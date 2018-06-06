@@ -2583,6 +2583,9 @@ Enabled | Yes
 This cop checks for unnecessary leading blank lines at the beginning
 of a file.
 
+### Examples
+
+```ruby
 # bad
 # (start of file)
 
@@ -2602,6 +2605,7 @@ end
 # good
 # (start of file)
 # a comment
+```
 
 ## Layout/LeadingCommentSpace
 

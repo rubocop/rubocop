@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Rails::Blank, :config do
   subject(:cop) { described_class.new(config) }
 
-  shared_examples :offense do |source, correction, message|
+  shared_examples 'offense' do |source, correction, message|
     it 'registers an offense' do
       inspect_source(source)
 
@@ -50,65 +50,65 @@ RSpec.describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     context 'nil or empty' do
-      it_behaves_like :offense, 'foo.nil? || foo.empty?',
+      it_behaves_like 'offense', 'foo.nil? || foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `foo.nil? || foo.empty?`.'
-      it_behaves_like :offense, 'nil? || empty?',
+      it_behaves_like 'offense', 'nil? || empty?',
                       'blank?',
                       'Use `blank?` instead of `nil? || empty?`.'
-      it_behaves_like :offense, 'foo == nil || foo.empty?',
+      it_behaves_like 'offense', 'foo == nil || foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `foo == nil || foo.empty?`.'
-      it_behaves_like :offense, 'nil == foo || foo.empty?',
+      it_behaves_like 'offense', 'nil == foo || foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `nil == foo || foo.empty?`.'
-      it_behaves_like :offense, '!foo || foo.empty?',
+      it_behaves_like 'offense', '!foo || foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `!foo || foo.empty?`.'
 
-      it_behaves_like :offense, 'foo.nil? || !!foo.empty?',
+      it_behaves_like 'offense', 'foo.nil? || !!foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of `foo.nil? || !!foo.empty?`.'
-      it_behaves_like :offense, 'foo == nil || !!foo.empty?',
+      it_behaves_like 'offense', 'foo == nil || !!foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of ' \
                       '`foo == nil || !!foo.empty?`.'
-      it_behaves_like :offense, 'nil == foo || !!foo.empty?',
+      it_behaves_like 'offense', 'nil == foo || !!foo.empty?',
                       'foo.blank?',
                       'Use `foo.blank?` instead of ' \
                       '`nil == foo || !!foo.empty?`.'
     end
 
     context 'checking all variable types' do
-      it_behaves_like :offense, 'foo.bar.nil? || foo.bar.empty?',
+      it_behaves_like 'offense', 'foo.bar.nil? || foo.bar.empty?',
                       'foo.bar.blank?',
                       'Use `foo.bar.blank?` instead of ' \
                       '`foo.bar.nil? || foo.bar.empty?`.'
-      it_behaves_like :offense, 'FOO.nil? || FOO.empty?',
+      it_behaves_like 'offense', 'FOO.nil? || FOO.empty?',
                       'FOO.blank?',
                       'Use `FOO.blank?` instead of `FOO.nil? || FOO.empty?`.'
-      it_behaves_like :offense, 'Foo.nil? || Foo.empty?',
+      it_behaves_like 'offense', 'Foo.nil? || Foo.empty?',
                       'Foo.blank?',
                       'Use `Foo.blank?` instead of `Foo.nil? || Foo.empty?`.'
-      it_behaves_like :offense, 'Foo::Bar.nil? || Foo::Bar.empty?',
+      it_behaves_like 'offense', 'Foo::Bar.nil? || Foo::Bar.empty?',
                       'Foo::Bar.blank?',
                       'Use `Foo::Bar.blank?` instead of ' \
                       '`Foo::Bar.nil? || Foo::Bar.empty?`.'
-      it_behaves_like :offense, '@foo.nil? || @foo.empty?',
+      it_behaves_like 'offense', '@foo.nil? || @foo.empty?',
                       '@foo.blank?',
                       'Use `@foo.blank?` instead of `@foo.nil? || @foo.empty?`.'
-      it_behaves_like :offense, '$foo.nil? || $foo.empty?',
+      it_behaves_like 'offense', '$foo.nil? || $foo.empty?',
                       '$foo.blank?',
                       'Use `$foo.blank?` instead of `$foo.nil? || $foo.empty?`.'
-      it_behaves_like :offense, '@@foo.nil? || @@foo.empty?',
+      it_behaves_like 'offense', '@@foo.nil? || @@foo.empty?',
                       '@@foo.blank?',
                       'Use `@@foo.blank?` instead of ' \
                       '`@@foo.nil? || @@foo.empty?`.'
-      it_behaves_like :offense, 'foo[bar].nil? || foo[bar].empty?',
+      it_behaves_like 'offense', 'foo[bar].nil? || foo[bar].empty?',
                       'foo[bar].blank?',
                       'Use `foo[bar].blank?` instead of ' \
                       '`foo[bar].nil? || foo[bar].empty?`.'
-      it_behaves_like :offense, 'foo(bar).nil? || foo(bar).empty?',
+      it_behaves_like 'offense', 'foo(bar).nil? || foo(bar).empty?',
                       'foo(bar).blank?',
                       'Use `foo(bar).blank?` instead of ' \
                       '`foo(bar).nil? || foo(bar).empty?`.'
@@ -120,13 +120,13 @@ RSpec.describe RuboCop::Cop::Rails::Blank, :config do
       { 'NotPresent' => true }
     end
 
-    it_behaves_like :offense, '!foo.present?',
+    it_behaves_like 'offense', '!foo.present?',
                     'foo.blank?',
                     'Use `foo.blank?` instead of `!foo.present?`.'
-    it_behaves_like :offense, 'not foo.present?',
+    it_behaves_like 'offense', 'not foo.present?',
                     'foo.blank?',
                     'Use `foo.blank?` instead of `not foo.present?`.'
-    it_behaves_like :offense, '!present?',
+    it_behaves_like 'offense', '!present?',
                     'blank?',
                     'Use `blank?` instead of `!present?`.'
   end

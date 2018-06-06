@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Performance::InefficientHashSearch do
   subject(:cop) { described_class.new(config) }
 
-  shared_examples :correct_behavior do |expected|
+  shared_examples 'correct behavior' do |expected|
     let(:expected_key_method) { expected == :short ? 'key?' : 'has_key?' }
     let(:expected_value_method) { expected == :short ? 'value?' : 'has_value?' }
 
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Performance::InefficientHashSearch do
   context 'when config is empty' do
     let(:config) { RuboCop::Config.new }
 
-    it_behaves_like :correct_behavior, :short
+    it_behaves_like 'correct behavior', :short
   end
 
   context 'when config enforces short hash methods' do
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Performance::InefficientHashSearch do
       )
     end
 
-    it_behaves_like :correct_behavior, :short
+    it_behaves_like 'correct behavior', :short
   end
 
   context 'when config specifies long hash methods but is not enabled' do
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Performance::InefficientHashSearch do
       )
     end
 
-    it_behaves_like :correct_behavior, :short
+    it_behaves_like 'correct behavior', :short
   end
 
   context 'when config enforces long hash methods' do
@@ -130,6 +130,6 @@ RSpec.describe RuboCop::Cop::Performance::InefficientHashSearch do
       )
     end
 
-    it_behaves_like :correct_behavior, :long
+    it_behaves_like 'correct behavior', :long
   end
 end

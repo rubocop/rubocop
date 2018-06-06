@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     }
   end
 
-  shared_examples :offense do |name, code, correction = nil, strip_fix = true|
+  shared_examples 'offense' do |name, code, correction = nil, strip_fix = true|
     it "registers an offense for #{name}" do
       inspect_source(code.strip_indent)
       expect(cop.offenses.size).to eq(1)
@@ -26,14 +26,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     end
   end
 
-  shared_examples :accept do |name, code|
+  shared_examples 'accept' do |name, code|
     it "accepts for #{name}" do
       inspect_source(code.strip_indent)
       expect(cop.offenses.empty?).to be(true)
     end
   end
 
-  shared_examples :check_message do |name, message, code = nil|
+  shared_examples 'check message' do |name, message, code = nil|
     it "displays a message with #{name}" do
       if code
         inspect_source(code.strip_indent)
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     end
   end
 
-  shared_examples :warning do |message|
+  shared_examples 'warning' do |message|
     it 'warns' do
       correct = lambda do
         autocorrect_source(<<-RUBY.strip_indent)
@@ -61,13 +61,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     end
   end
 
-  shared_examples :all_heredoc_type do |quote|
+  shared_examples 'all heredoc type' do |quote|
     context "quoted by #{quote}" do
       let(:cop_config) do
         { 'EnforcedStyle' => :powerpack }
       end
 
-      include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+      include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
         <<#{quote}RUBY2#{quote}
         \#{foo}
         bar
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           bar
         RUBY2
       CORRECTION
-      include_examples :offense, 'minus level indented', <<-RUBY, <<-CORRECTION
+      include_examples 'offense', 'minus level indented', <<-RUBY, <<-CORRECTION
         def foo
           <<#{quote}RUBY2#{quote}
         \#{foo}
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY2
         end
       CORRECTION
-      include_examples :offense, 'not indented, with `-`',
+      include_examples 'offense', 'not indented, with `-`',
                        <<-RUBY, <<-CORRECTION
         <<-#{quote}RUBY2#{quote}
         \#{foo}
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           bar
         RUBY2
       CORRECTION
-      include_examples :offense, 'minus level indented, with `-`',
+      include_examples 'offense', 'minus level indented, with `-`',
                        <<-RUBY, <<-CORRECTION
         def foo
           <<-#{quote}RUBY2#{quote}
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         end
       CORRECTION
 
-      include_examples :accept, 'not indented but with whitespace, with `-`',
+      include_examples 'accept', 'not indented but with whitespace, with `-`',
                        <<-RUBY
         def foo
           <<-#{quote}RUBY2#{quote}
@@ -130,28 +130,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         end
       RUBY
-      include_examples :accept, 'indented, but with `-`', <<-RUBY
+      include_examples 'accept', 'indented, but with `-`', <<-RUBY
         def foo
           <<-#{quote}RUBY2#{quote}
             something
           RUBY2
         end
       RUBY
-      include_examples :accept, 'not indented but with whitespace', <<-RUBY
+      include_examples 'accept', 'not indented but with whitespace', <<-RUBY
         def foo
           <<#{quote}RUBY2#{quote}
           something
         RUBY2
         end
       RUBY
-      include_examples :accept, 'indented, but without `~`', <<-RUBY
+      include_examples 'accept', 'indented, but without `~`', <<-RUBY
         def foo
           <<#{quote}RUBY2#{quote}
             something
         RUBY2
         end
       RUBY
-      include_examples :accept, 'an empty line', <<-RUBY
+      include_examples 'accept', 'an empty line', <<-RUBY
         <<-#{quote}RUBY2#{quote}
 
         RUBY2
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
       context 'when Metrics/LineLength is configured' do
         let(:allow_heredoc) { false }
 
-        include_examples :offense, 'short heredoc', <<-RUBY, <<-CORRECTION
+        include_examples 'offense', 'short heredoc', <<-RUBY, <<-CORRECTION
           <<#{quote}RUBY2#{quote}
           12
           RUBY2
@@ -170,14 +170,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
 
-        include_examples :accept, 'long heredoc', <<-RUBY
+        include_examples 'accept', 'long heredoc', <<-RUBY
           <<#{quote}RUBY2#{quote}
           12345678
           RUBY2
         RUBY
       end
 
-      include_examples :check_message, 'suggestion powerpack',
+      include_examples 'check message', 'suggestion powerpack',
                        [
                          'Use 2 spaces for indentation in a heredoc by using ' \
                          '`String#strip_indent`.'
@@ -190,14 +190,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
         message = 'Use 2 spaces for indentation in a heredoc by using ' \
                   "some library(e.g. ActiveSupport's `String#strip_heredoc`)."
-        include_examples :check_message, 'some library', [message]
+        include_examples 'check message', 'some library', [message]
         warning = 'Auto-correction does not work for Layout/IndentHeredoc. ' \
                   'Please configure EnforcedStyle.'
-        include_examples :warning, warning
+        include_examples 'warning', warning
 
         context 'Ruby 2.3', :ruby23 do
           width_message = 'Use 2 spaces for indentation in a heredoc.'
-          include_examples :check_message, 'squiggly heredoc, with ~',
+          include_examples 'check message', 'squiggly heredoc, with ~',
                            [width_message], <<-RUBY
             <<~#{quote}RUBY2#{quote}
             \#{foo}
@@ -207,9 +207,9 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
           type_message = 'Use 2 spaces for indentation in a heredoc by using ' \
                          '`<<~` instead of `<<-`.'
-          include_examples :check_message, 'squiggly heredoc, without ~',
+          include_examples 'check message', 'squiggly heredoc, without ~',
                            [type_message]
-          include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+          include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
             <<#{quote}RUBY2#{quote}
             \#{foo}
             bar
@@ -225,8 +225,9 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         context 'Rails', :enabled_rails do
           message = 'Use 2 spaces for indentation in a heredoc by using ' \
                     '`String#strip_heredoc`.'
-          include_examples :check_message, 'suggestion ActiveSupport', [message]
-          include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+          include_examples 'check message', 'suggestion ActiveSupport',
+                           [message]
+          include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
             <<#{quote}RUBY2#{quote}
             \#{foo}
             bar
@@ -245,7 +246,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           { 'EnforcedStyle' => :squiggly }
         end
 
-        include_examples :offense, 'not indented', <<-RUBY, <<-CORRECTION
+        include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
           <<~#{quote}RUBY2#{quote}
           something
           RUBY2
@@ -254,7 +255,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             something
           RUBY2
         CORRECTION
-        include_examples :offense, 'minus level indented',
+        include_examples 'offense', 'minus level indented',
                          <<-RUBY, <<-CORRECTION
           def foo
             <<~#{quote}RUBY2#{quote}
@@ -268,7 +269,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             RUBY2
           end
         CORRECTION
-        include_examples :offense, 'too deep indented', <<-RUBY, <<-CORRECTION
+        include_examples 'offense', 'too deep indented', <<-RUBY, <<-CORRECTION
           <<~#{quote}RUBY2#{quote}
               something
           RUBY2
@@ -277,7 +278,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             something
           RUBY2
         CORRECTION
-        include_examples :offense, 'not indented, without `~`',
+        include_examples 'offense', 'not indented, without `~`',
                          <<-RUBY, <<-CORRECTION
           <<#{quote}RUBY2#{quote}
           foo
@@ -288,7 +289,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
 
-        include_examples :offense, 'not indented, with `~`',
+        include_examples 'offense', 'not indented, with `~`',
                          <<-RUBY, <<-CORRECTION
           <<~#{quote}RUBY2#{quote}
           foo
@@ -299,7 +300,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
 
-        include_examples :offense, 'first line minus-level indented, with `-`',
+        include_examples 'offense', 'first line minus-level indented, with `-`',
                          <<-RUBY, <<-CORRECTION, false
                   puts <<-#{quote}RUBY2#{quote}
           def foo
@@ -314,12 +315,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY2
         CORRECTION
 
-        include_examples :accept, 'indented, with `~`', <<-RUBY
+        include_examples 'accept', 'indented, with `~`', <<-RUBY
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
         RUBY
-        include_examples :accept, 'include empty lines', <<-RUBY
+        include_examples 'accept', 'include empty lines', <<-RUBY
           <<~#{quote}MSG#{quote}
 
             foo
@@ -359,13 +360,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         context 'Ruby 2.2', :ruby22 do
           warning = '`squiggly` style is selectable only on Ruby 2.3 or ' \
                     'higher for Layout/IndentHeredoc.'
-          include_examples :warning, warning
+          include_examples 'warning', warning
         end
       end
     end
   end
 
   [nil, "'", '"', '`'].each do |quote|
-    include_examples :all_heredoc_type, quote
+    include_examples 'all heredoc type', quote
   end
 end

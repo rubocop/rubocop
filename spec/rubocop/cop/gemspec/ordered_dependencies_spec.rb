@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
       'section of the gemspec. Dependency `%s` should appear before `%s`.'
   end
 
-  shared_examples :ordered_dependency do |add_dependency|
+  shared_examples 'ordered dependency' do |add_dependency|
     context "When #{add_dependency}" do
       context 'When gems are alphabetically sorted' do
         it 'does not register any offenses' do
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     end
   end
 
-  include_examples :ordered_dependency, 'add_dependency' do
+  include_examples 'ordered dependency', 'add_dependency' do
     let(:offense_message) { <<-RUBY.strip_indent }
       Gem::Specification.new do |spec|
         spec.add_dependency 'rubocop'
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     RUBY
   end
 
-  include_examples :ordered_dependency, 'add_runtime_dependency' do
+  include_examples 'ordered dependency', 'add_runtime_dependency' do
     let(:offense_message) { <<-RUBY.strip_indent }
       Gem::Specification.new do |spec|
         spec.add_runtime_dependency 'rubocop'
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     RUBY
   end
 
-  include_examples :ordered_dependency, 'add_development_dependency' do
+  include_examples 'ordered dependency', 'add_development_dependency' do
     let(:offense_message) { <<-RUBY.strip_indent }
       Gem::Specification.new do |spec|
         spec.add_development_dependency 'rubocop'
