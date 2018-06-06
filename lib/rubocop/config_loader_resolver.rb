@@ -42,7 +42,7 @@ module RuboCop
         end
 
         hash['inherit_from'] = Array(hash['inherit_from'])
-        Array(config_path).reverse.each do |path|
+        Array(config_path).reverse_each do |path|
           # Put gem configuration first so local configuration overrides it.
           hash['inherit_from'].unshift gem_config_path(gem_name, path)
         end

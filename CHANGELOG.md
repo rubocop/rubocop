@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#5963](https://github.com/bbatsov/rubocop/issues/5963): Allow Performance/ReverseEach to apply to any receiver. ([@dvandersluis][])
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
 
 ## 0.57.0 (2018-06-06)
