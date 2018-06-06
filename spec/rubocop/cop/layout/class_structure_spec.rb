@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           extend SomeModule
           CONST = 1
         end
-        RUBY
+      RUBY
     end
   end
 

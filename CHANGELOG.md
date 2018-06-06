@@ -9,6 +9,7 @@
 * [#5803](https://github.com/bbatsov/rubocop/issues/5803): Add new `Style/UnneededCondition` cop. ([@balbesina][])
 * [#5406](https://github.com/bbatsov/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
 * [#5823](https://github.com/bbatsov/rubocop/issues/5823): Add new `slashes` style to `Rails/FilePath` since Ruby accepts forward slashes even on Windows. ([@sunny][])
+* New cop `Layout/LeadingBlankLines` checks for empty lines at the beginning of a file. ([@rrosenblum][])
 
 ### Bug fixes
 
@@ -19,9 +20,11 @@
 * [#5908](https://github.com/bbatsov/rubocop/pull/5908): Fix `Style/BracesAroundHashParameters` auto-correct going past the end of the file when the closing curly brace is on the last line of a file. ([@EiNSTeiN-][])
 * Fix a bug where `Style/FrozenStringLiteralComment` would be added to the second line if the first line is empty. ([@rrosenblum][])
 * [#5914](https://github.com/bbatsov/rubocop/issues/5914): Make `Layout/SpaceInsideReferenceBrackets` aware of `no_space` when using nested reference brackets. ([@koic][])
+* [#5799](https://github.com/bbatsov/rubocop/issues/5799): Fix false positive in `Style/MixinGrouping` when method named `include` accepts block. ([@Darhazer][])
 
 ### Changes
 
+* [#5937](https://github.com/rubocop-hq/rubocop/pull/5937): Add new `--fix-layout/-x` command line alias. ([@scottmatthewman][])
 * [#5887](https://github.com/bbatsov/rubocop/issues/5887): Remove `Lint/SplatKeywordArguments` cop. ([@koic][])
 * [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
 * [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])

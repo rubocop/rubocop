@@ -234,6 +234,10 @@ Layout/InitialIndentation:
     Checks the indentation of the first non-blank non-comment line in a file.
   Enabled: true
 
+Layout/LeadingBlankLines:
+  Description: Check for unnecessary blank lines at the beginning of a file.
+  Enabled: true
+
 Layout/LeadingCommentSpace:
   Description: 'Comments should start with a space.'
   StyleGuide: '#hash-space'

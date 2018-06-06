@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
       context 'Windows' do
         it 'allows any file permissions' do
           expect_no_offenses(<<-RUBY.strip_indent, file)
-        #!/usr/bin/ruby
+            #!/usr/bin/ruby
 
           RUBY
         end

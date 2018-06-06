@@ -535,17 +535,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   it 'corrects InitialIndentation offenses' do
     source = <<-RUBY.strip_indent
-        # comment 1
+      # comment 1
 
-        # comment 2
-        def func
-          begin
-            foo
-            bar
-          rescue StandardError
-            baz
-          end
+      # comment 2
+      def func
+        begin
+          foo
+          bar
+        rescue StandardError
+          baz
         end
+      end
     RUBY
     create_file('example.rb', source)
     create_file('.rubocop.yml', <<-YAML.strip_indent)

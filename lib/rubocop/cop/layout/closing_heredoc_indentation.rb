@@ -7,8 +7,8 @@ module RuboCop
       # Checks the indentation of here document closings.
       #
       # @example
-      #   # bad
       #
+      #   # bad
       #   class Foo
       #     def bar
       #       <<~SQL
@@ -18,7 +18,6 @@ module RuboCop
       #   end
       #
       #   # good
-      #
       #   class Foo
       #     def bar
       #       <<~SQL
@@ -27,13 +26,42 @@ module RuboCop
       #     end
       #   end
       #
+      #   # bad
+      #
+      #   # heredoc contents is before closing heredoc.
+      #   foo arg,
+      #       <<~EOS
+      #     Hi
+      #       EOS
+      #
+      #   # good
+      #   foo arg,
+      #       <<~EOS
+      #     Hi
+      #   EOS
+      #
+      #   # good
+      #   foo arg,
+      #       <<~EOS
+      #         Hi
+      #       EOS
+      #
       class ClosingHeredocIndentation < Cop
         include Heredoc
 
         MSG = '`%<closing>s` is not aligned with `%<opening>s`.'.freeze
+        MSG_ARG = '`%<closing>s` is not aligned with `%<opening>s` or ' \
+                  'beginning of method definition.'.freeze
 
         def on_heredoc(node)
-          return if opening_indentation(node) == closing_indentation(node)
+          if node.loc.heredoc_body.source.empty? ||
+             contents_indentation(node) >= closing_indentation(node)
+            return if opening_indentation(node) == closing_indentation(node)
+            return if node.argument? &&
+                      opening_indentation(
+                        find_node_used_heredoc_argument(node.parent)
+                      ) == closing_indentation(node)
+          end
 
           add_offense(node, location: :heredoc_end)
         end
@@ -48,6 +76,14 @@ module RuboCop
 
         def opening_indentation(node)
           indent_level(heredoc_opening(node))
+        end
+
+        def contents_indentation(node)
+          source_lines = node.loc.heredoc_body.source.split("\n")
+
+          source_lines.reject(&:empty?).map do |line|
+            indent_level(line)
+          end.min
         end
 
         def closing_indentation(node)
@@ -69,9 +105,17 @@ module RuboCop
           closing_text.gsub(/^\s{#{closing_indent}}/, ' ' * opening_indent)
         end
 
+        def find_node_used_heredoc_argument(node)
+          if node.parent && node.parent.send_type?
+            find_node_used_heredoc_argument(node.parent)
+          else
+            node
+          end
+        end
+
         def message(node)
           format(
-            MSG,
+            node.argument? ? MSG_ARG : MSG,
             closing: heredoc_closing(node).strip,
             opening: heredoc_opening(node).strip
           )

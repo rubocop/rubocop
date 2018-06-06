@@ -34,6 +34,16 @@ RSpec.describe RuboCop::Cop::Rails::AssertNot do
     RUBY
   end
 
+  it 'autocorrects `assert !` with a failure message' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      assert !foo, 'a failure message'
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      assert_not foo, 'a failure message'
+    RUBY
+  end
+
   it 'autocorrects `assert !` with extra spaces' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       assert   !  foo

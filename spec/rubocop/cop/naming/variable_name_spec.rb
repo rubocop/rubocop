@@ -55,8 +55,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
 
     it 'registers an offense for camel case local variables marked as unused' do
       expect_offense(<<-RUBY.strip_indent)
-    _myLocal = 1
-    ^^^^^^^^ Use snake_case for variable names.
+        _myLocal = 1
+        ^^^^^^^^ Use snake_case for variable names.
       RUBY
     end
 

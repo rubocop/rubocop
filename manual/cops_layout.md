@@ -665,7 +665,6 @@ Checks the indentation of here document closings.
 
 ```ruby
 # bad
-
 class Foo
   def bar
     <<~SQL
@@ -675,7 +674,6 @@ class Foo
 end
 
 # good
-
 class Foo
   def bar
     <<~SQL
@@ -683,6 +681,26 @@ class Foo
     SQL
   end
 end
+
+# bad
+
+# heredoc contents is before closing heredoc.
+foo arg,
+    <<~EOS
+  Hi
+    EOS
+
+# good
+foo arg,
+    <<~EOS
+  Hi
+EOS
+
+# good
+foo arg,
+    <<~EOS
+      Hi
+    EOS
 ```
 
 ## Layout/ClosingParenthesisIndentation
@@ -2555,6 +2573,35 @@ class A
   def foo; end
 end
 ```
+
+## Layout/LeadingBlankLines
+
+Enabled by default | Supports autocorrection
+--- | ---
+Enabled | Yes
+
+This cop checks for unnecessary leading blank lines at the beginning
+of a file.
+
+# bad
+# (start of file)
+
+class Foo
+end
+
+# bad
+# (start of file)
+
+# a comment
+
+# good
+# (start of file)
+class Foo
+end
+
+# good
+# (start of file)
+# a comment
 
 ## Layout/LeadingCommentSpace
 

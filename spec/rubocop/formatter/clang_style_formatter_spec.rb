@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
             test:1:14: C: message 1
             do_something([this, #{described_class::ELLIPSES}
                          ^^^^^^
-          OUTPUT
+        OUTPUT
       end
     end
 
