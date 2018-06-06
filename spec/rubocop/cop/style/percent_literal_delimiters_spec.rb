@@ -369,7 +369,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect(new_source).to eq(corrected_source)
     end
 
-    shared_examples :escape_characters do |percent_literal|
+    shared_examples 'escape characters' do |percent_literal|
       it "corrects #{percent_literal} with \\n in it" do
         new_source = autocorrect_source("#{percent_literal}{\n}")
 
@@ -383,14 +383,14 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       end
     end
 
-    it_behaves_like(:escape_characters, '%')
-    it_behaves_like(:escape_characters, '%q')
-    it_behaves_like(:escape_characters, '%Q')
-    it_behaves_like(:escape_characters, '%s')
-    it_behaves_like(:escape_characters, '%w')
-    it_behaves_like(:escape_characters, '%W')
-    it_behaves_like(:escape_characters, '%x')
-    it_behaves_like(:escape_characters, '%r')
-    it_behaves_like(:escape_characters, '%i')
+    it_behaves_like('escape characters', '%')
+    it_behaves_like('escape characters', '%q')
+    it_behaves_like('escape characters', '%Q')
+    it_behaves_like('escape characters', '%s')
+    it_behaves_like('escape characters', '%w')
+    it_behaves_like('escape characters', '%W')
+    it_behaves_like('escape characters', '%x')
+    it_behaves_like('escape characters', '%r')
+    it_behaves_like('escape characters', '%i')
   end
 end

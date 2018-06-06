@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
   let(:config) { RuboCop::Config.new }
 
-  shared_examples :offense do |name, message, code, correction|
+  shared_examples 'offense' do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
       inspect_source(code.strip_indent)
       message = "Extra empty line detected at `begin` body #{message}."
@@ -18,14 +18,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
     end
   end
 
-  shared_examples :accepts do |name, code|
+  shared_examples 'accepts' do |name, code|
     it "accepts #{name}" do
       inspect_source(code)
       expect(cop.offenses.empty?).to be(true)
     end
   end
 
-  include_examples :offense, 'begin body starting', 'beginning',
+  include_examples 'offense', 'begin body starting', 'beginning',
                    <<-CODE, <<-CORRECTION
     begin
 
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       foo
     end
   CORRECTION
-  include_examples :offense, 'begin body ending', 'end', <<-CODE, <<-CORRECTION
+  include_examples 'offense', 'begin body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
 
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       foo
     end
   CORRECTION
-  include_examples :offense,
+  include_examples 'offense',
                    'begin body starting in method', 'beginning',
                    <<-CODE, <<-CORRECTION
     def bar
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       end
     end
   CORRECTION
-  include_examples :offense,
+  include_examples 'offense',
                    'begin body ending in method', 'end', <<-CODE, <<-CORRECTION
     def bar
       begin
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
     end
   CORRECTION
 
-  include_examples :offense,
+  include_examples 'offense',
                    'begin body starting with rescue', 'beginning',
                    <<-CODE, <<-CORRECTION
     begin
@@ -94,7 +94,9 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       bar
     end
   CORRECTION
-  include_examples :offense, 'rescue body ending', 'end', <<-CODE, <<-CORRECTION
+  include_examples 'offense',
+                   'rescue body ending', 'end',
+                   <<-CODE, <<-CORRECTION
     begin
       foo
     rescue
@@ -109,7 +111,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
     end
   CORRECTION
 
-  include_examples :offense, 'else body ending', 'end', <<-CODE, <<-CORRECTION
+  include_examples 'offense', 'else body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
     rescue
@@ -127,7 +129,9 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       baz
     end
   CORRECTION
-  include_examples :offense, 'ensure body ending', 'end', <<-CODE, <<-CORRECTION
+  include_examples 'offense',
+                   'ensure body ending', 'end',
+                   <<-CODE, <<-CORRECTION
     begin
       foo
     ensure
@@ -187,12 +191,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
     end
   end
 
-  include_examples :accepts, 'begin block without empty line', <<-RUBY
+  include_examples 'accepts', 'begin block without empty line', <<-RUBY
     begin
       foo
     end
   RUBY
-  include_examples :accepts,
+  include_examples 'accepts',
                    'begin block without empty line in a method', <<-RUBY
     def foo
       begin

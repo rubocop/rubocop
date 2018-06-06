@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
   end
 
-  shared_examples :no_parentheses do
+  shared_examples 'no parentheses' do
     # common to require_no_parentheses and
     # require_no_parentheses_except_multiline
     it 'reports an offense for def with parameters with parens' do
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
   context 'require_no_parentheses' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_no_parentheses' } }
 
-    it_behaves_like :no_parentheses
+    it_behaves_like 'no parentheses'
   end
 
   context 'require_no_parentheses_except_multiline' do
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     context 'when args are all on a single line' do
-      it_behaves_like :no_parentheses
+      it_behaves_like 'no parentheses'
     end
 
     context 'when args span multiple lines' do
