@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
+
 ## 0.57.0 (2018-06-06)
 
 ### New features
@@ -31,7 +35,7 @@
 * [#5761](https://github.com/bbatsov/rubocop/pull/5761): Add `httpdate` to accepted `Rails/TimeZone` methods. ([@cupakromer][])
 * [#5899](https://github.com/bbatsov/rubocop/pull/5899): Add `xmlschema` to accepted `Rails/TimeZone` methods. ([@koic][])
 * [#5906](https://github.com/bbatsov/rubocop/pull/5906): Move REPL command from `rake repl` task to `bin/console` command. ([@koic][])
-* [#5917](https://github.com/bbatsov/rubocop/pull/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
+* [#5917](https://github.com/bbatsov/rubocop/issues/5917): Let `inherit_mode` work for default configuration too. ([@jonas054][])
 * [#5929](https://github.com/bbatsov/rubocop/pull/5929): Stop including string extensions from `unicode/display_width`. ([@nroman-stripe][])
 
 ## 0.56.0 (2018-05-14)

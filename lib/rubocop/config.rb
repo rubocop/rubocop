@@ -459,6 +459,11 @@ module RuboCop
         # There could be a custom cop with this name. If so, don't warn
         next if Cop::Cop.registry.contains_cop_matching?([name])
 
+        # Special case for inherit_mode, which is a directive that we keep in
+        # the configuration (even though it's not a cop), because it's easier
+        # to do so than to pass the value around to various methods.
+        next if name == 'inherit_mode'
+
         warn Rainbow("Warning: unrecognized cop #{name} found in " \
                      "#{smart_loaded_path}").yellow
       end

@@ -651,6 +651,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to include('no offenses detected')
       end
 
+      it 'can merge settings from inherited configuration' do
+        create_file('lib/example.rb', 'puts %x(ls)')
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          inherit_from: .rubocop_todo.yml
+
+          inherit_mode:
+            merge:
+              - Exclude
+
+          Style/CommandLiteral:
+            Exclude:
+              - generated/example.rb
+        YAML
+        create_file('.rubocop_todo.yml', <<-YAML.strip_indent)
+          Style/CommandLiteral:
+            Exclude:
+              - lib/example.rb
+        YAML
+        Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
+        expect($stdout.string).to include('no offenses detected')
+        expect($stderr.string.empty?).to be(true)
+      end
+
       it 'includes some directories by default' do
         source = ['read_attribute(:test)', "default_scope order: 'position'"]
         # Several rails cops include app/models by default.
