@@ -19,7 +19,7 @@ module RuboCop
         UNDERSCORE = '_'.freeze
 
         def_node_matcher :reverse_each?, <<-MATCHER
-          (send $(send array :reverse) :each)
+          (send $(send _ :reverse) :each)
         MATCHER
 
         def on_send(node)

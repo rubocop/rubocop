@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#5963](https://github.com/bbatsov/rubocop/issues/5963): Allow Performance/ReverseEach to apply to any receiver. ([@dvandersluis][])
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
 * [#5380](https://github.com/rubocop-hq/rubocop/issues/5380): Fix false negative in `Layout/IndentationWidth` when an access modifier section has an invalid indentation body. ([@tatsuyafw][])
 * [#5909](https://github.com/rubocop-hq/rubocop/pull/5909): Even when a module has no public methods, `Layout/IndentationConsistency` should still register an offense for private methods. ([@jaredbeck][])
