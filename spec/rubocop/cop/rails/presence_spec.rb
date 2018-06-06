@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
 
   let(:config) { RuboCop::Config.new }
 
-  shared_examples :offense do |source, correction, first_line, end_line|
+  shared_examples 'offense' do |source, correction, first_line, end_line|
     it 'registers an offense' do
       inspect_source(source)
 
@@ -28,21 +28,21 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     end
   end
 
-  it_behaves_like :offense, 'a.present? ? a : nil', 'a.presence', 1, 1
-  it_behaves_like :offense, '!a.present? ? nil: a', 'a.presence', 1, 1
-  it_behaves_like :offense, 'a.blank? ? nil : a', 'a.presence', 1, 1
-  it_behaves_like :offense, '!a.blank? ? a : nil', 'a.presence', 1, 1
-  it_behaves_like :offense, 'a.present? ? a : b', 'a.presence || b', 1, 1
-  it_behaves_like :offense, '!a.present? ? b : a', 'a.presence || b', 1, 1
-  it_behaves_like :offense, 'a.blank? ? b : a', 'a.presence || b', 1, 1
-  it_behaves_like :offense, '!a.blank? ? a : b', 'a.presence || b', 1, 1
+  it_behaves_like 'offense', 'a.present? ? a : nil', 'a.presence', 1, 1
+  it_behaves_like 'offense', '!a.present? ? nil: a', 'a.presence', 1, 1
+  it_behaves_like 'offense', 'a.blank? ? nil : a', 'a.presence', 1, 1
+  it_behaves_like 'offense', '!a.blank? ? a : nil', 'a.presence', 1, 1
+  it_behaves_like 'offense', 'a.present? ? a : b', 'a.presence || b', 1, 1
+  it_behaves_like 'offense', '!a.present? ? b : a', 'a.presence || b', 1, 1
+  it_behaves_like 'offense', 'a.blank? ? b : a', 'a.presence || b', 1, 1
+  it_behaves_like 'offense', '!a.blank? ? a : b', 'a.presence || b', 1, 1
 
-  it_behaves_like :offense,
+  it_behaves_like 'offense',
                   'a(:bar).map(&:baz).present? ? a(:bar).map(&:baz) : nil',
                   'a(:bar).map(&:baz).presence',
                   1, 1
 
-  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
+  it_behaves_like 'offense', <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
     if a.present?
       a
     else
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     end
   RUBY
 
-  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
+  it_behaves_like 'offense', <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
     unless a.present?
       nil
     else
@@ -58,9 +58,9 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     end
   RUBY
 
-  it_behaves_like :offense, 'a if a.present?', 'a.presence', 1, 1
-  it_behaves_like :offense, 'a unless a.blank?', 'a.presence', 1, 1
-  it_behaves_like :offense, <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 # rubocop:disable Metrics/LineLength
+  it_behaves_like 'offense', 'a if a.present?', 'a.presence', 1, 1
+  it_behaves_like 'offense', 'a unless a.blank?', 'a.presence', 1, 1
+  it_behaves_like 'offense', <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 # rubocop:disable Metrics/LineLength
     if [1, 2, 3].map { |num| num + 1 }
                 .map { |num| num + 2 }
                 .present?

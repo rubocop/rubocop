@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
 
   let(:rails_version) { 5.2 }
 
-  shared_examples :offense do
+  shared_examples 'offense' do
     it 'registers an offense when including combinable transformations' do
       expect_offense(<<-RUBY.strip_indent)
         def change
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
     end
   end
 
-  shared_examples :no_offense do
+  shared_examples 'no offense' do
     it 'does not register an offense' \
        'when including combinable transformations' do
       expect_no_offenses(<<-RUBY.strip_indent)
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
     end
   end
 
-  shared_examples :offense_for_mysql do
+  shared_examples 'offense for mysql' do
     it 'registers an offense when including combinable transformations' do
       expect_offense(<<-RUBY.strip_indent)
         def change
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
     end
   end
 
-  shared_examples :no_offense_for_mysql do
+  shared_examples 'no offense for mysql' do
     it 'does not register an offense' \
        'when including combinable transformations' do
       expect_no_offenses(<<-RUBY.strip_indent)
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
     end
   end
 
-  shared_examples :offense_for_postgresql do
+  shared_examples 'offense for postgresql' do
     it 'registers an offense when including combinable transformations' do
       expect_offense(<<-RUBY.strip_indent)
         def change
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
     end
   end
 
-  shared_examples :no_offense_for_postgresql do
+  shared_examples 'no offense for postgresql' do
     it 'does not register an offense' \
        'when including combinable transformations' do
       expect_no_offenses(<<-RUBY.strip_indent)
@@ -149,9 +149,9 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
     end
   end
 
-  it_behaves_like :no_offense
-  it_behaves_like :no_offense_for_mysql
-  it_behaves_like :no_offense_for_postgresql
+  it_behaves_like 'no offense'
+  it_behaves_like 'no offense for mysql'
+  it_behaves_like 'no offense for postgresql'
 
   context 'when database is MySQL' do
     let(:cop_config) do
@@ -161,9 +161,9 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
       }
     end
 
-    it_behaves_like :offense
-    it_behaves_like :offense_for_mysql
-    it_behaves_like :no_offense_for_postgresql
+    it_behaves_like 'offense'
+    it_behaves_like 'offense for mysql'
+    it_behaves_like 'no offense for postgresql'
 
     it 'registers offenses when including combinable alter methods' do
       expect_offense(<<-RUBY.strip_indent)
@@ -325,6 +325,14 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using empty migration' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class EmptyMigration < ActiveRecord::Migration[5.1]
+          def change; end
+        end
+      RUBY
+    end
   end
 
   context 'when database is PostgreSQL' do
@@ -335,16 +343,16 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
       }
     end
 
-    it_behaves_like :offense
-    it_behaves_like :no_offense_for_mysql
-    it_behaves_like :offense_for_postgresql
+    it_behaves_like 'offense'
+    it_behaves_like 'no offense for mysql'
+    it_behaves_like 'offense for postgresql'
 
     context 'with Rails 5.1' do
       let(:rails_version) { 5.1 }
 
-      it_behaves_like :no_offense
-      it_behaves_like :no_offense_for_mysql
-      it_behaves_like :no_offense_for_postgresql
+      it_behaves_like 'no offense'
+      it_behaves_like 'no offense for mysql'
+      it_behaves_like 'no offense for postgresql'
     end
   end
 
@@ -367,7 +375,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
         }
       end
 
-      it_behaves_like :offense_for_mysql
+      it_behaves_like 'offense for mysql'
     end
 
     context 'postgresql' do
@@ -379,7 +387,7 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
         }
       end
 
-      it_behaves_like :offense_for_postgresql
+      it_behaves_like 'offense for postgresql'
     end
   end
 end

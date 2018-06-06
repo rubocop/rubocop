@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
     end
   end
 
-  shared_examples :duplicated_literal_key do |key|
+  shared_examples 'duplicated literal key' do |key|
     it "registers an offense for duplicated `#{key}` hash keys" do
       inspect_source("hash = { #{key} => 1, #{key} => 4}")
       expect(cop.offenses.size).to eq(1)
@@ -61,39 +61,39 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
     end
   end
 
-  it_behaves_like :duplicated_literal_key, '!true'
-  it_behaves_like :duplicated_literal_key, '"#{2}"'
-  it_behaves_like :duplicated_literal_key, '(1)'
-  it_behaves_like :duplicated_literal_key, '(false && true)'
-  it_behaves_like :duplicated_literal_key, '(false <=> true)'
-  it_behaves_like :duplicated_literal_key, '(false or true)'
-  it_behaves_like :duplicated_literal_key, '[1, 2, 3]'
-  it_behaves_like :duplicated_literal_key, '{ :a => 1, :b => 2 }'
-  it_behaves_like :duplicated_literal_key, '{ a: 1, b: 2 }'
-  it_behaves_like :duplicated_literal_key, '/./'
-  it_behaves_like :duplicated_literal_key, '%r{abx}ixo'
-  it_behaves_like :duplicated_literal_key, '1.0'
-  it_behaves_like :duplicated_literal_key, '1'
-  it_behaves_like :duplicated_literal_key, 'false'
-  it_behaves_like :duplicated_literal_key, 'nil'
-  it_behaves_like :duplicated_literal_key, "'str'"
+  it_behaves_like 'duplicated literal key', '!true'
+  it_behaves_like 'duplicated literal key', '"#{2}"'
+  it_behaves_like 'duplicated literal key', '(1)'
+  it_behaves_like 'duplicated literal key', '(false && true)'
+  it_behaves_like 'duplicated literal key', '(false <=> true)'
+  it_behaves_like 'duplicated literal key', '(false or true)'
+  it_behaves_like 'duplicated literal key', '[1, 2, 3]'
+  it_behaves_like 'duplicated literal key', '{ :a => 1, :b => 2 }'
+  it_behaves_like 'duplicated literal key', '{ a: 1, b: 2 }'
+  it_behaves_like 'duplicated literal key', '/./'
+  it_behaves_like 'duplicated literal key', '%r{abx}ixo'
+  it_behaves_like 'duplicated literal key', '1.0'
+  it_behaves_like 'duplicated literal key', '1'
+  it_behaves_like 'duplicated literal key', 'false'
+  it_behaves_like 'duplicated literal key', 'nil'
+  it_behaves_like 'duplicated literal key', "'str'"
 
-  shared_examples :duplicated_non_literal_key do |key|
+  shared_examples 'duplicated non literal key' do |key|
     it "does not register an offense for duplicated `#{key}` hash keys" do
       inspect_source("hash = { #{key} => 1, #{key} => 4}")
       expect(cop.offenses.empty?).to be(true)
     end
   end
 
-  it_behaves_like :duplicated_non_literal_key, '"#{some_method_call}"'
-  it_behaves_like :duplicated_non_literal_key, '(x && false)'
-  it_behaves_like :duplicated_non_literal_key, '(x == false)'
-  it_behaves_like :duplicated_non_literal_key, '(x or false)'
-  it_behaves_like :duplicated_non_literal_key, '[some_method_call]'
-  it_behaves_like :duplicated_non_literal_key, '{ :sym => some_method_call }'
-  it_behaves_like :duplicated_non_literal_key, '{ some_method_call => :sym }'
-  it_behaves_like :duplicated_non_literal_key, '/.#{some_method_call}/'
-  it_behaves_like :duplicated_non_literal_key, '%r{abx#{foo}}ixo'
-  it_behaves_like :duplicated_non_literal_key, 'some_method_call'
-  it_behaves_like :duplicated_non_literal_key, 'some_method_call(x, y)'
+  it_behaves_like 'duplicated non literal key', '"#{some_method_call}"'
+  it_behaves_like 'duplicated non literal key', '(x && false)'
+  it_behaves_like 'duplicated non literal key', '(x == false)'
+  it_behaves_like 'duplicated non literal key', '(x or false)'
+  it_behaves_like 'duplicated non literal key', '[some_method_call]'
+  it_behaves_like 'duplicated non literal key', '{ :sym => some_method_call }'
+  it_behaves_like 'duplicated non literal key', '{ some_method_call => :sym }'
+  it_behaves_like 'duplicated non literal key', '/.#{some_method_call}/'
+  it_behaves_like 'duplicated non literal key', '%r{abx#{foo}}ixo'
+  it_behaves_like 'duplicated non literal key', 'some_method_call'
+  it_behaves_like 'duplicated non literal key', 'some_method_call(x, y)'
 end

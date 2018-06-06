@@ -643,7 +643,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe '--show-cops' do
-    shared_examples(:prints_config) do
+    shared_examples('prints config') do
       it 'prints the current configuration' do
         out = stdout.lines.to_a
         printed_config = YAML.load(out.join) # rubocop:disable Security/YAMLLoad
@@ -727,7 +727,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      include_examples :prints_config
+      include_examples 'prints config'
     end
 
     context 'with one cop given' do
@@ -744,13 +744,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         )
       end
 
-      include_examples :prints_config
+      include_examples 'prints config'
     end
 
     context 'with two cops given' do
       let(:arguments) { ['Layout/Tab,Metrics/LineLength'] }
 
-      include_examples :prints_config
+      include_examples 'prints config'
     end
 
     context 'with one of the cops misspelled' do
