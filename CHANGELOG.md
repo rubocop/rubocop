@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5917](https://github.com/bbatsov/rubocop/issues/5917): Fix erroneous warning for `inherit_mode` directive. ([@jonas054][])
+* [#5958](https://github.com/rubocop-hq/rubocop/issues/5958): Handle empty method body in `Rails/BulkChangeTable`. ([@wata727][])
 
 ## 0.57.0 (2018-06-06)
 

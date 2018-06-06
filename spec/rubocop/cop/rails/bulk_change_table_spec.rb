@@ -325,6 +325,14 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using empty migration' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class EmptyMigration < ActiveRecord::Migration[5.1]
+          def change; end
+        end
+      RUBY
+    end
   end
 
   context 'when database is PostgreSQL' do

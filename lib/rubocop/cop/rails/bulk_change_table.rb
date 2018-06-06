@@ -135,6 +135,7 @@ module RuboCop
         def on_def(node)
           return unless support_bulk_alter?
           return unless MIGRATIION_METHODS.include?(node.method_name)
+          return unless node.body
 
           recorder = AlterMethodsRecorder.new
 
