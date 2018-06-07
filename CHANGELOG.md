@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#5965](https://github.com/bbatsov/rubocop/issues/5965): Prevent `Layout/ClosingHeredocIndentation` from raising an error on heredocs containing only a newline. ([@drenmi][])
+* Prevent a crash in `Layout/IndentationConsistency` cop triggered by an empty expression string interpolation. ([@alexander-lazarov][])
 
 ## 0.57.1 (2018-06-07)
 
@@ -3418,3 +3419,4 @@
 [@nroman-stripe]: https://github.com/nroman-stripe
 [@sunny]: https://github.com/sunny
 [@tatsuyafw]: https://github.com/tatsuyafw
+[@alexander-lazarov]: https://github.com/alexander-lazarov

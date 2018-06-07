@@ -5,6 +5,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
 
   let(:cop_config) { { 'EnforcedStyle' => 'normal' } }
 
+  context 'with top-level code' do
+    it 'accepts an empty expression string interpolation' do
+      expect_no_offenses(<<-'RUBY'.strip_indent)
+        "#{}"
+      RUBY
+    end
+  end
+
   context 'with if statement' do
     it 'registers an offense for bad indentation in an if body' do
       expect_offense(<<-RUBY.strip_indent)

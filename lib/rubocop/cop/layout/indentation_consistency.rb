@@ -149,7 +149,7 @@ module RuboCop
         # is not an access modifier.
         def base_column_for_normal_style(node)
           first_child = node.children.first
-          return unless bare_access_modifier?(first_child)
+          return unless first_child && bare_access_modifier?(first_child)
 
           # If, as is most common, the access modifier is indented deeper than
           # the module (`access_modifier_indent > module_indent`) then the
