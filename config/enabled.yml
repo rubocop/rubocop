@@ -92,7 +92,7 @@ Layout/CaseIndentation:
   Enabled: true
 
 Layout/ClosingHeredocIndentation:
-  Description: 'Checks the indenation of here document closings.'
+  Description: 'Checks the indentation of here document closings.'
   Enabled: true
 
 Layout/ClosingParenthesisIndentation:
