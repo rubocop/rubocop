@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#5965](https://github.com/bbatsov/rubocop/issues/5965): Prevent `Layout/ClosingHeredocIndentation` from raising an error on heredocs containing only a newline. ([@drenmi][])
+
 ## 0.57.1 (2018-06-07)
 
 ### Bug fixes
