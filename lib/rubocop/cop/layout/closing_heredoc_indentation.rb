@@ -54,7 +54,7 @@ module RuboCop
                   'beginning of method definition.'.freeze
 
         def on_heredoc(node)
-          if node.loc.heredoc_body.source.empty? ||
+          if empty_heredoc?(node) ||
              contents_indentation(node) >= closing_indentation(node)
             return if opening_indentation(node) == closing_indentation(node)
             return if node.argument? &&
@@ -76,6 +76,10 @@ module RuboCop
 
         def opening_indentation(node)
           indent_level(heredoc_opening(node))
+        end
+
+        def empty_heredoc?(node)
+          node.loc.heredoc_body.source.empty? || !contents_indentation(node)
         end
 
         def contents_indentation(node)
