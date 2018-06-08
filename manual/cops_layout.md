@@ -1922,8 +1922,12 @@ second_param)
 some_method nested_call(
 nested_first_param),
 second_param
+```
+#### EnforcedStyle: consistent
 
-# Style: consistent
+```ruby
+# The first parameter should always be indented one step more than the
+# preceding line.
 
 # good
 some_method(
@@ -1946,8 +1950,12 @@ second_param)
 some_method nested_call(
   nested_first_param),
 second_param
+```
+#### EnforcedStyle: consistent_relative_to_receiver
 
-# Style: consistent_relative_to_receiver
+```ruby
+# The first parameter should always be indented one level relative to
+# the parent that is receiving the parameter
 
 # good
 some_method(
@@ -1970,8 +1978,14 @@ second_param)
 some_method nested_call(
               nested_first_param),
 second_params
+```
+#### EnforcedStyle: special_for_inner_method_call
 
-# Style: special_for_inner_method_call
+```ruby
+# The first parameter should normally be indented one step more than
+# the preceding line, but if it's a parameter for a method call that
+# is itself a parameter in a method call, then the inner parameter
+# should be indented relative to the inner method.
 
 # good
 some_method(
@@ -1994,8 +2008,13 @@ second_param)
 some_method nested_call(
               nested_first_param),
 second_param
+```
+#### EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
 
-# Style: special_for_inner_method_call_in_parentheses
+```ruby
+# Same as `special_for_inner_method_call` except that the special rule
+# only applies if the outer method call encloses its arguments in
+# parentheses.
 
 # good
 some_method(
