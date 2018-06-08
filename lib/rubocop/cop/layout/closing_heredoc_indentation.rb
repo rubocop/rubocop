@@ -49,18 +49,18 @@ module RuboCop
       class ClosingHeredocIndentation < Cop
         include Heredoc
 
+        SIMPLE_HEREDOC = '<<'.freeze
         MSG = '`%<closing>s` is not aligned with `%<opening>s`.'.freeze
         MSG_ARG = '`%<closing>s` is not aligned with `%<opening>s` or ' \
                   'beginning of method definition.'.freeze
 
         def on_heredoc(node)
+          return if heredoc_type(node) == SIMPLE_HEREDOC
+
           if empty_heredoc?(node) ||
              contents_indentation(node) >= closing_indentation(node)
             return if opening_indentation(node) == closing_indentation(node)
-            return if node.argument? &&
-                      opening_indentation(
-                        find_node_used_heredoc_argument(node.parent)
-                      ) == closing_indentation(node)
+            return if argument_indentation_correct?(node)
           end
 
           add_offense(node, location: :heredoc_end)
@@ -80,6 +80,13 @@ module RuboCop
 
         def empty_heredoc?(node)
           node.loc.heredoc_body.source.empty? || !contents_indentation(node)
+        end
+
+        def argument_indentation_correct?(node)
+          node.argument? &&
+            opening_indentation(
+              find_node_used_heredoc_argument(node.parent)
+            ) == closing_indentation(node)
         end
 
         def contents_indentation(node)

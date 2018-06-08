@@ -37,17 +37,13 @@ module RuboCop
         private
 
         def meaningful_delimiters?(node)
-          delimiters = delimiters(node)
+          delimiters = delimiter_string(node)
 
           return false unless delimiters =~ /\w/
 
           blacklisted_delimiters.none? do |blacklisted_delimiter|
             delimiters =~ Regexp.new(blacklisted_delimiter)
           end
-        end
-
-        def delimiters(node)
-          node.source.match(OPENING_DELIMITER).captures.first
         end
 
         def blacklisted_delimiters
