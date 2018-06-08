@@ -119,6 +119,16 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
     RUBY
   end
 
+  it 'does not register an offense for a << heredoc' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def foo
+        <<NIL
+
+      NIL
+      end
+    RUBY
+  end
+
   describe '#autocorrect' do
     it 'corrects bad indentation' do
       corrected = autocorrect_source(<<-RUBY.strip_indent)
