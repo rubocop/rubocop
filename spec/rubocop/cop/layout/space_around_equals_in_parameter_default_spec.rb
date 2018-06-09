@@ -42,8 +42,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(['def f(x, y=0, z=1)', 'end'])
-      expect(new_source).to eq(['def f(x, y = 0, z = 1)', 'end'].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def f(x, y=0, z=1)
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def f(x, y = 0, z = 1)
+        end
+      RUBY
     end
 
     it 'accepts default value assignment with spaces and unary + operator' do

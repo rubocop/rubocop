@@ -51,6 +51,10 @@ Layout/ClassStructure:
 Layout/IndentHeredoc:
   EnforcedStyle: powerpack
 
+# Trailing white space is meaningful in code examples
+Layout/TrailingWhitespace:
+  AllowInHeredoc: true
+
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'

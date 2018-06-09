@@ -62,9 +62,7 @@ shared_examples_for 'multiline literal brace layout' do
     let(:cop_config) { { 'EnforcedStyle' => 'same_line' } }
 
     it 'ignores heredocs that could share a last line' do
-      inspect_source(construct(false, a, make_multi(heredoc), true))
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(construct(false, a, make_multi(heredoc), true))
     end
 
     it 'detects heredoc structures that are safe to add to' do
@@ -88,15 +86,11 @@ shared_examples_for 'multiline literal brace layout' do
 
     context 'opening brace on same line as first element' do
       it 'allows closing brace on same line as last element' do
-        inspect_source(construct(false, false))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(false, false))
       end
 
       it 'allows closing brace on same line as last multiline element' do
-        inspect_source(construct(false, a, make_multi(multi), false))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(false, a, make_multi(multi), false))
       end
 
       it 'detects closing brace on different line from last element' do
@@ -158,15 +152,11 @@ shared_examples_for 'multiline literal brace layout' do
 
     context 'opening brace on separate line from first element' do
       it 'allows closing brace on separate line from last element' do
-        inspect_source(construct(true, true))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(true, true))
       end
 
       it 'allows closing brace on separate line from last multiline element' do
-        inspect_source(construct(true, a, make_multi(multi), true))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(true, a, make_multi(multi), true))
       end
 
       it 'detects closing brace on same line as last element' do
@@ -193,15 +183,11 @@ shared_examples_for 'multiline literal brace layout' do
 
     context 'opening brace on same line as first element' do
       it 'allows closing brace on different line from last element' do
-        inspect_source(construct(false, true))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(false, true))
       end
 
       it 'allows closing brace on different line from multi-line element' do
-        inspect_source(construct(false, a, make_multi(multi), true))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(false, a, make_multi(multi), true))
       end
 
       it 'detects closing brace on same line as last element' do
@@ -238,15 +224,11 @@ shared_examples_for 'multiline literal brace layout' do
 
     context 'opening brace on separate line from first element' do
       it 'allows closing brace on separate line from last element' do
-        inspect_source(construct(true, true))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(true, true))
       end
 
       it 'allows closing brace on separate line from last multiline element' do
-        inspect_source(construct(true, a, make_multi(multi), true))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(true, a, make_multi(multi), true))
       end
 
       it 'detects closing brace on same line as last element' do
@@ -273,15 +255,11 @@ shared_examples_for 'multiline literal brace layout' do
 
     context 'opening brace on same line as first element' do
       it 'allows closing brace on same line from last element' do
-        inspect_source(construct(false, false))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(false, false))
       end
 
       it 'allows closing brace on same line as multi-line element' do
-        inspect_source(construct(false, a, make_multi(multi), false))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(false, a, make_multi(multi), false))
       end
 
       it 'detects closing brace on different line from last element' do
@@ -354,15 +332,11 @@ shared_examples_for 'multiline literal brace layout' do
 
     context 'opening brace on separate line from first element' do
       it 'allows closing brace on same line as last element' do
-        inspect_source(construct(true, false))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(true, false))
       end
 
       it 'allows closing brace on same line as last multiline element' do
-        inspect_source(construct(true, a, make_multi(multi), false))
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(construct(true, a, make_multi(multi), false))
       end
 
       it 'detects closing brace on different line from last element' do

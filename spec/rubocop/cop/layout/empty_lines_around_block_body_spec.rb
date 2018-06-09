@@ -9,37 +9,49 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
       it 'registers an offense for block body starting with a blank' do
-        inspect_source(["some_method #{open}",
-                        '',
-                        '  do_something',
-                        close])
+        inspect_source(<<-RUBY.strip_indent)
+          some_method #{open}
+
+            do_something
+          #{close}
+        RUBY
+
         expect(cop.messages)
           .to eq(['Extra empty line detected at block body beginning.'])
       end
 
       it 'autocorrects block body containing only a blank' do
-        corrected = autocorrect_source(["some_method #{open}",
-                                        '',
-                                        close])
-        expect(corrected).to eq ["some_method #{open}",
-                                 close].join("\n")
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
+          some_method #{open}
+
+          #{close}
+        RUBY
+
+        expect(corrected).to eq(<<-RUBY.strip_indent)
+          some_method #{open}
+          #{close}
+        RUBY
       end
 
       it 'registers an offense for block body ending with a blank' do
-        inspect_source(["some_method #{open}",
-                        '  do_something',
-                        '',
-                        close])
+        inspect_source(<<-RUBY.strip_indent)
+          some_method #{open}
+            do_something
+
+            #{close}
+        RUBY
+
         expect(cop.messages)
           .to eq(['Extra empty line detected at block body end.'])
       end
 
       it 'accepts block body starting with a line with spaces' do
-        inspect_source(["some_method #{open}",
-                        '  ',
-                        '  do_something',
-                        close])
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          some_method #{open}
+            
+            do_something
+          #{close}
+        RUBY
       end
 
       it 'is not fooled by single line blocks' do
@@ -56,9 +68,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
 
       it 'registers an offense for block body not starting or ending with a ' \
          'blank' do
-        inspect_source(["some_method #{open}",
-                        '  do_something',
-                        close])
+        inspect_source(<<-RUBY.strip_indent)
+          some_method #{open}
+            do_something
+          #{close}
+        RUBY
+
         expect(cop.messages).to eq(['Empty line missing at block body '\
                                     'beginning.',
                                     'Empty line missing at block body end.'])
@@ -71,14 +86,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(["some_method #{open}",
-                                         '  do_something',
-                                         close])
-        expect(new_source).to eq(["some_method #{open}",
-                                  '',
-                                  '  do_something',
-                                  '',
-                                  close].join("\n"))
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          some_method #{open}
+            do_something
+          #{close}
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          some_method #{open}
+
+            do_something
+
+          #{close}
+        RUBY
       end
 
       it 'is not fooled by single line blocks' do

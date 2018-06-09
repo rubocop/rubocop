@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
       end
 
       it 'does not register any offenses' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(cop.offenses.empty?).to eq(true)
       end
     end
 

@@ -275,12 +275,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
 
       it 'accepts a multiline hash with pairs on a single line and' \
          'trailing comma' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           bar = {
             a: 1001, b: 2020,
           }
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

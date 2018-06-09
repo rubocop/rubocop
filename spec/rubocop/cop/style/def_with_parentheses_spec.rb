@@ -4,21 +4,19 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for def with empty parens' do
-    src = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       def func()
+              ^ Omit the parentheses in defs when the method doesn't accept any arguments.
       end
     RUBY
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'reports an offense for class def with empty parens' do
-    src = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       def Test.func()
+                   ^ Omit the parentheses in defs when the method doesn't accept any arguments.
       end
     RUBY
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts def with arg and parens' do

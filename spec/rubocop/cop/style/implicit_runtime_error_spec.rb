@@ -23,13 +23,13 @@ RSpec.describe RuboCop::Cop::Style::ImplicitRuntimeError do
     end
 
     it "doesn't register an offense for #{method} StandardError, 'message'" do
-      inspect_source("#{method} StandardError, 'message'")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{method} StandardError, 'message'
+      RUBY
     end
 
     it "doesn't register an offense for #{method} with no arguments" do
-      inspect_source(method)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(method)
     end
   end
 end

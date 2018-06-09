@@ -33,21 +33,19 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'on the top line' do
-      inspect_source('puts 1')
-
-      expect(cop.messages)
-        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
+      expect_offense(<<-RUBY.strip_indent)
+        puts 1
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
         puts 1
       RUBY
-
-      expect(cop.messages)
-        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'accepts a frozen string literal below a shebang comment' do
@@ -68,13 +66,11 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under an encoding comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         # encoding: utf-8
+        ^ Missing magic comment `# frozen_string_literal: true`.
         puts 1
       RUBY
-
-      expect(cop.messages)
-        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'accepts a frozen string literal below an encoding comment' do
@@ -95,14 +91,12 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang and an encoding comment' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
         # encoding: utf-8
         puts 1
       RUBY
-
-      expect(cop.messages)
-        .to eq(['Missing magic comment `# frozen_string_literal: true`.'])
     end
 
     it 'accepts a frozen string literal comment below shebang and encoding ' \

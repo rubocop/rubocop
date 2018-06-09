@@ -6,32 +6,29 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'reports offense' do |body|
     it 'reports an offense if method body is if / unless without else' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def func
           if something
+          ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
             #{body}
           end
         end
 
         def func
           unless something
+          ^^^^^^ Use a guard clause instead of wrapping the code inside a conditional expression.
             #{body}
           end
         end
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.offenses.map(&:line).sort).to eq([2, 8])
-      expect(cop.messages)
-        .to eq(['Use a guard clause instead of wrapping ' \
-                'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w[if unless])
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def func
           test
           if something
+          ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
             #{body}
           end
         end
@@ -39,16 +36,11 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         def func
           test
           unless something
+          ^^^^^^ Use a guard clause instead of wrapping the code inside a conditional expression.
             #{body}
           end
         end
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.offenses.map(&:line).sort).to eq([3, 10])
-      expect(cop.messages)
-        .to eq(['Use a guard clause instead of wrapping ' \
-                'the code inside a conditional expression.'] * 2)
-      expect(cop.highlights).to eq(%w[if unless])
     end
   end
 
@@ -206,29 +198,25 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'on if nodes which exit current scope' do |kw|
     it "registers an error with #{kw} in the if branch" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if something
+        ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
           #{kw}
         else
           puts "hello"
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
-                                  'the code inside a conditional expression.'])
     end
 
     it "registers an error with #{kw} in the else branch" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if something
+        ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
          puts "hello"
         else
           #{kw}
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
-                                  'the code inside a conditional expression.'])
     end
 
     it "doesn't register an error if condition has multiple lines" do
@@ -243,18 +231,17 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "does not report an offense if #{kw} is inside elsif" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if something
           a
         elsif something_else
           #{kw}
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if something
           a
         elsif something_else
@@ -263,27 +250,29 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           #{kw}
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't register an error if control flow expr has multiple lines" do
-      inspect_source(['if something',
-                      "  #{kw} 'blah blah blah' \\",
-                      "        'blah blah blah'",
-                      'else',
-                      '  puts "hello"',
-                      'end'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if something
+          #{kw} 'blah blah blah' \\
+                'blah blah blah'
+        else
+          puts "hello"
+        end
+      RUBY
     end
 
     it 'registers an error if non-control-flow branch has multiple lines' do
-      inspect_source(['if something',
-                      "  #{kw}",
-                      'else',
-                      '  puts "hello" \\',
-                      '       "blah blah blah"',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        if something
+        ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
+          #{kw}
+        else
+          puts "hello" \\
+               "blah blah blah"
+        end
+      RUBY
     end
   end
 

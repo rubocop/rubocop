@@ -5,27 +5,28 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses do
 
   it 'registers an offense for missing parentheses around expression with ' \
      '&& operator' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if day.is? 'monday' && month == :jan
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
         foo
       end
     RUBY
-    expect(cop.highlights).to eq(["day.is? 'monday' && month == :jan"])
-    expect(cop.messages)
-      .to eq(['Use parentheses in the method call to avoid confusion about ' \
-              'precedence.'])
   end
 
   it 'registers an offense for missing parentheses around expression with ' \
      '|| operator' do
-    inspect_source("day_is? 'tuesday' || true")
-    expect(cop.highlights).to eq(["day_is? 'tuesday' || true"])
+    expect_offense(<<-RUBY.strip_indent)
+      day_is? 'tuesday' || true
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
+    RUBY
   end
 
   it 'registers an offense for missing parentheses around expression in ' \
      'ternary' do
-    inspect_source("wd.include? 'tuesday' && true == true ? a : b")
-    expect(cop.highlights).to eq(["wd.include? 'tuesday' && true == true"])
+    expect_offense(<<-RUBY.strip_indent)
+      wd.include? 'tuesday' && true == true ? a : b
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
+    RUBY
   end
 
   it 'accepts missing parentheses around expression with + operator' do

@@ -3,24 +3,22 @@
 RSpec.describe RuboCop::Cop::Lint::EndInMethod do
   subject(:cop) { described_class.new }
 
-  it 'reports an offense for def with an RUBY inside' do
-    src = <<-RUBY.strip_indent
+  it 'registers an offense for def with an END inside' do
+    expect_offense(<<-RUBY.strip_indent)
       def test
         END { something }
+        ^^^ `END` found in method definition. Use `at_exit` instead.
       end
     RUBY
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'reports an offense for defs with an RUBY inside' do
-    src = <<-RUBY.strip_indent
+  it 'registers an offense for defs with an END inside' do
+    expect_offense(<<-RUBY.strip_indent)
       def self.test
         END { something }
+        ^^^ `END` found in method definition. Use `at_exit` instead.
       end
     RUBY
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts END outside of def(s)' do

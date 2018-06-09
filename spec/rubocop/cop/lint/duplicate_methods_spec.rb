@@ -19,15 +19,16 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "doesn't register an offense for non-duplicate method in #{type}" do
-      inspect_source([opening_line,
-                      '  def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  def any_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          def any_method
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for duplicate class methods in #{type}" do
@@ -46,75 +47,84 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "doesn't register offense for non-duplicate class methods in #{type}" do
-      inspect_source([opening_line,
-                      '  def self.some_method',
-                      '    implement 1',
-                      '  end',
-                      '  def self.any_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{opening_line}
+          def self.some_method
+            implement 1
+          end
+          def self.any_method
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "recognizes difference between instance and class methods in #{type}" do
-      inspect_source([opening_line,
-                      '  def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  def self.some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          def self.some_method
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for duplicate private methods in #{type}" do
-      inspect_source([opening_line,
-                      '  private def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  private def some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        #{opening_line}
+          private def some_method
+            implement 1
+          end
+          private def some_method
+                  ^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for duplicate private self methods in #{type}" do
-      inspect_source([opening_line,
-                      '  private def self.some_method',
-                      '    implement 1',
-                      '  end',
-                      '  private def self.some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        #{opening_line}
+          private def self.some_method
+            implement 1
+          end
+          private def self.some_method
+                  ^^^ Method `A.some_method` is defined at both (string):2 and (string):5.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "doesn't register an offense for different private methods in #{type}" do
-      inspect_source([opening_line,
-                      '  private def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  private def any_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{opening_line}
+          private def some_method
+            implement 1
+          end
+          private def any_method
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for duplicate protected methods in #{type}" do
-      inspect_source([opening_line,
-                      '  protected def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  protected def some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        #{opening_line}
+          protected def some_method
+            implement 1
+          end
+          protected def some_method
+                    ^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "registers 2 offenses for pair of duplicate methods in #{type}" do

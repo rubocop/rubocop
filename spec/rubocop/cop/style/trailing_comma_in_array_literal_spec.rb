@@ -270,12 +270,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'accepts a multiline array with items on a single line and' \
          'trailing comma' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           foo = [
             1, 2,
           ]
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

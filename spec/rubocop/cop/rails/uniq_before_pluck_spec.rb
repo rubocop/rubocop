@@ -15,10 +15,7 @@ RSpec.describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
         end
       else
         it "ignores pluck without errors in #{source}" do
-          inspect_source(source)
-          expect(cop.messages.empty?).to be(true)
-          expect(cop.highlights.empty?).to be(true)
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(source)
         end
       end
     end

@@ -92,12 +92,10 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'accepts string concat with a return value of method on an interpolated ' \
      'string' do
-    source = <<-RUBY
+    expect_no_offenses(<<-RUBY.strip_indent)
       x3a = 'x' +
         "\#{'a' + "\#{3}"}".reverse
     RUBY
-    inspect_source(source)
-    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'accepts string concat at line end when followed by comment' do

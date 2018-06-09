@@ -22,8 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::MultipleCompare do
     end
 
     it "accepts for #{good_source}" do
-      inspect_source(good_source)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(good_source)
     end
   end
 

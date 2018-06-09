@@ -27,15 +27,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentHash do
 
   shared_examples 'right brace' do
     it 'registers an offense for incorrectly indented }' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a << {
           }
+          ^ Indent the right brace the same as the start of the line where the left brace is.
       RUBY
-      expect(cop.highlights).to eq(['}'])
-      expect(cop.messages)
-        .to eq(['Indent the right brace the same as the start of the line ' \
-                'where the left brace is.'])
-      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
   end
 
@@ -484,32 +480,25 @@ RSpec.describe RuboCop::Cop::Layout::IndentHash do
 
     context "when 'special_inside_parentheses' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           var = {
             a: 1
+            ^^^^ Use 2 spaces for indentation in a hash, relative to the position of the opening brace.
           }
+          ^ Indent the right brace the same as the left brace.
           func({
                  a: 1
                })
         RUBY
-        expect(cop.messages)
-          .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
-                  ' position of the opening brace.',
-                  'Indent the right brace the same as the left brace.'])
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'special_inside_parentheses')
       end
     end
 
     it 'registers an offense for incorrectly indented }' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a << {
           }
+          ^ Indent the right brace the same as the left brace.
       RUBY
-      expect(cop.highlights).to eq(['}'])
-      expect(cop.messages)
-        .to eq(['Indent the right brace the same as the left brace.'])
-      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
   end
 end

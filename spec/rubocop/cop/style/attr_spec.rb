@@ -43,27 +43,32 @@ RSpec.describe RuboCop::Cop::Style::Attr do
   end
 
   context 'offense message' do
-    let(:msg_reader) { 'Do not use `attr`. Use `attr_reader` instead.' }
-    let(:msg_accessor) { 'Do not use `attr`. Use `attr_accessor` instead.' }
-
     it 'for attr :name suggests to use attr_reader' do
-      inspect_source('attr :name')
-      expect(cop.offenses.first.message).to eq(msg_reader)
+      expect_offense(<<-RUBY.strip_indent)
+        attr :foo
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      RUBY
     end
 
     it 'for attr :name, false suggests to use attr_reader' do
-      inspect_source('attr :name, false')
-      expect(cop.offenses.first.message).to eq(msg_reader)
+      expect_offense(<<-RUBY.strip_indent)
+        attr :foo, false
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      RUBY
     end
 
     it 'for attr :name, true suggests to use attr_accessor' do
-      inspect_source('attr :name, true')
-      expect(cop.offenses.first.message).to eq(msg_accessor)
+      expect_offense(<<-RUBY.strip_indent)
+        attr :foo, true
+        ^^^^ Do not use `attr`. Use `attr_accessor` instead.
+      RUBY
     end
 
     it 'for attr with multiple names suggests to use attr_reader' do
-      inspect_source('attr :foo, :bar')
-      expect(cop.offenses.first.message).to eq(msg_reader)
+      expect_offense(<<-RUBY.strip_indent)
+        attr :foo, :bar
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      RUBY
     end
   end
 end

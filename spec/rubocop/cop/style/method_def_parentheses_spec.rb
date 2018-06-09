@@ -85,12 +85,10 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'accepts a def with parameters but no parens' do
-      src = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func a, b
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'reports an offense for opposite + correct' do
@@ -115,12 +113,10 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'accepts a class def with parameters with parens' do
-      src = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def Test.func a, b
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'reports an offense for def with no args and parens' do
@@ -133,12 +129,10 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'accepts def with no args and no parens' do
-      src = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def func
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'auto-removes the parens' do

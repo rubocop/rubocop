@@ -241,8 +241,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       it 'accepts' do
         expect("  #{body} if #{conditional}".length).to eq(81)
 
-        inspect_source(source)
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(source)
       end
     end
   end

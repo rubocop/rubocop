@@ -5,14 +5,18 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
 
   it 'registers an offense for method call with space before the ' \
      'parenthesis' do
-    inspect_source('a.func (x)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a.func (x)
+            ^ `(...)` interpreted as grouped expression.
+    RUBY
   end
 
   it 'registers an offense for predicate method call with space ' \
      'before the parenthesis' do
-    inspect_source('is? (x)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      is? (x)
+         ^ `(...)` interpreted as grouped expression.
+    RUBY
   end
 
   it 'registers an offense for math expression' do
@@ -53,8 +57,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     expect_no_offenses('a( (b) )')
   end
 
-  it "doesn't register an offense for a call with multiple arguments" do
-    # there is no ambiguity here
+  it 'does not register an offense for a call with multiple arguments' do
     expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
 end

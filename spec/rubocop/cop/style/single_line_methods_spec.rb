@@ -35,9 +35,13 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
     end
 
     it 'auto-corrects an empty method' do
-      corrected = autocorrect_source('def x; end')
-      expect(corrected).to eq(['def x; ',
-                               'end'].join("\n"))
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        def x; end
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        def x; 
+        end
+      RUBY
     end
   end
 

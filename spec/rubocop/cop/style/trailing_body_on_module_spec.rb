@@ -46,39 +46,55 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'auto-corrects body after module definition' do
-    corrected = autocorrect_source(['module Foo extend self ',
-                                    'end'].join("\n"))
-    expect(corrected).to eq ['module Foo ',
-                             '  extend self ',
-                             'end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      module Foo extend self 
+      end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      module Foo 
+        extend self 
+      end
+    RUBY
   end
 
   it 'auto-corrects with comment after body' do
-    corrected = autocorrect_source(['module BarQux; foo # comment',
-                                    'end'].join("\n"))
-    expect(corrected).to eq ['# comment',
-                             'module BarQux ',
-                             '  foo ',
-                             'end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      module BarQux; foo # comment
+      end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      # comment
+      module BarQux 
+        foo 
+      end
+    RUBY
   end
 
   it 'auto-corrects when there are multiple semicolons' do
-    corrected = autocorrect_source(['module Bar; def bar; end',
-                                    'end'].join("\n"))
-    expect(corrected).to eq ['module Bar ',
-                             '  def bar; end',
-                             'end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      module Bar; def bar; end
+      end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      module Bar 
+        def bar; end
+      end
+    RUBY
   end
 
   context 'when module is not on first line of processed_source' do
     it 'auto-correct offense' do
-      corrected = autocorrect_source(['',
-                                      '  module Foo; body ',
-                                      '  end'].join("\n"))
-      expect(corrected).to eq ['',
-                               '  module Foo ',
-                               '    body ',
-                               '  end'].join("\n")
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+
+        module Foo; body 
+        end
+      RUBY
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+
+        module Foo 
+          body 
+        end
+      RUBY
     end
   end
 end

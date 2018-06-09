@@ -66,54 +66,74 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
   end
 
   it 'auto-corrects trailing end in 2 line method' do
-    corrected = autocorrect_source(['  def some_method',
-                                    '    []; end'].join("\n"))
-    expect(corrected).to eq ['  def some_method',
-                             '    [] ',
-                             '  end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      def some_method
+        []; end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      def some_method
+        [] 
+        end
+    RUBY
   end
 
   it 'auto-corrects trailing end in 3 line method' do
-    corrected = autocorrect_source(['  def do_this(x)',
-                                    '    y = x + 5',
-                                    '  y / 2; end'].join("\n"))
-    expect(corrected).to eq ['  def do_this(x)',
-                             '    y = x + 5',
-                             '  y / 2 ',
-                             '  end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      def do_this(x)
+        y = x + 5
+        y / 2; end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      def do_this(x)
+        y = x + 5
+        y / 2 
+        end
+    RUBY
   end
 
   it 'auto-corrects trailing end with comment' do
-    corrected = autocorrect_source(['  def f(x, y)',
-                                    '    process(x)',
-                                    '    process(y) end # comment'].join("\n"))
-    expect(corrected).to eq ['  def f(x, y)',
-                             '    process(x)',
-                             '    process(y) ',
-                             '  end # comment'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      def f(x, y)
+        process(x)
+        process(y) end # comment
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      def f(x, y)
+        process(x)
+        process(y) 
+        end # comment
+    RUBY
   end
 
   it 'auto-corrects trailing end on method with block' do
-    corrected = autocorrect_source(['  def d',
-                                    '    block do',
-                                    '      foo',
-                                    '    end end'].join("\n"))
-    expect(corrected).to eq ['  def d',
-                             '    block do',
-                             '      foo',
-                             '    end ',
-                             '  end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      def d
+        block do
+          foo
+        end end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      def d
+        block do
+          foo
+        end 
+        end
+    RUBY
   end
 
   it 'auto-corrects trailing end for larger example' do
-    corrected = autocorrect_source(['class Foo',
-                                    '  def some_method',
-                                    '    []; end',
-                                    'end'].join("\n"))
-    expect(corrected).to eq ['class Foo',
-                             '  def some_method',
-                             '    [] ',
-                             '  end',
-                             'end'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      class Foo
+        def some_method
+          []; end
+      end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      class Foo
+        def some_method
+          [] 
+        end
+      end
+    RUBY
   end
 end

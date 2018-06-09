@@ -21,16 +21,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
 
   it 'does not consider comment followed by empty line to be class ' \
      'documentation' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       # Copyright 2014
       # Some company
 
       class My_Class
+      ^^^^^ Missing top-level class documentation comment.
         def method
         end
       end
     RUBY
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for non-namespace' do
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
 
   it 'accepts non-empty class with annotation comment followed by other ' \
      'comment' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       # OPTIMIZE: Make this faster.
       # Class comment.
       class My_Class
@@ -117,7 +117,6 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
         end
       end
     RUBY
-    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'accepts non-empty class with comment that ends with an annotation' do
@@ -237,7 +236,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
   context 'sparse and trailing comments' do
     %w[class module].each do |keyword|
       it "ignores comments after #{keyword} node end" do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           module TestModule
             # documentation comment
             #{keyword} Test
@@ -246,7 +245,6 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
             end # decorating comment
           end
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
 
       it "ignores sparse comments inside #{keyword} node" do
@@ -267,13 +265,12 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
   context 'with # :nodoc:' do
     %w[class module].each do |keyword|
       it "accepts non-namespace #{keyword} without documentation" do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           #{keyword} Test #:nodoc:
             def method
             end
           end
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
 
       it "accepts compact-style nested #{keyword} without documentation" do
@@ -300,7 +297,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
 
       context 'with `all` modifier' do
         it "accepts nested #{keyword} without documentation" do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             module A #:nodoc: all
               module B
                 TEST = 20
@@ -310,7 +307,6 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
               end
             end
           RUBY
-          expect(cop.offenses.empty?).to be(true)
         end
       end
     end

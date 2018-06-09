@@ -54,17 +54,14 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeBlockParamName, :config do
   end
 
   it 'can register multiple offenses in one block' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       something do |y, num1, oFo|
+                    ^ Block parameter must be at least 2 characters long.
+                       ^^^^ Do not end block parameter with a number.
+                             ^^^ Only use lowercase characters for block parameter.
         do_stuff
       end
     RUBY
-    expect(cop.offenses.size).to eq(3)
-    expect(cop.messages).to eq [
-      'Block parameter must be at least 2 characters long.',
-      'Do not end block parameter with a number.',
-      'Only use lowercase characters for block parameter.'
-    ]
   end
 
   context 'with AllowedNames' do

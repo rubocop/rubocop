@@ -12,8 +12,7 @@ RSpec.describe RuboCop::Cop::Style::SelfAssignment do
     end
 
     it "accepts shorthand assignment for #{op} and #{var}" do
-      inspect_source("#{var} #{op}= y")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("#{var} #{op}= y")
     end
 
     it "auto-corrects a non-shorthand assignment #{op} and #{var}" do

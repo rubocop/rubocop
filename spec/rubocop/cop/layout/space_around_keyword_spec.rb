@@ -33,22 +33,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword do
 
   shared_examples 'accept before' do |after, expr|
     it "accepts `#{after}` before keyword in `#{expr}`" do
-      inspect_source(expr)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(expr)
     end
   end
 
   shared_examples 'accept after' do |after, expr|
     it "accepts `#{after}` after keyword in `#{expr}`" do
-      inspect_source(expr)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(expr)
     end
   end
 
   shared_examples 'accept around' do |after, expr|
     it "accepts `#{after}` around keyword in `#{expr}`" do
-      inspect_source(expr)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(expr)
     end
   end
 

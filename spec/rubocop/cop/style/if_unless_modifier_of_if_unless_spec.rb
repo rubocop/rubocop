@@ -6,10 +6,10 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
   subject(:cop) { described_class.new }
 
   it 'provides a good error message' do
-    source = 'condition ? then_part : else_part unless external_condition'
-    inspect_source(source)
-    expect(cop.messages)
-      .to eq(['Avoid modifier `unless` after another conditional.'])
+    expect_offense(<<-RUBY.strip_indent)
+      condition ? then_part : else_part unless external_condition
+                                        ^^^^^^ Avoid modifier `unless` after another conditional.
+    RUBY
   end
 
   context 'ternary with modifier' do

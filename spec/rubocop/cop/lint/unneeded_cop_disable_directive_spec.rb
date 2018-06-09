@@ -346,15 +346,17 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
         context 'and a comment disables' do
           context 'one cop twice' do
             let(:source) do
-              ['class One',
-               '  # rubocop:disable Style/ClassVars',
-               '  @@class_var = 1',
-               'end',
-               '',
-               'class Two',
-               '  # rubocop:disable Style/ClassVars',
-               '  @@class_var = 2',
-               'end'].join("\n")
+              <<-RUBY.strip_indent
+               class One
+                 # rubocop:disable Style/ClassVars
+                 @@class_var = 1
+               end
+
+               class Two
+                 # rubocop:disable Style/ClassVars
+                 @@class_var = 2
+               end
+              RUBY
             end
             let(:offense_lines) { [3, 8] }
             let(:cop_disabled_line_ranges) do
@@ -371,11 +373,13 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
 
           context 'one cop and then all cops' do
             let(:source) do
-              ['class One',
-               '  # rubocop:disable Style/ClassVars',
-               '  # rubocop:disable all',
-               '  @@class_var = 1',
-               'end'].join("\n")
+              <<-RUBY.strip_indent
+                class One
+                 # rubocop:disable Style/ClassVars
+                 # rubocop:disable all
+                 @@class_var = 1
+               end
+              RUBY
             end
             let(:offense_lines) { [4] }
             let(:cop_disabled_line_ranges) do

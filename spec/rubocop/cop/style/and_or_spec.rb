@@ -12,8 +12,9 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
 
     %w[and or].each do |operator|
       it "accepts \"#{operator}\" outside of conditional" do
-        inspect_source("x = a + b #{operator} return x")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          x = a + b #{operator} return x
+        RUBY
       end
 
       {
@@ -41,21 +42,22 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           }
           source = format(snippet_format, elements)
 
-          inspect_source(source)
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(source)
         end
       end
     end
 
     %w[&& ||].each do |operator|
       it "accepts #{operator} inside of conditional" do
-        inspect_source("test if a #{operator} b")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          test if a #{operator} b
+        RUBY
       end
 
       it "accepts #{operator} outside of conditional" do
-        inspect_source("x = a #{operator} b")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          x = a #{operator} b
+        RUBY
       end
     end
   end

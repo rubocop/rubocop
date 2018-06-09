@@ -226,8 +226,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects assignment without space on both sides' do
-      new_source = autocorrect_source(['x=0', 'y= 0', 'z =0'])
-      expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        x=0
+        y= 0
+        z =0
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        x = 0
+        y = 0
+        z = 0
+      RUBY
     end
 
     context 'ternary operators' do
@@ -278,8 +287,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(['a-3', 'x&0xff', 'z+0'])
-      expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        a-3
+        x&0xff
+        z+0
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        a - 3
+        x & 0xff
+        z + 0
+      RUBY
     end
 
     it 'registers an offense for arguments to a method' do
@@ -332,14 +350,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     context 'when a hash literal is on a single line' do
-      before { inspect_source('{ 1=>2, a: b }') }
-
       context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
-          expect(cop.messages)
-            .to eq(['Surrounding space missing for operator `=>`.'])
+          expect_offense(<<-RUBY.strip_indent)
+            { 1=>2, a: b }
+               ^^ Surrounding space missing for operator `=>`.
+          RUBY
         end
       end
 
@@ -347,28 +365,26 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         let(:hash_style) { 'table' }
 
         it 'registers an offense for a hash rocket without spaces' do
-          expect(cop.messages)
-            .to eq(['Surrounding space missing for operator `=>`.'])
+          expect_offense(<<-RUBY.strip_indent)
+            { 1=>2, a: b }
+               ^^ Surrounding space missing for operator `=>`.
+          RUBY
         end
       end
     end
 
     context 'when a hash literal is on multiple lines' do
-      before do
-        inspect_source(<<-RUBY.strip_indent)
-          {
-            1=>2,
-            a: b
-          }
-        RUBY
-      end
-
       context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
-          expect(cop.messages)
-            .to eq(['Surrounding space missing for operator `=>`.'])
+          expect_offense(<<-RUBY.strip_indent)
+            {
+              1=>2,
+               ^^ Surrounding space missing for operator `=>`.
+              a: b
+            }
+          RUBY
         end
       end
 
@@ -633,25 +649,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'registers an offense for a hash rocket with an extra space' \
       'on multiple line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         {
           1 =>  2
+            ^^ Operator `=>` should be surrounded by a single space.
         }
       RUBY
-      expect(cop.messages).to eq(
-        ['Operator `=>` should be surrounded by a single space.']
-      )
     end
 
     it 'accepts for a hash rocket with an extra space for alignment' \
       'on multiple line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         {
           1 =>  2,
           11 => 3
         }
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when does not allowed for alignment' do
@@ -717,9 +730,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'registers an offense for - with too many spaces with ' \
        'negative lhs operand' do
-      inspect_source('-1  - arg')
-      expect(cop.messages)
-        .to eq(['Operator `-` should be surrounded by a single space.'])
+      expect_offense(<<-RUBY.strip_indent)
+        -1  - arg
+            ^ Operator `-` should be surrounded by a single space.
+      RUBY
     end
 
     it 'registers an offense for inheritance < with too many spaces' do

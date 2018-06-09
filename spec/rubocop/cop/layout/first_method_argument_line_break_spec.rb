@@ -22,12 +22,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq([
-        'foo(',
-        'bar,',
-        '  baz)',
-        ''
-      ].join("\n"))
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        foo(
+        bar,
+          baz)
+      RUBY
     end
   end
 
@@ -50,12 +49,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq([
-        'something(',
-        '3, bar: 1,',
-        'baz: 2)',
-        ''
-      ].join("\n"))
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        something(
+        3, bar: 1,
+        baz: 2)
+      RUBY
     end
   end
 
@@ -78,12 +76,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq([
-        'something(',
-        'bar: 1,',
-        'baz: 2)',
-        ''
-      ].join("\n"))
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        something(
+        bar: 1,
+        baz: 2)
+      RUBY
     end
   end
 

@@ -7,27 +7,25 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     it 'registers an offense for alignment with token not preceded by space' do
       # The = and the ( are on the same column, but this is not for alignment,
       # it's just a mistake.
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         website("example.org")
         name   = "Jill"
+            ^^ Unnecessary spacing detected.
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'accepts aligned values of an implicit hash literal' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         register(street1:    '1 Market',
                  street2:    '#200',
                  :city =>    'Some Town',
                  state:      'CA',
                  postal_code:'99999-1111')
       RUBY
-      inspect_source(source)
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts space between key and value in a hash with hash rockets' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         ospf_h = {
           'ospfTest'    => {
             'foo'      => {
@@ -47,59 +45,58 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           }
         }
       RUBY
-      inspect_source(source)
-      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'when spaces are present in a single-line hash literal' do
       it 'registers an offense for hashes with symbol keys' do
-        inspect_source('hash = {a:   1,  b:    2}')
-        expect(cop.offenses.size).to eq(3)
+        expect_offense(<<-RUBY.strip_indent)
+          hash = {a:   1,  b:    2}
+                    ^^ Unnecessary spacing detected.
+                         ^ Unnecessary spacing detected.
+                             ^^^ Unnecessary spacing detected.
+        RUBY
       end
 
       it 'registers an offense for hashes with hash rockets' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           let(:single_line_hash) {
             {"a"   => "1", "b" => "2"}
+                ^^ Unnecessary spacing detected.
           }
         RUBY
-
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.line).to eq(2)
       end
     end
 
     it 'can handle extra space before a float' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         {:a => "a",
          :b => [nil,  2.5]}
+                    ^ Unnecessary spacing detected.
       RUBY
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'can handle unary plus in an argument list' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         assert_difference(MyModel.count, +2,
                           3,  +3, # Extra spacing only here.
+                            ^ Unnecessary spacing detected.
                           4,+4)
       RUBY
-      inspect_source(source)
-      expect(cop.offenses.map { |o| o.location.line }).to eq([2])
     end
 
     it 'gives the correct line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class A   < String
+               ^^ Unnecessary spacing detected.
         end
       RUBY
-      expect(cop.offenses.first.location.line).to eq(1)
     end
 
     it 'registers an offense for double extra spacing on variable assignment' do
-      inspect_source('m    = "hello"')
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        m    = "hello"
+         ^^^ Unnecessary spacing detected.
+      RUBY
     end
 
     it 'ignores whitespace at the beginning of the line' do
@@ -111,17 +108,16 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'ignores trailing whitespace' do
-      inspect_source(['      class Benchmarker < Performer     ',
-                      '      end'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(['      class Benchmarker < Performer     ',
+                          '      end'])
     end
 
     it 'registers an offense on class inheritance' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class A   < String
+               ^^ Unnecessary spacing detected.
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-corrects a line indented with mixed whitespace' do
@@ -232,8 +228,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'allows it' do
-            inspect_source(src)
-            expect(cop.offenses.empty?).to be(true)
+            expect_no_offenses(src)
           end
         end
       end
@@ -265,17 +260,14 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'registers an offense if consecutive assignments are not aligned' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = 1
+          ^ `=` is not aligned with the following assignment.
         bb = 2
+           ^ `=` is not aligned with the preceding assignment.
         ccc = 3
+            ^ `=` is not aligned with the preceding assignment.
       RUBY
-      expect(cop.offenses.size).to eq(3)
-      expect(cop.messages).to eq(
-        ['`=` is not aligned with the following assignment.',
-         '`=` is not aligned with the preceding assignment.',
-         '`=` is not aligned with the preceding assignment.']
-      )
     end
 
     it 'does not register an offense if assignments are separated by blanks' do
@@ -390,12 +382,11 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
 
     it 'does not register an offense when optarg equals is not aligned with ' \
        'assignment equals sign' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def method(arg = 1)
           var = arg
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
   end
 end

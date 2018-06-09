@@ -24,14 +24,13 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq([
-        'def foo(',
-        'bar,',
-        '  baz)',
-        '  do_something',
-        'end',
-        ''
-      ].join("\n"))
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def foo(
+        bar,
+          baz)
+          do_something
+        end
+      RUBY
     end
   end
 
@@ -56,14 +55,13 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq([
-        'def self.foo(',
-        'bar,',
-        '  baz)',
-        '  do_something',
-        'end',
-        ''
-      ].join("\n"))
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def self.foo(
+        bar,
+          baz)
+          do_something
+        end
+      RUBY
     end
   end
 
@@ -117,14 +115,13 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak do
     it 'autocorrects the offense' do
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq([
-        'def foo(',
-        'bar = [],',
-        '  baz = 2)',
-        '  do_something',
-        'end',
-        ''
-      ].join("\n"))
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def foo(
+        bar = [],
+          baz = 2)
+          do_something
+        end
+      RUBY
     end
   end
 end

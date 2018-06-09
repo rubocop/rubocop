@@ -9,25 +9,23 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w(1 2.0 [1] {}).each do |lit|
     it "registers an offense for a while loop with #{lit} as condition" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         while #{lit}
+        ^^^^^ Use `Kernel#loop` for infinite loops.
           top
         end
       RUBY
-      expect(cop.messages).to eq(['Use `Kernel#loop` for infinite loops.'])
-      expect(cop.highlights).to eq(['while'])
     end
   end
 
   %w[false nil].each do |lit|
     it "registers an offense for a until loop with #{lit} as condition" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         until #{lit}
+        ^^^^^ Use `Kernel#loop` for infinite loops.
           top
         end
       RUBY
-      expect(cop.messages).to eq(['Use `Kernel#loop` for infinite loops.'])
-      expect(cop.highlights).to eq(['until'])
     end
   end
 

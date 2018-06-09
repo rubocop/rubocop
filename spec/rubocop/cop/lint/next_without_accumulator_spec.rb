@@ -42,13 +42,11 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
       end
 
       it 'accepts next with a value' do
-        inspect_source(code_with_accumulator(reduce_alias))
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(code_with_accumulator(reduce_alias))
       end
 
       it 'accepts next within a nested block' do
-        inspect_source(code_with_nested_block(reduce_alias))
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(code_with_nested_block(reduce_alias))
       end
     end
   end

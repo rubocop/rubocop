@@ -7,24 +7,21 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'leading' } }
 
     it 'registers an offense for trailing dot in multi-line call' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         something.
+                 ^ Place the . on the next line, together with the method name.
           method_name
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'trailing')
     end
 
     it 'registers an offense for correct + opposite' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         something
           .method_name
         something.
+                 ^ Place the . on the next line, together with the method name.
           method_name
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts leading do in multi-line method call' do
@@ -112,15 +109,11 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'trailing' } }
 
     it 'registers an offense for leading dot in multi-line call' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         something
           .method_name
+          ^ Place the . on the previous line, together with the method call receiver.
       RUBY
-      expect(cop.messages)
-        .to eq(['Place the . on the previous line, together with the method ' \
-                'call receiver.'])
-      expect(cop.highlights).to eq(['.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'leading')
     end
 
     it 'accepts trailing dot in multi-line method call' do

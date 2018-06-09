@@ -22,8 +22,9 @@ RSpec.describe RuboCop::Cop::Style::GlobalVars, :config do
 
   described_class::BUILT_IN_VARS.each do |var|
     it "does not register an offense for built-in variable #{var}" do
-      inspect_source("puts #{var}")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        puts #{var}
+      RUBY
     end
   end
 

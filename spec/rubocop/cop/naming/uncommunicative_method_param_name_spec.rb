@@ -121,17 +121,14 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodParamName, :config do
   end
 
   it 'can register multiple offenses in one method definition' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def self.something(y, num1, oFo)
+                         ^ Method parameter must be at least 3 characters long.
+                            ^^^^ Do not end method parameter with a number.
+                                  ^^^ Only use lowercase characters for method parameter.
         do_stuff
       end
     RUBY
-    expect(cop.offenses.size).to eq(3)
-    expect(cop.messages).to eq [
-      'Method parameter must be at least 3 characters long.',
-      'Do not end method parameter with a number.',
-      'Only use lowercase characters for method parameter.'
-    ]
   end
 
   context 'with AllowedNames' do

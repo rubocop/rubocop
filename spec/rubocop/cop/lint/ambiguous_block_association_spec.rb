@@ -8,13 +8,9 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
       'associated with the `%s` method call.'
   end
 
-  before { inspect_source(source) }
-
   shared_examples 'accepts' do |code|
-    let(:source) { code }
-
     it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(code)
     end
   end
 
@@ -56,59 +52,49 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
 
   context 'without parentheses' do
     context 'without receiver' do
-      let(:source) { 'some_method a { |el| puts el }' }
-
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a { |el| puts el }', 'a'))
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          some_method a { |el| puts el }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
+        RUBY
       end
     end
 
     context 'with receiver' do
-      let(:source) { 'Foo.some_method a { |el| puts el }' }
+      let(:source) { '' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a { |el| puts el }', 'a'))
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          Foo.some_method a { |el| puts el }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
+        RUBY
       end
     end
 
     context 'rspec expect {}.to change {}' do
-      let(:source) do
-        'expect { order.expire }.to change { order.events }'
-      end
-
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'change { order.events }', 'change'))
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          expect { order.expire }.to change { order.events }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `change { order.events }` to make sure that the block will be associated with the `change` method call.
+        RUBY
       end
     end
 
     context 'as a hash key' do
-      let(:source) { 'Hash[some_method a { |el| el }]' }
-
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a { |el| el }', 'a'))
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          Hash[some_method a { |el| el }]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| el }` to make sure that the block will be associated with the `a` method call.
+        RUBY
       end
     end
 
     context 'with assignment' do
-      let(:source) { 'foo = some_method a { |el| puts el }' }
-
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to(
-          eq(format(error_message, 'a { |el| puts el }', 'a'))
-        )
+        expect_offense(<<-RUBY.strip_indent)
+          foo = some_method a { |el| puts el }
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
+        RUBY
       end
     end
   end

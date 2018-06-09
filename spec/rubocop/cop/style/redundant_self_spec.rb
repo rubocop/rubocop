@@ -143,14 +143,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
 
     it 'accepts a self receiver used to distinguish from an argument' \
       ' when an inner method is defined' do
-      src = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         def foo(bar)
           def inner_method(); end
           puts bar, self.bar
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.empty?).to be(true)
     end
   end
 

@@ -42,19 +42,12 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def self.method_name
+        ^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo if some_condition
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.chomp])
-        def self.method_name
-          call_foo if some_condition
-        end
-      RUBY
-      expect(cop.config_to_allow_offenses).to eq('Max' => 2)
     end
 
     it 'registers an offense for an unless modifier' do
