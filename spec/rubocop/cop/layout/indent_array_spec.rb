@@ -50,15 +50,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented ]' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a << [
           ]
+          ^ Indent the right bracket the same as the start of the line where the left bracket is.
       RUBY
-      expect(cop.highlights).to eq([']'])
-      expect(cop.messages)
-        .to eq(['Indent the right bracket the same as the start of the line ' \
-                'where the left bracket is.'])
-      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
 
     context 'when indentation width is overridden for this cop' do
@@ -73,13 +69,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
       end
 
       it 'registers an offense for incorrectly indented first element' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           a << [
             1
+            ^ Use 4 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
           ]
         RUBY
-        expect(cop.highlights).to eq(['1'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
     end
   end
@@ -96,32 +91,27 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented first element' do
-      inspect_source(<<-RUBY.strip_margin('|'))
-        |   config.rack_cache = [
-        |   "rails:/",
-        |   "rails:/",
-        |   false
-        |   ]
+      expect_offense(<<-RUBY.strip_indent)
+        config.rack_cache = [
+        "rails:/",
+        ^^^^^^^^^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
+        "rails:/",
+        false
+        ]
       RUBY
-      expect(cop.highlights).to eq(['"rails:/"'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
   end
 
   context 'when array is right hand side in assignment' do
     it 'registers an offense for incorrectly indented first element' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = [
             1,
+            ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
           2,
          3
         ]
       RUBY
-      expect(cop.messages)
-        .to eq(['Use 2 spaces for indentation in an array, relative to the ' \
-                'start of the line where the left square bracket is.'])
-      expect(cop.highlights).to eq(['1'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'auto-corrects incorrectly indented first element' do
@@ -205,34 +195,23 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it "registers an offense for 'consistent' indentation" do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             func([
               1
+              ^ Use 2 spaces for indentation in an array, relative to the first position after the preceding left parenthesis.
             ])
+            ^ Indent the right bracket the same as the first position after the preceding left parenthesis.
           RUBY
-          expect(cop.messages)
-            .to eq(['Use 2 spaces for indentation in an array, relative to ' \
-                    'the first position after the preceding left parenthesis.',
-                    'Indent the right bracket the same as the first position ' \
-                    'after the preceding left parenthesis.'])
-          expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => 'consistent')
         end
 
         it "registers an offense for 'align_brackets' indentation" do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             var = [
                     1
+                    ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
                   ]
+                  ^ Indent the right bracket the same as the start of the line where the left bracket is.
           RUBY
-          # since there are no parens, warning message is for 'consistent' style
-          expect(cop.messages)
-            .to eq(['Use 2 spaces for indentation in an array, relative to ' \
-                    'the start of the line where the left square bracket is.',
-                    'Indent the right bracket the same as the start of the ' \
-                    'line where the left bracket is.'])
-          expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => 'align_brackets')
         end
 
         it 'auto-corrects incorrectly indented first element' do
@@ -290,18 +269,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
         end
 
         it 'registers an offense for incorrect indentation' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             func([
                    1
+                   ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
                  ])
+                 ^ Indent the right bracket the same as the start of the line where the left bracket is.
           RUBY
-          expect(cop.messages)
-            .to eq(['Use 2 spaces for indentation in an array, relative to ' \
-                    'the start of the line where the left square bracket is.',
-                    'Indent the right bracket the same as the start of the ' \
-                    'line where the left bracket is.'])
-          expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => 'special_inside_parentheses')
         end
 
         it 'accepts normal indentation for second argument' do
@@ -331,15 +305,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
 
       it 'registers an offense for incorrectly indented multi-line array ' \
          'with brackets' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           func x, [
                  1, 2]
+                 ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
         RUBY
-        expect(cop.messages)
-          .to eq(['Use 2 spaces for indentation in an array, relative to the ' \
-                  'start of the line where the left square bracket is.'])
-        expect(cop.highlights).to eq(['1'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
     end
   end
@@ -417,32 +387,25 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
 
     context "when 'special_inside_parentheses' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           var = [
             1
+            ^ Use 2 spaces for indentation in an array, relative to the position of the opening bracket.
           ]
+          ^ Indent the right bracket the same as the left bracket.
           func([
                  1
                ])
         RUBY
-        expect(cop.messages)
-          .to eq(['Use 2 spaces for indentation in an array, relative to the' \
-                  ' position of the opening bracket.',
-                  'Indent the right bracket the same as the left bracket.'])
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'special_inside_parentheses')
       end
     end
 
     it 'registers an offense for incorrectly indented ]' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a << [
           ]
+          ^ Indent the right bracket the same as the left bracket.
       RUBY
-      expect(cop.highlights).to eq([']'])
-      expect(cop.messages)
-        .to eq(['Indent the right bracket the same as the left bracket.'])
-      expect(cop.config_to_allow_offenses.empty?).to be(true)
     end
 
     context 'when indentation width is overridden for this cop' do

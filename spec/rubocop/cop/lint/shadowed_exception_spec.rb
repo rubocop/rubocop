@@ -227,48 +227,40 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
   context 'multiple rescues' do
     it 'registers an offense when a higher level exception is rescued before' \
        ' a lower level exception' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           something
         rescue Exception
+        ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
         rescue StandardError
           handle_standard_error
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-      expect(cop.highlights).to eq([['rescue Exception',
-                                     '  handle_exception',
-                                     'rescue StandardError'].join("\n")])
     end
 
     it 'registers an offense when a higher level exception is rescued before ' \
        'a lower level exception when there are multiple exceptions ' \
        'rescued in a group' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           something
         rescue Exception
+        ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
         rescue NoMethodError, ZeroDivisionError
           handle_standard_error
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-      expect(cop.highlights).to eq([['rescue Exception',
-                                     '  handle_exception',
-                                     'rescue NoMethodError, ZeroDivisionError']
-                                     .join("\n")])
     end
 
     it 'registers an offense rescuing out of order exceptions when there ' \
        'is an ensure' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           something
         rescue Exception
+        ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
         rescue StandardError
           handle_standard_error
@@ -276,11 +268,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
           everything_is_ok
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-      expect(cop.highlights).to eq([['rescue Exception',
-                                     '  handle_exception',
-                                     'rescue StandardError'].join("\n")])
     end
 
     it 'accepts rescuing exceptions in order of level' do
@@ -383,20 +370,16 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
       it 'registers an offense for splat arguments rescued after ' \
          'rescuing Exception' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           begin
             a
           rescue Exception
+          ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
             b
           rescue *BAR
             c
           end
         RUBY
-
-        expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-        expect(cop.highlights).to eq([['rescue Exception',
-                                       '  b',
-                                       'rescue *BAR'].join("\n")])
       end
     end
 
@@ -489,20 +472,16 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'registers an offense rescuing Exception before an unknown exceptions' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           a
         rescue Exception
+        ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           b
         rescue UnknownException
           c
         end
       RUBY
-
-      expect(cop.messages).to eq(['Do not shadow rescued Exceptions.'])
-      expect(cop.highlights).to eq([['rescue Exception',
-                                     '  b',
-                                     'rescue UnknownException'].join("\n")])
     end
 
     it 'ignores expressions of non-const' do
@@ -518,23 +497,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     context 'last rescue does not specify exception class' do
-      let(:source) do
-        <<-RUBY.strip_indent
-          begin
-          rescue A, B
-            do_something
-          rescue C
-            do_something
-          rescue
-            do_something
-          end
-        RUBY
-      end
-
-      it 'does not raise error' do
-        expect { inspect_source(source) }.not_to raise_error
-      end
-
       it 'highlights range ending at rescue keyword' do
         expect_no_offenses(<<-RUBY.strip_indent)
           begin

@@ -24,11 +24,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   let(:end_alignment_align_with) { 'start_of_line' }
 
-  let(:message) do
-    'Use the return of the conditional ' \
-    'for variable assignment and comparison.'
-  end
-
   it 'counts array assignment when determining multiple assignment' do
     expect_no_offenses(<<-RUBY.strip_indent)
       if foo
@@ -66,10 +61,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   it 'registers an offense for assignment in ternary operation' do
-    source = 'foo? ? bar = "a" : bar = "b"'
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
+    expect_offense(<<-RUBY.strip_indent)
+      foo? ? bar = "a" : bar = "b"
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+    RUBY
   end
 
   it 'allows modifier if' do
@@ -89,61 +84,49 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it "doesn't crash when assignment statement uses chars which have " \
      'special meaning in a regex' do
     # regression test; see GH issue 2876
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       if condition
+      ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         default['key-with-dash'] << a
       else
         default['key-with-dash'] << b
       end
     RUBY
-
-    inspect_source(source)
-
-    expect(cop.offenses.size).to eq(1)
   end
 
   shared_examples 'comparison methods' do |method|
     it 'registers an offense for comparison methods in if else' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           a #{method} b
         else
           a #{method} d
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.messages).to eq([message])
     end
 
     it 'registers an offense for comparison methods in unless else' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         unless foo
+        ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           a #{method} b
         else
           a #{method} d
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.messages).to eq([message])
     end
 
     it 'registers an offense for comparison methods in case when' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         case foo
+        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         when bar
           a #{method} b
         else
           a #{method} d
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.messages).to eq([message])
     end
   end
 
@@ -349,23 +332,20 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   it 'registers an offense in an if else if the assignment is already ' \
     'at the line length limit' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       if foo
+      ^^^^^^ Use the return of the conditional for variable assignment and comparison.
         bar = #{'a' * 72}
       else
         bar = #{'b' * 72}
       end
     RUBY
-
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   context 'correction would exceed max line length' do
     it 'allows assignment to the same variable in if else if the correction ' \
        'would create a line longer than the configured LineLength' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           #{'a' * 78}
           bar = 1
@@ -373,30 +353,22 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 2
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the same variable in if else if the correction ' \
        'would cause the condition to exceed the configured LineLength' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if #{'a' * 78}
           bar = 1
         else
           bar = 2
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the same variable in case when else if the ' \
        'correction would create a line longer than the configured LineLength' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           #{'a' * 78}
@@ -405,10 +377,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 2
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
   end
 
@@ -416,7 +384,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'registers an offense assigning any variable type in ternary' do
       inspect_source("foo? ? #{variable} = 1 : #{variable} = 2")
 
-      expect(cop.messages).to eq([message])
+      expect(cop.messages).to eq(['Use the return of the conditional for ' \
+        'variable assignment and comparison.'])
     end
 
     it 'registers an offense assigning any variable type in if else' do
@@ -429,7 +398,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.messages).to eq([message])
+      expect(cop.messages).to eq(['Use the return of the conditional for ' \
+        'variable assignment and comparison.'])
     end
 
     it 'registers an offense assigning any variable type in case when' do
@@ -443,24 +413,22 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       inspect_source(source)
 
-      expect(cop.messages).to eq([message])
+      expect(cop.messages).to eq(['Use the return of the conditional for ' \
+        'variable assignment and comparison.'])
     end
 
     it 'allows assignment to the return of if else' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         #{variable} = if foo
                         1
                       else
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the return of case when' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         #{variable} = case foo
                       when bar
                         1
@@ -468,15 +436,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment to the return of a ternary' do
-      inspect_source("#{variable} = foo? ? 1 : 2")
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #{variable} = foo? ? 1 : 2
+      RUBY
     end
   end
 
@@ -502,14 +467,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
           inspect_source(source)
 
-          expect(cop.messages).to eq([message])
+          expect(cop.messages).to eq(['Use the return of the conditional for ' \
+            'variable assignment and comparison.'])
         end
 
         it "allows assignment using #{assignment} to ternary" do
-          source = "#{name} #{assignment} foo? ? 1 : 2"
-          inspect_source(source)
-
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(<<-RUBY.strip_indent)
+            #{name} #{assignment} foo? ? 1 : 2
+          RUBY
         end
 
         it "registers an offense for assignment using #{assignment} in " \
@@ -523,7 +488,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           RUBY
           inspect_source(source)
 
-          expect(cop.messages).to eq([message])
+          expect(cop.messages).to eq(['Use the return of the conditional for ' \
+            'variable assignment and comparison.'])
         end
 
         it "registers an offense for assignment using #{assignment} in "\
@@ -538,7 +504,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           RUBY
           inspect_source(source)
 
-          expect(cop.messages).to eq([message])
+          expect(cop.messages).to eq(['Use the return of the conditional for ' \
+            'variable assignment and comparison.'])
         end
 
         it "autocorrects for assignment using #{assignment} in if else" do
@@ -587,8 +554,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all assignment types', '-=')
 
   it 'registers an offense for assignment in if elsif else' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       if foo
+      ^^^^^^ Use the return of the conditional for variable assignment and comparison.
         bar = 1
       elsif baz
         bar = 2
@@ -596,14 +564,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 3
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in if elsif elsif else' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       if foo
+      ^^^^^^ Use the return of the conditional for variable assignment and comparison.
         bar = 1
       elsif baz
         bar = 2
@@ -613,15 +579,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 4
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in if else when the assignment ' \
     'spans multiple lines' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       if foo
+      ^^^^^^ Use the return of the conditional for variable assignment and comparison.
         foo = {
           a: 1,
           b: 2,
@@ -636,9 +600,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         foo = { }
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'autocorrects assignment in if else when the assignment ' \
@@ -755,7 +716,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'allows multiple assignment in if elsif else when the last ' \
        'assignment is the same and the earlier assignments do not appear in ' \
        'all branches' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if baz
           foo = 1
           bar = 1
@@ -767,15 +728,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 3
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows multiple assignment in case when else when the last ' \
        'assignment is the same and the earlier assignments do not appear ' \
        'in all branches' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           baz = 1
@@ -788,9 +746,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 3
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows out of order multiple assignment in if elsif else' do
@@ -851,7 +806,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'allows multiple assignments in case when if there are uniq ' \
        'variables in the when branches' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           foo = 1
@@ -866,15 +821,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 3
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows multiple assignment in case statements when the last ' \
        'assignment is the same and the earlier assignments do not appear in ' \
        'all branches' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           foo = 1
@@ -887,15 +839,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 3
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows assignment in if elsif else with some branches only ' \
        'containing variable assignment and others containing more than ' \
        'variable assignment' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           bar = 1
         elsif foobar
@@ -908,14 +857,11 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 4
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows variable assignment in unless else with more than ' \
        'variable assignment' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         unless foo
           method_call
           bar = 1
@@ -924,14 +870,11 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 2
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'allows variable assignment in case when else with more than ' \
        'variable assignment' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         case foo
         when foobar
           method_call
@@ -941,10 +884,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar = 2
         end
       RUBY
-
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'multiple assignment in only one branch' do
@@ -996,44 +935,39 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   it 'registers an offense for assignment in if then else' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       if foo then bar = 1
+      ^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       else bar = 2
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in unless else' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       unless foo
+      ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         bar = 1
       else
         bar = 2
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in case when then else' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       case foo
+      ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       when bar then baz = 1
       else baz = 2
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'registers an offense for assignment in case with when when else' do
-    source = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       case foo
+      ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       when foobar
         bar = 1
       when baz
@@ -1042,9 +976,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 3
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.messages).to eq([message])
   end
 
   it 'allows different assignment types in case with when when else' do
@@ -1060,16 +991,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   it 'allows assignment in multiple branches when it is ' \
      'wrapped in a modifier' do
-    source = <<-RUBY.strip_indent
+    expect_no_offenses(<<-RUBY.strip_indent)
       if foo
         bar << 1
       else
         bar << 2 if foobar
       end
     RUBY
-    inspect_source(source)
-
-    expect(cop.offenses.empty?).to be(true)
   end
 
   context 'auto-correct' do
@@ -1744,8 +1672,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'assignment as the last statement' do
       it 'registers an offense in if else with more than variable assignment' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             method_call
             bar = 1
           else
@@ -1753,15 +1682,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in if elsif else with more than ' \
          'variable assignment' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             method_call
             bar = 1
           elsif foobar
@@ -1772,14 +1699,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'register an offense for multiple assignment in if else' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           if baz
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             foo = 1
             bar = 1
           else
@@ -1787,14 +1712,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense for multiple assignment in if elsif else' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           if baz
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             foo = 1
             bar = 1
           elsif foobar
@@ -1805,14 +1728,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'allows multiple assignment in if elsif elsif else' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           if baz
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             foo = 1
             bar = 1
           elsif foobar
@@ -1826,9 +1747,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 4
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'allows out of order multiple assignment in if elsif else' do
@@ -1847,8 +1765,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'allows multiple assignment in unless else' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           unless baz
+          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             foo = 1
             bar = 1
           else
@@ -1856,14 +1775,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'allows multiple assignments in case when with only one when' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when foobar
             foo = 1
             bar = 1
@@ -1872,14 +1789,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'allows multiple assignments in case when with multiple whens' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when foobar
             foo = 1
             bar = 1
@@ -1891,16 +1806,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in if elsif else with some branches only ' \
           'containing variable assignment and others containing more than ' \
           'variable assignment' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             bar = 1
           elsif foobar
             method_call
@@ -1912,15 +1825,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 4
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in unless else with more than ' \
          'variable assignment' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           unless foo
+          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             method_call
             bar = 1
           else
@@ -1928,15 +1839,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       it 'registers an offense in case when else with more than ' \
          'variable assignment' do
-        source = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when foobar
             method_call
             bar = 1
@@ -1945,16 +1854,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-
-        inspect_source(source)
-
-        expect(cop.messages).to eq([message])
       end
 
       context 'multiple assignment in only one branch' do
         it 'registers an offense when multiple assignment is in if' do
-          source = <<-RUBY.strip_indent
+          expect_offense(<<-RUBY.strip_indent)
             if foo
+            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
               baz = 1
               bar = 1
             elsif foobar
@@ -1965,14 +1871,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               bar = 3
             end
           RUBY
-          inspect_source(source)
-
-          expect(cop.offenses.size).to eq(1)
         end
 
         it 'registers an offense when multiple assignment is in elsif' do
-          source = <<-RUBY.strip_indent
+          expect_offense(<<-RUBY.strip_indent)
             if foo
+            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
               method_call
               bar = 1
             elsif foobar
@@ -1983,14 +1887,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               bar = 3
             end
           RUBY
-          inspect_source(source)
-
-          expect(cop.offenses.size).to eq(1)
         end
 
         it 'registers an offense when multiple assignment is in else' do
-          source = <<-RUBY.strip_indent
+          expect_offense(<<-RUBY.strip_indent)
             if foo
+            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
               method_call
               bar = 1
             elsif foobar
@@ -2001,16 +1903,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               bar = 3
             end
           RUBY
-          inspect_source(source)
-
-          expect(cop.offenses.size).to eq(1)
         end
       end
     end
 
     it 'allows assignment in multiple branches when it is ' \
        'wrapped in a modifier' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           bar << 1
           bar << 2
@@ -2019,15 +1918,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar << 4 if foobar
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'registers an offense for multiple assignment when an earlier ' \
        'assignment is is protected by a modifier' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar << 1
           bar << 2
         else
@@ -2035,9 +1932,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar << 4
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq([message])
     end
 
     context 'auto-correct' do

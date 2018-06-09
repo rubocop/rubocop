@@ -64,7 +64,12 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and there are many lines ending with LF' do
       it 'registers only one offense' do
-        inspect_source_file(['x=0', '', 'y=1'].join("\n"))
+        inspect_source_file(<<-RUBY.strip_indent)
+          x=0
+
+          y=1
+        RUBY
+
         expect(cop.messages.size).to eq(1)
       end
 

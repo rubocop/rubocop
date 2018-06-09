@@ -21,50 +21,37 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def method_name
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2.24/0]
           call_foo if some_condition # 0 + 2*2 + 1*1
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [2.24/0]'])
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.chomp])
-        def method_name
-          call_foo if some_condition # 0 + 2*2 + 1*1
-        end
-      RUBY
-      expect(cop.config_to_allow_offenses).to eq('Max' => 3)
     end
 
     it 'registers an offense for an assignment of a local variable' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def method_name
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1/0]
           x = 1
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [1/0]'])
-      expect(cop.config_to_allow_offenses).to eq('Max' => 1)
     end
 
     it 'registers an offense for an assignment of an element' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def method_name
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1.41/0]
           x[0] = 1
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [1.41/0]'])
-      expect(cop.config_to_allow_offenses).to eq('Max' => 2)
     end
 
     it 'registers an offense for complex content including A, B, and C ' \
        'scores' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def method_name
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [6.4/0]
           my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 3, 2
           my_options.each do |key, value|           # 0, 1, 0
             p key                                   # 0, 1, 0
@@ -72,9 +59,6 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
           end
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [6.4/0]']) # sqrt(1*1 + 6*6 + 2*2) => 6.4
     end
 
     it 'registers an offense for a `define_method`' do

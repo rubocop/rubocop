@@ -33,14 +33,15 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
 
       it 'does not register an offense when a .new method is made
         independently of the Time class' do
-        inspect_source('Range.new(1,
-                                  Time.days_in_month(date.month, date.year))')
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          Range.new(1, Time.days_in_month(date.month, date.year))
+        RUBY
       end
 
       it "does not register an offense for #{klass}.new with zone argument" do
-        inspect_source("#{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')
+        RUBY
       end
 
       it "registers an offense for ::#{klass}.now" do
@@ -49,8 +50,9 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
       end
 
       it "accepts Some::#{klass}.now" do
-        inspect_source("Some::#{klass}.forward(0).strftime('%H:%M')")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          Some::#{klass}.forward(0).strftime('%H:%M')
+        RUBY
       end
 
       described_class::ACCEPTED_METHODS.each do |a_method|
@@ -169,8 +171,9 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
 
     described_class::DANGEROUS_METHODS.each do |a_method|
       it "accepts Some::Time.#{a_method}" do
-        inspect_source("Some::Time.#{a_method}")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          Some::Time.#{a_method}
+        RUBY
       end
     end
   end
@@ -194,41 +197,48 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
       end
 
       it "accepts #{klass}.current" do
-        inspect_source("#{klass}.current")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{klass}.current
+        RUBY
       end
 
       described_class::ACCEPTED_METHODS.each do |a_method|
         it "accepts #{klass}.now.#{a_method}" do
-          inspect_source("#{klass}.now.#{a_method}")
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(<<-RUBY.strip_indent)
+            #{klass}.now.#{a_method}
+          RUBY
         end
       end
 
       it "accepts #{klass}.zone.now" do
-        inspect_source("#{klass}.zone.now")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{klass}.zone.now
+        RUBY
       end
 
       it "accepts #{klass}.zone_default.now" do
-        inspect_source("#{klass}.zone_default.now")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{klass}.zone_default.now
+        RUBY
       end
 
       it "accepts #{klass}.find_zone(time_zone).now" do
-        inspect_source("#{klass}.find_zone('EST').now")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{klass}.find_zone('EST').now
+        RUBY
       end
 
       it "accepts #{klass}.find_zone!(time_zone).now" do
-        inspect_source("#{klass}.find_zone!('EST').now")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY.strip_indent)
+          #{klass}.find_zone!('EST').now
+        RUBY
       end
 
       described_class::DANGEROUS_METHODS.each do |a_method|
         it "accepts #{klass}.current.#{a_method}" do
-          inspect_source("#{klass}.current.#{a_method}")
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(<<-RUBY.strip_indent)
+            #{klass}.current.#{a_method}
+          RUBY
         end
       end
     end

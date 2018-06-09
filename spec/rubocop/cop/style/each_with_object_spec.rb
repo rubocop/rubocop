@@ -25,10 +25,11 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
       end
     RUBY
 
-    expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
-                             '  h[i] = i',
-                             'end',
-                             ''].join("\n"))
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      [1, 2, 3].each_with_object({}) do |i, h|
+        h[i] = i
+      end
+    RUBY
   end
 
   it 'correctly autocorrects with return value only' do
@@ -38,9 +39,10 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
       end
     RUBY
 
-    expect(corrected).to eq(['[1, 2, 3].each_with_object({}) do |i, h|',
-                             'end',
-                             ''].join("\n"))
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      [1, 2, 3].each_with_object({}) do |i, h|
+      end
+    RUBY
   end
 
   it 'ignores inject and reduce with passed in, but not returned hash' do

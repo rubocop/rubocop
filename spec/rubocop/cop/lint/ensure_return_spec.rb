@@ -27,13 +27,11 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
   end
 
   it 'does not check when ensure block has no body' do
-    expect do
-      inspect_source(<<-RUBY.strip_indent)
-        begin
-          something
-        ensure
-        end
-      RUBY
-    end.not_to raise_exception
+    expect_no_offenses(<<-RUBY.strip_indent)
+      begin
+        something
+      ensure
+      end
+    RUBY
   end
 end

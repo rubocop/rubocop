@@ -18,8 +18,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
   end
 
   it "accepts a line that's 80 characters wide" do
-    inspect_source('#' * 80)
-    expect(cop.offenses.empty?).to be(true)
+    expect_no_offenses('#' * 80)
   end
 
   it 'registers an offense for long line before __END__ but not after' do
@@ -33,71 +32,47 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     let(:cop_config) { { 'Max' => 80, 'AllowURI' => true } }
 
     context 'and all the excessive characters are part of an URL' do
-      # This code example is allowed by AllowURI feature itself :).
-      let(:source) { <<-RUBY }
-        # Some documentation comment...
-        # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
-      RUBY
-
       it 'accepts the line' do
-        inspect_source(source)
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(<<-RUBY)
+          # Some documentation comment...
+          # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
+        RUBY
       end
 
       context 'and the URL is wrapped in single quotes' do
-        let(:source) { <<-RUBY }
-          # See: 'https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c'
-        RUBY
-
         it 'accepts the line' do
-          inspect_source(source)
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(<<-RUBY)
+            # See: 'https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c'
+          RUBY
         end
       end
 
       context 'and the URL is wrapped in double quotes' do
-        let(:source) { <<-RUBY }
-          # See: "https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c"
-        RUBY
-
         it 'accepts the line' do
-          inspect_source(source)
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(<<-RUBY)
+            # See: "https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c"
+          RUBY
         end
       end
     end
 
     context 'and the excessive characters include a complete URL' do
-      let(:source) { <<-RUBY }
-        # See: http://google.com/, http://gmail.com/, https://maps.google.com/, http://plus.google.com/
-      RUBY
-
       it 'registers an offense for the line' do
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-      end
-
-      it 'highlights all the excessive characters' do
-        inspect_source(source)
-        expect(cop.highlights).to eq(['http://plus.google.com/'])
+        expect_offense(<<-RUBY)
+          # See: http://google.com/, http://gmail.com/, https://maps.google.com/, http://plus.google.com/
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [105/80]
+        RUBY
       end
     end
 
     context 'and the excessive characters include part of an URL ' \
             'and another word' do
-      let(:source) { <<-RUBY }
-        # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
-        #   http://google.com/
-      RUBY
-
       it 'registers an offense for the line' do
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-      end
-
-      it 'highlights only the non-URL part' do
-        inspect_source(source)
-        expect(cop.highlights).to eq([' and'])
+        expect_offense(<<-RUBY)
+          # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
+                                                                                                      ^^^^ Line is too long. [106/80]
+          #   http://google.com/
+        RUBY
       end
     end
 
@@ -131,9 +106,8 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
           { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w[otherprotocol] }
         end
 
-        it 'accepts the line' do
-          inspect_source(source)
-          expect(cop.offenses.empty?).to be(true)
+        it 'does not register an offense' do
+          expect_no_offenses(source)
         end
       end
     end
@@ -174,8 +148,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     RUBY
 
     it 'accepts long lines in heredocs' do
-      inspect_source(source)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(source)
     end
 
     context 'when the source has no AST' do
@@ -287,8 +260,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'accepts the line' do
-        inspect_source(source)
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(source)
       end
     end
 
@@ -300,8 +272,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       RUBY
 
       it 'accepts the line' do
-        inspect_source(source)
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses(source)
       end
 
       context 'and has explanatory text' do
@@ -311,9 +282,8 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
           end
         RUBY
 
-        it 'accepts the line' do
-          inspect_source(source)
-          expect(cop.offenses.empty?).to be(true)
+        it 'does not register an offense' do
+          expect_no_offenses(source)
         end
       end
     end

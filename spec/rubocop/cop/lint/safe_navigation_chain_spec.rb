@@ -9,9 +9,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   shared_examples 'accepts' do |name, code|
     it "accepts usages of #{name}" do
-      inspect_source(code)
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(code)
     end
   end
 

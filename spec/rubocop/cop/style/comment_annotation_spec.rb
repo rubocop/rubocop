@@ -133,16 +133,16 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
   context 'offenses in consecutive inline comments' do
     it 'registers each of them' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         class ToBeDone
           ITEMS = [
             '', # TODO Item 1
+                  ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
             '', # TODO Item 2
+                  ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
           ].freeze
         end
       RUBY
-
-      expect(cop.offenses.size).to be(2)
     end
   end
 end

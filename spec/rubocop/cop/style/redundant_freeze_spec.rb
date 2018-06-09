@@ -29,8 +29,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   shared_examples 'mutable objects' do |o|
     it "allows #{o} with freeze" do
       source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
-      inspect_source(source)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(source)
     end
   end
 

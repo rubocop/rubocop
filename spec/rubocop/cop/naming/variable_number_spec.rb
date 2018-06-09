@@ -21,9 +21,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
 
   shared_examples 'accepts' do |style, variable|
     it "accepts #{variable} in #{style}" do
-      inspect_source("#{variable} = 1")
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("#{variable} = 1")
     end
   end
 

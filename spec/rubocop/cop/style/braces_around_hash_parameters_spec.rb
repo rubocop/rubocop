@@ -45,40 +45,44 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   end
 
   shared_examples 'no_braces and context_dependent offenses' do
-    let(:msg) { 'Redundant curly braces around a hash parameter.' }
-
     it 'registers an offense for one non-hash parameter followed by a hash ' \
        'parameter with braces' do
-      inspect_source('where(1, { y: 2 })')
-      expect(cop.messages).to eq([msg])
-      expect(cop.highlights).to eq(['{ y: 2 }'])
+      expect_offense(<<-RUBY.strip_indent)
+        where(1, { y: 2 })
+                 ^^^^^^^^ Redundant curly braces around a hash parameter.
+      RUBY
     end
 
     it 'registers an offense for one object method hash parameter with ' \
        'braces' do
-      inspect_source('x.func({ y: "z" })')
-      expect(cop.messages).to eq([msg])
-      expect(cop.highlights).to eq(['{ y: "z" }'])
+      expect_offense(<<-RUBY.strip_indent)
+        x.func({ y: "z" })
+               ^^^^^^^^^^ Redundant curly braces around a hash parameter.
+      RUBY
     end
 
     it 'registers an offense for one hash parameter with braces' do
-      inspect_source('where({ x: 1 })')
-      expect(cop.messages).to eq([msg])
-      expect(cop.highlights).to eq(['{ x: 1 }'])
+      expect_offense(<<-RUBY.strip_indent)
+        where({ x: 1 })
+              ^^^^^^^^ Redundant curly braces around a hash parameter.
+      RUBY
     end
 
     it 'registers an offense for one hash parameter with braces and ' \
        'whitespace' do
-      inspect_source("where(  \n { x: 1 }   )")
-      expect(cop.messages).to eq([msg])
-      expect(cop.highlights).to eq(['{ x: 1 }'])
+      expect_offense(<<-RUBY.strip_indent)
+        where(  
+          { x: 1 }   )
+          ^^^^^^^^ Redundant curly braces around a hash parameter.
+      RUBY
     end
 
     it 'registers an offense for one hash parameter with braces and multiple ' \
        'keys' do
-      inspect_source('where({ x: 1, foo: "bar" })')
-      expect(cop.messages).to eq([msg])
-      expect(cop.highlights).to eq(['{ x: 1, foo: "bar" }'])
+      expect_offense(<<-RUBY.strip_indent)
+        where({ x: 1, foo: "bar" })
+              ^^^^^^^^^^^^^^^^^^^^ Redundant curly braces around a hash parameter.
+      RUBY
     end
   end
 
@@ -344,10 +348,10 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter with braces and one ' \
          'without' do
-        inspect_source('where({ x: 1 }, y: 2)')
-        expect(cop.messages)
-          .to eq(['Missing curly braces around a hash parameter.'])
-        expect(cop.highlights).to eq(['y: 2'])
+        expect_offense(<<-RUBY.strip_indent)
+          where({ x: 1 }, y: 2)
+                          ^^^^ Missing curly braces around a hash parameter.
+        RUBY
       end
     end
 

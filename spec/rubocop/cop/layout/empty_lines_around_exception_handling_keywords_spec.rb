@@ -20,8 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
 
   shared_examples 'accepts' do |name, code|
     it "accepts #{name}" do
-      inspect_source(code)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(code)
     end
   end
 

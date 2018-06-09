@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     it 'returns offenses' do
       expect(offenses.empty?).to be(false)
-      expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) }).to be_truthy
+      expect(offenses).to all(be_a(RuboCop::Cop::Offense))
     end
 
     context 'when Parser reports non-fatal warning for the file' do

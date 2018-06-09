@@ -126,72 +126,95 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
     end
 
     it 'autocorrects empty line detected at top' do
-      corrected = autocorrect_source(['foo(',
-                                      '',
-                                      '  bar',
-                                      ')'].join("\n"))
-      expect(corrected).to eq ['foo(',
-                               '  bar',
-                               ')'].join("\n")
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        foo(
+
+          bar
+        )
+      RUBY
+
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        foo(
+          bar
+        )
+      RUBY
     end
 
     it 'autocorrects empty line detected at bottom' do
-      corrected = autocorrect_source(['foo(',
-                                      '  baz: 1',
-                                      '',
-                                      ')'].join("\n"))
-      expect(corrected).to eq ['foo(',
-                               '  baz: 1',
-                               ')'].join("\n")
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        foo(
+          baz: 1
+
+        )
+      RUBY
+
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        foo(
+          baz: 1
+        )
+      RUBY
     end
 
     it 'autocorrects empty line detected in the middle' do
-      corrected = autocorrect_source(['do_something(',
-                                      '  [baz],',
-                                      '',
-                                      '  qux: 0',
-                                      ')'].join("\n"))
-      expect(corrected).to eq ['do_something(',
-                               '  [baz],',
-                               '  qux: 0',
-                               ')'].join("\n")
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        do_something(
+          [baz],
+
+          qux: 0
+        )
+      RUBY
+
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        do_something(
+          [baz],
+          qux: 0
+        )
+      RUBY
     end
 
     it 'autocorrects multiple empty lines' do
-      corrected = autocorrect_source(['do_stuff(',
-                                      '  baz,',
-                                      '',
-                                      '  qux,',
-                                      '',
-                                      '  bar: 0,',
-                                      '',
-                                      ')'].join("\n"))
-      expect(corrected).to eq ['do_stuff(',
-                               '  baz,',
-                               '  qux,',
-                               '  bar: 0,',
-                               ')'].join("\n")
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        do_stuff(
+          baz,
+
+          qux,
+
+          bar: 0,
+        )
+      RUBY
+
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        do_stuff(
+          baz,
+          qux,
+          bar: 0,
+        )
+      RUBY
     end
 
     it 'autocorrects args that start on definition line' do
-      corrected = autocorrect_source(['bar(qux,',
-                                      '',
-                                      '    78)'].join("\n"))
-      expect(corrected).to eq ['bar(qux,',
-                               '    78)'].join("\n")
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        bar(qux,
+
+            78)
+      RUBY
+
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        bar(qux,
+            78)
+      RUBY
     end
   end
 
   context 'when no extra lines' do
     it 'accpets one line methods' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo(bar)
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts multiple listed mixed args' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo(
           bar,
           [],
@@ -199,31 +222,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
           qux: 2
         )
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts listed args starting on definition line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo(bar,
             [],
             qux: 2)
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts block argument with empty line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         Foo.prepend(Module.new do
           def something; end
 
           def anything; end
         end)
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts method with argument that trails off block' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         fred.map do
           <<-EOT
             bar
@@ -232,51 +252,46 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
           EOT
         end.join("\n")
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts method with no arguments that trails off block' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo.baz do
 
           bar
         end.compact
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'accepts method with argument that trails off heredoc' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         bar(<<-DOCS)
           foo
 
         DOCS
           .call!(true)
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     context 'with one argument' do
       it 'ignores empty lines inside of method arguments' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           private(def bar
 
             baz
           end)
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
     end
 
     context 'with multiple arguments' do
       it 'ignores empty lines inside of method arguments' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           foo(:bar, [1,
 
                      2]
           )
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

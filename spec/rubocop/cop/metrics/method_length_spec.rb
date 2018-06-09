@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
 
   it 'accepts a method with multiline arguments ' \
      'and less than 5 lines of body' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       def m(x,
             y,
             z)
@@ -115,7 +115,6 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
         a = 4
       end
     RUBY
-    expect(cop.offenses.empty?).to be(true)
   end
 
   it 'does not count blank lines' do

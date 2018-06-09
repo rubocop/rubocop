@@ -5,30 +5,24 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   shared_examples 'variables' do |variable|
     it 'does not register an offense for % called on a variable' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #{variable} = '%s'
         #{variable} % [foo]
       RUBY
-
-      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for format called on a variable' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #{variable} = '%s'
         format(#{variable}, foo)
       RUBY
-
-      expect(cop.messages.empty?).to be(true)
     end
 
     it 'does not register an offense for format called on a variable' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         #{variable} = '%s'
         sprintf(#{variable}, foo)
       RUBY
-
-      expect(cop.messages.empty?).to be(true)
     end
   end
 
@@ -40,40 +34,32 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'registers an offense when calling Kernel.format ' \
      'and the fields do not match' do
-    inspect_source('Kernel.format("%s %s", 1)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ["Number of arguments (1) to `format` doesn't match the number of " \
-       'fields (2).']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      Kernel.format("%s %s", 1)
+             ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'registers an offense when calling Kernel.sprintf ' \
      'and the fields do not match' do
-    inspect_source('Kernel.sprintf("%s %s", 1)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ["Number of arguments (1) to `sprintf` doesn't match the number of " \
-       'fields (2).']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      Kernel.sprintf("%s %s", 1)
+             ^^^^^^^ Number of arguments (1) to `sprintf` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'registers an offense when there are less arguments than expected' do
-    inspect_source('format("%s %s", 1)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ["Number of arguments (1) to `format` doesn't match the number of " \
-       'fields (2).']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      format("%s %s", 1)
+      ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'registers an offense when there are more arguments than expected' do
-    inspect_source('format("%s %s", 1, 2, 3)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ["Number of arguments (3) to `format` doesn't match the number of " \
-       'fields (2).']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      format("%s %s", 1, 2, 3)
+      ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'does not register an offense when arguments and fields match' do
@@ -89,12 +75,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers offense with sprintf' do
-    inspect_source('sprintf("%s %s", 1, 2, 3)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ["Number of arguments (3) to `sprintf` doesn't match the number of " \
-       'fields (2).']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      sprintf("%s %s", 1, 2, 3)
+      ^^^^^^^ Number of arguments (3) to `sprintf` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'correctly parses different sprintf formats' do
@@ -102,12 +86,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense for String#%' do
-    inspect_source('"%s %s" % [1, 2, 3]')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ["Number of arguments (3) to `String#%` doesn't match the number of " \
-       'fields (2).']
-    )
+    expect_offense(<<-RUBY.strip_indent)
+      "%s %s" % [1, 2, 3]
+              ^ Number of arguments (3) to `String#%` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'does not register offense for `String#%` when arguments, fields match' do
@@ -127,13 +109,25 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
       expect_no_offenses('sprintf("%s, %s, %s", 1, *arr)')
     end
 
-    it 'does register an offense when args count is more than expected' do
-      inspect_source('puts "%s, %s, %s" % [1, 2, 3, 4, *arr]')
-      expect(cop.offenses.empty?).to be(false)
-      inspect_source('format("%s, %s, %s", 1, 2, 3, 4, *arr)')
-      expect(cop.offenses.empty?).to be(false)
-      inspect_source('sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)')
-      expect(cop.offenses.empty?).to be(false)
+    context 'when args count is more than expected' do
+      it 'registers an offense for `#%`' do
+        expect_offense(<<-RUBY.strip_indent)
+          puts "%s, %s, %s" % [1, 2, 3, 4, *arr]
+                            ^ Number of arguments (5) to `String#%` doesn't match the number of fields (3).
+        RUBY
+      end
+
+      it 'registers an offense for `#format`' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          puts format("%s, %s, %s", 1, 2, 3, 4, *arr)
+        RUBY
+      end
+
+      it 'registers an offense for `#sprintf`' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          puts sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)
+        RUBY
+      end
     end
   end
 
@@ -174,10 +168,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense if extra argument for dynamic width not given' do
-    inspect_source('format("%*d", id)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(["Number of arguments (1) to `format` doesn't " \
-                                'match the number of fields (2).'])
+    expect_offense(<<-RUBY.strip_indent)
+      format("%*d", id)
+      ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
+    RUBY
   end
 
   it 'accepts an extra arg for dynamic width with other preceding flags' do
@@ -202,8 +196,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'finds faults even when the string looks like a HEREDOC' do
     # heredocs are ignored at the moment
-    inspect_source('format("<< %s bleh", 1, 2)')
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      format("<< %s bleh", 1, 2)
+      ^^^^^^ Number of arguments (2) to `format` doesn't match the number of fields (1).
+    RUBY
   end
 
   it 'does not register an offense for sprintf with splat argument' do

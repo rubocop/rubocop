@@ -4,13 +4,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for consecutive empty lines' do
-    inspect_source(['test = 5', '', '', '', 'top'])
+    inspect_source(<<-RUBY.strip_indent)
+      test = 5
+
+
+
+      top
+    RUBY
     expect(cop.offenses.size).to eq(2)
   end
 
   it 'auto-corrects consecutive empty lines' do
-    corrected = autocorrect_source(['test = 5', '', '', '', 'top'])
-    expect(corrected).to eq ['test = 5', '', 'top'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      test = 5
+
+
+
+      top
+    RUBY
+
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      test = 5
+
+      top
+    RUBY
   end
 
   it 'works when there are no tokens' do

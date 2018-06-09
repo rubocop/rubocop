@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores comment line before #{access_modifier}" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
           something
 
@@ -43,22 +43,20 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
           def test; end
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "ignores #{access_modifier} inside a method call" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
           def #{access_modifier}?
             #{access_modifier}
           end
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "ignores #{access_modifier} deep inside a method call" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
           def #{access_modifier}?
             if true
@@ -67,18 +65,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
           end
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "ignores #{access_modifier} with a right-hand-side condition" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         class Test
           def #{access_modifier}?
             #{access_modifier} if true
           end
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "autocorrects blank line before #{access_modifier}" do

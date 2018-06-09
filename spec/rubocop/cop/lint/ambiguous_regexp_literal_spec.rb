@@ -5,17 +5,11 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
 
   context 'with a regexp literal in the first argument' do
     context 'without parentheses' do
-      let(:source) { 'p /pattern/' }
-
       it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to eq(
-          'Ambiguous regexp literal. Parenthesize the method arguments ' \
-          "if it's surely a regexp literal, or add a whitespace to the " \
-          'right of the `/` if it should be a division.'
-        )
-        expect(cop.highlights).to eq(['/'])
+        expect_offense(<<-RUBY.strip_indent)
+          p /pattern/
+            ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
       end
     end
 

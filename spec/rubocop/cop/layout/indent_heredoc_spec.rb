@@ -28,8 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
   shared_examples 'accept' do |name, code|
     it "accepts for #{name}" do
-      inspect_source(code.strip_indent)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(code.strip_indent)
     end
   end
 

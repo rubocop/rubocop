@@ -3,13 +3,10 @@
 RSpec.describe RuboCop::Cop::Lint::RandOne do
   subject(:cop) { described_class.new }
 
-  before { inspect_source(source) }
-
   shared_examples 'offenses' do |source|
     describe source do
-      let(:source) { source }
-
       it 'registers an offense' do
+        inspect_source(source)
         expect(cop.messages).to eq(
           [
             "`#{source}` always returns `0`. " \
@@ -23,10 +20,8 @@ RSpec.describe RuboCop::Cop::Lint::RandOne do
 
   shared_examples 'no offense' do |source|
     describe source do
-      let(:source) { source }
-
-      it "doesn't register an offense" do
-        expect(cop.messages.empty?).to be(true)
+      it 'does not register an offense' do
+        expect_no_offenses(source)
       end
     end
   end

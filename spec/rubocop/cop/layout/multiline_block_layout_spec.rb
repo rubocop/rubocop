@@ -119,10 +119,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
 
     new_source = autocorrect_source(src)
 
-    expect(new_source).to eq(['test do |foo| ',
-                              '  bar',
-                              'end',
-                              ''].join("\n"))
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      test do |foo| 
+        bar
+      end
+    RUBY
   end
 
   it 'auto-corrects a do/end block with a mult-line body' do
@@ -134,11 +135,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
 
     new_source = autocorrect_source(src)
 
-    expect(new_source).to eq(['test do |foo| ',
-                              '  bar',
-                              '  test',
-                              'end',
-                              ''].join("\n"))
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      test do |foo| 
+        bar
+        test
+      end
+    RUBY
   end
 
   it 'auto-corrects a {} block with params that is missing newlines' do
@@ -149,10 +151,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
 
     new_source = autocorrect_source(src)
 
-    expect(new_source).to eq(['test { |foo| ',
-                              '  bar',
-                              '}',
-                              ''].join("\n"))
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      test { |foo| 
+        bar
+      }
+    RUBY
   end
 
   it 'autocorrects in more complex case with lambda and assignment, and '\
@@ -165,11 +168,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
 
     new_source = autocorrect_source(src)
 
-    expect(new_source).to eq(['x = -> (y) { ',
-                              '      foo',
-                              '  bar',
-                              '}',
-                              ''].join("\n"))
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      x = -> (y) { 
+            foo
+        bar
+      }
+    RUBY
   end
 
   it 'auto-corrects a line-break before arguments' do

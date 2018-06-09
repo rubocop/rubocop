@@ -62,11 +62,10 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
     end
 
     it 'does not count keyword arguments without default values', ruby: 2.1 do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         def meth(a, b, c, d:, e:)
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
   end
 end

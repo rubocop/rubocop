@@ -84,13 +84,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       context 'for assignment' do
         it 'accepts a correctly indented first parameter and does not care ' \
            'about the second parameter' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             x = run(
               :foo,
                 bar: 3
             )
           RUBY
-          expect(cop.offenses.empty?).to be(true)
         end
 
         context 'with line break' do
@@ -103,12 +102,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
           end
 
           it 'registers an offense for an under-indented first parameter' do
-            inspect_source(<<-RUBY.strip_indent)
+            expect_offense(<<-RUBY.strip_indent)
               @x =
                 run(
                 :foo)
+                ^^^^ Indent the first parameter one step more than the start of the previous line.
             RUBY
-            expect(cop.highlights).to eq([':foo'])
           end
         end
       end
@@ -131,28 +130,24 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
         end
 
         it 'registers an offense for an over-indented first parameter' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             puts x.
               merge(
                   b: 2
+                  ^^^^ Indent the first parameter one step more than the start of the previous line.
               )
           RUBY
-          expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than the start of the ' \
-                                      'previous line.'])
-          expect(cop.highlights).to eq(['b: 2'])
         end
 
         it 'accepts a correctly indented first parameter preceded by an ' \
            'empty line' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             puts x.
               merge(
 
                 b: 2
               )
           RUBY
-          expect(cop.offenses.empty?).to be(true)
         end
 
         context 'when preceded by a comment line' do
@@ -167,17 +162,14 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
           end
 
           it 'registers an offense for an under-indented first parameter' do
-            inspect_source(<<-RUBY.strip_indent)
+            expect_offense(<<-RUBY.strip_indent)
               puts x.
                 merge(
                 # comment
                 b: 2
+                ^^^^ Indent the first parameter one step more than the start of the previous line (not counting the comment).
                 )
             RUBY
-            expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                        'more than the start of the previous ' \
-                                        'line (not counting the comment).'])
-            expect(cop.highlights).to eq(['b: 2'])
           end
         end
       end
@@ -206,13 +198,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       it 'does not view chained call as an outer method call' do
-        inspect_source(<<-'RUBY'.strip_margin('|'))
+        expect_no_offenses(<<-'RUBY'.strip_margin('|'))
           |  A = Regexp.union(
           |    /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
           |    *AST::Types::OPERATOR_METHODS.map(&:to_s)
           |  ).freeze
         RUBY
-        expect(cop.offenses.empty?).to be(true)
       end
 
       it 'auto-corrects an under-indented first parameter' do
@@ -361,11 +352,10 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
 
         it 'accepts a correctly indented first parameter with fullwidth ' \
            'characters' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             puts('Ｒｕｂｙ', f(
                                a))
           RUBY
-          expect(cop.offenses.empty?).to be(true)
         end
       end
 

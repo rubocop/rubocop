@@ -280,7 +280,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "allows loops with #{condition} being the entire body with else" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         [].each do |o|
           #{condition} o == 1
             puts o
@@ -289,13 +289,11 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
           end
         end
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "allows loops with #{condition} with else, nested in another " \
        'condition' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         [].each do |o|
           if foo
             #{condition} o == 1
@@ -306,12 +304,10 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
           end
         end
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "allows loops with #{condition} with else at the end" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         [].each do |o|
           puts o
           #{condition} o == 1
@@ -321,8 +317,6 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
           end
         end
       RUBY
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "reports an offense for #{condition} whose body has 3 lines" do
@@ -346,13 +340,11 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       end
 
       it "allows modifier #{condition}" do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           [].each do |o|
             puts o #{condition} o == 1
           end
         RUBY
-
-        expect(cop.offenses.empty?).to be(true)
       end
     end
 
@@ -414,22 +406,27 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'keeps comments when autocorrecting' do
-    new_source = autocorrect_source(['loop do',
-                                     '  if test # keep me',
-                                     '    # keep me',
-                                     '    something # keep me',
-                                     '    # keep me',
-                                     '    ',
-                                     '  end # keep me',
-                                     'end'])
-    expect(new_source).to eq(['loop do',
-                              '  next unless test # keep me',
-                              '  # keep me',
-                              '  something # keep me',
-                              '  # keep me',
-                              '    ',
-                              ' # keep me',
-                              'end'].join("\n"))
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      loop do
+        if test # keep me
+          # keep me
+          something # keep me
+          # keep me
+
+        end # keep me
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      loop do
+        next unless test # keep me
+        # keep me
+        something # keep me
+        # keep me
+
+       # keep me
+      end
+    RUBY
   end
 
   it 'handles `then` when autocorrecting' do

@@ -183,27 +183,22 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
 
     it 'registers offenses for misaligned ends' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def foo(bar)
           bar.get_stuffs
               .reject do |stuff|
                 stuff.with_a_very_long_expression_that_doesnt_fit_the_line
                 end.select do |stuff|
+                ^^^ `end` at 5, 8 is not aligned with `bar.get_stuffs` at 2, 2 or `.reject do |stuff|` at 3, 6.
                 stuff.another_very_long_expression_that_doesnt_fit_the_line
             end
+            ^^^ `end` at 7, 4 is not aligned with `bar.get_stuffs` at 2, 2 or `end.select do |stuff|` at 5, 8.
               .select do |stuff|
                 stuff.another_very_long_expression_that_doesnt_fit_the_line
                 end
+                ^^^ `end` at 10, 8 is not aligned with `bar.get_stuffs` at 2, 2 or `.select do |stuff|` at 8, 6.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['`end` at 5, 8 is not aligned with `bar.get_stuffs` at 2, 2' \
-                ' or `.reject do |stuff|` at 3, 6.',
-                '`end` at 7, 4 is not aligned with `bar.get_stuffs` at 2, 2' \
-                ' or `end.select do |stuff|` at 5, 8.',
-                '`end` at 10, 8 is not aligned with `bar.get_stuffs` at 2, 2' \
-                ' or `.select do |stuff|` at 8, 6.'])
     end
 
     # Example from issue 393 of rubocop-hq/rubocop on github:
@@ -284,16 +279,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
 
     it 'registers an offense for end aligned with the block' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         e,
         f = [5, 6].map do |i|
           i - 5
             end
+            ^^^ `end` at 4, 4 is not aligned with `e,` at 1, 0 or `f = [5, 6].map do |i|` at 2, 0.
       RUBY
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['`end` at 4, 4 is not aligned with `e,` at 1, 0 or' \
-                ' `f = [5, 6].map do |i|` at 2, 0.'])
     end
 
     it 'auto-corrects' do
@@ -323,13 +315,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
 
   it 'registers an offense for mismatched block end with' \
      ' an instance variable' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       @variable = test do |ala|
         end
+        ^^^ `end` at 2, 2 is not aligned with `@variable = test do |ala|` at 1, 0.
     RUBY
-    expect(cop.messages)
-      .to eq(['`end` at 2, 2 is not aligned with `@variable = test do |ala|`' \
-              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a class variable' do
@@ -404,14 +394,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
 
   it 'registers an offense for mismatched end with a method call' \
      ' with arguments' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       @h[:f] = f.each_pair.map do |f, v|
         v = 1
         end
+        ^^^ `end` at 3, 2 is not aligned with `@h[:f] = f.each_pair.map do |f, v|` at 1, 0.
     RUBY
-    expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with' \
-              ' `@h[:f] = f.each_pair.map do |f, v|` at 1, 0.'])
   end
 
   it 'does not raise an error for nested block in a method call' do
@@ -428,14 +416,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
 
   it 'registers an offense for mismatched end not aligned with the block' \
      ' that is an argument' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       expect(arr.all? do |o|
         o.valid?
         end)
+        ^^^ `end` at 3, 2 is not aligned with `arr.all? do |o|` at 1, 7 or `expect(arr.all? do |o|` at 1, 0.
     RUBY
-    expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with `arr.all? do |o|` at 1, 7 or' \
-              ' `expect(arr.all? do |o|` at 1, 0.'])
   end
 
   it 'accepts end aligned with an op-asgn (+=, -=)' do
@@ -676,16 +662,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
 
     it 'errors when do aligned' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         foo.bar
           .each do
             baz
           end
+          ^^^ `end` at 4, 2 is not aligned with `foo.bar` at 1, 0.
       RUBY
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['`end` at 4, 2 is not aligned with ' \
-                '`foo.bar` at 1, 0.'])
     end
 
     it 'autocorrects' do
@@ -722,16 +705,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
 
     it 'errors when start_of_line aligned' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         foo.bar
           .each do
             baz
         end
+        ^^^ `end` at 4, 0 is not aligned with `.each do` at 2, 2.
       RUBY
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['`end` at 4, 0 is not aligned with ' \
-                '`.each do` at 2, 2.'])
     end
 
     it 'autocorrects' do

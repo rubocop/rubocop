@@ -3,43 +3,32 @@
 RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
   subject(:cop) { described_class.new }
 
-  context 'When there is a duplicated key in the hash literal' do
-    let(:source) do
-      "hash = { 'otherkey' => 'value', 'key' => 'value', 'key' => 'hi' }"
-    end
-
+  context 'when there is a duplicated key in the hash literal' do
     it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Duplicated key in hash literal.')
-      expect(cop.highlights).to eq ["'key'"]
+      expect_offense(<<-RUBY.strip_indent)
+        hash = { 'otherkey' => 'value', 'key' => 'value', 'key' => 'hi' }
+                                                          ^^^^^ Duplicated key in hash literal.
+      RUBY
     end
   end
 
-  context 'When there are two duplicated keys in a hash' do
-    let(:source) do
-      "hash = { fruit: 'apple', veg: 'kale', veg: 'cuke', fruit: 'orange' }"
-    end
-
+  context 'when there are two duplicated keys in a hash' do
     it 'registers two offenses' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to eq(['Duplicated key in hash literal.'] * 2)
-      expect(cop.highlights).to eq %w[veg fruit]
+      expect_offense(<<-RUBY.strip_indent)
+        hash = { fruit: 'apple', veg: 'kale', veg: 'cuke', fruit: 'orange' }
+                                              ^^^ Duplicated key in hash literal.
+                                                           ^^^^^ Duplicated key in hash literal.
+      RUBY
     end
   end
 
   context 'When a key is duplicated three times in a hash literal' do
-    let(:source) do
-      'hash = { 1 => 2, 1 => 3, 1 => 4 }'
-    end
-
     it 'registers two offenses' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to eq(['Duplicated key in hash literal.'] * 2)
-      expect(cop.highlights).to eq %w[1 1]
+      expect_offense(<<-RUBY.strip_indent)
+        hash = { 1 => 2, 1 => 3, 1 => 4 }
+                         ^ Duplicated key in hash literal.
+                                 ^ Duplicated key in hash literal.
+      RUBY
     end
   end
 
@@ -80,8 +69,9 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
 
   shared_examples 'duplicated non literal key' do |key|
     it "does not register an offense for duplicated `#{key}` hash keys" do
-      inspect_source("hash = { #{key} => 1, #{key} => 4}")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash = { #{key} => 1, #{key} => 4}
+      RUBY
     end
   end
 

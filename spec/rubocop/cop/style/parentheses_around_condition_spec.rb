@@ -102,11 +102,10 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
   %w[rescue if unless while until].each do |op|
     it "allows parens if the condition node is a modifier #{op} op" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (something #{op} top)
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
   end
 

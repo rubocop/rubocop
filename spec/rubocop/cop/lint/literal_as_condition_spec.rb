@@ -70,12 +70,11 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
 
     it "accepts literal #{lit} in a when of a case with " \
        'something after case keyword' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         case x
         when #{lit} then top
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for literal #{lit} in &&" do
@@ -115,21 +114,19 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "accepts literal #{lit} if it's not an and/or operand" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if test(#{lit})
           top
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "accepts literal #{lit} in non-toplevel and/or" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         if (a || #{lit}).something
           top
         end
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "registers an offense for `!#{lit}`" do

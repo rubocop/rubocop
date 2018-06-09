@@ -30,13 +30,15 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
     end
 
     it "accepts #{method} with more than 1 param" do
-      inspect_source("[1, 2, 3].#{method}(other, &:test)")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        [1, 2, 3].#{method}(other, &:test)
+      RUBY
     end
 
     it "accepts #{method} without a block" do
-      inspect_source("[1, 2, 3].#{method}")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        [1, 2, 3].#{method}
+      RUBY
     end
 
     it 'auto-corrects to preferred method' do

@@ -78,25 +78,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
   it 'auto-corrects source separated by newlines ' \
      'by removing redundant begin blocks' do
-    src = <<-RUBY.strip_margin('|')
-      |  def func
-      |    begin
-      |      foo
-      |      bar
-      |    rescue
-      |      baz
-      |    end
-      |  end
+    src = <<-RUBY.strip_indent
+      def func
+        begin
+          foo
+          bar
+        rescue
+          baz
+        end
+      end
     RUBY
-    result_src = ['  def func',
-                  '    ',
-                  '      foo',
-                  '      bar',
-                  '    rescue',
-                  '      baz',
-                  '    ',
-                  '  end',
-                  ''].join("\n")
+
+    result_src = <<-RUBY.strip_indent
+      def func
+        
+          foo
+          bar
+        rescue
+          baz
+        
+      end
+    RUBY
+
     new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end
@@ -127,21 +130,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       end
     RUBY
 
-    result_src = ['def method',
-                  '  ',
-                  '    BlockA do |strategy|',
-                  '      foo',
-                  '    end',
-                  '',
-                  '    BlockB do |portfolio|',
-                  '      foo',
-                  '    end',
-                  '',
-                  '  rescue => e # some problem',
-                  '    bar',
-                  '  ',
-                  'end',
-                  ''].join("\n")
+    result_src = <<-RUBY.strip_indent
+      def method
+        
+          BlockA do |strategy|
+            foo
+          end
+
+          BlockB do |portfolio|
+            foo
+          end
+
+        rescue => e # some problem
+          bar
+        
+      end
+    RUBY
+
     new_source = autocorrect_source(src)
     expect(new_source).to eq(result_src)
   end

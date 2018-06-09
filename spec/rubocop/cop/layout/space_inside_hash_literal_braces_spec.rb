@@ -46,22 +46,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'registers an offense for hashes with no spaces if so configured' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       h = {a: 1, b: 2}
+          ^ Space inside { missing.
+                     ^ Space inside } missing.
       h = {a => 1}
+          ^ Space inside { missing.
+                 ^ Space inside } missing.
     RUBY
-    expect(cop.messages).to eq(['Space inside { missing.',
-                                'Space inside } missing.',
-                                'Space inside { missing.',
-                                'Space inside } missing.'])
-    expect(cop.highlights).to eq(['{', '}', '{', '}'])
-    expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'no_space')
   end
 
   it 'registers an offense for correct + opposite' do
-    inspect_source('h = { a: 1}')
-    expect(cop.messages).to eq(['Space inside } missing.'])
-    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    expect_offense(<<-RUBY.strip_indent)
+      h = { a: 1}
+                ^ Space inside } missing.
+    RUBY
   end
 
   it 'auto-corrects missing space' do
@@ -79,17 +78,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'registers an offense for hashes with spaces' do
-      inspect_source('h = { a: 1, b: 2 }')
-      expect(cop.messages).to eq(['Space inside { detected.',
-                                  'Space inside } detected.'])
-      expect(cop.highlights).to eq([' ', ' '])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'space')
+      expect_offense(<<-RUBY.strip_indent)
+        h = { a: 1, b: 2 }
+             ^ Space inside { detected.
+                        ^ Space inside } detected.
+      RUBY
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source('h = {a: 1 }')
-      expect(cop.messages).to eq(['Space inside } detected.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_offense(<<-RUBY.strip_indent)
+        h = {a: 1 }
+                 ^ Space inside } detected.
+      RUBY
     end
 
     it 'auto-corrects unwanted space' do
@@ -133,9 +133,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
     it "doesn't register an offense for non-nested hashes with spaces" do
-      inspect_source('h = { a: 1, b: 2 }')
-      expect(cop.offenses.empty?).to be(true)
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'compact')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        h = { a: 1, b: 2 }
+      RUBY
     end
 
     it 'registers an offense for nested hashes with spaces' do
@@ -146,9 +146,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      inspect_source('h = {a: 1 }')
-      expect(cop.messages).to eq(['Space inside { missing.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_offense(<<-RUBY.strip_indent)
+        h = {a: 1 }
+            ^ Space inside { missing.
+      RUBY
     end
 
     it 'auto-corrects hashes with no space' do
