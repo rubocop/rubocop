@@ -467,7 +467,7 @@ module RuboCop
       end
 
       def parenthesized_call?
-        loc.begin && loc.begin.is?('(')
+        loc.respond_to?(:begin) && loc.begin && loc.begin.is?('(')
       end
 
       def chained?
