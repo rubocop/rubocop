@@ -174,4 +174,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName do
       end
     end
   end
+
+  context 'memoized variable using underscores matches method name' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def x
+          @_x ||= :foo
+        end
+      RUBY
+    end
+  end
 end

@@ -21,6 +21,11 @@ module RuboCop
       #
       #   # good
       #   def foo
+      #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   def foo
       #     @foo ||= begin
       #       calculate_expensive_thing
       #     end
@@ -68,7 +73,10 @@ module RuboCop
           return true if ivar_assign.nil? || method_name == :initialize
           method_name = method_name.to_s.delete('!?')
           variable = ivar_assign.children.first
-          variable_name = variable.to_s.sub('@', '')
+          variable_name = variable
+                          .to_s
+                          .sub('@_', '')
+                          .sub('@', '')
           variable_name == method_name
         end
       end
