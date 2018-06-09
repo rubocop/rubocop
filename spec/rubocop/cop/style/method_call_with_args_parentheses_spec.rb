@@ -175,6 +175,34 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     RUBY
   end
 
+  it 'auto-corrects calls where the argument node is a constant' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def my_method
+        raise NotImplementedError
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def my_method
+        raise(NotImplementedError)
+      end
+    RUBY
+  end
+
+  it 'auto-corrects calls where the argument node is a number' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def my_method
+        sleep 1
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def my_method
+        sleep(1)
+      end
+    RUBY
+  end
+
   it 'ignores method listed in IgnoredMethods' do
     expect_no_offenses('puts :test')
   end
