@@ -307,6 +307,11 @@ end
 
 # good
 def foo
+  @_foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
   @foo ||= begin
     calculate_expensive_thing
   end
