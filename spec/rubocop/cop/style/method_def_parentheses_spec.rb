@@ -7,35 +7,29 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
     it 'reports an offense for def with parameters but no parens' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def func a, b
+                 ^^^^ Use def with parentheses when there are parameters.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'require_no_parentheses')
     end
 
     it 'reports an offense for correct + opposite' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def func(a, b)
         end
         def func a, b
+                 ^^^^ Use def with parentheses when there are parameters.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'reports an offense for class def with parameters but no parens' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def Test.func a, b
+                      ^^^^ Use def with parentheses when there are parameters.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'accepts def with no args and no parens' do
@@ -74,14 +68,11 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     # common to require_no_parentheses and
     # require_no_parentheses_except_multiline
     it 'reports an offense for def with parameters with parens' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def func(a, b)
+                ^^^^^^ Use def without parentheses.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'require_parentheses')
     end
 
     it 'accepts a def with parameters but no parens' do
@@ -92,24 +83,21 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'reports an offense for opposite + correct' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def func(a, b)
+                ^^^^^^ Use def without parentheses.
         end
         def func a, b
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'reports an offense for class def with parameters with parens' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def Test.func(a, b)
+                     ^^^^^^ Use def without parentheses.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'accepts a class def with parameters with parens' do
@@ -120,12 +108,11 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     end
 
     it 'reports an offense for def with no args and parens' do
-      src = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         def func()
+                ^^ Use def without parentheses.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'accepts def with no args and no parens' do
@@ -163,17 +150,15 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
 
     context 'when args span multiple lines' do
       it 'reports an offense for correct + opposite' do
-        src = <<-RUBY.strip_indent
+        expect_offense(<<-RUBY.strip_indent)
           def func(a,
                    b)
           end
           def func a,
+                   ^^ Use def with parentheses when there are parameters.
                    b
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'auto-adds required parens to argument lists on multiple lines' do

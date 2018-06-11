@@ -4,26 +4,22 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
   subject(:cop) { described_class.new }
 
   context 'elements listed on the first line' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         a = [:a,
+             ^^ Add a line break before the first element of a multi-line array.
              :b]
       RUBY
     end
 
-    it 'detects the offense' do
-      inspect_source(source)
-
-      expect(cop.offenses.length).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq([':a'])
-    end
-
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(source)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        a = [:a,
+             :b]
+      RUBY
       # Alignment for the first element is set by IndentationWidth cop,
       # the rest of the elements should be aligned using the AlignArray cop.
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         a = [
         :a,
              :b]
@@ -32,24 +28,21 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
   end
 
   context 'word arrays' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'detects the offense' do
+      expect_offense(<<-RUBY.strip_indent)
         %w(a b
+           ^ Add a line break before the first element of a multi-line array.
            c d)
       RUBY
     end
 
-    it 'detects the offense' do
-      inspect_source(source)
-
-      expect(cop.offenses.length).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(['a'])
-    end
-
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        %w(a b
+           c d)
+      RUBY
+
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         %w(
         a b
            c d)
@@ -58,25 +51,21 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
   end
 
   context 'array nested in a method call' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers ans offense' do
+      expect_offense(<<-RUBY.strip_indent)
         method([:foo,
+                ^^^^ Add a line break before the first element of a multi-line array.
                 :bar])
       RUBY
     end
 
-    it 'detects the offense' do
-      inspect_source(source)
-
-      expect(cop.offenses.length).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq([':foo'])
-    end
-
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(source)
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
+        method([:foo,
+                :bar])
+      RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
         method([
         :foo,
                 :bar])
@@ -85,66 +74,54 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
   end
 
   context 'masgn implicit arrays' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'detects the offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        a, b,
+        c = 1,
+            ^ Add a line break before the first element of a multi-line array.
+        2, 3
+      RUBY
+    end
+
+    it 'autocorrects the offense' do
+      corrected = autocorrect_source(<<-RUBY.strip_indent)
         a, b,
         c = 1,
         2, 3
       RUBY
-    end
 
-    let(:correct_source) do
-      ['a, b,',
-       'c = ',
-       '1,',
-       '2, 3',
-       ''].join("\n")
-    end
-
-    it 'detects the offense' do
-      inspect_source(source)
-
-      expect(cop.offenses.length).to eq(1)
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['1'])
-    end
-
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(correct_source)
+      expect(corrected).to eq(<<-RUBY.strip_indent)
+        a, b,
+        c = 
+        1,
+        2, 3
+      RUBY
     end
   end
 
   context 'send implicit arrays' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'detects the offense' do
+      expect_offense(<<-RUBY.strip_indent)
         a
         .c = 1,
+             ^ Add a line break before the first element of a multi-line array.
         2, 3
       RUBY
     end
 
-    let(:correct_source) do
-      ['a',
-       '.c = ',
-       '1,',
-       '2, 3',
-       ''].join("\n")
-    end
-
-    it 'detects the offense' do
-      inspect_source(source)
-
-      expect(cop.offenses.length).to eq(1)
-      expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(['1'])
-    end
-
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(source)
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        a
+        .c = 1,
+        2, 3
+      RUBY
 
-      expect(new_source).to eq(correct_source)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        a
+        .c = 
+        1,
+        2, 3
+      RUBY
     end
   end
 

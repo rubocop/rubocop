@@ -4,9 +4,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
   subject(:cop) { described_class.new }
 
   it 'reports an offense a self receiver on an rvalue' do
-    src = 'a = self.b'
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a = self.b
+          ^^^^^^ Redundant `self` detected.
+    RUBY
   end
 
   it 'does not report an offense when receiver and lvalue have the same name' do
@@ -199,9 +200,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'reports an offence a self receiver of .call' do
-    src = 'self.call'
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      self.call
+      ^^^^^^^^^ Redundant `self` detected.
+    RUBY
   end
 
   it 'auto-corrects by removing redundant self' do

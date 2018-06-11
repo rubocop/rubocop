@@ -32,13 +32,23 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      inspect_source(['x = 0', '', '', '', ''])
+      inspect_source(<<-RUBY.strip_indent)
+        x = 0
+
+
+
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['3 trailing blank lines detected.'])
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      inspect_source(['', '', '', '', ''])
+      inspect_source(<<-RUBY.strip_indent)
+
+
+
+
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['3 trailing blank lines detected.'])
     end
@@ -81,7 +91,12 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      inspect_source(['x = 0', '', '', '', ''])
+      inspect_source(<<-RUBY.strip_indent)
+        x = 0
+
+
+
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['3 trailing blank lines instead of 1 detected.'])

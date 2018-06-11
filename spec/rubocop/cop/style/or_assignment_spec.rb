@@ -58,59 +58,47 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
 
   context 'when using var = if var; var; else; something; end' do
     it 'registers an offense with normal variables' do
-      code = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         foo = if foo
+        ^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
                 foo
               else
                 'default'
               end
       RUBY
-      inspect_source(code)
-      expect(cop.highlights).to eq([code.strip])
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'registers an offense with instance variables' do
-      code = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         @foo = if @foo
+        ^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
                  @foo
                else
                  'default'
                end
       RUBY
-      inspect_source(code)
-      expect(cop.highlights).to eq([code.strip])
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'registers an offense with class variables' do
-      code = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         @@foo = if @@foo
+        ^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
                   @@foo
                 else
                   'default'
                 end
       RUBY
-      inspect_source(code)
-      expect(cop.highlights).to eq([code.strip])
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'registers an offense with global variables' do
-      code = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         $foo = if $foo
+        ^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
                  $foo
                else
                  'default'
                end
       RUBY
-      inspect_source(code)
-      expect(cop.highlights).to eq([code.strip])
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'autocorrects normal variables to `var ||= something`' do
@@ -228,67 +216,43 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
 
   context 'when using unless var; var = something; end' do
     it 'registers an offense for normal variables' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         foo = nil
         unless foo
+        ^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
           foo = 'default'
         end
       RUBY
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.strip])
-        unless foo
-          foo = 'default'
-        end
-      RUBY
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'registers an offense for instance variables' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         @foo = nil
         unless @foo
+        ^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
           @foo = 'default'
         end
       RUBY
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.strip])
-        unless @foo
-          @foo = 'default'
-        end
-      RUBY
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'registers an offense for class variables' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         @@foo = nil
         unless @@foo
+        ^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
           @@foo = 'default'
         end
       RUBY
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.strip])
-        unless @@foo
-          @@foo = 'default'
-        end
-      RUBY
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'registers an offense for global variables' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         $foo = nil
         unless $foo
+        ^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
           $foo = 'default'
         end
       RUBY
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.strip])
-        unless $foo
-          $foo = 'default'
-        end
-      RUBY
-      expect(cop.messages)
-        .to eq(['Use the double pipe equals operator `||=` instead.'])
     end
 
     it 'autocorrects normal variables to `var ||= something`' do

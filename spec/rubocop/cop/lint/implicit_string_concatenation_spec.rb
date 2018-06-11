@@ -10,15 +10,11 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
   end
 
   context 'on adjacent string literals on the same line' do
-    let(:source) { 'class A; "abc" "def"; end' }
-
     it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Combine "abc" and "def" into a single ' \
-                                  'string literal, rather than using ' \
-                                  'implicit string concatenation.'])
-      expect(cop.highlights).to eq(['"abc" "def"'])
+      expect_offense(<<-RUBY.strip_indent)
+        class A; "abc" "def"; end
+                 ^^^^^^^^^^^ Combine "abc" and "def" into a single string literal, rather than using implicit string concatenation.
+      RUBY
     end
   end
 
@@ -34,15 +30,12 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
   end
 
   context 'when the string literals contain newlines' do
-    let(:source) { "def method; 'ab\nc' 'de\nf'; end" }
-
     it 'registers an offense' do
-      inspect_source(source)
+      inspect_source(<<-RUBY.strip_indent)
+        def method; "ab\\nc" "de\\nf"; end
+      RUBY
+
       expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Combine "ab\nc" and "de\nf" into a ' \
-                                  'single string literal, rather than using ' \
-                                  'implicit string concatenation.'])
-      expect(cop.highlights).to eq(["'ab\nc' 'de\nf'"])
     end
   end
 
@@ -53,32 +46,20 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
   end
 
   context 'when inside an array' do
-    let(:source) { 'array = ["abc" "def"]' }
-
     it 'notes that the strings could be separated by a comma instead' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Combine "abc" and "def" into a single ' \
-                                  'string literal, rather than using ' \
-                                  'implicit string concatenation. Or, if they' \
-                                  ' were intended to be separate array ' \
-                                  'elements, separate them with a comma.'])
-      expect(cop.highlights).to eq(['"abc" "def"'])
+      expect_offense(<<-RUBY.strip_indent)
+        array = ["abc" "def"]
+                 ^^^^^^^^^^^ Combine "abc" and "def" into a single string literal, rather than using implicit string concatenation. Or, if they were intended to be separate array elements, separate them with a comma.
+      RUBY
     end
   end
 
   context "when in a method call's argument list" do
-    let(:source) { 'method("abc" "def")' }
-
     it 'notes that the strings could be separated by a comma instead' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Combine "abc" and "def" into a single ' \
-                                  'string literal, rather than using ' \
-                                  'implicit string concatenation. Or, if they' \
-                                  ' were intended to be separate method ' \
-                                  'arguments, separate them with a comma.'])
-      expect(cop.highlights).to eq(['"abc" "def"'])
+      expect_offense(<<-RUBY.strip_indent)
+        method("abc" "def")
+               ^^^^^^^^^^^ Combine "abc" and "def" into a single string literal, rather than using implicit string concatenation. Or, if they were intended to be separate method arguments, separate them with a comma.
+      RUBY
     end
   end
 end

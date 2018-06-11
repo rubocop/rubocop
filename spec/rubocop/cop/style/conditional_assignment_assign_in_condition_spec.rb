@@ -60,16 +60,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'allows assigning any variable type inside if else' \
       'with multiple assignment' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         if foo
           #{variable}, #{variable} = something
         else
           #{variable}, #{variable} = something_else
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages.empty?).to be(true)
     end
 
     it 'allows assigning any variable type inside if else' do

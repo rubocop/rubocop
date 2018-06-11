@@ -11,15 +11,11 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
   end
 
   it 'registers an offense for a method def with 5 parameters' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def meth(a, b, c, d, e)
+              ^^^^^^^^^^^^^^^ Avoid parameter lists longer than 4 parameters. [5/4]
       end
     RUBY
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(
-      ['Avoid parameter lists longer than 4 parameters. [5/4]']
-    )
-    expect(cop.config_to_allow_offenses).to eq('Max' => 5)
   end
 
   it 'accepts a method def with 4 parameters' do

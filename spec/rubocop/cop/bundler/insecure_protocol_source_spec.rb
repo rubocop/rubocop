@@ -29,18 +29,18 @@ RSpec.describe RuboCop::Cop::Bundler::InsecureProtocolSource do
   it 'autocorrects `source :gemcutter`' do
     new_source = autocorrect_source('source :gemcutter')
 
-    expect(new_source).to eq "source 'https://rubygems.org'"
+    expect(new_source).to eq("source 'https://rubygems.org'")
   end
 
   it 'autocorrects `source :rubygems`' do
     new_source = autocorrect_source('source :rubygems')
 
-    expect(new_source).to eq "source 'https://rubygems.org'"
+    expect(new_source).to eq("source 'https://rubygems.org'")
   end
 
   it 'autocorrects `source :rubyforge`' do
     new_source = autocorrect_source('source :rubyforge')
 
-    expect(new_source).to eq "source 'https://rubygems.org'"
+    expect(new_source).to eq("source 'https://rubygems.org'")
   end
 end

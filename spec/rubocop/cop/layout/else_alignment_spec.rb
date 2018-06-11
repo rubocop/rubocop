@@ -51,27 +51,24 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
     describe '#autocorrect' do
       it 'corrects bad alignment' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-            if a1
-              b1
-              elsif a2
-              b2
-          else
-              c
-            end
+        corrected = autocorrect_source(<<-RUBY.strip_margin('|'))
+        |    if a1
+        |      b1
+        |      elsif a2
+        |      b2
+        |  else
+        |      c
+        |    end
         RUBY
-        expect(cop.messages).to eq(['Align `elsif` with `if`.',
-                                    'Align `else` with `if`.'])
-        expect(corrected)
-          .to eq <<-RUBY.strip_margin('|')
-            |  if a1
-            |    b1
-            |  elsif a2
-            |    b2
-            |  else
-            |    c
-            |  end
-          RUBY
+        expect(corrected).to eq(<<-RUBY.strip_margin('|'))
+        |    if a1
+        |      b1
+        |    elsif a2
+        |      b2
+        |    else
+        |      c
+        |    end
+        RUBY
       end
     end
 

@@ -17,9 +17,7 @@ RSpec.describe RuboCop::Cop::Rails::ReversibleMigration, :config do
     let(:code) { code }
 
     it "accepts usages of #{name}" do
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(code)
     end
   end
 

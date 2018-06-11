@@ -20,11 +20,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot do
 
   it 'reports an offense for space after ! with the negated receiver ' \
      'wrapped in parentheses' do
-    inspect_source('! (model)')
-
-    expect(cop.messages)
-      .to eq(['Do not leave space between `!` and its argument.'])
-    expect(cop.highlights).to eq(['! (model)'])
+    expect_offense(<<-RUBY.strip_indent)
+      ! (model)
+      ^^^^^^^^^ Do not leave space between `!` and its argument.
+    RUBY
   end
 
   context 'auto-correct' do

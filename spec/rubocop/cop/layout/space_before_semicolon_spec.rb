@@ -32,8 +32,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
   context 'inside block braces' do
     shared_examples 'common behavior' do
       it 'accepts no space between an opening brace and a semicolon' do
-        inspect_source('test {; }')
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses('test {; }')
       end
     end
 
@@ -58,8 +57,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
 
       it 'registers an offense for a space between an opening brace and a ' \
          'semicolon' do
-        inspect_source('test { ; }')
-        expect(cop.messages).to eq(['Space found before semicolon.'])
+        expect_offense(<<-RUBY.strip_indent)
+          test { ; }
+                ^ Space found before semicolon.
+        RUBY
       end
     end
   end

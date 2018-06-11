@@ -7,15 +7,17 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
   shared_examples 'in scope' do |type, opening_line|
     it "registers an offense for duplicate method in #{type}" do
-      inspect_source([opening_line,
-                      '  def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  def some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent)
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          def some_method
+          ^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "doesn't register an offense for non-duplicate method in #{type}" do
@@ -32,18 +34,17 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate class methods in #{type}" do
-      inspect_source([opening_line,
-                      '  def self.some_method',
-                      '    implement 1',
-                      '  end',
-                      '  def self.some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'], 'src.rb')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['Method `A.some_method` is defined at both src.rb:2 and src.rb:5.']
-      )
+      expect_offense(<<-RUBY.strip_indent, 'dups.rb')
+        #{opening_line}
+          def self.some_method
+            implement 1
+          end
+          def self.some_method
+          ^^^ Method `A.some_method` is defined at both dups.rb:2 and dups.rb:5.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it "doesn't register offense for non-duplicate class methods in #{type}" do
@@ -128,40 +129,41 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers 2 offenses for pair of duplicate methods in #{type}" do
-      inspect_source([opening_line,
-                      '  def some_method',
-                      '    implement 1',
-                      '  end',
-                      '  def some_method',
-                      '    implement 2',
-                      '  end',
-                      '  def any_method',
-                      '    implement 1',
-                      '  end',
-                      '  def any_method',
-                      '    implement 2',
-                      '  end',
-                      'end'], 'dups.rb')
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to contain_exactly(
-        'Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.',
-        'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.'
-      )
+      expect_offense(<<-RUBY.strip_indent, 'dups.rb')
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+          def some_method
+          ^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.
+            implement 2
+          end
+          def any_method
+            implement 1
+          end
+          def any_method
+          ^^^ Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it 'registers an offense for a duplicate instance method in separate ' \
        "#{type} blocks" do
-      inspect_source([opening_line,
-                      '  def some_method',
-                      '    implement 1',
-                      '  end',
-                      'end',
-                      opening_line,
-                      '  def some_method',
-                      '    implement 2',
-                      '  end',
-                      'end'])
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-RUBY.strip_indent, 'dups.rb')
+        #{opening_line}
+          def some_method
+            implement 1
+          end
+        end
+        #{opening_line}
+          def some_method
+          ^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:7.
+            implement 2
+          end
+        end
+      RUBY
     end
 
     it 'registers an offense for a duplicate class method in separate ' \

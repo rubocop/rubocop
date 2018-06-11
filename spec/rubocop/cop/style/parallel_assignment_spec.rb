@@ -51,9 +51,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
   shared_examples('allowed') do |source|
     it "allows assignment of: #{source.gsub(/\s*\n\s*/, '; ')}" do
-      inspect_source(source)
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(source)
     end
   end
 
