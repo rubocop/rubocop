@@ -8,10 +8,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with a raise with 2 args' do
       it 'reports an offense' do
-        inspect_source('raise RuntimeError, msg')
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'exploded')
+        expect_offense(<<-RUBY.strip_indent)
+          raise RuntimeError, msg
+          ^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
       end
 
       it 'auto-corrects to compact style' do
@@ -22,17 +22,14 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with correct + opposite' do
       it 'reports an offense' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           if a
             raise RuntimeError, msg
+            ^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
           else
             raise Ex.new(msg)
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(['Provide an exception object as an argument to `raise`.'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'auto-corrects to compact style' do

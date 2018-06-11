@@ -54,13 +54,10 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
     end
 
     it 'registers offense for nested percent literal' do
-      source = '%W[\xff %W[]]'
-      inspect_source(source)
-
-      expect(cop.messages).to eq(['Within percent literals, nested percent' \
-                                  ' literals do not function and may be' \
-                                  ' unwanted in the result.'])
-      expect(cop.highlights).to eq([source])
+      expect_offense(<<-RUBY.strip_indent)
+        %W[\\xff %W[]]
+        ^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
+      RUBY
     end
   end
 end

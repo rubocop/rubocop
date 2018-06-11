@@ -13,41 +13,36 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
 
   describe 'with “both” style' do
     it 'registers an offense for if with exclamation point condition' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if !a_condition
+        ^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
           some_method
         end
         some_method if !a_condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
       RUBY
-      expect(cop.messages).to eq(
-        ['Favor `unless` over `if` for negative ' \
-         'conditions.'] * 2
-      )
     end
 
     it 'registers an offense for unless with exclamation point condition' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         unless !a_condition
+        ^^^^^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
           some_method
         end
         some_method unless !a_condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
       RUBY
-      expect(cop.messages).to eq(['Favor `if` over `unless` for negative ' \
-                                  'conditions.'] * 2)
     end
 
     it 'registers an offense for if with "not" condition' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if not a_condition
+        ^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
           some_method
         end
         some_method if not a_condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
       RUBY
-      expect(cop.messages).to eq(
-        ['Favor `unless` over `if` for negative ' \
-         'conditions.'] * 2
-      )
-      expect(cop.offenses.map(&:line)).to eq([1, 4])
     end
 
     it 'accepts an if/else with negative condition' do
@@ -145,14 +140,11 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
     end
 
     it 'registers an offence for prefix' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if !foo
+        ^^^^^^^ Favor `unless` over `if` for negative conditions.
         end
       RUBY
-
-      expect(cop.messages).to eq(
-        ['Favor `unless` over `if` for negative conditions.']
-      )
     end
 
     it 'does not register an offence for postfix' do

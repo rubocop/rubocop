@@ -3,17 +3,19 @@
 RSpec.describe RuboCop::Cop::Rails::FindBy do
   subject(:cop) { described_class.new }
 
-  shared_examples 'registers_offense' do |selector|
-    it "when using where.#{selector}" do
-      inspect_source("User.where(id: x).#{selector}")
-
-      expect(cop.messages)
-        .to eq(["Use `find_by` instead of `where.#{selector}`."])
-    end
+  it 'registers an offense when using `#first`' do
+    expect_offense(<<-RUBY.strip_indent)
+      User.where(id: x).first
+           ^^^^^^^^^^^^^^^^^^ Use `find_by` instead of `where.first`.
+    RUBY
   end
 
-  it_behaves_like('registers_offense', 'first')
-  it_behaves_like('registers_offense', 'take')
+  it 'registers an offense when using `#take`' do
+    expect_offense(<<-RUBY.strip_indent)
+      User.where(id: x).take
+           ^^^^^^^^^^^^^^^^^ Use `find_by` instead of `where.take`.
+    RUBY
+  end
 
   it 'does not register an offense when using find_by' do
     expect_no_offenses('User.find_by(id: x)')

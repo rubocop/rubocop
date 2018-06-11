@@ -27,16 +27,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       let(:cop_config_overrides) { {} }
 
       it 'registers offense for hash rocket syntax when new is possible' do
-        inspect_source('x = { :a => 0 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'hash_rockets')
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 0 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
-        inspect_source('x = { :a => 0, b: 1 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 0, b: 1 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'registers an offense for hash rockets in method calls' do
@@ -201,10 +202,11 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers an offense when using hash rockets ' \
         'and no elements have a symbol value' do
-        inspect_source('x = { :a => 1, :b => 2 }')
-        expect(cop.messages)
-          .to eq(['Use the new Ruby 1.9 hash syntax.',
-                  'Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 1, :b => 2 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+                         ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'registers an offense for hashes with elements on multiple lines' do
@@ -251,15 +253,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers offense for Ruby 1.9 style' do
-      inspect_source('x = { a: 0 }')
-      expect(cop.messages).to eq(['Use hash rockets syntax.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'ruby19')
+      expect_offense(<<-RUBY.strip_indent)
+        x = { a: 0 }
+              ^^ Use hash rockets syntax.
+      RUBY
     end
 
     it 'registers an offense for mixed syntax' do
-      inspect_source('x = { :a => 0, b: 1 }')
-      expect(cop.messages).to eq(['Use hash rockets syntax.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_offense(<<-RUBY.strip_indent)
+        x = { a => 0, b: 1 }
+                      ^^ Use hash rockets syntax.
+      RUBY
     end
 
     it 'registers an offense for 1.9 style in method calls' do
@@ -315,16 +319,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers offense for hash rocket syntax when new is possible' do
-        inspect_source('x = { :a => 0 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'hash_rockets')
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 0 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
-        inspect_source('x = { :a => 0, b: 1 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 0, b: 1 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
       end
 
       it 'accepts new syntax in method calls' do

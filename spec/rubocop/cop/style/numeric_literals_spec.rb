@@ -6,15 +6,17 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   let(:cop_config) { { 'MinDigits' => 5 } }
 
   it 'registers an offense for a long undelimited integer' do
-    inspect_source('a = 12345')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.config_to_allow_offenses).to eq('MinDigits' => 6)
+    expect_offense(<<-RUBY.strip_indent)
+      a = 12345
+          ^^^^^ Use underscores(_) as decimal mark and separate every 3 digits with them.
+    RUBY
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
-    inspect_source('a = 123456.789')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)
+    expect_offense(<<-RUBY.strip_indent)
+      a = 123456.789
+          ^^^^^^^^^^ Use underscores(_) as decimal mark and separate every 3 digits with them.
+    RUBY
   end
 
   it 'accepts integers with less than three places at the end' do
@@ -97,12 +99,10 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     end
 
     it 'registers an offense for an integer with misplaced underscore' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a = 123_456_78_90_00
-        b = 81_92
+            ^^^^^^^^^^^^^^^^ Use underscores(_) as decimal mark and separate every 3 digits with them.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
   end
 end

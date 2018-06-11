@@ -9,24 +9,21 @@ RSpec.describe RuboCop::Cop::Style::OptionalArguments do
 
   it 'registers an offense when an optional argument is followed by a ' \
      'required argument' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo(a = 1, b)
+              ^^^^^ Optional arguments should appear at the end of the argument list.
       end
     RUBY
-
-    expect(cop.messages).to eq([message])
-    expect(cop.highlights).to eq(['a = 1'])
   end
 
   it 'registers an offense for each optional argument when multiple ' \
      'optional arguments are followed by a required argument' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def foo(a = 1, b = 2, c)
+              ^^^^^ Optional arguments should appear at the end of the argument list.
+                     ^^^^^ Optional arguments should appear at the end of the argument list.
       end
     RUBY
-
-    expect(cop.messages).to eq([message, message])
-    expect(cop.highlights).to eq(['a = 1', 'b = 2'])
   end
 
   it 'allows methods without arguments' do
@@ -84,13 +81,11 @@ RSpec.describe RuboCop::Cop::Style::OptionalArguments do
     context 'required params' do
       it 'registers an offense for optional arguments that come before ' \
          'required arguments where there are name arguments' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           def foo(a = 1, b, c:, d: 4)
+                  ^^^^^ Optional arguments should appear at the end of the argument list.
           end
         RUBY
-
-        expect(cop.messages).to eq([message])
-        expect(cop.highlights).to eq(['a = 1'])
       end
 
       it 'allows optional arguments before required named arguments' do
@@ -102,12 +97,10 @@ RSpec.describe RuboCop::Cop::Style::OptionalArguments do
 
       it 'allows optional arguments to come before a mix of required and ' \
          'optional named argument' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_no_offenses(<<-RUBY.strip_indent)
           def foo(a = 1, b:, c: 3)
           end
         RUBY
-
-        expect(cop.messages.empty?).to be(true)
       end
     end
   end

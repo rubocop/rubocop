@@ -121,14 +121,17 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         end
       CORRECTION
 
-      include_examples 'accept', 'not indented but with whitespace, with `-`',
-                       <<-RUBY
-        def foo
-          <<-#{quote}RUBY2#{quote}
-          something
-          RUBY2
-        end
-      RUBY
+      it 'does not reguster an offense when not indented but with ' \
+         'whitespace, with `-`' do
+        expect_no_offenses(<<-RUBY)
+          def foo
+            <<-#{quote}RUBY2#{quote}
+            something
+            RUBY2
+          end
+        RUBY
+      end
+
       include_examples 'accept', 'indented, but with `-`', <<-RUBY
         def foo
           <<-#{quote}RUBY2#{quote}

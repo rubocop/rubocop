@@ -191,30 +191,29 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers multiple offenses in one set of ref brackets' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         b[ 89  ]
+          ^ Do not use space inside reference brackets.
+             ^^ Do not use space inside reference brackets.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages.uniq)
-        .to eq(['Do not use space inside reference brackets.'])
     end
 
     it 'registers multiple offenses for multiple sets of ref brackets' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a[ :key]["foo"  ][   0 ]
+          ^ Do not use space inside reference brackets.
+                      ^^ Do not use space inside reference brackets.
+                          ^^^ Do not use space inside reference brackets.
+                              ^ Do not use space inside reference brackets.
       RUBY
-      expect(cop.offenses.size).to eq(4)
-      expect(cop.messages.uniq)
-        .to eq(['Do not use space inside reference brackets.'])
     end
 
     it 'registers offense in outer ref brackets' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         record[ options[:attribute] ]
+               ^ Do not use space inside reference brackets.
+                                   ^ Do not use space inside reference brackets.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages.uniq)
-        .to eq(['Do not use space inside reference brackets.'])
     end
 
     context 'auto-correct' do

@@ -20,46 +20,35 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       let(:indentation_width) { 2 }
 
       it 'registers an offense for an over-indented first parameter' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           run(
               :foo,
+              ^^^^ Indent the first parameter one step more than the start of the previous line.
               bar: 3
           )
         RUBY
-        expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                    'more than the start of the ' \
-                                    'previous line.'])
-        expect(cop.highlights).to eq([':foo'])
       end
 
       it 'registers an offense for an under-indented first parameter' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           run(
            :foo,
+           ^^^^ Indent the first parameter one step more than the start of the previous line.
               bar: 3
           )
         RUBY
-        expect(cop.highlights).to eq([':foo'])
       end
 
       it 'registers an offense on lines affected by another offense' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           foo(
            bar(
+           ^^^^ Indent the first parameter one step more than the start of the previous line.
             7
+            ^ Bad indentation of the first parameter.
           )
           )
         RUBY
-
-        expect(cop.highlights).to eq([['bar(',
-                                       '  7',
-                                       ')'].join("\n"),
-                                      '7'])
-
-        expect(cop.messages)
-          .to eq(['Indent the first parameter one step more than ' \
-                  'the start of the previous line.',
-                  'Bad indentation of the first parameter.'])
       end
 
       it 'auto-corrects nested offenses' do
@@ -198,11 +187,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       it 'does not view chained call as an outer method call' do
-        expect_no_offenses(<<-'RUBY'.strip_margin('|'))
-          |  A = Regexp.union(
-          |    /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
-          |    *AST::Types::OPERATOR_METHODS.map(&:to_s)
-          |  ).freeze
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          A = Regexp.union(
+            /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
+            *AST::Types::OPERATOR_METHODS.map(&:to_s)
+          ).freeze
         RUBY
       end
 
@@ -591,11 +580,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       it 'does not view chained call as an outer method call' do
-        expect_no_offenses(<<-'RUBY'.strip_margin('|'))
-          |  A = Regexp.union(
-          |        /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
-          |        *AST::Types::OPERATOR_METHODS.map(&:to_s)
-          |      ).freeze
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          A = Regexp.union(
+                /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
+                *AST::Types::OPERATOR_METHODS.map(&:to_s)
+              ).freeze
         RUBY
       end
 

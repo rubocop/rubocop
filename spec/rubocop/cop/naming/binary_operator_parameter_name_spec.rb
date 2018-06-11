@@ -3,18 +3,25 @@
 RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
   subject(:cop) { described_class.new }
 
-  %i[+ eql? equal?].each do |op|
-    it "registers an offense for #{op} with arg not named other" do
-      inspect_source(<<-RUBY.strip_indent)
-        def #{op}(another)
-          another
-        end
-      RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["When defining the `#{op}` operator, " \
-                'name its argument `other`.'])
-    end
+  it 'registers an offense for `#+` when argument is not named other' do
+    expect_offense(<<-RUBY.strip_indent)
+        def +(foo); end
+              ^^^ When defining the `+` operator, name its argument `other`.
+    RUBY
+  end
+
+  it 'registers an offense for `#eql?` when argument is not named other' do
+    expect_offense(<<-RUBY.strip_indent)
+        def eql?(foo); end
+                 ^^^ When defining the `eql?` operator, name its argument `other`.
+    RUBY
+  end
+
+  it 'registers an offense for `#equal?` when argument is not named other' do
+    expect_offense(<<-RUBY.strip_indent)
+        def equal?(foo); end
+                   ^^^ When defining the `equal?` operator, name its argument `other`.
+    RUBY
   end
 
   it 'works properly even if the argument not surrounded with braces' do

@@ -6,8 +6,9 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   it 'rejects a module with more than 5 lines' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       module Test
+      ^^^^^^^^^^^ Module has too many lines. [6/5]
         a = 1
         a = 2
         a = 3
@@ -16,9 +17,6 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
         a = 6
       end
     RUBY
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Module has too many lines. [6/5]'])
-    expect(cop.config_to_allow_offenses).to eq('Max' => 6)
   end
 
   it 'reports the correct beginning and end lines' do
@@ -109,8 +107,9 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
 
     it 'rejects a module with 6 lines that belong to the module directly' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module NamespaceModule
+        ^^^^^^^^^^^^^^^^^^^^^^ Module has too many lines. [6/5]
           module TestOne
             a = 1
             a = 2
@@ -133,7 +132,6 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
           a = 6
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -165,8 +163,9 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
 
     it 'rejects a module with 6 lines that belong to the module directly' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module NamespaceModule
+        ^^^^^^^^^^^^^^^^^^^^^^ Module has too many lines. [6/5]
           class TestOne
             a = 1
             a = 2
@@ -189,7 +188,6 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
           a = 6
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -197,8 +195,9 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
     before { cop_config['CountComments'] = true }
 
     it 'also counts commented lines' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         module Test
+        ^^^^^^^^^^^ Module has too many lines. [6/5]
           a = 1
           #a = 2
           a = 3
@@ -207,7 +206,6 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
           a = 6
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 end

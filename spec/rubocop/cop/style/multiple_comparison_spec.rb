@@ -15,37 +15,45 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
   end
 
   it 'registers an offense when `a` is compared twice' do
-    inspect_source(['a = "a"',
-                    'if a == "a" || a == "b"',
-                    '  print a',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a = "a"
+      if a == "a" || a == "b"
+      ^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+        print a
+      end
+    RUBY
   end
 
   it 'registers an offense when `a` is compared three times' do
-    inspect_source(['a = "a"',
-                    'if a == "a" || a == "b" || a == "c"',
-                    '  print a',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a = "a"
+      if a == "a" || a == "b" || a == "c"
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+        print a
+      end
+    RUBY
   end
 
   it 'registers an offense when `a` is compared three times on the right ' \
     'hand side' do
-    inspect_source(['a = "a"',
-                    'if "a" == a || "b" == a || "c" == a',
-                    '  print a',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a = "a"
+      if "a" == a || "b" == a || "c" == a
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+        print a
+      end
+    RUBY
   end
 
   it 'registers an offense when `a` is compared three times, once on the ' \
     'righthand side' do
-    inspect_source(['a = "a"',
-                    'if a == "a" || "b" == a || a == "c"',
-                    '  print a',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      a = "a"
+      if a == "a" || "b" == a || a == "c"
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+        print a
+      end
+    RUBY
   end
 
   it 'does not register an offense for comparing multiple literal strings' do

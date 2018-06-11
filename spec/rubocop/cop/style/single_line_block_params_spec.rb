@@ -10,21 +10,24 @@ RSpec.describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   end
 
   it 'finds wrong argument names in calls with different syntax' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       def m
         [0, 1].reduce { |c, d| c + d }
+                        ^^^^^^ Name `reduce` block params `|a, e|`.
         [0, 1].reduce{ |c, d| c + d }
+                       ^^^^^^ Name `reduce` block params `|a, e|`.
         [0, 1].reduce(5) { |c, d| c + d }
+                           ^^^^^^ Name `reduce` block params `|a, e|`.
         [0, 1].reduce(5){ |c, d| c + d }
+                          ^^^^^^ Name `reduce` block params `|a, e|`.
         [0, 1].reduce (5) { |c, d| c + d }
+                            ^^^^^^ Name `reduce` block params `|a, e|`.
         [0, 1].reduce(5) { |c, d| c + d }
+                           ^^^^^^ Name `reduce` block params `|a, e|`.
         ala.test { |x, z| bala }
+                   ^^^^^^ Name `test` block params `|x, y|`.
       end
     RUBY
-    expect(cop.offenses.size).to eq(7)
-    expect(cop.offenses.map(&:line).sort).to eq((2..8).to_a)
-    expect(cop.messages.first)
-      .to eq('Name `reduce` block params `|a, e|`.')
   end
 
   it 'allows calls with proper argument names' do

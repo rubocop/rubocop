@@ -5,15 +5,15 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
 
   let(:cop_config) { { 'intern' => 'to_sym' } }
 
-  let(:source) { "'something'.intern" }
-  let(:corrected) { autocorrect_source(source) }
-
   it 'registers an offense' do
-    inspect_source(source)
+    expect_offense(<<-RUBY.strip_indent)
+      'something'.intern
+                  ^^^^^^ Prefer `to_sym` over `intern`.
+    RUBY
+  end
 
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Prefer `to_sym` over `intern`.'])
-    expect(cop.highlights).to eq(%w[intern])
+  it 'auto-corrects' do
+    corrected = autocorrect_source("'something'.intern")
 
     expect(corrected).to eq("'something'.to_sym")
   end

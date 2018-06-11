@@ -42,19 +42,12 @@ RSpec.describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
     end
 
     it 'registers an offense for an if modifier' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def self.method_name
+        ^^^^^^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
           call_foo if some_condition
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Perceived complexity for method_name is too high. [2/1]'])
-      expect(cop.highlights).to eq([<<-RUBY.strip_indent.chomp])
-        def self.method_name
-          call_foo if some_condition
-        end
-      RUBY
-      expect(cop.config_to_allow_offenses).to eq('Max' => 2)
     end
 
     it 'registers an offense for an unless modifier' do
@@ -152,8 +145,9 @@ RSpec.describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
 
     it 'registers an offense for a case/when block without an expression ' \
        'after case' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [3/1]
           case
           when value == 1
             call_foo
@@ -162,10 +156,6 @@ RSpec.describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
           end
         end
       RUBY
-      # Here, the `case` node doesn't count, but each when scores one
-      # complexity point.
-      expect(cop.messages)
-        .to eq(['Perceived complexity for method_name is too high. [3/1]'])
     end
 
     it 'registers an offense for &&' do

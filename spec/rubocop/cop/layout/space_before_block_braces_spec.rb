@@ -11,31 +11,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for left brace without outer space' do
-      inspect_source('each{ puts }')
-      expect(cop.messages).to eq(['Space missing to the left of {.'])
-      expect(cop.highlights).to eq(['{'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'no_space')
+      expect_offense(<<-RUBY.strip_indent)
+        each{ puts }
+            ^ Space missing to the left of {.
+      RUBY
     end
 
     it 'registers an offense for opposite + correct style' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         each{ puts }
+            ^ Space missing to the left of {.
         each { puts }
       RUBY
-      expect(cop.messages).to eq(['Space missing to the left of {.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for multiline block where left brace has no ' \
        'outer space' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         foo.map{ |a|
+               ^ Space missing to the left of {.
           a.bar.to_s
         }
       RUBY
-      expect(cop.messages).to eq(['Space missing to the left of {.'])
-      expect(cop.highlights).to eq(['{'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'no_space')
     end
 
     it 'auto-corrects missing space' do
@@ -48,19 +45,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'registers an offense for braces surrounded by spaces' do
-      inspect_source('each { puts }')
-      expect(cop.messages).to eq(['Space detected to the left of {.'])
-      expect(cop.highlights).to eq([' '])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'space')
+      expect_offense(<<-RUBY.strip_indent)
+        each { puts }
+            ^ Space detected to the left of {.
+      RUBY
     end
 
     it 'registers an offense for correct + opposite style' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         each{ puts }
         each { puts }
+            ^ Space detected to the left of {.
       RUBY
-      expect(cop.messages).to eq(['Space detected to the left of {.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts left brace without outer space' do
@@ -81,11 +77,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces' do
-      inspect_source('-> {}')
-      expect(cop.messages).to eq(['Space detected to the left of {.'])
-      expect(cop.highlights).to eq([' '])
-      expect(cop.config_to_allow_offenses)
-        .to eq('EnforcedStyleForEmptyBraces' => 'space')
+      expect_offense(<<-RUBY.strip_indent)
+        -> {}
+          ^ Space detected to the left of {.
+      RUBY
     end
 
     it 'auto-corrects unwanted space' do
@@ -107,11 +102,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces' do
-      inspect_source('->{}')
-      expect(cop.messages).to eq(['Space missing to the left of {.'])
-      expect(cop.highlights).to eq(['{'])
-      expect(cop.config_to_allow_offenses)
-        .to eq('EnforcedStyleForEmptyBraces' => 'no_space')
+      expect_offense(<<-RUBY.strip_indent)
+        ->{}
+          ^ Space missing to the left of {.
+      RUBY
     end
 
     it 'auto-corrects missing space' do

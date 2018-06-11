@@ -11,19 +11,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
   let(:cop_indent) { nil } # use indentation with from Layout/IndentationWidth
 
-  let(:message) do
-    'Indent the first line of the right-hand-side of a multi-line assignment.'
-  end
-
   it 'registers an offense for incorrectly indented rhs' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       a =
       if b ; end
+      ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
     RUBY
-
-    expect(cop.offenses.length).to eq(1)
-    expect(cop.highlights).to eq(['if b ; end'])
-    expect(cop.message).to eq(message)
   end
 
   it 'allows assignments that do not start on a newline' do
@@ -49,15 +42,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'registers an offense for multi-lhs' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       a,
       b =
       if b ; end
+      ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
     RUBY
-
-    expect(cop.offenses.length).to eq(1)
-    expect(cop.highlights).to eq(['if b ; end'])
-    expect(cop.message).to eq(message)
   end
 
   it 'ignores comparison operators' do

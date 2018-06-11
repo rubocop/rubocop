@@ -25,10 +25,10 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'registers an offense for arrays of symbols' do
-      inspect_source('[:one, :two, :three]')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'brackets')
+      expect_offense(<<-RUBY.strip_indent)
+        [:one, :two, :three]
+        ^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+      RUBY
     end
 
     it 'autocorrects arrays of symbols' do
@@ -87,8 +87,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         %i(a b c d)
       RUBY
 
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent',
                                                  'MinSize' => 4)
     end
@@ -98,8 +96,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         [:one, :two, :three]
         %i(a b)
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `%i` or `%I` for an array of symbols.'])
+
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 

@@ -4,39 +4,36 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for while with exclamation point condition' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       while !a_condition
+      ^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
         some_method
       end
       some_method while !a_condition
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
     RUBY
-    expect(cop.messages).to eq(
-      ['Favor `until` over `while` for negative conditions.'] * 2
-    )
   end
 
   it 'registers an offense for until with exclamation point condition' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       until !a_condition
+      ^^^^^^^^^^^^^^^^^^ Favor `while` over `until` for negative conditions.
         some_method
       end
       some_method until !a_condition
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `while` over `until` for negative conditions.
     RUBY
-    expect(cop.messages)
-      .to eq(['Favor `while` over `until` for negative conditions.'] * 2)
   end
 
   it 'registers an offense for while with "not" condition' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       while (not a_condition)
+      ^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
         some_method
       end
       some_method while not a_condition
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
     RUBY
-    expect(cop.messages).to eq(
-      ['Favor `until` over `while` for negative conditions.'] * 2
-    )
-    expect(cop.offenses.map(&:line)).to eq([1, 4])
   end
 
   it 'accepts a while where only part of the condition is negated' do

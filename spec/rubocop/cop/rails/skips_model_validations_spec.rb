@@ -40,8 +40,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
   context 'with methods that require at least an argument' do
     methods_with_arguments.each do |method_name|
       it "doesn't register an offense for `#{method_name}`" do
-        inspect_source("User.#{method_name}")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses("User.#{method_name}")
       end
     end
   end
@@ -68,8 +67,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
 
     whitelist.each do |method_name|
       it "accepts `#{method_name}`" do
-        inspect_source("User.#{method_name}")
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses("User.#{method_name}")
       end
     end
 

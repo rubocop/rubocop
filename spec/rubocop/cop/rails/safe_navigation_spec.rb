@@ -5,9 +5,7 @@ RSpec.describe RuboCop::Cop::Rails::SafeNavigation, :config do
 
   shared_examples 'accepts' do |name, code|
     it "accepts usages of #{name}" do
-      inspect_source("[1, 2].#{code}")
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("[1, 2].#{code}")
     end
   end
 

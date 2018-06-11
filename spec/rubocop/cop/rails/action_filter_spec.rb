@@ -49,20 +49,17 @@ RSpec.describe RuboCop::Cop::Rails::ActionFilter, :config do
     context 'when using action methods' do
       described_class::FILTER_METHODS.each do |method|
         it "does not register an offense for #{method}" do
-          inspect_source_file("#{method} :name")
-          expect(cop.offenses.size).to eq(0)
+          expect_no_offenses("#{method} :name")
         end
 
         it "does not register an offense for #{method} with block" do
-          inspect_source_file("#{method} { |controller| something }")
-          expect(cop.offenses.size).to eq(0)
+          expect_no_offenses("#{method} { |controller| something }")
         end
       end
 
       described_class::ACTION_METHODS.each do |method|
         it "accepts #{method}" do
-          inspect_source_file("#{method} :something")
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses("#{method} :something")
         end
       end
 
@@ -75,20 +72,17 @@ RSpec.describe RuboCop::Cop::Rails::ActionFilter, :config do
     context 'when using filter methods' do
       described_class::ACTION_METHODS.each do |method|
         it "does not register an offense for #{method}" do
-          inspect_source_file("#{method} :name")
-          expect(cop.offenses.size).to eq(0)
+          expect_no_offenses("#{method} :name")
         end
 
         it "does not register an offense for #{method} with block" do
-          inspect_source_file("#{method} { |controller| something }")
-          expect(cop.offenses.size).to eq(0)
+          expect_no_offenses("#{method} { |controller| something }")
         end
       end
 
       described_class::FILTER_METHODS.each do |method|
         it "accepts #{method}" do
-          inspect_source_file("#{method} :something")
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses("#{method} :something")
         end
       end
 

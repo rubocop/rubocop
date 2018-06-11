@@ -6,26 +6,30 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for parentheses around condition' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       if (x > 10)
+         ^^^^^^^^ Don't use parentheses around the condition of an `if`.
       elsif (x < 3)
+            ^^^^^^^ Don't use parentheses around the condition of an `elsif`.
       end
       unless (x > 10)
+             ^^^^^^^^ Don't use parentheses around the condition of an `unless`.
       end
       while (x > 10)
+            ^^^^^^^^ Don't use parentheses around the condition of a `while`.
       end
       until (x > 10)
+            ^^^^^^^^ Don't use parentheses around the condition of an `until`.
       end
       x += 1 if (x < 10)
+                ^^^^^^^^ Don't use parentheses around the condition of an `if`.
       x += 1 unless (x < 10)
+                    ^^^^^^^^ Don't use parentheses around the condition of an `unless`.
       x += 1 until (x < 10)
+                   ^^^^^^^^ Don't use parentheses around the condition of an `until`.
       x += 1 while (x < 10)
+                   ^^^^^^^^ Don't use parentheses around the condition of a `while`.
     RUBY
-    expect(cop.offenses.size).to eq(9)
-    expect(cop.messages.first)
-      .to eq("Don't use parentheses around the condition of an `if`.")
-    expect(cop.messages.last)
-      .to eq("Don't use parentheses around the condition of a `while`.")
   end
 
   it 'accepts parentheses if there is no space between the keyword and (.' do
@@ -158,20 +162,20 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
     it 'does not accept variable assignment in condition surrounded with ' \
        'parentheses' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if (test = 10)
+           ^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'does not accept element assignment in condition surrounded with ' \
        'parentheses' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         if (test[0] = 10)
+           ^^^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
