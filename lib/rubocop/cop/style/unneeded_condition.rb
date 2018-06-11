@@ -34,6 +34,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use double pipes `||` instead.'.freeze
+        UNNEEDED_CONDITION = 'This condition is not needed.'.freeze
 
         def on_if(node)
           return unless offense?(node)
@@ -44,6 +45,8 @@ module RuboCop
           lambda do |corrector|
             if node.ternary?
               corrector.replace(range_of_offense(node), '||')
+            elsif node.modifier_form?
+              corrector.replace(node.source_range, node.if_branch.source)
             else
               corrected = [node.if_branch.source,
                            else_source(node.else_branch)].join(' || ')
@@ -54,6 +57,14 @@ module RuboCop
         end
 
         private
+
+        def message(node)
+          if node.modifier_form?
+            UNNEEDED_CONDITION
+          else
+            MSG
+          end
+        end
 
         def range_of_offense(node)
           return :expression unless node.ternary?

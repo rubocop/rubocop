@@ -14,6 +14,7 @@
 * [#4878](https://github.com/rubocop-hq/rubocop/issues/4878): Fix false positive in `Layout/IndentationWidth` when multiple modifiers and def are on the same line. ([@tatsuyafw][])
 * [#5966](https://github.com/bbatsov/rubocop/issues/5966): Fix a false positive for `Layout/ClosingHeredocIndentation` when heredoc content is outdented compared to the closing. ([@koic][])
 * Fix auto-correct support check for custom cops on --auto-gen-config. ([@r7kamura][])
+* Fix exception that occurs when auto-correcting a modifier if statement in `Style/UnneededCondition`. ([@rrosenblum][])
 
 ### Changes
 

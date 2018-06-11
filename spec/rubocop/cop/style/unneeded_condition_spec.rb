@@ -63,6 +63,15 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
           RUBY
         end
       end
+
+      context 'when using modifier if' do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            bar if bar
+            ^^^^^^^^^^ This condition is not needed.
+          RUBY
+        end
+      end
     end
 
     describe '#autocorrection' do
@@ -118,6 +127,12 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
         expect(new_source).to eq(<<-RUBY.strip_indent)
           b || (c while d)
         RUBY
+      end
+
+      it 'auto-corrects modifer if statements' do
+        new_source = autocorrect_source('bar if bar')
+
+        expect(new_source).to eq('bar')
       end
     end
   end
