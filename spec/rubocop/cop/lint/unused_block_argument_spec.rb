@@ -237,8 +237,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       end
     end
 
-    context 'in a method calling `binding` without arguments' do
-      it 'accepts all arguments' do
+    context 'when `binding` is used inside the scope of the block' do
+      it 'accepts all arguments', :focus do
         expect_no_offenses(<<-RUBY.strip_indent)
           test do |key, value|
             puts something(binding)
@@ -246,7 +246,24 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         RUBY
       end
 
-      context 'inside a method definition' do
+      context 'when `binding` is used with params but does not use all block arguments' do
+        it 'registers an offense' do
+          (key_message, value_message) = %w[key value].map do |arg|
+            "Unused block argument - `#{arg}`. You can omit all the " \
+              "arguments if you don't care about them."
+          end
+
+          expect_offense(<<-RUBY.strip_indent)
+            test do |key, value|
+                          ^^^^^ #{value_message}
+                     ^^^ #{key_message}
+              puts something(binding(:other))
+            end
+          RUBY
+        end
+      end
+
+      context 'when `binding` is used outside the scope of the block' do
         it 'registers offenses' do
           (key_message, value_message) = %w[key value].map do |arg|
             "Unused block argument - `#{arg}`. You can omit all the " \
@@ -260,25 +277,6 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               def other(a)
                 puts something(binding)
               end
-            end
-          RUBY
-        end
-      end
-    end
-
-    context 'in a method calling `binding` with arguments' do
-      context 'when a method argument is unused' do
-        it 'registers an offense' do
-          (key_message, value_message) = %w[key value].map do |arg|
-            "Unused block argument - `#{arg}`. You can omit all the " \
-              "arguments if you don't care about them."
-          end
-
-          expect_offense(<<-RUBY.strip_indent)
-            test do |key, value|
-                          ^^^^^ #{value_message}
-                     ^^^ #{key_message}
-              puts something(binding(:other))
             end
           RUBY
         end
@@ -305,6 +303,188 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
         it 'does not register an offense' do
           expect_no_offenses('super { |bar| }')
+        end
+      end
+    end
+
+    context 'when using keyword arguments' do
+      context 'when a block takes multiple arguments' do
+        context 'and an argument is unused' do
+          it 'registers an offense' do
+            message = "Unused block argument - `foo`. If it's " \
+                        'necessary, use a trailing `**` for unused keyword ' \
+                        "arguments to indicate that they won't be used."
+
+            expect_offense(<<-RUBY.strip_indent)
+              [ { foo: 1, bar: 2 } ].each do |foo:, bar:|
+                                              ^^^ #{message}
+                puts bar
+              end
+            RUBY
+          end
+        end
+
+        context 'and arguments are swap-assigned' do
+          it 'accepts' do
+            expect_no_offenses(<<-RUBY.strip_indent)
+              [ { foo: 1, bar: 2 } ].each do |foo:, bar:|
+                foo, bar = bar, foo
+              end
+            RUBY
+          end
+        end
+
+        context "and one argument is assigned to another, whilst other's " \
+                  'value is not used' do
+          it 'registers an offense' do
+            message = "Unused block argument - `foo`. If it's " \
+                        'necessary, use a trailing `**` for unused keyword ' \
+                        "arguments to indicate that they won't be used."
+
+            expect_offense(<<-RUBY.strip_indent)
+              [ { foo: 1, bar: 2 } ].each do |foo:, bar:|
+                                              ^^^ #{message}
+                foo, bar = bar, 42
+              end
+            RUBY
+          end
+        end
+
+        context 'and all the arguments are unused' do
+          it 'registers offenses and suggests omitting them' do
+            (foo_message, bar_message) = %w[foo bar].map do |arg|
+              "Unused block argument - `#{arg}`. You can omit all the " \
+               "arguments if you don't care about them."
+            end
+
+            expect_offense(<<-RUBY.strip_indent)
+              [ { foo: 1, bar: 2 } ].each do |foo:, bar:|
+                                                    ^^^ #{bar_message}
+                                              ^^^ #{foo_message}
+                puts :something
+              end
+            RUBY
+          end
+        end
+
+        context 'when there is trailing double splat' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<-RUBY.strip_indent)
+              [ { foo: 1, bar: 2 } ].each do |foo:, **|
+                puts foo
+              end
+            RUBY
+          end
+        end
+      end
+
+      context 'when a block takes single argument' do
+        context 'and the argument is unused' do
+          it 'registers an offense and suggests omitting that' do
+            message = 'Unused block argument - `a`. ' \
+                        "You can omit the argument if you don't care about it."
+
+            expect_offense(<<-RUBY.strip_indent)
+               [{a: 1}].each do |a:|
+                                 ^ #{message}
+                puts :something
+              end
+            RUBY
+          end
+        end
+
+        context 'and the method call is `define_method`' do
+          it 'registers an offense' do
+            message = 'Unused block argument - `bar`. ' \
+                        "If it's necessary, use `_` or `_bar` as an argument " \
+                        "name to indicate that it won't be used."
+
+            expect_offense(<<-RUBY.strip_indent)
+              define_method(:foo) do |bar:|
+                                      ^^^ #{message}
+                puts 'baz'
+              end
+            RUBY
+          end
+        end
+      end
+
+      context 'when a method argument is not used' do
+        it 'does not care' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def some_method(foo:)
+            end
+          RUBY
+        end
+      end
+
+      context 'when `binding` is used inside the scope of the block' do
+        it 'accepts all arguments' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            test do |key:, value:|
+              puts something(binding)
+            end
+          RUBY
+        end
+
+        context 'when `binding` is used with params but does not use all block arguments' do
+          it 'registers an offense' do
+            (key_message, value_message) = %w[key value].map do |arg|
+              "Unused block argument - `#{arg}`. You can omit all the " \
+                "arguments if you don't care about them."
+            end
+
+            expect_offense(<<-RUBY.strip_indent)
+              test do |key:, value:|
+                             ^^^^^ #{value_message}
+                       ^^^ #{key_message}
+                puts something(binding(:other))
+              end
+            RUBY
+          end
+        end
+      end
+
+      context 'when `binding` is used outside the scope of the block' do
+        it 'registers offenses' do
+          (key_message, value_message) = %w[key value].map do |arg|
+            "Unused block argument - `#{arg}`. You can omit all the " \
+              "arguments if you don't care about them."
+          end
+
+          expect_offense(<<-RUBY.strip_indent)
+            test do |key:, value:|
+                           ^^^^^ #{value_message}
+                     ^^^ #{key_message}
+              def other(a)
+                puts something(binding)
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'with an empty block' do
+        context 'when not configured to ignore empty blocks' do
+          let(:cop_config) { { 'IgnoreEmptyBlocks' => false } }
+
+          it 'registers an offense' do
+            message = 'Unused block argument - `bar`. You can omit the ' \
+                      "argument if you don't care about it."
+
+            expect_offense(<<-RUBY.strip_indent)
+              super { |bar:| }
+                       ^^^ #{message}
+            RUBY
+          end
+        end
+
+        context 'when configured to ignore empty blocks' do
+          let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
+
+          it 'does not register an offense' do
+            expect_no_offenses('super { |bar:| }')
+          end
         end
       end
     end
