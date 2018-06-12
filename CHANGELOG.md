@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.57.2 (2018-06-12)
+
 ### Bug fixes
 
 * [#5968](https://github.com/bbatsov/rubocop/issues/5968): Prevent `Layout/ClosingHeredocIndentation` from raising an error on `<<` heredocs. ([@dvandersluis][])
