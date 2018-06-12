@@ -76,7 +76,7 @@ module RuboCop
         MYSQL = 'mysql'.freeze
         POSTGRESQL = 'postgresql'.freeze
 
-        MIGRATIION_METHODS = %i[change up down].freeze
+        MIGRATION_METHODS = %i[change up down].freeze
 
         COMBINABLE_TRANSFORMATIONS = %i[
           primary_key
@@ -134,7 +134,7 @@ module RuboCop
 
         def on_def(node)
           return unless support_bulk_alter?
-          return unless MIGRATIION_METHODS.include?(node.method_name)
+          return unless MIGRATION_METHODS.include?(node.method_name)
           return unless node.body
 
           recorder = AlterMethodsRecorder.new
