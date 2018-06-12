@@ -465,6 +465,7 @@ In the following section you find all available cops:
 * [Style/MultilineIfModifier](cops_style.md#stylemultilineifmodifier)
 * [Style/MultilineIfThen](cops_style.md#stylemultilineifthen)
 * [Style/MultilineMemoization](cops_style.md#stylemultilinememoization)
+* [Style/MultilineMethodSignature](cops_style.md#stylemultilinemethodsignature)
 * [Style/MultilineTernaryOperator](cops_style.md#stylemultilineternaryoperator)
 * [Style/MultipleComparison](cops_style.md#stylemultiplecomparison)
 * [Style/MutableConstant](cops_style.md#stylemutableconstant)
