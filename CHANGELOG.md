@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
+* [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
+
 ## 0.57.2 (2018-06-12)
 
 ### Bug fixes
@@ -68,8 +73,6 @@
 * [#5845](https://github.com/bbatsov/rubocop/pull/5845): Add new `Lint/ErbNewArguments` cop. ([@koic][])
 * [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Lint/SplatKeywordArguments` cop. ([@koic][])
 * [#4247](https://github.com/bbatsov/rubocop/issues/4247): Remove hard-coded file patterns and use only `Include`, `Exclude` and the new `RubyInterpreters` parameters for file selection. ([@jonas054][])
-* [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
-* [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 
 ### Bug fixes
 
