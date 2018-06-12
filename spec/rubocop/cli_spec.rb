@@ -185,7 +185,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
-              'token $end (Using Ruby 2.1 parser; configure using ' \
+              'token $end (Using Ruby 2.2 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
@@ -1636,7 +1636,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           /\AError: Unknown Ruby version 2.6 found in `TargetRubyVersion`/
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5/
+          /Supported versions: 2.2, 2.3, 2.4, 2.5/
         )
       end
     end
@@ -1658,7 +1658,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         )
 
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.1, 2.2, 2.3, 2.4/
+          /Supported versions: 2.2, 2.3, 2.4/
         )
       end
     end

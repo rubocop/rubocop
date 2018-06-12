@@ -23,8 +23,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
         .to eq('Shadowing outer local variable - `foo`.')
       expect(cop.offenses.first.line).to eq(4)
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a splat block argument has same name ' \
@@ -47,8 +45,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
         .to eq('Shadowing outer local variable - `foo`.')
       expect(cop.offenses.first.line).to eq(4)
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block block argument has same name ' \
@@ -73,8 +69,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
         .to eq('Shadowing outer local variable - `foo`.')
       expect(cop.offenses.first.line).to eq(4)
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block local variable has same name ' \
@@ -98,8 +92,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
         .to eq('Shadowing outer local variable - `foo`.')
       expect(cop.offenses.first.line).to eq(4)
     end
-
-    include_examples 'mimics MRI 2.1', 'shadowing'
   end
 
   context 'when a block argument has different name ' \
@@ -116,7 +108,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when an outer scope variable is reassigned in a block' do
@@ -133,7 +124,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when an outer scope variable is referenced in a block' do
@@ -150,7 +140,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when multiple block arguments have same name "_"' do
@@ -164,7 +153,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when multiple block arguments have ' \
@@ -179,7 +167,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block argument has same name "_" ' \
@@ -196,7 +183,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block argument has a same name starts with "_" ' \
@@ -213,7 +199,6 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a method argument has same name ' \
@@ -230,6 +215,5 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 end

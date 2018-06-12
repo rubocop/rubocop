@@ -163,12 +163,9 @@ module RuboCop
       [ast, comments, tokens]
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
     def parser_class(ruby_version)
       case ruby_version
-      when 2.1
-        require 'parser/ruby21'
-        Parser::Ruby21
       when 2.2
         require 'parser/ruby22'
         Parser::Ruby22
@@ -188,7 +185,7 @@ module RuboCop
         raise ArgumentError, "Unknown Ruby version: #{ruby_version.inspect}"
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     def create_parser(ruby_version)
       builder = RuboCop::AST::Builder.new
