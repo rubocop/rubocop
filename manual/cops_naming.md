@@ -290,7 +290,15 @@ Enabled | No
 This cop checks for memoized methods whose instance variable name
 does not match the method name.
 
+This cop can be configured with the EnforcedStyleForLeadingUnderscores
+directive. It can be configured to allow for memoized instance variables
+prefixed with an underscore. Prefixing ivars with an undersscore is a
+convention that is used to implicitly indicate that an ivar should not
+be set or referencd outside of the memoization method.
+
 ### Examples
+
+#### EnforcedStyleForLeadingUnderscores: disallowed (default)
 
 ```ruby
 # bad
@@ -318,6 +326,48 @@ def foo
   @foo ||= calculate_expensive_thing(helper_variable)
 end
 ```
+#### EnforcedStyleForLeadingUnderscores :required
+
+```ruby
+# bad
+def foo
+  @something ||= calculate_expensive_thing
+end
+
+# bad
+def foo
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @_foo ||= calculate_expensive_thing
+end
+```
+#### EnforcedStyleForLeadingUnderscores :optional
+
+```ruby
+# bad
+def foo
+  @something ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @_foo ||= calculate_expensive_thing
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyleForLeadingUnderscores | `disallowed` | `disallowed`, `required`, `optional`
 
 ## Naming/MethodName
 

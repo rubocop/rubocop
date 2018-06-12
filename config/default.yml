@@ -739,6 +739,13 @@ Naming/HeredocDelimiterCase:
     - lowercase
     - uppercase
 
+Naming/MemoizedInstanceVariableName:
+  EnforcedStyleForLeadingUnderscores: disallowed
+  SupportedStylesForLeadingUnderscores:
+    - disallowed
+    - required
+    - optional
+
 Naming/MethodName:
   EnforcedStyle: snake_case
   SupportedStyles:
