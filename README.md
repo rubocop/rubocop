@@ -72,7 +72,7 @@ You can read a ton more about RuboCop in its [official manual](http://docs.ruboc
 
 RuboCop supports the following Ruby implementations:
 
-* MRI 2.1+
+* MRI 2.2+
 * JRuby 9.0+
 
 The Rails cops support the following versions:

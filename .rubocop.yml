@@ -10,7 +10,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.2
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.

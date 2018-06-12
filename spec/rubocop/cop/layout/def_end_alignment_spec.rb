@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
     include_examples 'aligned', 'def',       'test',       'end'
     include_examples 'aligned', 'def',       'Test.test',  'end', 'defs'
 
-    context 'in ruby 2.1 or later' do
+    context 'in ruby 2.2 or later' do
       include_examples 'aligned', 'foo def', 'test', 'end'
       include_examples 'aligned', 'foo bar def', 'test', 'end'
 
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
     include_examples 'aligned', 'def', 'test',      'end'
     include_examples 'aligned', 'def', 'Test.test', 'end', 'defs'
 
-    context 'in ruby 2.1 or later' do
+    context 'in ruby 2.2 or later' do
       include_examples('aligned',
                        'foo def', 'test',
                        '    end')

@@ -802,7 +802,7 @@ RSpec.describe RuboCop::Config do
 
   describe '#target_ruby_version', :isolated_environment do
     context 'when TargetRubyVersion is set' do
-      let(:ruby_version) { 2.1 }
+      let(:ruby_version) { 2.2 }
 
       let(:hash) do
         {

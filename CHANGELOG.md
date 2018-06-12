@@ -17,6 +17,9 @@
 * [#6006](https://github.com/bbatsov/rubocop/pull/6006): Remove `rake repl` task. ([@koic][])
 
 ## 0.57.2 (2018-06-12)
+### Changes
+
+* Drop support for MRI 2.1. ([@drenmi][])
 
 ### Bug fixes
 

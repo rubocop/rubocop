@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.name = 'rubocop'
   s.version = RuboCop::Version::STRING
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '>= 2.1.0'
+  s.required_ruby_version = '>= 2.2.0'
   s.authors = ['Bozhidar Batsov', 'Jonas Arvidsson', 'Yuji Nakayama']
   s.description = <<-DESCRIPTION
     Automatic Ruby code style checking tool.
@@ -43,8 +43,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('unicode-display_width', '~> 1.0', '>= 1.0.1')
 
   s.add_development_dependency('bundler', '~> 1.3')
-  # TODO: loosen rack dependency once Ruby 2.1.0 support is dropped.
-  # See https://git.io/vxWRB
-  s.add_development_dependency('rack', '>= 1.6.9', '< 2.0')
+  s.add_development_dependency('rack', '>= 2.0')
 end
 # rubocop:enable Metrics/BlockLength
