@@ -357,6 +357,8 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
   end
 
   context 'when `database.yml` is exists' do
+    let(:yaml) {}
+
     before do
       allow(File).to receive(:exist?)
         .with('config/database.yml')
@@ -388,6 +390,16 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
       end
 
       it_behaves_like 'offense for postgresql'
+    end
+
+    context 'invalid (e.g. ERB)' do
+      before do
+        allow(YAML).to receive(:load_file).with('config/database.yml') do
+          YAML.parse('pool: <%= Rails.env.production? ? 10 : 5 %>')
+        end
+      end
+
+      it_behaves_like 'no offense'
     end
   end
 end

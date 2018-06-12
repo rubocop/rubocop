@@ -196,6 +196,8 @@ module RuboCop
           config = yaml['development']
           return nil unless config.is_a?(Hash)
           config
+        rescue Psych::SyntaxError
+          nil
         end
 
         def support_bulk_alter?

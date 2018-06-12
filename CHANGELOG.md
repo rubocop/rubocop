@@ -7,6 +7,10 @@
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 
+### Bug fixes
+
+* [#5987](https://github.com/rubocop-hq/rubocop/issues/5987): Suppress errors when using ERB template in Rails/BulkChangeTable. ([@wata727][])
+
 ## 0.57.2 (2018-06-12)
 
 ### Bug fixes
