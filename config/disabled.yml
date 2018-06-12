@@ -117,6 +117,10 @@ Style/MissingElse:
                 Style/EmptyElse is configured to style "both"
   Enabled: false
 
+Style/MultilineMethodSignature:
+  Description: 'Avoid multi-line method signatures.'
+  Enabled: false
+
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: false

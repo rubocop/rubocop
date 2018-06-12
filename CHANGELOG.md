@@ -10,6 +10,7 @@
 * Add autocorrect to `Style/For`. ([@rrosenblum][])
 * [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
 * [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
+* Add new `Style/MultilineMethodSignature` cop. ([@drenmi][])
 
 ### Bug fixes
 

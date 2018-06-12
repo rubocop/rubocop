@@ -3427,6 +3427,29 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `keyword` | `keyword`, `braces`
 
+## Style/MultilineMethodSignature
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop checks for method signatures that span multiple lines.
+
+### Examples
+
+```ruby
+# good
+
+def foo(bar, baz)
+end
+
+# bad
+
+def foo(bar,
+        baz)
+end
+```
+
 ## Style/MultilineTernaryOperator
 
 Enabled by default | Supports autocorrection
