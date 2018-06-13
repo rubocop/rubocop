@@ -10,6 +10,7 @@
 ### Bug fixes
 
 * [#5987](https://github.com/rubocop-hq/rubocop/issues/5987): Suppress errors when using ERB template in Rails/BulkChangeTable. ([@wata727][])
+* [#4878](https://github.com/rubocop-hq/rubocop/issues/4878): Fix false positive in `Layout/IndentationWidth` when multiple modifiers and def are on the same line. ([@tatsuyafw][])
 
 ## 0.57.2 (2018-06-12)
 
