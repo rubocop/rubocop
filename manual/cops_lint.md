@@ -2122,7 +2122,7 @@ rescue StandardError, ApplicationError
 end
 
 case foo
-when *[1, 2, 3]
+when 1, 2, 3
   bar
 else
   baz
