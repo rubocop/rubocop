@@ -29,6 +29,11 @@ Style/FormatStringToken:
   Exclude:
     - spec/**/*
 
+Style/IpAddresses:
+  # The test for this cop includes strings that would cause offenses
+  Exclude:
+  - spec/rubocop/cop/style/ip_addresses_spec.rb
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 

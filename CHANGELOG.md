@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5973](https://github.com/bbatsov/rubocop/issues/5973): Add new `Style/IpAddresses` cop. ([@dvandersluis][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 
