@@ -72,6 +72,18 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
     RUBY
   end
 
+  it 'accepts correctly indented closing heredoc when ' \
+     'heredoc contents is before closing heredoc' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      include_examples :offense,
+                       <<-EOS
+                         foo
+        bar
+                         baz
+                       EOS
+    RUBY
+  end
+
   it 'registers an offence for bad indentation of a closing heredoc' do
     expect_offense(<<-RUBY.strip_indent)
       class Test
@@ -82,19 +94,6 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
       ^^^^^ `SQL` is not aligned with `<<-SQL`.
         end
       end
-    RUBY
-  end
-
-  it 'registers correctly indented closing heredoc when ' \
-     'heredoc contents is before closing heredoc' do
-    expect_offense(<<-RUBY.strip_indent)
-      include_examples :offense,
-                       <<-EOS
-                         foo
-        bar
-                         baz
-                       EOS
-      ^^^^^^^^^^^^^^^^^^^^ `EOS` is not aligned with `<<-EOS` or beginning of method definition.
     RUBY
   end
 
