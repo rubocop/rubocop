@@ -55,13 +55,9 @@ module RuboCop
                   'beginning of method definition.'.freeze
 
         def on_heredoc(node)
-          return if heredoc_type(node) == SIMPLE_HEREDOC
-
-          if empty_heredoc?(node) ||
-             contents_indentation(node) >= closing_indentation(node)
-            return if opening_indentation(node) == closing_indentation(node)
-            return if argument_indentation_correct?(node)
-          end
+          return if heredoc_type(node) == SIMPLE_HEREDOC ||
+                    opening_indentation(node) == closing_indentation(node) ||
+                    argument_indentation_correct?(node)
 
           add_offense(node, location: :heredoc_end)
         end

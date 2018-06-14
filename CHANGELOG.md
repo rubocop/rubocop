@@ -10,6 +10,7 @@
 ### Bug fixes
 
 * [#5987](https://github.com/rubocop-hq/rubocop/issues/5987): Suppress errors when using ERB template in Rails/BulkChangeTable. ([@wata727][])
+* [#5966](https://github.com/bbatsov/rubocop/issues/5966): Fix a false positive for `Layout/ClosingHeredocIndentation` when heredoc content is outdented compared to the closing. ([@koic][])
 
 ## 0.57.2 (2018-06-12)
 
