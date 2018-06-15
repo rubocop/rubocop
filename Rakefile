@@ -61,16 +61,6 @@ task default: %i[
 require 'yard'
 YARD::Rake::YardocTask.new
 
-desc 'Open a REPL for experimentation'
-task :repl do
-  warn 'DEPRECATION WARNING: `rake repl` is deprecated and ' \
-       'will be removed in RuboCop 0.58.0. Please use `bin/console`.'
-  require 'pry'
-  require 'rubocop'
-  ARGV.clear
-  RuboCop.pry
-end
-
 desc 'Benchmark a cop on given source file/dir'
 task :bench_cop, %i[cop srcpath times] do |_task, args|
   require 'benchmark'

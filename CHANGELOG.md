@@ -11,6 +11,10 @@
 
 * [#5987](https://github.com/rubocop-hq/rubocop/issues/5987): Suppress errors when using ERB template in Rails/BulkChangeTable. ([@wata727][])
 
+### Changes
+
+* [#6006](https://github.com/bbatsov/rubocop/pull/6006): Remove `rake repl` task. ([@koic][])
+
 ## 0.57.2 (2018-06-12)
 
 ### Bug fixes
