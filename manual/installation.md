@@ -18,3 +18,8 @@ might want to use a conservative version locking in your `Gemfile`:
 ```rb
 gem 'rubocop', '~> 0.57.2', require: false
 ```
+
+!!! Note
+
+    You can check out our progress on the road to version 1.0 [here](https://github.com/rubocop-hq/rubocop/milestone/4).
+    You can also help us get there faster! :-)
