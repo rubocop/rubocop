@@ -11,6 +11,7 @@
 
 * [#5987](https://github.com/rubocop-hq/rubocop/issues/5987): Suppress errors when using ERB template in Rails/BulkChangeTable. ([@wata727][])
 * [#5966](https://github.com/bbatsov/rubocop/issues/5966): Fix a false positive for `Layout/ClosingHeredocIndentation` when heredoc content is outdented compared to the closing. ([@koic][])
+* Fix auto-correct support check for custom cops on --auto-gen-config. ([@r7kamura][])
 
 ### Changes
 
@@ -3437,3 +3438,4 @@
 [@sunny]: https://github.com/sunny
 [@tatsuyafw]: https://github.com/tatsuyafw
 [@alexander-lazarov]: https://github.com/alexander-lazarov
+[@r7kamura]: https://github.com/r7kamura
