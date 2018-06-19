@@ -4,6 +4,14 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for END blocks.
+      #
+      # @example
+      #   # bad
+      #   END { puts 'Goodbye!' }
+      #
+      #   # good
+      #   at_exit { puts 'Goodbye!' }
+      #
       class EndBlock < Cop
         MSG = 'Avoid the use of `END` blocks. ' \
               'Use `Kernel#at_exit` instead.'.freeze
