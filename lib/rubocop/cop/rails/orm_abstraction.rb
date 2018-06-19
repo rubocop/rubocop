@@ -20,33 +20,63 @@ module RuboCop
 
       class ORMAbstraction < Cop
         def_node_matcher :bad_pair?, <<-PATTERN
-          (pair _ (send !nil? {:id :uuid}))
+          (pair {str_type? sym_type? dstr_type?} (send !nil? {:id :uuid}))
         PATTERN
 
         def on_pair(node)
           return unless bad_pair?(node)
-          return unless node.key.source.match(BAD_RXP)
+          return if !node.key.source.match(BAD_RXP)
+
+          corrector = Corrector.new(processed_source.buffer)
+          replacement = prefered_pair(node, corrector)
+            .process_node(node.loc.expression)
 
           add_offense(
             node,
             location: node.loc.expression,
-            message: "prefer `#{prefered_pair(node)}`."
+            message: "prefer `#{replacement}`."
           )
         end
 
-        BAD_RXP = /(_id|_uuid)(:|'|"|\s|$)/
+        BAD_RXP = /_(id|uuid)(?="|'|$)/
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.loc.expression, prefered_pair(node))
+            prefered_pair(node, corrector)
           end
         end
 
-        def prefered_pair(bad_pair)
+        def prefered_pair(bad_pair, corrector)
           key, val = bad_pair.to_a
-          bad_pair.source.sub(key.source, key.source.sub(BAD_RXP, '\2')).sub(val.source, val.receiver.source)
+          prefered_key(key, corrector)
+          prefered_val(val, corrector)
+        end
+
+        def prefered_key(key, corrector)
+          corrector.replace(key.loc.expression, key.source.sub(BAD_RXP, ''))
+        end
+
+        def prefered_val(val, corrector)
+          corrector.replace(val.loc.expression, val.receiver.source)
         end
       end
     end
+  end
+end
+
+class Parser::Source::TreeRewriter
+  def process_node(node_range)
+    source     = @source_buffer.source.dup
+    adjustment = 0
+    @action_root.ordered_replacements.each do |range, replacement|
+      next if !node_range.contains?(range)
+      begin_pos = range.begin_pos + adjustment
+      end_pos   = begin_pos + range.length
+
+      source[begin_pos...end_pos] = replacement
+
+      adjustment += replacement.length - range.length
+    end
+    source[node_range.begin_pos...(node_range.end_pos + adjustment)]
   end
 end

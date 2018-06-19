@@ -46,7 +46,8 @@ RSpec.describe RuboCop::Cop::Rails::ORMAbstraction do
         baz_id: baz_id,
         role: role,
         foo_id: params[:foo_id],
-        foo_uuid: uuid
+        foo_uuid: uuid,
+        foo_id => foo.id,
       )
     RUBY
   end
