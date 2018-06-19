@@ -103,7 +103,11 @@ module RuboCop
 
           def_end_config = config.for_cop('Layout/DefEndAlignment')
           style = def_end_config['EnforcedStyleAlignWith'] || 'start_of_line'
-          base = style == 'def' ? node.first_argument : node
+          base = if style == 'def'
+                   node.first_argument
+                 else
+                   leftmost_modifier_of(node) || node
+                 end
 
           check_indentation(base.source_range, body)
           ignore_node(node.first_argument)
@@ -318,6 +322,10 @@ module RuboCop
 
         def configured_indentation_width
           cop_config['Width']
+        end
+
+        def leftmost_modifier_of(node)
+          node.each_ancestor(:send).to_a.last
         end
       end
     end
