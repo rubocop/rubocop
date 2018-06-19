@@ -6,6 +6,8 @@
 
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
+* [#6018](https://github.com/rubocop-hq/rubocop/pull/6018): Add `--strict-stdin`
+CLI option to discard non-ruby files passed via STDIN. ([@goddamnhippie][])
 
 ### Bug fixes
 
@@ -3438,3 +3440,4 @@
 [@sunny]: https://github.com/sunny
 [@tatsuyafw]: https://github.com/tatsuyafw
 [@alexander-lazarov]: https://github.com/alexander-lazarov
+[@goddamnhippie]: https://github.com/goddamnhippie
