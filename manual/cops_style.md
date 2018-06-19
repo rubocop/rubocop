@@ -1695,6 +1695,16 @@ Enabled | No
 
 This cop checks for END blocks.
 
+### Examples
+
+```ruby
+# bad
+END { puts 'Goodbye!' }
+
+# good
+at_exit { puts 'Goodbye!' }
+```
+
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#no-END-blocks](https://github.com/rubocop-hq/ruby-style-guide#no-END-blocks)
