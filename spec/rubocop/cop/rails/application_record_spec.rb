@@ -8,15 +8,13 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
 
     it 'allows ApplicationRecord to be defined' do
       expect_no_offenses(<<-RUBY.strip_indent)
-        class ApplicationRecord < ActiveRecord::Base
-        end
+        class ApplicationRecord < ActiveRecord::Base; end
       RUBY
     end
 
     it 'allows models that subclass ActiveRecord::Base' do
       expect_no_offenses(<<-RUBY.strip_indent)
-        class MyModel < ActiveRecord::Base
-        end
+        class MyModel < ActiveRecord::Base; end
       RUBY
     end
 
@@ -27,16 +25,14 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
     it 'allows namespaced models that subclass ActiveRecord::Base' do
       expect_no_offenses(<<-RUBY.strip_indent)
         module Nested
-          class MyModel < ActiveRecord::Base
-          end
+          class MyModel < ActiveRecord::Base; end
         end
       RUBY
     end
 
     it 'allows models defined using nested constants' do
       expect_no_offenses(<<-RUBY.strip_indent)
-        class Nested::MyModel < ActiveRecord::Base
-        end
+        class Nested::MyModel < ActiveRecord::Base; end
       RUBY
     end
 

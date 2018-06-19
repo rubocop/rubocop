@@ -10,7 +10,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.2
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
@@ -28,6 +28,11 @@ Style/FormatStringToken:
   # look like unannotated format string tokens to this cop.
   Exclude:
     - spec/**/*
+
+Style/IpAddresses:
+  # The test for this cop includes strings that would cause offenses
+  Exclude:
+  - spec/rubocop/cop/style/ip_addresses_spec.rb
 
 Layout/EndOfLine:
   EnforcedStyle: lf

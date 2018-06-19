@@ -64,30 +64,30 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with one statement" do
-      new_source = autocorrect_source(<<-RUBY.strip_margin('|'))
-        |  begin # comment 1
-        |    something += 1 # comment 2
-        |  end #{keyword} #{lit} # comment 3
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        begin # comment 1
+          something += 1 # comment 2
+        end #{keyword} #{lit} # comment 3
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_margin('|'))
-        |  loop do # comment 1
-        |    something += 1 # comment 2
-        |  end # comment 3
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        loop do # comment 1
+          something += 1 # comment 2
+        end # comment 3
       RUBY
     end
 
     it "auto-corrects begin-end-#{keyword} with two statements" do
-      new_source = autocorrect_source(<<-RUBY.strip_margin('|'))
-        | begin
-        |  something += 1
-        |  something_else += 1
-        | end #{keyword} #{lit}
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        begin
+          something += 1
+          something_else += 1
+        end #{keyword} #{lit}
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_margin('|'))
-        | loop do
-        |  something += 1
-        |  something_else += 1
-        | end
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        loop do
+          something += 1
+          something_else += 1
+        end
       RUBY
     end
 

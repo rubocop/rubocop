@@ -27,13 +27,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
     end
 
     it 'registers an offense for incorrectly indented first element' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a << [
          1
+         ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
         ]
       RUBY
-      expect(cop.highlights).to eq(['1'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'auto-corrects incorrectly indented first element' do

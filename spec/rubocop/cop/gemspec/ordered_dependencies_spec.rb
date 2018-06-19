@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
   end
 
   shared_examples 'ordered dependency' do |add_dependency|
-    context "When #{add_dependency}" do
+    context "when #{add_dependency}" do
       context 'When gems are alphabetically sorted' do
         it 'does not register any offenses' do
           expect_no_offenses(<<-RUBY.strip_indent)
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
         end
       end
 
-      context 'When gems are not alphabetically sorted' do
+      context 'when gems are not alphabetically sorted' do
         let(:source) { <<-RUBY.strip_indent }
           Gem::Specification.new do |spec|
             spec.#{add_dependency} 'rubocop'
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
         end
       end
 
-      context 'When each individual group of line is sorted' do
+      context 'when each individual group of line is sorted' do
         it 'does not register any offenses' do
           expect_no_offenses(<<-RUBY.strip_indent)
             Gem::Specification.new do |spec|
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
         end
       end
 
-      context 'When dependency is separated by multiline comment' do
+      context 'when dependency is separated by multiline comment' do
         let(:source) { <<-RUBY.strip_indent }
           Gem::Specification.new do |spec|
             # For code quality
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     RUBY
   end
 
-  context 'When different dependencies are consecutive' do
+  context 'when different dependencies are consecutive' do
     it 'does not register any offenses' do
       expect_no_offenses(<<-RUBY.strip_indent)
         Gem::Specification.new do |spec|

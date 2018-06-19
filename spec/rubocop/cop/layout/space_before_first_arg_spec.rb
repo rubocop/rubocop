@@ -8,14 +8,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   context 'for method calls without parentheses' do
     it 'registers an offense for method call with two spaces before the ' \
        'first arg' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         something  x
+                 ^^ Put one space between the method name and the first argument.
         a.something  y, z
+                   ^^ Put one space between the method name and the first argument.
       RUBY
-      expect(cop.messages)
-        .to eq(['Put one space between the method name and the first ' \
-                'argument.'] * 2)
-      expect(cop.highlights).to eq(['  ', '  '])
     end
 
     it 'auto-corrects extra space' do

@@ -26,10 +26,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for arrays of single quoted strings' do
-      inspect_source("['one', 'two', 'three']")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'brackets')
+      expect_offense(<<-RUBY.strip_indent)
+        ['one', 'two', 'three']
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
     end
 
     it 'registers an offense for arrays of double quoted strings' do
@@ -182,8 +182,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ['one', 'two', 'three']
         %w(a b c d)
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
+
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent',
                                                  'MinSize' => 4)
     end
@@ -193,8 +192,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ['one', 'two', 'three']
         %w(a b)
       RUBY
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
+
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 

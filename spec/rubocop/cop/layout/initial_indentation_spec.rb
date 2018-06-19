@@ -3,11 +3,11 @@
 RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for indented method definition ' do
+  it 'registers an offense for indented method definition' do
     expect_offense(<<-RUBY.strip_margin('|'))
-      |  def f
-      |  ^^^ Indentation of first line in file detected.
-      |  end
+    |  def f
+    |  ^^^ Indentation of first line in file detected.
+    |  end
     RUBY
   end
 
@@ -44,10 +44,10 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'registers an offense for indented assignment disregarding comment' do
-    expect_offense(<<-RUBY.strip_margin('|'))
-      |   # comment
-      |   x = 1
-      |   ^ Indentation of first line in file detected.
+    expect_offense(<<-RUBY)
+       # comment
+       x = 1
+       ^ Indentation of first line in file detected.
     RUBY
   end
 
@@ -59,23 +59,23 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'auto-corrects indented method definition' do
-    corrected = autocorrect_source(<<-RUBY.strip_margin('|'))
-      |  def f
-      |  end
-    RUBY
-    expect(corrected).to eq <<-RUBY.strip_indent
+    corrected = autocorrect_source(<<-RUBY)
       def f
-        end
+      end
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      def f
+            end
     RUBY
   end
 
   it 'auto-corrects indented assignment but not comment' do
-    corrected = autocorrect_source(<<-RUBY.strip_margin('|'))
-      |  # comment
-      |  x = 1
+    corrected = autocorrect_source(<<-RUBY)
+      # comment
+      x = 1
     RUBY
-    expect(corrected).to eq <<-RUBY.strip_indent
-        # comment
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+            # comment
       x = 1
     RUBY
   end

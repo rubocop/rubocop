@@ -117,17 +117,15 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
 
     it 'registers an offense for `raise` and `fail` with `Kernel` as ' \
        'explicit receiver' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         def test
           Kernel.raise
+                 ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         rescue Exception
           Kernel.fail
+                 ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.',
-                'Use `raise` instead of `fail` to rethrow exceptions.'])
     end
 
     it 'registers an offense for raise not in a begin/rescue/end' do
@@ -142,32 +140,30 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
     end
 
     it 'registers one offense for each raise' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         cop.stub(:on_def) { raise RuntimeError }
+                            ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         cop.stub(:on_def) { raise RuntimeError }
+                            ^^^^^ Use `fail` instead of `raise` to signal exceptions.
       RUBY
-      expect(cop.offenses.size).to eq(2)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.'] * 2)
     end
 
     it 'is not confused by nested begin/rescue' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         begin
           raise
+          ^^^^^ Use `fail` instead of `raise` to signal exceptions.
           begin
             raise
+            ^^^^^ Use `fail` instead of `raise` to signal exceptions.
           rescue
             fail
+            ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
           end
         rescue Exception
           #do nothing
         end
       RUBY
-      expect(cop.offenses.size).to eq(3)
-      expect(cop.messages)
-        .to eq(['Use `fail` instead of `raise` to signal exceptions.'] * 2 +
-               ['Use `raise` instead of `fail` to rethrow exceptions.'])
     end
 
     it 'auto-corrects raise to fail when appropriate' do

@@ -16,10 +16,10 @@ module RuboCop
 
     COMMON_PARAMS = %w[Exclude Include Severity
                        AutoCorrect StyleGuide Details].freeze
-    # 2.1 is the oldest officially supported Ruby version.
-    DEFAULT_RUBY_VERSION = 2.1
-    KNOWN_RUBIES = [2.1, 2.2, 2.3, 2.4, 2.5].freeze
-    OBSOLETE_RUBIES = { 1.9 => '0.50', 2.0 => '0.50' }.freeze
+    # 2.2 is the oldest officially supported Ruby version.
+    DEFAULT_RUBY_VERSION = 2.2
+    KNOWN_RUBIES = [2.2, 2.3, 2.4, 2.5].freeze
+    OBSOLETE_RUBIES = { 1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58' }.freeze
     RUBY_VERSION_FILENAME = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {

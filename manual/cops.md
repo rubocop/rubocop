@@ -445,6 +445,7 @@ In the following section you find all available cops:
 * [Style/InfiniteLoop](cops_style.md#styleinfiniteloop)
 * [Style/InlineComment](cops_style.md#styleinlinecomment)
 * [Style/InverseMethods](cops_style.md#styleinversemethods)
+* [Style/IpAddresses](cops_style.md#styleipaddresses)
 * [Style/Lambda](cops_style.md#stylelambda)
 * [Style/LambdaCall](cops_style.md#stylelambdacall)
 * [Style/LineEndConcatenation](cops_style.md#stylelineendconcatenation)

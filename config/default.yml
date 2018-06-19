@@ -130,7 +130,7 @@ AllCops:
   # followed by the Gemfile.lock or gems.locked file. (Although the Ruby version
   # is specified in the Gemfile or gems.rb file, RuboCop reads the final value
   # from the lock file.) If the Ruby version is still unresolved, RuboCop will
-  # use the oldest officially supported Ruby version (currently Ruby 2.1).
+  # use the oldest officially supported Ruby version (currently Ruby 2.2).
   TargetRubyVersion: ~
   # What version of Rails is the inspected code using?  If a value is specified
   # for TargetRailsVersion then it is used.  Acceptable values are specificed
@@ -1138,6 +1138,12 @@ Style/InverseMethods:
   InverseBlocks:
     :select: :reject
     :select!: :reject!
+
+Style/IpAddresses:
+  # Allow strings to be whitelisted
+  Whitelist:
+    - "::"
+    # :: is a valid IPv6 address, but could potentially be legitimately in code
 
 Style/Lambda:
   EnforcedStyle: line_count_dependent

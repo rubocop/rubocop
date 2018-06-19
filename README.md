@@ -4,6 +4,7 @@
 [![Coverage Status](https://img.shields.io/codeclimate/coverage/github/bbatsov/rubocop.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
+[![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
 [![Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/bbatsov/donate)
@@ -65,13 +66,13 @@ $ rubocop
 
 ## Official manual
 
-You can read a ton more about RuboCop in its [official manual](http://rubocop.readthedocs.io).
+You can read a ton more about RuboCop in its [official manual](http://docs.rubocop.org).
 
 ## Compatibility
 
 RuboCop supports the following Ruby implementations:
 
-* MRI 2.1+
+* MRI 2.2+
 * JRuby 9.0+
 
 The Rails cops support the following versions:
@@ -82,12 +83,13 @@ The Rails cops support the following versions:
 
 Here's a list of RuboCop's core developers:
 
-* [Bozhidar Batsov](https://github.com/bbatsov)
+* [Bozhidar Batsov](https://github.com/bbatsov) (author & head maintainer)
 * [Jonas Arvidsson](https://github.com/jonas054)
 * [Yuji Nakayama](https://github.com/yujinakayama)
 * [Evgeni Dzhelyov](https://github.com/edzhelyov) (retired)
 * [Ted Johansson](https://github.com/drenmi)
 * [Masataka Kuwabara](https://github.com/pocke)
+* [Koichi Ito](https://github.com/koic)
 
 ## Logo
 

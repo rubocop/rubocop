@@ -4,25 +4,25 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
   subject(:cop) { described_class.new }
 
   def code_without_accumulator(method_name)
-    <<-SOURCE
+    <<-RUBY
       (1..4).#{method_name}(0) do |acc, i|
         next if i.odd?
         acc + i
       end
-    SOURCE
+    RUBY
   end
 
   def code_with_accumulator(method_name)
-    <<-SOURCE
+    <<-RUBY
       (1..4).#{method_name}(0) do |acc, i|
         next acc if i.odd?
         acc + i
       end
-    SOURCE
+    RUBY
   end
 
   def code_with_nested_block(method_name)
-    <<-SOURCE
+    <<-RUBY
       [(1..3), (4..6)].#{method_name}(0) do |acc, elems|
         elems.each_with_index do |elem, i|
           next if i == 1
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
         end
         acc
       end
-    SOURCE
+    RUBY
   end
 
   shared_examples 'reduce/inject' do |reduce_alias|

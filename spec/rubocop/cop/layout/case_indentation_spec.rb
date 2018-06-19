@@ -595,9 +595,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
     end
 
     it "doesn't auto-correct" do
-      expect(autocorrect_source(source))
-        .to eq(source)
-      expect(cop.offenses.map(&:corrected?)).to eq [false]
+      expect(autocorrect_source(source)).to eq(source)
     end
   end
 end

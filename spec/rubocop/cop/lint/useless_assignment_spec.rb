@@ -26,8 +26,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced ' \
@@ -54,8 +52,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced ' \
@@ -83,8 +79,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced in a class' do
@@ -110,8 +104,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced in a class ' \
@@ -139,8 +131,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced ' \
@@ -168,8 +158,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced in a module' do
@@ -195,8 +183,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned and unreferenced in top level' do
@@ -216,8 +202,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned with operator assignment ' \
@@ -331,7 +315,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a referenced variable is reassigned in a block' do
@@ -348,7 +331,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block local variable is declared but not assigned' do
@@ -400,8 +382,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned at the end of loop body ' \
@@ -423,7 +403,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned at the end of loop body ' \
@@ -445,7 +424,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a setter is invoked with operator assignment in loop body' do
@@ -462,7 +440,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context "when a variable is reassigned in loop body but won't " \
@@ -564,8 +541,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a unreferenced variable is reassigned in same branch ' \
@@ -610,7 +585,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned in a loop' do
@@ -727,7 +701,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned in single branch if ' \
@@ -919,7 +892,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned in branch of modifier if ' \
@@ -955,7 +927,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a unreferenced variable is reassigned ' \
@@ -993,7 +964,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned ' \
@@ -1009,7 +979,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned ' \
@@ -1025,7 +994,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned ' \
@@ -1041,7 +1009,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned with binary operator ' \
@@ -1078,7 +1045,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned with ||= ' \
@@ -1147,8 +1113,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['bar'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned with multiple assignment ' \
@@ -1164,7 +1128,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned in loop body ' \
@@ -1179,7 +1142,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned in loop body ' \
@@ -1194,7 +1156,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned ' \
@@ -1218,8 +1179,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned in main body of begin, rescue ' \
@@ -1242,7 +1201,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned multiple times ' \
@@ -1264,7 +1222,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned multiple times ' \
@@ -1284,7 +1241,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned multiple times ' \
@@ -1304,7 +1260,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is reassigned multiple times in rescue ' \
@@ -1407,7 +1362,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned with operator assignment ' \
@@ -1426,7 +1380,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned ' \
@@ -1497,7 +1450,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a local variable is unreferenced ' \
@@ -1519,8 +1471,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a method argument is reassigned ' \
@@ -1556,8 +1506,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
         .to eq('Useless assignment to variable - `foo`.')
       expect(cop.offenses.first.line).to eq(1)
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a named capture is unreferenced ' \
@@ -1592,7 +1540,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is referenced ' \
@@ -1624,7 +1571,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is shadowed by a block argument ' \
@@ -1648,8 +1594,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1', 'unused variable'
   end
 
   context 'when a variable is not used and the name starts with _' do
@@ -1664,7 +1608,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a method argument is not used' do
@@ -1676,7 +1619,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when an optional method argument is not used' do
@@ -1688,7 +1630,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block method argument is not used' do
@@ -1700,7 +1641,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a splat method argument is not used' do
@@ -1712,7 +1652,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a optional keyword method argument is not used' do
@@ -1724,7 +1663,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a keyword splat method argument is used' do
@@ -1737,7 +1675,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a keyword splat method argument is not used' do
@@ -1749,7 +1686,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when an anonymous keyword splat method argument is defined' do
@@ -1761,7 +1697,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block argument is not used' do
@@ -1773,7 +1708,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when there is only one AST node and it is unused variable' do
@@ -1789,8 +1723,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['foo'])
     end
-
-    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a variable is assigned ' \
@@ -1805,7 +1737,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
       end
 
       include_examples 'accepts'
-      include_examples 'mimics MRI 2.1'
     end
 
     context 'and the variable is not used' do
@@ -1824,8 +1755,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
         expect(cop.offenses.first.line).to eq(1)
         expect(cop.highlights).to eq(['foo'])
       end
-
-      include_examples 'mimics MRI 2.1'
     end
   end
 
@@ -1840,7 +1769,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.1'
   end
 
   # regression test, from problem in Locatable

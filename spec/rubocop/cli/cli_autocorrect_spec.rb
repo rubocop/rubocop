@@ -1270,7 +1270,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     create_file('.rubocop.yml', <<-YAML.strip_indent)
       AllCops:
-        TargetRubyVersion: 2.1
+        TargetRubyVersion: 2.2
     YAML
     create_file('example.rb', src)
     expect(cli.run(%w[-a -f simple])).to eq(1)

@@ -82,6 +82,10 @@ Style/InlineComment:
   Description: 'Avoid trailing inline comments.'
   Enabled: false
 
+Style/IpAddresses:
+  Description: "Don't include literal IP addresses in code."
+  Enabled: false
+
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
   StyleGuide: '#method-invocation-parens'

@@ -16,11 +16,11 @@ RSpec.describe RuboCop::Cop::Rails::NotNullColumn, :config do
     end
 
     context 'with null: false and default' do
-      let(:source) do
-        'add_column :users, :name, :string, null: false, default: ""'
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          add_column :users, :name, :string, null: false, default: ""
+        RUBY
       end
-
-      include_examples 'accepts'
     end
 
     context 'with null: false and default: nil' do
@@ -33,33 +33,35 @@ RSpec.describe RuboCop::Cop::Rails::NotNullColumn, :config do
     end
 
     context 'with null: true' do
-      let(:source) { 'add_column :users, :name, :string, null: true' }
-
-      include_examples 'accepts'
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          add_column :users, :name, :string, null: true
+        RUBY
+      end
     end
 
     context 'without any options' do
-      let(:source) { 'add_column :users, :name, :string' }
-
-      include_examples 'accepts'
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          add_column :users, :name, :string
+        RUBY
+      end
     end
   end
 
   context 'with change_column call' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         add_column :users, :name, :string
         User.update_all(name: "dummy")
         change_column :users, :name, :string, null: false
       RUBY
     end
-
-    include_examples 'accepts'
   end
 
   context 'with create_table call' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         class CreateUsersTable < ActiveRecord::Migration
           def change
             create_table :users do |t|
@@ -70,8 +72,6 @@ RSpec.describe RuboCop::Cop::Rails::NotNullColumn, :config do
         end
       RUBY
     end
-
-    include_examples 'accepts'
   end
 
   context 'with add_reference call' do
@@ -85,17 +85,19 @@ RSpec.describe RuboCop::Cop::Rails::NotNullColumn, :config do
     end
 
     context 'with default option' do
-      let(:source) do
-        'add_reference :products, :category, null: false, default: 1'
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          add_reference :products, :category, null: false, default: 1
+        RUBY
       end
-
-      include_examples 'accepts'
     end
 
     context 'without any options' do
-      let(:source) { 'add_reference :products, :category' }
-
-      include_examples 'accepts'
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          add_reference :products, :category
+        RUBY
+      end
     end
   end
 end

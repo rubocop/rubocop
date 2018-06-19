@@ -4,37 +4,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'reports an offense for single line def with redundant begin block' do
-    src = '  def func; begin; x; y; rescue; z end end'
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
+    expect_offense(<<-RUBY.strip_indent)
+      def func; begin; x; y; rescue; z end; end
+                ^^^^^ Redundant `begin` block detected.
+    RUBY
   end
 
   it 'reports an offense for def with redundant begin block' do
-    src = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       def func
         begin
+        ^^^^^ Redundant `begin` block detected.
           ala
         rescue => e
           bala
         end
       end
     RUBY
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'reports an offense for defs with redundant begin block' do
-    src = <<-RUBY.strip_indent
+    expect_offense(<<-RUBY.strip_indent)
       def Test.func
         begin
+        ^^^^^ Redundant `begin` block detected.
           ala
         rescue => e
           bala
         end
       end
     RUBY
-    inspect_source(src)
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts a def with required begin block' do

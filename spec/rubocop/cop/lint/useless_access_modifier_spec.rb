@@ -123,17 +123,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
-  if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
-    context 'ruby 2.1 style modifiers' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
-          class SomeClass
-            private def some_method
-              puts 10
-            end
+  context 'when using inline modifiers' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class SomeClass
+          private def some_method
+            puts 10
           end
-        RUBY
-      end
+        end
+      RUBY
     end
   end
 

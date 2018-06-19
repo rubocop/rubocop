@@ -5,9 +5,9 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate do
 
   context 'comparison node type check' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY, 'example_cop.rb')
-      node.type == :send
-      ^^^^^^^^^^^^^^^^^^ Use `#send_type?` to check node type.
+      expect_offense(<<-RUBY.strip_indent, 'example_cop.rb')
+        node.type == :send
+        ^^^^^^^^^^^^^^^^^^ Use `#send_type?` to check node type.
       RUBY
     end
 
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate do
   end
 
   it 'does not register an offense for a predicate node type check' do
-    expect_no_offenses(<<-RUBY, 'example_spec.rb')
+    expect_no_offenses(<<-RUBY.strip_indent, 'example_spec.rb')
       node.send_type?
     RUBY
   end

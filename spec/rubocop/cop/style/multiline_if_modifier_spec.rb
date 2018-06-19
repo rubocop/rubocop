@@ -14,8 +14,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfModifier do
 
   shared_examples 'no offense' do
     it 'does not register an offense' do
-      inspect_source(source)
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(source)
     end
   end
 

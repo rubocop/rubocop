@@ -21,8 +21,10 @@ Metrics/LineLength:
   Max: 99
 ```
 
-**Note**: Qualifying cop name with its type, e.g., `Style`, is recommended,
-  but not necessary as long as the cop name is unique across all types.
+!!! Note
+
+    Qualifying cop name with its type, e.g., `Style`, is recommended,
+    but not necessary as long as the cop name is unique across all types.
 
 ### Inheritance
 
@@ -139,7 +141,7 @@ inherit_from:
 
 inherit_mode:
   merge:
-    - Exclude 
+    - Exclude
 
 AllCops:
   Exclude:
@@ -171,7 +173,7 @@ inherit_from:
 
 inherit_mode:
   merge:
-    - Exclude 
+    - Exclude
 
 Style/For:
   inherit_mode:

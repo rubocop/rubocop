@@ -23,8 +23,9 @@ module RuboCop
     # Registry that tracks all cops by their badge and department.
     class Registry
       def initialize(cops = [])
-        @registry    = {}
+        @registry = {}
         @departments = {}
+        @cops_by_cop_name = Hash.new { |hash, key| hash[key] = [] }
 
         cops.each { |cop| enlist(cop) }
       end
@@ -33,6 +34,7 @@ module RuboCop
         @registry[cop.badge] = cop
         @departments[cop.department] ||= []
         @departments[cop.department] << cop
+        @cops_by_cop_name[cop.cop_name] << cop
       end
 
       # @return [Array<Symbol>] list of departments for current cops.
@@ -102,8 +104,9 @@ module RuboCop
         end
       end
 
+      # @return [Hash{String => Array<Class>}]
       def to_h
-        cops.group_by(&:cop_name)
+        @cops_by_cop_name
       end
 
       def cops
@@ -140,6 +143,12 @@ module RuboCop
 
       def each(&block)
         cops.each(&block)
+      end
+
+      # @param [String] cop_name
+      # @return [Class, nil]
+      def find_by_cop_name(cop_name)
+        @cops_by_cop_name[cop_name].first
       end
 
       private

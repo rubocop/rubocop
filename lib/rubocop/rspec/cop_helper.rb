@@ -14,10 +14,6 @@ module CopHelper
     Tempfile.open('tmp') { |f| inspect_source(source, f) }
   end
 
-  def inspect_gemfile(source)
-    inspect_source(source, 'Gemfile')
-  end
-
   def inspect_source(source, file = nil)
     if source.is_a?(Array) && source.size == 1
       raise "Don't use an array for a single line of code: #{source}"

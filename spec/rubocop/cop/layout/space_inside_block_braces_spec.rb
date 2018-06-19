@@ -108,35 +108,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   end
 
   it 'registers an offense for left brace without inner space' do
-    inspect_source('each {puts }')
-    expect(cop.messages).to eq(['Space missing inside {.'])
-    expect(cop.highlights).to eq(['p'])
-    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    expect_offense(<<-RUBY.strip_indent)
+      each {puts }
+            ^ Space missing inside {.
+    RUBY
   end
 
   it 'registers an offense for right brace without inner space' do
-    inspect_source('each { puts}')
-    expect(cop.messages).to eq(['Space missing inside }.'])
-    expect(cop.highlights).to eq(['}'])
-    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    expect_offense(<<-RUBY.strip_indent)
+      each { puts}
+                 ^ Space missing inside }.
+    RUBY
   end
 
   it 'registers offenses for both braces without inner space' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       a {}
       b { }
+         ^ Space inside empty braces detected.
       each {puts}
+            ^ Space missing inside {.
+                ^ Space missing inside }.
     RUBY
-    expect(cop.messages).to eq(['Space inside empty braces detected.',
-                                'Space missing inside {.',
-                                'Space missing inside }.'])
-    expect(cop.highlights).to eq([' ', 'p', '}'])
-
-    # Both correct and incorrect code has been found in relation to
-    # EnforcedStyleForEmptyBraces, but that doesn't matter. EnforcedStyle can
-    # be changed to get rid of the EnforcedStyle offenses.
-    expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                               'no_space')
   end
 
   it 'auto-corrects missing space' do
@@ -151,10 +144,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'registers an offense for left brace without inner space' do
-        inspect_source('each {|x| puts }')
-        expect(cop.messages).to eq(['Space between { and | missing.'])
-        expect(cop.highlights).to eq(['{|'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_offense(<<-RUBY.strip_indent)
+          each {|x| puts }
+               ^^ Space between { and | missing.
+        RUBY
       end
     end
 
@@ -162,20 +155,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       it 'accepts left brace with inner space' do
         expect_no_offenses(<<-RUBY.strip_indent)
           each { |x|
-          puts
+            puts
           }
         RUBY
       end
 
       it 'registers an offense for left brace without inner space' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           each {|x|
-          puts
+               ^^ Space between { and | missing.
+            puts
           }
         RUBY
-        expect(cop.messages).to eq(['Space between { and | missing.'])
-        expect(cop.highlights).to eq(['{|'])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'auto-corrects missing space' do
@@ -238,10 +229,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'registers an offense for left brace with inner space' do
-        inspect_source('each { |x| puts }')
-        expect(cop.messages).to eq(['Space between { and | detected.'])
-        expect(cop.highlights).to eq([' '])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_offense(<<-RUBY.strip_indent)
+          each { |x| puts }
+                ^ Space between { and | detected.
+        RUBY
       end
 
       it 'accepts new lambda syntax' do
@@ -273,26 +264,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'registers an offense for left brace with inner space' do
-      inspect_source('each { puts}')
-      expect(cop.messages).to eq(['Space inside { detected.'])
-      expect(cop.highlights).to eq([' '])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_offense(<<-RUBY.strip_indent)
+        each { puts}
+              ^ Space inside { detected.
+      RUBY
     end
 
     it 'registers an offense for right brace with inner space' do
-      inspect_source('each {puts  }')
-      expect(cop.messages).to eq(['Space inside } detected.'])
-      expect(cop.highlights).to eq(['  '])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-    end
-
-    it 'registers offenses for both braces with inner space' do
-      inspect_source('each { puts  }')
-      expect(cop.messages).to eq(['Space inside { detected.',
-                                  'Space inside } detected.'])
-      expect(cop.highlights).to eq([' ', '  '])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'space')
+      expect_offense(<<-RUBY.strip_indent)
+        each {puts }
+                  ^ Space inside } detected.
+      RUBY
     end
 
     it 'accepts left brace without outer space' do
@@ -311,10 +293,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'registers an offense for left brace without inner space' do
-          inspect_source('each {|x| puts}')
-          expect(cop.messages).to eq(['Space between { and | missing.'])
-          expect(cop.highlights).to eq(['{|'])
-          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+          expect_offense(<<-RUBY.strip_indent)
+            each {|x| puts}
+                 ^^ Space between { and | missing.
+          RUBY
         end
 
         it 'accepts new lambda syntax' do
@@ -337,10 +319,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'registers an offense for left brace with inner space' do
-          inspect_source('each { |x| puts}')
-          expect(cop.messages).to eq(['Space between { and | detected.'])
-          expect(cop.highlights).to eq([' '])
-          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+          expect_offense(<<-RUBY.strip_indent)
+            each { |x| puts}
+                  ^ Space between { and | detected.
+          RUBY
         end
 
         it 'accepts new lambda syntax' do

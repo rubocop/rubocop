@@ -16,15 +16,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'new_line' }
 
     it 'registers an offense when the rhs is on the same line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         blarg = if true
+        ^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
         end
       RUBY
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(["blarg = if true\nend"])
-      expect(cop.messages).to eq([described_class::NEW_LINE_OFFENSE])
     end
 
     it 'auto-corrects offenses' do
@@ -51,15 +47,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           a, b = 4,
+          ^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
           5
         RUBY
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.line).to eq(1)
-        expect(cop.highlights).to eq(["a, b = 4,\n5"])
-        expect(cop.messages).to eq([described_class::NEW_LINE_OFFENSE])
       end
     end
 
@@ -72,16 +64,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a,
+        ^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
         b = if foo
         end
       RUBY
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(["a,\nb = if foo\nend"])
-      expect(cop.messages).to eq([described_class::NEW_LINE_OFFENSE])
     end
   end
 
@@ -89,16 +77,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'same_line' }
 
     it 'registers an offense when the rhs is a different line' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         blarg =
+        ^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
         if true
         end
       RUBY
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(["blarg =\nif true\nend"])
-      expect(cop.messages).to eq([described_class::SAME_LINE_OFFENSE])
     end
 
     it 'auto-corrects offenses' do
@@ -126,16 +110,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           a, b =
+          ^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
           4,
           5
         RUBY
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.line).to eq(1)
-        expect(cop.highlights).to eq(["a, b =\n4,\n5"])
-        expect(cop.messages).to eq([described_class::SAME_LINE_OFFENSE])
       end
     end
 
@@ -147,17 +127,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         a,
+        ^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
         b =
         if foo
         end
       RUBY
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(["a,\nb =\nif foo\nend"])
-      expect(cop.messages).to eq([described_class::SAME_LINE_OFFENSE])
     end
   end
 end
