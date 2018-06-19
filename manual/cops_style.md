@@ -1695,6 +1695,16 @@ Enabled | No
 
 This cop checks for END blocks.
 
+### Examples
+
+```ruby
+# bad
+END { puts 'Goodbye!' }
+
+# good
+at_exit { puts 'Goodbye!' }
+```
+
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#no-END-blocks](https://github.com/rubocop-hq/ruby-style-guide#no-END-blocks)
@@ -2541,6 +2551,34 @@ Name | Default value | Configurable values
 --- | --- | ---
 InverseMethods | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}` | 
 InverseBlocks | `{:select=>:reject, :select!=>:reject!}` | 
+
+## Style/IpAddresses
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop checks for hardcoded IP addresses, which can make code
+brittle. IP addresses are likely to need to be changed when code
+is deployed to a different server or environment, which may break
+a deployment if forgotten. Prefer setting IP addresses in ENV or
+other configuration.
+
+### Examples
+
+```ruby
+# bad
+ip_address = '127.59.241.29'
+
+# good
+ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Whitelist | `::` | Array
 
 ## Style/Lambda
 

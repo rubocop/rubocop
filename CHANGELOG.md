@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5973](https://github.com/bbatsov/rubocop/issues/5973): Add new `Style/IpAddresses` cop. ([@dvandersluis][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add configuration options to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 * [#5843](https://github.com/bbatsov/rubocop/issues/5843): Add `EnforcedStyleForLeadingUnderscores` to `Naming/MemoizedInstanceVariableName` cop to allow leading underscores. ([@leklund][])
 * [#6018](https://github.com/rubocop-hq/rubocop/pull/6018): Add `--strict-stdin` CLI option to discard non-ruby files passed via STDIN. ([@goddamnhippie][])
@@ -11,7 +12,9 @@
 ### Bug fixes
 
 * [#5987](https://github.com/rubocop-hq/rubocop/issues/5987): Suppress errors when using ERB template in Rails/BulkChangeTable. ([@wata727][])
+* [#4878](https://github.com/rubocop-hq/rubocop/issues/4878): Fix false positive in `Layout/IndentationWidth` when multiple modifiers and def are on the same line. ([@tatsuyafw][])
 * [#5966](https://github.com/bbatsov/rubocop/issues/5966): Fix a false positive for `Layout/ClosingHeredocIndentation` when heredoc content is outdented compared to the closing. ([@koic][])
+* Fix auto-correct support check for custom cops on --auto-gen-config. ([@r7kamura][])
 
 ### Changes
 
@@ -3440,3 +3443,4 @@
 [@tatsuyafw]: https://github.com/tatsuyafw
 [@alexander-lazarov]: https://github.com/alexander-lazarov
 [@goddamnhippie]: https://github.com/goddamnhippie
+[@r7kamura]: https://github.com/r7kamura

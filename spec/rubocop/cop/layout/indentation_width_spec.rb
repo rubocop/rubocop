@@ -903,6 +903,34 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
             RUBY
           end
         end
+
+        context 'when multiple modifiers and def are on the same line' do
+          it 'accepts a correctly aligned body' do
+            expect_no_offenses(<<-RUBY.strip_indent)
+              public foo def test
+                something
+              end
+            RUBY
+          end
+
+          it 'registers an offense for bad indentation of a def body' do
+            expect_offense(<<-RUBY.strip_indent)
+              public foo def test
+                    something
+              ^^^^^^ Use 2 (not 6) spaces for indentation.
+              end
+            RUBY
+          end
+
+          it 'registers an offense for bad indentation of a defs body' do
+            expect_offense(<<-RUBY.strip_indent)
+              public foo def self.test
+                    something
+              ^^^^^^ Use 2 (not 6) spaces for indentation.
+              end
+            RUBY
+          end
+        end
       end
 
       context 'when end is aligned with def' do

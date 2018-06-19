@@ -1139,6 +1139,12 @@ Style/InverseMethods:
     :select: :reject
     :select!: :reject!
 
+Style/IpAddresses:
+  # Allow strings to be whitelisted
+  Whitelist:
+    - "::"
+    # :: is a valid IPv6 address, but could potentially be legitimately in code
+
 Style/Lambda:
   EnforcedStyle: line_count_dependent
   SupportedStyles:
