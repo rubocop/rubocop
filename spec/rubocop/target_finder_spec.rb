@@ -311,6 +311,22 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         expect(found_basenames).to eq(['Untitled'])
       end
     end
+
+    context 'when input is passed on stdin in stric mode' do
+      let(:options) do
+        {
+          force_exclusion: force_exclusion,
+          debug: debug,
+          strict_stdin: true,
+          stdin: 'def example; end'
+        }
+      end
+      let(:args) { ['Untitled'] }
+
+      it 'does not include the file' do
+        expect(found_basenames).to eq([])
+      end
+    end
   end
 
   describe '#find_files' do

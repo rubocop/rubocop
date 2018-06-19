@@ -68,6 +68,8 @@ module RuboCop
         add_aliases(opts)
 
         option(opts, '-s', '--stdin FILE')
+
+        option(opts, '--strict-stdin')
       end
     end
 
@@ -395,7 +397,9 @@ module RuboCop
       parallel:             ['Use available CPUs to execute inspection in',
                              'parallel.'],
       stdin:                ['Pipe source from STDIN, using FILE in offense',
-                             'reports. This is useful for editor integration.']
+                             'reports. This is useful for editor integration.'],
+      strict_stdin:         ['Exclude non-ruby files even when piped via',
+                             'STDIN.']
     }.freeze
   end
 end
