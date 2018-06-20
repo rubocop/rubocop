@@ -130,3 +130,8 @@ Style/StringHashKeys:
 Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false
+
+Style/YodaCondition:
+  Description: 'Do not use literals as the first operand of a comparison.'
+  Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
+  Enabled: false
