@@ -21,6 +21,7 @@
 
 * [#6006](https://github.com/bbatsov/rubocop/pull/6006): Remove `rake repl` task. ([@koic][])
 * [#5990](https://github.com/bbatsov/rubocop/pull/5990): Drop support for MRI 2.1. ([@drenmi][])
+* [#3299](https://github.com/bbatsov/rubocop/issues/3299): `Lint/UselessAccessModifier` now warns when `private_class_method` is used without arguments. ([@Darhazer][])
 
 ## 0.57.2 (2018-06-12)
 
