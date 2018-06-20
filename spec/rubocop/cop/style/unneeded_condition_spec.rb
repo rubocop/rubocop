@@ -72,6 +72,18 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
           RUBY
         end
       end
+
+      context 'when using ternary if in `else` branch' do
+        it 'registers no offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            if a
+              a
+            else
+              b ? c : d
+            end
+          RUBY
+        end
+      end
     end
 
     describe '#autocorrection' do

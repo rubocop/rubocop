@@ -37,7 +37,9 @@ module RuboCop
         UNNEEDED_CONDITION = 'This condition is not needed.'.freeze
 
         def on_if(node)
+          return if node.elsif_conditional?
           return unless offense?(node)
+
           add_offense(node, location: range_of_offense(node))
         end
 
@@ -72,15 +74,19 @@ module RuboCop
         end
 
         def offense?(node)
-          return false if node.elsif_conditional?
-
           condition, if_branch, else_branch = *node
+
+          return false if use_if_branch?(else_branch)
 
           condition == if_branch && !node.elsif? && (
             node.ternary? ||
             !else_branch.instance_of?(AST::Node) ||
             else_branch.single_line?
           )
+        end
+
+        def use_if_branch?(else_branch)
+          else_branch && else_branch.if_type?
         end
 
         def else_source(else_branch)
