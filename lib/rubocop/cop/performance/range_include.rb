@@ -9,11 +9,17 @@ module RuboCop
       # end points of the `Range`. In a great majority of cases, this is what
       # is wanted.
       #
-      # Here is an example of a case where `Range#cover?` may not provide the
-      # desired result:
+      # @example
+      #   # bad
+      #   ('a'..'z').include?('b') # => true
       #
-      #     ('a'..'z').cover?('yellow') # => true
+      #   # good
+      #   ('a'..'z').cover?('b') # => true
       #
+      #   # Example of a case where `Range#cover?` may not provide
+      #   # the desired result:
+      #
+      #   ('a'..'z').cover?('yellow') # => true
       class RangeInclude < Cop
         MSG = 'Use `Range#cover?` instead of `Range#include?`.'.freeze
 
