@@ -1552,7 +1552,10 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
   Max: 25
-  ExcludedMethods: []
+  ExcludedMethods:
+    # By default, exclude the `#refine` method, as it tends to have larger
+    # associated blocks.
+    - refine
 
 Metrics/BlockNesting:
   CountBlocks: false
