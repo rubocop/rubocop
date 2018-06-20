@@ -5,6 +5,10 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
 
   let(:cop_config) { {} }
 
+  it 'does not register an offense on an empty string' do
+    expect_no_offenses("''")
+  end
+
   context 'IPv4' do
     it 'registers an offense for a valid address' do
       expect_offense(<<-RUBY.strip_indent)

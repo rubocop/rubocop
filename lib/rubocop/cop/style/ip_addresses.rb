@@ -26,6 +26,7 @@ module RuboCop
 
         def offense?(node)
           contents = node.source[1...-1]
+          return false if contents.empty?
 
           return false if whitelist.include?(contents.downcase)
 
