@@ -1683,6 +1683,15 @@ Enabled | Yes
 
 This cop checks ensures source files have no utf-8 encoding comments.
 
+### Examples
+
+```ruby
+# bad
+# encoding: UTF-8
+# coding: UTF-8
+# -*- coding: UTF-8 -*-
+```
+
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#utf-8](https://github.com/rubocop-hq/ruby-style-guide#utf-8)
