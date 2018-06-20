@@ -49,6 +49,22 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
     end
   end
 
+  context 'when no access modifier is used' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class C
+          def self.method
+            puts "hi"
+          end
+
+          def self.method2
+            puts "hi"
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when a `class << self` block is used' do
     it "doesn't register an offense" do
       expect_no_offenses(<<-RUBY.strip_indent)

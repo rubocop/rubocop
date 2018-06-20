@@ -53,7 +53,7 @@ module RuboCop
         ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
                                 'block'.freeze
 
-        def_node_matcher :private_class_method, <<-PATTERN
+        def_node_search :private_class_methods, <<-PATTERN
           (send nil? :private_class_method $...)
         PATTERN
 
@@ -67,25 +67,26 @@ module RuboCop
 
         private
 
-        def clear
-          @useless = {}
-          @last_access_modifier = nil
-        end
-
         def check_node(node)
           return unless node && node.begin_type?
 
-          clear
-          check_scope(node)
+          ignored_methods = private_class_method_names(node)
 
-          @useless.each do |_name, (defs_node, visibility, modifier)|
+          ineffective_modifier(node, ignored_methods) do |defs_node, modifier|
             add_offense(defs_node,
                         location: :keyword,
-                        message: format_message(visibility, modifier))
+                        message: format_message(modifier))
           end
         end
 
-        def format_message(visibility, modifier)
+        def private_class_method_names(node)
+          private_class_methods(node).to_a.flatten
+                                     .select(&:basic_literal?)
+                                     .map(&:value)
+        end
+
+        def format_message(modifier)
+          visibility = modifier.method_name
           alternative = if visibility == :private
                           ALTERNATIVE_PRIVATE
                         else
@@ -96,52 +97,28 @@ module RuboCop
                       alternative: alternative)
         end
 
-        def check_scope(node, cur_vis = :public)
-          node.each_child_node.reduce(cur_vis) do |visibility, child|
-            check_child_scope(child, visibility)
+        def ineffective_modifier(node, ignored_methods, modifier = nil, &block)
+          node.each_child_node do |child|
+            case child.type
+            when :send
+              modifier = child if access_modifier?(child)
+            when :defs
+              next if correct_visibility?(child, modifier, ignored_methods)
+              yield child, modifier
+            when :kwbegin
+              ineffective_modifier(child, ignored_methods, modifier, &block)
+            end
           end
         end
 
-        def check_child_scope(node, cur_vis)
-          case node.type
-          when :send
-            cur_vis = check_send(node, cur_vis)
-          when :defs
-            check_defs(node, cur_vis)
-          when :kwbegin
-            check_scope(node, cur_vis)
-          end
-
-          cur_vis
+        def access_modifier?(node)
+          node.bare_access_modifier? && !node.method?(:module_function)
         end
 
-        def check_send(node, cur_vis)
-          if node.bare_access_modifier? && !node.method?(:module_function)
-            @last_access_modifier = node
-            return node.method_name
-          elsif (methods = private_class_method(node))
-            # don't warn about defs nodes which are followed by a call to
-            # `private_class_method :name`
-            # obviously the programmer knows what they are doing
-            revert_method_uselessness(methods)
-          end
+        def correct_visibility?(node, modifier, ignored_methods)
+          return true if modifier.nil? || modifier.method_name == :public
 
-          cur_vis
-        end
-
-        def check_defs(node, cur_vis)
-          mark_method_as_useless(node, cur_vis) if cur_vis != :public
-        end
-
-        def mark_method_as_useless(node, cur_vis)
-          @useless[node.method_name] = [node, cur_vis, @last_access_modifier]
-        end
-
-        def revert_method_uselessness(methods)
-          methods.each do |sym|
-            next unless sym.sym_type?
-            @useless.delete(sym.value)
-          end
+          ignored_methods.include?(node.method_name)
         end
       end
     end
