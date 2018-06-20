@@ -134,9 +134,14 @@ module RuboCop
 
           if node.begin_type?
             check_scope(node)
-          elsif node.send_type? && node.bare_access_modifier?
+          elsif node.send_type? && access_modifier?(node)
             add_offense(node, message: format(MSG, current: node.method_name))
           end
+        end
+
+        def access_modifier?(node)
+          node.bare_access_modifier? ||
+            node.method_name == :private_class_method
         end
 
         def check_scope(node)
@@ -147,9 +152,8 @@ module RuboCop
 
         def check_child_nodes(node, unused, cur_vis)
           node.child_nodes.each do |child|
-            if child.send_type? && child.bare_access_modifier?
-              cur_vis, unused =
-                check_new_visibility(child, unused, child.method_name, cur_vis)
+            if child.send_type? && access_modifier?(child)
+              cur_vis, unused = check_send_node(child, cur_vis, unused)
             elsif method_definition?(child)
               unused = nil
             elsif start_of_new_scope?(child)
@@ -160,6 +164,15 @@ module RuboCop
           end
 
           [cur_vis, unused]
+        end
+
+        def check_send_node(node, cur_vis, unused)
+          if node.bare_access_modifier?
+            check_new_visibility(node, unused, node.method_name, cur_vis)
+          elsif node.method_name == :private_class_method && !node.arguments?
+            add_offense(node, message: format(MSG, current: node.method_name))
+            [cur_vis, unused]
+          end
         end
 
         def check_new_visibility(node, unused, new_vis, cur_vis)

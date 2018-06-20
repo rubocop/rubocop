@@ -163,6 +163,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'when private_class_method is used without arguments' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        class SomeClass
+          private_class_method
+          ^^^^^^^^^^^^^^^^^^^^ Useless `private_class_method` access modifier.
+
+          def self.some_method
+            puts 10
+          end
+        end
+      RUBY
+    end
+  end
+
   context "when using ActiveSupport's `concerning` method" do
     let(:config) do
       RuboCop::Config.new(
@@ -670,7 +685,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
-        ' and no method is defined' do
+        ' block and no method is defined' do
         src = <<-RUBY.strip_indent
           class A
             #{modifier}
