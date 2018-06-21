@@ -342,6 +342,44 @@ shared_examples_for 'multiline literal brace layout' do
       end
     end
 
+    if [
+      RuboCop::Cop::Layout::MultilineArrayBraceLayout,
+      RuboCop::Cop::Layout::MultilineHashBraceLayout
+    ].include?(described_class)
+      context 'when arguments to a function' do
+        let(:prefix) { 'bar(' }
+        let(:suffix) { ')' }
+        let(:source) { construct(false, true) }
+
+        context 'and a comment after the last element' do
+          let(:b_comment) { ' # comment b' }
+
+          it 'detects closing brace on separate line from last element' do
+            inspect_source(source)
+
+            expect(cop.highlights).to eq([close])
+            expect(cop.messages)
+              .to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
+          end
+
+          it 'does not autocorrect the closing brace' do
+            new_source = autocorrect_source(source)
+            expect(new_source).to eq(source.join($RS))
+          end
+        end
+
+        context 'but no comment after the last element' do
+          it 'autocorrects the closing brace' do
+            new_source = autocorrect_source(source)
+
+            expect(new_source).to eq(["#{prefix}#{open}#{a},",
+                                      "#{b}#{close}",
+                                      suffix].join($RS))
+          end
+        end
+      end
+    end
+
     context 'opening brace on separate line from first element' do
       it 'allows closing brace on same line as last element' do
         expect_no_offenses(construct(true, false))
