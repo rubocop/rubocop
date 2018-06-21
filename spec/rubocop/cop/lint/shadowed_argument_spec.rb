@@ -53,6 +53,29 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
       end
 
+      context 'when a splat argument is shadowed' do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            def do_something(*items)
+              *items, last = [42, 42]
+               ^^^^^ Argument `items` was shadowed by a local variable before it was used.
+              puts items
+            end
+          RUBY
+        end
+      end
+
+      context 'when reassigning to splat variable' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def do_something(*items)
+              *items, last = items
+              puts items
+            end
+          RUBY
+        end
+      end
+
       context 'when binding is used' do
         it 'registers an offense' do
           expect_offense(<<-RUBY.strip_indent)
