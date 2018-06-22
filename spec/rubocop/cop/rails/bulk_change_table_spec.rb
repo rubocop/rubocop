@@ -333,6 +333,26 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
         end
       RUBY
     end
+
+    it 'register an offense when using string as table name' do
+      expect_offense(<<-RUBY.strip_indent)
+        def change
+          remove_index "users", :name
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ You can use `change_table :users, bulk: true` to combine alter queries.
+          remove_index "users", :address
+        end
+      RUBY
+    end
+
+    it 'register an offense when using mixed style table name' do
+      expect_offense(<<-RUBY.strip_indent)
+        def change
+          remove_index "users", :name
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ You can use `change_table :users, bulk: true` to combine alter queries.
+          remove_index :users, :address
+        end
+      RUBY
+    end
   end
 
   context 'when database is PostgreSQL' do
