@@ -37,7 +37,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 CountComments | `false` | Boolean
 Max | `25` | Integer
-ExcludedMethods | `[]` | Array
+ExcludedMethods | `refine` | Array
 
 ## Metrics/BlockNesting
 
