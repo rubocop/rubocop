@@ -168,7 +168,7 @@ module RuboCop
 
         # @param node [RuboCop::AST::SendNode] (send nil? :change_table ...)
         def include_bulk_options?(node)
-          # arguments: [(sym :table) (hash (pair (sym :bulk) _))]
+          # arguments: [{(sym :table)(str "table")} (hash (pair (sym :bulk) _))]
           options = node.arguments[1]
           return false unless options
           options.hash_type? &&
@@ -233,7 +233,7 @@ module RuboCop
 
         # @param node [RuboCop::AST::SendNode]
         def add_offense_for_alter_methods(node)
-          # arguments: [(sym :table) ...]
+          # arguments: [{(sym :table)(str "table")} ...]
           table_name = node.arguments[0].value
           message = format(MSG_FOR_ALTER_METHODS, table: table_name)
           add_offense(node, message: message)
@@ -253,9 +253,11 @@ module RuboCop
 
           # @param new_node [RuboCop::AST::SendNode]
           def process(new_node)
-            # arguments: [(sym :table) ...]
-            table_name = new_node.arguments[0]
-            flush unless @nodes.all? { |node| node.arguments[0] == table_name }
+            # arguments: [{(sym :table)(str "table")} ...]
+            table_name = new_node.arguments[0].value.to_s
+            flush unless @nodes.all? do |node|
+              node.arguments[0].value.to_s == table_name
+            end
             @nodes << new_node
           end
 
