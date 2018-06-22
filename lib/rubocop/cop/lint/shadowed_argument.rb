@@ -77,9 +77,7 @@ module RuboCop
             next if references.any? do |reference|
               next true if !reference.explicit? && ignore_implicit_references?
 
-              reference_pos = reference.node.source_range.begin_pos
-
-              reference_pos <= assignment_without_usage_pos
+              reference_pos(reference.node) <= assignment_without_usage_pos
             end
 
             yield location_known ? node : argument.declaration_node
@@ -113,6 +111,12 @@ module RuboCop
 
             location_known
           end
+        end
+
+        def reference_pos(node)
+          node = node.parent.masgn_type? ? node.parent : node
+
+          node.source_range.begin_pos
         end
 
         # Check whether the given node is nested into block or conditional.
