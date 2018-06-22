@@ -17,6 +17,7 @@
 * Fix exception that occurs when auto-correcting a modifier if statement in `Style/UnneededCondition`. ([@rrosenblum][])
 * [#6025](https://github.com/bbatsov/rubocop/pull/6025): Fix an incorrect auto-correct for `Lint/UnneededCondition` when using if_branch in `else` branch. ([@koic][])
 * [#6029](https://github.com/bbatsov/rubocop/issues/6029): Fix a false positive for `Lint/ShadowedArgument` when reassigning to splat variable. ([@koic][])
+* [#6036](https://github.com/rubocop-hq/rubocop/issues/6036): Make `Rails/BulkChangeTable` aware of string table name. ([@wata727][])
 
 ### Changes
 
