@@ -209,7 +209,7 @@
 * [#5050](https://github.com/bbatsov/rubocop/issues/5050): Add auto-correction to `Style/ModuleFunction`. ([@garettarrowood][])
 * [#5358](https://github.com/bbatsov/rubocop/pull/5358):  `--no-auto-gen-timestamp` CLI option suppresses the inclusion of the date and time it was generated in auto-generated config. ([@dominicsayers][])
 * [#4274](https://github.com/bbatsov/rubocop/issues/4274): Add new `Layout/EmptyComment` cop. ([@koic][])
-* [#4477](https://github.com/bbatsov/rubocop/issues/4477): Add new configuration directive: `inherit_mode` for merging arrays. ([@leklund][])
+* [#4477](https://github.com/bbatsov/rubocop/issues/4477): Add new configuration directive: `inherit_mode` for merging arrays. WARNING: To keep compatibility with older versions, follow [this hint](https://github.com/rubocop-hq/rubocop/issues/6021#issuecomment-399415948). ([@leklund][])
 * [#5532](https://github.com/bbatsov/rubocop/pull/5532): Include `.axlsx` file by default. ([@georf][])
 * [#5490](https://github.com/bbatsov/rubocop/issues/5490): Add new `Lint/OrderedMagicComments` cop. ([@koic][])
 * [#4008](https://github.com/bbatsov/rubocop/issues/4008): Add new `Style/ExpandPathArguments` cop. ([@koic][])
