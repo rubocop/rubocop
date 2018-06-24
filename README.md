@@ -12,7 +12,7 @@
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
+  <img src="https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>
 
 > Role models are important. <br/>
@@ -20,10 +20,10 @@
 
 **RuboCop** is a Ruby static code analyzer. Out of the box it will
 enforce many of the guidelines outlined in the community
-[Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
+[Ruby Style Guide](https://github.com/rubocop-hq/ruby-style-guide).
 
 Most aspects of its behavior can be tweaked via various
-[configuration options](https://github.com/bbatsov/rubocop/blob/master/config/default.yml).
+[configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).
 
 Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
@@ -94,14 +94,14 @@ Here's a list of RuboCop's core developers:
 ## Logo
 
 RuboCop's logo was created by [Dimiter Petrov](https://www.chadomoto.com/). You can find the logo in various
-formats [here](https://github.com/bbatsov/rubocop/tree/master/logo).
+formats [here](https://github.com/rubocop-hq/rubocop/tree/master/logo).
 
 The logo is licensed under a
 [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/deed.en_GB).
 
 ## Contributors
 
-Here's a [list](https://github.com/bbatsov/rubocop/graphs/contributors) of
+Here's a [list](https://github.com/rubocop-hq/rubocop/graphs/contributors) of
 all the people who have contributed to the development of RuboCop.
 
 I'm extremely grateful to each and every one of them!
