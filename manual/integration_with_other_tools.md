@@ -2,7 +2,7 @@
 
 ### Emacs
 
-[rubocop.el](https://github.com/bbatsov/rubocop-emacs) is a simple
+[rubocop.el](https://github.com/rubocop-hq/rubocop-emacs) is a simple
 Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
 and quickly jump between problems in your code.
 
