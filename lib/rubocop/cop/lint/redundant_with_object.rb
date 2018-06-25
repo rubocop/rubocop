@@ -36,7 +36,7 @@ module RuboCop
         def_node_matcher :redundant_with_object?, <<-PATTERN
           (block
             $(send _ {:each_with_object :with_object}
-              (_))
+              _)
             (args
               (arg _))
             ...)

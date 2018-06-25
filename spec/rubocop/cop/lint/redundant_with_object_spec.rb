@@ -74,4 +74,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject do
   it 'an object is used as a block argument' do
     expect_no_offenses('ary.each_with_object([]) { |v, o| v; o }')
   end
+
+  context 'when missing argument to `each_with_object`' do
+    it 'does not register an offense when block has 2 arguments' do
+      expect_no_offenses('ary.each_with_object { |v, o| v; o }')
+    end
+
+    it 'does not register an offense when block has 1 argument' do
+      expect_no_offenses('ary.each_with_object { |v| v }')
+    end
+  end
 end
