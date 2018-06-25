@@ -19,6 +19,7 @@
 * [#6029](https://github.com/bbatsov/rubocop/issues/6029): Fix a false positive for `Lint/ShadowedArgument` when reassigning to splat variable. ([@koic][])
 * [#6036](https://github.com/rubocop-hq/rubocop/issues/6036): Make `Rails/BulkChangeTable` aware of string table name. ([@wata727][])
 * [#5467](https://github.com/bbatsov/rubocop/issues/5467): Fix a false negative for `Style/MultipleComparison` when multiple comparison is not part of a conditional. ([@koic][])
+* [#6042](https://github.com/rubocop-hq/rubocop/pull/6042): Fix `Lint/RedundantWithObject` error on missing parameter to `each_with_object`. ([@Vasfed][])
 
 ### Changes
 
@@ -3449,3 +3450,4 @@
 [@tatsuyafw]: https://github.com/tatsuyafw
 [@alexander-lazarov]: https://github.com/alexander-lazarov
 [@r7kamura]: https://github.com/r7kamura
+[@Vasfed]: https://github.com/Vasfed
