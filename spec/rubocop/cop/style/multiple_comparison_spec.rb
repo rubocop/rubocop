@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     expect_offense(<<-RUBY.strip_indent)
       a = "a"
       if a == "a" || a == "b"
-      ^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+         ^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
         print a
       end
     RUBY
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     expect_offense(<<-RUBY.strip_indent)
       a = "a"
       if a == "a" || a == "b" || a == "c"
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
         print a
       end
     RUBY
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     expect_offense(<<-RUBY.strip_indent)
       a = "a"
       if "a" == a || "b" == a || "c" == a
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
         print a
       end
     RUBY
@@ -50,8 +50,18 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     expect_offense(<<-RUBY.strip_indent)
       a = "a"
       if a == "a" || "b" == a || a == "c"
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
         print a
+      end
+    RUBY
+  end
+
+  it 'registers an offense when multiple comparison is not ' \
+     'part of a conditional' do
+    expect_offense(<<-RUBY.strip_indent)
+      def foo(x)
+        x == 1 || x == 2 || x == 3
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
       end
     RUBY
   end
