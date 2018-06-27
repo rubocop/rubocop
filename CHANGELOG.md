@@ -21,6 +21,7 @@
 * [#5467](https://github.com/bbatsov/rubocop/issues/5467): Fix a false negative for `Style/MultipleComparison` when multiple comparison is not part of a conditional. ([@koic][])
 * [#6042](https://github.com/rubocop-hq/rubocop/pull/6042): Fix `Lint/RedundantWithObject` error on missing parameter to `each_with_object`. ([@Vasfed][])
 * [#6056](https://github.com/rubocop-hq/rubocop/pull/6056): Support string timestamps in `Rails/CreateTableWithTimestamps` cop. ([@drn][])
+* [#6052](https://github.com/rubocop-hq/rubocop/issues/6052): Fix a false positive for `Style/SymbolProc` when using  block with adding a comma after the sole argument. ([@koic][])
 
 ### Changes
 

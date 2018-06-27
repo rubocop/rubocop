@@ -64,6 +64,10 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('something { |*x| x.first }')
   end
 
+  it 'accepts block with adding a comma after the sole argument' do
+    expect_no_offenses('something { |x,| x.first }')
+  end
+
   context 'when the method has arguments' do
     let(:source) { 'method(one, 2) { |x| x.test }' }
 
