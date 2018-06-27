@@ -2,6 +2,7 @@ version: 2
 
 steps: &steps
   steps:
+    - run: echo $JRUBY_OPTS
     - checkout
     - run: bundle install
     - run: ruby .travis.rb
@@ -124,3 +125,15 @@ workflows:
       - jruby-9.2-spec
       - jruby-9.2-ascii_spec
       - jruby-9.2-rubocop
+
+# Two environment variables are added directly in the CircleCI UI:
+# https://circleci.com/gh/rubocop-hq/rubocop/edit#env-vars
+#
+# By default we have 2 CPUs and 4GB ram available
+# https://circleci.com/docs/2.0/configuration-reference/#resource_class
+# JRUBY_OPTS="--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
+#
+# CircleCI container has two cores, but Ruby can see 32 cores. So we
+# configure test-queue.
+# See https://github.com/tmm1/test-queue#environment-variables
+# TEST_QUEUE_WORKERS=2
