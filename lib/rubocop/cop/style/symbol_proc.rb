@@ -22,7 +22,7 @@ module RuboCop
         def_node_matcher :symbol_proc?, <<-PATTERN
           (block
             ${(send ...) (super ...) zsuper}
-            (args (arg _var))
+            $(args (arg _var))
             (send (lvar _var) $_))
         PATTERN
 
@@ -31,7 +31,7 @@ module RuboCop
         end
 
         def on_block(node)
-          symbol_proc?(node) do |send_or_super, method|
+          symbol_proc?(node) do |send_or_super, block_args, method|
             block_method_name = resolve_block_method_name(send_or_super)
 
             # TODO: Rails-specific handling that we should probably make
@@ -40,6 +40,8 @@ module RuboCop
             return if proc_node?(send_or_super)
             return if %i[lambda proc].include?(block_method_name)
             return if ignored_method?(block_method_name)
+            return if block_args.children.size == 1 &&
+                      block_args.source.include?(',')
 
             offense(node, method, block_method_name)
           end
