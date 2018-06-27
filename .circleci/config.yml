@@ -2,6 +2,7 @@ version: 2
 
 steps: &steps
   steps:
+    - run: echo $JRUBY_OPTS
     - checkout
     - run: bundle install
     - run: ruby .travis.rb
