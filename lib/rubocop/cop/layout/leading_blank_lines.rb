@@ -39,7 +39,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          range = Parser::Source::Range.new(processed_source.raw_source,
+          range = Parser::Source::Range.new(processed_source.buffer,
                                             0,
                                             node.begin_pos)
 

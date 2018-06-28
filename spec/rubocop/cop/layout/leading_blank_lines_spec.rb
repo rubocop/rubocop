@@ -104,5 +104,37 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
         end
       RUBY
     end
+
+    context 'in collaboration' do
+      let(:config) do
+        RuboCop::Config.new('Layout/SpaceAroundEqualsInParameterDefault' => {
+                              'SupportedStyles' => [:space],
+                              'EnforcedStyle' => :space
+                            })
+      end
+      let(:cops) do
+        cop_classes = [
+          described_class,
+          ::RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault
+        ]
+        ::RuboCop::Cop::Registry.new(cop_classes)
+      end
+
+      it 'does not invoke conflicts with other cops' do
+        source_with_offences = <<-RUBY.strip_indent
+
+          def bar(arg =1); end
+        RUBY
+
+        options = { auto_correct: true, stdin: true }
+        team = RuboCop::Cop::Team.new(cops, config, options)
+        team.inspect_file(parse_source(source_with_offences, nil))
+        new_source = options[:stdin]
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          def bar(arg = 1); end
+        RUBY
+      end
+    end
   end
 end

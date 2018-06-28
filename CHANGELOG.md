@@ -17,6 +17,7 @@
 * Fix exception that occurs when auto-correcting a modifier if statement in `Style/UnneededCondition`. ([@rrosenblum][])
 * [#6025](https://github.com/bbatsov/rubocop/pull/6025): Fix an incorrect auto-correct for `Lint/UnneededCondition` when using if_branch in `else` branch. ([@koic][])
 * [#6029](https://github.com/bbatsov/rubocop/issues/6029): Fix a false positive for `Lint/ShadowedArgument` when reassigning to splat variable. ([@koic][])
+* [#6035](https://github.com/rubocop-hq/rubocop/issues/6035): Fix error on autocorrection when `Layout/LeadingBlankLines` is the first cop to act. ([@Vasfed][])
 * [#6036](https://github.com/rubocop-hq/rubocop/issues/6036): Make `Rails/BulkChangeTable` aware of string table name. ([@wata727][])
 * [#5467](https://github.com/bbatsov/rubocop/issues/5467): Fix a false negative for `Style/MultipleComparison` when multiple comparison is not part of a conditional. ([@koic][])
 * [#6042](https://github.com/rubocop-hq/rubocop/pull/6042): Fix `Lint/RedundantWithObject` error on missing parameter to `each_with_object`. ([@Vasfed][])
