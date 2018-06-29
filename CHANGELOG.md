@@ -20,6 +20,7 @@
 * [#6036](https://github.com/rubocop-hq/rubocop/issues/6036): Make `Rails/BulkChangeTable` aware of string table name. ([@wata727][])
 * [#5467](https://github.com/bbatsov/rubocop/issues/5467): Fix a false negative for `Style/MultipleComparison` when multiple comparison is not part of a conditional. ([@koic][])
 * [#6042](https://github.com/rubocop-hq/rubocop/pull/6042): Fix `Lint/RedundantWithObject` error on missing parameter to `each_with_object`. ([@Vasfed][])
+* [#6056](https://github.com/rubocop-hq/rubocop/pull/6056): Support string timestamps in `Rails/CreateTableWithTimestamps` cop. ([@drn][])
 
 ### Changes
 
@@ -3451,3 +3452,4 @@
 [@alexander-lazarov]: https://github.com/alexander-lazarov
 [@r7kamura]: https://github.com/r7kamura
 [@Vasfed]: https://github.com/Vasfed
+[@drn]: https://github.com/drn

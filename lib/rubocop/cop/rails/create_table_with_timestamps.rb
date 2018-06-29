@@ -59,7 +59,9 @@ module RuboCop
         PATTERN
 
         def_node_search :created_at_or_updated_at_included?, <<-PATTERN
-          (send _var :datetime (sym {:created_at :updated_at}) ...)
+          (send _var :datetime
+            {(sym {:created_at :updated_at})(str {"created_at" "updated_at"})}
+            ...)
         PATTERN
 
         def on_send(node)
