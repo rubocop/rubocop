@@ -26,6 +26,7 @@
 
 ### Changes
 
+* [#5949](https://github.com/rubocop-hq/rubocop/issues/5949): Lint/EnsureReturn cop - why ensure must not return. ([@andriymosin][])
 * [#6006](https://github.com/bbatsov/rubocop/pull/6006): Remove `rake repl` task. ([@koic][])
 * [#5990](https://github.com/bbatsov/rubocop/pull/5990): Drop support for MRI 2.1. ([@drenmi][])
 * [#3299](https://github.com/bbatsov/rubocop/issues/3299): `Lint/UselessAccessModifier` now warns when `private_class_method` is used without arguments. ([@Darhazer][])

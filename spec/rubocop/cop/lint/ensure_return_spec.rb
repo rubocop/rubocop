@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
       ensure
         file.close
         return
-        ^^^^^^ Do not return from an `ensure` block.
+        ^^^^^^ Do not return from an `ensure` block, it changes the control flow as if a `rescue Exception` clause was in place before the `ensure` clause.
       end
     RUBY
   end
