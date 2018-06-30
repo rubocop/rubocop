@@ -32,6 +32,8 @@ module RuboCop
       #   corrector = Corrector.new(source_buffer, corrections)
       def initialize(source_buffer, corrections = [])
         @source_buffer = source_buffer
+        raise 'source_buffer should be a Parser::Source::Buffer' unless \
+          source_buffer.is_a? Parser::Source::Buffer
         @corrections = corrections
         @source_rewriter = Parser::Source::TreeRewriter.new(
           source_buffer,
@@ -72,6 +74,7 @@ module RuboCop
       #
       # @param [Parser::Source::Range] range
       def remove(range)
+        validate_range range
         @source_rewriter.remove(range)
       end
 
@@ -80,6 +83,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def insert_before(range, content)
+        validate_range range
         # TODO: Fix Cops using bad ranges instead
         if range.end_pos > @source_buffer.source.size
           range = range.with(end_pos: @source_buffer.source.size)
@@ -93,6 +97,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def insert_after(range, content)
+        validate_range range
         @source_rewriter.insert_after(range, content)
       end
 
@@ -101,6 +106,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [String] content
       def replace(range, content)
+        validate_range range
         @source_rewriter.replace(range, content)
       end
 
@@ -109,6 +115,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [Integer] size
       def remove_preceding(range, size)
+        validate_range range
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.begin_pos - size,
                                               range.begin_pos)
@@ -122,6 +129,7 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [Integer] size
       def remove_leading(range, size)
+        validate_range range
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.begin_pos,
                                               range.begin_pos + size)
@@ -135,10 +143,27 @@ module RuboCop
       # @param [Parser::Source::Range] range
       # @param [Integer] size
       def remove_trailing(range, size)
+        validate_range range
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.end_pos - size,
                                               range.end_pos)
         @source_rewriter.remove(to_remove)
+      end
+
+      private
+
+      # :nodoc:
+      def validate_range(range)
+        return if range.source_buffer == @source_buffer
+        unless range.source_buffer.is_a?(Parser::Source::Buffer)
+          # actually this should be enforced by parser gem
+          raise 'Corrector expected range source buffer to be a '\
+                "Parser::Source::Buffer, but got #{range.source_buffer.class}"
+        end
+        raise "Correction target buffer #{range.source_buffer.object_id} "\
+              "name:#{range.source_buffer.name.inspect}"\
+              " is not current #{@source_buffer.object_id} "\
+              "name:#{@source_buffer.name.inspect} under investigation"
       end
     end
   end
