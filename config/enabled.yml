@@ -1336,10 +1336,6 @@ Security/YAMLLoad:
 
 #################### Style ###############################
 
-Style/AccessModifierDeclarations:
-  Description: 'Checks style of how access modifiers are used.'
-  Enabled: true
-
 Style/Alias:
   Description: 'Use alias instead of alias_method.'
   StyleGuide: '#alias-method'
