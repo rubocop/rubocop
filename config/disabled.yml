@@ -52,6 +52,10 @@ Rails/SaveBang:
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#save-bang'
   Enabled: false
 
+Style/AccessModifierDeclarations:
+  Description: 'Checks style of how access modifiers are used.'
+  Enabled: false
+
 Style/AutoResourceCleanup:
   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
   Enabled: false

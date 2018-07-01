@@ -4,7 +4,7 @@
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 Access modifiers should be declared to apply to a group of methods
 or inline before each method, depending on configuration.
