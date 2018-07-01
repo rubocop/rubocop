@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     module Rails
       # Avoid breaking ORM abstraction.
+      # AKA: don't use ID when you already have the object.
+      #
       # @example
       #
       #   # bad
