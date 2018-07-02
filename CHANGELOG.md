@@ -25,6 +25,7 @@
 * [#6056](https://github.com/rubocop-hq/rubocop/pull/6056): Support string timestamps in `Rails/CreateTableWithTimestamps` cop. ([@drn][])
 * [#6052](https://github.com/rubocop-hq/rubocop/issues/6052): Fix a false positive for `Style/SymbolProc` when using  block with adding a comma after the sole argument. ([@koic][])
 * [#2743](https://github.com/rubocop-hq/rubocop/issues/2743): Support `<<` as a kind of assignment operator in `Layout/EndAlignment`. ([@jonas054][])
+* [#6067](https://github.com/rubocop-hq/rubocop/issues/6067): Prevent auto-correct error for `Performance/InefficientHashSearch` when a method by itself and `include?` method are method chaining. ([@koic][])
 
 ### Changes
 

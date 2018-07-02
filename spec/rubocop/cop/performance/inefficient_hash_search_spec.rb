@@ -47,6 +47,15 @@ RSpec.describe RuboCop::Cop::Performance::InefficientHashSearch do
       RUBY
     end
 
+    it 'does not register an offense when `keys` method defined by itself ' \
+       'and `include?` method are method chaining' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_include?(key)
+          keys.include?(key)
+        end
+      RUBY
+    end
+
     describe 'autocorrect' do
       context 'when using `keys.include?`' do
         it 'corrects to `key?` or `has_key?`' do
