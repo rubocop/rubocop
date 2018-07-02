@@ -107,6 +107,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
+                  --strict-stdin               Exclude non-ruby files even when piped via
+                                               STDIN.
         OUTPUT
 
         expect($stdout.string).to eq(expected_help)
