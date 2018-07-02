@@ -38,11 +38,15 @@ module RuboCop
       #
       class InefficientHashSearch < Cop
         def_node_matcher :inefficient_include?, <<-PATTERN
-          (send $(send _ ${:keys :values}) :include? $_)
+          (send (send $_ {:keys :values}) :include? _)
         PATTERN
 
         def on_send(node)
-          add_offense(node, message: msg(node)) if inefficient_include?(node)
+          inefficient_include?(node) do |receiver|
+            return if receiver.nil?
+
+            add_offense(node)
+          end
         end
 
         def autocorrect(node)
@@ -59,7 +63,7 @@ module RuboCop
 
         private
 
-        def msg(node)
+        def message(node)
           "Use `##{autocorrect_method(node)}` instead of "\
             "`##{current_method(node)}.include?`."
         end
@@ -72,7 +76,7 @@ module RuboCop
         end
 
         def current_method(node)
-          node.children[0].method_name
+          node.receiver.method_name
         end
 
         def use_long_method
@@ -87,7 +91,7 @@ module RuboCop
         end
 
         def autocorrect_hash_expression(node)
-          node.children[0].children[0].loc.expression.source
+          node.receiver.receiver.source
         end
       end
     end
