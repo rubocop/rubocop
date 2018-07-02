@@ -11,6 +11,8 @@ module RuboCop
       #   [1, 2, 3].shuffle.first
       #   [1, 2, 3].shuffle.first(2)
       #   [1, 2, 3].shuffle.last
+      #   [2, 1, 3].shuffle.at(0)
+      #   [2, 1, 3].shuffle.slice(0)
       #   [1, 2, 3].shuffle[2]
       #   [1, 2, 3].shuffle[0, 2]    # sample(2) will do the same
       #   [1, 2, 3].shuffle[0..2]    # sample(3) will do the same
@@ -28,7 +30,7 @@ module RuboCop
         MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'.freeze
 
         def_node_matcher :sample_candidate?, <<-PATTERN
-          (send $(send _ :shuffle $...) ${:first :last :[]} $...)
+          (send $(send _ :shuffle $...) ${:first :last :[] :at :slice} $...)
         PATTERN
 
         def on_send(node)
@@ -57,7 +59,7 @@ module RuboCop
           case method
           when :first, :last
             true
-          when :[]
+          when :[], :at, :slice
             sample_size(method_args) != :unknown
           else
             false
@@ -78,7 +80,7 @@ module RuboCop
           when :erange, :irange
             range_size(arg)
           when :int
-            arg.to_a.first.zero? ? nil : :unknown
+            [0, -1].include?(arg.to_a.first) ? nil : :unknown
           else
             :unknown
           end
@@ -126,7 +128,7 @@ module RuboCop
           case method
           when :first, :last
             extract_source(method_args)
-          when :[]
+          when :[], :slice
             sample_size(method_args)
           end
         end
