@@ -3630,12 +3630,22 @@ foo if ['a', 'b', 'c'].include?(a)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | -
+Enabled | Yes | Yes  | 0.34 | 0.65
 
 This cop checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
 
+Strict mode can be used to freeze all constants, rather than
+just literals.
+Strict mode is considered an experimental feature. It has not been
+updated with an exhaustive list of all methods that will produce
+frozen objects so there is a decent chance of getting some false
+positives. Luckily, there is no harm in freezing an already
+frozen object.
+
 ### Examples
+
+#### EnforcedStyle: literals (default)
 
 ```ruby
 # bad
@@ -3646,9 +3656,41 @@ CONST = [1, 2, 3].freeze
 
 # good
 CONST = <<~TESTING.freeze
-This is a heredoc
+  This is a heredoc
 TESTING
+
+# good
+CONST = Something.new
 ```
+#### EnforcedStyle: strict
+
+```ruby
+# bad
+CONST = Something.new
+
+# bad
+CONST = Struct.new do
+  def foo
+    puts 1
+  end
+end
+
+# good
+CONST = Something.new.freeze
+
+# good
+CONST = Struct.new do
+  def foo
+    puts 1
+  end
+end.freeze
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `literals` | `literals`, `strict`
 
 ## Style/NegatedIf
 

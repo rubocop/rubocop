@@ -3549,6 +3549,17 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
+  VersionChanged: '0.65'
+  EnforcedStyle: literals
+  SupportedStyles:
+    # literals: freeze literals assigned to constants
+    # strict: freeze all constants
+    # Strict mode is considered an experimental feature. It has not been updated
+    # with an exhaustive list of all methods that will produce frozen objects so
+    # there is a decent chance of getting some false positives. Luckily, there is
+    # no harm in freezing an already frozen object.
+    - literals
+    - strict
 
 Style/NegatedIf:
   Description: >-
