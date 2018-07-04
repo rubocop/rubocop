@@ -162,7 +162,7 @@ module RuboCop
         def alignment_node_for_variable_style(node)
           return node.parent if node.case_type? && node.argument?
 
-          assignment = node.ancestors.find(&:assignment?)
+          assignment = node.ancestors.find(&:assignment_or_similar?)
           if assignment && !line_break_before_keyword?(assignment.source_range,
                                                        node)
             assignment

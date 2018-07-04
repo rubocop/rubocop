@@ -379,6 +379,11 @@ module RuboCop
         {equals_asgn? shorthand_asgn? asgn_method_call?}
       PATTERN
 
+      # Some cops treat the shovel operator as a kind of assignment.
+      def_node_matcher :assignment_or_similar?, <<-PATTERN
+        {assignment? (send _recv :<< ...)}
+      PATTERN
+
       def literal?
         LITERALS.include?(type)
       end

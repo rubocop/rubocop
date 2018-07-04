@@ -11,8 +11,6 @@ module RuboCop
       end
 
       def on_send(node)
-        return unless node.setter_method?
-
         rhs = extract_rhs(node)
 
         return unless rhs

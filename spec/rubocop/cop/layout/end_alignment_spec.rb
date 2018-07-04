@@ -372,6 +372,10 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         var = until test
         end
         ^^^ `end` at 2, 0 is not aligned with `until` at 1, 6.
+
+        var << until test
+        end
+        ^^^ `end` at 2, 0 is not aligned with `until` at 1, 7.
       RUBY
 
       include_examples 'aligned', 'var = if',     'test',     '      end'
@@ -379,6 +383,8 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       include_examples 'aligned', 'var = while',  'test',     '      end'
       include_examples 'aligned', 'var = until',  'test',     '      end'
       include_examples 'aligned', 'var = case',   'a when b', '      end'
+
+      include_examples 'aligned', 'var[0] = case', 'a when b', '         end'
     end
 
     context 'when EnforcedStyleAlignWith is variable' do
@@ -386,6 +392,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
       end
 
+      include_examples 'aligned', 'var << if',    'test',     'end'
       include_examples 'aligned', 'var = if',     'test',     'end'
       include_examples 'aligned', 'var = unless', 'test',     'end'
       include_examples 'aligned', 'var = while',  'test',     'end'
@@ -411,6 +418,22 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         var = until test
               end
               ^^^ `end` at 2, 6 is not aligned with `var = until` at 1, 0.
+
+        var << if test
+               end
+               ^^^ `end` at 2, 7 is not aligned with `var << if` at 1, 0.
+
+        var << unless test
+               end
+               ^^^ `end` at 2, 7 is not aligned with `var << unless` at 1, 0.
+
+        var[x] = while test
+                 end
+                 ^^^ `end` at 2, 9 is not aligned with `var[x] = while` at 1, 0.
+
+        var << until test
+               end
+               ^^^ `end` at 2, 7 is not aligned with `var << until` at 1, 0.
       RUBY
 
       # If there's a line break after = we align with the keyword even if the
@@ -496,6 +519,30 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         h[k] = if test
                end
                ^^^ `end` at 2, 7 is not aligned with `h[k] = if` at 1, 0.
+
+        var << case a when b
+               end
+               ^^^ `end` at 2, 7 is not aligned with `var << case` at 1, 0.
+
+        @var << if test
+                end
+                ^^^ `end` at 2, 8 is not aligned with `@var << if` at 1, 0.
+
+        @@var << if test
+                 end
+                 ^^^ `end` at 2, 9 is not aligned with `@@var << if` at 1, 0.
+
+        $var << if test
+                end
+                ^^^ `end` at 2, 8 is not aligned with `$var << if` at 1, 0.
+
+        CNST << if test
+                end
+                ^^^ `end` at 2, 8 is not aligned with `CNST << if` at 1, 0.
+
+        h[k] << if test
+                end
+                ^^^ `end` at 2, 8 is not aligned with `h[k] << if` at 1, 0.
       RUBY
 
       include_examples 'misaligned', <<-RUBY, false
@@ -531,6 +578,26 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       var = case a when b
             end
             ^^^ `end` at 2, 6 is not aligned with `var = case a when b` at 1, 0.
+
+      var << if test
+             end
+             ^^^ `end` at 2, 7 is not aligned with `var << if test` at 1, 0.
+
+      var << unless test
+             end
+             ^^^ `end` at 2, 7 is not aligned with `var << unless test` at 1, 0.
+
+      var << while test
+             end
+             ^^^ `end` at 2, 7 is not aligned with `var << while test` at 1, 0.
+
+      var << until test
+             end
+             ^^^ `end` at 2, 7 is not aligned with `var << until test` at 1, 0.
+
+      var << case a when b
+             end
+             ^^^ `end` at 2, 7 is not aligned with `var << case a when b` at 1, 0.
     RUBY
 
     include_examples 'misaligned', <<-RUBY, false
@@ -543,6 +610,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     include_examples 'aligned', 'var = if',     'test',     'end'
     include_examples 'aligned', 'var = unless', 'test',     'end'
     include_examples 'aligned', 'var = while',  'test',     'end'
+    include_examples 'aligned', 'var << while', 'test',     'end'
     include_examples 'aligned', 'var = until',  'test',     'end'
     include_examples 'aligned', 'var = case',   'a when b', 'end'
 
