@@ -5,6 +5,7 @@ require 'shellwords'
 
 module RuboCop
   class IncorrectCopNameError < StandardError; end
+  class OptionArgumentError < StandardError; end
 
   # This class handles command line options.
   class Options
@@ -26,7 +27,7 @@ module RuboCop
         # The parser has put the file name given after --stdin into
         # @options[:stdin]. The args array should be empty.
         if args.any?
-          raise ArgumentError, '-s/--stdin requires exactly one path.'
+          raise OptionArgumentError, '-s/--stdin requires exactly one path.'
         end
         # We want the STDIN contents in @options[:stdin] and the file name in
         # args to simplify the rest of the processing.
@@ -241,21 +242,21 @@ module RuboCop
 
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?
-        raise ArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
-                             'be used with --only.'
+        raise OptionArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
+                                   'be used with --only.'
       end
       if except_syntax?
-        raise ArgumentError, 'Syntax checking can not be turned off.'
+        raise OptionArgumentError, 'Syntax checking can not be turned off.'
       end
       unless boolean_or_empty_cache?
-        raise ArgumentError, '-C/--cache argument must be true or false'
+        raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
       validate_auto_gen_config
       validate_parallel
 
       return if incompatible_options.size <= 1
-      raise ArgumentError, 'Incompatible cli options: ' \
-                           "#{incompatible_options.inspect}"
+      raise OptionArgumentError, 'Incompatible cli options: ' \
+                                 "#{incompatible_options.inspect}"
     end
 
     def validate_auto_gen_config
@@ -265,7 +266,8 @@ module RuboCop
 
       %i[exclude_limit no_offense_counts no_auto_gen_timestamp].each do |option|
         if @options.key?(option)
-          raise ArgumentError, format(message, flag: option.to_s.tr('_', '-'))
+          raise OptionArgumentError,
+                format(message, flag: option.to_s.tr('_', '-'))
         end
       end
     end
@@ -274,11 +276,15 @@ module RuboCop
       return unless @options.key?(:parallel)
 
       if @options[:cache] == 'false'
-        raise ArgumentError, '-P/--parallel uses caching to speed up ' \
-                             'execution, so combining with --cache false is ' \
-                             'not allowed.'
+        raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
+                                   'execution, so combining with --cache ' \
+                                   'false is not allowed.'
       end
 
+      validate_parallel_with_combo_option
+    end
+
+    def validate_parallel_with_combo_option
       combos = {
         auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
                          'while --auto-gen-config needs a non-cached run, ' \
@@ -287,7 +293,9 @@ module RuboCop
         auto_correct: '-P/--parallel can not be combined with --auto-correct.'
       }
 
-      combos.each { |key, msg| raise ArgumentError, msg if @options.key?(key) }
+      combos.each do |key, msg|
+        raise OptionArgumentError, msg if @options.key?(key)
+      end
     end
 
     def only_includes_unneeded_disable?
