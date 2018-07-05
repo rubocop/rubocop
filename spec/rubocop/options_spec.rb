@@ -142,26 +142,26 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'rejects using -v with -V' do
         msg = 'Incompatible cli options: [:version, :verbose_version]'
         expect { options.parse %w[-vV] }
-          .to raise_error(ArgumentError, msg)
+          .to raise_error(RuboCop::OptionArgumentError, msg)
       end
 
       it 'rejects using -v with --show-cops' do
         msg = 'Incompatible cli options: [:version, :show_cops]'
         expect { options.parse %w[-v --show-cops] }
-          .to raise_error(ArgumentError, msg)
+          .to raise_error(RuboCop::OptionArgumentError, msg)
       end
 
       it 'rejects using -V with --show-cops' do
         msg = 'Incompatible cli options: [:verbose_version, :show_cops]'
         expect { options.parse %w[-V --show-cops] }
-          .to raise_error(ArgumentError, msg)
+          .to raise_error(RuboCop::OptionArgumentError, msg)
       end
 
       it 'mentions all incompatible options when more than two are used' do
         msg = 'Incompatible cli options: [:version, :verbose_version,' \
               ' :show_cops]'
         expect { options.parse %w[-vV --show-cops] }
-          .to raise_error(ArgumentError, msg)
+          .to raise_error(RuboCop::OptionArgumentError, msg)
       end
     end
 
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           msg = ['-P/--parallel uses caching to speed up execution, so ',
                  'combining with --cache false is not allowed.'].join
           expect { options.parse %w[--parallel --cache false] }
-            .to raise_error(ArgumentError, msg)
+            .to raise_error(RuboCop::OptionArgumentError, msg)
         end
       end
 
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         it 'fails with an error message' do
           msg = '-P/--parallel can not be combined with --auto-correct.'
           expect { options.parse %w[--parallel --auto-correct] }
-            .to raise_error(ArgumentError, msg)
+            .to raise_error(RuboCop::OptionArgumentError, msg)
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                 '--auto-gen-config needs a non-cached run, so they cannot be ' \
                 'combined.'
           expect { options.parse %w[--parallel --auto-gen-config] }
-            .to raise_error(ArgumentError, msg)
+            .to raise_error(RuboCop::OptionArgumentError, msg)
         end
       end
 
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         it 'fails with an error message' do
           msg = '-P/--parallel can not be combined with -F/--fail-fast.'
           expect { options.parse %w[--parallel --fail-fast] }
-            .to raise_error(ArgumentError, msg)
+            .to raise_error(RuboCop::OptionArgumentError, msg)
         end
       end
     end
@@ -247,7 +247,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if unrecognized argument is given' do
-        expect { options.parse %w[--cache maybe] }.to raise_error(ArgumentError)
+        expect { options.parse %w[--cache maybe] }
+          .to raise_error(RuboCop::OptionArgumentError)
       end
 
       it 'accepts true as argument' do
@@ -277,7 +278,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       it 'fails if given without --auto-gen-config' do
         expect { options.parse %w[--exclude-limit 10] }
-          .to raise_error(ArgumentError)
+          .to raise_error(RuboCop::OptionArgumentError)
       end
     end
 
@@ -306,7 +307,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       it 'fails if more than one path is given' do
         expect { options.parse %w[--stdin foo bar] }
-          .to raise_error(ArgumentError)
+          .to raise_error(RuboCop::OptionArgumentError)
       end
     end
   end

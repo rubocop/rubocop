@@ -39,7 +39,7 @@ module RuboCop
       act_on_options
       apply_default_formatter
       execute_runners(paths)
-    rescue RuboCop::ConfigNotFoundError => e
+    rescue ConfigNotFoundError, IncorrectCopNameError, OptionArgumentError => e
       warn e.message
       STATUS_ERROR
     rescue RuboCop::Error => e
@@ -47,9 +47,6 @@ module RuboCop
       STATUS_ERROR
     rescue Finished
       STATUS_SUCCESS
-    rescue IncorrectCopNameError => e
-      warn e.message
-      STATUS_ERROR
     rescue OptionParser::InvalidOption => e
       warn e.message
       warn 'For usage information, use --help'
@@ -128,9 +125,9 @@ module RuboCop
     def validate_options_vs_config
       if @options[:parallel] &&
          !@config_store.for(Dir.pwd).for_all_cops['UseCache']
-        raise ArgumentError, '-P/--parallel uses caching to speed up ' \
-                             'execution, so combining with AllCops: ' \
-                             'UseCache: false is not allowed.'
+        raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
+                                   'execution, so combining with AllCops: ' \
+                                   'UseCache: false is not allowed.'
       end
     end
 
