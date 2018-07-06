@@ -1654,6 +1654,10 @@ Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
 
+Lint/UselessAccessModifier:
+  ContextCreatingMethods: []
+  MethodCreatingMethods: []
+
 Lint/Void:
   CheckForMethodsWithNoSideEffects: false
 
