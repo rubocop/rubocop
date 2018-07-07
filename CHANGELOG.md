@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.58.0 (2018-07-07)
+
 ### New features
 
 * [#5973](https://github.com/bbatsov/rubocop/issues/5973): Add new `Style/IpAddresses` cop. ([@dvandersluis][])
