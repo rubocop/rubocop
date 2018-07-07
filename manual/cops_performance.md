@@ -654,6 +654,10 @@ def foo
 end
 ```
 
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#regexp-vs-stringmatch-vs-string-vs-stringmatch-code-](https://github.com/JuanitoFatas/fast-ruby#regexp-vs-stringmatch-vs-string-vs-stringmatch-code-)
+
 ## Performance/ReverseEach
 
 Enabled by default | Supports autocorrection
