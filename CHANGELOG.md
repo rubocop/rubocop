@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6086](https://github.com/bbatsov/rubocop/issues/6086): Fix an error for `Gemspec/OrderedDependencies` when using method call to gem names in gemspec. ([@koic][])
+
 ## 0.58.0 (2018-07-07)
 
 ### New features
