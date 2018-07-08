@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
++### Bug fixes
+
+* Fix `Style/RedundantParentheses` with hash literal as first argument to `super`. ([@maxh][])
+
 ## 0.58.0 (2018-07-07)
 
 ### New features
@@ -3461,3 +3465,4 @@
 [@r7kamura]: https://github.com/r7kamura
 [@Vasfed]: https://github.com/Vasfed
 [@drn]: https://github.com/drn
+[@maxh]: https://github.com/maxh
