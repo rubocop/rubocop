@@ -71,6 +71,46 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         end
       RUBY
     end
+
+    context 'when supported types is block' do
+      let(:supported_types) { %w[block] }
+
+      it 'registers an offense when multi-line assignments ' \
+         'using block definition is on the same line' do
+        expect_offense(<<-RUBY.strip_indent)
+          lambda = -> {
+          ^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
+            puts 'hello'
+          }
+        RUBY
+      end
+
+      it 'allows multi-line assignments when using block definition ' \
+         'on separate lines' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          lambda =
+            -> {
+              puts 'hello'
+            }
+        RUBY
+      end
+
+      it 'allows multi-line block defines on separate lines' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          default_scope -> {
+            where(foo: "bar")
+          }
+        RUBY
+      end
+
+      it 'allows multi-line assignments when using shovel operator' do
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          foo << items.map do |item|
+            "#{item}!"
+          end
+        RUBY
+      end
+    end
   end
 
   context 'same_line style' do
@@ -134,6 +174,46 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         if foo
         end
       RUBY
+    end
+
+    context 'when supported types is block' do
+      let(:supported_types) { %w[block] }
+
+      it 'allows when multi-line assignments using block definition ' \
+         'is on the same line' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          lambda = -> {
+            puts 'hello'
+          }
+        RUBY
+      end
+
+      it 'registers an offense when multi-line assignments ' \
+         'using block definition on separate lines' do
+        expect_offense(<<-RUBY.strip_indent)
+          lambda =
+          ^^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
+            -> {
+              puts 'hello'
+            }
+        RUBY
+      end
+
+      it 'allows multi-line block defines on separate lines' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          default_scope -> {
+            where(foo: "bar")
+          }
+        RUBY
+      end
+
+      it 'allows multi-line assignments when using shovel operator' do
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          foo << items.map do |item|
+            "#{item}!"
+          end
+        RUBY
+      end
     end
   end
 end
