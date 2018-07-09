@@ -250,4 +250,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
       end
     RUBY
   end
+
+  it 'accepts parentheses in super call with hash' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      super ({
+        foo: bar,
+      })
+    RUBY
+  end
 end

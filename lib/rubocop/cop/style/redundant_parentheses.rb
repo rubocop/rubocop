@@ -190,8 +190,16 @@ module RuboCop
           args.one? && args.first.begin_type?
         end
 
-        def_node_matcher :first_argument?, <<-PATTERN
+        def first_argument?(node)
+          first_send_argument?(node) || first_super_argument?(node)
+        end
+
+        def_node_matcher :first_send_argument?, <<-PATTERN
           ^(send _ _ equal?(%0) ...)
+        PATTERN
+
+        def_node_matcher :first_super_argument?, <<-PATTERN
+          ^(super equal?(%0) ...)
         PATTERN
 
         def call_chain_starts_with_int?(begin_node, send_node)

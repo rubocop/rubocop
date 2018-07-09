@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* Fix `Style/RedundantParentheses` with hash literal as first argument to `super`. ([@maxh][])
 * [#6086](https://github.com/bbatsov/rubocop/issues/6086): Fix an error for `Gemspec/OrderedDependencies` when using method call to gem names in gemspec. ([@koic][])
 
 ## 0.58.0 (2018-07-07)
@@ -3465,3 +3466,4 @@
 [@r7kamura]: https://github.com/r7kamura
 [@Vasfed]: https://github.com/Vasfed
 [@drn]: https://github.com/drn
+[@maxh]: https://github.com/maxh
