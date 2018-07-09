@@ -43,10 +43,15 @@ module RuboCop
           'on the same line as the assignment operator `=`.'.freeze
 
         def check_assignment(node, rhs)
+          return if node.send_type?
           return unless rhs
           return unless supported_types.include?(rhs.type)
           return if rhs.first_line == rhs.last_line
 
+          check_by_enforced_style(node, rhs)
+        end
+
+        def check_by_enforced_style(node, rhs)
           case style
           when :new_line
             check_new_line_offense(node, rhs)
