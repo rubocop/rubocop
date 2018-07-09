@@ -187,4 +187,15 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
       RUBY
     end
   end
+
+  context 'When using method call to gem names' do
+    it 'does not register any offenses' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Gem::Specification.new do |spec|
+          spec.add_dependency         'rubocop'.freeze
+          spec.add_runtime_dependency 'rspec'.freeze
+        end
+      RUBY
+    end
+  end
 end

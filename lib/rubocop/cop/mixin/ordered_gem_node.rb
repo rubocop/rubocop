@@ -37,7 +37,15 @@ module RuboCop
       end
 
       def gem_name(declaration_node)
-        declaration_node.first_argument.str_content
+        gem_node = declaration_node.first_argument
+
+        find_gem_name(gem_node)
+      end
+
+      def find_gem_name(gem_node)
+        return gem_node.str_content if gem_node.str_type?
+
+        find_gem_name(gem_node.receiver)
       end
 
       def treat_comments_as_separators

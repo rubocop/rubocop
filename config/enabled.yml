@@ -761,8 +761,6 @@ Lint/UriRegexp:
 Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
-  ContextCreatingMethods: []
-  MethodCreatingMethods: []
 
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
@@ -1033,6 +1031,7 @@ Performance/RegexpMatch:
   Description: >-
                   Use `match?` instead of `Regexp#match`, `String#match`, `Symbol#match`,
                   `Regexp#===`, or `=~` when `MatchData` is not used.
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#regexp-vs-stringmatch-vs-string-vs-stringmatch-code-'
   Enabled: true
 
 Performance/ReverseEach:
