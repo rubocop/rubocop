@@ -175,6 +175,34 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     RUBY
   end
 
+  it 'auto-corrects calls where arg is method call' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def my_method
+        foo bar.baz(abc, xyz)
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def my_method
+        foo(bar.baz(abc, xyz))
+      end
+    RUBY
+  end
+
+  it 'auto-corrects calls where multiple args are method calls' do
+    new_source = autocorrect_source(<<-RUBY.strip_indent)
+      def my_method
+        foo bar.baz(abc, xyz), foo(baz)
+      end
+    RUBY
+
+    expect(new_source).to eq(<<-RUBY.strip_indent)
+      def my_method
+        foo(bar.baz(abc, xyz), foo(baz))
+      end
+    RUBY
+  end
+
   it 'auto-corrects calls where the argument node is a constant' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       def my_method

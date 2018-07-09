@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#6071](https://github.com/bbatsov/rubocop/issues/6071): Fix auto-correct `Style/MethodCallWithArgsParentheses` when arguments are method calls. ([@maxh][])
 * Fix `Style/RedundantParentheses` with hash literal as first argument to `super`. ([@maxh][])
 * [#6086](https://github.com/bbatsov/rubocop/issues/6086): Fix an error for `Gemspec/OrderedDependencies` when using method call to gem names in gemspec. ([@koic][])
 
