@@ -9,6 +9,7 @@
 * [#6086](https://github.com/bbatsov/rubocop/issues/6086): Fix an error for `Gemspec/OrderedDependencies` when using method call to gem names in gemspec. ([@koic][])
 * [#6089](https://github.com/rubocop-hq/rubocop/issues/6089): Make `Rails/BulkChangeTable` aware of variable table name. ([@wata727][])
 * [#6088](https://github.com/bbatsov/rubocop/issues/6088): Fix an error for `Layout/MultilineAssignmentLayout` cop when using multi-line block defines on separate lines. ([@koic][])
+* [#6092](https://github.com/rubocop-hq/rubocop/issues/6092): Don't use the broken parser 2.5.1.1 version. ([@bbatsov][])
 
 ## 0.58.0 (2018-07-07)
 
