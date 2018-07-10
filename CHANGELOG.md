@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6084](https://github.com/rubocop-hq/rubocop/issues/6084): Fix `Naming/MemoizedInstanceVariableName` cop to allow methods to have leading underscores.
+
 ## 0.58.1 (2018-07-10)
 
 ### Bug fixes
