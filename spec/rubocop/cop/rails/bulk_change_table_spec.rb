@@ -353,6 +353,16 @@ RSpec.describe RuboCop::Cop::Rails::BulkChangeTable, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using variables as table name' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def change
+          %w[owners members].each do |table|
+            add_column table, :name, :string, null: false
+          end
+        end
+      RUBY
+    end
   end
 
   context 'when database is PostgreSQL' do
