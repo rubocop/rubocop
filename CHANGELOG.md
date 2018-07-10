@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* [#6084](https://github.com/rubocop-hq/rubocop/issues/6084): Fix `Naming/MemoizedInstanceVariableName` cop to allow methods to have leading underscores.
+* [#6084](https://github.com/rubocop-hq/rubocop/issues/6084): Fix `Naming/MemoizedInstanceVariableName` cop to allow methods to have leading underscores. ([@kenman345][])
 
 ## 0.58.1 (2018-07-10)
 
