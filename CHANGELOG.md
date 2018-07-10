@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.58.1 (2018-07-10)
+
 ### Bug fixes
 
 * [#6071](https://github.com/bbatsov/rubocop/issues/6071): Fix auto-correct `Style/MethodCallWithArgsParentheses` when arguments are method calls. ([@maxh][])
