@@ -118,7 +118,7 @@ module RuboCop
 
           return false unless valid_leading_underscore?(variable_name)
 
-          variable_name.sub(/\A_/, '') == method_name
+          variable_name.sub(/\A_/, '') == method_name.sub(/\A_/, '')
         end
 
         def message(variable)
