@@ -7,6 +7,7 @@
 * Fix `Style/RedundantParentheses` with hash literal as first argument to `super`. ([@maxh][])
 * [#6086](https://github.com/bbatsov/rubocop/issues/6086): Fix an error for `Gemspec/OrderedDependencies` when using method call to gem names in gemspec. ([@koic][])
 * [#6089](https://github.com/rubocop-hq/rubocop/issues/6089): Make `Rails/BulkChangeTable` aware of variable table name. ([@wata727][])
+* [#6088](https://github.com/bbatsov/rubocop/issues/6088): Fix an error for `Layout/MultilineAssignmentLayout` cop when using multi-line block defines on separate lines. ([@koic][])
 
 ## 0.58.0 (2018-07-07)
 
