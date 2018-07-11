@@ -28,6 +28,18 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
           RUBY
         end
 
+        context 'when argument was shadowed by zsuper' do
+          it 'registers an offense' do
+            expect_offense(<<-RUBY.strip_indent)
+              def select_fields(query, current_time)
+                query = super
+                ^^^^^^^^^^^^^ Argument `query` was shadowed by a local variable before it was used.
+                query.select('*')
+              end
+            RUBY
+          end
+        end
+
         context 'when IgnoreImplicitReferences config option is set to true' do
           let(:cop_config) { { 'IgnoreImplicitReferences' => true } }
 
@@ -38,6 +50,17 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
                 super
               end
             RUBY
+          end
+
+          context 'when argument was shadowed by zsuper' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<-RUBY.strip_indent)
+                def select_fields(query, current_time)
+                  query = super
+                  query.select('*')
+                end
+              RUBY
+            end
           end
         end
       end
