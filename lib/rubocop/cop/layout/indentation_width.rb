@@ -325,7 +325,9 @@ module RuboCop
         end
 
         def leftmost_modifier_of(node)
-          node.each_ancestor(:send).to_a.last
+          return node unless node.parent && node.parent.send_type?
+
+          leftmost_modifier_of(node.parent)
         end
       end
     end

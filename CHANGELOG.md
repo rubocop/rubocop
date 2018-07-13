@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6103](https://github.com/rubocop-hq/rubocop/pull/6103): Fix a false positive for `Layout/IndentationWidth` when multiple modifiers are used in a block and a method call is made at end of the block. ([@koic][])
+
 ## 0.58.1 (2018-07-10)
 
 ### Bug fixes
