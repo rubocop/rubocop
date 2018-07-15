@@ -1769,11 +1769,14 @@ Enabled | No
 
 This cop checks for shadowed arguments.
 
+This cop has `IgnoreImplicitReferences` configuration option.
+It means argument shadowing is used in order to pass parameters
+to zero arity `super` when `IgnoreImplicitReferences` is `true`.
+
 ### Examples
 
 ```ruby
 # bad
-
 do_something do |foo|
   foo = 42
   puts foo
@@ -1781,24 +1784,50 @@ end
 
 def do_something(foo)
   foo = 42
+  puts foo
+end
+
+# good
+do_something do |foo|
+  foo = foo + 42
+  puts foo
+end
+
+def do_something(foo)
+  foo = foo + 42
+  puts foo
+end
+
+def do_something(foo)
   puts foo
 end
 ```
+#### IgnoreImplicitReferences: false (default)
+
+```ruby
+# bad
+def do_something(foo)
+  foo = 42
+  super
+end
+
+def do_something(foo)
+  foo = super
+  bar
+end
+```
+#### IgnoreImplicitReferences: true
+
 ```ruby
 # good
-
-do_something do |foo|
-  foo = foo + 42
-  puts foo
+def do_something(foo)
+  foo = 42
+  super
 end
 
 def do_something(foo)
-  foo = foo + 42
-  puts foo
-end
-
-def do_something(foo)
-  puts foo
+  foo = super
+  bar
 end
 ```
 

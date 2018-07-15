@@ -5,10 +5,13 @@ module RuboCop
     module Lint
       # This cop checks for shadowed arguments.
       #
+      # This cop has `IgnoreImplicitReferences` configuration option.
+      # It means argument shadowing is used in order to pass parameters
+      # to zero arity `super` when `IgnoreImplicitReferences` is `true`.
+      #
       # @example
       #
       #   # bad
-      #
       #   do_something do |foo|
       #     foo = 42
       #     puts foo
@@ -18,11 +21,8 @@ module RuboCop
       #     foo = 42
       #     puts foo
       #   end
-      #
-      # @example
       #
       #   # good
-      #
       #   do_something do |foo|
       #     foo = foo + 42
       #     puts foo
@@ -36,6 +36,33 @@ module RuboCop
       #   def do_something(foo)
       #     puts foo
       #   end
+      #
+      # @example IgnoreImplicitReferences: false (default)
+      #
+      #   # bad
+      #   def do_something(foo)
+      #     foo = 42
+      #     super
+      #   end
+      #
+      #   def do_something(foo)
+      #     foo = super
+      #     bar
+      #   end
+      #
+      # @example IgnoreImplicitReferences: true
+      #
+      #   # good
+      #   def do_something(foo)
+      #     foo = 42
+      #     super
+      #   end
+      #
+      #   def do_something(foo)
+      #     foo = super
+      #     bar
+      #   end
+      #
       class ShadowedArgument < Cop
         MSG = 'Argument `%<argument>s` was shadowed by a local variable ' \
               'before it was used.'.freeze
