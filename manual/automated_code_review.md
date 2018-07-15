@@ -16,6 +16,10 @@ Codacy is free for open source, and it provides RuboCop analysis out-of-the-box.
 [Hound](https://houndci.com/) comments on style violations in GitHub pull requests, allowing you and your team to better review and maintain a clean codebase.
 It is open source software.
 
+### Pronto
+
+[Pronto](https://github.com/prontolabs/pronto) does quick automated code review of your changes. Created to be used on GitHub pull requests, but also works locally and integrates with GitLab and Bitbucket.
+
 ### Sider
 
 [Sider](https://sider.review) improves your team's productivity by automating code analysis.
