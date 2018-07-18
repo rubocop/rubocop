@@ -930,6 +930,40 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               end
             RUBY
           end
+
+          context 'when multiple modifiers are used in a block and' \
+                  'a method call is made at end of the block' do
+            it 'accepts a correctly aligned body' do
+              expect_no_offenses(<<-RUBY.strip_indent)
+                obj = Class.new do
+                  private def private_property
+                    "That would be great."
+                  end
+                end.new
+              RUBY
+            end
+
+            it 'registers an offense for bad indentation of a def' do
+              expect_offense(<<-RUBY.strip_indent)
+                obj = Class.new do
+                    private def private_property
+                ^^^^ Use 2 (not 4) spaces for indentation.
+                    end
+                end.new
+              RUBY
+            end
+
+            it 'registers an offense for bad indentation of a def body' do
+              expect_offense(<<-RUBY.strip_indent)
+                obj = Class.new do
+                  private def private_property
+                      "That would be great."
+                  ^^^^ Use 2 (not 4) spaces for indentation.
+                  end
+                end.new
+              RUBY
+            end
+          end
         end
       end
 
