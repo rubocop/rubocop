@@ -95,6 +95,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
         RUBY
       end
 
+      it 'does not registers an offense when method has leading `_`' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def _foo
+            @foo ||= :foo
+          end
+        RUBY
+      end
+
       context 'memoized variable matches method name during assignment' do
         it 'does not register an offense' do
           expect_no_offenses(<<-RUBY.strip_indent)
@@ -218,6 +226,22 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
       it 'does not register an offense without a leading underscore' do
         expect_no_offenses(<<-RUBY.strip_indent)
           def x
+            @x ||= :foo
+          end
+        RUBY
+      end
+
+      it 'does not register an offense with a leading `_` for both names' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def _x
+            @_x ||= :foo
+          end
+        RUBY
+      end
+
+      it 'does not register an offense with a leading `_` for method name' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def _x
             @x ||= :foo
           end
         RUBY
