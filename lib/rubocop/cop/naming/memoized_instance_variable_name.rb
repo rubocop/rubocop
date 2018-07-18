@@ -8,7 +8,7 @@ module RuboCop
       #
       # This cop can be configured with the EnforcedStyleForLeadingUnderscores
       # directive. It can be configured to allow for memoized instance variables
-      # prefixed with an underscore. Prefixing ivars with an undersscore is a
+      # prefixed with an underscore. Prefixing ivars with an underscore is a
       # convention that is used to implicitly indicate that an ivar should not
       # be set or referencd outside of the memoization method.
       #
@@ -18,6 +18,11 @@ module RuboCop
       #   # not `@foo`. This can cause confusion and bugs.
       #   def foo
       #     @something ||= calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   def _foo
+      #     @foo ||= calculate_expensive_thing
       #   end
       #
       #   # good
@@ -54,6 +59,11 @@ module RuboCop
       #     @_foo ||= calculate_expensive_thing
       #   end
       #
+      #   # good
+      #   def _foo
+      #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
       # @example EnforcedStyleForLeadingUnderscores :optional
       #   # bad
       #   def foo
@@ -67,6 +77,11 @@ module RuboCop
       #
       #   # good
       #   def foo
+      #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   def _foo
       #     @_foo ||= calculate_expensive_thing
       #   end
       class MemoizedInstanceVariableName < Cop
@@ -118,7 +133,7 @@ module RuboCop
 
           return false unless valid_leading_underscore?(variable_name)
 
-          variable_name.sub(/\A_/, '') == method_name
+          variable_name.sub(/\A_/, '') == method_name.sub(/\A_/, '')
         end
 
         def message(variable)
