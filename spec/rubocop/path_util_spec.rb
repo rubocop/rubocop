@@ -85,6 +85,12 @@ RSpec.describe RuboCop::PathUtil do
         .to be(true)
       expect(described_class.match_path?('**/.*',
                                          'dir/.hidden_file')).to be(true)
+
+      expect(described_class.match_path?('c{at,ub}s', 'cats')).to be(true)
+      expect(described_class.match_path?('c{at,ub}s', 'cubs')).to be(true)
+      expect(described_class.match_path?('c{at,ub}s', 'gorillas')).to be(false)
+      expect(described_class.match_path?('**/*.{rb,txt}', 'dir/foo.txt'))
+        .to be(true)
     end
 
     it 'matches regexps' do

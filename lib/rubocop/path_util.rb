@@ -36,7 +36,7 @@ module RuboCop
     def match_path?(pattern, path)
       case pattern
       when String
-        File.fnmatch?(pattern, path, File::FNM_PATHNAME)
+        File.fnmatch?(pattern, path, File::FNM_PATHNAME | File::FNM_EXTGLOB)
       when Regexp
         begin
           path =~ pattern

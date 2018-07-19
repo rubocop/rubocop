@@ -218,6 +218,7 @@ AllCops:
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
+    - 'bin/{rails,rake}'
     - !ruby/regexp /old_and_unused\.rb$/
 
 # other configuration
