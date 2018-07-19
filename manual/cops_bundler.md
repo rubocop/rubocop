@@ -39,6 +39,34 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 
+## Bundler/GemComment
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+Add a comment describing each gem in your Gemfile.
+
+### Examples
+
+```ruby
+# bad
+
+gem 'foo'
+
+# good
+
+# Helpers for the foo things.
+gem 'foo'
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
+Whitelist | `[]` | Array
+
 ## Bundler/InsecureProtocolSource
 
 Enabled by default | Supports autocorrection

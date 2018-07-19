@@ -1,5 +1,14 @@
 # These are all the cops that are disabled in the default configuration.
 
+Bundler/GemComment:
+  Description: 'Add a comment describing each gem.'
+  Enabled: false
+  Include:
+    - '**/*.gemfile'
+    - '**/Gemfile'
+    - '**/gems.rb'
+  Whitelist: []
+
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
   StyleGuide: 'https://github.com/rubocop-hq/ruby-style-guide#consistent-classes'

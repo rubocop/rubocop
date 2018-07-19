@@ -93,6 +93,7 @@ In the following section you find all available cops:
 #### Department [Bundler](cops_bundler.md)
 
 * [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)
+* [Bundler/GemComment](cops_bundler.md#bundlergemcomment)
 * [Bundler/InsecureProtocolSource](cops_bundler.md#bundlerinsecureprotocolsource)
 * [Bundler/OrderedGems](cops_bundler.md#bundlerorderedgems)
 

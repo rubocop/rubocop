@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6109](https://github.com/rubocop-hq/rubocop/pull/6109): Add new `Bundler/GemComment` cop. ([@sunny][])
+
 ## 0.58.2 (2018-07-23)
 
 ### Changes
