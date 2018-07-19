@@ -4,6 +4,10 @@
 
 ### Changes
 
+### New features
+
+* [#6105](https://github.com/rubocop-hq/rubocop/issues/6105): Support `{a,b}` file name globs in `Exclude` and `Include` config. ([@mikeyhew][])
+
 * [#6116](https://github.com/rubocop-hq/rubocop/pull/6116): Add `ip` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@nijikon][])
 
 ### Bug fixes
@@ -3485,3 +3489,5 @@
 [@maxh]: https://github.com/maxh
 [@kenman345]: https://github.com/kenman345
 [@nijikon]: https://github.com/nijikon
+[@mikeyhew]: https://github.com/mikeyhew
+[@kenman345]: https://github.com/kenman345
