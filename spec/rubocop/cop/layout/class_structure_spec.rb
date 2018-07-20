@@ -178,4 +178,26 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
     it { expect_offense(code) }
   end
+
+  describe '#autocorrect' do
+    context 'when there is a comment in the macro method' do
+      it 'autocorrects the offenses' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          class Foo
+            # This is a comment for macro method.
+            validates :attr
+            attr_reader :foo
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          class Foo
+            attr_reader :foo
+            # This is a comment for macro method.
+            validates :attr
+          end
+        RUBY
+      end
+    end
+  end
 end

@@ -281,7 +281,7 @@ module RuboCop
         end
 
         def start_line_position(node)
-          buffer.line_range(node.first_line).begin_pos - 1
+          buffer.line_range(node.loc.line).begin_pos - 1
         end
 
         def buffer

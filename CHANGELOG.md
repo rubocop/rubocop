@@ -6,6 +6,7 @@
 
 * [#6103](https://github.com/rubocop-hq/rubocop/pull/6103): Fix a false positive for `Layout/IndentationWidth` when multiple modifiers are used in a block and a method call is made at end of the block. ([@koic][])
 * [#6084](https://github.com/rubocop-hq/rubocop/issues/6084): Fix `Naming/MemoizedInstanceVariableName` cop to allow methods to have leading underscores. ([@kenman345][])
+* [#6098](https://github.com/rubocop-hq/rubocop/issues/6098): Fix an error for `Layout/ClassStructure` when there is a comment in the macro method to be auto-correct. ([@koic][])
 
 ## 0.58.1 (2018-07-10)
 
