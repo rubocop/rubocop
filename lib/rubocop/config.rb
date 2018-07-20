@@ -13,6 +13,7 @@ module RuboCop
   class Config
     include PathUtil
     include FileFinder
+    extend Forwardable
 
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
@@ -265,49 +266,8 @@ module RuboCop
       self
     end
 
-    def [](key)
-      @hash[key]
-    end
-
-    def []=(key, value)
-      @hash[key] = value
-    end
-
-    def delete(key)
-      @hash.delete(key)
-    end
-
-    def each(&block)
-      @hash.each(&block)
-    end
-
-    def key?(key)
-      @hash.key?(key)
-    end
-
-    def keys
-      @hash.keys
-    end
-
-    def each_key(&block)
-      @hash.each_key(&block)
-    end
-
-    def map(&block)
-      @hash.map(&block)
-    end
-
-    def merge(other_hash)
-      @hash.merge(other_hash)
-    end
-
-    def to_h
-      @hash
-    end
-
-    def to_hash
-      @hash
-    end
+    def_delegators :@hash, :[], :[]=, :delete, :each, :key?, :keys, :each_key,
+                   :map, :merge, :to_h, :to_hash
 
     def to_s
       @to_s ||= @hash.to_s
