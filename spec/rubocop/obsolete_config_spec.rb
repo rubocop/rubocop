@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
+RSpec.describe RuboCop::ObsoleteConfig do
   include FileHelper
 
-  let(:obsolete_configuration) { described_class.new(hash, loaded_path) }
+  subject(:obsolete_configuration) { described_class.new(configuration) }
+
+  let(:configuration) { RuboCop::Config.new(hash, loaded_path) }
   let(:loaded_path) { 'example/.rubocop.yml' }
 
   describe '#validate', :isolated_environment do
@@ -17,6 +19,9 @@ RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
           'Style/MethodCallParentheses' => { 'Enabled': true },
           'Style/DeprecatedHashMethods' => { 'Enabled': true },
           'Style/OpMethod' => { 'Enabled': true },
+          'Layout/FirstParameterIndentation' => { 'Enabled': true },
+          'Layout/IndentArray' => { 'Enabled': true },
+          'Layout/IndentHash' => { 'Enabled': true },
           # Moved cops
           'Lint/Eval' => { 'Enabled': true },
           'Lint/BlockAlignment' => { 'Enabled': true },
@@ -49,44 +54,50 @@ RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
       end
 
       let(:expected_message) do
-        <<-OUTPUT.strip_indent.chomp.split($RS).sort.join($RS)
+        <<-OUTPUT.strip_indent.chomp
           The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodCallParentheses` cop has been renamed to `Style/MethodCallWithoutArgsParentheses`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/DeprecatedHashMethods` cop has been renamed to `Style/PreferredHashMethods`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/OpMethod` cop has been renamed and moved to `Naming/BinaryOperatorParameterName`.
+          The `Style/OpMethod` cop has been renamed to `Naming/BinaryOperatorParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/Eval` cop has been renamed to `Security/Eval`.
+          The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/ClassAndModuleCamelCase` cop has been renamed to `Naming/ClassAndModuleCamelCase`.
+          The `Layout/IndentArray` cop has been renamed to `Layout/IndentFirstArrayElement`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/ConstantName` cop has been renamed to `Naming/ConstantName`.
+          The `Layout/IndentHash` cop has been renamed to `Layout/IndentFirstHashElement`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/FileName` cop has been renamed to `Naming/FileName`.
+          The `Lint/Eval` cop has been moved to `Security/Eval`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/MethodName` cop has been renamed to `Naming/MethodName`.
+          The `Style/ClassAndModuleCamelCase` cop has been moved to `Naming/ClassAndModuleCamelCase`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/PredicateName` cop has been renamed to `Naming/PredicateName`.
+          The `Style/ConstantName` cop has been moved to `Naming/ConstantName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/VariableName` cop has been renamed to `Naming/VariableName`.
+          The `Style/FileName` cop has been moved to `Naming/FileName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/VariableNumber` cop has been renamed to `Naming/VariableNumber`.
+          The `Style/MethodName` cop has been moved to `Naming/MethodName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/BlockAlignment` cop has been renamed to `Layout/BlockAlignment`.
+          The `Style/PredicateName` cop has been moved to `Naming/PredicateName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/EndAlignment` cop has been renamed to `Layout/EndAlignment`.
+          The `Style/VariableName` cop has been moved to `Naming/VariableName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/DefEndAlignment` cop has been renamed to `Layout/DefEndAlignment`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
+          The `Style/VariableNumber` cop has been moved to `Naming/VariableNumber`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/AccessorMethodName` cop has been moved to `Naming/AccessorMethodName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/AsciiIdentifiers` cop has been moved to `Naming/AccessorMethodName`.
+          The `Style/AsciiIdentifiers` cop has been moved to `Naming/AsciiIdentifiers`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Rails/DefaultScope` cop no longer exists.
+          The `Lint/BlockAlignment` cop has been moved to `Layout/BlockAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/DefEndAlignment` cop has been moved to `Layout/DefEndAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Rails/DefaultScope` cop has been removed.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -96,15 +107,15 @@ RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SpaceBeforeModifierKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/TrailingComma` cop no longer exists. Please use `Style/TrailingCommaInArguments`, `Style/TrailingCommaInArrayLiteral`, and/or `Style/TrailingCommaInHashLiteral` instead.
+          The `Style/TrailingComma` cop has been removed. Please use `Style/TrailingCommaInArguments`, `Style/TrailingCommaInArrayLiteral`, and/or `Style/TrailingCommaInHashLiteral` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/TrailingCommaInLiteral` cop no longer exists. Please use `Style/TrailingCommaInArrayLiteral` and/or `Style/TrailingCommaInHashLiteral` instead.
+          The `Style/TrailingCommaInLiteral` cop has been removed. Please use `Style/TrailingCommaInArrayLiteral` and/or `Style/TrailingCommaInHashLiteral` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/RescueWithoutErrorClass` cop has been replaced by `Style/RescueStandardError`.
+          The `Lint/RescueWithoutErrorClass` cop has been removed. Please use `Style/RescueStandardError` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a duplicate of `Layout/SpaceBeforeFirstArg`. Please use `Layout/SpaceBeforeFirstArg` instead.
+          The `Lint/SpaceBeforeFirstArg` cop has been removed since it was a duplicate of `Layout/SpaceBeforeFirstArg`. Please use `Layout/SpaceBeforeFirstArg` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodMissing` cop has been split into `Style/MethodMissingSuper` and `Style/MissingRespondToMissing`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -113,11 +124,10 @@ RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
 
       it 'prints a warning message' do
         begin
-          obsolete_configuration
-            .send(:reject_obsolete_cops_and_parameters)
+          obsolete_configuration.reject_obsolete_cops_and_parameters
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message.split($RS).sort.join($RS))
+          expect(expected_message).to eq(e.message)
         end
       end
     end
@@ -152,12 +162,12 @@ RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
       end
 
       let(:expected_message) do
-        <<-OUTPUT.strip_indent.chomp.split($RS).sort.join($RS)
-          The `Lint/BlockAlignment` cop has been renamed to `Layout/BlockAlignment`.
+        <<-OUTPUT.strip_indent.chomp
+          The `Lint/BlockAlignment` cop has been moved to `Layout/BlockAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/EndAlignment` cop has been renamed to `Layout/EndAlignment`.
+          The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/DefEndAlignment` cop has been renamed to `Layout/DefEndAlignment`.
+          The `Lint/DefEndAlignment` cop has been moved to `Layout/DefEndAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           obsolete parameter MultiSpaceAllowedForOperators (for Layout/SpaceAroundOperators) found in example/.rubocop.yml
           If your intention was to allow extra spaces for alignment, please use AllowForAlignment: true instead.
@@ -198,11 +208,10 @@ RSpec.describe RuboCop::Config do # rubocop:disable RSpec/FilePath
 
       it 'prints a warning message' do
         begin
-          obsolete_configuration
-            .send(:reject_obsolete_cops_and_parameters)
+          obsolete_configuration.reject_obsolete_cops_and_parameters
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message.split($RS).sort.join($RS))
+          expect(expected_message).to eq(e.message)
         end
       end
     end

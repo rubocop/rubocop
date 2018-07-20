@@ -1677,7 +1677,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
         expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
-          ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
+          ['Error: The `Style/TrailingComma` cop has been removed. Please ' \
            'use `Style/TrailingCommaInArguments`, ' \
            '`Style/TrailingCommaInArrayLiteral`, and/or ' \
            '`Style/TrailingCommaInHashLiteral` instead.',
