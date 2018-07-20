@@ -3,13 +3,13 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop checks that methods specified in the filter's `only`
-      # or `except` options are explicitly defined in the class or module.
+      # This cop checks that methods specified in the filter's `only` or
+      # `except` options are defined within the same class or module.
       #
-      # You can specify methods of superclass or methods added by mixins
-      # on the filter, but these confuse developers. If you specify methods
-      # where are defined on another classes or modules, you should define
-      # the filter in that class or module.
+      # You can technically specify methods of superclass or methods added
+      # by mixins on the filter, but these confuse developers. If you
+      # specify methods that are defined in other classes or modules, you
+      # should define the filter in that class or module.
       #
       # @example
       #   # bad
