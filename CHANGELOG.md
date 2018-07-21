@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#6116](https://github.com/rubocop-hq/rubocop/pull/6116): Add `ip` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@nijikon][])
+
 ### Bug fixes
 
 * [#6103](https://github.com/rubocop-hq/rubocop/pull/6103): Fix a false positive for `Layout/IndentationWidth` when multiple modifiers are used in a block and a method call is made at end of the block. ([@koic][])
@@ -3480,3 +3484,4 @@
 [@drn]: https://github.com/drn
 [@maxh]: https://github.com/maxh
 [@kenman345]: https://github.com/kenman345
+[@nijikon]: https://github.com/nijikon
