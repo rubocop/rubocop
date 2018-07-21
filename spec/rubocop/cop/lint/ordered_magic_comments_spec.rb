@@ -70,6 +70,17 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
     RUBY
   end
 
+  it 'does not register an offense when using ' \
+     '`encoding: Encoding::SJIS` Hash notation after' \
+     '`frozen_string_literal` magic comment' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      x = { encoding: Encoding::SJIS }
+      puts x
+    RUBY
+  end
+
   it 'autocorrects ordered magic comments' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       # frozen_string_literal: true

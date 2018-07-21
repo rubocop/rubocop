@@ -190,7 +190,7 @@ module RuboCop
     class SimpleComment < MagicComment
       # Match `encoding` or `coding`
       def encoding
-        extract(/\#* \b(?:en)?coding: (#{TOKEN})/i)
+        extract(/\A\#.*\b(?:en)?coding: (#{TOKEN})/i)
       end
 
       private
