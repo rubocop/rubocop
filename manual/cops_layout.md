@@ -1347,6 +1347,8 @@ Access modifiers should be surrounded by blank lines.
 
 ### Examples
 
+#### EnforcedStyle: around (default)
+
 ```ruby
 # bad
 class Foo
@@ -1364,10 +1366,35 @@ class Foo
   def baz; end
 end
 ```
+#### EnforcedStyle: only_before
+
+```ruby
+# bad
+class Foo
+  def bar; end
+  private
+  def baz; end
+end
+
+# good
+class Foo
+  def bar; end
+
+  private
+  def baz; end
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `around` | `around`, `only_before`
 
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-access-modifier](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-access-modifier)
+* [https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions)
 
 ## Layout/EmptyLinesAroundArguments
 
@@ -2748,6 +2775,7 @@ EnforcedStyle | `normal` | `normal`, `rails`
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation](https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation)
+* [https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions)
 
 ## Layout/IndentationWidth
 
