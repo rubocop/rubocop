@@ -84,7 +84,6 @@ module RuboCop
                         relevant_options_digest(options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
-      @pwd = Dir.pwd
     end
 
     def valid?
@@ -136,7 +135,7 @@ module RuboCop
       digester = Digest::MD5.new
       mode = File.stat(file).mode
       digester.update(
-        "#{@pwd}#{file}#{mode}#{config_store.for(file).signature}"
+        "#{file}#{mode}#{config_store.for(file).signature}"
       )
       digester.file(file)
       digester.hexdigest
