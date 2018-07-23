@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.58.2 (2018-07-23)
+
 ### Changes
 
 ### New features
