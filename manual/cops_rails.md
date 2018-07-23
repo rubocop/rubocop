@@ -1018,7 +1018,9 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop looks for .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and proposes to use the .left_joins("...") or .left_outer_joins("...") methods introduced in Rails 5.0.
+This cop looks for both .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and
+proposes to use either the .left_joins("...") method or the .left_outer_joins("...") one accordingly.
+These methods were introduced in Rails 5.0.
 
 ### Examples
 
