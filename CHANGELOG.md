@@ -28,6 +28,7 @@
 * Update the highlighting of `Lint/DuplicateMethods` to include the method name. ([@rrosenblum][])
 * [#6057](https://github.com/rubocop-hq/rubocop/issues/6057): Return 0 when running `rubocop --auto-gen-conf` if the todo file is successfully created even if there are offenses. ([@MagedMilad][])
 * [#4301](https://github.com/rubocop-hq/rubocop/issues/4301): Turn off autocorrect for `Rails/RelativeDateConstant` by default. ([@koic][])
+* [#4832](https://github.com/rubocop-hq/rubocop/issues/4832): Change the path pattern (`*`) to match the hidden file. ([@koic][])
 
 ## 0.58.2 (2018-07-23)
 

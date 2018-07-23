@@ -3,6 +3,7 @@
 require 'English'
 require 'benchmark'
 
+# A module for continuous integration.
 module RubocopTravis
   class << self
     def run
@@ -23,7 +24,8 @@ module RubocopTravis
     # Running YARD under jruby crashes so skip checking the manual.
     def documentation
       return if jruby?
-      sh!('bundle exec rake documentation_syntax_check generate_cops_documentation')
+      sh!('bundle exec rake documentation_syntax_check ' \
+          'generate_cops_documentation')
     end
 
     def jruby?
