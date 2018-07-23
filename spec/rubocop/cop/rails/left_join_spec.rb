@@ -8,7 +8,22 @@ RSpec.describe RuboCop::Cop::Rails::LeftJoin do
       it 'registers an offense' do
         source = "User.joins('#{query} emails ON user.id = emails.user_id')"
         message = <<-RUBY.strip
-          Use `.left_join(:emails)` instead of `.joins('#{query} emails ON user.id = emails.user_id')`.
+          Use `.left_join(:model)` instead of `.joins('left join ...')`.
+        RUBY
+
+        inspect_source(source)
+
+        expect(cop.messages).to eq([message])
+      end
+    end
+  end
+
+  context "when using .joins('LEFT OUTER JOIN ... ON ...')" do
+    ['LEFT OUTER JOIN', 'left outer join'].each do |query|
+      it 'registers an offense' do
+        source = "User.joins('#{query} emails ON user.id = emails.user_id')"
+        message = <<-RUBY.strip
+          Use `.left_outer_join(:model)` instead of `.joins('left outer join ...')`.
         RUBY
 
         inspect_source(source)
@@ -21,6 +36,14 @@ RSpec.describe RuboCop::Cop::Rails::LeftJoin do
   context "when not using .joins('LEFT JOIN ... ON ...')" do
     it 'does not register an offense' do
       source = "User.joins('RIGHT JOIN emails ON user.id = emails.user_id')"
+
+      expect_no_offenses(source)
+    end
+  end
+
+  context "when not using .joins('LEFT OUTER JOIN ... ON ...')" do
+    it 'does not register an offense' do
+      source = "User.joins('RIGHT OUTER JOIN emails ON user.id = emails.user_id')"
 
       expect_no_offenses(source)
     end

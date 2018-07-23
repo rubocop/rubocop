@@ -3,8 +3,9 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop looks for .joins("LEFT JOIN ...") and
-      # proposes to use the .left_join("...") method introduced in Rails 5.0.
+      # This cop looks for both .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and
+      # proposes to use either the .left_join("...") method or the .left_join("...") one accordingly.
+      # These methods were introduced in Rails 5.0.
       #
       # @example
       #  # bad
@@ -13,6 +14,13 @@ module RuboCop
       #  # good
       #  User.left_joins(:emails)
       #
+      #
+      #  # bad
+      #  User.joins('LEFT OUTER JOIN emails ON user.id = emails.user_id')
+      #
+      #  # good
+      #  User.left_outer_joins(:emails)
+      #
       class LeftJoin < Cop
         extend TargetRailsVersion
 
@@ -20,36 +28,36 @@ module RuboCop
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
+        PREFERRABLE_QUERIES = {
+          'left join'       => '.left_join(:model)',
+          'left outer join' => '.left_outer_join(:model)'
+        }
+
+        def_node_matcher :has_joins?, '(send _ :joins #left_join_from_query ...)'
+
         def on_send(node)
-          return unless node.method?(:joins) && include_left_join?(node)
+          return unless has_joins?(node)
 
-          prefer  = ".left_join(:#{join_model(node)})".freeze
-          current = ".joins('#{join_full_query(node)}')".freeze
+          query   = left_join_from_query(node)
+          current = ".joins('#{query} ...')"
+          prefer  = PREFERRABLE_QUERIES[query]
+          message = format(MSG, prefer: prefer, current: current)
 
-          add_offense(node,
-                      message: format(MSG, prefer: prefer, current: current),
-                      location: :selector,
-                      severity: :warning)
+          add_offense(node, message: message, location: :selector)
         end
 
         private
 
-        def include_left_join?(node)
-          join_query_phrase(node).casecmp?('left join')
-        end
+        WATCHABLE_QUERIES = ['left join', 'left outer join'].freeze
 
-        def join_full_query(node)
-          node.arguments.first.children.first
-        end
+        def left_join_from_query(node)
+          node_query = node.source.downcase
 
-        def join_model(node)
-          join_full_query(node).split[2]
-        end
+          WATCHABLE_QUERIES.each do |watchable_query|
+            return watchable_query if node_query.include?(watchable_query)
+          end
 
-        def join_query_phrase(node)
-          query = join_full_query(node).split
-
-          "#{query[0]} #{query[1]}"
+          false
         end
       end
     end
