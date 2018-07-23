@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Rails::LeftJoin do
       it 'registers an offense' do
         source = "User.joins('#{query} emails ON user.id = emails.user_id')"
         message = <<-RUBY.strip
-          Use `.left_join(:model)` instead of `.joins('left join ...')`.
+          Use `.left_joins(:model)` instead of `.joins('left join ...')`.
         RUBY
 
         inspect_source(source)
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Rails::LeftJoin do
       it 'registers an offense' do
         source = "User.joins('#{query} emails ON user.id = emails.user_id')"
         message = <<-RUBY.strip
-          Use `.left_outer_join(:model)` instead of `.joins('left outer join ...')`.
+          Use `.left_outer_joins(:model)` instead of `.joins('left outer join ...')`.
         RUBY
 
         inspect_source(source)

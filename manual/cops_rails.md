@@ -1018,7 +1018,7 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | No
 
-This cop looks for .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and proposes to use the .left_join("...") or .left_outer_join("...") methods introduced in Rails 5.0.
+This cop looks for .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and proposes to use the .left_joins("...") or .left_outer_joins("...") methods introduced in Rails 5.0.
 
 ### Examples
 
@@ -1027,13 +1027,13 @@ This cop looks for .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and
 User.joins('LEFT JOIN emails ON user.id = emails.user_id')
 
 # good
-User.left_join(:emails)
+User.left_joins(:emails)
 
 # bad
 User.joins('LEFT OUTER JOIN emails ON user.id = emails.user_id')
 
 # good
-User.left_outer_join(:emails)
+User.left_outer_joins(:emails)
 ```
 
 ### Configurable attributes
