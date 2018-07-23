@@ -35,17 +35,17 @@ RSpec.describe RuboCop::Cop::Rails::LeftJoin do
 
   context "when not using .joins('LEFT JOIN ... ON ...')" do
     it 'does not register an offense' do
-      source = "User.joins('RIGHT JOIN emails ON user.id = emails.user_id')"
-
-      expect_no_offenses(source)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        User.joins('RIGHT JOIN emails ON user.id = emails.user_id')
+      RUBY
     end
   end
 
   context "when not using .joins('LEFT OUTER JOIN ... ON ...')" do
     it 'does not register an offense' do
-      source = "User.joins('RIGHT OUTER JOIN emails ON user.id = emails.user_id')"
-
-      expect_no_offenses(source)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        User.joins('RIGHT OUTER JOIN emails ON user.id = emails.user_id')
+      RUBY
     end
   end
 end
