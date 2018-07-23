@@ -45,9 +45,9 @@ RSpec.describe RuboCop::PathUtil do
       expect($stderr.string).to eq('')
     end
 
-    it 'does not match dir/** for hidden file' do
+    it 'matches dir/** for hidden file' do
       expect(described_class.match_path?('dir/**', 'dir/.hidden_file'))
-        .to be(false)
+        .to be(true)
       expect($stderr.string).to eq('')
     end
 
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::PathUtil do
       expect(described_class.match_path?('**/*',
                                          'dir/.hidden/file')).to be(false)
       expect(described_class.match_path?('**/*',
-                                         'dir/.hidden_file')).to be(false)
+                                         'dir/.hidden_file')).to be(true)
       expect(described_class.match_path?('**/.*/*', 'dir/.hidden/file'))
         .to be(true)
       expect(described_class.match_path?('**/.*',
