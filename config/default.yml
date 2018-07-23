@@ -42,7 +42,6 @@ AllCops:
     - '**/.irbrc'
     - '**/.pryrc'
     - '**/buildfile'
-    - '**/config.ru'
     - '**/Appraisals'
     - '**/Berksfile'
     - '**/Brewfile'
