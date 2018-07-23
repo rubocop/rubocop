@@ -3,8 +3,10 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop looks for both .joins("LEFT JOIN ...") and .joins("LEFT OUTER JOIN ...") and
-      # proposes to use either the .left_joins("...") method or the .left_outer_joins("...") one accordingly.
+      # This cop looks for both .joins("LEFT JOIN ...") and
+      # .joins("LEFT OUTER JOIN ...").
+      # It proposes to use either the .left_joins("...") method
+      # or the .left_outer_joins("...") one accordingly.
       # These methods were introduced in Rails 5.0.
       #
       # @example
@@ -31,12 +33,14 @@ module RuboCop
         PREFERRABLE_QUERIES = {
           'left join'       => '.left_joins(:model)',
           'left outer join' => '.left_outer_joins(:model)'
-        }
+        }.freeze
 
-        def_node_matcher :has_joins?, '(send _ :joins #left_join_from_query ...)'
+        def_node_matcher :joins?, <<-PATTERN
+          (send _ :joins #left_join_from_query ...)
+        PATTERN
 
         def on_send(node)
-          return unless has_joins?(node)
+          return unless joins?(node)
 
           query   = left_join_from_query(node)
           current = ".joins('#{query} ...')"
