@@ -462,11 +462,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     %w[unless if].each do |keyword|
-      it "accepts special indentation of return #{keyword} condition" do
+      it "accepts indentation of return #{keyword} condition" do
         expect_no_offenses(<<-RUBY.strip_indent)
           return #{keyword} receiver.nil? &&
-              !args.empty? &&
-              BLACKLIST.include?(method_name)
+            !args.empty? &&
+            BLACKLIST.include?(method_name)
+        RUBY
+      end
+
+      it "accepts indentation of next #{keyword} condition" do
+        expect_no_offenses(<<-RUBY.strip_indent)
+        next #{keyword} 5 ||
+          7
         RUBY
       end
     end

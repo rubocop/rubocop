@@ -12,6 +12,7 @@
 
 ### Bug fixes
 
+* [#6107](https://github.com/rubocop-hq/rubocop/pull/6107): Fix indentation of multiline postfix conditionals. ([@jaredbeck][])
 * [#6140](https://github.com/rubocop-hq/rubocop/pull/6140): Fix `Style/DateTime` not detecting `#to_datetime`. It can be configured to allow this. ([@bdewater][])
 * [#6132](https://github.com/rubocop-hq/rubocop/issues/6132): Fix a false negative for `Naming/FileName` when `Include` of `AllCops` is the default setting. ([@koic][])
 * [#4115](https://github.com/rubocop-hq/rubocop/issues/4115): Fix false positive for unary operations in `Layout/MultilineOperationIndentation`. ([@jonas054][])
