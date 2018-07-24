@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 shared_examples_for 'multiline literal brace layout' do
+  include MultilineLiteralBraceHelper
+
   let(:prefix) { '' } # A prefix before the opening brace.
   let(:suffix) { '' } # A suffix for the line after the closing brace.
   let(:open) { nil } # The opening brace.
@@ -41,41 +43,6 @@ shared_examples_for 'multiline literal brace layout' do
     multi = multi.dup
     multi[0] = multi_prefix + multi[0]
     multi
-  end
-
-  # Construct the source code for the braces. For instance, for an array
-  # the `open` brace would be `[` and the `close` brace would be `]`, so
-  # you could construct the following:
-  #
-  #     braces(true, 'a', 'b', 'c', false)
-  #
-  #     [ # line break indicated by `true` as the first argument.
-  #     a,
-  #     b,
-  #     c] # no line break indicated by `false` as the last argument.
-  #
-  # This method also supports multi-line arguments. For example:
-  #
-  #     braces(true, 'a', ['{', 'foo: bar', '}'], true)
-  #
-  #     [ # line break indicated by `true` as the first argument.
-  #     a,
-  #     {
-  #     foo: bar
-  #     } # line break indicated by `true` as the last argument.
-  #     ]
-  def braces(open_line_break, *args, close_line_break)
-    args = [a, b + b_comment] if args.empty?
-
-    open + (open_line_break ? "\n" : '') +
-      args.map { |a| a.respond_to?(:join) ? a.join("\n") : a }.join(",\n") +
-      (close_line_break ? "\n" : '') + close
-  end
-
-  # Construct a piece of source code for brace layout testing. This farms
-  # out most of the work to `#braces` but it also includes a prefix and suffix.
-  def construct(*args)
-    (prefix + braces(*args) + "\n" + suffix)
   end
 
   context 'heredoc' do
@@ -337,44 +304,6 @@ shared_examples_for 'multiline literal brace layout' do
                                         "#{b}#{close}",
                                         suffix].join($RS))
             end
-          end
-        end
-      end
-    end
-
-    if [
-      RuboCop::Cop::Layout::MultilineArrayBraceLayout,
-      RuboCop::Cop::Layout::MultilineHashBraceLayout
-    ].include?(described_class)
-      context 'when arguments to a function' do
-        let(:prefix) { 'bar(' }
-        let(:suffix) { ')' }
-        let(:source) { construct(false, true) }
-
-        context 'and a comment after the last element' do
-          let(:b_comment) { ' # comment b' }
-
-          it 'detects closing brace on separate line from last element' do
-            inspect_source(source)
-
-            expect(cop.highlights).to eq([close])
-            expect(cop.messages)
-              .to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
-          end
-
-          it 'does not autocorrect the closing brace' do
-            new_source = autocorrect_source(source)
-            expect(new_source).to eq(source.join($RS))
-          end
-        end
-
-        context 'but no comment after the last element' do
-          it 'autocorrects the closing brace' do
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq(["#{prefix}#{open}#{a},",
-                                      "#{b}#{close}",
-                                      suffix].join($RS))
           end
         end
       end
