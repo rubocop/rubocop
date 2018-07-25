@@ -158,6 +158,14 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
       end
 
+      describe 'contributor name' do
+        subject(:contributor_names) { lines.grep(/\A\[@/).map(&:chomp) }
+
+        it 'has a unique contributor name' do
+          expect(contributor_names.uniq.size).to eq contributor_names.size
+        end
+      end
+
       describe 'body' do
         let(:bodies) do
           entries.map do |entry|

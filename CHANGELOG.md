@@ -3452,8 +3452,6 @@
 [@Edouard-chin]: https://github.com/Edouard-chin
 [@eostrom]: https://github.com/eostrom
 [@roberts1000]: https://github.com/roberts1000
-[@walinga]: https://github.com/walinga
-[@georf]: https://github.com/georf
 [@satyap]: https://github.com/satyap
 [@unkmas]: https://github.com/unkmas
 [@elebow]: https://github.com/elebow
@@ -3493,4 +3491,3 @@
 [@kenman345]: https://github.com/kenman345
 [@nijikon]: https://github.com/nijikon
 [@mikeyhew]: https://github.com/mikeyhew
-[@kenman345]: https://github.com/kenman345
