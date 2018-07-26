@@ -95,6 +95,14 @@ module RuboCop
         private
 
         def check(node, elements)
+          if elements.empty?
+            check_for_no_elements(node)
+          else
+            check_for_elements(node, elements)
+          end
+        end
+
+        def check_for_elements(node, elements)
           left_paren  = node.loc.begin
           right_paren = node.loc.end
 
@@ -106,6 +114,25 @@ module RuboCop
 
           return if @column_delta.zero?
 
+          add_offense(right_paren,
+                      location: right_paren,
+                      message:  message(correct_column,
+                                        left_paren,
+                                        right_paren))
+        end
+
+        def check_for_no_elements(node)
+          left_paren = node.loc.begin
+          right_paren = node.loc.end
+          return unless right_paren && begins_its_line?(right_paren)
+
+          candidates = correct_column_candidates(node, left_paren)
+
+          return if candidates.include?(right_paren.column)
+
+          # Although there are multiple choices for a correct column,
+          # select the first one of candidates to determine a specification.
+          correct_column = candidates.first
           add_offense(right_paren,
                       location: right_paren,
                       message:  message(correct_column,
@@ -138,6 +165,14 @@ module RuboCop
             .last
             .loc
             .first_line
+        end
+
+        def correct_column_candidates(node, left_paren)
+          [
+            processed_source.line_indentation(left_paren.line),
+            left_paren.column,
+            node.loc.column
+          ]
         end
 
         def message(correct_column, left_paren, right_paren)
