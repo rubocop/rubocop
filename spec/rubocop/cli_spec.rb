@@ -209,6 +209,36 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RESULT
     end
 
+    describe 'Specify `--init` option to `rubocop` command' do
+      context 'when .rubocop.yml does not exist' do
+        it 'generate a .rubocop.yml file' do
+          expect(cli.run(['--init'])).to eq(0)
+          expect($stdout.string).to start_with('Writing new .rubocop.yml to')
+          expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
+            # The behavior of RuboCop can be controlled via the .rubocop.yml
+            # configuration file. It makes it possible to enable/disable
+            # certain cops (checks) and to alter their behavior if they accept
+            # any parameters. The file can be placed either in your home
+            # directory or in some project directory.
+            #
+            # RuboCop will start looking for the configuration file in the directory
+            # where the inspected file is and continue its way up to the root directory.
+            #
+            # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
+          YAML
+        end
+      end
+
+      context 'when .rubocop.yml already exists' do
+        it 'fails with an error message' do
+          create_empty_file('.rubocop.yml')
+
+          expect(cli.run(['--init'])).to eq(2)
+          expect($stderr.string).to start_with('.rubocop.yml already exists at')
+        end
+      end
+    end
+
     context 'when --auto-correct is given' do
       it 'does not trigger UnneededCopDisableDirective due to ' \
          'lines moving around' do

@@ -117,6 +117,8 @@ module RuboCop
       option(opts, '--no-auto-gen-timestamp') do
         @options[:no_auto_gen_timestamp] = true
       end
+
+      option(opts, '--init')
     end
 
     def add_formatting_options(opts)
@@ -435,7 +437,8 @@ module RuboCop
       parallel: ['Use available CPUs to execute inspection in',
                  'parallel.'],
       stdin: ['Pipe source from STDIN, using FILE in offense',
-              'reports. This is useful for editor integration.']
+              'reports. This is useful for editor integration.'],
+      init: 'Generate a .rubocop.yml file in the current directory.'
     }.freeze
   end
 end
