@@ -117,6 +117,7 @@ Command flag                    | Description
 `   --force-exclusion`          | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
 `-h/--help`                     | Print usage information.
 `   --ignore-parent-exlusion`   | Ignores all Exclude: settings from all .rubocop.yml files present in parent folders. This is useful when you are importing submodules when you want to test them without being affected by the parent module's rubocop settings.
+`   --init`                     | Generate a .rubocop.yml file in the current directory.
 `-l/--lint`                     | Run only lint cops.
 `-L/--list-target-files`        | List all files RuboCop will inspect.
 `   --no-auto-gen-timestamp`    | Don't include the date and time when --auto-gen-config was run in the config file it generates

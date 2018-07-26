@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
+
 ### Bug fixes
 
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
