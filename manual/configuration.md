@@ -205,10 +205,7 @@ files with a hash-bang (`#!`) declaration containing one of the known
 ruby interpreters listed under `AllCops`/`RubyInterpreters` are
 inspected, unless the file also matches a pattern in
 `AllCops`/`Exclude`. Hidden directories (i.e., directories whose names
-start with a dot) are not searched by default.  If you'd like RuboCop
-to check files that are not included by default, you'll need to pass
-them in on the command line, or to add entries for them under
-`AllCops`/`Include`.
+start with a dot) are not searched by default.
 
 Here is an example that might be used for a Rails project:
 
@@ -225,22 +222,58 @@ AllCops:
 # ...
 ```
 
+#### Unusual files, that would not be included by default
+
+RuboCop comes with a comprehensive list of common ruby file names and
+extensions. But, if you'd like RuboCop to check files that are not included by
+default, you'll need to pass them in on the command line, or to add entries for
+them under `AllCops`/`Include`. Remember that your configuration files override
+RuboCops's defaults (see
+[default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml))
+In the following example, we want to include `foo.unusual_extension`, but we
+also must copy any other patterns we need from the overridden `default.yml`.
+
+```yaml
+AllCops:
+  Include:
+    - foo.unusual_extension
+    - '**/*.rb'
+    - '**/*.gemfile'
+    - '**/*.gemspec'
+    - '**/*.rake'
+    - '**/*.ru'
+    - '**/Gemfile'
+    - '**/Rakefile'
+```
+
+This behavior of `Include` (overriding `default.yml`) was introduced in
+[0.56.0](https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md#0560-2018-05-14)
+via [#5882](https://github.com/rubocop-hq/rubocop/pull/5882). This change allows
+people to include/exclude precisely what they need to, without the defaults
+getting in the way.
+
+#### Path relativity
+
 In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
 files and directories are specified relative to the directory where the
 configuration file is. In configuration files that don't begin with `.rubocop`,
 e.g. `our_company_defaults.yml`, paths are relative to the directory where
 `rubocop` is run.
 
-**Note**: Patterns that are just a file name, e.g. `Rakefile`, will match
+#### Deprecated patterns
+
+Patterns that are just a file name, e.g. `Rakefile`, will match
 that file name in any directory, but this pattern style is deprecated. The
 correct way to match the file in any directory, including the current, is
 `**/Rakefile`.
 
-**Note**: The pattern `config/**` will match any file recursively under
+The pattern `config/**` will match any file recursively under
 `config`, but this pattern style is deprecated and should be replaced by
 `config/**/*`.
 
-**Note**: The `Include` and `Exclude` parameters are special. They are
+#### `Include` and `Exclude` are relative to their directory
+
+The `Include` and `Exclude` parameters are special. They are
 valid for the directory tree starting where they are defined. They are not
 shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
 files in subdirectories. This is different from all other parameters, who
@@ -248,6 +281,8 @@ follow RuboCop's general principle that configuration for an inspected file
 is taken from the nearest `.rubocop.yml`, searching upwards.  _This behavior
 will be overridden if you specify the `--ignore-parent-exclusion` command line
 argument_.
+
+#### Cop-specific `Include` and `Exclude`
 
 Cops can be run only on specific sets of files when that's needed (for
 instance you might want to run some Rails model checks only on files whose
