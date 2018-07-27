@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
+
 ## 0.58.2 (2018-07-23)
 
 ### Changes
@@ -3491,3 +3495,4 @@
 [@kenman345]: https://github.com/kenman345
 [@nijikon]: https://github.com/nijikon
 [@mikeyhew]: https://github.com/mikeyhew
+[@mkenyon]: https://github.com/mkenyon
