@@ -22,8 +22,25 @@ module RuboCop
       #
       #   # good - uses `DateTime` with start argument for historical date
       #   DateTime.iso8601('1751-04-23', Date::ENGLAND)
+      #
+      # @example AllowCoercion: false (default)
+      #
+      #   # bad - coerces to `DateTime`
+      #   something.to_datetime
+      #
+      #   # good - coerces to `Time`
+      #   something.to_time
+      #
+      # @example AllowCoercion: true
+      #
+      #   # good
+      #   something.to_datetime
+      #
+      #   # good
+      #   something.to_time
       class DateTime < Cop
-        MSG = 'Prefer Date or Time over DateTime.'.freeze
+        CLASS_MSG = 'Prefer Date or Time over DateTime.'.freeze
+        COERCION_MSG = 'Do not use #to_datetime.'.freeze
 
         def_node_matcher :date_time?, <<-PATTERN
           (send (const {nil? (cbase)} :DateTime) ...)
@@ -33,10 +50,23 @@ module RuboCop
           (send _ _ _ (const (const nil? :Date) _))
         PATTERN
 
+        def_node_matcher :to_datetime?, <<-PATTERN
+          (send _ :to_datetime)
+        PATTERN
+
         def on_send(node)
-          return unless date_time?(node)
+          return unless date_time?(node) ||
+                        (to_datetime?(node) && disallow_coercion?)
           return if historic_date?(node)
-          add_offense(node)
+
+          message = to_datetime?(node) ? COERCION_MSG : CLASS_MSG
+          add_offense(node, message: message)
+        end
+
+        private
+
+        def disallow_coercion?
+          !cop_config['AllowCoercion']
         end
       end
     end

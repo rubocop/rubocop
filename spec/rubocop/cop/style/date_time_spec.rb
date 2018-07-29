@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::DateTime do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Style::DateTime, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) { { 'AllowCoercion' => false } }
 
   it 'registers an offense when using DateTime for current time' do
     expect_offense(<<-RUBY.strip_indent)
@@ -38,5 +40,24 @@ RSpec.describe RuboCop::Cop::Style::DateTime do
 
   it 'does not register an offense when using DateTime in another namespace' do
     expect_no_offenses('Icalendar::Values::DateTime.new(start_at)')
+  end
+
+  describe 'when configured to not allow #to_datetime' do
+    before { cop_config['AllowCoercion'] = false }
+
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        thing.to_datetime
+        ^^^^^^^^^^^^^^^^^ Do not use #to_datetime.
+      RUBY
+    end
+  end
+
+  describe 'when configured to allow #to_datetime' do
+    before { cop_config['AllowCoercion'] = true }
+
+    it 'does not register an offense' do
+      expect_no_offenses('thing.to_datetime')
+    end
   end
 end
