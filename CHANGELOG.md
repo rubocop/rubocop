@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#4115](https://github.com/rubocop-hq/rubocop/issues/4115): Fix false positive for unary operations in `Layout/MultilineOperationIndentation`. ([@jonas054][])
+
 ## 0.58.2 (2018-07-23)
 
 ### Changes
@@ -9,7 +13,6 @@
 ### New features
 
 * [#6105](https://github.com/rubocop-hq/rubocop/issues/6105): Support `{a,b}` file name globs in `Exclude` and `Include` config. ([@mikeyhew][])
-
 * [#6116](https://github.com/rubocop-hq/rubocop/pull/6116): Add `ip` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@nijikon][])
 
 ### Bug fixes
