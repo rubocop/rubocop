@@ -373,8 +373,20 @@ module RuboCop
       absolute_file_path = File.expand_path(file)
 
       patterns_to_include.any? do |pattern|
-        match_path?(pattern, relative_file_path) ||
-          match_path?(pattern, absolute_file_path)
+        if block_given?
+          yield pattern, relative_file_path, absolute_file_path
+        else
+          match_path?(pattern, relative_file_path) ||
+            match_path?(pattern, absolute_file_path)
+        end
+      end
+    end
+
+    def allowed_camel_case_file?(file)
+      file_to_include?(file) do |pattern, relative_path, absolute_path|
+        pattern.to_s =~ /[A-Z]/ &&
+          (match_path?(pattern, relative_path) ||
+           match_path?(pattern, absolute_path))
       end
     end
 
@@ -396,11 +408,11 @@ module RuboCop
     end
 
     def patterns_to_include
-      for_all_cops['Include']
+      for_all_cops['Include'] || []
     end
 
     def patterns_to_exclude
-      for_all_cops['Exclude']
+      for_all_cops['Exclude'] || []
     end
 
     def path_relative_to_config(path)

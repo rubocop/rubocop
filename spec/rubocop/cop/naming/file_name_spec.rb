@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     }
   end
 
-  let(:includes) { [] }
+  let(:includes) { ['**/*.rb'] }
   let(:source) { 'print 1' }
   let(:processed_source) { parse_source(source) }
 

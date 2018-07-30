@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6132](https://github.com/rubocop-hq/rubocop/issues/6132): Fix a false negative for `Naming/FileName` when `Include` of `AllCops` is the default setting. ([@koic][])
+
 ### Changes
 
 * [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
