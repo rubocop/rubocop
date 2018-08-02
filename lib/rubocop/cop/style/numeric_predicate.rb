@@ -53,6 +53,10 @@ module RuboCop
         }.freeze
 
         def on_send(node)
+          return if node.ancestors.any? do |ancestor|
+            ignored_method? ancestor.method_name
+          end
+
           numeric, replacement = check(node)
 
           return unless numeric
@@ -121,6 +125,10 @@ module RuboCop
 
             [numeric, comparison]
           end
+        end
+
+        def ignored_method?(method_name)
+          cop_config['IgnoredMethods'].include?(method_name.to_s)
         end
 
         def_node_matcher :predicate, <<-PATTERN

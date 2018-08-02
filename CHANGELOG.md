@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6148](https://github.com/bbatsov/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
+
 ### Changes
 
 * [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
