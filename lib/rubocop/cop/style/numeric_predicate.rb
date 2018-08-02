@@ -43,6 +43,7 @@ module RuboCop
       #   bar.baz > 0
       class NumericPredicate < Cop
         include ConfigurableEnforcedStyle
+        include IgnoredMethods
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
@@ -125,10 +126,6 @@ module RuboCop
 
             [numeric, comparison]
           end
-        end
-
-        def ignored_method?(method_name)
-          cop_config['IgnoredMethods'].include?(method_name.to_s)
         end
 
         def_node_matcher :predicate, <<-PATTERN

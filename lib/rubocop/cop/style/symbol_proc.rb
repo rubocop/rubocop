@@ -13,6 +13,7 @@ module RuboCop
       #   something.map(&:upcase)
       class SymbolProc < Cop
         include RangeHelp
+        include IgnoredMethods
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
               'instead of a block.'.freeze
@@ -118,14 +119,6 @@ module RuboCop
           else
             node.loc.begin.begin_pos
           end
-        end
-
-        def ignored_methods
-          cop_config['IgnoredMethods']
-        end
-
-        def ignored_method?(name)
-          ignored_methods.include?(name.to_s)
         end
 
         def super?(node)
