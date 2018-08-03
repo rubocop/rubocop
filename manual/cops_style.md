@@ -3987,6 +3987,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 AutoCorrect | `false` | Boolean
 EnforcedStyle | `predicate` | `predicate`, `comparison`
+IgnoredMethods | `[]` | Array
 Exclude | `spec/**/*` | Array
 
 ### References

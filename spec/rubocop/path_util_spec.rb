@@ -67,8 +67,6 @@ RSpec.describe RuboCop::PathUtil do
 
     it 'matches glob expressions' do
       expect(described_class.match_path?('dir/*', 'dir/file')).to be(true)
-      expect(described_class.match_path?('dir/*/*',
-                                         'dir/sub/file')).to be(true)
       expect(described_class.match_path?('dir/**/*',
                                          'dir/sub/file')).to be(true)
       expect(described_class.match_path?('dir/**/*', 'dir/file')).to be(true)

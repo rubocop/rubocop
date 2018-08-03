@@ -40,6 +40,8 @@ module RuboCop
       #     bar :baz
       #   end
       class MethodCallWithArgsParentheses < Cop
+        include IgnoredMethods
+
         MSG = 'Use parentheses for method calls with arguments.'.freeze
 
         def on_send(node)
@@ -66,11 +68,7 @@ module RuboCop
         def ignored_method?(node)
           node.operator_method? || node.setter_method? ||
             ignore_macros? && node.macro? ||
-            ignored_list.include?(node.method_name)
-        end
-
-        def ignored_list
-          cop_config['IgnoredMethods'].map(&:to_sym)
+            super(node.method_name)
         end
 
         def ignore_macros?
