@@ -16,6 +16,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
   let(:cop_indent) { nil } # use indentation width from Layout/IndentationWidth
 
   shared_examples 'common' do
+    it 'accepts unary operations' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        call a,
+             !b
+      RUBY
+    end
+
     it 'accepts indented operands in ordinary statement' do
       expect_no_offenses(<<-RUBY.strip_indent)
         a +
