@@ -12,6 +12,7 @@
 * [#6132](https://github.com/rubocop-hq/rubocop/issues/6132): Fix a false negative for `Naming/FileName` when `Include` of `AllCops` is the default setting. ([@koic][])
 * [#4115](https://github.com/rubocop-hq/rubocop/issues/4115): Fix false positive for unary operations in `Layout/MultilineOperationIndentation`. ([@jonas054][])
 * [#6127](https://github.com/rubocop-hq/rubocop/issues/6127): Fix an error for `Layout/ClosingParenthesisIndentation` when method arguments are empty with newlines. ([@tatsuyafw][])
+* [#6152](https://github.com/rubocop-hq/rubocop/pull/6152): Fix a false negative for `Layout/AccessModifierIndentation` when using access modifiers with arguments within nested classes. ([@gmalette][])
 
 ### Changes
 
@@ -3509,3 +3510,4 @@
 [@mikeyhew]: https://github.com/mikeyhew
 [@mkenyon]: https://github.com/mkenyon
 [@repinel]: https://github.com/repinel
+[@gmalette]: https://github.com/gmalette
