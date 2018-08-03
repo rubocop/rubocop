@@ -73,6 +73,7 @@ module RuboCop
       #
       class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
+        include IgnoredMethods
 
         def on_send(node)
           return unless node.arguments?
@@ -238,10 +239,6 @@ module RuboCop
           return unless node.keywords?
 
           node.send_node.arguments? && !node.send_node.parenthesized?
-        end
-
-        def ignored_method?(method_name)
-          cop_config['IgnoredMethods'].map(&:to_sym).include?(method_name)
         end
 
         def functional_method?(method_name)

@@ -96,6 +96,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
       File.read(path)
     end
 
+    it 'has newline at end of file' do
+      expect(changelog.end_with?("\n")).to be true
+    end
+
     it 'has link definitions for all implicit links' do
       implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
       implicit_link_names.each do |name|
@@ -151,6 +155,14 @@ RSpec.describe 'RuboCop Project', type: :feature do
           end
 
           expect(entries_including_issue_link).to all(include('): '))
+        end
+      end
+
+      describe 'contributor name' do
+        subject(:contributor_names) { lines.grep(/\A\[@/).map(&:chomp) }
+
+        it 'has a unique contributor name' do
+          expect(contributor_names.uniq.size).to eq contributor_names.size
         end
       end
 

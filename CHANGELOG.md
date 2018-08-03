@@ -2,9 +2,18 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6148](https://github.com/bbatsov/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
+
 ### Bug fixes
 
+* [#6132](https://github.com/rubocop-hq/rubocop/issues/6132): Fix a false negative for `Naming/FileName` when `Include` of `AllCops` is the default setting. ([@koic][])
 * [#4115](https://github.com/rubocop-hq/rubocop/issues/4115): Fix false positive for unary operations in `Layout/MultilineOperationIndentation`. ([@jonas054][])
+
+### Changes
+
+* [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
 
 ## 0.58.2 (2018-07-23)
 
@@ -3156,11 +3165,11 @@
 [@codez]: https://github.com/codez
 [@cyberdelia]: https://github.com/cyberdelia
 [@emou]: https://github.com/emou
-[@skanev]: http://github.com/skanev
-[@claco]: http://github.com/claco
-[@rifraf]: http://github.com/rifraf
+[@skanev]: https://github.com/skanev
+[@claco]: https://github.com/claco
+[@rifraf]: https://github.com/rifraf
 [@scottmatthewman]: https://github.com/scottmatthewman
-[@ma2gedev]: http://github.com/ma2gedev
+[@ma2gedev]: https://github.com/ma2gedev
 [@jeremyolliver]: https://github.com/jeremyolliver
 [@hannestyden]: https://github.com/hannestyden
 [@geniou]: https://github.com/geniou
@@ -3455,8 +3464,6 @@
 [@Edouard-chin]: https://github.com/Edouard-chin
 [@eostrom]: https://github.com/eostrom
 [@roberts1000]: https://github.com/roberts1000
-[@walinga]: https://github.com/walinga
-[@georf]: https://github.com/georf
 [@satyap]: https://github.com/satyap
 [@unkmas]: https://github.com/unkmas
 [@elebow]: https://github.com/elebow
@@ -3496,4 +3503,4 @@
 [@kenman345]: https://github.com/kenman345
 [@nijikon]: https://github.com/nijikon
 [@mikeyhew]: https://github.com/mikeyhew
-[@kenman345]: https://github.com/kenman345
+[@mkenyon]: https://github.com/mkenyon
