@@ -43,6 +43,7 @@ module RuboCop
       #   bar.baz > 0
       class NumericPredicate < Cop
         include ConfigurableEnforcedStyle
+        include IgnoredMethods
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
@@ -53,6 +54,10 @@ module RuboCop
         }.freeze
 
         def on_send(node)
+          return if node.ancestors.any? do |ancestor|
+            ignored_method? ancestor.method_name
+          end
+
           numeric, replacement = check(node)
 
           return unless numeric

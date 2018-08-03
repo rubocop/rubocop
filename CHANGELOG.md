@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6148](https://github.com/bbatsov/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
+
 ### Bug fixes
 
 * [#6132](https://github.com/rubocop-hq/rubocop/issues/6132): Fix a false negative for `Naming/FileName` when `Include` of `AllCops` is the default setting. ([@koic][])
@@ -3161,11 +3165,11 @@
 [@codez]: https://github.com/codez
 [@cyberdelia]: https://github.com/cyberdelia
 [@emou]: https://github.com/emou
-[@skanev]: http://github.com/skanev
-[@claco]: http://github.com/claco
-[@rifraf]: http://github.com/rifraf
+[@skanev]: https://github.com/skanev
+[@claco]: https://github.com/claco
+[@rifraf]: https://github.com/rifraf
 [@scottmatthewman]: https://github.com/scottmatthewman
-[@ma2gedev]: http://github.com/ma2gedev
+[@ma2gedev]: https://github.com/ma2gedev
 [@jeremyolliver]: https://github.com/jeremyolliver
 [@hannestyden]: https://github.com/hannestyden
 [@geniou]: https://github.com/geniou
