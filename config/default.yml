@@ -669,8 +669,8 @@ Layout/TrailingWhitespace:
 #################### Naming ##########################
 
 Naming/FileName:
-  # File names listed in `AllCops:Include` are excluded by default. Add extra
-  # excludes here.
+  # Camel case file names listed in `AllCops:Include` and all file names listed
+  # in `AllCops:Exclude` are excluded by default. Add extra excludes here.
   Exclude: []
   # When `true`, requires that each source file should define a class or module
   # with a name which matches the file name (converted to ... case).
