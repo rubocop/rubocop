@@ -32,7 +32,8 @@ module RuboCop
 
         def investigate(processed_source)
           file_path = processed_source.file_path
-          return if config.file_to_include?(file_path)
+          return if config.file_to_exclude?(file_path) ||
+                    config.allowed_camel_case_file?(file_path)
 
           for_bad_filename(file_path) do |range, msg|
             add_offense(nil, location: range, message: msg)
