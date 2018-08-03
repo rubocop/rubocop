@@ -18,7 +18,7 @@ module RuboCop
       #   str.casecmp('ABC').zero?
       #   'abc'.casecmp(str).zero?
       class Casecmp < Cop
-        MSG = 'Use `casecmp` instead of `%<methods>s`.'.freeze
+        MSG = 'Use `%<good>s` instead of `%<bad>s`.'.freeze
         CASE_METHODS = %i[downcase upcase].freeze
 
         def_node_matcher :downcase_eq, <<-PATTERN
@@ -43,16 +43,29 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if part_of_ignored_node?(node)
+          return unless downcase_eq(node) || eq_downcase(node)
+          return unless (parts = take_method_apart(node))
 
-          inefficient_comparison(node) do |range, is_other_part, *methods|
-            ignore_node(node) if is_other_part
-            add_offense(node, location: range,
-                              message: format(MSG, methods: methods.join(' ')))
-          end
+          _, _, arg, variable = parts
+          good_method = build_good_method(arg, variable)
+
+          add_offense(
+            node,
+            message: format(MSG, good: good_method, bad: node.source)
+          )
         end
 
         def autocorrect(node)
+          return unless (parts = take_method_apart(node))
+
+          receiver, method, arg, variable = parts
+
+          correction(node, receiver, method, arg, variable)
+        end
+
+        private
+
+        def take_method_apart(node)
           if downcase_downcase(node)
             receiver, method, rhs = *node
             arg, = *rhs
@@ -65,50 +78,28 @@ module RuboCop
           end
 
           variable, = *receiver
-          correction(node, receiver, method, arg, variable)
-        end
 
-        private
-
-        def inefficient_comparison(node)
-          loc = node.loc
-
-          downcase_eq(node) do |send_downcase, case_method, eq_method, other|
-            *_, method = *other
-            range, is_other_part = downcase_eq_range(method, loc, send_downcase)
-
-            yield range, is_other_part, case_method, eq_method
-            return
-          end
-
-          eq_downcase(node) do |eq_method, send_downcase, case_method|
-            range = loc.selector.join(send_downcase.loc.selector)
-            yield range, false, eq_method, case_method
-          end
-        end
-
-        def downcase_eq_range(method, loc, send_downcase)
-          if CASE_METHODS.include?(method)
-            [loc.expression, true]
-          else
-            [loc.selector.join(send_downcase.loc.selector), false]
-          end
+          [receiver, method, arg, variable]
         end
 
         def correction(node, _receiver, method, arg, variable)
           lambda do |corrector|
             corrector.insert_before(node.loc.expression, '!') if method == :!=
 
-            # we want resulting call to be parenthesized
-            # if arg already includes one or more sets of parens, don't add more
-            # or if method call already used parens, again, don't add more
-            replacement = if arg.send_type? || !parentheses?(arg)
-                            "#{variable.source}.casecmp(#{arg.source}).zero?"
-                          else
-                            "#{variable.source}.casecmp#{arg.source}.zero?"
-                          end
+            replacement = build_good_method(arg, variable)
 
             corrector.replace(node.loc.expression, replacement)
+          end
+        end
+
+        def build_good_method(arg, variable)
+          # We want resulting call to be parenthesized
+          # if arg already includes one or more sets of parens, don't add more
+          # or if method call already used parens, again, don't add more
+          if arg.send_type? || !parentheses?(arg)
+            "#{variable.source}.casecmp(#{arg.source}).zero?"
+          else
+            "#{variable.source}.casecmp#{arg.source}.zero?"
           end
         end
       end
