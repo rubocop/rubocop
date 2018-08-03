@@ -22,6 +22,7 @@
 ### Changes
 
 * [#6161](https://github.com/rubocop-hq/rubocop/pull/6161): Add scope methods to `Rails/FindEach` cop. Makes the cop also check for the following scopes: `eager_load`, `includes`, `joins`, `left_joins`, `left_outer_joins`, `preload`, `references`, and `unscoped`. ([@repinel][])
+* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Rails/LeftJoin` cop. ([@blackst0ne][])
 * [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
 * Update the highlighting of `Lint/DuplicateMethods` to include the method name. ([@rrosenblum][])
 * [#6057](https://github.com/rubocop-hq/rubocop/issues/6057): Return 0 when running `rubocop --auto-gen-conf` if the todo file is successfully created even if there are offenses. ([@MagedMilad][])
@@ -119,7 +120,6 @@
 * [#5406](https://github.com/rubocop-hq/rubocop/issues/5406): Add new `Layout/ClosingHeredocIndentation` cop. ([@siggymcfried][])
 * [#5823](https://github.com/rubocop-hq/rubocop/issues/5823): Add new `slashes` style to `Rails/FilePath` since Ruby accepts forward slashes even on Windows. ([@sunny][])
 * New cop `Layout/LeadingBlankLines` checks for empty lines at the beginning of a file. ([@rrosenblum][])
-* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Rails/LeftJoin` cop. ([@blackst0ne][])
 
 ### Bug fixes
 
@@ -3522,4 +3522,3 @@
 [@MagedMilad]: https://github.com/MagedMilad
 [@kenman345]: https://github.com/kenman345
 [@blackst0ne]: https://github.com/blackst0ne
-
