@@ -15,7 +15,7 @@ module RubocopTravis
     private
 
     # Check requiring libraries successfully.
-    # See https://github.com/bbatsov/rubocop/pull/4523#issuecomment-309136113
+    # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
     def check_requiring_libraries
       sh!("ruby -I lib -r rubocop -e 'exit 0'")
     end
