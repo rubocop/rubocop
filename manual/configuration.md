@@ -28,16 +28,28 @@ Metrics/LineLength:
 
 ### Inheritance
 
-RuboCop supports inheriting configuration from one or more supplemental
-configuration files at runtime. Settings in the file that inherits
-override settings in the file that's inherited from. Configuration
-parameter that are hashes, for example `PreferredMethods` in
-`Style/CollectionMethods` are merged with the same parameter in the base
-configuration, while other parameter, such as `AllCops` / `Include`, are
-simply replaced by the local setting. If arrays were merged, there would
-be no way to remove elements through overriding them in local
-configuration. There is a way to have specific array settings merged using
-the `inherit_mode` setting.
+All configuration inherits from [RuboCop's default configuration][1] (See
+"Defaults").
+
+RuboCop also supports inheritance in user's configuration files. The most common
+example would be the `.rubocop_todo.yml` file (See "Automatically Generated
+Configuration" below).
+
+Settings in the child file (that which inherits) override those in the parent
+(that which is inherited), with the following caveats.
+
+#### Inheritance of hashes vs. other types
+
+Configuration parameters that are hashes, for example `PreferredMethods` in
+`Style/CollectionMethods`, are merged with the same parameter in the parent
+configuration. Other types, such as `AllCops` / `Include` (an array), are
+overridden by the child setting.
+
+Arrays override because if they were merged, there would be no way to
+remove elements in child files.
+
+However, advanced users can still merge arrays using the `inherit_mode` setting.
+See "Merging arrays using inherit_mode" below.
 
 #### Inheriting from another configuration file in the project
 
@@ -126,12 +138,12 @@ $ bundle exec rubocop <options...>
 
 #### Merging arrays using inherit_mode
 
-The optional directive `inherit_mode` is used to specify which configuration
-keys that have array values should be merged together instead of overriding the
-inherited value.
+The optional directive `inherit_mode` specifies which configuration keys that
+have array values should be merged together instead of overriding the inherited
+value.
 
 This applies to explicit inheritance using `inherit_from` as well as implicit
-inheritance from the default configuration.
+inheritance from [the default configuration][1].
 
 Given the following config:
 ```yaml
@@ -188,13 +200,11 @@ In this example the `Exclude` would only include `bar.rb`.
 
 ### Defaults
 
-The file
-[config/default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml)
-under the RuboCop home directory contains the default settings that
-all configurations inherit from. Project and personal `.rubocop.yml`
-files need only make settings that are different from the default
-ones. If there is no `.rubocop.yml` file in the project or home
-directory, `config/default.yml` will be used.
+The file [config/default.yml][1] under the RuboCop home directory contains the
+default settings that all configurations inherit from. Project and personal
+`.rubocop.yml` files need only make settings that are different from the default
+ones. If there is no `.rubocop.yml` file in the project or home directory,
+`config/default.yml` will be used.
 
 ### Including/Excluding files
 
@@ -222,16 +232,23 @@ AllCops:
 # ...
 ```
 
+#### Path relativity
+
+In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
+files and directories are specified relative to the directory where the
+configuration file is. In configuration files that don't begin with `.rubocop`,
+e.g. `our_company_defaults.yml`, paths are relative to the directory where
+`rubocop` is run.
+
 #### Unusual files, that would not be included by default
 
 RuboCop comes with a comprehensive list of common ruby file names and
 extensions. But, if you'd like RuboCop to check files that are not included by
 default, you'll need to pass them in on the command line, or to add entries for
 them under `AllCops`/`Include`. Remember that your configuration files override
-RuboCops's defaults (see
-[default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml))
-In the following example, we want to include `foo.unusual_extension`, but we
-also must copy any other patterns we need from the overridden `default.yml`.
+[RuboCops's defaults][1]. In the following example, we want to include
+`foo.unusual_extension`, but we also must copy any other patterns we need from
+the overridden `default.yml`.
 
 ```yaml
 AllCops:
@@ -252,13 +269,19 @@ via [#5882](https://github.com/rubocop-hq/rubocop/pull/5882). This change allows
 people to include/exclude precisely what they need to, without the defaults
 getting in the way.
 
-#### Path relativity
+##### Another example, using `inherit_mode`
 
-In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
-files and directories are specified relative to the directory where the
-configuration file is. In configuration files that don't begin with `.rubocop`,
-e.g. `our_company_defaults.yml`, paths are relative to the directory where
-`rubocop` is run.
+```yaml
+inherit_mode:
+  merge:
+    - Include
+
+AllCops:
+  Include:
+    - foo.unusual_extension
+```
+
+See "Merging arrays using inherit_mode" above.
 
 #### Deprecated patterns
 
@@ -474,3 +497,5 @@ comment.
 ```ruby
 for x in (0..19) # rubocop:disable Style/For
 ```
+
+[1]: https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml
