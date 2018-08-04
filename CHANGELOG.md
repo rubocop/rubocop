@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#6109](https://github.com/rubocop-hq/rubocop/pull/6109): Add new `Bundler/GemComment` cop. ([@sunny][])
 * [#6148](https://github.com/bbatsov/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
 
 ### Bug fixes

@@ -159,6 +159,7 @@ require_relative 'rubocop/cop/correctors/string_literal_corrector'
 require_relative 'rubocop/cop/correctors/unused_arg_corrector'
 
 require_relative 'rubocop/cop/bundler/duplicated_gem'
+require_relative 'rubocop/cop/bundler/gem_comment'
 require_relative 'rubocop/cop/bundler/insecure_protocol_source'
 require_relative 'rubocop/cop/bundler/ordered_gems'
 
