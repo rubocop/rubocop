@@ -37,11 +37,11 @@ Other similar issues may apply.
 ### Examples
 
 ```ruby
-# always offense
+# bad
 JSON.load("{}")
 JSON.restore("{}")
 
-# no offense
+# good
 JSON.parse("{}")
 ```
 

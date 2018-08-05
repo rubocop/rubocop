@@ -15,11 +15,11 @@ module RuboCop
       # Other similar issues may apply.
       #
       # @example
-      #   # always offense
+      #   # bad
       #   JSON.load("{}")
       #   JSON.restore("{}")
       #
-      #   # no offense
+      #   # good
       #   JSON.parse("{}")
       #
       class JSONLoad < Cop
