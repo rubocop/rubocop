@@ -17,6 +17,7 @@ require_relative 'rubocop/version'
 
 require_relative 'rubocop/path_util'
 require_relative 'rubocop/file_finder'
+require_relative 'rubocop/cop_finder'
 require_relative 'rubocop/platform'
 require_relative 'rubocop/string_util'
 require_relative 'rubocop/name_similarity'
