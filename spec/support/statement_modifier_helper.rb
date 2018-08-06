@@ -8,7 +8,7 @@ module StatementModifierHelper
     RUBY
   end
 
-  def check_really_short(cop, keyword)
+  def check_really_short(keyword)
     inspect_source(<<-RUBY.strip_indent)
       #{keyword} a
         b
