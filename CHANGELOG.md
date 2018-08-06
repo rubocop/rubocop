@@ -15,6 +15,7 @@
 
 ### Changes
 
+* [#6161](https://github.com/rubocop-hq/rubocop/pull/6161): Add scope methods to `Rails/FindEach` cop. Makes the cop also check for the following scopes: `eager_load`, `includes`, `joins`, `left_joins`, `left_outer_joins`, `preload`, `references`, and `unscoped`. ([@repinel][])
 * [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
 
 ## 0.58.2 (2018-07-23)
@@ -3507,3 +3508,4 @@
 [@nijikon]: https://github.com/nijikon
 [@mikeyhew]: https://github.com/mikeyhew
 [@mkenyon]: https://github.com/mkenyon
+[@repinel]: https://github.com/repinel
