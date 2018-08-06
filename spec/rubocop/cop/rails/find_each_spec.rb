@@ -11,22 +11,16 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
     end
 
     it "does not register an offense when using #{scope}.order(...).each" do
-      inspect_source("User.#{scope}.order(:name).each { |u| u.something }")
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("User.#{scope}.order(:name).each { |u| u.something }")
     end
 
     it "does not register an offense when using #{scope}.limit(...).each" do
-      inspect_source("User.#{scope}.limit(10).each { |u| u.something }")
-
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("User.#{scope}.limit(10).each { |u| u.something }")
     end
 
     it "does not register an offense when using #{scope}.select(...).each" do
-      inspect_source("User.#{scope}.select(:name, :age).each " \
+      expect_no_offenses("User.#{scope}.select(:name, :age).each " \
                           '{ |u| u.something }')
-
-      expect(cop.offenses.empty?).to be(true)
     end
   end
 

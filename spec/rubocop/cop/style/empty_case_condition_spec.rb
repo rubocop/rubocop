@@ -20,8 +20,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
     let(:source_with_case) { source.sub(/case/, 'case :a') }
 
     it 'accepts the source with case' do
-      inspect_source(source_with_case)
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(source_with_case)
     end
   end
 

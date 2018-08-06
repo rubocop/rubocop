@@ -373,8 +373,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
     it "accepts a line that's including 1 tab with size 2" \
        ' and 78 other characters' do
-      inspect_source("\t" + '#' * 78)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("\t" + '#' * 78)
     end
   end
 end

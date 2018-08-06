@@ -56,10 +56,11 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     end
 
     it 'does not register offenses after __END__' do
-      inspect_source(["x=0\r",
-                      '__END__',
-                      'x=0'])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        x=0\r
+        __END__
+        x=0
+      RUBY
     end
 
     context 'and there are many lines ending with LF' do
@@ -127,10 +128,11 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     end
 
     it 'does not register offenses after __END__' do
-      inspect_source(['x=0',
-                      '__END__',
-                      "x=0\r"])
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        x=0
+        __END__
+        x=0\r
+      RUBY
     end
 
     context 'and there are many lines ending with CR+LF' do

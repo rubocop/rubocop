@@ -164,30 +164,22 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
 
   it 'accepts %q at the beginning of a double quoted string ' \
      'with interpolation' do
-    inspect_source("\"%q(a)\#{b}\"")
-
-    expect(cop.messages.empty?).to be(true)
+    expect_no_offenses("\"%q(a)\#{b}\"")
   end
 
   it 'accepts %Q at the beginning of a double quoted string ' \
      'with interpolation' do
-    inspect_source("\"%Q(a)\#{b}\"")
-
-    expect(cop.messages.empty?).to be(true)
+    expect_no_offenses("\"%Q(a)\#{b}\"")
   end
 
   it 'accepts %q at the beginning of a section of a double quoted string ' \
      'with interpolation' do
-    inspect_source(%("%\#{b}%q(a)"))
-
-    expect(cop.messages.empty?).to be(true)
+    expect_no_offenses(%("%\#{b}%q(a)"))
   end
 
   it 'accepts %Q at the beginning of a section of a double quoted string ' \
      'with interpolation' do
-    inspect_source(%("%\#{b}%Q(a)"))
-
-    expect(cop.messages.empty?).to be(true)
+    expect_no_offenses(%("%\#{b}%Q(a)"))
   end
 
   it 'accepts %q containing string interpolation' do

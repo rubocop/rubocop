@@ -24,8 +24,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do
 
   shared_examples 'trailing comma' do |items|
     it 'accepts the last comma' do
-      inspect_source(source.call(items))
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(source.call(items))
     end
   end
 
@@ -52,8 +51,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do
   context 'inside hash braces' do
     shared_examples 'common behavior' do
       it 'accepts a space between a comma and a closing brace' do
-        inspect_source('{ foo:bar, }')
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses('{ foo:bar, }')
       end
     end
 

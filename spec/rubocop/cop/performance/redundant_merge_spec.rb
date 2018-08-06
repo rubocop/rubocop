@@ -110,15 +110,12 @@ RSpec.describe RuboCop::Cop::Performance::RedundantMerge, :config do
 
     it 'does not register an offense when merge! is being assigned inside ' \
        'each_with_object' do
-      source = <<-RUBY.strip_indent
+      expect_no_offenses(<<-RUBY.strip_indent)
         foo.each_with_object({}) do |f, hash|
           changes = hash.merge!(a: 1, b: 2)
           why_are_you_doing_this?
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it 'autocorrects when receiver uses element reference to the object ' \

@@ -157,8 +157,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'does not register an offense for words with non-ascii chars and ' \
        'other control sequences' do
-      inspect_source('"España\n"')
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('"España\n"')
     end
 
     it 'does not autocorrect words with non-ascii chars and other control ' \

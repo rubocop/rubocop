@@ -30,12 +30,11 @@ RSpec.describe RuboCop::Cop::Performance::CompareWithBlock do
     end
 
     it "accepts valid #{method} usage" do
-      inspect_source("array.#{method} { |a, b| b <=> a }")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("array.#{method} { |a, b| b <=> a }")
     end
 
     it "accepts #{method}_by" do
-      inspect_source("array.#{method}_by { |a| a.baz }")
+      expect_no_offenses("array.#{method}_by { |a| a.baz }")
     end
 
     it "autocorrects array.#{method} { |a, b| a.foo <=> b.foo }" do

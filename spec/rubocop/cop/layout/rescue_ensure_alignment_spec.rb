@@ -118,9 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
   end
 
   it 'accepts rescue and ensure on the same line' do
-    inspect_source('begin; puts 1; rescue; ensure; puts 2; end')
-
-    expect(cop.messages.empty?).to be(true)
+    expect_no_offenses('begin; puts 1; rescue; ensure; puts 2; end')
   end
 
   it 'auto-corrects' do

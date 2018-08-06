@@ -485,7 +485,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   shared_examples 'conditionally defined method' do |keyword, modifier|
     %w[if unless].each do |conditional_type|
       it "doesn't register an offense for #{conditional_type}" do
-        src = <<-RUBY.strip_indent
+        expect_no_offenses(<<-RUBY.strip_indent)
           #{keyword} A
             #{modifier}
             #{conditional_type} x
@@ -494,8 +494,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.empty?).to be(true)
       end
     end
   end

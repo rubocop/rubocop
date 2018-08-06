@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module StatementModifierHelper
-  def check_empty(cop, keyword)
-    inspect_source(<<-RUBY.strip_indent)
+  def check_empty(keyword)
+    expect_no_offenses(<<-RUBY.strip_indent)
       #{keyword} cond
       end
     RUBY
-    expect(cop.offenses.empty?).to be(true)
   end
 
   def check_really_short(cop, keyword)
@@ -30,28 +29,25 @@ module StatementModifierHelper
     expect(corrected).to eq "b #{keyword} a\n"
   end
 
-  def check_too_long(cop, keyword)
+  def check_too_long(keyword)
     # This statement is one character too long to fit.
     condition = 'a' * (40 - keyword.length)
     body = 'b' * 37
     expect("  #{body} #{keyword} #{condition}".length).to eq(81)
 
-    inspect_source(<<-RUBY.strip_margin('|'))
+    expect_no_offenses(<<-RUBY.strip_margin('|'))
       |  #{keyword} #{condition}
       |    #{body}
       |  end
     RUBY
-
-    expect(cop.offenses.empty?).to be(true)
   end
 
-  def check_short_multiline(cop, keyword)
-    inspect_source(<<-RUBY.strip_indent)
+  def check_short_multiline(keyword)
+    expect_no_offenses(<<-RUBY.strip_indent)
       #{keyword} ENV['COVERAGE']
         require 'simplecov'
         SimpleCov.start
       end
     RUBY
-    expect(cop.messages.empty?).to be(true)
   end
 end

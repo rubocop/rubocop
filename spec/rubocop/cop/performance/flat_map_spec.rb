@@ -14,15 +14,11 @@ RSpec.describe RuboCop::Cop::Performance::FlatMap, :config do
 
     it "does not register an offense when calling #{method}...#{flatten} " \
       'with a number greater than 1' do
-      inspect_source("[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(3)")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("[1, 2, 3, 4].#{method} { |e| [e, e] }.#{flatten}(3)")
     end
 
     it "does not register an offense when calling #{method}!...#{flatten}" do
-      inspect_source("[1, 2, 3, 4].#{method}! { |e| [e, e] }.#{flatten}")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("[1, 2, 3, 4].#{method}! { |e| [e, e] }.#{flatten}")
     end
 
     it "corrects #{method}..#{flatten}(1) to flat_map" do
@@ -43,9 +39,7 @@ RSpec.describe RuboCop::Cop::Performance::FlatMap, :config do
 
     shared_examples 'flatten_with_params_disabled' do |method, flatten|
       it "does not register an offense when calling #{method}...#{flatten}" do
-        inspect_source("[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
-
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses("[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
       end
     end
 
