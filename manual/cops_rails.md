@@ -235,8 +235,8 @@ Enabled | No
 This Cop checks whether alter queries are combinable.
 If combinable queries are detected, it suggests to you
 to use `change_table` with `bulk: true` instead.
-When use this method, make combinable alter queries
-a bulk alter query.
+This option causes the migration to generate a single
+ALTER TABLE statement combining multiple column alterations.
 
 The `bulk` option is only supported on the MySQL and
 the PostgreSQL (5.2 later) adapter; thus it will
