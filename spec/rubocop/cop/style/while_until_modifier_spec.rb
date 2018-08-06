@@ -11,11 +11,11 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it "accepts multiline unless that doesn't fit on one line" do
-    check_too_long(cop, 'unless')
+    check_too_long('unless')
   end
 
   it 'accepts multiline unless whose body is more than one line' do
-    check_short_multiline(cop, 'unless')
+    check_short_multiline('unless')
   end
 
   context 'multiline while that fits on one line' do
@@ -29,11 +29,11 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it "accepts multiline while that doesn't fit on one line" do
-    check_too_long(cop, 'while')
+    check_too_long('while')
   end
 
   it 'accepts multiline while whose body is more than one line' do
-    check_short_multiline(cop, 'while')
+    check_short_multiline('while')
   end
 
   it 'accepts oneline while when condition has local variable assignment' do
@@ -80,16 +80,16 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it "accepts multiline until that doesn't fit on one line" do
-    check_too_long(cop, 'until')
+    check_too_long('until')
   end
 
   it 'accepts multiline until whose body is more than one line' do
-    check_short_multiline(cop, 'until')
+    check_short_multiline('until')
   end
 
   it 'accepts an empty condition' do
-    check_empty(cop, 'while')
-    check_empty(cop, 'until')
+    check_empty('while')
+    check_empty('until')
   end
 
   it 'accepts modifier while' do

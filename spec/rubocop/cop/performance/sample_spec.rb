@@ -19,8 +19,7 @@ RSpec.describe RuboCop::Cop::Performance::Sample do
 
   shared_examples 'accepts' do |acceptable|
     it acceptable do
-      inspect_source("[1, 2, 3].#{acceptable}")
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("[1, 2, 3].#{acceptable}")
     end
   end
 

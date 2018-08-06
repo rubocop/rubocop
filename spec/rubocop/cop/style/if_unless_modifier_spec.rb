@@ -148,11 +148,11 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "accepts multiline if that doesn't fit on one line" do
-    check_too_long(cop, 'if')
+    check_too_long('if')
   end
 
   it 'accepts multiline if whose body is more than one line' do
-    check_short_multiline(cop, 'if')
+    check_short_multiline('if')
   end
 
   context 'multiline unless that fits on one line' do
@@ -194,8 +194,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts an empty condition' do
-    check_empty(cop, 'if')
-    check_empty(cop, 'unless')
+    check_empty('if')
+    check_empty('unless')
   end
 
   it 'accepts if/elsif' do
@@ -400,8 +400,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
           # modifier.
           expect("#{body} if #{condition}".length).to eq(69)
 
-          inspect_source(source)
-          expect(cop.offenses.empty?).to be(true)
+          expect_no_offenses(source)
         end
       end
     end

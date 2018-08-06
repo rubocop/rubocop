@@ -26,8 +26,7 @@ RSpec.describe RuboCop::Cop::Performance::EndWith do
       end
 
       it "doesn't register an error for #{method} /#{str}\\z/" do
-        inspect_source("str#{method} /#{str}\\z/")
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses("str#{method} /#{str}\\z/")
       end
     end
 
@@ -44,8 +43,7 @@ RSpec.describe RuboCop::Cop::Performance::EndWith do
     # character classes, anchors
     %w[w W s S d D A Z z G b B h H R X S].each do |str|
       it "doesn't register an error for #{method} /\\#{str}\\z/" do
-        inspect_source("str#{method} /\\#{str}\\z/")
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses("str#{method} /\\#{str}\\z/")
       end
     end
 

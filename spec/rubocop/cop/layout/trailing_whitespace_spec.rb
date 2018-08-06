@@ -79,10 +79,9 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     let(:cop_config) { { 'AllowInHeredoc' => true } }
 
     it 'accepts trailing whitespace in a heredoc string' do
-      inspect_source(['x = <<RUBY',
-                      '  Hi   ',
-                      'RUBY'])
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses(['x = <<RUBY',
+                          '  Hi   ',
+                          'RUBY'])
     end
 
     it 'registers an offence for trailing whitespace at the heredoc begin' do

@@ -42,28 +42,25 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
         end
 
         it 'accepts literals without additional spaces' do
-          inspect_source(code_example('a b c'))
-          expect(cop.messages.empty?).to be(true)
+          expect_no_offenses(code_example('a b c'))
         end
 
         it 'accepts literals with escaped spaces' do
-          inspect_source(code_example('a\  b\ \  c'))
-          expect(cop.messages.empty?).to be(true)
+          expect_no_offenses(code_example('a\  b\ \  c'))
         end
 
         it 'accepts multi-line literals' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             %#{type}(
               a
               b
               c
             )
           RUBY
-          expect(cop.messages.empty?).to be(true)
         end
 
         it 'accepts multi-line literals within a method' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             def foo
               %#{type}(
                 a
@@ -72,15 +69,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
               )
             end
           RUBY
-          expect(cop.messages.empty?).to be(true)
         end
 
         it 'accepts newlines and additional following alignment spaces' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_no_offenses(<<-RUBY.strip_indent)
             %#{type}(a b
                c)
           RUBY
-          expect(cop.messages.empty?).to be(true)
         end
       end
     end

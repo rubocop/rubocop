@@ -25,21 +25,15 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method}!" do
-      inspect_source("object.#{method}!")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("object.#{method}!")
     end
 
     it "when using #{method} with 2 arguments" do
-      inspect_source("Model.#{method}(1, name: 'Tom')")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("Model.#{method}(1, name: 'Tom')")
     end
 
     it "when using #{method} with wrong argument" do
-      inspect_source("object.#{method}('Tom')")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("object.#{method}('Tom')")
     end
 
     it 'autocorrects' do
@@ -199,8 +193,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} as last method call" do
-      inspect_source(['def foo', "object.#{method}", 'end'])
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(['def foo', "object.#{method}", 'end'])
     end
 
     # Bug: https://github.com/rubocop-hq/rubocop/issues/4264
@@ -224,19 +217,15 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
 
   shared_examples 'checks_create_offense' do |method|
     it "when using persisted? after #{method}" do
-      inspect_source("x = object.#{method}\n" \
+      expect_no_offenses("x = object.#{method}\n" \
                           'if x.persisted? then; something; end')
-
-      expect(cop.messages.empty?).to be(true)
     end
 
     it "when using persisted? after #{method} with block" do
-      inspect_source("x = object.#{method} do |obj|\n" \
+      expect_no_offenses("x = object.#{method} do |obj|\n" \
                           "  obj.name = 'Tom'\n" \
                           "end\n" \
                           'if x.persisted? then; something; end')
-
-      expect(cop.messages.empty?).to be(true)
     end
   end
 

@@ -115,29 +115,25 @@ RSpec.describe RuboCop::Cop::Performance::Casecmp do
     end
 
     it "doesn't report an offense for variable == str.#{selector}" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = "a"
         var == str.#{selector}
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't report an offense for str.#{selector} == variable" do
-      inspect_source(<<-RUBY.strip_indent)
+      expect_no_offenses(<<-RUBY.strip_indent)
         var = "a"
         str.#{selector} == var
       RUBY
-      expect(cop.offenses.empty?).to be(true)
     end
 
     it "doesn't report an offense for obj.method == str.#{selector}" do
-      inspect_source("obj.method == str.#{selector}")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("obj.method == str.#{selector}")
     end
 
     it "doesn't report an offense for str.#{selector} == obj.method" do
-      inspect_source("str.#{selector} == obj.method")
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses("str.#{selector} == obj.method")
     end
   end
 

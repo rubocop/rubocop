@@ -53,16 +53,15 @@ RSpec.describe RuboCop::Cop::Performance::Count do
     end
 
     it "allows usage of #{selector}...count with a block on an array" do
-      inspect_source("[1, 2, 3].#{selector} { |e| e.odd? }.count { |e| e > 2 }")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        [1, 2, 3].#{selector} { |e| e.odd? }.count { |e| e > 2 }
+      RUBY
     end
 
     it "allows usage of #{selector}...count with a block on a hash" do
-      source = "{a: 1, b: 2}.#{selector} { |e| e == :a }.count { |e| e > 2 }"
-      inspect_source(source)
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses(<<-RUBY.strip_indent)
+        {a: 1, b: 2}.#{selector} { |e| e == :a }.count { |e| e > 2 }
+      RUBY
     end
 
     it "registers an offense for #{selector} with params instead of a block" do
@@ -102,28 +101,20 @@ RSpec.describe RuboCop::Cop::Performance::Count do
     end
 
     it "allows usage of #{selector} without getting the size" do
-      inspect_source("[1, 2, 3].#{selector} { |e| e.even? }")
-
-      expect(cop.messages.empty?).to be(true)
+      expect_no_offenses("[1, 2, 3].#{selector} { |e| e.even? }")
     end
 
     context 'bang methods' do
       it "allows usage of #{selector}!...size" do
-        inspect_source("[1, 2, 3].#{selector}! { |e| e.odd? }.size")
-
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses("[1, 2, 3].#{selector}! { |e| e.odd? }.size")
       end
 
       it "allows usage of #{selector}!...count" do
-        inspect_source("[1, 2, 3].#{selector}! { |e| e.odd? }.count")
-
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses("[1, 2, 3].#{selector}! { |e| e.odd? }.count")
       end
 
       it "allows usage of #{selector}!...length" do
-        inspect_source("[1, 2, 3].#{selector}! { |e| e.odd? }.length")
-
-        expect(cop.messages.empty?).to be(true)
+        expect_no_offenses("[1, 2, 3].#{selector}! { |e| e.odd? }.length")
       end
     end
   end
@@ -173,13 +164,11 @@ RSpec.describe RuboCop::Cop::Performance::Count do
 
   it 'allows usage of count on an interstitial method with blocks ' \
      'called on select' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_no_offenses(<<-RUBY.strip_indent)
       Data = Struct.new(:value)
       array = [Data.new(2), Data.new(3), Data.new(2)]
       array.select(&:value).uniq { |v| v > 2 }.count
     RUBY
-
-    expect(cop.messages.empty?).to be(true)
   end
 
   it 'allows usage of size called on an assigned variable' do
@@ -299,9 +288,7 @@ RSpec.describe RuboCop::Cop::Performance::Count do
 
     shared_examples 'selectors' do |selector|
       it "allows using array.#{selector}...size" do
-        inspect_source("[1, 2, 3].#{selector} { |e| e.even? }.size")
-
-        expect(cop.offenses.empty?).to be(true)
+        expect_no_offenses("[1, 2, 3].#{selector} { |e| e.even? }.size")
       end
     end
 

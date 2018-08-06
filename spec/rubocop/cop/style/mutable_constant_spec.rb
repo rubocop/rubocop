@@ -43,14 +43,12 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
   shared_examples 'immutable objects' do |o|
     it "allows #{o} to be assigned to a constant" do
       source = [prefix, "CONST = #{o}"].compact.join("\n")
-      inspect_source(source)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(source)
     end
 
     it "allows #{o} to be ||= to a constant" do
       source = [prefix, "CONST ||= #{o}"].compact.join("\n")
-      inspect_source(source)
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(source)
     end
   end
 
