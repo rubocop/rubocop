@@ -354,7 +354,6 @@ require_relative 'rubocop/cop/naming/variable_name'
 require_relative 'rubocop/cop/naming/variable_number'
 
 require_relative 'rubocop/cop/performance/caller'
-require_relative 'rubocop/cop/performance/case_when_splat'
 require_relative 'rubocop/cop/performance/casecmp'
 require_relative 'rubocop/cop/performance/count'
 require_relative 'rubocop/cop/performance/detect'

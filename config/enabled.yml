@@ -921,12 +921,6 @@ Performance/Caller:
              Use `caller(n..n)` instead of `caller`.
   Enabled: true
 
-Performance/CaseWhenSplat:
-  Description: >-
-                  Place `when` conditions that use splat at the end
-                  of the list of `when` branches.
-  Enabled: true
-
 Performance/Casecmp:
   Description: >-
              Use `casecmp` rather than `downcase ==`, `upcase ==`, `== downcase`, or `== upcase`..

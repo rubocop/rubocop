@@ -16,6 +16,7 @@
 ### Changes
 
 * [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
+* [#6163](https://github.com/rubocop-hq/rubocop/pull/6163): Remove `Performance/CaseWhenSplat` cop as the changes it proposes are unsafe. ([@urbanautomaton][])
 
 ## 0.58.2 (2018-07-23)
 
