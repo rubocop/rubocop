@@ -63,10 +63,6 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         RUBY
       end
 
-      it 'accepts empty ()' do
-        expect_no_offenses('some_method()')
-      end
-
       it 'accepts a correctly indented )' do
         expect_no_offenses(<<-RUBY.strip_indent)
           some_method(a,
@@ -97,6 +93,26 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           b =
             some_method(a,
                        )
+        RUBY
+      end
+    end
+
+    context 'without arguments' do
+      it 'accepts empty ()' do
+        expect_no_offenses('some_method()')
+      end
+
+      it 'can handle indentation up against the left edge' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          some_method(
+          )
+        RUBY
+      end
+
+      it 'accepts a correctly aligned ) against (' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          some_method(
+                     )
         RUBY
       end
     end
@@ -197,11 +213,6 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                            )
         RUBY
       end
-
-      it 'accepts empty ()' do
-        expect_no_offenses('foo = some_method()')
-      end
-
       it 'accepts a correctly indented )' do
         expect_no_offenses(<<-RUBY.strip_indent)
           foo = some_method(a,
@@ -232,6 +243,41 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           b =
             some_method(a,
                        )
+        RUBY
+      end
+    end
+
+    context 'without arguments' do
+      it 'accepts empty ()' do
+        expect_no_offenses('foo = some_method()')
+      end
+
+      it 'accepts a correctly aligned ) against (' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = some_method(
+                           )
+        RUBY
+      end
+
+      it 'can handle indentation up against the left edge' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = some_method(
+          )
+        RUBY
+      end
+
+      it 'can handle indentation up against the method' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo = some_method(
+                )
+        RUBY
+      end
+
+      it 'registers an offense for misaligned )' do
+        expect_offense(<<-RUBY.strip_indent)
+          foo = some_method(
+            )
+            ^ Indent `)` to column 0 (not 2)
         RUBY
       end
     end
