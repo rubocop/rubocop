@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
 
   context 'multiline while that fits on one line' do
     it 'registers an offense' do
-      check_really_short(cop, 'while')
+      check_really_short('while')
     end
 
     it 'does auto-correction' do
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
 
   context 'multiline until that fits on one line' do
     it 'registers an offense' do
-      check_really_short(cop, 'until')
+      check_really_short('until')
     end
 
     it 'does auto-correction' do
