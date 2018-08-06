@@ -18,12 +18,9 @@
 
 ## 0.58.2 (2018-07-23)
 
-### Changes
-
 ### New features
 
 * [#6105](https://github.com/rubocop-hq/rubocop/issues/6105): Support `{a,b}` file name globs in `Exclude` and `Include` config. ([@mikeyhew][])
-* [#6116](https://github.com/rubocop-hq/rubocop/pull/6116): Add `ip` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@nijikon][])
 
 ### Bug fixes
 
@@ -31,6 +28,10 @@
 * [#6084](https://github.com/rubocop-hq/rubocop/issues/6084): Fix `Naming/MemoizedInstanceVariableName` cop to allow methods to have leading underscores. ([@kenman345][])
 * [#6098](https://github.com/rubocop-hq/rubocop/issues/6098): Fix an error for `Layout/ClassStructure` when there is a comment in the macro method to be auto-correct. ([@koic][])
 * [#6115](https://github.com/rubocop-hq/rubocop/issues/6115): Fix a false positive for `Lint/OrderedMagicComments` when using `{ encoding: Encoding::SJIS }` hash object after `frozen_string_literal` magic comment. ([@koic][])
+
+### Changes
+
+* [#6116](https://github.com/rubocop-hq/rubocop/pull/6116): Add `ip` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@nijikon][])
 
 ## 0.58.1 (2018-07-10)
 
