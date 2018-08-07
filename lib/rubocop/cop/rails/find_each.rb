@@ -15,7 +15,10 @@ module RuboCop
       class FindEach < Cop
         MSG = 'Use `find_each` instead of `each`.'.freeze
 
-        SCOPE_METHODS = %i[all where not].freeze
+        SCOPE_METHODS = %i[
+          all eager_load includes joins left_joins left_outer_joins not preload
+          references unscoped where
+        ].freeze
         IGNORED_METHODS = %i[order limit select].freeze
 
         def on_send(node)
