@@ -517,16 +517,18 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
     it "doesn't break code by moving long keys too far left" do
       # regression test; see GH issue 2582
-      new_source = autocorrect_source(['{',
-                                       '  sjtjo: sjtjo,',
-                                       '  too_ono_ilitjion_tofotono_o: ' \
-                                       'too_ono_ilitjion_tofotono_o,',
-                                       '}'])
-      expect(new_source).to eq(['{',
-                                '  sjtjo: sjtjo,',
-                                'too_ono_ilitjion_tofotono_o: ' \
-                                'too_ono_ilitjion_tofotono_o,',
-                                '}'].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        {
+          sjtjo: sjtjo,
+          too_ono_ilitjion_tofotono_o: too_ono_ilitjion_tofotono_o,
+        }
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        {
+          sjtjo: sjtjo,
+        too_ono_ilitjion_tofotono_o: too_ono_ilitjion_tofotono_o,
+        }
+      RUBY
     end
   end
 

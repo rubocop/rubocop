@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
   it 'registers an offense for long line before __END__ but not after' do
     inspect_source(['#' * 150,
                     '__END__',
-                    '#' * 200])
+                    '#' * 200].join("\n"))
     expect(cop.messages).to eq(['Line is too long. [150/80]'])
   end
 

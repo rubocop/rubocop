@@ -15,12 +15,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for double quotes within embedded expression in ' \
        'a heredoc string' do
-      src = ['<<RUBY',
-             '#{"A"}',
-             'RUBY']
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['Prefer single-quoted strings inside interpolations.'])
+      expect_offense(<<-'SOURCE'.strip_indent)
+        <<RUBY
+        #{"A"}
+          ^^^ Prefer single-quoted strings inside interpolations.
+        RUBY
+      SOURCE
     end
 
     it 'accepts double quotes on a static string' do
@@ -73,12 +73,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for single quotes within embedded expression in ' \
        'a heredoc string' do
-      src = ['<<RUBY',
-             '#{\'A\'}',
-             'RUBY']
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['Prefer double-quoted strings inside interpolations.'])
+      expect_offense(<<-'SOURCE'.strip_indent)
+        <<RUBY
+        #{'A'}
+          ^^^ Prefer double-quoted strings inside interpolations.
+        RUBY
+      SOURCE
     end
   end
 

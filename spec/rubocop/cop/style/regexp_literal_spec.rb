@@ -93,10 +93,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex with slashes' do
       let(:source) do
-        ['foo = /',
-         '  https?:\/\/',
-         '  example\.com',
-         '/x']
+        <<-'RUBY'.strip_indent
+          foo = /
+            https?:\/\/
+            example\.com
+          /x
+        RUBY
       end
 
       it 'registers an offense' do
@@ -106,7 +108,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
       it 'cannot auto-correct' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source.join("\n"))
+        expect(new_source).to eq(source)
       end
 
       describe 'when configured to allow inner slashes' do
@@ -165,10 +167,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line %r regex without slashes' do
       let(:source) do
-        ['foo = %r{',
-         '  foo',
-         '  bar',
-         '}x']
+        <<-'RUBY'.strip_indent.chomp
+          foo = %r{
+            foo
+            bar
+          }x
+        RUBY
       end
 
       it 'registers an offense' do
@@ -184,10 +188,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line %r regex with slashes' do
       let(:source) do
-        ['foo = %r{',
-         '  https?://',
-         '  example\.com',
-         '}x']
+        <<-'RUBY'.strip_indent
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
 
       it 'is accepted' do
@@ -209,7 +215,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
         it 'cannot auto-correct' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(source.join("\n"))
+          expect(new_source).to eq(source)
         end
       end
     end
@@ -252,10 +258,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex without slashes' do
       let(:source) do
-        ['foo = /',
-         '  foo',
-         '  bar',
-         '/x']
+        <<-'RUBY'.strip_indent.chomp
+          foo = /
+            foo
+            bar
+          /x
+        RUBY
       end
 
       it 'registers an offense' do
@@ -271,10 +279,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex with slashes' do
       let(:source) do
-        ['foo = /',
-         '  https?:\/\/',
-         '  example\.com',
-         '/x']
+        <<-'RUBY'.strip_indent
+          foo = /
+            https?:\/\/
+            example\.com
+          /x
+        RUBY
       end
 
       it 'registers an offense' do
@@ -284,7 +294,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
       it 'cannot auto-correct' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source.join("\n"))
+        expect(new_source).to eq(source)
       end
     end
 
@@ -358,10 +368,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex without slashes' do
       let(:source) do
-        ['foo = /',
-         '  foo',
-         '  bar',
-         '/x']
+        <<-'RUBY'.strip_indent.chomp
+          foo = /
+            foo
+            bar
+          /x
+        RUBY
       end
 
       it 'registers an offense' do
@@ -377,10 +389,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex with slashes' do
       let(:source) do
-        ['foo = /',
-         '  https?:\/\/',
-         '  example\.com',
-         '/x']
+        <<-'RUBY'.strip_indent
+          foo = /
+            https?:\/\/
+            example\.com
+          /x
+        RUBY
       end
 
       it 'registers an offense' do
@@ -390,7 +404,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
       it 'cannot auto-correct' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source.join("\n"))
+        expect(new_source).to eq(source)
       end
     end
 

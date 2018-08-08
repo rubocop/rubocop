@@ -7,14 +7,16 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
     it 'registers offense for double quotes when single quotes suffice' do
-      inspect_source(['s = "abc"',
-                      'x = "a\\\\b"',
-                      'y ="\\\\b"',
-                      'z = "a\\\\"'])
-      expect(cop.highlights).to eq(['"abc"',
-                                    '"a\\\\b"',
-                                    '"\\\\b"',
-                                    '"a\\\\"'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        s = "abc"
+            ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        x = "a\\b"
+            ^^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        y ="\\b"
+           ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        z = "a\\"
+            ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
       expect(cop.messages)
         .to eq(["Prefer single-quoted strings when you don't need " \
                 'string interpolation or special symbols.'] * 4)
@@ -114,9 +116,11 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'detects unneeded double quotes within concatenated string' do
-      src = ['"#{x}" \\', '"y"']
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{x}" \
+        "y"
+        ^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
     end
 
     it 'can handle a built-in constant parsed as string' do

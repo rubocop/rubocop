@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::VariableInterpolation do
   end
 
   it 'autocorrects by adding the missing {}' do
-    corrected = autocorrect_source(['"some #@var"'])
+    corrected = autocorrect_source('"some #@var"')
     expect(corrected).to eq '"some #{@var}"'
   end
 end

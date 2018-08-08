@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::Proc do
   end
 
   it 'auto-corrects Proc.new to proc' do
-    corrected = autocorrect_source(['Proc.new { test }'])
+    corrected = autocorrect_source('Proc.new { test }')
     expect(corrected).to eq 'proc { test }'
   end
 end

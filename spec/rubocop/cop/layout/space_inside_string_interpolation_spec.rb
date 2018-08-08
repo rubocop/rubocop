@@ -4,17 +4,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:irregular_source) do
-    ['"#{ var}"',
-     '"#{var }"',
-     '"#{   var   }"',
-     '"#{var	}"',
-     '"#{	var	}"',
-     '"#{	var}"',
-     '"#{ 	 var 	 	}"']
+    <<-'RUBY'.strip_indent.chomp
+      "#{ var}"
+      "#{var }"
+      "#{   var   }"
+      "#{var	}"
+      "#{	var	}"
+      "#{	var}"
+      "#{ 	 var 	 	}"
+    RUBY
   end
 
   shared_examples 'ill-formatted string interpolations' do
-    let(:source_length) { source.class == String ? 1 : source.length }
+    let(:source_length) { source.count("\n") + 1 }
 
     it 'registers an offense for any irregular spacing inside the braces' do
       inspect_source(source)
@@ -50,8 +52,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for well-formatted string interpolations' do
       let(:source) do
-        ['"Variable is    #{var}      "',
-         '"  Variable is  #{var}"']
+        <<-'RUBY'.strip_indent.chomp
+          "Variable is    #{var}      "
+          "  Variable is  #{var}"
+        RUBY
       end
 
       it 'does not register an offense for excess literal spacing' do
@@ -63,7 +67,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
       it 'does not correct valid string interpolations' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source.join("\n"))
+        expect(new_source).to eq(source)
       end
     end
 
@@ -94,8 +98,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for well-formatted string interpolations' do
       let(:source) do
-        ['"Variable is    #{ var }      "',
-         '"  Variable is  #{ var }"']
+        <<-'RUBY'.strip_indent.chomp
+          "Variable is    #{ var }      "
+          "  Variable is  #{ var }"
+        RUBY
       end
 
       it 'does not register an offense for excess literal spacing' do
@@ -107,7 +113,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
       it 'does not correct valid string interpolations' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source.join("\n"))
+        expect(new_source).to eq(source)
       end
     end
 

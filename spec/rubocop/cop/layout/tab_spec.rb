@@ -61,22 +61,22 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
   end
 
   it 'auto-corrects a line indented with tab' do
-    new_source = autocorrect_source(["\tx = 0"])
+    new_source = autocorrect_source("\tx = 0")
     expect(new_source).to eq('  x = 0')
   end
 
   it 'auto-corrects a line indented with multiple tabs' do
-    new_source = autocorrect_source(["\t\t\tx = 0"])
+    new_source = autocorrect_source("\t\t\tx = 0")
     expect(new_source).to eq('      x = 0')
   end
 
   it 'auto-corrects a line indented with mixed whitespace' do
-    new_source = autocorrect_source([" \tx = 0"])
+    new_source = autocorrect_source(" \tx = 0")
     expect(new_source).to eq('   x = 0')
   end
 
   it 'auto-corrects a line with tab in a string indented with tab' do
-    new_source = autocorrect_source(["\t(x = \"\t\")"])
+    new_source = autocorrect_source("\t(x = \"\t\")")
     expect(new_source).to eq("  (x = \"\t\")")
   end
 

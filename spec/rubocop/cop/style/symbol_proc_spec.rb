@@ -85,18 +85,18 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'autocorrects alias with symbols as proc' do
-    corrected = autocorrect_source(['coll.map { |s| s.upcase }'])
+    corrected = autocorrect_source('coll.map { |s| s.upcase }')
     expect(corrected).to eq 'coll.map(&:upcase)'
   end
 
   it 'autocorrects multiple aliases with symbols as proc' do
-    corrected = autocorrect_source(['coll.map { |s| s.upcase }' \
-                                         '.map { |s| s.downcase }'])
+    corrected = autocorrect_source('coll.map { |s| s.upcase }' \
+                                   '.map { |s| s.downcase }')
     expect(corrected).to eq 'coll.map(&:upcase).map(&:downcase)'
   end
 
   it 'auto-corrects correctly when there are no arguments in parentheses' do
-    corrected = autocorrect_source(['coll.map(   ) { |s| s.upcase }'])
+    corrected = autocorrect_source('coll.map(   ) { |s| s.upcase }')
     expect(corrected).to eq 'coll.map(&:upcase)'
   end
 

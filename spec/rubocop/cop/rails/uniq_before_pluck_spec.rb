@@ -26,11 +26,11 @@ RSpec.describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
 
     it_behaves_like 'UniqBeforePluck cop', method,
                     ['Model.pluck(:id)',
-                     "  .#{method}"], :correct
+                     "  .#{method}"].join("\n"), :correct
 
     it_behaves_like 'UniqBeforePluck cop', method,
                     ['Model.pluck(:id).',
-                     "  #{method}"], :correct
+                     "  #{method}"].join("\n"), :correct
 
     context "#{method} before pluck" do
       it_behaves_like 'UniqBeforePluck cop', method,

@@ -60,17 +60,21 @@ RSpec.describe RuboCop::Cop::Lint::Void do
 
   %w[var @var @@var VAR $var].each do |var|
     it "registers an offense for void var #{var} if not on last line" do
-      inspect_source(["#{var} = 5",
-                      var,
-                      'top'])
+      inspect_source(<<-RUBY.strip_indent)
+                       #{var} = 5
+                       #{var}
+                       top
+      RUBY
       expect(cop.offenses.size).to eq(1)
     end
   end
 
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
-      inspect_source([lit,
-                      'top'])
+      inspect_source(<<-RUBY.strip_indent)
+                        #{lit}
+                        top
+      RUBY
       expect(cop.offenses.size).to eq(1)
     end
   end

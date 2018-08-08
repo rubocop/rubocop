@@ -42,8 +42,7 @@ shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
   name = name.gsub(/\n/, ' <newline>')
   it "accepts matching #{name} ... end" do
-    inspect_source(["#{alignment_base} #{arg}",
-                    end_kw])
+    inspect_source("#{alignment_base} #{arg}\n#{end_kw}")
     expect(cop.offenses).to be_empty
   end
 end

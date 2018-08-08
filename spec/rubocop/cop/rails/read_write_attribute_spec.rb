@@ -60,15 +60,14 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
       end
 
       it 'autocorrects multiline' do
-        source = [
-          'write_attribute(',
-          ':attr, ',
-          '(',
-          "'test_' + postfix",
-          ').to_sym',
-          ')',
-          ''
-        ]
+        source = <<-RUBY.strip_indent
+          write_attribute(
+          :attr,
+          (
+          'test_' + postfix
+          ).to_sym
+          )
+        RUBY
         corrected_source = <<-RUBY.strip_indent
           self[:attr] = (
           'test_' + postfix
