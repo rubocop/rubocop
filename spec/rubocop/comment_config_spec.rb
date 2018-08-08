@@ -55,7 +55,7 @@ RSpec.describe RuboCop::CommentConfig do
         '# rubocop:enable FlatMap',
         '# rubocop:disable RSpec/Example',
         '# rubocop:disable Custom2/Number9'                  # 48
-      ]
+      ].join("\n")
     end
 
     def disabled_lines_of_cop(cop)

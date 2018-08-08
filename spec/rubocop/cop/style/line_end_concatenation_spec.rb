@@ -66,10 +66,12 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'registers multiple offenses when there are chained concatenations' \
      'combined with << calls' do
-    inspect_source(['top = "test#{x}" <<',
-                    '"top" +',
-                    '"foo" <<',
-                    '"bar"'])
+    inspect_source(<<-'RUBY'.strip_indent)
+      top = "test#{x}" <<
+      "top" +
+      "foo" <<
+      "bar"
+    RUBY
     expect(cop.offenses.size).to eq(3)
   end
 
@@ -140,51 +142,74 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'autocorrects in the simple case by replacing + with \\' do
-    corrected = autocorrect_source(['top = "test" +',
-                                    '"top"'])
-    expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      top = "test" + 
+      "top"
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      top = "test" \\
+      "top"
+    RUBY
   end
 
   # The "central auto-correction engine" can't handle intermediate states where
   # the code has syntax errors, so it's important to fix the trailing
   # whitespace in this cop.
   it 'autocorrects a + with trailing whitespace to \\' do
-    corrected = autocorrect_source(['top = "test" + ',
-                                    '"top"'])
-    expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      top = "test" +
+      "top"
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      top = "test" \\
+      "top"
+    RUBY
   end
 
   it 'autocorrects a + with \\ to just \\' do
-    corrected = autocorrect_source(['top = "test" + \\',
-                                    '"top"'])
-    expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      top = "test" + \\
+      "top"
+    RUBY
+    expect(corrected).to eq(<<-RUBY.strip_indent)
+      top = "test" \\
+      "top"
+    RUBY
   end
 
   it 'autocorrects for chained concatenations and << calls' do
-    corrected = autocorrect_source(['top = "test#{x}" <<',
-                                    '"top" +',
-                                    '"ubertop" <<',
-                                    '"foo"'])
+    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+      top = "test#{x}" <<
+      "top" +
+      "ubertop" <<
+      "foo"
+    RUBY
 
-    expect(corrected).to eq ['top = "test#{x}" \\',
-                             '"top" \\',
-                             '"ubertop" \\',
-                             '"foo"'].join("\n")
+    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+      top = "test#{x}" \
+      "top" \
+      "ubertop" \
+      "foo"
+    RUBY
   end
 
   it 'autocorrects only the lines that should be autocorrected' do
-    corrected = autocorrect_source(['top = "test#{x}" <<',
-                                    '"top" + # comment',
-                                    '"foo" +',
-                                    '"bar" +',
-                                    '%(baz) +',
-                                    '"qux"'])
+    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+      top = "test#{x}" <<
+      "top" + # comment
+      "foo" +
+      "bar" +
+      %(baz) +
+      "qux"
+    RUBY
 
-    expect(corrected).to eq ['top = "test#{x}" \\',
-                             '"top" + # comment',
-                             '"foo" \\',
-                             '"bar" +',
-                             '%(baz) +',
-                             '"qux"'].join("\n")
+    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+      top = "test#{x}" \
+      "top" + # comment
+      "foo" \
+      "bar" +
+      %(baz) +
+      "qux"
+    RUBY
   end
 end

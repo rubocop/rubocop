@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias with symbol args' do
-      corrected = autocorrect_source(['alias :ala :bala'])
+      corrected = autocorrect_source('alias :ala :bala')
       expect(corrected).to eq 'alias ala bala'
     end
 

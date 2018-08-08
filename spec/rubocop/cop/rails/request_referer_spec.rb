@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Rails::RequestReferer, :config do
     end
 
     it 'autocorrects referrer with referer' do
-      corrected = autocorrect_source(['puts request.referrer'])
+      corrected = autocorrect_source('puts request.referrer')
       expect(corrected).to eq 'puts request.referer'
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Rails::RequestReferer, :config do
     end
 
     it 'autocorrects referer with referrer' do
-      corrected = autocorrect_source(['puts request.referer'])
+      corrected = autocorrect_source('puts request.referer')
       expect(corrected).to eq 'puts request.referrer'
     end
   end

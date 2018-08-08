@@ -67,17 +67,31 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(['x = 0', '', '', '', ''])
-      expect(new_source).to eq(['x = 0', ''].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        x = 0
+
+
+
+
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        x = 0
+      RUBY
     end
 
     it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(['', '', '', '', ''])
-      expect(new_source).to eq(['', ''].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+
+
+
+
+
+      RUBY
+      expect(new_source).to eq("\n")
     end
 
     it 'auto-corrects even if some lines have space' do
-      new_source = autocorrect_source(['x = 0', '', '  ', '', ''])
+      new_source = autocorrect_source(['x = 0', '', '  ', '', ''].join("\n"))
       expect(new_source).to eq(['x = 0', ''].join("\n"))
     end
   end
@@ -86,7 +100,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'final_blank_line' } }
 
     it 'registers an offense for final newline' do
-      inspect_source(['x = 0', ''])
+      inspect_source(<<-RUBY.strip_indent)
+        x = 0
+      RUBY
+
       expect(cop.messages).to eq(['Trailing blank line missing.'])
     end
 
@@ -103,7 +120,12 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      inspect_source(['', '', '', '', ''])
+      inspect_source(<<-RUBY.strip_indent)
+
+
+
+
+      RUBY
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['3 trailing blank lines instead of 1 detected.'])
@@ -119,23 +141,49 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(['x = 0', '', '', '', ''])
-      expect(new_source).to eq(['x = 0', '', ''].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        x = 0
+
+
+
+
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        x = 0
+
+      RUBY
     end
 
     it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(['', '', '', '', ''])
-      expect(new_source).to eq(['', '', ''].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+
+
+
+
+      RUBY
+      expect(new_source).to eq(<<-RUBY)
+
+
+      RUBY
     end
 
     it 'auto-corrects missing blank line' do
-      new_source = autocorrect_source(['x = 0', ''])
-      expect(new_source).to eq(['x = 0', '', ''].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        x = 0
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        x = 0
+
+      RUBY
     end
 
     it 'auto-corrects missing newline' do
-      new_source = autocorrect_source(['x = 0'])
-      expect(new_source).to eq(['x = 0', '', ''].join("\n"))
+      new_source = autocorrect_source('x = 0')
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        x = 0
+
+      RUBY
     end
   end
 end

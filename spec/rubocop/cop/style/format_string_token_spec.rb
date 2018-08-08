@@ -19,11 +19,11 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       let(:enforced_style) { name }
 
       it "registers offenses for #{bad_style1}" do
-        inspect_source([
-                         '<<-HEREDOC',
-                         "foo #{good} + bar #{bad_style1}",
-                         'HEREDOC'
-                       ])
+        inspect_source(<<-RUBY.strip_indent)
+          <<-HEREDOC
+          foo #{good} + bar #{bad_style1}
+          HEREDOC
+        RUBY
 
         expect(cop.highlights).to eql([bad_style1])
       end

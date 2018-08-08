@@ -193,15 +193,21 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
     end
 
     it "when using #{method} as last method call" do
-      expect_no_offenses(['def foo', "object.#{method}", 'end'])
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def foo
+          object.#{method}
+        end
+      RUBY
     end
 
     # Bug: https://github.com/rubocop-hq/rubocop/issues/4264
     it 'when using the assigned variable as value in a hash' do
-      inspect_source(['def foo',
-                      "  foo = Foo.#{method}",
-                      '  render json: foo',
-                      'end'])
+      inspect_source(<<-RUBY.strip_indent)
+        def foo
+          foo = Foo.#{method}
+          render json: foo
+        end
+      RUBY
       if pass
         expect(cop.offenses.empty?).to be(true)
       else

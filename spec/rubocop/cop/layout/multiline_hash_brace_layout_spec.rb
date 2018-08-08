@@ -26,7 +26,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     let(:a) { 'a: 1' }
     let(:b) { 'b: 2' }
     let(:multi_prefix) { 'b: ' }
-    let(:multi) { ['[', '1', ']'] }
+    let(:multi) do
+      <<-RUBY.strip_indent.chomp
+        [
+        1
+        ]
+      RUBY
+    end
   end
 
   include_examples 'multiline literal brace layout trailing comma' do

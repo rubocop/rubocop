@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
 
     it 'ignores trailing whitespace' do
       expect_no_offenses(['      class Benchmarker < Performer     ',
-                          '      end'])
+                          '      end'].join("\n"))
     end
 
     it 'registers an offense on class inheritance' do

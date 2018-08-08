@@ -14,20 +14,24 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
   end
 
   it 'registers an offense for then in multiline if' do
-    inspect_source(['if cond then',
-                    'end',
-                    "if cond then\t",
-                    'end',
-                    'if cond then  ',
-                    'end',
-                    'if cond',
-                    'then',
-                    'end',
-                    'if cond then # bad',
-                    'end'])
-    expect(cop.offenses.map(&:line)).to eq([1, 3, 5, 8, 10])
-    expect(cop.highlights).to eq(['then'] * 5)
-    expect(cop.messages).to eq(['Do not use `then` for multi-line `if`.'] * 5)
+    expect_offense(<<-RUBY.strip_indent)
+      if cond then
+              ^^^^ Do not use `then` for multi-line `if`.
+      end
+      if cond then\t
+              ^^^^ Do not use `then` for multi-line `if`.
+      end
+      if cond then
+              ^^^^ Do not use `then` for multi-line `if`.
+      end
+      if cond
+      then
+      ^^^^ Do not use `then` for multi-line `if`.
+      end
+      if cond then # bad
+              ^^^^ Do not use `then` for multi-line `if`.
+      end
+    RUBY
   end
 
   it 'registers an offense for then in multiline elsif' do

@@ -141,10 +141,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'keeps the line breaks in place after auto-correct' do
-      new_source = autocorrect_source(["['one',",
-                                       "'two', 'three']"])
-      expect(new_source).to eq(['%w(one',
-                                'two three)'].join("\n"))
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        ['one',
+        'two', 'three']
+      RUBY
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        %w(one
+        two three)
+      RUBY
     end
 
     it 'auto-corrects an array of words in multiple lines' do

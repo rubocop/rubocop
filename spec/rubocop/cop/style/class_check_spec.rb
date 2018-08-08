@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::ClassCheck, :config do
     end
 
     it 'auto-corrects kind_of? to is_a?' do
-      corrected = autocorrect_source(['x.kind_of? y'])
+      corrected = autocorrect_source('x.kind_of? y')
       expect(corrected).to eq 'x.is_a? y'
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::ClassCheck, :config do
     end
 
     it 'auto-corrects is_a? to kind_of?' do
-      corrected = autocorrect_source(['x.is_a? y'])
+      corrected = autocorrect_source('x.is_a? y')
       expect(corrected).to eq 'x.kind_of? y'
     end
   end

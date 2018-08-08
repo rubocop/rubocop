@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'accepts one empty hash parameter with whitespace' do
       expect_no_offenses(['where(  {     ',
-                          " }\t   )  "])
+                          " }\t   )  "].join("\n"))
     end
   end
 
@@ -89,51 +89,51 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   shared_examples 'no_braces and context_dependent auto-corrections' do
     it 'corrects one non-hash parameter followed by a hash parameter with ' \
        'braces' do
-      corrected = autocorrect_source(['where(1, { y: 2 })'])
+      corrected = autocorrect_source('where(1, { y: 2 })')
       expect(corrected).to eq('where(1, y: 2)')
     end
 
     it 'corrects one object method hash parameter with braces' do
-      corrected = autocorrect_source(['x.func({ y: "z" })'])
+      corrected = autocorrect_source('x.func({ y: "z" })')
       expect(corrected).to eq('x.func(y: "z")')
     end
 
     it 'corrects one hash parameter with braces' do
-      corrected = autocorrect_source(['where({ x: 1 })'])
+      corrected = autocorrect_source('where({ x: 1 })')
       expect(corrected).to eq('where(x: 1)')
     end
 
     it 'corrects one hash parameter with braces and whitespace' do
       corrected = autocorrect_source(['where(  ',
-                                      ' { x: 1 }   )'])
+                                      ' { x: 1 }   )'].join("\n"))
       expect(corrected).to eq(['where(  ',
                                ' x: 1   )'].join("\n"))
     end
 
     it 'corrects one hash parameter with braces and multiple keys' do
-      corrected = autocorrect_source(['where({ x: 1, foo: "bar" })'])
+      corrected = autocorrect_source('where({ x: 1, foo: "bar" })')
       expect(corrected).to eq('where(x: 1, foo: "bar")')
     end
 
     it 'corrects one hash parameter with braces and extra leading whitespace' do
-      corrected = autocorrect_source(['where({   x: 1, y: 2 })'])
+      corrected = autocorrect_source('where({   x: 1, y: 2 })')
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and extra trailing ' \
        'whitespace' do
-      corrected = autocorrect_source(['where({ x: 1, y: 2   })'])
+      corrected = autocorrect_source('where({ x: 1, y: 2   })')
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and a trailing comma' do
-      corrected = autocorrect_source(['where({ x: 1, y: 2, })'])
+      corrected = autocorrect_source('where({ x: 1, y: 2, })')
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and trailing comma and ' \
        'whitespace' do
-      corrected = autocorrect_source(['where({ x: 1, y: 2,   })'])
+      corrected = autocorrect_source('where({ x: 1, y: 2,   })')
       expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
@@ -298,12 +298,12 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       include_examples 'no_braces and context_dependent auto-corrections'
 
       it 'corrects one hash parameter with braces' do
-        corrected = autocorrect_source(['where(1, { x: 1 })'])
+        corrected = autocorrect_source('where(1, { x: 1 })')
         expect(corrected).to eq('where(1, x: 1)')
       end
 
       it 'corrects two hash parameters with braces' do
-        corrected = autocorrect_source(['where(1, { x: 1 }, { y: 2 })'])
+        corrected = autocorrect_source('where(1, { x: 1 }, { y: 2 })')
         expect(corrected).to eq('where(1, { x: 1 }, y: 2)')
       end
 
@@ -359,12 +359,12 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       include_examples 'no_braces and context_dependent auto-corrections'
 
       it 'corrects one hash parameter with braces and one without' do
-        corrected = autocorrect_source(['where(1, { x: 1 }, y: 2)'])
+        corrected = autocorrect_source('where(1, { x: 1 }, y: 2)')
         expect(corrected).to eq('where(1, { x: 1 }, {y: 2})')
       end
 
       it 'corrects one hash parameter with braces' do
-        corrected = autocorrect_source(['where(1, { x: 1 })'])
+        corrected = autocorrect_source('where(1, { x: 1 })')
         expect(corrected).to eq('where(1, x: 1)')
       end
     end
@@ -419,17 +419,17 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     describe '#autocorrect' do
       it 'corrects one hash parameter without braces' do
-        corrected = autocorrect_source(['where(x: "y")'])
+        corrected = autocorrect_source('where(x: "y")')
         expect(corrected).to eq('where({x: "y"})')
       end
 
       it 'corrects one hash parameter with multiple keys and without braces' do
-        corrected = autocorrect_source(['where(x: "y", foo: "bar")'])
+        corrected = autocorrect_source('where(x: "y", foo: "bar")')
         expect(corrected).to eq('where({x: "y", foo: "bar"})')
       end
 
       it 'corrects one hash parameter without braces with one hash value' do
-        corrected = autocorrect_source(['where(x: { "y" => "z" })'])
+        corrected = autocorrect_source('where(x: { "y" => "z" })')
         expect(corrected).to eq('where({x: { "y" => "z" }})')
       end
     end

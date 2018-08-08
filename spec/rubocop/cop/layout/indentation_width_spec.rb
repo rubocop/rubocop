@@ -317,7 +317,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
                                           '    y',
                                           ' ',
                                           'rescue',
-                                          'end'])
+                                          'end'].join("\n"))
 
           expect(corrected).to eq ['def x',
                                    '  y',

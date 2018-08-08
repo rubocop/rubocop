@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
   shared_examples 'iso-8859-15' do |eol|
     it 'can inspect non-UTF-8 encoded source with proper encoding comment' do
       inspect_source_file(["# coding: ISO-8859-15#{eol}",
-                           "# Euro symbol: \xa4#{eol}"])
+                           "# Euro symbol: \xa4#{eol}"].join("\n"))
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     end
 
     it 'registers an offense for an incorrect EOL' do
-      inspect_source_file(['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"].join("\n"))
       expect(cop.messages).to eq(messages)
       expect(cop.offenses.map(&:line))
         .to eq([RuboCop::Platform.windows? ? 1 : 3])
@@ -40,13 +40,13 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     include_examples 'all configurations'
 
     it 'registers an offense for CR+LF' do
-      inspect_source_file(['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"].join("\n"))
       expect(cop.messages).to eq(messages)
       expect(cop.offenses.map(&:line)).to eq([1])
     end
 
     it 'highlights the whole offending line' do
-      inspect_source_file(['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"].join("\n"))
       expect(cop.highlights).to eq(["x=0\n"])
     end
 
@@ -112,13 +112,13 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     include_examples 'all configurations'
 
     it 'registers an offense for CR+LF' do
-      inspect_source_file(['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"].join("\n"))
       expect(cop.messages).to eq(['Carriage return character detected.'])
       expect(cop.offenses.map(&:line)).to eq([3])
     end
 
     it 'highlights the whole offending line' do
-      inspect_source_file(['x=0', '', "y=1\r"])
+      inspect_source_file(['x=0', '', "y=1\r"].join("\n"))
       expect(cop.highlights).to eq(["y=1\r"])
     end
 
