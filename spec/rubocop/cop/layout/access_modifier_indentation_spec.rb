@@ -198,6 +198,32 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
+    it 'accepts indented access modifiers with arguments in nested classes' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class A
+          module Test
+            private :test
+          end
+        end
+      RUBY
+
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class A
+          class Test
+            private :test
+          end
+        end
+      RUBY
+
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class A
+          class << self
+            private :test
+          end
+        end
+      RUBY
+    end
+
     it 'auto-corrects incorrectly indented access modifiers' do
       corrected = autocorrect_source(<<-RUBY.strip_indent)
         class Test

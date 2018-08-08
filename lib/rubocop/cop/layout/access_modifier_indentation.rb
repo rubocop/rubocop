@@ -66,6 +66,7 @@ module RuboCop
 
         def check_body(body, node)
           return if body.nil? # Empty class etc.
+          return unless body.begin_type?
 
           modifiers = body.each_child_node(:send).select(&:access_modifier?)
           class_column = node.source_range.column
