@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense for no space between -> and (' do
       expect_offense(<<-RUBY.strip_indent)
         a = ->(b, c) { b + c }
-            ^^^^^^^^^^^^^^^^^^ Use a space between `->` and opening brace in lambda literals
+            ^^^^^^^^^^^^^^^^^^ Use a space between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
@@ -33,22 +33,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense for no space in the inner nested lambda' do
       expect_offense(<<-RUBY.strip_indent)
         a = -> (b = ->(c) {}, d) { b + d }
-                    ^^^^^^^^ Use a space between `->` and opening brace in lambda literals
+                    ^^^^^^^^ Use a space between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
     it 'registers an offense for no space in the outer nested lambda' do
       expect_offense(<<-RUBY.strip_indent)
         a = ->(b = -> (c) {}, d) { b + d }
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use a space between `->` and opening brace in lambda literals
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use a space between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
     it 'registers an offense for no space in both lambdas when nested' do
       expect_offense(<<-RUBY.strip_indent)
         a = ->(b = ->(c) {}, d) { b + d }
-                   ^^^^^^^^ Use a space between `->` and opening brace in lambda literals
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use a space between `->` and opening brace in lambda literals
+                   ^^^^^^^^ Use a space between `->` and opening parenthesis in lambda literals
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use a space between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense for a space between -> and (' do
       expect_offense(<<-RUBY.strip_indent)
         a = -> (b, c) { b + c }
-            ^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening brace in lambda literals
+            ^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
@@ -107,29 +107,29 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense for spaces between -> and (' do
       expect_offense(<<-RUBY.strip_indent)
         a = ->   (b, c) { b + c }
-            ^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening brace in lambda literals
+            ^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
     it 'registers an offense for a space in the inner nested lambda' do
       expect_offense(<<-RUBY.strip_indent)
         a = ->(b = -> (c) {}, d) { b + d }
-                   ^^^^^^^^^ Do not use spaces between `->` and opening brace in lambda literals
+                   ^^^^^^^^^ Do not use spaces between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
     it 'registers an offense for a space in the outer nested lambda' do
       expect_offense(<<-RUBY.strip_indent)
         a = -> (b = ->(c) {}, d) { b + d }
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening brace in lambda literals
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
     it 'registers two offenses for a space in both lambdas when nested' do
       expect_offense(<<-RUBY.strip_indent)
         a = -> (b = -> (c) {}, d) { b + d }
-                    ^^^^^^^^^ Do not use spaces between `->` and opening brace in lambda literals
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening brace in lambda literals
+                    ^^^^^^^^^ Do not use spaces between `->` and opening parenthesis in lambda literals
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and opening parenthesis in lambda literals
       RUBY
     end
 
