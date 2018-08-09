@@ -50,8 +50,7 @@ module RuboCop
             elsif node.modifier_form?
               corrector.replace(node.source_range, node.if_branch.source)
             else
-              corrected = [node.if_branch.source,
-                           else_source(node.else_branch)].join(' || ')
+              corrected = make_ternary_form(node)
 
               corrector.replace(node.source_range, corrected)
             end
@@ -93,6 +92,17 @@ module RuboCop
           wrap_else = MODIFIER_NODES.include?(else_branch.type) &&
                       else_branch.modifier_form?
           wrap_else ? "(#{else_branch.source})" : else_branch.source
+        end
+
+        def make_ternary_form(node)
+          ternary_form = [node.if_branch.source,
+                          else_source(node.else_branch)].join(' || ')
+
+          if node.parent && node.parent.send_type?
+            "(#{ternary_form})"
+          else
+            ternary_form
+          end
         end
       end
     end

@@ -16,6 +16,7 @@
 * [#6152](https://github.com/rubocop-hq/rubocop/pull/6152): Fix a false negative for `Layout/AccessModifierIndentation` when using access modifiers with arguments within nested classes. ([@gmalette][])
 * [#6124](https://github.com/rubocop-hq/rubocop/issues/6124): Fix `Style/IfUnlessModifier` cop for disabled `Layout/Tab` cop when there is no `IndentationWidth` config. ([@AlexWayfer][])
 * [#6133](https://github.com/rubocop-hq/rubocop/pull/6133): Fix `AllowURI` option of `Metrics/LineLength` cop for files with tabs indentation. ([@AlexWayfer][])
+* [#6164](https://github.com/rubocop-hq/rubocop/issues/6164): Fix incorrect autocorrect for `Style/UnneededCondition` when using operator method higher precedence than `||`. ([@koic][])
 
 ### Changes
 
