@@ -350,20 +350,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   context 'with disabled Layout/Tab cop' do
-    let(:config) do
-      RuboCop::Config.new(
-        'Layout/IndentationWidth' => {
-          'Width' => 1
-        },
-        'Layout/Tab' => {
-          'Enabled' => false,
-          'IndentationWidth' => 2
-        },
-        'Metrics/LineLength' => { 'Max' => 80 }
-      )
-    end
-
-    context 'with tabs indentation' do
+    shared_examples 'with tabs indentation' do
       let(:source) do
         # Empty lines should make no difference.
         <<-RUBY
@@ -373,15 +360,15 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
         RUBY
       end
 
-      let(:body) { 'b' * 38 }
+      let(:body) { 'bbb' }
 
       context 'it fits on one line' do
-        let(:condition) { 'a' * 26 }
+        let(:condition) { 'aaa' }
 
         it 'registers an offense' do
           # This if statement fits exactly on one line if written as a
           # modifier.
-          expect("#{body} if #{condition}".length).to eq(68)
+          expect("#{body} if #{condition}".length).to eq(10)
 
           inspect_source(source)
           expect(cop.messages).to eq(
@@ -393,16 +380,62 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       end
 
       context "it doesn't fit on one line" do
-        let(:condition) { 'a' * 27 }
+        let(:condition) { 'aaaa' }
 
         it "doesn't register an offense" do
           # This if statement fits exactly on one line if written as a
           # modifier.
-          expect("#{body} if #{condition}".length).to eq(69)
+          expect("#{body} if #{condition}".length).to eq(11)
 
           expect_no_offenses(source)
         end
       end
+    end
+
+    context 'with Layout/Tab: IndentationWidth config' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Layout/IndentationWidth' => {
+            'Width' => 1
+          },
+          'Layout/Tab' => {
+            'Enabled' => false,
+            'IndentationWidth' => 2
+          },
+          'Metrics/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
+        )
+      end
+
+      it_behaves_like 'with tabs indentation'
+    end
+
+    context 'with Layout/IndentationWidth: Width config' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Layout/IndentationWidth' => {
+            'Width' => 1
+          },
+          'Layout/Tab' => {
+            'Enabled' => false
+          },
+          'Metrics/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
+        )
+      end
+
+      it_behaves_like 'with tabs indentation'
+    end
+
+    context 'without any IndentationWidth config' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Layout/Tab' => {
+            'Enabled' => false
+          },
+          'Metrics/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
+        )
+      end
+
+      it_behaves_like 'with tabs indentation'
     end
   end
 end

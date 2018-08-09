@@ -343,37 +343,67 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
   end
 
   context 'affecting by IndentationWidth from Layout\Tab' do
-    let(:config) do
-      RuboCop::Config.new(
-        'Layout/IndentationWidth' => {
-          'Width' => 1
-        },
-        'Layout/Tab' => {
-          'Enabled' => false,
-          'IndentationWidth' => 2
-        },
-        'Metrics/LineLength' => {
-          'Max' => 80
-        }
-      )
+    shared_examples 'with tabs indentation' do
+      it "registers an offense for a line that's including 1 tab with size 2" \
+         ' and 9 other characters' do
+        inspect_source("\t" + '#' * 9)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to eq('Line is too long. [11/10]')
+        expect(cop.config_to_allow_offenses).to eq('Max' => 11)
+      end
+
+      it 'highlights excessive characters' do
+        inspect_source("\t" + '#' * 8 + 'a')
+        expect(cop.highlights).to eq(['a'])
+      end
+
+      it "accepts a line that's including 1 tab with size 2" \
+         ' and 8 other characters' do
+        expect_no_offenses("\t" + '#' * 8)
+      end
     end
 
-    it "registers an offense for a line that's including 1 tab with size 2" \
-       ' and 79 other characters' do
-      inspect_source("\t" + '#' * 79)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message).to eq('Line is too long. [81/80]')
-      expect(cop.config_to_allow_offenses).to eq('Max' => 81)
+    context 'without AllowURI option' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Layout/IndentationWidth' => {
+            'Width' => 1
+          },
+          'Layout/Tab' => {
+            'Enabled' => false,
+            'IndentationWidth' => 2
+          },
+          'Metrics/LineLength' => {
+            'Max' => 10
+          }
+        )
+      end
+
+      it_behaves_like 'with tabs indentation'
     end
 
-    it 'highlights excessive characters' do
-      inspect_source("\t" + '#' * 78 + 'abc')
-      expect(cop.highlights).to eq(['abc'])
-    end
+    context 'with AllowURI option' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Layout/IndentationWidth' => {
+            'Width' => 1
+          },
+          'Layout/Tab' => {
+            'Enabled' => false,
+            'IndentationWidth' => 2
+          },
+          'Metrics/LineLength' => {
+            'Max' => 10,
+            'AllowURI' => true
+          }
+        )
+      end
 
-    it "accepts a line that's including 1 tab with size 2" \
-       ' and 78 other characters' do
-      expect_no_offenses("\t" + '#' * 78)
+      it_behaves_like 'with tabs indentation'
+
+      it "accepts a line that's including URI" do
+        expect_no_offenses("\thttps://github.com/rubocop-hq/rubocop")
+      end
     end
   end
 end

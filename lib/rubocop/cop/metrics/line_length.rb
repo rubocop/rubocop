@@ -76,7 +76,7 @@ module RuboCop
           excessive_position = if uri_range && uri_range.begin < max
                                  uri_range.end
                                else
-                                 max
+                                 highligh_start(line)
                                end
 
           source_range(processed_source.buffer, index + 1,
