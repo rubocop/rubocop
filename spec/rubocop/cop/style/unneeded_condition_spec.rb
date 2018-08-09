@@ -146,6 +146,21 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
         expect(new_source).to eq('bar')
       end
+
+      it 'auto-corrects when using `<<` method higher precedence ' \
+         'than `||` operator' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          ary << if foo
+                   foo
+                 else
+                   bar
+                 end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          ary << (foo || bar)
+        RUBY
+      end
     end
   end
 
