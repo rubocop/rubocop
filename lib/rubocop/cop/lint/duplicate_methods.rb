@@ -147,7 +147,12 @@ module RuboCop
 
         def found_method(node, method_name)
           if @definitions.key?(method_name)
-            loc = node.send_type? ? node.loc.selector : node.loc.keyword
+            loc = case node.type
+                  when :def, :defs
+                    node.loc.keyword.join(node.loc.name)
+                  else
+                    node.loc.expression
+                  end
             message = message_for_dup(node, method_name)
 
             add_offense(node, location: loc, message: message)
