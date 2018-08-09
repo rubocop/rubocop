@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks for spaces between -> and opening parameter
-      # brace in lambda literals.
+      # parenthesis in lambda literals.
       #
       # @example EnforcedStyle: require_no_space (default)
       #     # bad
@@ -24,10 +24,10 @@ module RuboCop
         include RangeHelp
 
         ARROW = '->'.freeze
-        MSG_REQUIRE_SPACE = 'Use a space between `->` and opening brace ' \
-                            'in lambda literals'.freeze
+        MSG_REQUIRE_SPACE = 'Use a space between `->` and opening ' \
+                            'parenthesis in lambda literals'.freeze
         MSG_REQUIRE_NO_SPACE = 'Do not use spaces between `->` and opening ' \
-                               'brace in lambda literals'.freeze
+                               'parenthesis in lambda literals'.freeze
 
         def on_send(node)
           return unless arrow_lambda_with_args?(node)
