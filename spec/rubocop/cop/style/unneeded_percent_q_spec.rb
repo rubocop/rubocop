@@ -30,9 +30,10 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'registers an offfense for a string containing escaped backslashes' do
-      inspect_source('%q(\\\\foo\\\\)')
-
-      expect(cop.messages.length).to eq 1
+      expect_offense(<<-'RUBY'.strip_indent)
+        %q(\\\\foo\\\\)
+        ^^^^^^^^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
     end
 
     it 'accepts a string with escaped non-backslash characters' do

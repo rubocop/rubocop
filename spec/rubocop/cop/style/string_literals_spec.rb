@@ -17,9 +17,6 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         z = "a\\"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RUBY
-      expect(cop.messages)
-        .to eq(["Prefer single-quoted strings when you don't need " \
-                'string interpolation or special symbols.'] * 4)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'double_quotes')
     end

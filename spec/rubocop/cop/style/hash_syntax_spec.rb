@@ -352,8 +352,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have different types and styles' do
-        inspect_source('x = { a: 0, "b" => 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { a: 0, "b" => 1 }
+                ^^ Don't mix styles in the same hash.
+        RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
@@ -431,15 +433,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers offense for hash rocket syntax when new is possible' do
-        inspect_source('x = { :a => 0 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 0 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
         expect(cop.config_to_allow_offenses)
           .to eq('EnforcedStyle' => 'hash_rockets')
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
-        inspect_source('x = { :a => 0, b: 1 }')
-        expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { :a => 0, b: 1 }
+                ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
@@ -463,8 +469,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have different types and styles' do
-        inspect_source('x = { a: 0, "b" => 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+        expect_offense(<<-RUBY.strip_indent)
+          x = { a: 0, "b" => 1 }
+                ^^ Don't mix styles in the same hash.
+        RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
@@ -518,8 +526,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense for mixed syntax when new is possible' do
-      inspect_source('x = { :a => 0, b: 1 }')
-      expect(cop.messages).to eq(['Don\'t mix styles in the same hash.'])
+      expect_offense(<<-RUBY.strip_indent)
+        x = { :a => 0, b: 1 }
+                       ^^ Don't mix styles in the same hash.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -540,8 +550,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense when keys have different types and styles' do
-      inspect_source('x = { a: 0, "b" => 1 }')
-      expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+      expect_offense(<<-RUBY.strip_indent)
+        x = { a: 0, "b" => 1 }
+              ^^ Don't mix styles in the same hash.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -550,8 +562,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense when keys have whitespaces and mix styles' do
-      inspect_source('x = { :"t o" => 0, b: 1 }')
-      expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+      expect_offense(<<-RUBY.strip_indent)
+        x = { :"t o" => 0, b: 1 }
+                           ^^ Don't mix styles in the same hash.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -571,8 +585,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense when keys start with a digit and mix styles' do
-      inspect_source('x = { :"1" => 1, b: 1 }')
-      expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+      expect_offense(<<-RUBY.strip_indent)
+        x = { :"1" => 1, b: 1 }
+                         ^^ Don't mix styles in the same hash.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 

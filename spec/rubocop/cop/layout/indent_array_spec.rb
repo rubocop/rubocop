@@ -357,15 +357,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
 
     context "when 'consistent' style is used" do
       it 'registers an offense for incorrect indentation' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           func([
             1
+            ^ Use 2 spaces for indentation in an array, relative to the position of the opening bracket.
           ])
+          ^ Indent the right bracket the same as the left bracket.
         RUBY
-        expect(cop.messages)
-          .to eq(['Use 2 spaces for indentation in an array, relative to the' \
-                  ' position of the opening bracket.',
-                  'Indent the right bracket the same as the left bracket.'])
         expect(cop.config_to_allow_offenses)
           .to eq('EnforcedStyle' => 'consistent')
       end
