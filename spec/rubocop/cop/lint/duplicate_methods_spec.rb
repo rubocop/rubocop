@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           def some_method
-          ^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           def self.some_method
-          ^^^ Method `A.some_method` is defined at both dups.rb:2 and dups.rb:5.
+          ^^^^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both dups.rb:2 and dups.rb:5.
             implement 2
           end
         end
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           private def some_method
-                  ^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+                  ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           private def self.some_method
-                  ^^^ Method `A.some_method` is defined at both (string):2 and (string):5.
+                  ^^^^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           protected def some_method
-                    ^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+                    ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -135,14 +135,14 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           def some_method
-          ^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.
             implement 2
           end
           def any_method
             implement 1
           end
           def any_method
-          ^^^ Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.
+          ^^^^^^^^^^^^^^ Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.
             implement 2
           end
         end
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
         end
         #{opening_line}
           def some_method
-          ^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:7.
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:7.
             implement 2
           end
         end
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
       expect_offense(<<-RUBY.strip_indent, 'second.rb')
         #{opening_line}
           def some_method
-          ^^^ Method `A#some_method` is defined at both first.rb:2 and second.rb:2.
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both first.rb:2 and second.rb:2.
             implement 2
           end
         end
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
               implement 1
             end
             def some_method
-            ^^^ Method `A.some_method` is defined at both test.rb:3 and test.rb:6.
+            ^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both test.rb:3 and test.rb:6.
               implement 2
             end
           end
@@ -225,13 +225,13 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
               implement 1
             end
             def some_method
-            ^^^ Method `B::A#some_method` is defined at both test.rb:3 and test.rb:6.
+            ^^^^^^^^^^^^^^^ Method `B::A#some_method` is defined at both test.rb:3 and test.rb:6.
               implement 2
             end
             def self.another
             end
             def self.another
-            ^^^ Method `B::A.another` is defined at both test.rb:9 and test.rb:11.
+            ^^^^^^^^^^^^^^^^ Method `B::A.another` is defined at both test.rb:9 and test.rb:11.
             end
           end
         end
@@ -240,16 +240,18 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense when class << exp is used' do
       pending
-      inspect_source([opening_line,
-                      '  class << blah',
-                      '    def some_method',
-                      '      implement 1',
-                      '    end',
-                      '    def some_method',
-                      '      implement 2',
-                      '    end',
-                      '  end',
-                      'end'], 'test.rb')
+      inspect_source(<<-RUBY.strip_indent, 'test.rb')
+        #{opening_line}
+          class << blah
+            def some_method
+              implement 1
+            end
+            def some_method
+              implement 2
+            end
+          end
+        end
+      RUBY
       expect(cop.offenses.empty?).to be(false)
     end
 
@@ -260,7 +262,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           alias some_method any_method
-          ^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
         end
       RUBY
     end
@@ -283,7 +285,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           alias_method :some_method, :any_method
-          ^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
         end
       RUBY
     end
@@ -313,7 +315,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           def something
           end
           attr_reader :something
-          ^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
         end
       RUBY
     end
@@ -324,7 +326,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           def something=(right)
           end
           attr_writer :something
-          ^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:4.
         end
       RUBY
     end
@@ -335,10 +337,10 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           attr_accessor :something
 
           def something
-          ^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
           end
           def something=(right)
-          ^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
+          ^^^^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
           end
         end
       RUBY
@@ -350,7 +352,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           def something
           end
           attr :something
-          ^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
         end
       RUBY
     end
@@ -361,10 +363,10 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           attr :something, true
 
           def something
-          ^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
           end
           def something=(right)
-          ^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
+          ^^^^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
           end
         end
       RUBY
@@ -406,7 +408,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           def A.some_method
-          ^^^ Method `A.some_method` is defined at both src.rb:2 and src.rb:5.
+          ^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both src.rb:2 and src.rb:5.
             implement 2
           end
         end
@@ -421,7 +423,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           def A.some_method
-          ^^^ Method `A.some_method` is defined at both src.rb:2 and src.rb:5.
+          ^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both src.rb:2 and src.rb:5.
             implement 2
           end
         end
@@ -438,7 +440,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             end
           end
           def A.some_method
-          ^^^ Method `A.some_method` is defined at both test.rb:3 and test.rb:7.
+          ^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both test.rb:3 and test.rb:7.
             implement 2
           end
         end
@@ -452,7 +454,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
         implement 1
       end
       def some_method
-      ^^^ Method `Object#some_method` is defined at both toplevel.rb:1 and toplevel.rb:4.
+      ^^^^^^^^^^^^^^^ Method `Object#some_method` is defined at both toplevel.rb:1 and toplevel.rb:4.
         implement 2
       end
     RUBY
@@ -465,7 +467,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           implement 1
         end
         def some_method
-        ^^^ Method `A.some_method` is defined at both test.rb:2 and test.rb:5.
+        ^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both test.rb:2 and test.rb:5.
           implement 2
         end
       end
@@ -480,7 +482,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
             implement 1
           end
           def some_method
-          ^^^ Method `A#some_method` is defined at both test.rb:3 and test.rb:6.
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both test.rb:3 and test.rb:6.
             implement 2
           end
         end
@@ -526,7 +528,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
         def something
         end
         def something
-        ^^^ Method `Object#something` is defined at both lib/foo.rb:1 and lib/foo.rb:3.
+        ^^^^^^^^^^^^^ Method `Object#something` is defined at both lib/foo.rb:1 and lib/foo.rb:3.
         end
       RUBY
     end
@@ -544,7 +546,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
         def something
         end
         def something
-        ^^^ Method `Object#something` is defined at both /no/project/root/foo.rb:1 and /no/project/root/foo.rb:3.
+        ^^^^^^^^^^^^^ Method `Object#something` is defined at both /no/project/root/foo.rb:1 and /no/project/root/foo.rb:3.
         end
       RUBY
     end
