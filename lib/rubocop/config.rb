@@ -105,6 +105,9 @@ module RuboCop
       'Lint/DefEndAlignment' =>
         'The `Lint/DefEndAlignment` cop has been renamed to ' \
           '`Layout/DefEndAlignment`.',
+      'Performance/CaseWhenSplat' => \
+        'The `Performance/CaseWhenSplat` cop has been removed ' \
+          'since it did not reliably provide performance benefits.',
       'Performance/HashEachMethods' =>
         'The `Performance/HashEachMethods` cop has been removed ' \
           'since it no longer provides performance benefits in ' \
