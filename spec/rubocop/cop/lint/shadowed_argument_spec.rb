@@ -416,6 +416,19 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
   end
 
   describe 'block argument shadowing' do
+    context 'when a block local variable is assigned but no argument is' \
+            ' shadowed' do
+      it 'accepts' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          numbers = [1, 2, 3]
+          numbers.each do |i; j|
+            j = i * 2
+            puts j
+          end
+        RUBY
+      end
+    end
+
     context 'when a single argument is shadowed' do
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)

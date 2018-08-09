@@ -83,6 +83,9 @@ module RuboCop
 
         def check_argument(argument)
           return unless argument.method_argument? || argument.block_argument?
+          # Block local variables, i.e., variables declared after ; inside
+          # |...| aren't really arguments.
+          return if argument.explicit_block_local_variable?
 
           shadowing_assignment(argument) do |node|
             message = format(MSG, argument: argument.name)
