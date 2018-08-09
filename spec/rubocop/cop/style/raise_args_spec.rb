@@ -81,11 +81,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     context 'with a raise with exception object' do
       context 'with one argument' do
         it 'reports an offense' do
-          inspect_source('raise Ex.new(msg)')
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages)
-            .to eq(['Provide an exception class and message ' \
-                    'as arguments to `raise`.'])
+          expect_offense(<<-RUBY.strip_indent)
+            raise Ex.new(msg)
+            ^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'compact')
         end
@@ -98,11 +97,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
       context 'with no arguments' do
         it 'reports an offense' do
-          inspect_source('raise Ex.new')
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages)
-            .to eq(['Provide an exception class and message ' \
-                    'as arguments to `raise`.'])
+          expect_offense(<<-RUBY.strip_indent)
+            raise Ex.new
+            ^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'compact')
         end

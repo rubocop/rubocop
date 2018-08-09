@@ -5,20 +5,18 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma in a method call' do
-      inspect_source('some_method(a, b, c, )')
-      expect(cop.messages)
-        .to eq(['Avoid comma after the last parameter of a method ' \
-                "call#{extra_info}."])
-      expect(cop.highlights).to eq([','])
+      expect_offense(<<-RUBY.strip_indent)
+        some_method(a, b, c, )
+                           ^ Avoid comma after the last parameter of a method call#{extra_info}.
+      RUBY
     end
 
     it 'registers an offense for trailing comma in a method call with hash' \
        ' parameters at the end' do
-      inspect_source('some_method(a, b, c: 0, d: 1, )')
-      expect(cop.messages)
-        .to eq(['Avoid comma after the last parameter of a method ' \
-                "call#{extra_info}."])
-      expect(cop.highlights).to eq([','])
+      expect_offense(<<-RUBY.strip_indent)
+        some_method(a, b, c: 0, d: 1, )
+                                    ^ Avoid comma after the last parameter of a method call#{extra_info}.
+      RUBY
     end
 
     it 'accepts method call without trailing comma' do
@@ -81,14 +79,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for trailing comma in a method call with ' \
          'hash parameters at the end' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1,)
+                            ^ Avoid comma after the last parameter of a method call.
         RUBY
-        expect(cop.highlights).to eq([','])
       end
 
       it 'accepts a method call with ' \
@@ -146,18 +144,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'registers an offense for no trailing comma in a method call with' \
          ' hash parameters at the end' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1
+                        ^^^^ Put a comma after the last parameter of a multiline method call.
                      )
         RUBY
-        expect(cop.messages)
-          .to eq(['Put a comma after the last parameter of a multiline ' \
-                  'method call.'])
-        expect(cop.highlights).to eq(['d: 1'])
       end
 
       it 'accepts a method call with two parameters on the same line' do
@@ -242,41 +237,34 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for a method call, with a Hash as the ' \
            'last parameter, split on multiple lines' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
             some_method(a: "b",
                         c: "d")
+                        ^^^^^^ Put a comma after the last parameter of a multiline method call.
           RUBY
-          expect(cop.messages)
-            .to eq(['Put a comma after the last parameter of a ' \
-                    'multiline method call.'])
         end
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
          ' hash parameters at the end' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           some_method(
                         a,
                         b,
                         c: 0,
                         d: 1
+                        ^^^^ Put a comma after the last parameter of a multiline method call.
                      )
         RUBY
-        expect(cop.messages)
-          .to eq(['Put a comma after the last parameter of a multiline ' \
-                  'method call.'])
-        expect(cop.highlights).to eq(['d: 1'])
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
           'two parameters on the same line' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           some_method(a, b
+                         ^ Put a comma after the last parameter of a multiline method call.
                      )
         RUBY
-        expect(cop.messages)
-          .to eq(['Put a comma after the last parameter of a multiline ' \
-                  'method call.'])
       end
 
       it 'accepts trailing comma in a method call with hash' \

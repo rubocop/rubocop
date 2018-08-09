@@ -7,10 +7,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
     it 'registers an offense for double quotes within embedded expression' do
-      src = '"#{"A"}"'
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['Prefer single-quoted strings inside interpolations.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{"A"}"
+           ^^^ Prefer single-quoted strings inside interpolations.
+      RUBY
     end
 
     it 'registers an offense for double quotes within embedded expression in ' \
@@ -65,10 +65,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'double_quotes' } }
 
     it 'registers an offense for single quotes within embedded expression' do
-      src = %q("#{'A'}")
-      inspect_source(src)
-      expect(cop.messages)
-        .to eq(['Prefer double-quoted strings inside interpolations.'])
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{'A'}"
+           ^^^ Prefer double-quoted strings inside interpolations.
+      RUBY
     end
 
     it 'registers an offense for single quotes within embedded expression in ' \

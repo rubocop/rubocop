@@ -55,8 +55,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source('%(#{[1].first})')
-      expect(cop.messages.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        %(#{[1].first})
+        ^^^^^^^^^^^^^^^ `%`-literals should be delimited by `[` and `]`.
+      RUBY
     end
   end
 
@@ -101,8 +103,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source('%Q(#{[1].first})')
-      expect(cop.messages.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        %Q(#{[1].first})
+        ^^^^^^^^^^^^^^^^ `%Q`-literals should be delimited by `[` and `]`.
+      RUBY
     end
   end
 
@@ -158,8 +162,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source('%W(#{[1].first})')
-      expect(cop.messages.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        %W(#{[1].first})
+        ^^^^^^^^^^^^^^^^ `%W`-literals should be delimited by `[` and `]`.
+      RUBY
     end
   end
 
@@ -182,8 +188,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source('%r(#{[1].first})')
-      expect(cop.messages.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        %r(#{[1].first})
+        ^^^^^^^^^^^^^^^^ `%r`-literals should be delimited by `[` and `]`.
+      RUBY
     end
   end
 
@@ -214,10 +222,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source('%I(#{[1].first})')
-      expect(cop.messages).to eq(
-        ['`%I`-literals should be delimited by `[` and `]`.']
-      )
+      expect_offense(<<-'RUBY'.strip_indent)
+        %I(#{[1].first})
+        ^^^^^^^^^^^^^^^^ `%I`-literals should be delimited by `[` and `]`.
+      RUBY
     end
   end
 
@@ -253,8 +261,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      inspect_source('%x(#{[1].first})')
-      expect(cop.messages.size).to eq(1)
+      expect_offense(<<-'RUBY'.strip_indent)
+        %x(#{[1].first})
+        ^^^^^^^^^^^^^^^^ `%x`-literals should be delimited by `[` and `]`.
+      RUBY
     end
   end
 

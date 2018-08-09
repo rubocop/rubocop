@@ -333,30 +333,21 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY
 
         it 'displays message to use `<<~` instead of `<<`' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
           <<RUBY2
           foo
+          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
           RUBY2
           RUBY
-          expect(cop.messages).to eq(
-            [
-              'Use 2 spaces for indentation in a heredoc by using `<<~` ' \
-              'instead of `<<`.'
-            ]
-          )
         end
+
         it 'displays message to use `<<~` instead of `<<-`' do
-          inspect_source(<<-RUBY.strip_indent)
+          expect_offense(<<-RUBY.strip_indent)
           <<-RUBY2
           foo
+          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
           RUBY2
           RUBY
-          expect(cop.messages).to eq(
-            [
-              'Use 2 spaces for indentation in a heredoc by using `<<~` ' \
-              'instead of `<<-`.'
-            ]
-          )
         end
 
         context 'Ruby 2.2', :ruby22 do
