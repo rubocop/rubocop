@@ -1824,6 +1824,9 @@ Rails/SafeNavigation:
   # implement the intended method. `try` will not raise an exception for this.
   ConvertTry: false
 
+Rails/SaveBang:
+  AllowImplicitReturn: true
+
 Rails/ScopeArgs:
   Include:
     - app/models/**/*.rb
