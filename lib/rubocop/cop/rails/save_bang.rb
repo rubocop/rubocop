@@ -7,12 +7,18 @@ module RuboCop
       # should be used instead of save because the model might have failed to
       # save and an exception is better than unhandled failure.
       #
-      # This will ignore calls that return a boolean for success if the result
-      # is assigned to a variable or used as the condition in an if/unless
-      # statement.  It will also ignore calls that return a model assigned to a
-      # variable that has a call to `persisted?`. Finally, it will ignore any
-      # call with more than 2 arguments as that is likely not an Active Record
-      # call or a Model.update(id, attributes) call.
+      # This will allow:
+      # - update or save calls, assigned to a variable,
+      #   or used as a condition in an if/unless/case statement.
+      # - create calls, assigned to a variable that then has a
+      #   call to `persisted?`.
+      # - calls if the result is explicitly returned from methods and blocks,
+      #   or provided as arguments.
+      # - calls whose signature doesn't look like an ActiveRecord
+      #   persistence method.
+      #
+      # By default it will also allow implicit returns from methods and blocks.
+      # that behavior can be turned off with `AllowImplicitReturn: false`.
       #
       # @example
       #
@@ -34,6 +40,38 @@ module RuboCop
       #   user = User.find_or_create_by(name: 'Joe')
       #   unless user.persisted?
       #     # ...
+      #   end
+      #
+      #   def save_user
+      #     return user.save
+      #   end
+      #
+      # @example AllowImplicitReturn: true (default)
+      #
+      #   # good
+      #   users.each { |u| u.save }
+      #
+      #   def save_user
+      #     user.save
+      #   end
+      #
+      # @example AllowImplicitReturn: false
+      #
+      #   # bad
+      #   users.each { |u| u.save }
+      #   def save_user
+      #     user.save
+      #   end
+      #
+      #   # good
+      #   users.each { |u| u.save! }
+      #
+      #   def save_user
+      #     user.save!
+      #   end
+      #
+      #   def save_user
+      #     return user.save
       #   end
       class SaveBang < Cop
         include NegativeConditional
@@ -78,18 +116,24 @@ module RuboCop
                                             current: node.method_name.to_s))
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/PerceivedComplexity
         def on_send(node)
           return unless PERSIST_METHODS.include?(node.method_name)
           return unless expected_signature?(node)
           return if return_value_assigned?(node)
           return if check_used_in_conditional(node)
-          return if last_call_of_method?(node)
+          return if argument?(node)
+          return if implicit_return?(node)
+          return if explicit_return?(node)
 
           add_offense(node, location: :selector,
                             message: format(MSG,
                                             prefer: "#{node.method_name}!",
                                             current: node.method_name.to_s))
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/PerceivedComplexity
 
         def autocorrect(node)
           save_loc = node.loc.selector
@@ -138,16 +182,48 @@ module RuboCop
           )
         end
 
-        def last_call_of_method?(node)
-          node.parent && node.parent.children.size == node.sibling_index + 1
+        def implicit_return?(node)
+          return false unless cop_config['AllowImplicitReturn']
+          node.parent &&
+            (node.parent.def_type? || node.parent.block_type?) &&
+            node.parent.children.size == node.sibling_index + 1
+        end
+
+        def argument?(node)
+          # positional argument
+          return true if node.argument?
+          # keyword argument
+          node.parent && node.parent.parent &&
+            node.parent.parent.hash_type? &&
+            node.parent.parent.argument?
+        end
+
+        def explicit_return?(node)
+          node.parent &&
+            (node.parent.return_type? || node.parent.next_type?)
         end
 
         # Ignore simple assignment or if condition
         def return_value_assigned?(node)
           return false unless node.parent
           node.parent.lvasgn_type? ||
-            (node.parent.block_type? && node.parent.parent &&
-              node.parent.parent.lvasgn_type?)
+            return_block_value_assigned?(node) ||
+            return_hash_value_assigned?(node)
+        end
+
+        def return_block_value_assigned?(node)
+          node.parent &&
+            node.parent.block_type? &&
+            node.parent.parent &&
+            node.parent.parent.lvasgn_type?
+        end
+
+        def return_hash_value_assigned?(node)
+          node.parent &&
+            node.parent.parent &&
+            node.parent.parent.hash_type? &&
+            node.parent.parent.parent &&
+            node.parent.parent.parent.lvasgn_type?
         end
 
         # Check argument signature as no arguments or one hash

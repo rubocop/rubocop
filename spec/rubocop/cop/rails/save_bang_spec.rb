@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Rails::SaveBang do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
+  subject(:cop) { described_class.new(config) }
 
   shared_examples 'checks_common_offense' do |method|
     it "when using #{method} with arguments" do
@@ -181,6 +181,14 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
       end
     end
 
+    it 'when passing to a method' do
+      expect_no_offenses("handle_save(object.#{method})")
+    end
+
+    it 'when passing to a method as the non-last argument' do
+      expect_no_offenses("handle_save(object.#{method}, true)")
+    end
+
     it "when using #{method} with 'or'" do
       inspect_source("object.#{method} or false")
 
@@ -192,10 +200,44 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
       end
     end
 
-    it "when using #{method} as last method call" do
+    it 'when passing to a method as a keyword argument' do
+      expect_no_offenses("handle_save(success: object.#{method})")
+    end
+
+    it 'when assigning as a hash value' do
+      expect_no_offenses("result = { success: object.#{method} }")
+    end
+
+    it 'when using an explicit early return' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def foo
-          object.#{method}
+          return foo.#{method} if do_the_save
+          do_something_else
+        end
+      RUBY
+    end
+
+    it 'when using an explicit final return' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def foo
+          return foo.#{method}
+        end
+      RUBY
+    end
+
+    it 'when using an explicit early return from a block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        objects.each do |object|
+          next object.#{method} if do_the_save
+          do_something_else
+        end
+      RUBY
+    end
+
+    it 'when using an explicit final return from a block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        objects.each do |object|
+          next foo.#{method}
         end
       RUBY
     end
@@ -216,9 +258,55 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
     end
   end
 
+  shared_examples 'check_implicit_return' do |method, pass|
+    it "when using #{method} as last method call" do
+      inspect_source(<<-RUBY.strip_indent)
+        def foo
+          object.#{method}
+        end
+      RUBY
+
+      if pass
+        expect(cop.offenses.empty?).to be true
+      else
+        expect(cop.messages)
+          .to match_array(start_with("Use `#{method}!` instead of `#{method}`" \
+                             ' if the return value is not checked.'))
+      end
+    end
+
+    it "when using #{method} as last method call of a block" do
+      inspect_source(<<-RUBY.strip_indent)
+        objects.each do |object|
+          object.#{method}
+        end
+      RUBY
+
+      if pass
+        expect(cop.offenses.empty?).to be true
+      else
+        expect(cop.messages)
+          .to match_array(start_with("Use `#{method}!` instead of `#{method}`" \
+                             ' if the return value is not checked.'))
+      end
+    end
+  end
+
   described_class::MODIFY_PERSIST_METHODS.each do |method|
-    it_behaves_like('checks_common_offense', method)
-    it_behaves_like('checks_variable_return_use_offense', method, true)
+    let(:cop_config) { { 'AllowImplicitReturn' => true } }
+
+    context method.to_s do
+      it_behaves_like('checks_common_offense', method)
+      it_behaves_like('checks_variable_return_use_offense', method, true)
+      it_behaves_like('check_implicit_return', method, true)
+
+      context 'with AllowImplicitReturn false' do
+        let(:cop_config) { { 'AllowImplicitReturn' => false } }
+
+        it_behaves_like('checks_variable_return_use_offense', method, true)
+        it_behaves_like('check_implicit_return', method, false)
+      end
+    end
   end
 
   shared_examples 'checks_create_offense' do |method|
@@ -236,9 +324,21 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang do
   end
 
   described_class::CREATE_PERSIST_METHODS.each do |method|
-    it_behaves_like('checks_common_offense', method)
-    it_behaves_like('checks_variable_return_use_offense', method, false)
-    it_behaves_like('checks_create_offense', method)
+    let(:cop_config) { { 'AllowImplicitReturn' => true } }
+
+    context method.to_s do
+      it_behaves_like('checks_common_offense', method)
+      it_behaves_like('checks_variable_return_use_offense', method, false)
+      it_behaves_like('checks_create_offense', method)
+      it_behaves_like('check_implicit_return', method, true)
+
+      context 'with AllowImplicitReturn false' do
+        let(:cop_config) { { 'AllowImplicitReturn' => false } }
+
+        it_behaves_like('checks_variable_return_use_offense', method, false)
+        it_behaves_like('check_implicit_return', method, false)
+      end
+    end
   end
 
   it 'properly ignores lvasign without right hand side' do
