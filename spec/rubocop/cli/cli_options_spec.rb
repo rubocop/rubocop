@@ -1076,34 +1076,100 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
     end
 
-    def expect_offense_detected(num)
+    def expect_offense_detected
       expect($stderr.string).to eq('')
       expect($stdout.string)
-        .to include("1 file inspected, #{num} offense detected")
+        .to include('1 file inspected, 1 offense detected')
+      expect($stdout.string).to include 'Layout/IndentationWidth'
     end
 
     it 'fails when option is less than the severity level' do
       expect(cli.run(['--fail-level', 'refactor', target_file])).to eq(1)
       expect(cli.run(['--fail-level', 'autocorrect', target_file])).to eq(1)
-      expect_offense_detected(1)
+      expect_offense_detected
     end
 
     it 'fails when option is equal to the severity level' do
       expect(cli.run(['--fail-level', 'convention', target_file])).to eq(1)
-      expect_offense_detected(1)
+      expect_offense_detected
     end
 
     it 'succeeds when option is greater than the severity level' do
       expect(cli.run(['--fail-level', 'warning', target_file])).to eq(0)
-      expect_offense_detected(1)
+      expect_offense_detected
+    end
+
+    context 'with --display-only-fail-level-offenses' do
+      it 'outputs offense message when fail-level is less than the severity' do
+        expect(cli.run(['--fail-level', 'refactor',
+                        '--display-only-fail-level-offenses',
+                        target_file])).to eq(1)
+        expect(cli.run(['--fail-level', 'autocorrect',
+                        '--display-only-fail-level-offenses',
+                        target_file])).to eq(1)
+        expect_offense_detected
+      end
+
+      it 'outputs offense message when fail-level is equal to the severity' do
+        expect(cli.run(['--fail-level', 'convention',
+                        '--display-only-fail-level-offenses',
+                        target_file])).to eq(1)
+        expect_offense_detected
+      end
+
+      it "doesn't output offense message when less than the fail-level" do
+        expect(cli.run(['--fail-level', 'warning',
+                        '--display-only-fail-level-offenses',
+                        target_file])).to eq 0
+        expect($stderr.string).to eq('')
+        expect($stdout.string)
+          .to include('1 file inspected, no offenses detected')
+        expect($stdout.string).not_to include 'Layout/IndentationWidth'
+      end
+
+      context 'with disabled line' do
+        it "doesn't consider a unprinted offense to be an unneeded disable" do
+          create_file(target_file, <<-RUBY.strip_indent)
+            def f
+             x # rubocop:disable Layout/IndentationWidth
+            end
+          RUBY
+
+          expect(cli.run(['--fail-level', 'warning',
+                          '--display-only-fail-level-offenses',
+                          target_file])).to eq 0
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to include('1 file inspected, no offenses detected')
+          expect($stdout.string).not_to include 'Layout/IndentationWidth'
+          expect($stdout.string)
+            .not_to include 'Lint/UnneededCopDisableDirective'
+        end
+
+        it "still checks unprinted offense if they're an unneeded disable" do
+          create_file(target_file, <<-RUBY.strip_indent)
+            def f
+              x # rubocop:disable Layout/IndentationWidth
+            end
+          RUBY
+
+          expect(cli.run(['--fail-level', 'warning',
+                          '--display-only-fail-level-offenses',
+                          target_file])).to eq 1
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to include('1 file inspected, 1 offense detected')
+          expect($stdout.string).to include 'Lint/UnneededCopDisableDirective'
+        end
+      end
     end
 
     context 'with --auto-correct' do
-      def expect_auto_corrected(num)
-        expect_offense_detected(num)
+      def expect_auto_corrected
+        expect_offense_detected
         expect($stdout.string.lines.to_a.last)
-          .to eq("1 file inspected, #{num} offense detected, " \
-                 "#{num} offense corrected\n")
+          .to eq('1 file inspected, 1 offense detected, ' \
+                 "1 offense corrected\n")
       end
 
       it 'fails when option is autocorrect and all offenses are ' \
@@ -1111,21 +1177,21 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         '--fail-level', 'autocorrect',
                         target_file])).to eq(1)
-        expect_auto_corrected(1)
+        expect_auto_corrected
       end
 
       it 'fails when option is A and all offenses are autocorrected' do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         '--fail-level', 'A',
                         target_file])).to eq(1)
-        expect_auto_corrected(1)
+        expect_auto_corrected
       end
 
       it 'succeeds when option is not given and all offenses are ' \
          'autocorrected' do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         target_file])).to eq(0)
-        expect_auto_corrected(1)
+        expect_auto_corrected
       end
 
       it 'succeeds when option is refactor and all offenses are ' \
@@ -1133,7 +1199,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         '--fail-level', 'refactor',
                         target_file])).to eq(0)
-        expect_auto_corrected(1)
+        expect_auto_corrected
       end
     end
   end

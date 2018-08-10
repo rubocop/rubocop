@@ -136,6 +136,7 @@ module RuboCop
              table) do |severity|
         @options[:fail_level] = severity
       end
+      option(opts, '--display-only-fail-level-offenses')
     end
 
     def add_flags_with_optional_args(opts)
@@ -251,6 +252,11 @@ module RuboCop
       unless boolean_or_empty_cache?
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
+
+      if display_only_fail_level_offenses_with_autocorrect?
+        raise OptionArgumentError, '--autocorrect can not be used with ' \
+          '--display-only-fail-level-offenses'
+      end
       validate_auto_gen_config
       validate_parallel
 
@@ -302,6 +308,10 @@ module RuboCop
       @options.key?(:only) &&
         (@options[:only] & %w[Lint/UnneededCopDisableDirective
                               UnneededCopDisableDirective]).any?
+    end
+
+    def display_only_fail_level_offenses_with_autocorrect?
+      @options[:display_only_fail_level_offenses] && @options[:autocorrect]
     end
 
     def except_syntax?
@@ -378,6 +388,9 @@ module RuboCop
                              'if no format is specified.'],
       fail_level:           ['Minimum severity (A/R/C/W/E/F) for exit',
                              'with error code.'],
+      display_only_fail_level_offenses:
+                            ['Only output offense messages at',
+                             'the specified --fail-level or above'],
       show_cops:            ['Shows the given cops, or all cops by',
                              'default, and their configurations for the',
                              'current directory.'],

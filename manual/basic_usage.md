@@ -81,6 +81,7 @@ Command flag                    | Description
 `--exclude-limit`               | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `--show-cops`                   | Shows available cops and their configuration.
 `--fail-level`                  | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
+`--display-only-fail-level-offenses`           | Only output offense messages at the specified `--fail-level` or above
 `-s/--stdin`                    | Pipe source from STDIN. This is useful for editor integration.
 `--[no-]color`                  | Force color output on or off.
 `--parallel`                    | Use available CPUs to execute inspection in parallel.
