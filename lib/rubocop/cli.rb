@@ -159,7 +159,9 @@ module RuboCop
       display_error_summary(runner.errors)
       maybe_print_corrected_source
 
-      if all_passed && !runner.aborting? && runner.errors.empty?
+      all_pass_or_excluded = all_passed || @options[:auto_gen_config]
+
+      if all_pass_or_excluded && !runner.aborting? && runner.errors.empty?
         STATUS_SUCCESS
       else
         STATUS_OFFENSES
