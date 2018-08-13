@@ -6,6 +6,7 @@
 
 * [#6109](https://github.com/rubocop-hq/rubocop/pull/6109): Add new `Bundler/GemComment` cop. ([@sunny][])
 * [#6148](https://github.com/rubocop-hq/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
+* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Rails/LeftJoin` cop. ([@blackst0ne][])
 
 ### Bug fixes
 
@@ -22,7 +23,6 @@
 ### Changes
 
 * [#6161](https://github.com/rubocop-hq/rubocop/pull/6161): Add scope methods to `Rails/FindEach` cop. Makes the cop also check for the following scopes: `eager_load`, `includes`, `joins`, `left_joins`, `left_outer_joins`, `preload`, `references`, and `unscoped`. ([@repinel][])
-* [#5871](https://github.com/bbatsov/rubocop/pull/5871): Add new `Rails/LeftJoin` cop. ([@blackst0ne][])
 * [#6137](https://github.com/rubocop-hq/rubocop/pull/6137): Allow `db` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@mkenyon][])
 * Update the highlighting of `Lint/DuplicateMethods` to include the method name. ([@rrosenblum][])
 * [#6057](https://github.com/rubocop-hq/rubocop/issues/6057): Return 0 when running `rubocop --auto-gen-conf` if the todo file is successfully created even if there are offenses. ([@MagedMilad][])
