@@ -1744,6 +1744,9 @@ This will allow:
 By default it will also allow implicit returns from methods and blocks.
 that behavior can be turned off with `AllowImplicitReturn: false`.
 
+You can permit receivers that are giving false positives with
+`AllowedReceivers: []`
+
 ### Examples
 
 ```ruby
@@ -1801,12 +1804,33 @@ def save_user
   return user.save
 end
 ```
+#### AllowedReceivers: ['merchant.customers', 'Service::Mailer']
+
+```ruby
+# bad
+merchant.create
+customers.builder.save
+Mailer.create
+
+module Service::Mailer
+  self.create
+end
+
+# good
+merchant.customers.create
+MerchantService.merchant.customers.destroy
+Service::Mailer.update(message: 'Message')
+::Service::Mailer.update
+Services::Service::Mailer.update(message: 'Message')
+Service::Mailer::update
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowImplicitReturn | `true` | Boolean
+AllowedReceivers | `[]` | Array
 
 ### References
 
