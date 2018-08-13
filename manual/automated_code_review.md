@@ -11,6 +11,10 @@ Codacy is free for open source, and it provides RuboCop analysis out-of-the-box.
 
 [Code Climate](https://codeclimate.com/) provides automated code review for test coverage, complexity, duplication, security, style, and more, and merge with confidence.
 
+### CodeFactor
+
+[CodeFactor](https://www.codefactor.io) reports various code metrics like duplication and churn and problems for code style, performance, complexity and many others. CodeFactor is free for open source, and it supports analysis and auto-correction for RuboCop.
+
 ### Hound
 
 [Hound](https://houndci.com/) comments on style violations in GitHub pull requests, allowing you and your team to better review and maintain a clean codebase.
