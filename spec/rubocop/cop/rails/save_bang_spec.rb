@@ -43,11 +43,11 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
   end
 
-  shared_examples 'checks_variable_return_use_offense' do |method, pass|
+  shared_examples 'checks_variable_return_use_offense' do |method, update|
     it "when assigning the return value of #{method}" do
       inspect_source("x = object.#{method}\n")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
                           "  obj.name = 'Tom'\n" \
                           'end')
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with if" do
       inspect_source("if object.#{method}; something; end")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with negated if" do
       inspect_source("if !object.#{method}; something; end")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
           something
         end
       RUBY
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with oneline if" do
       inspect_source("something if object.#{method}")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with oneline if and multiple conditional" do
       inspect_source("something if false || object.#{method}")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
         end
       RUBY
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with '&&'" do
       inspect_source("object.#{method} && false")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with 'and'" do
       inspect_source("object.#{method} and false")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with '||'" do
       inspect_source("object.#{method} || false")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     it "when using #{method} with 'or'" do
       inspect_source("object.#{method} or false")
 
-      if pass
+      if update
         expect(cop.messages.empty?).to be(true)
       else
         expect(cop.messages)
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
           render json: foo
         end
       RUBY
-      if pass
+      if update
         expect(cop.offenses.empty?).to be(true)
       else
         expect(cop.offenses.size).to eq(1)
@@ -258,7 +258,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
   end
 
-  shared_examples 'check_implicit_return' do |method, pass|
+  shared_examples 'check_implicit_return' do |method, allow_implicit_return|
     it "when using #{method} as last method call" do
       inspect_source(<<-RUBY.strip_indent)
         def foo
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
         end
       RUBY
 
-      if pass
+      if allow_implicit_return
         expect(cop.offenses.empty?).to be true
       else
         expect(cop.messages)
@@ -282,7 +282,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
         end
       RUBY
 
-      if pass
+      if allow_implicit_return
         expect(cop.offenses.empty?).to be true
       else
         expect(cop.messages)
