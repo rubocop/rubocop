@@ -1832,6 +1832,7 @@ Rails/SafeNavigation:
 
 Rails/SaveBang:
   AllowImplicitReturn: true
+  AllowedReceivers: []
 
 Rails/ScopeArgs:
   Include:
