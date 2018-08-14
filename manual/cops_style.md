@@ -114,7 +114,7 @@ Enabled by default | Supports autocorrection
 Enabled | Yes
 
 This cop checks for uses of `and` and `or`, and suggests using `&&` and
-`|| instead`. It can be configured to check only in conditions, or in
+`||` instead. It can be configured to check only in conditions, or in
 all contexts.
 
 ### Examples
