@@ -110,6 +110,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           end
           $stderr = StringIO.new
         end
+
         after do
           FileUtils.rm_rf(attack_target_dir)
           $stderr = STDERR
@@ -191,6 +192,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
 
       before { Encoding.default_internal = Encoding::UTF_8 }
+
       after { Encoding.default_internal = nil }
 
       it 'writes non UTF-8 encodable data to file with no exception' do

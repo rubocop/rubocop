@@ -24,6 +24,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           create_file('.rubocop.yml', ['AllCops:',
                                        '  UseCache: false'])
         end
+
         it 'fails with an error message' do
           cli.run %w[-P]
           expect($stderr.string)
