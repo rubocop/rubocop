@@ -98,6 +98,9 @@ module RuboCop
       file_started(file)
 
       offenses = file_offenses(file)
+      if @options[:display_only_fail_level_offenses]
+        offenses = offenses.select { |o| considered_failure?(o) }
+      end
       formatter_set.file_finished(file, offenses)
       offenses
     rescue InfiniteCorrectionLoop => e

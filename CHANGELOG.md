@@ -6,6 +6,7 @@
 
 * [#6109](https://github.com/rubocop-hq/rubocop/pull/6109): Add new `Bundler/GemComment` cop. ([@sunny][])
 * [#6148](https://github.com/rubocop-hq/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
+* [#6174](https://github.com/rubocop-hq/rubocop/pull/6174): Add `--display-only-fail-level-offenses` to only output offenses at or above the fail level. ([@robotdana][])
 
 ### Bug fixes
 
@@ -3519,3 +3520,4 @@
 [@repinel]: https://github.com/repinel
 [@gmalette]: https://github.com/gmalette
 [@MagedMilad]: https://github.com/MagedMilad
+[@robotdana]: https://github.com/robotdana
