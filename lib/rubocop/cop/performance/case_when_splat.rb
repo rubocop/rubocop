@@ -3,16 +3,19 @@
 module RuboCop
   module Cop
     module Performance
-      # Place `when` conditions that use splat at the end
-      # of the list of `when` branches.
+      # Reordering `when` conditions with a splat to the end
+      # of the `when` branches can improve performance.
       #
       # Ruby has to allocate memory for the splat expansion every time
       # that the `case` `when` statement is run. Since Ruby does not support
       # fall through inside of `case` `when`, like some other languages do,
-      # the order of the `when` branches does not matter. By placing any
+      # the order of the `when` branches should not matter. By placing any
       # splat expansions at the end of the list of `when` branches we will
       # reduce the number of times that memory has to be allocated for
-      # the expansion.
+      # the expansion. The exception to this is if multiple of your `when`
+      # conditions can be true for any given condition. A likely scenario for
+      # this defining a higher level when condition to override a condition
+      # that is inside of the splat expansion.
       #
       # This is not a guaranteed performance improvement. If the data being
       # processed by the `case` condition is normalized in a manner that favors
@@ -54,9 +57,10 @@ module RuboCop
         include Alignment
         include RangeHelp
 
-        MSG = 'Place `when` conditions with a splat ' \
-              'at the end of the `when` branches.'.freeze
-        ARRAY_MSG = 'Do not expand array literals in `when` conditions.'.freeze
+        MSG = 'Reordering `when` conditions with a splat to the end ' \
+          'of the `when` branches can improve performance.'.freeze
+        ARRAY_MSG = 'Pass the contents of array literals ' \
+          'directly to `when` conditions.'.freeze
 
         def on_case(case_node)
           when_conditions = case_node.when_branches.flat_map(&:conditions)

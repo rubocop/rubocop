@@ -31,16 +31,19 @@ Enabled by default | Supports autocorrection
 --- | ---
 Disabled | Yes
 
-Place `when` conditions that use splat at the end
-of the list of `when` branches.
+Reordering `when` conditions with a splat to the end
+of the `when` branches can improve performance.
 
 Ruby has to allocate memory for the splat expansion every time
 that the `case` `when` statement is run. Since Ruby does not support
 fall through inside of `case` `when`, like some other languages do,
-the order of the `when` branches does not matter. By placing any
+the order of the `when` branches should not matter. By placing any
 splat expansions at the end of the list of `when` branches we will
 reduce the number of times that memory has to be allocated for
-the expansion.
+the expansion. The exception to this is if multiple of your `when`
+conditions can be true for any given condition. A likely scenario for
+this defining a higher level when condition to override a condition
+that is inside of the splat expansion.
 
 This is not a guaranteed performance improvement. If the data being
 processed by the `case` condition is normalized in a manner that favors

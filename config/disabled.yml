@@ -53,8 +53,8 @@ Lint/NumberConversion:
 
 Performance/CaseWhenSplat:
   Description: >-
-                  Place `when` conditions that use splat at the end
-                  of the list of `when` branches.
+                 Reordering `when` conditions with a splat to the end
+                 of the `when` branches can improve performance.
   Enabled: false
   AutoCorrect: false
 
