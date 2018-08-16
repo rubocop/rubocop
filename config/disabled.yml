@@ -14,10 +14,6 @@ Layout/ClassStructure:
   StyleGuide: 'https://github.com/rubocop-hq/ruby-style-guide#consistent-classes'
   Enabled: false
 
-Layout/EmptyLineAfterGuardClause:
-  Description: 'Add empty line after guard clause.'
-  Enabled: false
-
 Layout/FirstArrayElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a

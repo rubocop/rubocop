@@ -34,6 +34,7 @@ module RuboCop
 
         def investigate(processed_source)
           return if processed_source.blank?
+
           gem_declarations(processed_source.ast)
             .each_cons(2) do |previous, current|
             next unless consecutive_lines(previous, current)
@@ -41,6 +42,7 @@ module RuboCop
               gem_name(current),
               gem_name(previous)
             )
+
             register_offense(previous, current)
           end
         end

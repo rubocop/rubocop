@@ -15,6 +15,7 @@ module RuboCop
       def check(node)
         empty_arguments?(node) do |args|
           return if args.empty_and_without_delimiters?
+
           add_offense(args)
         end
       end

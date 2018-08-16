@@ -70,6 +70,7 @@ module RuboCop
           # Check indentation against end keyword but only if it's first on its
           # line.
           return unless begins_its_line?(node.loc.end)
+
           check_indentation(node.loc.end, node.children.first)
         end
 
@@ -165,6 +166,7 @@ module RuboCop
           else
             members.first.children.each do |member|
               next if member.send_type? && member.access_modifier?
+
               check_indentation(base, member)
             end
           end

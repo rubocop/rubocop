@@ -106,6 +106,7 @@ module RuboCop
         return true if debug?
         return false if options[:display_cop_names] == false
         return true if options[:display_cop_names]
+
         config.for_all_cops['DisplayCopNames']
       end
 

@@ -104,6 +104,7 @@ module RuboCop
               modifier = child if access_modifier?(child)
             when :defs
               next if correct_visibility?(child, modifier, ignored_methods)
+
               yield child, modifier
             when :kwbegin
               ineffective_modifier(child, ignored_methods, modifier, &block)

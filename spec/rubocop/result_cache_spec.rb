@@ -105,6 +105,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           Find.find(cache_root) do |path|
             next unless File.basename(path) == '_'
+
             FileUtils.rm_rf(path)
             FileUtils.ln_s(attack_target_dir, path)
           end

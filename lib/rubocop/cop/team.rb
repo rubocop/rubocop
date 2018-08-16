@@ -59,6 +59,7 @@ module RuboCop
         Force.all.each_with_object([]) do |force_class, forces|
           joining_cops = cops.select { |cop| cop.join_force?(force_class) }
           next if joining_cops.empty?
+
           forces << force_class.new(joining_cops)
         end
       end

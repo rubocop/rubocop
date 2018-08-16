@@ -56,8 +56,10 @@ module RuboCop
           http_status(node) do |hash_node|
             status = status_code(hash_node)
             return unless status
+
             checker = checker_class.new(status)
             return unless checker.offensive?
+
             add_offense(checker.node, message: checker.message)
           end
         end

@@ -18,6 +18,7 @@ module RuboCop
     # there's parallel execution and the cache is shared.
     def self.cleanup(config_store, verbose, cache_root = nil)
       return if inhibit_cleanup # OPTIMIZE: For faster testing
+
       cache_root ||= cache_root(config_store)
       return unless File.exist?(cache_root)
 

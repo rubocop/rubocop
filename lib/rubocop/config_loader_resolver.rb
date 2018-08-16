@@ -23,6 +23,7 @@ module RuboCop
         .reverse.each_with_index do |base_config, index|
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
+
           if hash.key?(k)
             v = merge(v, hash[k],
                       cop_name: k, file: file, debug: debug,
@@ -102,6 +103,7 @@ module RuboCop
       return false if inherited_file.start_with?('..') # Legitimate override
       return false if base_hash[key] == derived_hash[key] # Same value
       return false if remote_file?(inherited_file) # Can't change
+
       Gem.path.none? { |dir| inherited_file.start_with?(dir) } # Can change?
     end
 

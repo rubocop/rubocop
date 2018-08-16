@@ -27,6 +27,7 @@ module RuboCop
         def on_lvasgn(node)
           name, = *node
           return unless name
+
           check_name(node, name, node.loc.name)
         end
         alias on_ivasgn    on_lvasgn

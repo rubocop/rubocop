@@ -9,6 +9,7 @@ module RuboCop
     module Traversal
       def walk(node)
         return if node.nil?
+
         send(:"on_#{node.type}", node)
         nil
       end
@@ -65,6 +66,7 @@ module RuboCop
 
       def on_const(node)
         return unless (child = node.children[0])
+
         send(:"on_#{child.type}", child)
       end
 
@@ -74,6 +76,7 @@ module RuboCop
           send(:"on_#{child.type}", child)
         end
         return unless (child = children[2])
+
         send(:"on_#{child.type}", child)
       end
 
@@ -85,6 +88,7 @@ module RuboCop
           send(:"on_#{child.type}", child)
         end
         return unless (child = children[2])
+
         send(:"on_#{child.type}", child)
       end
 
@@ -92,12 +96,14 @@ module RuboCop
         children = node.children
         on_args(children[1])
         return unless (child = children[2])
+
         send(:"on_#{child.type}", child)
       end
 
       def on_send(node)
         node.children.each_with_index do |child, i|
           next if i == 1
+
           send(:"on_#{child.type}", child) if child
         end
         nil
@@ -119,6 +125,7 @@ module RuboCop
         send(:"on_#{child.type}", child)
         on_args(children[2])
         return unless (child = children[3])
+
         send(:"on_#{child.type}", child)
       end
 
@@ -130,6 +137,7 @@ module RuboCop
           send(:"on_#{child.type}", child)
         end
         return unless (child = children[2])
+
         send(:"on_#{child.type}", child)
       end
 
@@ -138,6 +146,7 @@ module RuboCop
         child = children[0]
         send(:"on_#{child.type}", child)
         return unless (child = children[1])
+
         send(:"on_#{child.type}", child)
       end
 
@@ -151,6 +160,7 @@ module RuboCop
         send(:"on_#{child.type}", child) # can be send, zsuper...
         on_args(children[1])
         return unless (child = children[2])
+
         send(:"on_#{child.type}", child)
       end
 

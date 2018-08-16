@@ -16,6 +16,7 @@ module RuboCop
           name = arg.children.first.to_s
           next if (arg.restarg_type? || arg.kwrestarg_type?) && name.empty?
           next if allowed_names.include?(name)
+
           range = arg_range(arg, name.size)
           issue_offenses(node, range, name)
         end
@@ -28,6 +29,7 @@ module RuboCop
         case_offense(node, range) if uppercase?(name)
         length_offense(node, range) unless long_enough?(name)
         return if allow_nums
+
         num_offense(node, range) if ends_with_num?(name)
       end
 

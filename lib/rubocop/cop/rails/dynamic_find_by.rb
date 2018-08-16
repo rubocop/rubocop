@@ -74,6 +74,7 @@ module RuboCop
         def static_method_name(method_name)
           match = METHOD_PATTERN.match(method_name)
           return nil unless match
+
           match[2] ? 'find_by!' : 'find_by'
         end
       end

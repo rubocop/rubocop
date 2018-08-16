@@ -71,6 +71,7 @@ module RuboCop
           _, _, right, = *node
 
           return unless right
+
           check_operator(node.loc.operator, right.source_range)
         end
 

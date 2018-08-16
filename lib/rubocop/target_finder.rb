@@ -74,6 +74,7 @@ module RuboCop
     def to_inspect?(file, hidden_files, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
       return true if !hidden_files.include?(file) && ruby_file?(file)
+
       base_dir_config.file_to_include?(file)
     end
 
@@ -141,6 +142,7 @@ module RuboCop
 
     def ruby_executable?(file)
       return false unless File.extname(file).empty? && File.exist?(file)
+
       first_line = File.open(file, &:readline)
       !(first_line =~ /#!.*(#{ruby_interpreters(file).join('|')})/).nil?
     rescue EOFError, ArgumentError => e

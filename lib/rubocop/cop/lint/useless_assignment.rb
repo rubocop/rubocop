@@ -123,6 +123,7 @@ module RuboCop
 
         def variable_like_method_invocation?(node)
           return false unless node.send_type?
+
           receiver, _method_name, *args = *node
           receiver.nil? && args.empty?
         end

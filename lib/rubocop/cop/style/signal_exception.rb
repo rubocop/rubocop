@@ -138,6 +138,7 @@ module RuboCop
             check_send(:raise, node) unless ignored_node?(node)
           when :only_raise
             return if @custom_fail_defined
+
             check_send(:fail, node)
           when :only_fail
             check_send(:raise, node)

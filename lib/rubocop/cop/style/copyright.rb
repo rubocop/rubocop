@@ -26,6 +26,7 @@ module RuboCop
         def investigate(processed_source)
           return if notice.empty?
           return if notice_found?(processed_source)
+
           range = source_range(processed_source.buffer, 1, 0)
           add_offense(insert_notice_before(processed_source),
                       location: range, message: format(MSG, notice: notice))
@@ -33,6 +34,7 @@ module RuboCop
 
         def autocorrect(token)
           raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
+
           regex = Regexp.new(notice)
           unless autocorrect_notice =~ regex
             raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
@@ -64,12 +66,14 @@ module RuboCop
 
         def shebang_token?(processed_source, token_index)
           return false if token_index >= processed_source.tokens.size
+
           token = processed_source.tokens[token_index]
           token.comment? && token.text =~ /^#!.*$/
         end
 
         def encoding_token?(processed_source, token_index)
           return false if token_index >= processed_source.tokens.size
+
           token = processed_source.tokens[token_index]
           token.comment? && token.text =~ /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/
         end
@@ -79,6 +83,7 @@ module RuboCop
           notice_regexp = Regexp.new(notice)
           processed_source.each_token do |token|
             break unless token.comment?
+
             notice_found = !(token.text =~ notice_regexp).nil?
             break if notice_found
           end

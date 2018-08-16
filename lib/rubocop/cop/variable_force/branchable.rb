@@ -8,11 +8,13 @@ module RuboCop
       module Branchable
         def branch
           return @branch if instance_variable_defined?(:@branch)
+
           @branch = Branch.of(node, scope: scope)
         end
 
         def run_exclusively_with?(other)
           return false if !branch || !other.branch
+
           branch.exclusive_with?(other.branch)
         end
       end

@@ -40,6 +40,7 @@ module RuboCop
 
         def on_block(node)
           return unless node.arguments?
+
           check(node, node.arguments)
         end
       end

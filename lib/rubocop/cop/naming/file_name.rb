@@ -53,6 +53,7 @@ module RuboCop
                 else
                   return if ignore_executable_scripts? &&
                             processed_source.start_with?('#!')
+
                   other_message(basename)
                 end
 
@@ -122,6 +123,7 @@ module RuboCop
 
           node.each_ancestor(:class, :module, :sclass, :casgn) do |ancestor|
             return false if ancestor.sclass_type?
+
             match_partial.call(ancestor.defined_module)
           end
 

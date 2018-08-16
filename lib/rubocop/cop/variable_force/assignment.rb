@@ -48,11 +48,13 @@ module RuboCop
 
         def operator_assignment?
           return false unless meta_assignment_node
+
           OPERATOR_ASSIGNMENT_TYPES.include?(meta_assignment_node.type)
         end
 
         def multiple_assignment?
           return false unless meta_assignment_node
+
           meta_assignment_node.type == MULTIPLE_ASSIGNMENT_TYPE
         end
 
@@ -76,6 +78,7 @@ module RuboCop
           return nil unless node.parent
           return nil unless OPERATOR_ASSIGNMENT_TYPES.include?(node.parent.type)
           return nil unless node.sibling_index.zero?
+
           node.parent
         end
 
@@ -84,6 +87,7 @@ module RuboCop
           return nil unless grandparent_node
           return nil unless grandparent_node.type == MULTIPLE_ASSIGNMENT_TYPE
           return nil unless node.parent.type == MULTIPLE_LEFT_HAND_SIDE_TYPE
+
           grandparent_node
         end
       end

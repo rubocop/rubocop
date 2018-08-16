@@ -116,8 +116,10 @@ task documentation_syntax_check: :yard_for_generate_documentation do
   cops = RuboCop::Cop::Cop.registry
   cops.each do |cop|
     next if %i[RSpec Capybara FactoryBot].include?(cop.department)
+
     examples = YARD::Registry.all(:class).find do |code_object|
       next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
+
       break code_object.tags('example')
     end
 

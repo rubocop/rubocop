@@ -24,6 +24,7 @@ module RuboCop
 
         def on_defs(node)
           return unless node.loc.operator.source == '::'
+
           add_offense(node, location: :operator)
         end
 

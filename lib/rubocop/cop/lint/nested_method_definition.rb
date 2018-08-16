@@ -74,6 +74,7 @@ module RuboCop
             elsif child.defs_type?
               subject, = *child
               next if subject.lvar_type?
+
               yield child
             elsif !scoping_method_call?(child)
               find_nested_defs(child, &block)

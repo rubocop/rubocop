@@ -129,6 +129,7 @@ module RuboCop
           corrector.replace(block_method.source_range, 'lambda')
           corrector.remove(args.source_range) if args.source_range
           return if args.children.empty?
+
           arg_str = " |#{lambda_arg_string(args)}|"
           corrector.insert_after(node.loc.begin, arg_str)
         end

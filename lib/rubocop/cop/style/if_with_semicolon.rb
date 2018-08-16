@@ -21,6 +21,7 @@ module RuboCop
         def on_normal_if_unless(node)
           beginning = node.loc.begin
           return unless beginning && beginning.is?(';')
+
           add_offense(node)
         end
       end

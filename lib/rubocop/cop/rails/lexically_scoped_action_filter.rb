@@ -92,6 +92,7 @@ module RuboCop
 
           parent = node.each_ancestor(:class, :module).first
           return unless parent
+
           block = parent.each_child_node(:begin).first
           return unless block
 

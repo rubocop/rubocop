@@ -33,6 +33,7 @@ module RuboCop
         def on_class(node)
           _name, superclass, body = *node
           return if superclass && style != :nested
+
           check_style(node, body)
         end
 
@@ -129,11 +130,13 @@ module RuboCop
 
         def check_nested_style(node)
           return unless compact_node_name?(node)
+
           add_offense(node, location: :name, message: NESTED_MSG)
         end
 
         def check_compact_style(node, body)
           return unless one_child?(body) && !compact_node_name?(node)
+
           add_offense(node, location: :name, message: COMPACT_MSG)
         end
 

@@ -23,6 +23,7 @@ module RuboCop
         def on_def(node)
           args = node.arguments
           return unless args.loc.begin && args.loc.begin.is?('(')
+
           expr = args.source_range
           pos_before_left_paren = range_between(expr.begin_pos - 1,
                                                 expr.begin_pos)

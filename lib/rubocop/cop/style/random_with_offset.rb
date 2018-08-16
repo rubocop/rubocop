@@ -59,6 +59,7 @@ module RuboCop
           return unless integer_op_rand?(node) ||
                         rand_op_integer?(node) ||
                         rand_modified?(node)
+
           add_offense(node)
         end
 

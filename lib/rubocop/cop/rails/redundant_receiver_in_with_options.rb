@@ -82,6 +82,7 @@ module RuboCop
         def on_block(node)
           with_options?(node) do |arg, body|
             return unless all_block_nodes_in(body).count.zero?
+
             send_nodes = all_send_nodes_in(body)
 
             if send_nodes.all? { |n| same_value?(arg, n.receiver) }

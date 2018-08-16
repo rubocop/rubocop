@@ -1060,7 +1060,7 @@ AllowMarginComment | `true` | Boolean
 
 Enabled by default | Supports autocorrection
 --- | ---
-Disabled | Yes
+Enabled | Yes
 
 This cop enforces empty line after guard clause
 

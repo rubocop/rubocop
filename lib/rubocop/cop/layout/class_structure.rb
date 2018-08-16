@@ -162,6 +162,7 @@ module RuboCop
         # @return String otherwise trying to {humanize_node} of the current node
         def classify(node)
           return node.to_s unless node.respond_to?(:type)
+
           case node.type
           when :block
             classify(node.send_node)
@@ -185,6 +186,7 @@ module RuboCop
           class_elements(class_node).each do |node|
             classification = classify(node)
             next if ignore?(classification)
+
             yield node, classification
           end
         end
@@ -192,6 +194,7 @@ module RuboCop
         def class_elements(class_node)
           *, class_def = class_node.children
           return [] unless class_def
+
           if class_def.def_type? || class_def.send_type?
             [class_def]
           else
@@ -241,6 +244,7 @@ module RuboCop
           method_name, = *node
           if node.def_type?
             return :initializer if method_name == :initialize
+
             return "#{node_visibility(node)}_methods"
           end
           HUMANIZED_NODE_TYPE[node.type] || node.type

@@ -148,12 +148,14 @@ module RuboCop
 
         def else_line_range(loc)
           return 0..0 if loc.else.nil? || loc.end.nil?
+
           loc.else.first_line..loc.end.first_line
         end
 
         def base_node(node)
           return node if node.case_type?
           return node unless node.elsif?
+
           node.each_ancestor(:if, :case, :when).find(-> { node }) do |parent|
             parent.loc.end
           end

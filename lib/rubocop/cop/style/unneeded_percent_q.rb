@@ -32,6 +32,7 @@ module RuboCop
 
         def on_dstr(node)
           return unless string_literal?(node)
+
           check(node)
         end
 
@@ -40,6 +41,7 @@ module RuboCop
           # will call `on_dstr` for the entire string and `on_str` for the
           # non interpolated portion of the string
           return unless string_literal?(node)
+
           check(node)
         end
 

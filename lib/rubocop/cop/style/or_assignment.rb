@@ -46,11 +46,13 @@ module RuboCop
 
         def on_if(node)
           return unless unless_assignment?(node)
+
           add_offense(node)
         end
 
         def on_lvasgn(node)
           return unless ternary_assignment?(node)
+
           add_offense(node)
         end
 

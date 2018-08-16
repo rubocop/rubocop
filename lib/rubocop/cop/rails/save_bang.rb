@@ -172,14 +172,17 @@ module RuboCop
         def hash_parent(node)
           pair = node.parent
           return unless pair && pair.pair_type?
+
           hash = pair.parent
           return unless hash && hash.hash_type?
+
           hash
         end
 
         def array_parent(node)
           array = node.parent
           return unless array && array.array_type?
+
           array
         end
 
@@ -198,6 +201,7 @@ module RuboCop
 
           condition = node.parent
           return false unless condition
+
           condition.if_type? || condition.case_type? ||
             condition.or_type? || condition.and_type? ||
             single_negative?(condition)
@@ -205,9 +209,11 @@ module RuboCop
 
         def implicit_return?(node)
           return false unless cop_config['AllowImplicitReturn']
+
           node = assignable_node(node)
           method = node.parent
           return unless method && (method.def_type? || method.block_type?)
+
           method.children.size == node.sibling_index + 1
         end
 

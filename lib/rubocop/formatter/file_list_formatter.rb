@@ -12,6 +12,7 @@ module RuboCop
     class FileListFormatter < BaseFormatter
       def file_finished(file, offenses)
         return if offenses.empty?
+
         output.printf("%s\n", file)
       end
     end

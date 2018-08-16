@@ -88,6 +88,7 @@ module RuboCop
 
         def on_if(node)
           return if allowed_if_condition?(node)
+
           check_node(node)
         end
 
@@ -97,6 +98,7 @@ module RuboCop
 
         def check_node(node)
           return if target_ruby_version < 2.3
+
           checked_variable, receiver, method_chain, method = extract_parts(node)
           return unless receiver == checked_variable
           # method is already a method call so this is actually checking for a
@@ -176,12 +178,14 @@ module RuboCop
                      end
 
           return receiver if receiver == checked_variable
+
           find_matching_receiver_invocation(receiver, checked_variable)
         end
 
         def chain_size(method_chain, method)
           method.each_ancestor(:send).inject(0) do |total, ancestor|
             break total + 1 if ancestor == method_chain
+
             total + 1
           end
         end

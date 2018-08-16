@@ -66,6 +66,7 @@ module RuboCop
           unless supported_styles.include?(s)
             raise "Unknown style #{s} selected!"
           end
+
           s
         end
       end

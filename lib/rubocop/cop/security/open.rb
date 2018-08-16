@@ -41,6 +41,7 @@ module RuboCop
         def on_send(node)
           open?(node) do |code|
             return if safe?(code)
+
             add_offense(node, location: :selector)
           end
         end

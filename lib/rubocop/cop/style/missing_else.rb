@@ -167,6 +167,7 @@ module RuboCop
 
         def empty_else_style
           return unless empty_else_config.key?('EnforcedStyle')
+
           empty_else_config['EnforcedStyle'].to_sym
         end
 

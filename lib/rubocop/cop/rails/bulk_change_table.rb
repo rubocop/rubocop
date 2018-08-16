@@ -155,6 +155,7 @@ module RuboCop
           return unless node.command?(:change_table)
           return if include_bulk_options?(node)
           return unless node.block_node
+
           send_nodes = node.block_node.body.each_child_node(:send).to_a
 
           transformations = send_nodes.select do |send_node|
@@ -171,6 +172,7 @@ module RuboCop
           # arguments: [{(sym :table)(str "table")} (hash (pair (sym :bulk) _))]
           options = node.arguments[1]
           return false unless options
+
           options.hash_type? &&
             options.keys.any? { |key| key.sym_type? && key.value == :bulk }
         end
@@ -181,6 +183,7 @@ module RuboCop
 
         def database_from_yaml
           return nil unless database_yaml
+
           case database_yaml['adapter']
           when 'mysql2'
             MYSQL
@@ -191,10 +194,13 @@ module RuboCop
 
         def database_yaml
           return nil unless File.exist?('config/database.yml')
+
           yaml = YAML.load_file('config/database.yml')
           return nil unless yaml.is_a? Hash
+
           config = yaml['development']
           return nil unless config.is_a?(Hash)
+
           config
         rescue Psych::SyntaxError
           nil
@@ -236,6 +242,7 @@ module RuboCop
           # arguments: [{(sym :table)(str "table")} ...]
           table_node = node.arguments[0]
           return unless table_node.is_a? RuboCop::AST::BasicLiteralNode
+
           message = format(MSG_FOR_ALTER_METHODS, table: table_node.value)
           add_offense(node, message: message)
         end

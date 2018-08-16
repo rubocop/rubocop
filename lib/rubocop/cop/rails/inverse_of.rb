@@ -178,6 +178,7 @@ module RuboCop
         def on_send(node)
           recv, arguments = association_recv_arguments(node)
           return unless arguments
+
           with_options = with_options_arguments(recv, node)
 
           options = arguments.concat(with_options).flat_map do |arg|
@@ -189,6 +190,7 @@ module RuboCop
                         options_requiring_inverse_of?(options)
 
           return if options_contain_inverse_of?(options)
+
           add_offense(node, message: message(options), location: :selector)
         end
 
@@ -203,6 +205,7 @@ module RuboCop
           end
 
           return required if target_rails_version >= 5.2
+
           required || options.any? { |opt| as_option?(opt) }
         end
 
@@ -226,6 +229,7 @@ module RuboCop
 
         def same_context_in_with_options?(arg, recv)
           return true if arg.nil? && recv.nil?
+
           arg && recv && arg.children[0] == recv.children[0]
         end
 

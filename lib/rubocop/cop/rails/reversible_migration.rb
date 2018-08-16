@@ -249,6 +249,7 @@ module RuboCop
           method_name = node.method_name
           return if receiver != node.receiver &&
                     !IRREVERSIBLE_CHANGE_TABLE_CALLS.include?(method_name)
+
           add_offense(
             node,
             message: format(MSG, action: "change_table(with #{method_name})")

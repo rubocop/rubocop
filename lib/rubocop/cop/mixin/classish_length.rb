@@ -17,6 +17,7 @@ module RuboCop
         target_line_numbers.reduce(0) do |length, line_number|
           source_line = processed_source[line_number]
           next length if irrelevant_line(source_line)
+
           length + 1
         end
       end

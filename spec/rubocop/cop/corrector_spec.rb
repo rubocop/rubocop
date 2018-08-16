@@ -17,6 +17,7 @@ RSpec.describe RuboCop::Cop::Corrector do
       unless corrections.all? { |c| c.is_a?(Proc) }
         raise 'Corrections should be a proc, block or an array of procs'
       end
+
       described_class.new(processed_source.buffer, corrections).rewrite
     end
 

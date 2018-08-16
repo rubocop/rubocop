@@ -33,6 +33,7 @@ module RuboCop
         def on_pair(node)
           return unless string_hash_key?(node)
           return if receive_environments_method?(node)
+
           add_offense(node.key)
         end
 

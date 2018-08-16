@@ -37,6 +37,7 @@ module RuboCop
 
         def nested_variable_comparison?(node)
           return false unless nested_comparison?(node)
+
           variables_in_node(node).count == 1
         end
 

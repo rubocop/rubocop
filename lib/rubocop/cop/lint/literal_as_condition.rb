@@ -67,6 +67,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.negation_method?
+
           check_for_literal(node)
         end
 

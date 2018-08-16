@@ -9,8 +9,10 @@ module RuboCop
           ([target_node] + target_node.ancestors).each do |node|
             return nil unless node.parent
             return nil unless scope.include?(node)
+
             klass = CLASSES_BY_TYPE[node.parent.type]
             next unless klass
+
             branch = klass.new(node, scope)
             return branch if branch.branched?
           end
@@ -74,6 +76,7 @@ module RuboCop
 
           def parent
             return @parent if instance_variable_defined?(:@parent)
+
             @branch = Branch.of(control_node, scope: scope)
           end
 
@@ -122,6 +125,7 @@ module RuboCop
 
           def ==(other)
             return false unless other
+
             control_node.equal?(other.control_node) &&
               child_node.equal?(other.child_node)
           end

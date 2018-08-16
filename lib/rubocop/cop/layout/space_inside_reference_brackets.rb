@@ -65,9 +65,11 @@ module RuboCop
         def on_send(node)
           return if node.multiline?
           return unless bracket_method?(node)
+
           tokens = tokens(node)
           left_token = left_ref_bracket(node, tokens)
           return unless left_token
+
           right_token = closing_bracket(tokens, left_token)
 
           if empty_brackets?(left_token, right_token)

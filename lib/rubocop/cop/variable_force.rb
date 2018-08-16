@@ -99,6 +99,7 @@ module RuboCop
       def process_children(origin_node)
         origin_node.each_child_node do |child_node|
           next if scanned_node?(child_node)
+
           process_node(child_node)
         end
       end
@@ -174,6 +175,7 @@ module RuboCop
 
         variable_names.each do |name|
           next if variable_table.variable_exist?(name)
+
           variable_table.declare_variable(name, node)
         end
 
@@ -272,6 +274,7 @@ module RuboCop
       def process_zero_arity_super(node)
         variable_table.accessible_variables.each do |variable|
           next unless variable.method_argument?
+
           variable.reference!(node)
         end
       end
@@ -315,10 +318,12 @@ module RuboCop
           # Non related references which are caught in the above scan
           # would be skipped here.
           next unless variable
+
           variable.assignments.each do |assignment|
             next if assignment_nodes_in_loop.none? do |assignment_node|
                       assignment_node.equal?(assignment.node)
                     end
+
             assignment.reference!(node)
           end
         end

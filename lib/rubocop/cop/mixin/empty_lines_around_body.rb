@@ -51,6 +51,7 @@ module RuboCop
 
         def check_empty_lines_special(body, first_line, last_line)
           return unless body
+
           if namespace?(body, with_one_child: true)
             check_both(:no_empty_lines, first_line, last_line)
           else
@@ -124,6 +125,7 @@ module RuboCop
         def namespace?(body, with_one_child: false)
           if body.begin_type?
             return false if with_one_child
+
             body.children.all? { |child| constant_definition?(child) }
           else
             constant_definition?(body)

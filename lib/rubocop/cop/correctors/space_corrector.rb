@@ -29,6 +29,7 @@ module RuboCop
             corrector.remove(range)
           end
           return unless right_token.space_before?
+
           range = side_space_range(range: right_token.pos, side: :left)
           corrector.remove(range)
         end
@@ -39,6 +40,7 @@ module RuboCop
             corrector.insert_after(left_token.pos, ' ')
           end
           return if right_token.space_before?
+
           corrector.insert_before(right_token.pos, ' ')
         end
       end

@@ -36,6 +36,7 @@ module RuboCop
 
         def move_comment(eol_comment:, node:, corrector:)
           return unless eol_comment
+
           text = eol_comment.loc.expression.source
           corrector.insert_before(node.source_range,
                                   text + "\n" + (' ' * node.loc.keyword.column))
@@ -46,6 +47,7 @@ module RuboCop
 
         def remove_semicolon(node, corrector)
           return unless semicolon(node)
+
           corrector.remove(semicolon(node).pos)
         end
 

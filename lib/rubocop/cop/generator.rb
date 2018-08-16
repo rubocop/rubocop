@@ -203,6 +203,7 @@ module RuboCop
 
       def snake_case(camel_case_string)
         return 'rspec' if camel_case_string == 'RSpec'
+
         camel_case_string
           .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
           .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')

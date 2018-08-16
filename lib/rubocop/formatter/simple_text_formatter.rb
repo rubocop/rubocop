@@ -27,6 +27,7 @@ module RuboCop
 
       def file_finished(file, offenses)
         return if offenses.empty?
+
         count_stats(offenses)
         report_file(file, offenses)
       end

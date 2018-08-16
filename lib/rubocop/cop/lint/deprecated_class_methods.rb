@@ -69,6 +69,7 @@ module RuboCop
           DEPRECATED_METHODS_OBJECT.each do |data|
             next unless data.class_nodes.include?(node.receiver)
             next unless node.method?(data.deprecated_method)
+
             yield data
           end
         end

@@ -46,10 +46,12 @@ module RuboCop
       def aligned_with_line?(line_nos, range, indent = nil)
         line_nos.each do |lineno|
           next if aligned_comment_lines.include?(lineno + 1)
+
           line = processed_source.lines[lineno]
           index = line =~ /\S/
           next unless index
           next if indent && indent != index
+
           return yield(range, line)
         end
         false

@@ -29,6 +29,7 @@ module RuboCop
         if args.any?
           raise OptionArgumentError, '-s/--stdin requires exactly one path.'
         end
+
         # We want the STDIN contents in @options[:stdin] and the file name in
         # args to simplify the rest of the processing.
         args = [@options[:stdin]]
@@ -261,6 +262,7 @@ module RuboCop
       validate_parallel
 
       return if incompatible_options.size <= 1
+
       raise OptionArgumentError, 'Incompatible cli options: ' \
                                  "#{incompatible_options.inspect}"
     end
@@ -329,6 +331,7 @@ module RuboCop
 
     def validate_exclude_limit_option
       return if @options[:exclude_limit] =~ /^\d+$/
+
       # Emulate OptionParser's behavior to make failures consistent regardless
       # of option order.
       raise OptionParser::MissingArgument

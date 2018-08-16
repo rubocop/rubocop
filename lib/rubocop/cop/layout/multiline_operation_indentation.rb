@@ -62,6 +62,7 @@ module RuboCop
 
         def relevant_node?(node)
           return false if node.unary_operation?
+
           !node.loc.dot # Don't check method calls with dot operator.
         end
 

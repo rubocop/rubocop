@@ -34,6 +34,7 @@ module RuboCop
         unless NAMES.include?(name)
           raise ArgumentError, "Unknown severity: #{name}"
         end
+
         @name = name.freeze
         freeze
       end

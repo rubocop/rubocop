@@ -89,6 +89,7 @@ module RuboCop
             message = format(MSG_UNALIGNED_ASGN, location: 'following')
           end
           return if aligned_assignment?(token.pos, assignment_line)
+
           add_offense(token.pos, location: token.pos, message: message)
         end
 

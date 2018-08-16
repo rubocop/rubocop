@@ -45,6 +45,7 @@ module RuboCop
 
         def on_array(node)
           return unless node.square_brackets?
+
           check_literal(node, 'item of %<article>s array')
         end
 

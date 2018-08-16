@@ -190,6 +190,7 @@ module RuboCop
             # In that case, one of the K/V pairs could contain a block node
             # which could change in meaning if do...end replaced {...}
             return if node.braces?
+
             node.each_child_node { |child| get_blocks(child, &block) }
           when :pair
             node.each_child_node { |child| get_blocks(child, &block) }

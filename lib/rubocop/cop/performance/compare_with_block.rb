@@ -48,6 +48,7 @@ module RuboCop
           compare?(node) do |send, var_a, var_b, body|
             replaceable_body?(body, var_a, var_b) do |method, args_a, args_b|
               return unless slow_compare?(method, args_a, args_b)
+
               range = compare_range(send, node)
 
               add_offense(
@@ -78,8 +79,10 @@ module RuboCop
 
         def slow_compare?(method, args_a, args_b)
           return false unless args_a == args_b
+
           if method == :[]
             return false unless args_a.size == 1
+
             key = args_a.first
             return false unless %i[sym str int].include?(key.type)
           else

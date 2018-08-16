@@ -130,6 +130,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         formatter_keys = format_section.reduce([]) do |keys, line|
           match = line.match(/^[ ]{39}(\[[a-z\]]+)/)
           next keys unless match
+
           keys << match.captures.first.gsub(/\[|\]/, '')
         end.sort
 
