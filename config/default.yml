@@ -152,6 +152,28 @@ Layout/AccessModifierIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/AlignArray:
+  # Alignment of values in multi-line arrays.
+  #
+  # The `with_first_value` style aligns the following lines along the same
+  # column as the first value.
+  #
+  #     array = [a,
+  #              b]
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the array.
+  #
+  #     array = [a,
+  #       b]
+  EnforcedStyle: with_first_value
+  SupportedStyles:
+    - with_first_value
+    - with_fixed_indentation
+  # By default, the indentation width from Layout/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
 # Align the elements of a hash literal if they span more than one line.
 Layout/AlignHash:
   # Alignment of entries using hash rocket as separator. Valid values are:
