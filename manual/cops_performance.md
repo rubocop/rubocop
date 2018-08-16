@@ -29,7 +29,7 @@ caller_locations(1..1).first
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | Yes
+Disabled | Yes
 
 Place `when` conditions that use splat at the end
 of the list of `when` branches.
@@ -81,6 +81,12 @@ when 5
   baz
 end
 ```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
 
 ## Performance/Casecmp
 

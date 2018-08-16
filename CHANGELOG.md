@@ -37,6 +37,7 @@
 * [#4301](https://github.com/rubocop-hq/rubocop/issues/4301): Turn off autocorrect for `Rails/RelativeDateConstant` by default. ([@koic][])
 * [#4832](https://github.com/rubocop-hq/rubocop/issues/4832): Change the path pattern (`*`) to match the hidden file. ([@koic][])
 * `Style/For` now highlights the entire statement rather than just the keyword. ([@rrosenblum][])
+* Disable `Performance/CaseWhenSplat` and its auto-correction by default. ([@rrosenblum][])
 
 ## 0.58.2 (2018-07-23)
 

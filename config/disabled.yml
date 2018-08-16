@@ -51,6 +51,13 @@ Lint/NumberConversion:
   Description: 'Checks unsafe usage of number conversion methods.'
   Enabled: false
 
+Performance/CaseWhenSplat:
+  Description: >-
+                  Place `when` conditions that use splat at the end
+                  of the list of `when` branches.
+  Enabled: false
+  AutoCorrect: false
+
 # By default, the rails cops are not run. Override in project or home
 # directory .rubocop.yml files, or by giving the -R/--rails option.
 Rails:
