@@ -64,8 +64,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do
 
       it 'registers an offense for no space between a comma and a ' \
          'closing brace' do
-        inspect_source('{ foo:bar,}')
-        expect(cop.messages).to eq(['Space missing after comma.'])
+        expect_offense(<<-RUBY.strip_indent)
+          { foo:bar,}
+                   ^ Space missing after comma.
+        RUBY
       end
     end
 

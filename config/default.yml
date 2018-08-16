@@ -1804,6 +1804,9 @@ Rails/RefuteMethods:
   Include:
     - '**/test/**/*'
 
+Rails/RelativeDateConstant:
+  AutoCorrect: false
+
 Rails/RequestReferer:
   EnforcedStyle: referer
   SupportedStyles:

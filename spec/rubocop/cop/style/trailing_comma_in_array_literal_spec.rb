@@ -5,10 +5,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma' do
-      inspect_source('VALUES = [1001, 2020, 3333, ]')
-      expect(cop.messages)
-        .to eq(["Avoid comma after the last item of an array#{extra_info}."])
-      expect(cop.highlights).to eq([','])
+      expect_offense(<<-RUBY.strip_indent)
+        VALUES = [1001, 2020, 3333, ]
+                                  ^ Avoid comma after the last item of an array#{extra_info}.
+      RUBY
     end
 
     it 'accepts literal without trailing comma' do
@@ -127,15 +127,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'registers an offense for a literal with two of the values ' \
          'on the same line and a trailing comma' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333,
+                         ^ Avoid comma after the last item of an array, unless each item is on its own line.
                    ]
         RUBY
-        expect(cop.messages)
-          .to eq(['Avoid comma after the last item of an array, unless each ' \
-                  'item is on its own line.'])
       end
 
       it 'accepts trailing comma' do
@@ -215,14 +213,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'registers an offense for literal with two of the values ' \
          'on the same line and no trailing comma' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           VALUES = [
                      1001, 2020,
                      3333
+                     ^^^^ Put a comma after the last item of a multiline array.
                    ]
         RUBY
-        expect(cop.messages)
-          .to eq(['Put a comma after the last item of a multiline array.'])
       end
 
       it 'accepts trailing comma' do

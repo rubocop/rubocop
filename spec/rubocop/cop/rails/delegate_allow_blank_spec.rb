@@ -4,10 +4,10 @@ RSpec.describe RuboCop::Cop::Rails::DelegateAllowBlank do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when using allow_blank' do
-    inspect_source('delegate :foo, to: :bar, allow_blank: true')
-
-    msg = '`allow_blank` is not a valid option, use `allow_nil`.'
-    expect(cop.messages).to eq([msg])
+    expect_offense(<<-RUBY.strip_indent)
+      delegate :foo, to: :bar, allow_blank: true
+                               ^^^^^^^^^^^^^^^^^ `allow_blank` is not a valid option, use `allow_nil`.
+    RUBY
   end
 
   it 'does not register an offense when using allow_nil' do

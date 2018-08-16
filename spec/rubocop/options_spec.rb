@@ -82,6 +82,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -r, --require FILE               Require Ruby file.
                   --fail-level SEVERITY        Minimum severity (A/R/C/W/E/F) for exit
                                                with error code.
+                  --display-only-fail-level-offenses
+                                               Only output offense messages at
+                                               the specified --fail-level or above
                   --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                                default, and their configurations for the
                                                current directory.

@@ -705,45 +705,40 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'registers an offense for assignment using a method that ends with ' \
        'an equal sign' do
-      inspect_source('self.attributes = foo? ? 1 : 2')
-
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
+      expect_offense(<<-RUBY.strip_indent)
+        self.attributes = foo? ? 1 : 2
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
+      RUBY
     end
 
     it 'registers an offense for assignment using []=' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         foo[:a] = if bar?
+        ^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
                     1
                   else
                     2
                   end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
     end
 
     it 'registers an offense for assignment to an if then else' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         bar = if foo then 1
+        ^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
               else 2
               end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
     end
 
     it 'registers an offense for assignment to case when then else' do
-      source = <<-RUBY.strip_indent
+      expect_offense(<<-RUBY.strip_indent)
         baz = case foo
+        ^^^^^^^^^^^^^^ Assign variables inside of conditionals
               when bar then 1
               else 2
               end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
     end
 
     context 'for loop' do

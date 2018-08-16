@@ -5,10 +5,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
 
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma in a literal' do
-      inspect_source('MAP = { a: 1001, b: 2020, c: 3333, }')
-      expect(cop.messages)
-        .to eq(["Avoid comma after the last item of a hash#{extra_info}."])
-      expect(cop.highlights).to eq([','])
+      expect_offense(<<-RUBY.strip_indent)
+        MAP = { a: 1001, b: 2020, c: 3333, }
+                                         ^ Avoid comma after the last item of a hash#{extra_info}.
+      RUBY
     end
 
     it 'accepts literal without trailing comma' do

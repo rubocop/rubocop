@@ -234,25 +234,26 @@ RSpec.describe RuboCop::Cop::Performance::StringReplacement do
 
   it 'registers an offense when the pattern has non deterministic regex ' \
      'as a string' do
-    inspect_source(%('a + c'.gsub('+', '-')))
-
-    expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+    expect_offense(<<-RUBY.strip_indent)
+      'a + c'.gsub('+', '-')
+              ^^^^^^^^^^^^^^ Use `tr` instead of `gsub`.
+    RUBY
   end
 
   it 'registers an offense when using gsub to find and replace ' \
      'a single character' do
-    inspect_source("'abc'.gsub('a', '1')")
-
-    expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
-    expect(cop.highlights).to eq(["gsub('a', '1')"])
+    expect_offense(<<-RUBY.strip_indent)
+      'abc'.gsub('a', '1')
+            ^^^^^^^^^^^^^^ Use `tr` instead of `gsub`.
+    RUBY
   end
 
   it 'registers an offense when using gsub! to find and replace ' \
      'a single character ' do
-    inspect_source("'abc'.gsub!('a', '1')")
-
-    expect(cop.messages).to eq(['Use `tr!` instead of `gsub!`.'])
-    expect(cop.highlights).to eq(["gsub!('a', '1')"])
+    expect_offense(<<-RUBY.strip_indent)
+      'abc'.gsub!('a', '1')
+            ^^^^^^^^^^^^^^^ Use `tr!` instead of `gsub!`.
+    RUBY
   end
 
   it 'registers an offense for gsub! when deleting one characters' do
