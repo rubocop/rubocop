@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond
-      ^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when 4
         foobar
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *baz
-      ^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when 4
         foobar
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond then bar
-      ^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
       when 4 then baz
       end
     RUBY
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *Foo, Bar
-      ^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         nil
       end
     RUBY
@@ -93,10 +93,10 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond1
-      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when *cond2
-      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         doo
       when 4
         foobar
@@ -110,12 +110,12 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond1
-      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when 8
         barfoo
       when *SOME_CONSTANT
-      ^^^^^^^^^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         doo
       when 4
         foobar
@@ -129,12 +129,12 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond1
-      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when 8
         barfoo
       when *cond2
-      ^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         doo
       when 4
         foobar
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when *cond
-      ^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when *[1, 2]
         baz
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect_offense(<<-RUBY.strip_indent)
       case foo
       when cond1, *cond2
-      ^^^^^^^^^^^^^^^^^^ Place `when` conditions with a splat at the end of the `when` branches.
+      ^^^^^^^^^^^^^^^^^^ Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
         bar
       when cond3
         baz
