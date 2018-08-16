@@ -81,7 +81,7 @@ module RuboCop
         CREATE_MSG = (MSG +
                       ' Or check `persisted?` on model returned from ' \
                       '`%<current>s`.').freeze
-        CREATE_CONDITIONAL_MSG = '`%<method>s` returns a model which is ' \
+        CREATE_CONDITIONAL_MSG = '`%<current>s` returns a model which is ' \
                                  'always truthy.'.freeze
 
         CREATE_PERSIST_METHODS = %i[create
@@ -106,34 +106,22 @@ module RuboCop
         def check_assignment(assignment)
           node = right_assignment_node(assignment)
           return unless node
-          return unless CREATE_PERSIST_METHODS.include?(node.method_name)
-          return unless expected_signature?(node)
+          return unless persist_method?(node, CREATE_PERSIST_METHODS)
           return if persisted_referenced?(assignment)
 
-          add_offense(node, location: :selector,
-                            message: format(CREATE_MSG,
-                                            prefer: "#{node.method_name}!",
-                                            current: node.method_name.to_s))
+          add_offense_for_node(node, CREATE_MSG)
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
-        # rubocop:disable Metrics/PerceivedComplexity
-        def on_send(node)
-          return unless PERSIST_METHODS.include?(node.method_name)
-          return unless expected_signature?(node)
+        def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity
+          return unless persist_method?(node)
           return if return_value_assigned?(node)
           return if check_used_in_conditional(node)
           return if argument?(node)
           return if implicit_return?(node)
           return if explicit_return?(node)
 
-          add_offense(node, location: :selector,
-                            message: format(MSG,
-                                            prefer: "#{node.method_name}!",
-                                            current: node.method_name.to_s))
+          add_offense_for_node(node)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
-        # rubocop:enable Metrics/PerceivedComplexity
 
         def autocorrect(node)
           save_loc = node.loc.selector
@@ -143,6 +131,13 @@ module RuboCop
         end
 
         private
+
+        def add_offense_for_node(node, msg = MSG)
+          name = node.method_name
+          full_message = format(msg, prefer: "#{name}!", current: name.to_s)
+
+          add_offense(node, location: :selector, message: full_message)
+        end
 
         def right_assignment_node(assignment)
           node = assignment.node.child_nodes.first
@@ -162,68 +157,73 @@ module RuboCop
           node.send_type? && node.method?(:persisted?)
         end
 
+        def assignable_node(node)
+          assignable = node.block_node || node
+          while node
+            node = hash_parent(node) || array_parent(node)
+            assignable = node if node
+          end
+          assignable
+        end
+
+        def hash_parent(node)
+          pair = node.parent
+          return unless pair && pair.pair_type?
+          hash = pair.parent
+          return unless hash && hash.hash_type?
+          hash
+        end
+
+        def array_parent(node)
+          array = node.parent
+          return unless array && array.array_type?
+          array
+        end
+
         def check_used_in_conditional(node)
           return false unless conditional?(node)
 
           unless MODIFY_PERSIST_METHODS.include?(node.method_name)
-            add_offense(node, location: :selector,
-                              message: format(CREATE_CONDITIONAL_MSG,
-                                              method: node.method_name.to_s))
+            add_offense_for_node(node, CREATE_CONDITIONAL_MSG)
           end
 
           true
         end
 
-        def conditional?(node)
-          node.parent && (
-            node.parent.if_type? || node.parent.case_type? ||
-            node.parent.or_type? || node.parent.and_type? ||
-            single_negative?(node.parent)
-          )
+        def conditional?(node) # rubocop:disable Metrics/CyclomaticComplexity
+          node = node.block_node || node
+
+          condition = node.parent
+          return false unless condition
+          condition.if_type? || condition.case_type? ||
+            condition.or_type? || condition.and_type? ||
+            single_negative?(condition)
         end
 
         def implicit_return?(node)
           return false unless cop_config['AllowImplicitReturn']
-          node.parent &&
-            (node.parent.def_type? || node.parent.block_type?) &&
-            node.parent.children.size == node.sibling_index + 1
+          node = assignable_node(node)
+          method = node.parent
+          return unless method && (method.def_type? || method.block_type?)
+          method.children.size == node.sibling_index + 1
         end
 
         def argument?(node)
-          # positional argument
-          return true if node.argument?
-          # keyword argument
-          node.parent && node.parent.parent &&
-            node.parent.parent.hash_type? &&
-            node.parent.parent.argument?
+          assignable_node(node).argument?
         end
 
         def explicit_return?(node)
-          node.parent &&
-            (node.parent.return_type? || node.parent.next_type?)
+          ret = assignable_node(node).parent
+          ret && (ret.return_type? || ret.next_type?)
         end
 
-        # Ignore simple assignment or if condition
         def return_value_assigned?(node)
-          return false unless node.parent
-          node.parent.lvasgn_type? ||
-            return_block_value_assigned?(node) ||
-            return_hash_value_assigned?(node)
+          assignment = assignable_node(node).parent
+          assignment && assignment.lvasgn_type?
         end
 
-        def return_block_value_assigned?(node)
-          node.parent &&
-            node.parent.block_type? &&
-            node.parent.parent &&
-            node.parent.parent.lvasgn_type?
-        end
-
-        def return_hash_value_assigned?(node)
-          node.parent &&
-            node.parent.parent &&
-            node.parent.parent.hash_type? &&
-            node.parent.parent.parent &&
-            node.parent.parent.parent.lvasgn_type?
+        def persist_method?(node, methods = PERSIST_METHODS)
+          methods.include?(node.method_name) && expected_signature?(node)
         end
 
         # Check argument signature as no arguments or one hash

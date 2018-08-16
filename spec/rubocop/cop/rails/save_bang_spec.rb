@@ -16,6 +16,42 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
       end
     end
 
+    it "when using #{method} with variable arguments" do
+      inspect_source("object.#{method}(variable)")
+
+      if method == :destroy
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["Use `#{method}!` instead of `#{method}` " \
+                  'if the return value is not checked.'])
+      end
+    end
+
+    it "when using #{method} with variable star arguments" do
+      inspect_source("object.#{method}(*variable)")
+
+      if method == :destroy
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["Use `#{method}!` instead of `#{method}` " \
+                  'if the return value is not checked.'])
+      end
+    end
+
+    it "when using #{method} with variable star star arguments" do
+      inspect_source("object.#{method}(**variable)")
+
+      if method == :destroy
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["Use `#{method}!` instead of `#{method}` " \
+                  'if the return value is not checked.'])
+      end
+    end
+
     it "when using #{method} without arguments" do
       inspect_source(method.to_s)
 
@@ -83,6 +119,47 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
       end
     end
 
+    it "when using #{method} with if with method chain" do
+      inspect_source(<<-RUBY.strip_indent)
+        if object.tap(&:prepare_for_save).#{method}
+          something
+        end
+      RUBY
+
+      if update
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with if with block" do
+      inspect_source(<<-RUBY.strip_indent)
+        if object.#{method} { |o| o.name = 'Tom' }
+          something
+        end
+      RUBY
+
+      if update
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
+    it "when using #{method} with referenced block" do
+      inspect_source("if object.#{method}(&:values); something; end")
+
+      if update
+        expect(cop.messages.empty?).to be(true)
+      else
+        expect(cop.messages)
+          .to eq(["`#{method}` returns a model which is always truthy."])
+      end
+    end
+
     it "when using #{method} with negated if" do
       inspect_source("if !object.#{method}; something; end")
 
@@ -128,6 +205,14 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
         expect(cop.messages)
           .to eq(["`#{method}` returns a model which is always truthy."])
       end
+    end
+
+    it "when using #{method} with a bunch of hashes & arrays" do
+      inspect_source(<<-RUBY.strip_indent)
+        return [{ success: object.#{method} }, true]
+      RUBY
+
+      expect(cop.messages.empty?).to be(true)
     end
 
     it "when using #{method} with case statement" do
@@ -290,6 +375,22 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
                              ' if the return value is not checked.'))
       end
     end
+
+    it "when using #{method} as part of the last line" do
+      inspect_source(<<-RUBY.strip_indent)
+        def whatever
+          [{ success: object.#{method} }, true]
+        end
+      RUBY
+
+      if allow_implicit_return
+        expect(cop.offenses.empty?).to be true
+      else
+        expect(cop.messages)
+          .to match_array(start_with("Use `#{method}!` instead of `#{method}`" \
+                             ' if the return value is not checked.'))
+      end
+    end
   end
 
   described_class::MODIFY_PERSIST_METHODS.each do |method|
@@ -320,6 +421,13 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
                           "  obj.name = 'Tom'\n" \
                           "end\n" \
                           'if x.persisted? then; something; end')
+    end
+
+    it "when using persisted? after #{method} called on a chain" do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        x = User.unverified.with_initial_values.#{method}
+        if x.persisted?; something; end
+      RUBY
     end
   end
 
