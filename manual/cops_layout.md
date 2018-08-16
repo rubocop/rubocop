@@ -64,6 +64,8 @@ aligned.
 
 ### Examples
 
+#### EnforcedStyle: with_first_value (default)
+
 ```ruby
 # bad
 a = [1, 2, 3,
@@ -79,6 +81,30 @@ a = ['run',
      'forrest',
      'run']
 ```
+#### EnforcedStyle: with_fixed_alignment
+
+```ruby
+# bad
+a = [1, 2, 3,
+     4, 5, 6]
+array = ['run',
+     'forrest',
+     'run']
+
+# good
+a = [1, 2, 3,
+  4, 5, 6]
+a = ['run',
+  'forrest',
+  'run']
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_value` | `with_first_value`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
 
 ### References
 

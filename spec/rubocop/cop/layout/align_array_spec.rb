@@ -58,6 +58,10 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
       RUBY
     end
 
+    it 'accepts empty array' do
+      expect_no_offenses('[]')
+    end
+
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(<<-RUBY.strip_indent)
         array = [
