@@ -19,6 +19,7 @@
 * [#6133](https://github.com/rubocop-hq/rubocop/pull/6133): Fix `AllowURI` option of `Metrics/LineLength` cop for files with tabs indentation. ([@AlexWayfer][])
 * [#6164](https://github.com/rubocop-hq/rubocop/issues/6164): Fix incorrect autocorrect for `Style/UnneededCondition` when using operator method higher precedence than `||`. ([@koic][])
 * [#6138](https://github.com/rubocop-hq/rubocop/issues/6138): Fix a false positive for assigning a block local variable in `Lint/ShadowedArgument`. ([@jonas054][])
+* [#6022](https://github.com/rubocop-hq/rubocop/issues/6022): Fix `Layout/MultilineHashBraceLayout` and `Layout/MultilineArrayBraceLayout` auto-correct syntax error when there is a comment on the last element. ([@bacchir][])
 
 ### Changes
 
@@ -3522,3 +3523,4 @@
 [@gmalette]: https://github.com/gmalette
 [@MagedMilad]: https://github.com/MagedMilad
 [@robotdana]: https://github.com/robotdana
+[@bacchir]: https://github.com/bacchir
