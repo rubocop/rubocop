@@ -66,6 +66,7 @@ module RuboCop
         def find_first_possible_offense(variables)
           variables.reduce(nil) do |offense, variable|
             break offense unless %i[lvasgn splat].include?(variable.type)
+
             var, = *variable
             var, = *var
             if allow_named_underscore_variables

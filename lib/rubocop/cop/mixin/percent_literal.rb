@@ -12,11 +12,13 @@ module RuboCop
 
       def percent_literal?(node)
         return unless (begin_source = begin_source(node))
+
         begin_source.start_with?('%')
       end
 
       def process(node, *types)
         return unless percent_literal?(node) && types.include?(type(node))
+
         on_percent_literal(node)
       end
 

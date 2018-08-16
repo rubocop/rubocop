@@ -36,6 +36,7 @@ module RuboCop
         def on_csend(node)
           return unless node.parent &&
                         AST::Node::OPERATOR_KEYWORDS.include?(node.parent.type)
+
           check(node)
         end
 
@@ -77,6 +78,7 @@ module RuboCop
                    AST::Node::OPERATOR_KEYWORDS.include?(parent.parent.type)))
             return node
           end
+
           top_conditional_ancestor(parent)
         end
 

@@ -38,6 +38,7 @@ module RuboCop
 
         def highligh_start(line)
           return max unless tab_indentation_width
+
           max - (tab_indentation_width - 1) * line.count("\t")
         end
 
@@ -97,6 +98,7 @@ module RuboCop
 
         def extract_heredocs(ast)
           return [] unless ast
+
           ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
             body = node.location.heredoc_body
             delimiter = node.location.heredoc_end.source.strip
@@ -128,8 +130,10 @@ module RuboCop
         def find_excessive_uri_range(line)
           last_uri_match = match_uris(line).last
           return nil unless last_uri_match
+
           begin_position, end_position = last_uri_match.offset(0)
           return nil if begin_position < max && end_position < max
+
           begin_position...end_position
         end
 
@@ -175,6 +179,7 @@ module RuboCop
             .detect { |e| e.location.line == source_line_number }
 
           return false unless comment
+
           comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
         end
 

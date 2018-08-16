@@ -66,6 +66,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.command?(:create_table)
+
           parent = node.parent
 
           if create_table_with_block?(parent)

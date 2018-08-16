@@ -120,6 +120,7 @@ module RuboCop
         def mark_variable_as_captured_by_block_if_so(variable)
           return unless current_scope.node.block_type?
           return if variable.scope == current_scope
+
           variable.capture_with_block!
         end
       end

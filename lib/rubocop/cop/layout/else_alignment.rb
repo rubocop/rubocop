@@ -120,6 +120,7 @@ module RuboCop
 
           @column_delta = effective_column(base_range) - else_range.column
           return if @column_delta.zero?
+
           message = format(
             MSG,
             else_range: else_range.source,

@@ -18,6 +18,7 @@ module RuboCop
 
         def on_block(node)
           return unless node.send_node.method_name == :define_method
+
           check_code_length(node)
         end
 

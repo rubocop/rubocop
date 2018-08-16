@@ -495,6 +495,7 @@ module RuboCop
 
     def validate_section_presence(name)
       return unless key?(name) && self[name].nil?
+
       raise ValidationError,
             "empty section #{name} found in #{smart_loaded_path}"
     end
@@ -558,6 +559,7 @@ module RuboCop
     def obsolete_cops
       OBSOLETE_COPS.map do |cop_name, message|
         next unless key?(cop_name) || key?(Cop::Badge.parse(cop_name).cop_name)
+
         message + "\n(obsolete configuration found in #{smart_loaded_path}," \
                    ' please update it)'
       end
@@ -627,6 +629,7 @@ module RuboCop
         # "RUBY VERSION" line.
         in_ruby_section ||= line.match(/^\s*RUBY\s*VERSION\s*$/)
         next unless in_ruby_section
+
         # We currently only allow this feature to work with MRI ruby. If jruby
         # (or something else) is used by the project, it's lock file will have a
         # line that looks like:
@@ -657,6 +660,7 @@ module RuboCop
 
     def bundler_lock_file_path
       return nil unless loaded_path
+
       base_path = base_dir_for_path_parameters
       ['gems.locked', 'Gemfile.lock'].each do |file_name|
         path = find_file_upwards(file_name, base_path)

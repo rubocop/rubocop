@@ -55,6 +55,7 @@ module RuboCop
 
         def on_send(node)
           return if part_of_ignored_node?(node)
+
           inverse_candidate?(node) do |_method_call, lhs, method, rhs|
             return unless inverse_methods.key?(method)
             return if possible_class_hierarchy_check?(lhs, rhs, method)

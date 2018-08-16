@@ -104,6 +104,7 @@ module RuboCop
 
         def keyword_locations(node)
           return [] unless node
+
           case node.type
           when :rescue
             keyword_locations_in_rescue(node)

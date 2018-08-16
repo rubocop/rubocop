@@ -49,6 +49,7 @@ module RuboCop
 
         def extract_heredoc_ranges(ast)
           return [] unless ast
+
           ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
             body = node.location.heredoc_body
             (body.first_line...body.last_line)

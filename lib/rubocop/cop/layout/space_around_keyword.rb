@@ -140,6 +140,7 @@ module RuboCop
         def check(node, locations, begin_keyword = DO)
           locations.each do |loc|
             next unless node.loc.respond_to?(loc)
+
             range = node.loc.public_send(loc)
             next unless range
 
@@ -182,6 +183,7 @@ module RuboCop
         def space_before_missing?(range)
           pos = range.begin_pos - 1
           return false if pos < 0
+
           range.source_buffer.source[pos] !~ /[\s\(\|\{\[;,\*\=]/
         end
 

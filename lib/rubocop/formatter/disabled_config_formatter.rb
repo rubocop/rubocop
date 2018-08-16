@@ -128,10 +128,10 @@ module RuboCop
 
         params.each do |param|
           value = default_cfg[param]
-          if value.is_a?(Array)
-            next if value.empty?
-            output_buffer.puts "# #{param}: #{value.join(', ')}"
-          end
+          next unless value.is_a?(Array)
+          next if value.empty?
+
+          output_buffer.puts "# #{param}: #{value.join(', ')}"
         end
       end
 

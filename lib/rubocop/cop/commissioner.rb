@@ -29,6 +29,7 @@ module RuboCop
       Parser::Meta::NODE_TYPES.each do |node_type|
         method_name = :"on_#{node_type}"
         next unless method_defined?(method_name)
+
         define_method(method_name) do |node|
           trigger_responding_cops(method_name, node)
           super(node) unless NO_CHILD_NODES.include?(node_type)
@@ -105,6 +106,7 @@ module RuboCop
         yield
       rescue StandardError => e
         raise e if @options[:raise_error]
+
         if node
           line = node.first_line
           column = node.loc.column

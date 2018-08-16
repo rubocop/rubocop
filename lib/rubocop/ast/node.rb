@@ -181,6 +181,7 @@ module RuboCop
 
         children.each do |child|
           next unless child.is_a?(Node)
+
           yield child if types.empty? || types.include?(child.type)
         end
 
@@ -279,6 +280,7 @@ module RuboCop
 
       def line_count
         return 0 unless source_range
+
         source_range.last_line - source_range.first_line + 1
       end
 
@@ -302,6 +304,7 @@ module RuboCop
 
       def const_name
         return unless const_type?
+
         namespace, name = *self
         if namespace && !namespace.cbase_type?
           "#{namespace.const_name}::#{name}"
@@ -436,12 +439,14 @@ module RuboCop
 
       def unary_operation?
         return false unless loc.respond_to?(:selector) && loc.selector
+
         Cop::Util.operator?(loc.selector.source.to_sym) &&
           source_range.begin_pos == loc.selector.begin_pos
       end
 
       def binary_operation?
         return false unless loc.respond_to?(:selector) && loc.selector
+
         Cop::Util.operator?(method_name) &&
           source_range.begin_pos != loc.selector.begin_pos
       end
@@ -613,6 +618,7 @@ module RuboCop
           # `class_eval` with no receiver applies to whatever module or class
           # we are currently in
           return unless (receiver = ancestor.receiver)
+
           yield unless receiver.const_type?
           receiver.const_name
         elsif !new_class_or_module_block?(ancestor)

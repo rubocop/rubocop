@@ -51,6 +51,7 @@ module RuboCop
 
           processed_source.raw_source.each_line.with_index do |line, index|
             break if index >= last_line
+
             msg = offense_message(line)
             next unless msg
             next if unimportant_missing_cr?(index, last_line, line)

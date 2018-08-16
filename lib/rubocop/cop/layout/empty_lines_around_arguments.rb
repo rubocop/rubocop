@@ -45,6 +45,7 @@ module RuboCop
 
         def on_send(node)
           return if node.single_line? || node.arguments.empty?
+
           extra_lines(node) { |range| add_offense(node, location: range) }
         end
 

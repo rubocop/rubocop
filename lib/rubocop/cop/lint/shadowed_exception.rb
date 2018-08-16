@@ -51,6 +51,7 @@ module RuboCop
 
         def on_rescue(node)
           return if rescue_modifier?(node)
+
           _body, *rescues, _else = *node
           rescued_groups = rescues.each_with_object([]) do |group, exceptions|
             rescue_group, = *group
@@ -151,6 +152,7 @@ module RuboCop
           klasses = *rescue_group
           klasses.map do |klass|
             next unless klass.const_type?
+
             klass.source
           end.compact
         end

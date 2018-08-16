@@ -32,6 +32,7 @@ module RuboCop
           processed_source.lines.each.with_index(1) do |line, lineno|
             match = line.match(/^([^\t]*)\t+/)
             next unless match
+
             prefix = match.captures[0]
             col = prefix.length
             next if in_string_literal?(str_ranges, lineno, col)

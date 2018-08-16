@@ -127,6 +127,7 @@ module RuboCop
 
         def matches?(method_name, ivar_assign)
           return true if ivar_assign.nil? || method_name == :initialize
+
           method_name = method_name.to_s.delete('!?')
           variable = ivar_assign.children.first
           variable_name = variable.to_s.sub('@', '')

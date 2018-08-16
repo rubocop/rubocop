@@ -46,6 +46,7 @@ module RuboCop
 
         def autocorrect(node)
           return false if append(node)
+
           lambda do |corrector|
             method_name = node.loc.selector.source
             replacement = ALIASES[method_name.to_sym][:original]

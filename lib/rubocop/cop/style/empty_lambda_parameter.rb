@@ -25,6 +25,7 @@ module RuboCop
         def on_block(node)
           send_node = node.send_node
           return unless send_node.send_type?
+
           check(node) if node.send_node.stabby_lambda?
         end
 

@@ -48,6 +48,7 @@ module RuboCop
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
           return false if num_of_format_args == :unknown
+
           matched_arguments_count?(num_of_expected_fields, num_of_format_args)
         end
 

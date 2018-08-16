@@ -14,6 +14,7 @@ module RuboCop
 
         def correct(processed_source, node, column_delta)
           return unless node
+
           @processed_source = processed_source
           expr = node.respond_to?(:loc) ? node.loc.expression : node
           return if block_comment_within?(expr)

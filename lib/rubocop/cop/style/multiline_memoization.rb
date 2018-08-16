@@ -58,6 +58,7 @@ module RuboCop
 
         def bad_rhs?(rhs)
           return false unless rhs.multiline?
+
           if style == :keyword
             rhs.begin_type?
           else

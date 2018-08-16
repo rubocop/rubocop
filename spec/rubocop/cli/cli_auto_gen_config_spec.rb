@@ -37,6 +37,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               if #{'a' * 80}
                 return y
               end
+
               z
             end
           RUBY
@@ -136,6 +137,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             if #{'a' * 80}
               return y
             end
+
             z
           end
         RUBY

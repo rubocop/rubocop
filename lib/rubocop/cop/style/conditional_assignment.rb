@@ -69,6 +69,7 @@ module RuboCop
 
         def expand_elsif(node, elsif_branches = [])
           return [] if node.nil? || !node.if_type?
+
           _condition, elsif_branch, else_branch = *node
           elsif_branches << elsif_branch
           if else_branch && else_branch.if_type?
@@ -100,6 +101,7 @@ module RuboCop
         def assignment_rhs_exist?(node)
           parent = node.parent
           return true unless parent
+
           !(parent.mlhs_type? || parent.resbody_type?)
         end
       end

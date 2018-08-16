@@ -90,6 +90,7 @@ module RuboCop
 
         def on_resbody(node)
           return if rescue_modifier?(node)
+
           case style
           when :implicit
             rescue_standard_error?(node) do |error|

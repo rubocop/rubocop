@@ -40,6 +40,7 @@
 * [#4832](https://github.com/rubocop-hq/rubocop/issues/4832): Change the path pattern (`*`) to match the hidden file. ([@koic][])
 * `Style/For` now highlights the entire statement rather than just the keyword. ([@rrosenblum][])
 * Disable `Performance/CaseWhenSplat` and its auto-correction by default. ([@rrosenblum][])
+* [#6235](https://github.com/rubocop-hq/rubocop/pull/6235): Enable `Layout/EmptyLineAfterGuardClause` cop by default. ([@koic][])
 
 ## 0.58.2 (2018-07-23)
 

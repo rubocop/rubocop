@@ -46,6 +46,7 @@ module RuboCop
 
     def ast_with_comments
       return if !ast || !comments
+
       @ast_with_comments ||= Parser::Source::Comment.associate(ast, comments)
     end
 
@@ -58,6 +59,7 @@ module RuboCop
         result = []
         all_lines.each_with_index do |line, ix|
           break if ix >= last_token_line && line == '__END__'
+
           result << line
         end
         result
@@ -70,6 +72,7 @@ module RuboCop
 
     def valid_syntax?
       return false if @parser_error
+
       @diagnostics.none? { |d| %i[error fatal].include?(d.level) }
     end
 
@@ -112,6 +115,7 @@ module RuboCop
 
     def start_with?(string)
       return false if self[0].nil?
+
       self[0].start_with?(string)
     end
 

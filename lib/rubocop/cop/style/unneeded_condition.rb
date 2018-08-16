@@ -69,6 +69,7 @@ module RuboCop
 
         def range_of_offense(node)
           return :expression unless node.ternary?
+
           range_between(node.loc.question.begin_pos, node.loc.colon.end_pos)
         end
 

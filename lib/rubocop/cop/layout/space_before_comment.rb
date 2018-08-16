@@ -19,6 +19,7 @@ module RuboCop
           processed_source.tokens.each_cons(2) do |token1, token2|
             next unless token2.comment?
             next unless token1.line == token2.line
+
             if token1.pos.end == token2.pos.begin
               add_offense(token2.pos, location: token2.pos)
             end

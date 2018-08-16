@@ -63,6 +63,7 @@ module RuboCop
           space_offense(node, left_token, :right, message, NO_SPACE_COMMAND)
         end
         return if !extra_space?(right_token, :right) || end_ok
+
         space_offense(node, right_token, :left, message, NO_SPACE_COMMAND)
       end
 
@@ -76,11 +77,13 @@ module RuboCop
           space_offense(node, left_token, :none, message, SPACE_COMMAND)
         end
         return if extra_space?(right_token, :right) || end_ok
+
         space_offense(node, right_token, :none, message, SPACE_COMMAND)
       end
 
       def extra_space?(token, side)
         return false unless token
+
         if side == :left
           String(token.space_after?) == ' '
         else
@@ -106,6 +109,7 @@ module RuboCop
           empty_offense(node, range, message, 'Use one')
         end
         return unless offending_empty_no_space?(empty_config, left, right)
+
         empty_offense(node, range, message, 'Do not use')
       end
 

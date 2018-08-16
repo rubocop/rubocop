@@ -100,6 +100,7 @@ module RuboCop
           end
 
           return if too_long_line?(node)
+
           add_offense(node, location: :heredoc_body)
         end
 
@@ -174,6 +175,7 @@ module RuboCop
 
         def too_long_line?(node)
           return false if config.for_cop('Metrics/LineLength')['AllowHeredoc']
+
           body = heredoc_body(node)
 
           expected_indent = base_indent_level(node) + indentation_width
@@ -191,6 +193,7 @@ module RuboCop
 
         def correct_by_squiggly(node)
           return if target_ruby_version < 2.3
+
           lambda do |corrector|
             if heredoc_indent_type(node) == '~'
               adjust_squiggly(corrector, node)

@@ -127,6 +127,10 @@ Layout/EmptyComment:
   Description: 'Checks empty comment.'
   Enabled: true
 
+Layout/EmptyLineAfterGuardClause:
+  Description: 'Add empty line after guard clause.'
+  Enabled: true
+
 Layout/EmptyLineAfterMagicComment:
   Description: 'Add an empty line after magic comments to separate them from code.'
   StyleGuide: '#separate-magic-comments-from-code'

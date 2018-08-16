@@ -34,6 +34,7 @@ module RuboCop
         @source_buffer = source_buffer
         raise 'source_buffer should be a Parser::Source::Buffer' unless \
           source_buffer.is_a? Parser::Source::Buffer
+
         @corrections = corrections
         @source_rewriter = Parser::Source::TreeRewriter.new(
           source_buffer,
@@ -155,6 +156,7 @@ module RuboCop
       # :nodoc:
       def validate_range(range)
         return if range.source_buffer == @source_buffer
+
         unless range.source_buffer.is_a?(Parser::Source::Buffer)
           # actually this should be enforced by parser gem
           raise 'Corrector expected range source buffer to be a '\

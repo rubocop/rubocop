@@ -28,6 +28,7 @@ module RuboCop
 
         def on_begin(node)
           return if !parentheses?(node) || parens_allowed?(node)
+
           check(node)
         end
 
@@ -63,8 +64,10 @@ module RuboCop
 
         def allowed_multiple_expression?(node)
           return false if node.children.one?
+
           ancestor = node.ancestors.first
           return false unless ancestor
+
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
         end
 
@@ -89,6 +92,7 @@ module RuboCop
           end
           return offense(begin_node, 'a variable') if node.variable?
           return offense(begin_node, 'a constant') if node.const_type?
+
           check_send(begin_node, node) if node.send_type?
         end
 
@@ -157,6 +161,7 @@ module RuboCop
 
           siblings = begin_node.parent && begin_node.parent.children
           return false if siblings.nil?
+
           next_sibling = siblings[begin_node.sibling_index + 1]
           base_value = node.children.first
 

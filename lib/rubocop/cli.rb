@@ -279,6 +279,7 @@ module RuboCop
       # So a delimiter is needed for tools to easily identify where the
       # autocorrected source begins
       return unless @options[:stdin] && @options[:auto_correct]
+
       puts '=' * 20
       print @options[:stdin]
     end

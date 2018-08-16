@@ -84,6 +84,7 @@ module RuboCop
 
         def remove_semicolon(node, corrector)
           return unless token_before_end(node).semicolon?
+
           corrector.remove(token_before_end(node).pos)
         end
       end

@@ -88,12 +88,14 @@ module RuboCop
 
         def sample_size_for_two_args(first, second)
           return :unknown unless first.int_type? && first.to_a.first.zero?
+
           second.int_type? ? second.to_a.first : :unknown
         end
 
         def range_size(range_node)
           vals = range_node.to_a
           return :unknown unless vals.all?(&:int_type?)
+
           low, high = vals.map { |val| val.children[0] }
           return :unknown unless low.zero? && high >= 0
 

@@ -127,6 +127,7 @@ module RuboCop
           def process_logical_operator_assignment(asgn_node)
             lhs_node, rhs_node = *asgn_node
             return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
+
             process_assignment(lhs_node, rhs_node)
 
             throw :skip_children
@@ -135,6 +136,7 @@ module RuboCop
           def process_binary_operator_assignment(op_asgn_node)
             lhs_node, = *op_asgn_node
             return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
+
             lhs_variable_name, = *lhs_node
             @local[lhs_variable_name] = true
 
@@ -155,6 +157,7 @@ module RuboCop
           def constructor?(node)
             return true if node.literal?
             return false unless node.send_type?
+
             _receiver, method = *node
             method == :new
           end

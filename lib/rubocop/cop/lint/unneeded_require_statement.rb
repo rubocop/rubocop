@@ -33,6 +33,7 @@ module RuboCop
 
         def on_send(node)
           return unless unnecessary_require_statement?(node)
+
           add_offense(node)
         end
 

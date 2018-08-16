@@ -95,6 +95,7 @@ module RuboCop
         return if found_files.empty?
         return if PathUtil.relative_path(found_files.last) ==
                   PathUtil.relative_path(config_file)
+
         print 'AllCops/Exclude ' if debug?
         config.add_excludes_from_higher_level(load_file(found_files.last))
       end
@@ -129,6 +130,7 @@ module RuboCop
         if File.exist?(DOTFILE)
           files = Array(load_yaml_configuration(DOTFILE)['inherit_from'])
           return if files.include?(AUTO_GENERATED_FILE)
+
           files.unshift(AUTO_GENERATED_FILE)
           file_string = "\n  - " + files.join("\n  - ") if files.size > 1
           rubocop_yml_contents = IO.read(DOTFILE, encoding: Encoding::UTF_8)

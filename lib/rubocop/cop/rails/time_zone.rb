@@ -165,6 +165,7 @@ module RuboCop
 
           while node && node.send_type?
             break if extract_method(node) == :localtime
+
             node = node.parent
           end
 

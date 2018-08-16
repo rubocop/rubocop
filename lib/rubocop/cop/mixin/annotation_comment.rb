@@ -16,6 +16,7 @@ module RuboCop
         def split_comment(comment)
           match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
           return false unless match
+
           match.captures
         end
 

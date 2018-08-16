@@ -22,6 +22,7 @@ module RuboCop
 
         def investigate(processed_source)
           return if processed_source.blank?
+
           @processed_source = processed_source
 
           check_for_line_terminator_or_opener
@@ -29,6 +30,7 @@ module RuboCop
 
         def on_begin(node)
           return if cop_config['AllowAsExpressionSeparator']
+
           exprs = node.children
 
           return if exprs.size < 2
@@ -40,6 +42,7 @@ module RuboCop
           # every line with more than 1 expression on it is an offense
           lines.each do |line, expr_on_line|
             next unless expr_on_line.size > 1
+
             # TODO: Find the correct position of the semicolon. We don't know
             # if the first semicolon on the line is a separator of
             # expressions. It's just a guess.
@@ -50,6 +53,7 @@ module RuboCop
 
         def autocorrect(range)
           return unless range
+
           ->(corrector) { corrector.remove(range) }
         end
 

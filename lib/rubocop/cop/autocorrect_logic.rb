@@ -19,6 +19,7 @@ module RuboCop
       def autocorrect_enabled?
         # allow turning off autocorrect on a cop by cop basis
         return true unless cop_config
+
         cop_config['AutoCorrect'] != false
       end
     end

@@ -124,6 +124,7 @@ module RuboCop
 
         def add_offense_for_same_line(node, line_node)
           return if special_line_keyword?(line_node)
+
           add_offense(
             node,
             location: line_node.loc.expression,
@@ -134,6 +135,7 @@ module RuboCop
         def add_offense_for_different_line(node, line_node, line_diff)
           sign = line_diff > 0 ? :+ : :-
           return if line_with_offset?(line_node, sign, line_diff.abs)
+
           add_offense(
             node,
             location: line_node.loc.expression,

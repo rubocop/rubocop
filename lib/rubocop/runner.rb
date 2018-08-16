@@ -80,6 +80,7 @@ module RuboCop
 
         if offenses.any? { |o| considered_failure?(o) }
           break false if @options[:fail_fast]
+
           next false
         end
 

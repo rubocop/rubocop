@@ -39,6 +39,7 @@ module RuboCop
           return if Platform.windows?
           return unless processed_source.start_with?(SHEBANG)
           return if executable?(processed_source)
+
           comment = processed_source.comments[0]
           message = format_message_from(processed_source)
           add_offense(comment, message: message)

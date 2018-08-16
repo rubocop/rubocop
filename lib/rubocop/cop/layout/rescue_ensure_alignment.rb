@@ -40,6 +40,7 @@ module RuboCop
           @modifier_locations =
             processed_source.tokens.each_with_object([]) do |token, locations|
               next unless token.rescue_modifier?
+
               locations << token.pos
             end
         end
@@ -77,6 +78,7 @@ module RuboCop
 
         def modifier?(node)
           return false unless @modifier_locations.respond_to?(:include?)
+
           @modifier_locations.include?(node.loc.keyword)
         end
 

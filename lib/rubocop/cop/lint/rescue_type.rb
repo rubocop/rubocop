@@ -44,6 +44,7 @@ module RuboCop
         def on_resbody(node)
           rescued, _, _body = *node
           return if rescued.nil?
+
           exceptions = *rescued
           invalid_exceptions = invalid_exceptions(exceptions)
           return if invalid_exceptions.empty?

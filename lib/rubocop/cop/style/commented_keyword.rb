@@ -47,6 +47,7 @@ module RuboCop
             line = processed_source.lines[line_position - 1]
             next if heredoc_lines.any? { |r| r.include?(line_position) }
             next unless offensive?(line)
+
             range = source_range(processed_source.buffer,
                                  line_position,
                                  (location.column)...(location.last_column))
@@ -74,6 +75,7 @@ module RuboCop
 
         def extract_heredoc_lines(ast)
           return [] unless ast
+
           ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
             body = node.location.heredoc_body
             (body.first_line...body.last_line)

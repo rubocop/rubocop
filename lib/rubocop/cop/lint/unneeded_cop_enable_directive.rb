@@ -40,6 +40,7 @@ module RuboCop
 
         def investigate(processed_source)
           return if processed_source.blank?
+
           offenses = processed_source.comment_config.extra_enabled_comments
           offenses.each do |comment, name|
             add_offense(

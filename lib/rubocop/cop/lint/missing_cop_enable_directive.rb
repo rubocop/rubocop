@@ -57,6 +57,7 @@ module RuboCop
               # This has to remain a strict inequality to handle
               # the case when max_range is Float::INFINITY
               next if line_range.max - line_range.min < max_range + 2
+
               range = source_range(processed_source.buffer,
                                    line_range.min,
                                    (0..0))

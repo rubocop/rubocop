@@ -24,6 +24,7 @@ module RuboCop
           processed_source.each_comment do |comment|
             next if comment.text.ascii_only?
             next if only_allowed_non_ascii_chars?(comment.text)
+
             add_offense(comment, location: first_offense_range(comment))
           end
         end

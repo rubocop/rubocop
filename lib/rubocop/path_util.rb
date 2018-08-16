@@ -43,6 +43,7 @@ module RuboCop
           path =~ pattern
         rescue ArgumentError => e
           return false if e.message.start_with?('invalid byte sequence')
+
           raise e
         end
       end

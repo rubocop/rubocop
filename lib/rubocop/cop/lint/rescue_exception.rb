@@ -30,6 +30,7 @@ module RuboCop
 
         def on_resbody(node)
           return unless node.children.first
+
           rescue_args = node.children.first.children
           return unless rescue_args.any? { |a| targets_exception?(a) }
 

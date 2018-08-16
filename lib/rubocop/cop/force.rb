@@ -29,6 +29,7 @@ module RuboCop
       def run_hook(method_name, *args)
         cops.each do |cop|
           next unless cop.respond_to?(method_name)
+
           cop.send(method_name, *args)
         end
       end

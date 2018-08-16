@@ -19,6 +19,7 @@ module CopHelper
     RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
     processed_source = parse_source(source, file)
     raise 'Error parsing example code' unless processed_source.valid_syntax?
+
     _investigate(cop, processed_source)
   end
 
@@ -51,6 +52,7 @@ module CopHelper
       cop.instance_variable_set(:@corrections, [])
       new_source = autocorrect_source(source, file)
       return new_source if new_source == source
+
       source = new_source
     end
   end
@@ -58,6 +60,7 @@ module CopHelper
   def _investigate(cop, processed_source)
     forces = RuboCop::Cop::Force.all.each_with_object([]) do |klass, instances|
       next unless cop.join_force?(klass)
+
       instances << klass.new([cop])
     end
 

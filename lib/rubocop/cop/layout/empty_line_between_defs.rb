@@ -80,6 +80,7 @@ module RuboCop
 
         def def_node?(node)
           return unless node
+
           node.def_type? || node.defs_type?
         end
 
@@ -88,6 +89,7 @@ module RuboCop
           blank_start = lines.each_index.select { |i| lines[i].blank? }.max
           non_blank_end = lines.each_index.reject { |i| lines[i].blank? }.min
           return false if blank_start.nil? || non_blank_end.nil?
+
           blank_start > non_blank_end
         end
 
