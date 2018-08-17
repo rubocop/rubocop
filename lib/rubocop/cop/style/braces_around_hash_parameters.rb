@@ -127,13 +127,12 @@ module RuboCop
         end
 
         def remove_braces_with_whitespace(corrector, node, space)
-          right_brace_and_space = right_brace_and_space(node.loc.end, space)
-
           if node.multiline?
             remove_braces_with_range(corrector,
                                      left_whole_line_range(node.loc.begin),
                                      right_whole_line_range(node.loc.end))
           else
+            right_brace_and_space = right_brace_and_space(node.loc.end, space)
             left_brace_and_space = left_brace_and_space(node.loc.begin, space)
             remove_braces_with_range(corrector,
                                      left_brace_and_space,
@@ -155,7 +154,7 @@ module RuboCop
         end
 
         def right_whole_line_range(loc_end)
-          if range_by_whole_lines(loc_end).source.strip == '}'
+          if range_by_whole_lines(loc_end).source.strip =~ /}\s*,?\z/
             range_by_whole_lines(loc_end, include_final_newline: true)
           else
             loc_end
