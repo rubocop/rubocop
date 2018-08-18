@@ -7,6 +7,7 @@
 * [#6109](https://github.com/rubocop-hq/rubocop/pull/6109): Add new `Bundler/GemComment` cop. ([@sunny][])
 * [#6148](https://github.com/rubocop-hq/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
 * [#6174](https://github.com/rubocop-hq/rubocop/pull/6174): Add `--display-only-fail-level-offenses` to only output offenses at or above the fail level. ([@robotdana][])
+* Add autocorrect to `Style/For`. ([@rrosenblum][])
 * [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
 
 ### Bug fixes
@@ -31,6 +32,7 @@
 * [#6057](https://github.com/rubocop-hq/rubocop/issues/6057): Return 0 when running `rubocop --auto-gen-conf` if the todo file is successfully created even if there are offenses. ([@MagedMilad][])
 * [#4301](https://github.com/rubocop-hq/rubocop/issues/4301): Turn off autocorrect for `Rails/RelativeDateConstant` by default. ([@koic][])
 * [#4832](https://github.com/rubocop-hq/rubocop/issues/4832): Change the path pattern (`*`) to match the hidden file. ([@koic][])
+* `Style/For` now highlights the entire statement rather than just the keyword. ([@rrosenblum][])
 
 ## 0.58.2 (2018-07-23)
 

@@ -1881,7 +1881,7 @@ end
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Enabled | Yes
 
 This cop looks for uses of the *for* keyword, or *each* method. The
 preferred alternative is set in the EnforcedStyle configuration
