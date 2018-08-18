@@ -7,12 +7,18 @@ module RuboCop
       # should be used instead of save because the model might have failed to
       # save and an exception is better than unhandled failure.
       #
-      # This will ignore calls that return a boolean for success if the result
-      # is assigned to a variable or used as the condition in an if/unless
-      # statement.  It will also ignore calls that return a model assigned to a
-      # variable that has a call to `persisted?`. Finally, it will ignore any
-      # call with more than 2 arguments as that is likely not an Active Record
-      # call or a Model.update(id, attributes) call.
+      # This will allow:
+      # - update or save calls, assigned to a variable,
+      #   or used as a condition in an if/unless/case statement.
+      # - create calls, assigned to a variable that then has a
+      #   call to `persisted?`.
+      # - calls if the result is explicitly returned from methods and blocks,
+      #   or provided as arguments.
+      # - calls whose signature doesn't look like an ActiveRecord
+      #   persistence method.
+      #
+      # By default it will also allow implicit returns from methods and blocks.
+      # that behavior can be turned off with `AllowImplicitReturn: false`.
       #
       # @example
       #
@@ -35,6 +41,38 @@ module RuboCop
       #   unless user.persisted?
       #     # ...
       #   end
+      #
+      #   def save_user
+      #     return user.save
+      #   end
+      #
+      # @example AllowImplicitReturn: true (default)
+      #
+      #   # good
+      #   users.each { |u| u.save }
+      #
+      #   def save_user
+      #     user.save
+      #   end
+      #
+      # @example AllowImplicitReturn: false
+      #
+      #   # bad
+      #   users.each { |u| u.save }
+      #   def save_user
+      #     user.save
+      #   end
+      #
+      #   # good
+      #   users.each { |u| u.save! }
+      #
+      #   def save_user
+      #     user.save!
+      #   end
+      #
+      #   def save_user
+      #     return user.save
+      #   end
       class SaveBang < Cop
         include NegativeConditional
 
@@ -43,7 +81,7 @@ module RuboCop
         CREATE_MSG = (MSG +
                       ' Or check `persisted?` on model returned from ' \
                       '`%<current>s`.').freeze
-        CREATE_CONDITIONAL_MSG = '`%<method>s` returns a model which is ' \
+        CREATE_CONDITIONAL_MSG = '`%<current>s` returns a model which is ' \
                                  'always truthy.'.freeze
 
         CREATE_PERSIST_METHODS = %i[create
@@ -68,27 +106,21 @@ module RuboCop
         def check_assignment(assignment)
           node = right_assignment_node(assignment)
           return unless node
-          return unless CREATE_PERSIST_METHODS.include?(node.method_name)
-          return unless expected_signature?(node)
+          return unless persist_method?(node, CREATE_PERSIST_METHODS)
           return if persisted_referenced?(assignment)
 
-          add_offense(node, location: :selector,
-                            message: format(CREATE_MSG,
-                                            prefer: "#{node.method_name}!",
-                                            current: node.method_name.to_s))
+          add_offense_for_node(node, CREATE_MSG)
         end
 
-        def on_send(node)
-          return unless PERSIST_METHODS.include?(node.method_name)
-          return unless expected_signature?(node)
+        def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity
+          return unless persist_method?(node)
           return if return_value_assigned?(node)
           return if check_used_in_conditional(node)
-          return if last_call_of_method?(node)
+          return if argument?(node)
+          return if implicit_return?(node)
+          return if explicit_return?(node)
 
-          add_offense(node, location: :selector,
-                            message: format(MSG,
-                                            prefer: "#{node.method_name}!",
-                                            current: node.method_name.to_s))
+          add_offense_for_node(node)
         end
 
         def autocorrect(node)
@@ -99,6 +131,13 @@ module RuboCop
         end
 
         private
+
+        def add_offense_for_node(node, msg = MSG)
+          name = node.method_name
+          full_message = format(msg, prefer: "#{name}!", current: name.to_s)
+
+          add_offense(node, location: :selector, message: full_message)
+        end
 
         def right_assignment_node(assignment)
           node = assignment.node.child_nodes.first
@@ -118,36 +157,73 @@ module RuboCop
           node.send_type? && node.method?(:persisted?)
         end
 
+        def assignable_node(node)
+          assignable = node.block_node || node
+          while node
+            node = hash_parent(node) || array_parent(node)
+            assignable = node if node
+          end
+          assignable
+        end
+
+        def hash_parent(node)
+          pair = node.parent
+          return unless pair && pair.pair_type?
+          hash = pair.parent
+          return unless hash && hash.hash_type?
+          hash
+        end
+
+        def array_parent(node)
+          array = node.parent
+          return unless array && array.array_type?
+          array
+        end
+
         def check_used_in_conditional(node)
           return false unless conditional?(node)
 
           unless MODIFY_PERSIST_METHODS.include?(node.method_name)
-            add_offense(node, location: :selector,
-                              message: format(CREATE_CONDITIONAL_MSG,
-                                              method: node.method_name.to_s))
+            add_offense_for_node(node, CREATE_CONDITIONAL_MSG)
           end
 
           true
         end
 
-        def conditional?(node)
-          node.parent && (
-            node.parent.if_type? || node.parent.case_type? ||
-            node.parent.or_type? || node.parent.and_type? ||
-            single_negative?(node.parent)
-          )
+        def conditional?(node) # rubocop:disable Metrics/CyclomaticComplexity
+          node = node.block_node || node
+
+          condition = node.parent
+          return false unless condition
+          condition.if_type? || condition.case_type? ||
+            condition.or_type? || condition.and_type? ||
+            single_negative?(condition)
         end
 
-        def last_call_of_method?(node)
-          node.parent && node.parent.children.size == node.sibling_index + 1
+        def implicit_return?(node)
+          return false unless cop_config['AllowImplicitReturn']
+          node = assignable_node(node)
+          method = node.parent
+          return unless method && (method.def_type? || method.block_type?)
+          method.children.size == node.sibling_index + 1
         end
 
-        # Ignore simple assignment or if condition
+        def argument?(node)
+          assignable_node(node).argument?
+        end
+
+        def explicit_return?(node)
+          ret = assignable_node(node).parent
+          ret && (ret.return_type? || ret.next_type?)
+        end
+
         def return_value_assigned?(node)
-          return false unless node.parent
-          node.parent.lvasgn_type? ||
-            (node.parent.block_type? && node.parent.parent &&
-              node.parent.parent.lvasgn_type?)
+          assignment = assignable_node(node).parent
+          assignment && assignment.lvasgn_type?
+        end
+
+        def persist_method?(node, methods = PERSIST_METHODS)
+          methods.include?(node.method_name) && expected_signature?(node)
         end
 
         # Check argument signature as no arguments or one hash

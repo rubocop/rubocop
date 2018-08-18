@@ -328,6 +328,29 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
         )
         RUBY
       end
+
+      it 'corrects parameters with braces & trailing comma' do
+        corrected = autocorrect_source('foo(1, { x: 1, y: 2, },)')
+        expect(corrected).to eq('foo(1, x: 1, y: 2,)')
+      end
+
+      it 'corrects hash multiline parameters with braces & trailing comma' do
+        src = <<-RUBY.strip_indent
+        foo(
+          {
+            foo: 1,
+            bar: 2,
+          } ,
+        )
+        RUBY
+        corrected = autocorrect_source(src)
+        expect(corrected).to eq(<<-RUBY.strip_indent)
+        foo(
+            foo: 1,
+            bar: 2,
+        )
+        RUBY
+      end
     end
   end
 

@@ -8,6 +8,7 @@
 * [#6148](https://github.com/rubocop-hq/rubocop/pull/6148): Add `IgnoredMethods` option to `Style/NumericPredicate` cop. ([@AlexWayfer][])
 * [#6174](https://github.com/rubocop-hq/rubocop/pull/6174): Add `--display-only-fail-level-offenses` to only output offenses at or above the fail level. ([@robotdana][])
 * Add autocorrect to `Style/For`. ([@rrosenblum][])
+* [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
 
 ### Bug fixes
 
@@ -21,6 +22,7 @@
 * [#6164](https://github.com/rubocop-hq/rubocop/issues/6164): Fix incorrect autocorrect for `Style/UnneededCondition` when using operator method higher precedence than `||`. ([@koic][])
 * [#6138](https://github.com/rubocop-hq/rubocop/issues/6138): Fix a false positive for assigning a block local variable in `Lint/ShadowedArgument`. ([@jonas054][])
 * [#6022](https://github.com/rubocop-hq/rubocop/issues/6022): Fix `Layout/MultilineHashBraceLayout` and `Layout/MultilineArrayBraceLayout` auto-correct syntax error when there is a comment on the last element. ([@bacchir][])
+* [#6175](https://github.com/rubocop-hq/rubocop/issues/6175): Fix `Style/BracesAroundHashParameters` auto-correct syntax error when there is a trailing comma. ([@bacchir][])
 
 ### Changes
 
