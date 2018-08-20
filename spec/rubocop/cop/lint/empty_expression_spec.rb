@@ -1,98 +1,113 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::EmptyExpression, :config do
-  subject(:cop) { described_class.new(config) }
-
-  before do
-    inspect_source(source)
-  end
-
-  shared_examples 'code with offense' do |code, expected = nil|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq([message])
-      end
-
-      if expected
-        it 'auto-corrects' do
-          expect(autocorrect_source(code)).to eq(expected)
-        end
-      else
-        it 'does not auto-correct' do
-          expect(autocorrect_source(code)).to eq(code)
-        end
-      end
-    end
-  end
-
-  let(:message) { 'Avoid empty expressions.' }
+RSpec.describe RuboCop::Cop::Lint::EmptyExpression do
+  subject(:cop) { described_class.new }
 
   context 'when used as a standalone expression' do
-    it_behaves_like 'code with offense',
-                    '()'
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        ()
+        ^^ Avoid empty expressions.
+      RUBY
+    end
 
     context 'with nested empty expressions' do
-      it_behaves_like 'code with offense',
-                      '(())'
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          (())
+           ^^ Avoid empty expressions.
+        RUBY
+      end
     end
   end
 
   context 'when used in a condition' do
-    it_behaves_like 'code with offense',
-                    'if (); end'
+    it 'registers an offense inside `if`' do
+      expect_offense(<<-RUBY.strip_indent)
+        if (); end
+           ^^ Avoid empty expressions.
+      RUBY
+    end
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
-      if foo
-        1
-      elsif ()
-        2
-      end
-    RUBY
+    it 'registers an offense inside `elseif`' do
+      expect_offense(<<-RUBY.strip_indent)
+        if foo
+          1
+        elsif ()
+              ^^ Avoid empty expressions.
+          2
+        end
+      RUBY
+    end
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
-      case ()
-      when :foo then 1
-      end
-    RUBY
+    it 'registers an offense inside `case`' do
+      expect_offense(<<-RUBY.strip_indent)
+        case ()
+             ^^ Avoid empty expressions.
+        when :foo then 1
+        end
+      RUBY
+    end
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
-      case foo
-      when () then 1
-      end
-    RUBY
+    it 'registers an offense inside `when`' do
+      expect_offense(<<-RUBY.strip_indent)
+        case foo
+        when () then 1
+             ^^ Avoid empty expressions.
+        end
+      RUBY
+    end
 
-    it_behaves_like 'code with offense',
-                    '() ? true : false'
+    it 'registers an offense in the condition of a ternary operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        () ? true : false
+        ^^ Avoid empty expressions.
+      RUBY
+    end
 
-    it_behaves_like 'code with offense',
-                    'foo ? () : bar'
+    it 'registers an offense in the return value of a ternary operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo ? () : bar
+              ^^ Avoid empty expressions.
+      RUBY
+    end
   end
 
   context 'when used as a return value' do
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
-      def foo
-        ()
-      end
-    RUBY
+    it 'registers an offense in the return value of a method' do
+      expect_offense(<<-RUBY.strip_indent)
+        def foo
+          ()
+          ^^ Avoid empty expressions.
+        end
+      RUBY
+    end
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
-      if foo
-        ()
-      end
-    RUBY
+    it 'registers an offense in the return value of a condition' do
+      expect_offense(<<-RUBY.strip_indent)
+        if foo
+          ()
+          ^^ Avoid empty expressions.
+        end
+      RUBY
+    end
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
-      case foo
-      when :bar then ()
-      end
-    RUBY
+    it 'registers an offense in the return value of a case statement' do
+      expect_offense(<<-RUBY.strip_indent)
+        case foo
+        when :bar then ()
+                       ^^ Avoid empty expressions.
+        end
+      RUBY
+    end
   end
 
   context 'when used as an assignment' do
-    it_behaves_like 'code with offense',
-                    'foo = ()'
+    it 'registers an offense for the assigned value' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo = ()
+              ^^ Avoid empty expressions.
+      RUBY
+    end
   end
 end
