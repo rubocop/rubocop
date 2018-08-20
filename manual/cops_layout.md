@@ -3738,8 +3738,8 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for spaces between -> and opening parameter
-parenthesis in lambda literals.
+This cop checks for spaces between `->` and opening parameter
+parenthesis (`(`) in lambda literals.
 
 ### Examples
 
