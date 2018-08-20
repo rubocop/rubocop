@@ -44,6 +44,16 @@ module RuboCop
       #   rescue => ex
       #     anything
       #   end
+      #
+      #   # good
+      #   # Stabby lambdas don't support implicit `begin` in `do-end` blocks.
+      #   -> do
+      #     begin
+      #       foo
+      #     rescue Bar
+      #       baz
+      #     end
+      #   end
       class RedundantBegin < Cop
         MSG = 'Redundant `begin` block detected.'.freeze
 
@@ -54,7 +64,10 @@ module RuboCop
 
         def on_block(node)
           return if target_ruby_version < 2.5
+
+          return if node.send_node.stabby_lambda?
           return if node.braces?
+
           check(node)
         end
 
