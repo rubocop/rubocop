@@ -223,5 +223,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end
       RUBY
     end
+
+    it 'accepts a stabby lambda with a begin-end' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        -> do
+          begin
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
   end
 end

@@ -4547,6 +4547,16 @@ do_something do
 rescue => ex
   anything
 end
+
+# good
+# Stabby lambdas don't support implicit `begin` in `do-end` blocks.
+-> do
+  begin
+    foo
+  rescue Bar
+    baz
+  end
+end
 ```
 
 ### References
