@@ -1458,7 +1458,7 @@ Style/ConditionalAssignment:
   Enabled: true
 
 Style/DateTime:
-  Description: 'Use Date or Time over DateTime.'
+  Description: 'Use Time over DateTime.'
   StyleGuide: '#date--time'
   Enabled: true
   AllowCoercion: false

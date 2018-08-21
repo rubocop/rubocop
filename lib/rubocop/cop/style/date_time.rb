@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for uses of `DateTime` that should be replaced by
-      # `Date` or `Time`.
+      # `Time`.
       #
       # @example
       #
@@ -17,8 +17,8 @@ module RuboCop
       #   # bad - uses `DateTime` for modern date
       #   DateTime.iso8601('2016-06-29')
       #
-      #   # good - uses `Date` for modern date
-      #   Date.iso8601('2016-06-29')
+      #   # good - uses `Time` for modern date
+      #   Time.iso8601('2016-06-29')
       #
       #   # good - uses `DateTime` with start argument for historical date
       #   DateTime.iso8601('1751-04-23', Date::ENGLAND)
@@ -39,7 +39,7 @@ module RuboCop
       #   # good
       #   something.to_time
       class DateTime < Cop
-        CLASS_MSG = 'Prefer Date or Time over DateTime.'.freeze
+        CLASS_MSG = 'Prefer Time over DateTime.'.freeze
         COERCION_MSG = 'Do not use #to_datetime.'.freeze
 
         def_node_matcher :date_time?, <<-PATTERN
