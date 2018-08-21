@@ -84,6 +84,12 @@ Style/Copyright:
   Description: 'Include a copyright notice in each file before any code.'
   Enabled: false
 
+Style/DateTime:
+  Description: 'Use Time over DateTime.'
+  StyleGuide: '#date--time'
+  Enabled: false
+  AllowCoercion: false
+
 Style/DocumentationMethod:
   Description: 'Public methods.'
   Enabled: false

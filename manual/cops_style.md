@@ -1117,7 +1117,7 @@ AutocorrectNotice | `` | String
 
 Enabled by default | Supports autocorrection
 --- | ---
-Enabled | No
+Disabled | No
 
 This cop checks for uses of `DateTime` that should be replaced by
 `Time`.
