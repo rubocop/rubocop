@@ -1,38 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::AST::Node do
-  describe '#asgn_method_call?' do
-    it 'does not match ==' do
-      parsed = parse_source('Object.new == value')
-      expect(parsed.ast.asgn_method_call?).to be(false)
-    end
-
-    it 'does not match !=' do
-      parsed = parse_source('Object.new != value')
-      expect(parsed.ast.asgn_method_call?).to be(false)
-    end
-
-    it 'does not match <=' do
-      parsed = parse_source('Object.new <= value')
-      expect(parsed.ast.asgn_method_call?).to be(false)
-    end
-
-    it 'does not match >=' do
-      parsed = parse_source('Object.new >= value')
-      expect(parsed.ast.asgn_method_call?).to be(false)
-    end
-
-    it 'does not match ===' do
-      parsed = parse_source('Object.new === value')
-      expect(parsed.ast.asgn_method_call?).to be(false)
-    end
-
-    it 'matches =' do
-      parsed = parse_source('Object.new = value')
-      expect(parsed.ast.asgn_method_call?).to be(true)
-    end
-  end
-
   describe '#value_used?' do
     let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 

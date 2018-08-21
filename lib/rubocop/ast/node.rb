@@ -297,10 +297,6 @@ module RuboCop
         {(send $_ ...) (block (send $_ ...) ...)}
       PATTERN
 
-      def_node_matcher :method_name, <<-PATTERN
-        {(send _ $_ ...) (block (send _ $_ ...) ...)}
-      PATTERN
-
       # Note: for masgn, #asgn_rhs will be an array node
       def_node_matcher :asgn_rhs, '[assignment? (... $_)]'
       def_node_matcher :str_content, '(str $_)'
@@ -360,11 +356,6 @@ module RuboCop
         source_length.zero?
       end
 
-      def asgn_method_call?
-        !COMPARISON_OPERATORS.include?(method_name) &&
-          method_name.to_s.end_with?('='.freeze)
-      end
-
       def arithmetic_operation?
         ARITHMETIC_OPERATORS.include?(method_name)
       end
@@ -376,7 +367,7 @@ module RuboCop
       def_node_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
 
       def_node_matcher :assignment?, <<-PATTERN
-        {equals_asgn? shorthand_asgn? asgn_method_call?}
+        {equals_asgn? shorthand_asgn?}
       PATTERN
 
       # Some cops treat the shovel operator as a kind of assignment.

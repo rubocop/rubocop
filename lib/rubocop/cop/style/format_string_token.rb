@@ -69,7 +69,7 @@ module RuboCop
         private
 
         def includes_format_methods?(node)
-          node.each_ancestor.any? do |ancestor|
+          node.each_ancestor(:send).any? do |ancestor|
             FORMAT_STRING_METHODS.include?(ancestor.method_name)
           end
         end

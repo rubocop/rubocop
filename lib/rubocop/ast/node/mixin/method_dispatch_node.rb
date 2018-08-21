@@ -80,6 +80,7 @@ module RuboCop
       def setter_method?
         loc.respond_to?(:operator) && loc.operator
       end
+      alias assignment? setter_method?
 
       # Checks whether the dispatched method uses a dot to connect the
       # receiver and the method name.

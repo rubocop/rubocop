@@ -32,6 +32,13 @@ module RuboCop
         node_parts[2]
       end
 
+      # The name of the dispatched method as a symbol.
+      #
+      # @return [Symbol] the name of the dispatched method
+      def method_name
+        send_node.method_name
+      end
+
       # Checks whether this block takes any arguments.
       #
       # @return [Boolean] whether this `block` node takes any arguments
@@ -101,7 +108,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `block` node body is a void context
       def void_context?
-        VOID_CONTEXT_METHODS.include?(send_node.method_name)
+        VOID_CONTEXT_METHODS.include?(method_name)
       end
     end
   end
