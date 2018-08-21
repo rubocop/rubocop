@@ -8,21 +8,21 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
   it 'registers an offense when using DateTime for current time' do
     expect_offense(<<-RUBY.strip_indent)
       DateTime.now
-      ^^^^^^^^^^^^ Prefer Date or Time over DateTime.
+      ^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
   end
 
   it 'registers an offense when using ::DateTime for current time' do
     expect_offense(<<-RUBY.strip_indent)
       ::DateTime.now
-      ^^^^^^^^^^^^^^ Prefer Date or Time over DateTime.
+      ^^^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
   end
 
   it 'registers an offense when using DateTime for modern date' do
     expect_offense(<<-RUBY.strip_indent)
       DateTime.iso8601('2016-06-29')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer Date or Time over DateTime.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
   end
 
