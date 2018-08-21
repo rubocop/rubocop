@@ -55,15 +55,21 @@ module RuboCop
         end
 
         def array?(node)
+          return true if node.array_type?
+          return false unless node.send_type?
+
           _, constant = *node.receiver
 
-          node.array_type? || constant == :Array || node.method_name == :to_a
+          constant == :Array || node.method_name == :to_a
         end
 
         def hash?(node)
+          return true if node.hash_type?
+          return false unless node.send_type?
+
           _, constant = *node.receiver
 
-          node.hash_type? || constant == :Hash || node.method_name == :to_h
+          constant == :Hash || node.method_name == :to_h
         end
       end
     end
