@@ -10,16 +10,45 @@ module RuboCop
           true
         end
 
-        def deltas_for_first_pair(*_nodes)
-          {}
+        def deltas_for_first_pair(first_pair, _node)
+          {
+            separator: separator_delta(first_pair),
+            value: value_delta(first_pair)
+          }
         end
 
         def deltas(first_pair, current_pair)
           if Util.begins_its_line?(current_pair.source_range)
-            { key: first_pair.key_delta(current_pair) }
+            key_delta = first_pair.key_delta(current_pair)
+            separator_delta = separator_delta(current_pair)
+            value_delta = value_delta(current_pair)
+
+            { key: key_delta, separator: separator_delta, value: value_delta }
           else
             {}
           end
+        end
+
+        private
+
+        def separator_delta(pair)
+          if pair.hash_rocket?
+            correct_separator_column = pair.key.loc.expression.end.column + 1
+            actual_separator_column = pair.loc.operator.column
+
+            correct_separator_column - actual_separator_column
+          else
+            0
+          end
+        end
+
+        def value_delta(pair)
+          return 0 if pair.kwsplat_type? || pair.value_on_new_line?
+
+          correct_value_column = pair.loc.operator.end.column + 1
+          actual_value_column = pair.value.loc.column
+
+          correct_value_column - actual_value_column
         end
       end
 
@@ -54,8 +83,6 @@ module RuboCop
       class TableAlignment
         include ValueAlignment
 
-        # The table style is the only one where the first key-value pair can
-        # be considered to have bad alignment.
         def deltas_for_first_pair(first_pair, node)
           self.max_key_width = node.keys.map { |key| key.source.length }.max
 
