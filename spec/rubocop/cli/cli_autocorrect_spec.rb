@@ -794,10 +794,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     corrected =
       <<-RUBY.strip_indent
         expect(subject[:address]).to eq(
-          street1:     '1 Market',
-          street2:     '#200',
-          city:        'Some Town',
-          state:       'CA',
+          street1: '1 Market',
+          street2: '#200',
+          city: 'Some Town',
+          state: 'CA',
           postal_code: '99999-1111'
         )
       RUBY

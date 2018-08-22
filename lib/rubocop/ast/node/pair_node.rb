@@ -51,6 +51,13 @@ module RuboCop
           hash_rocket? ? COLON : HASH_ROCKET
         end
       end
+
+      # Checks whether the value starts on its own line.
+      #
+      # @return [Boolean] whether the value in the `pair` starts its own line
+      def value_on_new_line?
+        key.loc.line != value.loc.line
+      end
     end
   end
 end

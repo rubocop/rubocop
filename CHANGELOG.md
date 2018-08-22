@@ -17,6 +17,11 @@
 
 ### Changes
 
+* [#3727](https://github.com/rubocop-hq/rubocop/issues/3727): Enforce single spaces for `key` option in `Layout/AlignHash` cop. ([@albaer][])
+
+## 0.59.2 (2018-09-24)
+### New features
+
 * Update `Style/MethodCallWithoutArgsParentheses` to highlight the closing parentheses in additition to the opening parentheses. ([@rrosenblum][])
 
 ## 0.59.2 (2018-09-24)
@@ -3613,3 +3618,4 @@
 [@ryanhageman]: https://github.com/ryanhageman
 [@autopp]: https://github.com/autopp
 [@lukasz-wojcik]: https://github.com/lukasz-wojcik
+[@albaer]: https://github.com/albaer
