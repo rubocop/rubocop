@@ -4,7 +4,7 @@ steps: &steps
   steps:
     - checkout
     - run: bundle install
-    - run: ruby .travis.rb
+    - run: ruby .ci.rb
 
 spec_env: &spec_env
   environment:
