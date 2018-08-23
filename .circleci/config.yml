@@ -14,18 +14,21 @@ jobs:
       - image: circleci/ruby:2.2
     environment:
       TASK: "spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.2-ascii_spec:
     docker:
       - image: circleci/ruby:2.2
     environment:
       TASK: "ascii_spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.2-rubocop:
     docker:
       - image: circleci/ruby:2.2
     environment:
       TASK: "internal_investigation"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
 
   # Ruby 2.3
@@ -34,18 +37,21 @@ jobs:
       - image: circleci/ruby:2.3
     environment:
       TASK: "spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.3-ascii_spec:
     docker:
       - image: circleci/ruby:2.3
     environment:
       TASK: "ascii_spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.3-rubocop:
     docker:
       - image: circleci/ruby:2.3
     environment:
       TASK: "internal_investigation"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
 
   # Ruby 2.4
@@ -54,18 +60,21 @@ jobs:
       - image: circleci/ruby:2.4
     environment:
       TASK: "spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.4-ascii_spec:
     docker:
       - image: circleci/ruby:2.4
     environment:
       TASK: "ascii_spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.4-rubocop:
     docker:
       - image: circleci/ruby:2.4
     environment:
       TASK: "internal_investigation"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
 
   # Ruby 2.5
@@ -74,18 +83,21 @@ jobs:
       - image: circleci/ruby:2.5
     environment:
       TASK: "spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.5-ascii_spec:
     docker:
       - image: circleci/ruby:2.5
     environment:
       TASK: "ascii_spec"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   ruby-2.5-rubocop:
     docker:
       - image: circleci/ruby:2.5
     environment:
       TASK: "internal_investigation"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
 
   # JRuby 9.2
@@ -94,18 +106,24 @@ jobs:
       - image: circleci/jruby:9.2
     environment:
       TASK: "spec"
+      JRUBY_OPTS: "--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   jruby-9.2-ascii_spec:
     docker:
       - image: circleci/jruby:9.2
     environment:
       TASK: "ascii_spec"
+      JRUBY_OPTS: "--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
   jruby-9.2-rubocop:
     docker:
       - image: circleci/jruby:9.2
     environment:
       TASK: "internal_investigation"
+      JRUBY_OPTS: "--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
+      TEST_QUEUE_WORKERS: 2
     <<: *steps
 
 workflows:
@@ -127,15 +145,3 @@ workflows:
       - jruby-9.2-spec
       - jruby-9.2-ascii_spec
       - jruby-9.2-rubocop
-
-# Two environment variables are added directly in the CircleCI UI:
-# https://circleci.com/gh/rubocop-hq/rubocop/edit#env-vars
-#
-# By default we have 2 CPUs and 4GB ram available
-# https://circleci.com/docs/2.0/configuration-reference/#resource_class
-# JRUBY_OPTS="--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
-#
-# CircleCI container has two cores, but Ruby can see 32 cores. So we
-# configure test-queue.
-# See https://github.com/tmm1/test-queue#environment-variables
-# TEST_QUEUE_WORKERS=2
