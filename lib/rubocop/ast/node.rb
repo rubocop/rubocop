@@ -452,14 +452,11 @@ module RuboCop
       end
 
       def chained?
-        return false unless argument?
-
-        receiver, _method_name, *_args = *parent
-        equal?(receiver)
+        parent && parent.send_type? && eql?(parent.receiver)
       end
 
       def argument?
-        parent && parent.send_type?
+        parent && parent.send_type? && parent.arguments.include?(self)
       end
 
       def numeric_type?
