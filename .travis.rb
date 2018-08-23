@@ -2,6 +2,7 @@
 
 require 'English'
 require 'benchmark'
+require 'open3'
 
 # A module for continuous integration.
 module RubocopTravis
@@ -30,7 +31,7 @@ module RubocopTravis
     def check_require_output
       whitelisted = ->(line) { line =~ /warning: private attribute\?$/ }
 
-      warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
+      warnings = captured_sh!('ruby -Ilib -w -W2 lib/rubocop.rb 2>&1')
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
                  .reject(&whitelisted)
@@ -66,6 +67,22 @@ module RubocopTravis
       else
         sh!("bundle exec rake parallel:#{ENV['TASK']}")
       end
+    end
+
+    def captured_sh!(command)
+      puts "$ #{command}"
+
+      status = nil
+      output = ''
+
+      time = Benchmark.realtime do
+        output, status = Open3.capture2e(command)
+      end
+
+      puts "#{time} seconds"
+      puts
+      raise "`#{command}` is failed" unless status.success?
+      output
     end
 
     def sh!(command)
