@@ -400,10 +400,9 @@ module RuboCop
         define_method(recursive_kind) do
           case type
           when :send
-            receiver, method_name, *args = *self
             [*COMPARISON_OPERATORS, :!, :<=>].include?(method_name) &&
               receiver.send(recursive_kind) &&
-              args.all?(&recursive_kind)
+              arguments.all?(&recursive_kind)
           when :begin, :pair, *OPERATOR_KEYWORDS, *COMPOSITE_LITERALS
             children.all?(&recursive_kind)
           else
