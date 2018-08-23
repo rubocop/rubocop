@@ -1,12 +1,12 @@
 RuboCop currently has several official & unofficial support channels.
 
-For questions, suggestions and support refer to one of them.  Please, don't
+For questions, suggestions and support refer to one of them. Please, don't
 use the support channels to report issues, as this makes them harder to track.
 
 ## Gitter
 
 Most internal discussions about the development of RuboCop happen on its
-[gitter channel](https://gitter.im/bbatsov/rubocop).  You can often find
+[gitter channel](https://gitter.im/bbatsov/rubocop). You can often find
 RuboCop's maintainers there and get some interesting news from the project's
 kitchen.
 

@@ -627,7 +627,7 @@ module RuboCop
         # "RUBY VERSION" line.
         in_ruby_section ||= line.match(/^\s*RUBY\s*VERSION\s*$/)
         next unless in_ruby_section
-        # We currently only allow this feature to work with MRI ruby.  If jruby
+        # We currently only allow this feature to work with MRI ruby. If jruby
         # (or something else) is used by the project, it's lock file will have a
         # line that looks like:
         #     RUBY VERSION

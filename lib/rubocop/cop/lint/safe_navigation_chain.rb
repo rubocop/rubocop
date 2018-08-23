@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Lint
       # The safe navigation operator returns nil if the receiver is
-      # nil.  If you chain an ordinary method call after a safe
-      # navigation operator, it raises NoMethodError.  We should use a
+      # nil. If you chain an ordinary method call after a safe
+      # navigation operator, it raises NoMethodError. We should use a
       # safe navigation operator after a safe navigation operator.
       # This cop checks for the problem outlined above.
       #

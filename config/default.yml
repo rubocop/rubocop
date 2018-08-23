@@ -96,7 +96,7 @@ AllCops:
   # cops in user configuration will be enabled even if they don't set the
   # Enabled parameter.
   # When `EnabledByDefault` is `true`, all cops, even those in disabled.yml,
-  # are enabled by default.  Cops can still be disabled in user configuration.
+  # are enabled by default. Cops can still be disabled in user configuration.
   # Note that it is invalid to set both EnabledByDefault and DisabledByDefault
   # to true in the same configuration.
   EnabledByDefault: false
@@ -132,11 +132,11 @@ AllCops:
   # use the oldest officially supported Ruby version (currently Ruby 2.2).
   TargetRubyVersion: ~
   # What version of Rails is the inspected code using?  If a value is specified
-  # for TargetRailsVersion then it is used.  Acceptable values are specificed
+  # for TargetRailsVersion then it is used. Acceptable values are specificed
   # as a float (i.e. 5.1); the patch version of Rails should not be included.
   # If TargetRailsVersion is not set, RuboCop will parse the Gemfile.lock or
   # gems.locked file to find the version of Rails that has been bound to the
-  # application.  If neither of those files exist, RuboCop will use Rails 5.0
+  # application. If neither of those files exist, RuboCop will use Rails 5.0
   # as the default.
   TargetRailsVersion: ~
 
@@ -1016,7 +1016,7 @@ Style/ConditionalAssignment:
 # You can override the default Notice in your .rubocop.yml file.
 #
 # In order to use autocorrect, you must supply a value for the
-# `AutocorrectNotice` key that matches the regexp Notice.  A blank
+# `AutocorrectNotice` key that matches the regexp Notice. A blank
 # `AutocorrectNotice` will cause an error during autocorrect.
 #
 # Autocorrect will add a copyright notice in a comment at the top
@@ -1530,7 +1530,7 @@ Style/WordArray:
     # bracket style: ['word1', 'word2']
     - brackets
   # The `MinSize` option causes the `WordArray` rule to be ignored for arrays
-  # smaller than a certain size.  The rule is only applied to arrays
+  # smaller than a certain size. The rule is only applied to arrays
   # whose element count is greater than or equal to `MinSize`.
   MinSize: 2
   # The regular expression `WordRegex` decides what is considered a word.
