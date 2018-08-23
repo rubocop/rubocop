@@ -8,22 +8,20 @@ module RuboCop
     class SendNode < Node
       include ParameterizedNode
       include MethodDispatchNode
-      ARROW = '->'.freeze
 
       # Checks whether this is a lambda. Some versions of parser parses
       # non-literal lambdas as a method send.
       #
       # @return [Boolean] whether this method is a lambda
       def lambda?
-        parent && parent.block_type? && method?(:lambda)
+        block_literal? && method?(:lambda)
       end
 
       # Checks whether this is a stabby lambda. e.g. `-> () {}`
       #
-      # @return [Boolean] whether this method is a staby lambda
+      # @return [Boolean] whether this method is a stabby lambda
       def stabby_lambda?
-        selector = loc.selector
-        selector && selector.source == ARROW
+        loc.selector && loc.selector.source == '->'
       end
     end
   end
