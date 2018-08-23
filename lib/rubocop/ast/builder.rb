@@ -21,6 +21,7 @@ module RuboCop
         block:      BlockNode,
         case:       CaseNode,
         def:        DefNode,
+        defined?:   DefinedNode,
         defs:       DefNode,
         ensure:     EnsureNode,
         for:        ForNode,
