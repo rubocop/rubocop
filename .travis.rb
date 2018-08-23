@@ -65,4 +65,8 @@ module RubocopTravis
   end
 end
 
+if ENV['TASK'].nil? || ENV['TASK'].empty?
+  raise 'The TASK environemnt variable needs to be set with a valid rake task'
+end
+
 RubocopTravis.run
