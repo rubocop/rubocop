@@ -24,7 +24,6 @@ module RuboCop
 
       # <=> isn't included here, because it doesn't return a boolean.
       COMPARISON_OPERATORS = %i[== === != <= >= > <].freeze
-      ARITHMETIC_OPERATORS = %i[+ - * / % **].freeze
 
       TRUTHY_LITERALS = %i[str dstr xstr int float sym dsym array
                            hash regexp true irange erange complex
@@ -354,10 +353,6 @@ module RuboCop
 
       def empty_source?
         source_length.zero?
-      end
-
-      def arithmetic_operation?
-        ARITHMETIC_OPERATORS.include?(method_name)
       end
 
       def_node_matcher :equals_asgn?, <<-PATTERN

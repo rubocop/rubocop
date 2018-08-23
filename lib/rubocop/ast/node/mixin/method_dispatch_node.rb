@@ -8,6 +8,8 @@ module RuboCop
       extend NodePattern::Macros
       include MethodIdentifierPredicates
 
+      ARITHMETIC_OPERATORS = %i[+ - * / % **].freeze
+
       # The receiving node of the method dispatch.
       #
       # @return [Node, nil] the receiver of the dispatched method or `nil`
@@ -27,6 +29,14 @@ module RuboCop
       # @return [Array<Node>] the arguments of the dispatched method
       def arguments
         node_parts[2..-1]
+      end
+
+      # The `block` node associated with this method dispatch, if any.
+      #
+      # @return [BlockNode, nil] the `block` node associated with this method
+      #                          call or `nil`
+      def block_node
+        parent if block_literal?
       end
 
       # Checks whether the dispatched method is a macro method. A macro method
@@ -133,12 +143,12 @@ module RuboCop
         parent && parent.block_type? && eql?(parent.send_node)
       end
 
-      # The `block` node associated with this method dispatch, if any.
+      # Checks whether this node is an arithmethic operation
       #
-      # @return [BlockNode, nil] the `block` node associated with this method
-      #                          call or `nil`
-      def block_node
-        parent if block_literal?
+      # @return [Boolean] whether the dispatched method is an arithmetic
+      #                   operation
+      def arithmetic_operation?
+        ARITHMETIC_OPERATORS.include?(method_name)
       end
 
       # Checks if this node is part of a chain of `def` modifiers.
