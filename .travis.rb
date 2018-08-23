@@ -16,9 +16,28 @@ module RubocopTravis
     private
 
     # Check requiring libraries successfully.
-    # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
     def check_requiring_libraries
+      check_require_status
+
+      check_require_output
+    end
+
+    # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
+    def check_require_status
       sh!("ruby -I lib -r rubocop -e 'exit 0'")
+    end
+
+    def check_require_output
+      whitelisted = ->(line) { line =~ /warning: private attribute\?$/ }
+
+      warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
+                 .lines
+                 .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
+                 .reject(&whitelisted)
+
+      return if warnings.empty?
+
+      raise "Requiring rubocop raises the following warnings: #{warnings}"
     end
 
     # Running YARD under jruby crashes so skip checking the manual.

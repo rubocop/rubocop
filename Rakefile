@@ -28,7 +28,6 @@ end
 
 desc 'Run test and RuboCop in parallel'
 task parallel: %i[
-  warnings_check
   documentation_syntax_check generate_cops_documentation
   parallel:spec parallel:ascii_spec
   internal_investigation
@@ -61,7 +60,6 @@ RuboCop::RakeTask.new(:internal_investigation).tap do |task|
 end
 
 task default: %i[
-  warnings_check
   documentation_syntax_check generate_cops_documentation
   spec ascii_spec
   internal_investigation
@@ -145,16 +143,4 @@ task documentation_syntax_check: :yard_for_generate_documentation do
     end
   end
   abort unless ok
-end
-
-desc 'Warnings check for requiring all files in lib'
-task :warnings_check do
-  whitelisted = ->(line) { line =~ /warning: private attribute\?$/ }
-
-  warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
-             .lines
-             .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
-             .reject(&whitelisted)
-
-  abort unless warnings.empty?
 end
