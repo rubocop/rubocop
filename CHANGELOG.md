@@ -25,6 +25,7 @@
 * [#6022](https://github.com/rubocop-hq/rubocop/issues/6022): Fix `Layout/MultilineHashBraceLayout` and `Layout/MultilineArrayBraceLayout` auto-correct syntax error when there is a comment on the last element. ([@bacchir][])
 * [#6175](https://github.com/rubocop-hq/rubocop/issues/6175): Fix `Style/BracesAroundHashParameters` auto-correct syntax error when there is a trailing comma. ([@bacchir][])
 * [#6192](https://github.com/rubocop-hq/rubocop/issues/6192): Make `Style/RedundantBegin` aware of stabby lambdas. ([@drenmi][])
+* [#6208](https://github.com/rubocop-hq/rubocop/pull/6208): Ignore assignment methods in `Naming/PredicateName`. ([@sunny][])
 
 ### Changes
 

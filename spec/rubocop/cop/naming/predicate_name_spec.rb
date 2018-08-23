@@ -28,6 +28,12 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
         def have_attr; end
       RUBY
     end
+
+    it 'accepts method name that is an assignment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def is_hello=; end
+      RUBY
+    end
   end
 
   context 'without blacklisted prefixes' do
