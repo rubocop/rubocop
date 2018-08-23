@@ -32,7 +32,7 @@ before_install:
 install:
   - bundle install --retry=3
 script:
-  - ruby .travis.rb
+  - ruby .ci.rb
 addons:
   code_climate:
     repo_token: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f

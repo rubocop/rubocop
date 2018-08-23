@@ -2,6 +2,7 @@
 
 require 'English'
 require 'benchmark'
+require 'open3'
 
 # A module for continuous integration.
 module RubocopTravis
@@ -16,9 +17,30 @@ module RubocopTravis
     private
 
     # Check requiring libraries successfully.
-    # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
     def check_requiring_libraries
+      check_require_status
+
+      check_require_output
+    end
+
+    # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
+    def check_require_status
       sh!("ruby -I lib -r rubocop -e 'exit 0'")
+    end
+
+    def check_require_output
+      allowed = lambda do |line|
+        line =~ /warning: private attribute\?$/ && RUBY_VERSION < '2.3'
+      end
+
+      warnings = captured_sh!('ruby -Ilib -w -W2 lib/rubocop.rb 2>&1')
+                 .lines
+                 .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
+                 .reject(&allowed)
+
+      return if warnings.empty?
+
+      raise "Requiring rubocop raises the following warnings: #{warnings}"
     end
 
     # Running YARD under jruby crashes so skip checking the manual.
@@ -49,6 +71,22 @@ module RubocopTravis
       end
     end
 
+    def captured_sh!(command)
+      puts "$ #{command}"
+
+      status = nil
+      output = ''
+
+      time = Benchmark.realtime do
+        output, status = Open3.capture2e(command)
+      end
+
+      puts "#{time} seconds"
+      puts
+      raise "`#{command}` is failed" unless status.success?
+      output
+    end
+
     def sh!(command)
       puts "$ #{command}"
       time = Benchmark.realtime do
@@ -63,6 +101,10 @@ module RubocopTravis
       ENV['TASK'] != 'internal_investigation'
     end
   end
+end
+
+if ENV['TASK'].nil? || ENV['TASK'].empty?
+  raise 'The TASK environemnt variable needs to be set with a valid rake task'
 end
 
 RubocopTravis.run
