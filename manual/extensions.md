@@ -16,7 +16,7 @@ require:
 
 !!! Note
 
-    The paths are directly passed to `Kernel.require`.  If your
+    The paths are directly passed to `Kernel.require`. If your
     extension file is not in `$LOAD_PATH`, you need to specify the path as
     relative path prefixed with `./` explicitly, or absolute path. Paths
     starting with a `.` are resolved relative to `.rubocop.yml`.

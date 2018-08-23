@@ -209,7 +209,7 @@ ones. If there is no `.rubocop.yml` file in the project or home directory,
 ### Including/Excluding files
 
 RuboCop does a recursive file search starting from the directory it is
-run in, or directories given as command line arguments.  Files that
+run in, or directories given as command line arguments. Files that
 match any pattern listed under `AllCops`/`Include` and extensionless
 files with a hash-bang (`#!`) declaration containing one of the known
 ruby interpreters listed under `AllCops`/`RubyInterpreters` are
@@ -301,7 +301,7 @@ valid for the directory tree starting where they are defined. They are not
 shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
 files in subdirectories. This is different from all other parameters, who
 follow RuboCop's general principle that configuration for an inspected file
-is taken from the nearest `.rubocop.yml`, searching upwards.  _This behavior
+is taken from the nearest `.rubocop.yml`, searching upwards. _This behavior
 will be overridden if you specify the `--ignore-parent-exclusion` command line
 argument_.
 
@@ -407,7 +407,7 @@ Metrics/LineLength:
     If lines are too short, text becomes hard to read because you must
     constantly jump from one line to the next while reading. If lines are too
     long, the line jumping becomes too hard because you "lose the line" while
-    going back to the start of the next line.  80 characters is a good
+    going back to the start of the next line. 80 characters is a good
     compromise.
 ```
 
