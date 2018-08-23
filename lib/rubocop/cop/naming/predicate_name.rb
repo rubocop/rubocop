@@ -63,6 +63,7 @@ module RuboCop
         def allowed_method_name?(method_name, prefix)
           !method_name.start_with?(prefix) ||
             method_name == expected_name(method_name, prefix) ||
+            method_name.end_with?('=') ||
             predicate_whitelist.include?(method_name)
         end
 
