@@ -421,7 +421,7 @@ module RuboCop
       end
 
       def keyword?
-        return true if special_keyword? || keyword_not?
+        return true if special_keyword? || send_type? && prefix_not?
         return false unless KEYWORDS.include?(type)
 
         !OPERATOR_KEYWORDS.include?(type) || loc.operator.is?(type.to_s)
@@ -433,16 +433,6 @@ module RuboCop
 
       def operator_keyword?
         OPERATOR_KEYWORDS.include?(type)
-      end
-
-      def keyword_not?
-        _receiver, method_name, *args = *self
-        args.empty? && method_name == :! && loc.selector.is?('not'.freeze)
-      end
-
-      def keyword_bang?
-        _receiver, method_name, *args = *self
-        args.empty? && method_name == :! && loc.selector.is?('!'.freeze)
       end
 
       def unary_operation?

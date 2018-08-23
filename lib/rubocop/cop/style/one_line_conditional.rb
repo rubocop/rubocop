@@ -87,7 +87,7 @@ module RuboCop
 
         def keyword_with_changed_precedence?(node)
           return false unless node.keyword?
-          return true if node.keyword_not?
+          return true if node.prefix_not?
 
           !node.parenthesized_call?
         end

@@ -17,7 +17,7 @@ module RuboCop
         MSG = 'Do not leave space between `!` and its argument.'.freeze
 
         def on_send(node)
-          return unless node.keyword_bang? && whitespace_after_operator?(node)
+          return unless node.prefix_bang? && whitespace_after_operator?(node)
 
           add_offense(node)
         end
