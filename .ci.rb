@@ -29,7 +29,9 @@ module RubocopTravis
     end
 
     def check_require_output
-      whitelisted = ->(line) { line =~ /warning: private attribute\?$/ }
+      whitelisted = lambda do |line|
+        line =~ /warning: private attribute\?$/ && RUBY_VERSION < '2.3'
+      end
 
       warnings = captured_sh!('ruby -Ilib -w -W2 lib/rubocop.rb 2>&1')
                  .lines
