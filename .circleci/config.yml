@@ -13,19 +13,19 @@ jobs:
     docker:
       - image: circleci/ruby:2.2
     environment:
-      - TASK: "spec"
+      TASK: "spec"
     <<: *steps
   ruby-2.2-ascii_spec:
     docker:
       - image: circleci/ruby:2.2
     environment:
-      - TASK: "ascii_spec"
+      TASK: "ascii_spec"
     <<: *steps
   ruby-2.2-rubocop:
     docker:
       - image: circleci/ruby:2.2
     environment:
-      - TASK: "internal_investigation"
+      TASK: "internal_investigation"
     <<: *steps
 
   # Ruby 2.3
@@ -33,19 +33,19 @@ jobs:
     docker:
       - image: circleci/ruby:2.3
     environment:
-      - TASK: "spec"
+      TASK: "spec"
     <<: *steps
   ruby-2.3-ascii_spec:
     docker:
       - image: circleci/ruby:2.3
     environment:
-      - TASK: "ascii_spec"
+      TASK: "ascii_spec"
     <<: *steps
   ruby-2.3-rubocop:
     docker:
       - image: circleci/ruby:2.3
     environment:
-      - TASK: "internal_investigation"
+      TASK: "internal_investigation"
     <<: *steps
 
   # Ruby 2.4
@@ -53,19 +53,19 @@ jobs:
     docker:
       - image: circleci/ruby:2.4
     environment:
-      - TASK: "spec"
+      TASK: "spec"
     <<: *steps
   ruby-2.4-ascii_spec:
     docker:
       - image: circleci/ruby:2.4
     environment:
-      - TASK: "ascii_spec"
+      TASK: "ascii_spec"
     <<: *steps
   ruby-2.4-rubocop:
     docker:
       - image: circleci/ruby:2.4
     environment:
-      - TASK: "internal_investigation"
+      TASK: "internal_investigation"
     <<: *steps
 
   # Ruby 2.5
@@ -73,19 +73,19 @@ jobs:
     docker:
       - image: circleci/ruby:2.5
     environment:
-      - TASK: "spec"
+      TASK: "spec"
     <<: *steps
   ruby-2.5-ascii_spec:
     docker:
       - image: circleci/ruby:2.5
     environment:
-      - TASK: "ascii_spec"
+      TASK: "ascii_spec"
     <<: *steps
   ruby-2.5-rubocop:
     docker:
       - image: circleci/ruby:2.5
     environment:
-      - TASK: "internal_investigation"
+      TASK: "internal_investigation"
     <<: *steps
 
   # JRuby 9.2
@@ -93,19 +93,19 @@ jobs:
     docker:
       - image: circleci/jruby:9.2
     environment:
-      - TASK: "spec"
+      TASK: "spec"
     <<: *steps
   jruby-9.2-ascii_spec:
     docker:
       - image: circleci/jruby:9.2
     environment:
-      - TASK: "ascii_spec"
+      TASK: "ascii_spec"
     <<: *steps
   jruby-9.2-rubocop:
     docker:
       - image: circleci/jruby:9.2
     environment:
-      - TASK: "internal_investigation"
+      TASK: "internal_investigation"
     <<: *steps
 
 workflows:
