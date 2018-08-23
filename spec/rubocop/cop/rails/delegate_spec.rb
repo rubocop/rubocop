@@ -77,6 +77,14 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
     RUBY
   end
 
+  it 'ignores trivial delegate with mismatched keyword arguments' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def fox(foo:)
+        bar.fox(foo)
+      end
+    RUBY
+  end
+
   it 'ignores trivial delegate with other prefix' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def fox_foo
