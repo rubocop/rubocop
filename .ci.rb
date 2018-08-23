@@ -29,14 +29,14 @@ module RubocopTravis
     end
 
     def check_require_output
-      whitelisted = lambda do |line|
+      allowed = lambda do |line|
         line =~ /warning: private attribute\?$/ && RUBY_VERSION < '2.3'
       end
 
       warnings = captured_sh!('ruby -Ilib -w -W2 lib/rubocop.rb 2>&1')
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
-                 .reject(&whitelisted)
+                 .reject(&allowed)
 
       return if warnings.empty?
 
