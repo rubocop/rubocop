@@ -10,13 +10,6 @@ module RuboCop
       include MethodDispatchNode
       ARROW = '->'.freeze
 
-      # Checks whether this is a negation method, i.e. `!` or keyword `not`.
-      #
-      # @return [Boolean] whether this method is a negation method
-      def negation_method?
-        keyword_bang? || keyword_not?
-      end
-
       # Checks whether this is a lambda. Some versions of parser parses
       # non-literal lambdas as a method send.
       #

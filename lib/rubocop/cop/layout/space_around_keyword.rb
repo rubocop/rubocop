@@ -96,7 +96,7 @@ module RuboCop
         end
 
         def on_send(node)
-          check(node, [:selector].freeze) if node.keyword_not?
+          check(node, [:selector].freeze) if node.prefix_not?
         end
 
         def on_super(node)

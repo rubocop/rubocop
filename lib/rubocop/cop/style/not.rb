@@ -28,7 +28,7 @@ module RuboCop
         }.freeze
 
         def on_send(node)
-          return unless node.keyword_not?
+          return unless node.prefix_not?
 
           add_offense(node, location: :selector)
         end

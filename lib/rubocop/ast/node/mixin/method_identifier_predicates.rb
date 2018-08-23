@@ -84,6 +84,27 @@ module RuboCop
       def const_receiver?
         receiver && receiver.const_type?
       end
+
+      # Checks whether this is a negation method, i.e. `!` or keyword `not`.
+      #
+      # @return [Boolean] whether this method is a negation method
+      def negation_method?
+        receiver && method_name == :!
+      end
+
+      # Checks whether this is a prefix not method, e.g. `not foo`.
+      #
+      # @return [Boolean] whether this method is a prefix not
+      def prefix_not?
+        negation_method? && loc.selector.is?('not')
+      end
+
+      # Checks whether this is a prefix bang method, e.g. `!foo`.
+      #
+      # @return [Boolean] whether this method is a prefix bang
+      def prefix_bang?
+        negation_method? && loc.selector.is?('!')
+      end
     end
   end
 end

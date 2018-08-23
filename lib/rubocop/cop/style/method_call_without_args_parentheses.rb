@@ -38,7 +38,7 @@ module RuboCop
         private
 
         def ineligible_node?(node)
-          node.camel_case_method? || node.implicit_call? || node.keyword_not?
+          node.camel_case_method? || node.implicit_call? || node.prefix_not?
         end
 
         def same_name_assignment?(node)

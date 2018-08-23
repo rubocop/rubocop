@@ -25,7 +25,7 @@ module RuboCop
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_send(node)
-          return unless double_negative?(node) && node.keyword_bang?
+          return unless double_negative?(node) && node.prefix_bang?
 
           add_offense(node, location: :selector)
         end

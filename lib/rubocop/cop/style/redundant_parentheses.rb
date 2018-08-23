@@ -178,7 +178,7 @@ module RuboCop
 
         def method_call_with_redundant_parentheses?(node)
           return false unless node.send_type?
-          return false if node.keyword_not?
+          return false if node.prefix_not?
           return false if range_end?(node)
 
           send_node, args = method_node_and_args(node)

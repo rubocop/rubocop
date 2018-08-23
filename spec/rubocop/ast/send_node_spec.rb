@@ -1080,13 +1080,19 @@ RSpec.describe RuboCop::AST::SendNode do
   end
 
   describe '#negation_method?' do
-    context 'with keyword `not`' do
+    context 'with prefix `not`' do
       let(:source) { 'not foo' }
 
       it { expect(send_node.negation_method?).to be_truthy }
     end
 
-    context 'with a bang method' do
+    context 'with suffix `not`' do
+      let(:source) { 'foo.not' }
+
+      it { expect(send_node.negation_method?).to be_falsey }
+    end
+
+    context 'with prefix bang' do
       let(:source) { '!foo' }
 
       it { expect(send_node.negation_method?).to be_truthy }
@@ -1096,6 +1102,46 @@ RSpec.describe RuboCop::AST::SendNode do
       let(:source) { 'foo.bar' }
 
       it { expect(send_node.negation_method?).to be_falsey }
+    end
+  end
+
+  describe '#prefix_not?' do
+    context 'with keyword `not`' do
+      let(:source) { 'not foo' }
+
+      it { expect(send_node.prefix_not?).to be_truthy }
+    end
+
+    context 'with a bang method' do
+      let(:source) { '!foo' }
+
+      it { expect(send_node.prefix_not?).to be_falsey }
+    end
+
+    context 'with a non-negated method' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.prefix_not?).to be_falsey }
+    end
+  end
+
+  describe '#prefix_bang?' do
+    context 'with keyword `not`' do
+      let(:source) { 'not foo' }
+
+      it { expect(send_node.prefix_bang?).to be_falsey }
+    end
+
+    context 'with a bang method' do
+      let(:source) { '!foo' }
+
+      it { expect(send_node.prefix_bang?).to be_truthy }
+    end
+
+    context 'with a non-negated method' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.prefix_bang?).to be_falsey }
     end
   end
 
