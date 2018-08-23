@@ -194,5 +194,61 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
+
+    context 'when using `return` in `when` clause and ' \
+            'assigning the return value of `case`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          v = case
+              when x.a
+                1
+              when x.b
+                return 2
+              end
+        RUBY
+      end
+    end
+
+    context 'when using `return ... if` in `when` clause and ' \
+            'assigning the return value of `case`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          v = case
+              when x.a
+                1
+              when x.b
+                return 2 if foo
+              end
+        RUBY
+      end
+    end
+
+    context 'when using `return` in `else` clause and ' \
+            'assigning the return value of `case`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          v = case
+              when x.a
+                1
+              else
+                return 2
+              end
+        RUBY
+      end
+    end
+
+    context 'when using `return ... if` in `else` clause and ' \
+            'assigning the return value of `case`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          v = case
+              when x.a
+                1
+              else
+                return 2 if foo
+              end
+        RUBY
+      end
+    end
   end
 end

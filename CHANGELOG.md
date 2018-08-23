@@ -26,6 +26,7 @@
 * [#6175](https://github.com/rubocop-hq/rubocop/issues/6175): Fix `Style/BracesAroundHashParameters` auto-correct syntax error when there is a trailing comma. ([@bacchir][])
 * [#6192](https://github.com/rubocop-hq/rubocop/issues/6192): Make `Style/RedundantBegin` aware of stabby lambdas. ([@drenmi][])
 * [#6208](https://github.com/rubocop-hq/rubocop/pull/6208): Ignore assignment methods in `Naming/PredicateName`. ([@sunny][])
+* [#6196](https://github.com/rubocop-hq/rubocop/issues/6196): Fix incorrect autocorrect for `Style/EmptyCaseCondition` when using `return` in `when` clause and assigning the return value of `case`. ([@koic][])
 
 ### Changes
 
