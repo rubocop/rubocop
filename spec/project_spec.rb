@@ -191,7 +191,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
   describe 'requiring all of `lib` with verbose warnings enabled' do
     it 'emits no warnings' do
-      whitelisted = ->(line) { line =~ /warning: private attribute\?$/ }
+      whitelisted = lambda do |line|
+        line =~ /warning: private attribute\?$/ && RUBY_VERSION < '2.3'
+      end
 
       warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
                  .lines
