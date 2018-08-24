@@ -5,12 +5,12 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger do
 
   let(:config) { RuboCop::Config.new }
 
-  shared_examples 'registers an offence' do |klass|
+  shared_examples 'registers an offense' do |klass|
     context "when #{klass}" do
       context 'without any decorations' do
         let(:source) { "1.is_a?(#{klass})" }
 
-        it 'registers an offence' do
+        it 'registers an offense' do
           inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages).to eq(["Use `Integer` instead of `#{klass}`."])
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger do
       context 'when explicitly specified as toplevel constant' do
         let(:source) { "1.is_a?(::#{klass})" }
 
-        it 'registers an offence' do
+        it 'registers an offense' do
           inspect_source(source)
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages).to eq(["Use `Integer` instead of `#{klass}`."])
@@ -45,8 +45,8 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger do
     end
   end
 
-  include_examples 'registers an offence', 'Fixnum'
-  include_examples 'registers an offence', 'Bignum'
+  include_examples 'registers an offense', 'Fixnum'
+  include_examples 'registers an offense', 'Bignum'
 
   context 'when Integer' do
     context 'without any decorations' do

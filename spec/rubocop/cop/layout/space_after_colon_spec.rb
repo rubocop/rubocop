@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
     RUBY
   end
 
-  it 'registers an offence if an keyword optional argument has no space' do
+  it 'registers an offense if an keyword optional argument has no space' do
     expect_offense(<<-RUBY.strip_indent)
       def m(var:1, other_var: 2)
                ^ Space missing after colon.

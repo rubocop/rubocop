@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
     RUBY
   end
 
-  it 'registers an offence for compact-style nested module' do
+  it 'registers an offense for compact-style nested module' do
     expect_offense(<<-RUBY.strip_indent)
       module A::B
       ^^^^^^ Missing top-level module documentation comment.
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
     RUBY
   end
 
-  it 'registers an offence for compact-style nested class' do
+  it 'registers an offense for compact-style nested class' do
     expect_offense(<<-RUBY.strip_indent)
       class A::B
       ^^^^^ Missing top-level class documentation comment.

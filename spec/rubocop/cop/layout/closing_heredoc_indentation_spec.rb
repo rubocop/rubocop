@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
     RUBY
   end
 
-  it 'registers an offence for bad indentation of a closing heredoc' do
+  it 'registers an offense for bad indentation of a closing heredoc' do
     expect_offense(<<-RUBY.strip_indent)
       class Test
         def foo

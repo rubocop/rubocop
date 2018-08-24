@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
   end
 
   context 'with invalid byte sequence in UTF-8' do
-    it 'add an offences if tokens contain quotes' do
+    it 'add an offense if tokens contain quotes' do
       expect_offense(<<-RUBY)
         %W("a\\255\\255")
         ^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.

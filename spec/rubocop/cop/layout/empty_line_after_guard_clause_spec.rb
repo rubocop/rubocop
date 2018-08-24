@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'registers offence when guard clause is before `begin`' do
+  it 'registers offense when guard clause is before `begin`' do
     expect_offense(<<-RUBY.strip_indent)
       def foo
         return another_object if something_different?
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence for modifier if' do
+  it 'does not register offense for modifier if' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         foo += 1 if need_add?
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence for guard clause followed by end' do
+  it 'does not register offense for guard clause followed by end' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         if something?
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence for guard clause inside oneliner block' do
+  it 'does not register offense for guard clause inside oneliner block' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         object.tap { |obj| return another_object if something? }
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence for multiple guard clauses' do
+  it 'does not register offense for multiple guard clauses' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         return another_object if something?
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence if next line is end' do
+  it 'does not register offense if next line is end' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         return another_object if something_different?
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is before `rescue`' do
+  it 'does not register offense when guard clause is before `rescue`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         begin
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is before `ensure`' do
+  it 'does not register offense when guard clause is before `ensure`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         begin
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is before `rescue`-`else`' do
+  it 'does not register offense when guard clause is before `rescue`-`else`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         begin
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is before `else`' do
+  it 'does not register offense when guard clause is before `else`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         if cond
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is before `elsif`' do
+  it 'does not register offense when guard clause is before `elsif`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         if cond
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is after single line ' \
+  it 'does not register offense when guard clause is after single line ' \
      'heredoc' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'does not register offence when guard clause is after multiline heredoc' do
+  it 'does not register offense when guard clause is after multiline heredoc' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
         raise ArgumentError, <<-MSG unless path
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'registers an offence for methods starting with end_' do
+  it 'registers an offense for methods starting with end_' do
     expect_offense(<<-RUBY.strip_indent)
       def foo
         next unless need_next?
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'autocorrects offence' do
+  it 'autocorrects offense' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       def foo
         next if foo?
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
-  it 'correctly autocorrects offence with comment on same line' do
+  it 'correctly autocorrects offense with comment on same line' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       def foo
         next if foo? # This is foo

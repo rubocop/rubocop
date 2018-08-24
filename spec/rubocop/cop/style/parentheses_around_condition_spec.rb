@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       RUBY
     end
 
-    it 'registers an offence for paranthesses in single line condition' do
+    it 'registers an offense for parentheses in single line condition' do
       expect_offense(<<-RUBY.strip_indent)
         if (x > 3 && x < 10)
            ^^^^^^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.

@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offence for namespace body starting with a blank' do
+      it 'registers offense for namespace body starting with a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent
 
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         expect(cop.messages).to eq([extra_begin])
       end
 
-      it 'registers offence for namespace body ending with a blank' do
+      it 'registers offense for namespace body ending with a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent
             class Child
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         expect(cop.messages).to eq([extra_end])
       end
 
-      it 'registers offences for namespaced class body not starting '\
+      it 'registers offenses for namespaced class body not starting '\
           'with a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         expect(cop.messages).to eq([missing_begin])
       end
 
-      it 'registers offences for namespaced class body not ending '\
+      it 'registers offenses for namespaced class body not ending '\
           'with a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offence for namespace body starting with a blank' do
+      it 'registers offense for namespace body starting with a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent
 
@@ -263,7 +263,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         expect(cop.messages).to eq([extra_begin])
       end
 
-      it 'registers offence for namespace body ending with a blank' do
+      it 'registers offense for namespace body ending with a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent
             module Child
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offences for namespace body starting '\
+      it 'registers offenses for namespace body starting '\
         'and ending without a blank' do
         inspect_source(<<-RUBY.strip_indent)
           class Parent

@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     expect_no_offenses('self.()')
   end
 
-  it 'reports an offence a self receiver of .call' do
+  it 'reports an offense a self receiver of .call' do
     expect_offense(<<-RUBY.strip_indent)
       self.call
       ^^^^^^^^^ Redundant `self` detected.
