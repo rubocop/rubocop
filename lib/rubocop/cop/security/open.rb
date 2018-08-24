@@ -4,11 +4,12 @@ module RuboCop
   module Cop
     module Security
       # This cop checks for the use of `Kernel#open`.
+      #
       # `Kernel#open` enables not only file access but also process invocation
-      # by prefixing a pipe symbol (e.g., `open("| ls")`).  So, it may lead to
+      # by prefixing a pipe symbol (e.g., `open("| ls")`). So, it may lead to
       # a serious security risk by using variable input to the argument of
-      # `Kernel#open`.  It would be better to use `File.open` or `IO.popen`
-      # explicitly.
+      # `Kernel#open`. It would be better to use `File.open`, `IO.popen` or
+      # `URI#open` explicitly.
       #
       # @example
       #   # bad
@@ -17,6 +18,7 @@ module RuboCop
       #   # good
       #   File.open(something)
       #   IO.popen(something)
+      #   URI.parse(something).open
       class Open < Cop
         MSG = 'The use of `Kernel#open` is a serious security risk.'.freeze
 
