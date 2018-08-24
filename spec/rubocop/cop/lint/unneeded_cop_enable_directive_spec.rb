@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
     end
 
     context 'when at least one cop was disabled' do
-      it 'does not register offence' do
+      it 'does not register offense' do
         expect_no_offenses(<<-RUBY.strip_indent)
         # rubocop:disable Metrics/LineLength
         foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo

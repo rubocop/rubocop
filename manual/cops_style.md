@@ -696,7 +696,7 @@ end
 
 class A
   def test
-    @@test # you can access class variable without offence
+    @@test # you can access class variable without offense
   end
 end
 ```
@@ -2923,8 +2923,8 @@ end
 
 ```ruby
 # The `require_no_parentheses_except_multiline` style prefers no
-# parantheses when method definition arguments fit on single line,
-# but prefers parantheses when arguments span multiple lines.
+# parentheses when method definition arguments fit on single line,
+# but prefers parentheses when arguments span multiple lines.
 
 # bad
 def bar(num1, num2)

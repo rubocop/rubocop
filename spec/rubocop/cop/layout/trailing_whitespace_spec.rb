@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
                           'RUBY'].join("\n"))
     end
 
-    it 'registers an offence for trailing whitespace at the heredoc begin' do
+    it 'registers an offense for trailing whitespace at the heredoc begin' do
       inspect_source(['x = <<RUBY ',
                       '  Hi   ',
                       'RUBY'].join("\n"))

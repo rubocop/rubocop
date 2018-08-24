@@ -121,14 +121,14 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
       end
 
       it 'does not invoke conflicts with other cops' do
-        source_with_offences = <<-RUBY.strip_indent
+        source_with_offenses = <<-RUBY.strip_indent
 
           def bar(arg =1); end
         RUBY
 
         options = { auto_correct: true, stdin: true }
         team = RuboCop::Cop::Team.new(cops, config, options)
-        team.inspect_file(parse_source(source_with_offences, nil))
+        team.inspect_file(parse_source(source_with_offenses, nil))
         new_source = options[:stdin]
 
         expect(new_source).to eq(<<-RUBY.strip_indent)

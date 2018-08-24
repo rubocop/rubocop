@@ -26,7 +26,7 @@ module RuboCop
       #
       #   class A
       #     def test
-      #       @@test # you can access class variable without offence
+      #       @@test # you can access class variable without offense
       #     end
       #   end
       #

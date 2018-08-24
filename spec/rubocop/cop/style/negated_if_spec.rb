@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
       described_class.new(config)
     end
 
-    it 'registers an offence for prefix' do
+    it 'registers an offense for prefix' do
       expect_offense(<<-RUBY.strip_indent)
         if !foo
         ^^^^^^^ Favor `unless` over `if` for negative conditions.
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
       RUBY
     end
 
-    it 'does not register an offence for postfix' do
+    it 'does not register an offense for postfix' do
       expect_no_offenses('foo if !bar')
     end
 
@@ -176,14 +176,14 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
       described_class.new(config)
     end
 
-    it 'registers an offence for postfix' do
+    it 'registers an offense for postfix' do
       expect_offense(<<-RUBY.strip_indent)
         foo if !bar
         ^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
       RUBY
     end
 
-    it 'does not register an offence for prefix' do
+    it 'does not register an offense for prefix' do
       expect_no_offenses(<<-RUBY.strip_indent)
         if !foo
         end

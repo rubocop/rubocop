@@ -253,11 +253,11 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   context 'with wildcard' do
-    it 'does not register an offence for width' do
+    it 'does not register an offense for width' do
       expect_no_offenses('format("%*d", 10, 3)')
     end
 
-    it 'does not register an offence for precision' do
+    it 'does not register an offense for precision' do
       expect_no_offenses('format("%.*f", 2, 20.19)')
     end
 

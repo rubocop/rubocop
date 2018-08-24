@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
   describe 'String' do
     describe '#starts_with?' do
-      it 'is registered as an offence' do
+      it 'is registered as an offense' do
         expect_offense(<<-RUBY.strip_indent)
           'some_string'.starts_with?('prefix')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `start_with?` instead of `starts_with?`.
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
   describe 'Array' do
     describe '#append' do
-      it 'is registered as an offence' do
+      it 'is registered as an offense' do
         expect_offense(<<-RUBY.strip_indent)
           [1, 'a', 3].append('element')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `<<` instead of `append`.
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
     end
 
     describe '#prepend' do
-      it 'is registered as an offence' do
+      it 'is registered as an offense' do
         expect_offense(<<-RUBY.strip_indent)
           [1, 'a', 3].prepend('element')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `unshift` instead of `prepend`.
