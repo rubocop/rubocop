@@ -197,20 +197,11 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     let(:cop_config) { { 'Max' => 80, 'AllowURI' => false } }
 
     context 'and all the excessive characters are part of an URL' do
-      let(:source) { <<-RUBY }
-        # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
-      RUBY
-
       it 'registers an offense for the line' do
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-      end
-
-      it 'highlights excessive characters' do
-        inspect_source(source)
-        expect(cop.highlights).to eq(
-          ['061837309890f04ab08c']
-        )
+        expect_offense(<<-RUBY)
+          # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [102/80]
+        RUBY
       end
     end
   end

@@ -38,9 +38,9 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger do
       end
 
       context 'with MyNamespace' do
-        let(:source) { "1.is_a?(MyNamespace::#{klass})" }
-
-        include_examples 'accepts'
+        it 'does not register an offense' do
+          expect_no_offenses("1.is_a?(MyNamespace::#{klass})")
+        end
       end
     end
   end
@@ -50,19 +50,19 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger do
 
   context 'when Integer' do
     context 'without any decorations' do
-      it 'does not reguster an offense' do
+      it 'does not register an offense' do
         expect_no_offenses('1.is_a?(Integer)')
       end
     end
 
     context 'when explicitly specified as toplevel constant' do
-      it 'does not reguster an offense' do
+      it 'does not register an offense' do
         expect_no_offenses('1.is_a?(::Integer)')
       end
     end
 
     context 'with MyNamespace' do
-      it 'does not reguster an offense' do
+      it 'does not register an offense' do
         expect_no_offenses('1.is_a?(MyNamespace::Integer)')
       end
     end

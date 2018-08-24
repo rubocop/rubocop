@@ -61,8 +61,6 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
     end
 
     context 'with receiver' do
-      let(:source) { '' }
-
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)
           Foo.some_method a { |el| puts el }

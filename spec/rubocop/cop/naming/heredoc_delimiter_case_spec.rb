@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
     end
 
     context 'with a non-interpolated heredoc' do
-      it 'does not reguster an offense with a lowercase delimiter' do
+      it 'does not register an offense with a lowercase delimiter' do
         expect_no_offenses(<<-RUBY.strip_indent)
           <<-'sql'
             foo

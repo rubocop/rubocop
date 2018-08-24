@@ -114,14 +114,14 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with opposite + correct' do
       it 'reports an offense for opposite + correct' do
-        inspect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           if a
             raise RuntimeError, msg
           else
             raise Ex.new(msg)
+            ^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 

@@ -245,8 +245,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'flags single quotes with plain # (not #@var or #{interpolation}' do
-      inspect_source("a = 'blah #'")
-      expect(cop.offenses.size).to be 1
+      expect_offense(<<-RUBY.strip_indent)
+        a = 'blah #'
+            ^^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
     end
 
     it 'accepts single quotes at the start of regexp literals' do

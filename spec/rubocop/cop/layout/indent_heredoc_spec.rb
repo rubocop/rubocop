@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         end
       CORRECTION
 
-      it 'does not reguster an offense when not indented but with ' \
+      it 'does not register an offense when not indented but with ' \
          'whitespace, with `-`' do
         expect_no_offenses(<<-RUBY)
           def foo

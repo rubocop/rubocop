@@ -2,13 +2,6 @@
 
 # `cop` and `source` must be declared with #let.
 
-shared_examples_for 'accepts' do
-  it 'accepts' do
-    inspect_source(source)
-    expect(cop.offenses).to be_empty
-  end
-end
-
 shared_examples_for 'misaligned' do |annotated_source, used_style|
   config_to_allow_offenses = if used_style
                                { 'EnforcedStyleAlignWith' => used_style.to_s }

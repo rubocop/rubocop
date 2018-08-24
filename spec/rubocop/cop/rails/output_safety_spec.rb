@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Rails::OutputSafety do
       expect_no_offenses('raw')
     end
 
-    it 'does not reguster an offense with more than one argument' do
+    it 'does not register an offense with more than one argument' do
       expect_no_offenses('raw(one, two)')
     end
 

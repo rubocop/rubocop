@@ -11,16 +11,16 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition do
   end
 
   it 'registers an offense for a nested singleton method definition' do
-    inspect_source(<<-RUBY.strip_indent)
+    expect_offense(<<-RUBY.strip_indent)
       class Foo
       end
       foo = Foo.new
       def foo.bar
         def baz
+        ^^^^^^^ Method definitions must not be nested. Use `lambda` instead.
         end
       end
     RUBY
-    expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for a nested method definition inside lambda' do
