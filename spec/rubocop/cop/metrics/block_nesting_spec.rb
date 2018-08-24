@@ -5,21 +5,6 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   let(:cop_config) { { 'Max' => 2 } }
 
-  shared_examples 'too deep' do |source, lines, max_to_allow = 3|
-    it "registers #{lines.length} offense(s)" do
-      inspect_source(source)
-      expect(cop.offenses.map(&:line)).to eq(lines)
-      expect(cop.messages).to eq(
-        ['Avoid more than 2 levels of block nesting.'] * lines.length
-      )
-    end
-
-    it 'sets `Max` value correctly' do
-      inspect_source(source)
-      expect(cop.config_to_allow_offenses['Max']).to eq(max_to_allow)
-    end
-  end
-
   it 'accepts `Max` levels of nesting' do
     expect_no_offenses(<<-RUBY.strip_indent)
       if a
@@ -31,143 +16,167 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
   end
 
   context '`Max + 1` levels of `if` nesting' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          if c
-            puts c
-          end
-        end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
-  end
-
-  context '`Max + 2` levels of `if` nesting' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          if c
-            if d
-              puts d
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            if cinspect_source
+            ^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+              puts c
             end
           end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3], 4
+      RUBY
+      expect(cop.config_to_allow_offenses['Max']).to eq(3)
+    end
+  end
+
+  context '`Max + 2` levels of `if` nesting' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            if c
+            ^^^^ Avoid more than 2 levels of block nesting.
+              if d
+                puts d
+              end
+            end
+          end
+        end
+      RUBY
+      expect(cop.config_to_allow_offenses['Max']).to eq(4)
+    end
   end
 
   context 'Multiple nested `ifs` at same level' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          if c
-            puts c
+    it 'registers 2 offenses' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            if c
+            ^^^^ Avoid more than 2 levels of block nesting.
+              puts c
+            end
+          end
+          if d
+            if e
+            ^^^^ Avoid more than 2 levels of block nesting.
+              puts e
+            end
           end
         end
-        if d
-          if e
-            puts e
-          end
-        end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3, 8]
+      RUBY
+      expect(cop.config_to_allow_offenses['Max']).to eq(3)
+    end
   end
 
   context 'nested `case`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          case c
-            when C
-              puts C
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            case c
+            ^^^^^^ Avoid more than 2 levels of block nesting.
+              when C
+                puts C
+            end
           end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
+      RUBY
+    end
   end
 
   context 'nested `while`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          while c
-            puts c
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            while c
+            ^^^^^^^ Avoid more than 2 levels of block nesting.
+              puts c
+            end
           end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
+      RUBY
+    end
   end
 
   context 'nested modifier `while`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          begin
-            puts c
-          end while c
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            begin
+            ^^^^^ Avoid more than 2 levels of block nesting.
+              puts c
+            end while c
+          end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
+      RUBY
+    end
   end
 
   context 'nested `until`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          until c
-            puts c
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            until c
+            ^^^^^^^ Avoid more than 2 levels of block nesting.
+              puts c
+            end
           end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
+      RUBY
+    end
   end
 
   context 'nested modifier `until`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          begin
-            puts c
-          end until c
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            begin
+            ^^^^^ Avoid more than 2 levels of block nesting.
+              puts c
+            end until c
+          end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
+      RUBY
+    end
   end
 
   context 'nested `for`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          for c in [1,2] do
-            puts c
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            for c in [1,2] do
+            ^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+              puts c
+            end
           end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [3]
+      RUBY
+    end
   end
 
   context 'nested `rescue`' do
-    source = <<-RUBY.strip_indent
-      if a
-        if b
-          begin
-            puts c
-          rescue
-            puts x
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        if a
+          if b
+            begin
+              puts c
+            rescue
+            ^^^^^^ Avoid more than 2 levels of block nesting.
+              puts x
+            end
           end
         end
-      end
-    RUBY
-    it_behaves_like 'too deep', source, [5]
+      RUBY
+    end
   end
 
   it 'accepts if/elsif' do
@@ -210,27 +219,31 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
     let(:cop_config) { { 'Max' => 2, 'CountBlocks' => true } }
 
     context 'nested multiline block' do
-      source = <<-RUBY.strip_indent
-        if a
-          if b
-            [1, 2].each do |c|
-              puts c
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          if a
+            if b
+              [1, 2].each do |c|
+              ^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+                puts c
+              end
             end
           end
-        end
-      RUBY
-      it_behaves_like 'too deep', source, [3]
+        RUBY
+      end
     end
 
     context 'nested inline block' do
-      source = <<-RUBY.strip_indent
-        if a
-          if b
-            [1, 2].each { |c| puts c }
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          if a
+            if b
+              [1, 2].each { |c| puts c }
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+            end
           end
-        end
-      RUBY
-      it_behaves_like 'too deep', source, [3]
+        RUBY
+      end
     end
   end
 end
