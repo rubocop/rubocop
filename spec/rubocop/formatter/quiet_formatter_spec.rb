@@ -7,6 +7,10 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
     Rainbow.enabled = true
   end
 
+  after do
+    Rainbow.enabled = false
+  end
+
   let(:output) { StringIO.new }
 
   describe '#report_file' do
@@ -123,9 +127,5 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
         OUTPUT
       end
     end
-  end
-
-  after do
-    Rainbow.enabled = false
   end
 end

@@ -26,11 +26,11 @@ RSpec.describe RuboCop::Formatter::Colorizable do
   end
 
   describe '#colorize' do
-    subject { formatter.colorize('foo', :red) }
+    subject(:colorized_output) { formatter.colorize('foo', :red) }
 
     shared_examples 'does nothing' do
       it 'does nothing' do
-        is_expected.to eq('foo')
+        expect(colorized_output).to eq('foo')
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
         end
 
         it 'colorizes the passed string' do
-          is_expected.to eq("\e[31mfoo\e[0m")
+          expect(colorized_output).to eq("\e[31mfoo\e[0m")
         end
       end
 
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
         end
 
         it 'colorizes the passed string' do
-          is_expected.to eq("\e[31mfoo\e[0m")
+          expect(colorized_output).to eq("\e[31mfoo\e[0m")
         end
       end
     end
