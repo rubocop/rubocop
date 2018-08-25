@@ -997,7 +997,7 @@ RSpec.describe RuboCop::AST::SendNode do
     end
   end
 
-  describe '#arithmethic_operation?' do
+  describe '#arithmetic_operation?' do
     context 'with a binary arithmetic operation' do
       let(:source) { 'foo + bar' }
 

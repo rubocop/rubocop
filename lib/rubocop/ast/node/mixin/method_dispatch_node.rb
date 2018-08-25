@@ -143,7 +143,7 @@ module RuboCop
         parent && parent.block_type? && eql?(parent.send_node)
       end
 
-      # Checks whether this node is an arithmethic operation
+      # Checks whether this node is an arithmetic operation
       #
       # @return [Boolean] whether the dispatched method is an arithmetic
       #                   operation

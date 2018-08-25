@@ -308,7 +308,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
               CODE
             end
 
-            it 'registers an offense witn inline `private`' do
+            it 'registers an offense with inline `private`' do
               expect_offense(<<-CODE.strip_indent)
                 class Foo
                   private def bar
