@@ -3778,9 +3778,14 @@ Enabled by default | Supports autocorrection
 --- | ---
 Enabled | Yes
 
-This cop checks for comparison of something with nil using ==.
+This cop checks for comparison of something with nil using `==` and
+`nil?`.
+
+Supported styles are: predicate_method, explicit_comparison.
 
 ### Examples
+
+#### EnforcedStyle: predicate_method (default)
 
 ```ruby
 # bad
@@ -3791,6 +3796,23 @@ end
 if x.nil?
 end
 ```
+#### EnforcedStyle: explicit_comparison
+
+```ruby
+# bad
+if x.nil?
+end
+
+# good
+if x == nil
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `predicate_method` | `predicate_method`, `explicit_comparison`
 
 ### References
 
