@@ -322,7 +322,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     ensure
       ENV.delete('RUBOCOP_OPTS')
     end
-    subject { options.parse(command_line_options).first }
+
+    subject(:parsed_options) { options.parse(command_line_options).first }
 
     let(:command_line_options) { %w[--no-color] }
 
@@ -332,12 +333,12 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'has lower precedence then command line options' do
-        is_expected.to eq(color: false, fail_level: :convention)
+        expect(parsed_options).to eq(color: false, fail_level: :convention)
       end
 
       it 'has lower precedence then options from RUBOCOP_OPTS env variable' do
         with_env_options '--fail-level W' do
-          is_expected.to eq(color: false, fail_level: :warning)
+          expect(parsed_options).to eq(color: false, fail_level: :warning)
         end
       end
     end
@@ -348,14 +349,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'is ignored and command line options are used' do
-        is_expected.to eq(color: false)
+        expect(parsed_options).to eq(color: false)
       end
     end
 
     context 'RUBOCOP_OPTS environment variable' do
       it 'has lower precedence then command line options' do
         with_env_options '--color' do
-          is_expected.to eq(color: false)
+          expect(parsed_options).to eq(color: false)
         end
       end
 
@@ -363,7 +364,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         create_file('.rubocop', %w[--color --fail-level C])
 
         with_env_options '--fail-level W' do
-          is_expected.to eq(color: false, fail_level: :warning)
+          expect(parsed_options).to eq(color: false, fail_level: :warning)
         end
       end
     end
