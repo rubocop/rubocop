@@ -8,15 +8,15 @@ steps: &steps
 
 spec_env: &spec_env
   environment:
-    - TASK: "spec"
+    TASK: "spec"
 
 ascii_spec_env: &ascii_spec_env
   environment:
-    - TASK: "ascii_spec"
+    TASK: "ascii_spec"
 
 rubocop_env: &rubocop_env
   environment:
-    - TASK: "internal_investigation"
+    TASK: "internal_investigation"
 
 jobs:
 
