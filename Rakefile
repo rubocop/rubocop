@@ -16,25 +16,42 @@ require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-RSpec::Core::RakeTask.new(:spec) { |t| t.ruby_opts = '-E UTF-8' }
-RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
+desc 'Run RSpec'
+task spec: %i[default_spec ascii_spec]
+
+desc 'Run default RSpec'
+task :default_spec do
+  sh('rspec spec/')
+end
+
+desc "Run RSpec's encoding-related specs with ASCII encoding"
+task :ascii_spec do
+  sh('RUBYOPT="$RUBYOPT -E ASCII" rspec ' \
+     'spec/rubocop/config_loader_spec.rb ' \
+     'spec/rubocop/cop/style/string_literals_spec.rb')
+end
 
 desc 'Run test and RuboCop in parallel'
 task parallel: %i[
   documentation_syntax_check generate_cops_documentation
-  parallel:spec parallel:ascii_spec
+  parallel:spec
   internal_investigation
 ]
 
 namespace :parallel do
   desc 'Run RSpec in parallel'
-  task :spec do
-    sh('rspec-queue spec/')
+  task spec: %i[default_spec ascii_spec]
+
+  desc 'Run default RSpec in parallel'
+  task :default_spec do
+    sh('rspec spec/')
   end
 
-  desc 'Run RSpec in parallel with ASCII encoding'
+  desc "Run RSpec's encoding-related specs with ASCII encoding in parallel"
   task :ascii_spec do
-    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue spec/')
+    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue ' \
+       'spec/rubocop/config_loader_spec.rb ' \
+       'spec/rubocop/cop/style/string_literals_spec.rb')
   end
 end
 
@@ -54,7 +71,7 @@ end
 
 task default: %i[
   documentation_syntax_check generate_cops_documentation
-  spec ascii_spec
+  spec
   internal_investigation
 ]
 

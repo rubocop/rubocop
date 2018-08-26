@@ -98,7 +98,7 @@ module RuboCop
       end
 
       def to_string_literal(string)
-        if needs_escaping?(string) && compatible_external_encoding_for?(string)
+        if needs_escaping?(string)
           string.inspect
         else
           "'#{string.gsub('\\') { '\\\\' }}'"
@@ -132,13 +132,6 @@ module RuboCop
         @tokens[node.object_id] = processed_source.tokens.select do |token|
           token.end_pos <= end_pos && token.begin_pos >= begin_pos
         end
-      end
-
-      private
-
-      def compatible_external_encoding_for?(src)
-        src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
-        src.force_encoding(Encoding.default_external).valid_encoding?
       end
     end
   end

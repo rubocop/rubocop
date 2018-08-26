@@ -169,7 +169,7 @@ module RuboCop
       # stderr. Care is taken to use the standard OS exit code for a "file not
       # found" error.
       def read_file(absolute_path)
-        IO.read(absolute_path, encoding: Encoding::UTF_8)
+        IO.read(absolute_path)
       rescue Errno::ENOENT
         raise ConfigNotFoundError,
               "Configuration file not found: #{absolute_path}"
