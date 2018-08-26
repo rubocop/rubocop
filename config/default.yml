@@ -1247,6 +1247,12 @@ Style/Next:
     - skip_modifier_ifs
     - always
 
+Style/NilComparison:
+  EnforcedStyle: predicate
+  SupportedStyles:
+    - predicate
+    - comparison
+
 Style/NonNilCheck:
   # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
   # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
