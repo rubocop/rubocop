@@ -3781,11 +3781,11 @@ Enabled | Yes
 This cop checks for comparison of something with nil using `==` and
 `nil?`.
 
-Supported styles are: predicate_method, explicit_comparison.
+Supported styles are: predicate, comparison.
 
 ### Examples
 
-#### EnforcedStyle: predicate_method (default)
+#### EnforcedStyle: predicate (default)
 
 ```ruby
 # bad
@@ -3796,7 +3796,7 @@ end
 if x.nil?
 end
 ```
-#### EnforcedStyle: explicit_comparison
+#### EnforcedStyle: comparison
 
 ```ruby
 # bad
@@ -3812,7 +3812,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `predicate_method` | `predicate_method`, `explicit_comparison`
+EnforcedStyle | `predicate` | `predicate`, `comparison`
 
 ### References
 

@@ -3,8 +3,8 @@
 RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'configured with predicate_method preferred' do
-    let(:cop_config) { { 'EnforcedStyle' => 'predicate_method' } }
+  context 'configured with predicate preferred' do
+    let(:cop_config) { { 'EnforcedStyle' => 'predicate' } }
 
     it 'registers an offense for == nil' do
       expect_offense(<<-RUBY.strip_indent)
@@ -31,13 +31,13 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
     end
   end
 
-  context 'configured with explicit_comparison preferred' do
-    let(:cop_config) { { 'EnforcedStyle' => 'explicit_comparison' } }
+  context 'configured with comparison preferred' do
+    let(:cop_config) { { 'EnforcedStyle' => 'comparison' } }
 
     it 'registers an offense for nil?' do
       expect_offense(<<-RUBY.strip_indent)
         x.nil?
-          ^^^^ Prefer the use of the explicit `==` comparison.
+          ^^^^ Prefer the use of the `==` comparison.
       RUBY
     end
 

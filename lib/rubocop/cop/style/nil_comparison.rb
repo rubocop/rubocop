@@ -6,9 +6,9 @@ module RuboCop
       # This cop checks for comparison of something with nil using `==` and
       # `nil?`.
       #
-      # Supported styles are: predicate_method, explicit_comparison.
+      # Supported styles are: predicate, comparison.
       #
-      # @example EnforcedStyle: predicate_method (default)
+      # @example EnforcedStyle: predicate (default)
       #
       #   # bad
       #   if x == nil
@@ -18,7 +18,7 @@ module RuboCop
       #   if x.nil?
       #   end
       #
-      # @example EnforcedStyle: explicit_comparison
+      # @example EnforcedStyle: comparison
       #
       #   # bad
       #   if x.nil?
@@ -32,7 +32,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         PREDICATE_MSG = 'Prefer the use of the `nil?` predicate.'.freeze
-        EXPLICIT_MSG = 'Prefer the use of the explicit `==` comparison.'.freeze
+        EXPLICIT_MSG = 'Prefer the use of the `==` comparison.'.freeze
 
         def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
         def_node_matcher :nil_check?, '(send _ :nil?)'
@@ -44,7 +44,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          new_code = if explicit_comparison?
+          new_code = if prefer_comparison?
                        node.source.sub('.nil?', ' == nil')
                      else
                        node.source.sub(/\s*={2,3}\s*nil/, '.nil?')
@@ -55,19 +55,19 @@ module RuboCop
         private
 
         def message(_node)
-          explicit_comparison? ? EXPLICIT_MSG : PREDICATE_MSG
+          prefer_comparison? ? EXPLICIT_MSG : PREDICATE_MSG
         end
 
         def style_check?(node, &block)
-          if explicit_comparison?
+          if prefer_comparison?
             nil_check?(node, &block)
           else
             nil_comparison?(node, &block)
           end
         end
 
-        def explicit_comparison?
-          style == :explicit_comparison
+        def prefer_comparison?
+          style == :comparison
         end
       end
     end

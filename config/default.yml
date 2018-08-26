@@ -1248,10 +1248,10 @@ Style/Next:
     - always
 
 Style/NilComparison:
-  EnforcedStyle: predicate_method
+  EnforcedStyle: predicate
   SupportedStyles:
-    - predicate_method
-    - explicit_comparison
+    - predicate
+    - comparison
 
 Style/NonNilCheck:
   # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
