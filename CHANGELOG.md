@@ -9,7 +9,7 @@
 * [#6174](https://github.com/rubocop-hq/rubocop/pull/6174): Add `--display-only-fail-level-offenses` to only output offenses at or above the fail level. ([@robotdana][])
 * Add autocorrect to `Style/For`. ([@rrosenblum][])
 * [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
-* [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to Style/NilComparison. ([@khiav223577][])
+* [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
 
 ### Bug fixes
 
