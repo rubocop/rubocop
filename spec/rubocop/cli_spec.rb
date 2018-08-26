@@ -11,7 +11,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'returns 1' do
       allow_any_instance_of(RuboCop::Runner)
         .to receive(:aborting?).and_return(true)
-      create_file('example.rb', '# encoding: utf-8')
+      create_file('example.rb', '')
       expect(cli.run(['example.rb'])).to eq(1)
     end
   end

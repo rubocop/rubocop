@@ -68,13 +68,13 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
   let(:debug) { false }
 
   before do
-    create_file('dir1/ruby1.rb',    '# encoding: utf-8')
-    create_file('dir1/ruby2.rb',    '# encoding: utf-8')
-    create_file('dir1/file.txt',    '# encoding: utf-8')
-    create_file('dir1/file',        '# encoding: utf-8')
+    create_file('dir1/ruby1.rb',    '')
+    create_file('dir1/ruby2.rb',    '')
+    create_file('dir1/file.txt',    '')
+    create_file('dir1/file',        '')
     create_file('dir1/executable',  '#!/usr/bin/env ruby')
-    create_file('dir2/ruby3.rb',    '# encoding: utf-8')
-    create_file('.hidden/ruby4.rb', '# encoding: utf-8')
+    create_file('dir2/ruby3.rb',    '')
+    create_file('.hidden/ruby4.rb', '')
   end
 
   describe '#find' do
@@ -330,7 +330,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     it 'works also if a folder is named ","' do
-      create_file(',/ruby4.rb', '# encoding: utf-8')
+      create_file(',/ruby4.rb', '')
 
       config = double('config')
       exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }

@@ -86,8 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       end
 
       it 'does not crash on UTF-8 encoded non-ascii characters' do
-        source = ['# encoding: UTF-8',
-                  'class Epd::ReportsController < EpdAreaController',
+        source = ['class Epd::ReportsController < EpdAreaController',
                   "  'terecht bij uw ROM-coördinator.'",
                   'end'].join("\r\n")
         inspect_source_file(source)
@@ -153,8 +152,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       end
 
       it 'does not crash on UTF-8 encoded non-ascii characters' do
-        source = ['# encoding: UTF-8',
-                  'class Epd::ReportsController < EpdAreaController',
+        source = ['class Epd::ReportsController < EpdAreaController',
                   "  'terecht bij uw ROM-coördinator.'",
                   'end'].join("\n")
         inspect_source_file(source)
