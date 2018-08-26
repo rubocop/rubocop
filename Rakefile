@@ -17,7 +17,10 @@ require 'rubocop/rake_task'
 Dir['tasks/**/*.rake'].each { |t| load t }
 
 desc 'Run RSpec'
-task :spec do
+task spec: %i[default_spec ascii_spec]
+
+desc 'Run default RSpec'
+task :default_spec do
   sh('rspec spec/')
 end
 
@@ -31,14 +34,17 @@ end
 desc 'Run test and RuboCop in parallel'
 task parallel: %i[
   documentation_syntax_check generate_cops_documentation
-  parallel:spec parallel:ascii_spec
+  parallel:spec
   internal_investigation
 ]
 
 namespace :parallel do
   desc 'Run RSpec in parallel'
-  task :spec do
-    sh('rspec-queue spec/')
+  task spec: %i[default_spec ascii_spec]
+
+  desc 'Run default RSpec in parallel'
+  task :default_spec do
+    sh('rspec spec/')
   end
 
   desc "Run RSpec's encoding-related specs with ASCII encoding in parallel"
@@ -65,7 +71,7 @@ end
 
 task default: %i[
   documentation_syntax_check generate_cops_documentation
-  spec ascii_spec
+  spec
   internal_investigation
 ]
 

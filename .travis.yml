@@ -19,7 +19,6 @@ env:
     - TEST_QUEUE_WORKERS=2
   matrix:
     - 'TASK=spec'
-    - 'TASK=ascii_spec'
     - 'TASK=internal_investigation'
 matrix:
   allow_failures:
