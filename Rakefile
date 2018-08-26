@@ -21,9 +21,11 @@ task :spec do
   sh('rspec spec/')
 end
 
-desc 'Run RSpec with ASCII encoding'
+desc "Run RSpec's encoding-related specs with ASCII encoding"
 task :ascii_spec do
-  sh('RUBYOPT="$RUBYOPT -E ASCII" rspec spec/')
+  sh('RUBYOPT="$RUBYOPT -E ASCII" rspec ' \
+     'spec/rubocop/config_loader_spec.rb ' \
+     'spec/rubocop/cop/style/string_literals_spec.rb')
 end
 
 desc 'Run test and RuboCop in parallel'
@@ -39,9 +41,11 @@ namespace :parallel do
     sh('rspec-queue spec/')
   end
 
-  desc 'Run RSpec in parallel with ASCII encoding'
+  desc "Run RSpec's encoding-related specs with ASCII encoding in parallel"
   task :ascii_spec do
-    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue spec/')
+    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue ' \
+       'spec/rubocop/config_loader_spec.rb ' \
+       'spec/rubocop/cop/style/string_literals_spec.rb')
   end
 end
 
