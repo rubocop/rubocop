@@ -16,8 +16,15 @@ require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-RSpec::Core::RakeTask.new(:spec)
-RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
+desc 'Run RSpec'
+task :spec do
+  sh('rspec spec/')
+end
+
+desc 'Run RSpec with ASCII encoding'
+task :ascii_spec do
+  sh('RUBYOPT="$RUBYOPT -E ASCII" rspec spec/')
+end
 
 desc 'Run test and RuboCop in parallel'
 task parallel: %i[
