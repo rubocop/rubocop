@@ -46,7 +46,6 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
 
     context 'with a parser error' do
       let(:source) { <<-RUBY }
-        # encoding: utf-8
         # \xf9
       RUBY
 

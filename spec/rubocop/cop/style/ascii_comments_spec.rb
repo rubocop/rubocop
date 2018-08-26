@@ -5,7 +5,6 @@ RSpec.describe RuboCop::Cop::Style::AsciiComments do
 
   it 'registers an offense for a comment with non-ascii chars' do
     expect_offense(<<-RUBY.strip_indent)
-      # encoding: utf-8
       # 这是什么？
         ^^^^^ Use only ascii symbols in comments.
     RUBY
@@ -13,7 +12,6 @@ RSpec.describe RuboCop::Cop::Style::AsciiComments do
 
   it 'registers an offense for comments with mixed chars' do
     expect_offense(<<-RUBY.strip_indent)
-      # encoding: utf-8
       # foo ∂ bar
             ^ Use only ascii symbols in comments.
     RUBY
@@ -34,7 +32,6 @@ RSpec.describe RuboCop::Cop::Style::AsciiComments do
 
     it 'registers an offense for comments with non-allowed non-ascii chars' do
       expect_offense(<<-RUBY.strip_indent)
-        # encoding: utf-8
         # 这是什么？
           ^^^^^ Use only ascii symbols in comments.
       RUBY

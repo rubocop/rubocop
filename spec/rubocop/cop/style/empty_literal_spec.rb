@@ -158,7 +158,6 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
       it 'does not register an offense for String.new' do
         expect_no_offenses(<<-RUBY.strip_indent)
-          # encoding: utf-8
           # frozen_string_literal: true
           test = String.new
         RUBY

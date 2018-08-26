@@ -5,7 +5,6 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers do
 
   it 'registers an offense for a variable name with non-ascii chars' do
     expect_offense(<<-RUBY.strip_indent)
-      # encoding: utf-8
       älg = 1
       ^ Use only ascii symbols in identifiers.
     RUBY
@@ -13,7 +12,6 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers do
 
   it 'registers an offense for a variable name with mixed chars' do
     expect_offense(<<-RUBY.strip_indent)
-      # encoding: utf-8
       foo∂∂bar = baz
          ^^ Use only ascii symbols in identifiers.
     RUBY
@@ -25,7 +23,7 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers do
 
   it 'does not get confused by a byte order mark' do
     expect_no_offenses(<<-RUBY.strip_indent)
-      ﻿# encoding: utf-8
+      ﻿
       puts 'foo'
     RUBY
   end
