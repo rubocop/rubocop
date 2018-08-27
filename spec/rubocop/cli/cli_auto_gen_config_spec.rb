@@ -24,7 +24,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           if initial_dotfile
             initial_config = YAML.safe_load(initial_dotfile.join($RS)) || {}
             inherited_files = Array(initial_config['inherit_from'])
-            (inherited_files - ['.rubocop.yml']).each { |f| create_file(f, '') }
+            (inherited_files - ['.rubocop.yml']).each do |f|
+              create_empty_file(f)
+            end
 
             create_file('.rubocop.yml', initial_dotfile)
             create_file('.rubocop_todo.yml', [''])

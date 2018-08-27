@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       let(:required_file_path) { './path/to/required_file.rb' }
 
       before do
-        create_file('example.rb', '')
+        create_empty_file('example.rb')
 
         create_file(required_file_path, "puts 'Hello from required file!'")
       end
