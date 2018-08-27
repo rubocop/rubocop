@@ -381,6 +381,7 @@ require_relative 'rubocop/cop/performance/times_map'
 require_relative 'rubocop/cop/performance/unfreeze_string'
 require_relative 'rubocop/cop/performance/unneeded_sort'
 require_relative 'rubocop/cop/performance/uri_default_parser'
+require_relative 'rubocop/cop/performance/chain_array_allocation'
 
 require_relative 'rubocop/cop/style/access_modifier_declarations'
 require_relative 'rubocop/cop/style/alias'

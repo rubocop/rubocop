@@ -11,6 +11,7 @@
 * [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
 * [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
 * Add new `Style/MultilineMethodSignature` cop. ([@drenmi][])
+* [#6234](https://github.com/rubocop-hq/rubocop/pull/6234): Add `Performance/ChainArrayAllocation` cop. ([@schneems][])
 
 ### Bug fixes
 
@@ -3540,3 +3541,4 @@
 [@robotdana]: https://github.com/robotdana
 [@bacchir]: https://github.com/bacchir
 [@khiav223577]: https://github.com/khiav223577
+[@schneems]: https://github.com/schneems
