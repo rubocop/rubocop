@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Layout
-      # Here we check if the parameters on a multi-line method call or
-      # definition are aligned.
+      # Here we check if all lines containing parameters of a multi-line method
+      # call or definition have the same indentation.
       #
       # @example EnforcedStyle: with_first_parameter (default)
       #   # good

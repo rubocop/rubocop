@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Layout
-      # Here we check if the elements of a multi-line array literal are
-      # aligned.
+      # Here we check if all lines containing elements of a multi-line array
+      # literal have the same indentation.
       #
       # @example
       #   # bad
