@@ -1066,7 +1066,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       example.rb:1:1: C: [Corrected] Style/SignalException: Always use raise to signal exceptions.
       fail NotImplementedError,
       ^^^^
-      example.rb:2:6: C: [Corrected] Layout/AlignParameters: Ensure lines containing parameters on a method call have the same indentation.
+      example.rb:2:6: C: [Corrected] Layout/AlignParameters: Ensure lines containing parameters of a method call have the same indentation.
            'Method should be overridden in child classes'
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

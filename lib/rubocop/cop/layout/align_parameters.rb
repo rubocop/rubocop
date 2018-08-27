@@ -30,7 +30,7 @@ module RuboCop
       class AlignParameters < Cop
         include Alignment
 
-        ALIGN_PARAMS_MSG = 'Ensure lines containing parameters on a ' \
+        ALIGN_PARAMS_MSG = 'Ensure lines containing parameters of a ' \
           'method %<type>s have the same indentation.'.freeze
 
         FIXED_INDENT_MSG = 'Use one level of indentation for parameters ' \
