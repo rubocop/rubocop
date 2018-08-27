@@ -23,7 +23,7 @@ module RuboCop
       class AlignArray < Cop
         include Alignment
 
-        MSG = 'Make sure all lines containing elements on an array literal ' \
+        MSG = 'Ensure lines containing elements on an array literal ' \
               'have the same indentation.'.freeze
 
         def on_array(node)

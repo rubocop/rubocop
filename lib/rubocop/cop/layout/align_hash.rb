@@ -169,7 +169,7 @@ module RuboCop
         include HashAlignment
         include RangeHelp
 
-        MSG = 'Make sure all lines containing elements on a hash literal ' \
+        MSG = 'Ensure lines containing elements on a hash literal ' \
               'have the same indentation.'.freeze
 
         def on_send(node)

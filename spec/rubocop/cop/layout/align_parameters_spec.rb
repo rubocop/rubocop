@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
       expect_offense(<<-RUBY.strip_indent)
         function(a,
           if b then c else d end)
-          ^^^^^^^^^^^^^^^^^^^^^^ Make sure all lines containing parameters on a method call have the same indentation.
+          ^^^^^^^^^^^^^^^^^^^^^^ Ensure lines containing parameters on a method call have the same indentation.
       RUBY
     end
 
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
       expect_offense(<<-RUBY.strip_indent)
         function(a,
             if b then c else d end)
-            ^^^^^^^^^^^^^^^^^^^^^^ Make sure all lines containing parameters on a method call have the same indentation.
+            ^^^^^^^^^^^^^^^^^^^^^^ Ensure lines containing parameters on a method call have the same indentation.
       RUBY
     end
 
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
               c)
         func2(a,
              *b,
-             ^^ Make sure all lines containing parameters on a method call have the same indentation.
+             ^^ Ensure lines containing parameters on a method call have the same indentation.
               c)
         func3(*a)
       RUBY
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
       expect_offense(<<-RUBY.strip_indent)
         func1(a,
              b,)
-             ^ Make sure all lines containing parameters on a method call have the same indentation.
+             ^ Ensure lines containing parameters on a method call have the same indentation.
       RUBY
     end
 
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
         expect_offense(<<-RUBY.strip_indent)
           def method(a,
             b)
-            ^ Make sure all lines containing parameters on a method definition have the same indentation.
+            ^ Ensure lines containing parameters on a method definition have the same indentation.
           end
         RUBY
       end
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
         expect_offense(<<-RUBY.strip_indent)
           def method(a,
               b)
-              ^ Make sure all lines containing parameters on a method definition have the same indentation.
+              ^ Ensure lines containing parameters on a method definition have the same indentation.
           end
         RUBY
       end
@@ -272,7 +272,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
         expect_offense(<<-RUBY.strip_indent)
           def func2(a,
                    *b,
-                   ^^ Make sure all lines containing parameters on a method definition have the same indentation.
+                   ^^ Ensure lines containing parameters on a method definition have the same indentation.
                     c)
           end
         RUBY
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
           expect_offense(<<-RUBY.strip_indent)
             def self.method(a,
               b)
-              ^ Make sure all lines containing parameters on a method definition have the same indentation.
+              ^ Ensure lines containing parameters on a method definition have the same indentation.
             end
           RUBY
         end

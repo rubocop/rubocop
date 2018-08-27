@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         func(a: 0,
           b: 1)
-          ^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^ Ensure lines containing elements on a hash literal have the same indentation.
       RUBY
     end
 
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         func({a: 0,
           b: 1})
-          ^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^ Ensure lines containing elements on a hash literal have the same indentation.
       RUBY
     end
   end
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         func({a: 0,
           b: 1})
-          ^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^ Ensure lines containing elements on a hash literal have the same indentation.
       RUBY
     end
   end
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         func(a: 0,
           b: 1)
-          ^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^ Ensure lines containing elements on a hash literal have the same indentation.
       RUBY
     end
 
@@ -137,12 +137,12 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         hash1 = {
           a: 0,
            bb: 1
-           ^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+           ^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
         hash2 = {
           'ccc' => 2,
          'dddd'  =>  2
-         ^^^^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+         ^^^^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         hash = { a: 1, b: 2,
                 c: 3 }
-                ^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+                ^^^^ Ensure lines containing elements on a hash literal have the same indentation.
       RUBY
     end
 
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         hash = {
             'a' => 0,
           'bbb' => 1
-          ^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         expect_offense(<<-RUBY.strip_indent)
           func(a: 0,
             b: 1)
-            ^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+            ^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         RUBY
       end
 
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         expect_offense(<<-RUBY.strip_indent)
           func(a: 0,
              bbb: 1)
-             ^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+             ^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         RUBY
       end
 
@@ -351,13 +351,13 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         hash1 = {
           'a'   =>  0,
-          ^^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
           'bbb' => 1
         }
         hash2 = {
           a:   0,
           bbb:1
-          ^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -366,15 +366,15 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       expect_offense(<<-RUBY.strip_indent)
         hash1 = {
           'a'   =>  0,
-          ^^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
          'bbb'  =>  1
-         ^^^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+         ^^^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
         hash2 = {
            a:  0,
-           ^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+           ^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
           bbb: 1
-          ^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         hash = {
           'a'   => 0,
           'bbb'  => 1
-          ^^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -471,7 +471,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         hash = {
             'a' =>  0,
           'bbb' => 1
-          ^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -481,7 +481,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         hash = {
             'a'  => 0,
           'bbb' =>  1
-          ^^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
@@ -545,12 +545,12 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         hash1 = {
           a:   0,
           bbb: 1
-          ^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
         hash2 = {
             'a' => 0,
           'bbb' => 1
-          ^^^^^^^^^^ Make sure all lines containing elements on a hash literal have the same indentation.
+          ^^^^^^^^^^ Ensure lines containing elements on a hash literal have the same indentation.
         }
       RUBY
     end
