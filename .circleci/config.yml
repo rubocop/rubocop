@@ -6,11 +6,12 @@ steps: &steps
     - run: bundle install
     - run: bash .travis.sh
 
-common_env: &common_env
+jruby_env: &jruby_env
   # By default we have 2 CPUs and 4GB ram available
   # https://circleci.com/docs/2.0/configuration-reference/#resource_class
   JRUBY_OPTS: "--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
 
+common_env: &common_env
   # CircleCI container has two cores, but Ruby can see 32 cores. So we
   # configure test-queue.
   # See https://github.com/tmm1/test-queue#environment-variables
@@ -105,16 +106,22 @@ jobs:
   jruby-9.2-spec:
     docker:
       - image: circleci/jruby:9.2
+        environment:
+          <<: *jruby_env
     <<: *spec_env
     <<: *steps
   jruby-9.2-ascii_spec:
     docker:
       - image: circleci/jruby:9.2
+        environment:
+          <<: *jruby_env
     <<: *ascii_spec_env
     <<: *steps
   jruby-9.2-rubocop:
     docker:
       - image: circleci/jruby:9.2
+        environment:
+          <<: *jruby_env
     <<: *rubocop_env
     <<: *steps
 
