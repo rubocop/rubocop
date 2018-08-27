@@ -119,6 +119,37 @@ str.casecmp('ABC').zero?
 
 * [https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code](https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code)
 
+## Performance/ChainArrayAllocation
+
+Enabled by default | Supports autocorrection
+--- | ---
+Disabled | No
+
+This cop is used to identify usages of
+Each of these methods (`compact`, `flatten`, `map`) will generate a
+new intermediate array that is promptly thrown away. Instead it is
+faster to mutate when we know it's safe.
+
+### Examples
+
+```ruby
+# bad
+array = ["a", "b", "c"]
+array.compact.flatten.map { |x| x.downcase }
+```
+```ruby
+# good.
+array = ["a", "b", "c"]
+array.compact!
+array.flatten!
+array.map! { |x| x.downcase }
+array
+```
+
+### References
+
+* [https://twitter.com/schneems/status/1034123879978029057](https://twitter.com/schneems/status/1034123879978029057)
+
 ## Performance/CompareWithBlock
 
 Enabled by default | Supports autocorrection
