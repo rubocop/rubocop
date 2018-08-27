@@ -11,7 +11,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'returns 1' do
       allow_any_instance_of(RuboCop::Runner)
         .to receive(:aborting?).and_return(true)
-      create_file('example.rb', '')
+      create_empty_file('example.rb')
       expect(cli.run(['example.rb'])).to eq(1)
     end
   end
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     shared_examples 'checks Rakefile' do
       it 'checks a Rakefile but Style/FileName does not report' do
         create_file('Rakefile', 'x = 1')
-        create_file('other/empty', '')
+        create_empty_file('other/empty')
         Dir.chdir('other') do
           expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
         end
@@ -416,7 +416,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'does not register any offenses for an empty file' do
-    create_file('example.rb', '')
+    create_empty_file('example.rb')
     expect(cli.run(%w[--format simple])).to eq(0)
     expect($stdout.string)
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))

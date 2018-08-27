@@ -6,8 +6,8 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
   subject(:finder) { Class.new.include(described_class).new }
 
   before do
-    create_file('file', '')
-    create_file(File.join('dir', 'file'), '')
+    create_empty_file('file')
+    create_empty_file(File.join('dir', 'file'))
   end
 
   describe '#find_file_upwards' do
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
     end
 
     context 'when given `use_home` option' do
-      before { create_file(File.join(Dir.home, 'file2'), '') }
+      before { create_empty_file(File.join(Dir.home, 'file2')) }
 
       context 'and a file exists in home directory' do
         it 'returns the file' do
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
     end
 
     context 'when given `use_home` option' do
-      before { create_file(File.join(Dir.home, 'file'), '') }
+      before { create_empty_file(File.join(Dir.home, 'file')) }
 
       context 'and a file exists in home directory' do
         it 'returns an array including the file' do

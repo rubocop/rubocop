@@ -18,4 +18,8 @@ module FileHelper
       end
     end
   end
+
+  def create_empty_file(file_path)
+    create_file(file_path, '')
+  end
 end

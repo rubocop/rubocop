@@ -27,13 +27,13 @@ RSpec.describe RuboCop::PathUtil do
     include FileHelper
 
     before do
-      create_file('file', '')
-      create_file('dir/file', '')
-      create_file('dir/files', '')
-      create_file('dir/dir/file', '')
-      create_file('dir/sub/file', '')
-      create_file('dir/.hidden/file', '')
-      create_file('dir/.hidden_file', '')
+      create_empty_file('file')
+      create_empty_file('dir/file')
+      create_empty_file('dir/files')
+      create_empty_file('dir/dir/file')
+      create_empty_file('dir/sub/file')
+      create_empty_file('dir/.hidden/file')
+      create_empty_file('dir/.hidden_file')
       $stderr = StringIO.new
     end
 

@@ -23,10 +23,10 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'when no config file exists in ancestor directories' do
       let(:dir_path) { 'dir' }
 
-      before { create_file('dir/example.rb', '') }
+      before { create_empty_file('dir/example.rb') }
 
       context 'but a config file exists in home directory' do
-        before { create_file('~/.rubocop.yml', '') }
+        before { create_empty_file('~/.rubocop.yml') }
 
         it 'returns the path to the file in home directory' do
           expect(configuration_file_for).to end_with('home/.rubocop.yml')
@@ -52,8 +52,8 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:dir_path) { 'dir' }
 
       before do
-        create_file('dir/example.rb', '')
-        create_file('.rubocop.yml', '')
+        create_empty_file('dir/example.rb')
+        create_empty_file('.rubocop.yml')
       end
 
       it 'returns the path to that configuration file' do
@@ -65,9 +65,9 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:dir_path) { 'dir' }
 
       before do
-        create_file('dir/example.rb', '')
-        create_file('dir/.rubocop.yml', '')
-        create_file('.rubocop.yml', '')
+        create_empty_file('dir/example.rb')
+        create_empty_file('dir/.rubocop.yml')
+        create_empty_file('.rubocop.yml')
       end
 
       it 'prefers closer config file' do
@@ -418,7 +418,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/subdir/.rubocop.yml' }
 
       before do
-        create_file('dir/subdir/example.rb', '')
+        create_empty_file('dir/subdir/example.rb')
 
         create_file('.rubocop.yml', <<-YAML.strip_indent)
           Metrics/LineLength:
@@ -480,7 +480,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file('example.rb', '')
+        create_empty_file('example.rb')
 
         create_file('normal.yml', <<-YAML.strip_indent)
           Metrics/MethodLength:
@@ -524,7 +524,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file('example.rb', '')
+        create_empty_file('example.rb')
 
         create_file('line_length.yml', <<-YAML.strip_indent)
           LineLength:
@@ -908,7 +908,7 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     it 'returns an empty configuration loaded from an empty file' do
-      create_file(configuration_path, '')
+      create_empty_file(configuration_path)
       configuration = load_file
       expect(configuration.to_h).to eq({})
     end
