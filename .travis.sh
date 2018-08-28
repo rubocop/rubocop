@@ -4,7 +4,6 @@ set -eo pipefail
 
 run() {
   run_main_task
-  report_coverage
   documentation
   check_requiring_libraries
 }
@@ -28,12 +27,6 @@ is_jruby() {
 
 is_master() {
   [ "$TRAVIS_BRANCH" = 'master' ] && [ "$TRAVIS_PULL_REQUEST" = 'false' ]
-}
-
-report_coverage() {
-  if is_test && is_master; then
-    logged bundle exec codeclimate-test-reporter
-  fi
 }
 
 run_main_task() {
