@@ -94,8 +94,13 @@ module RuboCop
         def arguments_match?(arg_array, body)
           argument_array = body.arguments
 
-          arg_array == argument_array ||
-            arg_array.map(&:children) == argument_array.map(&:children)
+          return false if arg_array.size != argument_array.size
+
+          arg_array.zip(argument_array).all? do |arg, argument|
+            arg.arg_type? &&
+              argument.lvar_type? &&
+              arg.children == argument.children
+          end
         end
 
         def method_name_matches?(method_name, body)
