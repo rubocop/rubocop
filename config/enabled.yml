@@ -1453,12 +1453,6 @@ Style/ConditionalAssignment:
                  of assigning that variable inside of each branch.
   Enabled: true
 
-Style/DateTime:
-  Description: 'Use Date or Time over DateTime.'
-  StyleGuide: '#date--time'
-  Enabled: true
-  AllowCoercion: false
-
 Style/DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
   StyleGuide: '#method-parens'
