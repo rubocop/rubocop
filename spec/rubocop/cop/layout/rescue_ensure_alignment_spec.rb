@@ -7,135 +7,318 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     expect_no_offenses('test rescue nil')
   end
 
-  it 'registers an offense when rescue used with begin' do
-    expect_offense(<<-RUBY.strip_indent)
-      begin
-        something
-          rescue
-          ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'rescue with begin' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        begin
+          something
+            rescue
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        begin
+          something
+            rescue
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when rescue used with def' do
-    expect_offense(<<-RUBY.strip_indent)
-      def test
-        something
-          rescue
-          ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'rescue with def' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        def test
+          something
+            rescue
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def test
+          something
+            rescue
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def test
+          something
+        rescue
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when rescue used with defs' do
-    expect_offense(<<-RUBY.strip_indent)
-      def Test.test
-        something
-          rescue
-          ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'rescue with defs' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        def Test.test
+          something
+            rescue
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def Test.test
+          something
+            rescue
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def Test.test
+          something
+        rescue
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when rescue used with class' do
-    expect_offense(<<-RUBY.strip_indent)
-      class C
-        something
-          rescue
-          ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'rescue with class' do
+    it 'registers an offense when rescue used with class' do
+      expect_offense(<<-RUBY.strip_indent)
+        class C
+          something
+            rescue
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        class C
+          something
+            rescue
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        class C
+          something
+        rescue
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when rescue used with module' do
-    expect_offense(<<-RUBY.strip_indent)
-      module M
-        something
-          rescue
-          ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'rescue with module' do
+    it 'registers an offense when rescue used with module' do
+      expect_offense(<<-RUBY.strip_indent)
+        module M
+          something
+            rescue
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        module M
+          something
+            rescue
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        module M
+          something
+        rescue
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when ensure used with begin' do
-    expect_offense(<<-RUBY.strip_indent)
-      begin
-        something
-          ensure
-          ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'ensure with begin' do
+    it 'registers an offense when ensure used with begin' do
+      expect_offense(<<-RUBY.strip_indent)
+        begin
+          something
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        begin
+          something
+            ensure
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        begin
+          something
+        ensure
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when ensure used with def' do
-    expect_offense(<<-RUBY.strip_indent)
-      def test
-        something
-          ensure
-          ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'ensure with def' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        def test
+          something
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def test
+          something
+            ensure
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def test
+          something
+        ensure
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when ensure used with defs' do
-    expect_offense(<<-RUBY.strip_indent)
-      def Test.test
-        something
-          ensure 
-          ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'ensure with defs' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        def Test.test
+          something
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def Test.test
+          something
+            ensure
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def Test.test
+          something
+        ensure
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when ensure used with class' do
-    expect_offense(<<-RUBY.strip_indent)
-      class C
-        something
-          ensure
-          ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'ensure with class' do
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        class C
+          something
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        class C
+          something
+            ensure
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        class C
+          something
+        ensure
+            error
+        end
+      RUBY
+    end
   end
 
-  it 'registers an offense when ensure used with module' do
-    expect_offense(<<-RUBY.strip_indent)
-      module M
-        something
-          ensure
-          ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
-          error
-      end
-    RUBY
+  context 'ensure with module' do
+    it 'registers an offense when ensure used with module' do
+      expect_offense(<<-RUBY.strip_indent)
+        module M
+          something
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            error
+        end
+      RUBY
+    end
+
+    it 'corrects the alignment' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        module M
+          something
+            ensure
+            error
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        module M
+          something
+        ensure
+            error
+        end
+      RUBY
+    end
   end
 
   it 'accepts rescue and ensure on the same line' do
     expect_no_offenses('begin; puts 1; rescue; ensure; puts 2; end')
-  end
-
-  it 'auto-corrects' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
-      begin
-        something
-          rescue
-          error
-      end
-    RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
-      begin
-        something
-      rescue
-          error
-      end
-    RUBY
   end
 
   it 'accepts correctly aligned rescue' do
@@ -181,17 +364,41 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense for not aligned rescue in do-end block' do
-      expect_offense(<<-RUBY.strip_indent)
-        def foo
-          [1, 2, 3].each do |el|
-            el.to_s
-        rescue StandardError => _exception
-        ^^^^^^ `rescue` at 4, 0 is not aligned with `end` at 6, 2.
-            next
+    context 'rescue with do-end block' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          def foo
+            [1, 2, 3].each do |el|
+              el.to_s
+          rescue StandardError => _exception
+          ^^^^^^ `rescue` at 4, 0 is not aligned with `end` at 6, 2.
+              next
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
+
+      it 'corrects the alignment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          def foo
+            [1, 2, 3].each do |el|
+              el.to_s
+          rescue StandardError => _exception
+              next
+            end
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          def foo
+            [1, 2, 3].each do |el|
+              el.to_s
+            rescue StandardError => _exception
+              next
+            end
+          end
+        RUBY
+      end
     end
   end
 
