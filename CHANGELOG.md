@@ -12,6 +12,7 @@
 * [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
 * Add new `Style/MultilineMethodSignature` cop. ([@drenmi][])
 * [#6234](https://github.com/rubocop-hq/rubocop/pull/6234): Add `Performance/ChainArrayAllocation` cop. ([@schneems][])
+* [#5659](https://github.com/rubocop-hq/rubocop/issues/5659): Make `Layout/EmptyLinesAroundClassBody` aware of specifying a superclass that breaks the line. ([@koic][])
 
 ### Bug fixes
 
