@@ -85,6 +85,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
   context 'when EnforcedStyle is empty_lines' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
 
+    it 'does not register offenses' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Foo
+
+          def do_something
+          end
+
+        end
+      RUBY
+    end
+
+    it 'does not register offenses when specifying a superclass ' \
+       'that breaks the line' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Foo <
+              Bar
+
+          def do_something
+          end
+
+        end
+      RUBY
+    end
+
     it 'registers an offense for class body not starting or ending with a ' \
        'blank' do
       inspect_source(<<-RUBY.strip_indent)
