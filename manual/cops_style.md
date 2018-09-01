@@ -1119,8 +1119,11 @@ Enabled by default | Supports autocorrection
 --- | ---
 Disabled | No
 
-This cop checks for uses of `DateTime` that should be replaced by
-`Time`.
+This cop checks for consistent usage of the `DateTime` class over the
+`Time` class. This cop is disabled by default since these classes,
+although highly overlapping, have particularities that make them not
+replaceable in certain situations when dealing with multiple timezones
+and/or DST.
 
 ### Examples
 
