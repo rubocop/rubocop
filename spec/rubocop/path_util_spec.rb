@@ -34,21 +34,16 @@ RSpec.describe RuboCop::PathUtil do
       create_empty_file('dir/sub/file')
       create_empty_file('dir/.hidden/file')
       create_empty_file('dir/.hidden_file')
-      $stderr = StringIO.new
     end
-
-    after { $stderr = STDERR }
 
     it 'does not match dir/** for file in hidden dir' do
       expect(described_class.match_path?('dir/**', 'dir/.hidden/file'))
         .to be(false)
-      expect($stderr.string).to eq('')
     end
 
     it 'matches dir/** for hidden file' do
       expect(described_class.match_path?('dir/**', 'dir/.hidden_file'))
         .to be(true)
-      expect($stderr.string).to eq('')
     end
 
     it 'does not match file in a subdirectory' do

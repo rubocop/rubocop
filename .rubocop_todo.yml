@@ -54,7 +54,6 @@ RSpec/ExpectOutput:
     - 'spec/rubocop/formatter/disabled_config_formatter_spec.rb'
     - 'spec/rubocop/formatter/formatter_set_spec.rb'
     - 'spec/rubocop/options_spec.rb'
-    - 'spec/rubocop/path_util_spec.rb'
     - 'spec/rubocop/rake_task_spec.rb'
     - 'spec/rubocop/result_cache_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
