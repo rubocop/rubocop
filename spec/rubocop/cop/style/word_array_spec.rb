@@ -251,6 +251,12 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect(new_source).to eq('["\n", "\t", "\b", "\v", "\f"]')
     end
 
+    it 'autocorrects a %W() array which uses string interpolation' do
+      new_source = autocorrect_source('%W(#{foo}bar baz)')
+
+      expect(new_source).to eq('["#{foo}bar", \'baz\']')
+    end
+
     it "doesn't fail on strings which are not valid UTF-8" do
       # Regression test, see GH issue 2671
       expect_no_offenses(<<-'RUBY'.strip_indent)
