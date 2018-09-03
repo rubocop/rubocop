@@ -81,11 +81,23 @@ module RuboCop
         end
 
         def correct_bracketed(node)
-          words = node.children.map { |w| to_string_literal(w.children[0]) }
+          words = node.children.map do |word|
+            if word.dstr_type?
+              string_literal = to_string_literal(word.source)
+
+              trim_string_interporation_escape_character(string_literal)
+            else
+              to_string_literal(word.children[0])
+            end
+          end
 
           lambda do |corrector|
             corrector.replace(node.source_range, "[#{words.join(', ')}]")
           end
+        end
+
+        def trim_string_interporation_escape_character(str)
+          str.gsub(/\\\#{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
         end
       end
     end
