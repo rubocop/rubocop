@@ -69,7 +69,7 @@ Command flag                    | Description
 `-c/--config`                   | Run with specified config file.
 `-f/--format`                   | Choose a formatter.
 `-o/--out`                      | Write output to a file instead of STDOUT.
-`-r/--require`                  | Require Ruby file (see [Loading Extensions](#loading-extensions)).
+`-r/--require`                  | Require Ruby file (see [Loading Extensions](extensions.md#loading-extensions)).
 `-R/--rails`                    | Run extra Rails cops.
 `-l/--lint`                     | Run only lint cops.
 `-a/--auto-correct`             | Auto-correct certain offenses. *Note:* Experimental - use with caution.
@@ -80,7 +80,7 @@ Command flag                    | Description
 `--no-auto-gen-timestamp`       | Don't include the date and time when --auto-gen-config was run in the config file it generates
 `--exclude-limit`               | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `--show-cops`                   | Shows available cops and their configuration.
-`--fail-level`                  | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
+`--fail-level`                  | Minimum [severity](configuration.md#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 `--display-only-fail-level-offenses`           | Only output offense messages at the specified `--fail-level` or above
 `-s/--stdin`                    | Pipe source from STDIN. This is useful for editor integration.
 `--[no-]color`                  | Force color output on or off.
