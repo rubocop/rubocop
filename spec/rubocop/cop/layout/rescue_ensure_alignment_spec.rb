@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         begin
           something
             rescue
-            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `begin` at 1, 0.
             error
         end
       RUBY
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         def test
           something
             rescue
-            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `def test` at 1, 0.
             error
         end
       RUBY
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         def Test.test
           something
             rescue
-            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `def Test.test` at 1, 0.
             error
         end
       RUBY
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         class C
           something
             rescue
-            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `class C` at 1, 0.
             error
         end
       RUBY
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         module M
           something
             rescue
-            ^^^^^^ `rescue` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `module M` at 1, 0.
             error
         end
       RUBY
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         begin
           something
             ensure
-            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `begin` at 1, 0.
             error
         end
       RUBY
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         def test
           something
             ensure
-            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `def test` at 1, 0.
             error
         end
       RUBY
@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         def Test.test
           something
             ensure
-            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `def Test.test` at 1, 0.
             error
         end
       RUBY
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         class C
           something
             ensure
-            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `class C` at 1, 0.
             error
         end
       RUBY
@@ -292,7 +292,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         module M
           something
             ensure
-            ^^^^^^ `ensure` at 3, 4 is not aligned with `end` at 5, 0.
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `module M` at 1, 0.
             error
         end
       RUBY
@@ -315,6 +315,19 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
     end
+  end
+
+  it 'accepts end being misaligned' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def method1
+        'foo'
+      end
+
+      def method2
+        'bar'
+      rescue
+        'baz' end
+    RUBY
   end
 
   it 'accepts rescue and ensure on the same line' do
@@ -371,7 +384,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             [1, 2, 3].each do |el|
               el.to_s
           rescue StandardError => _exception
-          ^^^^^^ `rescue` at 4, 0 is not aligned with `end` at 6, 2.
+          ^^^^^^ `rescue` at 4, 0 is not aligned with `[1, 2, 3].each do` at 2, 2.
               next
             end
           end

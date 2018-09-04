@@ -31,6 +31,7 @@
 * [#6196](https://github.com/rubocop-hq/rubocop/issues/6196): Fix incorrect autocorrect for `Style/EmptyCaseCondition` when using `return` in `when` clause and assigning the return value of `case`. ([@koic][])
 * [#6142](https://github.com/rubocop-hq/rubocop/issues/6142): Ignore keyword arguments in `Rails/Delegate`. ([@sunny][])
 * [#6240](https://github.com/rubocop-hq/rubocop/issues/6240): Fix an auto-correct error for `Style/WordArray` when setting `EnforcedStyle: brackets` and using string interpolation in `%W` literal. ([@koic][])
+* [#6202](https://github.com/rubocop-hq/rubocop/issues/6202): Fix infinite loop when auto-correcting `Lint/RescueEnsureAlignment` when `end` is misaligned. The alignment and message are now based on the beginning position rather than the `end` position. ([@rrosenblum][])
 
 ### Changes
 
