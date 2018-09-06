@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   subject(:cop) { described_class.new }
 
-  let(:message) { 'Unnecessary splat expansion.' }
+  let(:message) { 'Replace splat expansion with comma separated values.' }
 
   it 'allows assigning to a splat' do
     expect_no_offenses('*, rhs = *node')
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
     it 'registers an offense for an array using a constructor' do
       expect_offense(<<-RUBY.strip_indent)
         a = *Array.new(3) { 42 }
-            ^^^^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+            ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
       RUBY
     end
   end
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
       expect_offense(<<-RUBY.strip_indent)
         case foo
         when *[first, second]
-             ^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+             ^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
           bar
         end
       RUBY
@@ -100,17 +100,17 @@ RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
       expect_offense(<<-RUBY.strip_indent)
         case foo
         when *%w(first second)
-             ^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+             ^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
           bar
         end
       RUBY
     end
 
     it 'registers an offense for an array using %W' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case foo
-        when *%W(#{first} second)
-             ^^^^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+        when *%W(\#{first} second)
+             ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
           bar
         end
       RUBY
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
       begin
         foo
       rescue *[First, Second]
-             ^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+             ^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
         bar
       end
     RUBY
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)
           [*Array.new(foo)]
-           ^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+           ^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
         RUBY
       end
     end
@@ -359,13 +359,13 @@ RSpec.describe RuboCop::Cop::Lint::UnneededSplatExpansion do
   context 'arrays being expanded with %i variants using splat expansion' do
     it 'registers an offense for an array literal being expanded in a ' \
       'when condition' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         case foo
         when *%i(first second)
-             ^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+             ^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
           bar
-        when *%I(#{first} second)
-             ^^^^^^^^^^^^^^^^^^^^ Unnecessary splat expansion.
+        when *%I(\#{first} second)
+             ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
           baz
         end
       RUBY
