@@ -12,6 +12,7 @@
 * [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
 * Add new `Style/MultilineMethodSignature` cop. ([@drenmi][])
 * [#6234](https://github.com/rubocop-hq/rubocop/pull/6234): Add `Performance/ChainArrayAllocation` cop. ([@schneems][])
+* [#6136](https://github.com/rubocop-hq/rubocop/pull/6136): Add remote url in remote url download error message. ([@ShockwaveNN][])
 
 ### Bug fixes
 
@@ -3542,3 +3543,4 @@
 [@bacchir]: https://github.com/bacchir
 [@khiav223577]: https://github.com/khiav223577
 [@schneems]: https://github.com/schneems
+[@ShockwaveNN]: https://github.com/ShockwaveNN
