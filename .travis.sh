@@ -37,11 +37,7 @@ report_coverage() {
 }
 
 run_main_task() {
-  if is_master || ! is_test || is_jruby; then
-    logged bundle exec rake "$TASK"
-  else
-    logged bundle exec rake "parallel:$TASK"
-  fi
+  logged bundle exec rake "$TASK"
 }
 
 logged() {

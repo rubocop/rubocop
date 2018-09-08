@@ -357,8 +357,7 @@ before `class YourCop`. While not all examples in the codebase follow this exact
 we strive to make this consistent. PRs improving RuboCop documentation are very welcome.
 
 Run `rake generate_cops_documentation` to apply your `yard` documentation into the manual.
-CI will fail if the manual and `yard` comments do not match exactly. `rake default` and
-`rake parallel` will also generate the new documentation.
+CI will fail if the manual and `yard` comments do not match exactly. `rake default` will also generate the new documentation.
 
 ### Testing your cop in a real codebase
 
