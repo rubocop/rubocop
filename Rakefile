@@ -14,12 +14,11 @@ require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-desc 'Run test and RuboCop in parallel'
-task parallel: %i[
-  documentation_syntax_check generate_cops_documentation
-  parallel:spec parallel:ascii_spec
-  internal_investigation
-]
+desc 'Deprecated: Run test and RuboCop in parallel'
+task :parallel do
+  warn '`rake parallel` is deprecated. Use `rake default` instead.'
+  Rake::Task[:default].execute
+end
 
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation).tap do |task|
