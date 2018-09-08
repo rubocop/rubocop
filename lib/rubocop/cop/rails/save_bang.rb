@@ -233,6 +233,7 @@ module RuboCop
         def allowed_receiver?(node)
           return false unless node.receiver
           return false unless cop_config['AllowedReceivers']
+
           cop_config['AllowedReceivers'].any? do |allowed_receiver|
             receiver_chain_matches?(node, allowed_receiver)
           end
@@ -242,6 +243,7 @@ module RuboCop
           allowed_receiver.split('.').reverse.all? do |receiver_part|
             node = node.receiver
             return false unless node
+
             if node.variable?
               node.node_parts.first == receiver_part.to_sym
             elsif node.send_type?
