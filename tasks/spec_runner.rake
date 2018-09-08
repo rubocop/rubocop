@@ -19,9 +19,7 @@ module RuboCop
       rspec_args = %w[spec]
       with_encoding do
         if Process.respond_to?(:fork)
-          ARGV.clear
-          ARGV.concat(rspec_args)
-          ::TestQueue::Runner::RSpec.new.execute
+          ParallelRunner.new(rspec_args).execute
         else
           ::RSpec::Core::Runner.run(rspec_args)
         end
@@ -35,6 +33,42 @@ module RuboCop
       yield
     ensure
       Encoding.default_external = @previous_encoding
+    end
+
+    # A parallel spec runner implementation, heavily inspired by
+    # `TestQueue::Runner::RSpec`, but modified so that it takes an argument
+    # (an array of paths of specs to run) instead of relying on ARGV.
+    class ParallelRunner < ::TestQueue::Runner
+      def initialize(rspec_args)
+        super(Framework.new(rspec_args))
+      end
+
+      def run_worker(iterator)
+        rspec = ::RSpec::Core::QueueRunner.new
+        rspec.run_each(iterator).to_i
+      end
+
+      def summarize_worker(worker)
+        worker.summary = worker.lines.grep(/\A\d+ examples?, /).first
+        worker.failure_output = worker.output[
+          /^Failures:\n\n(.*)\n^Finished/m, 1]
+      end
+    end
+
+    # A TestQueue framework that is explicitly given RSpec arguments instead of
+    # implicitly reading ARGV.
+    class Framework < ::TestQueue::TestFramework::RSpec
+      def initialize(rspec_args)
+        @rspec_args = rspec_args
+      end
+
+      def all_suite_files
+        options = ::RSpec::Core::ConfigurationOptions.new(@rspec_args)
+        options.parse_options if options.respond_to?(:parse_options)
+        options.configure(::RSpec.configuration)
+
+        ::RSpec.configuration.files_to_run.uniq
+      end
     end
   end
 end
