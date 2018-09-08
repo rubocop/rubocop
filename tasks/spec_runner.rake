@@ -9,6 +9,7 @@ module RuboCop
   # This is a bit risky, since strings defined before the block may have a
   # different encoding than strings defined inside the block.
   # The specs will be run in parallel if the system implements `fork`.
+  # If ENV['COVERAGE'] is truthy, code coverage will be measured.
   class SpecRunner
     def initialize(encoding: 'UTF-8')
       @previous_encoding = Encoding.default_external
@@ -19,7 +20,7 @@ module RuboCop
       rspec_args = %w[spec]
       with_encoding do
         if Process.respond_to?(:fork)
-          ParallelRunner.new(rspec_args).execute
+          parallel_runner_klass.new(rspec_args).execute
         else
           ::RSpec::Core::Runner.run(rspec_args)
         end
@@ -33,6 +34,14 @@ module RuboCop
       yield
     ensure
       Encoding.default_external = @previous_encoding
+    end
+
+    def parallel_runner_klass
+      if ENV['COVERAGE']
+        ParallelCoverageRunner
+      else
+        ParallelRunner
+      end
     end
 
     # A parallel spec runner implementation, heavily inspired by
@@ -52,6 +61,21 @@ module RuboCop
         worker.summary = worker.lines.grep(/\A\d+ examples?, /).first
         worker.failure_output = worker.output[
           /^Failures:\n\n(.*)\n^Finished/m, 1]
+      end
+    end
+
+    # A custom runner for measuring code coverage in parallel.
+    class ParallelCoverageRunner < ParallelRunner
+      def after_fork(num)
+        SimpleCov.command_name "rspec-#{num}"
+      end
+
+      def cleanup_worker
+        SimpleCov.result
+      end
+
+      def summarize
+        SimpleCov.at_exit.call
       end
     end
 
@@ -96,10 +120,4 @@ namespace :parallel do
          'instead.'
     Rake::Task[:ascii_spec].execute
   end
-end
-
-desc 'Run RSpec with code coverage'
-task :coverage do
-  ENV['COVERAGE'] = 'true'
-  Rake::Task['spec'].execute
 end
