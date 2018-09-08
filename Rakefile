@@ -10,14 +10,9 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 require 'rake'
-require 'rspec/core'
-require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
-
-RSpec::Core::RakeTask.new(:spec) { |t| t.ruby_opts = '-E UTF-8' }
-RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
 
 desc 'Run test and RuboCop in parallel'
 task parallel: %i[
@@ -25,24 +20,6 @@ task parallel: %i[
   parallel:spec parallel:ascii_spec
   internal_investigation
 ]
-
-namespace :parallel do
-  desc 'Run RSpec in parallel'
-  task :spec do
-    sh('rspec-queue spec/')
-  end
-
-  desc 'Run RSpec in parallel with ASCII encoding'
-  task :ascii_spec do
-    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue spec/')
-  end
-end
-
-desc 'Run RSpec with code coverage'
-task :coverage do
-  ENV['COVERAGE'] = 'true'
-  Rake::Task['spec'].execute
-end
 
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation).tap do |task|
