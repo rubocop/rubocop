@@ -36,6 +36,10 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
   it_behaves_like('register_offense', 'where(name: name)')
   it_behaves_like('register_offense', 'where.not(name: name)')
 
+  it 'does not register an offense when called on a constant' do
+    expect_no_offenses('FOO.each { |u| u.x }')
+  end
+
   it 'does not register an offense when using find_by' do
     expect_no_offenses('User.all.find_each { |u| u.x }')
   end
