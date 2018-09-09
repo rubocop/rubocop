@@ -103,6 +103,15 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
         RUBY
       end
 
+      it 'does not register an offense with a leading `_` for both names' do
+        pending
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def _foo
+            @_foo ||= :foo
+          end
+        RUBY
+      end
+
       context 'memoized variable matches method name during assignment' do
         it 'does not register an offense' do
           expect_no_offenses(<<-RUBY.strip_indent)
@@ -207,6 +216,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
         @_my_var ||= :foo
         ^^^^^^^^ Memoized variable `@_my_var` does not match method name `foo`. Use `@_foo` instead.
       end
+      RUBY
+    end
+
+    it 'does not register an offense with a leading `_` for both names' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def _foo
+          @_foo ||= :foo
+        end
       RUBY
     end
   end

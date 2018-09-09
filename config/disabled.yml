@@ -54,6 +54,13 @@ Performance/CaseWhenSplat:
   Enabled: false
   AutoCorrect: false
 
+Performance/ChainArrayAllocation:
+  Description: >-
+                  Instead of chaining array methods that allocate new arrays, mutate an
+                  existing array.
+  Reference: 'https://twitter.com/schneems/status/1034123879978029057'
+  Enabled: false
+
 # By default, the rails cops are not run. Override in project or home
 # directory .rubocop.yml files, or by giving the -R/--rails option.
 Rails:
@@ -76,6 +83,12 @@ Style/CollectionMethods:
 Style/Copyright:
   Description: 'Include a copyright notice in each file before any code.'
   Enabled: false
+
+Style/DateTime:
+  Description: 'Use Time over DateTime.'
+  StyleGuide: '#date--time'
+  Enabled: false
+  AllowCoercion: false
 
 Style/DocumentationMethod:
   Description: 'Public methods.'

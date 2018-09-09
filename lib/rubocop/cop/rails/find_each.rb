@@ -22,7 +22,9 @@ module RuboCop
         IGNORED_METHODS = %i[order limit select].freeze
 
         def on_send(node)
-          return unless node.receiver && node.method?(:each)
+          return unless node.receiver &&
+                        node.receiver.send_type? &&
+                        node.method?(:each)
 
           return unless SCOPE_METHODS.include?(node.receiver.method_name)
           return if method_chain(node).any? { |m| ignored_by_find_each?(m) }

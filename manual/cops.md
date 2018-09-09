@@ -301,6 +301,7 @@ In the following section you find all available cops:
 * [Performance/Caller](cops_performance.md#performancecaller)
 * [Performance/CaseWhenSplat](cops_performance.md#performancecasewhensplat)
 * [Performance/Casecmp](cops_performance.md#performancecasecmp)
+* [Performance/ChainArrayAllocation](cops_performance.md#performancechainarrayallocation)
 * [Performance/CompareWithBlock](cops_performance.md#performancecomparewithblock)
 * [Performance/Count](cops_performance.md#performancecount)
 * [Performance/Detect](cops_performance.md#performancedetect)

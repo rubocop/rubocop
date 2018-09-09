@@ -94,7 +94,8 @@ RSpec.describe RuboCop::RemoteConfig do
       it 'raises error' do
         expect do
           remote_config
-        end.to raise_error(Net::HTTPFatalError)
+        end.to raise_error(Net::HTTPFatalError,
+                           '500 "" while downloading remote config file http://example.com/rubocop.yml')
       end
     end
   end

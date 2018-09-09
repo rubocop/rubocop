@@ -11,6 +11,9 @@
 * [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
 * [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
 * Add new `Style/MultilineMethodSignature` cop. ([@drenmi][])
+* [#6234](https://github.com/rubocop-hq/rubocop/pull/6234): Add `Performance/ChainArrayAllocation` cop. ([@schneems][])
+* [#6136](https://github.com/rubocop-hq/rubocop/pull/6136): Add remote url in remote url download error message. ([@ShockwaveNN][])
+* [#5659](https://github.com/rubocop-hq/rubocop/issues/5659): Make `Layout/EmptyLinesAroundClassBody` aware of specifying a superclass that breaks the line. ([@koic][])
 
 ### Bug fixes
 
@@ -32,6 +35,7 @@
 * [#6142](https://github.com/rubocop-hq/rubocop/issues/6142): Ignore keyword arguments in `Rails/Delegate`. ([@sunny][])
 * [#6240](https://github.com/rubocop-hq/rubocop/issues/6240): Fix an auto-correct error for `Style/WordArray` when setting `EnforcedStyle: brackets` and using string interpolation in `%W` literal. ([@koic][])
 * [#6202](https://github.com/rubocop-hq/rubocop/issues/6202): Fix infinite loop when auto-correcting `Lint/RescueEnsureAlignment` when `end` is misaligned. The alignment and message are now based on the beginning position rather than the `end` position. ([@rrosenblum][])
+* [#6199](https://github.com/rubocop-hq/rubocop/issues/6199): Don't recommend `Date` usage in `Style/DateTime`. ([@deivid-rodriguez][])
 
 ### Changes
 
@@ -44,6 +48,7 @@
 * `Style/For` now highlights the entire statement rather than just the keyword. ([@rrosenblum][])
 * Disable `Performance/CaseWhenSplat` and its auto-correction by default. ([@rrosenblum][])
 * [#6235](https://github.com/rubocop-hq/rubocop/pull/6235): Enable `Layout/EmptyLineAfterGuardClause` cop by default. ([@koic][])
+* [#6199](https://github.com/rubocop-hq/rubocop/pull/6199): `Style/DateTime` has been moved to disabled by default. ([@deivid-rodriguez][])
 
 ## 0.58.2 (2018-07-23)
 
@@ -3541,3 +3546,5 @@
 [@robotdana]: https://github.com/robotdana
 [@bacchir]: https://github.com/bacchir
 [@khiav223577]: https://github.com/khiav223577
+[@schneems]: https://github.com/schneems
+[@ShockwaveNN]: https://github.com/ShockwaveNN
