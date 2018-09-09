@@ -736,6 +736,22 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RuboCop::ConfigLoader.default_configuration = nil
     end
 
+    context 'when a value in a hash is overridden with nil' do
+      it 'acts as if the key/value pair was removed' do
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          Style/InverseMethods:
+            InverseMethods:
+              :even?: ~
+          Style/CollectionMethods:
+            Enabled: true
+            PreferredMethods:
+              collect: ~
+        YAML
+        create_file('example.rb', 'array.collect { |e| !e.odd? }')
+        expect(cli.run([])).to eq(0)
+      end
+    end
+
     context 'when configured for rails style indentation' do
       it 'accepts rails style indentation' do
         create_file('.rubocop.yml', <<-YAML.strip_indent)

@@ -42,8 +42,21 @@ Settings in the child file (that which inherits) override those in the parent
 
 Configuration parameters that are hashes, for example `PreferredMethods` in
 `Style/CollectionMethods`, are merged with the same parameter in the parent
-configuration. Other types, such as `AllCops` / `Include` (an array), are
-overridden by the child setting.
+configuration. This means that any key-value pairs given in child configuration
+override the same keys in parent configuration. Giving `~`, YAML's
+representation of `nil`, as a value cancels the setting of the corresponding
+key in the parent configuration. For example:
+
+```yaml
+Style/CollectionMethods:
+  Enabled: true
+  PreferredMethods:
+    # No preference for collect, keep all others from default config.
+    collect: ~
+```
+
+Other types, such as `AllCops` / `Include` (an array), are overridden by the
+child setting.
 
 Arrays override because if they were merged, there would be no way to
 remove elements in child files.
