@@ -25,8 +25,10 @@ module RuboCop
         include RangeHelp
 
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
-              'aligned with `end` at %<end_loc_line>d, %<end_loc_column>d.'
-              .freeze
+              'aligned with `%<beginning>s` at ' \
+              '%<begin_loc_line>d, %<begin_loc_column>d.'.freeze
+        ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
+        RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + [:block]).freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
@@ -56,24 +58,39 @@ module RuboCop
         private
 
         def check(node)
-          end_loc = ancestor_node(node).loc.end
+          ancestor_node = ancestor_node(node)
+          alignment_loc = ancestor_node.loc.expression
           kw_loc = node.loc.keyword
 
-          return if end_loc.column == kw_loc.column
-          return if end_loc.line == kw_loc.line
+          return if alignment_loc.column == kw_loc.column
+          return if alignment_loc.line == kw_loc.line
 
           add_offense(node,
                       location: kw_loc,
-                      message: format_message(kw_loc, end_loc))
+                      message: format_message(kw_loc,
+                                              alignment_loc,
+                                              ancestor_node))
         end
 
-        def format_message(kw_loc, end_loc)
+        def format_message(kw_loc, alignment_loc, ancestor_node)
           format(MSG,
                  kw_loc: kw_loc.source,
                  kw_loc_line: kw_loc.line,
                  kw_loc_column: kw_loc.column,
-                 end_loc_line: end_loc.line,
-                 end_loc_column: end_loc.column)
+                 beginning: alignment_source(ancestor_node),
+                 begin_loc_line: alignment_loc.line,
+                 begin_loc_column: alignment_loc.column)
+        end
+
+        def alignment_source(node)
+          ending = case node.type
+                   when :def, :defs, :class, :module
+                     node.loc.name
+                   when :block, :kwbegin
+                     node.loc.begin
+                   end
+
+          range_between(node.loc.expression.begin_pos, ending.end_pos).source
         end
 
         def modifier?(node)
@@ -90,8 +107,12 @@ module RuboCop
         end
 
         def ancestor_node(node)
-          types = %i[kwbegin def defs class module]
-          types << :block if target_ruby_version >= 2.5
+          types = if target_ruby_version >= 2.5
+                    RUBY_2_5_ANCESTOR_TYPES
+                  else
+                    ANCESTOR_TYPES
+                  end
+
           node.each_ancestor(*types).first
         end
       end
