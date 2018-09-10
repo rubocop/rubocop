@@ -495,9 +495,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       home = File.dirname(File.dirname(File.dirname(File.dirname(__FILE__))))
       expect($stdout.string.lines.grep(/configuration/).map(&:chomp))
         .to eq(["For #{abs('')}:" \
-                " configuration from #{home}/config/default.yml",
-                "Inheriting configuration from #{home}/config/enabled.yml",
-                "Inheriting configuration from #{home}/config/disabled.yml"])
+                " configuration from #{home}/config/default.yml"])
     end
 
     it 'shows cop names' do
@@ -741,6 +739,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
+           /^  VersionAdded: [0-9\.]+$/,
+           /^  VersionChanged: [0-9\.]+$/,
            '  IndentationWidth:'].join("\n")
         )
       end

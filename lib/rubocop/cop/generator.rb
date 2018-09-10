@@ -122,7 +122,7 @@ module RuboCop
         ).inject
       end
 
-      def inject_config(config_file_path: 'config/enabled.yml')
+      def inject_config(config_file_path: 'config/default.yml')
         config = File.readlines(config_file_path)
         content = <<-YAML.strip_indent
           #{badge}:
@@ -138,7 +138,7 @@ module RuboCop
         File.write(config_file_path, config.join)
         output.puts <<-MESSAGE.strip_indent
           [modify] A configuration for the cop is added into #{config_file_path}.
-                   If you want to disable the cop by default, move the added config to config/disabled.yml
+                   If you want to disable the cop by default, set `Enabled` option to false.
         MESSAGE
       end
 
@@ -147,7 +147,7 @@ module RuboCop
           Do 3 steps:
             1. Add an entry to the "New features" section in CHANGELOG.md,
                e.g. "Add new `#{badge}` cop. ([@#{github_user}][])"
-            2. Modify the description of #{badge} in config/enabled.yml
+            2. Modify the description of #{badge} in config/default.yml
             3. Implement your new cop in the generated file!
         TODO
       end
