@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
 
 ## 0.59.0 (2018-09-09)
@@ -3554,3 +3555,4 @@
 [@khiav223577]: https://github.com/khiav223577
 [@schneems]: https://github.com/schneems
 [@ShockwaveNN]: https://github.com/ShockwaveNN
+[@Knack]: https://github.com/Knack
