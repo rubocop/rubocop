@@ -6,6 +6,7 @@
 
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
 * [#6242](https://github.com/rubocop-hq/rubocop/pull/6242): Fix `Style/EmptyCaseCondition` auto-correction removes comment between `case` and first `when`. ([@koic][])
+* [#6261](https://github.com/rubocop-hq/rubocop/pull/6261): Fix undefined method error for `Style/RedundantBegin` when calling `super` with a block. ([@eitoball][])
 
 ### Changes
 
