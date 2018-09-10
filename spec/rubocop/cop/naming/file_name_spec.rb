@@ -358,4 +358,12 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       expect(cop.offenses.empty?).to be(true)
     end
   end
+
+  context 'with dotfiles' do
+    let(:filename) { '.pryrc' }
+
+    it 'does not report an offense' do
+      expect(cop.offenses.empty?).to be(true)
+    end
+  end
 end
