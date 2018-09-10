@@ -84,6 +84,14 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     end
   end
 
+  context 'with snake_case names which use +' do
+    let(:filename) { 'some/dir/some_file.xlsx+mobile.axlsx' }
+
+    it 'does not report an offense' do
+      expect(cop.offenses.empty?).to be(true)
+    end
+  end
+
   context 'with non-snake-case file names with a shebang' do
     let(:filename) { '/some/dir/test-case' }
     let(:source) { <<-RUBY.strip_indent }

@@ -98,7 +98,9 @@ module RuboCop
         def filename_good?(basename)
           basename = basename.sub(/^\./, '')
           basename = basename.sub(/\.[^\.]+$/, '')
-          basename =~ (regex || SNAKE_CASE)
+          basename.split('+').all? do |words|
+            words =~ (regex || SNAKE_CASE)
+          end
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity

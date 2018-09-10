@@ -15,6 +15,7 @@
 ### Changes
 
 * [#6272](https://github.com/rubocop-hq/rubocop/pull/6272): Make `Lint/UnreachableCode` detect `exit`, `exit!` and `abort`. ([@hoshinotsuyoshi][])
+* Add `+` to allowed file names of `Naming/FileName`. ([@yensaki][])
 
 ## 0.59.0 (2018-09-09)
 
@@ -3565,3 +3566,4 @@
 [@schneems]: https://github.com/schneems
 [@ShockwaveNN]: https://github.com/ShockwaveNN
 [@Knack]: https://github.com/Knack
+[@yensaki]: https://github.com/yensaki
