@@ -49,4 +49,10 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
 
     expect(new_source).to eq('User.all.find_each { |u| u.x }')
   end
+
+  it 'registers an offense with non-send ancestors' do
+    inspect_source('class C; User.all.each { |u| u.x }; end')
+
+    expect(cop.messages).to eq(['Use `find_each` instead of `each`.'])
+  end
 end
