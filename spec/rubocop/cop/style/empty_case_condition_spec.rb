@@ -53,6 +53,41 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
 
+    context 'with multiple when branches and an `else` with code comments' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          case
+          # condition a
+          when 1 == 2
+            foo
+          # condition b
+          when 1 == 1
+            bar
+          # condition c
+          else
+            baz
+          end
+        RUBY
+      end
+
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          # condition a
+          if 1 == 2
+            foo
+          # condition b
+          elsif 1 == 1
+            bar
+          # condition c
+          else
+            baz
+          end
+        RUBY
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
+
     context 'with multiple when branches and no else' do
       let(:source) do
         <<-RUBY.strip_indent
