@@ -47,7 +47,10 @@ module RuboCop
           if last_argument_is_heredoc?(node)
             heredoc_node = last_argument(node)
 
-            num_of_heredoc_lines = heredoc_node.children.size
+            heredoc_body = heredoc_node.loc.heredoc_body
+            num_of_heredoc_lines =
+              heredoc_body.last_line - heredoc_body.first_line
+
             line = node.last_line + num_of_heredoc_lines + END_OF_HEREDOC_LINE
 
             return if next_line_empty?(line)
