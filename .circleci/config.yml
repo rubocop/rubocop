@@ -125,6 +125,26 @@ jobs:
     <<: *rubocop_env
     <<: *steps
 
+  code-climate:
+    docker:
+      - image: circleci/ruby:2.5
+    environment:
+      CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Run specs
+          command: |
+            ./cc-test-reporter before-build
+            rake report_coverage
+            ./cc-test-reporter after-build --exit-code $?
+
 workflows:
   version: 2
   build:
@@ -144,3 +164,4 @@ workflows:
       - jruby-9.2-spec
       - jruby-9.2-ascii_spec
       - jruby-9.2-rubocop
+      - code-climate

@@ -38,6 +38,13 @@ namespace :parallel do
   end
 end
 
+desc 'Run RSpec with code coverage on CI, only on master branch'
+task :report_coverage do
+  return if ENV['CIRCLE_BRANCH'] != 'master'
+
+  Rake::Task['coverage'].execute
+end
+
 desc 'Run RSpec with code coverage'
 task :coverage do
   ENV['COVERAGE'] = 'true'
