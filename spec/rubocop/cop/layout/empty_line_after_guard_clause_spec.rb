@@ -51,6 +51,17 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
   end
 
   it 'registers an offense for next guard clause not followed by empty line ' \
+     'when guard clause is after heredoc including string interpolation' do
+    expect_offense(<<-'RUBY'.strip_indent)
+      raise(<<-FAIL) unless true
+        #{1 + 1}
+      FAIL
+      ^^^^ Add empty line after guard clause.
+      1
+    RUBY
+  end
+
+  it 'registers an offense for next guard clause not followed by empty line ' \
      'when guard clause is after condition without method invocation' do
     expect_no_offenses(<<-'RUBY'.strip_indent)
       def foo
