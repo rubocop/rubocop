@@ -32,6 +32,13 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
+    it 'sorts configuration keys alphabetically' do
+      expected = configuration_keys.sort
+      configuration_keys.each_with_index do |key, idx|
+        expect(key).to eq expected[idx]
+      end
+    end
+
     it 'has a SupportedStyles for all EnforcedStyle ' \
       'and EnforcedStyle is valid' do
       errors = []
@@ -61,32 +68,6 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
         expect(msg).to match(/(?:[.?]|(?:\[.+\])|%s)$/)
       end
-    end
-  end
-
-  describe 'config/disabled.yml' do
-    include_context 'configuration file', 'config/disabled.yml'
-
-    it 'disables all cops in the file' do
-      expect(raw_configuration)
-        .to all(match(hash_including('Enabled' => false)))
-    end
-
-    it 'sorts configuration keys alphabetically' do
-      expect(configuration_keys).to eq configuration_keys.sort
-    end
-  end
-
-  describe 'config/enabled.yml' do
-    include_context 'configuration file', 'config/enabled.yml'
-
-    it 'enables all cops in the file' do
-      expect(raw_configuration)
-        .to all(match(hash_including('Enabled' => true)))
-    end
-
-    it 'sorts configuration keys alphabetically' do
-      expect(configuration_keys).to eq configuration_keys.sort
     end
   end
 
