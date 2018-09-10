@@ -235,5 +235,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end
       RUBY
     end
+
+    it 'accepts super with block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def a_method
+          super do |arg|
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
   end
 end
