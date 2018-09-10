@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     head + body + tail
   end
 
-  %w[return next break retry redo throw raise fail].each do |t|
+  %w[return next break retry redo throw raise fail exit exit! abort].each do |t|
     it "registers an offense for `#{t}` before other statements" do
       expect_offense(wrap(<<-RUBY))
         #{t}

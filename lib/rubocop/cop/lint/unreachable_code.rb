@@ -56,7 +56,7 @@ module RuboCop
             return next break retry redo
             (send
              {nil? (const {nil? cbase} :Kernel)}
-             {:raise :fail :throw}
+             {:raise :fail :throw :exit :exit! :abort}
              ...)
           }
         PATTERN
