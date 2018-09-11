@@ -131,6 +131,29 @@ jobs:
     steps:
       *rubocop_steps
 
+  # Latest MRI release candidate
+  ruby-rc-spec:
+    docker:
+      - image: circleci/ruby:rc
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
+  ruby-rc-ascii_spec:
+    docker:
+      - image: circleci/ruby:rc
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
+  ruby-rc-rubocop:
+    docker:
+      - image: circleci/ruby:rc
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
+
   # JRuby 9.2
   jruby-9.2-spec:
     docker:
@@ -217,6 +240,11 @@ workflows:
             - cc-setup
       - ruby-2.5-ascii_spec
       - ruby-2.5-rubocop
+      - ruby-rc-spec:
+          requires:
+            - cc-setup
+      - ruby-rc-ascii_spec
+      - ruby-rc-rubocop
       - jruby-9.2-spec:
           requires:
             - cc-setup
