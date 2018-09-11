@@ -35,7 +35,19 @@ ascii_spec_steps: &ascii_spec_steps
 rubocop_steps: &rubocop_steps
   - checkout
   - run: bundle install
-  - run: TASK="internal_investigation" bash .travis.sh
+  - run: bundle exec rake internal_investigation
+  - run:
+      name: Check syntax and build documentation
+      # Running `rake yard` crashes in JRuby
+      command: |
+        if [ -z "$JRUBY_OPTS" ]; then
+          bundle exec rake documentation_syntax_check generate_cops_documentation
+        fi
+  - run:
+      name: Check requiring libraries successfully
+      # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
+      command: |
+        ruby -I lib -r rubocop -e 'exit 0'
 
 jobs:
 
