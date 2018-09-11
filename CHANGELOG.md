@@ -7,6 +7,10 @@
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
 * [#6242](https://github.com/rubocop-hq/rubocop/pull/6242): Fix `Style/EmptyCaseCondition` auto-correction removes comment between `case` and first `when`. ([@koic][])
 
+### Changes
+
+* [#6272](https://github.com/rubocop-hq/rubocop/pull/6272): Make `Lint/UnreachableCode` detect `exit`, `exit!` and `abort`. ([@hoshinotsuyoshi][])
+
 ## 0.59.0 (2018-09-09)
 
 ### New features
