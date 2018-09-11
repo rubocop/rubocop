@@ -65,7 +65,12 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            node_range = range_by_whole_lines(node.source_range)
+            node_range = if node.respond_to?(:heredoc?) && node.heredoc?
+                           range_by_whole_lines(node.loc.heredoc_body)
+                         else
+                           range_by_whole_lines(node.source_range)
+                         end
+
             corrector.insert_after(node_range, "\n")
           end
         end
@@ -109,19 +114,17 @@ module RuboCop
         end
 
         def last_argument_is_heredoc?(node)
-          last_children = node.children.last
+          last_children = node.if_branch
 
           return false unless last_children && last_children.send_type?
 
           last_argument = last_argument(node)
 
-          last_argument &&
-            (last_argument.str_type? || last_argument.dstr_type?) &&
-            last_argument.heredoc?
+          last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
         end
 
         def last_argument(node)
-          node.children.last.last_argument
+          node.if_branch.children.last
         end
       end
     end
