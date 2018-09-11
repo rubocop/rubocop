@@ -55,4 +55,8 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
 
     expect(cop.messages).to eq(['Use `find_each` instead of `each`.'])
   end
+
+  it 'does not register an offense when using order(...) earlier' do
+    expect_no_offenses('User.order(:name).all.each { |u| u.something }')
+  end
 end

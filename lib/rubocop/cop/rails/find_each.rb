@@ -39,7 +39,13 @@ module RuboCop
         private
 
         def method_chain(node)
-          [*node.ancestors.take_while(&:send_type?), node].map(&:method_name)
+          chain = []
+          loop do
+            chain << node.method_name
+            node = node.receiver
+            break unless node.send_type?
+          end
+          chain
         end
 
         def ignored_by_find_each?(relation_method)
