@@ -458,6 +458,12 @@ RSpec.describe RuboCop::Config do
 
       it { is_expected.to be false }
     end
+
+    context 'when the passed path is a gemspec' do
+      let(:file_path) { '/home/foo/project/my-project.gemspec' }
+
+      it { is_expected.to be true }
+    end
   end
 
   describe '#patterns_to_include' do
