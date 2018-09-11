@@ -1,5 +1,4 @@
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](http://badge.fury.io/rb/rubocop)
-[![Travis Status](https://travis-ci.org/rubocop-hq/rubocop.svg?branch=master)](https://travis-ci.org/rubocop-hq/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
 [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/sj3ye7n5690d0nvg?svg=true)](https://ci.appveyor.com/project/bbatsov/rubocop)
 [![Coverage Status](https://img.shields.io/codeclimate/coverage/github/bbatsov/rubocop.svg)](https://codeclimate.com/github/bbatsov/rubocop)

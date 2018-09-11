@@ -1,35 +1,9 @@
 sudo: false
-cache: bundler
 language: ruby
 dist: trusty
 rvm:
-  - jruby-9.2.0.0
-  - jruby-head
-  - 2.2.10
-  - 2.3.7
-  - 2.4.4
-  - 2.5.1
-  - ruby-head
-env:
-  global:
-    - JRUBY_OPTS='-J-Xmx1000M'
-    # Travis CI container has two cores, but Ruby can see 32 cores unfortunately.
-    # See https://github.com/rubocop-hq/rubocop/pull/5719
-    #     https://docs.travis-ci.com/user/reference/overview/#Virtualisation-Environment-vs-Operating-System
-    - TEST_QUEUE_WORKERS=2
-  matrix:
-    - 'TASK=spec'
-    - 'TASK=ascii_spec'
-    - 'TASK=internal_investigation'
-matrix:
-  allow_failures:
-    - rvm: ruby-head
-    - rvm: jruby-head
-  fast_finish: true
-before_install:
-  - gem update --system
-  - gem update --remote bundler
+  - 2.4.1
 install:
-  - bundle install --retry=3
+  - echo "noop install"
 script:
-  - bash .travis.sh
+  - echo "noop script"
