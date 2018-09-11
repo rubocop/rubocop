@@ -37,13 +37,6 @@ rubocop_steps: &rubocop_steps
   - run: bundle install
   - run: bundle exec rake internal_investigation
   - run:
-      name: Check syntax and build documentation
-      # Running `rake yard` crashes in JRuby
-      command: |
-        if [ -z "$JRUBY_OPTS" ]; then
-          bundle exec rake documentation_syntax_check generate_cops_documentation
-        fi
-  - run:
       name: Check requiring libraries successfully
       # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
       command: |
@@ -227,10 +220,27 @@ jobs:
             ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
 
+  # Miscellaneous tasks
+  documentation-checks:
+    docker:
+      - image: circleci/ruby:2.5
+    environment:
+      <<: *common_env
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Check documentation syntax
+          command: bundle exec rake documentation_syntax_check
+      - run:
+          name: Build documentation and check that manual files are in sync
+          command: bundle exec rake generate_cops_documentation
+
 workflows:
   version: 2
   build:
     jobs:
+      - documentation-checks
       - cc-setup
       - ruby-2.2-spec:
           requires:
