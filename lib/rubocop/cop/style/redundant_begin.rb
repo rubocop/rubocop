@@ -65,7 +65,7 @@ module RuboCop
         def on_block(node)
           return if target_ruby_version < 2.5
 
-          return if node.send_node.stabby_lambda?
+          return if node.send_node.lambda_literal?
           return if node.braces?
 
           check(node)

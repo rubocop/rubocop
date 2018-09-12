@@ -50,7 +50,7 @@ module RuboCop
       #     baz
       #   end
       class UnneededSplatExpansion < Cop
-        MSG = 'Unnecessary splat expansion.'.freeze
+        MSG = 'Replace splat expansion with comma separated values.'.freeze
         ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'.freeze
         PERCENT_W = '%w'.freeze
         PERCENT_CAPITAL_W = '%W'.freeze

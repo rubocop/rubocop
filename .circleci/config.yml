@@ -1,11 +1,5 @@
 version: 2
 
-steps: &steps
-  steps:
-    - checkout
-    - run: bundle install
-    - run: bash .travis.sh
-
 jruby_env: &jruby_env
   # By default we have 2 CPUs and 4GB ram available
   # https://circleci.com/docs/2.0/configuration-reference/#resource_class
@@ -17,20 +11,36 @@ common_env: &common_env
   # See https://github.com/tmm1/test-queue#environment-variables
   TEST_QUEUE_WORKERS: 2
 
-spec_env: &spec_env
-  environment:
-    TASK: "spec"
-    <<: *common_env
+spec_steps: &spec_steps
+  - checkout
+  - attach_workspace:
+      at: ~/project/tmp
+  - run: bundle install
+  - run:
+      name: Run specs
+      command: |
+        ./tmp/cc-test-reporter before-build
+        COVERAGE=true bundle exec rake spec
+        ./tmp/cc-test-reporter format-coverage --output tmp/codeclimate.$CIRCLE_JOB.json
+  - persist_to_workspace:
+      root: tmp
+      paths:
+        - codeclimate.*.json
 
-ascii_spec_env: &ascii_spec_env
-  environment:
-    TASK: "ascii_spec"
-    <<: *common_env
+ascii_spec_steps: &ascii_spec_steps
+  - checkout
+  - run: bundle install
+  - run: bundle exec rake ascii_spec
 
-rubocop_env: &rubocop_env
-  environment:
-    TASK: "internal_investigation"
-    <<: *common_env
+rubocop_steps: &rubocop_steps
+  - checkout
+  - run: bundle install
+  - run: bundle exec rake internal_investigation
+  - run:
+      name: Check requiring libraries successfully
+      # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
+      command: |
+        ruby -I lib -r rubocop -e 'exit 0'
 
 jobs:
 
@@ -38,109 +48,235 @@ jobs:
   ruby-2.2-spec:
     docker:
       - image: circleci/ruby:2.2
-    <<: *spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
   ruby-2.2-ascii_spec:
     docker:
       - image: circleci/ruby:2.2
-    <<: *ascii_spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
   ruby-2.2-rubocop:
     docker:
       - image: circleci/ruby:2.2
-    <<: *rubocop_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
 
   # Ruby 2.3
   ruby-2.3-spec:
     docker:
       - image: circleci/ruby:2.3
-    <<: *spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
   ruby-2.3-ascii_spec:
     docker:
       - image: circleci/ruby:2.3
-    <<: *ascii_spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
   ruby-2.3-rubocop:
     docker:
       - image: circleci/ruby:2.3
-    <<: *rubocop_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
 
   # Ruby 2.4
   ruby-2.4-spec:
     docker:
       - image: circleci/ruby:2.4
-    <<: *spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
   ruby-2.4-ascii_spec:
     docker:
       - image: circleci/ruby:2.4
-    <<: *ascii_spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
   ruby-2.4-rubocop:
     docker:
       - image: circleci/ruby:2.4
-    <<: *rubocop_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
 
   # Ruby 2.5
   ruby-2.5-spec:
     docker:
       - image: circleci/ruby:2.5
-    <<: *spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
   ruby-2.5-ascii_spec:
     docker:
       - image: circleci/ruby:2.5
-    <<: *ascii_spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
   ruby-2.5-rubocop:
     docker:
       - image: circleci/ruby:2.5
-    <<: *rubocop_env
-    <<: *steps
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
+
+  # Latest MRI release candidate
+  ruby-rc-spec:
+    docker:
+      - image: circleci/ruby:rc
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
+  ruby-rc-ascii_spec:
+    docker:
+      - image: circleci/ruby:rc
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
+  ruby-rc-rubocop:
+    docker:
+      - image: circleci/ruby:rc
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
 
   # JRuby 9.2
   jruby-9.2-spec:
     docker:
       - image: circleci/jruby:9.2
-        environment:
-          <<: *jruby_env
-    <<: *spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+      <<: *jruby_env
+    steps:
+      *spec_steps
   jruby-9.2-ascii_spec:
     docker:
       - image: circleci/jruby:9.2
-        environment:
-          <<: *jruby_env
-    <<: *ascii_spec_env
-    <<: *steps
+    environment:
+      <<: *common_env
+      <<: *jruby_env
+    steps:
+      *ascii_spec_steps
   jruby-9.2-rubocop:
     docker:
       - image: circleci/jruby:9.2
+    environment:
+      <<: *common_env
+      <<: *jruby_env
+    steps:
+      *rubocop_steps
+
+  # Job for downloading the Code Climate test reporter
+  cc-setup:
+    docker:
+      - image: circleci/ruby:2.5
+    environment:
+      <<: *common_env
+    steps:
+      - run:
+          name: Download Code Climate test-reporter
+          command: |
+            mkdir -p tmp/
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+            chmod +x ./tmp/cc-test-reporter
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - cc-test-reporter
+
+  # Job for merging code coverage results and sending them to Code Climate
+  cc-upload-coverage:
+    docker:
+      - image: circleci/ruby:2.5
         environment:
-          <<: *jruby_env
-    <<: *rubocop_env
-    <<: *steps
+          CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
+    environment:
+      <<: *common_env
+    steps:
+      - attach_workspace:
+          at: ~/project/tmp
+      - run:
+          name: Upload coverage results to Code Climate
+          command: |
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
+
+  # Miscellaneous tasks
+  documentation-checks:
+    docker:
+      - image: circleci/ruby:2.5
+    environment:
+      <<: *common_env
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Check documentation syntax
+          command: bundle exec rake documentation_syntax_check
+      - run:
+          name: Build documentation and check that manual files are in sync
+          command: bundle exec rake generate_cops_documentation
 
 workflows:
   version: 2
   build:
     jobs:
-      - ruby-2.2-spec
+      - documentation-checks
+      - cc-setup
+      - ruby-2.2-spec:
+          requires:
+            - cc-setup
       - ruby-2.2-ascii_spec
       - ruby-2.2-rubocop
-      - ruby-2.3-spec
+      - ruby-2.3-spec:
+          requires:
+            - cc-setup
       - ruby-2.3-ascii_spec
       - ruby-2.3-rubocop
-      - ruby-2.4-spec
+      - ruby-2.4-spec:
+          requires:
+            - cc-setup
       - ruby-2.4-ascii_spec
       - ruby-2.4-rubocop
-      - ruby-2.5-spec
+      - ruby-2.5-spec:
+          requires:
+            - cc-setup
       - ruby-2.5-ascii_spec
       - ruby-2.5-rubocop
-      - jruby-9.2-spec
+      - ruby-rc-spec:
+          requires:
+            - cc-setup
+      - ruby-rc-ascii_spec
+      - ruby-rc-rubocop
+      - jruby-9.2-spec:
+          requires:
+            - cc-setup
       - jruby-9.2-ascii_spec
       - jruby-9.2-rubocop
+
+      - cc-upload-coverage:
+          requires:
+            - ruby-2.2-spec
+            - ruby-2.3-spec
+            - ruby-2.4-spec
+            - ruby-2.5-spec
+            - jruby-9.2-spec

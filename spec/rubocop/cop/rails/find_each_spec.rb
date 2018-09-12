@@ -36,6 +36,10 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
   it_behaves_like('register_offense', 'where(name: name)')
   it_behaves_like('register_offense', 'where.not(name: name)')
 
+  it 'does not register an offense when called on a constant' do
+    expect_no_offenses('FOO.each { |u| u.x }')
+  end
+
   it 'does not register an offense when using find_by' do
     expect_no_offenses('User.all.find_each { |u| u.x }')
   end
@@ -44,5 +48,15 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
     new_source = autocorrect_source('User.all.each { |u| u.x }')
 
     expect(new_source).to eq('User.all.find_each { |u| u.x }')
+  end
+
+  it 'registers an offense with non-send ancestors' do
+    inspect_source('class C; User.all.each { |u| u.x }; end')
+
+    expect(cop.messages).to eq(['Use `find_each` instead of `each`.'])
+  end
+
+  it 'does not register an offense when using order(...) earlier' do
+    expect_no_offenses('User.order(:name).all.each { |u| u.something }')
   end
 end

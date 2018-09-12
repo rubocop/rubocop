@@ -91,6 +91,7 @@ module RuboCop
         end
 
         def filename_good?(basename)
+          basename = basename.sub(/^\./, '')
           basename = basename.sub(/\.[^\.]+$/, '')
           basename =~ (regex || SNAKE_CASE)
         end

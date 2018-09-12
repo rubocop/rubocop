@@ -1,5 +1,15 @@
 ## Basic Usage
 
+RuboCop has three primary uses:
+
+* Code style checker (a.k.a. linter)
+* A replacement for `ruby -w` (a subset of its linting capabilities)
+* Code formatter
+
+In the next sections we'll briefly cover all of them.
+
+### RuboCop as a code style checker
+
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
 
@@ -50,6 +60,39 @@ test.rb:4:5: W: Layout/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
 1 file inspected, 5 offenses detected
 ```
 
+#### Auto-correcting offenses
+
+You can also run RuboCop in an auto-correct mode, where it will try to automatically fix the problems it found in your code:
+
+```
+rubocop -a
+```
+
+Note that not all offenses are auto-correctable (either because
+auto-correct is not implemented for some cop, or because there's no
+way to determine how to correct some problem).
+
+#### RuboCop as a replacement for `ruby -w`
+
+RuboCop natively implements almost all `ruby -w` lint warning checks, and then some. If you want you can use RuboCop
+simply as a replacement for `ruby -w`:
+
+```
+rubocop -l
+```
+
+### RuboCop as a formatter
+
+There's a handy shortcut to run auto-correction only on code layout (a.k.a. formatting) offenses:
+
+```
+rubocop -x
+```
+
+Note that this option was introduced in RuboCop 0.57.0.
+
+## Other useful command-line flags
+
 For more details check the available command-line options:
 
 ```sh
@@ -69,10 +112,11 @@ Command flag                    | Description
 `-c/--config`                   | Run with specified config file.
 `-f/--format`                   | Choose a formatter.
 `-o/--out`                      | Write output to a file instead of STDOUT.
-`-r/--require`                  | Require Ruby file (see [Loading Extensions](#loading-extensions)).
+`-r/--require`                  | Require Ruby file (see [Loading Extensions](extensions.md#loading-extensions)).
 `-R/--rails`                    | Run extra Rails cops.
 `-l/--lint`                     | Run only lint cops.
 `-a/--auto-correct`             | Auto-correct certain offenses. *Note:* Experimental - use with caution.
+`-x/--fix-layout`               | Auto-correct only code layout (formatting) offenses.
 `--only`                        | Run only the specified cop(s) and/or cops in the specified departments.
 `--except`                      | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 `--auto-gen-config`             | Generate a configuration file acting as a TODO list.
@@ -80,7 +124,7 @@ Command flag                    | Description
 `--no-auto-gen-timestamp`       | Don't include the date and time when --auto-gen-config was run in the config file it generates
 `--exclude-limit`               | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `--show-cops`                   | Shows available cops and their configuration.
-`--fail-level`                  | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
+`--fail-level`                  | Minimum [severity](configuration.md#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 `--display-only-fail-level-offenses`           | Only output offense messages at the specified `--fail-level` or above
 `-s/--stdin`                    | Pipe source from STDIN. This is useful for editor integration.
 `--[no-]color`                  | Force color output on or off.
@@ -99,10 +143,10 @@ Thus, the options have the following order of precedence (from highest to lowest
 
 RuboCop exits with the following status codes:
 
-- 0 if no offenses are found, or if the severity of all offenses are less than
+- `0` if no offenses are found, or if the severity of all offenses are less than
   `--fail-level`. (By default, if you use `--auto-correct`, offenses which are
   auto-corrected do not cause RuboCop to fail.)
-- 1 if one or more offenses equal or greater to `--fail-level` are found. (By
+- `1` if one or more offenses equal or greater to `--fail-level` are found. (By
   default, this is any offense which is not auto-corrected.)
-- 2 if RuboCop terminates abnormally due to invalid configuration, invalid CLI
+- `2` if RuboCop terminates abnormally due to invalid configuration, invalid CLI
   options, or an internal error.

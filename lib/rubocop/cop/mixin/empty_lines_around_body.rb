@@ -21,14 +21,11 @@ module RuboCop
         def_node_matcher :constant_definition?, '{class module}'
         def_node_matcher :empty_line_required?, '{def defs class module}'
 
-        def check(node, body)
-          # When style is `empty_lines`, if the body is empty, we don't enforce
-          # the presence OR absence of an empty line
-          # But if style is `no_empty_lines`, there must not be an empty line
-          return unless body || style == :no_empty_lines
+        def check(node, body, adjusted_first_line: nil)
+          return if valid_body_style?(body)
           return if node.single_line?
 
-          first_line = node.source_range.first_line
+          first_line = adjusted_first_line || node.source_range.first_line
           last_line = node.source_range.last_line
 
           case style
@@ -161,6 +158,13 @@ module RuboCop
 
         def deferred_message(node)
           format(MSG_DEFERRED, type: node.type)
+        end
+
+        def valid_body_style?(body)
+          # When style is `empty_lines`, if the body is empty, we don't enforce
+          # the presence OR absence of an empty line
+          # But if style is `no_empty_lines`, there must not be an empty line
+          body.nil? && style != :no_empty_lines
         end
       end
     end

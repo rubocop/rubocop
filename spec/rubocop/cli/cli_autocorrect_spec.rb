@@ -645,8 +645,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       def func
         foo
         bar
-        rescue StandardError
-          baz
+      rescue StandardError
+        baz
         end
 
       def func

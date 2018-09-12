@@ -10,8 +10,12 @@ install:
 
 build: off
 
+# We are intentionally starting Rake a few times here, because we have seen some
+# encoding issues when all tasks are run in just one process (`rake default`).
 test_script:
-  - bundle exec rake
+  - bundle exec rake spec
+  - bundle exec rake ascii_spec
+  - bundle exec rake internal_investigation
 
 environment:
   matrix:

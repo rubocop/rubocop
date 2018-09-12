@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# For code coverage measurements to work properly, `SimpleCov` should be loaded
+# and started before any application code is loaded.
+require 'simplecov' if ENV['COVERAGE']
+
 require 'bundler'
 require 'bundler/gem_tasks'
 begin
@@ -10,38 +14,14 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 require 'rake'
-require 'rspec/core'
-require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-RSpec::Core::RakeTask.new(:spec) { |t| t.ruby_opts = '-E UTF-8' }
-RSpec::Core::RakeTask.new(:ascii_spec) { |t| t.ruby_opts = '-E ASCII' }
-
-desc 'Run test and RuboCop in parallel'
-task parallel: %i[
-  documentation_syntax_check generate_cops_documentation
-  parallel:spec parallel:ascii_spec
-  internal_investigation
-]
-
-namespace :parallel do
-  desc 'Run RSpec in parallel'
-  task :spec do
-    sh('rspec-queue spec/')
-  end
-
-  desc 'Run RSpec in parallel with ASCII encoding'
-  task :ascii_spec do
-    sh('RUBYOPT="$RUBYOPT -E ASCII" rspec-queue spec/')
-  end
-end
-
-desc 'Run RSpec with code coverage'
-task :coverage do
-  ENV['COVERAGE'] = 'true'
-  Rake::Task['spec'].execute
+desc 'Deprecated: Run test and RuboCop in parallel'
+task :parallel do
+  warn '`rake parallel` is deprecated. Use `rake default` instead.'
+  Rake::Task[:default].execute
 end
 
 desc 'Run RuboCop over itself'

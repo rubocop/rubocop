@@ -327,6 +327,109 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
       RUBY
     end
 
+    it 'when using an allowed variable receiver' do
+      cop_config['AllowedReceivers'] = ['gateway']
+      expect_no_offenses(<<-RUBY.strip_indent)
+        gateway = true
+        gateway.#{method}
+        gateway.#{method} { |t| t.name = 'Tom' }
+
+        merchant.gateway = true
+        merchant.gateway.#{method}
+        merchant.gateway.#{method} { |t| t.name = 'Tom' }
+      RUBY
+    end
+
+    it 'when using an allowed method receiver' do
+      cop_config['AllowedReceivers'] = ['customer']
+      expect_no_offenses(<<-RUBY.strip_indent)
+        customer.#{method}
+        merchant.customer.#{method}
+        customer(true).#{method}
+        merchant.customer(true).#{method}
+        customer.#{method} { |t| t.name = 'Tom' }
+        merchant.customer.#{method} { |t| t.name = 'Tom' }
+      RUBY
+    end
+
+    it 'when using an allowed const receiver' do
+      cop_config['AllowedReceivers'] = ['NonActiveRecord']
+      expect_no_offenses(<<-RUBY.strip_indent)
+        NonActiveRecord.#{method}
+        NameSpace::NonActiveRecord.#{method}
+        ::NonActiveRecord.#{method}
+        NonActiveRecord::#{method}
+      RUBY
+    end
+
+    it 'when using an allowed namespaced const receiver' do
+      cop_config['AllowedReceivers'] = ['NameSpace::NonActiveRecord']
+      expect_no_offenses(<<-RUBY.strip_indent)
+        NameSpace::NonActiveRecord.#{method}
+        ::NameSpace::NonActiveRecord.#{method}
+        NameSpace::NonActiveRecord::#{method}
+      RUBY
+    end
+
+    it 'when using only part of an allowed namespaced const receiver' do
+      cop_config['AllowedReceivers'] = ['NameSpace::NonActiveRecord']
+      inspect_source(<<-RUBY.strip_indent)
+        NonActiveRecord.#{method}
+      RUBY
+
+      expect(cop.messages)
+        .to eq(["Use `#{method}!` instead of `#{method}` " \
+                'if the return value is not checked.'])
+    end
+
+    it 'when using a namespaced const with an allowed absolute const' do
+      cop_config['AllowedReceivers'] = ['::NonActiveRecord']
+      inspect_source(<<-RUBY.strip_indent)
+        NameSpace::NonActiveRecord.#{method}
+      RUBY
+
+      expect(cop.messages)
+        .to eq(["Use `#{method}!` instead of `#{method}` " \
+                'if the return value is not checked.'])
+    end
+
+    it 'when using an allowed method chain receiver' do
+      cop_config['AllowedReceivers'] = ['merchant.gateway']
+      expect_no_offenses(<<-RUBY.strip_indent)
+        merchant.gateway.#{method}
+      RUBY
+    end
+
+    it 'when using only part of an allowed method chain receiver' do
+      cop_config['AllowedReceivers'] = ['merchant.gateway']
+      inspect_source(<<-RUBY.strip_indent)
+        gateway.#{method}
+      RUBY
+
+      expect(cop.messages)
+        .to eq(["Use `#{method}!` instead of `#{method}` " \
+                'if the return value is not checked.'])
+    end
+
+    it 'when using an allowed class and method receiver' do
+      cop_config['AllowedReceivers'] = ['A::B.merchant.gateway']
+      expect_no_offenses(<<-RUBY.strip_indent)
+        A::B.merchant.gateway.#{method}
+        A::B::merchant::gateway::#{method}
+      RUBY
+    end
+
+    it 'when using only part of an allowed class and method receiver' do
+      cop_config['AllowedReceivers'] = ['A::B.merchant.gateway']
+      inspect_source(<<-RUBY.strip_indent)
+        B.merchant.#{method}
+      RUBY
+
+      expect(cop.messages)
+        .to eq(["Use `#{method}!` instead of `#{method}` " \
+                'if the return value is not checked.'])
+    end
+
     # Bug: https://github.com/rubocop-hq/rubocop/issues/4264
     it 'when using the assigned variable as value in a hash' do
       inspect_source(<<-RUBY.strip_indent)

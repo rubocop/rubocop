@@ -20,6 +20,9 @@ module RuboCop
       # By default it will also allow implicit returns from methods and blocks.
       # that behavior can be turned off with `AllowImplicitReturn: false`.
       #
+      # You can permit receivers that are giving false positives with
+      # `AllowedReceivers: []`
+      #
       # @example
       #
       #   # bad
@@ -73,6 +76,26 @@ module RuboCop
       #   def save_user
       #     return user.save
       #   end
+      #
+      # @example AllowedReceivers: ['merchant.customers', 'Service::Mailer']
+      #
+      #   # bad
+      #   merchant.create
+      #   customers.builder.save
+      #   Mailer.create
+      #
+      #   module Service::Mailer
+      #     self.create
+      #   end
+      #
+      #   # good
+      #   merchant.customers.create
+      #   MerchantService.merchant.customers.destroy
+      #   Service::Mailer.update(message: 'Message')
+      #   ::Service::Mailer.update
+      #   Services::Service::Mailer.update(message: 'Message')
+      #   Service::Mailer::update
+      #
       class SaveBang < Cop
         include NegativeConditional
 
@@ -207,6 +230,47 @@ module RuboCop
             single_negative?(condition)
         end
 
+        def allowed_receiver?(node)
+          return false unless node.receiver
+          return false unless cop_config['AllowedReceivers']
+
+          cop_config['AllowedReceivers'].any? do |allowed_receiver|
+            receiver_chain_matches?(node, allowed_receiver)
+          end
+        end
+
+        def receiver_chain_matches?(node, allowed_receiver)
+          allowed_receiver.split('.').reverse.all? do |receiver_part|
+            node = node.receiver
+            return false unless node
+
+            if node.variable?
+              node.node_parts.first == receiver_part.to_sym
+            elsif node.send_type?
+              node.method_name == receiver_part.to_sym
+            elsif node.const_type?
+              const_matches?(node.const_name, receiver_part)
+            end
+          end
+        end
+
+        # Const == Const
+        # ::Const == ::Const
+        # ::Const == Const
+        # Const == ::Const
+        # NameSpace::Const == Const
+        # NameSpace::Const == NameSpace::Const
+        # NameSpace::Const != ::Const
+        # Const != NameSpace::Const
+        def const_matches?(const, allowed_const)
+          parts = allowed_const.split('::').reverse.zip(
+            const.split('::').reverse
+          )
+          parts.all? do |(allowed_part, const_part)|
+            allowed_part == const_part.to_s
+          end
+        end
+
         def implicit_return?(node)
           return false unless cop_config['AllowImplicitReturn']
 
@@ -232,7 +296,9 @@ module RuboCop
         end
 
         def persist_method?(node, methods = PERSIST_METHODS)
-          methods.include?(node.method_name) && expected_signature?(node)
+          methods.include?(node.method_name) &&
+            expected_signature?(node) &&
+            !allowed_receiver?(node)
         end
 
         # Check argument signature as no arguments or one hash

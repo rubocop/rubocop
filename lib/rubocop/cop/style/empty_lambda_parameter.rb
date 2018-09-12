@@ -26,7 +26,7 @@ module RuboCop
           send_node = node.send_node
           return unless send_node.send_type?
 
-          check(node) if node.send_node.stabby_lambda?
+          check(node) if node.send_node.lambda_literal?
         end
 
         def autocorrect(node)

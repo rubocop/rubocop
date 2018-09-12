@@ -2,6 +2,20 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
+* [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
+* [#6242](https://github.com/rubocop-hq/rubocop/pull/6242): Fix `Style/EmptyCaseCondition` auto-correction removes comment between `case` and first `when`. ([@koic][])
+* [#6261](https://github.com/rubocop-hq/rubocop/pull/6261): Fix undefined method error for `Style/RedundantBegin` when calling `super` with a block. ([@eitoball][])
+* [#6263](https://github.com/rubocop-hq/rubocop/issues/6263): Fix an error `Layout/EmptyLineAfterGuardClause` when guard clause is after heredoc including string interpolation. ([@koic][])
+
+### Changes
+
+* [#6272](https://github.com/rubocop-hq/rubocop/pull/6272): Make `Lint/UnreachableCode` detect `exit`, `exit!` and `abort`. ([@hoshinotsuyoshi][])
+
+## 0.59.0 (2018-09-09)
+
 ### New features
 
 * [#6109](https://github.com/rubocop-hq/rubocop/pull/6109): Add new `Bundler/GemComment` cop. ([@sunny][])
@@ -10,6 +24,10 @@
 * Add autocorrect to `Style/For`. ([@rrosenblum][])
 * [#6173](https://github.com/rubocop-hq/rubocop/pull/6173): Add `AllowImplicitReturn` option to `Rails/SaveBang` cop. ([@robotdana][])
 * [#6218](https://github.com/rubocop-hq/rubocop/pull/6218): Add `comparison` style to `Style/NilComparison`. ([@khiav223577][])
+* Add new `Style/MultilineMethodSignature` cop. ([@drenmi][])
+* [#6234](https://github.com/rubocop-hq/rubocop/pull/6234): Add `Performance/ChainArrayAllocation` cop. ([@schneems][])
+* [#6136](https://github.com/rubocop-hq/rubocop/pull/6136): Add remote url in remote url download error message. ([@ShockwaveNN][])
+* [#5659](https://github.com/rubocop-hq/rubocop/issues/5659): Make `Layout/EmptyLinesAroundClassBody` aware of specifying a superclass that breaks the line. ([@koic][])
 
 ### Bug fixes
 
@@ -29,6 +47,9 @@
 * [#6208](https://github.com/rubocop-hq/rubocop/pull/6208): Ignore assignment methods in `Naming/PredicateName`. ([@sunny][])
 * [#6196](https://github.com/rubocop-hq/rubocop/issues/6196): Fix incorrect autocorrect for `Style/EmptyCaseCondition` when using `return` in `when` clause and assigning the return value of `case`. ([@koic][])
 * [#6142](https://github.com/rubocop-hq/rubocop/issues/6142): Ignore keyword arguments in `Rails/Delegate`. ([@sunny][])
+* [#6240](https://github.com/rubocop-hq/rubocop/issues/6240): Fix an auto-correct error for `Style/WordArray` when setting `EnforcedStyle: brackets` and using string interpolation in `%W` literal. ([@koic][])
+* [#6202](https://github.com/rubocop-hq/rubocop/issues/6202): Fix infinite loop when auto-correcting `Lint/RescueEnsureAlignment` when `end` is misaligned. The alignment and message are now based on the beginning position rather than the `end` position. ([@rrosenblum][])
+* [#6199](https://github.com/rubocop-hq/rubocop/issues/6199): Don't recommend `Date` usage in `Style/DateTime`. ([@deivid-rodriguez][])
 * [#6183](https://github.com/rubocop-hq/rubocop/issues/6183): Fix ConfigurableNaming FORMATS constant now accepting utf-8 characters in snake_case method names. ([@martincabrera][])
 
 ### Changes
@@ -42,6 +63,7 @@
 * `Style/For` now highlights the entire statement rather than just the keyword. ([@rrosenblum][])
 * Disable `Performance/CaseWhenSplat` and its auto-correction by default. ([@rrosenblum][])
 * [#6235](https://github.com/rubocop-hq/rubocop/pull/6235): Enable `Layout/EmptyLineAfterGuardClause` cop by default. ([@koic][])
+* [#6199](https://github.com/rubocop-hq/rubocop/pull/6199): `Style/DateTime` has been moved to disabled by default. ([@deivid-rodriguez][])
 
 ## 0.58.2 (2018-07-23)
 
@@ -3539,4 +3561,7 @@
 [@robotdana]: https://github.com/robotdana
 [@bacchir]: https://github.com/bacchir
 [@khiav223577]: https://github.com/khiav223577
+[@schneems]: https://github.com/schneems
+[@ShockwaveNN]: https://github.com/ShockwaveNN
+[@Knack]: https://github.com/Knack
 [@martincabrera]: https://github.com/martincabrera

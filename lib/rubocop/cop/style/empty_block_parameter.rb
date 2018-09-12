@@ -29,7 +29,7 @@ module RuboCop
 
         def on_block(node)
           send_node = node.send_node
-          check(node) unless send_node.send_type? && send_node.stabby_lambda?
+          check(node) unless send_node.send_type? && send_node.lambda_literal?
         end
 
         def autocorrect(node)
