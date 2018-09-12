@@ -61,12 +61,12 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       it "accepts class emitter method in a #{kind}" do
         expect_no_offenses(<<-RUBY.strip_indent)
           #{kind} Sequel
-            def self.Model(source)
-            end
-
-            class Model
-            end
-          end
+                      def self.Model(source)
+                      end
+          
+                      class Model
+                      end
+                    end
         RUBY
       end
 
@@ -128,6 +128,105 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
+    it 'accepts snake case in names, utf-8 Latin alphabet lowercase part 1' do
+      method_name = 97.upto(122).to_a.map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin alphabet lowercase part 2' do
+      method_name = 223.upto(246).to_a.map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin alphabet lowercase part 3' do
+      method_name = 248.upto(255).to_a.map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-A part 1' do
+      method_name = (257..311).to_a.select(&:odd?)
+                              .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-A part 2' do
+      method_name = (312..328).to_a.select(&:even?)
+                              .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-A part 3' do
+      method_name = (331..375).to_a.select(&:odd?)
+                              .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-A part 4' do
+      method_name = [378, 380, 382, 383]
+                    .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-B part 1' do
+      method_name = [384, 387, 389, 392, 396, 397, 402, 405, 409, 410, 411, 414,
+                     417, 419, 421, 424, 427, 429, 432, 436, 438, 441, 442, 445,
+                     454, 457, 460, 462, 464, 466, 468, 470, 472, 474, 476, 477,
+                     479, 481, 483, 485, 487, 489, 491, 493, 495, 496, 499, 501,
+                     505, 507, 509, 511].map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-B part 2' do
+      method_name = (513..563).to_a.select(&:odd?)
+                              .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-B part 3' do
+      method_name = 564.upto(569).to_a
+                       .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
+    it 'accepts snake case in names, utf-8 Latin Extended-B part 4' do
+      method_name = [572, 575, 576, 578, 583, 585, 587, 589, 591]
+                    .map { |i| [i].pack('U*') }.join('')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def my_#{method_name}
+        end
+      RUBY
+    end
+
     it 'registers an offense for singleton camelCase method within class' do
       expect_offense(<<-RUBY.strip_indent)
         class Sequel
@@ -138,7 +237,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
-    include_examples 'never accepted',  'snake_case'
+    include_examples 'never accepted', 'snake_case'
     include_examples 'always accepted', 'snake_case'
   end
 
@@ -190,6 +289,6 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     include_examples 'always accepted', 'camelCase'
-    include_examples 'never accepted',  'camelCase'
+    include_examples 'never accepted', 'camelCase'
   end
 end
