@@ -30,7 +30,7 @@ module RuboCop
           return unless redundant_parentheses?(node) ||
                         missing_parentheses?(node)
 
-          add_offense(node.parent.arguments)
+          add_offense(node.block_node.arguments)
         end
 
         def autocorrect(node)
@@ -57,7 +57,7 @@ module RuboCop
 
         def missing_parentheses_corrector(node)
           lambda do |corrector|
-            args_loc = node.parent.arguments.source_range
+            args_loc = node.loc.expression
 
             corrector.insert_before(args_loc, '(')
             corrector.insert_after(args_loc, ')')
@@ -66,7 +66,7 @@ module RuboCop
 
         def unwanted_parentheses_corrector(node)
           lambda do |corrector|
-            args_loc = node.parent.arguments.loc
+            args_loc = node.loc
 
             corrector.replace(args_loc.begin, '')
             corrector.remove(args_loc.end)
@@ -74,11 +74,11 @@ module RuboCop
         end
 
         def stabby_lambda_with_args?(node)
-          node.stabby_lambda? && node.parent.arguments?
+          node.lambda_literal? && node.block_node.arguments?
         end
 
         def parentheses?(node)
-          node.parent.arguments.loc.begin
+          node.block_node.arguments.loc.begin
         end
       end
     end
