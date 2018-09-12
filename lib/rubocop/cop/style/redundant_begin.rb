@@ -65,10 +65,7 @@ module RuboCop
         def on_block(node)
           return if target_ruby_version < 2.5
 
-          send_node = node.send_node
-          # send_node is either SendNode or SuperNode, only SendNode
-          # could be a lambda.
-          return if send_node.send_type? && send_node.stabby_lambda?
+          return if node.send_node.lambda_literal?
           return if node.braces?
 
           check(node)

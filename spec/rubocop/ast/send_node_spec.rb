@@ -1153,6 +1153,13 @@ RSpec.describe RuboCop::AST::SendNode do
       it { expect(send_node.lambda?).to be_truthy }
     end
 
+    context 'with a method named lambda in a class' do
+      let(:source) { 'foo.lambda { |bar| baz }' }
+      let(:send_node) { parse_source(source).ast.send_node }
+
+      it { expect(send_node.lambda?).to be_falsey }
+    end
+
     context 'with a stabby lambda method' do
       let(:source) { '-> (foo) { do_something(foo) }' }
       let(:send_node) { parse_source(source).ast.send_node }
@@ -1172,14 +1179,14 @@ RSpec.describe RuboCop::AST::SendNode do
       let(:send_node) { parse_source(source).ast.send_node }
       let(:source) { '-> (foo) { do_something(foo) }' }
 
-      it { expect(send_node.stabby_lambda?).to be(true) }
+      it { expect(send_node.lambda_literal?).to be(true) }
     end
 
     context 'with a lambda method' do
       let(:send_node) { parse_source(source).ast.send_node }
       let(:source) { 'lambda { |foo| bar(foo) }' }
 
-      it { expect(send_node.stabby_lambda?).to be(false) }
+      it { expect(send_node.lambda_literal?).to be(false) }
     end
 
     context 'with a non-lambda method' do

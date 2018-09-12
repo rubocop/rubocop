@@ -3,7 +3,7 @@
 module RuboCop
   module AST
     # Common functionality for nodes that are a kind of method dispatch:
-    # `send`, `csend`, `super`, `zsuper`, `yield`
+    # `send`, `csend`, `super`, `zsuper`, `yield`, `defined?`
     module MethodDispatchNode
       extend NodePattern::Macros
       include MethodIdentifierPredicates
@@ -161,6 +161,25 @@ module RuboCop
       def def_modifier?
         send_type? &&
           [self, *each_descendant(:send)].any?(&:adjacent_def_modifier?)
+      end
+
+      # Checks whether this is a lambda. Some versions of parser parses
+      # non-literal lambdas as a method send.
+      #
+      # @return [Boolean] whether this method is a lambda
+      def lambda?
+        block_literal? && command?(:lambda)
+      end
+
+      # Checks whether this is a lambda literal (stabby lambda.)
+      #
+      # @example
+      #
+      #   -> (foo) { bar }
+      #
+      # @return [Boolean] whether this method is a lambda literal
+      def lambda_literal?
+        block_literal? && loc.expression && loc.expression.source == '->'
       end
 
       private
