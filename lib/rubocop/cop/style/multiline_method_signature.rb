@@ -22,6 +22,7 @@ module RuboCop
         MSG = 'Avoid multi-line method signatures.'.freeze
 
         def on_def(node)
+          return unless node.arguments?
           return if opening_line(node) == closing_line(node)
           return if correction_exceeds_max_line_length?(node)
 
@@ -36,11 +37,7 @@ module RuboCop
         end
 
         def closing_line(node)
-          if node.arguments?
-            node.arguments.last_line
-          else
-            node.first_line
-          end
+          node.arguments.last_line
         end
 
         def correction_exceeds_max_line_length?(node)
@@ -52,8 +49,7 @@ module RuboCop
         end
 
         def definition_width(node)
-          node.loc.expression.source.squeeze.length -
-            node.loc.end.source.length
+          node.source_range.begin.join(node.arguments.source_range.end).length
         end
 
         def max_line_length
