@@ -29,6 +29,7 @@
 * [#6208](https://github.com/rubocop-hq/rubocop/pull/6208): Ignore assignment methods in `Naming/PredicateName`. ([@sunny][])
 * [#6196](https://github.com/rubocop-hq/rubocop/issues/6196): Fix incorrect autocorrect for `Style/EmptyCaseCondition` when using `return` in `when` clause and assigning the return value of `case`. ([@koic][])
 * [#6142](https://github.com/rubocop-hq/rubocop/issues/6142): Ignore keyword arguments in `Rails/Delegate`. ([@sunny][])
+* [#6183](https://github.com/rubocop-hq/rubocop/issues/6183): Fix ConfigurableNaming FORMATS constant now accepting utf-8 characters in snake_case method names. ([@martincabrera][])
 
 ### Changes
 
@@ -3538,3 +3539,4 @@
 [@robotdana]: https://github.com/robotdana
 [@bacchir]: https://github.com/bacchir
 [@khiav223577]: https://github.com/khiav223577
+[@martincabrera]: https://github.com/martincabrera
