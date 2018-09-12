@@ -113,5 +113,23 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
       end
     end
+
+    context 'when correction would not exceed maximum line length' do
+      let(:other_cops) do
+        {
+          'Metrics/LineLength' => { 'Max' => 25 }
+        }
+      end
+
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          def foo(bar,
+          ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                  baz)
+            qux.qux
+          end
+        RUBY
+      end
+    end
   end
 end
