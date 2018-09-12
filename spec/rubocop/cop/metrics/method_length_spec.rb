@@ -189,4 +189,35 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
       RUBY
     end
   end
+
+  context 'when ExcludedMethods is enabled' do
+    before { cop_config['ExcludedMethods'] = ['foo'] }
+
+    it 'still rejects other methods with more than 5 lines' do
+      expect_offense(<<-RUBY.strip_indent)
+        def m 
+        ^^^^^^ Method has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+
+    it 'accepts the foo method with more than 5 lines' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def foo
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
 end

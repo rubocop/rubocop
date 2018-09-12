@@ -147,6 +147,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 CountComments | `false` | Boolean
 Max | `10` | Integer
+ExcludedMethods | `[]` | Array
 
 ### References
 
