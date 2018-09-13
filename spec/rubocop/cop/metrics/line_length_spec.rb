@@ -393,7 +393,15 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       it_behaves_like 'with tabs indentation'
 
       it "accepts a line that's including URI" do
-        expect_no_offenses("\thttps://github.com/rubocop-hq/rubocop")
+        expect_no_offenses("\t\t# https://github.com/rubocop-hq/rubocop")
+      end
+
+      it "accepts a line that's including URI with text" do
+        expect_no_offenses("\t\t# See https://github.com/rubocop-hq/rubocop")
+      end
+
+      it "accepts a line that's including URI in quotes with text" do
+        expect_no_offenses("\t\t# See 'https://github.com/rubocop-hq/rubocop'")
       end
     end
   end
