@@ -170,7 +170,7 @@ module RuboCop
           # To convert a pathname to a Ruby namespace, we need a starting point
           # But RC can be run from any working directory, and can check any path
           # We can't assume that the working directory, or any other, is the
-          # "starting point" to build a namespace
+          # "starting point" to build a namespace.
           start = %w[lib spec test src]
           start_index = nil
 
