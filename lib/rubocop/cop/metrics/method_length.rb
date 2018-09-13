@@ -12,7 +12,7 @@ module RuboCop
         LABEL = 'Method'.freeze
 
         def on_def(node)
-          return if excluded_method?(node)
+          return if excluded_methods.include?(String(node.method_name))
           
           check_code_length(node)
         end
@@ -25,14 +25,6 @@ module RuboCop
         end
 
         private
-
-        def excluded_method?(node)
-          node_method = String(node.method_name)
-
-          excluded_methods.any? do |method|
-            method == node_method
-          end
-        end
 
         def excluded_methods
           cop_config['ExcludedMethods'] || []
