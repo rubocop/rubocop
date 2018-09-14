@@ -16,6 +16,7 @@
 ### Changes
 
 * [#6272](https://github.com/rubocop-hq/rubocop/pull/6272): Make `Lint/UnreachableCode` detect `exit`, `exit!` and `abort`. ([@hoshinotsuyoshi][])
+* [#6295](https://github.com/rubocop-hq/rubocop/pull/6295): Exclude `#===` from `Naming/BinaryOperatorParameterName`. ([@zverok][])
 * Add `+` to allowed file names of `Naming/FileName`. ([@yensaki][])
 
 ## 0.59.0 (2018-09-09)
