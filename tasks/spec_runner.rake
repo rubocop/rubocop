@@ -11,9 +11,12 @@ module RuboCop
   # The specs will be run in parallel if the system implements `fork`.
   # If ENV['COVERAGE'] is truthy, code coverage will be measured.
   class SpecRunner
-    def initialize(encoding: 'UTF-8')
-      @previous_encoding = Encoding.default_external
-      @temporary_encoding = encoding
+    def initialize(external_encoding: 'UTF-8', internal_encoding: nil)
+      @previous_external_encoding = Encoding.default_external
+      @previous_internal_encoding = Encoding.default_internal
+
+      @temporary_external_encoding = external_encoding
+      @temporary_internal_encoding = internal_encoding
     end
 
     def run_specs
@@ -30,10 +33,12 @@ module RuboCop
     private
 
     def with_encoding
-      Encoding.default_external = @temporary_encoding
+      Encoding.default_external = @temporary_external_encoding
+      Encoding.default_internal = @temporary_internal_encoding
       yield
     ensure
-      Encoding.default_external = @previous_encoding
+      Encoding.default_external = @previous_external_encoding
+      Encoding.default_internal = @previous_internal_encoding
     end
 
     def parallel_runner_klass
@@ -104,7 +109,7 @@ end
 
 desc 'Run RSpec code examples with ASCII encoding'
 task :ascii_spec do
-  RuboCop::SpecRunner.new(encoding: 'ASCII').run_specs
+  RuboCop::SpecRunner.new(external_encoding: 'ASCII').run_specs
 end
 
 namespace :parallel do
