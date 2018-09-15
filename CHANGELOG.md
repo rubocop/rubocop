@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.59.1 (2018-09-15)
+
 ### Bug fixes
 
 * [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
