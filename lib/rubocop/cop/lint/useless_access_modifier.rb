@@ -141,7 +141,13 @@ module RuboCop
 
         def access_modifier?(node)
           node.bare_access_modifier? ||
-            node.method_name == :private_class_method
+            (node.method_name == :private_class_method && new_method?(node))
+        end
+
+        def new_method?(node)
+          return true unless node.arguments.first
+
+          node.arguments.first.value != :new
         end
 
         def check_scope(node)
