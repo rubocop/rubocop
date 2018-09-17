@@ -468,7 +468,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'Enabled' => true,
               'CountComments' => false,
               'Max' => 5,
-              "ExcludedMethods" => []
+              'ExcludedMethods' => []
             }
           )
         expect do
