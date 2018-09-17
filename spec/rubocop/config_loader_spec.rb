@@ -467,7 +467,8 @@ RSpec.describe RuboCop::ConfigLoader do
               'StyleGuide' => '#short-methods',
               'Enabled' => true,
               'CountComments' => false,
-              'Max' => 5
+              'Max' => 5,
+              "ExcludedMethods" => []
             }
           )
         expect do
