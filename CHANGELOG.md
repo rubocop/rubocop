@@ -2,19 +2,25 @@
 
 ## master (unreleased)
 
+## 0.59.1 (2018-09-15)
+
 ### Bug fixes
 
 * [#6286](https://github.com/rubocop-hq/rubocop/pull/6286): Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
 * [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
+* [#6278](https://github.com/rubocop-hq/rubocop/pull/6278): Fix false positive for `Naming/FileName` when investigating gemspecs. ([@kddeisz][])
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
 * [#6242](https://github.com/rubocop-hq/rubocop/pull/6242): Fix `Style/EmptyCaseCondition` auto-correction removes comment between `case` and first `when`. ([@koic][])
 * [#6261](https://github.com/rubocop-hq/rubocop/pull/6261): Fix undefined method error for `Style/RedundantBegin` when calling `super` with a block. ([@eitoball][])
 * [#6263](https://github.com/rubocop-hq/rubocop/issues/6263): Fix an error `Layout/EmptyLineAfterGuardClause` when guard clause is after heredoc including string interpolation. ([@koic][])
 * [#6281](https://github.com/rubocop-hq/rubocop/pull/6281): Fix false negative in `Style/MultilineMethodSignature`. ([@drenmi][])
+* [#6264](https://github.com/rubocop-hq/rubocop/issues/6264): Fix an incorrect autocorrect for `Layout/EmptyLineAfterGuardClause` cop when `if` condition is after heredoc. ([@koic][])
 
 ### Changes
 
 * [#6272](https://github.com/rubocop-hq/rubocop/pull/6272): Make `Lint/UnreachableCode` detect `exit`, `exit!` and `abort`. ([@hoshinotsuyoshi][])
+* [#6295](https://github.com/rubocop-hq/rubocop/pull/6295): Exclude `#===` from `Naming/BinaryOperatorParameterName`. ([@zverok][])
+* Add `+` to allowed file names of `Naming/FileName`. ([@yensaki][])
 
 ## 0.59.0 (2018-09-09)
 
@@ -3566,3 +3572,4 @@
 [@ShockwaveNN]: https://github.com/ShockwaveNN
 [@Knack]: https://github.com/Knack
 [@akanoi]: https://github.com/akanoi
+[@yensaki]: https://github.com/yensaki

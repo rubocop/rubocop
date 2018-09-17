@@ -9,6 +9,11 @@ module RuboCop
       # names. Ruby scripts (i.e. source files with a shebang in the
       # first line) are ignored.
       #
+      # The cop also ignores `.gemspec` files, because Bundler
+      # recommends using dashes to separate namespaces in nested gems
+      # (i.e. `bundler-console` becomes `Bundler::Console`). As such, the
+      # gemspec is supposed to be named `bundler-console.gemspec`.
+      #
       # @example
       #   # bad
       #   lib/layoutManager.rb
@@ -93,6 +98,9 @@ module RuboCop
         def filename_good?(basename)
           basename = basename.sub(/^\./, '')
           basename = basename.sub(/\.[^\.]+$/, '')
+          # special handling for Action Pack Variants file names like
+          # some_file.xlsx+mobile.axlsx
+          basename = basename.sub('+', '_')
           basename =~ (regex || SNAKE_CASE)
         end
 
@@ -165,7 +173,7 @@ module RuboCop
           # To convert a pathname to a Ruby namespace, we need a starting point
           # But RC can be run from any working directory, and can check any path
           # We can't assume that the working directory, or any other, is the
-          # "starting point" to build a namespace
+          # "starting point" to build a namespace.
           start = %w[lib spec test src]
           start_index = nil
 

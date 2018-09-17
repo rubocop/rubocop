@@ -73,6 +73,14 @@ RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
     RUBY
   end
 
+  it 'does not register an offense for ===' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def ===(string)
+        string
+      end
+    RUBY
+  end
+
   it 'does not register an offense for non binary operators' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def -@; end

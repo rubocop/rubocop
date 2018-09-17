@@ -383,6 +383,11 @@ module RuboCop
     end
 
     def allowed_camel_case_file?(file)
+      # Gemspecs are allowed to have dashes because that fits with bundler best
+      # practices in the case when the gem is nested under a namespace (e.g.,
+      # `bundler-console` conveys `Bundler::Console`).
+      return true if File.extname(file) == '.gemspec'
+
       file_to_include?(file) do |pattern, relative_path, absolute_path|
         pattern.to_s =~ /[A-Z]/ &&
           (match_path?(pattern, relative_path) ||

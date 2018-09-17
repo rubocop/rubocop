@@ -18,7 +18,7 @@ module RuboCop
               'name its argument `other`.'.freeze
 
         OP_LIKE_METHODS = %i[eql? equal?].freeze
-        BLACKLISTED = %i[+@ -@ [] []= << `].freeze
+        BLACKLISTED = %i[+@ -@ [] []= << === `].freeze
 
         def_node_matcher :op_method_candidate?, <<-PATTERN
           (def [#op_method? $_] (args $(arg [!:other !:_other])) _)
