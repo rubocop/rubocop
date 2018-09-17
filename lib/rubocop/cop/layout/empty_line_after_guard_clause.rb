@@ -44,22 +44,16 @@ module RuboCop
         def on_if(node)
           return if correct_style?(node)
 
-          if last_argument_is_heredoc?(node)
+          if node.modifier_form? && last_argument_is_heredoc?(node)
             heredoc_node = last_argument(node)
 
-            heredoc_body = heredoc_node.loc.heredoc_body
-            num_of_heredoc_lines =
-              heredoc_body.last_line - heredoc_body.first_line
-
-            line = node.last_line + num_of_heredoc_lines + END_OF_HEREDOC_LINE
-
-            return if next_line_empty?(line)
+            return if next_line_empty?(heredoc_line(node, heredoc_node))
 
             add_offense(heredoc_node, location: :heredoc_end)
           else
             return if next_line_empty?(node.last_line)
 
-            add_offense(node)
+            add_offense(node, location: offense_location(node))
           end
         end
 
@@ -125,6 +119,22 @@ module RuboCop
 
         def last_argument(node)
           node.if_branch.children.last
+        end
+
+        def heredoc_line(node, heredoc_node)
+          heredoc_body = heredoc_node.loc.heredoc_body
+          num_of_heredoc_lines =
+            heredoc_body.last_line - heredoc_body.first_line
+
+          node.last_line + num_of_heredoc_lines + END_OF_HEREDOC_LINE
+        end
+
+        def offense_location(node)
+          if node.loc && node.loc.end
+            :end
+          else
+            :expression
+          end
         end
       end
     end
