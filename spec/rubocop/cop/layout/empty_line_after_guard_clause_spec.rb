@@ -106,6 +106,36 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'registers an offense for guard clause followed by empty line' \
+     'when guard clause including heredoc' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      def method
+        if truthy
+          raise <<-MSG
+            This is an error.
+          MSG
+        end
+
+        value
+      end
+    RUBY
+  end
+
+  it 'registers an offense for guard clause not followed by empty line' \
+     'when guard clause including heredoc' do
+    expect_offense(<<-RUBY.strip_indent)
+      def method
+        if truthy
+          raise <<-MSG
+            This is an error.
+          MSG
+        end
+        ^^^ Add empty line after guard clause.
+        value
+      end
+    RUBY
+  end
+
   it 'does not register offense for guard clause followed by end' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def foo
