@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
+* [#6286](https://github.com/rubocop-hq/rubocop/pull/6286)Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
 * [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
 * [#6242](https://github.com/rubocop-hq/rubocop/pull/6242): Fix `Style/EmptyCaseCondition` auto-correction removes comment between `case` and first `when`. ([@koic][])
