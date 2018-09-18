@@ -99,7 +99,9 @@ module RuboCop
 
         def autocorrect_to_each(node)
           item, enumerable = deconstruct_for(node)
-          replacement_range = replacement_range(node, node.loc.begin.end_pos)
+          loc_begin = node.loc.begin
+          end_pos = loc_begin ? loc_begin.end_pos : enumerable.loc.end.end_pos
+          replacement_range = replacement_range(node, end_pos)
           correction = "#{enumerable.source}.each do |#{item.source}|"
 
           ->(corrector) { corrector.replace(replacement_range, correction) }

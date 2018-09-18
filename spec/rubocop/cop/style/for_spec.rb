@@ -67,6 +67,24 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
       end
+
+      it 'changes for that dose not have do or semicolon to each' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          def func
+            for n in [1, 2, 3]
+              puts n
+            end
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          def func
+            [1, 2, 3].each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
     end
 
     it 'accepts multiline each' do
