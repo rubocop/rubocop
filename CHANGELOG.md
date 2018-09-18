@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6296](https://github.com/rubocop-hq/rubocop/issues/6296): Fix an auto-correct error for `Style/For` when setting `EnforcedStyle: each` and `for` dose not have `do` or semicolon. ([@autopp][])
+
 ## 0.59.1 (2018-09-15)
 
 ### Bug fixes
@@ -3573,3 +3577,4 @@
 [@Knack]: https://github.com/Knack
 [@yensaki]: https://github.com/yensaki
 [@ryanhageman]: https://github.com/ryanhageman
+[@autopp]: https://github.com/autopp
