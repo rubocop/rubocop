@@ -50,6 +50,8 @@ module RuboCop
 
           lhs, opr, rhs = zero_length_predicate
 
+          return if non_polymorphic_collection?(node)
+
           add_offense(
             node,
             message: format(ZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
@@ -62,6 +64,8 @@ module RuboCop
           return unless nonzero_length_predicate
 
           lhs, opr, rhs = nonzero_length_predicate
+
+          return if non_polymorphic_collection?(node)
 
           add_offense(
             node,
@@ -98,6 +102,14 @@ module RuboCop
         def_node_matcher :other_receiver, <<-PATTERN
           {(send (send $_ _) _ _)
            (send _ _ (send $_ _))}
+        PATTERN
+
+        # Some collection like objects in the Ruby standard library
+        # implement `#size`, but not `#empty`. We ignore those to
+        # reduce false positives.
+        def_node_matcher :non_polymorphic_collection?, <<-PATTERN
+          {(send (send (send (const nil? :File) :stat _) ...) ...)
+           (send (send (send (const nil? {:Tempfile :StringIO}) {:new :open} ...) ...) ...)}
         PATTERN
       end
     end

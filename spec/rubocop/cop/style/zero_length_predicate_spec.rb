@@ -3,6 +3,8 @@
 RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
   subject(:cop) { described_class.new }
 
+  let(:source) { '' }
+
   before do
     inspect_source(source)
   end
@@ -151,5 +153,39 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
 
     it_behaves_like 'code without offense', '0 != size'
     it_behaves_like 'code without offense', '0 != length'
+  end
+
+  context 'when inspecting a File::Stat object' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        File.stat(foo).size == 0
+      RUBY
+    end
+  end
+
+  context 'when inspecting a StringIO object' do
+    context 'when initialized with a string' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          StringIO.new('foo').size == 0
+        RUBY
+      end
+    end
+
+    context 'when initialized without arguments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          StringIO.new.size == 0
+        RUBY
+      end
+    end
+  end
+
+  context 'when inspecting a Tempfile object' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Tempfile.new('foo').size == 0
+      RUBY
+    end
   end
 end
