@@ -7,6 +7,7 @@
 * [#6266](https://github.com/rubocop-hq/rubocop/issues/6266): Run `Rails/HasManyOrHasOneDependent` only for `ActiveRecord` class. ([@tejasbubane][])
 * [#6296](https://github.com/rubocop-hq/rubocop/issues/6296): Fix an auto-correct error for `Style/For` when setting `EnforcedStyle: each` and `for` dose not have `do` or semicolon. ([@autopp][])
 * [#6300](https://github.com/rubocop-hq/rubocop/pull/6300): Fix a false positive for `Layout/EmptyLineAfterGuardClause` when guard clause including heredoc. ([@koic][])
+* [#6287](https://github.com/rubocop-hq/rubocop/pull/6287): Fix `AllowURI` option for `Metrics/LineLength` cop with disabled `Layut/Tab` cop. ([@AlexWayfer][])
 * [#5338](https://github.com/rubocop-hq/rubocop/pull/5338): Move checking of class- and module defining blocks from `Metrics/BlockLength` into the respective length cops. ([@drenmi][])
 * [#2841](https://github.com/rubocop-hq/rubocop/pull/2841): Fix `Style/ZeroLengthPredicate` false positives when inspecting `Tempfile`, `StringIO`, and `File::Stat` objects. ([@drenmi][])
 
