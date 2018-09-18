@@ -100,12 +100,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           # this is a class
           class Thing
-            def super_with_block
-              super { |response| }
-            end
-
             def and_with_args
               super(arg1, arg2) { |response| }
+            end
+
+            def super_with_block
+              super { |response| }
             end
           end
         RUBY

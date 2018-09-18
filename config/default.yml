@@ -872,6 +872,12 @@ Layout/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/OrderedMethods:
+  Description: 'Checks that methods are ordered alphabetically.'
+  Enabled: true
+  IgnoredMethods:
+    - initialize
+
 Layout/RescueEnsureAlignment:
   Description: 'Align rescues and ensures correctly.'
   Enabled: true

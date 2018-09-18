@@ -3308,6 +3308,48 @@ Name | Default value | Configurable values
 EnforcedStyle | `aligned` | `aligned`, `indented`
 IndentationWidth | `<none>` | Integer
 
+## Layout/OrderedMethods
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | - | -
+
+Check that methods are defined alphabetically.
+
+### Examples
+
+```ruby
+# bad
+def self.b; end
+def self.a; end
+
+def b; end
+def a; end
+
+private
+
+def d; end
+def c; end
+
+# good
+def self.a; end
+def self.b; end
+
+def a; end
+def b; end
+
+private
+
+def c; end
+def d; end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+IgnoredMethods | `initialize` | Array
+
 ## Layout/RescueEnsureAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

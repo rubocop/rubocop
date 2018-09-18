@@ -158,6 +158,7 @@ In the following section you find all available cops:
 * [Layout/MultilineMethodCallIndentation](cops_layout.md#layoutmultilinemethodcallindentation)
 * [Layout/MultilineMethodDefinitionBraceLayout](cops_layout.md#layoutmultilinemethoddefinitionbracelayout)
 * [Layout/MultilineOperationIndentation](cops_layout.md#layoutmultilineoperationindentation)
+* [Layout/OrderedMethods](cops_layout.md#layoutorderedmethods)
 * [Layout/RescueEnsureAlignment](cops_layout.md#layoutrescueensurealignment)
 * [Layout/SpaceAfterColon](cops_layout.md#layoutspaceaftercolon)
 * [Layout/SpaceAfterComma](cops_layout.md#layoutspaceaftercomma)
