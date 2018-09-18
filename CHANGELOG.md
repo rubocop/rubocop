@@ -7,6 +7,8 @@
 * [#6266](https://github.com/rubocop-hq/rubocop/issues/6266): Run `Rails/HasManyOrHasOneDependent` only for `ActiveRecord` class. ([@tejasbubane][])
 * [#6296](https://github.com/rubocop-hq/rubocop/issues/6296): Fix an auto-correct error for `Style/For` when setting `EnforcedStyle: each` and `for` dose not have `do` or semicolon. ([@autopp][])
 * [#6300](https://github.com/rubocop-hq/rubocop/pull/6300): Fix a false positive for `Layout/EmptyLineAfterGuardClause` when guard clause including heredoc. ([@koic][])
+* [#5338](https://github.com/rubocop-hq/rubocop/pull/5338): Move checking of class- and module defining blocks from `Metrics/BlockLength` into the respective length cops. ([@drenmi][])
+* [#2841](https://github.com/rubocop-hq/rubocop/pull/2841): Fix `Style/ZeroLengthPredicate` false positives when inspecting `Tempfile`, `StringIO`, and `File::Stat` objects. ([@drenmi][])
 
 ## 0.59.1 (2018-09-15)
 
@@ -20,14 +22,12 @@
 * [#6263](https://github.com/rubocop-hq/rubocop/issues/6263): Fix an error `Layout/EmptyLineAfterGuardClause` when guard clause is after heredoc including string interpolation. ([@koic][])
 * [#6281](https://github.com/rubocop-hq/rubocop/pull/6281): Fix false negative in `Style/MultilineMethodSignature`. ([@drenmi][])
 * [#6264](https://github.com/rubocop-hq/rubocop/issues/6264): Fix an incorrect autocorrect for `Layout/EmptyLineAfterGuardClause` cop when `if` condition is after heredoc. ([@koic][])
-* [#5338](https://github.com/rubocop-hq/rubocop/pull/5338): Move checking of class- and module defining blocks from `Metrics/BlockLength` into the respective length cops. ([@drenmi][])
 
 ### Changes
 
 * [#6272](https://github.com/rubocop-hq/rubocop/pull/6272): Make `Lint/UnreachableCode` detect `exit`, `exit!` and `abort`. ([@hoshinotsuyoshi][])
 * [#6295](https://github.com/rubocop-hq/rubocop/pull/6295): Exclude `#===` from `Naming/BinaryOperatorParameterName`. ([@zverok][])
 * Add `+` to allowed file names of `Naming/FileName`. ([@yensaki][])
-* [#2841](https://github.com/rubocop-hq/rubocop/pull/2841): Fix `Style/ZeroLengthPredicate` false positives when inspecting `Tempfile`, `StringIO`, and `File::Stat` objects. ([@drenmi][])
 
 ## 0.59.0 (2018-09-09)
 
