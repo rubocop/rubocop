@@ -14,6 +14,7 @@ module RuboCop
 
         def on_block(node)
           return if excluded_method?(node)
+          return if node.class_constructor?
 
           check_code_length(node)
         end
