@@ -131,6 +131,36 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     RUBY
   end
 
+  context 'when defining a class' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Class.new do
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
+
+  context 'when defining a module' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Module.new do
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 

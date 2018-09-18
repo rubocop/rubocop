@@ -19,6 +19,7 @@
 * [#6263](https://github.com/rubocop-hq/rubocop/issues/6263): Fix an error `Layout/EmptyLineAfterGuardClause` when guard clause is after heredoc including string interpolation. ([@koic][])
 * [#6281](https://github.com/rubocop-hq/rubocop/pull/6281): Fix false negative in `Style/MultilineMethodSignature`. ([@drenmi][])
 * [#6264](https://github.com/rubocop-hq/rubocop/issues/6264): Fix an incorrect autocorrect for `Layout/EmptyLineAfterGuardClause` cop when `if` condition is after heredoc. ([@koic][])
+* [#5338](https://github.com/rubocop-hq/rubocop/pull/5338): Move checking of class- and module defining blocks from `Metrics/BlockLength` into the respective length cops. ([@drenmi][])
 
 ### Changes
 

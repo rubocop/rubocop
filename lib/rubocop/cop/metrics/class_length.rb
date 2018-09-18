@@ -13,7 +13,17 @@ module RuboCop
           check_code_length(node)
         end
 
+        def on_casgn(node)
+          class_definition?(node) do
+            check_code_length(node)
+          end
+        end
+
         private
+
+        def_node_matcher :class_definition?, <<-PATTERN
+          (casgn nil? _ (block (send (const nil? :Class) :new) ...))
+        PATTERN
 
         def message(length, max_length)
           format('Class has too many lines. [%<length>d/%<max>d]',

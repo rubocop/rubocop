@@ -18,9 +18,13 @@ module RuboCop
 
       def check_code_length(node)
         length = code_length(node)
+
         return unless length > max_length
 
-        add_offense(node, message: message(length, max_length)) do
+        location = node.casgn_type? ? :name : :expression
+
+        add_offense(node, location: location,
+                          message: message(length, max_length)) do
           self.max = length
         end
       end
