@@ -189,4 +189,13 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       RUBY
     end
   end
+
+  context 'when an Active Record model does not have any relations' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Person < ApplicationRecord
+        end
+      RUBY
+    end
+  end
 end

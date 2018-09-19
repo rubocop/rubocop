@@ -54,6 +54,8 @@ module RuboCop
         def on_class(node)
           _class_name, base_class, body = *node.children
 
+          return if body.nil?
+
           activerecord_class(base_class) do
             check_offsenses(body)
             body.each_descendant(:send) do |n|
