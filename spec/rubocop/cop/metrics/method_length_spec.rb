@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     end
   end
 
-  context 'when ExcludedMethods is enabled' do
+  context 'when method is defined in `ExcludedMethods`' do
     before { cop_config['ExcludedMethods'] = ['foo'] }
 
     it 'still rejects other methods with more than 5 lines' do
