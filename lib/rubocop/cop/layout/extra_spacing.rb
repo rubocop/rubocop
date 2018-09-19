@@ -31,10 +31,7 @@ module RuboCop
           return if processed_source.blank?
 
           if force_equal_sign_alignment?
-            @asgn_tokens = assignment_tokens
-            @asgn_lines  = @asgn_tokens.map(&:line)
-            # Don't attempt to correct the same = more than once
-            @corrected   = Set.new
+            @corrected = Set.new
           end
 
           processed_source.tokens.each_cons(2) do |token1, token2|
@@ -54,21 +51,10 @@ module RuboCop
 
         private
 
-        def assignment_tokens
-          tokens = processed_source.tokens.select(&:equal_sign?)
-          # we don't want to operate on equals signs which are part of an
-          #   optarg in a method definition
-          # e.g.: def method(optarg = default_val); end
-          tokens = remove_optarg_equals(tokens, processed_source)
-
-          # Only attempt to align the first = on each line
-          Set.new(tokens.uniq(&:line))
-        end
-
         def check_tokens(ast, token1, token2)
           return if token2.type == :tNL
 
-          if force_equal_sign_alignment? && @asgn_tokens.include?(token2)
+          if force_equal_sign_alignment? && assignment_tokens.include?(token2)
             check_assignment(token2)
           else
             check_other(token1, token2, ast)
@@ -77,29 +63,9 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def check_assignment(token)
-          token_line_indent              = processed_source
-                                           .line_indentation(token.line)
+          return if aligned_with_operator?(token)
 
-          preceding_line_range           = token.line.downto(1)
-          preceding_assignment_lines     = \
-            relevant_assignment_lines(preceding_line_range)
-          preceding_relevant_line_number = preceding_assignment_lines[1]
-
-          return unless preceding_relevant_line_number
-
-          preceding_relevant_indent = \
-            processed_source
-            .line_indentation(preceding_relevant_line_number)
-
-          return if preceding_relevant_indent < token_line_indent
-
-          assignment_line = processed_source
-                            .lines[preceding_relevant_line_number - 1]
-          message         = format(MSG_UNALIGNED_ASGN, location: 'preceding')
-
-          return unless assignment_line
-          return if aligned_assignment?(token.pos, assignment_line)
-
+          message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
           add_offense(token.pos, location: token.pos, message: message)
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -182,7 +148,7 @@ module RuboCop
 
         def align_equal_signs(range, corrector)
           lines  = all_relevant_assignment_lines(range.line)
-          tokens = @asgn_tokens.select { |t| lines.include?(t.line) }
+          tokens = assignment_tokens.select { |t| lines.include?(t.line) }
 
           columns  = tokens.map { |t| align_column(t) }
           align_to = columns.max
@@ -213,37 +179,6 @@ module RuboCop
             .sort
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
-        # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
-        def relevant_assignment_lines(line_range)
-          result               = []
-          original_line_indent = processed_source
-                                 .line_indentation(line_range.first)
-          previous_line_indent_at_level = true
-
-          line_range.each do |line_number|
-            current_line_indent = processed_source.line_indentation(line_number)
-            blank_line          = processed_source.lines[line_number - 1].blank?
-
-            if (current_line_indent < original_line_indent && !blank_line) ||
-               (previous_line_indent_at_level && blank_line)
-              break
-            end
-
-            result << line_number if @asgn_lines.include?(line_number) &&
-                                     current_line_indent == original_line_indent
-
-            unless blank_line
-              previous_line_indent_at_level = \
-                current_line_indent == original_line_indent
-            end
-          end
-
-          result
-        end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
-        # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength
-
         def align_column(asgn_token)
           # if we removed unneeded spaces from the beginning of this =,
           # what column would it end from?
@@ -251,12 +186,6 @@ module RuboCop
           leading = line[0...asgn_token.column]
           spaces  = leading.size - (leading =~ / *\Z/)
           asgn_token.pos.last_column - spaces + 1
-        end
-
-        def remove_optarg_equals(asgn_tokens, processed_source)
-          optargs    = processed_source.ast.each_node(:optarg)
-          optarg_eql = optargs.map { |o| o.loc.operator.begin_pos }.to_set
-          asgn_tokens.reject { |t| optarg_eql.include?(t.begin_pos) }
         end
       end
     end

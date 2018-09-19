@@ -39,7 +39,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       Layout/BlockAlignment:
         Enabled: false
 
-      Layout/ExtraSpacingCop:
+      Layout/ExtraSpacing:
         ForceEqualSignAlignment: true
 
       Layout/MultilineMethodCallBraceLayout:
@@ -49,9 +49,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     source = <<-RUBY.strip_indent
       def batch
         @areas = params[:param].map do
-                     var_1 = 123_456
-                     variable_2 = 456_123
-                 end
+                        var_1 = 123_456
+                        variable_2 = 456_123
+                   end
         @another = params[:param].map do
                      char_1 = begin
                                 variable_1_1     = 'a'
@@ -74,6 +74,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(1)
+
+    expect($stderr.string).to eql 'foo'
 
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
       def batch
