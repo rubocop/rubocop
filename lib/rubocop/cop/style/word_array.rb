@@ -32,7 +32,6 @@ module RuboCop
         include ArraySyntax
         include ConfigurableEnforcedStyle
         include PercentArray
-        include PercentLiteral
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'.freeze
         ARRAY_MSG = 'Use `[]` for an array of words.'.freeze
@@ -53,7 +52,9 @@ module RuboCop
 
         def autocorrect(node)
           if style == :percent
-            correct_percent(node, 'w')
+            PercentLiteralCorrector
+              .new(@config, @preferred_delimiters)
+              .correct(node, 'w')
           else
             correct_bracketed(node)
           end

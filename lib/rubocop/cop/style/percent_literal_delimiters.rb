@@ -77,6 +77,12 @@ module RuboCop
           add_offense(node)
         end
 
+        def preferred_delimiters_for(type)
+          PreferredDelimiters
+            .new(type, @config, @preferred_delimiters)
+            .delimiters
+        end
+
         def uses_preferred_delimiter?(node, type)
           preferred_delimiters_for(type)[0] == begin_source(node)[-1]
         end
