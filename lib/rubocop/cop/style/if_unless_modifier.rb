@@ -31,8 +31,11 @@ module RuboCop
         ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
                               gvasgn ivasgn masgn].freeze
 
+        NAMED_CAPTURE = /\?<.+>/
+
         def on_if(node)
           return unless eligible_node?(node)
+          return if named_capture_in_condition?(node)
 
           add_offense(node, location: :keyword,
                             message: format(MSG, keyword: node.keyword))
@@ -45,6 +48,10 @@ module RuboCop
         end
 
         private
+
+        def named_capture_in_condition?(node)
+          node.condition.match_with_lvasgn_type?
+        end
 
         def eligible_node?(node)
           !non_eligible_if?(node) && !node.chained? &&
