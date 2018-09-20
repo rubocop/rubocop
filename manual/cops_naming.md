@@ -336,7 +336,7 @@ def foo
   @foo ||= calculate_expensive_thing(helper_variable)
 end
 ```
-#### EnforcedStyleForLeadingUnderscores :required
+#### EnforcedStyleForLeadingUnderscores: required
 
 ```ruby
 # bad
