@@ -43,7 +43,7 @@ module RuboCop
       #     @foo ||= calculate_expensive_thing(helper_variable)
       #   end
       #
-      # @example EnforcedStyleForLeadingUnderscores :required
+      # @example EnforcedStyleForLeadingUnderscores: required
       #   # bad
       #   def foo
       #     @something ||= calculate_expensive_thing
