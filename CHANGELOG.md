@@ -11,6 +11,7 @@
 * [#5338](https://github.com/rubocop-hq/rubocop/pull/5338): Move checking of class- and module defining blocks from `Metrics/BlockLength` into the respective length cops. ([@drenmi][])
 * [#2841](https://github.com/rubocop-hq/rubocop/pull/2841): Fix `Style/ZeroLengthPredicate` false positives when inspecting `Tempfile`, `StringIO`, and `File::Stat` objects. ([@drenmi][])
 * [#6305](https://github.com/rubocop-hq/rubocop/pull/6305): Fix infinite loop for `Layout/EmptyLinesAroundAccessModifier` and `Layout/EmptyLinesAroundAccessModifier` when specifying a superclass that breaks the line. ([@koic][])
+* [#6007](https://github.com/rubocop-hq/rubocop/pull/6007): Fix false positive in `Style/IfUnlessModifier` when using named capture. ([@drenmi][])
 
 ## 0.59.1 (2018-09-15)
 

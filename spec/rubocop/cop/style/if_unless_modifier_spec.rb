@@ -349,6 +349,16 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
+  context 'with a named regexp capture on the LHS' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if /(?<foo>\d)/ =~ "bar"
+          foo
+        end
+      RUBY
+    end
+  end
+
   context 'with disabled Layout/Tab cop' do
     shared_examples 'with tabs indentation' do
       let(:source) do
