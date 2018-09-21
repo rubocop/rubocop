@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
   end
 
   context 'base-class check' do
-    it 'runs the cop for ActiveRecord::Base class' do
+    it 'registers an offense for `ActiveRecord::Base` class' do
       expect_offense(<<-RUBY.strip_indent)
         class Person < ActiveRecord::Base
           has_one :foo
@@ -173,24 +173,31 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       RUBY
     end
 
-    it 'does not run the cop for ActiveResource class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        class Person < ActiveResource
-          has_one :foo
+    it 'registers an offense when using mix-in module that has ' \
+       'an association of Active Record' do
+      expect_offense(<<-RUBY.strip_indent)
+        module Foo
+          extend ActiveSupport::Concern
+
+          included do
+            has_many :bazs
+            ^^^^^^^^ Specify a `:dependent` option.
+          end
         end
       RUBY
     end
 
-    it 'does not run the cop no base-class' do
+    it 'does not register an offense when using associations of ' \
+       'Active Resource' do
       expect_no_offenses(<<-RUBY.strip_indent)
-        class Person
-          has_one :foo
+        class User < ActiveResource::Base
+          has_many :projects, class_name: 'API::Project'
         end
       RUBY
     end
   end
 
-  context 'when an Active Record model does not have any relations' do
+  context 'when an Active Record model does not have any associations' do
     it 'does not register an offense' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class Person < ApplicationRecord

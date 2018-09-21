@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* [#6266](https://github.com/rubocop-hq/rubocop/issues/6266): Run `Rails/HasManyOrHasOneDependent` only for `ActiveRecord` class. ([@tejasbubane][])
+* [#6266](https://github.com/rubocop-hq/rubocop/issues/6266): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using associations of Active Resource. ([@tejasbubane][], [@koic][])
 * [#6296](https://github.com/rubocop-hq/rubocop/issues/6296): Fix an auto-correct error for `Style/For` when setting `EnforcedStyle: each` and `for` dose not have `do` or semicolon. ([@autopp][])
 * [#6300](https://github.com/rubocop-hq/rubocop/pull/6300): Fix a false positive for `Layout/EmptyLineAfterGuardClause` when guard clause including heredoc. ([@koic][])
 * [#6287](https://github.com/rubocop-hq/rubocop/pull/6287): Fix `AllowURI` option for `Metrics/LineLength` cop with disabled `Layut/Tab` cop. ([@AlexWayfer][])
