@@ -132,7 +132,10 @@ module RuboCop
       def expect_no_offenses(source, file = nil)
         inspect_source(source, file)
 
-        expect(cop.offenses).to be_empty
+        expected_annotations = AnnotatedSource.parse(source)
+        actual_annotations =
+          expected_annotations.with_offense_annotations(cop.offenses)
+        expect(actual_annotations.to_s).to eq(source)
       end
 
       # Parsed representation of code annotated with the `^^^ Message` style
