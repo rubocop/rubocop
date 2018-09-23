@@ -13,6 +13,7 @@
 * [#6305](https://github.com/rubocop-hq/rubocop/pull/6305): Fix infinite loop for `Layout/EmptyLinesAroundAccessModifier` and `Layout/EmptyLinesAroundAccessModifier` when specifying a superclass that breaks the line. ([@koic][])
 * [#6007](https://github.com/rubocop-hq/rubocop/pull/6007): Fix false positive in `Style/IfUnlessModifier` when using named capture. ([@drenmi][])
 * [#6311](https://github.com/rubocop-hq/rubocop/pull/6311): Prevent `Style/Semicolon` from breaking on single line if-then-else in assignment. ([@drenmi][])
+* [#6315](https://github.com/rubocop-hq/rubocop/pull/6315): Fix an error for `Rails/HasManyOrHasOneDependent` when an Active Record model does not have any relations. ([@koic][])
 
 ## 0.59.1 (2018-09-15)
 
