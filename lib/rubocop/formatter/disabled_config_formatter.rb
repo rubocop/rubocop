@@ -85,6 +85,7 @@ module RuboCop
       def output_cop(cop_name, offense_count)
         output.puts
         cfg = self.class.config_to_allow_offenses[cop_name] || {}
+        set_max(cfg, offense_count)
 
         # To avoid malformed YAML when potentially reading the config in
         # #excludes, we use an output buffer and append it to the actual output
@@ -93,6 +94,19 @@ module RuboCop
         output_cop_comments(output_buffer, cfg, cop_name, offense_count)
         output_cop_config(output_buffer, cfg, cop_name)
         output.puts(output_buffer.string)
+      end
+
+      def set_max(cfg, offense_count)
+        return unless cfg[:exclude_limit]
+
+        # In case auto_gen_only_exclude is set, only modify the maximum if the
+        # files are not excluded one by one.
+        if !@options[:auto_gen_only_exclude] || offense_count > @exclude_limit
+          cfg.merge! cfg[:exclude_limit]
+        end
+
+        # Remove already used exclude_limit.
+        cfg.reject! { |key| key == :exclude_limit }
       end
 
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
@@ -141,25 +155,17 @@ module RuboCop
       end
 
       def output_cop_config(output_buffer, cfg, cop_name)
-        filtered_cfg = cfg.reject do |key|
-          # Filter out all parameters if --auto-gen-only-exclude is given. We
-          # assume here that those are Max parameters and other maximum
-          # parameters with different names. This will cause Exclude parameters
-          # to be generated in the next step.
-          next true if @options[:auto_gen_only_exclude]
-
-          # 'Enabled' option will be put into file only if exclude limit is
-          # exceeded.
-          key == 'Enabled'
-        end
+        # 'Enabled' option will be put into file only if exclude
+        # limit is exceeded.
+        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
 
         output_buffer.puts "#{cop_name}:"
-        filtered_cfg.each do |key, value|
+        cfg_without_enabled.each do |key, value|
           value = value[0] if value.is_a?(Array)
           output_buffer.puts "  #{key}: #{value}"
         end
 
-        output_offending_files(output_buffer, filtered_cfg, cop_name)
+        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
       end
 
       def output_offending_files(output_buffer, cfg, cop_name)
