@@ -468,6 +468,12 @@ Then you can start removing the entries in the generated
 `.rubocop_todo.yml` file one by one as you work through all the offenses
 in the code.
 
+The cops in the `Metrics` department will by default get `Max` parameters
+generated in `.rubocop_todo.yml`. The value of these will be just high enough
+so that no offenses are reported the next time you run `rubocop`. If you
+prefer to exclude files, like for other cops, add `--auto-gen-only-exclude`
+when running with `--auto-gen-config`.
+
 ### Updating the configuration file
 
 When you update RuboCop version, sometimes you need to change `.rubocop.yml`.
