@@ -105,6 +105,16 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
       RUBY
   end
 
+  context 'with a multi-expression line without a semicolon' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def foo
+          bar = baz if qux else quux
+        end
+      RUBY
+    end
+  end
+
   context 'when AllowAsExpressionSeparator is true' do
     let(:cop_config) { { 'AllowAsExpressionSeparator' => true } }
 

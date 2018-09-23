@@ -39,14 +39,18 @@ module RuboCop
           exprs_lines = exprs.map { |e| e.source_range.line }
           lines = exprs_lines.group_by { |i| i }
 
-          # every line with more than 1 expression on it is an offense
           lines.each do |line, expr_on_line|
+            # Every line with more than one expression on it is a
+            # potential offense
             next unless expr_on_line.size > 1
 
             # TODO: Find the correct position of the semicolon. We don't know
             # if the first semicolon on the line is a separator of
             # expressions. It's just a guess.
             column = @processed_source[line - 1].index(';')
+
+            next unless column
+
             convention_on(line, column, false)
           end
         end
