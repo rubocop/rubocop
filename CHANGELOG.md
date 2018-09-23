@@ -11,6 +11,9 @@
 * [#6340](https://github.com/rubocop-hq/rubocop/pull/6340): Fix an error for `Rails/ReversibleMigration` when block argument is empty. ([@koic][])
 
 ## 0.59.2 (2018-09-24)
+### New features
+
+* [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@jonas054][])
 
 ### Bug fixes
 

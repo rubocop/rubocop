@@ -141,17 +141,25 @@ module RuboCop
       end
 
       def output_cop_config(output_buffer, cfg, cop_name)
-        # 'Enabled' option will be put into file only if exclude
-        # limit is exceeded.
-        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
+        filtered_cfg = cfg.reject do |key|
+          # Filter out all parameters if --auto-gen-only-exclude is given. We
+          # assume here that those are Max parameters and other maximum
+          # parameters with different names. This will cause Exclude parameters
+          # to be generated in the next step.
+          next true if @options[:auto_gen_only_exclude]
+
+          # 'Enabled' option will be put into file only if exclude limit is
+          # exceeded.
+          key == 'Enabled'
+        end
 
         output_buffer.puts "#{cop_name}:"
-        cfg_without_enabled.each do |key, value|
+        filtered_cfg.each do |key, value|
           value = value[0] if value.is_a?(Array)
           output_buffer.puts "  #{key}: #{value}"
         end
 
-        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
+        output_offending_files(output_buffer, filtered_cfg, cop_name)
       end
 
       def output_offending_files(output_buffer, cfg, cop_name)
