@@ -67,7 +67,7 @@ $ rubocop
 
 ## Official manual
 
-You can read a ton more about RuboCop in its [official manual](http://docs.rubocop.org).
+You can read a ton more about RuboCop in its [official manual](https://docs.rubocop.org).
 
 ## Compatibility
 

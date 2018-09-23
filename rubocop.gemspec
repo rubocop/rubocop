@@ -27,10 +27,10 @@ Gem::Specification.new do |s|
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.metadata = {
-    'homepage_uri' => 'http://www.rubocop.org/',
+    'homepage_uri' => 'https://www.rubocop.org/',
     'changelog_uri' => 'https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/rubocop-hq/rubocop/',
-    'documentation_uri' => 'http://docs.rubocop.org/',
+    'documentation_uri' => 'https://docs.rubocop.org/',
     'bug_tracker_uri' => 'https://github.com/rubocop-hq/rubocop/issues'
   }
 
