@@ -1,9 +1,0 @@
-sudo: false
-language: ruby
-dist: trusty
-rvm:
-  - 2.4.1
-install:
-  - echo "noop install"
-script:
-  - echo "noop script"
