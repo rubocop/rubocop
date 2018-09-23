@@ -223,6 +223,14 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         cache.save(offenses)
       end
     end
+
+    context 'when the @path is not writable' do
+      let(:cache_root) { '/permission_denied_dir' }
+
+      it 'doesn\'t raise an exception' do
+        expect { cache.save([]) }.not_to raise_error
+      end
+    end
   end
 
   describe '.cleanup' do

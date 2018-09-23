@@ -44,6 +44,7 @@
 ### Changes
 
 * [#6286](https://github.com/rubocop-hq/rubocop/pull/6286): Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
+* [#6321](https://github.com/rubocop-hq/rubocop/pull/6321): Fix run of RuboCop when cache directory is not writable. ([@Kevinrob][])
 
 ## 0.59.1 (2018-09-15)
 
@@ -3620,3 +3621,4 @@
 [@autopp]: https://github.com/autopp
 [@lukasz-wojcik]: https://github.com/lukasz-wojcik
 [@albaer]: https://github.com/albaer
+[@Kevinrob]: https://github.com/Kevinrob
