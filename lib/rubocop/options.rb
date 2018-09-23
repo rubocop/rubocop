@@ -361,7 +361,9 @@ module RuboCop
                              'generates.'],
       auto_gen_only_exclude:
                             ['Generate only Exclude parameters and not Max',
-                             'when running --auto-gen-config.'],
+                             'when running --auto-gen-config, except if the',
+                             'number of files with offenses is bigger than',
+                             'exclude-limit.'],
       exclude_limit:        ['Used together with --auto-gen-config to',
                              'set the limit for how many Exclude',
                              "properties to generate. Default is #{MAX_EXCL}."],

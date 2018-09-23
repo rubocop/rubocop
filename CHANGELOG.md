@@ -5,7 +5,7 @@
 ## 0.59.2 (2018-09-24)
 ### New features
 
-* [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@jonas054][])
+* [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@Ana06][], [@jonas054][])
 
 ### Bug fixes
 
