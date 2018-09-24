@@ -35,7 +35,7 @@ module RuboCop
       #     foo.bar
       #   end
       #
-      #   # EnforceForPrefixed: true
+      # @example EnforceForPrefixed: true (default)
       #   # bad
       #   def foo_bar
       #     foo.bar
@@ -44,7 +44,7 @@ module RuboCop
       #   # good
       #   delegate :bar, to: :foo, prefix: true
       #
-      #   # EnforceForPrefixed: false
+      # @example EnforceForPrefixed: false
       #   # good
       #   def foo_bar
       #     foo.bar

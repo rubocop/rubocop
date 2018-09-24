@@ -454,8 +454,10 @@ private
 def bar
   foo.bar
 end
+```
+#### EnforceForPrefixed: true (default)
 
-# EnforceForPrefixed: true
+```ruby
 # bad
 def foo_bar
   foo.bar
@@ -463,8 +465,10 @@ end
 
 # good
 delegate :bar, to: :foo, prefix: true
+```
+#### EnforceForPrefixed: false
 
-# EnforceForPrefixed: false
+```ruby
 # good
 def foo_bar
   foo.bar
