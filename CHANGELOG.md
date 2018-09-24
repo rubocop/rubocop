@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.59.2 (2018-09-24)
+
 ### Bug fixes
 
 * [#6266](https://github.com/rubocop-hq/rubocop/issues/6266): Fix a false positive for `Rails/HasManyOrHasOneDependent` when using associations of Active Resource. ([@tejasbubane][], [@koic][])
