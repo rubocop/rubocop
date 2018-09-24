@@ -330,6 +330,7 @@ require_relative 'rubocop/cop/lint/void'
 
 require_relative 'rubocop/cop/metrics/cyclomatic_complexity'
 # relies on cyclomatic_complexity
+require_relative 'rubocop/cop/metrics/utils/abc_size_calculator'
 require_relative 'rubocop/cop/metrics/abc_size'
 require_relative 'rubocop/cop/metrics/block_length'
 require_relative 'rubocop/cop/metrics/block_nesting'
