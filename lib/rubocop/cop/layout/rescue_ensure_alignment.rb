@@ -29,6 +29,7 @@ module RuboCop
               '%<begin_loc_line>d, %<begin_loc_column>d.'.freeze
         ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
         RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + [:block]).freeze
+        ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
@@ -36,6 +37,18 @@ module RuboCop
 
         def on_ensure(node)
           check(node)
+        end
+
+        def autocorrect(node)
+          whitespace = whitespace_range(node)
+          # Some inline node is sitting before current node.
+          return nil unless whitespace.source.strip.empty?
+
+          alignment_node = alignment_node(node)
+          return false if alignment_node.nil?
+
+          new_column = alignment_node.loc.column
+          ->(corrector) { corrector.replace(whitespace, ' ' * new_column) }
         end
 
         def investigate(processed_source)
@@ -47,50 +60,88 @@ module RuboCop
             end
         end
 
-        def autocorrect(node)
-          whitespace = whitespace_range(node)
-          return false unless whitespace.source.strip.empty?
-
-          new_column = ancestor_node(node).loc.end.column
-          ->(corrector) { corrector.replace(whitespace, ' ' * new_column) }
-        end
-
         private
 
+        # Check alignment of node with rescue or ensure modifiers.
+
         def check(node)
+          alignment_node = alignment_node(node)
+          return if alignment_node.nil?
+
+          alignment_loc = alignment_node.loc.expression
+          kw_loc        = node.loc.keyword
+
+          return if
+            alignment_loc.column == kw_loc.column ||
+            alignment_loc.line   == kw_loc.line
+
+          add_offense(
+            node,
+            location: kw_loc,
+            message: format_message(alignment_node, alignment_loc, kw_loc)
+          )
+        end
+
+        def format_message(alignment_node, alignment_loc, kw_loc)
+          format(
+            MSG,
+            kw_loc: kw_loc.source,
+            kw_loc_line: kw_loc.line,
+            kw_loc_column: kw_loc.column,
+            beginning: alignment_source(alignment_node, alignment_loc),
+            begin_loc_line: alignment_loc.line,
+            begin_loc_column: alignment_loc.column
+          )
+        end
+
+        def alignment_source(node, starting_loc)
+          ending_loc =
+            case node.type
+            when :block, :kwbegin
+              node.loc.begin
+            when :def, :defs, :class, :module
+              node.loc.name
+            else
+              # It is a wrapper with access modifier.
+              node.child_nodes.first.loc.name
+            end
+
+          range_between(starting_loc.begin_pos, ending_loc.end_pos).source
+        end
+
+        # We will use ancestor or wrapper with access modifier.
+
+        def alignment_node(node)
           ancestor_node = ancestor_node(node)
-          alignment_loc = ancestor_node.loc.expression
-          kw_loc = node.loc.keyword
+          return nil if ancestor_node.nil?
 
-          return if alignment_loc.column == kw_loc.column
-          return if alignment_loc.line == kw_loc.line
+          access_modifier_node = access_modifier_node(ancestor_node)
+          return ancestor_node if access_modifier_node.nil?
 
-          add_offense(node,
-                      location: kw_loc,
-                      message: format_message(kw_loc,
-                                              alignment_loc,
-                                              ancestor_node))
+          access_modifier_node
         end
 
-        def format_message(kw_loc, alignment_loc, ancestor_node)
-          format(MSG,
-                 kw_loc: kw_loc.source,
-                 kw_loc_line: kw_loc.line,
-                 kw_loc_column: kw_loc.column,
-                 beginning: alignment_source(ancestor_node),
-                 begin_loc_line: alignment_loc.line,
-                 begin_loc_column: alignment_loc.column)
+        def ancestor_node(node)
+          ancestor_types =
+            if target_ruby_version >= 2.5
+              RUBY_2_5_ANCESTOR_TYPES
+            else
+              ANCESTOR_TYPES
+            end
+
+          node.each_ancestor(*ancestor_types).first
         end
 
-        def alignment_source(node)
-          ending = case node.type
-                   when :def, :defs, :class, :module
-                     node.loc.name
-                   when :block, :kwbegin
-                     node.loc.begin
-                   end
+        def access_modifier_node(node)
+          return nil unless
+            ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS.include?(node.type)
 
-          range_between(node.loc.expression.begin_pos, ending.end_pos).source
+          access_modifier_node = node.ancestors.first
+          return nil unless
+            access_modifier_node.respond_to?(:access_modifier?) &&
+            access_modifier_node.access_modifier?
+
+          access_modifier_node
         end
 
         def modifier?(node)
@@ -100,20 +151,10 @@ module RuboCop
         end
 
         def whitespace_range(node)
-          begin_pos = node.loc.keyword.begin_pos
+          begin_pos      = node.loc.keyword.begin_pos
           current_column = node.loc.keyword.column
 
           range_between(begin_pos - current_column, begin_pos)
-        end
-
-        def ancestor_node(node)
-          types = if target_ruby_version >= 2.5
-                    RUBY_2_5_ANCESTOR_TYPES
-                  else
-                    ANCESTOR_TYPES
-                  end
-
-          node.each_ancestor(*types).first
         end
       end
     end
