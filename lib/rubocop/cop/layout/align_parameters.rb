@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Layout
-      # Here we check if the parameters on a multi-line method call or
-      # definition are aligned.
+      # Here we check if all lines containing parameters of a multi-line method
+      # call or definition have the same indentation.
       #
       # @example EnforcedStyle: with_first_parameter (default)
       #   # good
@@ -30,8 +30,8 @@ module RuboCop
       class AlignParameters < Cop
         include Alignment
 
-        ALIGN_PARAMS_MSG = 'Align the parameters of a method %<type>s if ' \
-          'they span more than one line.'.freeze
+        ALIGN_PARAMS_MSG = 'Ensure lines containing parameters of a ' \
+          'method %<type>s have the same indentation.'.freeze
 
         FIXED_INDENT_MSG = 'Use one level of indentation for parameters ' \
           'following the first line of a multi-line method %<type>s.'.freeze

@@ -8,10 +8,10 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
       array = [
         a,
          b,
-         ^ Align the elements of an array literal if they span more than one line.
+         ^ Ensure lines containing elements of an array literal have the same indentation.
         c,
          d
-         ^ Align the elements of an array literal if they span more than one line.
+         ^ Ensure lines containing elements of an array literal have the same indentation.
       ]
     RUBY
   end

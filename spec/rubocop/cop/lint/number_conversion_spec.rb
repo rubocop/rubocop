@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
       RUBY
     end
 
-    it 'when `#to_i` called on a variable on a array' do
+    it 'when `#to_i` called on a variable on an array' do
       expect_offense(<<-RUBY.strip_indent)
         args = [1,2,3]
         args[0].to_i

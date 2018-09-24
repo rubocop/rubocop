@@ -169,8 +169,8 @@ module RuboCop
         include HashAlignment
         include RangeHelp
 
-        MSG = 'Align the elements of a hash literal if they span more than ' \
-              'one line.'.freeze
+        MSG = 'Ensure lines containing elements of a hash literal ' \
+              'have the same indentation.'.freeze
 
         def on_send(node)
           return if double_splat?(node)
