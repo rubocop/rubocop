@@ -689,6 +689,38 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(actual.size).to eq(expected.size)
     end
 
+    it 'generates Exclude instead of Max when --auto-gen-only-exclude is' \
+       ' used' do
+      create_file('example1.rb', ['#' * 90,
+                                  'puts 123456'])
+      create_file('example2.rb', <<-RUBY.strip_indent)
+        def function(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+          puts 123456
+        end
+      RUBY
+      # Make ConfigLoader reload the default configuration so that its
+      # absolute Exclude paths will point into this example's work directory.
+      RuboCop::ConfigLoader.default_configuration = nil
+
+      expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude'])).to eq(0)
+      actual = IO.read('.rubocop_todo.yml').split($RS)
+      expect(actual.grep(/^[^#]/).join($RS)).to eq(<<-YAML.strip_indent.chomp)
+        Lint/UnusedMethodArgument:
+          Exclude:
+            - 'example2.rb'
+        Metrics/ParameterLists:
+          Exclude:
+            - 'example2.rb'
+        Style/NumericLiterals:
+          Exclude:
+            - 'example1.rb'
+            - 'example2.rb'
+        Metrics/LineLength:
+          Exclude:
+            - 'example1.rb'
+      YAML
+    end
+
     it 'does not include a timestamp when --no-auto-gen-timestamp is used' do
       create_file('example1.rb', ['$!'])
       expect(cli.run(['--auto-gen-config', '--no-auto-gen-timestamp'])).to eq(0)

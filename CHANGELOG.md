@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@jonas054][])
+
 ### Bug fixes
 
 * [#6266](https://github.com/rubocop-hq/rubocop/issues/6266): Run `Rails/HasManyOrHasOneDependent` only for `ActiveRecord` class. ([@tejasbubane][])
