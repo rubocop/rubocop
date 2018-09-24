@@ -20,6 +20,7 @@
 
 ### Bug fixes
 
+* [#6286](https://github.com/rubocop-hq/rubocop/pull/6286): Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
 * [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
 * [#6278](https://github.com/rubocop-hq/rubocop/pull/6278): Fix false positive for `Naming/FileName` when investigating gemspecs. ([@kddeisz][])
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
@@ -3585,6 +3586,7 @@
 [@schneems]: https://github.com/schneems
 [@ShockwaveNN]: https://github.com/ShockwaveNN
 [@Knack]: https://github.com/Knack
+[@akanoi]: https://github.com/akanoi
 [@yensaki]: https://github.com/yensaki
 [@ryanhageman]: https://github.com/ryanhageman
 [@autopp]: https://github.com/autopp
