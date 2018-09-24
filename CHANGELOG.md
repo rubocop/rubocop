@@ -14,6 +14,7 @@
 * [#6007](https://github.com/rubocop-hq/rubocop/pull/6007): Fix false positive in `Style/IfUnlessModifier` when using named capture. ([@drenmi][])
 * [#6311](https://github.com/rubocop-hq/rubocop/pull/6311): Prevent `Style/Semicolon` from breaking on single line if-then-else in assignment. ([@drenmi][])
 * [#6315](https://github.com/rubocop-hq/rubocop/pull/6315): Fix an error for `Rails/HasManyOrHasOneDependent` when an Active Record model does not have any relations. ([@koic][])
+* [#6316](https://github.com/rubocop-hq/rubocop/issues/6316): Fix an auto-correct error for `Style/For` when setting `EnforcedStyle: each` with range provided to the `for` loop without a `do` keyword or semicolon and without enclosing parenthesis. ([@lukasz-wojcik][])
 
 ## 0.59.1 (2018-09-15)
 
@@ -3587,3 +3588,4 @@
 [@yensaki]: https://github.com/yensaki
 [@ryanhageman]: https://github.com/ryanhageman
 [@autopp]: https://github.com/autopp
+[@lukasz-wojcik]: https://github.com/lukasz-wojcik

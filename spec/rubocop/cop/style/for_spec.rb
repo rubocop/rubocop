@@ -50,6 +50,68 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
         RUBY
       end
 
+      context 'with range' do
+        let(:expected_each_with_range) do
+          <<-RUBY.strip_indent
+            def func
+              (1...value).each do |n|
+                puts n
+              end
+            end
+          RUBY
+        end
+
+        it 'changes for to each' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            def func
+              for n in (1...value) do
+                puts n
+              end
+            end
+          RUBY
+
+          expect(new_source).to eq(expected_each_with_range)
+        end
+
+        it 'changes for that does not have do or semicolon to each' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            def func
+              for n in (1...value)
+                puts n
+              end
+            end
+          RUBY
+
+          expect(new_source).to eq(expected_each_with_range)
+        end
+
+        context 'without parentheses' do
+          it 'changes for to each' do
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
+              def func
+                for n in 1...value do
+                  puts n
+                end
+              end
+            RUBY
+
+            expect(new_source).to eq(expected_each_with_range)
+          end
+
+          it 'changes for that does not have do or semicolon to each' do
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
+              def func
+                for n in 1...value
+                  puts n
+                end
+              end
+            RUBY
+
+            expect(new_source).to eq(expected_each_with_range)
+          end
+        end
+      end
+
       it 'corrects a tuple of items' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
           def func
@@ -68,7 +130,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
         RUBY
       end
 
-      it 'changes for that dose not have do or semicolon to each' do
+      it 'changes for that does not have do or semicolon to each' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
           def func
             for n in [1, 2, 3]
