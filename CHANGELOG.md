@@ -16,11 +16,14 @@
 * [#6315](https://github.com/rubocop-hq/rubocop/pull/6315): Fix an error for `Rails/HasManyOrHasOneDependent` when an Active Record model does not have any relations. ([@koic][])
 * [#6316](https://github.com/rubocop-hq/rubocop/issues/6316): Fix an auto-correct error for `Style/For` when setting `EnforcedStyle: each` with range provided to the `for` loop without a `do` keyword or semicolon and without enclosing parenthesis. ([@lukasz-wojcik][])
 
+### Changes
+
+* [#6286](https://github.com/rubocop-hq/rubocop/pull/6286): Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
+
 ## 0.59.1 (2018-09-15)
 
 ### Bug fixes
 
-* [#6286](https://github.com/rubocop-hq/rubocop/pull/6286): Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
 * [#6267](https://github.com/rubocop-hq/rubocop/pull/6267): Fix undefined method 'method_name' for `Rails/FindEach`. ([@Knack][])
 * [#6278](https://github.com/rubocop-hq/rubocop/pull/6278): Fix false positive for `Naming/FileName` when investigating gemspecs. ([@kddeisz][])
 * [#6256](https://github.com/rubocop-hq/rubocop/pull/6256): Fix false positive for `Naming/FileName` when investigating dotfiles. ([@sinsoku][])
