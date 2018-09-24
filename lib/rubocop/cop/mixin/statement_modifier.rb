@@ -32,6 +32,8 @@ module RuboCop
       end
 
       def modifier_fits_on_single_line?(node)
+        return true unless max_line_length
+
         modifier_length = length_in_modifier_form(node, node.condition,
                                                   node.body.source_length)
 
@@ -47,6 +49,8 @@ module RuboCop
       end
 
       def max_line_length
+        return unless config.for_cop('Metrics/LineLength')['Enabled']
+
         config.for_cop('Metrics/LineLength')['Max']
       end
 

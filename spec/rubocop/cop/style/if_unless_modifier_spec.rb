@@ -6,8 +6,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    hash = { 'Metrics/LineLength' => { 'Max' => 80 } }
-    RuboCop::Config.new(hash)
+    RuboCop::Config.new('Metrics/LineLength' => { 'Max' => 80 })
   end
 
   context 'multiline if that fits on one line' do
@@ -446,6 +445,26 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       end
 
       it_behaves_like 'with tabs indentation'
+    end
+  end
+
+  context 'when Metrics/LineLength is disabled' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Metrics/LineLength' => {
+          'Enabled' => false,
+          'Max' => 80
+        }
+      )
+    end
+
+    it 'registers an offense even for a long modifier statement' do
+      expect_offense(<<-RUBY.strip_indent)
+        if foo
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          "This string would make the line longer than eighty characters if combined with the statement." 
+        end
+      RUBY
     end
   end
 end
