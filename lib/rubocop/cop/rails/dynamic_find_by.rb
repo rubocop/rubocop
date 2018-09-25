@@ -27,7 +27,7 @@ module RuboCop
       #   User.find_by!(email: email)
       class DynamicFindBy < Cop
         MSG = 'Use `%<static_name>s` instead of dynamic `%<method>s`.'.freeze
-        METHOD_PATTERN = /^find_by_(.+?)(!)?$/
+        METHOD_PATTERN = /^find_by_(.+?)(!)?$/.freeze
 
         def on_send(node)
           method_name = node.method_name.to_s

@@ -7,7 +7,7 @@ module RuboCop
       # It looks for other directives that require files in the same (cop)
       # namespace and injects the provided one in alpha
       class RequireFileInjector
-        REQUIRE_PATH = /require_relative ['"](.+)['"]/
+        REQUIRE_PATH = /require_relative ['"](.+)['"]/.freeze
 
         def initialize(source_path:, root_file_path:, output: $stdout)
           @source_path = Pathname(source_path)

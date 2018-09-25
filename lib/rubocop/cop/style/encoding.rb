@@ -13,7 +13,7 @@ module RuboCop
         include RangeHelp
 
         MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'.freeze
-        ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+        ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
         SHEBANG = '#!'.freeze
 
         def investigate(processed_source)

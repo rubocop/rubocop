@@ -16,7 +16,7 @@ module RuboCop
       #     work
       #   end
       class InfiniteLoop < Cop
-        LEADING_SPACE = /\A(\s*)/
+        LEADING_SPACE = /\A(\s*)/.freeze
 
         MSG = 'Use `Kernel#loop` for infinite loops.'.freeze
 

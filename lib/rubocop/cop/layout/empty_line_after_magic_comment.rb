@@ -24,7 +24,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Add an empty line after magic comments.'.freeze
-        BLANK_LINE = /\A\s*\z/
+        BLANK_LINE = /\A\s*\z/.freeze
 
         def investigate(source)
           return unless source.ast &&

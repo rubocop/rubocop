@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#6330](https://github.com/rubocop-hq/rubocop/issues/6330): Fix an error for `Rails/ReversibleMigration` when using variable assignment. ([@koic][], [@scottmatthewman][])
+* [#6331](https://github.com/rubocop-hq/rubocop/issues/6331): Fix a false positive for `Style/RedundantFreeze` and a false negative for `Style/MutableConstant` when assigning a regexp object to a constant. ([@koic][])
 
 ## 0.59.2 (2018-09-24)
 

@@ -24,8 +24,8 @@ module RuboCop
         include PercentLiteral
 
         QUOTES_AND_COMMAS = [/,$/, /^'.*'$/, /^".*"$/].freeze
-        LEADING_QUOTE = /^['"]/
-        TRAILING_QUOTE = /['"]?,?$/
+        LEADING_QUOTE = /^['"]/.freeze
+        TRAILING_QUOTE = /['"]?,?$/.freeze
 
         MSG = "Within `%w`/`%W`, quotes and ',' are unnecessary and may be " \
           'unwanted in the resulting strings.'.freeze

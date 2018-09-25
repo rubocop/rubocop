@@ -25,7 +25,8 @@ module RuboCop
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
-      LITERAL_REGEX = /[\w\s\-,"'!#%&<>=;:`~]|\\[^AbBdDgGhHkpPRwWXsSzZ0-9]/
+      LITERAL_REGEX =
+        /[\w\s\-,"'!#%&<>=;:`~]|\\[^AbBdDgGhHkpPRwWXsSzZ0-9]/.freeze
 
       module_function
 

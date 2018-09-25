@@ -21,8 +21,8 @@ module RuboCop
         include PercentLiteral
 
         MSG = 'Do not use spaces inside percent literal delimiters.'.freeze
-        BEGIN_REGEX = /\A( +)/
-        END_REGEX = /(?<!\\)( +)\z/
+        BEGIN_REGEX = /\A( +)/.freeze
+        END_REGEX = /(?<!\\)( +)\z/.freeze
 
         def on_array(node)
           process(node, '%i', '%I', '%w', '%W')
