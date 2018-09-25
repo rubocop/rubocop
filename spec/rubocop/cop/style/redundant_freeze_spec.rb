@@ -23,7 +23,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'immutable objects', '1.5'
   it_behaves_like 'immutable objects', ':sym'
   it_behaves_like 'immutable objects', ':""'
-  it_behaves_like 'immutable objects', '/./'
   it_behaves_like 'immutable objects', '1..5'
 
   shared_examples 'mutable objects' do |o|
@@ -37,6 +36,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'mutable objects', '{ a: 1, b: 2 }'
   it_behaves_like 'mutable objects', "'str'"
   it_behaves_like 'mutable objects', '"top#{1 + 2}"'
+  it_behaves_like 'mutable objects', '/./'
 
   it 'allows .freeze on  method call' do
     expect_no_offenses('TOP_TEST = Something.new.freeze')

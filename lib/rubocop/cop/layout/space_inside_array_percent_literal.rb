@@ -18,7 +18,7 @@ module RuboCop
 
         MSG = 'Use only a single space inside array percent literal.'.freeze
         MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX =
-          /(?:[\S&&[^\\]](?:\\ )*)( {2,})(?=\S)/
+          /(?:[\S&&[^\\]](?:\\ )*)( {2,})(?=\S)/.freeze
 
         def on_array(node)
           process(node, '%i', '%I', '%w', '%W')

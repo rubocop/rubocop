@@ -27,8 +27,8 @@ module RuboCop
         EMPTY = ''.freeze
         PERCENT_Q = '%q'.freeze
         PERCENT_CAPITAL_Q = '%Q'.freeze
-        STRING_INTERPOLATION_REGEXP = /#\{.+}/
-        ESCAPED_NON_BACKSLASH = /\\[^\\]/
+        STRING_INTERPOLATION_REGEXP = /#\{.+}/.freeze
+        ESCAPED_NON_BACKSLASH = /\\[^\\]/.freeze
 
         def on_dstr(node)
           return unless string_literal?(node)

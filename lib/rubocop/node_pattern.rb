@@ -96,27 +96,27 @@ module RuboCop
     # @private
     # Builds Ruby code which implements a pattern
     class Compiler
-      SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}
-      IDENTIFIER   = /[a-zA-Z_-]/
-      META         = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
-      NUMBER       = /-?\d+(?:\.\d+)?/
-      STRING       = /".+?"/
-      METHOD_NAME  = /\#?#{IDENTIFIER}+[\!\?]?\(?/
-      PARAM_NUMBER = /%\d*/
+      SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
+      IDENTIFIER   = /[a-zA-Z_-]/.freeze
+      META         = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./.freeze
+      NUMBER       = /-?\d+(?:\.\d+)?/.freeze
+      STRING       = /".+?"/.freeze
+      METHOD_NAME  = /\#?#{IDENTIFIER}+[\!\?]?\(?/.freeze
+      PARAM_NUMBER = /%\d*/.freeze
 
-      SEPARATORS = /[\s]+/
+      SEPARATORS = /[\s]+/.freeze
       TOKENS     = Regexp.union(META, PARAM_NUMBER, NUMBER,
                                 METHOD_NAME, SYMBOL, STRING)
 
-      TOKEN = /\G(?:#{SEPARATORS}|#{TOKENS}|.)/
+      TOKEN = /\G(?:#{SEPARATORS}|#{TOKENS}|.)/.freeze
 
-      NODE      = /\A#{IDENTIFIER}+\Z/
-      PREDICATE = /\A#{IDENTIFIER}+\?\(?\Z/
-      WILDCARD  = /\A_#{IDENTIFIER}*\Z/
-      FUNCALL   = /\A\##{METHOD_NAME}/
-      LITERAL   = /\A(?:#{SYMBOL}|#{NUMBER}|#{STRING})\Z/
-      PARAM     = /\A#{PARAM_NUMBER}\Z/
-      CLOSING   = /\A(?:\)|\}|\])\Z/
+      NODE      = /\A#{IDENTIFIER}+\Z/.freeze
+      PREDICATE = /\A#{IDENTIFIER}+\?\(?\Z/.freeze
+      WILDCARD  = /\A_#{IDENTIFIER}*\Z/.freeze
+      FUNCALL   = /\A\##{METHOD_NAME}/.freeze
+      LITERAL   = /\A(?:#{SYMBOL}|#{NUMBER}|#{STRING})\Z/.freeze
+      PARAM     = /\A#{PARAM_NUMBER}\Z/.freeze
+      CLOSING   = /\A(?:\)|\}|\])\Z/.freeze
 
       attr_reader :match_code
 

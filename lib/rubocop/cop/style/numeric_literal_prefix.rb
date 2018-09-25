@@ -36,11 +36,11 @@ module RuboCop
       class NumericLiteralPrefix < Cop
         include IntegerNode
 
-        OCTAL_ZERO_ONLY_REGEX = /^0[Oo][0-7]+$/
-        OCTAL_REGEX = /^0O?[0-7]+$/
-        HEX_REGEX = /^0X[0-9A-F]+$/
-        BINARY_REGEX = /^0B[01]+$/
-        DECIMAL_REGEX = /^0[dD][0-9]+$/
+        OCTAL_ZERO_ONLY_REGEX = /^0[Oo][0-7]+$/.freeze
+        OCTAL_REGEX = /^0O?[0-7]+$/.freeze
+        HEX_REGEX = /^0X[0-9A-F]+$/.freeze
+        BINARY_REGEX = /^0B[01]+$/.freeze
+        DECIMAL_REGEX = /^0[dD][0-9]+$/.freeze
 
         OCTAL_ZERO_ONLY_MSG = 'Use 0 for octal literals.'.freeze
         OCTAL_MSG = 'Use 0o for octal literals.'.freeze

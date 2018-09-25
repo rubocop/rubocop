@@ -33,7 +33,8 @@ module RuboCop
       COMPOSITE_LITERALS = %i[dstr xstr dsym array hash irange
                               erange regexp].freeze
       BASIC_LITERALS = (LITERALS - COMPOSITE_LITERALS).freeze
-      MUTABLE_LITERALS = %i[str dstr xstr array hash].freeze
+      MUTABLE_LITERALS = %i[str dstr xstr array hash
+                            regexp].freeze
       IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
       VARIABLES = %i[ivar gvar cvar lvar].freeze

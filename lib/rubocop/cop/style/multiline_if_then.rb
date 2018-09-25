@@ -20,7 +20,7 @@ module RuboCop
         include OnNormalIfUnless
         include RangeHelp
 
-        NON_MODIFIER_THEN = /then\s*(#.*)?$/
+        NON_MODIFIER_THEN = /then\s*(#.*)?$/.freeze
 
         MSG = 'Do not use `then` for multi-line `%<keyword>s`.'.freeze
 

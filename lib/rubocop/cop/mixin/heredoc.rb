@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for working with heredoc strings.
     module Heredoc
-      OPENING_DELIMITER = /(<<[~-]?)['"`]?([^'"`]+)['"`]?/
+      OPENING_DELIMITER = /(<<[~-]?)['"`]?([^'"`]+)['"`]?/.freeze
 
       def on_str(node)
         return unless node.heredoc?

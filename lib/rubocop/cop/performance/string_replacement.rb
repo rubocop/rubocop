@@ -22,7 +22,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
-        DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
+        DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/.freeze
         DELETE = 'delete'.freeze
         TR = 'tr'.freeze
         BANG = '!'.freeze

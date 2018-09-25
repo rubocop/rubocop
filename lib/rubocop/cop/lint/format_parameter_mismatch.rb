@@ -23,14 +23,14 @@ module RuboCop
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
               'match the number of fields (%<field_num>i).'.freeze
         FIELD_REGEX =
-          /(%(([\s#+-0\*]*)(\d*)?(\.\d+)?[bBdiouxXeEfgGaAcps]|%))/
-        NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/
+          /(%(([\s#+-0\*]*)(\d*)?(\.\d+)?[bBdiouxXeEfgGaAcps]|%))/.freeze
+        NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze
         KERNEL = 'Kernel'.freeze
         SHOVEL = '<<'.freeze
         PERCENT = '%'.freeze
         PERCENT_PERCENT = '%%'.freeze
         STRING_TYPES = %i[str dstr].freeze
-        NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/
+        NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/.freeze
 
         def on_send(node)
           return unless offending_node?(node)

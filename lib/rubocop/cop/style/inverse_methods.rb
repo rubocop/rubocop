@@ -35,7 +35,7 @@ module RuboCop
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
-        CAMEL_CASE = /[A-Z]+[a-z]+/
+        CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
 
         def_node_matcher :inverse_candidate?, <<-PATTERN
           {
