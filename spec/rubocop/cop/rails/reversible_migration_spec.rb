@@ -61,6 +61,18 @@ RSpec.describe RuboCop::Cop::Rails::ReversibleMigration, :config do
     RUBY
   end
 
+  context 'when using variable assignment' do
+    it_behaves_like 'accepts', 'create_table', <<-RUBY
+      def change
+        change_table :invoices do |t|
+          decimals_params = {precision: 10, scale: 2}
+
+          t.decimal :total_discount, decimals_params
+        end
+      end
+    RUBY
+  end
+
   context 'within #reversible' do
     it_behaves_like 'accepts', 'execute', <<-RUBY
       reversible do |dir|

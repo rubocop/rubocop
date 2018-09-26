@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6330](https://github.com/rubocop-hq/rubocop/issues/6330): Fix an error for `Rails/ReversibleMigration` when using variable assignment. ([@koic][], [@scottmatthewman][])
+
 ## 0.59.2 (2018-09-24)
 
 ### Bug fixes

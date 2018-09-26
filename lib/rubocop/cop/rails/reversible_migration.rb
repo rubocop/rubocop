@@ -246,6 +246,8 @@ module RuboCop
         end
 
         def check_change_table_offense(receiver, node)
+          return unless node.send_type?
+
           method_name = node.method_name
           return if receiver != node.receiver &&
                     !IRREVERSIBLE_CHANGE_TABLE_CALLS.include?(method_name)
