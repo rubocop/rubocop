@@ -2,9 +2,9 @@
 
 ## Rails/ActionFilter
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.19 | 
 
 This cop enforces the consistent use of action filter methods.
 
@@ -52,9 +52,9 @@ Include | `app/controllers/**/*.rb` | Array
 
 ## Rails/ActiveRecordAliases
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.53 | 
 
 Checks that ActiveRecord aliases are not used. The direct method names
 are more clear and easier to read.
@@ -71,9 +71,9 @@ Book.update!(author: 'Alice')
 
 ## Rails/ActiveSupportAliases
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.48 | 
 
 This cop checks that ActiveSupport aliases to core ruby methods
 are not used.
@@ -96,9 +96,9 @@ are not used.
 
 ## Rails/ApplicationJob
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 
 
 This cop checks that jobs subclass ApplicationJob with Rails 5.0.
 
@@ -118,9 +118,9 @@ end
 
 ## Rails/ApplicationRecord
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 
 
 This cop checks that models subclass ApplicationRecord with Rails 5.0.
 
@@ -140,9 +140,9 @@ end
 
 ## Rails/AssertNot
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.56 | 
 
 Use `assert_not` instead of `assert !`.
 
@@ -164,9 +164,9 @@ Include | `**/test/**/*` | Array
 
 ## Rails/Blank
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.48 | 
 
 This cop checks for code that can be written with simpler conditionals
 using `Object#blank?` defined by Active Support.
@@ -228,9 +228,9 @@ UnlessPresent | `true` | Boolean
 
 ## Rails/BulkChangeTable
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.57 | 
 
 This Cop checks whether alter queries are combinable.
 If combinable queries are detected, it suggests to you
@@ -304,9 +304,9 @@ Include | `db/migrate/*.rb` | Array
 
 ## Rails/CreateTableWithTimestamps
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 This cop checks the migration for which timestamps are not included
 when creating a new table.
@@ -357,9 +357,9 @@ Include | `db/migrate/*.rb` | Array
 
 ## Rails/Date
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.3 | 0.33
 
 This cop checks for the correct use of Date methods,
 such as Date.today, Date.current etc.
@@ -417,9 +417,9 @@ EnforcedStyle | `flexible` | `strict`, `flexible`
 
 ## Rails/Delegate
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.21 | 0.5
 
 This cop looks for delegations that could have been created
 automatically with the `delegate` method.
@@ -486,9 +486,9 @@ EnforceForPrefixed | `true` | Boolean
 
 ## Rails/DelegateAllowBlank
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.44 | 
 
 This cop looks for delegations that pass :allow_blank as an option
 instead of :allow_nil. :allow_blank is not a valid option to pass
@@ -506,9 +506,9 @@ delegate :foo, to: :bar, allow_nil: true
 
 ## Rails/DynamicFindBy
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.44 | 
 
 This cop checks dynamic `find_by_*` methods.
 Use `find_by` instead of dynamic method.
@@ -548,9 +548,9 @@ Whitelist | `find_by_sql` | Array
 
 ## Rails/EnumUniqueness
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.46 | 
 
 This cop looks for duplicate values in enum declarations.
 
@@ -578,9 +578,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/EnvironmentComparison
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.52 | 
 
 This cop checks that Rails.env is compared using `.production?`-like
 methods instead of equality against a string or symbol.
@@ -600,9 +600,9 @@ Rails.env.production?
 
 ## Rails/Exit
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.41 | 
 
 This cop enforces that 'exit' calls are not used within a rails app.
 Valid options are instead to raise an error, break, return or some
@@ -637,9 +637,9 @@ Exclude | `lib/**/*.rake` | Array
 
 ## Rails/FilePath
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.47 | 0.57
 
 This cop is used to identify usages of file path joining process
 to use `Rails.root.join` clause. It is used to add uniformity when
@@ -678,9 +678,9 @@ EnforcedStyle | `arguments` | `slashes`, `arguments`
 
 ## Rails/FindBy
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 
 
 This cop is used to identify usages of `where.first` and
 change them to use `find_by` instead.
@@ -708,9 +708,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/FindEach
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 
 
 This cop is used to identify usages of `all.each` and
 change them to use `all.find_each` instead.
@@ -737,9 +737,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/HasAndBelongsToMany
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.12 | 
 
 This cop checks for the use of the has_and_belongs_to_many macro.
 
@@ -765,9 +765,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/HasManyOrHasOneDependent
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.5 | 
 
 This cop looks for `has_many` or `has_one` associations that don't
 specify a `:dependent` option.
@@ -802,9 +802,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/HttpPositionalArguments
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.44 | 
 
 This cop is used to identify usages of http methods like `get`, `post`,
 `put`, `patch` without the usage of keyword arguments in your tests and
@@ -831,9 +831,9 @@ Include | `spec/**/*`, `test/**/*` | Array
 
 ## Rails/HttpStatus
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.54 | 
 
 Enforces use of symbolic or numeric value to define HTTP status.
 
@@ -878,9 +878,9 @@ EnforcedStyle | `symbolic` | `numeric`, `symbolic`
 
 ## Rails/InverseOf
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 This cop looks for has_(one|many) and belongs_to associations where
 Active Record can't automatically determine the inverse association
@@ -1018,9 +1018,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/LexicallyScopedActionFilter
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 This cop checks that methods specified in the filter's `only` or
 `except` options are defined within the same class or module.
@@ -1091,9 +1091,9 @@ Include | `app/controllers/**/*.rb` | Array
 
 ## Rails/NotNullColumn
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.43 | 
 
 This cop checks for add_column call with NOT NULL constraint
 in migration file.
@@ -1120,9 +1120,9 @@ Include | `db/migrate/*.rb` | Array
 
 ## Rails/Output
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.15 | 0.19
 
 This cop checks for the use of output calls like puts and print
 
@@ -1146,9 +1146,9 @@ Include | `app/**/*.rb`, `config/**/*.rb`, `db/**/*.rb`, `lib/**/*.rb` | Array
 
 ## Rails/OutputSafety
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.41 | 
 
 This cop checks for the use of output safety calls like html_safe,
 raw, and safe_concat. These methods do not escape content. They
@@ -1215,9 +1215,9 @@ safe_join([user_content, " ", content_tag(:span, user_content)])
 
 ## Rails/PluralizationGrammar
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.35 | 
 
 This cop checks for correct grammar when using ActiveSupport's
 core extensions to the numeric classes.
@@ -1236,9 +1236,9 @@ core extensions to the numeric classes.
 
 ## Rails/Presence
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.52 | 
 
 This cop checks code that can be written more easily using
 `Object#presence` defined by Active Support.
@@ -1280,9 +1280,9 @@ a.presence || b
 
 ## Rails/Present
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.48 | 
 
 This cop checks for code that can be written with simpler conditionals
 using `Object#present?` defined by Active Support.
@@ -1341,9 +1341,9 @@ UnlessBlank | `true` | Boolean
 
 ## Rails/ReadWriteAttribute
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.2 | 0.29
 
 This cop checks for the use of the read_attribute or write_attribute
 methods, and recommends square brackets instead.
@@ -1379,9 +1379,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/RedundantReceiverInWithOptions
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.52 | 
 
 This cop checks for redundant receiver in `with_options`.
 Receiver is implicit from Rails 4.2 or higher.
@@ -1440,9 +1440,9 @@ end
 
 ## Rails/RefuteMethods
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.56 | 
 
 Use `assert_not` methods instead of `refute` methods.
 
@@ -1468,9 +1468,9 @@ Include | `**/test/**/*` | Array
 
 ## Rails/RelativeDateConstant
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.48 | 0.59
 
 This cop checks whether constant value isn't relative date.
 Because the relative date will be evaluated only once.
@@ -1499,9 +1499,9 @@ AutoCorrect | `false` | Boolean
 
 ## Rails/RequestReferer
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.41 | 
 
 This cop checks for consistent uses of `request.referer` or
 `request.referrer`, depending on the cop's configuration.
@@ -1535,9 +1535,9 @@ EnforcedStyle | `referer` | `referer`, `referrer`
 
 ## Rails/ReversibleMigration
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.47 | 
 
 This cop checks whether the change method of the migration file is
 reversible.
@@ -1676,9 +1676,9 @@ Include | `db/migrate/*.rb` | Array
 
 ## Rails/SafeNavigation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.43 | 
 
 This cop converts usages of `try!` to `&.`. It can also be configured
 to convert `try`. It will convert code to use safe navigation if the
@@ -1727,9 +1727,9 @@ ConvertTry | `false` | Boolean
 
 ## Rails/SaveBang
 
-Enabled by default | Supports autocorrection
---- | ---
-Disabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.42 | 0.59
 
 This cop identifies possible cases where Active Record save! or related
 should be used instead of save because the model might have failed to
@@ -1842,9 +1842,9 @@ AllowedReceivers | `[]` | Array
 
 ## Rails/ScopeArgs
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.19 | 
 
 This cop checks for scope calls where it was passed
 a method (usually a scope) instead of a lambda/proc.
@@ -1867,9 +1867,9 @@ Include | `app/models/**/*.rb` | Array
 
 ## Rails/SkipsModelValidations
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.47 | 
 
 This cop checks for the use of methods which skip
 validations which are listed in
@@ -1907,9 +1907,9 @@ Blacklist | `decrement!`, `decrement_counter`, `increment!`, `increment_counter`
 
 ## Rails/TimeZone
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.3 | 0.33
 
 This cop checks for the use of Time methods without zone.
 
@@ -1972,9 +1972,9 @@ EnforcedStyle | `flexible` | `strict`, `flexible`
 
 ## Rails/UniqBeforePluck
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.4 | 0.47
 
 Prefer the use of uniq (or distinct), before pluck instead of after.
 
@@ -2031,9 +2031,9 @@ AutoCorrect | `false` | Boolean
 
 ## Rails/UnknownEnv
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.51 | 
 
 This cop checks that environments called with `Rails.env` predicates
 exist.
@@ -2056,9 +2056,9 @@ Environments | `development`, `test`, `production` | Array
 
 ## Rails/Validation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.9 | 0.41
 
 This cop checks for the use of old-style attribute validation macros.
 
