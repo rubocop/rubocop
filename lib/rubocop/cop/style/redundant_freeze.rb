@@ -34,10 +34,20 @@ module RuboCop
         private
 
         def immutable_literal?(node)
+          node = strip_parenthesis(node)
+
           return true if node.immutable_literal?
 
           FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
             frozen_string_literals_enabled?
+        end
+
+        def strip_parenthesis(node)
+          if node.begin_type? && node.children.first
+            node.children.first
+          else
+            node
+          end
         end
       end
     end
