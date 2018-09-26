@@ -2,9 +2,9 @@
 
 ## Metrics/AbcSize
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.27 | 
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
@@ -22,9 +22,9 @@ Max | `15` | Integer
 
 ## Metrics/BlockLength
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.44 | 0.58
 
 This cop checks if the length of a block exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -41,9 +41,9 @@ ExcludedMethods | `refine` | Array
 
 ## Metrics/BlockNesting
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 0.47
 
 This cop checks for excessive nesting of conditional and looping
 constructs.
@@ -67,9 +67,9 @@ Max | `3` | Integer
 
 ## Metrics/ClassLength
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 
 
 This cop checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -84,9 +84,9 @@ Max | `100` | Integer
 
 ## Metrics/CyclomaticComplexity
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 
 
 This cop checks that the cyclomatic complexity of methods is not higher
 than the configured maximum. The cyclomatic complexity is the number of
@@ -107,9 +107,9 @@ Max | `6` | Integer
 
 ## Metrics/LineLength
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 0.46
 
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
@@ -133,9 +133,9 @@ IgnoredPatterns | `[]` | Array
 
 ## Metrics/MethodLength
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 0.59.2
 
 This cop checks if the length of a method exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -155,9 +155,9 @@ ExcludedMethods | `[]` | Array
 
 ## Metrics/ModuleLength
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.31 | 
 
 This cop checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -172,9 +172,9 @@ Max | `100` | Integer
 
 ## Metrics/ParameterLists
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 
 
 This cop checks for methods with too many parameters.
 The maximum number of parameters is configurable.
@@ -193,9 +193,9 @@ CountKeywordArgs | `true` | Boolean
 
 ## Metrics/PerceivedComplexity
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.25 | 
 
 This cop tries to produce a complexity score that's a measure of the
 complexity the reader experiences when looking at a method. For that

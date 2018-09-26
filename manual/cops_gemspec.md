@@ -2,9 +2,9 @@
 
 ## Gemspec/DuplicatedAssignment
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 An attribute assignment method calls should be listed only once
 in a gemspec.
@@ -49,9 +49,9 @@ Include | `**/*.gemspec` | Array
 
 ## Gemspec/OrderedDependencies
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.51 | 
 
 Dependencies in the gemspec should be alphabetically sorted.
 
@@ -108,14 +108,14 @@ spec.add_dependency 'rspec'
 
 Name | Default value | Configurable values
 --- | --- | ---
-Include | `**/*.gemspec` | Array
 TreatCommentsAsGroupSeparators | `true` | Boolean
+Include | `**/*.gemspec` | Array
 
 ## Gemspec/RequiredRubyVersion
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 Checks that `required_ruby_version` of gemspec and `TargetRubyVersion`
 of .rubocop.yml are equal.

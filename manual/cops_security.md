@@ -2,9 +2,9 @@
 
 ## Security/Eval
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.47 | 
 
 This cop checks for the use of `Kernel#eval` and `Binding#eval`.
 
@@ -19,9 +19,9 @@ binding.eval(something)
 
 ## Security/JSONLoad
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes (Unsafe) | 0.43 | 0.44
 
 This cop checks for the use of JSON class methods which have potential
 security issues.
@@ -57,9 +57,9 @@ AutoCorrect | `false` | Boolean
 
 ## Security/MarshalLoad
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.47 | 
 
 This cop checks for the use of Marshal class methods which have
 potential security issues leading to remote code execution when
@@ -85,9 +85,9 @@ Marshal.load(Marshal.dump({}))
 
 ## Security/Open
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | No | 0.53 | 
 
 This cop checks for the use of `Kernel#open`.
 
@@ -111,9 +111,9 @@ URI.parse(something).open
 
 ## Security/YAMLLoad
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes (Unsafe) | 0.47 | 
 
 This cop checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when

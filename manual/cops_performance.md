@@ -2,9 +2,9 @@
 
 ## Performance/Caller
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.49 | 
 
 This cop identifies places where `caller[n]`
 can be replaced by `caller(n..n).first`.
@@ -27,9 +27,9 @@ caller_locations(1..1).first
 
 ## Performance/CaseWhenSplat
 
-Enabled by default | Supports autocorrection
---- | ---
-Disabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes (Unsafe) | 0.34 | 0.59
 
 Reordering `when` conditions with a splat to the end
 of the `when` branches can improve performance.
@@ -93,9 +93,9 @@ AutoCorrect | `false` | Boolean
 
 ## Performance/Casecmp
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies places where a case-insensitive string comparison
 can better be implemented using `casecmp`.
@@ -121,9 +121,9 @@ str.casecmp('ABC').zero?
 
 ## Performance/ChainArrayAllocation
 
-Enabled by default | Supports autocorrection
---- | ---
-Disabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.59 | 
 
 This cop is used to identify usages of
 Each of these methods (`compact`, `flatten`, `map`) will generate a
@@ -152,9 +152,9 @@ array
 
 ## Performance/CompareWithBlock
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.46 | 
 
 This cop identifies places where `sort { |a, b| a.foo <=> b.foo }`
 can be replaced by `sort_by(&:foo)`.
@@ -182,9 +182,9 @@ array.sort_by { |a| a[:foo] }
 
 ## Performance/Count
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.31 | 0.39
 
 This cop is used to identify usages of `count` on an `Enumerable` that
 follow calls to `select` or `reject`. Querying logic can instead be
@@ -232,9 +232,9 @@ SafeMode | `true` | Boolean
 
 ## Performance/Detect
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 0.39
 
 This cop is used to identify usages of
 `select.first`, `select.last`, `find_all.first`, and `find_all.last`
@@ -271,9 +271,9 @@ SafeMode | `true` | Boolean
 
 ## Performance/DoubleStartEndWith
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 0.48
 
 This cop checks for double `#start_with?` or `#end_with?` calls
 separated by `||`. In some cases such calls can be replaced
@@ -301,9 +301,9 @@ IncludeActiveSupportAliases | `false` | Boolean
 
 ## Performance/EndWith
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes (Unsafe) | 0.36 | 0.44
 
 This cop identifies unnecessary use of a regex where `String#end_with?`
 would suffice.
@@ -332,9 +332,9 @@ AutoCorrect | `false` | Boolean
 
 ## Performance/FixedSize
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.35 | 
 
 Do not compute the size of statically sized objects.
 
@@ -383,9 +383,9 @@ waldo.size
 
 ## Performance/FlatMap
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 
 
 This cop is used to identify usages of
 
@@ -414,9 +414,9 @@ EnabledForFlattenWithoutParams | `false` | Boolean
 
 ## Performance/InefficientHashSearch
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | Yes  | 0.56 | 
 
 This cop checks for inefficient searching of keys and values within
 hashes.
@@ -460,9 +460,9 @@ h = { a: 1, b: 2 }; h.value?(nil)
 
 ## Performance/LstripRstrip
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies places where `lstrip.rstrip` can be replaced by
 `strip`.
@@ -480,9 +480,9 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 ## Performance/RangeInclude
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies uses of `Range#include?`, which iterates over each
 item in a `Range` to see if a specified item is there. In contrast,
@@ -511,9 +511,9 @@ is wanted.
 
 ## Performance/RedundantBlockCall
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies the use of a `&block` parameter and `block.call`
 where `yield` would do just as well.
@@ -544,9 +544,9 @@ end
 
 ## Performance/RedundantMatch
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies the use of `Regexp#match` or `String#match`, which
 returns `#<MatchData>`/`nil`. The return value of `=~` is an integral
@@ -568,9 +568,9 @@ return value unless regex =~ 'str'
 
 ## Performance/RedundantMerge
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies places where `Hash#merge!` can be replaced by
 `Hash#[]=`.
@@ -595,9 +595,9 @@ MaxKeyValuePairs | `2` | Integer
 
 ## Performance/RedundantSortBy
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 
 
 This cop identifies places where `sort_by { ... }` can be replaced by
 `sort`.
@@ -617,9 +617,9 @@ array.sort
 
 ## Performance/RegexpMatch
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.47 | 
 
 In Ruby 2.4, `String#match?`, `Regexp#match?` and `Symbol#match?`
 have been added. The methods are faster than `match`.
@@ -700,9 +700,9 @@ end
 
 ## Performance/ReverseEach
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 
 
 This cop is used to identify usages of `reverse.each` and
 change them to use `reverse_each` instead.
@@ -723,9 +723,9 @@ change them to use `reverse_each` instead.
 
 ## Performance/Sample
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 
 
 This cop is used to identify usages of `shuffle.first`, `shuffle.last`
 and `shuffle[]` and change them to use `sample` instead.
@@ -760,9 +760,9 @@ and `shuffle[]` and change them to use `sample` instead.
 
 ## Performance/Size
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.3 | 
 
 This cop is used to identify usages of `count` on an
 `Array` and `Hash` and change them to `size`.
@@ -795,9 +795,9 @@ have been assigned to an array or a hash.
 
 ## Performance/StartWith
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes (Unsafe) | 0.36 | 0.44
 
 This cop identifies unnecessary use of a regex where
 `String#start_with?` would suffice.
@@ -826,9 +826,9 @@ AutoCorrect | `false` | Boolean
 
 ## Performance/StringReplacement
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.33 | 
 
 This cop identifies places where `gsub` can be replaced by
 `tr` or `delete`.
@@ -855,9 +855,9 @@ This cop identifies places where `gsub` can be replaced by
 
 ## Performance/TimesMap
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | 0.5
 
 This cop checks for .times.map calls.
 In most cases such calls can be replaced
@@ -882,12 +882,13 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 AutoCorrect | `false` | Boolean
+SafeAutocorrect | `false` | Boolean
 
 ## Performance/UnfreezeString
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.5 | 
 
 In Ruby 2.3 or later, use unary plus operator to unfreeze a string
 literal instead of `String#dup` and `String.new`.
@@ -915,9 +916,9 @@ String.new('something')
 
 ## Performance/UnneededSort
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.55 | 
 
 This cop is used to identify instances of sorting and then
 taking only the first or last element. The same behavior can
@@ -970,9 +971,9 @@ arr.max_by(&:foo)
 
 ## Performance/UriDefaultParser
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.5 | 
 
 This cop identifies places where `URI::Parser.new`
 can be replaced by `URI::DEFAULT_PARSER`.

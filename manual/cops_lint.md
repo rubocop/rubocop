@@ -2,9 +2,9 @@
 
 ## Lint/AmbiguousBlockAssociation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.48 | 
 
 This cop checks for ambiguous block association with method
 when param passed without parentheses.
@@ -35,9 +35,9 @@ foo = ->(bar) { bar.baz }
 
 ## Lint/AmbiguousOperator
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.17 | 
 
 This cop checks for ambiguous operators in the first argument of a
 method invocation without parentheses.
@@ -64,9 +64,9 @@ do_something(*some_array)
 
 ## Lint/AmbiguousRegexpLiteral
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.17 | 
 
 This cop checks for ambiguous regexp literals in the first argument of
 a method invocation without parentheses.
@@ -90,9 +90,9 @@ do_something(/pattern/i)
 
 ## Lint/AssignmentInCondition
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for assignments in the conditions of
 if/while/until.
@@ -126,9 +126,9 @@ AllowSafeAssignment | `true` | Boolean
 
 ## Lint/BigDecimalNew
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.53 | 
 
 `BigDecimal.new()` is deprecated since BigDecimal 1.3.3.
 This cop identifies places where `BigDecimal.new()`
@@ -146,9 +146,9 @@ BigDecimal(123.456, 3)
 
 ## Lint/BooleanSymbol
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.5 | 
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
@@ -172,9 +172,9 @@ false
 
 ## Lint/CircularArgumentReference
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.33 | 
 
 This cop checks for circular argument references in optional keyword
 arguments and optional ordinal arguments.
@@ -221,9 +221,9 @@ end
 
 ## Lint/Debugger
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.14 | 0.49
 
 This cop checks for calls to debugger or pry.
 
@@ -257,9 +257,9 @@ end
 
 ## Lint/DeprecatedClassMethods
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.19 | 
 
 This cop checks for uses of the deprecated class method usages.
 
@@ -278,9 +278,9 @@ File.exist?(some_path)
 
 ## Lint/DuplicateCaseCondition
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.45 | 
 
 This cop checks that there are no repeated conditions
 used in case 'when' expressions.
@@ -310,9 +310,9 @@ end
 
 ## Lint/DuplicateMethods
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.29 | 
 
 This cop checks for duplicated instance (or singleton) method
 definitions.
@@ -362,9 +362,9 @@ alias bar foo
 
 ## Lint/DuplicatedKey
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.34 | 
 
 This cop checks for duplicated keys in hash literals.
 
@@ -385,9 +385,9 @@ hash = { food: 'apple', other_food: 'orange' }
 
 ## Lint/EachWithObjectArgument
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.31 | 
 
 This cop checks if each_with_object is called with an immutable
 argument. Since the argument is the object that the given block shall
@@ -411,9 +411,9 @@ sum = numbers.each_with_object(num) { |e, a| a += e }
 
 ## Lint/ElseLayout
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.17 | 
 
 This cop checks for odd else block layout - like
 having an expression on the same line as the else keyword,
@@ -443,9 +443,9 @@ end
 
 ## Lint/EmptyEnsure
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.1 | 0.48
 
 This cop checks for empty `ensure` blocks
 
@@ -494,9 +494,9 @@ AutoCorrect | `false` | Boolean
 
 ## Lint/EmptyExpression
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.45 | 
 
 This cop checks for the presence of empty expressions.
 
@@ -521,9 +521,9 @@ end
 
 ## Lint/EmptyInterpolation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.2 | 0.45
 
 This cop checks for empty interpolation.
 
@@ -542,9 +542,9 @@ This cop checks for empty interpolation.
 
 ## Lint/EmptyWhen
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.45 | 
 
 This cop checks for the presence of `when` branches without a body.
 
@@ -569,9 +569,9 @@ end
 
 ## Lint/EndInMethod
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for END blocks in method definitions.
 
@@ -600,9 +600,9 @@ END { do_something }
 
 ## Lint/EnsureReturn
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for *return* from an *ensure* block.
 
@@ -634,9 +634,9 @@ end
 
 ## Lint/ErbNewArguments
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.56 | 
 
 This cop emulates the following Ruby warnings in Ruby 2.6.
 
@@ -698,9 +698,9 @@ end
 
 ## Lint/FloatOutOfRange
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.36 | 
 
 This cop identifies Float literals which are, like, really really really
 really really really really really big. Too big. No-one needs Floats
@@ -721,9 +721,9 @@ float = 42.9
 
 ## Lint/FormatParameterMismatch
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.33 | 
 
 This lint sees if there is a mismatch between the number of
 expected fields for format/sprintf/#% and what is actually
@@ -744,9 +744,9 @@ format('A value: %s and another: %i', a_value, another)
 
 ## Lint/HandleExceptions
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for *rescue* blocks with no body.
 
@@ -795,9 +795,9 @@ end
 
 ## Lint/ImplicitStringConcatenation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.36 | 
 
 This cop checks for implicit string concatenation of string literals
 which are on the same line.
@@ -822,9 +822,9 @@ array = [
 
 ## Lint/IneffectiveAccessModifier
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.36 | 
 
 This cop checks for `private` or `protected` access modifiers which are
 applied to a singleton method. These access modifiers do not make
@@ -871,9 +871,9 @@ end
 
 ## Lint/InheritException
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.41 | 
 
 This cop looks for error classes inheriting from `Exception`
 and its standard library subclasses, excluding subclasses of
@@ -913,9 +913,9 @@ EnforcedStyle | `runtime_error` | `runtime_error`, `standard_error`
 
 ## Lint/InterpolationCheck
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.5 | 
 
 This cop checks for interpolation in a single quoted string.
 
@@ -934,9 +934,9 @@ foo = "something with #{interpolation} inside"
 
 ## Lint/LiteralAsCondition
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.51 | 
 
 This cop checks for literals used as the conditions or as
 operands in and/or expressions serving as the conditions of
@@ -968,9 +968,9 @@ end
 
 ## Lint/LiteralInInterpolation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.19 | 0.32
 
 This cop checks for interpolated literals.
 
@@ -989,9 +989,9 @@ This cop checks for interpolated literals.
 
 ## Lint/Loop
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for uses of *begin...end while/until something*.
 
@@ -1036,9 +1036,9 @@ end
 
 ## Lint/MissingCopEnableDirective
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 This cop checks that there is an `# rubocop:enable ...` statement
 after a `# rubocop:disable ...` statement. This will prevent leaving
@@ -1089,9 +1089,9 @@ MaximumRangeSize | `Infinity` | Float
 
 ## Lint/MultipleCompare
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.47 | 
 
 In math and Python, we can use `x < y < z` style comparison to compare
 multiple value. However, we can't use the comparison in Ruby. However,
@@ -1115,9 +1115,9 @@ x < y && y < z
 
 ## Lint/NestedMethodDefinition
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.32 | 
 
 This cop checks for nested method definitions.
 
@@ -1176,9 +1176,9 @@ end
 
 ## Lint/NestedPercentLiteral
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 This cop checks for nested percent literals.
 
@@ -1197,9 +1197,9 @@ attributes = {
 
 ## Lint/NextWithoutAccumulator
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.36 | 
 
 Don't omit the accumulator when calling `next` in a `reduce` block.
 
@@ -1224,9 +1224,9 @@ end
 
 ## Lint/NonLocalExitFromIterator
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.3 | 
 
 This cop checks for non-local exits from iterators without a return
 value. It registers an offense under these conditions:
@@ -1267,9 +1267,9 @@ end
 
 ## Lint/NumberConversion
 
-Enabled by default | Supports autocorrection
---- | ---
-Disabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.53 | 
 
 This cop warns the usage of unsafe number conversions. Unsafe
 number conversion can cause unexpected error if auto type conversion
@@ -1293,9 +1293,9 @@ Complex('10')
 
 ## Lint/OrderedMagicComments
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.53 | 
 
 Checks the proper ordering of magic comments and whether
 a magic comment is not placed before a shebang.
@@ -1325,9 +1325,9 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 
 ## Lint/ParenthesesAsGroupedExpression
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.12 | 
 
 Checks for space between the name of a called method and a left
 parenthesis.
@@ -1351,9 +1351,9 @@ puts(x + y)
 
 ## Lint/PercentStringArray
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.41 | 
 
 This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 
@@ -1376,9 +1376,9 @@ rather than meant to be part of the resulting strings.
 
 ## Lint/PercentSymbolArray
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.41 | 
 
 This cop checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
 
@@ -1401,9 +1401,9 @@ rather than meant to be part of the resulting symbols.
 
 ## Lint/RandOne
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.36 | 
 
 This cop checks for `rand(1)` calls.
 Such calls always return `0`.
@@ -1426,9 +1426,9 @@ rand(-1.0)
 
 ## Lint/RedundantWithIndex
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.5 | 
 
 This cop checks for redundant `with_index`.
 
@@ -1458,9 +1458,9 @@ end
 
 ## Lint/RedundantWithObject
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.51 | 
 
 This cop checks for redundant `with_object`.
 
@@ -1490,9 +1490,9 @@ end
 
 ## Lint/RegexpAsCondition
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.51 | 
 
 This cop checks for regexp literals used as `match-current-line`.
 If a regexp literal is in condition, the regexp matches `$_` implicitly.
@@ -1513,9 +1513,9 @@ end
 
 ## Lint/RequireParentheses
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.18 | 
 
 This cop checks for expressions where there is a call to a predicate
 method with at least one argument, where no parentheses are used around
@@ -1545,9 +1545,9 @@ end
 
 ## Lint/RescueException
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 0.27.1
 
 This cop checks for *rescue* blocks targeting the Exception class.
 
@@ -1578,9 +1578,9 @@ end
 
 ## Lint/RescueType
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 
 
 Check for arguments to `rescue` that will result in a `TypeError`
 if an exception is raised.
@@ -1619,9 +1619,9 @@ end
 
 ## Lint/ReturnInVoidContext
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.5 | 
 
 This cop checks for the use of a return with a value in a context
 where the value will be ignored. (initialize and setter methods)
@@ -1655,9 +1655,9 @@ end
 
 ## Lint/SafeNavigationChain
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.47 | 0.56
 
 The safe navigation operator returns nil if the receiver is
 nil. If you chain an ordinary method call after a safe
@@ -1689,9 +1689,9 @@ Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/SafeNavigationConsistency
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.55 | 
 
 This cop check to make sure that if safe navigation is used for a method
 call in an `&&` or `||` condition that safe navigation is used for all
@@ -1727,9 +1727,9 @@ Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/ScriptPermission
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.5
 
 This cop checks if a file which has a shebang line as
 its first line is granted execute permission.
@@ -1763,9 +1763,9 @@ puts 'hello, world'
 
 ## Lint/ShadowedArgument
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.52 | 
 
 This cop checks for shadowed arguments.
 
@@ -1839,9 +1839,9 @@ IgnoreImplicitReferences | `false` | Boolean
 
 ## Lint/ShadowedException
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.41 | 
 
 This cop checks for a rescued exception that get shadowed by a
 less specific exception being rescued before a more specific
@@ -1887,9 +1887,9 @@ end
 
 ## Lint/ShadowingOuterLocalVariable
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop looks for use of the same name as outer local variables
 for block arguments or block local variables.
@@ -1923,9 +1923,9 @@ end
 
 ## Lint/StringConversionInInterpolation
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.19 | 0.2
 
 This cop checks for string conversion in string interpolation,
 which is redundant.
@@ -1949,18 +1949,18 @@ which is redundant.
 
 ## Lint/Syntax
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This is actually not a cop and inspects nothing. It just provides
 methods to repack Parser's diagnostics/errors into RuboCop's offenses.
 
 ## Lint/UnderscorePrefixedVariableName
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.21 | 
 
 This cop checks for underscore-prefixed variables that are actually
 used.
@@ -1991,9 +1991,9 @@ end
 
 ## Lint/UnifiedInteger
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.43 | 
 
 This cop checks for using Fixnum or Bignum constant.
 
@@ -2013,9 +2013,9 @@ This cop checks for using Fixnum or Bignum constant.
 
 ## Lint/UnneededCopDisableDirective
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.53 | 
 
 This cop detects instances of rubocop:disable comments that can be
 removed without causing any offenses to be reported. It's implemented
@@ -2041,9 +2041,9 @@ x += 1
 
 ## Lint/UnneededCopEnableDirective
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.53 | 
 
 This cop detects instances of rubocop:enable comments that can be
 removed.
@@ -2078,9 +2078,9 @@ baz
 
 ## Lint/UnneededRequireStatement
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.51 | 
 
 Checks for unnecessary `require` statement.
 
@@ -2106,9 +2106,9 @@ require 'unloaded_feature'
 
 ## Lint/UnneededSplatExpansion
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.43 | 
 
 This cop checks for unneeded usages of splat expansion
 
@@ -2160,9 +2160,9 @@ end
 
 ## Lint/UnreachableCode
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for unreachable code.
 The check are based on the presence of flow of control
@@ -2199,9 +2199,9 @@ end
 
 ## Lint/UnusedBlockArgument
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.21 | 0.22
 
 This cop checks for unused block arguments.
 
@@ -2251,9 +2251,9 @@ AllowUnusedKeywordArguments | `false` | Boolean
 
 ## Lint/UnusedMethodArgument
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.21 | 0.35
 
 This cop checks for unused method arguments.
 
@@ -2287,9 +2287,9 @@ IgnoreEmptyMethods | `true` | Boolean
 
 ## Lint/UriEscapeUnescape
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.5 | 
 
 This cop identifies places where `URI.escape` can be replaced by
 `CGI.escape`, `URI.encode_www_form` or `URI.encode_www_form_component`
@@ -2323,9 +2323,9 @@ URI.decode_www_form_component(enc_uri)
 
 ## Lint/UriRegexp
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | Yes
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.5 | 
 
 This cop identifies places where `URI.regexp` is obsolete and should
 not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
@@ -2342,9 +2342,9 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 
 ## Lint/UselessAccessModifier
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.2 | 0.47
 
 This cop checks for redundant access modifiers, including those with no
 code, those which are repeated, and leading `public` modifiers in a
@@ -2444,9 +2444,9 @@ MethodCreatingMethods | `[]` | Array
 
 ## Lint/UselessAssignment
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.11 | 
 
 This cop checks for every useless assignment to local variable in every
 scope.
@@ -2483,9 +2483,9 @@ end
 
 ## Lint/UselessComparison
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.11 | 
 
 This cop checks for comparison of something with itself.
 
@@ -2499,9 +2499,9 @@ x.top >= x.top
 
 ## Lint/UselessElseWithoutRescue
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.17 | 
 
 This cop checks for useless `else` in `begin..end` without `rescue`.
 
@@ -2530,9 +2530,9 @@ end
 
 ## Lint/UselessSetterCall
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.13 | 
 
 This cop checks for setter call to local variable as the final
 expression of a function definition.
@@ -2559,9 +2559,9 @@ end
 
 ## Lint/Void
 
-Enabled by default | Supports autocorrection
---- | ---
-Enabled | No
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 
 
 This cop checks for operators, variables, literals, and nonmutating
 methods used in void context.
