@@ -93,6 +93,30 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant do
     end
   end
 
+  context 'when assigning a range (irange) without parenthesis' do
+    it 'adds parenthesis when auto-correcting' do
+      new_source = autocorrect_source('XXX = 1..99')
+      expect(new_source).to eq 'XXX = (1..99).freeze'
+    end
+
+    it 'does not add parenthesis to range enclosed in parentheses' do
+      new_source = autocorrect_source('XXX = (1..99)')
+      expect(new_source).to eq 'XXX = (1..99).freeze'
+    end
+  end
+
+  context 'when assigning a range (erange) without parenthesis' do
+    it 'adds parenthesis when auto-correcting' do
+      new_source = autocorrect_source('XXX = 1...99')
+      expect(new_source).to eq 'XXX = (1...99).freeze'
+    end
+
+    it 'does not add parenthesis to range enclosed in parentheses' do
+      new_source = autocorrect_source('XXX = (1...99)')
+      expect(new_source).to eq 'XXX = (1...99).freeze'
+    end
+  end
+
   context 'when the constant is a frozen string literal' do
     if RuboCop::Config::KNOWN_RUBIES.include?(3.0)
       context 'when the target ruby version >= 3.0' do

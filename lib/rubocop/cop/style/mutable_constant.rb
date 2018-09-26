@@ -42,6 +42,9 @@ module RuboCop
             if node.array_type? && !node.bracketed?
               corrector.insert_before(expr, '[')
               corrector.insert_after(expr, '].freeze')
+            elsif node.irange_type? || node.erange_type?
+              corrector.insert_before(expr, '(')
+              corrector.insert_after(expr, ').freeze')
             else
               corrector.insert_after(expr, '.freeze')
             end
@@ -51,17 +54,28 @@ module RuboCop
         private
 
         def on_assignment(value)
+          range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
+
           value = splat_value(value) if splat_value(value)
 
-          return unless value && value.mutable_literal?
+          return unless mutable_literal?(value) ||
+                        range_enclosed_in_parentheses
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
           add_offense(value)
         end
 
+        def mutable_literal?(value)
+          value && value.mutable_literal?
+        end
+
         def_node_matcher :splat_value, <<-PATTERN
           (array (splat $_))
+        PATTERN
+
+        def_node_matcher :range_enclosed_in_parentheses?, <<-PATTERN
+          (begin ({irange erange} _ _))
         PATTERN
       end
     end
