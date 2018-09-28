@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5980](https://github.com/rubocop-hq/rubocop/issues/5980): Add --safe and --safe-auto-correct options. ([@Darhazer][])
+
 ### Bug fixes
 
 * [#6330](https://github.com/rubocop-hq/rubocop/issues/6330): Fix an error for `Rails/ReversibleMigration` when using variable assignment. ([@koic][], [@scottmatthewman][])

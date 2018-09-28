@@ -117,9 +117,18 @@ module RuboCop
         @registry.size
       end
 
-      def enabled(config, only)
+      def enabled(config, only, only_safe = false)
         select do |cop|
-          config.for_cop(cop).fetch('Enabled') || only.include?(cop.cop_name)
+          only.include?(cop.cop_name) || enabled?(cop, config, only_safe)
+        end
+      end
+
+      def enabled?(cop, config, only_safe)
+        cfg = config.for_cop(cop)
+        if only_safe
+          cfg.fetch('Enabled') && cfg.fetch('Safe', true)
+        else
+          cfg.fetch('Enabled')
         end
       end
 

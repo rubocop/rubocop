@@ -857,7 +857,7 @@ This cop identifies places where `gsub` can be replaced by
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 0.5
+Enabled | Yes | Yes (Unsafe) | 0.36 | 0.5
 
 This cop checks for .times.map calls.
 In most cases such calls can be replaced
@@ -882,7 +882,6 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 AutoCorrect | `false` | Boolean
-SafeAutocorrect | `false` | Boolean
 
 ## Performance/UnfreezeString
 

@@ -45,8 +45,9 @@ module RuboCop
       end
 
       def cops
-        only_options = @options.fetch(:only, [])
-        @cops ||= @cop_classes.enabled(@config, only_options).map do |cop_class|
+        only = @options.fetch(:only, [])
+        safe = @options.fetch(:safe, false)
+        @cops ||= @cop_classes.enabled(@config, only, safe).map do |cop_class|
           cop_class.new(@config, @options)
         end
       end

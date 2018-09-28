@@ -138,7 +138,10 @@ RSpec.describe RuboCop::Cop::Registry do
 
   context '#enabled' do
     let(:config) do
-      RuboCop::Config.new('Test/IndentArray' => { 'Enabled' => false })
+      RuboCop::Config.new(
+        'Test/IndentArray' => { 'Enabled' => false },
+        'RSpec/Foo' => { 'Safe' => false }
+      )
     end
 
     it 'selects cops which are enabled in the config' do
@@ -147,6 +150,11 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'overrides config if :only includes the cop' do
       expect(registry.enabled(config, ['Test/IndentArray'])).to eql(cops)
+    end
+
+    it 'selects only safe cops if :safe passed' do
+      enabled_cops = registry.enabled(config, [], true)
+      expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
   end
 
