@@ -86,11 +86,12 @@ Here's a list of RuboCop's core developers:
 
 * [Bozhidar Batsov](https://github.com/bbatsov) (author & head maintainer)
 * [Jonas Arvidsson](https://github.com/jonas054)
-* [Yuji Nakayama](https://github.com/yujinakayama)
+* [Yuji Nakayama](https://github.com/yujinakayama) (retired)
 * [Evgeni Dzhelyov](https://github.com/edzhelyov) (retired)
 * [Ted Johansson](https://github.com/drenmi)
 * [Masataka Kuwabara](https://github.com/pocke)
 * [Koichi Ito](https://github.com/koic)
+* [Maxim Krizhanovski](https://github.com/darhazer)
 
 ## Logo
 
