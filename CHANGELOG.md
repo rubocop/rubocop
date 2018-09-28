@@ -28,6 +28,7 @@
 * [#6806](https://github.com/rubocop-hq/rubocop/pull/6806): Remove `powerpack` dependency. ([@dduugg][])
 * [#6810](https://github.com/rubocop-hq/rubocop/pull/6810): Exclude gemspec file by default for `Metrics/BlockLength` cop. ([@koic][])
 * [#6813](https://github.com/rubocop-hq/rubocop/pull/6813): Allow unicode/display_width dependency version 1.5.0. ([@tagliala][])
+* Make `Style/RedundantFreeze` aware of methods that will produce frozen objects. ([@rrosenblum][])
 
 ## 0.65.0 (2019-02-19)
 

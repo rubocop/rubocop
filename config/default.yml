@@ -3883,6 +3883,7 @@ Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
   Enabled: true
   VersionAdded: '0.34'
+  VersionChanged: '0.66'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."

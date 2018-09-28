@@ -23,6 +23,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'immutable objects', '1.5'
   it_behaves_like 'immutable objects', ':sym'
   it_behaves_like 'immutable objects', ':""'
+  it_behaves_like 'immutable objects', "ENV['foo']"
+  it_behaves_like 'immutable objects', "'foo'.count"
+  it_behaves_like 'immutable objects', '(1 + 2)'
+  it_behaves_like 'immutable objects', '(2 > 1)'
+  it_behaves_like 'immutable objects', "('a' > 'b')"
+  it_behaves_like 'immutable objects', '(a > b)'
+  it_behaves_like 'immutable objects', '[1, 2, 3].size'
 
   shared_examples 'mutable objects' do |o|
     it "allows #{o} with freeze" do
@@ -38,6 +45,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'mutable objects', '/./'
   it_behaves_like 'mutable objects', '(1..5)'
   it_behaves_like 'mutable objects', '(1...5)'
+  it_behaves_like 'mutable objects', "('a' + 'b')"
+  it_behaves_like 'mutable objects', '(a + b)'
 
   it 'allows .freeze on  method call' do
     expect_no_offenses('TOP_TEST = Something.new.freeze')
