@@ -8,6 +8,7 @@
 * [#6331](https://github.com/rubocop-hq/rubocop/issues/6331): Fix a false positive for `Style/RedundantFreeze` and a false negative for `Style/MutableConstant` when assigning a regexp object to a constant. ([@koic][])
 * [#6334](https://github.com/rubocop-hq/rubocop/pull/6334): Fix a false negative for `Style/RedundantFreeze` when assigning a range object to a constant. ([@koic][])
 * [#5538](https://github.com/rubocop-hq/rubocop/pull/5538): Fix false negatives in modifier cops when line length cop is disabled. ([@drenmi][])
+* [#6340](https://github.com/rubocop-hq/rubocop/pull/6340): Fix an error for `Rails/ReversibleMigration` when block argument is empty. ([@koic][])
 
 ## 0.59.2 (2018-09-24)
 
