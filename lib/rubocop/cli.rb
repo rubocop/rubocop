@@ -65,8 +65,7 @@ module RuboCop
       if @options[:auto_gen_config]
         reset_config_and_auto_gen_file
         line_length_contents =
-          if max_line_length(@config_store.for(Dir.pwd)) ==
-             max_line_length(ConfigLoader.default_configuration)
+          if perform_line_length_initial_run?
             run_line_length_cop_auto_gen_config(paths)
           else
             puts Rainbow(SKIPPED_PHASE_1).yellow
@@ -78,8 +77,27 @@ module RuboCop
       end
     end
 
+    def perform_line_length_initial_run?
+      line_length_enabled?(@config_store.for(Dir.pwd)) &&
+        same_max_line_length?(
+          @config_store.for(Dir.pwd), ConfigLoader.default_configuration
+        )
+    end
+
+    def line_length_enabled?(config)
+      line_length_cop(config)['Enabled']
+    end
+
+    def same_max_line_length?(config1, config2)
+      max_line_length(config1) == max_line_length(config2)
+    end
+
     def max_line_length(config)
-      config.for_cop('Metrics/LineLength')['Max']
+      line_length_cop(config)['Max']
+    end
+
+    def line_length_cop(config)
+      config.for_cop('Metrics/LineLength')
     end
 
     # Do an initial run with only Metrics/LineLength so that cops that depend
