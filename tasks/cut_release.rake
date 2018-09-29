@@ -33,6 +33,17 @@ namespace :cut_release do
     end
   end
 
+  def update_issue_template(old_version, new_version)
+    issue_template = File.read('.github/ISSUE_TEMPLATE/bug_report.md')
+
+    File.open('.github/ISSUE_TEMPLATE/bug_report.md', 'w') do |f|
+      f << issue_template.sub(
+        "#{old_version} (using Parser ",
+        "#{new_version} (using Parser "
+      )
+    end
+  end
+
   def add_header_to_changelog(version)
     changelog = File.read('CHANGELOG.md')
     head, tail = changelog.split("## master (unreleased)\n\n", 2)
@@ -76,6 +87,7 @@ namespace :cut_release do
 
     update_readme(old_version, new_version)
     update_manual(old_version, new_version)
+    update_issue_template(old_version, new_version)
     add_header_to_changelog(new_version)
     create_release_notes(new_version)
 
