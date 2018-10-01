@@ -79,7 +79,7 @@ module RuboCop
           return false if node.if_type? && node.ternary?
           return true if node.rescue_type?
 
-          MODIFIER_NODES.include?(node.type) && node.modifier_form?
+          node.basic_conditional? && node.modifier_form?
         end
 
         def message(node)

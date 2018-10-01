@@ -90,8 +90,8 @@ module RuboCop
         end
 
         def else_source(else_branch)
-          wrap_else = MODIFIER_NODES.include?(else_branch.type) &&
-                      else_branch.modifier_form?
+          wrap_else =
+            else_branch.basic_conditional? && else_branch.modifier_form?
           wrap_else ? "(#{else_branch.source})" : else_branch.source
         end
 

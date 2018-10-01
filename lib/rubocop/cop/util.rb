@@ -6,8 +6,6 @@ module RuboCop
     module Util
       include PathUtil
 
-      MODIFIER_NODES = %i[if while until].freeze
-
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
       LITERAL_REGEX =
