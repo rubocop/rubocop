@@ -5,7 +5,6 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
-      extend RuboCop::AST::Sexp
 
       MODIFIER_NODES = %i[if while until].freeze
 
