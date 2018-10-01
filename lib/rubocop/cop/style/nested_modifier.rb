@@ -39,7 +39,7 @@ module RuboCop
         end
 
         def modifier?(node)
-          node && MODIFIER_NODES.include?(node.type) && node.modifier_form?
+          node && node.basic_conditional? && node.modifier_form?
         end
 
         def autocorrect(node)

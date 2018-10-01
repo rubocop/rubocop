@@ -74,8 +74,8 @@ module RuboCop
         private
 
         def on_conditionals(node)
-          node.condition.each_node(*AST::Node::OPERATOR_KEYWORDS) do |logical_node|
-            process_logical_operator(logical_node)
+          node.condition.each_node(*AST::Node::OPERATOR_KEYWORDS) do |operator|
+            process_logical_operator(operator)
           end
         end
 

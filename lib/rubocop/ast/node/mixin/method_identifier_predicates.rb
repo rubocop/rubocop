@@ -13,8 +13,8 @@ module RuboCop
                               select! times upto].freeze
 
       # http://phrogz.net/programmingruby/language.html#table_18.4
-      OPERATOR_METHODS = %i(| ^ & <=> == === =~ > >= < <= << >> + - * /
-                            % ** ~ +@ -@ !@ ~@ [] []= ! != !~ `).freeze
+      OPERATOR_METHODS = %i[| ^ & <=> == === =~ > >= < <= << >> + - * /
+                            % ** ~ +@ -@ !@ ~@ [] []= ! != !~ `].freeze
 
       # Checks whether the method name matches the argument.
       #

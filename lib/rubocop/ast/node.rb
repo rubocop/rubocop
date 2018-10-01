@@ -42,7 +42,8 @@ module RuboCop
       SHORTHAND_ASSIGNMENTS = %i[op_asgn or_asgn and_asgn].freeze
       ASSIGNMENTS = (EQUALS_ASSIGNMENTS + SHORTHAND_ASSIGNMENTS).freeze
 
-      CONDITIONALS = %i[if while until case].freeze
+      BASIC_CONDITIONALS = %i[if while until].freeze
+      CONDITIONALS = [*BASIC_CONDITIONALS, :case].freeze
       VARIABLES = %i[ivar gvar cvar lvar].freeze
       REFERENCES = %i[nth_ref back_ref].freeze
       KEYWORDS = %i[alias and break case class def defs defined?
@@ -429,6 +430,10 @@ module RuboCop
 
       def assignment?
         ASSIGNMENTS.include?(type)
+      end
+
+      def basic_conditional?
+        BASIC_CONDITIONALS.include?(type)
       end
 
       def conditional?
