@@ -121,7 +121,7 @@ module RuboCop
         end
 
         def regular_method_call?(node)
-          !(operator?(node.method_name) ||
+          !(node.operator_method? ||
             keyword?(node.method_name) ||
             node.camel_case_method? ||
             node.setter_method? ||

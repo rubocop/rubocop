@@ -222,7 +222,7 @@ module RuboCop
           node.each_ancestor do |ancestor|
             return true if ancestor.and_type? || ancestor.or_type?
             return false unless ancestor.send_type?
-            return true if operator?(ancestor.method_name)
+            return true if ancestor.operator_method?
           end
           false
         end

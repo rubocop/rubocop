@@ -1174,7 +1174,7 @@ RSpec.describe RuboCop::AST::SendNode do
     end
   end
 
-  describe '#stabby_lambda?' do
+  describe '#lambda_literal?' do
     context 'with a stabby lambda' do
       let(:send_node) { parse_source(source).ast.send_node }
       let(:source) { '-> (foo) { do_something(foo) }' }
@@ -1201,6 +1201,58 @@ RSpec.describe RuboCop::AST::SendNode do
       let(:source) { 'a.() {}' }
 
       it { expect(send_node.lambda?).to be_falsey }
+    end
+  end
+
+  describe '#unary_operation?' do
+    context 'with a unary operation' do
+      let(:source) { '-foo' }
+
+      it { expect(send_node.unary_operation?).to be(true) }
+    end
+
+    context 'with a binary operation' do
+      let(:source) { 'foo + bar' }
+
+      it { expect(send_node.unary_operation?).to be(false) }
+    end
+
+    context 'with a regular method call' do
+      let(:source) { 'foo(bar)' }
+
+      it { expect(send_node.unary_operation?).to be(false) }
+    end
+
+    context 'with an implicit call method' do
+      let(:source) { 'foo.(:baz)' }
+
+      it { expect(send_node.unary_operation?).to be(false) }
+    end
+  end
+
+  describe '#binary_operation??' do
+    context 'with a unary operation' do
+      let(:source) { '-foo' }
+
+      it { expect(send_node.binary_operation?).to be(false) }
+    end
+
+    context 'with a binary operation' do
+      let(:source) { 'foo + bar' }
+
+      it { expect(send_node.binary_operation?).to be(true) }
+    end
+
+    context 'with a regular method call' do
+      let(:source) { 'foo(bar)' }
+
+      it { expect(send_node.binary_operation?).to be(false) }
+    end
+
+    context 'with an implicit call method' do
+      let(:source) { 'foo.(:baz)' }
+
+      it { expect(send_node.binary_operation?).to be(false) }
     end
   end
 end
