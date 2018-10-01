@@ -18,16 +18,16 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
 
       {
-        'if'                     => 'if %<condition>s; %<body>s; end',
-        'while'                  => 'while %<condition>s; %<body>s; end',
-        'until'                  => 'until %<condition>s; %<body>s; end',
+        'if' => 'if %<condition>s; %<body>s; end',
+        'while' => 'while %<condition>s; %<body>s; end',
+        'until' => 'until %<condition>s; %<body>s; end',
         'post-conditional while' => 'begin; %<body>s; end while %<condition>s',
         'post-conditional until' => 'begin; %<body>s; end until %<condition>s'
       }.each do |type, snippet_format|
         it "registers an offense for \"#{operator}\" in #{type} conditional" do
           elements = {
             condition: "a #{operator} b",
-            body:      'do_something'
+            body: 'do_something'
           }
           source = format(snippet_format, elements)
 
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         it "accepts \"#{operator}\" in #{type} body" do
           elements = {
             condition: 'some_condition',
-            body:      "do_something #{operator} return"
+            body: "do_something #{operator} return"
           }
           source = format(snippet_format, elements)
 

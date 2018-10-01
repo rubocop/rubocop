@@ -21,20 +21,20 @@ module RuboCop
         MSG = 'Prefer `%<assert_method>s` over `%<refute_method>s`.'.freeze
 
         CORRECTIONS = {
-          refute:             'assert_not',
-          refute_empty:       'assert_not_empty',
-          refute_equal:       'assert_not_equal',
-          refute_in_delta:    'assert_not_in_delta',
-          refute_in_epsilon:  'assert_not_in_epsilon',
-          refute_includes:    'assert_not_includes',
+          refute: 'assert_not',
+          refute_empty: 'assert_not_empty',
+          refute_equal: 'assert_not_equal',
+          refute_in_delta: 'assert_not_in_delta',
+          refute_in_epsilon: 'assert_not_in_epsilon',
+          refute_includes: 'assert_not_includes',
           refute_instance_of: 'assert_not_instance_of',
-          refute_kind_of:     'assert_not_kind_of',
-          refute_nil:         'assert_not_nil',
-          refute_operator:    'assert_not_operator',
-          refute_predicate:   'assert_not_predicate',
-          refute_respond_to:  'assert_not_respond_to',
-          refute_same:        'assert_not_same',
-          refute_match:       'assert_no_match'
+          refute_kind_of: 'assert_not_kind_of',
+          refute_nil: 'assert_not_nil',
+          refute_operator: 'assert_not_operator',
+          refute_predicate: 'assert_not_predicate',
+          refute_respond_to: 'assert_not_respond_to',
+          refute_same: 'assert_not_same',
+          refute_match: 'assert_no_match'
         }.freeze
 
         OFFENSIVE_METHODS = CORRECTIONS.keys.freeze

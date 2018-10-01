@@ -5,8 +5,8 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
   context 'always' do
     let(:cop_config) do
-      { 'Enabled'           => true,
-        'EnforcedStyle'     => 'always' }
+      { 'Enabled' => true,
+        'EnforcedStyle' => 'always' }
     end
 
     it 'accepts an empty source' do
@@ -259,8 +259,8 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
   context 'when_needed' do
     let(:cop_config) do
-      { 'Enabled'           => true,
-        'EnforcedStyle'     => 'when_needed' }
+      { 'Enabled' => true,
+        'EnforcedStyle' => 'when_needed' }
     end
 
     it 'accepts an empty source' do
@@ -370,8 +370,8 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
   context 'never' do
     let(:cop_config) do
-      { 'Enabled'           => true,
-        'EnforcedStyle'     => 'never' }
+      { 'Enabled' => true,
+        'EnforcedStyle' => 'never' }
     end
 
     it 'accepts an empty source' do
