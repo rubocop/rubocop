@@ -182,6 +182,20 @@ module RuboCop
         block_literal? && loc.expression && loc.expression.source == '->'
       end
 
+      def unary_operation?
+        return false unless loc.selector
+
+        Cop::Util.operator?(loc.selector.source.to_sym) &&
+          loc.expression.begin_pos == loc.selector.begin_pos
+      end
+
+      def binary_operation?
+        return false unless loc.selector
+
+        Cop::Util.operator?(method_name) &&
+          loc.expression.begin_pos != loc.selector.begin_pos
+      end
+
       private
 
       def_node_matcher :macro_scope?, <<-PATTERN

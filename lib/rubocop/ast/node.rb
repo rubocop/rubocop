@@ -438,20 +438,6 @@ module RuboCop
         OPERATOR_KEYWORDS.include?(type)
       end
 
-      def unary_operation?
-        return false unless loc.respond_to?(:selector) && loc.selector
-
-        Cop::Util.operator?(loc.selector.source.to_sym) &&
-          source_range.begin_pos == loc.selector.begin_pos
-      end
-
-      def binary_operation?
-        return false unless loc.respond_to?(:selector) && loc.selector
-
-        Cop::Util.operator?(method_name) &&
-          source_range.begin_pos != loc.selector.begin_pos
-      end
-
       def parenthesized_call?
         loc.respond_to?(:begin) && loc.begin && loc.begin.is?('(')
       end
