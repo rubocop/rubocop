@@ -34,8 +34,7 @@ module RuboCop
           'inside of `&&` and `||`.'.freeze
 
         def on_csend(node)
-          return unless node.parent &&
-                        AST::Node::OPERATOR_KEYWORDS.include?(node.parent.type)
+          return unless node.parent && node.parent.operator_keyword?
 
           check(node)
         end
@@ -72,10 +71,10 @@ module RuboCop
         def top_conditional_ancestor(node)
           parent = node.parent
           unless parent &&
-                 (AST::Node::OPERATOR_KEYWORDS.include?(parent.type) ||
+                 (parent.operator_keyword? ||
                   (parent.begin_type? &&
                    parent.parent &&
-                   AST::Node::OPERATOR_KEYWORDS.include?(parent.parent.type)))
+                   parent.parent.operator_keyword?))
             return node
           end
 

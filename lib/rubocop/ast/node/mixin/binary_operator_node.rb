@@ -31,7 +31,7 @@ module RuboCop
         rhs = rhs.children.first if rhs.begin_type?
 
         [lhs, rhs].each_with_object([]) do |side, collection|
-          if AST::Node::OPERATOR_KEYWORDS.include?(side.type)
+          if side.operator_keyword?
             collection.concat(side.conditions)
           else
             collection << side
