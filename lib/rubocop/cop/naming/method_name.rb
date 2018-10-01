@@ -25,6 +25,8 @@ module RuboCop
         MSG = 'Use %<style>s for method names.'.freeze
 
         def on_def(node)
+          return if node.operator_method?
+
           check_name(node, node.method_name, node.loc.name)
         end
         alias on_defs on_def

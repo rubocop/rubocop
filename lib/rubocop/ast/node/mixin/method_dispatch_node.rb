@@ -192,8 +192,7 @@ module RuboCop
       def unary_operation?
         return false unless loc.selector
 
-        Cop::Util.operator?(loc.selector.source.to_sym) &&
-          loc.expression.begin_pos == loc.selector.begin_pos
+        operator_method? && loc.expression.begin_pos == loc.selector.begin_pos
       end
 
       # Checks whether this is a binary operation.
@@ -206,8 +205,7 @@ module RuboCop
       def binary_operation?
         return false unless loc.selector
 
-        Cop::Util.operator?(method_name) &&
-          loc.expression.begin_pos != loc.selector.begin_pos
+        operator_method? && loc.expression.begin_pos != loc.selector.begin_pos
       end
 
       private

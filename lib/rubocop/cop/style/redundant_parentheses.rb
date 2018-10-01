@@ -108,8 +108,9 @@ module RuboCop
         def check_unary(begin_node, node)
           return if begin_node.chained?
 
-          # parens are not redundant in `(!recv.method arg)`
-          node = node.children.first while node.unary_operation?
+          node = node.children.first while
+            node.send_type? && node.unary_operation? && !node.prefix_not?
+
           if node.send_type?
             return unless method_call_with_redundant_parentheses?(node)
           end
