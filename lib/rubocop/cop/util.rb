@@ -14,7 +14,6 @@ module RuboCop
 
       MODIFIER_NODES = %i[if while until].freeze
       CONDITIONAL_NODES = (MODIFIER_NODES + [:case]).freeze
-      LOGICAL_OPERATOR_NODES = %i[and or].freeze
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
