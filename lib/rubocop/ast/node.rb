@@ -37,6 +37,11 @@ module RuboCop
                             regexp irange erange].freeze
       IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
+      EQUALS_ASSIGNMENTS = %i[lvasgn ivasgn cvasgn gvasgn
+                              casgn masgn].freeze
+      SHORTHAND_ASSIGNMENTS = %i[op_asgn or_asgn and_asgn].freeze
+      ASSIGNMENTS = (EQUALS_ASSIGNMENTS + SHORTHAND_ASSIGNMENTS).freeze
+
       CONDITIONALS = %i[if while until case].freeze
       VARIABLES = %i[ivar gvar cvar lvar].freeze
       REFERENCES = %i[nth_ref back_ref].freeze
@@ -360,16 +365,6 @@ module RuboCop
         source_length.zero?
       end
 
-      def_node_matcher :equals_asgn?, <<-PATTERN
-        {lvasgn ivasgn cvasgn gvasgn casgn masgn}
-      PATTERN
-
-      def_node_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
-
-      def_node_matcher :assignment?, <<-PATTERN
-        {equals_asgn? shorthand_asgn?}
-      PATTERN
-
       # Some cops treat the shovel operator as a kind of assignment.
       def_node_matcher :assignment_or_similar?, <<-PATTERN
         {assignment? (send _recv :<< ...)}
@@ -422,6 +417,18 @@ module RuboCop
 
       def reference?
         REFERENCES.include?(type)
+      end
+
+      def equals_asgn?
+        EQUALS_ASSIGNMENTS.include?(type)
+      end
+
+      def shorthand_asgn?
+        SHORTHAND_ASSIGNMENTS.include?(type)
+      end
+
+      def assignment?
+        ASSIGNMENTS.include?(type)
       end
 
       def conditional?

@@ -7,11 +7,6 @@ module RuboCop
       include PathUtil
       extend RuboCop::AST::Sexp
 
-      EQUALS_ASGN_NODES = %i[lvasgn ivasgn cvasgn gvasgn
-                             casgn masgn].freeze
-      SHORTHAND_ASGN_NODES = %i[op_asgn or_asgn and_asgn].freeze
-      ASGN_NODES = (EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES).freeze
-
       MODIFIER_NODES = %i[if while until].freeze
 
       # Match literal regex characters, not including anchors, character
