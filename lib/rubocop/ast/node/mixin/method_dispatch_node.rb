@@ -182,6 +182,13 @@ module RuboCop
         block_literal? && loc.expression && loc.expression.source == '->'
       end
 
+      # Checks whether this is a unary operation.
+      #
+      # @example
+      #
+      #   -foo
+      #
+      # @return [Boolean] whether this method is a unary operation
       def unary_operation?
         return false unless loc.selector
 
@@ -189,6 +196,13 @@ module RuboCop
           loc.expression.begin_pos == loc.selector.begin_pos
       end
 
+      # Checks whether this is a binary operation.
+      #
+      # @example
+      #
+      #   foo + bar
+      #
+      # @return [Bookean] whether this method is a binary operation
       def binary_operation?
         return false unless loc.selector
 
