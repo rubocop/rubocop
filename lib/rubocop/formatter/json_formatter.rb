@@ -15,8 +15,8 @@ module RuboCop
         super
         @output_hash = {
           metadata: metadata_hash,
-          files:    [],
-          summary:  { offense_count: 0 }
+          files: [],
+          summary: { offense_count: 0 }
         }
       end
 
@@ -37,16 +37,16 @@ module RuboCop
       def metadata_hash
         {
           rubocop_version: RuboCop::Version::STRING,
-          ruby_engine:     RUBY_ENGINE,
-          ruby_version:    RUBY_VERSION,
+          ruby_engine: RUBY_ENGINE,
+          ruby_version: RUBY_VERSION,
           ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
-          ruby_platform:   RUBY_PLATFORM
+          ruby_platform: RUBY_PLATFORM
         }
       end
 
       def hash_for_file(file, offenses)
         {
-          path:     smart_path(file),
+          path: smart_path(file),
           offenses: offenses.map { |o| hash_for_offense(o) }
         }
       end
@@ -54,7 +54,7 @@ module RuboCop
       def hash_for_offense(offense)
         {
           severity: offense.severity.name,
-          message:  offense.message,
+          message: offense.message,
           cop_name: offense.cop_name,
           corrected: offense.corrected?,
           location: hash_for_location(offense)
@@ -64,15 +64,15 @@ module RuboCop
       # TODO: Consider better solution for Offense#real_column.
       def hash_for_location(offense)
         {
-          start_line:        offense.line,
-          start_column:      offense.real_column,
-          last_line:   offense.last_line,
+          start_line: offense.line,
+          start_column: offense.real_column,
+          last_line: offense.last_line,
           last_column: offense.last_column,
-          length:      offense.location.length,
+          length: offense.location.length,
           # `line` and `column` exist for compatibility.
           # Use `start_line` and `start_column` instead.
-          line:        offense.line,
-          column:      offense.real_column
+          line: offense.line,
+          column: offense.real_column
         }
       end
     end

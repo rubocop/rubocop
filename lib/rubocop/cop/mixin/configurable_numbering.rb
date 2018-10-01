@@ -8,8 +8,8 @@ module RuboCop
       include ConfigurableFormatting
 
       FORMATS = {
-        snake_case:  /(?:[a-z_]|_\d+)$/,
-        normalcase:  /(?:_\D*|[A-Za-z]\d*)$/,
+        snake_case: /(?:[a-z_]|_\d+)$/,
+        normalcase: /(?:_\D*|[A-Za-z]\d*)$/,
         non_integer: /[A-Za-z_]$/
       }.freeze
     end

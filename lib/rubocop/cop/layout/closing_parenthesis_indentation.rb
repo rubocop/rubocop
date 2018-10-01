@@ -116,9 +116,9 @@ module RuboCop
 
           add_offense(right_paren,
                       location: right_paren,
-                      message:  message(correct_column,
-                                        left_paren,
-                                        right_paren))
+                      message: message(correct_column,
+                                       left_paren,
+                                       right_paren))
         end
 
         def check_for_no_elements(node)
@@ -135,9 +135,9 @@ module RuboCop
           correct_column = candidates.first
           add_offense(right_paren,
                       location: right_paren,
-                      message:  message(correct_column,
-                                        left_paren,
-                                        right_paren))
+                      message: message(correct_column,
+                                       left_paren,
+                                       right_paren))
         end
 
         def expected_column(left_paren, elements)

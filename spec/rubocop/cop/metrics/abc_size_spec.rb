@@ -108,10 +108,10 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
   end
 
   {
-    1.3     => '3.74/1.3',    # no more than 2 decimals reported
-    10.3    => '37.42/10.3',
+    1.3 => '3.74/1.3', # no more than 2 decimals reported
+    10.3 => '37.42/10.3',
     100.321 => '374.2/100.3', # 4 significant digits, so only 1 decimal here
-    1000.3  => '3742/1000'
+    1000.3 => '3742/1000'
   }.each do |max, presentation|
     context "when Max is #{max}" do
       let(:cop_config) { { 'Max' => max } }

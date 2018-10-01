@@ -222,8 +222,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     context 'and space before block parameters not allowed' do
       let(:cop_config) do
         {
-          'EnforcedStyle'              => 'space',
-          'SupportedStyles'            => SUPPORTED_STYLES,
+          'EnforcedStyle' => 'space',
+          'SupportedStyles' => SUPPORTED_STYLES,
           'SpaceBeforeBlockParameters' => false
         }
       end
@@ -253,8 +253,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   context 'configured with no_space' do
     let(:cop_config) do
       {
-        'EnforcedStyle'              => 'no_space',
-        'SupportedStyles'            => SUPPORTED_STYLES,
+        'EnforcedStyle' => 'no_space',
+        'SupportedStyles' => SUPPORTED_STYLES,
         'SpaceBeforeBlockParameters' => true
       }
     end
@@ -312,8 +312,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       context 'and space before block parameters not allowed' do
         let(:cop_config) do
           {
-            'EnforcedStyle'              => 'no_space',
-            'SupportedStyles'            => SUPPORTED_STYLES,
+            'EnforcedStyle' => 'no_space',
+            'SupportedStyles' => SUPPORTED_STYLES,
             'SpaceBeforeBlockParameters' => false
           }
         end

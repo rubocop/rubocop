@@ -117,12 +117,12 @@ RSpec.describe RuboCop::Cop::Registry do
 
   it 'exposes a mapping of cop names to cop classes' do
     expect(registry.to_h).to eql(
-      'Lint/BooleanSymbol'    => [RuboCop::Cop::Lint::BooleanSymbol],
+      'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
       'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/IndentArray'    => [RuboCop::Cop::Layout::IndentArray],
-      'Metrics/MethodLength'  => [RuboCop::Cop::Metrics::MethodLength],
-      'Test/IndentArray'      => [RuboCop::Cop::Test::IndentArray],
-      'RSpec/Foo'             => [RuboCop::Cop::RSpec::Foo]
+      'Layout/IndentArray' => [RuboCop::Cop::Layout::IndentArray],
+      'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
+      'Test/IndentArray' => [RuboCop::Cop::Test::IndentArray],
+      'RSpec/Foo' => [RuboCop::Cop::RSpec::Foo]
     )
   end
 
