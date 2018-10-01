@@ -53,7 +53,8 @@ module RuboCop
         end
 
         def requires_parens?(child)
-          child.and_type? || child.or_type? || child.binary_operation? ||
+          child.and_type? || child.or_type? ||
+            child.send_type? && child.binary_operation? ||
             child.if_type? && child.ternary?
         end
 
