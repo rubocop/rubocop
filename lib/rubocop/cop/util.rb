@@ -13,7 +13,6 @@ module RuboCop
       ASGN_NODES = (EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES).freeze
 
       MODIFIER_NODES = %i[if while until].freeze
-      CONDITIONAL_NODES = (MODIFIER_NODES + [:case]).freeze
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc

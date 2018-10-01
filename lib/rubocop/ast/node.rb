@@ -37,6 +37,7 @@ module RuboCop
                             regexp irange erange].freeze
       IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
+      CONDITIONALS = %i[if while until case].freeze
       VARIABLES = %i[ivar gvar cvar lvar].freeze
       REFERENCES = %i[nth_ref back_ref].freeze
       KEYWORDS = %i[alias and break case class def defs defined?
@@ -421,6 +422,10 @@ module RuboCop
 
       def reference?
         REFERENCES.include?(type)
+      end
+
+      def conditional?
+        CONDITIONALS.include?(type)
       end
 
       def keyword?

@@ -154,8 +154,7 @@ module RuboCop
         def node_within_block_or_conditional?(node, stop_search_node)
           return false if node == stop_search_node
 
-          CONDITIONAL_NODES.include?(node.type) ||
-            node.block_type? ||
+          node.conditional? || node.block_type? ||
             node_within_block_or_conditional?(node.parent, stop_search_node)
         end
 
