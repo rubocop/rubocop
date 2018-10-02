@@ -26,7 +26,7 @@ module RuboCop
 
         def literal_at_start?(regex_str)
           # is this regexp 'literal' in the sense of only matching literal
-          # chars, rather than using metachars like . and * and so on?
+          # chars, rather than using metachars like `.` and `*` and so on?
           # also, is it anchored at the start of the string?
           # (tricky: \s, \d, and so on are metacharacters, but other characters
           #  escaped with a slash are just literals. LITERAL_REGEX takes all

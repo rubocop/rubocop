@@ -265,7 +265,7 @@ Take a special attention to nil behavior:
 $ ruby-parse -e 'nil'
 (nil)
 ```
-In this case, the `nil` implicit matches with expressions like: `nil` or `(nil)` or `nil_type?`.
+In this case, the `nil` implicit matches with expressions like: `nil`, `(nil)`, or `nil_type?`.
 
 But, nil is also used to represent a call from `nothing` from a simple method call:
 

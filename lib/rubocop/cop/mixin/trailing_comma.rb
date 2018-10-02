@@ -86,7 +86,7 @@ module RuboCop
       end
 
       # Returns true if the round/square/curly brackets of the given node are
-      # on different lines, and each item within is on its own line, and the
+      # on different lines, each item within is on its own line, and the
       # closing bracket is on its own line.
       def multiline?(node)
         # No need to process anything if the whole node is not multiline

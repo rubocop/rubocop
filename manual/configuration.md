@@ -248,7 +248,7 @@ AllCops:
 #### Path relativity
 
 In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
-files and directories are specified relative to the directory where the
+files, and directories are specified relative to the directory where the
 configuration file is. In configuration files that don't begin with `.rubocop`,
 e.g. `our_company_defaults.yml`, paths are relative to the directory where
 `rubocop` is run.
@@ -365,7 +365,7 @@ AllCops:
   DisabledByDefault: true
 ```
 
-All cops are then disabled by default, and only cops appearing in user
+All cops are then disabled by default. Only cops appearing in user
 configuration files are enabled. `Enabled: true` does not have to be
 set for cops in user configuration. They will be enabled anyway. It is also
 possible to enable entire departments by adding for example
@@ -386,7 +386,7 @@ AllCops:
   EnabledByDefault: true
 ```
 
-All cops are then enabled by default, and only cops explicitly disabled
+All cops are then enabled by default. Only cops explicitly disabled
 using `Enabled: false` in user configuration files are enabled.
 
 #### Severity

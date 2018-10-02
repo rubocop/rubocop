@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Performance
-      # In Ruby 2.4, `String#match?`, `Regexp#match?` and `Symbol#match?`
+      # In Ruby 2.4, `String#match?`, `Regexp#match?`, and `Symbol#match?`
       # have been added. The methods are faster than `match`.
       # Because the methods avoid creating a `MatchData` object or saving
       # backref.

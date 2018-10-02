@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeDestructuring do
     it 'registers an offense when receiver is named `node`' do
       expect_offense(<<-RUBY.strip_indent, 'example_cop.rb')
         lhs, rhs = node.children
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions, or destructure the node using `*`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions or destructure the node using `*`.
       RUBY
     end
 
     it 'registers an offense when receiver is named `send_node`' do
       expect_offense(<<-RUBY.strip_indent, 'example_cop.rb')
         lhs, rhs = send_node.children
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions, or destructure the node using `*`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions or destructure the node using `*`.
       RUBY
     end
   end

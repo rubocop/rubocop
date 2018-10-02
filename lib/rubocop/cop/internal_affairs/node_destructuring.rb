@@ -22,7 +22,7 @@ module RuboCop
       #   # good
       #   method_name = send_node.method_name
       class NodeDestructuring < Cop
-        MSG = 'Use the methods provided with the node extensions, or ' \
+        MSG = 'Use the methods provided with the node extensions or ' \
               'destructure the node using `*`.'.freeze
 
         def_node_matcher :node_children_destructuring?, <<-PATTERN
