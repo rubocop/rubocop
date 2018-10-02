@@ -364,19 +364,19 @@ Enabled | Yes | No | 0.3 | 0.33
 This cop checks for the correct use of Date methods,
 such as Date.today, Date.current etc.
 
-Using Date.today is dangerous, because it doesn't know anything about
-Rails time zone. You must use Time.zone.today instead.
+Using `Date.today` is dangerous, because it doesn't know anything about
+Rails time zone. You must use `Time.zone.today` instead.
 
-The cop also reports warnings when you are using 'to_time' method,
+The cop also reports warnings when you are using `to_time` method,
 because it doesn't know about Rails time zone either.
 
 Two styles are supported for this cop. When EnforcedStyle is 'strict'
-then the Date methods (today, current, yesterday, tomorrow)
-are prohibited and the usage of both 'to_time'
-and 'to_time_in_current_zone' is reported as warning.
+then the Date methods `today`, `current`, `yesterday`, and `tomorrow`
+are prohibited and the usage of both `to_time`
+and 'to_time_in_current_zone' are reported as warning.
 
-When EnforcedStyle is 'flexible' then only 'Date.today' is prohibited
-and only 'to_time' is reported as warning.
+When EnforcedStyle is 'flexible' then only `Date.today` is prohibited
+and only `to_time` is reported as warning.
 
 ### Examples
 
@@ -604,15 +604,15 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | No | 0.41 | 
 
-This cop enforces that 'exit' calls are not used within a rails app.
-Valid options are instead to raise an error, break, return or some
+This cop enforces that `exit` calls are not used within a rails app.
+Valid options are instead to raise an error, break, return, or some
 other form of stopping execution of current request.
 
-There are two obvious cases where 'exit' is particularly harmful:
+There are two obvious cases where `exit` is particularly harmful:
 
-- Usage in library code for your application. Even though rails will
-rescue from a SystemExit and continue on, unit testing that library
-code will result in specs exiting (potentially silently if exit(0)
+- Usage in library code for your application. Even though Rails will
+rescue from a `SystemExit` and continue on, unit testing that library
+code will result in specs exiting (potentially silently if `exit(0)`
 is used.)
 - Usage in application code outside of the web process could result in
 the program exiting, which could result in the code failing to run and
@@ -1150,10 +1150,10 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | No | 0.41 | 
 
-This cop checks for the use of output safety calls like html_safe,
-raw, and safe_concat. These methods do not escape content. They
+This cop checks for the use of output safety calls like `html_safe`,
+`raw`, and `safe_concat`. These methods do not escape content. They
 simply return a SafeBuffer containing the content as is. Instead,
-use safe_join to join content and escape it and concat to
+use `safe_join` to join content and escape it and concat to
 concatenate content and escape it, ensuring its safety.
 
 ### Examples
@@ -1345,12 +1345,13 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.2 | 0.29
 
-This cop checks for the use of the read_attribute or write_attribute
-methods, and recommends square brackets instead.
+This cop checks for the use of the `read_attribute` or `write_attribute`
+methods and recommends square brackets instead.
 
 If an attribute is missing from the instance (for example, when
-initialized by a partial `select`) then read_attribute will return nil,
-but square brackets will raise an ActiveModel::MissingAttributeError.
+initialized by a partial `select`) then `read_attribute`
+will return nil, but square brackets will raise
+an `ActiveModel::MissingAttributeError`.
 
 Explicitly raising an error in this situation is preferable, and that
 is why rubocop recommends using square brackets.

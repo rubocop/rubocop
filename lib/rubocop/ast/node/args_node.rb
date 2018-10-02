@@ -8,7 +8,7 @@ module RuboCop
     class ArgsNode < Node
       include CollectionNode
 
-      # It returns true if arguments are empty, and delimiters do not exist.
+      # It returns true if arguments are empty and delimiters do not exist.
       # @example:
       #   # true
       #   def x; end

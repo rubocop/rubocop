@@ -79,11 +79,11 @@ Rails:
 
 ### Bundler
 
-Bundler cops check for style or bad practices in Bundler files, e.g. `Gemfile`.
+Bundler cops check for style and bad practices in Bundler files, e.g. `Gemfile`.
 
 ### Gemspec
 
-Gemspec cops check for style or bad practices in gemspec files, e.g. `rubocop.gemspec`.
+Gemspec cops check for style and bad practices in gemspec files, e.g. `rubocop.gemspec`.
 
 ### Available cops
 

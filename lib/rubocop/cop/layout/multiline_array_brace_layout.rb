@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks that the closing brace in an array literal is either
-      # on the same line as the last array element, or a new line.
+      # on the same line as the last array element or on a new line.
       #
       # When using the `symmetrical` (default) style:
       #
