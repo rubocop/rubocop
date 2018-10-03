@@ -3,7 +3,7 @@
 require 'tmpdir'
 require 'fileutils'
 
-shared_context 'isolated environment', :isolated_environment do
+RSpec.shared_context 'isolated environment', :isolated_environment do
   around do |example|
     Dir.mktmpdir do |tmpdir|
       original_home = ENV['HOME']
@@ -36,7 +36,7 @@ shared_context 'isolated environment', :isolated_environment do
 end
 
 # `cop_config` must be declared with #let.
-shared_context 'config', :config do
+RSpec.shared_context 'config', :config do
   let(:config) do
     # Module#<
     unless described_class < RuboCop::Cop::Cop
@@ -59,38 +59,38 @@ shared_context 'config', :config do
   end
 end
 
-shared_context 'ruby 2.2', :ruby22 do
+RSpec.shared_context 'ruby 2.2', :ruby22 do
   let(:ruby_version) { 2.2 }
 end
 
-shared_context 'ruby 2.3', :ruby23 do
+RSpec.shared_context 'ruby 2.3', :ruby23 do
   let(:ruby_version) { 2.3 }
 end
 
-shared_context 'ruby 2.4', :ruby24 do
+RSpec.shared_context 'ruby 2.4', :ruby24 do
   let(:ruby_version) { 2.4 }
 end
 
-shared_context 'ruby 2.5', :ruby25 do
+RSpec.shared_context 'ruby 2.5', :ruby25 do
   let(:ruby_version) { 2.5 }
 end
 
-shared_context 'ruby 2.6', :ruby26 do
+RSpec.shared_context 'ruby 2.6', :ruby26 do
   let(:ruby_version) { 2.6 }
 end
 
-shared_context 'with Rails', :enabled_rails do
+RSpec.shared_context 'with Rails', :enabled_rails do
   let(:enabled_rails) { true }
 end
 
-shared_context 'with Rails 3', :rails3 do
+RSpec.shared_context 'with Rails 3', :rails3 do
   let(:rails_version) { 3.0 }
 end
 
-shared_context 'with Rails 4', :rails4 do
+RSpec.shared_context 'with Rails 4', :rails4 do
   let(:rails_version) { 4.0 }
 end
 
-shared_context 'with Rails 5', :rails5 do
+RSpec.shared_context 'with Rails 5', :rails5 do
   let(:rails_version) { 5.0 }
 end
