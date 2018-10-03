@@ -146,7 +146,7 @@ module RuboCop
             left_paren.column
           else
             source_indent = processed_source
-                            .line_indentation(last_argument_line(elements))
+                            .line_indentation(first_argument_line(elements))
             new_indent    = source_indent - indentation_width
 
             new_indent < 0 ? 0 : new_indent
@@ -160,9 +160,9 @@ module RuboCop
             .count == 1
         end
 
-        def last_argument_line(elements)
+        def first_argument_line(elements)
           elements
-            .last
+            .first
             .loc
             .first_line
         end
