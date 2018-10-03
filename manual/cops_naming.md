@@ -128,6 +128,39 @@ end
 
 * [https://github.com/rubocop-hq/ruby-style-guide#camelcase-classes](https://github.com/rubocop-hq/ruby-style-guide#camelcase-classes)
 
+## Naming/ClassVariableName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No |  | 
+
+This cop makes sur that variable used to store Classes are not
+named clazz
+
+### Examples
+
+```ruby
+# bad
+def do_something_with_class(clazz)
+end
+
+# bad
+classes.map { |clazz| puts clazz.name }
+
+# bad
+clazz = Array
+
+# good
+def do_something_with_class(klass)
+end
+
+# good
+classes.map { |klass| puts klass.name }
+
+# good
+klass = Array
+```
+
 ## Naming/ConstantName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

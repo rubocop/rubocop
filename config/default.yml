@@ -1745,6 +1745,10 @@ Naming/ClassAndModuleCamelCase:
   Enabled: true
   VersionAdded: 0.50
 
+Naming/ClassVariableName:
+  Description: 'Use klass instead of clazz'
+  Enabled: true
+
 Naming/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
   StyleGuide: '#screaming-snake-case'
