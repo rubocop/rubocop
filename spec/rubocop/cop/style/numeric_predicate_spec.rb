@@ -71,6 +71,14 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         it_behaves_like 'code without offense',
                         '0 == $CHILD_STATUS'
       end
+
+      context 'when comparing against a method argument variable' do
+        it_behaves_like 'code with offense',
+                        'def m(foo); foo == 0; end',
+                        expected: 'def m(foo); foo.zero?; end',
+                        use: 'foo.zero?',
+                        instead_of: 'foo == 0'
+      end
     end
 
     context 'with checking if a number is not zero' do
