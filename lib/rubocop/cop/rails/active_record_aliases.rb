@@ -5,6 +5,10 @@ module RuboCop
     module Rails
       # Checks that ActiveRecord aliases are not used. The direct method names
       # are more clear and easier to read.
+      # This cop only applies to Rails >= 4.
+      # If you are running Rails < 4 you should disable the
+      # Rails/ActiveRecordAliases cop or set your TargetRailsVersion in your
+      # .rubocop.yml file to 3.2, etc.
       #
       # @example
       #   #bad
@@ -13,6 +17,10 @@ module RuboCop
       #   #good
       #   Book.update!(author: 'Alice')
       class ActiveRecordAliases < Cop
+        extend TargetRailsVersion
+
+        minimum_target_rails_version 4.0
+
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
         ALIASES = {

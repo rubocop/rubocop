@@ -58,6 +58,10 @@ Enabled | Yes | Yes  | 0.53 |
 
 Checks that ActiveRecord aliases are not used. The direct method names
 are more clear and easier to read.
+This cop only applies to Rails >= 4.
+If you are running Rails < 4 you should disable the
+Rails/ActiveRecordAliases cop or set your TargetRailsVersion in your
+.rubocop.yml file to 3.2, etc.
 
 ### Examples
 
