@@ -23,7 +23,7 @@ module RuboCop
           return if ignored_method?(node.method_name)
           return if same_name_assignment?(node)
 
-          add_offense(node, location: :begin)
+          add_offense(node, location: node.loc.begin.join(node.loc.end))
         end
 
         def autocorrect(node)
@@ -69,7 +69,7 @@ module RuboCop
           mlhs_node, _mrhs_node = *node
           var_nodes = *mlhs_node
 
-          var_nodes.map { |n| n.to_a.first }.include?(variable_name)
+          var_nodes.any? { |n| n.to_a.first == variable_name }
         end
       end
     end
