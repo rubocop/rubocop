@@ -30,7 +30,7 @@ module RuboCop
         include ConfigurableMax
         include IntegerNode
 
-        MSG = 'Use underscores(_) as decimal mark and ' \
+        MSG = 'Use underscores(_) as thousands separator and ' \
               'separate every 3 digits with them.'.freeze
 
         def on_int(node)
