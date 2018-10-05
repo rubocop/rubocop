@@ -14,6 +14,10 @@
 * [#5538](https://github.com/rubocop-hq/rubocop/issues/5538): Fix false negatives in modifier cops when line length cop is disabled. ([@drenmi][])
 * [#6340](https://github.com/rubocop-hq/rubocop/pull/6340): Fix an error for `Rails/ReversibleMigration` when block argument is empty. ([@koic][])
 
+### Changes
+
+* Update `Style/MethodCallWithoutArgsParentheses` to highlight the closing parentheses in additition to the opening parentheses. ([@rrosenblum][])
+
 ## 0.59.2 (2018-09-24)
 
 ### Bug fixes
