@@ -355,8 +355,8 @@ Metrics/LineLength:
   Enabled: false
 ```
 
-Most cops are enabled by default. Some cops, configured in
-[config/disabled.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/disabled.yml),
+Most cops are enabled by default. Some cops, configured the above `Enabled: false`
+in [config/default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml),
 are disabled by default. The cop enabling process can be altered by
 setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.
 
