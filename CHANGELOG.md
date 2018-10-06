@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#6357](https://github.com/rubocop-hq/rubocop/pull/6357): Disable cop Rails/ActiveRecordAliases for rails < 4. ([@wabilin][])
 * [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@Ana06][], [@jonas054][])
 
 ### Bug fixes
@@ -3612,3 +3613,4 @@
 [@ryanhageman]: https://github.com/ryanhageman
 [@autopp]: https://github.com/autopp
 [@lukasz-wojcik]: https://github.com/lukasz-wojcik
+[@wabilin]: https://github.com/wabilin
