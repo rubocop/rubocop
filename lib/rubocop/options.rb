@@ -158,6 +158,8 @@ module RuboCop
       option(opts, '-R', '--rails')
       option(opts, '-a', '--auto-correct')
 
+      option(opts, '--safe')
+
       option(opts, '--[no-]color')
 
       option(opts, '-v', '--version')
@@ -173,6 +175,9 @@ module RuboCop
       option(opts, '-x', '--fix-layout') do
         @options[:only] ||= []
         @options[:only] << 'Layout'
+        @options[:auto_correct] = true
+      end
+      option(opts, '--safe-auto-correct') do
         @options[:auto_correct] = true
       end
     end
@@ -418,8 +423,10 @@ module RuboCop
       extra_details:         'Display extra details in offense messages.',
       rails:                 'Run extra Rails cops.',
       lint:                  'Run only lint cops.',
+      safe:                  'Run only safe cops.',
       list_target_files:     'List all files RuboCop will inspect.',
       auto_correct:          'Auto-correct offenses.',
+      safe_auto_correct:     'Run auto-correct only when it\'s safe.',
       fix_layout:            'Run only layout cops, with auto-correct on.',
       color:                 'Force color output on or off.',
       version:               'Display version.',

@@ -4005,7 +4005,7 @@ Strict | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.42 | 0.59
+Enabled | No | Yes (Unsafe) | 0.42 | 0.59
 
 This cop checks for usage of comparison operators (`==`,
 `>`, `<`) to test numbers as zero, positive, or negative.
@@ -4057,7 +4057,6 @@ bar.baz > 0
 
 Name | Default value | Configurable values
 --- | --- | ---
-SafeAutocorrect | `false` | Boolean
 AutoCorrect | `false` | Boolean
 EnforcedStyle | `predicate` | `predicate`, `comparison`
 IgnoredMethods | `[]` | Array

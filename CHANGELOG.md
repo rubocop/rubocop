@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5980](https://github.com/rubocop-hq/rubocop/issues/5980): Add --safe and --safe-auto-correct options. ([@Darhazer][])
 * [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@Ana06][], [@jonas054][])
 
 ### Bug fixes

@@ -2152,7 +2152,7 @@ Performance/TimesMap:
   Enabled: true
   VersionAdded: 0.36
   VersionChanged: 0.50
-  SafeAutocorrect: false # see https://github.com/rubocop-hq/rubocop/issues/4658
+  SafeAutoCorrect: false # see https://github.com/rubocop-hq/rubocop/issues/4658
 
 Performance/UnfreezeString:
   Description: 'Use unary plus to get an unfrozen string literal.'
@@ -3640,7 +3640,7 @@ Style/NumericPredicate:
   # This will change to a new method call which isn't guaranteed to be on the
   # object. Switching these methods has to be done with knowledge of the types
   # of the variables which rubocop doesn't have.
-  SafeAutocorrect: false
+  SafeAutoCorrect: false
   AutoCorrect: false
   Enabled: true
   VersionAdded: 0.42
