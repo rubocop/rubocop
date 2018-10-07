@@ -9,7 +9,7 @@ module RuboCop
     # ## Creating Custom Formatter
     #
     # You can create a custom formatter by subclassing
-    # `RuboCop::Formatter::BaseFormatter` and overriding some methods,
+    # `RuboCop::Formatter::BaseFormatter` and overriding some methods
     # or by implementing all the methods by duck typing.
     #
     # ## Using Custom Formatter in Command Line
@@ -25,7 +25,7 @@ module RuboCop
     # `Kernel.require`.
     # If your custom formatter file is not in `$LOAD_PATH`,
     # you need to specify the path as relative path prefixed with `./`
-    # explicitly, or absolute path.
+    # explicitly or absolute path.
     #
     # ## Method Invocation Order
     #
@@ -109,7 +109,7 @@ module RuboCop
 
       # @api public
       #
-      # Invoked after all files are inspected, or interrupted by user.
+      # Invoked after all files are inspected or interrupted by user.
       #
       # @param inspected_files [Array(String)]
       #   the inspected file paths.

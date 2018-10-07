@@ -13,7 +13,7 @@ Codacy is free for open source, and it provides RuboCop analysis out-of-the-box.
 
 ### CodeFactor
 
-[CodeFactor](https://www.codefactor.io) reports various code metrics like duplication and churn and problems for code style, performance, complexity and many others. CodeFactor is free for open source, and it supports analysis and auto-correction for RuboCop.
+[CodeFactor](https://www.codefactor.io) reports various code metrics like duplication, churn, and problems for code style, performance, complexity, and many others. CodeFactor is free for open source. It supports analysis and auto-correction for RuboCop.
 
 ### Hound
 

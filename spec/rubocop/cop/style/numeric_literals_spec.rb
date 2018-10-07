@@ -8,14 +8,14 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   it 'registers an offense for a long undelimited integer' do
     expect_offense(<<-RUBY.strip_indent)
       a = 12345
-          ^^^^^ Use underscores(_) as decimal mark and separate every 3 digits with them.
+          ^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
     expect_offense(<<-RUBY.strip_indent)
       a = 123456.789
-          ^^^^^^^^^^ Use underscores(_) as decimal mark and separate every 3 digits with them.
+          ^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
   end
 
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     it 'registers an offense for an integer with misplaced underscore' do
       expect_offense(<<-RUBY.strip_indent)
         a = 123_456_78_90_00
-            ^^^^^^^^^^^^^^^^ Use underscores(_) as decimal mark and separate every 3 digits with them.
+            ^^^^^^^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
       RUBY
     end
   end

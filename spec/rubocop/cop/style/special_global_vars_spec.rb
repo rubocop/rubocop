@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     it 'is clear about variables from the English library vs those not' do
       expect_offense(<<-RUBY.strip_indent)
         puts $*
-             ^^ Prefer `$ARGV` from the stdlib 'English' module (don't forget to require it), or `ARGV` over `$*`.
+             ^^ Prefer `$ARGV` from the stdlib 'English' module (don't forget to require it) or `ARGV` over `$*`.
       RUBY
     end
 

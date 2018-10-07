@@ -1,6 +1,6 @@
 RuboCop currently has several official & unofficial support channels.
 
-For questions, suggestions and support refer to one of them. Please, don't
+For questions, suggestions, and support refer to one of them. Please, don't
 use the support channels to report issues, as this makes them harder to track.
 
 ## Gitter

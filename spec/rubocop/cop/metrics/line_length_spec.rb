@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     inspect_source('#' * 81)
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.first.message).to eq('Line is too long. [81/80]')
-    expect(cop.config_to_allow_offenses).to eq('Max' => 81)
+    expect(cop.config_to_allow_offenses).to eq(exclude_limit: { 'Max' => 81 })
   end
 
   it 'highlights excessive characters' do
@@ -340,7 +340,8 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         inspect_source("\t" + '#' * 9)
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to eq('Line is too long. [11/10]')
-        expect(cop.config_to_allow_offenses).to eq('Max' => 11)
+        expect(cop.config_to_allow_offenses)
+          .to eq(exclude_limit: { 'Max' => 11 })
       end
 
       it 'highlights excessive characters' do

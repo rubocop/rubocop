@@ -85,6 +85,7 @@ module RuboCop
       def output_cop(cop_name, offense_count)
         output.puts
         cfg = self.class.config_to_allow_offenses[cop_name] || {}
+        set_max(cfg, offense_count)
 
         # To avoid malformed YAML when potentially reading the config in
         # #excludes, we use an output buffer and append it to the actual output
@@ -93,6 +94,19 @@ module RuboCop
         output_cop_comments(output_buffer, cfg, cop_name, offense_count)
         output_cop_config(output_buffer, cfg, cop_name)
         output.puts(output_buffer.string)
+      end
+
+      def set_max(cfg, offense_count)
+        return unless cfg[:exclude_limit]
+
+        # In case auto_gen_only_exclude is set, only modify the maximum if the
+        # files are not excluded one by one.
+        if !@options[:auto_gen_only_exclude] || offense_count > @exclude_limit
+          cfg.merge! cfg[:exclude_limit]
+        end
+
+        # Remove already used exclude_limit.
+        cfg.reject! { |key| key == :exclude_limit }
       end
 
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)

@@ -5,10 +5,9 @@ module RuboCop
     # Common functionality for checking multiline method calls and binary
     # operations.
     module MultilineExpressionIndentation # rubocop:disable Metrics/ModuleLength
-      KEYWORD_ANCESTOR_TYPES  = [:for, :return, *Util::MODIFIER_NODES].freeze
+      KEYWORD_ANCESTOR_TYPES  = %i[for if while until return].freeze
       UNALIGNED_RHS_TYPES     = %i[if while until for return
                                    array kwbegin].freeze
-      ASSIGNMENT_RHS_TYPES    = [:send, *Util::ASGN_NODES].freeze
       DEFAULT_MESSAGE_TAIL    = 'an expression'.freeze
       ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'.freeze
       KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` ' \
@@ -191,7 +190,7 @@ module RuboCop
       def valid_rhs?(candidate, ancestor)
         if ancestor.send_type?
           valid_method_rhs_candidate?(candidate, ancestor)
-        elsif Util::ASGN_NODES.include?(ancestor.type)
+        elsif ancestor.assignment?
           valid_rhs_candidate?(candidate, assignment_rhs(ancestor))
         else
           false

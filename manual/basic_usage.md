@@ -69,7 +69,7 @@ rubocop -a
 ```
 
 Note that not all offenses are auto-correctable (either because
-auto-correct is not implemented for some cop, or because there's no
+auto-correct is not implemented for some cop or because there's no
 way to determine how to correct some problem).
 
 #### RuboCop as a replacement for `ruby -w`
@@ -143,7 +143,7 @@ Thus, the options have the following order of precedence (from highest to lowest
 
 RuboCop exits with the following status codes:
 
-- `0` if no offenses are found, or if the severity of all offenses are less than
+- `0` if no offenses are found or if the severity of all offenses are less than
   `--fail-level`. (By default, if you use `--auto-correct`, offenses which are
   auto-corrected do not cause RuboCop to fail.)
 - `1` if one or more offenses equal or greater to `--fail-level` are found. (By

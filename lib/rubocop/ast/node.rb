@@ -37,6 +37,13 @@ module RuboCop
                             regexp irange erange].freeze
       IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
+      EQUALS_ASSIGNMENTS = %i[lvasgn ivasgn cvasgn gvasgn
+                              casgn masgn].freeze
+      SHORTHAND_ASSIGNMENTS = %i[op_asgn or_asgn and_asgn].freeze
+      ASSIGNMENTS = (EQUALS_ASSIGNMENTS + SHORTHAND_ASSIGNMENTS).freeze
+
+      BASIC_CONDITIONALS = %i[if while until].freeze
+      CONDITIONALS = [*BASIC_CONDITIONALS, :case].freeze
       VARIABLES = %i[ivar gvar cvar lvar].freeze
       REFERENCES = %i[nth_ref back_ref].freeze
       KEYWORDS = %i[alias and break case class def defs defined?
@@ -359,16 +366,6 @@ module RuboCop
         source_length.zero?
       end
 
-      def_node_matcher :equals_asgn?, <<-PATTERN
-        {lvasgn ivasgn cvasgn gvasgn casgn masgn}
-      PATTERN
-
-      def_node_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
-
-      def_node_matcher :assignment?, <<-PATTERN
-        {equals_asgn? shorthand_asgn?}
-      PATTERN
-
       # Some cops treat the shovel operator as a kind of assignment.
       def_node_matcher :assignment_or_similar?, <<-PATTERN
         {assignment? (send _recv :<< ...)}
@@ -423,6 +420,26 @@ module RuboCop
         REFERENCES.include?(type)
       end
 
+      def equals_asgn?
+        EQUALS_ASSIGNMENTS.include?(type)
+      end
+
+      def shorthand_asgn?
+        SHORTHAND_ASSIGNMENTS.include?(type)
+      end
+
+      def assignment?
+        ASSIGNMENTS.include?(type)
+      end
+
+      def basic_conditional?
+        BASIC_CONDITIONALS.include?(type)
+      end
+
+      def conditional?
+        CONDITIONALS.include?(type)
+      end
+
       def keyword?
         return true if special_keyword? || send_type? && prefix_not?
         return false unless KEYWORDS.include?(type)
@@ -436,20 +453,6 @@ module RuboCop
 
       def operator_keyword?
         OPERATOR_KEYWORDS.include?(type)
-      end
-
-      def unary_operation?
-        return false unless loc.respond_to?(:selector) && loc.selector
-
-        Cop::Util.operator?(loc.selector.source.to_sym) &&
-          source_range.begin_pos == loc.selector.begin_pos
-      end
-
-      def binary_operation?
-        return false unless loc.respond_to?(:selector) && loc.selector
-
-        Cop::Util.operator?(method_name) &&
-          source_range.begin_pos != loc.selector.begin_pos
       end
 
       def parenthesized_call?

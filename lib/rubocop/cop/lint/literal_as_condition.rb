@@ -101,7 +101,7 @@ module RuboCop
         def check_node(node)
           if node.send_type? && node.prefix_bang?
             handle_node(node.receiver)
-          elsif LOGICAL_OPERATOR_NODES.include?(node.type)
+          elsif node.operator_keyword?
             node.each_child_node { |op| handle_node(op) }
           elsif node.begin_type? && node.children.one?
             handle_node(node.children.first)

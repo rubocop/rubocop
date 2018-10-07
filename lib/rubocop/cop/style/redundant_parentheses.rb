@@ -108,8 +108,8 @@ module RuboCop
         def check_unary(begin_node, node)
           return if begin_node.chained?
 
-          # parens are not redundant in `(!recv.method arg)`
-          node = node.children.first while node.unary_operation?
+          node = node.children.first while suspect_unary?(node)
+
           if node.send_type?
             return unless method_call_with_redundant_parentheses?(node)
           end
@@ -119,6 +119,10 @@ module RuboCop
 
         def offense(node, msg)
           add_offense(node, message: "Don't use parentheses around #{msg}.")
+        end
+
+        def suspect_unary?(node)
+          node.send_type? && node.unary_operation? && !node.prefix_not?
         end
 
         def keyword_ancestor?(node)

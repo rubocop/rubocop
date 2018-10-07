@@ -73,6 +73,15 @@ RSpec.describe RuboCop::Cop::Rails::ReversibleMigration, :config do
     RUBY
   end
 
+  context 'when block argument is empty' do
+    it_behaves_like 'accepts', 'create_table', <<-RUBY
+      def change
+        change_table :invoices do |t|
+        end
+      end
+    RUBY
+  end
+
   context 'within #reversible' do
     it_behaves_like 'accepts', 'execute', <<-RUBY
       reversible do |dir|

@@ -5,23 +5,6 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
-      extend RuboCop::AST::Sexp
-
-      EQUALS_ASGN_NODES = %i[lvasgn ivasgn cvasgn gvasgn
-                             casgn masgn].freeze
-      SHORTHAND_ASGN_NODES = %i[op_asgn or_asgn and_asgn].freeze
-      ASGN_NODES = (EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES).freeze
-
-      MODIFIER_NODES = %i[if while until].freeze
-      CONDITIONAL_NODES = (MODIFIER_NODES + [:case]).freeze
-      LOGICAL_OPERATOR_NODES = %i[and or].freeze
-
-      # http://phrogz.net/programmingruby/language.html#table_18.4
-      # Backtick is added last just to help editors parse this code.
-      OPERATOR_METHODS = %w(
-        | ^ & <=> == === =~ > >= < <= << >>
-        + - * / % ** ~ +@ -@ !@ ~@ [] []= ! != !~
-      ).map(&:to_sym).push(:'`').freeze
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
@@ -29,10 +12,6 @@ module RuboCop
         /[\w\s\-,"'!#%&<>=;:`~]|\\[^AbBdDgGhHkpPRwWXsSzZ0-9]/.freeze
 
       module_function
-
-      def operator?(symbol)
-        OPERATOR_METHODS.include?(symbol)
-      end
 
       def comment_line?(line_source)
         line_source =~ /^\s*#/

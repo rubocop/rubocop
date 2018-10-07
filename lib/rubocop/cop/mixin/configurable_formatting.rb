@@ -7,8 +7,6 @@ module RuboCop
       include ConfigurableEnforcedStyle
 
       def check_name(node, name, name_range)
-        return if operator?(name)
-
         if valid_name?(node, name)
           correct_style_detected
         else

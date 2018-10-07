@@ -71,7 +71,7 @@ module RuboCop
           branches = expand_elses(node.else_branch).unshift(node.if_branch)
 
           # return if any branch is empty. An empty branch can be an `if`
-          # without an `else`, or a branch that contains only comments.
+          # without an `else` or a branch that contains only comments.
           return if branches.any?(&:nil?)
 
           check_branches(branches)

@@ -621,7 +621,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.47 | 
 
-In Ruby 2.4, `String#match?`, `Regexp#match?` and `Symbol#match?`
+In Ruby 2.4, `String#match?`, `Regexp#match?`, and `Symbol#match?`
 have been added. The methods are faster than `match`.
 Because the methods avoid creating a `MatchData` object or saving
 backref.
@@ -727,8 +727,9 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.3 | 
 
-This cop is used to identify usages of `shuffle.first`, `shuffle.last`
-and `shuffle[]` and change them to use `sample` instead.
+This cop is used to identify usages of `shuffle.first`,
+`shuffle.last`, and `shuffle[]` and change them to use
+`sample` instead.
 
 ### Examples
 

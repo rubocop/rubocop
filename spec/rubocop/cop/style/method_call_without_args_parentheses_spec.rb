@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
   it 'registers an offense for parens in method call without args' do
     expect_offense(<<-RUBY.strip_indent)
       top.test()
-              ^ Do not use parentheses for method calls with no arguments.
+              ^^ Do not use parentheses for method calls with no arguments.
     RUBY
   end
 
@@ -67,21 +67,21 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
   it 'registers an offense for `obj.method ||= func()`' do
     expect_offense(<<-RUBY.strip_indent)
       obj.method ||= func()
-                         ^ Do not use parentheses for method calls with no arguments.
+                         ^^ Do not use parentheses for method calls with no arguments.
     RUBY
   end
 
   it 'registers an offense for `obj.method &&= func()`' do
     expect_offense(<<-RUBY.strip_indent)
       obj.method &&= func()
-                         ^ Do not use parentheses for method calls with no arguments.
+                         ^^ Do not use parentheses for method calls with no arguments.
     RUBY
   end
 
   it 'registers an offense for `obj.method += func()`' do
     expect_offense(<<-RUBY.strip_indent)
       obj.method += func()
-                        ^ Do not use parentheses for method calls with no arguments.
+                        ^^ Do not use parentheses for method calls with no arguments.
     RUBY
   end
 
@@ -114,14 +114,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     it 'registers an offense with empty parens' do
       expect_offense(<<-RUBY.strip_indent)
         _a = c(d())
-                ^ Do not use parentheses for method calls with no arguments.
+                ^^ Do not use parentheses for method calls with no arguments.
       RUBY
     end
 
     it 'registers an empty parens offense for multiple assignment' do
       expect_offense(<<-RUBY.strip_indent)
         _a, _b, _c = d(e())
-                        ^ Do not use parentheses for method calls with no arguments.
+                        ^^ Do not use parentheses for method calls with no arguments.
       RUBY
     end
   end

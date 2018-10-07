@@ -114,7 +114,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.9 | 0.25
 
 This cop checks for uses of `and` and `or`, and suggests using `&&` and
-`||` instead. It can be configured to check only in conditions, or in
+`||` instead. It can be configured to check only in conditions or in
 all contexts.
 
 ### Examples
@@ -1621,7 +1621,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.9 | 0.12
 
 This cop checks for the use of a method, the result of which
-would be a literal, like an empty array, hash or string.
+would be a literal, like an empty array, hash, or string.
 
 ### Examples
 
@@ -1789,8 +1789,8 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.12 | 0.29
 
-This cop checks for places where Integer#even? or Integer#odd?
-should have been used.
+This cop checks for places where `Integer#even?` or `Integer#odd?`
+can be used.
 
 ### Examples
 
@@ -1886,10 +1886,10 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.13 | 0.59
 
-This cop looks for uses of the *for* keyword, or *each* method. The
+This cop looks for uses of the `for` keyword or `each` method. The
 preferred alternative is set in the EnforcedStyle configuration
-parameter. An *each* call with a block on a single line is always
-allowed, however.
+parameter. An `each` call with a block on a single line is always
+allowed.
 
 ### Examples
 
@@ -3914,7 +3914,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.41 | 
 
-This cop checks for octal, hex, binary and decimal literals using
+This cop checks for octal, hex, binary, and decimal literals using
 uppercase prefixes and corrects them to lowercase prefix
 or no prefix (in case of decimals).
 
@@ -5550,7 +5550,7 @@ Enabled | Yes | Yes  | 0.51 |
 
 This cop identifies places where `$stderr.puts` can be replaced by
 `warn`. The latter has the advantage of easily being disabled by,
-e.g. the -W0 interpreter flag, or setting $VERBOSE to nil.
+the `-W0` interpreter flag or setting `$VERBOSE` to `nil`.
 
 ### Examples
 

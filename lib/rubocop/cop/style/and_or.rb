@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for uses of `and` and `or`, and suggests using `&&` and
-      # `||` instead. It can be configured to check only in conditions, or in
+      # `||` instead. It can be configured to check only in conditions or in
       # all contexts.
       #
       # @example EnforcedStyle: always (default)
@@ -74,8 +74,8 @@ module RuboCop
         private
 
         def on_conditionals(node)
-          node.condition.each_node(*LOGICAL_OPERATOR_NODES) do |logical_node|
-            process_logical_operator(logical_node)
+          node.condition.each_node(*AST::Node::OPERATOR_KEYWORDS) do |operator|
+            process_logical_operator(operator)
           end
         end
 

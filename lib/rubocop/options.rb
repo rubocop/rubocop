@@ -94,22 +94,24 @@ module RuboCop
 
     def add_configuration_options(opts)
       option(opts, '-c', '--config FILE')
+      option(opts, '--force-exclusion')
+      option(opts, '--ignore-parent-exclusion')
+      option(opts, '--force-default-config')
+      add_auto_gen_options(opts)
+    end
 
+    def add_auto_gen_options(opts)
       option(opts, '--auto-gen-config')
 
       option(opts, '--exclude-limit COUNT') do
         @validator.validate_exclude_limit_option
       end
 
-      option(opts, '--force-exclusion')
-      option(opts, '--ignore-parent-exclusion')
-
-      option(opts, '--force-default-config')
-
       option(opts, '--no-offense-counts') do
         @options[:no_offense_counts] = true
       end
 
+      option(opts, '--auto-gen-only-exclude')
       option(opts, '--no-auto-gen-timestamp') do
         @options[:no_auto_gen_timestamp] = true
       end
@@ -277,7 +279,8 @@ module RuboCop
 
       message = '--%<flag>s can only be used together with --auto-gen-config.'
 
-      %i[exclude_limit no_offense_counts no_auto_gen_timestamp].each do |option|
+      %i[exclude_limit no_offense_counts no_auto_gen_timestamp
+         auto_gen_only_exclude].each do |option|
         if @options.key?(option)
           raise OptionArgumentError,
                 format(message, flag: option.to_s.tr('_', '-'))
@@ -361,6 +364,11 @@ module RuboCop
                             ['Do not include the date and time when',
                              'the --auto-gen-config was run in the file it',
                              'generates.'],
+      auto_gen_only_exclude:
+                            ['Generate only Exclude parameters and not Max',
+                             'when running --auto-gen-config, except if the',
+                             'number of files with offenses is bigger than',
+                             'exclude-limit.'],
       exclude_limit:        ['Used together with --auto-gen-config to',
                              'set the limit for how many Exclude',
                              "properties to generate. Default is #{MAX_EXCL}."],

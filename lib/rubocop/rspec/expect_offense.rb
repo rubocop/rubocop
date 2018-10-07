@@ -5,7 +5,7 @@ module RuboCop
     # Mixin for `expect_offense` and `expect_no_offenses`
     #
     # This mixin makes it easier to specify strict offense expectations
-    # and a declarative and visual fashion. Just type out the code that
+    # in a declarative and visual fashion. Just type out the code that
     # should generate a offense, annotate code by writing '^'s
     # underneath each character that should be highlighted, and follow
     # the carets with a string (separated by a space) that is the

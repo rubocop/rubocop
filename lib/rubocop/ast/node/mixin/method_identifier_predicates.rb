@@ -12,6 +12,10 @@ module RuboCop
                               map reduce reject reject! reverse_each select
                               select! times upto].freeze
 
+      # http://phrogz.net/programmingruby/language.html#table_18.4
+      OPERATOR_METHODS = %i[| ^ & <=> == === =~ > >= < <= << >> + - * /
+                            % ** ~ +@ -@ !@ ~@ [] []= ! != !~ `].freeze
+
       # Checks whether the method name matches the argument.
       #
       # @param [Symbol, String] name the method name to check for
@@ -24,7 +28,7 @@ module RuboCop
       #
       # @return [Boolean] whether the method is an operator
       def operator_method?
-        RuboCop::Cop::Util::OPERATOR_METHODS.include?(method_name)
+        OPERATOR_METHODS.include?(method_name)
       end
 
       # Checks whether the method is a comparison method.
