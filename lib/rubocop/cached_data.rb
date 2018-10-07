@@ -31,7 +31,7 @@ module RuboCop
         },
         message: message(offense),
         cop_name: offense.cop_name,
-        status: offense.status
+        status: :uncorrected
       }
     end
 
