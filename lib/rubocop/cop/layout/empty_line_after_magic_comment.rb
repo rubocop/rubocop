@@ -24,12 +24,11 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Add an empty line after magic comments.'.freeze
-        BLANK_LINE = /\A\s*\z/.freeze
 
         def investigate(source)
           return unless source.ast &&
                         (last_magic_comment = last_magic_comment(source))
-          return if source[last_magic_comment.loc.line] =~ BLANK_LINE
+          return if source[last_magic_comment.loc.line].strip.empty?
 
           offending_range =
             source_range(source.buffer, last_magic_comment.loc.line + 1, 0)
