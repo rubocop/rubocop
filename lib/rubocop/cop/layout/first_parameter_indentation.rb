@@ -168,7 +168,7 @@ module RuboCop
           text = base_range(send_node, arg_node).source.strip
           base = if text !~ /\n/ && special_inner_call_indentation?(send_node)
                    "`#{text}`"
-                 elsif text.lines.reverse_each.first =~ /^\s*#/
+                 elsif comment_line?(text.lines.reverse_each.first)
                    'the start of the previous line (not counting the comment)'
                  else
                    'the start of the previous line'
