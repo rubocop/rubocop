@@ -120,7 +120,7 @@ module RuboCop
       def keyword_message_tail(node)
         keyword = node.loc.keyword.source
         kind    = keyword == 'for' ? 'collection' : 'condition'
-        article = keyword =~ /^[iu]/ ? 'an' : 'a'
+        article = keyword.start_with?('i', 'u') ? 'an' : 'a'
 
         format(KEYWORD_MESSAGE_TAIL, kind: kind,
                                      article: article,
