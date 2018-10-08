@@ -33,12 +33,10 @@ module RuboCop
         def on_block(node)
           return if node.single_line?
 
-          end_loc = node.loc.end
-
           # If the end is on its own line, there is no offense
-          return if end_loc.source_line =~ /^\s*#{end_loc.source}/
+          return if begins_its_line?(node.loc.end)
 
-          add_offense(node, location: end_loc)
+          add_offense(node, location: :end)
         end
 
         def autocorrect(node)
