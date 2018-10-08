@@ -49,17 +49,14 @@ module RuboCop
 
         private
 
+        def_node_matcher :setter_call_to_local_variable?, <<-PATTERN
+          [(send (lvar _) ...) setter_method?]
+        PATTERN
+
         def last_expression(body)
           expression = body.begin_type? ? body.children : body
 
           expression.is_a?(Array) ? expression.last : expression
-        end
-
-        def setter_call_to_local_variable?(node)
-          return unless node && node.send_type?
-          return unless node.receiver && node.receiver.lvar_type?
-
-          node.method_name =~ /(?:\w|\[\])=$/
         end
 
         # This class tracks variable assignments in a method body
