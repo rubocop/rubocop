@@ -31,8 +31,6 @@ module RuboCop
         ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
                               gvasgn ivasgn masgn].freeze
 
-        NAMED_CAPTURE = /\?<.+>/.freeze
-
         def on_if(node)
           return unless eligible_node?(node)
           return if named_capture_in_condition?(node)
