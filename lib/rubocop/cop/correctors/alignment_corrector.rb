@@ -69,7 +69,8 @@ module RuboCop
         end
 
         def calculate_range(expr, line_begin_pos, column_delta)
-          starts_with_space = expr.source_buffer.source[line_begin_pos] =~ / /
+          starts_with_space =
+            expr.source_buffer.source[line_begin_pos].start_with?(' ')
           pos_to_remove = if column_delta > 0 || starts_with_space
                             line_begin_pos
                           else
