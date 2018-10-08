@@ -34,16 +34,17 @@ module RuboCop
         ASGN_TYPES = [:begin, *AST::Node::EQUALS_ASSIGNMENTS, :send].freeze
 
         def on_if(node)
-          check(node)
-        end
+          return if node.condition.block_type?
 
-        def on_while(node)
-          check(node)
-        end
+          traverse_node(node.condition, ASGN_TYPES) do |asgn_node|
+            next :skip_children if skip_children?(asgn_node)
+            next if allowed_construct?(asgn_node)
 
-        def on_until(node)
-          check(node)
+            add_offense(asgn_node, location: :operator)
+          end
         end
+        alias on_while on_if
+        alias on_until on_if
 
         private
 
@@ -52,17 +53,6 @@ module RuboCop
             MSG_WITH_SAFE_ASSIGNMENT_ALLOWED
           else
             MSG_WITHOUT_SAFE_ASSIGNMENT_ALLOWED
-          end
-        end
-
-        def check(node)
-          return if node.condition.block_type?
-
-          traverse_node(node.condition, ASGN_TYPES) do |asgn_node|
-            next :skip_children if skip_children?(asgn_node)
-            next if allowed_construct?(asgn_node)
-
-            add_offense(asgn_node, location: :operator)
           end
         end
 
