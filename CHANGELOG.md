@@ -19,13 +19,12 @@
 ### Changes
 
 * [#3727](https://github.com/rubocop-hq/rubocop/issues/3727): Enforce single spaces for `key` option in `Layout/AlignHash` cop. ([@albaer][])
+* [#6321](https://github.com/rubocop-hq/rubocop/pull/6321): Fix run of RuboCop when cache directory is not writable. ([@Kevinrob][])
 
 ## 0.59.2 (2018-09-24)
 ### New features
 
 * Update `Style/MethodCallWithoutArgsParentheses` to highlight the closing parentheses in additition to the opening parentheses. ([@rrosenblum][])
-
-## 0.59.2 (2018-09-24)
 
 ### Bug fixes
 
@@ -44,7 +43,6 @@
 ### Changes
 
 * [#6286](https://github.com/rubocop-hq/rubocop/pull/6286): Allow exclusion of certain methods for `Metrics/MethodLength`. ([@akanoi][])
-* [#6321](https://github.com/rubocop-hq/rubocop/pull/6321): Fix run of RuboCop when cache directory is not writable. ([@Kevinrob][])
 
 ## 0.59.1 (2018-09-15)
 
