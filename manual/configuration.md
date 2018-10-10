@@ -387,7 +387,7 @@ AllCops:
 ```
 
 All cops are then enabled by default. Only cops explicitly disabled
-using `Enabled: false` in user configuration files are enabled.
+using `Enabled: false` in user configuration files are disabled.
 
 #### Severity
 
