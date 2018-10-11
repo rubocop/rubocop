@@ -12,7 +12,12 @@ module RuboCop
         if r.start_with?('.')
           require(File.join(config_dir, r))
         else
-          require(r)
+          begin
+            require(r)
+          rescue LoadError => exception
+            puts "Unable to load requirement '#{r}', are you missing a gem or a file?"
+            exit
+          end
         end
       end
     end
