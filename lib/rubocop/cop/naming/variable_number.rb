@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Naming
       # This cop makes sure that all numbered variables use the
-      # configured style, snake_case, normalcase or non_integer,
+      # configured style, snake_case, normalcase, or non_integer,
       # for their numbering.
       #
       # @example EnforcedStyle: snake_case

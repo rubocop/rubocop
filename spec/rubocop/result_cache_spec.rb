@@ -45,6 +45,29 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
     end
 
+    # Fixes https://github.com/rubocop-hq/rubocop/issues/6274
+    context 'when offenses are saved by autocorrect run' do
+      let(:corrected_offense) do
+        RuboCop::Cop::Offense.new(
+          :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
+        )
+      end
+      let(:uncorrected_offense) do
+        RuboCop::Cop::Offense.new(
+          corrected_offense.severity.name,
+          corrected_offense.location,
+          corrected_offense.message,
+          corrected_offense.cop_name,
+          :uncorrected
+        )
+      end
+
+      it 'serializes them with :uncorrected status' do
+        cache.save([corrected_offense])
+        expect(cache.load).to match_array([uncorrected_offense])
+      end
+    end
+
     context 'when no option is given' do
       let(:options2) { {} }
 
@@ -198,6 +221,14 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
       it 'writes non UTF-8 encodable data to file with no exception' do
         cache.save(offenses)
+      end
+    end
+
+    context 'when the @path is not writable' do
+      let(:cache_root) { '/permission_denied_dir' }
+
+      it 'doesn\'t raise an exception' do
+        expect { cache.save([]) }.not_to raise_error
       end
     end
   end

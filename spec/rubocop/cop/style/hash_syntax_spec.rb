@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       let(:cop_config) do
         {
-          'EnforcedStyle'   => 'ruby19',
+          'EnforcedStyle' => 'ruby19',
           'SupportedStyles' => %w[ruby19 hash_rockets],
           'UseHashRocketsWithSymbolValues' => false,
           'PreferHashRocketsForNonAlnumEndingSymbols' => false
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                               'TargetRubyVersion' => ruby_version
                             },
                             'Style/HashSyntax' => {
-                              'EnforcedStyle'   => 'ruby19',
+                              'EnforcedStyle' => 'ruby19',
                               'SupportedStyles' => %w[ruby19 hash_rockets],
                               'UseHashRocketsWithSymbolValues' => false
                             },

@@ -621,7 +621,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.47 | 
 
-In Ruby 2.4, `String#match?`, `Regexp#match?` and `Symbol#match?`
+In Ruby 2.4, `String#match?`, `Regexp#match?`, and `Symbol#match?`
 have been added. The methods are faster than `match`.
 Because the methods avoid creating a `MatchData` object or saving
 backref.
@@ -727,8 +727,9 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.3 | 
 
-This cop is used to identify usages of `shuffle.first`, `shuffle.last`
-and `shuffle[]` and change them to use `sample` instead.
+This cop is used to identify usages of `shuffle.first`,
+`shuffle.last`, and `shuffle[]` and change them to use
+`sample` instead.
 
 ### Examples
 
@@ -857,7 +858,7 @@ This cop identifies places where `gsub` can be replaced by
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 0.5
+Enabled | Yes | Yes (Unsafe) | 0.36 | 0.5
 
 This cop checks for .times.map calls.
 In most cases such calls can be replaced
@@ -882,7 +883,6 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 AutoCorrect | `false` | Boolean
-SafeAutocorrect | `false` | Boolean
 
 ## Performance/UnfreezeString
 

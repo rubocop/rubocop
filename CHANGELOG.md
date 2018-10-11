@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5980](https://github.com/rubocop-hq/rubocop/issues/5980): Add --safe and --safe-auto-correct options. ([@Darhazer][])
 * [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@Ana06][], [@jonas054][])
 * Add new `Naming/ForbidenVariableName` cop. Forbide the use of variable names and recommend alternatives if available. ([@ylecuyer][])
 
@@ -14,8 +15,17 @@
 * [#6334](https://github.com/rubocop-hq/rubocop/pull/6334): Fix a false negative for `Style/RedundantFreeze` when assigning a range object to a constant. ([@koic][])
 * [#5538](https://github.com/rubocop-hq/rubocop/issues/5538): Fix false negatives in modifier cops when line length cop is disabled. ([@drenmi][])
 * [#6340](https://github.com/rubocop-hq/rubocop/pull/6340): Fix an error for `Rails/ReversibleMigration` when block argument is empty. ([@koic][])
+* [#6274](https://github.com/rubocop-hq/rubocop/issues/6274): Fix "[Corrected]" message being displayed even when nothing has been corrected. ([@jekuta][])
+
+### Changes
+
+* [#3727](https://github.com/rubocop-hq/rubocop/issues/3727): Enforce single spaces for `key` option in `Layout/AlignHash` cop. ([@albaer][])
+* [#6321](https://github.com/rubocop-hq/rubocop/pull/6321): Fix run of RuboCop when cache directory is not writable. ([@Kevinrob][])
 
 ## 0.59.2 (2018-09-24)
+### New features
+
+* Update `Style/MethodCallWithoutArgsParentheses` to highlight the closing parentheses in additition to the opening parentheses. ([@rrosenblum][])
 
 ### Bug fixes
 
@@ -3610,3 +3620,5 @@
 [@autopp]: https://github.com/autopp
 [@lukasz-wojcik]: https://github.com/lukasz-wojcik
 [@ylecuyer]: https://github.com/ylecuyer
+[@albaer]: https://github.com/albaer
+[@Kevinrob]: https://github.com/Kevinrob

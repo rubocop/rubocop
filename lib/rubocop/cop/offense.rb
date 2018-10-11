@@ -177,7 +177,7 @@ module RuboCop
 
       # @api public
       #
-      # Returns `-1`, `0` or `+1`
+      # Returns `-1`, `0`, or `+1`
       # if this offense is less than, equal to, or greater than `other`.
       #
       # @return [Integer]

@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def require_parentheses?(node)
-          node.binary_operation? && node.source !~ /^\(.*\)$/
+          node.send_type? && node.binary_operation? && !node.parenthesized?
         end
 
         def replacement_supported?(operator)

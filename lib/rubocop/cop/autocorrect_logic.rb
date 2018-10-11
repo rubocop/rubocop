@@ -20,7 +20,13 @@ module RuboCop
         # allow turning off autocorrect on a cop by cop basis
         return true unless cop_config
 
-        cop_config['AutoCorrect'] != false
+        return false if cop_config['AutoCorrect'] == false
+
+        if @options.fetch(:safe_auto_correct, false)
+          return cop_config.fetch('SafeAutoCorrect', true)
+        end
+
+        true
       end
     end
   end

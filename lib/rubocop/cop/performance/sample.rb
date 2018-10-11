@@ -3,8 +3,9 @@
 module RuboCop
   module Cop
     module Performance
-      # This cop is used to identify usages of `shuffle.first`, `shuffle.last`
-      # and `shuffle[]` and change them to use `sample` instead.
+      # This cop is used to identify usages of `shuffle.first`,
+      # `shuffle.last`, and `shuffle[]` and change them to use
+      # `sample` instead.
       #
       # @example
       #   # bad

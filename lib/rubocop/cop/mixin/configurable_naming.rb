@@ -9,7 +9,7 @@ module RuboCop
 
       FORMATS = {
         snake_case: /^@{0,2}[\da-z_]+[!?=]?$/,
-        camelCase:  /^@{0,2}_?[a-z][\da-zA-Z]+[!?=]?$/
+        camelCase: /^@{0,2}_?[a-z][\da-zA-Z]+[!?=]?$/
       }.freeze
     end
   end

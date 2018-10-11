@@ -103,6 +103,38 @@ RSpec.describe RuboCop::AST::PairNode do
     it { expect(pair_node.value.int_type?).to be(true) }
   end
 
+  describe '#value_on_new_line?' do
+    let(:pair) { parse_source(source).ast.children[0] }
+
+    context 'when value starts on a new line' do
+      let(:source) do
+        ['{',
+         '  a:',
+         '    1',
+         '}'].join("\n")
+      end
+
+      it { expect(pair.value_on_new_line?).to be_truthy }
+    end
+
+    context 'when value spans multiple lines' do
+      let(:source) do
+        ['{',
+         '  a: (',
+         '  )',
+         '}'].join("\n")
+      end
+
+      it { expect(pair.value_on_new_line?).to be_falsey }
+    end
+
+    context 'when pair is on a single line' do
+      let(:source) { "{ 'a' => 1 }" }
+
+      it { expect(pair.value_on_new_line?).to be_falsey }
+    end
+  end
+
   describe '#same_line?' do
     let(:first_pair) { parse_source(source).ast.children[0] }
     let(:second_pair) { parse_source(source).ast.children[1] }

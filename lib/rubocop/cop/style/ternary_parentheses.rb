@@ -155,12 +155,13 @@ module RuboCop
 
         def unparenthesized_method_call?(child)
           argument = method_call_argument(child)
-          argument && argument !~ /^\(/
+
+          argument && !argument.parenthesized?
         end
 
         def_node_matcher :method_call_argument, <<-PATTERN
-          {(:defined? $...)
-           (send {_ nil?} _ $(send nil? _)...)}
+          {(:defined? $(send nil? _) ...)
+           (send {_ nil?} _ $(send nil? _) ...)}
         PATTERN
 
         def correct_parenthesized(condition)

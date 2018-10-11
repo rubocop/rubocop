@@ -60,7 +60,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
-        'module (don\'t forget to require it), or `%<regular>s` over ' \
+        'module (don\'t forget to require it) or `%<regular>s` over ' \
         '`%<global>s`.'.freeze
         MSG_ENGLISH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
         'module (don\'t forget to require it) over `%<global>s`.'.freeze

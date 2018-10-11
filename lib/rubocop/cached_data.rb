@@ -29,9 +29,9 @@ module RuboCop
           begin_pos: offense.location.begin_pos,
           end_pos: offense.location.end_pos
         },
-        message:  message(offense),
+        message: message(offense),
         cop_name: offense.cop_name,
-        status:   offense.status
+        status: :uncorrected
       }
     end
 

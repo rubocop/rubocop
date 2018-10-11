@@ -28,7 +28,7 @@ module RuboCop
       end
 
       # Returns the delimiter of the `pair` as a string. Returns `=>` for a
-      # colon delimited `pair`, and `:` for a hash rocket delimited `pair`.
+      # colon delimited `pair` and `:` for a hash rocket delimited `pair`.
       #
       # @param [Boolean] with_spacing whether to include spacing
       # @return [String] the delimiter of the `pair`
@@ -50,6 +50,13 @@ module RuboCop
         else
           hash_rocket? ? COLON : HASH_ROCKET
         end
+      end
+
+      # Checks whether the value starts on its own line.
+      #
+      # @return [Boolean] whether the value in the `pair` starts its own line
+      def value_on_new_line?
+        key.loc.line != value.loc.line
       end
     end
   end

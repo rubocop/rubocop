@@ -41,8 +41,9 @@ module RuboCop
             node.children.each do |child|
               range = child.loc.expression
 
-              corrector.remove_trailing(range, 1) if /,$/ =~ range.source
-              corrector.remove_leading(range, 1) if /^:/ =~ range.source
+              corrector.remove_trailing(range, 1) if range.source.end_with?(',')
+              corrector.remove_leading(range, 1) if
+                range.source.start_with?(':')
             end
           end
         end
@@ -50,15 +51,17 @@ module RuboCop
         private
 
         def contains_colons_or_commas?(node)
-          patterns = [/^:/, /,$/]
           node.children.any? do |child|
-            literal = child.children.first
+            literal = child.children.first.to_s
 
-            # To avoid likely false positives (e.g. a single ' or ")
-            next if literal.to_s.gsub(/[^[[:alnum:]]]/, '').empty?
+            next if non_alphanumeric_literal?(literal)
 
-            patterns.any? { |pat| literal =~ pat }
+            literal.start_with?(':') || literal.end_with?(',')
           end
+        end
+
+        def non_alphanumeric_literal?(literal)
+          literal !~ /[[:alnum:]]/
         end
       end
     end

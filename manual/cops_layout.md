@@ -94,7 +94,7 @@ Check that the keys, separators, and values of a multi-line hash
 literal are aligned according to configuration. The configuration
 options are:
 
-  - key (left align keys)
+  - key (left align keys, one space before hash rockets and values)
   - separator (align hash rockets and colons, right align keys)
   - table (left align keys, hash rockets, and values)
 
@@ -115,6 +115,10 @@ can also be configured. The options are:
 {
   :foo => bar,
    :ba => baz
+}
+{
+  :foo => bar,
+  :ba  => baz
 }
 
 # good
@@ -164,6 +168,10 @@ can also be configured. The options are:
 {
   foo: bar,
    ba: baz
+}
+{
+  foo: bar,
+  ba:  baz
 }
 
 # good
@@ -2659,7 +2667,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.49 | 
 
 This cop checks that the closing brace in an array literal is either
-on the same line as the last array element, or a new line.
+on the same line as the last array element or on a new line.
 
 When using the `symmetrical` (default) style:
 

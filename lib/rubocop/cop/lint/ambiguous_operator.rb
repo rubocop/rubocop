@@ -24,11 +24,11 @@ module RuboCop
         include ParserDiagnostic
 
         AMBIGUITIES = {
-          '+'  => { actual: 'positive number', possible: 'addition' },
-          '-'  => { actual: 'negative number', possible: 'subtraction' },
-          '*'  => { actual: 'splat',           possible: 'multiplication' },
-          '&'  => { actual: 'block',           possible: 'binary AND' },
-          '**' => { actual: 'keyword splat',   possible: 'exponent' }
+          '+' => { actual: 'positive number', possible: 'addition' },
+          '-' => { actual: 'negative number', possible: 'subtraction' },
+          '*' => { actual: 'splat',           possible: 'multiplication' },
+          '&' => { actual: 'block',           possible: 'binary AND' },
+          '**' => { actual: 'keyword splat', possible: 'exponent' }
         }.each do |key, hash|
           hash[:operator] = key
         end

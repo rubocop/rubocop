@@ -9,13 +9,13 @@ Files created:
   - spec/rubocop/cop/department/name_spec.rb
 File modified:
   - `require_relative 'rubocop/cop/department/name'` added into lib/rubocop.rb
-  - A configuration for the cop is added into config/enabled.yml
-    - If you want to disable the cop by default, move the added config to config/disabled.yml
+  - A configuration for the cop is added into config/default.yml
+    - If you want to disable the cop by default, set `Enabled` option to false.
 
 Do 3 steps:
   1. Add an entry to the "New features" section in CHANGELOG.md,
      e.g. "Add new `Department/Name` cop. ([@your_id][])"
-  2. Modify the description of Department/Name in config/enabled.yml
+  2. Modify the description of Department/Name in config/default.yml
   3. Implement your new cop in the generated file!
 ```
 

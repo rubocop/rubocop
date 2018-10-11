@@ -23,7 +23,7 @@ module RuboCop
       def style_detected(detected)
         return if no_acceptable_style?
 
-        # `detected` can be a single style, or an Array of possible styles
+        # `detected` can be a single style or an Array of possible styles
         # (if there is more than one which matches the observed code)
         detected_as_strings = Array(detected).map(&:to_s)
 

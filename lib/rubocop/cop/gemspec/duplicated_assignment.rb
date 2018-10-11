@@ -8,7 +8,7 @@ module RuboCop
       #
       # Assigning to an attribute with the same name using `spec.foo =` will be
       # an unintended usage. On the other hand, duplication of methods such
-      # as `spec.requirements`, `spec.add_runtime_dependency` and others are
+      # as `spec.requirements`, `spec.add_runtime_dependency`, and others are
       # permitted because it is the intended use of appending values.
       #
       # @example

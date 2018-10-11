@@ -97,7 +97,15 @@ module RuboCop
 
     def save(offenses)
       dir = File.dirname(@path)
-      FileUtils.mkdir_p(dir)
+
+      begin
+        FileUtils.mkdir_p(dir)
+      rescue Errno::EACCES => e
+        warn "Couldn't create cache directory. Continuing without cache."\
+             "\n  #{e.message}"
+        return
+      end
+
       preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
       # RuboCop must be in control of where its cached data is stored. A
       # symbolic link anywhere in the cache directory tree can be an

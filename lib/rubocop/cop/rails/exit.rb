@@ -3,15 +3,15 @@
 module RuboCop
   module Cop
     module Rails
-      # This cop enforces that 'exit' calls are not used within a rails app.
-      # Valid options are instead to raise an error, break, return or some
+      # This cop enforces that `exit` calls are not used within a rails app.
+      # Valid options are instead to raise an error, break, return, or some
       # other form of stopping execution of current request.
       #
-      # There are two obvious cases where 'exit' is particularly harmful:
+      # There are two obvious cases where `exit` is particularly harmful:
       #
-      # - Usage in library code for your application. Even though rails will
-      # rescue from a SystemExit and continue on, unit testing that library
-      # code will result in specs exiting (potentially silently if exit(0)
+      # - Usage in library code for your application. Even though Rails will
+      # rescue from a `SystemExit` and continue on, unit testing that library
+      # code will result in specs exiting (potentially silently if `exit(0)`
       # is used.)
       # - Usage in application code outside of the web process could result in
       # the program exiting, which could result in the code failing to run and
@@ -52,9 +52,8 @@ module RuboCop
           arg_nodes.size <= 1
         end
 
-        # Only register if exit is being called explicitly on
-        # Kernel or Process or if receiver node is nil for plain
-        # `exit` calls.
+        # Only register if exit is being called explicitly on `Kernel`,
+        # `Process`, or if receiver node is nil for plain `exit` calls.
         def right_receiver?(receiver_node)
           return true unless receiver_node
 

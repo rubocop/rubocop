@@ -36,7 +36,7 @@ module RuboCop
           unpack_and_first_element?(node) do |unpack_call, unpack_arg|
             range = first_element_range(node, unpack_call)
             message = format(MSG,
-                             receiver:  unpack_call.receiver.source,
+                             receiver: unpack_call.receiver.source,
                              format: unpack_arg.source,
                              method: range.source)
             add_offense(node, message: message)

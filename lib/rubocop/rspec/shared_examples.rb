@@ -2,7 +2,7 @@
 
 # `cop` and `source` must be declared with #let.
 
-shared_examples_for 'misaligned' do |annotated_source, used_style|
+RSpec.shared_examples_for 'misaligned' do |annotated_source, used_style|
   config_to_allow_offenses = if used_style
                                { 'EnforcedStyleAlignWith' => used_style.to_s }
                              else
@@ -31,7 +31,7 @@ shared_examples_for 'misaligned' do |annotated_source, used_style|
   end
 end
 
-shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
+RSpec.shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
   name = name.gsub(/\n/, ' <newline>')
   it "accepts matching #{name} ... end" do
@@ -40,7 +40,7 @@ shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   end
 end
 
-shared_examples_for 'debugger' do |name, src|
+RSpec.shared_examples_for 'debugger' do |name, src|
   it "reports an offense for a #{name} call" do
     inspect_source(src)
     src = [src] if src.is_a? String
@@ -51,7 +51,7 @@ shared_examples_for 'debugger' do |name, src|
   end
 end
 
-shared_examples_for 'non-debugger' do |name, src|
+RSpec.shared_examples_for 'non-debugger' do |name, src|
   it "does not report an offense for #{name}" do
     inspect_source(src)
     expect(cop.offenses).to be_empty

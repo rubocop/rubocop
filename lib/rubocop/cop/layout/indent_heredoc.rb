@@ -88,7 +88,7 @@ module RuboCop
 
         def on_heredoc(node)
           body = heredoc_body(node)
-          return if body =~ /\A\s*\z/
+          return if body.strip.empty?
 
           body_indent_level = indent_level(body)
 

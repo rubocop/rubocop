@@ -248,7 +248,7 @@ AllCops:
 #### Path relativity
 
 In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
-files and directories are specified relative to the directory where the
+files, and directories are specified relative to the directory where the
 configuration file is. In configuration files that don't begin with `.rubocop`,
 e.g. `our_company_defaults.yml`, paths are relative to the directory where
 `rubocop` is run.
@@ -355,8 +355,8 @@ Metrics/LineLength:
   Enabled: false
 ```
 
-Most cops are enabled by default. Some cops, configured in
-[config/disabled.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/disabled.yml),
+Most cops are enabled by default. Some cops, configured the above `Enabled: false`
+in [config/default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml),
 are disabled by default. The cop enabling process can be altered by
 setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.
 
@@ -365,7 +365,7 @@ AllCops:
   DisabledByDefault: true
 ```
 
-All cops are then disabled by default, and only cops appearing in user
+All cops are then disabled by default. Only cops appearing in user
 configuration files are enabled. `Enabled: true` does not have to be
 set for cops in user configuration. They will be enabled anyway. It is also
 possible to enable entire departments by adding for example
@@ -386,8 +386,8 @@ AllCops:
   EnabledByDefault: true
 ```
 
-All cops are then enabled by default, and only cops explicitly disabled
-using `Enabled: false` in user configuration files are enabled.
+All cops are then enabled by default. Only cops explicitly disabled
+using `Enabled: false` in user configuration files are disabled.
 
 #### Severity
 

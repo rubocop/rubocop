@@ -82,15 +82,15 @@ AllCops:
   # default. Change behavior by overriding `StyleGuideCopsOnly`, or by giving
   # the `--only-guide-cops` option.
   StyleGuideCopsOnly: false
-  # All cops except the ones in disabled.yml are enabled by default. Change
-  # this behavior by overriding either `DisabledByDefault` or `EnabledByDefault`.
+  # All cops except the ones configured `Enabled: false` in this file are enabled by default.
+  # Change this behavior by overriding either `DisabledByDefault` or `EnabledByDefault`.
   # When `DisabledByDefault` is `true`, all cops in the default configuration
   # are disabled, and only cops in user configuration are enabled. This makes
   # cops opt-in instead of opt-out. Note that when `DisabledByDefault` is `true`,
   # cops in user configuration will be enabled even if they don't set the
   # Enabled parameter.
-  # When `EnabledByDefault` is `true`, all cops, even those in disabled.yml,
-  # are enabled by default. Cops can still be disabled in user configuration.
+  # When `EnabledByDefault` is `true`, all cops, even those configured `Enabled: false`
+  # in this file are enabled by default. Cops can still be disabled in user configuration.
   # Note that it is invalid to set both EnabledByDefault and DisabledByDefault
   # to true in the same configuration.
   EnabledByDefault: false
@@ -2158,7 +2158,7 @@ Performance/TimesMap:
   Enabled: true
   VersionAdded: 0.36
   VersionChanged: 0.50
-  SafeAutocorrect: false # see https://github.com/rubocop-hq/rubocop/issues/4658
+  SafeAutoCorrect: false # see https://github.com/rubocop-hq/rubocop/issues/4658
 
 Performance/UnfreezeString:
   Description: 'Use unary plus to get an unfrozen string literal.'
@@ -3646,7 +3646,7 @@ Style/NumericPredicate:
   # This will change to a new method call which isn't guaranteed to be on the
   # object. Switching these methods has to be done with knowledge of the types
   # of the variables which rubocop doesn't have.
-  SafeAutocorrect: false
+  SafeAutoCorrect: false
   AutoCorrect: false
   Enabled: true
   VersionAdded: 0.42

@@ -31,8 +31,6 @@ module RuboCop
         ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
                               gvasgn ivasgn masgn].freeze
 
-        NAMED_CAPTURE = /\?<.+>/.freeze
-
         def on_if(node)
           return unless eligible_node?(node)
           return if named_capture_in_condition?(node)
@@ -69,17 +67,7 @@ module RuboCop
           return false if node.parent.nil?
           return true if ASSIGNMENT_TYPES.include?(node.parent.type)
 
-          if node.parent.send_type?
-            _receiver, _name, *args = *node.parent
-            return !method_uses_parens?(node.parent, args.first)
-          end
-
-          false
-        end
-
-        def method_uses_parens?(node, limit)
-          source = node.source_range.source_line[0...limit.loc.column]
-          source =~ /\s*\(\s*$/
+          node.parent.send_type? && !node.parent.parenthesized?
         end
 
         def to_modifier_form(node)

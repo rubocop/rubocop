@@ -667,7 +667,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | No | 0.5 | 
 
 This cop makes sure that all numbered variables use the
-configured style, snake_case, normalcase or non_integer,
+configured style, snake_case, normalcase, or non_integer,
 for their numbering.
 
 ### Examples

@@ -1953,8 +1953,9 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | No | 0.9 | 
 
-This is actually not a cop and inspects nothing. It just provides
-methods to repack Parser's diagnostics/errors into RuboCop's offenses.
+This is not actually a cop. It does not inspect anything. It just
+provides methods to repack Parser's diagnostics/errors
+into RuboCop's offenses.
 
 ## Lint/UnderscorePrefixedVariableName
 
@@ -2292,11 +2293,11 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | No | 0.5 | 
 
 This cop identifies places where `URI.escape` can be replaced by
-`CGI.escape`, `URI.encode_www_form` or `URI.encode_www_form_component`
+`CGI.escape`, `URI.encode_www_form`, or `URI.encode_www_form_component`
 depending on your specific use case.
 Also this cop identifies places where `URI.unescape` can be replaced by
-`CGI.unescape`, `URI.decode_www_form` or `URI.decode_www_form_component`
-depending on your specific use case.
+`CGI.unescape`, `URI.decode_www_form`,
+or `URI.decode_www_form_component` depending on your specific use case.
 
 ### Examples
 
