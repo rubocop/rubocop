@@ -3,8 +3,11 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sur that variables used are not fordiden for use.
+      # This cop makes sur that variables used are not fordidden for use.
       # If a recommended variable is present it will display it.
+      #
+      # The recommendations are configured in the `Recommendations`
+      # of the `Naming/ForbiddenVariableName` cop.
       #
       # @example
       #   # bad
@@ -26,7 +29,7 @@ module RuboCop
       #
       #   # good
       #   klass = Array
-      class ForbidenVariableName < Cop
+      class ForbiddenVariableName < Cop
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'.freeze
         MSG_NO_RECOMENDATION = 'Do not use `%<bad>s`.'.freeze
 

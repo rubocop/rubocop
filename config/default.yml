@@ -1815,8 +1815,8 @@ Naming/FileName:
     - XSRF
     - XSS
 
-Naming/ForbidenVariableName:
-  Description: 'Use recommended variable names instead of forbiden ones'
+Naming/ForbiddenVariableName:
+  Description: 'Use recommended variable names instead of forbidden ones'
   Enabled: true
   Recommendations:
     clazz: klass

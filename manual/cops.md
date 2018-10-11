@@ -286,7 +286,7 @@ In the following section you find all available cops:
 * [Naming/ClassAndModuleCamelCase](cops_naming.md#namingclassandmodulecamelcase)
 * [Naming/ConstantName](cops_naming.md#namingconstantname)
 * [Naming/FileName](cops_naming.md#namingfilename)
-* [Naming/ForbidenVariableName](cops_naming.md#namingforbidenvariablename)
+* [Naming/ForbiddenVariableName](cops_naming.md#namingforbiddenvariablename)
 * [Naming/HeredocDelimiterCase](cops_naming.md#namingheredocdelimitercase)
 * [Naming/HeredocDelimiterNaming](cops_naming.md#namingheredocdelimiternaming)
 * [Naming/MemoizedInstanceVariableName](cops_naming.md#namingmemoizedinstancevariablename)
