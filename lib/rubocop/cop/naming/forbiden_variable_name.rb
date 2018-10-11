@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sur that variable used to store Classes are not
-      # named clazz
+      # This cop makes sur that variables used are not fordiden for use.
+      # If a recommended variable is present it will display it.
       #
       # @example
       #   # bad
@@ -26,14 +26,15 @@ module RuboCop
       #
       #   # good
       #   klass = Array
-      class ClassVariableName < Cop
-        MSG = 'Use `klass` instead of `clazz`.'.freeze
+      class ForbidenVariableName < Cop
+        MSG = 'Use `%<good>s` instead of `%<bad>s`.'.freeze
+        MSG_NO_RECOMENDATION = 'Do not use `%<bad>s`.'.freeze
 
         def on_lvasgn(node)
           name, = *node
           return unless name
 
-          check_name(node, name)
+          check_name(node, name.to_s.downcase)
         end
         alias on_ivasgn    on_lvasgn
         alias on_cvasgn    on_lvasgn
@@ -48,11 +49,25 @@ module RuboCop
         private
 
         def check_name(node, name)
-          add_offense(node) if invalid_name?(name)
+          add_offense(node, message: offense_message_for(name)) if invalid_name?(name)
+        end
+
+        def offense_message_for(name)
+          recommendation = recommendation_for(name)
+          return format(MSG_NO_RECOMENDATION, bad: name) unless recommendation
+          format(MSG, good: recommendation_for(name), bad: name)
+        end
+
+        def recommendations
+          @recommendations ||= cop_config.fetch('Recommendations', {})
+        end
+
+        def recommendation_for(name)
+          recommendations[name]
         end
 
         def invalid_name?(name)
-          name.match(/clazz/i)
+          recommendations.key?(name)
         end
       end
     end

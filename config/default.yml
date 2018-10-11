@@ -1745,10 +1745,6 @@ Naming/ClassAndModuleCamelCase:
   Enabled: true
   VersionAdded: 0.50
 
-Naming/ClassVariableName:
-  Description: 'Use klass instead of clazz'
-  Enabled: true
-
 Naming/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
   StyleGuide: '#screaming-snake-case'
@@ -1818,6 +1814,12 @@ Naming/FileName:
     - XMPP
     - XSRF
     - XSS
+
+Naming/ForbidenVariableName:
+  Description: 'Use recommended variable names instead of forbiden ones'
+  Enabled: true
+  Recommendations:
+    clazz: klass
 
 Naming/HeredocDelimiterCase:
   Description: 'Use configured case for heredoc delimiters.'
