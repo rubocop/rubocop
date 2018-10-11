@@ -62,6 +62,7 @@
 * [#6386](https://github.com/rubocop-hq/rubocop/pull/6386): Add `VersionAdded` meta data to config/default.yml when running `rake new_cop`. ([@koic][])
 * [#6395](https://github.com/rubocop-hq/rubocop/pull/6395): Permit to specify TargetRubyVersion 2.6. ([@koic][])
 * [#6392](https://github.com/rubocop-hq/rubocop/pull/6392): Add `Whitelist` config to `Rails/SkipsModelValidations` rule. ([@DiscoStarslayer][])
+* [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Added ToJSON cop to enforce an argument when overriding #to_json. ([@allcentury][])
 
 ### Bug fixes
 
@@ -3693,3 +3694,4 @@
 [@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
 [@nadiyaka]: https://github.com/nadiyaka
+[@allcentury]: https://github.com/allcentury
