@@ -49,12 +49,13 @@ module RuboCop
         private
 
         def check_name(node, name)
-          add_offense(node, message: offense_message_for(name)) if invalid_name?(name)
+          add_offense(node, message: message_for(name)) if invalid_name?(name)
         end
 
-        def offense_message_for(name)
+        def message_for(name)
           recommendation = recommendation_for(name)
           return format(MSG_NO_RECOMENDATION, bad: name) unless recommendation
+
           format(MSG, good: recommendation_for(name), bad: name)
         end
 

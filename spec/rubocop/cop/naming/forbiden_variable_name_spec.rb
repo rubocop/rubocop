@@ -3,7 +3,15 @@
 RSpec.describe RuboCop::Cop::Naming::ForbidenVariableName, :config do
   subject(:cop) { described_class.new(config) }
 
-  let(:cop_config) { { 'Recommendations' => { 'clazz' => 'klass', 'test' => nil } } }
+  let(:cop_config) do
+    {
+      'Recommendations' =>
+      {
+        'clazz' => 'klass',
+        'test' => nil
+      }
+    }
+  end
 
   context 'without recommendation' do
     it 'registers an offense when using `test`' do
