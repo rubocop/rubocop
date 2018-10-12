@@ -74,6 +74,10 @@ RSpec.describe RuboCop::MagicComment do
                    frozen_string_literal: true
 
   include_examples 'magic comment',
+                   '# -*- frozen-string-literal: true -*-',
+                   frozen_string_literal: true
+
+  include_examples 'magic comment',
                    '# frozen_string_literal: invalid',
                    frozen_string_literal: 'invalid'
 

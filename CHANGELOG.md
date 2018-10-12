@@ -15,6 +15,7 @@
 * [#5538](https://github.com/rubocop-hq/rubocop/issues/5538): Fix false negatives in modifier cops when line length cop is disabled. ([@drenmi][])
 * [#6340](https://github.com/rubocop-hq/rubocop/pull/6340): Fix an error for `Rails/ReversibleMigration` when block argument is empty. ([@koic][])
 * [#6274](https://github.com/rubocop-hq/rubocop/issues/6274): Fix "[Corrected]" message being displayed even when nothing has been corrected. ([@jekuta][])
+* [#6380](https://github.com/rubocop-hq/rubocop/pull/6380): Allow use of a hyphen-separated frozen string literal in Emacs style magic comment. ([@y-yagi][])
 
 ### Changes
 
@@ -3620,3 +3621,4 @@
 [@lukasz-wojcik]: https://github.com/lukasz-wojcik
 [@albaer]: https://github.com/albaer
 [@Kevinrob]: https://github.com/Kevinrob
+[@y-yagi]: https://github.com/y-yagi

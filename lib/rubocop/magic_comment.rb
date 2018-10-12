@@ -140,7 +140,7 @@ module RuboCop
       private
 
       def extract_frozen_string_literal
-        match('frozen_string_literal')
+        match('frozen[_-]string[_-]literal')
       end
     end
 
