@@ -2871,10 +2871,10 @@ Style/CollectionMethods:
   VersionAdded: 0.9
   VersionChanged: 0.27
   Safe: false
-  # Mapping from undesired method to desired_method
+  # Mapping from undesired method to desired method
   # e.g. to use `detect` over `find`:
   #
-  # CollectionMethods:
+  # Style/CollectionMethods:
   #   PreferredMethods:
   #     find: detect
   PreferredMethods:
