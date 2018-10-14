@@ -14,8 +14,8 @@ module RuboCop
         else
           begin
             require(r)
-          rescue LoadError => exception
-            puts "Unable to load requirement '#{r}', are you missing a gem or a file?"
+          rescue LoadError
+            puts "Unable to load '#{r}', are you missing a gem or a file?"
             exit
           end
         end
