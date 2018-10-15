@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cops checks the indentation of the first key in a hash literal
+      # This cop checks the indentation of the first key in a hash literal
       # where the opening brace and the first key are on separate lines. The
       # other keys' indentations are handled by the AlignHash cop.
       #

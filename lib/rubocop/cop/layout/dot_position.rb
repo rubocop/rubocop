@@ -8,7 +8,7 @@ module RuboCop
       # @example EnforcedStyle: leading (default)
       #   # bad
       #   something.
-      #     mehod
+      #     method
       #
       #   # good
       #   something
@@ -21,7 +21,7 @@ module RuboCop
       #
       #   # good
       #   something.
-      #     mehod
+      #     method
       class DotPosition < Cop
         include ConfigurableEnforcedStyle
 

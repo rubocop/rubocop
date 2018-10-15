@@ -717,7 +717,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks the indentation of hanging closing parentheses in
+This cop checks the indentation of hanging closing parentheses in
 method calls, method definitions, and grouped expressions. A hanging
 closing parenthesis means `)` preceded by a line break.
 
@@ -789,7 +789,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks the indentation of comments.
+This cop checks the indentation of comments.
 
 ### Examples
 
@@ -919,7 +919,7 @@ This cop checks the . position in multi-line method calls.
 ```ruby
 # bad
 something.
-  mehod
+  method
 
 # good
 something
@@ -934,7 +934,7 @@ something
 
 # good
 something.
-  mehod
+  method
 ```
 
 ### Configurable attributes
@@ -953,7 +953,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks the alignment of else keywords. Normally they should
+This cop checks the alignment of else keywords. Normally they should
 be aligned with an if/unless/while/until/begin/def keyword, but there
 are special cases when they should follow the same rules as the
 alignment of end.
@@ -1187,7 +1187,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks for two or more consecutive blank lines.
+This cop checks for two or more consecutive blank lines.
 
 ### Examples
 
@@ -1246,7 +1246,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.52 | 
 
-This cops checks if empty lines exist around the arguments
+This cop checks if empty lines exist around the arguments
 of a method invocation.
 
 ### Examples
@@ -1290,7 +1290,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks if empty lines exist around the bodies of begin-end
+This cop checks if empty lines exist around the bodies of begin-end
 blocks.
 
 ### Examples
@@ -1321,7 +1321,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks if empty lines around the bodies of blocks match
+This cop checks if empty lines around the bodies of blocks match
 the configuration.
 
 ### Examples
@@ -1363,7 +1363,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 0.53
 
-This cops checks if empty lines around the bodies of classes match
+This cop checks if empty lines around the bodies of classes match
 the configuration.
 
 ### Examples
@@ -1456,7 +1456,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks if empty lines exist around the bodies of `begin`
+This cop checks if empty lines exist around the bodies of `begin`
 sections. This cop doesn't check empty lines at `begin` body
 beginning/end and around method definition body.
 `Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
@@ -1524,7 +1524,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks if empty lines exist around the bodies of methods.
+This cop checks if empty lines exist around the bodies of methods.
 
 ### Examples
 
@@ -1554,7 +1554,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks if empty lines around the bodies of modules match
+This cop checks if empty lines around the bodies of modules match
 the configuration.
 
 ### Examples
@@ -2193,7 +2193,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks the indentation of the first key in a hash literal
+This cop checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
 other keys' indentations are handled by the AlignHash cop.
 
@@ -2290,7 +2290,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks the indentation of the here document bodies. The bodies
+This cop checks the indentation of the here document bodies. The bodies
 are indented one step.
 In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
 use the older rubies, you should introduce some library to your project
@@ -2384,7 +2384,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks for inconsistent indentation.
+This cop checks for inconsistent indentation.
 
 The difference between `rails` and `normal` is that the `rails` style
 prescribes that in classes and modules the `protected` and `private`
@@ -2522,7 +2522,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks for indentation that doesn't use the specified number
+This cop checks for indentation that doesn't use the specified number
 of spaces.
 
 See also the IndentationConsistency cop which is the companion to this
@@ -2584,7 +2584,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 
 
-This cops checks for indentation of the first non-blank non-comment
+This cop checks for indentation of the first non-blank non-comment
 line in a file.
 
 ### Examples
