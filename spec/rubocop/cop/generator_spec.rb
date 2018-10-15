@@ -193,6 +193,8 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     it 'inserts the cop in alphabetical' do
+      stub_const('RuboCop::Version::STRING', '0.58.2')
+
       expect(File).to receive(:write).with(path, <<-YAML.strip_indent)
         Style/Alias:
           Enabled: true
@@ -200,6 +202,7 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/FakeCop:
           Description: 'TODO: Write a description of the cop.'
           Enabled: true
+          VersionAdded: 0.59
 
         Style/Lambda:
           Enabled: true

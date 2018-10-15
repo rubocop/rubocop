@@ -128,6 +128,7 @@ module RuboCop
           #{badge}:
             Description: 'TODO: Write a description of the cop.'
             Enabled: true
+            VersionAdded: #{bump_minor_version}
 
         YAML
         target_line = config.find.with_index(1) do |line, index|
@@ -208,6 +209,12 @@ module RuboCop
           .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
           .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
           .downcase
+      end
+
+      def bump_minor_version
+        versions = RuboCop::Version::STRING.split('.')
+
+        "#{versions[0]}.#{versions[1].succ}"
       end
     end
   end
