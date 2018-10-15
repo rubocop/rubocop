@@ -105,7 +105,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | No | 0.5 | 
 
-This cops checks for class and module names with
+This cop checks for class and module names with
 an underscore in them.
 
 ### Examples

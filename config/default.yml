@@ -698,7 +698,7 @@ Layout/IndentHash:
   IndentationWidth: ~
 
 Layout/IndentHeredoc:
-  Description: 'This cops checks the indentation of the here document bodies.'
+  Description: 'This cop checks the indentation of the here document bodies.'
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: 0.49

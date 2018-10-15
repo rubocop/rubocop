@@ -2128,7 +2128,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | No | 0.13 | 
 
-This cops looks for uses of global variables.
+This cop looks for uses of global variables.
 It does not report offenses for built-in global variables.
 Built-in global variables are allowed by default. Additionally
 users can allow additional variables via the AllowedVariables option.
@@ -2861,7 +2861,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.16 | 0.35
 
-This cops checks for parentheses around the arguments in method
+This cop checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
 
 ### Examples
@@ -3258,7 +3258,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.11 | 0.53
 
-This cops checks for use of `extend self` or `module_function` in a
+This cop checks for use of `extend self` or `module_function` in a
 module.
 
 Supported styles are: module_function, extend_self.
@@ -4443,7 +4443,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.9 | 0.18
 
-This cops checks for uses of Proc.new where Kernel#proc
+This cop checks for uses of Proc.new where Kernel#proc
 would be more appropriate.
 
 ### Examples

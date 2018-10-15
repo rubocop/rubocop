@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cops checks for inconsistent indentation.
+      # This cop checks for inconsistent indentation.
       #
       # The difference between `rails` and `normal` is that the `rails` style
       # prescribes that in classes and modules the `protected` and `private`
