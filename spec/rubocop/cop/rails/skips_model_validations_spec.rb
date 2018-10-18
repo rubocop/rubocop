@@ -87,14 +87,14 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
       }
     end
 
-    it 'registers an offense for method not on Whitelist' do
+    it 'registers an offense for method not in whitelist' do
       inspect_source('User.toggle!(:attr)')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq([format(msg, 'toggle!')])
     end
 
-    it 'accepts method on whitelist, superseding the blacklist' do
+    it 'accepts method in whitelist, superseding the blacklist' do
       expect_no_offenses('User.touch(:attr)')
     end
   end
