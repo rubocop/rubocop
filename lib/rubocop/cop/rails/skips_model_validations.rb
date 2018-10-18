@@ -42,6 +42,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return if whitelist.include?(node.method_name.to_s)
           return unless blacklist.include?(node.method_name.to_s)
 
           _receiver, method_name, *args = *node
@@ -63,6 +64,10 @@ module RuboCop
 
         def blacklist
           cop_config['Blacklist'] || []
+        end
+
+        def whitelist
+          cop_config['Whitelist'] || []
         end
       end
     end
