@@ -3,6 +3,9 @@
 module RuboCop
   module Cop
     module Lint
+      # Explicit return from an ensure block alters the control flow
+      # as the return will take precedence over any exception being raised,
+      # and the exception will be silently thrown away.
       # This cop checks for *return* from an *ensure* block.
       #
       # @example
