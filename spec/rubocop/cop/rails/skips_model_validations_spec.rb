@@ -88,10 +88,10 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
     end
 
     it 'registers an offense for method not in whitelist' do
-      inspect_source('User.toggle!(:attr)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq([format(msg, 'toggle!')])
+      expect_offense(<<-RUBY.strip_indent)
+        user.toggle!(:active)
+             ^^^^^^^ Avoid using `toggle!` because it skips validations.
+      RUBY
     end
 
     it 'accepts method in whitelist, superseding the blacklist' do
