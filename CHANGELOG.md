@@ -7,6 +7,7 @@
 * [#5980](https://github.com/rubocop-hq/rubocop/issues/5980): Add --safe and --safe-auto-correct options. ([@Darhazer][])
 * [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@Ana06][], [@jonas054][])
 * [#6386](https://github.com/rubocop-hq/rubocop/pull/6386): Add `VersionAdded` meta data to config/default.yml when running `rake new_cop`. ([@koic][])
+* [#6395](https://github.com/rubocop-hq/rubocop/pull/6395): Permit to specify TargetRubyVersion 2.6. ([@koic][])
 
 ### Bug fixes
 
