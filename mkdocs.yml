@@ -3,7 +3,7 @@ repo_url: https://github.com/rubocop-hq/rubocop
 edit_uri: edit/master/manual/
 copyright: "Copyright &copy; 2012-2018 Bozhidar Batsov and RuboCop contributors"
 docs_dir: manual
-nav:
+pages:
 - Home: index.md
 - Installation: installation.md
 - Basic Usage: basic_usage.md
