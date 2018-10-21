@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'appveyor-worker', '~> 0.2'
 gem 'bump', require: false
 gem 'pry'
 gem 'pry-byebug' if RUBY_ENGINE == 'ruby'
