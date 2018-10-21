@@ -7,6 +7,8 @@ module RuboCop
       # validations which are listed in
       # http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
       #
+      # Methods may be ignored from this rule by configuring a `Whitelist`.
+      #
       # @example
       #   # bad
       #   Article.first.decrement!(:view_count)
@@ -23,6 +25,16 @@ module RuboCop
       #   # good
       #   user.update(website: 'example.com')
       #   FileUtils.touch('file')
+      #
+      # @example Whitelist: ["touch"]
+      #   # bad
+      #   DiscussionBoard.decrement_counter(:post_count, 5)
+      #   DiscussionBoard.increment_counter(:post_count, 5)
+      #   person.toggle :active
+      #
+      #   # good
+      #   user.touch
+      #
       class SkipsModelValidations < Cop
         MSG = 'Avoid using `%<method>s` because it skips validations.'.freeze
 

@@ -1870,11 +1870,13 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 
+Enabled | Yes | No | 0.47 | 0.59
 
 This cop checks for the use of methods which skip
 validations which are listed in
 http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
+
+Methods may be ignored from this rule by configuring a `Whitelist`.
 
 ### Examples
 
@@ -1895,12 +1897,24 @@ Post.update_counters 5, comment_count: -1, action_count: 1
 user.update(website: 'example.com')
 FileUtils.touch('file')
 ```
+#### Whitelist: ["touch"]
+
+```ruby
+# bad
+DiscussionBoard.decrement_counter(:post_count, 5)
+DiscussionBoard.increment_counter(:post_count, 5)
+person.toggle :active
+
+# good
+user.touch
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 Blacklist | `decrement!`, `decrement_counter`, `increment!`, `increment_counter`, `toggle!`, `touch`, `update_all`, `update_attribute`, `update_column`, `update_columns`, `update_counters` | Array
+Whitelist | `[]` | Array
 
 ### References
 

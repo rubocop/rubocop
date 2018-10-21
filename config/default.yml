@@ -2518,6 +2518,7 @@ Rails/SkipsModelValidations:
   Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: true
   VersionAdded: 0.47
+  VersionChanged: 0.59
   Blacklist:
     - decrement!
     - decrement_counter
@@ -2530,6 +2531,7 @@ Rails/SkipsModelValidations:
     - update_column
     - update_columns
     - update_counters
+  Whitelist: []
 
 Rails/TimeZone:
   Description: 'Checks the correct usage of time zone aware methods.'
