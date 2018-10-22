@@ -434,4 +434,249 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       RUBY
     end
   end
+
+  context 'allows inline access modifier' do
+    let(:cop_config) do
+      {
+        'Style/AccessModifierDeclarations' =>
+          { 'EnforcedStyle' => 'inline' }
+      }
+    end
+
+    context 'rescue with def' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+            rescue
+            ^^^^^^ `rescue` at 3, 2 is not aligned with `private def test` at 1, 0.
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+          rescue
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'corrects the alignment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+            rescue
+            'baz'
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+          rescue
+            'baz'
+          end
+        RUBY
+      end
+    end
+
+    context 'rescue with defs' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+            rescue
+            ^^^^^^ `rescue` at 3, 2 is not aligned with `private def Test.test` at 1, 0.
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+          rescue
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'corrects the alignment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+            rescue
+            'baz'
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+          rescue
+            'baz'
+          end
+        RUBY
+      end
+    end
+
+    context 'ensure with def' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+            ensure
+            ^^^^^^ `ensure` at 3, 2 is not aligned with `private def test` at 1, 0.
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+          ensure
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'corrects the alignment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+            ensure
+            'baz'
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          private def test
+            'foo'
+          ensure
+            'baz'
+          end
+        RUBY
+      end
+    end
+
+    context 'ensure with defs' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+            ensure
+            ^^^^^^ `ensure` at 3, 2 is not aligned with `private def Test.test` at 1, 0.
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+          ensure
+            'baz'
+          end
+        RUBY
+      end
+
+      it 'corrects the alignment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+            ensure
+            'baz'
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          private def Test.test
+            'foo'
+          ensure
+            'baz'
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'allows inline expression before' do
+    context 'rescue' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          def test
+            'foo'; rescue; 'baz'
+                   ^^^^^^ `rescue` at 2, 9 is not aligned with `def test` at 1, 0.
+          end
+
+          def test
+            begin
+              'foo'; rescue; 'baz'
+                     ^^^^^^ `rescue` at 7, 11 is not aligned with `begin` at 6, 2.
+            end
+          end
+        RUBY
+      end
+
+      it 'does not correct alignment' do
+        source = <<-RUBY.strip_indent
+          def test
+          'foo'; rescue; 'baz'
+          end
+
+          def test
+            begin
+            'foo'; rescue; 'baz'
+            end
+          end
+        RUBY
+
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+    end
+
+    context 'ensure' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          def test
+            'foo'; ensure; 'baz'
+                   ^^^^^^ `ensure` at 2, 9 is not aligned with `def test` at 1, 0.
+          end
+
+          def test
+            begin
+              'foo'; ensure; 'baz'
+                     ^^^^^^ `ensure` at 7, 11 is not aligned with `begin` at 6, 2.
+            end
+          end
+        RUBY
+      end
+
+      it 'does not correct alignment' do
+        source = <<-RUBY.strip_indent
+          def test
+          'foo'; ensure; 'baz'
+          end
+
+          def test
+            begin
+            'foo'; ensure; 'baz'
+            end
+          end
+        RUBY
+
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(source)
+      end
+    end
+  end
 end
