@@ -6,6 +6,9 @@
 
 * [#5980](https://github.com/rubocop-hq/rubocop/issues/5980): Add --safe and --safe-auto-correct options. ([@Darhazer][])
 * [#4156](https://github.com/rubocop-hq/rubocop/issues/4156): Add command line option `--auto-gen-only-exclude`. ([@Ana06][], [@jonas054][])
+* [#6386](https://github.com/rubocop-hq/rubocop/pull/6386): Add `VersionAdded` meta data to config/default.yml when running `rake new_cop`. ([@koic][])
+* [#6395](https://github.com/rubocop-hq/rubocop/pull/6395): Permit to specify TargetRubyVersion 2.6. ([@koic][])
+* [#6392](https://github.com/rubocop-hq/rubocop/pull/6392): Add `Whitelist` config to `Rails/SkipsModelValidations` rule. ([@DiscoStarslayer][])
 
 ### Bug fixes
 
@@ -15,6 +18,8 @@
 * [#5538](https://github.com/rubocop-hq/rubocop/issues/5538): Fix false negatives in modifier cops when line length cop is disabled. ([@drenmi][])
 * [#6340](https://github.com/rubocop-hq/rubocop/pull/6340): Fix an error for `Rails/ReversibleMigration` when block argument is empty. ([@koic][])
 * [#6274](https://github.com/rubocop-hq/rubocop/issues/6274): Fix "[Corrected]" message being displayed even when nothing has been corrected. ([@jekuta][])
+* [#6380](https://github.com/rubocop-hq/rubocop/pull/6380): Allow use of a hyphen-separated frozen string literal in Emacs style magic comment. ([@y-yagi][])
+* Fix and improve `LineLength` cop for tab-indented code. ([@AlexWayfer][])
 
 ### Changes
 
@@ -3622,3 +3627,5 @@
 [@albaer]: https://github.com/albaer
 [@Kevinrob]: https://github.com/Kevinrob
 [@andrew-aladev]: https://github.com/andrew-aladev
+[@y-yagi]: https://github.com/y-yagi
+[@DiscoStarslayer]: https://github.com/DiscoStarslayer

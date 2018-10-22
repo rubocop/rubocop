@@ -78,4 +78,24 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
       RUBY
     end
   end
+
+  context 'with whitelist' do
+    let(:cop_config) do
+      {
+        'Blacklist' => %w[toggle! touch],
+        'Whitelist' => %w[touch]
+      }
+    end
+
+    it 'registers an offense for method not in whitelist' do
+      expect_offense(<<-RUBY.strip_indent)
+        user.toggle!(:active)
+             ^^^^^^^ Avoid using `toggle!` because it skips validations.
+      RUBY
+    end
+
+    it 'accepts method in whitelist, superseding the blacklist' do
+      expect_no_offenses('User.touch(:attr)')
+    end
+  end
 end

@@ -335,23 +335,23 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
   context 'affecting by IndentationWidth from Layout\Tab' do
     shared_examples 'with tabs indentation' do
-      it "registers an offense for a line that's including 1 tab with size 2" \
-         ' and 9 other characters' do
-        inspect_source("\t" + '#' * 9)
+      it "registers an offense for a line that's including 2 tab with size 2" \
+         ' and 28 other characters' do
+        inspect_source("\t\t" + '#' * 28)
         expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to eq('Line is too long. [11/10]')
+        expect(cop.offenses.first.message).to eq('Line is too long. [32/30]')
         expect(cop.config_to_allow_offenses)
-          .to eq(exclude_limit: { 'Max' => 11 })
+          .to eq(exclude_limit: { 'Max' => 32 })
       end
 
       it 'highlights excessive characters' do
-        inspect_source("\t" + '#' * 8 + 'a')
+        inspect_source("\t" + '#' * 28 + 'a')
         expect(cop.highlights).to eq(['a'])
       end
 
       it "accepts a line that's including 1 tab with size 2" \
-         ' and 8 other characters' do
-        expect_no_offenses("\t" + '#' * 8)
+         ' and 28 other characters' do
+        expect_no_offenses("\t" + '#' * 28)
       end
     end
 
@@ -366,7 +366,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
             'IndentationWidth' => 2
           },
           'Metrics/LineLength' => {
-            'Max' => 10
+            'Max' => 30
           }
         )
       end
@@ -385,7 +385,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
             'IndentationWidth' => 2
           },
           'Metrics/LineLength' => {
-            'Max' => 10,
+            'Max' => 30,
             'AllowURI' => true
           }
         )
@@ -395,6 +395,10 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       it "accepts a line that's including URI" do
         expect_no_offenses("\t\t# https://github.com/rubocop-hq/rubocop")
+      end
+
+      it "accepts a line that's including URI and exceeds by 1 char" do
+        expect_no_offenses("\t\t# https://github.com/ruboco")
       end
 
       it "accepts a line that's including URI with text" do

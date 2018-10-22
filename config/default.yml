@@ -698,7 +698,7 @@ Layout/IndentHash:
   IndentationWidth: ~
 
 Layout/IndentHeredoc:
-  Description: 'This cops checks the indentation of the here document bodies.'
+  Description: 'This cop checks the indentation of the here document bodies.'
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: 0.49
@@ -2518,6 +2518,7 @@ Rails/SkipsModelValidations:
   Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: true
   VersionAdded: 0.47
+  VersionChanged: 0.59
   Blacklist:
     - decrement!
     - decrement_counter
@@ -2530,6 +2531,7 @@ Rails/SkipsModelValidations:
     - update_column
     - update_columns
     - update_counters
+  Whitelist: []
 
 Rails/TimeZone:
   Description: 'Checks the correct usage of time zone aware methods.'
@@ -2871,10 +2873,10 @@ Style/CollectionMethods:
   VersionAdded: 0.9
   VersionChanged: 0.27
   Safe: false
-  # Mapping from undesired method to desired_method
+  # Mapping from undesired method to desired method
   # e.g. to use `detect` over `find`:
   #
-  # CollectionMethods:
+  # Style/CollectionMethods:
   #   PreferredMethods:
   #     find: detect
   PreferredMethods:

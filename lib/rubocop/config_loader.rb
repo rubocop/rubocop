@@ -181,6 +181,14 @@ module RuboCop
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
           SafeYAML.load(yaml_code, filename,
                         whitelisted_tags: %w[!ruby/regexp])
+        elsif RUBY_VERSION >= '2.6'
+          YAML.safe_load(
+            yaml_code,
+            whitelist_classes: [Regexp, Symbol],
+            whitelist_symbols: [],
+            aliases: false,
+            filename: filename
+          )
         else
           YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
         end

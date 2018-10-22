@@ -29,17 +29,18 @@ module RuboCop
           config.for_cop('Layout/Tab')['IndentationWidth']
         end
 
+        def indentation_difference(line)
+          return 0 unless tab_indentation_width
+
+          line.match(/^\t*/)[0].size * (tab_indentation_width - 1)
+        end
+
         def line_length(line)
-          if tab_indentation_width
-            line = line.gsub("\t", ' ' * tab_indentation_width)
-          end
-          line.length
+          line.length + indentation_difference(line)
         end
 
         def highligh_start(line)
-          return max unless tab_indentation_width
-
-          max - (tab_indentation_width - 1) * line.count("\t")
+          max - indentation_difference(line)
         end
 
         def check_line(line, index, heredocs)
@@ -123,15 +124,18 @@ module RuboCop
 
         def allowed_uri_position?(line, uri_range)
           uri_range.begin < max &&
-            (uri_range.end == line.length ||
-             uri_range.end == line.length - 1)
+            (uri_range.end == line_length(line) ||
+             uri_range.end == line_length(line) - 1)
         end
 
         def find_excessive_uri_range(line)
           last_uri_match = match_uris(line).last
           return nil unless last_uri_match
 
-          begin_position, end_position = last_uri_match.offset(0)
+          begin_position, end_position =
+            last_uri_match.offset(0).map do |pos|
+              pos + indentation_difference(line)
+            end
           return nil if begin_position < max && end_position < max
 
           begin_position...end_position
