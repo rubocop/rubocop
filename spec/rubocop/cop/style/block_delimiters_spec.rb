@@ -169,18 +169,36 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'registers an offense for a single line procedural block' do
-      expect_offense(<<-RUBY.strip_indent)
-        each { |x| puts x }
-             ^ Prefer `do...end` over `{...}` for procedural blocks.
-      RUBY
+    context 'with a procedural one-line block' do
+      context 'with AllowBracesOnProceduralOneLiners false or unset' do
+        it 'registers an offense for a single line procedural block' do
+          expect_offense(<<-RUBY.strip_indent)
+            each { |x| puts x }
+                 ^ Prefer `do...end` over `{...}` for procedural blocks.
+          RUBY
+        end
+
+        it 'accepts a single line block with do-end if it is procedural' do
+          expect_no_offenses('each do |x| puts x; end')
+        end
+      end
+
+      context 'with AllowBracesOnProceduralOneLiners true' do
+        let(:cop_config) do
+          cop_config.merge('AllowBracesOnProceduralOneLiners' => true)
+        end
+
+        it 'accepts a single line procedural block with braces' do
+          expect_no_offenses('each { |x| puts x }')
+        end
+
+        it 'accepts a single line procedural do-end block' do
+          expect_no_offenses('each do |x| puts x; end')
+        end
+      end
     end
 
-    it 'accepts a single line block with do-end if it is procedural' do
-      expect_no_offenses('each do |x| puts x; end')
-    end
-
-    context 'with a procedural block' do
+    context 'with a procedural multi-line block' do
       let(:corrected_source) do
         <<-RUBY.strip_indent
         each do |x|

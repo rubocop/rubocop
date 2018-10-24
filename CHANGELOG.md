@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6393](https://github.com/rubocop-hq/rubocop/issues/6393): Add AllowBracesOnProceduralOneLiners option to fine-tune Style/BlockDelimiter's semantic mode. ([@davearonson][])
+
 ### Bug fixes
 
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
@@ -3636,3 +3640,4 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@davearonson]: https://github.com/davearonson

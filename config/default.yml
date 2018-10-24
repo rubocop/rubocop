@@ -2719,8 +2719,9 @@ Style/BlockDelimiters:
     - line_count_based
     # The `semantic` style enforces braces around functional blocks, where the
     # primary purpose of the block is to return a value and do..end for
-    # procedural blocks, where the primary purpose of the block is its
-    # side-effects.
+    # multi-line procedural blocks, where the primary purpose of the block is
+    # its side-effects. Single-line procedural blocks may only use do-end,
+    # unless AllowBracesOnProceduralOneLiners has a truthy value (see below).
     #
     # This looks at the usage of a block's method to determine its type (e.g. is
     # the result of a `map` assigned to a variable or passed to another
@@ -2781,6 +2782,28 @@ Style/BlockDelimiters:
     - lambda
     - proc
     - it
+  # The AllowBracesOnProceduralOneLiners option is ignored unless the
+  # EnforcedStyle is set to `semantic`. If so:
+  #
+  # If AllowBracesOnProceduralOneLiners is unspecified, or set to any
+  # falsey value, then semantic purity is maintained, so one-line
+  # procedural blocks must use do-end, not braces.
+  #
+  #   # bad
+  #   collection.each { |element| puts element }
+  #
+  #   # good
+  #   collection.each do |element| puts element end
+  #
+  # If AllowBracesOnProceduralOneLiners is set to any truthy value,
+  # then one-line procedural blocks may use either style.
+  #
+  #   # good
+  #   collection.each { |element| puts element }
+  #
+  #   # also good
+  #   collection.each do |element| puts element end
+  AllowBracesOnProceduralOneLiners: false
 
 Style/BracesAroundHashParameters:
   Description: 'Enforce braces style around hash parameters.'

@@ -60,6 +60,30 @@ module RuboCop
       #     x
       #   }.inspect
       #
+      #   # The AllowBracesOnProceduralOneLiners option is ignored unless the
+      #   # EnforcedStyle is set to `semantic`. If so:
+      #
+      #   # If the AllowBracesOnProceduralOneLiners option is unspecified, or
+      #   # set to `false` or any other falsey value, then semantic purity is
+      #   # maintained, so one-line procedural blocks must use do-end, not
+      #   # braces.
+      #
+      #   # bad
+      #   collection.each { |element| puts element }
+      #
+      #   # good
+      #   collection.each do |element| puts element end
+      #
+      #   # If the AllowBracesOnProceduralOneLiners option is set to `true`, or
+      #   # any other truthy value, then one-line procedural blocks may use
+      #   # either style. (There is no setting for requiring braces on them.)
+      #
+      #   # good
+      #   collection.each { |element| puts element }
+      #
+      #   # also good
+      #   collection.each do |element| puts element end
+      #
       # @example EnforcedStyle: braces_for_chaining
       #   # bad
       #   words.each do |word|
@@ -216,7 +240,8 @@ module RuboCop
           method_name = node.method_name
 
           if node.braces?
-            functional_method?(method_name) || functional_block?(node)
+            functional_method?(method_name) || functional_block?(node) ||
+              (procedural_oneliners_may_have_braces? && !node.multiline?)
           else
             procedural_method?(method_name) || !return_value_used?(node)
           end
@@ -248,6 +273,10 @@ module RuboCop
 
         def functional_block?(node)
           return_value_used?(node) || return_value_of_scope?(node)
+        end
+
+        def procedural_oneliners_may_have_braces?
+          cop_config['AllowBracesOnProceduralOneLiners']
         end
 
         def procedural_method?(method_name)

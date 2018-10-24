@@ -415,6 +415,30 @@ foo = map { |x|
 map { |x|
   x
 }.inspect
+
+# The AllowBracesOnProceduralOneLiners option is ignored unless the
+# EnforcedStyle is set to `semantic`. If so:
+
+# If the AllowBracesOnProceduralOneLiners option is unspecified, or
+# set to `false` or any other falsey value, then semantic purity is
+# maintained, so one-line procedural blocks must use do-end, not
+# braces.
+
+# bad
+collection.each { |element| puts element }
+
+# good
+collection.each do |element| puts element end
+
+# If the AllowBracesOnProceduralOneLiners option is set to `true`, or
+# any other truthy value, then one-line procedural blocks may use
+# either style. (There is no setting for requiring braces on them.)
+
+# good
+collection.each { |element| puts element }
+
+# also good
+collection.each do |element| puts element end
 ```
 #### EnforcedStyle: braces_for_chaining
 
@@ -438,6 +462,7 @@ EnforcedStyle | `line_count_based` | `line_count_based`, `semantic`, `braces_for
 ProceduralMethods | `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `measure`, `new`, `realtime`, `tap`, `with_object` | Array
 FunctionalMethods | `let`, `let!`, `subject`, `watch` | Array
 IgnoredMethods | `lambda`, `proc`, `it` | Array
+AllowBracesOnProceduralOneLiners | `false` | Boolean
 
 ### References
 
