@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add AllowBeforeTrailingComments option on Layout/ExtraSpacing cop. ([@davearonson][])
+
 ### Bug fixes
 
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
@@ -3636,3 +3640,4 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@davearonson]: https://github.com/davearonson

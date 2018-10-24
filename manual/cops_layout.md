@@ -1785,6 +1785,17 @@ puts        "rubocop"          if     debug
 # bad for any configuration
 set_app("RuboCop")
 website  = "https://github.com/rubocop-hq/rubocop"
+
+# good only if AllowBeforeTrailingComments is true
+object.method(arg)  # this is a comment
+
+# good even if AllowBeforeTrailingComments is false or not set
+object.method(arg) # this is a comment
+
+# good with either AllowBeforeTrailingComments or AllowForAlignment
+object.method(arg)         # this is a comment
+another_object.method(arg) # this is another comment
+some_object.method(arg)    # this is some comment
 ```
 
 ### Configurable attributes
@@ -1792,6 +1803,7 @@ website  = "https://github.com/rubocop-hq/rubocop"
 Name | Default value | Configurable values
 --- | --- | ---
 AllowForAlignment | `true` | Boolean
+AllowBeforeTrailingComments | `false` | Boolean
 ForceEqualSignAlignment | `false` | Boolean
 
 ## Layout/FirstArrayElementLineBreak
