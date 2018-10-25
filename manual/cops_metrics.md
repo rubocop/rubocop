@@ -4,11 +4,12 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.27 | -
+Enabled | Yes | No | 0.27 | 0.66
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
 (method calls), and conditions. See http://c2.com/cgi/wiki?AbcMetric
+and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 
 ### Configurable attributes
 
@@ -19,6 +20,7 @@ Max | `15` | Integer
 ### References
 
 * [http://c2.com/cgi/wiki?AbcMetric](http://c2.com/cgi/wiki?AbcMetric)
+* [https://en.wikipedia.org/wiki/ABC_Software_Metric'](https://en.wikipedia.org/wiki/ABC_Software_Metric')
 
 ## Metrics/BlockLength
 
