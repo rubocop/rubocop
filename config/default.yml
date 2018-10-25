@@ -1632,9 +1632,12 @@ Metrics/AbcSize:
   Description: >-
                  A calculated magnitude based on number of assignments,
                  branches, and conditions.
-  Reference: 'http://c2.com/cgi/wiki?AbcMetric'
+  Reference:
+    - http://c2.com/cgi/wiki?AbcMetric
+    - https://en.wikipedia.org/wiki/ABC_Software_Metric'
   Enabled: true
   VersionAdded: '0.27'
+  VersionChanged: '0.66'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   Max: 15
