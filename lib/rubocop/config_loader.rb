@@ -136,8 +136,9 @@ module RuboCop
           files.unshift(AUTO_GENERATED_FILE)
           file_string = "\n  - " + files.join("\n  - ") if files.size > 1
           rubocop_yml_contents = IO.read(config_file, encoding: Encoding::UTF_8)
-                                   .sub(/^inherit_from: *[.\w]+/, '')
-                                   .sub(/^inherit_from: *(\n *- *[.\w]+)+/, '')
+                                   .sub(%r{^inherit_from: *[.\/\w]+}, '')
+                                   .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+},
+                                        '')
         end
         write_config_file(config_file, file_string, rubocop_yml_contents)
         puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
@@ -148,7 +149,7 @@ module RuboCop
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
           f.write "inherit_from:#{file_string}\n"
-          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents
+          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents =~ /\S/
         end
       end
 
