@@ -118,6 +118,7 @@ module RuboCop
 
     def reset_config_and_auto_gen_file
       @config_store = ConfigStore.new
+      @config_store.options_config = @options[:config] if @options[:config]
       File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w') {}
       ConfigLoader.add_inheritance_from_auto_generated_file
     end
@@ -135,6 +136,7 @@ module RuboCop
       ConfigLoader.debug = @options[:debug]
       ConfigLoader.auto_gen_config = @options[:auto_gen_config]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
+      ConfigLoader.options_config = @options[:config]
 
       @config_store.options_config = @options[:config] if @options[:config]
       @config_store.force_default_config! if @options[:force_default_config]

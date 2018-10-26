@@ -302,6 +302,40 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    context 'when --config is used' do
+      it 'can generate a todo list' do
+        create_file('example1.rb', ['$x = 0 ',
+                                    '#' * 90,
+                                    'y ',
+                                    'puts x'])
+        create_file('dir/cop_config.yml', <<-YAML.strip_indent)
+          Layout/TrailingWhitespace:
+            Enabled: false
+          Metrics/LineLength:
+            Max: 95
+        YAML
+        expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml]))
+          .to eq(0)
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = IO.read('.rubocop_todo.yml').lines[8..-1].join
+        expect(todo_contents).to eq(<<-YAML.strip_indent)
+          # Offense count: 1
+          # Configuration parameters: AllowedVariables.
+          Style/GlobalVars:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(IO.read('dir/cop_config.yml')).to eq(<<-YAML.strip_indent)
+          inherit_from: .rubocop_todo.yml
+
+          Layout/TrailingWhitespace:
+            Enabled: false
+          Metrics/LineLength:
+            Max: 95
+        YAML
+      end
+    end
+
     it 'can generate a todo list' do
       create_file('example1.rb', ['$x= 0 ',
                                   '#' * 90,
