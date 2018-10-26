@@ -336,6 +336,41 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when working in a subdirectory' do
+      it 'can generate a todo list' do
+        create_file('dir/example1.rb', ['$x = 0 ',
+                                        '#' * 90,
+                                        'y ',
+                                        'puts x'])
+        create_file('dir/.rubocop.yml', <<-YAML.strip_indent)
+          inherit_from: ../.rubocop.yml
+        YAML
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          Layout/TrailingWhitespace:
+            Enabled: false
+          Metrics/LineLength:
+            Max: 95
+        YAML
+        Dir.chdir('dir') { expect(cli.run(%w[--auto-gen-config])).to eq(0) }
+        expect($stderr.string).to eq('')
+        # expect($stdout.string).to include('Created .rubocop_todo.yml.')
+        expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
+        todo_contents = IO.read('dir/.rubocop_todo.yml').lines[8..-1].join
+        expect(todo_contents).to eq(<<-YAML.strip_indent)
+          # Offense count: 1
+          # Configuration parameters: AllowedVariables.
+          Style/GlobalVars:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(IO.read('dir/.rubocop.yml')).to eq(<<-YAML.strip_indent)
+          inherit_from:
+            - .rubocop_todo.yml
+            - ../.rubocop.yml
+        YAML
+      end
+    end
+
     it 'can generate a todo list' do
       create_file('example1.rb', ['$x= 0 ',
                                   '#' * 90,
