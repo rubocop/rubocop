@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.60.0 (2018-10-26)
+
 ### New features
 
 * [#5980](https://github.com/rubocop-hq/rubocop/issues/5980): Add `--safe` and `--safe-auto-correct` options. ([@Darhazer][])
