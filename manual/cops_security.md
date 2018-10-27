@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 
+Enabled | Yes | No | 0.47 | -
 
 This cop checks for the use of `Kernel#eval` and `Binding#eval`.
 
@@ -59,7 +59,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 
+Enabled | Yes | No | 0.47 | -
 
 This cop checks for the use of Marshal class methods which have
 potential security issues leading to remote code execution when
@@ -87,7 +87,7 @@ Marshal.load(Marshal.dump({}))
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | No | 0.53 | 
+Enabled | No | No | 0.53 | -
 
 This cop checks for the use of `Kernel#open`.
 
@@ -113,7 +113,7 @@ URI.parse(something).open
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.47 | 
+Enabled | Yes | Yes (Unsafe) | 0.47 | -
 
 This cop checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when

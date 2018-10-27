@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.46 | 
+Enabled | Yes | No | 0.46 | -
 
 A Gem's requirements should be listed only once in a Gemfile.
 
@@ -43,7 +43,7 @@ Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.59 | 
+Disabled | Yes | No | 0.59 | -
 
 Add a comment describing each gem in your Gemfile.
 
@@ -71,7 +71,7 @@ Whitelist | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.50 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 The symbol argument `:gemcutter`, `:rubygems`, and `:rubyforge`
 are deprecated. So please change your source to URL string that

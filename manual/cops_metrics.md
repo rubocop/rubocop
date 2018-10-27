@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.27 | 
+Enabled | Yes | No | 0.27 | -
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
@@ -69,7 +69,7 @@ Max | `3` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | 
+Enabled | Yes | No | 0.25 | -
 
 This cop checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -86,7 +86,7 @@ Max | `100` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | 
+Enabled | Yes | No | 0.25 | -
 
 This cop checks that the cyclomatic complexity of methods is not higher
 than the configured maximum. The cyclomatic complexity is the number of
@@ -157,7 +157,7 @@ ExcludedMethods | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.31 | 
+Enabled | Yes | No | 0.31 | -
 
 This cop checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -174,7 +174,7 @@ Max | `100` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | 
+Enabled | Yes | No | 0.25 | -
 
 This cop checks for methods with too many parameters.
 The maximum number of parameters is configurable.
@@ -195,7 +195,7 @@ CountKeywordArgs | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | 
+Enabled | Yes | No | 0.25 | -
 
 This cop tries to produce a complexity score that's a measure of the
 complexity the reader experiences when looking at a method. For that
