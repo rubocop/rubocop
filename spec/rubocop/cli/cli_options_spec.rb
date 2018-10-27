@@ -739,8 +739,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
-           /^  VersionAdded: [0-9\.]+$/,
-           /^  VersionChanged: [0-9\.]+$/,
+           /^  VersionAdded: '[0-9\.]+'$/,
+           /^  VersionChanged: '[0-9\.]+'$/,
            '  IndentationWidth:'].join("\n")
         )
       end

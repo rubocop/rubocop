@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/FakeCop:
           Description: 'TODO: Write a description of the cop.'
           Enabled: true
-          VersionAdded: 0.59
+          VersionAdded: '0.59'
 
         Style/Lambda:
           Enabled: true

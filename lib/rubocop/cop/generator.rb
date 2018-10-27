@@ -128,7 +128,7 @@ module RuboCop
           #{badge}:
             Description: 'TODO: Write a description of the cop.'
             Enabled: true
-            VersionAdded: #{bump_minor_version}
+            VersionAdded: '#{bump_minor_version}'
 
         YAML
         target_line = config.find.with_index(1) do |line, index|

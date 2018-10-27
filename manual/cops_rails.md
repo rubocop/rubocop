@@ -359,7 +359,7 @@ Include | `db/migrate/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.3 | 0.33
+Enabled | Yes | No | 0.30 | 0.33
 
 This cop checks for the correct use of Date methods,
 such as Date.today, Date.current etc.
@@ -419,7 +419,7 @@ EnforcedStyle | `flexible` | `strict`, `flexible`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.21 | 0.5
+Enabled | Yes | Yes  | 0.21 | 0.50
 
 This cop looks for delegations that could have been created
 automatically with the `delegate` method.
@@ -680,7 +680,7 @@ EnforcedStyle | `arguments` | `slashes`, `arguments`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop is used to identify usages of `where.first` and
 change them to use `find_by` instead.
@@ -710,7 +710,7 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop is used to identify usages of `all.each` and
 change them to use `all.find_each` instead.
@@ -767,7 +767,7 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop looks for `has_many` or `has_one` associations that don't
 specify a `:dependent` option.
@@ -1343,7 +1343,7 @@ UnlessBlank | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 0.29
+Enabled | Yes | Yes  | 0.20 | 0.29
 
 This cop checks for the use of the `read_attribute` or `write_attribute`
 methods and recommends square brackets instead.
@@ -1924,7 +1924,7 @@ Whitelist | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.3 | 0.33
+Enabled | Yes | No | 0.30 | 0.33
 
 This cop checks for the use of Time methods without zone.
 
@@ -1989,7 +1989,7 @@ EnforcedStyle | `flexible` | `strict`, `flexible`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.4 | 0.47
+Enabled | Yes | Yes  | 0.40 | 0.47
 
 Prefer the use of uniq (or distinct), before pluck instead of after.
 

@@ -234,7 +234,7 @@ SafeMode | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 0.39
+Enabled | Yes | Yes  | 0.30 | 0.39
 
 This cop is used to identify usages of
 `select.first`, `select.last`, `find_all.first`, and `find_all.last`
@@ -385,7 +385,7 @@ waldo.size
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop is used to identify usages of
 
@@ -702,7 +702,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop is used to identify usages of `reverse.each` and
 change them to use `reverse_each` instead.
@@ -725,7 +725,7 @@ change them to use `reverse_each` instead.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop is used to identify usages of `shuffle.first`,
 `shuffle.last`, and `shuffle[]` and change them to use
@@ -763,7 +763,7 @@ This cop is used to identify usages of `shuffle.first`,
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop is used to identify usages of `count` on an
 `Array` and `Hash` and change them to `size`.
@@ -858,7 +858,7 @@ This cop identifies places where `gsub` can be replaced by
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.36 | 0.5
+Enabled | Yes | Yes (Unsafe) | 0.36 | 0.50
 
 This cop checks for .times.map calls.
 In most cases such calls can be replaced
@@ -888,7 +888,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 In Ruby 2.3 or later, use unary plus operator to unfreeze a string
 literal instead of `String#dup` and `String.new`.
@@ -973,7 +973,7 @@ arr.max_by(&:foo)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop identifies places where `URI::Parser.new`
 can be replaced by `URI::DEFAULT_PARSER`.
