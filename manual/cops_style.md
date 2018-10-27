@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.57 | 
+Enabled | Yes | No | 0.57 | -
 
 Access modifiers should be declared to apply to a group of methods
 or inline before each method, depending on configuration.
@@ -248,7 +248,7 @@ attr_reader :one, :two, :three
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.30 | 
+Disabled | Yes | No | 0.30 | -
 
 This cop checks for cases when you could use a block
 accepting version of a method that does automatic
@@ -270,7 +270,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.25 | 
+Enabled | Yes | Yes  | 0.25 | -
 
 This cop checks if usage of %() or %Q() matches configuration.
 
@@ -313,7 +313,7 @@ EnforcedStyle | `bare_percent` | `percent_q`, `bare_percent`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for BEGIN blocks.
 
@@ -505,7 +505,7 @@ EnforcedStyle | `no_braces` | `braces`, `no_braces`, `context_dependent`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for uses of the case equality operator(===).
 
@@ -531,7 +531,7 @@ some_string =~ /something/
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 
+Enabled | Yes | Yes  | 0.9 | -
 
 Checks for uses of the character literal ?x.
 
@@ -556,7 +556,7 @@ Checks for uses of the character literal ?x.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.19 | 
+Enabled | Yes | Yes (Unsafe) | 0.19 | -
 
 This cop checks the style of children definitions at classes and
 modules. Basically there are two different styles:
@@ -599,7 +599,7 @@ EnforcedStyle | `nested` | `nested`, `compact`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.24 | 
+Enabled | Yes | Yes  | 0.24 | -
 
 This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 
@@ -669,7 +669,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | 
+Enabled | Yes | No | 0.13 | -
 
 This cop checks for uses of class variables. Offenses
 are signaled only on assignment to class variables to
@@ -760,7 +760,7 @@ PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 
+Enabled | Yes | Yes  | 0.9 | -
 
 This cop checks for methods invoked via the :: operator instead
 of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
@@ -787,7 +787,7 @@ Marshal.dump(obj)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for class methods that are defined using the `::`
 operator instead of the `.` operator.
@@ -816,7 +816,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.30 | 
+Enabled | Yes | Yes  | 0.30 | -
 
 This cop enforces using `` or %x around command literals.
 
@@ -966,7 +966,7 @@ Keywords | `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.51 | 
+Enabled | Yes | No | 0.51 | -
 
 This cop checks for comments put on the same line as some keywords.
 These keywords are: `begin`, `class`, `def`, `end`, `module`.
@@ -1120,7 +1120,7 @@ IncludeTernaryExpressions | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.30 | 
+Disabled | Yes | Yes  | 0.30 | -
 
 Check that a copyright notice was given in each source file.
 
@@ -1246,7 +1246,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.50 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop checks for places where the `#__dir__` method can replace more
 complex constructs to retrieve a canonicalized absolute path to the
@@ -1269,7 +1269,7 @@ path = __dir__
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for missing top-level documentation of
 classes and modules. Classes with no body are exempt from the
@@ -1305,7 +1305,7 @@ Exclude | `spec/**/*`, `test/**/*` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.43 | 
+Disabled | Yes | No | 0.43 | -
 
 This cop checks for missing documentation comment for public methods.
 It can optionally be configured to also require documentation for
@@ -1365,7 +1365,7 @@ RequireForNonPublicMethods | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.19 | 
+Enabled | Yes | No | 0.19 | -
 
 This cop checks for uses of double negation (!!) to convert something
 to a boolean value. As this is both cryptic and usually redundant, it
@@ -1394,7 +1394,7 @@ this is rarely a problem in practice.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | 
+Enabled | Yes | Yes  | 0.41 | -
 
 This cop checks for loops which iterate a constant number of times,
 using a Range literal and `#each`. This can be done more readably using
@@ -1446,7 +1446,7 @@ parameter is assigned to within the block.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for pipes for empty block parameters. Pipes for empty
 block parameters do not cause syntax errors, but they are redundant.
@@ -1474,7 +1474,7 @@ a { do_something }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.40 | 
+Enabled | Yes | Yes  | 0.40 | -
 
 This cop checks for case statements with an empty condition.
 
@@ -1623,7 +1623,7 @@ EnforcedStyle | `both` | `empty`, `nil`, `both`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for parentheses for empty lambda parameters. Parentheses
 for empty lambda parameters do not cause syntax errors, but they are
@@ -1673,7 +1673,7 @@ s = ''
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.46 | 
+Enabled | Yes | Yes  | 0.46 | -
 
 This cop checks for the formatting of empty method definitions.
 By default it enforces empty method definitions to go on a single
@@ -1755,7 +1755,7 @@ This cop checks ensures source files have no utf-8 encoding comments.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for END blocks.
 
@@ -1777,7 +1777,7 @@ at_exit { puts 'Goodbye!' }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.52 | 
+Enabled | Yes | No | 0.52 | -
 
 This cop checks `eval` method usage. `eval` can receive source location
 metadata, that are filename and line number. The metadata is used by
@@ -1840,7 +1840,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for use of the `File.expand_path` arguments.
 Likewise, it also checks for the `Pathname.new` argument.
@@ -1886,7 +1886,7 @@ Pathname.new(__dir__).expand_path
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.16 | 
+Enabled | Yes | No | 0.16 | -
 
 This cop looks for uses of flip flop operator
 
@@ -2154,7 +2154,7 @@ EnforcedStyle | `when_needed` | `when_needed`, `always`, `never`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | 
+Enabled | Yes | No | 0.13 | -
 
 This cop looks for uses of global variables.
 It does not report offenses for built-in global variables.
@@ -2324,7 +2324,7 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 This cop checks for identical lines at the beginning or end of
 each branch of a conditional statement.
@@ -2393,7 +2393,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 If the `else` branch of a conditional consists solely of an `if` node,
 it can be combined with the `else` to become an `elsif`.
@@ -2459,7 +2459,7 @@ Foo.do_something unless qux.empty?
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.39 | 
+Enabled | Yes | No | 0.39 | -
 
 Checks for if and unless statements used as modifiers of other if or
 unless statements.
@@ -2487,7 +2487,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 Checks for uses of semicolon in if statements.
 
@@ -2509,7 +2509,7 @@ result = some_condition ? something : another_thing
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.41 | 
+Disabled | Yes | No | 0.41 | -
 
 This cop checks for `raise` or `fail` statements which do not specify an
 explicit exception class. (This raises a `RuntimeError`. Some projects
@@ -2530,7 +2530,7 @@ raise ArgumentError, 'Error message here'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.26 | 
+Enabled | Yes | Yes (Unsafe) | 0.26 | -
 
 Use `Kernel#loop` for infinite loops.
 
@@ -2556,7 +2556,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.23 | 
+Disabled | Yes | No | 0.23 | -
 
 This cop checks for trailing inline comments.
 
@@ -2579,7 +2579,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.48 | 
+Enabled | No | Yes  | 0.48 | -
 
 This cop check for usages of not (`not` or `!`) called on a method
 when an inverse of that method can be used instead.
@@ -2621,7 +2621,7 @@ InverseBlocks | `{:select=>:reject, :select!=>:reject!}` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.58 | 
+Disabled | Yes | No | 0.58 | -
 
 This cop checks for hardcoded IP addresses, which can make code
 brittle. IP addresses are likely to need to be changed when code
@@ -2757,7 +2757,7 @@ EnforcedStyle | `call` | `call`, `braces`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.18 | 
+Enabled | Yes | Yes  | 0.18 | -
 
 This cop checks for string literal concatenation at
 the end of a line.
@@ -2865,7 +2865,7 @@ IgnoredMethods | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.14 | 
+Disabled | Yes | No | 0.14 | -
 
 This cop checks for methods called on a do...end block. The point of
 this check is that it's easy to miss the call tacked on to the block
@@ -2994,7 +2994,7 @@ EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_paren
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.56 | 
+Enabled | Yes | No | 0.56 | -
 
 This cop checks for the presence of `method_missing` without
 falling back on `super`.
@@ -3023,7 +3023,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.50 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop checks for potential uses of `Enumerable#minmax`.
 
@@ -3155,7 +3155,7 @@ EnforcedStyle | `both` | `if`, `case`, `both`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.56 | 
+Enabled | Yes | No | 0.56 | -
 
 This cop checks for the presence of `method_missing` without also
 defining `respond_to_missing?`.
@@ -3237,7 +3237,7 @@ EnforcedStyle | `separated` | `separated`, `grouped`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.51 | 
+Enabled | Yes | No | 0.51 | -
 
 This cop checks that `include`, `extend` and `prepend` statements appear
 inside classes and modules, not at the top level, so as to not affect
@@ -3341,7 +3341,7 @@ EnforcedStyle | `module_function` | `module_function`, `extend_self`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | 
+Enabled | Yes | No | 0.13 | -
 
 This cop checks for chaining of a block after another block that spans
 multiple lines.
@@ -3364,7 +3364,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.45 | 
+Enabled | Yes | Yes  | 0.45 | -
 
 Checks for uses of if/unless modifiers with multiple-lines bodies.
 
@@ -3462,7 +3462,7 @@ EnforcedStyle | `keyword` | `keyword`, `braces`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.59 | 
+Disabled | Yes | No | 0.59 | -
 
 This cop checks for method signatures that span multiple lines.
 
@@ -3485,7 +3485,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for multi-line ternary op expressions.
 
@@ -3519,7 +3519,7 @@ a =
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.49 | 
+Enabled | Yes | No | 0.49 | -
 
 This cop checks against comparing a variable with multiple items, where
 `Array#include?` could be used instead to avoid code repetition.
@@ -3540,7 +3540,7 @@ foo if ['a', 'b', 'c'].include?(a)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | 
+Enabled | Yes | Yes  | 0.34 | -
 
 This cop checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
@@ -3655,7 +3655,7 @@ EnforcedStyle | `both` | `both`, `prefix`, `postfix`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.20 | 
+Enabled | Yes | Yes  | 0.20 | -
 
 Checks for uses of while with a negated condition.
 
@@ -3688,7 +3688,7 @@ bar while !foo && baz
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.35 | 
+Enabled | Yes | Yes  | 0.35 | -
 
 This cop checks for nested use of if, unless, while and until in their
 modifier form.
@@ -3736,7 +3736,7 @@ Whitelist | `be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for nested ternary op expressions.
 
@@ -3940,7 +3940,7 @@ x = !something
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | 
+Enabled | Yes | Yes  | 0.41 | -
 
 This cop checks for octal, hex, binary, and decimal literals using
 uppercase prefixes and corrects them to lowercase prefix
@@ -4161,7 +4161,7 @@ SuspiciousParamNames | `options`, `opts`, `args`, `params`, `parameters` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.33 | 
+Enabled | Yes | No | 0.33 | -
 
 This cop checks for optional arguments to methods
 that do not come at the end of the argument list
@@ -4189,7 +4189,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.50 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop checks for potential usage of the `||=` operator.
 
@@ -4226,7 +4226,7 @@ name ||= 'Bozhidar'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.32 | 
+Enabled | Yes | Yes  | 0.32 | -
 
 Checks for simple usages of parallel assignment.
 This will only complain when the number of variables
@@ -4358,7 +4358,7 @@ PreferredDelimiters | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.25 | 
+Enabled | Yes | Yes  | 0.25 | -
 
 This cop checks for usage of the %Q() syntax when %q() would do.
 
@@ -4400,7 +4400,7 @@ EnforcedStyle | `lower_case_q` | `lower_case_q`, `upper_case_q`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.13 | 
+Enabled | Yes | Yes  | 0.13 | -
 
 This cop looks for uses of Perl-style regexp match
 backreferences like $1, $2, etc.
@@ -4545,7 +4545,7 @@ EnforcedStyle | `exploded` | `compact`, `exploded`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for the use of randomly generated numbers,
 added/subtracted with integer literals, as well as those with
@@ -4643,7 +4643,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.50 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop checks for redundant returning of true/false in conditionals.
 
@@ -4701,7 +4701,7 @@ raise 'message'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | 
+Enabled | Yes | Yes  | 0.34 | -
 
 This cop check for uses of Object#freeze on immutable objects.
 
@@ -4719,7 +4719,7 @@ CONST = 1
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop checks for redundant parentheses.
 
@@ -4974,7 +4974,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for rescuing `StandardError`. There are two supported
 styles `implicit` and `explicit`. This cop will not register an offense
@@ -5061,7 +5061,7 @@ EnforcedStyle | `explicit` | `implicit`, `explicit`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.50 | 
+Disabled | Yes | Yes  | 0.50 | -
 
 This cop enforces consistency between 'return nil' and 'return'.
 
@@ -5232,7 +5232,7 @@ AllowAsExpressionSeparator | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.33 | 
+Disabled | Yes | No | 0.33 | -
 
 This cop checks for the use of the send method.
 
@@ -5534,7 +5534,7 @@ EnforcedStyle | `use_english_names` | `use_perl_names`, `use_english_names`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.35 | 
+Enabled | Yes | Yes  | 0.35 | -
 
 Check for parentheses around stabby lambda arguments.
 There are two different styles. Defaults to `require_parentheses`.
@@ -5574,7 +5574,7 @@ EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_paren
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.51 | 
+Enabled | Yes | Yes  | 0.51 | -
 
 This cop identifies places where `$stderr.puts` can be replaced by
 `warn`. The latter has the advantage of easily being disabled by,
@@ -5598,7 +5598,7 @@ warn('hello')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.52 | 
+Disabled | Yes | Yes  | 0.52 | -
 
 This cop checks for the use of strings as keys in hashes. The use of
 symbols is preferred instead.
@@ -5669,7 +5669,7 @@ ConsistentQuotesInMultiline | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.27 | 
+Enabled | Yes | Yes  | 0.27 | -
 
 This cop checks that quotes inside the string interpolation
 match the configured preference.
@@ -5732,7 +5732,7 @@ PreferredMethods | `{"intern"=>"to_sym"}` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.29 | 
+Enabled | Yes | No | 0.29 | -
 
 This cop checks for inheritance from Struct.new.
 
@@ -5804,7 +5804,7 @@ MinSize | `2` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.30 | 
+Enabled | Yes | Yes  | 0.30 | -
 
 This cop checks symbol literal syntax.
 
@@ -5906,7 +5906,7 @@ AllowSafeAssignment | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing code after the class definition.
 
@@ -5927,7 +5927,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for trailing code after the method definition.
 
@@ -5957,7 +5957,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing code after the module definition.
 
@@ -5978,7 +5978,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop checks for trailing comma in argument lists.
 
@@ -6041,7 +6041,7 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing comma in array literals.
 
@@ -6104,7 +6104,7 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing comma in hash literals.
 
@@ -6163,7 +6163,7 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.52 | 
+Enabled | Yes | Yes  | 0.52 | -
 
 This cop checks for trailing code after the method definition.
 
@@ -6285,7 +6285,7 @@ Whitelist | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 
+Enabled | Yes | Yes  | 0.9 | -
 
 This cop looks for *unless* expressions with *else* clauses.
 
@@ -6336,7 +6336,7 @@ This cop checks for usage of the %W() syntax when %w() would do.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.57 | 
+Enabled | Yes | Yes  | 0.57 | -
 
 This cop checks for unnecessary conditional expressions.
 
@@ -6372,7 +6372,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop checks for strings that are just an interpolated expression.
 
@@ -6393,7 +6393,7 @@ This cop checks for strings that are just an interpolated expression.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.24 | 
+Enabled | Yes | Yes  | 0.24 | -
 
 This cop checks for usage of the %q/%Q syntax when '' or "" would do.
 
@@ -6419,7 +6419,7 @@ question = '"What did you say?"'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.54 | 
+Enabled | Yes | Yes  | 0.54 | -
 
 This cop checks for accessing the first element of `String#unpack`
 which can be replaced with the shorter method `unpack1`.
@@ -6467,7 +6467,7 @@ This cop checks for variable interpolation (like "#@ivar").
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 
+Enabled | Yes | Yes  | 0.9 | -
 
 This cop checks for *when;* uses in *case* expressions.
 
@@ -6495,7 +6495,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 
+Enabled | Yes | Yes  | 0.9 | -
 
 Checks for uses of `do` in multi-line `while/until` statements.
 
