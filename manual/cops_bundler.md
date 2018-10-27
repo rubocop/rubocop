@@ -71,7 +71,7 @@ Whitelist | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 The symbol argument `:gemcutter`, `:rubygems`, and `:rubyforge`
 are deprecated. So please change your source to URL string that

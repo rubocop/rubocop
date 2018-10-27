@@ -168,7 +168,7 @@ EnforcedStyle | `always` | `always`, `conditionals`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 0.31
+Enabled | Yes | Yes  | 0.20 | 0.31
 
 This cop checks for uses of "*" as a substitute for *join*.
 
@@ -248,7 +248,7 @@ attr_reader :one, :two, :three
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.3 | 
+Disabled | Yes | No | 0.30 | 
 
 This cop checks for cases when you could use a block
 accepting version of a method that does automatic
@@ -351,7 +351,7 @@ of comments...
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 0.35
+Enabled | Yes | Yes  | 0.30 | 0.35
 
 Check for uses of braces or do/end around single line or
 multi-line blocks.
@@ -638,7 +638,7 @@ EnforcedStyle | `is_a?` | `is_a?`, `kind_of?`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.2
+Enabled | Yes | Yes  | 0.9 | 0.20
 
 This cop checks for uses of the class/module name instead of
 self, when defining class/module methods.
@@ -816,7 +816,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop enforces using `` or %x around command literals.
 
@@ -919,7 +919,7 @@ AllowInnerBackticks | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.1 | 0.31
+Enabled | Yes | Yes  | 0.10 | 0.31
 
 This cop checks that comment annotation keywords are written according
 to guidelines.
@@ -1120,7 +1120,7 @@ IncludeTernaryExpressions | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.3 | 
+Disabled | Yes | Yes  | 0.30 | 
 
 Check that a copyright notice was given in each source file.
 
@@ -1246,7 +1246,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop checks for places where the `#__dir__` method can replace more
 complex constructs to retrieve a canonicalized absolute path to the
@@ -1474,7 +1474,7 @@ a { do_something }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.4 | 
+Enabled | Yes | Yes  | 0.40 | 
 
 This cop checks for case statements with an empty condition.
 
@@ -1734,7 +1734,7 @@ EnforcedStyle | `compact` | `compact`, `expanded`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.5
+Enabled | Yes | Yes  | 0.9 | 0.50
 
 This cop checks ensures source files have no utf-8 encoding comments.
 
@@ -2191,7 +2191,7 @@ AllowedVariables | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.2 | 0.22
+Enabled | Yes | No | 0.20 | 0.22
 
 Use a guard clause instead of wrapping the code inside a conditional
 expression
@@ -2427,7 +2427,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.3
+Enabled | Yes | Yes  | 0.9 | 0.30
 
 Checks for if and unless statements that would fit on one line
 if written as a modifier if/unless. The maximum line length is
@@ -2649,7 +2649,7 @@ Whitelist | `::` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.4
+Enabled | Yes | Yes  | 0.9 | 0.40
 
 This cop (by default) checks for uses of the lambda literal syntax for
 single line lambdas, and the method call syntax for multiline lambdas.
@@ -3023,7 +3023,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop checks for potential uses of `Enumerable#minmax`.
 
@@ -3043,7 +3043,7 @@ return foo.minmax
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.3 | 0.38
+Disabled | Yes | No | 0.30 | 0.38
 
 Checks for `if` expressions that do not have an `else` branch.
 
@@ -3564,7 +3564,7 @@ TESTING
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 0.48
+Enabled | Yes | Yes  | 0.20 | 0.48
 
 Checks for uses of if with a negated condition. Only ifs
 without else are considered. There are three different styles:
@@ -3655,7 +3655,7 @@ EnforcedStyle | `both` | `both`, `prefix`, `postfix`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 
+Enabled | Yes | Yes  | 0.20 | 
 
 Checks for uses of while with a negated condition.
 
@@ -3711,7 +3711,7 @@ something if b && a
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 0.5
+Enabled | Yes | Yes  | 0.36 | 0.50
 
 This cop checks for unparenthesized method calls in the argument list
 of a parenthesized method call.
@@ -3876,7 +3876,7 @@ EnforcedStyle | `predicate` | `predicate`, `comparison`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 0.22
+Enabled | Yes | Yes  | 0.20 | 0.22
 
 This cop checks for non-nil checks, which are usually redundant.
 
@@ -3918,7 +3918,7 @@ IncludeSemanticChanges | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.2
+Enabled | Yes | Yes  | 0.9 | 0.20
 
 This cop checks for uses of the keyword `not` instead of `!`.
 
@@ -4189,7 +4189,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop checks for potential usage of the `||=` operator.
 
@@ -4492,7 +4492,7 @@ p = proc { |n| puts n }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.14 | 0.4
+Enabled | Yes | Yes  | 0.14 | 0.40
 
 This cop checks the args passed to `fail` and `raise`. For exploded
 style (default), it recommends passing the exception class and message
@@ -4579,7 +4579,7 @@ rand(1...7)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.1 | 0.21
+Enabled | Yes | Yes  | 0.10 | 0.21
 
 This cop checks for redundant `begin` blocks.
 
@@ -4643,7 +4643,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop checks for redundant returning of true/false in conditionals.
 
@@ -4737,7 +4737,7 @@ x if y.z.nil?
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.1 | 0.14
+Enabled | Yes | Yes  | 0.10 | 0.14
 
 This cop checks for redundant `return` expressions.
 
@@ -4788,7 +4788,7 @@ AllowMultipleReturnValues | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.1 | 0.13
+Enabled | Yes | Yes  | 0.10 | 0.13
 
 This cop checks for redundant uses of `self`.
 
@@ -4839,7 +4839,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.3
+Enabled | Yes | Yes  | 0.9 | 0.30
 
 This cop enforces using // or %r around regular expressions.
 
@@ -5061,7 +5061,7 @@ EnforcedStyle | `explicit` | `implicit`, `explicit`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.5 | 
+Disabled | Yes | Yes  | 0.50 | 
 
 This cop enforces consistency between 'return nil' and 'return'.
 
@@ -5804,7 +5804,7 @@ MinSize | `2` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | 
 
 This cop checks symbol literal syntax.
 
@@ -5822,7 +5822,7 @@ This cop checks symbol literal syntax.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.26 | 0.4
+Enabled | Yes | Yes  | 0.26 | 0.40
 
 Use symbols as procs when possible.
 
@@ -6441,7 +6441,7 @@ which can be replaced with the shorter method `unpack1`.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.2
+Enabled | Yes | Yes  | 0.9 | 0.20
 
 This cop checks for variable interpolation (like "#@ivar").
 
@@ -6532,7 +6532,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.3
+Enabled | Yes | Yes  | 0.9 | 0.30
 
 Checks for while and until statements that would fit on one line
 if written as a modifier while/until. The maximum line length is
@@ -6617,7 +6617,7 @@ WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.5
+Enabled | Yes | Yes  | 0.49 | 0.50
 
 This cop checks for Yoda conditions, i.e. comparison operations where
 readability is reduced because the operands are not ordered the same

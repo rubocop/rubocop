@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop makes sure that accessor methods are named properly.
 
@@ -36,7 +36,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks for non-ascii characters in identifier names.
 
@@ -80,7 +80,7 @@ params[:width_gteq]
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop makes sure that certain binary operator methods have their
 sole  parameter named `other`.
@@ -103,7 +103,7 @@ def +(other); end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks for class and module names with
 an underscore in them.
@@ -132,7 +132,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks whether constant names are written using
 SCREAMING_SNAKE_CASE.
@@ -160,7 +160,7 @@ INCH_IN_CM = 2.54
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop makes sure that Ruby source files have snake_case
 names. Ruby scripts (i.e. source files with a shebang in the
@@ -203,7 +203,7 @@ AllowedAcronyms | `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks that your heredocs are using the configured case.
 By default it is configured to enforce uppercase heredocs.
@@ -251,7 +251,7 @@ EnforcedStyle | `uppercase` | `lowercase`, `uppercase`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
@@ -393,7 +393,7 @@ EnforcedStyleForLeadingUnderscores | `disallowed` | `disallowed`, `required`, `o
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop makes sure that all methods use the configured style,
 snake_case or camelCase, for their names.
@@ -433,7 +433,7 @@ EnforcedStyle | `snake_case` | `snake_case`, `camelCase`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 0.51
+Enabled | Yes | No | 0.50 | 0.51
 
 This cop makes sure that predicates are named properly.
 
@@ -585,7 +585,7 @@ ForbiddenNames | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
@@ -625,7 +625,7 @@ EnforcedStyle | `snake_case` | `snake_case`, `camelCase`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop makes sure that all numbered variables use the
 configured style, snake_case, normalcase, or non_integer,

@@ -148,7 +148,7 @@ BigDecimal(123.456, 3)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
@@ -445,7 +445,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.1 | 0.48
+Enabled | Yes | Yes  | 0.10 | 0.48
 
 This cop checks for empty `ensure` blocks
 
@@ -523,7 +523,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 0.45
+Enabled | Yes | Yes  | 0.20 | 0.45
 
 This cop checks for empty interpolation.
 
@@ -918,7 +918,7 @@ EnforcedStyle | `runtime_error` | `runtime_error`, `standard_error`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks for interpolation in a single quoted string.
 
@@ -1229,7 +1229,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.3 | 
+Enabled | Yes | No | 0.30 | 
 
 This cop checks for non-local exits from iterators without a return
 value. It registers an offense under these conditions:
@@ -1431,7 +1431,7 @@ rand(-1.0)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop checks for redundant `with_index`.
 
@@ -1624,7 +1624,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop checks for the use of a return with a value in a context
 where the value will be ignored. (initialize and setter methods)
@@ -1732,7 +1732,7 @@ Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.5
+Enabled | Yes | Yes  | 0.49 | 0.50
 
 This cop checks if a file which has a shebang line as
 its first line is granted execute permission.
@@ -1928,7 +1928,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.19 | 0.2
+Enabled | Yes | Yes  | 0.19 | 0.20
 
 This cop checks for string conversion in string interpolation,
 which is redundant.
@@ -2293,7 +2293,7 @@ IgnoreEmptyMethods | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | 
 
 This cop identifies places where `URI.escape` can be replaced by
 `CGI.escape`, `URI.encode_www_form`, or `URI.encode_www_form_component`
@@ -2329,7 +2329,7 @@ URI.decode_www_form_component(enc_uri)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | 
 
 This cop identifies places where `URI.regexp` is obsolete and should
 not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
@@ -2348,7 +2348,7 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.2 | 0.47
+Enabled | Yes | No | 0.20 | 0.47
 
 This cop checks for redundant access modifiers, including those with no
 code, those which are repeated, and leading `public` modifiers in a
