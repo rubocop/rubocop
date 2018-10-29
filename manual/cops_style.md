@@ -2089,6 +2089,30 @@ module Foo
   # ...
 end
 ```
+#### EnforcedStyle: always_enabled
+
+```ruby
+# The `always_enabled` style will enforce that the frozen string
+# literal comment appears in the file and that it is set to true.
+# bad
+module Bar
+  # ...
+end
+
+# bad
+# frozen_string_literal: false
+
+module Bar
+  # ...
+end
+
+# good
+# frozen_string_literal: true
+
+module Bar
+  # ...
+end
+```
 #### EnforcedStyle: always
 
 ```ruby
@@ -2129,7 +2153,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `when_needed` | `when_needed`, `always`, `never`
+EnforcedStyle | `when_needed` | `when_needed`, `always_enabled`, `always`, `never`
 
 ## Style/GlobalVars
 

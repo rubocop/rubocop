@@ -277,6 +277,268 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
   end
 
+  context 'always_enabled' do
+    let(:cop_config) do
+      { 'Enabled' => true,
+        'EnforcedStyle' => 'always_enabled' }
+    end
+
+    it 'accepts an empty source' do
+      expect_no_offenses('')
+    end
+
+    it 'accepts a source with no tokens' do
+      expect_no_offenses(' ')
+    end
+
+    it 'accepts a frozen string literal on the top line' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a ' \
+        'disabled frozen string literal on the top line' do
+      expect_offense(<<-RUBY.strip_indent)
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Magic comment `frozen_string_literal` must be set to `true`.
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'on the top line' do
+      expect_offense(<<-RUBY.strip_indent)
+        puts 1
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under a shebang' do
+      expect_offense(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal below a shebang comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a ' \
+        'disabled frozen string literal below a shebang comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Magic comment `frozen_string_literal` must be set to `true`.
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under an encoding comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        # encoding: utf-8
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal below an encoding comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a ' \
+        'disabled frozen string literal below an encoding comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        # encoding: utf-8
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Magic comment `frozen_string_literal` must be set to `true`.
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under a shebang and an encoding comment' do
+      expect_offense(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment below shebang and encoding ' \
+       'comments' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+       'below shebang and encoding comments' do
+      expect_offense(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Magic comment `frozen_string_literal` must be set to `true`.
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment below shebang above an ' \
+       'encoding comments' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+        'below shebang above an encoding comments' do
+      expect_offense(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Magic comment `frozen_string_literal` must be set to `true`.
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'accepts an emacs style combined magic comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        # -*- encoding: UTF-8; frozen_string_literal: true -*-
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    context 'auto-correct' do
+      it 'adds a frozen string literal comment to the first line if one is ' \
+         'missing' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment to the first line if one is ' \
+         'missing and handles extra spacing' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment after a shebang' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment after an encoding comment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          # encoding: utf-8
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          # encoding: utf-8
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment after a shebang and encoding ' \
+         'comment' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          # encoding: utf-8
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          # encoding: utf-8
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment after a shebang and encoding ' \
+         'comment when there is an empty line before the code' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          # encoding: utf-8
+
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          # encoding: utf-8
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment after an encoding comment ' \
+         'when there is an empty line before the code' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          # encoding: utf-8
+
+          puts 1
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          # encoding: utf-8
+          # frozen_string_literal: true
+
+          puts 1
+        RUBY
+      end
+    end
+  end
+
   context 'when_needed' do
     let(:cop_config) do
       { 'Enabled' => true,

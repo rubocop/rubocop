@@ -16,6 +16,12 @@ module RuboCop
         end
       end
 
+      def frozen_string_literal_comment_set_to_true?
+        leading_comment_lines.any? do |line|
+          MagicComment.parse(line).frozen_string_literal?
+        end
+      end
+
       private
 
       def frozen_string_literals_enabled?
