@@ -1870,7 +1870,7 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 0.59
+Enabled | Yes | No | 0.47 | 0.60
 
 This cop checks for the use of methods which skip
 validations which are listed in
