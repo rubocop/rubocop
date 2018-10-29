@@ -7,6 +7,7 @@
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
 * [#5970](https://github.com/rubocop-hq/rubocop/issues/5970): Make running `--auto-gen-config` in a subdirectory work. ([@jonas054][])
 * [#6412](https://github.com/rubocop-hq/rubocop/issues/6412): Fix an `unknown keywords` error when using `Psych.safe_load` with Ruby 2.6.0-preview2. ([@koic][])
+* [#6415](https://github.com/rubocop-hq/rubocop/issues/6415): Fix Style/UnneededCondition auto-correct for un-parenthesized else statements. ([@joeadcock][])
 
 ## 0.60.0 (2018-10-26)
 
@@ -3637,3 +3638,4 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@joeadcock]: https://github.com/joeadcock

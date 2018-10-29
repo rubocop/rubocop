@@ -91,7 +91,11 @@ module RuboCop
 
         def else_source(else_branch)
           wrap_else =
-            else_branch.basic_conditional? && else_branch.modifier_form?
+            (else_branch.basic_conditional? && else_branch.modifier_form?) ||
+            (else_branch.multiline? &&
+             else_branch.send_type? &&
+             !else_branch.parenthesized?)
+
           wrap_else ? "(#{else_branch.source})" : else_branch.source
         end
 

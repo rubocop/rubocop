@@ -115,6 +115,21 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
         RUBY
       end
 
+      it 'auto-corrects unparenthesized multiline sendNode offense' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          if b
+            b
+          else
+            y x,
+              z
+          end
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          b || (y x,
+              z)
+        RUBY
+      end
+
       it 'auto-corrects one-line node offense' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
           if b
