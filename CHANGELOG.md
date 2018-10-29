@@ -5,6 +5,7 @@
 ### New features
 
 * [#6643](https://github.com/rubocop-hq/rubocop/pull/6643): Support `AllowParenthesesInCamelCaseMethod` option on `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@dazuma][])
+* [#6422](https://github.com/rubocop-hq/rubocop/pull/6422): Add `always_enabled` option to `Style/FrozenStringLiteralComment` to enforce frozen_string_literal is always set to true. ([@martingordon][])
 
 ### Bug fixes
 
@@ -33,7 +34,6 @@
 * [#6363](https://github.com/rubocop-hq/rubocop/issues/6363): Allow `Style/YodaCondition` cop to be configured to enforce yoda conditions. ([@tejasbubane][])
 * [#6150](https://github.com/rubocop-hq/rubocop/issues/6150): Add support to enforce disabled cops to be executed. ([@roooodcastro][])
 * [#6596](https://github.com/rubocop-hq/rubocop/pull/6596): Add new `Rails/BelongsTo` cop with auto-correct for Rails >= 5. ([@petehamilton][])
-* Add `always_enabled` option to `Style/FrozenStringLiteralComment` to enforce frozen_string_literal is always set to true. ([@martingordon][])
 
 ### Bug fixes
 
@@ -3788,3 +3788,4 @@
 [@dazuma]: https://github.com/dazuma
 [@dischorde]: https://github.com/dischorde
 [@mhelmetag]: https://github.com/mhelmetag
+[@martingordon]: https://github.com/martingordon
