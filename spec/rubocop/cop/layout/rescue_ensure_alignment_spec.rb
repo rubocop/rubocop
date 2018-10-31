@@ -365,6 +365,16 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       RUBY
     end
 
+    it 'accepts aligned rescue in assigned do-end block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        result = [1, 2, 3].map do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+      RUBY
+    end
+
     it 'accepts aligned rescue in do-end block in a method' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def foo
