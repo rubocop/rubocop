@@ -59,7 +59,7 @@ module RuboCop
       def initialize(rspec_args)
         super(Framework.new(rspec_args))
 
-        @exit_when_done = true
+        @exit_when_done = false
       end
 
       def run_worker(iterator)
