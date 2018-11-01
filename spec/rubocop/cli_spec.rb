@@ -8,11 +8,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   subject(:cli) { described_class.new }
 
   context 'when interrupted' do
-    it 'returns 1' do
+    it 'returns 130' do
       allow_any_instance_of(RuboCop::Runner)
         .to receive(:aborting?).and_return(true)
       create_empty_file('example.rb')
-      expect(cli.run(['example.rb'])).to eq(1)
+      expect(cli.run(['example.rb'])).to eq(130)
     end
   end
 
