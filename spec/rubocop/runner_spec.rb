@@ -34,26 +34,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       expect(interrupt_handlers.size).to eq(1)
     end
 
-    context 'with SIGINT once' do
+    context 'with SIGINT' do
       it 'aborts processing' do
         runner.trap_interrupt
         expect(runner).to receive(:aborting=).with(true)
-        interrupt
-      end
-
-      it 'does not exit immediately' do
-        runner.trap_interrupt
-        expect_any_instance_of(Object).not_to receive(:exit)
-        expect_any_instance_of(Object).not_to receive(:exit!)
-        interrupt
-      end
-    end
-
-    context 'with SIGINT twice' do
-      it 'exits immediately' do
-        runner.trap_interrupt
-        expect_any_instance_of(Object).to receive(:exit!).with(1)
-        interrupt
         interrupt
       end
     end
