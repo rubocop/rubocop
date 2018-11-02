@@ -351,6 +351,25 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
         )
         RUBY
       end
+
+      it 'corrects when the opening brace is before the first hash element' \
+         'at same line' do
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
+          foo = Foo.new(
+            { foo: 'foo',
+              bar: 'bar',
+              baz: 'this is the last element'}
+          )
+        RUBY
+
+        expect(corrected).to eq(<<-RUBY.strip_indent)
+          foo = Foo.new(
+             foo: 'foo',
+              bar: 'bar',
+              baz: 'this is the last element'
+          )
+        RUBY
+      end
     end
   end
 
