@@ -34,7 +34,7 @@ module RuboCop
       Signal.trap('INT') do
         exit!(1) if aborting?
         self.aborting = true
-        warn
+        warn ''
         warn 'Exiting... Interrupt again to exit immediately.'
       end
     end
