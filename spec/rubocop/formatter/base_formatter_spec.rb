@@ -100,9 +100,12 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
             end
           end
 
-          allow(runner).to receive(:aborting?) do
-            formatter.processed_file_count == 2
-          end
+          allow(runner).to receive(:process_file)
+            .and_wrap_original do |m, *args|
+              raise Interrupt if formatter.processed_file_count == 2
+
+              m.call(*args)
+            end
 
           run
 

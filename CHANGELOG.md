@@ -103,6 +103,7 @@
 * [#6594](https://github.com/rubocop-hq/rubocop/pull/6594): Fix a false positive for `Rails/OutputSafety` when the receiver is a non-interpolated string literal. ([@amatsuda][])
 * [#6574](https://github.com/rubocop-hq/rubocop/pull/6574): Fix `Style/AccessModifierIndentation` not handling arbitrary blocks. ([@deivid-rodriguez][])
 * [#6370](https://github.com/rubocop-hq/rubocop/issues/6370): Fix the enforcing style from `extend self` into `module_function` when there are private methods. ([@Ruffeng][])
+* [#6461](https://github.com/rubocop-hq/rubocop/pull/6461): Restrict Ctrl-C handling to RuboCop's loop and simplify it to a single phase. ([@deivid-rodriguez][])
 
 ### Changes
 
