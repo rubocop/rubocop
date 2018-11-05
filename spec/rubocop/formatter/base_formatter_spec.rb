@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Formatter::BaseFormatter do
-  include FileHelper
+  include_context 'cli spec behavior'
 
   describe 'how the API methods are invoked', :isolated_environment do
     subject(:formatter) { instance_double(described_class).as_null_object }
@@ -18,14 +18,9 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
       allow(RuboCop::Formatter::SimpleTextFormatter)
         .to receive(:new).and_return(formatter)
-      $stdout = StringIO.new
       # avoid intermittent failure caused when another test set global
       # options on ConfigLoader
       RuboCop::ConfigLoader.clear_options
-    end
-
-    after do
-      $stdout = STDOUT
     end
 
     def run
