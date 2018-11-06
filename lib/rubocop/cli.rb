@@ -62,7 +62,7 @@ module RuboCop
     def trap_interrupt(runner)
       Signal.trap('INT') do
         exit!(1) if runner.aborting?
-        runner.abort
+        runner.aborting = true
         warn
         warn 'Exiting... Interrupt again to exit immediately.'
       end
