@@ -1145,7 +1145,7 @@ AutocorrectNotice | `` | String
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.51 | 0.59
+Disabled | Yes | No | 0.51 | 0.59
 
 This cop checks for consistent usage of the `DateTime` class over the
 `Time` class. This cop is disabled by default since these classes,

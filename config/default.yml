@@ -2983,9 +2983,9 @@ Style/Copyright:
   AutocorrectNotice: ''
 
 Style/DateTime:
-  Description: 'Use Date or Time over DateTime.'
+  Description: 'Use Time over DateTime.'
   StyleGuide: '#date--time'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.51'
   VersionChanged: '0.59'
   AllowCoercion: false
