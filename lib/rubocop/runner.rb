@@ -30,6 +30,15 @@ module RuboCop
       @aborting = false
     end
 
+    def trap_interrupt
+      Signal.trap('INT') do
+        exit!(1) if aborting?
+        self.aborting = true
+        warn
+        warn 'Exiting... Interrupt again to exit immediately.'
+      end
+    end
+
     def run(paths)
       target_files = find_target_files(paths)
       if @options[:list_target_files]
@@ -72,6 +81,8 @@ module RuboCop
     end
 
     def each_inspected_file(files)
+      trap_interrupt
+
       files.reduce(true) do |all_passed, file|
         break false if aborting?
 
