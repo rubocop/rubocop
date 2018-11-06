@@ -39,7 +39,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'with SIGINT once' do
       it 'aborts processing' do
         cli.trap_interrupt(runner)
-        expect(runner).to receive(:abort)
+        expect(runner).to receive(:aborting=).with(true)
         interrupt
       end
 

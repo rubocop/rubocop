@@ -20,6 +20,7 @@ module RuboCop
     MAX_ITERATIONS = 200
 
     attr_reader :errors, :warnings
+    attr_writer :aborting
 
     def initialize(options, config_store)
       @options = options
@@ -41,10 +42,6 @@ module RuboCop
 
     def aborting?
       @aborting
-    end
-
-    def abort
-      @aborting = true
     end
 
     private
