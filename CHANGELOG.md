@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
+
 ### Bug fixes
 
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
