@@ -20,6 +20,9 @@ Naming/PredicateName:
     - def_node_matcher
     - def_node_search
 
+Naming/RescuedExceptionsVariableName:
+  PreferredName: exception
+
 Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 

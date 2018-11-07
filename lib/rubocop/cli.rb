@@ -40,21 +40,23 @@ module RuboCop
       act_on_options
       apply_default_formatter
       execute_runners(paths)
-    rescue ConfigNotFoundError, IncorrectCopNameError, OptionArgumentError => e
-      warn e.message
+    rescue ConfigNotFoundError,
+           IncorrectCopNameError,
+           OptionArgumentError => exception
+      warn exception.message
       STATUS_ERROR
-    rescue RuboCop::Error => e
-      warn Rainbow("Error: #{e.message}").red
+    rescue RuboCop::Error => exception
+      warn Rainbow("Error: #{exception.message}").red
       STATUS_ERROR
     rescue Finished
       STATUS_SUCCESS
-    rescue OptionParser::InvalidOption => e
-      warn e.message
+    rescue OptionParser::InvalidOption => exception
+      warn exception.message
       warn 'For usage information, use --help'
       STATUS_ERROR
-    rescue StandardError, SyntaxError, LoadError => e
-      warn e.message
-      warn e.backtrace
+    rescue StandardError, SyntaxError, LoadError => exception
+      warn exception.message
+      warn exception.backtrace
       STATUS_ERROR
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize

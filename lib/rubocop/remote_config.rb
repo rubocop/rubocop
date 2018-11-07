@@ -50,8 +50,8 @@ module RuboCop
       end
 
       handle_response(http.request(request), limit, &block)
-    rescue SocketError => err
-      handle_response(err, limit, &block)
+    rescue SocketError => exception
+      handle_response(exception, limit, &block)
     end
 
     def handle_response(response, limit, &block)
@@ -63,8 +63,10 @@ module RuboCop
       else
         begin
           response.error!
-        rescue StandardError => e
-          raise e, "#{e.message} while downloading remote config file #{uri}"
+        rescue StandardError => exception
+          message = "#{exception.message} while downloading remote config"\
+            " file #{uri}"
+          raise exception, message
         end
       end
     end

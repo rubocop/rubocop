@@ -8,10 +8,10 @@ require 'bundler'
 require 'bundler/gem_tasks'
 begin
   Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  warn e.message
+rescue Bundler::BundlerError => exception
+  warn exception.message
   warn 'Run `bundle install` to install missing gems'
-  exit e.status_code
+  exit exception.status_code
 end
 require 'rake'
 require 'rubocop/rake_task'
@@ -110,9 +110,9 @@ task documentation_syntax_check: :yard_for_generate_documentation do
         parser = Parser::Ruby25.new(RuboCop::AST::Builder.new)
         parser.diagnostics.all_errors_are_fatal = true
         parser.parse(buffer)
-      rescue Parser::SyntaxError => ex
+      rescue Parser::SyntaxError => exception
         path = example.object.file
-        puts "#{path}: Syntax Error in an example. #{ex}"
+        puts "#{path}: Syntax Error in an example. #{exception}"
         ok = false
       end
     end

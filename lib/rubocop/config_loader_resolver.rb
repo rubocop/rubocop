@@ -189,9 +189,9 @@ module RuboCop
     def gem_config_path(gem_name, relative_config_path)
       spec = Gem::Specification.find_by_name(gem_name)
       File.join(spec.gem_dir, relative_config_path)
-    rescue Gem::LoadError => e
+    rescue Gem::LoadError => exception
       raise Gem::LoadError,
-            "Unable to find gem #{gem_name}; is the gem installed? #{e}"
+            "Unable to find gem #{gem_name}; is the gem installed? #{exception}"
     end
   end
 end

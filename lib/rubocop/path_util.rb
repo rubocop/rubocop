@@ -41,10 +41,10 @@ module RuboCop
       when Regexp
         begin
           path =~ pattern
-        rescue ArgumentError => e
-          return false if e.message.start_with?('invalid byte sequence')
+        rescue ArgumentError => exception
+          return false if exception.message.start_with?('invalid byte sequence')
 
-          raise e
+          raise exception
         end
       end
     end
