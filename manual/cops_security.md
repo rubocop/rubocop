@@ -53,7 +53,7 @@ AutoCorrect | `false` | Boolean
 
 ### References
 
-* [http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load](http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load)
+* [https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load](https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load)
 
 ## Security/MarshalLoad
 
@@ -81,7 +81,7 @@ Marshal.load(Marshal.dump({}))
 
 ### References
 
-* [http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations](http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations)
+* [https://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations](https://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations)
 
 ## Security/Open
 

@@ -73,7 +73,7 @@ $ bin/console
 ```
 
 First we need to declare the code that we want to match, and use the
-[ProcessedSource](http://www.rubydoc.info/gems/rubocop/RuboCop/ProcessedSource)
+[ProcessedSource](https://www.rubydoc.info/gems/rubocop/RuboCop/ProcessedSource)
 that is a simple wrap to make the parser interpret the code and build the AST:
 
 ```ruby
@@ -94,7 +94,7 @@ node.source # => "!something.empty?"
 ### Writing rules to make node pattern matches:
 
 Now that you're familiar with AST, you can learn a bit about the
-[node pattern](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
+[node pattern](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
 and use patterns to match with specific nodes that you want to match.
 
 You can learn more about Node Pattern [here](https://docs.rubocop.org/en/latest/node_pattern/).
