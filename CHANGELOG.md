@@ -6,6 +6,7 @@
 
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
 * [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on Style/Lambda. ([@r7kamura][])
+* Add new `Naming/RescuedExceptionsVariableName` cop. ([@AdrienSldy][])
 
 ### Bug fixes
 
@@ -3514,6 +3515,7 @@
 [@sue445]: https://github.com/sue445
 [@zverok]: https://github.com/zverok
 [@backus]: https://github.com/backus
+[@AdrienSldy]: https://github.com/adriensldy
 [@pat]: https://github.com/pat
 [@sinsoku]: https://github.com/sinsoku
 [@nodo]: https://github.com/nodo

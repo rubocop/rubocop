@@ -471,6 +471,61 @@ Exclude | `spec/**/*` | Array
 
 * [https://github.com/rubocop-hq/ruby-style-guide#bool-methods-qmark](https://github.com/rubocop-hq/ruby-style-guide#bool-methods-qmark)
 
+## Naming/RescuedExceptionsVariableName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.61 | -
+
+This cop makes sure that rescued exceptions variables are named as
+expected.
+
+The `PreferredName` config option takes a `String`. It represents
+the required name of the variable. Its default is `e`.
+
+### Examples
+
+#### PreferredName: e (default)
+
+```ruby
+# bad
+begin
+  # do something
+rescue MyException => exc
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => e
+  # do something
+end
+```
+#### PreferredName: exception
+
+```ruby
+# bad
+begin
+  # do something
+rescue MyException => e
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => exception
+  # do something
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+PreferredName | `e` | String
+
 ## Naming/UncommunicativeBlockParamName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
