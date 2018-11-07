@@ -8,8 +8,8 @@ RSpec::Matchers.define :exit_with_code do |code|
   match do |block|
     begin
       block.call
-    rescue SystemExit => e
-      actual = e.status
+    rescue SystemExit => ex
+      actual = ex.status
     end
     actual && actual == code
   end

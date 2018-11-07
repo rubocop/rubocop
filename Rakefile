@@ -8,10 +8,10 @@ require 'bundler'
 require 'bundler/gem_tasks'
 begin
   Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  warn e.message
+rescue Bundler::BundlerError => ex
+  warn ex.message
   warn 'Run `bundle install` to install missing gems'
-  exit e.status_code
+  exit ex.status_code
 end
 require 'rake'
 require 'rubocop/rake_task'

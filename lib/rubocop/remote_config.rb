@@ -47,8 +47,8 @@ module RuboCop
       generate_request(uri) do |request|
         begin
           handle_response(http.request(request), limit, &block)
-        rescue SocketError => err
-          handle_response(err, limit, &block)
+        rescue SocketError => ex
+          handle_response(ex, limit, &block)
         end
       end
     end
@@ -72,8 +72,10 @@ module RuboCop
       else
         begin
           response.error!
-        rescue StandardError => e
-          raise e, "#{e.message} while downloading remote config file #{uri}"
+        rescue StandardError => ex
+          message = "#{ex.message} while downloading remote config"\
+            " file #{uri}"
+          raise ex, message
         end
       end
     end

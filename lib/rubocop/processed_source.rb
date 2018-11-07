@@ -146,8 +146,8 @@ module RuboCop
 
       begin
         @buffer.source = source
-      rescue EncodingError => error
-        @parser_error = error
+      rescue EncodingError => ex
+        @parser_error = ex
         return
       end
 

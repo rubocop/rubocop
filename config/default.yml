@@ -1935,6 +1935,12 @@ Naming/PredicateName:
   Exclude:
     - 'spec/**/*'
 
+Naming/RescuedExceptionsVariableName:
+  Description: 'Use consistent rescued exceptions variables naming.'
+  Enabled: true
+  VersionAdded: '0.67'
+  PreferredName: ex
+
 Naming/UncommunicativeBlockParamName:
   Description: >-
                 Checks for block parameter names that contain capital letters,

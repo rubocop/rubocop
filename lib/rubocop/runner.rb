@@ -108,8 +108,8 @@ module RuboCop
       end
       formatter_set.file_finished(file, offenses)
       offenses
-    rescue InfiniteCorrectionLoop => e
-      formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
+    rescue InfiniteCorrectionLoop => ex
+      formatter_set.file_finished(file, ex.offenses.compact.sort.freeze)
       raise
     end
 
