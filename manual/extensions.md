@@ -53,9 +53,9 @@ or implement all formatter API methods by duck typing.
 
 Please see the documents below for more formatter API details.
 
-* [RuboCop::Formatter::BaseFormatter](http://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter)
-* [RuboCop::Cop::Offense](http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
-* [Parser::Source::Range](http://www.rubydoc.info/github/whitequark/parser/Parser/Source/Range)
+* [RuboCop::Formatter::BaseFormatter](https://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter)
+* [RuboCop::Cop::Offense](https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
+* [Parser::Source::Range](https://www.rubydoc.info/github/whitequark/parser/Parser/Source/Range)
 
 #### Using a Custom Formatter from the Command Line
 

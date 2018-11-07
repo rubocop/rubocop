@@ -13,7 +13,7 @@ and solves a problem that RuboCop contributors were facing for a long time:
 
 - Ability to declaratively define rules for node search, matching, and capture.
 
-The code below belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/rubocop-hq/RuboCop/RuboCop/Cop/Style/ArrayJoin)
+The code below belongs to [Style/ArrayJoin](https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Style/ArrayJoin)
 cop and it's in favor of `Array#join` over `Array#*`. Then it tries to find
 code like `%w(one two three) * ", "` and suggest to use `#join` instead.
 

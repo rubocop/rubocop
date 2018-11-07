@@ -626,7 +626,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       file = abs('example1.rb')
       style_guide_link = 'https://github.com/rubocop-hq/ruby-style-guide' \
                          '#instance-vars'
-      reference_link = 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
+      reference_link = 'https://www.zenspider.com/ruby/quickref.html'
 
       expect(cli.run(['--format',
                       'emacs',

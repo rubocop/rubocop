@@ -2479,7 +2479,7 @@ Rails/RequestReferer:
 Rails/ReversibleMigration:
   Description: 'Checks whether the change method of the migration file is reversible.'
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#reversible-migration'
-  Reference: 'http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
+  Reference: 'https://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
   Enabled: true
   VersionAdded: '0.47'
   Include:
@@ -2515,7 +2515,7 @@ Rails/SkipsModelValidations:
   Description: >-
                  Use methods that skips model validations with caution.
                  See reference for more information.
-  Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
+  Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: true
   VersionAdded: '0.47'
   VersionChanged: '0.60'
@@ -2586,7 +2586,7 @@ Security/JSONLoad:
   Description: >-
                  Prefer usage of `JSON.parse` over `JSON.load` due to potential
                  security issues. See reference for more information.
-  Reference: 'http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load'
+  Reference: 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load'
   Enabled: true
   VersionAdded: '0.43'
   VersionChanged: '0.44'
@@ -2599,7 +2599,7 @@ Security/MarshalLoad:
   Description: >-
                  Avoid using of `Marshal.load` or `Marshal.restore` due to potential
                  security issues. See reference for more information.
-  Reference: 'http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
+  Reference: 'https://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
   Enabled: true
   VersionAdded: '0.47'
 
@@ -3183,7 +3183,7 @@ Style/FrozenStringLiteralComment:
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
   StyleGuide: '#instance-vars'
-  Reference: 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
+  Reference: 'https://www.zenspider.com/ruby/quickref.html'
   Enabled: true
   VersionAdded: '0.13'
   # Built-in global variables are allowed by default.

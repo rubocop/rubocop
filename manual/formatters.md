@@ -269,7 +269,7 @@ $ rubocop --format html -o rubocop.html
 
  **Machine-parsable**
 
-Useful for CI environments, it will format report following the [Test Anything Protocol](http://testanything.org).
+Useful for CI environments, it will format report following the [Test Anything Protocol](https://testanything.org).
 
 ```sh
 $ rubocop --format tap
