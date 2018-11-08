@@ -61,6 +61,38 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
           ^^^^ Align the elements of a hash literal if they span more than one line.
       RUBY
     end
+
+    it 'registers offense for misaligned keys in implicit hash for super' do
+      expect_offense(<<-RUBY.strip_indent)
+        super(a: 0,
+          b: 1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in explicit hash for super' do
+      expect_offense(<<-RUBY.strip_indent)
+        super({a: 0,
+          b: 1})
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in implicit hash for yield' do
+      expect_offense(<<-RUBY.strip_indent)
+        yield(a: 0,
+          b: 1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in explicit hash for yield' do
+      expect_offense(<<-RUBY.strip_indent)
+        yield({a: 0,
+          b: 1})
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
   end
 
   context 'always ignore last argument hash' do
@@ -80,6 +112,34 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     it 'accepts misaligned keys in explicit hash' do
       expect_no_offenses(<<-RUBY.strip_indent)
         func({a: 0,
+          b: 1})
+      RUBY
+    end
+
+    it 'accepts misaligned keys in implicit hash for super' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        super(a: 0,
+          b: 1)
+      RUBY
+    end
+
+    it 'accepts misaligned keys in explicit hash for super' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        super({a: 0,
+          b: 1})
+      RUBY
+    end
+
+    it 'accepts misaligned keys in implicit hash for yield' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        yield(a: 0,
+          b: 1)
+      RUBY
+    end
+
+    it 'accepts misaligned keys in explicit hash for yield' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        yield({a: 0,
           b: 1})
       RUBY
     end
@@ -106,6 +166,36 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
           ^^^^ Align the elements of a hash literal if they span more than one line.
       RUBY
     end
+
+    it 'accepts misaligned keys in implicit hash for super' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        super(a: 0,
+          b: 1)
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in explicit hash for super' do
+      expect_offense(<<-RUBY.strip_indent)
+        super({a: 0,
+          b: 1})
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
+
+    it 'accepts misaligned keys in implicit hash for yield' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        yield(a: 0,
+          b: 1)
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in explicit hash for yield' do
+      expect_offense(<<-RUBY.strip_indent)
+        yield({a: 0,
+          b: 1})
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
   end
 
   context 'ignore explicit last argument hash' do
@@ -126,6 +216,36 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     it 'accepts misaligned keys in explicit hash' do
       expect_no_offenses(<<-RUBY.strip_indent)
         func({a: 0,
+          b: 1})
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in implicit hash for super' do
+      expect_offense(<<-RUBY.strip_indent)
+        super(a: 0,
+          b: 1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
+
+    it 'accepts misaligned keys in explicit hash for super' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        super({a: 0,
+          b: 1})
+      RUBY
+    end
+
+    it 'registers offense for misaligned keys in implicit hash for yield' do
+      expect_offense(<<-RUBY.strip_indent)
+        yield(a: 0,
+          b: 1)
+          ^^^^ Align the elements of a hash literal if they span more than one line.
+      RUBY
+    end
+
+    it 'accepts misaligned keys in explicit hash for yield' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        yield({a: 0,
           b: 1})
       RUBY
     end
@@ -624,5 +744,13 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
         }
       RUBY
     end
+  end
+
+  it 'register no offense for superclass call without args' do
+    expect_no_offenses('super')
+  end
+
+  it 'register no offense for yield without args' do
+    expect_no_offenses('yield')
   end
 end
