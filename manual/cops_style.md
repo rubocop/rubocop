@@ -2185,7 +2185,7 @@ AllowedVariables | `[]` | Array
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#instance-vars](https://github.com/rubocop-hq/ruby-style-guide#instance-vars)
-* [http://www.zenspider.com/Languages/Ruby/QuickRef.html](http://www.zenspider.com/Languages/Ruby/QuickRef.html)
+* [https://www.zenspider.com/ruby/quickref.html](https://www.zenspider.com/ruby/quickref.html)
 
 ## Style/GuardClause
 
