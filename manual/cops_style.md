@@ -2861,6 +2861,83 @@ IgnoredMethods | `[]` | Array
 
 * [https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens](https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens)
 
+## Style/MethodCallWithoutParentheses
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | No | Yes (Unsafe) | 0.61 | -
+
+This cop checks for unwanted parentheses method calls with parameters.
+
+### Examples
+
+```ruby
+# bad
+array.delete(e)
+
+# good
+array.delete e
+
+# bad
+foo.enforce(strict: true)
+
+# good
+foo.enforce strict: true
+```
+#### AllowParenthesesInMultilineCall: false (default)
+
+```ruby
+# bad
+foo.enforce(
+  strict: true
+)
+
+# good
+foo.enforce \
+  strict: true
+```
+#### AllowParenthesesInMultilineCall: true
+
+```ruby
+# good
+foo.enforce(
+  strict: true
+)
+
+# good
+foo.enforce \
+  strict: true
+```
+#### AllowParenthesesInChaining: false (default)
+
+```ruby
+# bad
+foo().bar(1)
+
+# good
+foo().bar 1
+```
+#### AllowParenthesesInChaining: true
+
+```ruby
+# good
+foo().bar(1)
+
+# good
+foo().bar 1
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowParenthesesInMultilineCall | `false` | Boolean
+AllowParenthesesInChaining | `false` | Boolean
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens](https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens)
+
 ## Style/MethodCalledOnDoEndBlock
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

@@ -453,6 +453,7 @@ In the following section you find all available cops:
 * [Style/LineEndConcatenation](cops_style.md#stylelineendconcatenation)
 * [Style/MethodCallWithArgsParentheses](cops_style.md#stylemethodcallwithargsparentheses)
 * [Style/MethodCallWithoutArgsParentheses](cops_style.md#stylemethodcallwithoutargsparentheses)
+* [Style/MethodCallWithoutParentheses](cops_style.md#stylemethodcallwithoutparentheses)
 * [Style/MethodCalledOnDoEndBlock](cops_style.md#stylemethodcalledondoendblock)
 * [Style/MethodDefParentheses](cops_style.md#stylemethoddefparentheses)
 * [Style/MethodMissingSuper](cops_style.md#stylemethodmissingsuper)

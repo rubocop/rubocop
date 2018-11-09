@@ -3359,6 +3359,16 @@ Style/MethodCallWithoutArgsParentheses:
   VersionAdded: '0.47'
   VersionChanged: '0.55'
 
+Style/MethodCallWithoutParentheses:
+  Description: 'Do not use parentheses for method calls.'
+  StyleGuide: '#method-invocation-parens'
+  Safe: false
+  SafeAutoCorrect: false
+  Enabled: false
+  AllowParenthesesInMultilineCall: false
+  AllowParenthesesInChaining: false
+  VersionAdded: '0.61'
+
 Style/MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
   StyleGuide: '#single-line-blocks'

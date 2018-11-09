@@ -6,6 +6,7 @@
 
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
 * [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on Style/Lambda. ([@r7kamura][])
+* [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Add a cop to enforce method calls without parentheses. ([@gsamokovarov][])
 
 ### Bug fixes
 
@@ -3655,3 +3656,4 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@gsamokovarov]: https://github.com/gsamokovarov
