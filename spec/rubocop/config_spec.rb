@@ -108,6 +108,9 @@ RSpec.describe RuboCop::Config do
             Include:
               - lib/file.xyz
             Severity: warning
+            inherit_mode:
+              merge:
+                - Exclude
             StyleGuide: https://example.com/some-style.html
         YAML
       end
