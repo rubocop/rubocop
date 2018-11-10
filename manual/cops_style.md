@@ -2530,7 +2530,7 @@ raise ArgumentError, 'Error message here'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.26 | -
+Enabled | Yes | Yes  | 0.26 | 0.61
 
 Use `Kernel#loop` for infinite loops.
 
