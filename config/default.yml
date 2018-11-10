@@ -3268,7 +3268,8 @@ Style/InfiniteLoop:
   StyleGuide: '#infinite-loop'
   Enabled: true
   VersionAdded: '0.26'
-  SafeAutoCorrect: false
+  VersionChanged: '0.61'
+  SafeAutoCorrect: true
 
 Style/InlineComment:
   Description: 'Avoid trailing inline comments.'

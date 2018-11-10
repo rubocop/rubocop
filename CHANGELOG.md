@@ -10,6 +10,7 @@
 * [#6436](https://github.com/rubocop-hq/rubocop/pull/6436): Fix exit status code to be 130 when rubocop is interrupted. ([@deivid-rodriguez][])
 * [#6443](https://github.com/rubocop-hq/rubocop/pull/6443): Fix an incorrect autocorrect for `Style/BracesAroundHashParameters` when the opening brace is bofore the first hash element at same line. ([@koic][])
 * [#6445](https://github.com/rubocop-hq/rubocop/pull/6445): Treat `yield` and `super` like regular method calls in `Style/AlignHash`. ([@mvz][])
+* [#3301](https://github.com/rubocop-hq/rubocop/issues/3301): Don't suggest or make semantic changes to the code in `Style/InfiniteLoop`. ([@jonas054][])
 
 ## 0.60.0 (2018-10-26)
 
