@@ -188,8 +188,8 @@ module RuboCop
         elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0.pre1')
           YAML.safe_load(
             yaml_code,
-            whitelist_classes: [Regexp, Symbol],
-            whitelist_symbols: [],
+            permitted_classes: [Regexp, Symbol],
+            permitted_symbols: [],
             aliases: false,
             filename: filename
           )
