@@ -5,6 +5,7 @@
 ### New features
 
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
+* [#6470](https://github.com/rubocop-hq/rubocop/pull/6470): Add new `Naming/ConstantWording` cop. ([@JuanitoFatas][])
 
 ### Bug fixes
 
@@ -3645,3 +3646,4 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@JuanitoFatas]: https://github.com/JuanitoFatas

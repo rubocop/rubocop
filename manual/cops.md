@@ -285,6 +285,7 @@ In the following section you find all available cops:
 * [Naming/BinaryOperatorParameterName](cops_naming.md#namingbinaryoperatorparametername)
 * [Naming/ClassAndModuleCamelCase](cops_naming.md#namingclassandmodulecamelcase)
 * [Naming/ConstantName](cops_naming.md#namingconstantname)
+* [Naming/ConstantWording](cops_naming.md#namingconstantwording)
 * [Naming/FileName](cops_naming.md#namingfilename)
 * [Naming/HeredocDelimiterCase](cops_naming.md#namingheredocdelimitercase)
 * [Naming/HeredocDelimiterNaming](cops_naming.md#namingheredocdelimiternaming)

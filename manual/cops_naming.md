@@ -156,6 +156,31 @@ INCH_IN_CM = 2.54
 
 * [https://github.com/rubocop-hq/ruby-style-guide#screaming-snake-case](https://github.com/rubocop-hq/ruby-style-guide#screaming-snake-case)
 
+## Naming/ConstantWording
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.60 | -
+
+This cop checks whether constant names are written using
+clearer wording.
+
+### Examples
+
+```ruby
+# bad
+Whitelist = []
+WhiteList = []
+Whitelisted = []
+Blacklist = []
+BLACKLISTED = []
+
+# good
+Allowlist = []
+PermittedList = []
+Denylist = []
+```
+
 ## Naming/FileName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
