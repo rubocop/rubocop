@@ -98,8 +98,17 @@ module RuboCop
         items = elements(node).map(&:source_range)
         return false if items.empty?
 
+        return false if single_argument_not_multiline?(items, node)
+
         items << node.loc.begin << node.loc.end
         (items.map(&:first_line) + items.map(&:last_line)).uniq.size > 1
+      end
+
+      # A single argument with the closing bracket on the same line as the end
+      # of the argument is not considered multiline, even if the argument
+      # itself might span multiple lines.
+      def single_argument_not_multiline?(items, node)
+        items.size == 1 && !Util.begins_its_line?(node.loc.end)
       end
 
       def elements(node)
