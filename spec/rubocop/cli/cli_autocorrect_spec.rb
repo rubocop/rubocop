@@ -238,7 +238,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             func({
                    @abc => 0,
                    @xyz => 1,
-                 },)
+                 })
             func(
               {
                 abc: 0,
