@@ -5,6 +5,7 @@
 ### New features
 
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
+* [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on Style/Lambda. ([@r7kamura][])
 
 ### Bug fixes
 

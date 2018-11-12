@@ -80,9 +80,6 @@ module RuboCop
           block_method, _args = *node
           selector = block_method.source
 
-          # Don't autocorrect if this would change the meaning of the code
-          return if selector == '->' && arg_to_unparenthesized_call?(node)
-
           lambda do |corrector|
             if selector == 'lambda'
               autocorrect_method_to_literal(corrector, node)
@@ -128,6 +125,9 @@ module RuboCop
           end
           corrector.replace(block_method.source_range, 'lambda')
           corrector.remove(args.source_range) if args.source_range
+
+          replace_keywords_with_braces(corrector, node)
+
           return if args.children.empty?
 
           arg_str = " |#{lambda_arg_string(args)}|"
@@ -205,6 +205,21 @@ module RuboCop
 
         def unparenthesized_literal_args?(args)
           args.source_range && args.source_range.begin && !parentheses?(args)
+        end
+
+        def check_whitespace_after_do(node)
+          range = node.loc.begin
+          range.source_buffer.source[range.begin_pos + 2].match(/\s/)
+        end
+
+        def replace_keywords_with_braces(corrector, node)
+          return if node.braces? || !arg_to_unparenthesized_call?(node)
+
+          unless check_whitespace_after_do(node)
+            corrector.insert_after(node.loc.begin, ' ')
+          end
+          corrector.replace(node.loc.begin, '{')
+          corrector.replace(node.loc.end, '}')
         end
       end
     end
