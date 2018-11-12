@@ -134,7 +134,7 @@ module RuboCop
       OPERATOR  = ':'.freeze
 
       def encoding
-        match('encoding')
+        match('(?:en)?coding')
       end
 
       private
