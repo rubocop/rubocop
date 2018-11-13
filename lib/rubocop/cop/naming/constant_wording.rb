@@ -6,6 +6,15 @@ module RuboCop
       # This cop checks whether constant names are written using
       # clearer wording.
       #
+      # You can customize the mapping from undesired name to why
+      # this method is not desired.
+      #
+      # e.g. not to use `whitelist`:
+      #
+      #   Naming/ConstantWording:
+      #     PreferredMethods:
+      #       whitelist: 'Please use clearer concepts, such as allow, permitted, approved.'
+      #
       # @example
       #   # bad
       #   Whitelist = []
@@ -14,27 +23,18 @@ module RuboCop
       #   Blacklist = []
       #   BLACKLISTED = []
       #
-      #   # good
-      #   Allowlist = []
-      #   PermittedList = []
-      #   Denylist = []
       class ConstantWording < Cop
-        MSG = 'Please use clearer names for constants.'.freeze
+        include MethodPreference
+
+        MSG = 'Prefer `%<prefer>` over `%<current>`.'.freeze
 
         def on_casgn(node)
           constant_name = get_constant_name(node)
 
-          add_offense(node, location: :name) if not_clear?(constant_name)
+          check_constant_name(constant_name)
         end
 
         private
-
-        NAME_DENY_LIST = %i[
-          whitelist
-          blacklist
-          blacklisted
-          whitelisted
-        ].freeze
 
         def get_constant_name(node)
           if node.parent && node.parent.or_asgn_type?
@@ -47,8 +47,18 @@ module RuboCop
           const_name
         end
 
-        def not_clear?(const_name)
-          NAME_DENY_LIST.include?(const_name.downcase)
+        def message(node)
+          constant_name = get_constant_name(node)
+
+          format(MSG,
+                 prefer: preferred_method(constant_name),
+                 current: constant_name)
+        end
+
+        def check_constant_name(constant_name)
+          return unless preferred_methods[constant_name.downcase]
+
+          add_offense(node, location: :name)
         end
       end
     end

@@ -1755,6 +1755,8 @@ Naming/ConstantWording:
   Description: 'Constant name should use clearer wording.'
   Enabled: true
   VersionAdded: '0.60'
+  PreferredMethods:
+    whitelist: 'Please use clearer concepts, such as allow, permitted, approved.'
 
 Naming/FileName:
   Description: 'Use snake_case for source file names.'

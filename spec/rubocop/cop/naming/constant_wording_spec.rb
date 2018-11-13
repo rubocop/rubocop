@@ -5,16 +5,8 @@ RSpec.describe RuboCop::Cop::Naming::ConstantWording do
 
   it 'report const names not clear' do
     expect_offense(<<-RUBY.strip_indent)
-      ::Whitelist = 42
-        ^^^^^^^^^ Please use clearer names for constants.
-      WhiteList = 42
-      ^^^^^^^^^ Please use clearer names for constants.
-      Whitelisted = 42
-      ^^^^^^^^^^^ Please use clearer names for constants.
-      Blacklist = 42
-      ^^^^^^^^^ Please use clearer names for constants.
-      Blacklisted = 42
-      ^^^^^^^^^^^ Please use clearer names for constants.
+      Whitelist = 42
+      ^^^^^^^^^ Please use clearer concepts, such as allow, permitted, approved.
     RUBY
   end
 end
