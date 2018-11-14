@@ -79,7 +79,6 @@ module RuboCop
             run_line_length_cop_auto_gen_config(paths)
           else
             puts Rainbow(SKIPPED_PHASE_1).yellow
-            ''
           end
         run_all_cops_auto_gen_config(line_length_contents, paths)
       else
@@ -233,7 +232,6 @@ module RuboCop
         puts '# Supports --auto-correct' if cop.new.support_autocorrect?
         puts "#{cop.cop_name}:"
         puts config_lines(cop)
-        puts
       end
     end
 
