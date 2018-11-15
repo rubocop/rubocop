@@ -8,14 +8,14 @@ RSpec.describe RuboCop::Cop::Performance::OpenStruct do
   it 'registers an offense for OpenStruct.new' do
     expect_offense(<<-RUBY.strip_indent)
       OpenStruct.new(key: "value")
-                 ^^^ `OpenStruct.new` clears Ruby global method cache. Use `Struct` instead.
+                 ^^^ For performance reasons, consider using `Struct` instead of `OpenStruct.new`.
     RUBY
   end
 
   it 'registers an offense for a fully qualified ::OpenStruct.new' do
     expect_offense(<<-RUBY.strip_indent)
       ::OpenStruct.new(key: "value")
-                   ^^^ `OpenStruct.new` clears Ruby global method cache. Use `Struct` instead.
+                   ^^^ For performance reasons, consider using `Struct` instead of `OpenStruct.new`.
     RUBY
   end
 
