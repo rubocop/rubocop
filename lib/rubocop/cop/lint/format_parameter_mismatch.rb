@@ -29,6 +29,7 @@ module RuboCop
         SHOVEL = '<<'.freeze
         PERCENT = '%'.freeze
         PERCENT_PERCENT = '%%'.freeze
+        DIGIT_DOLLAR_FLAG = /%(\d+)\$/.freeze
         STRING_TYPES = %i[str dstr].freeze
         NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/.freeze
 
@@ -132,11 +133,21 @@ module RuboCop
           return :unknown unless node.str_type?
           return 1 if node.source =~ NAMED_INTERPOLATION
 
+          max_digit_dollar_num = max_digit_dollar_num(node)
+          return max_digit_dollar_num if max_digit_dollar_num &&
+                                         max_digit_dollar_num.nonzero?
+
           node
             .source
             .scan(FIELD_REGEX)
             .reject { |x| x.first == PERCENT_PERCENT }
             .reduce(0) { |acc, elem| acc + arguments_count(elem[2]) }
+        end
+
+        def max_digit_dollar_num(node)
+          node.source.scan(DIGIT_DOLLAR_FLAG).map do |digit_dollar_num|
+            digit_dollar_num.first.to_i
+          end.max
         end
 
         # number of arguments required for the format sequence

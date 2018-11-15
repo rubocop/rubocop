@@ -146,6 +146,25 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
+  context 'when using (digit)$ flag' do
+    it 'does not register an offense' do
+      expect_no_offenses("format('%1$s %2$s', 'foo', 'bar')")
+    end
+
+    it 'does not register an offense when match between the maximum value ' \
+       'specified by (digit)$ flag and the number of arguments' do
+      expect_no_offenses("format('%1$s %1$s', 'foo')")
+    end
+
+    it 'registers an offense when mismatch between the maximum value ' \
+       'specified by (digit)$ flag and the number of arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        format('%1$s %2$s', 'foo', 'bar', 'baz')
+        ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (2).
+      RUBY
+    end
+  end
+
   context 'when format is not a string literal' do
     it 'does not register an offense' do
       expect_no_offenses('puts str % [1, 2]')
