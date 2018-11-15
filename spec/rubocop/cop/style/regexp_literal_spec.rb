@@ -47,6 +47,18 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
   end
 
+  describe 'when PercentLiteralDelimiters is configured with slashes' do
+    let(:cop_config) { { 'EnforcedStyle' => 'percent_r' } }
+    let(:percent_literal_delimiters_config) do
+      { 'PreferredDelimiters' => { '%r' => '//' } }
+    end
+
+    it 'respects the configuration when auto-correcting' do
+      new_source = autocorrect_source('/\//')
+      expect(new_source).to eq('%r/\//')
+    end
+  end
+
   context 'when EnforcedStyle is set to slashes' do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
 
@@ -66,9 +78,9 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         RUBY
       end
 
-      it 'cannot auto-correct' do
+      it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect(new_source).to eq('foo = %r{home/}')
       end
 
       describe 'when configured to allow inner slashes' do
@@ -76,6 +88,23 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
         it 'is accepted' do
           expect_no_offenses('foo = /home\\//')
+        end
+      end
+    end
+
+    describe 'a single-line `%r//` regex with slashes' do
+      let(:source) { 'foo = %r/\//' }
+
+      it 'is accepted' do
+        expect_no_offenses(source)
+      end
+
+      context 'when configured to allow inner slashes' do
+        before { cop_config['AllowInnerSlashes'] = true }
+
+        it 'remains slashes after auto-correction' do
+          new_source = autocorrect_source(source)
+          expect(new_source).to eq('foo = /\//')
         end
       end
     end
@@ -106,9 +135,14 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
-      it 'cannot auto-correct' do
+      it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect(new_source).to eq(<<-'RUBY'.strip_indent)
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
 
       describe 'when configured to allow inner slashes' do
@@ -158,9 +192,9 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           RUBY
         end
 
-        it 'cannot auto-correct' do
+        it 'auto-corrects' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(source)
+          expect(new_source).to eq('foo = /home\//')
         end
       end
     end
@@ -213,9 +247,14 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           expect(cop.messages).to eq(['Use `//` around regular expression.'])
         end
 
-        it 'cannot auto-correct' do
+        it 'auto-corrects' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(source)
+          expect(new_source).to eq(<<-'RUBY'.strip_indent)
+            foo = /
+              https?:\/\/
+              example\.com
+            /x
+          RUBY
         end
       end
     end
@@ -250,9 +289,9 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         RUBY
       end
 
-      it 'cannot auto-correct' do
+      it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect(new_source).to eq('foo = %r{home/}')
       end
     end
 
@@ -292,9 +331,14 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
-      it 'cannot auto-correct' do
+      it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect(new_source).to eq(<<-'RUBY'.strip_indent)
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
     end
 
@@ -352,9 +396,9 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         RUBY
       end
 
-      it 'cannot auto-correct' do
+      it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect(new_source).to eq('foo = %r{home/}')
       end
 
       describe 'when configured to allow inner slashes' do
@@ -402,9 +446,14 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages).to eq(['Use `%r` around regular expression.'])
       end
 
-      it 'cannot auto-correct' do
+      it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect(new_source).to eq(<<-'RUBY'.strip_indent)
+          foo = %r{
+            https?://
+            example\.com
+          }x
+        RUBY
       end
     end
 
@@ -441,9 +490,9 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           RUBY
         end
 
-        it 'cannot auto-correct' do
+        it 'auto-corrects' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(source)
+          expect(new_source).to eq('foo = /home\//')
         end
       end
     end

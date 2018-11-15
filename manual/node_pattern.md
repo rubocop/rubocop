@@ -157,7 +157,7 @@ You can also use it at the node level, asking for each child:
 - `(int odd?)` will match only with odd numbers, asking it to the current
   number.
 
-## `[]` for "AND"`
+## `[]` for "AND"
 
 Imagine you want to check if the number is `odd?` and also positive numbers:
 
