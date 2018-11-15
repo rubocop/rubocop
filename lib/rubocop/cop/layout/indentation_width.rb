@@ -96,6 +96,12 @@ module RuboCop
           check_members(node.loc.keyword, members)
         end
 
+        def on_sclass(node)
+          _class_name, *members = *node
+
+          check_members(node.loc.keyword, members)
+        end
+
         def on_send(node)
           super
           return unless node.adjacent_def_modifier?

@@ -1107,6 +1107,32 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
             .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
           expect(cop.offenses.map(&:line)).to eq([9, 14])
         end
+
+        it 'registers an offense for normal non-rails indentation ' \
+           'when defined in a singleton class' do
+          inspect_source(<<-RUBY.strip_indent)
+            class << self
+              public
+
+              def e
+              end
+
+              protected
+
+              def f
+              end
+
+              private
+
+              def g
+              end
+            end
+          RUBY
+
+          expect(cop.messages)
+            .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
+          expect(cop.offenses.map(&:line)).to eq([9, 14])
+        end
       end
     end
 
