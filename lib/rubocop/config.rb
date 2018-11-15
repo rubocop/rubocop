@@ -14,7 +14,7 @@ module RuboCop
     include PathUtil
     include FileFinder
 
-    COMMON_PARAMS = %w[Exclude Include Severity
+    COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
     # 2.2 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.2
