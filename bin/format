@@ -1,0 +1,3 @@
+#!/bin/bash
+set -e
+prettier --write *.yml **/*.yml

@@ -1,6 +1,4 @@
----
-
-version: "{build}"
+version: '{build}'
 
 install:
   - set PATH=C:\Ruby%ruby_version%\bin;%PATH%

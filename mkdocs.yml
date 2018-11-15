@@ -1,34 +1,34 @@
-site_name: "RuboCop: The Ruby Linter that Serves and Protects"
+site_name: 'RuboCop: The Ruby Linter that Serves and Protects'
 repo_url: https://github.com/rubocop-hq/rubocop
 edit_uri: edit/master/manual/
-copyright: "Copyright &copy; 2012-2018 Bozhidar Batsov and RuboCop contributors"
+copyright: 'Copyright &copy; 2012-2018 Bozhidar Batsov and RuboCop contributors'
 docs_dir: manual
 pages:
-- Home: index.md
-- Installation: installation.md
-- Basic Usage: basic_usage.md
-- Cops: cops.md
-- Formatters: formatters.md
-- Configuration: configuration.md
-- Caching: caching.md
-- Extensions: extensions.md
-- Integration with other tools: integration_with_other_tools.md
-- Automated Code Review: automated_code_review.md
-- Support: support.md
-- Contributing: contributing.md
-- Development: development.md
-- Node Pattern: node_pattern.md
-- Cops Documentation:
-    - Layout Cops: cops_layout.md
-    - Linting Cops: cops_lint.md
-    - Metrics Cops: cops_metrics.md
-    - Naming Cops: cops_naming.md
-    - Performance Cops: cops_performance.md
-    - Rails Cops: cops_rails.md
-    - Security Cops: cops_security.md
-    - Style Cops: cops_style.md
-    - Bundler Cops: cops_bundler.md
-    - Gemspec Cops: cops_gemspec.md
+  - Home: index.md
+  - Installation: installation.md
+  - Basic Usage: basic_usage.md
+  - Cops: cops.md
+  - Formatters: formatters.md
+  - Configuration: configuration.md
+  - Caching: caching.md
+  - Extensions: extensions.md
+  - Integration with other tools: integration_with_other_tools.md
+  - Automated Code Review: automated_code_review.md
+  - Support: support.md
+  - Contributing: contributing.md
+  - Development: development.md
+  - Node Pattern: node_pattern.md
+  - Cops Documentation:
+      - Layout Cops: cops_layout.md
+      - Linting Cops: cops_lint.md
+      - Metrics Cops: cops_metrics.md
+      - Naming Cops: cops_naming.md
+      - Performance Cops: cops_performance.md
+      - Rails Cops: cops_rails.md
+      - Security Cops: cops_security.md
+      - Style Cops: cops_style.md
+      - Bundler Cops: cops_bundler.md
+      - Gemspec Cops: cops_gemspec.md
 extra_css:
   - css/extra.css
 markdown_extensions:

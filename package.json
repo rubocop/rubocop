@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "prettier": "^1.15.2"
+  }
+}
