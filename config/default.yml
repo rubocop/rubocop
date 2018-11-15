@@ -3347,9 +3347,15 @@ Style/MethodCallWithArgsParentheses:
   StyleGuide: '#method-invocation-parens'
   Enabled: false
   VersionAdded: '0.47'
-  VersionChanged: '0.48'
+  VersionChanged: '0.61'
   IgnoreMacros: true
   IgnoredMethods: []
+  AllowParenthesesInMultilineCall: false
+  AllowParenthesesInChaining: false
+  EnforcedStyle: require_parentheses
+  SupportedStyles:
+    - require_parentheses
+    - omit_parentheses
 
 Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
@@ -3358,16 +3364,6 @@ Style/MethodCallWithoutArgsParentheses:
   IgnoredMethods: []
   VersionAdded: '0.47'
   VersionChanged: '0.55'
-
-Style/MethodCallWithoutParentheses:
-  Description: 'Do not use parentheses for method calls.'
-  StyleGuide: '#method-invocation-parens'
-  Safe: false
-  SafeAutoCorrect: false
-  Enabled: false
-  AllowParenthesesInMultilineCall: false
-  AllowParenthesesInChaining: false
-  VersionAdded: '0.61'
 
 Style/MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'

@@ -2781,13 +2781,29 @@ some_str = 'ala' \
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.47 | 0.48
+Disabled | Yes | Yes  | 0.47 | 0.61
 
-This cop checks presence of parentheses in method calls containing
-parameters. By default, macro methods are ignored. Additional methods
-can be added to the `IgnoredMethods` list.
+This cop enforces the presence (default) or absence of parentheses in
+method calls containing parameters.
+
+In the default style (require_parentheses), macro methods are ignored.
+Additional methods can be added to the `IgnoredMethods` list. This
+option is valid only in the default style.
+
+In the alternative style (omit_parentheses), there are two additional
+options.
+
+1. `AllowParenthesesInChaining` is `false` by default. Setting it to
+   `true` allows the presence of parentheses in the last call during
+   method chaining.
+
+2. `AllowParenthesesInMultilineCall` is `false` by default. Setting it
+    to `true` allows the presence of parentheses in multi-line method
+    calls.
 
 ### Examples
+
+#### EnforcedStyle: require_parentheses
 
 ```ruby
 # bad
@@ -2821,6 +2837,59 @@ class Foo
   bar :baz
 end
 ```
+#### EnforcedStyle: omit_parentheses
+
+```ruby
+# bad
+array.delete(e)
+
+# good
+array.delete e
+
+# bad
+foo.enforce(strict: true)
+
+# good
+foo.enforce strict: true
+
+# AllowParenthesesInMultilineCall: false (default)
+
+# bad
+foo.enforce(
+  strict: true
+)
+
+# good
+foo.enforce \
+  strict: true
+
+# AllowParenthesesInMultilineCall: true
+
+# good
+foo.enforce(
+  strict: true
+)
+
+# good
+foo.enforce \
+  strict: true
+
+# AllowParenthesesInChaining: false (default)
+
+# bad
+foo().bar(1)
+
+# good
+foo().bar 1
+
+# AllowParenthesesInChaining: true
+
+# good
+foo().bar(1)
+
+# good
+foo().bar 1
+```
 
 ### Configurable attributes
 
@@ -2828,6 +2897,9 @@ Name | Default value | Configurable values
 --- | --- | ---
 IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
+AllowParenthesesInMultilineCall | `false` | Boolean
+AllowParenthesesInChaining | `false` | Boolean
+EnforcedStyle | `require_parentheses` | `require_parentheses`, `omit_parentheses`
 
 ### References
 
@@ -2856,83 +2928,6 @@ object.some_method
 Name | Default value | Configurable values
 --- | --- | ---
 IgnoredMethods | `[]` | Array
-
-### References
-
-* [https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens](https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens)
-
-## Style/MethodCallWithoutParentheses
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Disabled | No | Yes (Unsafe) | 0.61 | -
-
-This cop checks for unwanted parentheses method calls with parameters.
-
-### Examples
-
-```ruby
-# bad
-array.delete(e)
-
-# good
-array.delete e
-
-# bad
-foo.enforce(strict: true)
-
-# good
-foo.enforce strict: true
-```
-#### AllowParenthesesInMultilineCall: false (default)
-
-```ruby
-# bad
-foo.enforce(
-  strict: true
-)
-
-# good
-foo.enforce \
-  strict: true
-```
-#### AllowParenthesesInMultilineCall: true
-
-```ruby
-# good
-foo.enforce(
-  strict: true
-)
-
-# good
-foo.enforce \
-  strict: true
-```
-#### AllowParenthesesInChaining: false (default)
-
-```ruby
-# bad
-foo().bar(1)
-
-# good
-foo().bar 1
-```
-#### AllowParenthesesInChaining: true
-
-```ruby
-# good
-foo().bar(1)
-
-# good
-foo().bar 1
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-AllowParenthesesInMultilineCall | `false` | Boolean
-AllowParenthesesInChaining | `false` | Boolean
 
 ### References
 
