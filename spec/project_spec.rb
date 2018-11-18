@@ -84,7 +84,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
     it 'has link definitions for all implicit links' do
       implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
       implicit_link_names.each do |name|
-        expect(changelog).to include("[#{name}]: http")
+        expect(changelog.include?("[#{name}]: http"))
+          .to be(true), "CHANGELOG.md is missing a link for #{name}. " \
+                        'Please add this link to the bottom of the file.'
       end
     end
 
