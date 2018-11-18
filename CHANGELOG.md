@@ -22,6 +22,10 @@
 * [#6449](https://github.com/rubocop-hq/rubocop/pull/6449): Fix a false negative for `Layout/IndentationWidth` when setting `EnforcedStyle: rails` of `Layout/IndentationConsistency` and method definition indented to access modifier in a singleton class. ([@koic][])
 * [#6482](https://github.com/rubocop-hq/rubocop/issues/6482): Fix a false positive for `Lint/FormatParameterMismatch` when using (digit)$ flag. ([@koic][])
 
+### Changes
+
+* [#6492](https://github.com/rubocop-hq/rubocop/issues/6492): Auto-correct chunks of comment lines in `Layout/CommentIndentation` to avoid unnecessary iterations for `rubocop -a`. ([@jonas054][])
+
 ## 0.60.0 (2018-10-26)
 
 ### New features
