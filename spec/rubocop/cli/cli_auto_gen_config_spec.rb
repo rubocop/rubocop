@@ -200,7 +200,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(['--auto-gen-config'])).to eq(0)
           expect($stdout.string).to include(<<-YAML.strip_indent)
             Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
-            Phase 1 of 2: run Metrics/LineLength cop (skipped because the default Metrics/LineLength:Max is overridden)
+            Phase 1 of 2: run Metrics/LineLength cop (skipped because Metrics/LineLength is disabled)
             Phase 2 of 2: run all cops
           YAML
 
