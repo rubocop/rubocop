@@ -26,24 +26,44 @@ module RuboCop
           (send nil? :open $!str ...)
         PATTERN
 
-        def safe?(node)
-          if node.str_type?
-            !node.str_content.empty? && !node.str_content.start_with?('|')
-          elsif node.dstr_type?
-            safe?(node.child_nodes.first)
-          elsif node.send_type? && node.method_name == :+
-            safe?(node.child_nodes.first)
-          else
-            false
-          end
-        end
-
         def on_send(node)
           open?(node) do |code|
             return if safe?(code)
 
             add_offense(node, location: :selector)
           end
+        end
+
+        private
+
+        def safe?(node)
+          if simple_string?(node)
+            safe_argument?(node.str_content)
+          elsif composite_string?(node)
+            safe?(node.children.first)
+          else
+            false
+          end
+        end
+
+        def safe_argument?(argument)
+          !argument.empty? && !argument.start_with?('|')
+        end
+
+        def simple_string?(node)
+          node.str_type?
+        end
+
+        def composite_string?(node)
+          interpolated_string?(node) || concatenated_string?(node)
+        end
+
+        def interpolated_string?(node)
+          node.dstr_type?
+        end
+
+        def concatenated_string?(node)
+          node.send_type? && node.method?(:+) && node.receiver.str_type?
         end
       end
     end
