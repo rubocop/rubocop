@@ -44,21 +44,28 @@ module RuboCop
         end
 
         def autocorrect(node)
-          _receiver, method, *args = *node
-          static_name = static_method_name(method.to_s)
-          keywords = column_keywords(method)
+          keywords = column_keywords(node.method_name)
 
-          return if keywords.size != args.size
+          return if keywords.size != node.arguments.size
 
           lambda do |corrector|
-            corrector.replace(node.loc.selector, static_name)
-            keywords.each.with_index do |keyword, idx|
-              corrector.insert_before(args[idx].loc.expression, keyword)
-            end
+            autocorrect_method_name(corrector, node)
+            autocorrect_argument_keywords(corrector, node, keywords)
           end
         end
 
         private
+
+        def autocorrect_method_name(corrector, node)
+          corrector.replace(node.loc.selector,
+                            static_method_name(node.method_name.to_s))
+        end
+
+        def autocorrect_argument_keywords(corrector, node, keywords)
+          keywords.each.with_index do |keyword, idx|
+            corrector.insert_before(node.arguments[idx].loc.expression, keyword)
+          end
+        end
 
         def whitelist
           cop_config['Whitelist']
