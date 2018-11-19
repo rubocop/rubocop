@@ -22,7 +22,8 @@ module RuboCop
         'worst' => WorstOffendersFormatter,
         'tap' => TapFormatter,
         'quiet' => QuietFormatter,
-        'autogenconf' => AutoGenConfigFormatter
+        'autogenconf' => AutoGenConfigFormatter,
+        'bar' => ProgressbarFormatter
       }.freeze
 
       FORMATTER_APIS = %i[started finished].freeze

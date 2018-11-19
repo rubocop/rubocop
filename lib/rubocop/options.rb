@@ -399,6 +399,7 @@ module RuboCop
                '  [t]ap',
                '  [q]uiet',
                '  [a]utogenconf',
+               '  [b]ar',
                '  custom formatter class name'],
       out: ['Write output to a file instead of STDOUT.',
             'This option applies to the previously',

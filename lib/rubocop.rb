@@ -615,6 +615,8 @@ require_relative 'rubocop/cop/security/yaml_load'
 require_relative 'rubocop/cop/team'
 
 require_relative 'rubocop/formatter/base_formatter'
+# relies on base_formatter
+require_relative 'rubocop/formatter/progressbar_formatter'
 require_relative 'rubocop/formatter/simple_text_formatter'
 # relies on simple text
 require_relative 'rubocop/formatter/clang_style_formatter'
