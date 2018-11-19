@@ -52,19 +52,9 @@ module RuboCop
         # the data is the http parameters and environment sent in
         # the Rails 5 http call
         def autocorrect(node)
-          http_path, *data = *node.arguments
-
-          controller_action = http_path.source
-          params = convert_hash_data(data.first, 'params')
-          session = convert_hash_data(data.last, 'session') if data.size > 1
-          # the range of the text to replace, which is the whole line
-          code_to_replace = node.loc.expression
-          # what to replace with
-          format = parentheses_format(node)
-          new_code = format(format, name: node.method_name,
-                                    action: controller_action,
-                                    params: params, session: session)
-          ->(corrector) { corrector.replace(code_to_replace, new_code) }
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, correction(node))
+          end
         end
 
         private
@@ -101,7 +91,20 @@ module RuboCop
           format(', %<type>s: %<hash_data>s', type: type, hash_data: hash_data)
         end
 
-        def parentheses_format(node)
+        def correction(node)
+          http_path, *data = *node.arguments
+
+          controller_action = http_path.source
+          params = convert_hash_data(data.first, 'params')
+          session = convert_hash_data(data.last, 'session') if data.size > 1
+
+          format(correction_template(node), name: node.method_name,
+                                            action: controller_action,
+                                            params: params,
+                                            session: session)
+        end
+
+        def correction_template(node)
           if parentheses?(node)
             '%<name>s(%<action>s%<params>s%<session>s)'
           else
