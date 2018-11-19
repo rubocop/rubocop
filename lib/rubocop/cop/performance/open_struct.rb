@@ -28,8 +28,8 @@ module RuboCop
       #   end
       #
       class OpenStruct < Cop
-        MSG = '`OpenStruct.new` clears Ruby global method cache. ' \
-              'Use `Struct` instead.'.freeze
+        MSG = 'Consider using `Struct` over `OpenStruct` ' \
+              'to optimize the performance.'.freeze
 
         def_node_matcher :open_struct, <<-PATTERN
           (send (const {nil? cbase} :OpenStruct) :new ...)

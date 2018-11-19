@@ -482,7 +482,7 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.61 | -
+Disabled | No | No | 0.61 | -
 
 
 
