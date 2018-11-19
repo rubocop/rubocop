@@ -4,8 +4,12 @@ module RuboCop
   module Cop
     module Performance
       # This cop checks for `OpenStruct.new` calls.
-      # Usually `OpenStruct`s can be easily replaced by static `Structs` or
-      # which generally are much faster.
+      # Instantiation of an `OpenStruct` invalidates
+      # Ruby global method cache as it causes dynamic method
+      # definition during program runtime.
+      # This could have an effect on performance,
+      # especially in case of single-threaded
+      # applications with multiple `OpenStruct` instantiations.
 
       # @example
       #   # bad
@@ -24,8 +28,8 @@ module RuboCop
       #   end
       #
       class OpenStruct < Cop
-        MSG = 'For performance reasons, consider using `Struct` ' \
-              'instead of `OpenStruct.new`.'.freeze
+        MSG = '`OpenStruct.new` clears Ruby global method cache. ' \
+              'Use `Struct` instead.'.freeze
 
         def_node_matcher :open_struct, <<-PATTERN
           (send (const {nil? cbase} :OpenStruct) :new ...)
