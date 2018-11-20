@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
   end
 
-  context 'when EnforcedStyle is omit' do
+  context 'when EnforcedStyle is omit_parentheses' do
     let(:cop_config) do
       { 'EnforcedStyle' => 'omit_parentheses' }
     end
@@ -363,6 +363,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'accepts parens in blocks with braces' do
       expect_no_offenses('foo(1) { 2 }')
+    end
+
+    it 'accepts parens in calls with logical operators' do
+      expect_no_offenses('foo(a) && bar(b)')
+      expect_no_offenses('foo(a) || bar(b)')
+    end
+
+    it 'accepts parens in calls with arguments with logical operators' do
+      expect_no_offenses('foo(a, b || c)')
+      expect_no_offenses('foo a, b || c')
+      expect_no_offenses('foo a, b(1) || c(2, d(3))')
     end
 
     it 'auto-corrects single-line calls' do
