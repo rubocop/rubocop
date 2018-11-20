@@ -46,18 +46,6 @@ module RuboCop
         PREFER_EACH = 'Prefer `each` over `for`.'.freeze
         PREFER_FOR = 'Prefer `for` over `each`.'.freeze
 
-        def_node_matcher :deconstruct_for, <<-PATTERN
-          (for $_item $_enumerable _block)
-        PATTERN
-
-        def_node_matcher :deconstruct_each, <<-PATTERN
-          (block (send $_enumerable :each) $_ _block)
-        PATTERN
-
-        def_node_matcher :extract_variables, <<-PATTERN
-          (args $_)
-        PATTERN
-
         def on_for(node)
           if style == :each
             add_offense(node, message: PREFER_EACH) do
@@ -69,13 +57,12 @@ module RuboCop
         end
 
         def on_block(node)
-          return if node.single_line?
-
-          return unless node.send_node.method?(:each) &&
-                        !node.send_node.arguments?
+          return unless suspect_enumerable?(node)
 
           if style == :for
-            incorrect_style_detected(node)
+            add_offense(node, message: PREFER_FOR) do
+              opposite_style_detected
+            end
           else
             correct_style_detected
           end
@@ -83,73 +70,17 @@ module RuboCop
 
         def autocorrect(node)
           if style == :each
-            autocorrect_to_each(node)
+            ForToEachCorrector.new(node)
           else
-            autocorrect_to_for(node)
+            EachToForCorrector.new(node)
           end
         end
 
         private
 
-        def incorrect_style_detected(node)
-          add_offense(node, message: PREFER_FOR) do
-            opposite_style_detected
-          end
-        end
-
-        def autocorrect_to_each(node)
-          item, enumerable = deconstruct_for(node)
-
-          end_pos = end_position(node, enumerable)
-
-          replacement_range = replacement_range(node, end_pos)
-
-          enum_source = enumerable_source(enumerable)
-
-          correction = "#{enum_source}.each do |#{item.source}|"
-          ->(corrector) { corrector.replace(replacement_range, correction) }
-        end
-
-        def end_position(node, enumerable)
-          if node.do?
-            node.loc.begin.end_pos
-          elsif enumerable.begin_type?
-            enumerable.loc.end.end_pos
-          else
-            enumerable.loc.expression.end.end_pos
-          end
-        end
-
-        def enumerable_source(enumerable)
-          return "(#{enumerable.source})" if wrap_into_parentheses?(enumerable)
-
-          enumerable.source
-        end
-
-        def wrap_into_parentheses?(enumerable)
-          enumerable.irange_type? || enumerable.erange_type?
-        end
-
-        def autocorrect_to_for(node)
-          enumerable, items = deconstruct_each(node)
-          variables = extract_variables(items)
-
-          if variables.nil?
-            replacement_range = replacement_range(node, node.loc.begin.end_pos)
-            correction = "for _ in #{enumerable.source} do"
-          else
-            replacement_range = replacement_range(node,
-                                                  items.loc.expression.end_pos)
-            correction = "for #{variables.source} in #{enumerable.source} do"
-          end
-
-          ->(corrector) { corrector.replace(replacement_range, correction) }
-        end
-
-        def replacement_range(node, end_pos)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    node.loc.expression.begin_pos,
-                                    end_pos)
+        def suspect_enumerable?(node)
+          node.multiline? &&
+            node.send_node.method?(:each) && !node.send_node.arguments?
         end
       end
     end
