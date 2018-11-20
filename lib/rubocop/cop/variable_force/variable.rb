@@ -37,6 +37,7 @@ module RuboCop
           !@references.empty?
         end
 
+        # rubocop:disable Metrics/AbcSize
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
@@ -56,6 +57,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def capture_with_block!
           @captured_by_block = true
