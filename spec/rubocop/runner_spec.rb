@@ -159,5 +159,63 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         end.to raise_error RuboCop::Runner::InfiniteCorrectionLoop
       end
     end
+
+    context 'if there is offenses and unneeded disables' do
+      subject(:runner) do
+        described_class.new(options, RuboCop::ConfigStore.new)
+      end
+
+      let(:source) { <<-RUBY.strip_indent }
+        class FooBar
+          def foo
+            'alpha beta'
+          end
+
+          # rubocop:disable Metrics/AbcSize
+          def bar
+            'lorem ipsum'
+          end
+          # rubocop:enable Metrics/AbcSize
+        end
+      RUBY
+
+      it 'corrects in a loop unneeded disables and regular offenses' do
+        runner.run([])
+        expect(formatter_output).to eq <<-RESULT.strip_indent
+          Inspecting 1 file
+          W
+
+          Offenses:
+
+          example.rb:1:1: C: Style/Documentation: Missing top-level class documentation comment.
+          class FooBar
+          ^^^^^
+          example.rb:5:3: C: [Corrected] Layout/EmptyLineBetweenDefs: Use empty lines between method definitions.
+            def bar
+            ^^^
+          example.rb:6:3: W: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/AbcSize.
+            # rubocop:disable Metrics/AbcSize
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          example.rb:8:20: W: [Corrected] Lint/UnneededCopEnableDirective: Unnecessary enabling of Metrics/AbcSize.
+            # rubocop:enable Metrics/AbcSize
+                             ^^^^^^^^^^^^^^^
+          example.rb:9:1: C: [Corrected] Layout/EmptyLinesAroundClassBody: Extra empty line detected at class body end.
+          example.rb:9:1: C: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
+
+          1 file inspected, 6 offenses detected, 5 offenses corrected
+        RESULT
+        expect(File.read('example.rb')).to eq(<<-RUBY.strip_indent)
+          class FooBar
+            def foo
+              'alpha beta'
+            end
+
+            def bar
+              'lorem ipsum'
+            end
+          end
+        RUBY
+      end
+    end
   end
 end

@@ -28,6 +28,7 @@
 * Fix NoMethodError for `Style/FrozenStringLiteral` when a file contains only a shebang. ([@takaram][])
 * [#6511](https://github.com/rubocop-hq/rubocop/issues/6511): Fix an incorrect auto-correct for `Style/EmptyCaseCondition` when used as an argument of a method. ([@koic][])
 * [#6509](https://github.com/rubocop-hq/rubocop/issues/6509): Fix an incorrect auto-correct for `Style/RaiseArgs` when an exception object is assigned to a local variable. ([@koic][])
+* [#6430](https://github.com/rubocop-hq/rubocop/issues/6430): Fix Lint/UnneededDisableCopDisableDirective behaviour when its autocorrect triggers offenses to other cops. ([@tdeo][])
 
 ### Changes
 

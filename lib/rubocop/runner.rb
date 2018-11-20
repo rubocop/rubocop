@@ -112,8 +112,8 @@ module RuboCop
     def file_offenses(file)
       file_offense_cache(file) do
         source = get_processed_source(file)
-        source, offenses = do_inspection_loop(file, source)
-        add_unneeded_disables(file, offenses.compact.sort, source)
+        offenses = do_inspection_loop(file, source)
+        offenses.sort.reject(&:disabled?).freeze
       end
     end
 
@@ -137,7 +137,8 @@ module RuboCop
       offenses
     end
 
-    def add_unneeded_disables(file, offenses, source)
+    def unneeded_disables(file, offenses, source)
+      unneeded_disable_offenses = []
       if check_for_unneeded_disables?(source)
         config = @config_store.for(file)
         if config.for_cop(Cop::Lint::UnneededCopDisableDirective)
@@ -145,14 +146,13 @@ module RuboCop
           cop = Cop::Lint::UnneededCopDisableDirective.new(config, @options)
           if cop.relevant_file?(file)
             cop.check(offenses, source.disabled_line_ranges, source.comments)
-            offenses += cop.offenses
+            unneeded_disable_offenses += cop.offenses
             autocorrect_unneeded_disables(source, cop)
           end
         end
-        offenses
       end
 
-      offenses.sort.reject(&:disabled?).freeze
+      [unneeded_disable_offenses, unneeded_disable_offenses.any?(&:corrected?)]
     end
 
     def check_for_unneeded_disables?(source)
@@ -216,6 +216,12 @@ module RuboCop
         new_offenses, updated_source_file = inspect_file(processed_source)
         offenses.concat(new_offenses).uniq!
 
+        unless updated_source_file
+          ud_offenses, updated_source_file = \
+            unneeded_disables(file, offenses.compact.sort, processed_source)
+          offenses.concat(ud_offenses).uniq!
+        end
+
         # We have to reprocess the source to pickup the changes. Since the
         # change could (theoretically) introduce parsing errors, we break the
         # loop if we find any.
@@ -224,7 +230,7 @@ module RuboCop
         processed_source = get_processed_source(file)
       end
 
-      [processed_source, offenses]
+      offenses
     end
 
     def iterate_until_no_changes(source, offenses)
