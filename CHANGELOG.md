@@ -25,6 +25,7 @@
 * [#6449](https://github.com/rubocop-hq/rubocop/pull/6449): Fix a false negative for `Layout/IndentationWidth` when setting `EnforcedStyle: rails` of `Layout/IndentationConsistency` and method definition indented to access modifier in a singleton class. ([@koic][])
 * [#6482](https://github.com/rubocop-hq/rubocop/issues/6482): Fix a false positive for `Lint/FormatParameterMismatch` when using (digit)$ flag. ([@koic][])
 * [#6489](https://github.com/rubocop-hq/rubocop/issues/6489): Fix an error for `Style/UnneededCondition` when `if` condition and `then` branch are the same and it has no `else` branch. ([@koic][])
+* Fix NoMethodError for `Style/FrozenStringLiteral` when a file contains only a shebang. ([@takaram][])
 
 ### Changes
 
@@ -3662,3 +3663,4 @@
 [@gsamokovarov]: https://github.com/gsamokovarov
 [@itsWill]: https://github.com/itsWill
 [@xlts]: https://github.com/xlts
+[@takaram]: https://github.com/takaram
