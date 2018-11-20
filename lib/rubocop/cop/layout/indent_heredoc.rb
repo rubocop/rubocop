@@ -173,7 +173,7 @@ module RuboCop
           )
         end
 
-        def line_to_long?(node)
+        def line_too_long?(node)
           return false if unlimited_heredoc_length?
 
           body = heredoc_body(node)
