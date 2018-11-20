@@ -478,6 +478,33 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 'abc'.strip
 ```
 
+## Performance/OpenStruct
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | No | No | 0.61 | -
+
+
+
+### Examples
+
+```ruby
+# bad
+class MyClass
+  def my_method
+    OpenStruct.new(my_key1: 'my_value1', my_key2: 'my_value2')
+  end
+end
+
+# good
+class MyClass
+  MyStruct = Struct.new(:my_key1, :my_key2)
+  def my_method
+    MyStruct.new('my_value1', 'my_value2')
+  end
+end
+```
+
 ## Performance/RangeInclude
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

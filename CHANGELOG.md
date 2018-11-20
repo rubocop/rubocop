@@ -5,6 +5,8 @@
 ### New features
 
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
+* [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on Style/Lambda. ([@r7kamura][])
+* New cop `Performance/OpenStruct` checks for `OpenStruct.new` calls. ([@xlts][])
 
 ### Bug fixes
 
@@ -18,6 +20,14 @@
 * [#3301](https://github.com/rubocop-hq/rubocop/issues/3301): Don't suggest or make semantic changes to the code in `Style/InfiniteLoop`. ([@jonas054][])
 * [#3586](https://github.com/rubocop-hq/rubocop/issues/3586): Handle single argument spanning multiple lines in `Style/TrailingCommaInArguments`. ([@jonas054][])
 * [#6478](https://github.com/rubocop-hq/rubocop/pull/6478): Fix EmacsComment#encoding to match the `coding` variable. ([@akihiro17][])
+* Don't show "unrecognized parameter" warning for `inherit_mode` parameter to individual cop configurations. ([@maxh][])
+* [#6449](https://github.com/rubocop-hq/rubocop/pull/6449): Fix a false negative for `Layout/IndentationWidth` when setting `EnforcedStyle: rails` of `Layout/IndentationConsistency` and method definition indented to access modifier in a singleton class. ([@koic][])
+* [#6482](https://github.com/rubocop-hq/rubocop/issues/6482): Fix a false positive for `Lint/FormatParameterMismatch` when using (digit)$ flag. ([@koic][])
+* [#6489](https://github.com/rubocop-hq/rubocop/issues/6489): Fix an error for `Style/UnneededCondition` when `if` condition and `then` branch are the same and it has no `else` branch. ([@koic][])
+
+### Changes
+
+* [#6492](https://github.com/rubocop-hq/rubocop/issues/6492): Auto-correct chunks of comment lines in `Layout/CommentIndentation` to avoid unnecessary iterations for `rubocop -a`. ([@jonas054][])
 
 ## 0.60.0 (2018-10-26)
 
@@ -3649,3 +3659,4 @@
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
 [@itsWill]: https://github.com/itsWill
+[@xlts]: https://github.com/xlts

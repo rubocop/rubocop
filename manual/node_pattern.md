@@ -191,8 +191,8 @@ We can use the `#prime?` method directly in the expression:
 
 The RuboCop base includes two useful methods to use the node pattern with Ruby in a
 simple way. You can use the macros to define methods. The basics are
-[def_node_matcher](http://www.rubydoc.info/github/bbatsov/RuboCop/RuboCop/NodePattern/Macros#def_node_matcher-instance_method)
-and [def_node_search](http://www.rubydoc.info/github/bbatsov/RuboCop/RuboCop/NodePattern/Macros#def_node_search-instance_method).
+[def_node_matcher](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern/Macros#def_node_matcher-instance_method)
+and [def_node_search](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern/Macros#def_node_search-instance_method).
 
 When you define a pattern, it creates a method that accepts a node and tries to match.
 
@@ -286,7 +286,7 @@ matched with an expression like:
 Curious about how it works?
 
 Check more details in the
-[documentation](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
+[documentation](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
 or browse the [source code](https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/node_pattern.rb)
 directly. It's easy to read and hack on.
 
