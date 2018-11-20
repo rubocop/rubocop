@@ -10,6 +10,7 @@
 
 ### Bug fixes
 
+* [#6405](https://github.com/rubocop-hq/rubocop/issues/6405): Fix a false positive for `Lint/UselessAssignment` when using a variable in a module name. ([@itsWill][])
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
 * [#5970](https://github.com/rubocop-hq/rubocop/issues/5970): Make running `--auto-gen-config` in a subdirectory work. ([@jonas054][])
 * [#6412](https://github.com/rubocop-hq/rubocop/issues/6412): Fix an `unknown keywords` error when using `Psych.safe_load` with Ruby 2.6.0-preview2. ([@koic][])
@@ -3657,4 +3658,5 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@itsWill]: https://github.com/itsWill
 [@xlts]: https://github.com/xlts
