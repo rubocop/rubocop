@@ -2063,6 +2063,12 @@ Performance/LstripRstrip:
   Enabled: true
   VersionAdded: '0.36'
 
+Performance/OpenStruct:
+  Description: 'Use `Struct` instead of `OpenStruct`.'
+  Enabled: false
+  VersionAdded: '0.61'
+  Safe: false
+
 Performance/RangeInclude:
   Description: 'Use `Range#cover?` instead of `Range#include?`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
