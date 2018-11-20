@@ -7,9 +7,11 @@
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
 * [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on Style/Lambda. ([@r7kamura][])
 * [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Enforce no parentheses style in the `Style/MethodCallWithArgsParentheses` cop. ([@gsamokovarov][])
+* New cop `Performance/OpenStruct` checks for `OpenStruct.new` calls. ([@xlts][])
 
 ### Bug fixes
 
+* [#6405](https://github.com/rubocop-hq/rubocop/issues/6405): Fix a false positive for `Lint/UselessAssignment` when using a variable in a module name. ([@itsWill][])
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
 * [#5970](https://github.com/rubocop-hq/rubocop/issues/5970): Make running `--auto-gen-config` in a subdirectory work. ([@jonas054][])
 * [#6412](https://github.com/rubocop-hq/rubocop/issues/6412): Fix an `unknown keywords` error when using `Psych.safe_load` with Ruby 2.6.0-preview2. ([@koic][])
@@ -22,6 +24,7 @@
 * Don't show "unrecognized parameter" warning for `inherit_mode` parameter to individual cop configurations. ([@maxh][])
 * [#6449](https://github.com/rubocop-hq/rubocop/pull/6449): Fix a false negative for `Layout/IndentationWidth` when setting `EnforcedStyle: rails` of `Layout/IndentationConsistency` and method definition indented to access modifier in a singleton class. ([@koic][])
 * [#6482](https://github.com/rubocop-hq/rubocop/issues/6482): Fix a false positive for `Lint/FormatParameterMismatch` when using (digit)$ flag. ([@koic][])
+* [#6489](https://github.com/rubocop-hq/rubocop/issues/6489): Fix an error for `Style/UnneededCondition` when `if` condition and `then` branch are the same and it has no `else` branch. ([@koic][])
 
 ### Changes
 
@@ -3657,3 +3660,5 @@
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
 [@gsamokovarov]: https://github.com/gsamokovarov
+[@itsWill]: https://github.com/itsWill
+[@xlts]: https://github.com/xlts

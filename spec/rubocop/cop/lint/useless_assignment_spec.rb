@@ -129,6 +129,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
     end
   end
 
+  context 'when a variable is assigned and referenced when defining a module' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        x = Object.new
+        module x::Foo
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned and unreferenced in top level' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
