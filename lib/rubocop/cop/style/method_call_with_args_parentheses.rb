@@ -214,19 +214,24 @@ module RuboCop
         def eligible_for_parentheses_presence?(node)
           node.implicit_call? ||
             call_in_arguments_or_literals?(node) ||
-            call_with_braced_block?(node) ||
-            call_with_splats?(node) ||
+            call_with_ambiguous_arguments?(node) ||
             call_in_logical_operators?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
         end
 
-        def call_with_braced_block?(node)
-          node.block_node && node.block_node.braces?
+        def call_in_arguments_or_literals?(node)
+          node.parent &&
+            (node.parent.send_type? ||
+             node.parent.pair_type? ||
+             node.parent.array_type?)
         end
 
-        def call_with_splats?(node)
-          node.descendants.any? { |n| n.splat_type? || n.kwsplat_type? }
+        def call_with_ambiguous_arguments?(node)
+          node.block_node && node.block_node.braces? ||
+            node.descendants.any? do |n|
+              n.splat_type? || n.kwsplat_type? || n.block_pass_type?
+            end
         end
 
         def call_in_logical_operators?(node)
@@ -242,13 +247,6 @@ module RuboCop
         def allowed_chained_call_with_parentheses?(node)
           cop_config['AllowParenthesesInChaining'] &&
             node.descendants.first && node.descendants.first.send_type?
-        end
-
-        def call_in_arguments_or_literals?(node)
-          node.parent &&
-            (node.parent.send_type? ||
-             node.parent.pair_type? ||
-             node.parent.array_type?)
         end
 
         def parentheses_at_the_end_of_multiline_call?(node)
