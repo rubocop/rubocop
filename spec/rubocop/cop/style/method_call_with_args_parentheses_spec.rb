@@ -370,10 +370,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo(a) || bar(b)')
     end
 
-    it 'accepts parens in calls with arguments with logical operators' do
+    it 'accepts parens in calls with args with logical operators' do
       expect_no_offenses('foo(a, b || c)')
       expect_no_offenses('foo a, b || c')
       expect_no_offenses('foo a, b(1) || c(2, d(3))')
+    end
+
+    it 'accepts parens in args splat' do
+      expect_no_offenses('foo(*args)')
+      expect_no_offenses('foo *args')
+      expect_no_offenses('foo(**kwargs)')
+      expect_no_offenses('foo **kwargs')
     end
 
     it 'auto-corrects single-line calls' do

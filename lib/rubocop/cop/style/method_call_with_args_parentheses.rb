@@ -215,6 +215,7 @@ module RuboCop
           node.implicit_call? ||
             call_in_arguments_or_literals?(node) ||
             call_with_braced_block?(node) ||
+            call_with_splats?(node) ||
             call_in_logical_operators?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
@@ -222,6 +223,10 @@ module RuboCop
 
         def call_with_braced_block?(node)
           node.block_node && node.block_node.braces?
+        end
+
+        def call_with_splats?(node)
+          node.descendants.any? { |n| n.splat_type? || n.kwsplat_type? }
         end
 
         def call_in_logical_operators?(node)
