@@ -58,6 +58,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         <<-RUBY.strip_indent
           case
           # condition a
+          # This is a multi-line comment
           when 1 == 2
             foo
           # condition b
@@ -73,6 +74,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:corrected_source) do
         <<-RUBY.strip_indent
           # condition a
+          # This is a multi-line comment
           if 1 == 2
             foo
           # condition b
@@ -224,6 +226,56 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
           elsif my.baz?
             something_else
           end
+        RUBY
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
+
+    context 'when used as an argument of a method without comment' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          do_some_work case
+                       when object.nil?
+                         Object.new
+                       else
+                         object
+                       end
+        RUBY
+      end
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          do_some_work if object.nil?
+                         Object.new
+                       else
+                         object
+                       end
+        RUBY
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
+
+    context 'when used as an argument of a method with comment' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          # example.rb
+          do_some_work case
+                       when object.nil?
+                         Object.new
+                       else
+                         object
+                       end
+        RUBY
+      end
+      let(:corrected_source) do
+        <<-RUBY.strip_indent
+          # example.rb
+          do_some_work if object.nil?
+                         Object.new
+                       else
+                         object
+                       end
         RUBY
       end
 
