@@ -175,6 +175,30 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
+  context 'when a lvar may contain a non-local object' do
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def test
+          some_lvar = Foo.shared_object
+          some_lvar = {} if some_lvar.nil?
+          some_lvar.attr = 1
+        end
+      RUBY
+    end
+  end
+
+  context 'when a lvar contains an object assgined to a non-local object' do
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def test
+          some_lvar = {}
+          Foo.shared_object = some_lvar
+          some_lvar[:attr] = 1
+        end
+      RUBY
+    end
+  end
+
   it 'is not confused by operators ending with =' do
     expect_no_offenses(<<-RUBY.strip_indent)
       def test
