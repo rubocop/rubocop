@@ -388,6 +388,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo &block')
     end
 
+    it 'accepts super with parentheses' do
+      expect_no_offenses('super()')
+    end
+
     it 'auto-corrects single-line calls' do
       original = <<-RUBY.strip_indent
         top.test(1, 2, foo: bar(3))

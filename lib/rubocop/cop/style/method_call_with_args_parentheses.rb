@@ -157,6 +157,7 @@ module RuboCop
 
         def add_offense_for_omit_parentheses(node)
           return unless node.parenthesized?
+          return if super_call_without_arguments?(node)
           return if eligible_for_parentheses_presence?(node)
 
           add_offense(node, location: node.loc.begin.join(node.loc.end))
@@ -209,6 +210,10 @@ module RuboCop
 
           first_node = node.arguments.first
           first_node.begin_type? && first_node.parenthesized_call?
+        end
+
+        def super_call_without_arguments?(node)
+          node.super_type? && node.arguments.none?
         end
 
         def eligible_for_parentheses_presence?(node)
