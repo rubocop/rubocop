@@ -68,7 +68,7 @@ module RuboCop
 
           message = message_node && message_node.source
 
-          correction = exception_node.const_name.to_s
+          correction = exception_node.source
           correction = "#{correction}, #{message}" if message
 
           "#{node.method_name} #{correction}"
