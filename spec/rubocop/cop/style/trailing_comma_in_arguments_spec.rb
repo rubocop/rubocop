@@ -212,8 +212,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts an empty hash being passed as a method argument' do
         expect_no_offenses(<<-RUBY.strip_indent)
-          Foo.new([
-                   ])
+          Foo.new({
+                   })
         RUBY
       end
 
@@ -373,6 +373,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           method(
             1, 2,
           )
+        RUBY
+      end
+
+      it 'accepts a multiline call with single argument on multiple lines' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          method(a:
+                    "foo")
         RUBY
       end
     end
