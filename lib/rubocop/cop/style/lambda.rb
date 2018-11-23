@@ -77,15 +77,12 @@ module RuboCop
         end
 
         def autocorrect(node)
-          block_method, _args = *node
-          selector = block_method.source
-
-          lambda do |corrector|
-            if selector == 'lambda'
+          if node.send_node.source == 'lambda'
+            lambda do |corrector|
               autocorrect_method_to_literal(corrector, node)
-            else
-              autocorrect_literal_to_method(corrector, node)
             end
+          else
+            LambdaLiteralToMethodCorrector.new(node)
           end
         end
 
@@ -112,28 +109,6 @@ module RuboCop
           end
         end
 
-        def autocorrect_literal_to_method(corrector, node)
-          block_method, args = *node
-
-          # Check for unparenthesized args' preceding and trailing whitespaces.
-          remove_unparenthesized_whitespace(corrector, node)
-
-          # Avoid correcting to `lambdado` by inserting whitespace
-          # if none exists before or after the lambda arguments.
-          if needs_whitespace?(block_method, args, node)
-            corrector.insert_before(node.loc.begin, ' ')
-          end
-          corrector.replace(block_method.source_range, 'lambda')
-          corrector.remove(args.source_range) if args.source_range
-
-          replace_keywords_with_braces(corrector, node)
-
-          return if args.children.empty?
-
-          arg_str = " |#{lambda_arg_string(args)}|"
-          corrector.insert_after(node.loc.begin, arg_str)
-        end
-
         def autocorrect_method_to_literal(corrector, node)
           block_method, args = *node
           corrector.replace(block_method.source_range, '->')
@@ -145,81 +120,8 @@ module RuboCop
           corrector.remove(whitespace_and_old_args)
         end
 
-        def needs_whitespace?(block_method, args, node)
-          selector_end = block_method.loc.selector.end.end_pos
-          block_begin  = node.loc.begin.begin_pos
-
-          (block_begin == end_pos(args) && selector_end == begin_pos(args)) ||
-            (block_begin == selector_end)
-        end
-
-        def begin_pos(node)
-          node.loc.begin && node.loc.begin.begin_pos
-        end
-
-        def end_pos(node)
-          node.loc.end && node.loc.end.end_pos
-        end
-
         def lambda_arg_string(args)
           args.children.map(&:source).join(', ')
-        end
-
-        def arg_to_unparenthesized_call?(arg_node)
-          parent = arg_node.parent
-
-          if parent && parent.pair_type?
-            arg_node = parent.parent
-            parent = arg_node.parent
-          end
-
-          return false unless parent && parent.send_type?
-          return false if parent.parenthesized_call?
-
-          arg_node.sibling_index > 1
-        end
-
-        def remove_unparenthesized_whitespace(corrector, node)
-          args = node.arguments
-
-          return unless unparenthesized_literal_args?(args)
-
-          remove_leading_whitespace(node, corrector)
-          remove_trailing_whitespace(node, corrector)
-        end
-
-        def remove_leading_whitespace(node, corrector)
-          corrector.remove_preceding(
-            node.arguments.source_range,
-            node.arguments.source_range.begin_pos -
-              node.send_node.source_range.end_pos
-          )
-        end
-
-        def remove_trailing_whitespace(node, corrector)
-          corrector.remove_preceding(
-            node.loc.begin,
-            node.loc.begin.begin_pos - node.arguments.source_range.end_pos - 1
-          )
-        end
-
-        def unparenthesized_literal_args?(args)
-          args.source_range && args.source_range.begin && !parentheses?(args)
-        end
-
-        def check_whitespace_after_do(node)
-          range = node.loc.begin
-          range.source_buffer.source[range.begin_pos + 2].match(/\s/)
-        end
-
-        def replace_keywords_with_braces(corrector, node)
-          return if node.braces? || !arg_to_unparenthesized_call?(node)
-
-          unless check_whitespace_after_do(node)
-            corrector.insert_after(node.loc.begin, ' ')
-          end
-          corrector.replace(node.loc.begin, '{')
-          corrector.replace(node.loc.end, '}')
         end
       end
     end
