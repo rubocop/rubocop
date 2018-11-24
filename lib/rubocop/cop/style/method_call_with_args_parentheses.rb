@@ -111,6 +111,10 @@ module RuboCop
         include IgnoredMethods
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
+        LOGICAL_OPERATOR_CHECK = lambda do |node|
+          node.parent.respond_to?(:logical_operator?) &&
+            node.parent.logical_operator?
+        end
 
         def on_send(node)
           case style
@@ -153,6 +157,7 @@ module RuboCop
 
         def add_offense_for_omit_parentheses(node)
           return unless node.parenthesized?
+          return if super_call_without_arguments?(node)
           return if eligible_for_parentheses_presence?(node)
 
           add_offense(node, location: node.loc.begin.join(node.loc.end))
@@ -170,7 +175,7 @@ module RuboCop
 
         def autocorrect_for_omit_parentheses(node)
           lambda do |corrector|
-            if parentheses_at_end_of_multiline?(node)
+            if parentheses_at_the_end_of_multiline_call?(node)
               corrector.replace(args_begin(node), ' \\')
             else
               corrector.replace(args_begin(node), ' ')
@@ -207,16 +212,37 @@ module RuboCop
           first_node.begin_type? && first_node.parenthesized_call?
         end
 
+        def super_call_without_arguments?(node)
+          node.super_type? && node.arguments.none?
+        end
+
         def eligible_for_parentheses_presence?(node)
           node.implicit_call? ||
             call_in_arguments_or_literals?(node) ||
-            call_with_braced_block?(node) ||
+            call_with_ambiguous_arguments?(node) ||
+            call_in_logical_operators?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
         end
 
-        def call_with_braced_block?(node)
-          node.block_node && node.block_node.braces?
+        def call_in_arguments_or_literals?(node)
+          node.parent &&
+            (node.parent.send_type? ||
+             node.parent.pair_type? ||
+             node.parent.array_type?)
+        end
+
+        def call_with_ambiguous_arguments?(node)
+          node.block_node && node.block_node.braces? ||
+            node.descendants.any? do |n|
+              n.splat_type? || n.kwsplat_type? || n.block_pass_type?
+            end
+        end
+
+        def call_in_logical_operators?(node)
+          node.descendants.any?(&LOGICAL_OPERATOR_CHECK) || (node.parent &&
+            (LOGICAL_OPERATOR_CHECK.call(node.parent) ||
+             node.parent.descendants.any?(&LOGICAL_OPERATOR_CHECK)))
         end
 
         def allowed_multiline_call_with_parentheses?(node)
@@ -228,14 +254,7 @@ module RuboCop
             node.descendants.first && node.descendants.first.send_type?
         end
 
-        def call_in_arguments_or_literals?(node)
-          node.parent &&
-            (node.parent.send_type? ||
-             node.parent.pair_type? ||
-             node.parent.array_type?)
-        end
-
-        def parentheses_at_end_of_multiline?(node)
+        def parentheses_at_the_end_of_multiline_call?(node)
           node.multiline? &&
             node.loc.begin.source_line
                 .gsub(TRAILING_WHITESPACE_REGEX, '')

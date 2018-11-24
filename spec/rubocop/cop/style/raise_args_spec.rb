@@ -143,6 +143,24 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'when an exception object is assigned to a local variable' do
+      it 'auto-corrects to exploded style' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          def do_something
+            klass = RuntimeError
+            raise klass.new('hi')
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          def do_something
+            klass = RuntimeError
+            raise klass, 'hi'
+          end
+        RUBY
+      end
+    end
+
     it 'accepts exception constructor with more than 1 argument' do
       expect_no_offenses('raise MyCustomError.new(a1, a2, a3)')
     end
