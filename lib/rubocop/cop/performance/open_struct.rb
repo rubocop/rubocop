@@ -10,7 +10,7 @@ module RuboCop
       # This could have an effect on performance,
       # especially in case of single-threaded
       # applications with multiple `OpenStruct` instantiations.
-
+      #
       # @example
       #   # bad
       #   class MyClass
