@@ -484,7 +484,13 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Disabled | No | No | 0.61 | -
 
-
+This cop checks for `OpenStruct.new` calls.
+Instantiation of an `OpenStruct` invalidates
+Ruby global method cache as it causes dynamic method
+definition during program runtime.
+This could have an effect on performance,
+especially in case of single-threaded
+applications with multiple `OpenStruct` instantiations.
 
 ### Examples
 
