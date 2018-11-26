@@ -111,6 +111,7 @@ module RuboCop
         include IgnoredMethods
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
+
         LOGICAL_OPERATOR_CHECK = lambda do |node|
           node.parent.respond_to?(:logical_operator?) &&
             node.parent.logical_operator?
@@ -218,30 +219,36 @@ module RuboCop
 
         def eligible_for_parentheses_presence?(node)
           node.implicit_call? ||
-            call_in_arguments_or_literals?(node) ||
+            call_in_literals?(node) ||
             call_with_ambiguous_arguments?(node) ||
             call_in_logical_operators?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
         end
 
-        def call_in_arguments_or_literals?(node)
+        def call_in_literals?(node)
           node.parent &&
             (node.parent.pair_type? ||
-             node.parent.array_type?)
-        end
-
-        def call_with_ambiguous_arguments?(node)
-          node.block_node && node.block_node.braces? ||
-            node.descendants.any? do |n|
-              n.splat_type? || n.kwsplat_type? || n.block_pass_type?
-            end
+             node.parent.array_type? ||
+             ternary_if?(node.parent))
         end
 
         def call_in_logical_operators?(node)
           node.descendants.any?(&LOGICAL_OPERATOR_CHECK) || (node.parent &&
             (LOGICAL_OPERATOR_CHECK.call(node.parent) ||
              node.parent.descendants.any?(&LOGICAL_OPERATOR_CHECK)))
+        end
+
+        def call_with_ambiguous_arguments?(node)
+          call_with_braced_block?(node) ||
+            node.descendants.any? do |n|
+              n.splat_type? || n.kwsplat_type? || n.block_pass_type? ||
+                ternary_if?(n)
+            end
+        end
+
+        def call_with_braced_block?(node)
+          node.block_node && node.block_node.braces?
         end
 
         def allowed_multiline_call_with_parentheses?(node)
@@ -259,6 +266,10 @@ module RuboCop
             node.loc.begin.source_line
                 .gsub(TRAILING_WHITESPACE_REGEX, '')
                 .end_with?('(')
+        end
+
+        def ternary_if?(node)
+          node.if_type? && node.ternary?
         end
       end
     end
