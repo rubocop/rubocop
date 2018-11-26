@@ -341,6 +341,10 @@ of comments...
 # good
 # Multiple lines
 # of comments...
+
+=begin
+@api {get} / my endpoint description
+=end
 ```
 
 ### References

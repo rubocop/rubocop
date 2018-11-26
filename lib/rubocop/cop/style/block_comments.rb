@@ -16,16 +16,20 @@ module RuboCop
       #   # Multiple lines
       #   # of comments...
       #
+      #   =begin
+      #   @api {get} / my endpoint description
+      #   =end
       class BlockComments < Cop
         include RangeHelp
 
         MSG = 'Do not use block comments.'.freeze
         BEGIN_LENGTH = "=begin\n".length
         END_LENGTH = "\n=end".length
+        APIDOC_PATTERN = '@api'.freeze
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|
-            next unless comment.document?
+            next if !comment.document? || apidoc?(comment)
 
             add_offense(comment)
           end
@@ -55,6 +59,10 @@ module RuboCop
           eq_end = range_between(expr.end_pos - END_LENGTH, expr.end_pos)
           contents = range_between(eq_begin.end_pos, eq_end.begin_pos)
           [eq_begin, eq_end, contents]
+        end
+
+        def apidoc?(comment)
+          comment.text.include? APIDOC_PATTERN
         end
       end
     end

@@ -16,6 +16,20 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
     expect_no_offenses('# comment')
   end
 
+  it 'accepts apiDoc related comments' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      =begin
+      @api {get} / my endpoint description
+      ...
+      =end
+
+      =begin
+      @apiDefine UserNotFound
+      ...
+      =end
+    RUBY
+  end
+
   it 'auto-corrects a block comment into a regular comment' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
       =begin
