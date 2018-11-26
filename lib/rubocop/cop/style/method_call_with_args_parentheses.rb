@@ -153,7 +153,9 @@ module RuboCop
 
         def add_offense_for_omit_parentheses(node)
           return unless node.parenthesized?
+          return if node.implicit_call?
           return if super_call_without_arguments?(node)
+          return if camel_case_method_call_without_arguments?(node)
           return if eligible_for_parentheses_presence?(node)
 
           add_offense(node, location: node.loc.begin.join(node.loc.end))
@@ -212,9 +214,12 @@ module RuboCop
           node.super_type? && node.arguments.none?
         end
 
+        def camel_case_method_call_without_arguments?(node)
+          node.camel_case_method? && node.arguments.none?
+        end
+
         def eligible_for_parentheses_presence?(node)
-          node.implicit_call? ||
-            call_in_literals?(node) ||
+          call_in_literals?(node) ||
             call_with_ambiguous_arguments?(node) ||
             call_in_logical_operators?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||

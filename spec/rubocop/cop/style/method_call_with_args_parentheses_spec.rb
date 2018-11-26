@@ -283,13 +283,6 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'register an offense for methods starting with capital letter' do
-      expect_offense(<<-RUBY.strip_indent)
-        Test()
-            ^^ Omit parentheses for method calls with arguments.
-      RUBY
-    end
-
     it 'register an offense for multi-line method calls' do
       expect_offense(<<-RUBY.strip_indent)
         test(
@@ -390,6 +383,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'accepts parens in super without args' do
       expect_no_offenses('super()')
+    end
+
+    it 'accepts parens in camel case method without args' do
+      expect_no_offenses('Array()')
     end
 
     it 'accepts parens in ternary condition calls' do
