@@ -112,11 +112,6 @@ module RuboCop
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
 
-        LOGICAL_OPERATOR_CHECK = lambda do |node|
-          node.parent.respond_to?(:logical_operator?) &&
-            node.parent.logical_operator?
-        end
-
         def on_send(node)
           case style
           when :require_parentheses
@@ -234,16 +229,16 @@ module RuboCop
         end
 
         def call_in_logical_operators?(node)
-          node.descendants.any?(&LOGICAL_OPERATOR_CHECK) || (node.parent &&
-            (LOGICAL_OPERATOR_CHECK.call(node.parent) ||
-             node.parent.descendants.any?(&LOGICAL_OPERATOR_CHECK)))
+          node.parent &&
+            (logical_operator?(node.parent) ||
+             node.parent.descendants.any?(&method(:logical_operator?)))
         end
 
         def call_with_ambiguous_arguments?(node)
           call_with_braced_block?(node) ||
             node.descendants.any? do |n|
               n.splat_type? || n.kwsplat_type? || n.block_pass_type? ||
-                ternary_if?(n)
+                ternary_if?(n) || logical_operator?(n)
             end
         end
 
@@ -270,6 +265,10 @@ module RuboCop
 
         def ternary_if?(node)
           node.if_type? && node.ternary?
+        end
+
+        def logical_operator?(node)
+          (node.and_type? || node.or_type?) && node.logical_operator?
         end
       end
     end
