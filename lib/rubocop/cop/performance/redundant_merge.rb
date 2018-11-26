@@ -14,6 +14,12 @@ module RuboCop
         AREF_ASGN = '%<receiver>s[%<key>s] = %<value>s'.freeze
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
+        WITH_MODIFIER_CORRECTION = <<-RUBY.strip_indent
+          %<keyword>s %<condition>s
+          %<leading_space>s%<indent>s%<body>s
+          %<leading_space>send
+        RUBY
+
         def_node_matcher :redundant_merge_candidate, <<-PATTERN
           (send $!nil? :merge! [(hash $...) !kwsplat_type?])
         PATTERN
@@ -106,12 +112,15 @@ module RuboCop
         end
 
         def rewrite_with_modifier(node, parent, new_source)
-          cond, = *parent
-          padding = "\n#{(' ' * indent_width) + leading_spaces(node)}"
+          indent = ' ' * indent_width
+          padding = "\n#{indent + leading_spaces(node)}"
           new_source.gsub!(/\n/, padding)
 
-          parent.loc.keyword.source << ' ' << cond.source << padding <<
-            new_source << "\n" << leading_spaces(node) << 'end'
+          format(WITH_MODIFIER_CORRECTION, keyword: parent.loc.keyword.source,
+                                           condition: parent.condition.source,
+                                           leading_space: leading_spaces(node),
+                                           indent: indent,
+                                           body: new_source).chomp
         end
 
         def leading_spaces(node)
