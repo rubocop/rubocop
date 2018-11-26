@@ -170,27 +170,31 @@ module RuboCop
         end
 
         def correct_inner_slashes(node, corrector)
-          search_indices(
-            node_body(node),
-            inner_slash_before_correction(node)
-          ).each do |index|
+          regexp_begin = node.loc.begin.end_pos
+
+          inner_slash_indices(node).each do |index|
+            start = regexp_begin + index
+
             corrector.replace(
               range_between(
-                node.loc.begin.end_pos + index,
-                node.loc.begin.end_pos + index +
-                  inner_slash_before_correction(node).length
+                start,
+                start + inner_slash_before_correction(node).length
               ),
               inner_slash_after_correction(node)
             )
           end
         end
 
-        def search_indices(text, pattern)
-          index = -1
+        def inner_slash_indices(node)
+          text    = node_body(node)
+          pattern = inner_slash_before_correction(node)
+          index   = -1
           indices = []
+
           while (index = text.index(pattern, index + 1))
             indices << index
           end
+
           indices
         end
 
