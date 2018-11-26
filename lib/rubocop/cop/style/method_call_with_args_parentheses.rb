@@ -227,8 +227,7 @@ module RuboCop
 
         def call_in_arguments_or_literals?(node)
           node.parent &&
-            (node.parent.send_type? ||
-             node.parent.pair_type? ||
+            (node.parent.pair_type? ||
              node.parent.array_type?)
         end
 
@@ -250,8 +249,9 @@ module RuboCop
         end
 
         def allowed_chained_call_with_parentheses?(node)
-          cop_config['AllowParenthesesInChaining'] &&
-            node.descendants.first && node.descendants.first.send_type?
+          (node.parent && node.parent.send_type?) ||
+            cop_config['AllowParenthesesInChaining'] &&
+              node.descendants.first && node.descendants.first.send_type?
         end
 
         def parentheses_at_the_end_of_multiline_call?(node)
