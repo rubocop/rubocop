@@ -210,6 +210,13 @@ module RuboCop
           first_node.begin_type? && first_node.parenthesized_call?
         end
 
+        def parentheses_at_the_end_of_multiline_call?(node)
+          node.multiline? &&
+            node.loc.begin.source_line
+                .gsub(TRAILING_WHITESPACE_REGEX, '')
+                .end_with?('(')
+        end
+
         def super_call_without_arguments?(node)
           node.super_type? && node.arguments.none?
         end
@@ -241,14 +248,21 @@ module RuboCop
 
         def call_with_ambiguous_arguments?(node)
           call_with_braced_block?(node) ||
+            hash_literal_in_arguments?(node) ||
             node.descendants.any? do |n|
-              n.splat_type? || n.kwsplat_type? || n.block_pass_type? ||
-                ternary_if?(n) || logical_operator?(n)
+              splat?(n) || ternary_if?(n) || logical_operator?(n)
             end
         end
 
         def call_with_braced_block?(node)
           node.block_node && node.block_node.braces?
+        end
+
+        def hash_literal_in_arguments?(node)
+          node.arguments.any? do |n|
+            hash_literal?(n) ||
+              n.send_type? && node.descendants.any?(&method(:hash_literal?))
+          end
         end
 
         def allowed_multiline_call_with_parentheses?(node)
@@ -261,11 +275,8 @@ module RuboCop
               node.descendants.first && node.descendants.first.send_type?
         end
 
-        def parentheses_at_the_end_of_multiline_call?(node)
-          node.multiline? &&
-            node.loc.begin.source_line
-                .gsub(TRAILING_WHITESPACE_REGEX, '')
-                .end_with?('(')
+        def splat?(node)
+          node.splat_type? || node.kwsplat_type? || node.block_pass_type?
         end
 
         def ternary_if?(node)
@@ -274,6 +285,10 @@ module RuboCop
 
         def logical_operator?(node)
           (node.and_type? || node.or_type?) && node.logical_operator?
+        end
+
+        def hash_literal?(node)
+          node.hash_type? && node.braces?
         end
       end
     end

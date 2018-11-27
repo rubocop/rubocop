@@ -317,12 +317,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'register an offense accepts parens in do-end blocks' do
+    it 'register an offense for parens in do-end blocks' do
       expect_offense(<<-RUBY.strip_indent)
         foo(:arg) do
            ^^^^^^ Omit parentheses for method calls with arguments.
           bar
         end
+      RUBY
+    end
+
+    it 'register an offense for hashes in keyword values' do
+      expect_offense(<<-RUBY.strip_indent)
+        method_call(hash: {foo: :bar})
+                   ^^^^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
       RUBY
     end
 
@@ -340,6 +347,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'accepts parens in nested method args' do
       expect_no_offenses('top.test 1, 2, foo: [bar(3)]')
+    end
+
+    it 'accepts parens in calls with hash as arg' do
+      expect_no_offenses('top.test({foo: :bar})')
+      expect_no_offenses('top.test({foo: :bar}.merge(baz: :maz))')
+      expect_no_offenses('top.test(:first, {foo: :bar}.merge(baz: :maz))')
     end
 
     it 'accepts special lambda call syntax' do
