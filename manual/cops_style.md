@@ -317,6 +317,13 @@ Enabled | Yes | No | 0.9 | -
 
 This cop checks for BEGIN blocks.
 
+### Examples
+
+```ruby
+# bad
+BEGIN { test }
+```
+
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#no-BEGIN-blocks](https://github.com/rubocop-hq/ruby-style-guide#no-BEGIN-blocks)
