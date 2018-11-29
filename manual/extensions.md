@@ -40,6 +40,7 @@ See [development](development.md).
   Thread-safety analysis
 * [rubocop-require_tools](https://github.com/milch/rubocop-require_tools) -
   Dynamic analysis for missing require statements
+* [rubocop-i18n](https://github.com/puppetlabs/rubocop-i18n) - i18n wrapper function analysis (gettext and rails-i18n)
 
 ### Custom Formatters
 
