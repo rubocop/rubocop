@@ -484,16 +484,44 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         }
       end
 
-      it 'accepts parens in the last chain' do
+      it 'register offense for single-line chaining without previous parens' do
+        expect_offense(<<-RUBY.strip_indent)
+          Rails.convoluted.example.logger.error("something")
+                                               ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+      end
+
+      it 'register offense for multi-line chaining without previous parens' do
+        expect_offense(<<-RUBY.strip_indent)
+          Rails
+            .convoluted
+            .example
+            .logger
+            .error("something")
+                  ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+      end
+
+      it 'accepts parens in the last call if previous calls with parens' do
         expect_no_offenses('foo().bar(3).wait 4')
       end
 
-      it 'does not auto-correct' do
+      it 'does not auto-correct if any previous call have parentheses' do
         original = <<-RUBY.strip_indent
-          foo().bar(3).wait(4)
+          foo().bar(3).quux.wait(4)
         RUBY
 
         expect(autocorrect_source(original)).to eq(original)
+      end
+
+      it 'auto-correct if previous does calls have parentheses' do
+        original = <<-RUBY.strip_indent
+          foo.bar.wait(4)
+        RUBY
+
+        expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+          foo.bar.wait 4
+        RUBY
       end
     end
 
