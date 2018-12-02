@@ -248,6 +248,7 @@ module RuboCop
 
         def call_with_ambiguous_arguments?(node)
           call_with_braced_block?(node) ||
+            call_as_argument?(node) ||
             hash_literal_in_arguments?(node) ||
             node.descendants.any? do |n|
               splat?(n) || ternary_if?(n) || logical_operator?(n)
@@ -256,6 +257,10 @@ module RuboCop
 
         def call_with_braced_block?(node)
           node.block_node && node.block_node.braces?
+        end
+
+        def call_as_argument?(node)
+          node.parent && node.parent.send_type?
         end
 
         def hash_literal_in_arguments?(node)
@@ -270,9 +275,13 @@ module RuboCop
         end
 
         def allowed_chained_call_with_parentheses?(node)
-          (node.parent && node.parent.send_type?) ||
-            cop_config['AllowParenthesesInChaining'] &&
-              node.descendants.first && node.descendants.first.send_type?
+          return unless cop_config['AllowParenthesesInChaining']
+
+          previous = node.descendants.first
+          return false unless previous && previous.send_type?
+
+          previous.parenthesized? ||
+            allowed_chained_call_with_parentheses?(previous)
         end
 
         def splat?(node)
