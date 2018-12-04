@@ -33,6 +33,7 @@
 ### Changes
 
 * [#6492](https://github.com/rubocop-hq/rubocop/issues/6492): Auto-correct chunks of comment lines in `Layout/CommentIndentation` to avoid unnecessary iterations for `rubocop -a`. ([@jonas054][])
+* Fix `--auto-gen-config` when individual cops have regexp literal exclude paths. ([@maxh][])
 
 ## 0.60.0 (2018-10-26)
 

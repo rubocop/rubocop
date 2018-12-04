@@ -184,8 +184,8 @@ module RuboCop
         parent = Pathname.new(Dir.pwd)
 
         output_buffer.puts '  Exclude:'
-        excludes(offending_files, cop_name, parent).each do |file|
-          output_exclude_path(output_buffer, file, parent)
+        excludes(offending_files, cop_name, parent).each do |exclude_path|
+          output_exclude_path(output_buffer, exclude_path, parent)
         end
       end
 
@@ -201,12 +201,17 @@ module RuboCop
         ((cfg['Exclude'] || []) + offending_files).uniq
       end
 
-      def output_exclude_path(output_buffer, file, parent)
-        file_path = Pathname.new(file)
+      def output_exclude_path(output_buffer, exclude_path, parent)
+        # exclude_path is either relative path, an absolute path, or a regexp.
+        file_path = Pathname.new(exclude_path)
         relative = file_path.relative_path_from(parent)
         output_buffer.puts "    - '#{relative}'"
       rescue ArgumentError
+        file = exclude_path
         output_buffer.puts "    - '#{file}'"
+      rescue TypeError
+        regexp = exclude_path
+        output_buffer.puts "    - !ruby/regexp /#{regexp.source}/"
       end
     end
   end
