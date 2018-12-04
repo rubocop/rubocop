@@ -17,7 +17,7 @@
 * [#5970](https://github.com/rubocop-hq/rubocop/issues/5970): Make running `--auto-gen-config` in a subdirectory work. ([@jonas054][])
 * [#6412](https://github.com/rubocop-hq/rubocop/issues/6412): Fix an `unknown keywords` error when using `Psych.safe_load` with Ruby 2.6.0-preview2. ([@koic][])
 * [#6436](https://github.com/rubocop-hq/rubocop/pull/6436): Fix exit status code to be 130 when rubocop is interrupted. ([@deivid-rodriguez][])
-* [#6443](https://github.com/rubocop-hq/rubocop/pull/6443): Fix an incorrect autocorrect for `Style/BracesAroundHashParameters` when the opening brace is bofore the first hash element at same line. ([@koic][])
+* [#6443](https://github.com/rubocop-hq/rubocop/pull/6443): Fix an incorrect autocorrect for `Style/BracesAroundHashParameters` when the opening brace is before the first hash element at same line. ([@koic][])
 * [#6445](https://github.com/rubocop-hq/rubocop/pull/6445): Treat `yield` and `super` like regular method calls in `Style/AlignHash`. ([@mvz][])
 * [#3301](https://github.com/rubocop-hq/rubocop/issues/3301): Don't suggest or make semantic changes to the code in `Style/InfiniteLoop`. ([@jonas054][])
 * [#3586](https://github.com/rubocop-hq/rubocop/issues/3586): Handle single argument spanning multiple lines in `Style/TrailingCommaInArguments`. ([@jonas054][])
@@ -29,6 +29,7 @@
 * Fix NoMethodError for `Style/FrozenStringLiteral` when a file contains only a shebang. ([@takaram][])
 * [#6511](https://github.com/rubocop-hq/rubocop/issues/6511): Fix an incorrect auto-correct for `Style/EmptyCaseCondition` when used as an argument of a method. ([@koic][])
 * [#6509](https://github.com/rubocop-hq/rubocop/issues/6509): Fix an incorrect auto-correct for `Style/RaiseArgs` when an exception object is assigned to a local variable. ([@koic][])
+* [#6534](https://github.com/rubocop-hq/rubocop/issues/6534): Fix a false positive for `Lint/UselessAccessModifier` when using `private_class_method`. ([@dduugg][])
 
 ### Changes
 
@@ -3668,3 +3669,4 @@
 [@xlts]: https://github.com/xlts
 [@takaram]: https://github.com/takaram
 [@gmcgibbon]: https://github.com/gmcgibbon
+[@dduugg]: https://github.com/dduugg

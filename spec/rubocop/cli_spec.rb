@@ -16,51 +16,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
-  describe '#trap_interrupt' do
-    let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new) }
-    let(:interrupt_handlers) { [] }
-
-    before do
-      allow(Signal).to receive(:trap).with('INT') do |&block|
-        interrupt_handlers << block
-      end
-    end
-
-    def interrupt
-      interrupt_handlers.each(&:call)
-    end
-
-    it 'adds a handler for SIGINT' do
-      expect(interrupt_handlers.empty?).to be(true)
-      cli.trap_interrupt(runner)
-      expect(interrupt_handlers.size).to eq(1)
-    end
-
-    context 'with SIGINT once' do
-      it 'aborts processing' do
-        cli.trap_interrupt(runner)
-        expect(runner).to receive(:abort)
-        interrupt
-      end
-
-      it 'does not exit immediately' do
-        cli.trap_interrupt(runner)
-        expect_any_instance_of(Object).not_to receive(:exit)
-        expect_any_instance_of(Object).not_to receive(:exit!)
-        interrupt
-      end
-    end
-
-    context 'with SIGINT twice' do
-      it 'exits immediately' do
-        cli.trap_interrupt(runner)
-        expect_any_instance_of(Object).to receive(:exit!).with(1)
-        interrupt
-        interrupt
-      end
-    end
-  end
-
   context 'when given a file/directory that is not under the current dir' do
     shared_examples 'checks Rakefile' do
       it 'checks a Rakefile but Style/FileName does not report' do

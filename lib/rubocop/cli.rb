@@ -59,15 +59,6 @@ module RuboCop
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-    def trap_interrupt(runner)
-      Signal.trap('INT') do
-        exit!(1) if runner.aborting?
-        runner.abort
-        warn
-        warn 'Exiting... Interrupt again to exit immediately.'
-      end
-    end
-
     private
 
     def execute_runners(paths)
@@ -156,7 +147,6 @@ module RuboCop
     def execute_runner(paths)
       runner = Runner.new(@options, @config_store)
 
-      trap_interrupt(runner)
       all_passed = runner.run(paths)
       display_warning_summary(runner.warnings)
       display_error_summary(runner.errors)
