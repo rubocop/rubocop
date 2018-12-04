@@ -398,6 +398,65 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       expect(found_basenames).not_to include('ruby2.rb')
     end
 
+    context 'in git repo directory' do
+      before do
+        system 'git init'
+
+        create_empty_file('git_regular.rb')
+        create_empty_file('git_group.rb')
+        create_empty_file('git_excluded.rb')
+        create_empty_file('git_glob.rb')
+        create_empty_file('git with spaces.rb')
+        create_empty_file('git_dir/thing.rb')
+        create_file('.gitignore', <<-'CONTENT'.strip_indent)
+          git_regular.rb
+          git_gr[ao]up.rb
+          !git_excluded.rb
+          git_glob*
+          git_dir/
+        CONTENT
+      end
+
+      it 'does not pick files ignored by git' do
+        expect(found_basenames).not_to include(
+          'git_regular.rb',
+          'git_group.rb',
+          'git_glob.rb',
+          'git_dir/thing.rb'
+        )
+        expect(found_basenames).to include(
+          'git_excluded.rb',
+          'git with spaces.rb'
+        )
+      end
+
+      context 'without `git` executable' do
+        before do
+          allow_any_instance_of(Kernel).to receive(:`)
+            .with(/command -v git/)
+            .and_return('')
+
+          allow_any_instance_of(Kernel).to receive(:`)
+            .with(start_with('git ls-files'))
+            .and_raise(Errno::ENOENT, 'git')
+        end
+
+        it 'does not fail' do
+          expect { found_basenames }.not_to raise_error
+        end
+      end
+
+      context 'with `*` in argument' do
+        let(:base_dir) { './git*' }
+
+        it 'does not fail' do
+          expect(found_basenames).not_to include(
+            'thing.rb'
+          )
+        end
+      end
+    end
+
     context 'when an exception is raised while reading file' do
       around do |example|
         original_stderr = $stderr

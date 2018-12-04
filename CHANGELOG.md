@@ -20,6 +20,10 @@
 * [#6570](https://github.com/rubocop-hq/rubocop/pull/6570): Fix a false positive for `Style/MethodCallWithArgsParentheses` `omit_parentheses` enforced style while splatting the result of a method invocation. ([@gsamokovarov][])
 * [#6594](https://github.com/rubocop-hq/rubocop/pull/6594): Fix a false positive for `Rails/OutputSafety` when the receiver is a non-interpolated string literal. ([@amatsuda][])
 
+### Changes
+
+* [#595](https://github.com/rubocop-hq/rubocop/issues/595): Exclude files ignored by `git`. ([@AlexWayfer][])
+
 ## 0.61.1 (2018-12-06)
 
 ### Bug fixes
