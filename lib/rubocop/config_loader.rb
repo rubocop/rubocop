@@ -44,7 +44,6 @@ module RuboCop
         resolver.resolve_requires(path, hash)
 
         add_missing_namespaces(path, hash)
-        target_ruby_version_to_f!(hash)
 
         resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolver.resolve_inheritance(path, hash, file, debug?)
@@ -118,19 +117,14 @@ module RuboCop
         resolver.merge_with_default(config, config_file)
       end
 
-      def target_ruby_version_to_f!(hash)
-        version = 'TargetRubyVersion'
-        return unless hash['AllCops'] && hash['AllCops'][version]
-
-        hash['AllCops'][version] = hash['AllCops'][version].to_f
-      end
-
       def add_inheritance_from_auto_generated_file
         file_string = " #{AUTO_GENERATED_FILE}"
 
         config_file = options_config || DOTFILE
+
         if File.exist?(config_file)
           files = Array(load_yaml_configuration(config_file)['inherit_from'])
+
           return if files.include?(AUTO_GENERATED_FILE)
 
           files.unshift(AUTO_GENERATED_FILE)
@@ -140,7 +134,9 @@ module RuboCop
                                    .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+},
                                         '')
         end
+
         write_config_file(config_file, file_string, rubocop_yml_contents)
+
         puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
