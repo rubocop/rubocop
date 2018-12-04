@@ -129,10 +129,7 @@ module RuboCop
 
           files.unshift(AUTO_GENERATED_FILE)
           file_string = "\n  - " + files.join("\n  - ") if files.size > 1
-          rubocop_yml_contents = IO.read(config_file, encoding: Encoding::UTF_8)
-                                   .sub(%r{^inherit_from: *[.\/\w]+}, '')
-                                   .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+},
-                                        '')
+          rubocop_yml_contents = existing_configuration(config_file)
         end
 
         write_config_file(config_file, file_string, rubocop_yml_contents)
@@ -141,6 +138,12 @@ module RuboCop
       end
 
       private
+
+      def existing_configuration(config_file)
+        IO.read(config_file, encoding: Encoding::UTF_8)
+          .sub(%r{^inherit_from: *[.\/\w]+}, '')
+          .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+}, '')
+      end
 
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
