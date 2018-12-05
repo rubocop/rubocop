@@ -30,7 +30,7 @@ $ rubocop -V
 * Write [good commit messages][3].
 * Use the same coding conventions as the rest of the project.
 * Commit and push until you are happy with your contribution.
-* If your change has a corresponding open GitHub issue, prefix the commit message with `[Fix #github-issue-number]`.
+* If your change has a corresponding open GitHub issue, add [`Fix #github-issue-number`][7] into PRs description (not title or commit message).
 * Make sure to add tests for it. This is important so I don't break it
   in a future version unintentionally.
 * Add an entry to the [Changelog](CHANGELOG.md) accordingly. See [changelog entry format](#changelog-entry-format).
@@ -40,7 +40,7 @@ $ rubocop -V
   around it.
 * Make sure the test suite is passing and the code you wrote doesn't produce
   RuboCop offenses (usually this is as simple as running `bundle exec rake`).
-* [Squash related commits together][5].
+* [Squash related commits together][5] (or you can use [`git commit --amend`][8] for single-commit pull requests).
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
 
@@ -66,3 +66,5 @@ Here are a few examples:
 [4]: https://help.github.com/articles/about-pull-requests
 [5]: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
 [6]: https://daringfireball.net/projects/markdown/syntax
+[7]: https://help.github.com/articles/closing-issues-using-keywords/
+[8]: https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History
