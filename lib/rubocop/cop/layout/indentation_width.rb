@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def on_if(node, base = node)
-          return if ignored_node?(node) || !node.body
+          return if ignored_node?(node)
           return if node.ternary? || node.modifier_form?
 
           check_if(node, node.body, node.else_branch, base.loc)

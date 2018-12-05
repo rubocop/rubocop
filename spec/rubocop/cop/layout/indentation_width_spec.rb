@@ -122,6 +122,32 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         RUBY
       end
 
+      it 'registers an offense for bad indentation of an else body when if ' \
+         'body contains no code' do
+        expect_offense(<<-RUBY.strip_indent)
+          if cond
+            # nothing here
+          else
+           func2
+          ^ Use 2 (not 1) spaces for indentation.
+          end
+        RUBY
+      end
+
+      it 'registers an offense for bad indentation of an else body when if ' \
+         'and elsif body contains no code' do
+        expect_offense(<<-RUBY.strip_indent)
+          if cond
+            # nothing here
+          elsif cond2
+            # nothing here either
+          else
+           func2
+          ^ Use 2 (not 1) spaces for indentation.
+          end
+        RUBY
+      end
+
       it 'registers an offense for bad indentation of an elsif body' do
         expect_offense(<<-RUBY.strip_indent)
           if a1
