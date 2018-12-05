@@ -31,6 +31,7 @@
 * [#6509](https://github.com/rubocop-hq/rubocop/issues/6509): Fix an incorrect auto-correct for `Style/RaiseArgs` when an exception object is assigned to a local variable. ([@koic][])
 * [#6534](https://github.com/rubocop-hq/rubocop/issues/6534): Fix a false positive for `Lint/UselessAccessModifier` when using `private_class_method`. ([@dduugg][])
 * [#6545](https://github.com/rubocop-hq/rubocop/issues/6545): Fix a regression where `Performance/RedundantMerge` raises an error on a sole double splat argument passed to `merge!`. ([@mmedal][])
+* [#6360](https://github.com/rubocop-hq/rubocop/issues/6360): Detect bad indentation in `if` nodes even if the first branch is empty. ([@bquorning][])
 
 ### Changes
 
