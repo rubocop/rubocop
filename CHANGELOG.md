@@ -4,8 +4,8 @@
 
 ### New features
 
-* [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on Style/RegexpLiteral. ([@r7kamura][])
-* [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on Style/Lambda. ([@r7kamura][])
+* [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on `Style/RegexpLiteral`. ([@r7kamura][])
+* [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on `Style/Lambda`. ([@r7kamura][])
 * [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Enforce no parentheses style in the `Style/MethodCallWithArgsParentheses` cop. ([@gsamokovarov][])
 * New cop `Performance/OpenStruct` checks for `OpenStruct.new` calls. ([@xlts][])
 
