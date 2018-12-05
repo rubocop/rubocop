@@ -60,11 +60,16 @@ module RuboCop
 
         def non_redundant_merge?(node, receiver, pairs)
           non_redundant_pairs?(receiver, pairs) ||
+            kwsplat_used?(pairs) ||
             non_redundant_value_used?(receiver, node)
         end
 
         def non_redundant_pairs?(receiver, pairs)
           pairs.size > 1 && !receiver.pure? || pairs.size > max_key_value_pairs
+        end
+
+        def kwsplat_used?(pairs)
+          pairs.any?(&:kwsplat_type?)
         end
 
         def non_redundant_value_used?(receiver, node)
