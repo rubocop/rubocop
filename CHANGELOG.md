@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.61.0 (2018-12-05)
+
 ### New features
 
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on `Style/RegexpLiteral`. ([@r7kamura][])
