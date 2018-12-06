@@ -2896,6 +2896,25 @@ foo().bar(1)
 
 # good
 foo().bar 1
+
+# AllowParenthesesInControlFlow: false (default)
+
+# bad
+process(:work) if condition(true)
+
+# good
+process :work if condition true
+
+# AllowParenthesesInControlFlow: true (default)
+
+# good
+process(:work) if condition(true)
+
+# good
+process :work if condition(true)
+
+# good
+process :work if condition true
 ```
 
 ### Configurable attributes
@@ -2904,6 +2923,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
+AllowParenthesesInControlFlow | `false` | Boolean
 AllowParenthesesInMultilineCall | `false` | Boolean
 AllowParenthesesInChaining | `false` | Boolean
 EnforcedStyle | `require_parentheses` | `require_parentheses`, `omit_parentheses`

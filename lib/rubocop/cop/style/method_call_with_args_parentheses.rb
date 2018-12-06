@@ -106,6 +106,25 @@ module RuboCop
       #
       #   # good
       #   foo().bar 1
+      #
+      #   # AllowParenthesesInControlFlow: false (default)
+      #
+      #   # bad
+      #   process(:work) if condition(true)
+      #
+      #   # good
+      #   process :work if condition true
+      #
+      #   # AllowParenthesesInControlFlow: true (default)
+      #
+      #   # good
+      #   process(:work) if condition(true)
+      #
+      #   # good
+      #   process :work if condition(true)
+      #
+      #   # good
+      #   process :work if condition true
       class MethodCallWithArgsParentheses < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
@@ -228,7 +247,7 @@ module RuboCop
         def eligible_for_parentheses_presence?(node)
           call_in_literals?(node) ||
             call_with_ambiguous_arguments?(node) ||
-            call_in_logical_operators?(node) ||
+            allowed_call_in_control_flow?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
         end
@@ -282,6 +301,20 @@ module RuboCop
 
           previous.parenthesized? ||
             allowed_chained_call_with_parentheses?(previous)
+        end
+
+        def allowed_call_in_control_flow?(node)
+          return true if call_in_logical_operators?(node)
+          return unless cop_config['AllowParenthesesInControlFlow']
+
+          parent = node.parent
+          return false unless parent || control_flow?(parent)
+
+          parent.modifier_form? || parent.condition == node
+        end
+
+        def control_flow?(node)
+          node.if_type? || node.while_type? || node.until_type?
         end
 
         def splat?(node)

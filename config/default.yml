@@ -3356,6 +3356,7 @@ Style/MethodCallWithArgsParentheses:
   VersionChanged: '0.61'
   IgnoreMacros: true
   IgnoredMethods: []
+  AllowParenthesesInControlFlow: false
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
   EnforcedStyle: require_parentheses

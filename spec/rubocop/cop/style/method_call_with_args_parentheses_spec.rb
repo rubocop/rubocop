@@ -333,6 +333,38 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register offense for parens in control flow modifier condition' do
+      expect_offense(<<-RUBY.strip_indent)
+        make :this if condition(true)
+                               ^^^^^^ Omit parentheses for method calls with arguments.
+
+        make :this unless condition(true)
+                                   ^^^^^^ Omit parentheses for method calls with arguments.
+
+        make :this while condition(true)
+                                  ^^^^^^ Omit parentheses for method calls with arguments.
+
+        make :this until condition(true)
+                                  ^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
+    it 'register offense for parens in control flow modifier body' do
+      expect_offense(<<-RUBY.strip_indent)
+        make(:this) if condition true
+            ^^^^^^^ Omit parentheses for method calls with arguments.
+
+        make(:this) unless condition true
+            ^^^^^^^ Omit parentheses for method calls with arguments.
+
+        make(:this) while condition true
+            ^^^^^^^ Omit parentheses for method calls with arguments.
+
+        make(:this) until condition true
+            ^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
@@ -369,6 +401,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'accepts parens in blocks with braces' do
       expect_no_offenses('foo(1) { 2 }')
+    end
+
+    it 'accepts no parens in control flow conditions' do
+      expect_no_offenses('make :this if condition true')
+      expect_no_offenses('make :this unless condition true')
+      expect_no_offenses('make :this while condition true')
+      expect_no_offenses('make :this until condition true')
     end
 
     it 'accepts parens in calls with logical operators' do
@@ -474,6 +513,44 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
         foo().bar(3).wait 4
       RUBY
+    end
+
+    context 'allowing parenthesis in control flow' do
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => 'omit_parentheses',
+          'AllowParenthesesInControlFlow' => true
+        }
+      end
+
+      it 'register an offense for parens in children of control flows' do
+        expect_offense(<<-RUBY.strip_indent)
+          if condition(true)
+            process(:that)
+                   ^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif condition(true)
+            process(:that)
+                   ^^^^^^^ Omit parentheses for method calls with arguments.
+          end
+
+          while condition(true)
+            push(:on)
+                ^^^^^ Omit parentheses for method calls with arguments.
+          end
+
+          until condition(true)
+            push(:on)
+                ^^^^^ Omit parentheses for method calls with arguments.
+          end
+        RUBY
+      end
+
+      it 'accepts parens in control flow' do
+        expect_no_offenses('make :this while condition true')
+        expect_no_offenses('make :this until condition(true)')
+        expect_no_offenses('process(:that) if condition true')
+        expect_no_offenses('process(:that) unless condition(true)')
+      end
     end
 
     context 'allowing parenthesis in chaining' do
