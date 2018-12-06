@@ -3,9 +3,12 @@
 RSpec.describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
     let(:cop) do
-      double(RuboCop::Cop, offenses: [], excluded_file?: false).as_null_object
+      # rubocop:disable RSpec/VerifiedDoubles
+      double(RuboCop::Cop::Cop, offenses: [],
+                                excluded_file?: false).as_null_object
+      # rubocop:enable RSpec/VerifiedDoubles
     end
-    let(:force) { double(RuboCop::Cop::Force).as_null_object }
+    let(:force) { instance_double(RuboCop::Cop::Force).as_null_object }
 
     it 'returns all offenses found by the cops' do
       allow(cop).to receive(:offenses).and_return([1])
@@ -20,9 +23,11 @@ RSpec.describe RuboCop::Cop::Commissioner do
     context 'when a cop has no interest in the file' do
       it 'returns all offenses except the ones of the cop' do
         cops = []
-        cops << double('cop A', offenses: %w[foo], excluded_file?: false)
-        cops << double('cop B', excluded_file?: true)
-        cops << double('cop C', offenses: %w[baz], excluded_file?: false)
+        cops << instance_double(RuboCop::Cop::Cop, offenses: %w[foo],
+                                                   excluded_file?: false)
+        cops << instance_double(RuboCop::Cop::Cop, excluded_file?: true)
+        cops << instance_double(RuboCop::Cop::Cop, offenses: %w[baz],
+                                                   excluded_file?: false)
         cops.each(&:as_null_object)
 
         commissioner = described_class.new(cops, [])
