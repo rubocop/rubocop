@@ -320,7 +320,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     let(:flags) { 0 }
 
     it 'does not search excluded top level directories' do
-      config = double('config')
+      config = instance_double(RuboCop::Config)
       exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
       allow(config).to receive(:for_all_cops).and_return(exclude_property)
       allow(config_store).to receive(:for).and_return(config)
@@ -332,7 +332,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     it 'works also if a folder is named ","' do
       create_empty_file(',/ruby4.rb')
 
-      config = double('config')
+      config = instance_double(RuboCop::Config)
       exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
       allow(config).to receive(:for_all_cops).and_return(exclude_property)
       allow(config_store).to receive(:for).and_return(config)
@@ -368,7 +368,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     it 'picks files specified to be included in config' do
-      config = double('config')
+      config = instance_double(RuboCop::Config)
       allow(config).to receive(:file_to_include?) do |file|
         File.basename(file) == 'file'
       end
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     it 'does not pick files specified to be excluded in config' do
-      config = double('config').as_null_object
+      config = instance_double(RuboCop::Config).as_null_object
       allow(config)
         .to receive(:for_all_cops).and_return('Exclude' => [],
                                               'Include' => [],
