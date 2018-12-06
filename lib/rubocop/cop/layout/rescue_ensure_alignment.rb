@@ -114,7 +114,9 @@ module RuboCop
 
         def alignment_node(node)
           ancestor_node = ancestor_node(node)
-          return nil if ancestor_node.nil?
+
+          return ancestor_node if ancestor_node.nil? ||
+                                  ancestor_node.kwbegin_type?
 
           assignment_node = assignment_node(ancestor_node)
           return assignment_node unless assignment_node.nil?
