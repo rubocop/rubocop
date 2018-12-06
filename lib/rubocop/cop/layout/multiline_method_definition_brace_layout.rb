@@ -123,7 +123,7 @@ module RuboCop
         alias on_defs on_def
 
         def autocorrect(node)
-          MultilineLiteralBraceCorrector.correct(processed_source, node)
+          MultilineLiteralBraceCorrector.new(node, processed_source)
         end
       end
     end

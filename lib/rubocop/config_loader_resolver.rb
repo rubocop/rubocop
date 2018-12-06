@@ -76,11 +76,11 @@ module RuboCop
                  config_file)
     end
 
-    # Returns a new hash where the parameters of the given config hash have
-    # been replaced by parameters returned by the given block.
     # Return a recursive merge of two hashes. That is, a normal hash merge,
     # with the addition that any value that is a hash, and occurs in both
     # arguments, will also be merged. And so on.
+    #
+    # rubocop:disable Metrics/AbcSize
     def merge(base_hash, derived_hash, **opts)
       result = base_hash.merge(derived_hash)
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
@@ -95,6 +95,7 @@ module RuboCop
       end
       result
     end
+    # rubocop:enable Metrics/AbcSize
 
     private
 

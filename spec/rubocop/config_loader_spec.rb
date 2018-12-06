@@ -901,15 +901,6 @@ RSpec.describe RuboCop::ConfigLoader do
       )
     end
 
-    it 'changes target ruby version with a patch to float' do
-      create_file(configuration_path, <<-YAML.strip_indent)
-        AllCops:
-          TargetRubyVersion: 2.3.4
-      YAML
-
-      expect(load_file.to_h).to eq('AllCops' => { 'TargetRubyVersion' => 2.3 })
-    end
-
     it 'loads configuration properly when it includes non-ascii characters ' do
       create_file(configuration_path, <<-YAML.strip_indent)
         # All these cops of mine are ❤

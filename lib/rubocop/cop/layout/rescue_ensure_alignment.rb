@@ -28,8 +28,9 @@ module RuboCop
               'aligned with `%<beginning>s` at ' \
               '%<begin_loc_line>d, %<begin_loc_column>d.'.freeze
         ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
-        RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + [:block]).freeze
+        RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
+        ASSIGNMENT_TYPES = %i[lvasgn].freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
@@ -113,12 +114,17 @@ module RuboCop
 
         def alignment_node(node)
           ancestor_node = ancestor_node(node)
-          return nil if ancestor_node.nil?
+
+          return ancestor_node if ancestor_node.nil? ||
+                                  ancestor_node.kwbegin_type?
+
+          assignment_node = assignment_node(ancestor_node)
+          return assignment_node unless assignment_node.nil?
 
           access_modifier_node = access_modifier_node(ancestor_node)
-          return ancestor_node if access_modifier_node.nil?
+          return access_modifier_node unless access_modifier_node.nil?
 
-          access_modifier_node
+          ancestor_node
         end
 
         def ancestor_node(node)
@@ -130,6 +136,15 @@ module RuboCop
             end
 
           node.each_ancestor(*ancestor_types).first
+        end
+
+        def assignment_node(node)
+          assignment_node = node.ancestors.first
+          return nil unless
+            assignment_node &&
+            ASSIGNMENT_TYPES.include?(assignment_node.type)
+
+          assignment_node
         end
 
         def access_modifier_node(node)

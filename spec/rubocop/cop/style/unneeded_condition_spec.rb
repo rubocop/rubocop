@@ -73,6 +73,18 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
         end
       end
 
+      context 'when `if` condition and `then` branch are the same ' \
+              'and it has no `else` branch' do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            if do_something
+            ^^^^^^^^^^^^^^^ This condition is not needed.
+              do_something
+            end
+          RUBY
+        end
+      end
+
       context 'when using ternary if in `else` branch' do
         it 'registers no offense' do
           expect_no_offenses(<<-RUBY.strip_indent)
@@ -174,6 +186,19 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
         expect(new_source).to eq(<<-RUBY.strip_indent)
           ary << (foo || bar)
+        RUBY
+      end
+
+      it 'when `if` condition and `then` branch are the same ' \
+         'and it has no `else` branch' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          if do_something
+            do_something
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          do_something
         RUBY
       end
     end

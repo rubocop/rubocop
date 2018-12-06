@@ -110,7 +110,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          MultilineLiteralBraceCorrector.correct(processed_source, node)
+          MultilineLiteralBraceCorrector.new(node, processed_source)
         end
 
         private

@@ -10,9 +10,10 @@ module RuboCop
     SKIPPED_PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop (skipped ' \
                       'because the default Metrics/LineLength:Max is ' \
                       'overridden)'.freeze
-    STATUS_SUCCESS  = 0
-    STATUS_OFFENSES = 1
-    STATUS_ERROR    = 2
+    STATUS_SUCCESS     = 0
+    STATUS_OFFENSES    = 1
+    STATUS_ERROR       = 2
+    STATUS_INTERRUPTED = 128 + Signal.list['INT']
 
     class Finished < RuntimeError; end
 
@@ -57,15 +58,6 @@ module RuboCop
       STATUS_ERROR
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-
-    def trap_interrupt(runner)
-      Signal.trap('INT') do
-        exit!(1) if runner.aborting?
-        runner.abort
-        warn
-        warn 'Exiting... Interrupt again to exit immediately.'
-      end
-    end
 
     private
 
@@ -155,7 +147,6 @@ module RuboCop
     def execute_runner(paths)
       runner = Runner.new(@options, @config_store)
 
-      trap_interrupt(runner)
       all_passed = runner.run(paths)
       display_warning_summary(runner.warnings)
       display_error_summary(runner.errors)
@@ -163,7 +154,9 @@ module RuboCop
 
       all_pass_or_excluded = all_passed || @options[:auto_gen_config]
 
-      if all_pass_or_excluded && !runner.aborting? && runner.errors.empty?
+      if runner.aborting?
+        STATUS_INTERRUPTED
+      elsif all_pass_or_excluded && runner.errors.empty?
         STATUS_SUCCESS
       else
         STATUS_OFFENSES

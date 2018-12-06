@@ -42,11 +42,41 @@ module RuboCop
           processed_source.each_comment { |comment| check(comment) }
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        def autocorrect(comment)
+          corrections = autocorrect_preceding_comments(comment) <<
+                        autocorrect_one(comment)
+          ->(corrector) { corrections.each { |corr| corr.call(corrector) } }
         end
 
         private
+
+        # Corrects all comment lines that occur immediately before the given
+        # comment and have the same indentation. This is to avoid a long chain
+        # of correcting, saving the file, parsing and inspecting again, and
+        # then correcting one more line, and so on.
+        def autocorrect_preceding_comments(comment)
+          corrections = []
+          line_no = comment.loc.line
+          column = comment.loc.column
+          comments = processed_source.comments
+          (comments.index(comment) - 1).downto(0) do |ix|
+            previous_comment = comments[ix]
+            break unless should_correct?(previous_comment, column, line_no - 1)
+
+            corrections << autocorrect_one(previous_comment)
+            line_no -= 1
+          end
+          corrections
+        end
+
+        def should_correct?(comment, column, line_no)
+          loc = comment.loc
+          loc.line == line_no && loc.column == column
+        end
+
+        def autocorrect_one(comment)
+          AlignmentCorrector.correct(processed_source, comment, @column_delta)
+        end
 
         def check(comment)
           return unless own_line_comment?(comment)

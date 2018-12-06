@@ -89,31 +89,27 @@ module RuboCop
       # on different lines, each item within is on its own line, and the
       # closing bracket is on its own line.
       def multiline?(node)
-        # No need to process anything if the whole node is not multiline
-        # Without the 2nd check, Foo.new({}) is considered multiline, which
-        # it should not be. Essentially, if there are no elements, the
-        # expression can not be multiline.
-        return false unless node.multiline?
+        node.multiline? && !allowed_multiline_argument?(node)
+      end
 
-        items = elements(node).map(&:source_range)
-        return false if items.empty?
-
-        items << node.loc.begin << node.loc.end
-        (items.map(&:first_line) + items.map(&:last_line)).uniq.size > 1
+      # A single argument with the closing bracket on the same line as the end
+      # of the argument is not considered multiline, even if the argument
+      # itself might span multiple lines.
+      def allowed_multiline_argument?(node)
+        elements(node).one? && !Util.begins_its_line?(node.loc.end)
       end
 
       def elements(node)
         return node.children unless node.send_type?
 
-        _receiver, _method_name, *args = *node
-        args.flat_map do |a|
+        node.arguments.flat_map do |argument|
           # For each argument, if it is a multi-line hash without braces,
           # then promote the hash elements to method arguments
           # for the purpose of determining multi-line-ness.
-          if a.hash_type? && a.multiline? && !a.braces?
-            a.children
+          if argument.hash_type? && argument.multiline? && !argument.braces?
+            argument.children
           else
-            a
+            argument
           end
         end
       end

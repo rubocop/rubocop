@@ -41,7 +41,7 @@ module RuboCop
     # If you do not want to specify an offense then use the
     # companion method `expect_no_offenses`. This method is a much
     # simpler assertion since it just inspects the source and checks
-    # that there were no offenses. The `expect_offenses` method has
+    # that there were no offenses. The `expect_offense` method has
     # to do more work by parsing out lines that contain carets.
     module ExpectOffense
       def expect_offense(source, file = nil)

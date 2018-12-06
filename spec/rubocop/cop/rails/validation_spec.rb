@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Rails::Validation do
   subject(:cop) { described_class.new }
 
-  described_class::BLACKLIST.each_with_index do |validation, number|
+  described_class::DENYLIST.each_with_index do |validation, number|
     it "registers an offense for #{validation}" do
       inspect_source("#{validation} :name")
       expect(cop.offenses.size).to eq(1)
@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Rails::Validation do
     it "outputs the correct message for #{validation}" do
       inspect_source("#{validation} :name")
       expect(cop.offenses.first.message)
-        .to include(described_class::WHITELIST[number])
+        .to include(described_class::ALLOWLIST[number])
     end
   end
 

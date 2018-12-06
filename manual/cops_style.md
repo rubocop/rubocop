@@ -317,6 +317,13 @@ Enabled | Yes | No | 0.9 | -
 
 This cop checks for BEGIN blocks.
 
+### Examples
+
+```ruby
+# bad
+BEGIN { test }
+```
+
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#no-BEGIN-blocks](https://github.com/rubocop-hq/ruby-style-guide#no-BEGIN-blocks)
@@ -1145,7 +1152,7 @@ AutocorrectNotice | `` | String
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.51 | 0.59
+Disabled | Yes | No | 0.51 | 0.59
 
 This cop checks for consistent usage of the `DateTime` class over the
 `Time` class. This cop is disabled by default since these classes,
@@ -2185,7 +2192,7 @@ AllowedVariables | `[]` | Array
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#instance-vars](https://github.com/rubocop-hq/ruby-style-guide#instance-vars)
-* [http://www.zenspider.com/Languages/Ruby/QuickRef.html](http://www.zenspider.com/Languages/Ruby/QuickRef.html)
+* [https://www.zenspider.com/ruby/quickref.html](https://www.zenspider.com/ruby/quickref.html)
 
 ## Style/GuardClause
 
@@ -2530,7 +2537,7 @@ raise ArgumentError, 'Error message here'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.26 | -
+Enabled | Yes | Yes  | 0.26 | 0.61
 
 Use `Kernel#loop` for infinite loops.
 
@@ -2781,13 +2788,29 @@ some_str = 'ala' \
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.47 | 0.48
+Disabled | Yes | Yes  | 0.47 | 0.61
 
-This cop checks presence of parentheses in method calls containing
-parameters. By default, macro methods are ignored. Additional methods
-can be added to the `IgnoredMethods` list.
+This cop enforces the presence (default) or absence of parentheses in
+method calls containing parameters.
+
+In the default style (require_parentheses), macro methods are ignored.
+Additional methods can be added to the `IgnoredMethods` list. This
+option is valid only in the default style.
+
+In the alternative style (omit_parentheses), there are two additional
+options.
+
+1. `AllowParenthesesInChaining` is `false` by default. Setting it to
+   `true` allows the presence of parentheses in the last call during
+   method chaining.
+
+2. `AllowParenthesesInMultilineCall` is `false` by default. Setting it
+    to `true` allows the presence of parentheses in multi-line method
+    calls.
 
 ### Examples
+
+#### EnforcedStyle: require_parentheses
 
 ```ruby
 # bad
@@ -2821,6 +2844,59 @@ class Foo
   bar :baz
 end
 ```
+#### EnforcedStyle: omit_parentheses
+
+```ruby
+# bad
+array.delete(e)
+
+# good
+array.delete e
+
+# bad
+foo.enforce(strict: true)
+
+# good
+foo.enforce strict: true
+
+# AllowParenthesesInMultilineCall: false (default)
+
+# bad
+foo.enforce(
+  strict: true
+)
+
+# good
+foo.enforce \
+  strict: true
+
+# AllowParenthesesInMultilineCall: true
+
+# good
+foo.enforce(
+  strict: true
+)
+
+# good
+foo.enforce \
+  strict: true
+
+# AllowParenthesesInChaining: false (default)
+
+# bad
+foo().bar(1)
+
+# good
+foo().bar 1
+
+# AllowParenthesesInChaining: true
+
+# good
+foo().bar(1)
+
+# good
+foo().bar 1
+```
 
 ### Configurable attributes
 
@@ -2828,6 +2904,9 @@ Name | Default value | Configurable values
 --- | --- | ---
 IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
+AllowParenthesesInMultilineCall | `false` | Boolean
+AllowParenthesesInChaining | `false` | Boolean
+EnforcedStyle | `require_parentheses` | `require_parentheses`, `omit_parentheses`
 
 ### References
 

@@ -2063,6 +2063,12 @@ Performance/LstripRstrip:
   Enabled: true
   VersionAdded: '0.36'
 
+Performance/OpenStruct:
+  Description: 'Use `Struct` instead of `OpenStruct`.'
+  Enabled: false
+  VersionAdded: '0.61'
+  Safe: false
+
 Performance/RangeInclude:
   Description: 'Use `Range#cover?` instead of `Range#include?`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
@@ -2479,7 +2485,7 @@ Rails/RequestReferer:
 Rails/ReversibleMigration:
   Description: 'Checks whether the change method of the migration file is reversible.'
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#reversible-migration'
-  Reference: 'http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
+  Reference: 'https://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html'
   Enabled: true
   VersionAdded: '0.47'
   Include:
@@ -2515,10 +2521,10 @@ Rails/SkipsModelValidations:
   Description: >-
                  Use methods that skips model validations with caution.
                  See reference for more information.
-  Reference: 'http://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
+  Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: true
   VersionAdded: '0.47'
-  VersionChanged: '0.59'
+  VersionChanged: '0.60'
   Blacklist:
     - decrement!
     - decrement_counter
@@ -2586,7 +2592,7 @@ Security/JSONLoad:
   Description: >-
                  Prefer usage of `JSON.parse` over `JSON.load` due to potential
                  security issues. See reference for more information.
-  Reference: 'http://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load'
+  Reference: 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load'
   Enabled: true
   VersionAdded: '0.43'
   VersionChanged: '0.44'
@@ -2599,7 +2605,7 @@ Security/MarshalLoad:
   Description: >-
                  Avoid using of `Marshal.load` or `Marshal.restore` due to potential
                  security issues. See reference for more information.
-  Reference: 'http://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
+  Reference: 'https://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
   Enabled: true
   VersionAdded: '0.47'
 
@@ -2983,9 +2989,9 @@ Style/Copyright:
   AutocorrectNotice: ''
 
 Style/DateTime:
-  Description: 'Use Date or Time over DateTime.'
+  Description: 'Use Time over DateTime.'
   StyleGuide: '#date--time'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.51'
   VersionChanged: '0.59'
   AllowCoercion: false
@@ -3183,7 +3189,7 @@ Style/FrozenStringLiteralComment:
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
   StyleGuide: '#instance-vars'
-  Reference: 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
+  Reference: 'https://www.zenspider.com/ruby/quickref.html'
   Enabled: true
   VersionAdded: '0.13'
   # Built-in global variables are allowed by default.
@@ -3268,7 +3274,8 @@ Style/InfiniteLoop:
   StyleGuide: '#infinite-loop'
   Enabled: true
   VersionAdded: '0.26'
-  SafeAutoCorrect: false
+  VersionChanged: '0.61'
+  SafeAutoCorrect: true
 
 Style/InlineComment:
   Description: 'Avoid trailing inline comments.'
@@ -3346,9 +3353,15 @@ Style/MethodCallWithArgsParentheses:
   StyleGuide: '#method-invocation-parens'
   Enabled: false
   VersionAdded: '0.47'
-  VersionChanged: '0.48'
+  VersionChanged: '0.61'
   IgnoreMacros: true
   IgnoredMethods: []
+  AllowParenthesesInMultilineCall: false
+  AllowParenthesesInChaining: false
+  EnforcedStyle: require_parentheses
+  SupportedStyles:
+    - require_parentheses
+    - omit_parentheses
 
 Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'

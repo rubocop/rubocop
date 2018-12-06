@@ -67,8 +67,11 @@ module RuboCop
         private
 
         def correct_case_when(corrector, case_node, when_nodes)
-          remove_case_node(corrector, case_node)
-          corrector.replace(when_nodes.first.loc.keyword, 'if')
+          case_range = case_node.loc.keyword.join(when_nodes.first.loc.keyword)
+
+          corrector.replace(case_range, 'if')
+
+          keep_first_when_comment(case_node, when_nodes.first, corrector)
 
           when_nodes[1..-1].each do |when_node|
             corrector.replace(when_node.loc.keyword, 'elsif')
@@ -88,12 +91,15 @@ module RuboCop
           end
         end
 
-        def remove_case_node(corrector, case_node)
-          range = range_by_whole_lines(
-            case_node.loc.keyword, include_final_newline: true
-          )
+        def keep_first_when_comment(case_node, first_when_node, corrector)
+          comment = processed_source.comments_before_line(
+            first_when_node.loc.keyword.line
+          ).map(&:text).join("\n")
 
-          corrector.remove(range)
+          line = range_by_whole_lines(case_node.source_range)
+
+          corrector.insert_before(line, "#{comment}\n") if !comment.empty? &&
+                                                           !case_node.parent
         end
       end
     end

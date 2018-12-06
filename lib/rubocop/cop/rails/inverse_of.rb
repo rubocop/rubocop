@@ -128,8 +128,8 @@ module RuboCop
       #     has_many :physicians, through: :appointments
       #   end
       #
-      # @see http://guides.rubyonrails.org/association_basics.html#bi-directional-associations
-      # @see http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#module-ActiveRecord::Associations::ClassMethods-label-Setting+Inverses
+      # @see https://guides.rubyonrails.org/association_basics.html#bi-directional-associations
+      # @see https://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#module-ActiveRecord::Associations::ClassMethods-label-Setting+Inverses
       class InverseOf < Cop
         extend TargetRailsVersion
 
