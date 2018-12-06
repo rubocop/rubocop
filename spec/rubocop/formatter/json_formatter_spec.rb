@@ -41,7 +41,8 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
       formatter.file_started(files[0], {})
       expect(summary[:offense_count]).to eq(0)
       formatter.file_finished(files[0], [
-                                double('offense1'), double('offense2')
+                                instance_double(RuboCop::Cop::Offense),
+                                instance_double(RuboCop::Cop::Offense)
                               ])
       expect(summary[:offense_count]).to eq(2)
     end
@@ -82,7 +83,12 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     subject(:hash) { formatter.hash_for_file(file, offenses) }
 
     let(:file) { File.expand_path('spec/spec_helper.rb') }
-    let(:offenses) { [double('offense1'), double('offense2')] }
+    let(:offenses) do
+      [
+        instance_double(RuboCop::Cop::Offense),
+        instance_double(RuboCop::Cop::Offense)
+      ]
+    end
 
     before do
       count = 0
