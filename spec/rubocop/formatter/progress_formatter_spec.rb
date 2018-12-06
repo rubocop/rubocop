@@ -31,7 +31,9 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
     end
 
     context 'when any offenses are detected' do
-      let(:offenses) { [double('offense').as_null_object] }
+      let(:offenses) do
+        [instance_double(RuboCop::Cop::Offense).as_null_object]
+      end
 
       include_examples 'calls #report_file_as_mark'
     end
