@@ -92,8 +92,3 @@ RSpec/SubjectStub:
     - 'spec/rubocop/formatter/base_formatter_spec.rb'
     - 'spec/rubocop/formatter/json_formatter_spec.rb'
     - 'spec/rubocop/formatter/progress_formatter_spec.rb'
-
-# Offense count: 39
-# Configuration parameters: IgnoreSymbolicNames.
-RSpec/VerifiedDoubles:
-  Enabled: false
