@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.61.1 (2018-12-06)
+
 ### Bug fixes
 
 * [#6550](https://github.com/rubocop-hq/rubocop/issues/6550): Prevent Layout/RescueEnsureAlignment cop from breaking on assigned begin-end. ([@drenmi][])
