@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
   include FileHelper
 
   describe 'how the API methods are invoked', :isolated_environment do
-    subject(:formatter) { double('formatter').as_null_object }
+    subject(:formatter) { instance_double(described_class).as_null_object }
 
     let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new) }
     let(:output) { $stdout.string }
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
     describe 'invocation order' do
       subject(:formatter) do
-        formatter = double('formatter')
+        formatter = instance_double(described_class)
         %i[started file_started file_finished finished output]
           .each do |message|
           allow(formatter).to receive(message) do
