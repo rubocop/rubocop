@@ -22,7 +22,9 @@ RSpec.describe RuboCop::Cop::VariableForce::Variable do
 
     let(:name) { :foo }
     let(:declaration_node) { s(:arg, name) }
-    let(:scope) { double('scope').as_null_object }
+    let(:scope) do
+      instance_double(RuboCop::Cop::VariableForce::Scope).as_null_object
+    end
     let(:variable) { described_class.new(name, declaration_node, scope) }
 
     context 'when the variable is not assigned' do
