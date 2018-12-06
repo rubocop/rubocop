@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       before do
         # The cache responds that it's not valid, which means that new results
         # should normally be collected and saved...
-        cache = double('cache', 'valid?' => false)
+        cache = instance_double(RuboCop::ResultCache, 'valid?' => false)
         # ... but there's a crash in one cop.
         runner.errors = ['An error occurred in ...']
 
