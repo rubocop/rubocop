@@ -1,6 +1,10 @@
-# Change log
+Fencer# Change log
 
 ## master (unreleased)
+
+### Bug fixes
+
+* [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
 
 ## 0.61.1 (2018-12-06)
 
@@ -3681,3 +3685,4 @@
 [@gmcgibbon]: https://github.com/gmcgibbon
 [@dduugg]: https://github.com/dduugg
 [@mmedal]: https://github.com/mmedal
+[@timmcanty]: https://github.com/timmcanty

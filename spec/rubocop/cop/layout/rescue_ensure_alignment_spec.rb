@@ -385,6 +385,17 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       RUBY
     end
 
+    it 'accepts aligned rescue in assigned do-end block starting on newline' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        valid =
+          proc do |bar|
+            baz
+          rescue
+            qux
+          end
+      RUBY
+    end
+
     it 'accepts aligned rescue in do-end block in a method' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def foo
