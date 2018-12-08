@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6560](https://github.com/rubocop-hq/rubocop/issues/6560): Consider file count, not offense count, for `--exclude-limit` in combination with `--auto-gen-only-exclude`. ([@jonas054][])
+
 ## 0.61.1 (2018-12-06)
 
 ### Bug fixes
