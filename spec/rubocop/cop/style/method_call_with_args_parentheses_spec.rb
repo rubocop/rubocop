@@ -476,6 +476,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    context 'TargetRubyVersion >= 2.3', :ruby23 do
+      it 'accepts parens in chaining with safe operators' do
+        expect_no_offenses('Something.find(criteria: given)&.field')
+      end
+    end
+
     context 'allowing parenthesis in chaining' do
       let(:cop_config) do
         {
