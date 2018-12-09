@@ -79,7 +79,7 @@ module RuboCop
 
         def preferred_delimiters_for(type)
           PreferredDelimiters
-            .new(type, @config, @preferred_delimiters)
+            .new(type, @config, nil)
             .delimiters
         end
 
