@@ -1,4 +1,4 @@
-Fencer# Change log
+# Change log
 
 ## master (unreleased)
 
