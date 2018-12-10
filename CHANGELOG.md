@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
+* [#6343](https://github.com/rubocop-hq/rubocop/pull/6343): Optimise `--auto-gen-config` when `Metrics/LineLength` cop is disabled. ([@tom-lord][])
 
 ## 0.61.1 (2018-12-06)
 
@@ -3686,3 +3687,4 @@
 [@dduugg]: https://github.com/dduugg
 [@mmedal]: https://github.com/mmedal
 [@timmcanty]: https://github.com/timmcanty
+[@tom-lord]: https://github.com/tom-lord
