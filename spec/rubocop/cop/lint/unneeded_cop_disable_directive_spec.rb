@@ -298,7 +298,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
             let(:cop_disabled_line_ranges) do
               {
                 'Metrics/MethodLength' => [1..Float::INFINITY],
-                'Metrics/ClassLength' => [1..Float::INFINITY],
+                'Metrics/ClassLength' => [1..Float::INFINITY]
                 # etc... (no need to include all cops here)
               }
             end
