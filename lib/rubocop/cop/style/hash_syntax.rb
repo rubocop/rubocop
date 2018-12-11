@@ -87,7 +87,7 @@ module RuboCop
         end
 
         def ruby19_no_mixed_keys_check(pairs)
-          if force_hash_rockets? pairs
+          if force_hash_rockets?(pairs)
             check(pairs, ':', MSG_HASH_ROCKETS)
           elsif sym_indices?(pairs)
             check(pairs, '=>', MSG_19)
