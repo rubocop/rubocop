@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* New cop `Lint/SafeNavigationWithEmpty` checks for `foo&.empty?` in conditionals. ([@rspeicher][])
+
 ### Bug fixes
 
 * [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
@@ -3690,3 +3694,4 @@
 [@timmcanty]: https://github.com/timmcanty
 [@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
+[@rspeicher]: https://github.com/rspeicher
