@@ -77,7 +77,7 @@ module RuboCop
       end
 
       def heredoc?(source_after_last_item)
-        source_after_last_item =~ /\w/
+        source_after_last_item !~ /^\s*#/ && source_after_last_item =~ /\w/
       end
 
       # Returns true if the node has round/square/curly brackets.
