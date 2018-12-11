@@ -21,13 +21,16 @@ module RuboCop
 
     def run_specs
       rspec_args = %w[spec]
-      with_encoding do
+
+      n_failures = with_encoding do
         if Process.respond_to?(:fork)
           parallel_runner_klass.new(rspec_args).execute
         else
           ::RSpec::Core::Runner.run(rspec_args)
         end
       end
+
+      exit!(n_failures) unless n_failures.zero?
     end
 
     private
@@ -55,6 +58,8 @@ module RuboCop
     class ParallelRunner < ::TestQueue::Runner
       def initialize(rspec_args)
         super(Framework.new(rspec_args))
+
+        @exit_when_done = false
       end
 
       def run_worker(iterator)

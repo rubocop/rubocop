@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
     formatter_class.new(output, options)
   end
 
-  let(:output) { double('output') }
+  let(:output) { instance_double(IO) }
 
   around do |example|
     original_state = Rainbow.enabled

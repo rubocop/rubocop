@@ -27,7 +27,25 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
     end
 
     context 'when any offenses are detected' do
-      let(:offenses) { [double('offense').as_null_object] }
+      let(:offenses) do
+        source_buffer = Parser::Source::Buffer.new('test', 1)
+        source = Array.new(9) do |index|
+          "This is line #{index + 1}."
+        end
+        source_buffer.source = source.join("\n")
+        line_length = source[0].length + 1
+
+        [
+          RuboCop::Cop::Offense.new(
+            :convention,
+            Parser::Source::Range.new(source_buffer,
+                                      line_length + 2,
+                                      line_length + 3),
+            'foo',
+            'Cop'
+          )
+        ]
+      end
 
       it 'prints "not ok"' do
         expect(output.string).to include('not ok 1')

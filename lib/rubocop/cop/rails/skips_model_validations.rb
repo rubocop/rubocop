@@ -5,7 +5,7 @@ module RuboCop
     module Rails
       # This cop checks for the use of methods which skip
       # validations which are listed in
-      # http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
+      # https://guides.rubyonrails.org/active_record_validations.html#skipping-validations
       #
       # Methods may be ignored from this rule by configuring a `Whitelist`.
       #

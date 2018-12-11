@@ -115,6 +115,13 @@ RSpec.describe RuboCop::MagicComment do
     frozen_string_literal: true
   )
 
+  include_examples(
+    'magic comment',
+    '# -*- coding: ASCII-8BIT; frozen_string_literal: true -*-',
+    encoding: 'ascii-8bit',
+    frozen_string_literal: true
+  )
+
   include_examples 'magic comment',
                    '# vim: filetype=ruby, fileencoding=ascii-8bit',
                    encoding: 'ascii-8bit'

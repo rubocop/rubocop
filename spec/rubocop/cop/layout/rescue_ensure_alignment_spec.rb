@@ -354,6 +354,16 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
+  it 'accepts correctly aligned rescue in assigned begin-end block' do
+    expect_no_offenses(<<-RUBY)
+      foo = begin
+              bar
+            rescue BazError
+              qux
+            end
+    RUBY
+  end
+
   context '>= Ruby 2.5', :ruby25 do
     it 'accepts aligned rescue in do-end block' do
       expect_no_offenses(<<-RUBY.strip_indent)
@@ -362,6 +372,27 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         rescue StandardError => _exception
           next
         end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in assigned do-end block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        result = [1, 2, 3].map do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in assigned do-end block starting on newline' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        valid =
+          proc do |bar|
+            baz
+          rescue
+            qux
+          end
       RUBY
     end
 

@@ -238,7 +238,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             func({
                    @abc => 0,
                    @xyz => 1,
-                 },)
+                 })
             func(
               {
                 abc: 0,
@@ -453,7 +453,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'caching' do
-    let(:cache) { double('cache', 'valid?' => true, 'load' => cached_offenses) }
+    let(:cache) do
+      instance_double(RuboCop::ResultCache, 'valid?' => true,
+                                            'load' => cached_offenses)
+    end
     let(:source) { %(puts "Hi"\n) }
 
     before do

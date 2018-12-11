@@ -44,7 +44,6 @@ module RuboCop
         resolver.resolve_requires(path, hash)
 
         add_missing_namespaces(path, hash)
-        target_ruby_version_to_f!(hash)
 
         resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolver.resolve_inheritance(path, hash, file, debug?)
@@ -118,33 +117,33 @@ module RuboCop
         resolver.merge_with_default(config, config_file)
       end
 
-      def target_ruby_version_to_f!(hash)
-        version = 'TargetRubyVersion'
-        return unless hash['AllCops'] && hash['AllCops'][version]
-
-        hash['AllCops'][version] = hash['AllCops'][version].to_f
-      end
-
       def add_inheritance_from_auto_generated_file
         file_string = " #{AUTO_GENERATED_FILE}"
 
         config_file = options_config || DOTFILE
+
         if File.exist?(config_file)
           files = Array(load_yaml_configuration(config_file)['inherit_from'])
+
           return if files.include?(AUTO_GENERATED_FILE)
 
           files.unshift(AUTO_GENERATED_FILE)
           file_string = "\n  - " + files.join("\n  - ") if files.size > 1
-          rubocop_yml_contents = IO.read(config_file, encoding: Encoding::UTF_8)
-                                   .sub(%r{^inherit_from: *[.\/\w]+}, '')
-                                   .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+},
-                                        '')
+          rubocop_yml_contents = existing_configuration(config_file)
         end
+
         write_config_file(config_file, file_string, rubocop_yml_contents)
+
         puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
       private
+
+      def existing_configuration(config_file)
+        IO.read(config_file, encoding: Encoding::UTF_8)
+          .sub(%r{^inherit_from: *[.\/\w]+}, '')
+          .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+}, '')
+      end
 
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
@@ -188,8 +187,8 @@ module RuboCop
         elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0.pre1')
           YAML.safe_load(
             yaml_code,
-            whitelist_classes: [Regexp, Symbol],
-            whitelist_symbols: [],
+            permitted_classes: [Regexp, Symbol],
+            permitted_symbols: [],
             aliases: false,
             filename: filename
           )

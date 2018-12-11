@@ -101,9 +101,9 @@ module RuboCop
             token_number += 1
           end
 
-          if processed_source.tokens[token_number].text =~
-             Encoding::ENCODING_PATTERN
-            token = processed_source.tokens[token_number]
+          next_token = processed_source.tokens[token_number]
+          if next_token && next_token.text =~ Encoding::ENCODING_PATTERN
+            token = next_token
           end
 
           token
@@ -155,7 +155,9 @@ module RuboCop
 
         def proceeding_comment
           last_special_comment = last_special_comment(processed_source)
-          if processed_source.following_line(last_special_comment).empty?
+          following_line = processed_source.following_line(last_special_comment)
+
+          if following_line && following_line.empty?
             "\n#{FROZEN_STRING_LITERAL_ENABLED}"
           else
             "\n#{FROZEN_STRING_LITERAL_ENABLED}\n"

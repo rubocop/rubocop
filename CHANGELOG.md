@@ -5,9 +5,52 @@
 ### Bug fixes
 
 * [#4229](https://github.com/rubocop-hq/rubocop/issues/4229): Fix unexpected Style/HashSyntax consistency offence. ([@timon][])
+* [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
+* [#6343](https://github.com/rubocop-hq/rubocop/pull/6343): Optimise `--auto-gen-config` when `Metrics/LineLength` cop is disabled. ([@tom-lord][])
+* [#6389](https://github.com/rubocop-hq/rubocop/pull/6389): Fix false negative for `Style/TrailingCommaInHashLitera`/`Style/TrailingCommaInArrayLiteral` when there is a comment in the last line. ([@bayandin][])
+
+## 0.61.1 (2018-12-06)
+
+### Bug fixes
+
+* [#6550](https://github.com/rubocop-hq/rubocop/issues/6550): Prevent Layout/RescueEnsureAlignment cop from breaking on assigned begin-end. ([@drenmi][])
+
+## 0.61.0 (2018-12-05)
+
+### New features
+
+* [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on `Style/RegexpLiteral`. ([@r7kamura][])
+* [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on `Style/Lambda`. ([@r7kamura][])
+* [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Enforce no parentheses style in the `Style/MethodCallWithArgsParentheses` cop. ([@gsamokovarov][])
+* New cop `Performance/OpenStruct` checks for `OpenStruct.new` calls. ([@xlts][])
+
+### Bug fixes
+
+* [#6433](https://github.com/rubocop-hq/rubocop/issues/6433): Fix Ruby 2.5 `Layout/RescueEnsureAlignment` error on assigned blocks. ([@gmcgibbon][])
+* [#6405](https://github.com/rubocop-hq/rubocop/issues/6405): Fix a false positive for `Lint/UselessAssignment` when using a variable in a module name. ([@itsWill][])
 * [#5934](https://github.com/rubocop-hq/rubocop/issues/5934): Handle the combination of `--auto-gen-config` and `--config FILE` correctly. ([@jonas054][])
 * [#5970](https://github.com/rubocop-hq/rubocop/issues/5970): Make running `--auto-gen-config` in a subdirectory work. ([@jonas054][])
 * [#6412](https://github.com/rubocop-hq/rubocop/issues/6412): Fix an `unknown keywords` error when using `Psych.safe_load` with Ruby 2.6.0-preview2. ([@koic][])
+* [#6436](https://github.com/rubocop-hq/rubocop/pull/6436): Fix exit status code to be 130 when rubocop is interrupted. ([@deivid-rodriguez][])
+* [#6443](https://github.com/rubocop-hq/rubocop/pull/6443): Fix an incorrect autocorrect for `Style/BracesAroundHashParameters` when the opening brace is before the first hash element at same line. ([@koic][])
+* [#6445](https://github.com/rubocop-hq/rubocop/pull/6445): Treat `yield` and `super` like regular method calls in `Style/AlignHash`. ([@mvz][])
+* [#3301](https://github.com/rubocop-hq/rubocop/issues/3301): Don't suggest or make semantic changes to the code in `Style/InfiniteLoop`. ([@jonas054][])
+* [#3586](https://github.com/rubocop-hq/rubocop/issues/3586): Handle single argument spanning multiple lines in `Style/TrailingCommaInArguments`. ([@jonas054][])
+* [#6478](https://github.com/rubocop-hq/rubocop/pull/6478): Fix EmacsComment#encoding to match the `coding` variable. ([@akihiro17][])
+* Don't show "unrecognized parameter" warning for `inherit_mode` parameter to individual cop configurations. ([@maxh][])
+* [#6449](https://github.com/rubocop-hq/rubocop/pull/6449): Fix a false negative for `Layout/IndentationWidth` when setting `EnforcedStyle: rails` of `Layout/IndentationConsistency` and method definition indented to access modifier in a singleton class. ([@koic][])
+* [#6482](https://github.com/rubocop-hq/rubocop/issues/6482): Fix a false positive for `Lint/FormatParameterMismatch` when using (digit)$ flag. ([@koic][])
+* [#6489](https://github.com/rubocop-hq/rubocop/issues/6489): Fix an error for `Style/UnneededCondition` when `if` condition and `then` branch are the same and it has no `else` branch. ([@koic][])
+* Fix NoMethodError for `Style/FrozenStringLiteral` when a file contains only a shebang. ([@takaram][])
+* [#6511](https://github.com/rubocop-hq/rubocop/issues/6511): Fix an incorrect auto-correct for `Style/EmptyCaseCondition` when used as an argument of a method. ([@koic][])
+* [#6509](https://github.com/rubocop-hq/rubocop/issues/6509): Fix an incorrect auto-correct for `Style/RaiseArgs` when an exception object is assigned to a local variable. ([@koic][])
+* [#6534](https://github.com/rubocop-hq/rubocop/issues/6534): Fix a false positive for `Lint/UselessAccessModifier` when using `private_class_method`. ([@dduugg][])
+* [#6545](https://github.com/rubocop-hq/rubocop/issues/6545): Fix a regression where `Performance/RedundantMerge` raises an error on a sole double splat argument passed to `merge!`. ([@mmedal][])
+* [#6360](https://github.com/rubocop-hq/rubocop/issues/6360): Detect bad indentation in `if` nodes even if the first branch is empty. ([@bquorning][])
+
+### Changes
+
+* [#6492](https://github.com/rubocop-hq/rubocop/issues/6492): Auto-correct chunks of comment lines in `Layout/CommentIndentation` to avoid unnecessary iterations for `rubocop -a`. ([@jonas054][])
 
 ## 0.60.0 (2018-10-26)
 
@@ -3639,3 +3682,13 @@
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
 [@timon]: https://github.com/timon
+[@gsamokovarov]: https://github.com/gsamokovarov
+[@itsWill]: https://github.com/itsWill
+[@xlts]: https://github.com/xlts
+[@takaram]: https://github.com/takaram
+[@gmcgibbon]: https://github.com/gmcgibbon
+[@dduugg]: https://github.com/dduugg
+[@mmedal]: https://github.com/mmedal
+[@timmcanty]: https://github.com/timmcanty
+[@tom-lord]: https://github.com/tom-lord
+[@bayandin]: https://github.com/bayandin

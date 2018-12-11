@@ -96,6 +96,12 @@ module RuboCop
           check_members(node.loc.keyword, members)
         end
 
+        def on_sclass(node)
+          _class_name, *members = *node
+
+          check_members(node.loc.keyword, members)
+        end
+
         def on_send(node)
           super
           return unless node.adjacent_def_modifier?
@@ -141,7 +147,7 @@ module RuboCop
         end
 
         def on_if(node, base = node)
-          return if ignored_node?(node) || !node.body
+          return if ignored_node?(node)
           return if node.ternary? || node.modifier_form?
 
           check_if(node, node.body, node.else_branch, base.loc)

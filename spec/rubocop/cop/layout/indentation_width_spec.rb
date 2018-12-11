@@ -122,6 +122,32 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         RUBY
       end
 
+      it 'registers an offense for bad indentation of an else body when if ' \
+         'body contains no code' do
+        expect_offense(<<-RUBY.strip_indent)
+          if cond
+            # nothing here
+          else
+           func2
+          ^ Use 2 (not 1) spaces for indentation.
+          end
+        RUBY
+      end
+
+      it 'registers an offense for bad indentation of an else body when if ' \
+         'and elsif body contains no code' do
+        expect_offense(<<-RUBY.strip_indent)
+          if cond
+            # nothing here
+          elsif cond2
+            # nothing here either
+          else
+           func2
+          ^ Use 2 (not 1) spaces for indentation.
+          end
+        RUBY
+      end
+
       it 'registers an offense for bad indentation of an elsif body' do
         expect_offense(<<-RUBY.strip_indent)
           if a1
@@ -1103,6 +1129,32 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               end
             end
           RUBY
+          expect(cop.messages)
+            .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
+          expect(cop.offenses.map(&:line)).to eq([9, 14])
+        end
+
+        it 'registers an offense for normal non-rails indentation ' \
+           'when defined in a singleton class' do
+          inspect_source(<<-RUBY.strip_indent)
+            class << self
+              public
+
+              def e
+              end
+
+              protected
+
+              def f
+              end
+
+              private
+
+              def g
+              end
+            end
+          RUBY
+
           expect(cop.messages)
             .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
           expect(cop.offenses.map(&:line)).to eq([9, 14])

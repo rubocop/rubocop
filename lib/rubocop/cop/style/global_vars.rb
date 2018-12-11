@@ -23,7 +23,7 @@ module RuboCop
         MSG = 'Do not introduce global variables.'.freeze
 
         # built-in global variables and their English aliases
-        # http://www.zenspider.com/Languages/Ruby/QuickRef.html
+        # https://www.zenspider.com/ruby/quickref.html
         BUILT_IN_VARS = %w[
           $: $LOAD_PATH
           $" $LOADED_FEATURES

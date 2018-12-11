@@ -45,7 +45,9 @@ RSpec.describe RuboCop::Token do
     let(:parser_token) { [type, [text, range]] }
     let(:type) { :kDEF }
     let(:text) { 'def' }
-    let(:range) { double('range', line: 42, column: 30) }
+    let(:range) do
+      instance_double(Parser::Source::Range, line: 42, column: 30)
+    end
 
     it "sets parser token's type to rubocop token's type" do
       expect(token.type).to eq(type)

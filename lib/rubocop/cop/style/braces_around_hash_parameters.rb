@@ -154,7 +154,7 @@ module RuboCop
         end
 
         def right_whole_line_range(loc_end)
-          if range_by_whole_lines(loc_end).source.strip =~ /}\s*,?\z/
+          if range_by_whole_lines(loc_end).source.strip =~ /\A}\s*,?\z/
             range_by_whole_lines(loc_end, include_final_newline: true)
           else
             loc_end

@@ -63,7 +63,7 @@ module RuboCop
 
         def ignored_line?(line, index, heredocs)
           matches_ignored_pattern?(line) ||
-            heredocs && line_in_whitelisted_heredoc?(heredocs, index.succ)
+            heredocs && line_in_permitted_heredoc?(heredocs, index.succ)
         end
 
         def register_offense(loc, line)
@@ -107,7 +107,7 @@ module RuboCop
           end
         end
 
-        def line_in_whitelisted_heredoc?(heredocs, line_number)
+        def line_in_permitted_heredoc?(heredocs, line_number)
           heredocs.any? do |range, delimiter|
             range.cover?(line_number) &&
               (allowed_heredoc == true || allowed_heredoc.include?(delimiter))

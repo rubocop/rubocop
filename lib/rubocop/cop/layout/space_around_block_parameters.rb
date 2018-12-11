@@ -27,22 +27,13 @@ module RuboCop
         include RangeHelp
 
         def on_block(node)
-          return unless node.arguments?
+          arguments = node.arguments
 
-          args = node.arguments
+          return unless node.arguments? && pipes?(arguments)
 
-          opening_pipe = args.loc.begin
-          closing_pipe = args.loc.end
-          return if opening_pipe.nil? || closing_pipe.nil?
-
-          check_inside_pipes(args.children, opening_pipe, closing_pipe)
-
-          if node.body
-            check_space(closing_pipe.end_pos, node.body.source_range.begin_pos,
-                        closing_pipe, 'after closing `|`')
-          end
-
-          check_each_arg(args)
+          check_inside_pipes(arguments)
+          check_after_closing_pipe(arguments) if node.body
+          check_each_arg(arguments)
         end
 
         def autocorrect(range)
@@ -56,16 +47,38 @@ module RuboCop
 
         private
 
+        def pipes(arguments)
+          [arguments.loc.begin, arguments.loc.end]
+        end
+
+        def pipes?(arguments)
+          pipes(arguments).none?(&:nil?)
+        end
+
         def style_parameter_name
           'EnforcedStyleInsidePipes'
         end
 
-        def check_inside_pipes(args, opening_pipe, closing_pipe)
+        def check_inside_pipes(arguments)
+          opening_pipe, closing_pipe = pipes(arguments)
+
           if style == :no_space
-            check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+            check_no_space_style_inside_pipes(arguments.children,
+                                              opening_pipe,
+                                              closing_pipe)
           elsif style == :space
-            check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+            check_space_style_inside_pipes(arguments.children,
+                                           opening_pipe,
+                                           closing_pipe)
           end
+        end
+
+        def check_after_closing_pipe(arguments)
+          _opening_pipe, closing_pipe = pipes(arguments)
+          block = arguments.parent
+
+          check_space(closing_pipe.end_pos, block.body.source_range.begin_pos,
+                      closing_pipe, 'after closing `|`')
         end
 
         def check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)

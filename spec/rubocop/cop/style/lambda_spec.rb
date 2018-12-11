@@ -20,13 +20,6 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
     end
   end
 
-  shared_examples 'does not auto-correct' do
-    it 'does not autocorrect' do
-      expect(autocorrect_source(source)).to eq(source)
-      expect(cop.offenses.map(&:corrected?)).to eq [false]
-    end
-  end
-
   context 'with enforced `lambda` style' do
     let(:cop_config) { { 'EnforcedStyle' => 'lambda' } }
 
@@ -407,10 +400,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       it_behaves_like 'registers an offense',
                       'Use the `lambda` method for multiline lambdas.'
-      it_behaves_like 'does not auto-correct'
+      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        has_many :kittens, lambda {
+          where(cats: Cat.young.where_values_hash)
+        }, source: cats
+      RUBY
     end
 
-    context 'with a multiline lambda literal as a keyword argument' do
+    context 'with a multiline braces lambda literal as a keyword argument' do
       let(:source) do
         <<-RUBY.strip_indent
           has_many opt: -> do
@@ -421,7 +418,51 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       it_behaves_like 'registers an offense',
                       'Use the `lambda` method for multiline lambdas.'
-      it_behaves_like 'does not auto-correct'
+      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        has_many opt: lambda {
+          where(cats: Cat.young.where_values_hash)
+        }
+      RUBY
+    end
+
+    context 'with a multiline do-end lambda literal as a keyword argument' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          has_many opt: -> {
+            where(cats: Cat.young.where_values_hash)
+          }
+        RUBY
+      end
+
+      it_behaves_like 'registers an offense',
+                      'Use the `lambda` method for multiline lambdas.'
+      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        has_many opt: lambda {
+          where(cats: Cat.young.where_values_hash)
+        }
+      RUBY
+    end
+
+    context 'with a multiline do-end lambda as a parenthesized kwarg' do
+      let(:source) do
+        <<-RUBY.strip_indent
+          has_many(
+            opt: -> do
+              where(cats: Cat.young.where_values_hash)
+            end
+          )
+        RUBY
+      end
+
+      it_behaves_like 'registers an offense',
+                      'Use the `lambda` method for multiline lambdas.'
+      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        has_many(
+          opt: lambda do
+            where(cats: Cat.young.where_values_hash)
+          end
+        )
+      RUBY
     end
   end
 

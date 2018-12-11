@@ -86,11 +86,8 @@ module RuboCop
         end
 
         def contains_multiple_levels_of_exceptions?(group)
-          if group.size > 1 && group.include?(Exception)
-            # Treat `Exception` as the highest level exception unless `nil` was
-            # also rescued
-            return !(group.size == 2 && group.include?(NilClass))
-          end
+          # Always treat `Exception` as the highest level exception.
+          return true if group.size > 1 && group.include?(Exception)
 
           group.combination(2).any? do |a, b|
             compare_exceptions(a, b)

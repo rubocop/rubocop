@@ -9,7 +9,9 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
   let(:file) { 'example.rb' }
   let(:options) { {} }
-  let(:config_store) { double('config_store', for: RuboCop::Config.new) }
+  let(:config_store) do
+    instance_double(RuboCop::ConfigStore, for: RuboCop::Config.new)
+  end
   let(:cache_root) { "#{Dir.pwd}/rubocop_cache" }
   let(:offenses) do
     [RuboCop::Cop::Offense.new(:warning, location, 'unused var',
@@ -265,7 +267,9 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   end
 
   describe 'the cache path' do
-    let(:config_store) { double('config_store') }
+    let(:config_store) do
+      instance_double(RuboCop::ConfigStore)
+    end
     let(:puid) { Process.uid.to_s }
 
     before do

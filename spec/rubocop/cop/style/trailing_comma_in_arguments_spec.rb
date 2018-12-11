@@ -73,6 +73,21 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
   end
 
+  context 'with a single argument spanning multiple lines' do
+    context 'when EnforcedStyleForMultiline is consistent_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
+
+      it 'accepts a single argument with no trailing comma' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          EmailWorker.perform_async({
+            subject: "hey there",
+            email: "foo@bar.com"
+          })
+        RUBY
+      end
+    end
+  end
+
   context 'with multi-line list of values' do
     context 'when EnforcedStyleForMultiline is no_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
@@ -197,8 +212,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts an empty hash being passed as a method argument' do
         expect_no_offenses(<<-RUBY.strip_indent)
-          Foo.new([
-                   ])
+          Foo.new({
+                   })
         RUBY
       end
 
@@ -358,6 +373,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           method(
             1, 2,
           )
+        RUBY
+      end
+
+      it 'accepts a multiline call with single argument on multiple lines' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          method(a:
+                    "foo")
         RUBY
       end
     end

@@ -1673,7 +1673,7 @@ Include | `db/migrate/*.rb` | Array
 ### References
 
 * [https://github.com/rubocop-hq/rails-style-guide#reversible-migration](https://github.com/rubocop-hq/rails-style-guide#reversible-migration)
-* [http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html](http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html)
+* [https://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html](https://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html)
 
 ## Rails/SafeNavigation
 
@@ -1870,11 +1870,11 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 0.59
+Enabled | Yes | No | 0.47 | 0.60
 
 This cop checks for the use of methods which skip
 validations which are listed in
-http://guides.rubyonrails.org/active_record_validations.html#skipping-validations
+https://guides.rubyonrails.org/active_record_validations.html#skipping-validations
 
 Methods may be ignored from this rule by configuring a `Whitelist`.
 
@@ -1918,7 +1918,7 @@ Whitelist | `[]` | Array
 
 ### References
 
-* [http://guides.rubyonrails.org/active_record_validations.html#skipping-validations](http://guides.rubyonrails.org/active_record_validations.html#skipping-validations)
+* [https://guides.rubyonrails.org/active_record_validations.html#skipping-validations](https://guides.rubyonrails.org/active_record_validations.html#skipping-validations)
 
 ## Rails/TimeZone
 

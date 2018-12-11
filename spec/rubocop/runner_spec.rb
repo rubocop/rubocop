@@ -12,12 +12,59 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
   let(:formatter_output_path) { 'formatter_output.txt' }
   let(:formatter_output) { File.read(formatter_output_path) }
 
-  before do
-    create_file('example.rb', source)
+  describe '#trap_interrupt' do
+    include_context 'cli spec behavior'
+
+    let(:runner) { described_class.new({}, RuboCop::ConfigStore.new) }
+    let(:interrupt_handlers) { [] }
+
+    before do
+      allow(Signal).to receive(:trap).with('INT') do |&block|
+        interrupt_handlers << block
+      end
+    end
+
+    def interrupt
+      interrupt_handlers.each(&:call)
+    end
+
+    it 'adds a handler for SIGINT' do
+      expect(interrupt_handlers.empty?).to be(true)
+      runner.trap_interrupt
+      expect(interrupt_handlers.size).to eq(1)
+    end
+
+    context 'with SIGINT once' do
+      it 'aborts processing' do
+        runner.trap_interrupt
+        expect(runner).to receive(:aborting=).with(true)
+        interrupt
+      end
+
+      it 'does not exit immediately' do
+        runner.trap_interrupt
+        expect_any_instance_of(Object).not_to receive(:exit)
+        expect_any_instance_of(Object).not_to receive(:exit!)
+        interrupt
+      end
+    end
+
+    context 'with SIGINT twice' do
+      it 'exits immediately' do
+        runner.trap_interrupt
+        expect_any_instance_of(Object).to receive(:exit!).with(1)
+        interrupt
+        interrupt
+      end
+    end
   end
 
   describe '#run' do
     subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
+
+    before do
+      create_file('example.rb', source)
+    end
 
     let(:options) { { formatters: [['progress', formatter_output_path]] } }
 
@@ -65,7 +112,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       before do
         # The cache responds that it's not valid, which means that new results
         # should normally be collected and saved...
-        cache = double('cache', 'valid?' => false)
+        cache = instance_double(RuboCop::ResultCache, 'valid?' => false)
         # ... but there's a crash in one cop.
         runner.errors = ['An error occurred in ...']
 
@@ -137,6 +184,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         end
       end
       runner_class.new(options, RuboCop::ConfigStore.new)
+    end
+
+    before do
+      create_file('example.rb', source)
     end
 
     let(:options) do

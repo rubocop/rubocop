@@ -29,6 +29,12 @@ module RuboCop
         MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after ' \
                                '`%<modifier>s`.'.freeze
 
+        def initialize(config = nil, options = nil)
+          super
+
+          @block_line = nil
+        end
+
         def on_class(node)
           _name, superclass, _body = *node
 
