@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
+* [#6343](https://github.com/rubocop-hq/rubocop/pull/6343): Optimise `--auto-gen-config` when `Metrics/LineLength` cop is disabled. ([@tom-lord][])
 * [#6389](https://github.com/rubocop-hq/rubocop/pull/6389): Fix false negative for `Style/TrailingCommaInHashLitera`/`Style/TrailingCommaInArrayLiteral` when there is a comment in the last line. ([@bayandin][])
 
 ## 0.61.1 (2018-12-06)
@@ -3687,4 +3688,5 @@
 [@dduugg]: https://github.com/dduugg
 [@mmedal]: https://github.com/mmedal
 [@timmcanty]: https://github.com/timmcanty
+[@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
