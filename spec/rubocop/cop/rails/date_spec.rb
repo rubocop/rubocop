@@ -74,6 +74,13 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
         expect(cop.offenses.size).to eq(1)
       end
     end
+
+    it 'registers an offense for #to_time_in_current_zone' do
+      expect_offense(<<-RUBY.strip_indent)
+          "2016-07-12 14:36:31".to_time_in_current_zone
+                                ^^^^^^^^^^^^^^^^^^^^^^^ `to_time_in_current_zone` is deprecated. Use `in_time_zone` instead.
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is "flexible"' do
@@ -98,8 +105,11 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
       end
     end
 
-    it 'accepts #to_time_in_current_zone' do
-      expect_no_offenses('date.to_time_in_current_zone')
+    it 'registers an offense for #to_time_in_current_zone' do
+      expect_offense(<<-RUBY.strip_indent)
+          "2016-07-12 14:36:31".to_time_in_current_zone
+                                ^^^^^^^^^^^^^^^^^^^^^^^ `to_time_in_current_zone` is deprecated. Use `in_time_zone` instead.
+      RUBY
     end
   end
 end
