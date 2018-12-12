@@ -388,7 +388,6 @@ Date.current
 Date.yesterday
 Date.today
 date.to_time
-date.to_time_in_current_zone
 
 # good
 Time.zone.today
@@ -406,7 +405,7 @@ Time.zone.today
 Time.zone.today - 1.day
 Date.current
 Date.yesterday
-date.to_time_in_current_zone
+date.in_time_zone
 ```
 
 ### Configurable attributes
