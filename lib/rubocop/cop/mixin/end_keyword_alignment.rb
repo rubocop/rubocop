@@ -35,7 +35,7 @@ module RuboCop
       def matching_ranges(end_loc, align_ranges)
         align_ranges.select do |_, range|
           range.line == end_loc.line ||
-            effective_column(range) == end_loc.column
+            column_offset_between(range, end_loc).zero?
         end
       end
 

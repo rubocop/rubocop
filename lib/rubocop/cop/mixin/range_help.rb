@@ -74,6 +74,12 @@ module RuboCop
           .intersect(buffer.source_range)
       end
 
+      def column_offset_between(base_range, range)
+        effective_column(base_range) - effective_column(range)
+      end
+
+      ## Helpers for above range methods. Do not use inside Cops.
+
       # Returns the column attribute of the range, except if the range is on
       # the first line and there's a byte order mark at the beginning of that
       # line, in which case 1 is subtracted from the column value. This gives
@@ -86,8 +92,6 @@ module RuboCop
           range.column
         end
       end
-
-      ## Helpers for above range methods. Do not use inside Cops.
 
       def directions(side)
         if side == :both
