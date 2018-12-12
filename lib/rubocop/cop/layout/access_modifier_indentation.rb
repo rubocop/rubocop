@@ -54,8 +54,6 @@ module RuboCop
         end
 
         def on_block(node)
-          return unless node.class_constructor?
-
           check_body(node.body, node)
         end
 
