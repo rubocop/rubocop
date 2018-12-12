@@ -6,6 +6,8 @@ module RuboCop
     module RangeHelp
       private
 
+      BYTE_ORDER_MARK = 0xfeff # The Unicode codepoint
+
       def source_range(source_buffer, line_number, column, length = 1)
         if column.is_a?(Range)
           column_index = column.begin
@@ -70,6 +72,19 @@ module RuboCop
         range
           .adjust(begin_pos: -range.column, end_pos: end_offset)
           .intersect(buffer.source_range)
+      end
+
+      # Returns the column attribute of the range, except if the range is on
+      # the first line and there's a byte order mark at the beginning of that
+      # line, in which case 1 is subtracted from the column value. This gives
+      # the column as it appears when viewing the file in an editor.
+      def effective_column(range)
+        if range.line == 1 &&
+           @processed_source.raw_source.codepoints.first == BYTE_ORDER_MARK
+          range.column - 1
+        else
+          range.column
+        end
       end
 
       ## Helpers for above range methods. Do not use inside Cops.
