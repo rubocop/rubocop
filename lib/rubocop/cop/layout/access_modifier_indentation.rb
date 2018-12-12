@@ -34,6 +34,7 @@ module RuboCop
       class AccessModifierIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle
+        include RangeHelp
 
         MSG = '%<style>s access modifiers like `%<node>s`.'.freeze
 
@@ -69,14 +70,13 @@ module RuboCop
           return unless body.begin_type?
 
           modifiers = body.each_child_node(:send).select(&:access_modifier?)
-          class_column = node.source_range.column
+          end_range = node.loc.end
 
-          modifiers.each { |modifier| check_modifier(modifier, class_column) }
+          modifiers.each { |modifier| check_modifier(modifier, end_range) }
         end
 
-        def check_modifier(send_node, class_start_col)
-          access_modifier_start_col = send_node.source_range.column
-          offset = access_modifier_start_col - class_start_col
+        def check_modifier(send_node, end_range)
+          offset = column_offset_between(send_node.source_range, end_range)
 
           @column_delta = expected_indent_offset - offset
           if @column_delta.zero?

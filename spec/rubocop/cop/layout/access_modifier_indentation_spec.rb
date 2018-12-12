@@ -162,6 +162,17 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
+    it 'accepts properly indented private in module defined with Module.new' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Test = Module.new do
+
+          private
+
+          def test; end
+        end
+      RUBY
+    end
+
     it 'accepts an empty class' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class Test
