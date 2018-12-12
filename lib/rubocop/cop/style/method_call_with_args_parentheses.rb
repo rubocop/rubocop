@@ -237,6 +237,7 @@ module RuboCop
           node.parent &&
             (node.parent.pair_type? ||
              node.parent.array_type? ||
+             splat?(node.parent) ||
              ternary_if?(node.parent))
         end
 

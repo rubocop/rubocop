@@ -414,6 +414,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in splat calls' do
+      expect_no_offenses(<<-RUBY)
+        foo(*bar(args))
+        foo(**quux(args))
+      RUBY
+    end
+
+    it 'accepts parens in block passing calls' do
+      expect_no_offenses(<<-RUBY)
+        foo(&method(:args))
+      RUBY
+    end
+
     it 'auto-corrects single-line calls' do
       original = <<-RUBY.strip_indent
         top.test(1, 2, foo: bar(3))
