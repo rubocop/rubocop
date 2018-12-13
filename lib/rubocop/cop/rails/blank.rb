@@ -43,6 +43,11 @@ module RuboCop
       #   if foo.blank?
       #     something
       #   end
+      #
+      #   # good
+      #   def blank?
+      #     !present?
+      #   end
       class Blank < Cop
         MSG_NIL_OR_EMPTY = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
         MSG_NOT_PRESENT = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
@@ -70,6 +75,8 @@ module RuboCop
 
         def_node_matcher :not_present?, '(send (send $_ :present?) :!)'
 
+        def_node_matcher :defining_blank?, '(def :blank? (args) ...)'
+
         def_node_matcher :unless_present?, <<-PATTERN
           (:if $(send $_ :present?) {nil? (...)} ...)
         PATTERN
@@ -78,6 +85,9 @@ module RuboCop
           return unless cop_config['NotPresent']
 
           not_present?(node) do |receiver|
+            # accepts !present? if its in the body of a `blank?` method
+            next if defining_blank?(node.parent)
+
             add_offense(node,
                         message: format(MSG_NOT_PRESENT,
                                         prefer: replacement(receiver),
