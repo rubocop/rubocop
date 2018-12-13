@@ -216,6 +216,11 @@ end
 if foo.blank?
   something
 end
+
+# good
+def blank?
+  !present?
+end
 ```
 
 ### Configurable attributes

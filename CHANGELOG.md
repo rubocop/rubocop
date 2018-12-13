@@ -6,6 +6,7 @@
 
 * [#4229](https://github.com/rubocop-hq/rubocop/issues/4229): Fix unexpected Style/HashSyntax consistency offence. ([@timon][])
 * [#6500](https://github.com/rubocop-hq/rubocop/issues/6500): Add offense to use `in_time_zone` instead of deprecated `to_time_in_current_zone`. ([@nadiyaka][])
+* [#6577](https://github.com/rubocop-hq/rubocop/pull/6577): Prevent Rails/Blank cop from adding offense when define the blank method. ([@jonatas][])
 * [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
 * [#6343](https://github.com/rubocop-hq/rubocop/pull/6343): Optimise `--auto-gen-config` when `Metrics/LineLength` cop is disabled. ([@tom-lord][])
 * [#6389](https://github.com/rubocop-hq/rubocop/pull/6389): Fix false negative for `Style/TrailingCommaInHashLitera`/`Style/TrailingCommaInArrayLiteral` when there is a comment in the last line. ([@bayandin][])
