@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jruby_env: &jruby_env
   # By default we have 2 CPUs and 4GB ram available
@@ -11,197 +11,86 @@ common_env: &common_env
   # See https://github.com/tmm1/test-queue#environment-variables
   TEST_QUEUE_WORKERS: 2
 
-spec_steps: &spec_steps
-  - checkout
-  - attach_workspace:
-      at: ~/project/tmp
-  - run: bundle install
-  - run:
-      name: Run specs
-      command: |
-        ./tmp/cc-test-reporter before-build
-        COVERAGE=true bundle exec rake spec
-        ./tmp/cc-test-reporter format-coverage --output tmp/codeclimate.$CIRCLE_JOB.json
-  - persist_to_workspace:
-      root: tmp
-      paths:
-        - codeclimate.*.json
+executors:
+  mri:
+    parameters:
+      version:
+        type: string
+    docker:
+      - image: circleci/ruby:<< parameters.version >>
+    environment:
+      <<: *common_env
 
-ascii_spec_steps: &ascii_spec_steps
-  - checkout
-  - run: bundle install
-  - run: bundle exec rake ascii_spec
+  jruby:
+    parameters:
+      version:
+        type: string
+        default: "9.2"
+    docker:
+      - image: circleci/jruby:<< parameters.version >>
+    environment:
+      <<: *common_env
+      <<: *jruby_env
 
-rubocop_steps: &rubocop_steps
-  - checkout
-  - run: bundle install
-  - run: bundle exec rake internal_investigation
-  - run:
-      name: Check requiring libraries successfully
-      # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
-      command: |
-        ruby -I lib -r rubocop -e 'exit 0'
+  head:
+    docker:
+      - image: rubocophq/circleci-ruby-snapshot:latest
+    environment:
+      <<: *common_env
+
+  head-with-jit:
+    docker:
+      - image: rubocophq/circleci-ruby-snapshot:latest
+    environment:
+      RUBYOPT: '--jit'
+      <<: *common_env
 
 jobs:
+  spec:
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project/tmp
+      - run: bundle install
+      - run:
+          name: Run specs
+          command: |
+            ./tmp/cc-test-reporter before-build
+            COVERAGE=true bundle exec rake spec
+            ./tmp/cc-test-reporter format-coverage --output tmp/codeclimate.$CIRCLE_JOB.json
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.*.json
 
-  # Ruby 2.2
-  ruby-2.2-spec:
-    docker:
-      - image: circleci/ruby:2.2
-    environment:
-      <<: *common_env
+  ascii_spec:
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
     steps:
-      *spec_steps
-  ruby-2.2-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.2
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.2-rubocop:
-    docker:
-      - image: circleci/ruby:2.2
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
+      - checkout
+      - run: bundle install
+      - run: bundle exec rake ascii_spec
 
-  # Ruby 2.3
-  ruby-2.3-spec:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
+  rubocop:
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
     steps:
-      *spec_steps
-  ruby-2.3-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.3-rubocop:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
-  # Ruby 2.4
-  ruby-2.4-spec:
-    docker:
-      - image: circleci/ruby:2.4
-    environment:
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-2.4-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.4
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.4-rubocop:
-    docker:
-      - image: circleci/ruby:2.4
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
-  # Ruby 2.5
-  ruby-2.5-spec:
-    docker:
-      - image: circleci/ruby:2.5
-    environment:
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-2.5-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.5
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.5-rubocop:
-    docker:
-      - image: circleci/ruby:2.5
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
-  # ruby-head (nightly snapshot build)
-  ruby-head-spec:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-head-ascii_spec:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-head-rubocop:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
-  # With JIT compiler enabled!
-  ruby-head-spec-with-jit:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      RUBYOPT: '--jit'
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-head-rubocop-with-jit:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      RUBYOPT: '--jit'
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
-  # JRuby 9.2
-  jruby-9.2-spec:
-    docker:
-      - image: circleci/jruby:9.2
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  jruby-9.2-ascii_spec:
-    docker:
-      - image: circleci/jruby:9.2
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  jruby-9.2-rubocop:
-    docker:
-      - image: circleci/jruby:9.2
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
+      - checkout
+      - run: bundle install
+      - run: bundle exec rake internal_investigation
+      - run:
+          name: Check requiring libraries successfully
+          # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
+          command: |
+            ruby -I lib -r rubocop -e 'exit 0'
 
   # Job for downloading the Code Climate test reporter
   cc-setup:
@@ -260,40 +149,125 @@ workflows:
     jobs:
       - documentation-checks
       - cc-setup
-      - ruby-2.2-spec:
+
+      # Ruby 2.2
+      - spec:
+          name: ruby-2.2-spec
+          executor:
+            name: mri
+            version: "2.2"
           requires:
             - cc-setup
-      - ruby-2.2-ascii_spec
-      - ruby-2.2-rubocop
-      - ruby-2.3-spec:
+      - ascii_spec:
+          name: ruby-2.2-ascii_spec
+          executor:
+            name: mri
+            version: "2.2"
+      - rubocop:
+          name: ruby-2.2-rubocop
+          executor:
+            name: mri
+            version: "2.2"
+
+      # Ruby 2.3
+      - spec:
+          name: ruby-2.3-spec
+          executor:
+            name: mri
+            version: "2.3"
           requires:
             - cc-setup
-      - ruby-2.3-ascii_spec
-      - ruby-2.3-rubocop
-      - ruby-2.4-spec:
+      - ascii_spec:
+          name: ruby-2.3-ascii_spec
+          executor:
+            name: mri
+            version: "2.3"
+      - rubocop:
+          name: ruby-2.3-rubocop
+          executor:
+            name: mri
+            version: "2.3"
+
+      # Ruby 2.4
+      - spec:
+          name: ruby-2.4-spec
+          executor:
+            name: mri
+            version: "2.4"
           requires:
             - cc-setup
-      - ruby-2.4-ascii_spec
-      - ruby-2.4-rubocop
-      - ruby-2.5-spec:
+      - ascii_spec:
+          name: ruby-2.4-ascii_spec
+          executor:
+            name: mri
+            version: "2.4"
+      - rubocop:
+          name: ruby-2.4-rubocop
+          executor:
+            name: mri
+            version: "2.4"
+
+      # Ruby 2.5
+      - spec:
+          name: ruby-2.5-spec
+          executor:
+            name: mri
+            version: "2.5"
           requires:
             - cc-setup
-      - ruby-2.5-ascii_spec
-      - ruby-2.5-rubocop
-      - ruby-head-spec:
+      - ascii_spec:
+          name: ruby-2.5-ascii_spec
+          executor:
+            name: mri
+            version: "2.5"
+      - rubocop:
+          name: ruby-2.5-rubocop
+          executor:
+            name: mri
+            version: "2.5"
+
+      # ruby-head (nightly snapshot build)
+      - spec:
+          name: ruby-head-spec
+          executor:
+            name: head
           requires:
             - cc-setup
-      - ruby-head-spec-with-jit:
+      - ascii_spec:
+          name: ruby-head-ascii_spec
+          executor:
+            name: head
+      - rubocop:
+          name: ruby-head-rubocop
+          executor:
+            name: head
+      # With JIT compiler enabled!
+      - spec:
+          name: ruby-head-spec-with-jit
+          executor:
+            name: head-with-jit
           requires:
             - cc-setup
-      - ruby-head-ascii_spec
-      - ruby-head-rubocop
-      - ruby-head-rubocop-with-jit
-      - jruby-9.2-spec:
+      - rubocop:
+          name: ruby-head-rubocop-with-jit
+          executor:
+            name: head-with-jit
+
+      # JRuby 9.2
+      - spec:
+          name: jruby-9.2-spec
+          executor:
+            name: jruby
           requires:
             - cc-setup
-      - jruby-9.2-ascii_spec
-      - jruby-9.2-rubocop
+      - ascii_spec:
+          name: jruby-9.2-ascii_spec
+          executor:
+            name: jruby
+      - rubocop:
+          name: jruby-9.2-rubocop
+          executor:
+            name: jruby
 
       - cc-upload-coverage:
           requires:
