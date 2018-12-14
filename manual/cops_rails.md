@@ -1088,6 +1088,27 @@ Include | `app/controllers/**/*.rb` | Array
 
 * [https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter](https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter)
 
+## Rails/LinkToBlank
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.62 | -
+
+This cop checks for calls to `link_to` that contain a
+`target: '_blank'` but no `rel: 'noopener'`. This can be a security
+ risk as the loaded page will have control over the previous page
+and could change its location for phishing purposes.
+
+### Examples
+
+```ruby
+# bad
+link_to 'Click here', url, target: '_blank'
+
+# good
+link_to 'Click here', url, target: '_blank', rel: 'noopener'
+```
+
 ## Rails/NotNullColumn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

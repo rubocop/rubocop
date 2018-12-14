@@ -1,6 +1,7 @@
 # Change log
 
 ## master (unreleased)
+* New cop `Rails/LinkToBlank` checks for `link_to` calls with `target: '_blank'` and no `rel: 'noopener'`. ([@Intrepidd][])
 
 ### Bug fixes
 
@@ -3701,3 +3702,4 @@
 [@bayandin]: https://github.com/bayandin
 [@nadiyaka]: https://github.com/nadiyaka
 [@amatsuda]: https://github.com/amatsuda
+[@Intrepidd]: https://github.com/Intrepidd
