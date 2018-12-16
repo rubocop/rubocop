@@ -5,9 +5,12 @@
 ### Bug fixes
 
 * [#4229](https://github.com/rubocop-hq/rubocop/issues/4229): Fix unexpected Style/HashSyntax consistency offence. ([@timon][])
+* [#6500](https://github.com/rubocop-hq/rubocop/issues/6500): Add offense to use `in_time_zone` instead of deprecated `to_time_in_current_zone`. ([@nadiyaka][])
 * [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
 * [#6343](https://github.com/rubocop-hq/rubocop/pull/6343): Optimise `--auto-gen-config` when `Metrics/LineLength` cop is disabled. ([@tom-lord][])
 * [#6389](https://github.com/rubocop-hq/rubocop/pull/6389): Fix false negative for `Style/TrailingCommaInHashLitera`/`Style/TrailingCommaInArrayLiteral` when there is a comment in the last line. ([@bayandin][])
+* [#6566](https://github.com/rubocop-hq/rubocop/issues/6566): Fix false positive for `Layout/EmptyLinesAroundAccessModifier` when at the end of specifying a superclass is missing blank line. ([@koic][])
+* [#6571](https://github.com/rubocop-hq/rubocop/issues/6571): Fix a false positive for `Layout/TrailingCommaInArguments` when a line break before a method call and `EnforcedStyleForMultiline` is set to `consistent_comma`. ([@koic][])
 
 ## 0.61.1 (2018-12-06)
 
@@ -3692,3 +3695,4 @@
 [@timmcanty]: https://github.com/timmcanty
 [@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
+[@nadiyaka]: https://github.com/nadiyaka

@@ -414,6 +414,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in splat calls' do
+      expect_no_offenses(<<-RUBY)
+        foo(*bar(args))
+        foo(**quux(args))
+      RUBY
+    end
+
+    it 'accepts parens in block passing calls' do
+      expect_no_offenses(<<-RUBY)
+        foo(&method(:args))
+      RUBY
+    end
+
     it 'auto-corrects single-line calls' do
       original = <<-RUBY.strip_indent
         top.test(1, 2, foo: bar(3))
@@ -474,6 +487,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
         foo().bar(3).wait 4
       RUBY
+    end
+
+    context 'TargetRubyVersion >= 2.3', :ruby23 do
+      it 'accepts parens in chaining with safe operators' do
+        expect_no_offenses('Something.find(criteria: given)&.field')
+      end
     end
 
     context 'allowing parenthesis in chaining' do

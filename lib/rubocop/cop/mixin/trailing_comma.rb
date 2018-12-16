@@ -63,7 +63,7 @@ module RuboCop
         when :comma
           multiline?(node) && no_elements_on_same_line?(node)
         when :consistent_comma
-          multiline?(node)
+          multiline?(node) && !method_name_and_arguments_on_same_line?(node)
         else
           false
         end
@@ -90,6 +90,12 @@ module RuboCop
       # closing bracket is on its own line.
       def multiline?(node)
         node.multiline? && !allowed_multiline_argument?(node)
+      end
+
+      def method_name_and_arguments_on_same_line?(node)
+        node.send_type? &&
+          node.loc.selector.line == node.arguments.last.last_line &&
+          node.last_line == node.arguments.last.last_line
       end
 
       # A single argument with the closing bracket on the same line as the end
