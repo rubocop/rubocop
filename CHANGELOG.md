@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#4229](https://github.com/rubocop-hq/rubocop/issues/4229): Fix unexpected Style/HashSyntax consistency offence. ([@timon][])
 * [#6500](https://github.com/rubocop-hq/rubocop/issues/6500): Add offense to use `in_time_zone` instead of deprecated `to_time_in_current_zone`. ([@nadiyaka][])
 * [#6554](https://github.com/rubocop-hq/rubocop/issues/6554): Prevent Layout/RescueEnsureAlignment cop from breaking on block assignment when assignment is on a separate line. ([@timmcanty][])
 * [#6343](https://github.com/rubocop-hq/rubocop/pull/6343): Optimise `--auto-gen-config` when `Metrics/LineLength` cop is disabled. ([@tom-lord][])
@@ -3683,6 +3684,7 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@timon]: https://github.com/timon
 [@gsamokovarov]: https://github.com/gsamokovarov
 [@itsWill]: https://github.com/itsWill
 [@xlts]: https://github.com/xlts
