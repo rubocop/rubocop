@@ -28,7 +28,7 @@ module RuboCop
         def on_send(node)
           return unless node.method?(:link_to)
 
-          option_nodes = [node.children.last, node.children[3]].compact
+          option_nodes = node.each_child_node(:hash)
 
           option_nodes.map(&:children).each do |options|
             blank = options.find { |o| blank_target?(o) }
