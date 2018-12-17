@@ -39,4 +39,13 @@ RSpec.describe RuboCop::Cop::Rails::Validation do
       'validates :age, numericality: { minimum: 0, maximum: 122 }'
     )
   end
+
+  it 'autocorrect validates_numericality_of with options in braces' do
+    new_source = autocorrect_source(
+      'validates_numericality_of :age, { minimum: 0, maximum: 122 }'
+    )
+    expect(new_source).to eq(
+      'validates :age, numericality: { minimum: 0, maximum: 122 }'
+    )
+  end
 end
