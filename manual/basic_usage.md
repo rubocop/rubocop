@@ -68,9 +68,8 @@ You can also run RuboCop in an auto-correct mode, where it will try to automatic
 rubocop -a
 ```
 
-Note that not all offenses are auto-correctable (either because
-auto-correct is not implemented for some cop or because there's no
-way to determine how to correct some problem).
+Not all offenses are auto-correctable (either not implemented, or there's no
+way to automatically correct).
 
 ### 2. RuboCop as a replacement for `ruby -w`
 
@@ -89,7 +88,7 @@ There's a handy shortcut to run auto-correction only on code layout (a.k.a. form
 rubocop -x
 ```
 
-Note that this option was introduced in RuboCop 0.57.0.
+This option was introduced in RuboCop 0.57.0.
 
 ## Command-line flags
 
@@ -101,7 +100,7 @@ $ rubocop -h
 
 Command flag                    | Description
 --------------------------------|------------------------------------------------------------
-`-a/--auto-correct`             | Auto-correct certain offenses. *Note:* Experimental - use with caution.
+`-a/--auto-correct`             | Auto-correct certain offenses. *Experimental*, use with caution.
 `-c/--config`                   | Run with specified config file.
 `-C/--cache`                    | Store and reuse results for faster operation.
 `-d/--debug`                    | Displays some extra debug output.
