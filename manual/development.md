@@ -368,7 +368,7 @@ To make it fast and do not get confused with other cops in action,  you can use
 `--only` parameter in the command line to filter by your cop name:
 
 ```sh
-rubocop --only Style/SimplifyNotEmptyWithAny
+$ rubocop --only Style/SimplifyNotEmptyWithAny
 ```
 
 In the end, do not forget to run `rake generate_cops_documentation` to update

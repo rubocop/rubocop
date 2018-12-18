@@ -64,8 +64,8 @@ test.rb:4:5: W: Layout/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
 
 You can also run RuboCop in an auto-correct mode, where it will try to automatically fix the problems it found in your code:
 
-```
-rubocop -a
+```sh
+$ rubocop -a
 ```
 
 Not all offenses are auto-correctable (either not implemented, or there's no
@@ -76,16 +76,16 @@ way to automatically correct).
 RuboCop natively implements almost all `ruby -w` lint warning checks, and then some. If you want you can use RuboCop
 simply as a replacement for `ruby -w`:
 
-```
-rubocop -l
+```sh
+$ rubocop -l
 ```
 
 ### 3. RuboCop as a formatter
 
 There's a handy shortcut to run auto-correction only on code layout (a.k.a. formatting) offenses:
 
-```
-rubocop -x
+```sh
+$ rubocop -x
 ```
 
 This option was introduced in RuboCop 0.57.0.

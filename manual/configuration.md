@@ -145,7 +145,7 @@ Gemfile and the gem was installed using `bundle install`, it would be
 necessary to also invoke RuboCop using Bundler in order to find the
 dependency's installation path at runtime:
 
-```
+```sh
 $ bundle exec rubocop <options...>
 ```
 
@@ -482,7 +482,7 @@ If you use [mry](https://github.com/pocke/mry), you can update `.rubocop.yml`
 to latest version automatically.
 
 
-```bash
+```sh
 $ gem install mry
 # Update to latest version
 $ mry .rubocop.yml
