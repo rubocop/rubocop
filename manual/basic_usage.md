@@ -2,13 +2,13 @@
 
 RuboCop has three primary uses:
 
-* Code style checker (a.k.a. linter)
-* A replacement for `ruby -w` (a subset of its linting capabilities)
-* Code formatter
+1. Code style checker (a.k.a. linter)
+1. A replacement for `ruby -w` (a subset of its linting capabilities)
+1. Code formatter
 
 In the next sections we'll briefly cover all of them.
 
-### RuboCop as a code style checker
+### 1. Code style checker
 
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
@@ -72,7 +72,7 @@ Note that not all offenses are auto-correctable (either because
 auto-correct is not implemented for some cop or because there's no
 way to determine how to correct some problem).
 
-#### RuboCop as a replacement for `ruby -w`
+### 2. RuboCop as a replacement for `ruby -w`
 
 RuboCop natively implements almost all `ruby -w` lint warning checks, and then some. If you want you can use RuboCop
 simply as a replacement for `ruby -w`:
@@ -81,7 +81,7 @@ simply as a replacement for `ruby -w`:
 rubocop -l
 ```
 
-### RuboCop as a formatter
+### 3. RuboCop as a formatter
 
 There's a handy shortcut to run auto-correction only on code layout (a.k.a. formatting) offenses:
 
