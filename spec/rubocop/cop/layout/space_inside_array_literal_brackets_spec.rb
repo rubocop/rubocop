@@ -532,6 +532,64 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
+    it 'accepts multiline array' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        array = [[ a ],
+          [ b, c ]]
+      RUBY
+    end
+
+    context 'multiline array does not collapse successive right-brackets' do
+      it 'registers offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          multiline = [[ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ] ]
+                          ^ Do not use space inside array brackets.
+        RUBY
+      end
+    end
+
+    context 'multiline array does not collapse successive left-brackets' do
+      it 'registers offense' do
+        # In this example, we cannot use `expect_offense` because the offense
+        # has no highlight (actually, a zero-width `column_range`) so our caret
+        # would not match.
+        inspect_source(<<-RUBY.strip_indent)
+          multiline = [
+            [ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
+        expect(cop.offenses.size).to eq(1)
+        offense = cop.offenses.first
+        expect(offense.line).to eq(1)
+        expect(offense.column_range).to eq(13...13) # thus, can't expect_offense
+        expect(offense.message).to eql(
+          'Do not use space inside array brackets.'
+        )
+      end
+    end
+
+    context 'multiline array does not collapse any successive brackets' do
+      it 'registers offense' do
+        # In this example, we cannot use `expect_offense` because the offense
+        # has no highlight (actually, a zero-width `column_range`) so our caret
+        # would not match.
+        inspect_source(<<-RUBY.strip_indent)
+          array = [
+            [ a ],
+            [ b, c ]
+          ]
+        RUBY
+        expect(cop.offenses.size).to eq(1)
+        offense = cop.offenses.first
+        expect(offense.line).to eq(1)
+        expect(offense.column_range).to eq(9...9) # thus, can't expect_offense
+        expect(offense.message).to eql(
+          'Do not use space inside array brackets.'
+        )
+      end
+    end
+
     context 'auto-corrects' do
       it 'fixes 2-dimensional array with extra spaces' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
