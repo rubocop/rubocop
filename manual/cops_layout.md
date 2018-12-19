@@ -3820,9 +3820,15 @@ array = [a, b, c, d]
 
 # bad
 array = [ a, [ b, c ] ]
+array = [
+  [ a ],
+  [ b, c ]
+]
 
 # good
 array = [ a, [ b, c ]]
+array = [[ a ],
+  [ b, c ]]
 ```
 #### EnforcedStyleForEmptyBrackets: no_space (default)
 
