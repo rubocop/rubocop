@@ -16,6 +16,27 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
       RUBY
     end
 
+    it 'accepts for `extend self` in a module with private methods' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+          extend self
+          def test; end
+          private
+          def test_private;end
+        end
+      RUBY
+    end
+
+    it 'accepts for `extend self` in a module with declarative private' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+          extend self
+          def test; end
+          private :test
+        end
+      RUBY
+    end
+
     it 'accepts `extend self` in a class' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class Test
