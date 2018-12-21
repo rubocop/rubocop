@@ -16,7 +16,7 @@ Some automatic corrections that _are_ possible have not been implemented yet.
 $ rubocop --safe-auto-correct
 ```
 
-In 2018, RuboCop began to annotate cops as `Safe` or not safe.
+In RuboCop 0.60, we began to annotate cops as `Safe` or not safe.
 
 > - Safe (true/false) - indicates whether the cop can yield false positives (by 
 >   design) or not.
