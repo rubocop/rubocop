@@ -974,6 +974,17 @@ Layout/LeadingEmptyLines:
   VersionAdded: '0.57'
   VersionChanged: '0.77'
 
+Layout/LineContinuationSpacing:
+  Description: 'Checks the spacing in front of backslash in line continuations.'
+  Enabled: pending
+  AutoCorrect: true
+  SafeAutoCorrect: true
+  VersionAdded: '<<next>>'
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+
 Layout/LineEndStringConcatenationIndentation:
   Description: >-
                  Checks the indentation of the next line after a line that
