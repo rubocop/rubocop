@@ -2241,6 +2241,13 @@ Rails/AssertNot:
   Include:
     - '**/test/**/*'
 
+Rails/BelongsTo:
+  Description: >-
+                  Use `optional: true` instead of `required: false` for
+                  `belongs_to` relations'
+  Enabled: true
+  VersionAdded: '0.62'
+
 Rails/Blank:
   Description: 'Enforces use of `blank?`.'
   Enabled: true
