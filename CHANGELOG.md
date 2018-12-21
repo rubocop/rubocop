@@ -13,6 +13,7 @@
 * [#6571](https://github.com/rubocop-hq/rubocop/issues/6571): Fix a false positive for `Layout/TrailingCommaInArguments` when a line break before a method call and `EnforcedStyleForMultiline` is set to `consistent_comma`. ([@koic][])
 * [#6562](https://github.com/rubocop-hq/rubocop/pull/6562): Fix a false positive for `Style/MethodCallWithArgsParentheses`  `omit_parentheses` enforced style after safe navigation call. ([@gsamokovarov][])
 * [#6570](https://github.com/rubocop-hq/rubocop/pull/6570): Fix a false positive for `Style/MethodCallWithArgsParentheses` `omit_parentheses` enforced style while splatting the result of a method invocation. ([@gsamokovarov][])
+* [#6594](https://github.com/rubocop-hq/rubocop/pull/6594): Fix a false positive for `Rails/OutputSafety` when the receiver is a non-interpolated string literal. ([@amatsuda][])
 
 ## 0.61.1 (2018-12-06)
 
@@ -3699,3 +3700,4 @@
 [@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
 [@nadiyaka]: https://github.com/nadiyaka
+[@amatsuda]: https://github.com/amatsuda
