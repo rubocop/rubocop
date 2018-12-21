@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6596](https://github.com/rubocop-hq/rubocop/pull/6596): Add offence when using `required` option for `belongs_to` associations in Rails >= 5. ([@petehamilton][])
+
 ### Bug fixes
 
 * [#4229](https://github.com/rubocop-hq/rubocop/issues/4229): Fix unexpected Style/HashSyntax consistency offence. ([@timon][])
