@@ -333,6 +333,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense for %r regex literal as arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        method_call(%r{foo})
+                   ^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
@@ -387,6 +394,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo *args')
       expect_no_offenses('foo(**kwargs)')
       expect_no_offenses('foo **kwargs')
+    end
+
+    it 'accepts parens in slash regexp literal as argument' do
+      expect_no_offenses('foo(/regexp/)')
     end
 
     it 'accepts parens in implicit #to_proc' do
