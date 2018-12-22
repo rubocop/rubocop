@@ -257,12 +257,13 @@ module RuboCop
             call_as_argument_or_chain?(node) ||
             hash_literal_in_arguments?(node) ||
             node.descendants.any? do |n|
-              ambigious_literal?(n) || logical_operator?(n)
+              ambigious_literal?(n) || logical_operator?(n) ||
+                call_with_braced_block?(n)
             end
         end
 
         def call_with_braced_block?(node)
-          node.block_node && node.block_node.braces?
+          node.send_type? && node.block_node && node.block_node.braces?
         end
 
         def call_as_argument_or_chain?(node)
