@@ -24,7 +24,7 @@
 ## 0.61.0 (2018-12-05)
 
 ### New features
-
+* [#6580](https://github.com/rubocop-hq/rubocop/pull/6580): New cop `Rails/LinkToBlank` checks for `link_to` calls with `target: '_blank'` and no `rel: 'noopener'`. ([@Intrepidd][])
 * [#6457](https://github.com/rubocop-hq/rubocop/pull/6457): Support inner slash correction on `Style/RegexpLiteral`. ([@r7kamura][])
 * [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on `Style/Lambda`. ([@r7kamura][])
 * [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Enforce no parentheses style in the `Style/MethodCallWithArgsParentheses` cop. ([@gsamokovarov][])
@@ -3701,3 +3701,4 @@
 [@bayandin]: https://github.com/bayandin
 [@nadiyaka]: https://github.com/nadiyaka
 [@amatsuda]: https://github.com/amatsuda
+[@Intrepidd]: https://github.com/Intrepidd

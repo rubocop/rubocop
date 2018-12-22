@@ -355,6 +355,7 @@ In the following section you find all available cops:
 * [Rails/HttpStatus](cops_rails.md#railshttpstatus)
 * [Rails/InverseOf](cops_rails.md#railsinverseof)
 * [Rails/LexicallyScopedActionFilter](cops_rails.md#railslexicallyscopedactionfilter)
+* [Rails/LinkToBlank](cops_rails.md#railslinktoblank)
 * [Rails/NotNullColumn](cops_rails.md#railsnotnullcolumn)
 * [Rails/Output](cops_rails.md#railsoutput)
 * [Rails/OutputSafety](cops_rails.md#railsoutputsafety)
