@@ -345,7 +345,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'accepts no parens in method call with args' do
-      expect_no_offenses('top.test 1, 2, foo: bar')
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def regular(arg = default(42))
+          nil
+        end
+
+        def seatle_style arg = default(42)
+          nil
+        end
+      RUBY
+    end
+
+    it 'accepts parens in default argument value calls' do
+      expect_no_offenses('top.test 1, 2, foo: bar(3)')
     end
 
     it 'accepts parens in method args' do
