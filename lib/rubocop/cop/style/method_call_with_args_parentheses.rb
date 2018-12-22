@@ -229,6 +229,7 @@ module RuboCop
           call_in_literals?(node) ||
             call_with_ambiguous_arguments?(node) ||
             call_in_logical_operators?(node) ||
+            call_in_optional_arguments?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
         end
@@ -245,6 +246,10 @@ module RuboCop
           node.parent &&
             (logical_operator?(node.parent) ||
              node.parent.descendants.any?(&method(:logical_operator?)))
+        end
+
+        def call_in_optional_arguments?(node)
+          node.parent && node.parent.optarg_type?
         end
 
         def call_with_ambiguous_arguments?(node)
