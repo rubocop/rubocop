@@ -345,6 +345,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'accepts no parens in method call with args' do
+      expect_no_offenses('top.test 1, 2, foo: bar')
+    end
+
+    it 'accepts parens in default argument value calls' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def regular(arg = default(42))
           nil
@@ -354,10 +358,6 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           nil
         end
       RUBY
-    end
-
-    it 'accepts parens in default argument value calls' do
-      expect_no_offenses('top.test 1, 2, foo: bar(3)')
     end
 
     it 'accepts parens in method args' do
@@ -410,6 +410,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'accepts parens in slash regexp literal as argument' do
       expect_no_offenses('foo(/regexp/)')
+    end
+
+    it 'accepts parens in argument calls with braced blocks' do
+      expect_no_offenses('foo(bar(:arg) { 42 })')
     end
 
     it 'accepts parens in implicit #to_proc' do
