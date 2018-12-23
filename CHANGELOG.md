@@ -123,6 +123,7 @@
 ### Changes
 
 * [#595](https://github.com/rubocop-hq/rubocop/issues/595): Exclude files ignored by `git`. ([@AlexWayfer][])
+* [#3904](https://github.com/rubocop-hq/rubocop/issues/3904): Deduplicate descriptions by copying cop descriptions into config. ([@garettarrowood][])
 * [#6429](https://github.com/rubocop-hq/rubocop/issues/6429): Fix autocorrect in Rails/Validation to not wrap hash options with braces in an extra set of braces. ([@bquorning][])
 * [#6533](https://github.com/rubocop-hq/rubocop/issues/6533): Improved warning message for unrecognized cop parameters to include Supported parameters. ([@MagedMilad][])
 

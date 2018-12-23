@@ -33,9 +33,12 @@ RuboCop::RakeTask.new(:internal_investigation).tap do |task|
 end
 
 task default: %i[
-  documentation_syntax_check generate_cops_documentation
+  build_config
+  documentation_syntax_check
+  generate_cops_documentation
   spec ascii_spec
   internal_investigation
+  confirm_config
 ]
 
 require 'yard'
@@ -118,4 +121,24 @@ task documentation_syntax_check: :yard_for_generate_documentation do
     end
   end
   abort unless ok
+end
+
+desc 'Build config/default.yml'
+task :build_config do
+  sh('bin/build_config')
+end
+
+desc 'Confirm config/default.yml is up to date'
+task confirm_config: :build_config do
+  # Do not print diff and yield whether exit code was zero
+  sh('git diff --quiet config') do |outcome, _|
+    return if outcome
+
+    # Output diff before raising error
+    sh('GIT_PAGER=cat git diff config')
+
+    warn 'The config/default.yml is out of sync. ' \
+      'Run `rake build_config` and commit the results.'
+    exit!
+  end
 end

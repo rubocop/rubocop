@@ -28,7 +28,6 @@ RSpec.describe 'RuboCop Project', type: :feature do
       cop_names.each do |name|
         description = config[name]['Description']
         expect(description.nil?).to be(false)
-        expect(description).not_to include("\n")
       end
     end
 

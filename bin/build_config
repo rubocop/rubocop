@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift(File.join(__dir__, '..', 'lib'))
+
+require 'yard'
+
+require 'rubocop'
+require 'rubocop/description_extractor'
+require 'rubocop/config_formatter'
+
+departments =
+  "{,#{RuboCop::Cop::Cop.registry.departments.map(&:downcase).join(',')}}"
+
+glob = File.join(__dir__, '..', 'lib', 'rubocop', 'cop', departments, '*.rb')
+YARD.parse(Dir[glob], [])
+
+descriptions = RuboCop::DescriptionExtractor.new(YARD::Registry.all).to_h
+current_config = YAML.load_file('config/default.yml')
+
+File.write(
+  'config/default.yml',
+  RuboCop::ConfigFormatter.new(current_config, descriptions).dump
+)

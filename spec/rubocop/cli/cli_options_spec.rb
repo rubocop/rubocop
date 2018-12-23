@@ -736,7 +736,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(stdout).to match(
           ['# Supports --auto-correct',
            'Layout/Tab:',
-           '  Description: No hard tabs.',
+           '  Description: This cop checks for tabs inside the source code.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
            /^  VersionAdded: '[0-9\.]+'$/,
@@ -761,7 +761,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(stdout).to match(
           ['# Supports --auto-correct',
            'Layout/Tab:',
-           '  Description: No hard tabs.',
+           '  Description: This cop checks for tabs inside the source code.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true'].join("\n")
         )
