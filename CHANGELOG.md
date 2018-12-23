@@ -17,6 +17,7 @@
 * [#6389](https://github.com/rubocop-hq/rubocop/pull/6389): Fix false negative for `Style/TrailingCommaInHashLitera`/`Style/TrailingCommaInArrayLiteral` when there is a comment in the last line. ([@bayandin][])
 * [#6566](https://github.com/rubocop-hq/rubocop/issues/6566): Fix false positive for `Layout/EmptyLinesAroundAccessModifier` when at the end of specifying a superclass is missing blank line. ([@koic][])
 * [#6571](https://github.com/rubocop-hq/rubocop/issues/6571): Fix a false positive for `Layout/TrailingCommaInArguments` when a line break before a method call and `EnforcedStyleForMultiline` is set to `consistent_comma`. ([@koic][])
+* [#6573](https://github.com/rubocop-hq/rubocop/pull/6573): Make `Layout/AccessModifierIndentation` work for dynamic module or class definitions. ([@deivid-rodriguez][])
 * [#6562](https://github.com/rubocop-hq/rubocop/pull/6562): Fix a false positive for `Style/MethodCallWithArgsParentheses` `omit_parentheses` enforced style after safe navigation call. ([@gsamokovarov][])
 * [#6570](https://github.com/rubocop-hq/rubocop/pull/6570): Fix a false positive for `Style/MethodCallWithArgsParentheses` `omit_parentheses` enforced style while splatting the result of a method invocation. ([@gsamokovarov][])
 * [#6598](https://github.com/rubocop-hq/rubocop/pull/6598): Fix a false positive for `Style/MethodCallWithArgsParentheses` `omit_parentheses` enforced style for calls with regexp slash literals argument. ([@gsamokovarov][])
