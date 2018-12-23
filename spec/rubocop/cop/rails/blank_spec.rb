@@ -129,6 +129,10 @@ RSpec.describe RuboCop::Cop::Rails::Blank, :config do
     it_behaves_like 'offense', '!present?',
                     'blank?',
                     'Use `blank?` instead of `!present?`.'
+
+    it 'accepts !present? if its in the body of a `blank?` method' do
+      expect_no_offenses('def blank?; !present? end')
+    end
   end
 
   context 'UnlessPresent set to true' do

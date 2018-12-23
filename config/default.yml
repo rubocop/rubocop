@@ -2399,6 +2399,12 @@ Rails/LexicallyScopedActionFilter:
   Include:
     - app/controllers/**/*.rb
 
+Rails/LinkToBlank:
+  Description: 'Checks that `link_to` with a `target: "_blank"` have a `rel: "noopener"` option passed to them.'
+  Reference: https://mathiasbynens.github.io/rel-noopener/
+  Enabled: true
+  VersionAdded: '0.62'
+
 Rails/NotNullColumn:
   Description: 'Do not add a NOT NULL column without a default value'
   Enabled: true
