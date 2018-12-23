@@ -30,6 +30,7 @@
 
 * [#595](https://github.com/rubocop-hq/rubocop/issues/595): Exclude files ignored by `git`. ([@AlexWayfer][])
 * [#6429](https://github.com/rubocop-hq/rubocop/issues/6429): Fix autocorrect in Rails/Validation to not wrap hash options with braces in an extra set of braces. ([@bquorning][])
+* [#6533](https://github.com/rubocop-hq/rubocop/issues/6533): Improved warning message for unrecognized cop parameters to include Supported parameters. ([@MagedMilad][])
 
 ## 0.61.1 (2018-12-06)
 
