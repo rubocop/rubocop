@@ -7,9 +7,14 @@ module RuboCop
   class CLI
     include Formatter::TextUtil
 
-    SKIPPED_PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop (skipped ' \
-                      'because the default Metrics/LineLength:Max is ' \
-                      'overridden)'.freeze
+    PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop'.freeze
+    PHASE_2 = 'Phase 2 of 2: run all cops'.freeze
+
+    PHASE_1_OVERRIDDEN = '(skipped because the default Metrics/LineLength:Max' \
+                         ' is overridden)'.freeze
+    PHASE_1_DISABLED   = '(skipped because Metrics/LineLength is ' \
+                         'disabled)'.freeze
+
     STATUS_SUCCESS     = 0
     STATUS_OFFENSES    = 1
     STATUS_ERROR       = 2
@@ -64,28 +69,47 @@ module RuboCop
     def execute_runners(paths)
       if @options[:auto_gen_config]
         reset_config_and_auto_gen_file
-        line_length_contents =
-          if max_line_length(@config_store.for(Dir.pwd)) ==
-             max_line_length(ConfigLoader.default_configuration)
-            run_line_length_cop_auto_gen_config(paths)
-          else
-            puts Rainbow(SKIPPED_PHASE_1).yellow
-            ''
-          end
+        line_length_contents = maybe_run_line_length_cop(paths)
         run_all_cops_auto_gen_config(line_length_contents, paths)
       else
         execute_runner(paths)
       end
     end
 
+    def maybe_run_line_length_cop(paths)
+      if !line_length_enabled?(@config_store.for(Dir.pwd))
+        puts Rainbow("#{PHASE_1} #{PHASE_1_DISABLED}").yellow
+        ''
+      elsif !same_max_line_length?(
+        @config_store.for(Dir.pwd), ConfigLoader.default_configuration
+      )
+        puts Rainbow("#{PHASE_1} #{PHASE_1_OVERRIDDEN}").yellow
+        ''
+      else
+        run_line_length_cop_auto_gen_config(paths)
+      end
+    end
+
+    def line_length_enabled?(config)
+      line_length_cop(config)['Enabled']
+    end
+
+    def same_max_line_length?(config1, config2)
+      max_line_length(config1) == max_line_length(config2)
+    end
+
     def max_line_length(config)
-      config.for_cop('Metrics/LineLength')['Max']
+      line_length_cop(config)['Max']
+    end
+
+    def line_length_cop(config)
+      config.for_cop('Metrics/LineLength')
     end
 
     # Do an initial run with only Metrics/LineLength so that cops that depend
     # on Metrics/LineLength:Max get the correct value for that parameter.
     def run_line_length_cop_auto_gen_config(paths)
-      puts Rainbow('Phase 1 of 2: run Metrics/LineLength cop').yellow
+      puts Rainbow(PHASE_1).yellow
       @options[:only] = ['Metrics/LineLength']
       execute_runner(paths)
       @options.delete(:only)
@@ -98,7 +122,7 @@ module RuboCop
     end
 
     def run_all_cops_auto_gen_config(line_length_contents, paths)
-      puts Rainbow('Phase 2 of 2: run all cops').yellow
+      puts Rainbow(PHASE_2).yellow
       result = execute_runner(paths)
       # This run was made with the current maximum length allowed, so append
       # the saved setting for LineLength.

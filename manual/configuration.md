@@ -145,7 +145,7 @@ Gemfile and the gem was installed using `bundle install`, it would be
 necessary to also invoke RuboCop using Bundler in order to find the
 dependency's installation path at runtime:
 
-```
+```sh
 $ bundle exec rubocop <options...>
 ```
 
@@ -229,6 +229,7 @@ ruby interpreters listed under `AllCops`/`RubyInterpreters` are
 inspected, unless the file also matches a pattern in
 `AllCops`/`Exclude`. Hidden directories (i.e., directories whose names
 start with a dot) are not searched by default.
+Files ignored by Git are ignored by RuboCop by default.
 
 Here is an example that might be used for a Rails project:
 
@@ -482,7 +483,7 @@ If you use [mry](https://github.com/pocke/mry), you can update `.rubocop.yml`
 to latest version automatically.
 
 
-```bash
+```sh
 $ gem install mry
 # Update to latest version
 $ mry .rubocop.yml

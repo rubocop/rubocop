@@ -119,7 +119,7 @@ module RuboCop
                                   ancestor_node.kwbegin_type?
 
           assignment_node = assignment_node(ancestor_node)
-          return assignment_node unless assignment_node.nil?
+          return assignment_node if same_line?(ancestor_node, assignment_node)
 
           access_modifier_node = access_modifier_node(ancestor_node)
           return access_modifier_node unless access_modifier_node.nil?

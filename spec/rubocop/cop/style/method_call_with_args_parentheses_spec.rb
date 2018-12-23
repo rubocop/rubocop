@@ -333,12 +333,31 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense for %r regex literal as arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        method_call(%r{foo})
+                   ^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
 
     it 'accepts no parens in method call with args' do
       expect_no_offenses('top.test 1, 2, foo: bar')
+    end
+
+    it 'accepts parens in default argument value calls' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def regular(arg = default(42))
+          nil
+        end
+
+        def seatle_style arg = default(42)
+          nil
+        end
+      RUBY
     end
 
     it 'accepts parens in method args' do
@@ -389,6 +408,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo **kwargs')
     end
 
+    it 'accepts parens in slash regexp literal as argument' do
+      expect_no_offenses('foo(/regexp/)')
+    end
+
+    it 'accepts parens in argument calls with braced blocks' do
+      expect_no_offenses('foo(bar(:arg) { 42 })')
+    end
+
     it 'accepts parens in implicit #to_proc' do
       expect_no_offenses('foo(&block)')
       expect_no_offenses('foo &block')
@@ -411,6 +438,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     it 'accepts parens in args with ternary conditions' do
       expect_no_offenses(<<-RUBY)
         foo.include?(bar ? baz : quux)
+      RUBY
+    end
+
+    it 'accepts parens in splat calls' do
+      expect_no_offenses(<<-RUBY)
+        foo(*bar(args))
+        foo(**quux(args))
+      RUBY
+    end
+
+    it 'accepts parens in block passing calls' do
+      expect_no_offenses(<<-RUBY)
+        foo(&method(:args))
       RUBY
     end
 
@@ -474,6 +514,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
         foo().bar(3).wait 4
       RUBY
+    end
+
+    context 'TargetRubyVersion >= 2.3', :ruby23 do
+      it 'accepts parens in chaining with safe operators' do
+        expect_no_offenses('Something.find(criteria: given)&.field')
+      end
     end
 
     context 'allowing parenthesis in chaining' do
