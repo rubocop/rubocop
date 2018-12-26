@@ -34,6 +34,15 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
         RUBY
       end
 
+      it 'autocorrects with a new rel' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          link_to 'Click here', 'https://www.example.com', target: '_blank'
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          link_to 'Click here', 'https://www.example.com', target: '_blank', rel: 'noopener'
+        RUBY
+      end
+
       it 'registers an offence when using a string for the target key' do
         expect_offense(<<-RUBY.strip_indent)
           link_to 'Click here', 'https://www.example.com', "target" => '_blank'
@@ -49,6 +58,19 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
           end
         RUBY
       end
+
+      it 'autocorrects with a new rel when using the block syntax' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          link_to 'https://www.example.com', target: '_blank' do
+            "Click here"
+          end
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          link_to 'https://www.example.com', target: '_blank', rel: 'noopener' do
+            "Click here"
+          end
+        RUBY
+      end
     end
 
     context 'when using rel' do
@@ -57,6 +79,15 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
           expect_offense(<<-RUBY.strip_indent)
             link_to 'Click here', 'https://www.example.com', "target" => '_blank', rel: 'unrelated'
                                                              ^^^^^^^^^^^^^^^^^^^^ Specify a `:rel` option containing noopener.
+          RUBY
+        end
+
+        it 'autocorrects by appending to the existing rel' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            link_to 'Click here', 'https://www.example.com', target: '_blank', rel: 'foo'
+          RUBY
+          expect(new_source).to eq(<<-RUBY.strip_indent)
+            link_to 'Click here', 'https://www.example.com', target: '_blank', rel: 'foo noopener'
           RUBY
         end
       end
