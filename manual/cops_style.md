@@ -2810,7 +2810,7 @@ options.
 
 ### Examples
 
-#### EnforcedStyle: require_parentheses
+#### EnforcedStyle: require_parentheses (default)
 
 ```ruby
 # bad

@@ -21,7 +21,7 @@ module RuboCop
       #     to `true` allows the presence of parentheses in multi-line method
       #     calls.
       #
-      # @example EnforcedStyle: require_parentheses
+      # @example EnforcedStyle: require_parentheses (default)
       #
       #
       #   # bad
