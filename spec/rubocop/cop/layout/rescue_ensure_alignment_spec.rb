@@ -36,6 +36,40 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
     end
+
+    context 'as RHS of assignment' do
+      it 'accepts multi-line, aligned' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          x ||= begin
+                  1
+                rescue
+                  2
+                end
+        RUBY
+      end
+
+      it 'accepts multi-line, indented' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          x ||=
+            begin
+              1
+            rescue
+              2
+            end
+        RUBY
+      end
+
+      it 'registers offense for incorrect alignment' do
+        expect_offense(<<-RUBY.strip_indent)
+          x ||= begin
+            1
+          rescue
+          ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
+            2
+          end
+        RUBY
+      end
+    end
   end
 
   context 'rescue with def' do
