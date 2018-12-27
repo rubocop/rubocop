@@ -198,6 +198,7 @@ In the following section you find all available cops:
 * [Lint/CircularArgumentReference](cops_lint.md#lintcircularargumentreference)
 * [Lint/Debugger](cops_lint.md#lintdebugger)
 * [Lint/DeprecatedClassMethods](cops_lint.md#lintdeprecatedclassmethods)
+* [Lint/DisjunctiveAssignmentInConstructor](cops_lint.md#lintdisjunctiveassignmentinconstructor)
 * [Lint/DuplicateCaseCondition](cops_lint.md#lintduplicatecasecondition)
 * [Lint/DuplicateMethods](cops_lint.md#lintduplicatemethods)
 * [Lint/DuplicatedKey](cops_lint.md#lintduplicatedkey)
