@@ -245,7 +245,8 @@ module RuboCop
         def call_in_logical_operators?(node)
           node.parent &&
             (logical_operator?(node.parent) ||
-             node.parent.descendants.any?(&method(:logical_operator?)))
+             node.parent.send_type? &&
+             node.parent.arguments.any?(&method(:logical_operator?)))
         end
 
         def call_in_optional_arguments?(node)
