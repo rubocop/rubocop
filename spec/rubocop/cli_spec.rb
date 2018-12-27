@@ -1074,12 +1074,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Exclude:
             - ignored/**
       YAML
-      expect(File).not_to receive(:open).with(%r{/ignored/})
       allow(File).to receive(:open).and_call_original
       expect(cli.run(%w[--format simple example])).to eq(0)
-      expect($stdout.string)
-        .to eq(['', '0 files inspected, no offenses detected',
-                ''].join("\n"))
+      expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+
+        0 files inspected, no offenses detected
+      OUTPUT
+      expect(File).not_to have_received(:open).with(%r{/ignored/})
     end
 
     it 'can be configured with option to disable a certain error' do
