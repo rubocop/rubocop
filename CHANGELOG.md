@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#6607](https://github.com/rubocop-hq/rubocop/pull/6607): Improve CLI usage message for --stdin option. ([@jaredbeck][])
+
 ## 0.62.0 (2019-01-01)
 
 ### New features
