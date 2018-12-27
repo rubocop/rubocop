@@ -1191,6 +1191,12 @@ Lint/DeprecatedClassMethods:
   Enabled: true
   VersionAdded: '0.19'
 
+Lint/DisjunctiveAssignmentInConstructor:
+  Description: 'In constructor, plain assignment is preferred over disjunctive.'
+  Enabled: true
+  Safe: false
+  VersionAdded: '0.62'
+
 Lint/DuplicateCaseCondition:
   Description: 'Do not repeat values in case conditionals.'
   Enabled: true
