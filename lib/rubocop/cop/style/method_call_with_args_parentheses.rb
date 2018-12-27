@@ -268,7 +268,9 @@ module RuboCop
         end
 
         def call_as_argument_or_chain?(node)
-          node.parent && (node.parent.send_type? || node.parent.csend_type?)
+          node.parent &&
+            (node.parent.send_type? && !assigned_before?(node.parent, node) ||
+             node.parent.csend_type?)
         end
 
         def hash_literal_in_arguments?(node)
@@ -314,6 +316,11 @@ module RuboCop
 
         def regexp_slash_literal?(node)
           node.regexp_type? && node.loc.begin.source == '/'
+        end
+
+        def assigned_before?(node, target)
+          node.assignment? &&
+            node.loc.operator.begin < target.loc.begin
         end
       end
     end
