@@ -13,13 +13,18 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
     before do
       formatter_set.add_formatter('simple')
       formatter_set.add_formatter('emacs')
+
+      formatter_set.each do |formatter|
+        allow(formatter).to receive(:started)
+      end
     end
 
     let(:files) { ['/path/to/file1', '/path/to/file2'] }
 
     it 'invokes same method of all containing formatters' do
-      expect(formatter_set).to all(receive(:started).with(files))
       formatter_set.started(files)
+
+      expect(formatter_set).to all(have_received(:started).with(files))
     end
   end
 
