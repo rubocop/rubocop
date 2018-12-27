@@ -16,6 +16,10 @@
 * [#6382](https://github.com/rubocop-hq/rubocop/issues/6382): Fix `Layout/IndentationWidth` with `Layout/EndAlignment` set to start_of_line. ([@dischorde][], [@siegfault][], [@mhelmetag][])
 * [#6710](https://github.com/rubocop-hq/rubocop/issues/6710): Fix `Naming/MemoizedInstanceVariableName` on method starts with underscore. ([@pocke][])
 
+### Changes
+
+* [#6597](https://github.com/rubocop-hq/rubocop/issues/6597): `Style/LineEndConcatenation` is now known to be unsafe for auto-correct. ([@jaredbeck][])
+
 ## 0.63.1 (2019-01-22)
 
 ### Bug fixes

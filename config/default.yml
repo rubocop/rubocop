@@ -3374,7 +3374,9 @@ Style/LineEndConcatenation:
                  Use \ instead of + or << to concatenate two string literals at
                  line end.
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.18'
+  VersionChanged: '0.64'
 
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
