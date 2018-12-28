@@ -15,6 +15,7 @@
 
 * [#6766](https://github.com/rubocop-hq/rubocop/pull/6766): Drop support for Ruby 2.2.0 and 2.2.1. ([@pocke][])
 * [#6733](https://github.com/rubocop-hq/rubocop/pull/6733): Warn duplicated keys in `.rubocop.yml`. ([@pocke][])
+* [#6613](https://github.com/rubocop-hq/rubocop/pull/6613): Mark `Style/ModuleFunction` as `SafeAutocorrect: false` and disable autocorrect by default. ([@dduugg][])
 
 ## 0.64.0 (2019-02-10)
 
