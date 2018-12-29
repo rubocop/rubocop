@@ -229,7 +229,7 @@ jobs:
   # Job for downloading the Code Climate test reporter
   cc-setup:
     docker:
-      - image: circleci/ruby:2.6
+      - image: circleci/ruby
     environment:
       <<: *common_env
     steps:
@@ -247,7 +247,7 @@ jobs:
   # Job for merging code coverage results and sending them to Code Climate
   cc-upload-coverage:
     docker:
-      - image: circleci/ruby:2.6
+      - image: circleci/ruby
         environment:
           CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
     environment:
@@ -264,7 +264,7 @@ jobs:
   # Miscellaneous tasks
   documentation-checks:
     docker:
-      - image: circleci/ruby:2.6
+      - image: circleci/ruby
     environment:
       <<: *common_env
     steps:
