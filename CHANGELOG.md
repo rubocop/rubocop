@@ -25,7 +25,7 @@
 * [#6598](https://github.com/rubocop-hq/rubocop/pull/6598): Fix a false positive for `Style/MethodCallWithArgsParentheses` `omit_parentheses` enforced style for argument calls with braced blocks. ([@gsamokovarov][])
 * [#6594](https://github.com/rubocop-hq/rubocop/pull/6594): Fix a false positive for `Rails/OutputSafety` when the receiver is a non-interpolated string literal. ([@amatsuda][])
 * [#6574](https://github.com/rubocop-hq/rubocop/pull/6574): Fix `Style/AccessModifierIndentation` not handling arbitrary blocks. ([@deivid-rodriguez][])
-[#6370](https://github.com/rubocop-hq/rubocop/issues/6370): Fix the enforcing style from `extend self` into `module_function` when there are private methods
+* [#6370](https://github.com/rubocop-hq/rubocop/issues/6370): Fix the enforcing style from `extend self` into `module_function` when there are private methods. ([@Ruffeng][])
 
 ### Changes
 
@@ -3721,4 +3721,4 @@
 [@nadiyaka]: https://github.com/nadiyaka
 [@amatsuda]: https://github.com/amatsuda
 [@Intrepidd]: https://github.com/Intrepidd
-[@ruffeng]: https://github.com/Ruffeng
+[@Ruffeng]: https://github.com/Ruffeng
