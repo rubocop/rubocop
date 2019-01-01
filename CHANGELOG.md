@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.62.0 (2019-01-01)
+
 ### New features
 
 * [#6580](https://github.com/rubocop-hq/rubocop/pull/6580): New cop `Rails/LinkToBlank` checks for `link_to` calls with `target: '_blank'` and no `rel: 'noopener'`. ([@Intrepidd][])
