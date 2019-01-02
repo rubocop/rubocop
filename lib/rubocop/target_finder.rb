@@ -100,8 +100,6 @@ module RuboCop
     private
 
     def ls_git_files(base_dir)
-      return if `sh -c 'command -v git'`.empty?
-
       output, _error, status = Open3.capture3(
         'git', 'ls-files', '-z', base_dir,
         '--exclude-standard', '--others', '--cached', '--modified'
@@ -110,6 +108,8 @@ module RuboCop
       return unless status.success?
 
       output.split("\0").map { |git_file| "#{base_dir}/#{git_file}" }
+    rescue Errno::ENOENT
+      nil
     end
 
     def to_inspect?(file, git_files, hidden_files, base_dir_config)
