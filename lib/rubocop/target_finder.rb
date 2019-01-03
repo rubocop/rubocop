@@ -109,7 +109,16 @@ module RuboCop
 
       return unless status.success?
 
-      output.split("\0").map { |git_file| "#{base_dir}/#{git_file}" }
+      output.split("\0").map do |git_file|
+        add_base_dir_prefix(base_dir, git_file)
+      end
+    end
+
+    def add_base_dir_prefix(base_dir, git_file)
+      return File.join(Dir.pwd, git_file) if base_dir.start_with?(Dir.pwd)
+      return File.join('.', git_file) if base_dir.start_with?('.')
+
+      git_file
     end
 
     def to_inspect?(file, git_files, hidden_files, base_dir_config)

@@ -6,6 +6,7 @@
 
 * [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
 * [#6100](https://github.com/rubocop-hq/rubocop/issues/6100): Fix a false positive in `Naming/ConstantName` cop when rhs is a conditional expression. ([@tatsuyafw][])
+* [#6625](https://github.com/rubocop-hq/rubocop/issues/6625): Fix passing directories as arguments to rubocop regression. ([@tiagotex][])
 
 ## 0.62.0 (2019-01-01)
 

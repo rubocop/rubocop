@@ -414,6 +414,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
           !git_excluded.rb
           git_glob*
           git_dir/
+          /dir1/ruby1.rb
         CONTENT
       end
 
@@ -422,11 +423,22 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
           'git_regular.rb',
           'git_group.rb',
           'git_glob.rb',
-          'git_dir/thing.rb'
+          'git_dir/thing.rb',
+          'dir1/ruby1.rb'
         )
         expect(found_basenames).to include(
           'git_excluded.rb',
           'git with spaces.rb'
+        )
+
+        expect(found_files).to match_array(
+          [
+            './git with spaces.rb',
+            './git_excluded.rb',
+            './dir2/ruby3.rb',
+            './dir1/executable',
+            './dir1/ruby2.rb'
+          ]
         )
       end
 
@@ -453,6 +465,51 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
           expect(found_basenames).not_to include(
             'thing.rb'
           )
+        end
+      end
+
+      context 'with `dir1` in argument' do
+        let(:base_dir) { 'dir1' }
+
+        it 'finds files inside the directory' do
+          expect(found_files).to match_array [
+            'dir1/executable',
+            'dir1/ruby2.rb'
+          ]
+        end
+      end
+
+      context 'with `./dir1` in argument' do
+        let(:base_dir) { './dir1' }
+
+        it 'finds files inside the directory' do
+          expect(found_files).to match_array [
+            './dir1/executable',
+            './dir1/ruby2.rb'
+          ]
+        end
+      end
+
+      context 'with `#{Dir.pwd}/dir1` in argument' do
+        let(:base_dir) { "#{Dir.pwd}/dir1" }
+
+        it 'finds files inside the directory' do
+          expect(found_files).to match_array [
+            "#{Dir.pwd}/dir1/executable",
+            "#{Dir.pwd}/dir1/ruby2.rb"
+          ]
+        end
+      end
+
+      context 'with `./` in argument' do
+        let(:base_dir) { './' }
+
+        it 'finds files inside directories' do
+          expect(found_files).to match_array [
+            './dir1/executable',
+            './dir1/ruby2.rb',
+            './dir2/ruby3.rb'
+          ]
         end
       end
     end
