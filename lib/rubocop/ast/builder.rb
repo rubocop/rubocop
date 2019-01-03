@@ -27,6 +27,8 @@ module RuboCop
         for: ForNode,
         hash: HashNode,
         if: IfNode,
+        irange: RangeNode,
+        erange: RangeNode,
         kwsplat: KeywordSplatNode,
         or: OrNode,
         pair: PairNode,
