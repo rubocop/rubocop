@@ -41,7 +41,7 @@ module RuboCop
                  end
       end
 
-      files.map { |f| File.expand_path(f) }.uniq
+      files.uniq
     end
 
     # Finds all Ruby source files under the current or other supplied
@@ -198,7 +198,9 @@ module RuboCop
     def process_explicit_path(path)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| included_file?(file) }
+      files =
+        files.select { |file| included_file?(file) }
+             .map { |relative_path| File.expand_path(relative_path) }
 
       return files unless force_exclusion?
 

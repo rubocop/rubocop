@@ -146,6 +146,13 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
           .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
       end
 
+      it 'returns absolute paths' do
+        expect(found_files.empty?).to be(false)
+        found_files.each do |file|
+          expect(file.sub(/^[A-Z]:/, '')).to start_with('/')
+        end
+      end
+
       context 'when local AllCops/Include lists two patterns' do
         before do
           create_file('.rubocop.yml', <<-YAML)
