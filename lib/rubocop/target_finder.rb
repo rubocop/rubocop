@@ -94,9 +94,12 @@ module RuboCop
                   # on the top level, which would otherwise not be found.
                   wanted_toplevel_dirs.unshift("#{base_dir}/*")
                 end
-      Dir.glob(pattern, flags)
-         .select { |path| FileTest.file?(path) }
-         .map { |relative_path| File.expand_path(relative_path) }
+
+      Dir.glob(pattern, flags).each_with_object([]) do |relative_path, files|
+        next unless FileTest.file?(relative_path)
+
+        files << File.expand_path(relative_path)
+      end
     end
 
     private
@@ -199,8 +202,11 @@ module RuboCop
       files = path.include?('*') ? Dir[path] : [path]
 
       files =
-        files.select { |file| included_file?(file) }
-             .map { |relative_path| File.expand_path(relative_path) }
+        files.each_with_object([]) do |relative_path, paths|
+          next unless included_file?(relative_path)
+
+          paths << File.expand_path(relative_path)
+        end
 
       return files unless force_exclusion?
 
