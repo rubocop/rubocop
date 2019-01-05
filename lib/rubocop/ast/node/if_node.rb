@@ -141,6 +141,35 @@ module RuboCop
 
         [condition, true_branch, false_branch]
       end
+
+      # Returns an array of all the branches in the conditional statement.
+      #
+      # @return [Array<Node>] an array of branch nodes
+      def branches
+        branches = [if_branch]
+
+        return branches unless else_branch
+
+        other_branches = if elsif_conditional?
+                           else_branch.branches
+                         else
+                           [else_branch]
+                         end
+        branches.concat(other_branches)
+      end
+
+      # Calls the given block for each branch node in the conditional statement.
+      # If no block is given, an `Enumerator` is returned.
+      #
+      # @return [self] if a block is given
+      # @return [Enumerator] if no block is given
+      def each_branch
+        return branches.to_enum(__method__) unless block_given?
+
+        branches.each do |branch|
+          yield branch
+        end
+      end
     end
   end
 end
