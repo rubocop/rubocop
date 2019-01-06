@@ -12,6 +12,7 @@
 
 ### Bug fixes
 
+* [#6627](https://github.com/rubocop-hq/rubocop/pull/6627): Fix handling of hashes in trailing comma. ([@abrom][])
 * [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
 * [#6100](https://github.com/rubocop-hq/rubocop/issues/6100): Fix a false positive in `Naming/ConstantName` cop when rhs is a conditional expression. ([@tatsuyafw][])
 * [#6526](https://github.com/rubocop-hq/rubocop/issues/6526): Fix a wrong line highlight in `Lint/ShadowedException` cop. ([@tatsuyafw][])
