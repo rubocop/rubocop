@@ -424,6 +424,8 @@ Metrics/LineLength:
     compromise.
 ```
 
+These details will only be seen when rubocop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global rubocop configuration. 
+
 #### AutoCorrect
 
 Cops that support the `--auto-correct` option can have that support
