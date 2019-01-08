@@ -1255,6 +1255,12 @@ Lint/ErbNewArguments:
   Enabled: true
   VersionAdded: '0.56'
 
+Lint/FlipFlop:
+  Description: 'Checks for flip-flops'
+  StyleGuide: '#no-flip-flops'
+  Enabled: true
+  VersionAdded: '0.16'
+
 Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
@@ -3128,12 +3134,6 @@ Style/ExpandPathArguments:
   Description: "Use `expand_path(__dir__)` instead of `expand_path('..', __FILE__)`."
   Enabled: true
   VersionAdded: '0.53'
-
-Style/FlipFlop:
-  Description: 'Checks for flip-flops'
-  StyleGuide: '#no-flip-flops'
-  Enabled: true
-  VersionAdded: '0.16'
 
 Style/For:
   Description: 'Checks use of for or each in multiline loops.'

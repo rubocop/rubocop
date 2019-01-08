@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Lint
       # This cop looks for uses of flip-flop operator.
       # flip-flop operator is deprecated since Ruby 2.6.0.
       #
