@@ -111,6 +111,22 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
       context 'when the rel contains noopener' do
         it 'register no offence' do
           expect_no_offenses(<<~RUBY)
+            link_to 'Click here', 'https://www.example.com', target: '_blank', rel: 'noopener unrelated'
+          RUBY
+        end
+      end
+
+      context 'when the rel contains noreferrer' do
+        it 'register no offence' do
+          expect_no_offenses(<<-RUBY)
+            link_to 'Click here', 'https://www.example.com', target: '_blank', rel: 'unrelated noreferrer'
+          RUBY
+        end
+      end
+
+      context 'when the rel contains noopener and noreferrer' do
+        it 'register no offence' do
+          expect_no_offenses(<<-RUBY)
             link_to 'Click here', 'https://www.example.com', target: '_blank', rel: 'noopener noreferrer'
           RUBY
         end

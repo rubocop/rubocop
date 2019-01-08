@@ -1275,6 +1275,9 @@ This cop checks for calls to `link_to` that contain a
 risk as the loaded page will have control over the previous page
 and could change its location for phishing purposes.
 
+The option `rel: 'noreferrer'` also blocks this behavior
+and removes the http-referrer header.
+
 ### Examples
 
 ```ruby
@@ -1283,11 +1286,16 @@ link_to 'Click here', url, target: '_blank'
 
 # good
 link_to 'Click here', url, target: '_blank', rel: 'noopener'
+
+# good
+link_to 'Click here', url, target: '_blank', rel: 'noreferrer'
 ```
 
 ### References
 
 * [https://mathiasbynens.github.io/rel-noopener/](https://mathiasbynens.github.io/rel-noopener/)
+* [https://html.spec.whatwg.org/multipage/links.html#link-type-noopener](https://html.spec.whatwg.org/multipage/links.html#link-type-noopener)
+* [https://html.spec.whatwg.org/multipage/links.html#link-type-noreferrer](https://html.spec.whatwg.org/multipage/links.html#link-type-noreferrer)
 
 ## Rails/NotNullColumn
 
