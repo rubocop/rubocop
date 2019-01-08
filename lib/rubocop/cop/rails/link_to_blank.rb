@@ -8,12 +8,18 @@ module RuboCop
       # risk as the loaded page will have control over the previous page
       # and could change its location for phishing purposes.
       #
+      # The option `rel: 'noreferrer'` also blocks this behavior
+      # and removes the http-referrer header.
+      #
       # @example
       #   # bad
       #   link_to 'Click here', url, target: '_blank'
       #
       #   # good
       #   link_to 'Click here', url, target: '_blank', rel: 'noopener'
+      #
+      #   # good
+      #   link_to 'Click here', url, target: '_blank', rel: 'noreferrer'
       class LinkToBlank < Cop
         MSG = 'Specify a `:rel` option containing noopener.'
 
@@ -83,7 +89,8 @@ module RuboCop
         def contains_noopener?(value)
           return false unless value
 
-          value.to_s.split(' ').include?('noopener')
+          rel_array = value.to_s.split(' ')
+          rel_array.include?('noopener') || rel_array.include?('noreferrer')
         end
       end
     end
