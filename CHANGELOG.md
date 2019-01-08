@@ -9,6 +9,10 @@
 * [#6526](https://github.com/rubocop-hq/rubocop/issues/6526): Fix a wrong line highlight in `Lint/ShadowedException` cop. ([@tatsuyafw][])
 * [#6617](https://github.com/rubocop-hq/rubocop/issues/6617): Prevent traversal error on infinite ranges. ([@drenmi][])
 
+### Changes
+
+* [#6636](https://github.com/rubocop-hq/rubocop/pull/6636): Move `FlipFlop` cop from `Style` to `Lint` department because flip-flop is deprecated since Ruby 2.6.0. ([@koic][])
+
 ## 0.62.0 (2019-01-01)
 
 ### New features

@@ -699,6 +699,33 @@ else
 end
 ```
 
+## Lint/FlipFlop
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.16 | -
+
+This cop looks for uses of flip-flop operator.
+flip-flop operator is deprecated since Ruby 2.6.0.
+
+### Examples
+
+```ruby
+# bad
+(1..20).each do |x|
+  puts x if (x == 5) .. (x == 10)
+end
+
+# good
+(1..20).each do |x|
+  puts x if (x >= 5) && (x <= 10)
+end
+```
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
+
 ## Lint/FloatOutOfRange
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

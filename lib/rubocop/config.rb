@@ -26,6 +26,8 @@ module RuboCop
     RUBY_VERSION_FILENAME = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
+      'Style/FlipFlop' =>
+        'The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.',
       'Style/TrailingComma' =>
         'The `Style/TrailingComma` cop no longer exists. Please use ' \
         '`Style/TrailingCommaInArguments`, ' \
