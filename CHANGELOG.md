@@ -160,6 +160,7 @@
 * [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on `Style/Lambda`. ([@r7kamura][])
 * [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Enforce no parentheses style in the `Style/MethodCallWithArgsParentheses` cop. ([@gsamokovarov][])
 * New cop `Performance/OpenStruct` checks for `OpenStruct.new` calls. ([@xlts][])
+* New cop `Link/MemorizationWithParameters` checks for methods with memorized and parameterized return values. ([@mbuffa][])
 
 ### Bug fixes
 
@@ -3844,3 +3845,4 @@
 [@mhelmetag]: https://github.com/mhelmetag
 [@Bhacaz]: https://github.com/bhacaz
 [@enkessler]: https://github.com/enkessler
+[@mbuffa]: https://github.com/mbuffa

@@ -1097,6 +1097,35 @@ end
 
 * [https://github.com/rubocop-hq/ruby-style-guide#loop-with-break](https://github.com/rubocop-hq/ruby-style-guide#loop-with-break)
 
+## Lint/MemorizationWithParameters
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.61 | -
+
+This cop checks potentially buggy usages of the ||= operators that
+store dynamic values in instance variables based on method parameters.
+
+### Examples
+
+```ruby
+# bad
+def foo(bar)
+  @foo ||= baz(bar)
+end
+
+# bad
+def foo(bar)
+  @foo ||= "Test #{bar}"
+end
+
+# good
+def foo(bar)
+  @foo ||= {}
+  @foo[bar] ||= baz(bar)
+end
+```
+
 ## Lint/MissingCopEnableDirective
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
