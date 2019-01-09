@@ -33,10 +33,11 @@ module RuboCop
       #
       #   # bad
       #   h = { a: { b: 2 } }
+      #   foo = { { a: 1 } => { b: { c: 2 } } }
       #
       #   # good
       #   h = { a: { b: 2 }}
-      #
+      #   foo = {{ a: 1 } => { b: { c: 2 }}}
       #
       # @example EnforcedStyleForEmptyBraces: no_space (default)
       #   # The `no_space` EnforcedStyleForEmptyBraces style enforces that
