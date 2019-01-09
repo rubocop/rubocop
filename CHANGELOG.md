@@ -9,6 +9,10 @@
 * [#6526](https://github.com/rubocop-hq/rubocop/issues/6526): Fix a wrong line highlight in `Lint/ShadowedException` cop. ([@tatsuyafw][])
 * [#6617](https://github.com/rubocop-hq/rubocop/issues/6617): Prevent traversal error on infinite ranges. ([@drenmi][])
 
+### Changes
+
+* [#6641](https://github.com/rubocop-hq/rubocop/issues/6641): Specify `Performance/RangeInclude` as unsafe because `Range#include?` and `Range#cover?` are not equivalent. ([@koic][])
+
 ## 0.62.0 (2019-01-01)
 
 ### New features
