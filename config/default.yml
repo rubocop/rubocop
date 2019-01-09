@@ -2074,6 +2074,7 @@ Performance/RangeInclude:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
   Enabled: true
   VersionAdded: '0.36'
+  Safe: false
 
 Performance/RedundantBlockCall:
   Description: 'Use `yield` instead of `block.call`.'
