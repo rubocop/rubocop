@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   it_behaves_like 'accepts', 'Hash[some_method(a) { |el| el }]'
   it_behaves_like 'accepts', 'foo = lambda do |diagnostic|;end'
   it_behaves_like 'accepts', 'Proc.new { puts "proc" }'
-  it_behaves_like 'accepts', 'expect { order.save }.to(change { orders.size })'
+  it_behaves_like 'accepts', 'expect { order.save }.to change { orders.size }'
   it_behaves_like 'accepts', 'scope :active, -> { where(status: "active") }'
   it_behaves_like(
     'accepts',
