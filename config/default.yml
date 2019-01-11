@@ -1500,6 +1500,11 @@ Lint/ShadowingOuterLocalVariable:
   Enabled: true
   VersionAdded: '0.9'
 
+Lint/SingleConstantInitialization:
+  Description: 'Checks for constants initialized more than once.'
+  Enabled: true
+  VersionAdded: '0.63'
+
 Lint/StringConversionInInterpolation:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: '#no-to-s'
