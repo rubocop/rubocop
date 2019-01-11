@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6657](https://github.com/rubocop-hq/rubocop/pull/6657): New cop `Lint/SingleConstantInitialization` checks for constants initialized more than once. ([@jbernardo95][])
+
 ### Bug fixes
 
 * [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
@@ -3737,3 +3741,4 @@
 [@amatsuda]: https://github.com/amatsuda
 [@Intrepidd]: https://github.com/Intrepidd
 [@Ruffeng]: https://github.com/Ruffeng
+[@jbernardo95]: https://github.com/jbernardo95
