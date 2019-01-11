@@ -1951,6 +1951,28 @@ def some_method
 end
 ```
 
+## Lint/SingleConstantInitialization
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.63 | -
+
+This cop checks that there are no constants initialized more than once.
+
+### Examples
+
+```ruby
+# bad
+
+CONSTANT = 1
+CONSTANT = 2
+```
+```ruby
+# good
+
+CONSTANT = 1
+```
+
 ## Lint/StringConversionInInterpolation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
