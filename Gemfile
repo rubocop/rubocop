@@ -14,6 +14,10 @@ gem 'simplecov', '~> 0.10'
 gem 'test-queue'
 gem 'yard', '~> 0.9'
 
+group :development do
+  gem 'parser'
+end
+
 group :test do
   gem 'safe_yaml', require: false
   gem 'webmock', require: false
