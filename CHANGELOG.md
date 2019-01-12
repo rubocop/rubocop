@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6658](https://github.com/rubocop-hq/rubocop/pull/6658): Adds `parser` gem as a development dependency. ([@jbernardo95][])
+
 ### Bug fixes
 
 * [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
@@ -3737,3 +3741,4 @@
 [@amatsuda]: https://github.com/amatsuda
 [@Intrepidd]: https://github.com/Intrepidd
 [@Ruffeng]: https://github.com/Ruffeng
+[@jbernardo95]: https://github.com/jbernardo95
