@@ -32,12 +32,14 @@ module RuboCop
       #   redirect_to root_url, status: 301
       #
       class HttpStatus < Cop
+        # rubocop:disable Lint/SingleConstantInitialization
         begin
           require 'rack/utils'
           RACK_LOADED = true
         rescue LoadError
           RACK_LOADED = false
         end
+        # rubocop:enable Lint/SingleConstantInitialization
 
         include ConfigurableEnforcedStyle
 
