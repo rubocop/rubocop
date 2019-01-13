@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6660](https://github.com/rubocop-hq/rubocop/pull/6660): Add new `Rails/IgnoredSkipActionFilterOption` cop. ([@wata727][])
+
 ### Bug fixes
 
 * [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
