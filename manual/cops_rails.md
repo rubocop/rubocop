@@ -880,6 +880,58 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `symbolic` | `numeric`, `symbolic`
 
+## Rails/IgnoredSkipActionFilterOption
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.63 | -
+
+This cop checks that `if` and `only` (or `except`) are not used together
+as options of `skip_*` action filter.
+
+The `if` option will be ignored when `if` and `only` are used together.
+Similarly, the `except` option will be ignored when `if` and `except`
+are used together.
+
+### Examples
+
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    only: :show, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name == "show" }
+end
+```
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    except: :admin, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name != "admin" }
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/controllers/**/*.rb` | Array
+
+### References
+
+* [https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options](https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options)
+
 ## Rails/InverseOf
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

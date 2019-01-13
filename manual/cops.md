@@ -354,6 +354,7 @@ In the following section you find all available cops:
 * [Rails/HasManyOrHasOneDependent](cops_rails.md#railshasmanyorhasonedependent)
 * [Rails/HttpPositionalArguments](cops_rails.md#railshttppositionalarguments)
 * [Rails/HttpStatus](cops_rails.md#railshttpstatus)
+* [Rails/IgnoredSkipActionFilterOption](cops_rails.md#railsignoredskipactionfilteroption)
 * [Rails/InverseOf](cops_rails.md#railsinverseof)
 * [Rails/LexicallyScopedActionFilter](cops_rails.md#railslexicallyscopedactionfilter)
 * [Rails/LinkToBlank](cops_rails.md#railslinktoblank)
