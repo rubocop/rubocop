@@ -4,7 +4,6 @@
 
 ### New features
 
-* [#6596](https://github.com/rubocop-hq/rubocop/pull/6596): Add offence when using `required` option for `belongs_to` associations in Rails >= 5. ([@petehamilton][])
 * [#6604](https://github.com/rubocop-hq/rubocop/pull/6604): Add auto-correct support to `Rails/LinkToBlank`. ([@Intrepidd][])
 * [#6660](https://github.com/rubocop-hq/rubocop/pull/6660): Add new `Rails/IgnoredSkipActionFilterOption` cop. ([@wata727][])
 * [#6363](https://github.com/rubocop-hq/rubocop/issues/6363): Allow `Style/YodaCondition` cop to be configured to enforce yoda conditions. ([@tejasbubane][])
