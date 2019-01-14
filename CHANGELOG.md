@@ -21,6 +21,7 @@
 
 ### Changes
 
+* [#6607](https://github.com/rubocop-hq/rubocop/pull/6607): Improve CLI usage message for --stdin option. ([@jaredbeck][])
 * [#6641](https://github.com/rubocop-hq/rubocop/issues/6641): Specify `Performance/RangeInclude` as unsafe because `Range#include?` and `Range#cover?` are not equivalent. ([@koic][])
 * [#6636](https://github.com/rubocop-hq/rubocop/pull/6636): Move `FlipFlop` cop from `Style` to `Lint` department because flip-flop is deprecated since Ruby 2.6.0. ([@koic][])
 * [#6660](https://github.com/rubocop-hq/rubocop/pull/6660): Abandon making frozen string literals default for Ruby 3.0. ([@koic][])
