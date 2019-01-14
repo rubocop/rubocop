@@ -77,8 +77,18 @@ RSpec.describe 'RuboCop Project', type: :feature do
       File.read(path)
     end
 
+    let(:lines) { changelog.each_line }
+
+    let(:non_reference_lines) do
+      lines.take_while { |line| !line.start_with?('[@') }
+    end
+
     it 'has newline at end of file' do
       expect(changelog.end_with?("\n")).to be true
+    end
+
+    it 'has either entries, headers, or empty lines' do
+      expect(non_reference_lines).to all(match(/^(\*|#|$)/))
     end
 
     it 'has link definitions for all implicit links' do
@@ -92,8 +102,6 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     describe 'entry' do
       subject(:entries) { lines.grep(/^\*/).map(&:chomp) }
-
-      let(:lines) { changelog.each_line }
 
       it 'has a whitespace between the * and the body' do
         expect(entries).to all(match(/^\* \S/))

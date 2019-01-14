@@ -340,6 +340,40 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense in complex conditionals' do
+      expect_offense(<<-RUBY.strip_indent)
+        def foo
+          if cond.present? && verify?(:something)
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif cond.present? || verify?(:something_else)
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif whatevs?
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          end
+        end
+      RUBY
+    end
+
+    it 'register an offense in assignments' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo = A::B.new(c)
+                      ^^^ Omit parentheses for method calls with arguments.
+        bar.foo = A::B.new(c)
+                          ^^^ Omit parentheses for method calls with arguments.
+        bar.foo(42).quux = A::B.new(c)
+                                   ^^^ Omit parentheses for method calls with arguments.
+
+        bar.foo(42).quux &&= A::B.new(c)
+                                     ^^^ Omit parentheses for method calls with arguments.
+
+        bar.foo(42).quux += A::B.new(c)
+                                    ^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end

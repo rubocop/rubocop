@@ -198,6 +198,8 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
       expect_offense(<<-RUBY.strip_indent)
         begin
           something
+        rescue NoMethodError
+          handle_no_method_error
         rescue Exception
         ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
@@ -217,6 +219,20 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
         ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_exception
         rescue NoMethodError, ZeroDivisionError
+          handle_standard_error
+        end
+      RUBY
+    end
+
+    it 'registers an offense for two exceptions when there are ' \
+       'multiple levels of exceptions in the same rescue' do
+      expect_offense(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue ZeroDivisionError
+          handle_exception
+        rescue NoMethodError, StandardError
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
           handle_standard_error
         end
       RUBY

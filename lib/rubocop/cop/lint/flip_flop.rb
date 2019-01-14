@@ -2,8 +2,9 @@
 
 module RuboCop
   module Cop
-    module Style
-      # This cop looks for uses of flip flop operator
+    module Lint
+      # This cop looks for uses of flip-flop operator.
+      # flip-flop operator is deprecated since Ruby 2.6.0.
       #
       # @example
       #   # bad
@@ -16,7 +17,7 @@ module RuboCop
       #     puts x if (x >= 5) && (x <= 10)
       #   end
       class FlipFlop < Cop
-        MSG = 'Avoid the use of flip flop operators.'.freeze
+        MSG = 'Avoid the use of flip-flop operators.'.freeze
 
         def on_iflipflop(node)
           add_offense(node)

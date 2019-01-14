@@ -1889,32 +1889,6 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ```
 
-## Style/FlipFlop
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.16 | -
-
-This cop looks for uses of flip flop operator
-
-### Examples
-
-```ruby
-# bad
-(1..20).each do |x|
-  puts x if (x == 5) .. (x == 10)
-end
-
-# good
-(1..20).each do |x|
-  puts x if (x >= 5) && (x <= 10)
-end
-```
-
-### References
-
-* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
-
 ## Style/For
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2090,10 +2064,10 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.36 | 0.47
 
-This cop is designed to help upgrade to Ruby 3.0. It will add the
+This cop is designed to help upgrade to after Ruby 3.0. It will add the
 comment `# frozen_string_literal: true` to the top of files to
 enable frozen string literals. Frozen string literals may be default
-in Ruby 3.0. The comment will be added below a shebang and encoding
+after Ruby 3.0. The comment will be added below a shebang and encoding
 comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 ### Examples
@@ -2810,7 +2784,7 @@ options.
 
 ### Examples
 
-#### EnforcedStyle: require_parentheses
+#### EnforcedStyle: require_parentheses (default)
 
 ```ruby
 # bad
@@ -3370,6 +3344,9 @@ module.
 
 Supported styles are: module_function, extend_self.
 
+In case there are private methods, the cop won't be activated.
+Otherwise, it forces to change the flow of the default code.
+
 These offenses are not auto-corrected since there are different
 implications to each approach.
 
@@ -3387,6 +3364,17 @@ end
 # good
 module Test
   module_function
+  # ...
+end
+```
+#### EnforcedStyle: module_function (default)
+
+```ruby
+# good
+module Test
+  extend self
+  # ...
+  private
   # ...
 end
 ```

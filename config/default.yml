@@ -1255,6 +1255,12 @@ Lint/ErbNewArguments:
   Enabled: true
   VersionAdded: '0.56'
 
+Lint/FlipFlop:
+  Description: 'Checks for flip-flops'
+  StyleGuide: '#no-flip-flops'
+  Enabled: true
+  VersionAdded: '0.16'
+
 Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
@@ -2074,6 +2080,7 @@ Performance/RangeInclude:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
   Enabled: true
   VersionAdded: '0.36'
+  Safe: false
 
 Performance/RedundantBlockCall:
   Description: 'Use `yield` instead of `block.call`.'
@@ -2383,6 +2390,14 @@ Rails/HttpStatus:
   SupportedStyles:
     - numeric
     - symbolic
+
+Rails/IgnoredSkipActionFilterOption:
+  Description: 'Checks that `if` and `only` (or `except`) are not used together as options of `skip_*` action filter.'
+  Reference: 'https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options'
+  Enabled: true
+  VersionAdded: '0.63'
+  Include:
+    - app/controllers/**/*.rb
 
 Rails/InverseOf:
   Description: 'Checks for associations where the inverse cannot be determined automatically.'
@@ -3128,12 +3143,6 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
-Style/FlipFlop:
-  Description: 'Checks for flip flops'
-  StyleGuide: '#no-flip-flops'
-  Enabled: true
-  VersionAdded: '0.16'
-
 Style/For:
   Description: 'Checks use of for or each in multiline loops.'
   StyleGuide: '#no-for-loops'
@@ -3174,7 +3183,7 @@ Style/FormatStringToken:
 Style/FrozenStringLiteralComment:
   Description: >-
                  Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+                 to help transition to frozen string literals by default.
   Enabled: true
   VersionAdded: '0.36'
   VersionChanged: '0.47'
