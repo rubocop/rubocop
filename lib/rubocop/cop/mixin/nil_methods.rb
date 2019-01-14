@@ -2,13 +2,19 @@
 
 module RuboCop
   module Cop
-    # This module provides a list of methods that are either in the NilClass,
-    # or in the cop's configuration parameter Whitelist.
+    # This module provides a list of methods that are:
+    # 1. In the NilClass by default
+    # 2. Added to NilClass by explicitly requiring any standard libraries
+    # 3. Cop's configuration parameter Whitelist.
     module NilMethods
       private
 
       def nil_methods
-        nil.methods + whitelist
+        nil.methods + other_stdlib_methods + whitelist
+      end
+
+      def other_stdlib_methods
+        [:to_d]
       end
 
       def whitelist
