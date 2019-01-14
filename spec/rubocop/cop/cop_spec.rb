@@ -84,8 +84,8 @@ RSpec.describe RuboCop::Cop::Cop do
 
   it 'will warn if custom severity is invalid' do
     cop.config[cop.name] = { 'Severity' => 'superbad' }
-    expect(cop).to receive(:warn)
-    cop.add_offense(nil, location: location, message: 'message')
+    expect { cop.add_offense(nil, location: location, message: 'message') }
+      .to output(/Warning: Invalid severity 'superbad'./).to_stderr
   end
 
   it 'registers offense with its name' do

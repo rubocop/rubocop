@@ -259,6 +259,11 @@ end
 if foo.blank?
   something
 end
+
+# good
+def blank?
+  !present?
+end
 ```
 
 ### Configurable attributes
@@ -918,6 +923,58 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `symbolic` | `numeric`, `symbolic`
 
+## Rails/IgnoredSkipActionFilterOption
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.63 | -
+
+This cop checks that `if` and `only` (or `except`) are not used together
+as options of `skip_*` action filter.
+
+The `if` option will be ignored when `if` and `only` are used together.
+Similarly, the `except` option will be ignored when `if` and `except`
+are used together.
+
+### Examples
+
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    only: :show, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name == "show" }
+end
+```
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    except: :admin, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name != "admin" }
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/controllers/**/*.rb` | Array
+
+### References
+
+* [https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options](https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options)
+
 ## Rails/InverseOf
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -961,9 +1018,8 @@ end
 # good
 class Blog < ApplicationRecord
   has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: :blog
-  )
+           -> { order(published_at: :desc) },
+           inverse_of: :blog)
 end
 
 class Post < ApplicationRecord
@@ -985,9 +1041,8 @@ end
 # When you don't want to use the inverse association.
 class Blog < ApplicationRecord
   has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: false
-  )
+           -> { order(published_at: :desc) },
+           inverse_of: false)
 end
 ```
 ```ruby
@@ -1130,6 +1185,31 @@ Include | `app/controllers/**/*.rb` | Array
 ### References
 
 * [https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter](https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter)
+
+## Rails/LinkToBlank
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.62 | -
+
+This cop checks for calls to `link_to` that contain a
+`target: '_blank'` but no `rel: 'noopener'`. This can be a security
+risk as the loaded page will have control over the previous page
+and could change its location for phishing purposes.
+
+### Examples
+
+```ruby
+# bad
+link_to 'Click here', url, target: '_blank'
+
+# good
+link_to 'Click here', url, target: '_blank', rel: 'noopener'
+```
+
+### References
+
+* [https://mathiasbynens.github.io/rel-noopener/](https://mathiasbynens.github.io/rel-noopener/)
 
 ## Rails/NotNullColumn
 

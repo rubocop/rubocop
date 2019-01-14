@@ -425,4 +425,71 @@ RSpec.describe RuboCop::AST::IfNode do
       it { expect(if_node.else_branch.int_type?).to be(true) }
     end
   end
+
+  describe '#branches' do
+    context 'with an if statement' do
+      let(:source) { 'if foo?; :bar; end' }
+
+      it { expect(if_node.branches.size).to eq(1) }
+      it { expect(if_node.branches).to all(be_literal) }
+    end
+
+    context 'with an unless statement' do
+      let(:source) { 'unless foo?; :bar; end' }
+
+      it { expect(if_node.branches.size).to eq(1) }
+      it { expect(if_node.branches).to all(be_literal) }
+    end
+
+    context 'with an else statement' do
+      let(:source) do
+        ['if foo?',
+         '  1',
+         'else',
+         '  2',
+         'end'].join("\n")
+      end
+
+      it { expect(if_node.branches.size).to eq(2) }
+      it { expect(if_node.branches).to all(be_literal) }
+    end
+
+    context 'with an elsif statement' do
+      let(:source) do
+        ['if foo?',
+         '  1',
+         'elsif bar?',
+         '  2',
+         'else',
+         '  3',
+         'end'].join("\n")
+      end
+
+      it { expect(if_node.branches.size).to eq(3) }
+      it { expect(if_node.branches).to all(be_literal) }
+    end
+  end
+
+  describe '#each_branch' do
+    let(:source) do
+      ['if foo?',
+       '  1',
+       'elsif bar?',
+       '  2',
+       'else',
+       '  3',
+       'end'].join("\n")
+    end
+
+    context 'when not passed a block' do
+      it { expect(if_node.each_branch.is_a?(Enumerator)).to be(true) }
+    end
+
+    context 'when passed a block' do
+      it 'yields all the branches' do
+        expect { |b| if_node.each_branch(&b) }
+          .to yield_successive_args(*if_node.branches)
+      end
+    end
+  end
 end

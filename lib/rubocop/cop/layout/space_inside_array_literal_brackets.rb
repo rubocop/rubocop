@@ -33,10 +33,15 @@ module RuboCop
       #
       #   # bad
       #   array = [ a, [ b, c ] ]
+      #   array = [
+      #     [ a ],
+      #     [ b, c ]
+      #   ]
       #
       #   # good
       #   array = [ a, [ b, c ]]
-      #
+      #   array = [[ a ],
+      #     [ b, c ]]
       #
       # @example EnforcedStyleForEmptyBrackets: no_space (default)
       #   # The `no_space` EnforcedStyleForEmptyBrackets style enforces that

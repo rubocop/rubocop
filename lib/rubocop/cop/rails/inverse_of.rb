@@ -38,9 +38,8 @@ module RuboCop
       #   # good
       #   class Blog < ApplicationRecord
       #     has_many(:posts,
-      #       -> { order(published_at: :desc) },
-      #       inverse_of: :blog
-      #     )
+      #              -> { order(published_at: :desc) },
+      #              inverse_of: :blog)
       #   end
       #
       #   class Post < ApplicationRecord
@@ -62,9 +61,8 @@ module RuboCop
       #   # When you don't want to use the inverse association.
       #   class Blog < ApplicationRecord
       #     has_many(:posts,
-      #       -> { order(published_at: :desc) },
-      #       inverse_of: false
-      #     )
+      #              -> { order(published_at: :desc) },
+      #              inverse_of: false)
       #   end
       #
       # @example

@@ -333,12 +333,65 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense for %r regex literal as arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        method_call(%r{foo})
+                   ^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
+    it 'register an offense in complex conditionals' do
+      expect_offense(<<-RUBY.strip_indent)
+        def foo
+          if cond.present? && verify?(:something)
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif cond.present? || verify?(:something_else)
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif whatevs?
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          end
+        end
+      RUBY
+    end
+
+    it 'register an offense in assignments' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo = A::B.new(c)
+                      ^^^ Omit parentheses for method calls with arguments.
+        bar.foo = A::B.new(c)
+                          ^^^ Omit parentheses for method calls with arguments.
+        bar.foo(42).quux = A::B.new(c)
+                                   ^^^ Omit parentheses for method calls with arguments.
+
+        bar.foo(42).quux &&= A::B.new(c)
+                                     ^^^ Omit parentheses for method calls with arguments.
+
+        bar.foo(42).quux += A::B.new(c)
+                                    ^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
 
     it 'accepts no parens in method call with args' do
       expect_no_offenses('top.test 1, 2, foo: bar')
+    end
+
+    it 'accepts parens in default argument value calls' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def regular(arg = default(42))
+          nil
+        end
+
+        def seatle_style arg = default(42)
+          nil
+        end
+      RUBY
     end
 
     it 'accepts parens in method args' do
@@ -387,6 +440,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo *args')
       expect_no_offenses('foo(**kwargs)')
       expect_no_offenses('foo **kwargs')
+    end
+
+    it 'accepts parens in slash regexp literal as argument' do
+      expect_no_offenses('foo(/regexp/)')
+    end
+
+    it 'accepts parens in argument calls with braced blocks' do
+      expect_no_offenses('foo(bar(:arg) { 42 })')
     end
 
     it 'accepts parens in implicit #to_proc' do
