@@ -107,7 +107,7 @@ NodePattern.new('send').match(node) # => true
 ```
 
 It matches because the root is a `send` type. Now lets match it deeply using
-parens to define details for sub-nodes. If you don't care about what a internal
+parens to define details for sub-nodes. If you don't care about what an internal
 node is, you can use `...` to skip it and just consider " a node".
 
 ```ruby

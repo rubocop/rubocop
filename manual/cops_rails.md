@@ -162,6 +162,49 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/test/**/*` | Array
 
+## Rails/BelongsTo
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | - | -
+
+This cop looks for belongs_to associations where we control whether the
+association is required via the deprecated `required` option instead.
+
+Since Rails 5, belongs_to associations are required by default and this
+can be controlled through the use of `optional: true`.
+
+From the release notes:
+
+    belongs_to will now trigger a validation error by default if the
+    association is not present. You can turn this off on a
+    per-association basis with optional: true. Also deprecate required
+    option in favor of optional for belongs_to. (Pull Request)
+
+In the case that the developer is doing `required: false`, we
+definitely want to autocorrect to `optional: true`.
+
+However, without knowing whether they've set overriden the default
+value of `config.active_record.belongs_to_required_by_default`, we
+can't say whether it's safe to remove `required: true` or replace it
+with `optional: false` (or, similarly, remove a superfluous `optional:
+false`). Therefore, in the cases we're using `required: true`, we'll
+highlight that `required` is deprecated but otherwise do nothing.
+
+### Examples
+
+```ruby
+# bad
+class Post < ApplicationRecord
+  belongs_to :blog, required: false
+end
+
+# good
+class Post < ApplicationRecord
+  belongs_to :blog, optional: true
+end
+```
+
 ## Rails/Blank
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -880,6 +923,58 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `symbolic` | `numeric`, `symbolic`
 
+## Rails/IgnoredSkipActionFilterOption
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.63 | -
+
+This cop checks that `if` and `only` (or `except`) are not used together
+as options of `skip_*` action filter.
+
+The `if` option will be ignored when `if` and `only` are used together.
+Similarly, the `except` option will be ignored when `if` and `except`
+are used together.
+
+### Examples
+
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    only: :show, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name == "show" }
+end
+```
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    except: :admin, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name != "admin" }
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/controllers/**/*.rb` | Array
+
+### References
+
+* [https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options](https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options)
+
 ## Rails/InverseOf
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -923,9 +1018,8 @@ end
 # good
 class Blog < ApplicationRecord
   has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: :blog
-  )
+           -> { order(published_at: :desc) },
+           inverse_of: :blog)
 end
 
 class Post < ApplicationRecord
@@ -947,9 +1041,8 @@ end
 # When you don't want to use the inverse association.
 class Blog < ApplicationRecord
   has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: false
-  )
+           -> { order(published_at: :desc) },
+           inverse_of: false)
 end
 ```
 ```ruby
@@ -1097,7 +1190,7 @@ Include | `app/controllers/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.62 | -
+Enabled | Yes | Yes  | 0.62 | -
 
 This cop checks for calls to `link_to` that contain a
 `target: '_blank'` but no `rel: 'noopener'`. This can be a security

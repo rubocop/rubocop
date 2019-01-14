@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'set'
-require 'open3'
 
 module RuboCop
   # This class finds target files to inspect by scanning the directory tree
@@ -60,19 +59,23 @@ module RuboCop
       end
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
       hidden_files = Set.new(all_files - find_files(base_dir, 0))
-
-      git_files = ls_git_files(base_dir)
-
       base_dir_config = @config_store.for(base_dir)
 
       target_files = all_files.select do |file|
-        to_inspect?(file, git_files, hidden_files, base_dir_config)
+        to_inspect?(file, hidden_files, base_dir_config)
       end
 
       # Most recently modified file first.
       target_files.sort_by! { |path| -Integer(File.mtime(path)) } if fail_fast?
 
       target_files
+    end
+
+    def to_inspect?(file, hidden_files, base_dir_config)
+      return false if base_dir_config.file_to_exclude?(file)
+      return true if !hidden_files.include?(file) && ruby_file?(file)
+
+      base_dir_config.file_to_include?(file)
     end
 
     # Search for files recursively starting at the given base directory using
@@ -95,31 +98,6 @@ module RuboCop
                   wanted_toplevel_dirs.unshift("#{base_dir}/*")
                 end
       Dir.glob(pattern, flags).select { |path| FileTest.file?(path) }
-    end
-
-    private
-
-    def ls_git_files(base_dir)
-      return if `sh -c 'command -v git'`.empty?
-
-      output, _error, status = Open3.capture3(
-        'git', 'ls-files', '-z', base_dir,
-        '--exclude-standard', '--others', '--cached', '--modified'
-      )
-
-      return unless status.success?
-
-      output.split("\0").map { |git_file| "#{base_dir}/#{git_file}" }
-    end
-
-    def to_inspect?(file, git_files, hidden_files, base_dir_config)
-      return false if base_dir_config.file_to_exclude?(file)
-
-      if !hidden_files.include?(file) && ruby_file?(file)
-        return git_files.nil? || git_files.include?(file)
-      end
-
-      base_dir_config.file_to_include?(file)
     end
 
     def toplevel_dirs(base_dir, flags)

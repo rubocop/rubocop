@@ -2,15 +2,36 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6596](https://github.com/rubocop-hq/rubocop/pull/6596): Add offence when using `required` option for `belongs_to` associations in Rails >= 5. ([@petehamilton][])
+* [#6604](https://github.com/rubocop-hq/rubocop/pull/6604): Add auto-correct support to `Rails/LinkToBlank`. ([@Intrepidd][])
+* [#6660](https://github.com/rubocop-hq/rubocop/pull/6660): Add new `Rails/IgnoredSkipActionFilterOption` cop. ([@wata727][])
+* [#6363](https://github.com/rubocop-hq/rubocop/issues/6363): Allow `Style/YodaCondition` cop to be configured to enforce yoda conditions. ([@tejasbubane][])
+
+### Bug fixes
+
+* [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
+* [#6100](https://github.com/rubocop-hq/rubocop/issues/6100): Fix a false positive in `Naming/ConstantName` cop when rhs is a conditional expression. ([@tatsuyafw][])
+* [#6526](https://github.com/rubocop-hq/rubocop/issues/6526): Fix a wrong line highlight in `Lint/ShadowedException` cop. ([@tatsuyafw][])
+* [#6617](https://github.com/rubocop-hq/rubocop/issues/6617): Prevent traversal error on infinite ranges. ([@drenmi][])
+* [#6625](https://github.com/rubocop-hq/rubocop/issues/6625): Revert the "auto-exclusion of files ignored by git" feature. ([@bbatsov][])
+* [#4460](https://github.com/rubocop-hq/rubocop/issues/4460): Fix the determination of unsafe auto-correct in `Style/TernaryParentheses`. ([@jonas054][])
+* [#6651](https://github.com/rubocop-hq/rubocop/issues/6651): Fix auto-correct issue in `Style/RegexpLiteral` cop when there is string interpolation. ([@roooodcastro][])
+
 ### Changes
 
 * [#6607](https://github.com/rubocop-hq/rubocop/pull/6607): Improve CLI usage message for --stdin option. ([@jaredbeck][])
+* [#6641](https://github.com/rubocop-hq/rubocop/issues/6641): Specify `Performance/RangeInclude` as unsafe because `Range#include?` and `Range#cover?` are not equivalent. ([@koic][])
+* [#6636](https://github.com/rubocop-hq/rubocop/pull/6636): Move `FlipFlop` cop from `Style` to `Lint` department because flip-flop is deprecated since Ruby 2.6.0. ([@koic][])
+* [#6660](https://github.com/rubocop-hq/rubocop/pull/6660): Abandon making frozen string literals default for Ruby 3.0. ([@koic][])
 
 ## 0.62.0 (2019-01-01)
 
 ### New features
 
 * [#6580](https://github.com/rubocop-hq/rubocop/pull/6580): New cop `Rails/LinkToBlank` checks for `link_to` calls with `target: '_blank'` and no `rel: 'noopener'`. ([@Intrepidd][])
+* [#6586](https://github.com/rubocop-hq/rubocop/issues/6586): New cop `Style/DisjunctiveAssignmentInConstructor` checks constructors for disjunctive assignments that should be plain assignments. ([@jaredbeck][])
 
 ### Bug fixes
 
@@ -3728,3 +3749,4 @@
 [@amatsuda]: https://github.com/amatsuda
 [@Intrepidd]: https://github.com/Intrepidd
 [@Ruffeng]: https://github.com/Ruffeng
+[@roooodcastro]: https://github.com/roooodcastro

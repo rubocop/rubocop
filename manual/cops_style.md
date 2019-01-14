@@ -1889,32 +1889,6 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ```
 
-## Style/FlipFlop
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.16 | -
-
-This cop looks for uses of flip flop operator
-
-### Examples
-
-```ruby
-# bad
-(1..20).each do |x|
-  puts x if (x == 5) .. (x == 10)
-end
-
-# good
-(1..20).each do |x|
-  puts x if (x >= 5) && (x <= 10)
-end
-```
-
-### References
-
-* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
-
 ## Style/For
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2090,10 +2064,10 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.36 | 0.47
 
-This cop is designed to help upgrade to Ruby 3.0. It will add the
+This cop is designed to help upgrade to after Ruby 3.0. It will add the
 comment `# frozen_string_literal: true` to the top of files to
 enable frozen string literals. Frozen string literals may be default
-in Ruby 3.0. The comment will be added below a shebang and encoding
+after Ruby 3.0. The comment will be added below a shebang and encoding
 comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 ### Examples
@@ -6719,15 +6693,15 @@ WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.50
+Enabled | Yes | Yes  | 0.49 | 0.63
 
-This cop checks for Yoda conditions, i.e. comparison operations where
-readability is reduced because the operands are not ordered the same
-way as they would be ordered in spoken English.
+This cop can either enforce or forbid Yoda conditions,
+i.e. comparison operations where the order of expression is reversed.
+eg. `5 == x`
 
 ### Examples
 
-#### EnforcedStyle: all_comparison_operators (default)
+#### EnforcedStyle: forbid_for_all_comparison_operators (default)
 
 ```ruby
 # bad
@@ -6742,7 +6716,7 @@ foo == "bar"
 foo <= 42
 bar > 10
 ```
-#### EnforcedStyle: equality_operators_only
+#### EnforcedStyle: forbid_for_equality_operators_only
 
 ```ruby
 # bad
@@ -6753,12 +6727,38 @@ bar > 10
 99 >= foo
 3 < a && a < 5
 ```
+#### EnforcedStyle: require_for_all_comparison_operators
+
+```ruby
+# bad
+foo == 99
+foo == "bar"
+foo <= 42
+bar > 10
+
+# good
+99 == foo
+"bar" != foo
+42 >= foo
+10 < bar
+```
+#### EnforcedStyle: require_for_equality_operators_only
+
+```ruby
+# bad
+99 >= foo
+3 < a && a < 5
+
+# good
+99 == foo
+"bar" != foo
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `all_comparison_operators` | `all_comparison_operators`, `equality_operators_only`
+EnforcedStyle | `forbid_for_all_comparison_operators` | `forbid_for_all_comparison_operators`, `forbid_for_equality_operators_only`, `require_for_all_comparison_operators`, `require_for_equality_operators_only`
 
 ### References
 

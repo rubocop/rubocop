@@ -4028,9 +4028,11 @@ h = {a: 1, b: 2}
 
 # bad
 h = { a: { b: 2 } }
+foo = { { a: 1 } => { b: { c: 2 } } }
 
 # good
 h = { a: { b: 2 }}
+foo = {{ a: 1 } => { b: { c: 2 }}}
 ```
 #### EnforcedStyleForEmptyBraces: no_space (default)
 

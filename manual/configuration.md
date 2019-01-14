@@ -229,7 +229,6 @@ ruby interpreters listed under `AllCops`/`RubyInterpreters` are
 inspected, unless the file also matches a pattern in
 `AllCops`/`Exclude`. Hidden directories (i.e., directories whose names
 start with a dot) are not searched by default.
-Files ignored by Git are ignored by RuboCop by default.
 
 Here is an example that might be used for a Rails project:
 
@@ -424,6 +423,8 @@ Metrics/LineLength:
     going back to the start of the next line. 80 characters is a good
     compromise.
 ```
+
+These details will only be seen when rubocop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global rubocop configuration. 
 
 #### AutoCorrect
 

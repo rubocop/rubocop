@@ -92,6 +92,30 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
     end
 
+    describe 'a single-line `//` regex with slashes and interpolation' do
+      let(:source) { 'foo = /users\/#{user.id}\/forms/' }
+
+      it 'registers an offense' do
+        expect_offense(<<-'RUBY'.strip_indent)
+          foo = /users\/#{user.id}\/forms/
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%r` around regular expression.
+        RUBY
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq('foo = %r{users/#{user.id}/forms}')
+      end
+
+      describe 'when configured to allow inner slashes' do
+        before { cop_config['AllowInnerSlashes'] = true }
+
+        it 'is accepted' do
+          expect_no_offenses('foo = /users\/#{user.id}\/forms/')
+        end
+      end
+    end
+
     describe 'a single-line `%r//` regex with slashes' do
       let(:source) { 'foo = %r/\//' }
 

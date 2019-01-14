@@ -4,8 +4,8 @@ version: "{build}"
 
 install:
   - set PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - gem update --system 2.6.14 --no-document
-  - gem install bundler --no-document
+  - gem update --no-document --system 2.7.8
+  - gem install bundler --no-document --version="<2.0.0"
   - bundle install --jobs 3 --retry 3
 
 build: off

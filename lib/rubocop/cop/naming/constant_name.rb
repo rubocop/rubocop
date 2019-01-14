@@ -54,12 +54,21 @@ module RuboCop
         def allowed_assignment?(value)
           value && %i[block const casgn].include?(value.type) ||
             allowed_method_call_on_rhs?(value) ||
-            class_or_struct_return_method?(value)
+            class_or_struct_return_method?(value) ||
+            allowed_conditional_expression_on_rhs?(value)
         end
 
         def allowed_method_call_on_rhs?(node)
           node && node.send_type? &&
             (node.receiver.nil? || !node.receiver.literal?)
+        end
+
+        def allowed_conditional_expression_on_rhs?(node)
+          node && node.if_type? && contains_contant?(node)
+        end
+
+        def contains_contant?(node)
+          node.branches.any?(&:const_type?)
         end
       end
     end
