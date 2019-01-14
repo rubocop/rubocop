@@ -22,6 +22,7 @@
 * [#6651](https://github.com/rubocop-hq/rubocop/issues/6651): Fix auto-correct issue in `Style/RegexpLiteral` cop when there is string interpolation. ([@roooodcastro][])
 * [#6670](https://github.com/rubocop-hq/rubocop/issues/6670): Fix a false positive for `Style/SafeNavigation` when a method call safeguarded with a negative check for the object. ([@koic][])
 * [#6633](https://github.com/rubocop-hq/rubocop/issues/6633): Fix `Lint/SafeNavigation` complaining about use of `to_d`. ([@tejasbubane][])
+* [#6575](https://github.com/rubocop-hq/rubocop/issues/6575): Fix `Naming/PredicateName` suggesting invalid rename. ([@tejasbubane][])
 
 ### Changes
 
