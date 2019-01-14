@@ -1147,7 +1147,7 @@ Include | `app/controllers/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.62 | -
+Enabled | Yes | Yes  | 0.62 | -
 
 This cop checks for calls to `link_to` that contain a
 `target: '_blank'` but no `rel: 'noopener'`. This can be a security

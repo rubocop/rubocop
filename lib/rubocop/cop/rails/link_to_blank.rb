@@ -25,6 +25,10 @@ module RuboCop
           (pair {(sym :rel) (str "rel")} (str #contains_noopener?))
         PATTERN
 
+        def_node_matcher :rel_node?, <<-PATTERN
+          (pair {(sym :rel) (str "rel")} (str _))
+        PATTERN
+
         def on_send(node)
           return unless node.method?(:link_to)
 
@@ -38,7 +42,40 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            send_node = node.parent.parent
+
+            option_nodes = send_node.each_child_node(:hash)
+            rel_node = nil
+            option_nodes.map(&:children).each do |options|
+              rel_node ||= options.find { |o| rel_node?(o) }
+            end
+
+            if rel_node
+              append_to_rel(rel_node, corrector)
+            else
+              add_rel(send_node, node, corrector)
+            end
+          end
+        end
+
         private
+
+        def append_to_rel(rel_node, corrector)
+          existing_rel = rel_node.children.last.value
+          str_range = rel_node.children.last.loc.expression.adjust(
+            begin_pos: 1,
+            end_pos: -1
+          )
+          corrector.replace(str_range, "#{existing_rel} noopener")
+        end
+
+        def add_rel(send_node, offence_node, corrector)
+          quote_style = offence_node.children.last.source[0]
+          new_rel_exp = ", rel: #{quote_style}noopener#{quote_style}"
+          corrector.insert_after(send_node.loc.expression, new_rel_exp)
+        end
 
         def contains_noopener?(str)
           return false unless str
