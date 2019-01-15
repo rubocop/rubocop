@@ -7,6 +7,7 @@
 * [#6604](https://github.com/rubocop-hq/rubocop/pull/6604): Add auto-correct support to `Rails/LinkToBlank`. ([@Intrepidd][])
 * [#6660](https://github.com/rubocop-hq/rubocop/pull/6660): Add new `Rails/IgnoredSkipActionFilterOption` cop. ([@wata727][])
 * [#6363](https://github.com/rubocop-hq/rubocop/issues/6363): Allow `Style/YodaCondition` cop to be configured to enforce yoda conditions. ([@tejasbubane][])
+* [#6150](https://github.com/rubocop-hq/rubocop/issues/6150): Add support to enforce disabled cops to be executed. ([@roooodcastro][])
 * [#6596](https://github.com/rubocop-hq/rubocop/pull/6596): Add new `Rails/BelongsTo` cop with auto-correct for Rails >= 5. ([@petehamilton][])
 
 ### Bug fixes

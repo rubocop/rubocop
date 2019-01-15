@@ -159,6 +159,7 @@ module RuboCop
       option(opts, '-S', '--display-style-guide')
       option(opts, '-R', '--rails')
       option(opts, '-a', '--auto-correct')
+      option(opts, '--ignore-disable-comments')
 
       option(opts, '--safe')
 
@@ -375,6 +376,8 @@ module RuboCop
       force_exclusion: ['Force excluding files specified in the',
                         'configuration `Exclude` even if they are',
                         'explicitly passed as arguments.'],
+      ignore_disable_comments: ['Run cops even when they are disabled locally',
+                                'with a comment.'],
       ignore_parent_exclusion: ['Prevent from inheriting AllCops/Exclude from',
                                 'parent folders.'],
       force_default_config: ['Use default configuration even if configuration',
