@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.63.0 (2019-01-16)
+
 ### New features
 
 * [#6604](https://github.com/rubocop-hq/rubocop/pull/6604): Add auto-correct support to `Rails/LinkToBlank`. ([@Intrepidd][])
