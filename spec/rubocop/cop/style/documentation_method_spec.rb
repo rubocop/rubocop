@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
     context 'when declaring methods in a module' do
       context 'without documentation comment' do
-        context 'wheh method is public' do
+        context 'when method is public' do
           it 'registers an offense' do
             expect_offense(<<-CODE.strip_indent)
               module Foo
@@ -570,6 +570,30 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             end
           end
         end
+
+        context 'when method is module_function' do
+          it 'registers an offense for inline def' do
+            expect_offense(<<-CODE.strip_indent)
+              module Foo
+                module_function def bar
+                ^^^^^^^^^^^^^^^^^^^^^^^ Missing method documentation comment.
+                end
+              end
+            CODE
+          end
+
+          it 'registers an offense for separate def' do
+            expect_offense(<<-CODE.strip_indent)
+              module Foo
+                def bar
+                ^^^^^^^ Missing method documentation comment.
+                end
+
+                module_function :bar
+              end
+            CODE
+          end
+        end
       end
 
       context 'with documentation comment' do
@@ -590,6 +614,28 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
               module Foo
                 # Documentation
                 def bar; end
+              end
+            CODE
+          end
+        end
+
+        context 'when method is module_function' do
+          it 'does not register an offense for inline def' do
+            expect_no_offenses(<<-CODE.strip_indent)
+              module Foo
+                # Documentation
+                module_function def bar; end
+              end
+            CODE
+          end
+
+          it 'does not register an offense for separate def' do
+            expect_no_offenses(<<-CODE.strip_indent)
+              module Foo
+                # Documentation
+                def bar; end
+
+                module_function :bar
               end
             CODE
           end
