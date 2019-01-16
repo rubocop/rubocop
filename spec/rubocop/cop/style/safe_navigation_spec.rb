@@ -108,6 +108,16 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo.bar.baz > 2 if foo')
     end
 
+    it 'allows a method call safeguarded with a negative check ' \
+       'for the object when using `unless`' do
+      expect_no_offenses('obj.do_something unless obj')
+    end
+
+    it 'allows a method call safeguarded with a negative check ' \
+       'for the object when using `if`' do
+      expect_no_offenses('obj.do_something if !obj')
+    end
+
     it 'allows method calls that do not get called using . safe guarded by ' \
       'an object check' do
       expect_no_offenses('foo + bar if foo')
