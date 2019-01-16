@@ -30,7 +30,17 @@ module RuboCop
         ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
         RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
-        ASSIGNMENT_TYPES = %i[lvasgn].freeze
+        ASSIGNMENT_TYPES = %i[
+          lvasgn
+          ivasgn
+          cvasgn
+          gvasgn
+          casgn
+          masgn
+          op_asgn
+          and_asgn
+          or_asgn
+        ].freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
