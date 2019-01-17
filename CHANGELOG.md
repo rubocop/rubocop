@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6678](https://github.com/rubocop-hq/rubocop/issues/6678): Fix `Lint/DisjunctiveAssignmentInConstructor` when it finds an empty constructor. ([@rmm5t][])
+* [#6254](https://github.com/rubocop-hq/rubocop/issues/6254): Fix `Layout/RescueEnsureAlignment` for non-local assignments. ([@marcotc][])
+
 ## 0.63.0 (2019-01-16)
 
 ### New features
@@ -14,7 +19,6 @@
 
 ### Bug fixes
 
-* [#6254](https://github.com/rubocop-hq/rubocop/issues/6254): Fix `Layout/RescueEnsureAlignment` for non-local assignments. ([@marcotc][])
 * [#6627](https://github.com/rubocop-hq/rubocop/pull/6627): Fix handling of hashes in trailing comma. ([@abrom][])
 * [#6623](https://github.com/rubocop-hq/rubocop/pull/6623): Fix heredoc detection in trailing comma. ([@palkan][])
 * [#6100](https://github.com/rubocop-hq/rubocop/issues/6100): Fix a false positive in `Naming/ConstantName` cop when rhs is a conditional expression. ([@tatsuyafw][])
@@ -3759,4 +3763,5 @@
 [@Intrepidd]: https://github.com/Intrepidd
 [@Ruffeng]: https://github.com/Ruffeng
 [@roooodcastro]: https://github.com/roooodcastro
+[@rmm5t]: https://github.com/rmm5t
 [@marcotc]: https://github.com/marcotc
