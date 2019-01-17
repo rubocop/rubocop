@@ -6,6 +6,17 @@ RSpec.describe(
 ) do
   subject(:cop) { described_class.new(config) }
 
+  context 'empty constructor' do
+    it 'accepts' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Banana
+          def initialize
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'constructor does not have disjunctive assignment' do
     it 'accepts' do
       expect_no_offenses(<<-RUBY.strip_indent)
