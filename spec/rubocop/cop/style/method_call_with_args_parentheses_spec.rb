@@ -459,6 +459,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('super()')
     end
 
+    it 'accepts parens in super method calls as arguments' do
+      expect_no_offenses('super foo(bar)')
+    end
+
+    it 'accepts parens in super calls with braced blocks' do
+      expect_no_offenses('super(foo(bar)) { yield }')
+    end
+
     it 'accepts parens in camel case method without args' do
       expect_no_offenses('Array()')
     end

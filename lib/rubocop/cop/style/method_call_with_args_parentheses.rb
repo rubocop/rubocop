@@ -264,13 +264,14 @@ module RuboCop
         end
 
         def call_with_braced_block?(node)
-          node.send_type? && node.block_node && node.block_node.braces?
+          (node.send_type? || node.super_type?) &&
+            node.block_node && node.block_node.braces?
         end
 
         def call_as_argument_or_chain?(node)
           node.parent &&
             (node.parent.send_type? && !assigned_before?(node.parent, node) ||
-             node.parent.csend_type?)
+             node.parent.csend_type? || node.parent.super_type?)
         end
 
         def hash_literal_in_arguments?(node)
