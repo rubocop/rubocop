@@ -14,6 +14,9 @@ gem 'simplecov', '~> 0.10'
 gem 'test-queue'
 gem 'yard', '~> 0.9'
 
+gem 'rubocop-node_pattern',
+    git: 'git://github.com/jonatas/rubocop-node_pattern.git'
+
 group :test do
   gem 'safe_yaml', require: false
   gem 'webmock', require: false

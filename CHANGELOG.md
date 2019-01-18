@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#6655](https://github.com/rubocop-hq/rubocop/issues/6655): Extract rubocop-node_pattern gem. ([@jonatas][])
+
 ### Bug fixes
 
 * [#6678](https://github.com/rubocop-hq/rubocop/issues/6678): Fix `Lint/DisjunctiveAssignmentInConstructor` when it finds an empty constructor. ([@rmm5t][])
