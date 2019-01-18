@@ -514,6 +514,17 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               RUBY
             end
 
+            it 'accepts an if/else in assignment on next line' do
+              expect_no_offenses(<<-RUBY.strip_indent)
+                var =
+                  if a
+                    0
+                  else
+                    1
+                  end
+              RUBY
+            end
+
             it 'registers an offense for a while' do
               expect_offense(<<-RUBY.strip_indent)
                 var = while a
