@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#6610](https://github.com/rubocop-hq/rubocop/issues/6610): Extend `Lint/UriEscapeUnescape` to include ERB::Util.url_encode in suggested alternatives. ([@bauerjon][])
+
 ### Bug fixes
 
 * [#6678](https://github.com/rubocop-hq/rubocop/issues/6678): Fix `Lint/DisjunctiveAssignmentInConstructor` when it finds an empty constructor. ([@rmm5t][])
@@ -3763,3 +3765,4 @@
 [@Ruffeng]: https://github.com/Ruffeng
 [@roooodcastro]: https://github.com/roooodcastro
 [@rmm5t]: https://github.com/rmm5t
+[@bauerjon]: https://github.com/bauerjon
