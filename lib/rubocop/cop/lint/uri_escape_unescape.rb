@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Lint
       # This cop identifies places where `URI.escape` can be replaced by
-      # `CGI.escape`, `URI.encode_www_form`, or `URI.encode_www_form_component`
-      # depending on your specific use case.
+      # `CGI.escape`, `URI.encode_www_form`, `URI.encode_www_form_component`
+      # or `ERB::Util.url_encode` depending on your specific use case.
       # Also this cop identifies places where `URI.unescape` can be replaced by
       # `CGI.unescape`, `URI.decode_www_form`,
       # or `URI.decode_www_form_component` depending on your specific use case.
@@ -20,6 +20,7 @@ module RuboCop
       #   URI.encode_www_form([['example', 'param'], ['lang', 'en']])
       #   URI.encode_www_form(page: 10, locale: 'en')
       #   URI.encode_www_form_component('http://example.com')
+      #   ERB::Util.url_encode('http://example.com')
       #
       #   # bad
       #   URI.unescape(enc_uri)
@@ -34,6 +35,7 @@ module RuboCop
           CGI.escape
           URI.encode_www_form
           URI.encode_www_form_component
+          ERB::Util.url_encode
         ].freeze
         ALTERNATE_METHODS_OF_URI_UNESCAPE = %w[
           CGI.unescape
@@ -53,21 +55,29 @@ module RuboCop
 
         def on_send(node)
           uri_escape_unescape?(node) do |top_level, obsolete_method|
-            replacements = if %i[escape encode].include?(obsolete_method)
-                             ALTERNATE_METHODS_OF_URI_ESCAPE
-                           else
-                             ALTERNATE_METHODS_OF_URI_UNESCAPE
-                           end
-
             double_colon = top_level ? '::' : ''
 
             message = format(
               MSG, uri_method: "#{double_colon}URI.#{obsolete_method}",
-                   replacements: "`#{replacements[0]}`, `#{replacements[1]}` " \
-                                 "or `#{replacements[2]}`"
+                   replacements: replacements_string(obsolete_method)
             )
 
             add_offense(node, message: message)
+          end
+        end
+
+        private
+
+        def replacements_string(obsolete_method)
+          if %i[escape encode].include?(obsolete_method)
+            "`#{ALTERNATE_METHODS_OF_URI_ESCAPE[0]}`, " \
+            "`#{ALTERNATE_METHODS_OF_URI_ESCAPE[1]}`, " \
+            "`#{ALTERNATE_METHODS_OF_URI_ESCAPE[2]}` " \
+            "or `#{ALTERNATE_METHODS_OF_URI_ESCAPE[3]}`"
+          else
+            "`#{ALTERNATE_METHODS_OF_URI_UNESCAPE[0]}`, " \
+            "`#{ALTERNATE_METHODS_OF_URI_UNESCAPE[1]}` " \
+            "or `#{ALTERNATE_METHODS_OF_URI_UNESCAPE[2]}`"
           end
         end
       end

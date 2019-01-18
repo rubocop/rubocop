@@ -2352,8 +2352,8 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | No | 0.50 | -
 
 This cop identifies places where `URI.escape` can be replaced by
-`CGI.escape`, `URI.encode_www_form`, or `URI.encode_www_form_component`
-depending on your specific use case.
+`CGI.escape`, `URI.encode_www_form`, `URI.encode_www_form_component`
+or `ERB::Util.url_encode` depending on your specific use case.
 Also this cop identifies places where `URI.unescape` can be replaced by
 `CGI.unescape`, `URI.decode_www_form`,
 or `URI.decode_www_form_component` depending on your specific use case.
@@ -2370,6 +2370,7 @@ CGI.escape('http://example.com')
 URI.encode_www_form([['example', 'param'], ['lang', 'en']])
 URI.encode_www_form(page: 10, locale: 'en')
 URI.encode_www_form_component('http://example.com')
+ERB::Util.url_encode('http://example.com')
 
 # bad
 URI.unescape(enc_uri)
