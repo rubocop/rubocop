@@ -34,6 +34,12 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
         def is_hello=; end
       RUBY
     end
+
+    it 'accepts method name when corrected name is invalid identifier' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def is_2d?; end
+      RUBY
+    end
   end
 
   context 'without blacklisted prefixes' do
@@ -58,6 +64,12 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     it 'accepts method name that starts with unknown prefix' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def have_attr; end
+      RUBY
+    end
+
+    it 'accepts method name when corrected name is invalid identifier' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def is_2d?; end
       RUBY
     end
   end
@@ -100,6 +112,14 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
         PATTERN
       RUBY
     end
+
+    it 'accepts method name when corrected name is invalid identifier' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        define_method(:is_2d?) do |method_name|
+          method_name == 'hello'
+        end
+      RUBY
+    end
   end
 
   context 'without method definition macros' do
@@ -124,6 +144,14 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
             (send nil? :method_name) :==
             (str 'hello'))
         PATTERN
+      RUBY
+    end
+
+    it 'accepts method name when corrected name is invalid identifier' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        define_method(:is_2d?) do |method_name|
+          method_name == 'hello'
+        end
       RUBY
     end
   end

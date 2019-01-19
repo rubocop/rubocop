@@ -167,6 +167,52 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
+      context 'when there is string interpolation inside heredoc parameter' do
+        it 'accepts comma inside a heredoc parameter' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            some_method(
+              <<-SQL
+                \#{variable}.a ASC,
+                \#{variable}.b ASC
+              SQL
+            )
+          RUBY
+        end
+
+        it 'accepts comma inside a heredoc parameter when on a single line' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            some_method(
+              bar: <<-BAR
+                \#{variable} foo, bar
+              BAR
+            )
+          RUBY
+        end
+
+        it 'auto-corrects unwanted comma inside string interpolation' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            some_method(
+              bar: <<-BAR,
+                \#{other_method(a, b,)} foo, bar
+              BAR
+              baz: <<-BAZ
+                \#{third_method(c, d,)} foo, bar
+              BAZ
+            )
+          RUBY
+          expect(new_source).to eq(<<-RUBY.strip_indent)
+            some_method(
+              bar: <<-BAR,
+                \#{other_method(a, b)} foo, bar
+              BAR
+              baz: <<-BAZ
+                \#{third_method(c, d)} foo, bar
+              BAZ
+            )
+          RUBY
+        end
+      end
+
       it 'auto-corrects unwanted comma in a method call with hash parameters' \
          ' at the end' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
