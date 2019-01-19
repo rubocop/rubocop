@@ -38,6 +38,8 @@ module CopHelper
   end
 
   def autocorrect_source(source, file = nil)
+    RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+    RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
     cop.instance_variable_get(:@options)[:auto_correct] = true
     processed_source = parse_source(source, file)
     _investigate(cop, processed_source)
