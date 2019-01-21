@@ -47,7 +47,7 @@ module RuboCop
           configuration_entries.find.with_index do |line, index|
             next if comment?(line)
 
-            break index if badge.to_s < line
+            return index if badge.to_s < line
           end
           configuration_entries.size - 1
         end
