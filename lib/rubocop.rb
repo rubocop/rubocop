@@ -13,6 +13,9 @@ require 'powerpack/string/blank'
 require 'powerpack/string/strip_indent'
 require 'unicode/display_width/no_string_ext'
 
+require 'bundler/setup'
+require 'rubocop/node_pattern'
+
 require_relative 'rubocop/version'
 
 require_relative 'rubocop/path_util'
@@ -20,7 +23,6 @@ require_relative 'rubocop/file_finder'
 require_relative 'rubocop/platform'
 require_relative 'rubocop/string_util'
 require_relative 'rubocop/name_similarity'
-require 'rubocop/node_pattern'
 require_relative 'rubocop/string_interpreter'
 require_relative 'rubocop/error'
 require_relative 'rubocop/warning'
