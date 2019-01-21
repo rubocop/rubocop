@@ -94,7 +94,7 @@ module RuboCop
         begin_line_num = previous_line_num - base_line_num + 1
         end_line_num = node.first_line - base_line_num + 1
         lines = source_in_lines[begin_line_num...end_line_num]
-        "\n" + lines.join("\n").split(node.source).first
+        "\n#{(lines.join("\n").split(node.source).first || '')}"
       end
 
       def fix_escaped_content(word_node, escape, delimiters)

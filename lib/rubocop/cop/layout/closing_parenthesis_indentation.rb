@@ -133,6 +133,7 @@ module RuboCop
           # Although there are multiple choices for a correct column,
           # select the first one of candidates to determine a specification.
           correct_column = candidates.first
+          @column_delta = correct_column - right_paren.column
           add_offense(right_paren,
                       location: right_paren,
                       message: message(correct_column,

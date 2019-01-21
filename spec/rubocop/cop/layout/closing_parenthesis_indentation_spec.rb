@@ -279,6 +279,11 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          foo = some_method(
+          )
+        RUBY
       end
     end
   end

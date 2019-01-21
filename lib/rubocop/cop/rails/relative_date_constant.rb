@@ -19,18 +19,15 @@ module RuboCop
       #     end
       #   end
       class RelativeDateConstant < Cop
+        include RangeHelp
+
         MSG = 'Do not assign %<method_name>s to constants as it ' \
               'will be evaluated only once.'.freeze
 
-        RELATIVE_DATE_METHODS = %i[ago from_now since until].freeze
-
         def on_casgn(node)
-          _scope, _constant, rhs = *node
-
-          # rhs would be nil in a or_asgn node
-          return unless rhs
-
-          check_node(rhs)
+          relative_date_assignment?(node) do |method_name|
+            add_offense(node, message: format(MSG, method_name: method_name))
+          end
         end
 
         def on_masgn(node)
@@ -39,20 +36,29 @@ module RuboCop
           return unless rhs && rhs.array_type?
 
           lhs.children.zip(rhs.children).each do |(name, value)|
-            check_node(value) if name.casgn_type?
+            next unless name.casgn_type?
+
+            relative_date?(value) do |method_name|
+              add_offense(node,
+                          location: range_between(name.loc.expression.begin_pos,
+                                                  value.loc.expression.end_pos),
+                          message: format(MSG, method_name: method_name))
+            end
           end
         end
 
         def on_or_asgn(node)
-          lhs, rhs = *node
-
-          return unless lhs.casgn_type?
-
-          check_node(rhs)
+          relative_date_or_assignment?(node) do |method_name|
+            add_offense(node, message: format(MSG, method_name: method_name))
+          end
         end
 
         def autocorrect(node)
-          _scope, const_name, value = *node
+          return unless node.casgn_type?
+
+          scope, const_name, value = *node
+          return unless scope.nil?
+
           indent = ' ' * node.loc.column
           new_code = ["def self.#{const_name.downcase}",
                       "#{indent}#{value.source}",
@@ -62,27 +68,25 @@ module RuboCop
 
         private
 
-        def check_node(node)
-          return unless node.irange_type? ||
-                        node.erange_type? ||
-                        node.send_type?
+        def_node_matcher :relative_date_assignment?, <<-PATTERN
+          {
+            (casgn _ _ (send _ ${:since :from_now :after :ago :until :before}))
+            (casgn _ _ ({erange irange} _ (send _ ${:since :from_now :after :ago :until :before})))
+            (casgn _ _ ({erange irange} (send _ ${:since :from_now :after :ago :until :before}) _))
+          }
+        PATTERN
 
-          # for range nodes we need to check both their boundaries
-          nodes = node.send_type? ? [node] : node.children
+        def_node_matcher :relative_date_or_assignment?, <<-PATTERN
+          (:or_asgn (casgn _ _) (send _ ${:since :from_now :after :ago :until :before}))
+        PATTERN
 
-          nodes.each do |n|
-            if relative_date_method?(n)
-              add_offense(node.parent,
-                          message: format(MSG, method_name: n.method_name))
-            end
-          end
-        end
-
-        def relative_date_method?(node)
-          node.send_type? &&
-            RELATIVE_DATE_METHODS.include?(node.method_name) &&
-            !node.arguments?
-        end
+        def_node_matcher :relative_date?, <<-PATTERN
+          {
+            ({erange irange} _ (send _ ${:since :from_now :after :ago :until :before}))
+            ({erange irange} (send _ ${:since :from_now :after :ago :until :before}) _)
+            (send _ ${:since :from_now :after :ago :until :before})
+          }
+        PATTERN
       end
     end
   end

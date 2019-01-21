@@ -4,17 +4,15 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate do
   subject(:cop) { described_class.new }
 
   context 'comparison node type check' do
-    it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent, 'example_cop.rb')
+    it 'registers an offense and auto-corrects' do
+      expect_offense(<<-RUBY.strip_indent)
         node.type == :send
         ^^^^^^^^^^^^^^^^^^ Use `#send_type?` to check node type.
       RUBY
-    end
 
-    it 'auto-corrects' do
-      new_source = autocorrect_source('node.type == :send')
-
-      expect(new_source).to eq('node.send_type?')
+      expect_correction(<<-RUBY.strip_indent)
+        node.send_type?
+      RUBY
     end
   end
 
