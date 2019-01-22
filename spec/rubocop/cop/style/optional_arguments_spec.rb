@@ -3,10 +3,6 @@
 RSpec.describe RuboCop::Cop::Style::OptionalArguments do
   subject(:cop) { described_class.new }
 
-  let(:message) do
-    'Optional arguments should appear at the end of the argument list.'
-  end
-
   it 'registers an offense when an optional argument is followed by a ' \
      'required argument' do
     expect_offense(<<-RUBY.strip_indent)
