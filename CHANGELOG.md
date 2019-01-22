@@ -12,6 +12,7 @@
 * [#6648](https://github.com/rubocop-hq/rubocop/issues/6648): Fix auto-correction of `Style/EmptyLiteral` when `Hash.new` is passed as the first argument to `super`. ([@rrosenblum][])
 * [#6351](https://github.com/rubocop-hq/rubocop/pull/6351): Fix a false positive for `Layout/ClosingParenthesisIndentation` when first argument is multiline. ([@antonzaytsev][])
 * [#6689](https://github.com/rubocop-hq/rubocop/pull/6689): Support more complex argument patterns on `Rails/Validation` auto-correction. ([@r7kamura][])
+* [#6668](https://github.com/rubocop-hq/rubocop/issues/6668): Fix autocorrection for `Style/UnneededCondition` when conditional has the `unless` form. ([@mvz][])
 
 ## 0.63.1 (2019-01-22)
 
