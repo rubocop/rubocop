@@ -57,6 +57,9 @@ module RuboCop
         end
 
         def autocorrect(node)
+          last_argument = node.arguments.last
+          return if !last_argument.literal? && !last_argument.splat_type?
+
           lambda do |corrector|
             corrector.replace(node.loc.selector, 'validates')
             correct_validate_type(corrector, node)
@@ -75,12 +78,14 @@ module RuboCop
         end
 
         def correct_validate_type(corrector, node)
-          options = node.arguments.find { |arg| !arg.sym_type? }
+          last_argument = node.arguments.last
           validate_type = node.method_name.to_s.split('_')[1]
 
-          if options
-            corrector.replace(options.loc.expression,
-                              "#{validate_type}: #{braced_options(options)}")
+          if last_argument.hash_type?
+            corrector.replace(
+              last_argument.loc.expression,
+              "#{validate_type}: #{braced_options(last_argument)}"
+            )
           else
             corrector.insert_after(node.loc.expression,
                                    ", #{validate_type}: true")
