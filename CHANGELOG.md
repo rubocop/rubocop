@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.63.1 (2019-01-22)
+
 ### Bug fixes
 
 * [#6678](https://github.com/rubocop-hq/rubocop/issues/6678): Fix `Lint/DisjunctiveAssignmentInConstructor` when it finds an empty constructor. ([@rmm5t][])
