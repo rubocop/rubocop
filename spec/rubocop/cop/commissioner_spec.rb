@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
     end
 
     it 'traverses the AST and invoke cops specific callbacks' do
-      expect(cop).to receive(:on_def)
+      allow(cop).to receive(:on_def)
 
       commissioner = described_class.new([cop], [])
       source = <<-RUBY.strip_indent
@@ -50,18 +50,23 @@ RSpec.describe RuboCop::Cop::Commissioner do
       processed_source = parse_source(source)
 
       commissioner.investigate(processed_source)
+
+      expect(cop).to have_received(:on_def).once
     end
 
     it 'passes the input params to all cops/forces that implement their own' \
        ' #investigate method' do
       source = ''
       processed_source = parse_source(source)
-      expect(cop).to receive(:investigate).with(processed_source)
-      expect(force).to receive(:investigate).with(processed_source)
+      allow(cop).to receive(:investigate)
+      allow(force).to receive(:investigate)
 
       commissioner = described_class.new([cop], [force])
 
       commissioner.investigate(processed_source)
+
+      expect(cop).to have_received(:investigate).with(processed_source)
+      expect(force).to have_received(:investigate).with(processed_source)
     end
 
     it 'stores all errors raised by the cops' do

@@ -53,8 +53,13 @@ module RuboCop
 
         MSG = 'Missing method documentation comment.'.freeze
 
+        def_node_matcher :module_function_node?, <<-PATTERN
+          (send nil? :module_function ...)
+        PATTERN
+
         def on_def(node)
-          check(node)
+          parent = node.parent
+          module_function_node?(parent) ? check(parent) : check(node)
         end
         alias on_defs on_def
 

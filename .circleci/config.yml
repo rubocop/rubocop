@@ -136,6 +136,29 @@ jobs:
     steps:
       *rubocop_steps
 
+  # Ruby 2.6
+  ruby-2.6-spec:
+    docker:
+      - image: circleci/ruby:2.6
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
+  ruby-2.6-ascii_spec:
+    docker:
+      - image: circleci/ruby:2.6
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
+  ruby-2.6-rubocop:
+    docker:
+      - image: circleci/ruby:2.6
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
+
   # ruby-head (nightly snapshot build)
   ruby-head-spec:
     docker:
@@ -206,7 +229,7 @@ jobs:
   # Job for downloading the Code Climate test reporter
   cc-setup:
     docker:
-      - image: circleci/ruby:2.5
+      - image: circleci/ruby
     environment:
       <<: *common_env
     steps:
@@ -224,7 +247,7 @@ jobs:
   # Job for merging code coverage results and sending them to Code Climate
   cc-upload-coverage:
     docker:
-      - image: circleci/ruby:2.5
+      - image: circleci/ruby
         environment:
           CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
     environment:
@@ -235,13 +258,13 @@ jobs:
       - run:
           name: Upload coverage results to Code Climate
           command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 6 --output tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
 
   # Miscellaneous tasks
   documentation-checks:
     docker:
-      - image: circleci/ruby:2.5
+      - image: circleci/ruby
     environment:
       <<: *common_env
     steps:
@@ -280,6 +303,11 @@ workflows:
             - cc-setup
       - ruby-2.5-ascii_spec
       - ruby-2.5-rubocop
+      - ruby-2.6-spec:
+          requires:
+            - cc-setup
+      - ruby-2.6-ascii_spec
+      - ruby-2.6-rubocop
       - ruby-head-spec:
           requires:
             - cc-setup
@@ -301,4 +329,5 @@ workflows:
             - ruby-2.3-spec
             - ruby-2.4-spec
             - ruby-2.5-spec
+            - ruby-2.6-spec
             - jruby-9.2-spec

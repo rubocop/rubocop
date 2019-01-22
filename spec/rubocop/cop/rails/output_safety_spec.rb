@@ -29,14 +29,20 @@ RSpec.describe RuboCop::Cop::Rails::OutputSafety do
   end
 
   context 'when using `#html_safe`' do
-    it 'registers an offense for literal receiver and no argument' do
-      expect_offense(<<-RUBY.strip_indent)
+    it 'does not register an offense for static string literal receiver' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         "foo".html_safe
-              ^^^^^^^^^ Tagging a string as html safe may be a security risk.
       RUBY
     end
 
-    it 'registers an offense for variable receiver and no argument' do
+    it 'registers an offense for dynamic string literal receiver' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        "foo#{1}".html_safe
+                  ^^^^^^^^^ Tagging a string as html safe may be a security risk.
+      RUBY
+    end
+
+    it 'registers an offense for variable receiver' do
       expect_offense(<<-RUBY.strip_indent)
         foo.html_safe
             ^^^^^^^^^ Tagging a string as html safe may be a security risk.

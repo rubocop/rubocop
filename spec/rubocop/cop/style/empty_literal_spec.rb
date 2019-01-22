@@ -102,6 +102,36 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       new_source = autocorrect_source(source)
       expect(new_source).to eq('yadayada.map { a }.reduce({}, :merge)')
     end
+
+    it 'auto-correct changes Hash.new to {} and wraps it in parentheses ' \
+      'when it is the only argument to super' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def foo
+          super Hash.new
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def foo
+          super({})
+        end
+      RUBY
+    end
+
+    it 'auto-correct changes Hash.new to {} and wraps all arguments in ' \
+      'parentheses when it is the first argument to super' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        def foo
+          super Hash.new, something
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        def foo
+          super({}, something)
+        end
+      RUBY
+    end
   end
 
   describe 'Empty String' do

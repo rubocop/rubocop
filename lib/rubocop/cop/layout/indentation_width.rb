@@ -234,7 +234,7 @@ module RuboCop
         def check_indentation(base_loc, body_node, style = 'normal')
           return unless indentation_to_check?(base_loc, body_node)
 
-          indentation = body_node.loc.column - effective_column(base_loc)
+          indentation = column_offset_between(body_node.loc, base_loc)
           @column_delta = configured_indentation_width - indentation
           return if @column_delta.zero?
 

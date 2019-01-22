@@ -333,12 +333,72 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense for %r regex literal as arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        method_call(%r{foo})
+                   ^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
+    it 'register an offense in complex conditionals' do
+      expect_offense(<<-RUBY.strip_indent)
+        def foo
+          if cond.present? && verify?(:something)
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif cond.present? || verify?(:something_else)
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          elsif whatevs?
+            h.do_with(kw: value)
+                     ^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+          end
+        end
+      RUBY
+    end
+
+    it 'register an offense in assignments' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo = A::B.new(c)
+                      ^^^ Omit parentheses for method calls with arguments.
+        bar.foo = A::B.new(c)
+                          ^^^ Omit parentheses for method calls with arguments.
+        bar.foo(42).quux = A::B.new(c)
+                                   ^^^ Omit parentheses for method calls with arguments.
+
+        bar.foo(42).quux &&= A::B.new(c)
+                                     ^^^ Omit parentheses for method calls with arguments.
+
+        bar.foo(42).quux += A::B.new(c)
+                                    ^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
+    it 'register an offense for camel-case methods with arguments' do
+      expect_offense(<<-RUBY.strip_indent)
+        Array(:arg)
+             ^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
 
     it 'accepts no parens in method call with args' do
       expect_no_offenses('top.test 1, 2, foo: bar')
+    end
+
+    it 'accepts parens in default argument value calls' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def regular(arg = default(42))
+          nil
+        end
+
+        def seatle_style arg = default(42)
+          nil
+        end
+      RUBY
     end
 
     it 'accepts parens in method args' do
@@ -389,6 +449,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo **kwargs')
     end
 
+    it 'accepts parens in slash regexp literal as argument' do
+      expect_no_offenses('foo(/regexp/)')
+    end
+
+    it 'accepts parens in argument calls with braced blocks' do
+      expect_no_offenses('foo(bar(:arg) { 42 })')
+    end
+
     it 'accepts parens in implicit #to_proc' do
       expect_no_offenses('foo(&block)')
       expect_no_offenses('foo &block')
@@ -396,6 +464,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'accepts parens in super without args' do
       expect_no_offenses('super()')
+    end
+
+    it 'accepts parens in super method calls as arguments' do
+      expect_no_offenses('super foo(bar)')
+    end
+
+    it 'accepts parens in super calls with braced blocks' do
+      expect_no_offenses('super(foo(bar)) { yield }')
     end
 
     it 'accepts parens in camel case method without args' do
@@ -489,6 +565,16 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'auto-corrects camel-case methods with arguments' do
+      original = <<-RUBY.strip_indent
+        Array(:arg)
+      RUBY
+
+      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+        Array :arg
+      RUBY
+    end
+
     context 'TargetRubyVersion >= 2.3', :ruby23 do
       it 'accepts parens in chaining with safe operators' do
         expect_no_offenses('Something.find(criteria: given)&.field')
@@ -568,6 +654,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
 
         expect(autocorrect_source(original)).to eq(original)
+      end
+    end
+
+    context 'allowing parens in camel-case methods' do
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => 'omit_parentheses',
+          'AllowParenthesesInCamelCaseMethod' => true
+        }
+      end
+
+      it 'accepts parens for camel-case method names' do
+        expect_no_offenses('Array(nil)')
       end
     end
   end

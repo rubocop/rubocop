@@ -1,7 +1,7 @@
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
 [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/sj3ye7n5690d0nvg?svg=true)](https://ci.appveyor.com/project/bbatsov/rubocop)
-[![Coverage Status](https://img.shields.io/codeclimate/coverage/github/bbatsov/rubocop.svg)](https://codeclimate.com/github/bbatsov/rubocop)
+[![Coverage Status](https://api.codeclimate.com/v1/badges/ad6e76460499c8c99697/test_coverage)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](https://inch-ci.org/github/bbatsov/rubocop.svg)](https://inch-ci.org/github/bbatsov/rubocop)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
@@ -53,7 +53,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version locking in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.61.1', require: false
+gem 'rubocop', '~> 0.63.1', require: false
 ```
 
 ## Quickstart
@@ -217,5 +217,5 @@ RuboCop's changelog is available [here](CHANGELOG.md).
 
 ## Copyright
 
-Copyright (c) 2012-2018 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2019 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.

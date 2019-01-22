@@ -276,6 +276,35 @@ File.exists?(some_path)
 File.exist?(some_path)
 ```
 
+## Lint/DisjunctiveAssignmentInConstructor
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | No | 0.62 | -
+
+This cop checks constructors for disjunctive assignments that should
+be plain assignments.
+
+So far, this cop is only concerned with disjunctive assignment of
+instance variables.
+
+In ruby, an instance variable is nil until a value is assigned, so the
+disjunction is unnecessary. A plain assignment has the same effect.
+
+### Examples
+
+```ruby
+# bad
+def initialize
+  @x ||= 1
+end
+
+# good
+def initialize
+  @x = 1
+end
+```
+
 ## Lint/DuplicateCaseCondition
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -698,6 +727,33 @@ else
   ERB.new(str, nil, '-', '@output_buffer')
 end
 ```
+
+## Lint/FlipFlop
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.16 | -
+
+This cop looks for uses of flip-flop operator.
+flip-flop operator is deprecated since Ruby 2.6.0.
+
+### Examples
+
+```ruby
+# bad
+(1..20).each do |x|
+  puts x if (x == 5) .. (x == 10)
+end
+
+# good
+(1..20).each do |x|
+  puts x if (x >= 5) && (x <= 10)
+end
+```
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
 
 ## Lint/FloatOutOfRange
 

@@ -38,23 +38,64 @@ module RuboCop
     #       'Avoid chaining a method call on a do...end block.'
     #     )
     #
+    # Auto-correction can be tested using `expect_correction` after
+    # `expect_offense`.
+    #
+    # @example `expect_offense` and `expect_correction`
+    #
+    #   expect_offense(<<-RUBY.strip_indent)
+    #     x % 2 == 0
+    #     ^^^^^^^^^^ Replace with `Integer#even?`.
+    #   RUBY
+    #
+    #   expect_correction(<<-RUBY.strip_indent)
+    #     x.even?
+    #   RUBY
+    #
     # If you do not want to specify an offense then use the
     # companion method `expect_no_offenses`. This method is a much
     # simpler assertion since it just inspects the source and checks
     # that there were no offenses. The `expect_offense` method has
     # to do more work by parsing out lines that contain carets.
     module ExpectOffense
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def expect_offense(source, file = nil)
+        RuboCop::Formatter::DisabledConfigFormatter
+          .config_to_allow_offenses = {}
+        RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
+        cop.instance_variable_get(:@options)[:auto_correct] = true
+
         expected_annotations = AnnotatedSource.parse(source)
 
         if expected_annotations.plain_source == source
-          raise 'Use expect_no_offenses to assert that no offenses are found'
+          raise 'Use `expect_no_offenses` to assert that no offenses are found'
         end
 
-        inspect_source(expected_annotations.plain_source, file)
+        @processed_source = parse_source(expected_annotations.plain_source,
+                                         file)
+
+        unless @processed_source.valid_syntax?
+          raise 'Error parsing example code'
+        end
+
+        _investigate(cop, @processed_source)
         actual_annotations =
           expected_annotations.with_offense_annotations(cop.offenses)
+
         expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
+      end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+      def expect_correction(correction)
+        unless @processed_source
+          raise '`expect_correction` must follow `expect_offense`'
+        end
+
+        corrector =
+          RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
+        new_source = corrector.rewrite
+
+        expect(new_source).to eq(correction)
       end
 
       def expect_no_offenses(source, file = nil)

@@ -21,6 +21,18 @@ module RuboCop
       #     # ...
       #   end
       #
+      # In case there are private methods, the cop won't be activated.
+      # Otherwise, it forces to change the flow of the default code.
+      #
+      # @example EnforcedStyle: module_function (default)
+      #   # good
+      #   module Test
+      #     extend self
+      #     # ...
+      #     private
+      #     # ...
+      #   end
+      #
       # @example EnforcedStyle: extend_self
       #   # bad
       #   module Test
@@ -46,6 +58,7 @@ module RuboCop
 
         def_node_matcher :module_function_node?, '(send nil? :module_function)'
         def_node_matcher :extend_self_node?, '(send nil? :extend self)'
+        def_node_matcher :private_directive?, '(send nil? :private ...)'
 
         def on_module(node)
           _name, body = *node
@@ -71,8 +84,10 @@ module RuboCop
         def each_wrong_style(nodes)
           case style
           when :module_function
+            private_directive = nodes.any? { |node| private_directive?(node) }
+
             nodes.each do |node|
-              yield node if extend_self_node?(node)
+              yield node if extend_self_node?(node) && !private_directive
             end
           when :extend_self
             nodes.each do |node|

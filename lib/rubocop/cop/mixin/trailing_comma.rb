@@ -17,9 +17,9 @@ module RuboCop
       end
 
       def check(node, items, kind, begin_pos, end_pos)
-        after_last_item = range_between(begin_pos, end_pos)
+        return if heredoc?(items.last)
 
-        return if heredoc?(after_last_item.source)
+        after_last_item = range_between(begin_pos, end_pos)
 
         comma_offset = after_last_item.source =~ /,/
 
@@ -74,10 +74,6 @@ module RuboCop
           comment_offset = comment.loc.expression.begin_pos - range.begin_pos
           comment_offset >= 0 && comment_offset < comma_offset
         end
-      end
-
-      def heredoc?(source_after_last_item)
-        source_after_last_item !~ /^\s*#/ && source_after_last_item =~ /\w/
       end
 
       # Returns true if the node has round/square/curly brackets.
@@ -168,6 +164,45 @@ module RuboCop
 
       # By default, there's no reason to avoid auto-correct.
       def avoid_autocorrect?(_nodes)
+        false
+      end
+
+      def heredoc?(node)
+        return false unless node.is_a?(RuboCop::AST::Node)
+        return true if node.loc.respond_to?(:heredoc_body)
+
+        return heredoc_send?(node) if node.send_type?
+
+        # handle hash values
+        #
+        #   some_method({
+        #     'auth' => <<-SOURCE
+        #       ...
+        #     SOURCE
+        #   })
+        if node.pair_type? || node.hash_type?
+          return heredoc?(node.children.last)
+        end
+
+        false
+      end
+
+      def heredoc_send?(node)
+        # handle heredocs with methods
+        #
+        #   some_method(<<-CODE.strip.chomp)
+        #     ...
+        #   CODE
+        return heredoc?(node.children.first) if node.children.size == 2
+        # handle nested methods
+        #
+        #   some_method(
+        #     another_method(<<-CODE.strip.chomp)
+        #       ...
+        #     CODE
+        #   )
+        return heredoc?(node.children.last) if node.children.size > 2
+
         false
       end
     end

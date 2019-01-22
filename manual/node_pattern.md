@@ -50,7 +50,7 @@ Parens delimits navigation inside node and its children.
 
 A simple integer like `1` is represented by `(int 1)` in the AST.
 
-```
+```sh
 $ ruby-parse -e '1'
 (int 1)
 ```
@@ -78,7 +78,7 @@ final with the same results. For example, let's use `sum(1,2)`.
 We can also have `sum(1,2,3,n)` and the arguments can vary. The objective is
 match all. So, let's check how it looks like in the AST:
 
-```
+```sh
 $ ruby-parse -e 'sum(1,2)'
 (send nil :sum
   (int 1)
@@ -87,7 +87,7 @@ $ ruby-parse -e 'sum(1,2)'
 
 Or with more children:
 
-```
+```sh
 $ ruby-parse -e 'sum(1,2,3,n)'
 (send nil :sum
   (int 1)
@@ -106,7 +106,7 @@ The first case can be addressed with an expression like:
 
 Lets make it a bit more complex and introduce floats:
 
-```
+```sh
 $ ruby-parse -e '1'
 (int 1)
 $ ruby-parse -e '1.0'
@@ -200,7 +200,7 @@ Lets create an example where we're trying to find the symbols `user` and
 `current_user` in expressions like: `user: current_user` or
 `current_user: User.first`, so the objective here is pick all keys:
 
-```
+```sh
 $ ruby-parse -e ':current_user'
 (sym :current_user)
 $ ruby-parse -e ':user'
@@ -223,7 +223,7 @@ def_node_matcher :user_symbol?, '(sym {:current_user :user})'
 Now let's go deeply combining the previous expression and also match if the
 current symbol is being called from an initialization method, like:
 
-```
+```sh
 $ ruby-parse -e 'Comment.new(user: current_user)'
 (send
   (const nil :Comment) :new
@@ -261,7 +261,7 @@ PATTERN
 
 Take a special attention to nil behavior:
 
-```
+```sh
 $ ruby-parse -e 'nil'
 (nil)
 ```
@@ -269,7 +269,7 @@ In this case, the `nil` implicit matches with expressions like: `nil`, `(nil)`, 
 
 But, nil is also used to represent a call from `nothing` from a simple method call:
 
-```
+```sh
 $ ruby-parse -e 'method'
 (send nil :method)
 ```

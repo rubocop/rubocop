@@ -665,10 +665,10 @@ RSpec.describe RuboCop::ConfigLoader do
         gem_class = Struct.new(:gem_dir)
         %w[gemone gemtwo].each do |gem_name|
           mock_spec = gem_class.new(File.join(gem_root, gem_name))
-          expect(Gem::Specification).to receive(:find_by_name)
-            .at_least(:once).with(gem_name).and_return(mock_spec)
+          allow(Gem::Specification).to receive(:find_by_name)
+            .with(gem_name).and_return(mock_spec)
         end
-        expect(Gem).to receive(:path).at_least(:once).and_return([gem_root])
+        allow(Gem).to receive(:path).and_return([gem_root])
 
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # overridden in local.yml

@@ -80,10 +80,18 @@ module RuboCop
 
           if options
             corrector.replace(options.loc.expression,
-                              "#{validate_type}: { #{options.source} }")
+                              "#{validate_type}: #{braced_options(options)}")
           else
             corrector.insert_after(node.loc.expression,
                                    ", #{validate_type}: true")
+          end
+        end
+
+        def braced_options(options)
+          if options.braces?
+            options.source
+          else
+            "{ #{options.source} }"
           end
         end
       end
