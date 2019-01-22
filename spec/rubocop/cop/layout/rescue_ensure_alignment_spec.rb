@@ -375,12 +375,76 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       RUBY
     end
 
-    it 'accepts aligned rescue in assigned do-end block' do
+    it 'accepts aligned rescue do-end block assigned to local variable' do
       expect_no_offenses(<<-RUBY.strip_indent)
         result = [1, 2, 3].map do |el|
           el.to_s
         rescue StandardError => _exception
           next
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block assigned to instance variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        @instance = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block assigned to class variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        @@class = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block assigned to global variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        $global = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block assigned to class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        CLASS = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block on multi-assignment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        a, b = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block on operation assignment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        a += [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block on and-assignment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        a &&= [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
+    end
+
+    it 'accepts aligned rescue in do-end block on or-assignment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        a ||= [].map do |_|
+        rescue StandardError => _
         end
       RUBY
     end

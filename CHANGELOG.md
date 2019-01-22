@@ -6,6 +6,7 @@
 
 ### Bug fixes
 
+* [#6254](https://github.com/rubocop-hq/rubocop/issues/6254): Fix `Layout/RescueEnsureAlignment` for non-local assignments. ([@marcotc][])
 * [#6678](https://github.com/rubocop-hq/rubocop/issues/6678): Fix `Lint/DisjunctiveAssignmentInConstructor` when it finds an empty constructor. ([@rmm5t][])
 * Do not attempt to auto-correct mass assignment or optional assignment in `Rails/RelativeDateConstant`. ([@rrosenblum][])
 * Fix auto-correction of `Style/WordArray` and `Style/SymbolArray` when all elements are on separate lines and there is a trailing comment after the closing bracket. ([@rrosenblum][])
@@ -3769,3 +3770,4 @@
 [@Ruffeng]: https://github.com/Ruffeng
 [@roooodcastro]: https://github.com/roooodcastro
 [@rmm5t]: https://github.com/rmm5t
+[@marcotc]: https://github.com/marcotc
