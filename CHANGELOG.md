@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6643](https://github.com/rubocop-hq/rubocop/pull/6643): Support `AllowParenthesesInCamelCaseMethod` option on `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@dazuma][])
+
 ## 0.63.1 (2019-01-22)
 
 ### Bug fixes
@@ -3771,3 +3775,4 @@
 [@roooodcastro]: https://github.com/roooodcastro
 [@rmm5t]: https://github.com/rmm5t
 [@marcotc]: https://github.com/marcotc
+[@dazuma]: https://github.com/dazuma

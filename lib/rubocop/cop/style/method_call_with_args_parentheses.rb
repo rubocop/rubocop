@@ -10,7 +10,7 @@ module RuboCop
       # Additional methods can be added to the `IgnoredMethods` list. This
       # option is valid only in the default style.
       #
-      # In the alternative style (omit_parentheses), there are two additional
+      # In the alternative style (omit_parentheses), there are three additional
       # options.
       #
       # 1. `AllowParenthesesInChaining` is `false` by default. Setting it to
@@ -20,6 +20,12 @@ module RuboCop
       # 2. `AllowParenthesesInMultilineCall` is `false` by default. Setting it
       #     to `true` allows the presence of parentheses in multi-line method
       #     calls.
+      #
+      # 3. `AllowParenthesesInCamelCaseMethod` is `false` by default. This
+      #     allows the presence of parentheses when calling a method whose name
+      #     begins with a capital letter and which has no arguments. Setting it
+      #     to `true` allows the presence of parentheses in such a method call
+      #     even with arguments.
       #
       # @example EnforcedStyle: require_parentheses (default)
       #
@@ -106,6 +112,22 @@ module RuboCop
       #
       #   # good
       #   foo().bar 1
+      #
+      #   # AllowParenthesesInCamelCaseMethod: false (default)
+      #
+      #   # bad
+      #   Array(1)
+      #
+      #   # good
+      #   Array 1
+      #
+      #   # AllowParenthesesInCamelCaseMethod: true
+      #
+      #   # good
+      #   Array(1)
+      #
+      #   # good
+      #   Array 1
       class MethodCallWithArgsParentheses < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
@@ -155,7 +177,7 @@ module RuboCop
           return unless node.parenthesized?
           return if node.implicit_call?
           return if super_call_without_arguments?(node)
-          return if camel_case_method_call_without_arguments?(node)
+          return if allowed_camel_case_method_call?(node)
           return if legitimate_call_with_parentheses?(node)
 
           add_offense(node, location: node.loc.begin.join(node.loc.end))
@@ -221,8 +243,10 @@ module RuboCop
           node.super_type? && node.arguments.none?
         end
 
-        def camel_case_method_call_without_arguments?(node)
-          node.camel_case_method? && node.arguments.none?
+        def allowed_camel_case_method_call?(node)
+          node.camel_case_method? &&
+            (node.arguments.none? ||
+             cop_config['AllowParenthesesInCamelCaseMethod'])
         end
 
         def legitimate_call_with_parentheses?(node)

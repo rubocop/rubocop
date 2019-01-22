@@ -2771,7 +2771,7 @@ In the default style (require_parentheses), macro methods are ignored.
 Additional methods can be added to the `IgnoredMethods` list. This
 option is valid only in the default style.
 
-In the alternative style (omit_parentheses), there are two additional
+In the alternative style (omit_parentheses), there are three additional
 options.
 
 1. `AllowParenthesesInChaining` is `false` by default. Setting it to
@@ -2781,6 +2781,12 @@ options.
 2. `AllowParenthesesInMultilineCall` is `false` by default. Setting it
     to `true` allows the presence of parentheses in multi-line method
     calls.
+
+3. `AllowParenthesesInCamelCaseMethod` is `false` by default. This
+    allows the presence of parentheses when calling a method whose name
+    begins with a capital letter and which has no arguments. Setting it
+    to `true` allows the presence of parentheses in such a method call
+    even with arguments.
 
 ### Examples
 
@@ -2870,6 +2876,22 @@ foo().bar(1)
 
 # good
 foo().bar 1
+
+# AllowParenthesesInCamelCaseMethod: false (default)
+
+# bad
+Array(1)
+
+# good
+Array 1
+
+# AllowParenthesesInCamelCaseMethod: true
+
+# good
+Array(1)
+
+# good
+Array 1
 ```
 
 ### Configurable attributes
