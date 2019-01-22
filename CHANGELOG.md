@@ -10,6 +10,7 @@
 
 * [#6254](https://github.com/rubocop-hq/rubocop/issues/6254): Fix `Layout/RescueEnsureAlignment` for non-local assignments. ([@marcotc][])
 * [#6648](https://github.com/rubocop-hq/rubocop/issues/6648): Fix auto-correction of `Style/EmptyLiteral` when `Hash.new` is passed as the first argument to `super`. ([@rrosenblum][])
+* [#6351](https://github.com/rubocop-hq/rubocop/pull/6351): Fix a false positive for `Layout/ClosingParenthesisIndentation` when first argument is multiline. ([@antonzaytsev][])
 
 ## 0.63.1 (2019-01-22)
 
@@ -3773,6 +3774,7 @@
 [@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
 [@nadiyaka]: https://github.com/nadiyaka
+[@antonzaytsev]: https://github.com/antonzaytsev
 [@amatsuda]: https://github.com/amatsuda
 [@Intrepidd]: https://github.com/Intrepidd
 [@Ruffeng]: https://github.com/Ruffeng
