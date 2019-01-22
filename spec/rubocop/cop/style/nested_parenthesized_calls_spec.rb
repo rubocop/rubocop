@@ -29,18 +29,15 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
 
   context 'on a non-parenthesized call nested in a parenthesized one' do
     context 'with a single argument to the nested call' do
-      let(:source) { 'puts(compute something)' }
-
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)
           puts(compute something)
                ^^^^^^^^^^^^^^^^^ Add parentheses to nested method call `compute something`.
         RUBY
-      end
 
-      it 'auto-corrects by adding parentheses' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('puts(compute(something))')
+        expect_correction(<<-RUBY.strip_indent)
+          puts(compute(something))
+        RUBY
       end
     end
 
@@ -50,11 +47,10 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
           puts(compute first, second)
                ^^^^^^^^^^^^^^^^^^^^^ Add parentheses to nested method call `compute first, second`.
         RUBY
-      end
 
-      it 'auto-corrects by adding parentheses' do
-        new_source = autocorrect_source('puts(compute first, second)')
-        expect(new_source).to eq('puts(compute(first, second))')
+        expect_correction(<<-RUBY.strip_indent)
+          puts(compute(first, second))
+        RUBY
       end
     end
   end

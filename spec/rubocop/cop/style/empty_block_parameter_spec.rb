@@ -11,6 +11,11 @@ RSpec.describe RuboCop::Cop::Style::EmptyBlockParameter do
            ^^ Omit pipes for the empty block parameters.
       end
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      a do
+      end
+    RUBY
   end
 
   it 'registers an offense for an empty block parameter with {} style' do
@@ -18,45 +23,34 @@ RSpec.describe RuboCop::Cop::Style::EmptyBlockParameter do
       a { || do_something }
           ^^ Omit pipes for the empty block parameters.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      a { do_something }
+    RUBY
   end
 
   it 'registers an offense for an empty block parameter with super' do
-    expect_offense(<<-RUBY)
+    expect_offense(<<-RUBY.strip_indent)
       def foo
         super { || do_something }
                 ^^ Omit pipes for the empty block parameters.
       end
     RUBY
-  end
 
-  it 'auto-corrects for do-end style' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      a do ||
-      end
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      a do
+    expect_correction(<<-RUBY.strip_indent)
+      def foo
+        super { do_something }
       end
     RUBY
   end
 
-  it 'auto-corrects for {} style' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      a { || do_something }
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      a { do_something }
-    RUBY
-  end
-
-  it 'auto-corrects for a keyword lambda' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+  it 'registers an offense for an empty block parameter with lambda' do
+    expect_offense(<<-RUBY.strip_indent)
       lambda { || do_something }
+               ^^ Omit pipes for the empty block parameters.
     RUBY
 
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect_correction(<<-RUBY.strip_indent)
       lambda { do_something }
     RUBY
   end
