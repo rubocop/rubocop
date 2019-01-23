@@ -11,6 +11,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
+    it 'registers an offense for trailing comma preceded by whitespace' \
+       ' in a method call' do
+      expect_offense(<<-RUBY.strip_indent)
+        some_method(a, b, c , )
+                            ^ Avoid comma after the last parameter of a method call#{extra_info}.
+      RUBY
+    end
+
     it 'registers an offense for trailing comma in a method call with hash' \
        ' parameters at the end' do
       expect_offense(<<-RUBY.strip_indent)
@@ -56,6 +64,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
        ' the end' do
       new_source = autocorrect_source('some_method(a, b, c: 0, d: 1, )')
       expect(new_source).to eq('some_method(a, b, c: 0, d: 1 )')
+    end
+
+    it 'accepts heredoc without trailing comma' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        route(1, <<-HELP.chomp)
+        ...
+        HELP
+      RUBY
     end
   end
 
@@ -163,6 +179,33 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                     :foo, defaults.merge(
                                           bar: 3))
             SOURCE
+          )
+        RUBY
+      end
+
+      it 'accepts comma inside a modified heredoc parameter' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          some_method(
+            <<-LOREM.delete("\\n")
+              Something with a , in it
+            LOREM
+          )
+        RUBY
+      end
+
+      it 'auto-corrects unwanted comma after modified heredoc parameter' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          some_method(
+            <<-LOREM.delete("\\n"),
+              Something with a , in it
+            LOREM
+          )
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          some_method(
+            <<-LOREM.delete("\\n")
+              Something with a , in it
+            LOREM
           )
         RUBY
       end
@@ -280,7 +323,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       it 'accepts missing comma after heredoc with comments' do
         expect_no_offenses(<<-RUBY.strip_indent)
           route(
-            <<-HELP.chomp
+            a, <<-HELP.chomp
             ,
             # some comment
             HELP
@@ -437,11 +480,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts missing comma after a heredoc' do
-        # A heredoc that's the last item in a literal or parameter list can not
-        # have a trailing comma. It's a syntax error.
-        expect_no_offenses(<<-RUBY.strip_indent)
+      it 'auto-corrects missing comma after a heredoc' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
           route(1, <<-HELP.chomp
+          ...
+          HELP
+          )
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          route(1, <<-HELP.chomp,
           ...
           HELP
           )

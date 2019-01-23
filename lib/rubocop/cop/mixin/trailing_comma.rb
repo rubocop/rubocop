@@ -17,11 +17,13 @@ module RuboCop
       end
 
       def check(node, items, kind, begin_pos, end_pos)
-        return if heredoc?(items.last)
-
         after_last_item = range_between(begin_pos, end_pos)
 
-        comma_offset = after_last_item.source =~ /,/
+        # If there is any heredoc in items, then match the comma succeeding
+        # any whitespace (except newlines), otherwise allow for newlines
+        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
+        comma_offset = after_last_item.source =~ comma_regex &&
+                       after_last_item.source.index(',')
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
@@ -165,6 +167,10 @@ module RuboCop
       # By default, there's no reason to avoid auto-correct.
       def avoid_autocorrect?(_nodes)
         false
+      end
+
+      def any_heredoc?(items)
+        items.any? { |item| heredoc?(item) }
       end
 
       def heredoc?(node)
