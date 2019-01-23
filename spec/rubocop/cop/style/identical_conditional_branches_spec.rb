@@ -149,17 +149,6 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   end
 
   context 'on case without else' do
-    let(:source) do
-      <<-RUBY.strip_indent
-        case something
-        when :a
-          do_x
-        when :b
-          do_x
-        end
-      RUBY
-    end
-
     it "doesn't register an offense" do
       expect_no_offenses(<<-RUBY.strip_indent)
         case something
