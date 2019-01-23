@@ -96,8 +96,9 @@ module RuboCop
         end
 
         def make_ternary_form(node)
-          ternary_form = [node.if_branch.source,
-                          else_source(node.else_branch)].join(' || ')
+          _condition, if_branch, else_branch = *node
+          ternary_form = [if_branch.source,
+                          else_source(else_branch)].join(' || ')
 
           if node.parent && node.parent.send_type?
             "(#{ternary_form})"
