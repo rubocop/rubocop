@@ -184,7 +184,7 @@ From the release notes:
 In the case that the developer is doing `required: false`, we
 definitely want to autocorrect to `optional: true`.
 
-However, without knowing whether they've set overriden the default
+However, without knowing whether they've set overridden the default
 value of `config.active_record.belongs_to_required_by_default`, we
 can't say whether it's safe to remove `required: true` or whether we
 should replace it with `optional: false` (or, similarly, remove a
