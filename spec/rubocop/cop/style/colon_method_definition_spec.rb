@@ -23,18 +23,8 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
           end
         end
       RUBY
-    end
 
-    it 'corrects :: to .' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        class Foo
-          def self::bar
-            something
-          end
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         class Foo
           def self.bar
             something
@@ -54,18 +44,8 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
           end
         end
       RUBY
-    end
 
-    it 'corrects :: to .' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        class Foo
-          def Foo::bar
-            something
-          end
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         class Foo
           def Foo.bar
             something

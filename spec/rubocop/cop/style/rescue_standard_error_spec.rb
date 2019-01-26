@@ -61,18 +61,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               bar
             end
           RUBY
-        end
 
-        it 'autocorrect will remove StandardError' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            begin
-              foo
-            rescue StandardError
-              bar
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect_correction(<<-RUBY.strip_indent)
             begin
               foo
             rescue
@@ -91,18 +81,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
                 bar
               end
             RUBY
-          end
 
-          it 'autocorrect will remove StandardError' do
-            new_source = autocorrect_source(<<-RUBY.strip_indent)
-              begin
-                foo
-              rescue StandardError => e
-                bar
-              end
-            RUBY
-
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect_correction(<<-RUBY.strip_indent)
               begin
                 foo
               rescue => e
@@ -191,18 +171,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               bar
             end
           RUBY
-        end
 
-        it 'autocorrect will remove StandardError' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            def foobar
-              foo
-            rescue StandardError
-              bar
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect_correction(<<-RUBY.strip_indent)
             def foobar
               foo
             rescue
@@ -221,18 +191,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
                 bar
               end
             RUBY
-          end
 
-          it 'autocorrect will remove StandardError' do
-            new_source = autocorrect_source(<<-RUBY.strip_indent)
-              def foobar
-                foo
-              rescue StandardError => e
-                bar
-              end
-            RUBY
-
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect_correction(<<-RUBY.strip_indent)
               def foobar
                 foo
               rescue => e
@@ -293,18 +253,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               bar
             end
           RUBY
-        end
 
-        it 'autocorrect will add StandardError' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            begin
-              foo
-            rescue
-              bar
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect_correction(<<-RUBY.strip_indent)
             begin
               foo
             rescue StandardError
@@ -323,18 +273,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
                 bar
               end
             RUBY
-          end
 
-          it 'autocorrect will add StandardError' do
-            new_source = autocorrect_source(<<-RUBY.strip_indent)
-              begin
-                foo
-              rescue => e
-                bar
-              end
-            RUBY
-
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect_correction(<<-RUBY.strip_indent)
               begin
                 foo
               rescue StandardError => e
@@ -423,18 +363,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               bar
             end
           RUBY
-        end
 
-        it 'autocorrect will add StandardError' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            def baz
-              foo
-            rescue
-              bar
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect_correction(<<-RUBY.strip_indent)
             def baz
               foo
             rescue StandardError
@@ -454,18 +384,8 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               bar
             end
           RUBY
-        end
 
-        it 'autocorrect will add StandardError' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            def baz
-              foo
-            rescue => e
-              bar
-            end
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect_correction(<<-RUBY.strip_indent)
             def baz
               foo
             rescue StandardError => e
