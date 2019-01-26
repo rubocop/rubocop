@@ -14,6 +14,7 @@
 * [#6689](https://github.com/rubocop-hq/rubocop/pull/6689): Support more complex argument patterns on `Rails/Validation` auto-correction. ([@r7kamura][])
 * [#6668](https://github.com/rubocop-hq/rubocop/issues/6668): Fix autocorrection for `Style/UnneededCondition` when conditional has the `unless` form. ([@mvz][])
 * [#6382](https://github.com/rubocop-hq/rubocop/issues/6382): Fix `Layout/IndentationWidth` with `Layout/EndAlignment` set to start_of_line. ([@dischorde][], [@siegfault][], [@mhelmetag][])
+* [#6710](https://github.com/rubocop-hq/rubocop/issues/6710): Fix `Naming/MemoizedInstanceVariableName` on method starts with underscore. ([@pocke][])
 
 ## 0.63.1 (2019-01-22)
 
