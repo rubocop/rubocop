@@ -75,6 +75,20 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         RUBY
       end
 
+      it 'accepts a correctly indented ) inside a block' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          block_adds_extra_indentation do
+            some_method(a,
+              x: 1,
+              y: 2
+            )
+            b =
+              some_method(a,
+                         )
+          end
+        RUBY
+      end
+
       it 'autocorrects misindented )' do
         corrected = autocorrect_source(<<-RUBY.strip_indent)
           some_method(a,

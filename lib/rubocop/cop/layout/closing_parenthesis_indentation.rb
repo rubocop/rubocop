@@ -142,15 +142,16 @@ module RuboCop
         end
 
         def expected_column(left_paren, elements)
-          if !line_break_after_left_paren?(left_paren, elements) &&
-             all_elements_aligned?(elements)
-            left_paren.column
-          else
+          if line_break_after_left_paren?(left_paren, elements)
             source_indent = processed_source
                             .line_indentation(first_argument_line(elements))
             new_indent    = source_indent - indentation_width
 
             new_indent < 0 ? 0 : new_indent
+          elsif all_elements_aligned?(elements)
+            left_paren.column
+          else
+            processed_source.line_indentation(first_argument_line(elements))
           end
         end
 
