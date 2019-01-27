@@ -116,6 +116,27 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         RUBY
       end
     end
+
+    context 'with first multiline arg on new line' do
+      it 'accepts ) on the same level as ( with args on same line' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          where(
+            "multiline
+             condition", second_arg
+          )
+        RUBY
+      end
+
+      it 'accepts ) on the same level as ( with second arg on new line' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          where(
+            "multiline
+             condition",
+            second_arg
+          )
+        RUBY
+      end
+    end
   end
 
   context 'for method assignments with indented parameters' do
@@ -497,27 +518,6 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                   a)
         RUBY
       end
-    end
-  end
-
-  context 'method call with first multiline arg on new line' do
-    it 'accepts ) on the same level as ( with args on same line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        where(
-          "multiline
-           condition", second_arg
-        )
-      RUBY
-    end
-
-    it 'accepts ) on the same level as ( with second arg on new line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        where(
-          "multiline
-           condition",
-          second_arg
-        )
-      RUBY
     end
   end
 
