@@ -15,6 +15,7 @@ module RuboCop
   # directories are inspected.
   class ConfigLoader
     DOTFILE = '.rubocop.yml'.freeze
+    CONFIGFILE = 'rubocop/config.yml'.freeze
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
     AUTO_GENERATED_FILE = '.rubocop_todo.yml'.freeze
@@ -75,7 +76,9 @@ module RuboCop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        find_file_upwards(DOTFILE, target_dir, use_home: true) || DEFAULT_FILE
+        find_file_upwards(DOTFILE, target_dir, use_home: true) ||
+          find_file_upwards(CONFIGFILE, target_dir, use_home: true) ||
+          DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)

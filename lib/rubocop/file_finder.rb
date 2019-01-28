@@ -31,17 +31,26 @@ module RuboCop
     private
 
     def traverse_files_upwards(filename, start_dir, use_home)
+      traverse_file(filename, start_dir).each { |f| yield(f.to_s) }
+      return unless use_home && (ENV.key?('HOME') ||
+                                 ENV.key?('XDG_CONFIG_HOME'))
+
+      xdg_file = File.join(ENV['XDG_CONFIG_HOME'].to_s, filename)
+      yield(xdg_file) if File.exist?(xdg_file)
+
+      file = File.join(ENV['HOME'].to_s, filename)
+      yield(file) if File.exist?(file)
+    end
+
+    def traverse_file(filename, start_dir)
+      result = []
       Pathname.new(start_dir).expand_path.ascend do |dir|
         break if FileFinder.root_level?(dir)
 
         file = dir + filename
-        yield(file.to_s) if file.exist?
+        result.push(file) if file.exist?
       end
-
-      return unless use_home && ENV.key?('HOME')
-
-      file = File.join(Dir.home, filename)
-      yield(file) if File.exist?(file)
+      result
     end
   end
 end

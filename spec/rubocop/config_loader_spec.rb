@@ -20,34 +20,6 @@ RSpec.describe RuboCop::ConfigLoader do
       described_class.configuration_file_for(dir_path)
     end
 
-    context 'when no config file exists in ancestor directories' do
-      let(:dir_path) { 'dir' }
-
-      before { create_empty_file('dir/example.rb') }
-
-      context 'but a config file exists in home directory' do
-        before { create_empty_file('~/.rubocop.yml') }
-
-        it 'returns the path to the file in home directory' do
-          expect(configuration_file_for).to end_with('home/.rubocop.yml')
-        end
-      end
-
-      context 'and no config file exists in home directory' do
-        it 'falls back to the provided default file' do
-          expect(configuration_file_for).to end_with('config/default.yml')
-        end
-      end
-
-      context 'and ENV has no `HOME` defined' do
-        before { ENV.delete 'HOME' }
-
-        it 'falls back to the provided default file' do
-          expect(configuration_file_for).to end_with('config/default.yml')
-        end
-      end
-    end
-
     context 'when a config file exists in the parent directory' do
       let(:dir_path) { 'dir' }
 
@@ -72,6 +44,58 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'prefers closer config file' do
         expect(configuration_file_for).to end_with('dir/.rubocop.yml')
+      end
+    end
+
+    context 'when no config file exists in ancestor directories' do
+      let(:dir_path) { 'dir' }
+
+      before { create_empty_file('dir/example.rb') }
+
+      context 'ENV has `XDG_CONFIG_HOME` defined' do
+        before { ENV['XDG_CONFIG_HOME'] = 'xdg_home' }
+
+        context 'config file exists in `XDG_CONFIG_HOME` directory' do
+          before { create_empty_file('xdg_home/.rubocop.yml') }
+
+          it 'returns path to the file in `XDG_CONFIG_HOME` directory' do
+            expect(configuration_file_for).to end_with('xdg_home/.rubocop.yml')
+          end
+        end
+
+        context 'no config in `XDG_CONFIG_HOME` but in rubocop directory' do
+          before { create_empty_file('xdg_home/rubocop/config.yml') }
+
+          it 'returns path to the file in XDG_CONFIG_HOME/rubocop directory' do
+            expect(configuration_file_for)
+              .to end_with('xdg_home/rubocop/config.yml')
+          end
+        end
+      end
+
+      context 'when ENV does not have `XDG_CONFIG_HOME` defined' do
+        context 'and a config file exists in home directory' do
+          before { create_empty_file('~/.rubocop.yml') }
+
+          it 'returns the path to the file in home directory' do
+            expect(configuration_file_for).to end_with('home/.rubocop.yml')
+          end
+        end
+
+        context 'and a config file exists in rubocop directory' do
+          before { create_empty_file('~/rubocop/config.yml') }
+
+          it 'returns the path to the file in home/rubocop directory' do
+            expect(configuration_file_for)
+              .to end_with('home/rubocop/config.yml')
+          end
+        end
+      end
+
+      context 'no config exists in `XDG_CONFIG_HOME` or `HOME` directories' do
+        it 'falls back to the provided default file' do
+          expect(configuration_file_for).to end_with('config/default.yml')
+        end
       end
     end
   end

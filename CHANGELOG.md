@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+## New features
+
+* [#6662](https://github.com/rubocop-hq/rubocop/issues/6662): Support loading rubocop config from `~/rubocop/` and `$XDG_CONFIG_HOME`. ([@tejasbubane][])
+
+
 ## 0.65.0 (2019-02-19)
 
 ### New features
