@@ -2493,6 +2493,11 @@ Rails/RedundantReceiverInWithOptions:
   Enabled: true
   VersionAdded: '0.52'
 
+Rails/ReflectionClassName:
+  Description: 'Use a string for `class_name` option value in the definition of a reflection.'
+  Enabled: true
+  VersionAdded: '0.64'
+
 Rails/RefuteMethods:
   Description: 'Use `assert_not` methods instead of `refute` methods.'
   Enabled: true

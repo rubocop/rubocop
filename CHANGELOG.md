@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#6704](https://github.com/rubocop-hq/rubocop/pull/6704): Add new `Rails/ReflectionClassName` cop. ([@Bhacaz][])
 * [#6643](https://github.com/rubocop-hq/rubocop/pull/6643): Support `AllowParenthesesInCamelCaseMethod` option on `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@dazuma][])
 
 ### Bug fixes
@@ -3787,3 +3788,4 @@
 [@dazuma]: https://github.com/dazuma
 [@dischorde]: https://github.com/dischorde
 [@mhelmetag]: https://github.com/mhelmetag
+[@Bhacaz]: https://github.com/bhacaz
