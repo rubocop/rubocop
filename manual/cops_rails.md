@@ -1572,6 +1572,26 @@ with_options options: false do |merger|
 end
 ```
 
+## Rails/ReflectionClassName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.64 | -
+
+This cop checks if the value of the option `class_name`, in
+the definition of a reflection is a string.
+
+### Examples
+
+```ruby
+# bad
+has_many :accounts, class_name: Account
+has_many :accounts, class_name: Account.name
+
+# good
+has_many :accounts, class_name: 'Account'
+```
+
 ## Rails/RefuteMethods
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
