@@ -2738,7 +2738,7 @@ EnforcedStyle | `call` | `call`, `braces`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.18 | -
+Enabled | Yes | Yes (Unsafe) | 0.18 | 0.64
 
 This cop checks for string literal concatenation at
 the end of a line.
