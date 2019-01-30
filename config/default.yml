@@ -3393,7 +3393,6 @@ Style/MethodCallWithArgsParentheses:
   IgnoredMethods: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
-  AllowParenthesesInCamelCaseMethod: false
   EnforcedStyle: require_parentheses
   SupportedStyles:
     - require_parentheses
