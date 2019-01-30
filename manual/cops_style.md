@@ -2902,7 +2902,6 @@ IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
 AllowParenthesesInMultilineCall | `false` | Boolean
 AllowParenthesesInChaining | `false` | Boolean
-AllowParenthesesInCamelCaseMethod | `false` | Boolean
 EnforcedStyle | `require_parentheses` | `require_parentheses`, `omit_parentheses`
 
 ### References
