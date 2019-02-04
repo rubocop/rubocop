@@ -38,6 +38,13 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
     end
   end
 
+  context 'one line if/then/else/end when `then` branch has no body' do
+    let(:source) { 'if cond then else dont end' }
+
+    include_examples 'offense', 'if'
+    include_examples 'autocorrect', 'cond ? nil : dont'
+  end
+
   context 'one line if/then/end' do
     let(:source) { 'if cond then run end' }
 

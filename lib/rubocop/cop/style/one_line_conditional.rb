@@ -67,6 +67,8 @@ module RuboCop
         end
 
         def expr_replacement(node)
+          return 'nil' if node.nil?
+
           requires_parentheses?(node) ? "(#{node.source})" : node.source
         end
 
