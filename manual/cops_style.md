@@ -5912,7 +5912,7 @@ This cop checks symbol literal syntax.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.26 | 0.40
+Enabled | Yes | Yes (Unsafe) | 0.26 | 0.64
 
 Use symbols as procs when possible.
 
