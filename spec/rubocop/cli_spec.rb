@@ -21,7 +21,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'checks a Rakefile but Style/FileName does not report' do
         create_file('Rakefile', 'x = 1')
         create_empty_file('other/empty')
-        Dir.chdir('other') do
+        RuboCop::PathUtil.chdir('other') do
           expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
         end
         expect($stdout.string)
@@ -602,7 +602,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Exclude:
               - lib/example.rb
         YAML
-        Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
+        RuboCop::PathUtil.chdir('lib') { expect(cli.run([])).to eq(0) }
         expect($stdout.string).to include('no offenses detected')
       end
 
@@ -624,7 +624,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Exclude:
               - lib/example.rb
         YAML
-        Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
+        RuboCop::PathUtil.chdir('lib') { expect(cli.run([])).to eq(0) }
         expect($stdout.string).to include('no offenses detected')
         expect($stderr.string.empty?).to be(true)
       end

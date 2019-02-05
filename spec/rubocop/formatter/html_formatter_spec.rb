@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Formatter::HTMLFormatter, :isolated_environment do
     project_path = File.join(spec_root, 'fixtures/html_formatter/project')
     FileUtils.cp_r(project_path, '.')
 
-    Dir.chdir(File.basename(project_path)) do
+    RuboCop::PathUtil.chdir(File.basename(project_path)) do
       example.run
     end
   end

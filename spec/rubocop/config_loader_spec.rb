@@ -973,6 +973,22 @@ RSpec.describe RuboCop::ConfigLoader do
         )
       end
     end
+
+    context 'when the file has duplicated keys' do
+      it 'outputs a warning' do
+        create_file(configuration_path, <<-YAML.strip_indent)
+          Style/Encoding:
+            Enabled: true
+
+          Style/Encoding:
+            Enabled: false
+        YAML
+
+        expect do
+          load_file
+        end.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
+      end
+    end
   end
 
   describe '.merge' do
@@ -1052,7 +1068,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     it 'uses paths relative to the .rubocop.yml, not cwd' do
       config_path = described_class.configuration_file_for('.')
-      Dir.chdir '..' do
+      RuboCop::PathUtil.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end
@@ -1070,7 +1086,7 @@ RSpec.describe RuboCop::ConfigLoader do
     it 'works without a starting .' do
       config_path = described_class.configuration_file_for('.')
       $LOAD_PATH.unshift(File.dirname(config_path))
-      Dir.chdir '..' do
+      RuboCop::PathUtil.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end
