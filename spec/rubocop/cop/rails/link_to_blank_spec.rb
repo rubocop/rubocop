@@ -59,6 +59,21 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
           end
         RUBY
       end
+
+      it 'autocorrects with a new rel when using the block syntax ' \
+         'with parenthesis' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          link_to('https://www.example.com', target: '_blank') do
+            "Click here"
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          link_to('https://www.example.com', target: '_blank', rel: 'noopener') do
+            "Click here"
+          end
+        RUBY
+      end
     end
 
     context 'when using rel' do
