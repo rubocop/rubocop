@@ -22,6 +22,7 @@
 
 * [#6597](https://github.com/rubocop-hq/rubocop/issues/6597): `Style/LineEndConcatenation` is now known to be unsafe for auto-correct. ([@jaredbeck][])
 * [#6725](https://github.com/rubocop-hq/rubocop/issues/6725): Mark `Style/SymbolProc` as unsafe for auto-correct. ([@drenmi][])
+* [#6708](https://github.com/rubocop-hq/rubocop/issues/6708): Make `Style/CommentedKeyword` allow the `:yields:` RDoc comment. ([@bquorning][])
 
 ## 0.63.1 (2019-01-22)
 
