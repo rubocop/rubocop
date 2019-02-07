@@ -100,6 +100,33 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
                    ]
         RUBY
       end
+
+      it 'accepts HEREDOC with commas' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          [
+            <<-TEXT, 123
+              Something with a , in it
+            TEXT
+          ]
+        RUBY
+      end
+
+      it 'auto-corrects unwanted comma where HEREDOC has commas' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          [
+            <<-TEXT, 123,
+              Something with a , in it
+            TEXT
+          ]
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          [
+            <<-TEXT, 123
+              Something with a , in it
+            TEXT
+          ]
+        RUBY
+      end
     end
 
     context 'when EnforcedStyleForMultiline is comma' do
