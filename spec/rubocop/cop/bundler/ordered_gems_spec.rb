@@ -50,11 +50,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rspec'
         ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop'
       RUBY
@@ -87,11 +84,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rspec'
         ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop',
             '0.1.1'
@@ -191,11 +185,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           gem 'rspec'
           ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source_with_loop(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           # For
           # test
           gem 'rspec'
@@ -262,11 +253,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'a'
         ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `a` should appear before `Z`.
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'a'
         gem 'Z'
       RUBY
@@ -295,11 +283,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `b` should appear before `c`.
         end
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'a'
 
         group :development do

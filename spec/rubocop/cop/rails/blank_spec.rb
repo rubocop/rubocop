@@ -176,58 +176,42 @@ RSpec.describe RuboCop::Cop::Rails::Blank, :config do
 
     context 'modifier unless' do
       context 'with a receiver' do
-        it 'registers an offense' do
+        it 'registers an offense and corrects' do
           expect_offense(<<-RUBY.strip_indent)
-          something unless foo.present?
-                    ^^^^^^^^^^^^^^^^^^^ Use `if foo.blank?` instead of `unless foo.present?`.
+            something unless foo.present?
+                      ^^^^^^^^^^^^^^^^^^^ Use `if foo.blank?` instead of `unless foo.present?`.
           RUBY
-        end
 
-        it 'auto-corrects' do
-          new_source = autocorrect_source('something unless foo.present?')
-
-          expect(new_source).to eq('something if foo.blank?')
+          expect_correction(<<-RUBY.strip_indent)
+            something if foo.blank?
+          RUBY
         end
       end
 
       context 'without a receiver' do
-        it 'registers an offense' do
+        it 'registers an offense and corrects' do
           expect_offense(<<-RUBY.strip_indent)
-          something unless present?
-                    ^^^^^^^^^^^^^^^ Use `if blank?` instead of `unless present?`.
+            something unless present?
+                      ^^^^^^^^^^^^^^^ Use `if blank?` instead of `unless present?`.
           RUBY
-        end
 
-        it 'auto-corrects' do
-          new_source = autocorrect_source('something unless present?')
-
-          expect(new_source).to eq('something if blank?')
+          expect_correction(<<-RUBY.strip_indent)
+            something if blank?
+          RUBY
         end
       end
     end
 
     context 'normal unless present?' do
-      let(:source) do
-        <<-RUBY.strip_indent
-          unless foo.present?
-            something
-          end
-        RUBY
-      end
-
-      it 'registers an offense' do
+      it 'registers an offense and corrects' do
         expect_offense(<<-RUBY.strip_indent)
           unless foo.present?
           ^^^^^^^^^^^^^^^^^^^ Use `if foo.blank?` instead of `unless foo.present?`.
             something
           end
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           if foo.blank?
             something
           end
@@ -236,17 +220,7 @@ RSpec.describe RuboCop::Cop::Rails::Blank, :config do
     end
 
     context 'unless present? with an else' do
-      let(:source) do
-        <<-RUBY.strip_indent
-          unless foo.present?
-            something
-          else
-            something_else
-          end
-        RUBY
-      end
-
-      it 'registers an offense' do
+      it 'registers an offense and corrects' do
         expect_offense(<<-RUBY.strip_indent)
           unless foo.present?
           ^^^^^^^^^^^^^^^^^^^ Use `if foo.blank?` instead of `unless foo.present?`.
@@ -255,12 +229,8 @@ RSpec.describe RuboCop::Cop::Rails::Blank, :config do
             something_else
           end
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           if foo.blank?
             something
           else
