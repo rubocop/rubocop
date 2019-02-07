@@ -18,6 +18,7 @@
 * [#6710](https://github.com/rubocop-hq/rubocop/issues/6710): Fix `Naming/MemoizedInstanceVariableName` on method starts with underscore. ([@pocke][])
 * [#6722](https://github.com/rubocop-hq/rubocop/issues/6722): Fix an error for `Style/OneLineConditional` when `then` branch has no body. ([@koic][])
 * [#6702](https://github.com/rubocop-hq/rubocop/pull/6702): Fix `TrailingComma` regression where heredoc with commas caused false positives. ([@abrom][])
+* [#6737](https://github.com/rubocop-hq/rubocop/issues/6737): Fix an incorrect auto-correct for `Rails/LinkToBlank` when `link_to` method arguments are enclosed in parentheses. ([@koic][])
 
 ### Changes
 
