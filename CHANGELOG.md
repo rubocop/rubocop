@@ -19,6 +19,7 @@
 * [#6722](https://github.com/rubocop-hq/rubocop/issues/6722): Fix an error for `Style/OneLineConditional` when `then` branch has no body. ([@koic][])
 * [#6702](https://github.com/rubocop-hq/rubocop/pull/6702): Fix `TrailingComma` regression where heredoc with commas caused false positives. ([@abrom][])
 * [#6737](https://github.com/rubocop-hq/rubocop/issues/6737): Fix an incorrect auto-correct for `Rails/LinkToBlank` when `link_to` method arguments are enclosed in parentheses. ([@koic][])
+* [#6720](https://github.com/rubocop-hq/rubocop/issues/6720): Fix detection of `:native` line ending for `Layout/EndOfLine` on JRuby. ([@enkessler][])
 
 ### Changes
 
@@ -3799,3 +3800,4 @@
 [@dischorde]: https://github.com/dischorde
 [@mhelmetag]: https://github.com/mhelmetag
 [@Bhacaz]: https://github.com/bhacaz
+[@enkessler]: https://github.com/enkessler
