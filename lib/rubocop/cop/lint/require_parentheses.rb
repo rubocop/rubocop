@@ -42,6 +42,7 @@ module RuboCop
             check_predicate(node.last_argument, node)
           end
         end
+        alias on_csend on_send
 
         private
 
