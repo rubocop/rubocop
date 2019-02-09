@@ -31,13 +31,13 @@ module RuboCop
 
         private
 
+        # @param [DefNode] node a constructor definition
         def check(node)
           return unless node.method_name == :initialize
 
           check_body(node.body)
         end
 
-        # @param [DefNode] node a constructor definition
         def check_body(body)
           return if body.nil?
 
