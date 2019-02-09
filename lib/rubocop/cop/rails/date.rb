@@ -79,6 +79,7 @@ module RuboCop
           add_offense(node, location: :selector,
                             message: format(MSG_SEND, method: node.method_name))
         end
+        alias on_csend on_send
 
         private
 
