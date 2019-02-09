@@ -41,6 +41,7 @@ module RuboCop
 
           add_offense(node, location: :selector)
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           lambda do |corrector|

@@ -24,6 +24,15 @@ RSpec.describe RuboCop::Cop::Style::PreferredHashMethods, :config do
       RUBY
     end
 
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for has_value? with one arg' do
+        expect_offense(<<-RUBY.strip_indent)
+        o&.has_value?(o)
+           ^^^^^^^^^^ Use `Hash#value?` instead of `Hash#has_value?`.
+        RUBY
+      end
+    end
+
     it 'accepts has_value? with no args' do
       expect_no_offenses('o.has_value?')
     end
