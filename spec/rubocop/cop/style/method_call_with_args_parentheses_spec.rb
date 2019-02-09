@@ -31,6 +31,15 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    context 'when using safe navigation operator', :ruby23 do
+      it 'register an offense for method call without parens' do
+        expect_offense(<<-RUBY.strip_indent)
+          top&.test a, b
+          ^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+        RUBY
+      end
+    end
+
     it 'register an offense for non-receiver method call without parens' do
       expect_offense(<<-RUBY.strip_indent)
         def foo
