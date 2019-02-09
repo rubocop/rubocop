@@ -14,6 +14,22 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordAliases do
         book.update(author: "Alice")
       RUBY
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+        book&.update_attributes(author: "Alice")
+              ^^^^^^^^^^^^^^^^^ Use `update` instead of `update_attributes`.
+        RUBY
+      end
+
+      it 'is autocorrected' do
+        new_source = autocorrect_source(
+          'book&.update_attributes(author: "Alice")'
+        )
+        expect(new_source).to eq 'book&.update(author: "Alice")'
+      end
+    end
   end
 
   describe '#update_attributes!' do
