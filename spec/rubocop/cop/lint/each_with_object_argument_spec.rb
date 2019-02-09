@@ -36,4 +36,13 @@ RSpec.describe RuboCop::Cop::Lint::EachWithObjectArgument do
   it 'accepts a string argument' do
     expect_no_offenses("collection.each_with_object('') { |e, a| a << e.to_s }")
   end
+
+  context 'when using safe navigation operator', :ruby23 do
+    it 'registers an offense for fixnum argument' do
+      expect_offense(<<-RUBY.strip_indent)
+        collection&.each_with_object(0) { |e, a| a + e }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The argument to each_with_object can not be immutable.
+      RUBY
+    end
+  end
 end

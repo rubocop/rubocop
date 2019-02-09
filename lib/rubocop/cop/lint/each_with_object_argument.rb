@@ -24,7 +24,9 @@ module RuboCop
       class EachWithObjectArgument < Cop
         MSG = 'The argument to each_with_object can not be immutable.'.freeze
 
-        def_node_matcher :each_with_object?, '(send _ :each_with_object $_)'
+        def_node_matcher :each_with_object?, <<-PATTERN
+          ({send csend} _ :each_with_object $_)
+        PATTERN
 
         def on_send(node)
           each_with_object?(node) do |arg|
@@ -33,6 +35,7 @@ module RuboCop
             add_offense(node)
           end
         end
+        alias on_csend on_send
       end
     end
   end
