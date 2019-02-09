@@ -26,7 +26,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          return unless node.dot?
+          return unless node.dot? || ampersand_dot?(node)
 
           if proper_dot_position?(node)
             correct_style_detected
@@ -34,23 +34,26 @@ module RuboCop
             add_offense(node, location: :dot) { opposite_style_detected }
           end
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           lambda do |corrector|
+            dot = node.loc.dot.source
             corrector.remove(node.loc.dot)
             case style
             when :leading
-              corrector.insert_before(selector_range(node), '.')
+              corrector.insert_before(selector_range(node), dot)
             when :trailing
-              corrector.insert_after(node.receiver.source_range, '.')
+              corrector.insert_after(node.receiver.source_range, dot)
             end
           end
         end
 
         private
 
-        def message(_node)
-          'Place the . on the ' +
+        def message(node)
+          dot = node.loc.dot.source
+          "Place the #{dot} on the " +
             case style
             when :leading
               'next line, together with the method name.'
@@ -91,6 +94,10 @@ module RuboCop
         def selector_range(node)
           # l.(1) has no selector, so we use the opening parenthesis instead
           node.loc.selector || node.loc.begin
+        end
+
+        def ampersand_dot?(node)
+          node.loc.respond_to?(:dot) && node.loc.dot && node.loc.dot.is?('&.')
         end
       end
     end
