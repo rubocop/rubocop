@@ -24,6 +24,29 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
           baz)
       RUBY
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'detects the offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          receiver&.foo(bar,
+                        ^^^ Add a line break before the first argument of a multi-line method argument list.
+            baz)
+        RUBY
+      end
+
+      it 'autocorrects the offense' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          receiver&.foo(bar,
+            baz)
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          receiver&.foo(
+          bar,
+            baz)
+        RUBY
+      end
+    end
   end
 
   context 'hash arg spanning multiple lines' do
