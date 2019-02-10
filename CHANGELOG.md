@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.64.0 (2019-02-10)
+
 ### New features
 
 * [#6704](https://github.com/rubocop-hq/rubocop/pull/6704): Add new `Rails/ReflectionClassName` cop. ([@Bhacaz][])
