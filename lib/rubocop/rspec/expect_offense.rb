@@ -57,6 +57,20 @@ module RuboCop
     # simpler assertion since it just inspects the source and checks
     # that there were no offenses. The `expect_offense` method has
     # to do more work by parsing out lines that contain carets.
+    #
+    # If the code produces an offense that could not be auto-corrected, you can
+    # use `expect_no_corrections` after `expect_offense`.
+    #
+    # @example `expect_offense` and `expect_no_corrections`
+    #
+    #   expect_offense(<<-RUBY.strip_indent)
+    #       a do
+    #         b
+    #       end.c
+    #       ^^^^^ Avoid chaining a method call on a do...end block.
+    #     RUBY
+    #
+    #   expect_no_corrections
     module ExpectOffense
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def expect_offense(source, file = nil)
@@ -96,6 +110,23 @@ module RuboCop
         new_source = corrector.rewrite
 
         expect(new_source).to eq(correction)
+      end
+
+      def expect_no_corrections
+        unless @processed_source
+          raise '`expect_no_corrections` must follow `expect_offense`'
+        end
+
+        return if cop.corrections.empty?
+
+        # In order to print a nice diff, e.g. what source got corrected to,
+        # we need to run the actual corrections
+
+        corrector =
+          RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
+        new_source = corrector.rewrite
+
+        expect(new_source).to eq(@processed_source.buffer.source)
       end
 
       def expect_no_offenses(source, file = nil)
