@@ -1334,6 +1334,26 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         RUBY
       end
 
+      context 'when using safe navigation operator', :ruby23 do
+        it 'registers an offense for bad indentation of a {} body' do
+          expect_offense(<<-RUBY.strip_indent)
+            func {
+               receiver&.b
+            ^^^ Use 2 (not 3) spaces for indentation.
+            }
+          RUBY
+        end
+
+        it 'registers an offense for an if with setter' do
+          expect_offense(<<-RUBY.strip_indent)
+            foo&.bar = if baz
+                         derp
+            ^^^^^^^^^^^^^ Use 2 (not 13) spaces for indentation.
+                       end
+          RUBY
+        end
+      end
+
       # The cop uses the block end/} as the base for indentation, so if it's not
       # on its own line, all bets are off.
       it 'accepts badly indented code if block end is not on separate line' do

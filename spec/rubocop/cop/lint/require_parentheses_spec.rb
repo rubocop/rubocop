@@ -29,6 +29,18 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses do
     RUBY
   end
 
+  context 'when using safe navigation operator', :ruby23 do
+    it 'registers an offense for missing parentheses around expression with ' \
+       '&& operator' do
+      expect_offense(<<-RUBY.strip_indent)
+        if day&.is? 'monday' && month == :jan
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
+          foo
+        end
+      RUBY
+    end
+  end
+
   it 'accepts missing parentheses around expression with + operator' do
     expect_no_offenses(<<-RUBY.strip_indent)
       if day_is? 'tuesday' + rest

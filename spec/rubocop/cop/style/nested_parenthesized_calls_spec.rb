@@ -39,6 +39,22 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
           puts(compute(something))
         RUBY
       end
+
+      context 'when using safe navigation operator', :ruby23 do
+        let(:source) { 'puts(receiver&.compute something)' }
+
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            puts(receiver&.compute something)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add parentheses to nested method call `receiver&.compute something`.
+          RUBY
+        end
+
+        it 'auto-corrects by adding parentheses' do
+          new_source = autocorrect_source(source)
+          expect(new_source).to eq('puts(receiver&.compute(something))')
+        end
+      end
     end
 
     context 'with multiple arguments to the nested call' do

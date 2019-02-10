@@ -119,6 +119,7 @@ module RuboCop
           check_indentation(base.source_range, body)
           ignore_node(node.first_argument)
         end
+        alias on_csend on_send
 
         def on_def(node)
           return if ignored_node?(node)

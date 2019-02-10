@@ -67,6 +67,15 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
         RUBY
       end
+
+      context 'when using safe navigation operator', :ruby23 do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            Foo&.some_method a { |el| puts el }
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
+          RUBY
+        end
+      end
     end
 
     context 'rspec expect {}.to change {}' do

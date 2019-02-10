@@ -277,6 +277,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentHash do
           RUBY
         end
 
+        context 'when using safe navigation operator', :ruby23 do
+          it "registers an offense for 'consistent' indentation" do
+            expect_offense(<<-RUBY.strip_indent)
+              receiver&.func({
+                a: 1
+                ^^^^ Use 2 spaces for indentation in a hash, relative to the first position after the preceding left parenthesis.
+              })
+              ^ Indent the right brace the same as the first position after the preceding left parenthesis.
+            RUBY
+          end
+        end
+
         it "registers an offense for 'align_braces' indentation" do
           expect_offense(<<-RUBY.strip_indent)
             var = {

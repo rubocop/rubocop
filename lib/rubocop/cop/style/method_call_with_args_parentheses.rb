@@ -142,6 +142,7 @@ module RuboCop
             add_offense_for_omit_parentheses(node)
           end
         end
+        alias on_csend on_send
         alias on_super on_send
         alias on_yield on_send
 

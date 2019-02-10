@@ -13,6 +13,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
       RUBY
     end
 
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for a chained call' do
+        expect_offense(<<-RUBY.strip_indent)
+        a do
+          b
+        end&.c
+        ^^^^^^ Avoid chaining a method call on a do...end block.
+        RUBY
+      end
+    end
+
     it 'accepts it if there is no chained call' do
       expect_no_offenses(<<-RUBY.strip_indent)
         a do
