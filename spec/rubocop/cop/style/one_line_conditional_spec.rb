@@ -108,4 +108,11 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
     corrected = autocorrect_source('if 0 + 0 then 1 + 1 else 2 + 2 end')
     expect(corrected).to eq('0 + 0 ? 1 + 1 : 2 + 2')
   end
+
+  it 'does not break when one of the branches contains a retry keyword' do
+    expect_offense(<<-RUBY.strip_indent)
+      if true then retry else 7 end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over `if/then/else/end` constructs.
+    RUBY
+  end
 end

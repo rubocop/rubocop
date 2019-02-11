@@ -34,6 +34,7 @@ module RuboCop
         pair: PairNode,
         regexp: RegexpNode,
         resbody: ResbodyNode,
+        retry: RetryNode,
         csend: SendNode,
         send: SendNode,
         str: StrNode,
