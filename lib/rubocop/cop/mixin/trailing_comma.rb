@@ -91,7 +91,7 @@ module RuboCop
       end
 
       def method_name_and_arguments_on_same_line?(node)
-        node.send_type? &&
+        %i[send csend].include?(node.type) &&
           node.loc.selector.line == node.arguments.last.last_line &&
           node.last_line == node.arguments.last.last_line
       end
@@ -104,7 +104,7 @@ module RuboCop
       end
 
       def elements(node)
-        return node.children unless node.send_type?
+        return node.children unless %i[csend send].include?(node.type)
 
         node.arguments.flat_map do |argument|
           # For each argument, if it is a multi-line hash without braces,
