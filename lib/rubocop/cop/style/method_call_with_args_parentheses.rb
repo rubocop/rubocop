@@ -259,13 +259,16 @@ module RuboCop
             allowed_chained_call_with_parentheses?(node)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def call_in_literals?(node)
           node.parent &&
             (node.parent.pair_type? ||
              node.parent.array_type? ||
+             node.parent.irange_type? || node.parent.erange_type? ||
              splat?(node.parent) ||
              ternary_if?(node.parent))
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def call_in_logical_operators?(node)
           node.parent &&
