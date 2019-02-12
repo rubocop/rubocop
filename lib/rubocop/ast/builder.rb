@@ -19,6 +19,7 @@ module RuboCop
         args: ArgsNode,
         array: ArrayNode,
         block: BlockNode,
+        break: BreakNode,
         case: CaseNode,
         def: DefNode,
         defined?: DefinedNode,
