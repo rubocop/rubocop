@@ -278,7 +278,8 @@ module RuboCop
         end
 
         def call_in_optional_arguments?(node)
-          node.parent && node.parent.optarg_type?
+          node.parent &&
+            (node.parent.optarg_type? || node.parent.kwoptarg_type?)
         end
 
         def call_with_ambiguous_arguments?(node)
