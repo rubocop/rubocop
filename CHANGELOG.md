@@ -6,6 +6,10 @@
 
 * [#6748](https://github.com/rubocop-hq/rubocop/issues/6748): Fix `Style/RaiseArgs` auto-correction breaking in contexts that require parentheses. ([@drenmi][])
 
+### Changes
+
+* [#6766](https://github.com/rubocop-hq/rubocop/pull/6766): Drop support for Ruby 2.2.0 and 2.2.1. ([@pocke][])
+
 ## 0.64.0 (2019-02-10)
 
 ### New features
