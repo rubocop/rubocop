@@ -95,6 +95,33 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     end
   end
 
+  context 'single arg spanning multiple lines' do
+    it 'detects the offense' do
+      expect_offense(<<-RUBY.strip_indent)
+        foo([
+            ^ Add a line break before the first argument of a multi-line method argument list.
+        ])
+      RUBY
+    end
+
+    it 'autocorrects the offense' do
+      new_source = autocorrect_source(<<-RUBY.strip_indent)
+        begin
+          foo([
+          ])
+        end
+      RUBY
+
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        begin
+          foo(
+          [
+          ])
+        end
+      RUBY
+    end
+  end
+
   it 'ignores arguments listed on a single line' do
     expect_no_offenses('foo(bar, baz, bing)')
   end

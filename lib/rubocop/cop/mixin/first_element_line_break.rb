@@ -21,6 +21,14 @@ module RuboCop
       end
 
       def check_children_line_break(node, children, start = node)
+        return if children.empty?
+
+        return add_offense(children.first) if children.first.multiline?
+
+        check_multiple_children_line_break(children, start)
+      end
+
+      def check_multiple_children_line_break(children, start)
         return if children.size < 2
 
         line = start.first_line

@@ -46,7 +46,19 @@ module RuboCop
         alias on_csend on_send
 
         def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
+          lambda do |corrector|
+            first_arg = if node.argument?
+                          node
+                        else
+                          # In case of keyword arguments
+                          node.parent
+                        end
+
+            block_start_col = first_arg.parent.source_range.column
+
+            corrector.insert_before(first_arg.source_range,
+                                    "\n#{' ' * block_start_col}")
+          end
         end
       end
     end

@@ -464,7 +464,10 @@ module RuboCop
       end
 
       def argument?
-        parent && parent.send_type? && parent.arguments.include?(self)
+        # TODO: Adds support safe navigator calls.
+        # TODO: Discuss with maintainers if this should be applied 'everywhere'
+        parent && (parent.send_type? || parent.csend_type?) &&
+          parent.arguments.include?(self)
       end
 
       def numeric_type?

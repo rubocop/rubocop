@@ -5,6 +5,8 @@
 ### Changes
 
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
+* [#6493](https://github.com/rubocop-hq/rubocop/issues/6493): Fix `Layout/FirstMethodArgumentLineBreak` for multi-line single argument. ([@marcotc][])
+* [#6699](https://github.com/rubocop-hq/rubocop/issues/6699): Fix infinite loop for `Layout/IndentationWidth` and `Layout/IndentationConsistency` when bad modifier indentation before good method definition. ([@koic][])
 
 ## 0.66.0 (2019-03-18)
 
