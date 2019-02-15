@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.name = 'rubocop'
   s.version = RuboCop::Version::STRING
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '>= 2.2.0'
+  s.required_ruby_version = '>= 2.2.2'
   s.authors = ['Bozhidar Batsov', 'Jonas Arvidsson', 'Yuji Nakayama']
   s.description = <<-DESCRIPTION
     Automatic Ruby code style checking tool.
@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 2.5', '!= 2.5.1.1')
   s.add_runtime_dependency('powerpack', '~> 0.1')
+  s.add_runtime_dependency('psych', '>= 3.1.0')
   s.add_runtime_dependency('rainbow', '>= 2.2.2', '< 4.0')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.7')
   s.add_runtime_dependency('unicode-display_width', '~> 1.4.0')

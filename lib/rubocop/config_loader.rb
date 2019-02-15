@@ -183,8 +183,7 @@ module RuboCop
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
           SafeYAML.load(yaml_code, filename,
                         whitelisted_tags: %w[!ruby/regexp])
-        # Ruby 2.6+
-        elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0.pre1')
+        else
           YAML.safe_load(
             yaml_code,
             permitted_classes: [Regexp, Symbol],
@@ -192,8 +191,6 @@ module RuboCop
             aliases: false,
             filename: filename
           )
-        else
-          YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
         end
       end
     end
