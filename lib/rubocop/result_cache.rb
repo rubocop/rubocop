@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'digest/md5'
+require 'digest/sha1'
 require 'find'
 require 'etc'
 
@@ -141,7 +141,7 @@ module RuboCop
     end
 
     def file_checksum(file, config_store)
-      digester = Digest::MD5.new
+      digester = Digest::SHA1.new
       mode = File.stat(file).mode
       digester.update(
         "#{file}#{mode}#{config_store.for(file).signature}"
@@ -173,7 +173,7 @@ module RuboCop
                     .select { |path| File.file?(path) }
                     .sort
                     .map { |path| IO.read(path, encoding: Encoding::UTF_8) }
-          Digest::MD5.hexdigest(sources.join)
+          Digest::SHA1.hexdigest(sources.join)
         end
     end
 
@@ -185,7 +185,7 @@ module RuboCop
       options = options.to_s.gsub(/[^a-z]+/i, '_')
       # We must avoid making file names too long for some filesystems to handle
       # If they are short, we can leave them human-readable
-      options.length <= 32 ? options : Digest::MD5.hexdigest(options)
+      options.length <= 32 ? options : Digest::SHA1.hexdigest(options)
     end
   end
 end

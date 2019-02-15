@@ -297,7 +297,7 @@ module RuboCop
     end
 
     def signature
-      @signature ||= Digest::MD5.hexdigest(to_s)
+      @signature ||= Digest::SHA1.hexdigest(to_s)
     end
 
     def make_excludes_absolute
