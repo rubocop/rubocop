@@ -512,6 +512,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in range literals' do
+      expect_no_offenses(<<-RUBY)
+        1..limit(n)
+        1...limit(n)
+      RUBY
+    end
+
     it 'auto-corrects single-line calls' do
       original = <<-RUBY.strip_indent
         top.test(1, 2, foo: bar(3))
