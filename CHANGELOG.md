@@ -10,6 +10,7 @@
 ### Changes
 
 * [#6766](https://github.com/rubocop-hq/rubocop/pull/6766): Drop support for Ruby 2.2.0 and 2.2.1. ([@pocke][])
+* [#6733](https://github.com/rubocop-hq/rubocop/pull/6733): Warn duplicated keys in `.rubocop.yml`. ([@pocke][])
 
 ## 0.64.0 (2019-02-10)
 

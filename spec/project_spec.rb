@@ -54,6 +54,15 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       raise errors.join("\n") unless errors.empty?
     end
+
+    it 'does not have nay duplication' do
+      fname = File.expand_path('../config/default.yml', __dir__)
+      content = File.read(fname)
+      RuboCop::YAMLDuplicationChecker.check(content, fname) do |key1, key2|
+        raise "#{fname} has duplication of #{key1.value} " \
+              "on line #{key1.start_line} and line #{key2.start_line}"
+      end
+    end
   end
 
   describe 'cop message' do
