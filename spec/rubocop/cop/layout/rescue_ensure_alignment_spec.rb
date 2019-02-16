@@ -364,6 +364,28 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
+  context 'rescue with assigned begin' do
+    it 'accepts variable-aligned rescue in or-assigned begin-end block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        @bar ||= begin
+          expensive_method
+        rescue StandardError
+          fall_back
+        end
+      RUBY
+    end
+
+    it 'accepts variable-aligned rescue in assigned begin-end block' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        @bar = begin
+          expensive_method
+        rescue StandardError
+          fall_back
+        end
+      RUBY
+    end
+  end
+
   context '>= Ruby 2.5', :ruby25 do
     it 'accepts aligned rescue in do-end block' do
       expect_no_offenses(<<-RUBY.strip_indent)
