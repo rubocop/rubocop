@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6772](https://github.com/rubocop-hq/rubocop/pull/6772): Add new `Layout/OrderedMethods` cop. ([@shanecav84][])
+
 ### Bug fixes
 
 * [#6763](https://github.com/rubocop-hq/rubocop/pull/6763): Fix false positives in range literals for `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@gsamokovarov]][])
