@@ -27,14 +27,18 @@ module RuboCop
         MSG = 'Use an instance variable such as a Hash to store method' \
               ' returns called with parameter(s).'.freeze
 
-        def_node_matcher :shadowed_parameter?, <<-PATTERN
-          (def _ (args (arg $_)) (or_asgn (ivasgn _) (send _ _ (lvar $_))))
-        PATTERN
+        def_node_search :memoization, '(or_asgn (ivasgn _) $_)'
+        def_node_search :contains_argument?, '(lvar %1)'
 
         def on_def(node)
-          return unless shadowed_parameter?(node)
+          memoization(node.body) do |assignment|
+            node.arguments.each do |arg|
+              next unless contains_argument?(assignment, arg.children.first)
 
-          add_offense(node)
+              add_offense(node)
+              break
+            end
+          end
         end
       end
     end
