@@ -22,14 +22,6 @@ module RuboCop
 
         MSG = 'Avoid single-line method definitions.'.freeze
 
-        def on_def(node)
-          return unless node.single_line?
-          return if allow_empty? && !node.body
-
-          add_offense(node)
-        end
-        alias on_defs on_def
-
         def autocorrect(node)
           lambda do |corrector|
             each_part(node.body) do |part|
@@ -47,6 +39,14 @@ module RuboCop
             move_comment(node, corrector)
           end
         end
+
+        def on_def(node)
+          return unless node.single_line?
+          return if allow_empty? && !node.body
+
+          add_offense(node)
+        end
+        alias on_defs on_def
 
         private
 

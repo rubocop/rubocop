@@ -12,8 +12,14 @@ module RuboCop
 
       private
 
-      def check_end_kw_in_node(node)
-        check_end_kw_alignment(node, style => node.loc.keyword)
+      def add_offense_for_misalignment(node, align_with)
+        end_loc = node.loc.end
+        msg = format(MSG, end_line: end_loc.line,
+                          end_col: end_loc.column,
+                          source: align_with.source,
+                          align_line: align_with.line,
+                          align_col: align_with.column)
+        add_offense(node, location: end_loc, message: msg)
       end
 
       def check_end_kw_alignment(node, align_ranges)
@@ -32,21 +38,19 @@ module RuboCop
         end
       end
 
+      def check_end_kw_in_node(node)
+        check_end_kw_alignment(node, style => node.loc.keyword)
+      end
+
+      def line_break_before_keyword?(whole_expression, rhs)
+        rhs.first_line > whole_expression.line
+      end
+
       def matching_ranges(end_loc, align_ranges)
         align_ranges.select do |_, range|
           range.line == end_loc.line ||
             column_offset_between(range, end_loc).zero?
         end
-      end
-
-      def add_offense_for_misalignment(node, align_with)
-        end_loc = node.loc.end
-        msg = format(MSG, end_line: end_loc.line,
-                          end_col: end_loc.column,
-                          source: align_with.source,
-                          align_line: align_with.line,
-                          align_col: align_with.column)
-        add_offense(node, location: end_loc, message: msg)
       end
 
       def style_parameter_name
@@ -57,10 +61,6 @@ module RuboCop
         return if end_alignment_style == :keyword
 
         !line_break_before_keyword?(whole_expression, rhs)
-      end
-
-      def line_break_before_keyword?(whole_expression, rhs)
-        rhs.first_line > whole_expression.line
       end
     end
   end

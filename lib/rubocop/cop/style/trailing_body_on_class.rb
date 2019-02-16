@@ -21,12 +21,6 @@ module RuboCop
 
         MSG = 'Place the first line of class body on its own line.'.freeze
 
-        def on_class(node)
-          return unless trailing_body?(node)
-
-          add_offense(node, location: first_part_of(node.to_a.last))
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             LineBreakCorrector.correct_trailing_body(
@@ -36,6 +30,12 @@ module RuboCop
               processed_source: processed_source
             )
           end
+        end
+
+        def on_class(node)
+          return unless trailing_body?(node)
+
+          add_offense(node, location: first_part_of(node.to_a.last))
         end
       end
     end

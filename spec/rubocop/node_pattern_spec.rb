@@ -1044,12 +1044,12 @@ RSpec.describe RuboCop::NodePattern do
   describe 'funcalls' do
     module RuboCop
       class NodePattern
-        def goodmatch(_foo)
-          true
-        end
-
         def badmatch(_foo)
           false
+        end
+
+        def goodmatch(_foo)
+          true
         end
 
         def witharg(foo, bar)

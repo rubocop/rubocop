@@ -48,14 +48,6 @@ module RuboCop
             @classes ||= []
           end
 
-          def self.inherited(subclass)
-            classes << subclass
-          end
-
-          def self.type
-            name.split('::').last.gsub(/(.)([A-Z])/, '\1_\2').downcase.to_sym
-          end
-
           def self.define_predicate(name, child_index: nil)
             define_method(name) do
               target_node = control_node.children[child_index]
@@ -70,14 +62,33 @@ module RuboCop
             end
           end
 
-          def control_node
-            child_node.parent
+          def self.inherited(subclass)
+            classes << subclass
           end
 
-          def parent
-            return @parent if instance_variable_defined?(:@parent)
+          def self.type
+            name.split('::').last.gsub(/(.)([A-Z])/, '\1_\2').downcase.to_sym
+          end
 
-            @branch = Branch.of(control_node, scope: scope)
+          def ==(other)
+            return false unless other
+
+            control_node.equal?(other.control_node) &&
+              child_node.equal?(other.child_node)
+          end
+
+          alias_method :eql?, :==
+
+          def always_run?
+            raise NotImplementedError
+          end
+
+          def branched?
+            !always_run?
+          end
+
+          def control_node
+            child_node.parent
           end
 
           def each_ancestor(include_self: false, &block)
@@ -88,22 +99,6 @@ module RuboCop
             yield self if include_self
             scan_ancestors(&block)
             self
-          end
-
-          def branched?
-            !always_run?
-          end
-
-          def always_run?
-            raise NotImplementedError
-          end
-
-          def may_jump_to_other_branch?
-            false
-          end
-
-          def may_run_incompletely?
-            false
           end
 
           def exclusive_with?(other)
@@ -123,17 +118,22 @@ module RuboCop
             end
           end
 
-          def ==(other)
-            return false unless other
-
-            control_node.equal?(other.control_node) &&
-              child_node.equal?(other.child_node)
-          end
-
-          alias_method :eql?, :==
-
           def hash
             control_node.object_id.hash ^ child_node.object_id.hash
+          end
+
+          def may_jump_to_other_branch?
+            false
+          end
+
+          def may_run_incompletely?
+            false
+          end
+
+          def parent
+            return @parent if instance_variable_defined?(:@parent)
+
+            @branch = Branch.of(control_node, scope: scope)
           end
 
           private
@@ -149,12 +149,12 @@ module RuboCop
 
         # Mix-in module for simple conditional control structures.
         module SimpleConditional
-          def conditional_clause?
-            raise NotImplementedError
-          end
-
           def always_run?
             conditional_clause?
+          end
+
+          def conditional_clause?
+            raise NotImplementedError
           end
         end
 

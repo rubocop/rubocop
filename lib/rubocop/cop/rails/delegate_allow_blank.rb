@@ -24,18 +24,18 @@ module RuboCop
           (pair (sym :allow_blank) true)
         PATTERN
 
+        def autocorrect(pair_node)
+          lambda do |corrector|
+            corrector.replace(pair_node.key.source_range, 'allow_nil')
+          end
+        end
+
         def on_send(node)
           offending_node = allow_blank_option(node)
 
           return unless offending_node
 
           add_offense(offending_node)
-        end
-
-        def autocorrect(pair_node)
-          lambda do |corrector|
-            corrector.replace(pair_node.key.source_range, 'allow_nil')
-          end
         end
 
         private

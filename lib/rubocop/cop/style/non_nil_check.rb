@@ -32,14 +32,14 @@ module RuboCop
         def_node_matcher :nil_check?, '(send _ :nil?)'
         def_node_matcher :not_and_nil_check?, '(send (send _ :nil?) :!)'
 
-        def on_send(node)
-          return if ignored_node?(node)
-
-          if not_equal_to_nil?(node)
-            add_offense(node, location: :selector)
-          elsif include_semantic_changes? &&
-                (not_and_nil_check?(node) || unless_and_nil_check?(node))
-            add_offense(node)
+        def autocorrect(node)
+          case node.method_name
+          when :!=
+            autocorrect_comparison(node)
+          when :!
+            autocorrect_non_nil(node, node.receiver)
+          when :nil?
+            autocorrect_unless_nil(node, node.receiver)
           end
         end
 
@@ -56,37 +56,18 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          case node.method_name
-          when :!=
-            autocorrect_comparison(node)
-          when :!
-            autocorrect_non_nil(node, node.receiver)
-          when :nil?
-            autocorrect_unless_nil(node, node.receiver)
+        def on_send(node)
+          return if ignored_node?(node)
+
+          if not_equal_to_nil?(node)
+            add_offense(node, location: :selector)
+          elsif include_semantic_changes? &&
+                (not_and_nil_check?(node) || unless_and_nil_check?(node))
+            add_offense(node)
           end
         end
 
         private
-
-        def unless_and_nil_check?(send_node)
-          parent = send_node.parent
-
-          nil_check?(send_node) && unless_check?(parent) && !parent.ternary? &&
-            parent.unless?
-        end
-
-        def message(node)
-          if node.method?(:!=)
-            'Prefer `!expression.nil?` over `expression != nil`.'
-          else
-            'Explicit non-nil checks are usually redundant.'
-          end
-        end
-
-        def include_semantic_changes?
-          cop_config['IncludeSemanticChanges']
-        end
 
         def autocorrect_comparison(node)
           expr = node.source
@@ -117,6 +98,25 @@ module RuboCop
             corrector.replace(node.parent.loc.keyword, 'if')
             corrector.replace(node.source_range, receiver.source)
           end
+        end
+
+        def include_semantic_changes?
+          cop_config['IncludeSemanticChanges']
+        end
+
+        def message(node)
+          if node.method?(:!=)
+            'Prefer `!expression.nil?` over `expression != nil`.'
+          else
+            'Explicit non-nil checks are usually redundant.'
+          end
+        end
+
+        def unless_and_nil_check?(send_node)
+          parent = send_node.parent
+
+          nil_check?(send_node) && unless_check?(parent) && !parent.ternary? &&
+            parent.unless?
         end
       end
     end

@@ -21,6 +21,10 @@ module RuboCop
 
         private
 
+        def cop_label
+          LABEL
+        end
+
         def excluded_method?(node)
           node_receiver = node.receiver && node.receiver.source.gsub(/\s+/, '')
           node_method = String(node.method_name)
@@ -39,10 +43,6 @@ module RuboCop
 
         def excluded_methods
           cop_config['ExcludedMethods'] || []
-        end
-
-        def cop_label
-          LABEL
         end
       end
     end

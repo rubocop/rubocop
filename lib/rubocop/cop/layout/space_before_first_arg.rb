@@ -28,6 +28,10 @@ module RuboCop
         MSG = 'Put one space between the method name and ' \
               'the first argument.'.freeze
 
+        def autocorrect(range)
+          ->(corrector) { corrector.replace(range, ' ') }
+        end
+
         def on_send(node)
           return unless regular_method_call_with_arguments?(node)
           return unless expect_params_after_method_name?(node)
@@ -42,15 +46,7 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(range)
-          ->(corrector) { corrector.replace(range, ' ') }
-        end
-
         private
-
-        def regular_method_call_with_arguments?(node)
-          node.arguments? && !node.operator_method? && !node.setter_method?
-        end
 
         def expect_params_after_method_name?(node)
           return false if node.parenthesized?
@@ -60,6 +56,10 @@ module RuboCop
           same_line?(first_arg, node) &&
             !(allow_for_alignment? &&
               aligned_with_something?(first_arg.source_range))
+        end
+
+        def regular_method_call_with_arguments?(node)
+          node.arguments? && !node.operator_method? && !node.setter_method?
         end
       end
     end

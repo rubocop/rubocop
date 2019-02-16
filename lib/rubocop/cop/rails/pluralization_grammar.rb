@@ -28,6 +28,14 @@ module RuboCop
 
         MSG = 'Prefer `%<number>s.%<correct>s`.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            method_name = node.loc.selector.source
+
+            corrector.replace(node.loc.selector, correct_method(method_name))
+          end
+        end
+
         def on_send(node)
           return unless duration_method?(node.method_name)
           return unless literal_number?(node.receiver)
@@ -37,22 +45,7 @@ module RuboCop
           add_offense(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            method_name = node.loc.selector.source
-
-            corrector.replace(node.loc.selector, correct_method(method_name))
-          end
-        end
-
         private
-
-        def message(node)
-          number, = *node.receiver
-
-          format(MSG, number: number,
-                      correct: correct_method(node.method_name.to_s))
-        end
 
         def correct_method(method_name)
           if plural_method?(method_name)
@@ -60,6 +53,22 @@ module RuboCop
           else
             pluralize(method_name)
           end
+        end
+
+        def duration_method?(method_name)
+          SINGULAR_DURATION_METHODS.key?(method_name) ||
+            PLURAL_DURATION_METHODS.key?(method_name)
+        end
+
+        def literal_number?(node)
+          node && (node.int_type? || node.float_type?)
+        end
+
+        def message(node)
+          number, = *node.receiver
+
+          format(MSG, number: number,
+                      correct: correct_method(node.method_name.to_s))
         end
 
         def offense?(node)
@@ -73,6 +82,14 @@ module RuboCop
           method_name.to_s.end_with?('s')
         end
 
+        def plural_receiver?(number)
+          !singular_receiver?(number)
+        end
+
+        def pluralize(method_name)
+          SINGULAR_DURATION_METHODS.fetch(method_name.to_sym).to_s
+        end
+
         def singular_method?(method_name)
           !plural_method?(method_name)
         end
@@ -81,25 +98,8 @@ module RuboCop
           number.abs == 1
         end
 
-        def plural_receiver?(number)
-          !singular_receiver?(number)
-        end
-
-        def literal_number?(node)
-          node && (node.int_type? || node.float_type?)
-        end
-
-        def pluralize(method_name)
-          SINGULAR_DURATION_METHODS.fetch(method_name.to_sym).to_s
-        end
-
         def singularize(method_name)
           PLURAL_DURATION_METHODS.fetch(method_name.to_sym).to_s
-        end
-
-        def duration_method?(method_name)
-          SINGULAR_DURATION_METHODS.key?(method_name) ||
-            PLURAL_DURATION_METHODS.key?(method_name)
         end
       end
     end

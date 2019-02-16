@@ -24,6 +24,19 @@ module RuboCop
         MSG = 'Do not assign %<method_name>s to constants as it ' \
               'will be evaluated only once.'.freeze
 
+        def autocorrect(node)
+          return unless node.casgn_type?
+
+          scope, const_name, value = *node
+          return unless scope.nil?
+
+          indent = ' ' * node.loc.column
+          new_code = ["def self.#{const_name.downcase}",
+                      "#{indent}#{value.source}",
+                      'end'].join("\n#{indent}")
+          ->(corrector) { corrector.replace(node.source_range, new_code) }
+        end
+
         def on_casgn(node)
           relative_date_assignment?(node) do |method_name|
             add_offense(node, message: format(MSG, method_name: method_name))
@@ -51,19 +64,6 @@ module RuboCop
           relative_date_or_assignment?(node) do |method_name|
             add_offense(node, message: format(MSG, method_name: method_name))
           end
-        end
-
-        def autocorrect(node)
-          return unless node.casgn_type?
-
-          scope, const_name, value = *node
-          return unless scope.nil?
-
-          indent = ' ' * node.loc.column
-          new_code = ["def self.#{const_name.downcase}",
-                      "#{indent}#{value.source}",
-                      'end'].join("\n#{indent}")
-          ->(corrector) { corrector.replace(node.source_range, new_code) }
         end
 
         private

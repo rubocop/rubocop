@@ -72,6 +72,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include NegativeConditional
 
+        def autocorrect(node)
+          ConditionCorrector.correct_negative_condition(node)
+        end
+
         def on_if(node)
           return if node.elsif? || node.ternary?
           return if correct_style?(node)
@@ -79,19 +83,15 @@ module RuboCop
           check_negative_conditional(node)
         end
 
-        def autocorrect(node)
-          ConditionCorrector.correct_negative_condition(node)
-        end
-
         private
-
-        def message(node)
-          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
-        end
 
         def correct_style?(node)
           style == :prefix && node.modifier_form? ||
             style == :postfix && !node.modifier_form?
+        end
+
+        def message(node)
+          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
         end
       end
     end

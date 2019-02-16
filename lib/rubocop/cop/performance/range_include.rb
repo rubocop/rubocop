@@ -35,14 +35,14 @@ module RuboCop
           (send {irange erange (begin {irange erange})} :include? ...)
         PATTERN
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.selector, 'cover?') }
+        end
+
         def on_send(node)
           return unless range_include(node)
 
           add_offense(node, location: :selector)
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'cover?') }
         end
       end
     end

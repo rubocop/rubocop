@@ -52,21 +52,21 @@ module RuboCop
 
         private
 
-        def non_void_context(return_node)
-          return_node.each_ancestor(:block, :def, :defs).first
-        end
-
         def method_name(context_node)
           context_node.children.first
         end
 
-        def void_context_method?(method_name)
-          method_name == :initialize || setter_method?(method_name)
+        def non_void_context(return_node)
+          return_node.each_ancestor(:block, :def, :defs).first
         end
 
         def setter_method?(method_name)
           method_name.to_s.end_with?('=') &&
             !AST::Node::COMPARISON_OPERATORS.include?(method_name)
+        end
+
+        def void_context_method?(method_name)
+          method_name == :initialize || setter_method?(method_name)
         end
       end
     end

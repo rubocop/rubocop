@@ -31,18 +31,18 @@ module RuboCop
             (str {"enumerator" "rational" "complex" "thread"}))
         PATTERN
 
-        def on_send(node)
-          return unless unnecessary_require_statement?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             range = range_with_surrounding_space(range: node.loc.expression,
                                                  side: :right)
             corrector.remove(range)
           end
+        end
+
+        def on_send(node)
+          return unless unnecessary_require_statement?(node)
+
+          add_offense(node)
         end
       end
     end

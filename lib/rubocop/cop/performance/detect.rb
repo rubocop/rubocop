@@ -37,20 +37,6 @@ module RuboCop
           }
         PATTERN
 
-        def on_send(node)
-          return if rails_safe_mode?
-
-          detect_candidate?(node) do |receiver, second_method, args|
-            return unless args.empty?
-            return unless receiver
-
-            receiver, _args, body = *receiver if receiver.block_type?
-            return if accept_first_call?(receiver, body)
-
-            register_offense(node, receiver, second_method)
-          end
-        end
-
         def autocorrect(node)
           receiver, first_method = *node
 
@@ -70,6 +56,20 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return if rails_safe_mode?
+
+          detect_candidate?(node) do |receiver, second_method, args|
+            return unless args.empty?
+            return unless receiver
+
+            receiver, _args, body = *receiver if receiver.block_type?
+            return if accept_first_call?(receiver, body)
+
+            register_offense(node, receiver, second_method)
+          end
+        end
+
         private
 
         def accept_first_call?(receiver, body)
@@ -79,6 +79,18 @@ module RuboCop
           return true if body.nil? && (args.nil? || !args.block_pass_type?)
 
           lazy?(caller)
+        end
+
+        def lazy?(node)
+          return false unless node
+
+          receiver, method, _args = *node
+          method == :lazy && !receiver.nil?
+        end
+
+        def preferred_method
+          config.for_cop('Style/CollectionMethods') \
+            ['PreferredMethods']['detect'] || 'detect'
         end
 
         def register_offense(node, receiver, second_method)
@@ -91,18 +103,6 @@ module RuboCop
                                               second_method: second_method)
 
           add_offense(node, location: range, message: formatted_message)
-        end
-
-        def preferred_method
-          config.for_cop('Style/CollectionMethods') \
-            ['PreferredMethods']['detect'] || 'detect'
-        end
-
-        def lazy?(node)
-          return false unless node
-
-          receiver, method, _args = *node
-          method == :lazy && !receiver.nil?
         end
       end
     end

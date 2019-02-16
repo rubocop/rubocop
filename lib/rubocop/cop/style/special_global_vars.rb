@@ -111,16 +111,16 @@ module RuboCop
                                      ARGV
                                    ]).freeze
 
-        def on_gvar(node)
-          global_var, = *node
+        def autocorrect(node)
+          lambda do |corrector|
+            global_var, = *node
 
-          return unless (preferred = preferred_names(global_var))
+            while node.parent && node.parent.begin_type? &&
+                  node.parent.children.one?
+              node = node.parent
+            end
 
-          if preferred.include?(global_var)
-            correct_style_detected
-          else
-            opposite_style_detected
-            add_offense(node)
+            corrector.replace(node.source_range, replacement(node, global_var))
           end
         end
 
@@ -136,20 +136,26 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            global_var, = *node
+        def on_gvar(node)
+          global_var, = *node
 
-            while node.parent && node.parent.begin_type? &&
-                  node.parent.children.one?
-              node = node.parent
-            end
+          return unless (preferred = preferred_names(global_var))
 
-            corrector.replace(node.source_range, replacement(node, global_var))
+          if preferred.include?(global_var)
+            correct_style_detected
+          else
+            opposite_style_detected
+            add_offense(node)
           end
         end
 
         private
+
+        def english_name_replacement(preferred_name, node)
+          return "\#{#{preferred_name}}" if node.begin_type?
+
+          "{#{preferred_name}}"
+        end
 
         def format_english_message(global_var)
           regular, english = ENGLISH_VARS[global_var].partition do |var|
@@ -157,6 +163,11 @@ module RuboCop
           end
 
           format_message(english, regular, global_var)
+        end
+
+        # For now, we assume that lists are 2 items or less. Easy grammar!
+        def format_list(items)
+          items.join('` or `')
         end
 
         def format_message(english, regular, global)
@@ -174,9 +185,12 @@ module RuboCop
           end
         end
 
-        # For now, we assume that lists are 2 items or less. Easy grammar!
-        def format_list(items)
-          items.join('` or `')
+        def preferred_names(global)
+          if style == :use_english_names
+            ENGLISH_VARS[global]
+          else
+            PERL_VARS[global]
+          end
         end
 
         def replacement(node, global_var)
@@ -192,20 +206,6 @@ module RuboCop
           end
 
           "##{preferred_name}"
-        end
-
-        def preferred_names(global)
-          if style == :use_english_names
-            ENGLISH_VARS[global]
-          else
-            PERL_VARS[global]
-          end
-        end
-
-        def english_name_replacement(preferred_name, node)
-          return "\#{#{preferred_name}}" if node.begin_type?
-
-          "{#{preferred_name}}"
         end
       end
     end

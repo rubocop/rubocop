@@ -35,6 +35,14 @@ module RuboCop
 
     private
 
+    def parallel_runner_klass
+      if ENV['COVERAGE']
+        ParallelCoverageRunner
+      else
+        ParallelRunner
+      end
+    end
+
     def with_encoding
       Encoding.default_external = @temporary_external_encoding
       Encoding.default_internal = @temporary_internal_encoding
@@ -42,14 +50,6 @@ module RuboCop
     ensure
       Encoding.default_external = @previous_external_encoding
       Encoding.default_internal = @previous_internal_encoding
-    end
-
-    def parallel_runner_klass
-      if ENV['COVERAGE']
-        ParallelCoverageRunner
-      else
-        ParallelRunner
-      end
     end
 
     # A parallel spec runner implementation, heavily inspired by

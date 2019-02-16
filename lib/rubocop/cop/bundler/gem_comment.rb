@@ -43,15 +43,15 @@ module RuboCop
           node2.loc.line - node1.loc.line == 1
         end
 
+        def preceding_comment?(node1, node2)
+          node1 && node2 && precede?(node2, node1) &&
+            comment_line?(node2.loc.expression.source)
+        end
+
         def preceding_lines(node)
           processed_source.ast_with_comments[node].select do |line|
             line.loc.line < node.loc.line
           end
-        end
-
-        def preceding_comment?(node1, node2)
-          node1 && node2 && precede?(node2, node1) &&
-            comment_line?(node2.loc.expression.source)
         end
 
         def whitelisted_gem?(node)

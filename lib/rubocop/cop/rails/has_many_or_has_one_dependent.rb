@@ -64,12 +64,10 @@ module RuboCop
 
         private
 
-        def valid_options_in_with_options_block?(node)
-          return true unless node.parent
+        def active_resource?(node)
+          return false if node.nil?
 
-          n = node.parent.begin_type? ? node.parent.parent : node.parent
-
-          contain_valid_options_in_with_options_block?(n)
+          active_resource_class?(node)
         end
 
         def contain_valid_options_in_with_options_block?(node)
@@ -95,10 +93,12 @@ module RuboCop
           false
         end
 
-        def active_resource?(node)
-          return false if node.nil?
+        def valid_options_in_with_options_block?(node)
+          return true unless node.parent
 
-          active_resource_class?(node)
+          n = node.parent.begin_type? ? node.parent.parent : node.parent
+
+          contain_valid_options_in_with_options_block?(n)
         end
       end
     end

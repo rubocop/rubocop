@@ -134,18 +134,6 @@ module RuboCop
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
 
-        def on_send(node)
-          case style
-          when :require_parentheses
-            add_offense_for_require_parentheses(node)
-          when :omit_parentheses
-            add_offense_for_omit_parentheses(node)
-          end
-        end
-        alias on_csend on_send
-        alias on_super on_send
-        alias on_yield on_send
-
         def autocorrect(node)
           case style
           when :require_parentheses
@@ -164,15 +152,19 @@ module RuboCop
           end
         end
 
-        private
-
-        def add_offense_for_require_parentheses(node)
-          return if ignored_method?(node.method_name)
-          return if eligible_for_parentheses_omission?(node)
-          return unless node.arguments? && !node.parenthesized?
-
-          add_offense(node)
+        def on_send(node)
+          case style
+          when :require_parentheses
+            add_offense_for_require_parentheses(node)
+          when :omit_parentheses
+            add_offense_for_omit_parentheses(node)
+          end
         end
+        alias on_csend on_send
+        alias on_super on_send
+        alias on_yield on_send
+
+        private
 
         def add_offense_for_omit_parentheses(node)
           return unless node.parenthesized?
@@ -184,33 +176,36 @@ module RuboCop
           add_offense(node, location: node.loc.begin.join(node.loc.end))
         end
 
-        def autocorrect_for_require_parentheses(node)
-          lambda do |corrector|
-            corrector.replace(args_begin(node), '(')
+        def add_offense_for_require_parentheses(node)
+          return if ignored_method?(node.method_name)
+          return if eligible_for_parentheses_omission?(node)
+          return unless node.arguments? && !node.parenthesized?
 
-            unless args_parenthesized?(node)
-              corrector.insert_after(args_end(node), ')')
-            end
-          end
+          add_offense(node)
         end
 
-        def autocorrect_for_omit_parentheses(node)
-          lambda do |corrector|
-            if parentheses_at_the_end_of_multiline_call?(node)
-              corrector.replace(args_begin(node), ' \\')
-            else
-              corrector.replace(args_begin(node), ' ')
-            end
-            corrector.remove(node.loc.end)
-          end
+        def allowed_camel_case_method_call?(node)
+          node.camel_case_method? &&
+            (node.arguments.none? ||
+             cop_config['AllowParenthesesInCamelCaseMethod'])
         end
 
-        def eligible_for_parentheses_omission?(node)
-          node.operator_method? || node.setter_method? || ignore_macros?(node)
+        def allowed_chained_call_with_parentheses?(node)
+          return false unless cop_config['AllowParenthesesInChaining']
+
+          previous = node.descendants.first
+          return false unless previous && previous.send_type?
+
+          previous.parenthesized? ||
+            allowed_chained_call_with_parentheses?(previous)
         end
 
-        def ignore_macros?(node)
-          cop_config['IgnoreMacros'] && node.macro?
+        def allowed_multiline_call_with_parentheses?(node)
+          cop_config['AllowParenthesesInMultilineCall'] && node.multiline?
+        end
+
+        def ambigious_literal?(node)
+          splat?(node) || ternary_if?(node) || regexp_slash_literal?(node)
         end
 
         def args_begin(node)
@@ -233,30 +228,36 @@ module RuboCop
           first_node.begin_type? && first_node.parenthesized_call?
         end
 
-        def parentheses_at_the_end_of_multiline_call?(node)
-          node.multiline? &&
-            node.loc.begin.source_line
-                .gsub(TRAILING_WHITESPACE_REGEX, '')
-                .end_with?('(')
+        def assigned_before?(node, target)
+          node.assignment? &&
+            node.loc.operator.begin < target.loc.begin
         end
 
-        def super_call_without_arguments?(node)
-          node.super_type? && node.arguments.none?
+        def autocorrect_for_omit_parentheses(node)
+          lambda do |corrector|
+            if parentheses_at_the_end_of_multiline_call?(node)
+              corrector.replace(args_begin(node), ' \\')
+            else
+              corrector.replace(args_begin(node), ' ')
+            end
+            corrector.remove(node.loc.end)
+          end
         end
 
-        def allowed_camel_case_method_call?(node)
-          node.camel_case_method? &&
-            (node.arguments.none? ||
-             cop_config['AllowParenthesesInCamelCaseMethod'])
+        def autocorrect_for_require_parentheses(node)
+          lambda do |corrector|
+            corrector.replace(args_begin(node), '(')
+
+            unless args_parenthesized?(node)
+              corrector.insert_after(args_end(node), ')')
+            end
+          end
         end
 
-        def legitimate_call_with_parentheses?(node)
-          call_in_literals?(node) ||
-            call_with_ambiguous_arguments?(node) ||
-            call_in_logical_operators?(node) ||
-            call_in_optional_arguments?(node) ||
-            allowed_multiline_call_with_parentheses?(node) ||
-            allowed_chained_call_with_parentheses?(node)
+        def call_as_argument_or_chain?(node)
+          node.parent &&
+            (node.parent.send_type? && !assigned_before?(node.parent, node) ||
+             node.parent.csend_type? || node.parent.super_type?)
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity
@@ -268,6 +269,7 @@ module RuboCop
              splat?(node.parent) ||
              ternary_if?(node.parent))
         end
+
         # rubocop:enable Metrics/CyclomaticComplexity
 
         def call_in_logical_operators?(node)
@@ -296,10 +298,12 @@ module RuboCop
             node.block_node && node.block_node.braces?
         end
 
-        def call_as_argument_or_chain?(node)
-          node.parent &&
-            (node.parent.send_type? && !assigned_before?(node.parent, node) ||
-             node.parent.csend_type? || node.parent.super_type?)
+        def eligible_for_parentheses_omission?(node)
+          node.operator_method? || node.setter_method? || ignore_macros?(node)
+        end
+
+        def hash_literal?(node)
+          node.hash_type? && node.braces?
         end
 
         def hash_literal_in_arguments?(node)
@@ -309,47 +313,44 @@ module RuboCop
           end
         end
 
-        def allowed_multiline_call_with_parentheses?(node)
-          cop_config['AllowParenthesesInMultilineCall'] && node.multiline?
+        def ignore_macros?(node)
+          cop_config['IgnoreMacros'] && node.macro?
         end
 
-        def allowed_chained_call_with_parentheses?(node)
-          return false unless cop_config['AllowParenthesesInChaining']
-
-          previous = node.descendants.first
-          return false unless previous && previous.send_type?
-
-          previous.parenthesized? ||
-            allowed_chained_call_with_parentheses?(previous)
-        end
-
-        def ambigious_literal?(node)
-          splat?(node) || ternary_if?(node) || regexp_slash_literal?(node)
-        end
-
-        def splat?(node)
-          node.splat_type? || node.kwsplat_type? || node.block_pass_type?
-        end
-
-        def ternary_if?(node)
-          node.if_type? && node.ternary?
+        def legitimate_call_with_parentheses?(node)
+          call_in_literals?(node) ||
+            call_with_ambiguous_arguments?(node) ||
+            call_in_logical_operators?(node) ||
+            call_in_optional_arguments?(node) ||
+            allowed_multiline_call_with_parentheses?(node) ||
+            allowed_chained_call_with_parentheses?(node)
         end
 
         def logical_operator?(node)
           (node.and_type? || node.or_type?) && node.logical_operator?
         end
 
-        def hash_literal?(node)
-          node.hash_type? && node.braces?
+        def parentheses_at_the_end_of_multiline_call?(node)
+          node.multiline? &&
+            node.loc.begin.source_line
+                .gsub(TRAILING_WHITESPACE_REGEX, '')
+                .end_with?('(')
         end
 
         def regexp_slash_literal?(node)
           node.regexp_type? && node.loc.begin.source == '/'
         end
 
-        def assigned_before?(node, target)
-          node.assignment? &&
-            node.loc.operator.begin < target.loc.begin
+        def splat?(node)
+          node.splat_type? || node.kwsplat_type? || node.block_pass_type?
+        end
+
+        def super_call_without_arguments?(node)
+          node.super_type? && node.arguments.none?
+        end
+
+        def ternary_if?(node)
+          node.if_type? && node.ternary?
         end
       end
     end

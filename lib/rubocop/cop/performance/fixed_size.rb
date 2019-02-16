@@ -64,10 +64,6 @@ module RuboCop
 
         private
 
-        def allowed_variable?(var)
-          contains_splat?(var) || contains_double_splat?(var)
-        end
-
         def allowed_argument?(arg)
           arg && non_string_argument?(arg.first)
         end
@@ -76,16 +72,20 @@ module RuboCop
           node && (node.casgn_type? || node.block_type?)
         end
 
-        def contains_splat?(node)
-          return unless node.array_type?
-
-          node.each_child_node(:splat).any?
+        def allowed_variable?(var)
+          contains_splat?(var) || contains_double_splat?(var)
         end
 
         def contains_double_splat?(node)
           return unless node.hash_type?
 
           node.each_child_node(:kwsplat).any?
+        end
+
+        def contains_splat?(node)
+          return unless node.array_type?
+
+          node.each_child_node(:splat).any?
         end
 
         def non_string_argument?(node)

@@ -28,12 +28,6 @@ module RuboCop
           [{if while until} modifier_form?]
         PATTERN
 
-        def on_send(node)
-          each_redundant_merge(node) do |redundant_merge_node|
-            add_offense(redundant_merge_node)
-          end
-        end
-
         def autocorrect(node)
           redundant_merge_candidate(node) do |receiver, pairs|
             new_source = to_assignments(receiver, pairs).join("\n")
@@ -46,42 +40,13 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          each_redundant_merge(node) do |redundant_merge_node|
+            add_offense(redundant_merge_node)
+          end
+        end
+
         private
-
-        def message(node)
-          redundant_merge_candidate(node) do |receiver, pairs|
-            assignments = to_assignments(receiver, pairs).join('; ')
-
-            format(MSG, prefer: assignments, current: node.source)
-          end
-        end
-
-        def each_redundant_merge(node)
-          redundant_merge_candidate(node) do |receiver, pairs|
-            next if non_redundant_merge?(node, receiver, pairs)
-
-            yield node
-          end
-        end
-
-        def non_redundant_merge?(node, receiver, pairs)
-          non_redundant_pairs?(receiver, pairs) ||
-            kwsplat_used?(pairs) ||
-            non_redundant_value_used?(receiver, node)
-        end
-
-        def non_redundant_pairs?(receiver, pairs)
-          pairs.size > 1 && !receiver.pure? || pairs.size > max_key_value_pairs
-        end
-
-        def kwsplat_used?(pairs)
-          pairs.any?(&:kwsplat_type?)
-        end
-
-        def non_redundant_value_used?(receiver, node)
-          node.value_used? &&
-            !EachWithObjectInspector.new(node, receiver).value_used?
-        end
 
         def correct_multiple_elements(node, parent, new_source)
           if modifier_flow_control?(parent)
@@ -99,16 +64,51 @@ module RuboCop
           ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
 
-        def to_assignments(receiver, pairs)
-          pairs.map do |pair|
-            key, value = *pair
+        def each_redundant_merge(node)
+          redundant_merge_candidate(node) do |receiver, pairs|
+            next if non_redundant_merge?(node, receiver, pairs)
 
-            key = key.sym_type? && pair.colon? ? ":#{key.source}" : key.source
-
-            format(AREF_ASGN, receiver: receiver.source,
-                              key: key,
-                              value: value.source)
+            yield node
           end
+        end
+
+        def indent_width
+          @config.for_cop('IndentationWidth')['Width'] || 2
+        end
+
+        def kwsplat_used?(pairs)
+          pairs.any?(&:kwsplat_type?)
+        end
+
+        def leading_spaces(node)
+          node.source_range.source_line[/\A\s*/]
+        end
+
+        def max_key_value_pairs
+          Integer(cop_config['MaxKeyValuePairs'])
+        end
+
+        def message(node)
+          redundant_merge_candidate(node) do |receiver, pairs|
+            assignments = to_assignments(receiver, pairs).join('; ')
+
+            format(MSG, prefer: assignments, current: node.source)
+          end
+        end
+
+        def non_redundant_merge?(node, receiver, pairs)
+          non_redundant_pairs?(receiver, pairs) ||
+            kwsplat_used?(pairs) ||
+            non_redundant_value_used?(receiver, node)
+        end
+
+        def non_redundant_pairs?(receiver, pairs)
+          pairs.size > 1 && !receiver.pure? || pairs.size > max_key_value_pairs
+        end
+
+        def non_redundant_value_used?(receiver, node)
+          node.value_used? &&
+            !EachWithObjectInspector.new(node, receiver).value_used?
         end
 
         def rewrite_with_modifier(node, parent, new_source)
@@ -123,16 +123,16 @@ module RuboCop
                                            body: new_source).chomp
         end
 
-        def leading_spaces(node)
-          node.source_range.source_line[/\A\s*/]
-        end
+        def to_assignments(receiver, pairs)
+          pairs.map do |pair|
+            key, value = *pair
 
-        def indent_width
-          @config.for_cop('IndentationWidth')['Width'] || 2
-        end
+            key = key.sym_type? && pair.colon? ? ":#{key.source}" : key.source
 
-        def max_key_value_pairs
-          Integer(cop_config['MaxKeyValuePairs'])
+            format(AREF_ASGN, receiver: receiver.source,
+                              key: key,
+                              value: value.source)
+          end
         end
 
         # A utility class for checking the use of values within an

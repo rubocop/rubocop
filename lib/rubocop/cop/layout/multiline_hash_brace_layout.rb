@@ -109,12 +109,12 @@ module RuboCop
           [Style::BracesAroundHashParameters]
         end
 
-        def on_hash(node)
-          check_brace_layout(node)
-        end
-
         def autocorrect(node)
           MultilineLiteralBraceCorrector.new(node, processed_source)
+        end
+
+        def on_hash(node)
+          check_brace_layout(node)
         end
       end
     end

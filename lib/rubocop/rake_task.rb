@@ -34,6 +34,13 @@ module RuboCop
 
     private
 
+    def full_options
+      formatters.map { |f| ['--format', f] }.flatten
+                .concat(requires.map { |r| ['--require', r] }.flatten)
+                .concat(options.flatten)
+                .concat(patterns)
+    end
+
     def run_cli(verbose, options)
       # We lazy-load rubocop so that the task doesn't dramatically impact the
       # load time of your Rakefile.
@@ -43,13 +50,6 @@ module RuboCop
       puts 'Running RuboCop...' if verbose
       result = cli.run(options)
       abort('RuboCop failed!') if result.nonzero? && fail_on_error
-    end
-
-    def full_options
-      formatters.map { |f| ['--format', f] }.flatten
-                .concat(requires.map { |r| ['--require', r] }.flatten)
-                .concat(options.flatten)
-                .concat(patterns)
     end
 
     def setup_ivars(name)

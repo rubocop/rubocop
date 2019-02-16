@@ -26,16 +26,6 @@ module RuboCop
         MSG = "Within `%i`/`%I`, ':' and ',' are unnecessary and may be " \
           'unwanted in the resulting symbols.'.freeze
 
-        def on_array(node)
-          process(node, '%i', '%I')
-        end
-
-        def on_percent_literal(node)
-          return unless contains_colons_or_commas?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             node.children.each do |child|
@@ -46,6 +36,16 @@ module RuboCop
                 range.source.start_with?(':')
             end
           end
+        end
+
+        def on_array(node)
+          process(node, '%i', '%I')
+        end
+
+        def on_percent_literal(node)
+          return unless contains_colons_or_commas?(node)
+
+          add_offense(node)
         end
 
         private

@@ -39,6 +39,10 @@ module RuboCop
           environments.map { |env| env + '?' }
         end
 
+        def environments
+          cop_config['Environments']
+        end
+
         def message(name)
           similar = find_similar_name(name.to_s, [])
           if similar
@@ -52,10 +56,6 @@ module RuboCop
           name = name.to_s
           name.end_with?('?') &&
             !environments.include?(name[0..-2])
-        end
-
-        def environments
-          cop_config['Environments']
         end
       end
     end

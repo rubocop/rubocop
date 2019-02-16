@@ -81,15 +81,6 @@ module RuboCop
         include SurroundingSpace
         include RangeHelp
 
-        def on_block(node)
-          return if node.keywords?
-
-          left_brace = node.loc.begin
-          right_brace = node.loc.end
-
-          check_inside(node, left_brace, right_brace)
-        end
-
         def autocorrect(range)
           lambda do |corrector|
             case range.source
@@ -101,7 +92,30 @@ module RuboCop
           end
         end
 
+        def on_block(node)
+          return if node.keywords?
+
+          left_brace = node.loc.begin
+          right_brace = node.loc.end
+
+          check_inside(node, left_brace, right_brace)
+        end
+
         private
+
+        def adjacent_braces(left_brace, right_brace)
+          return if style_for_empty_braces != :space
+
+          offense(left_brace.begin_pos, right_brace.end_pos,
+                  'Space missing inside empty braces.')
+        end
+
+        def braces_with_contents_inside(node, inner)
+          args_delimiter = node.arguments.loc.begin # Can be ( | or nil.
+
+          check_left_brace(inner, node.loc.begin, args_delimiter)
+          check_right_brace(inner, node.loc.end, node.single_line?)
+        end
 
         def check_inside(node, left_brace, right_brace)
           if left_brace.end_pos == right_brace.begin_pos
@@ -119,20 +133,6 @@ module RuboCop
           end
         end
 
-        def adjacent_braces(left_brace, right_brace)
-          return if style_for_empty_braces != :space
-
-          offense(left_brace.begin_pos, right_brace.end_pos,
-                  'Space missing inside empty braces.')
-        end
-
-        def braces_with_contents_inside(node, inner)
-          args_delimiter = node.arguments.loc.begin # Can be ( | or nil.
-
-          check_left_brace(inner, node.loc.begin, args_delimiter)
-          check_right_brace(inner, node.loc.end, node.single_line?)
-        end
-
         def check_left_brace(inner, left_brace, args_delimiter)
           if inner =~ /\A\S/
             no_space_inside_left_brace(left_brace, args_delimiter)
@@ -147,6 +147,14 @@ module RuboCop
                      'Space missing inside }.')
           else
             space_inside_right_brace(right_brace)
+          end
+        end
+
+        def no_space(begin_pos, end_pos, msg)
+          if style == :space
+            offense(begin_pos, end_pos, msg) { opposite_style_detected }
+          else
+            correct_style_detected
           end
         end
 
@@ -168,6 +176,23 @@ module RuboCop
           end
         end
 
+        def offense(begin_pos, end_pos, msg, &block)
+          range = range_between(begin_pos, end_pos)
+          add_offense(range, location: range, message: msg, &block)
+        end
+
+        def pipe?(args_delimiter)
+          args_delimiter && args_delimiter.is?('|')
+        end
+
+        def space(begin_pos, end_pos, msg)
+          if style == :no_space
+            offense(begin_pos, end_pos, msg) { opposite_style_detected }
+          else
+            correct_style_detected
+          end
+        end
+
         def space_inside_left_brace(left_brace, args_delimiter)
           if pipe?(args_delimiter)
             unless cop_config['SpaceBeforeBlockParameters']
@@ -184,36 +209,11 @@ module RuboCop
           end
         end
 
-        def pipe?(args_delimiter)
-          args_delimiter && args_delimiter.is?('|')
-        end
-
         def space_inside_right_brace(right_brace)
           brace_with_space = range_with_surrounding_space(range: right_brace,
                                                           side: :left)
           space(brace_with_space.begin_pos, brace_with_space.end_pos - 1,
                 'Space inside } detected.')
-        end
-
-        def no_space(begin_pos, end_pos, msg)
-          if style == :space
-            offense(begin_pos, end_pos, msg) { opposite_style_detected }
-          else
-            correct_style_detected
-          end
-        end
-
-        def space(begin_pos, end_pos, msg)
-          if style == :no_space
-            offense(begin_pos, end_pos, msg) { opposite_style_detected }
-          else
-            correct_style_detected
-          end
-        end
-
-        def offense(begin_pos, end_pos, msg, &block)
-          range = range_between(begin_pos, end_pos)
-          add_offense(range, location: range, message: msg, &block)
         end
 
         def style_for_empty_braces

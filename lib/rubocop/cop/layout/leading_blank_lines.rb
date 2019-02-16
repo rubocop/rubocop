@@ -30,14 +30,6 @@ module RuboCop
       class LeadingBlankLines < Cop
         MSG = 'Unnecessary blank line at the beginning of the source.'.freeze
 
-        def investigate(processed_source)
-          token = processed_source.tokens[0]
-          return unless token && token.line > 1
-
-          add_offense(processed_source.tokens[0],
-                      location: processed_source.tokens[0].pos)
-        end
-
         def autocorrect(node)
           range = Parser::Source::Range.new(processed_source.buffer,
                                             0,
@@ -46,6 +38,14 @@ module RuboCop
           lambda do |corrector|
             corrector.remove(range)
           end
+        end
+
+        def investigate(processed_source)
+          token = processed_source.tokens[0]
+          return unless token && token.line > 1
+
+          add_offense(processed_source.tokens[0],
+                      location: processed_source.tokens[0].pos)
         end
       end
     end

@@ -40,14 +40,14 @@ module RuboCop
 
         private
 
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :ambiguous_prefix
-        end
-
         def alternative_message(diagnostic)
           operator = diagnostic.location.source
           hash = AMBIGUITIES[operator]
           format(MSG_FORMAT, hash)
+        end
+
+        def relevant_diagnostic?(diagnostic)
+          diagnostic.reason == :ambiguous_prefix
         end
       end
     end

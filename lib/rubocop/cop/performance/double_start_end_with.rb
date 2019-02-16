@@ -21,19 +21,6 @@ module RuboCop
         MSG = 'Use `%<receiver>s.%<method>s(%<combined_args>s)` ' \
               'instead of `%<original_code>s`.'.freeze
 
-        def on_or(node)
-          receiver,
-          method,
-          first_call_args,
-          second_call_args = process_source(node)
-
-          return unless receiver && second_call_args.all?(&:pure?)
-
-          combined_args = combine_args(first_call_args, second_call_args)
-
-          add_offense_for_double_call(node, receiver, method, combined_args)
-        end
-
         def autocorrect(node)
           _receiver, _method,
           first_call_args, second_call_args = process_source(node)
@@ -48,19 +35,20 @@ module RuboCop
           end
         end
 
+        def on_or(node)
+          receiver,
+          method,
+          first_call_args,
+          second_call_args = process_source(node)
+
+          return unless receiver && second_call_args.all?(&:pure?)
+
+          combined_args = combine_args(first_call_args, second_call_args)
+
+          add_offense_for_double_call(node, receiver, method, combined_args)
+        end
+
         private
-
-        def process_source(node)
-          if check_for_active_support_aliases?
-            check_with_active_support_aliases(node)
-          else
-            two_start_end_with_calls(node)
-          end
-        end
-
-        def combine_args(first_call_args, second_call_args)
-          (first_call_args + second_call_args).map(&:source).join(', ')
-        end
 
         def add_offense_for_double_call(node, receiver, method, combined_args)
           msg = format(MSG, receiver: receiver.source,
@@ -73,6 +61,18 @@ module RuboCop
 
         def check_for_active_support_aliases?
           cop_config['IncludeActiveSupportAliases']
+        end
+
+        def combine_args(first_call_args, second_call_args)
+          (first_call_args + second_call_args).map(&:source).join(', ')
+        end
+
+        def process_source(node)
+          if check_for_active_support_aliases?
+            check_with_active_support_aliases(node)
+          else
+            two_start_end_with_calls(node)
+          end
         end
 
         def_node_matcher :two_start_end_with_calls, <<-PATTERN

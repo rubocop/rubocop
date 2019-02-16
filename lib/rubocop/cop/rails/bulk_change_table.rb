@@ -167,14 +167,37 @@ module RuboCop
 
         private
 
-        # @param node [RuboCop::AST::SendNode] (send nil? :change_table ...)
-        def include_bulk_options?(node)
-          # arguments: [{(sym :table)(str "table")} (hash (pair (sym :bulk) _))]
-          options = node.arguments[1]
-          return false unless options
+        # @param node [RuboCop::AST::SendNode]
+        def add_offense_for_alter_methods(node)
+          # arguments: [{(sym :table)(str "table")} ...]
+          table_node = node.arguments[0]
+          return unless table_node.is_a? RuboCop::AST::BasicLiteralNode
 
-          options.hash_type? &&
-            options.keys.any? { |key| key.sym_type? && key.value == :bulk }
+          message = format(MSG_FOR_ALTER_METHODS, table: table_node.value)
+          add_offense(node, message: message)
+        end
+
+        # @param node [RuboCop::AST::SendNode]
+        def add_offense_for_change_table(node)
+          add_offense(node, message: MSG_FOR_CHANGE_TABLE)
+        end
+
+        def combinable_alter_methods
+          case database
+          when MYSQL
+            COMBINABLE_ALTER_METHODS + MYSQL_COMBINABLE_ALTER_METHODS
+          when POSTGRESQL
+            COMBINABLE_ALTER_METHODS + POSTGRESQL_COMBINABLE_ALTER_METHODS
+          end
+        end
+
+        def combinable_transformations
+          case database
+          when MYSQL
+            COMBINABLE_TRANSFORMATIONS + MYSQL_COMBINABLE_TRANSFORMATIONS
+          when POSTGRESQL
+            COMBINABLE_TRANSFORMATIONS + POSTGRESQL_COMBINABLE_TRANSFORMATIONS
+          end
         end
 
         def database
@@ -206,6 +229,16 @@ module RuboCop
           nil
         end
 
+        # @param node [RuboCop::AST::SendNode] (send nil? :change_table ...)
+        def include_bulk_options?(node)
+          # arguments: [{(sym :table)(str "table")} (hash (pair (sym :bulk) _))]
+          options = node.arguments[1]
+          return false unless options
+
+          options.hash_type? &&
+            options.keys.any? { |key| key.sym_type? && key.value == :bulk }
+        end
+
         def support_bulk_alter?
           case database
           when MYSQL
@@ -219,44 +252,21 @@ module RuboCop
           end
         end
 
-        def combinable_alter_methods
-          case database
-          when MYSQL
-            COMBINABLE_ALTER_METHODS + MYSQL_COMBINABLE_ALTER_METHODS
-          when POSTGRESQL
-            COMBINABLE_ALTER_METHODS + POSTGRESQL_COMBINABLE_ALTER_METHODS
-          end
-        end
-
-        def combinable_transformations
-          case database
-          when MYSQL
-            COMBINABLE_TRANSFORMATIONS + MYSQL_COMBINABLE_TRANSFORMATIONS
-          when POSTGRESQL
-            COMBINABLE_TRANSFORMATIONS + POSTGRESQL_COMBINABLE_TRANSFORMATIONS
-          end
-        end
-
-        # @param node [RuboCop::AST::SendNode]
-        def add_offense_for_alter_methods(node)
-          # arguments: [{(sym :table)(str "table")} ...]
-          table_node = node.arguments[0]
-          return unless table_node.is_a? RuboCop::AST::BasicLiteralNode
-
-          message = format(MSG_FOR_ALTER_METHODS, table: table_node.value)
-          add_offense(node, message: message)
-        end
-
-        # @param node [RuboCop::AST::SendNode]
-        def add_offense_for_change_table(node)
-          add_offense(node, message: MSG_FOR_CHANGE_TABLE)
-        end
-
         # Record combinable alter methods and register offensive nodes.
         class AlterMethodsRecorder
           def initialize
             @nodes = []
             @offensive_nodes = []
+          end
+
+          def flush
+            @offensive_nodes << @nodes.first if @nodes.size > 1
+            @nodes = []
+          end
+
+          def offensive_nodes
+            flush
+            @offensive_nodes
           end
 
           # @param new_node [RuboCop::AST::SendNode]
@@ -271,16 +281,6 @@ module RuboCop
             else
               flush
             end
-          end
-
-          def flush
-            @offensive_nodes << @nodes.first if @nodes.size > 1
-            @nodes = []
-          end
-
-          def offensive_nodes
-            flush
-            @offensive_nodes
           end
         end
       end

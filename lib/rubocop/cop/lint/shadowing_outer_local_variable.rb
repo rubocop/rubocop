@@ -34,10 +34,6 @@ module RuboCop
       class ShadowingOuterLocalVariable < Cop
         MSG = 'Shadowing outer local variable - `%<variable>s`.'.freeze
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def before_declaring_variable(variable, variable_table)
           return if variable.should_be_unused?
 
@@ -46,6 +42,10 @@ module RuboCop
 
           message = format(MSG, variable: variable.name)
           add_offense(variable.declaration_node, message: message)
+        end
+
+        def join_force?(force_class)
+          force_class == VariableForce
         end
       end
     end

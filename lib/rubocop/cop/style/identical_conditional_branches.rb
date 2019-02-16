@@ -65,6 +65,16 @@ module RuboCop
       class IdenticalConditionalBranches < Cop
         MSG = 'Move `%<source>s` out of the conditional.'.freeze
 
+        def on_case(node)
+          return unless node.else? && node.else_branch
+
+          branches = node.when_branches.map(&:body).push(node.else_branch)
+
+          return if branches.any?(&:nil?)
+
+          check_branches(branches)
+        end
+
         def on_if(node)
           return if node.elsif?
 
@@ -72,16 +82,6 @@ module RuboCop
 
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
-          return if branches.any?(&:nil?)
-
-          check_branches(branches)
-        end
-
-        def on_case(node)
-          return unless node.else? && node.else_branch
-
-          branches = node.when_branches.map(&:body).push(node.else_branch)
-
           return if branches.any?(&:nil?)
 
           check_branches(branches)
@@ -104,10 +104,6 @@ module RuboCop
           end
         end
 
-        def message(node)
-          format(MSG, source: node.source)
-        end
-
         # `elsif` branches show up in the if node as nested `else` branches. We
         # need to recursively iterate over all `else` branches.
         def expand_elses(branch)
@@ -121,12 +117,16 @@ module RuboCop
           end
         end
 
-        def tail(node)
-          node.begin_type? ? node.children.last : node
-        end
-
         def head(node)
           node.begin_type? ? node.children.first : node
+        end
+
+        def message(node)
+          format(MSG, source: node.source)
+        end
+
+        def tail(node)
+          node.begin_type? ? node.children.last : node
         end
       end
     end

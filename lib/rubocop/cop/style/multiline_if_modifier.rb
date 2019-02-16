@@ -21,31 +21,19 @@ module RuboCop
         MSG = 'Favor a normal %<keyword>s-statement over a modifier' \
               ' clause in a multiline statement.'.freeze
 
-        def on_if(node)
-          return unless node.modifier_form? && node.body.multiline?
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, to_normal_if(node))
           end
         end
 
+        def on_if(node)
+          return unless node.modifier_form? && node.body.multiline?
+
+          add_offense(node)
+        end
+
         private
-
-        def message(node)
-          format(MSG, keyword: node.keyword)
-        end
-
-        def to_normal_if(node)
-          indented_body = indented_body(node.body, node)
-          condition = "#{node.keyword} #{node.condition.source}"
-          indented_end = "#{offset(node)}end"
-
-          [condition, indented_body, indented_end].join("\n")
-        end
 
         def configured_indentation_width
           super || 2
@@ -60,6 +48,18 @@ module RuboCop
               line.sub(/^\s{#{offset(node).length}}/, indentation(node))
             end
           end.join
+        end
+
+        def message(node)
+          format(MSG, keyword: node.keyword)
+        end
+
+        def to_normal_if(node)
+          indented_body = indented_body(node.body, node)
+          condition = "#{node.keyword} #{node.condition.source}"
+          indented_end = "#{offset(node)}end"
+
+          [condition, indented_body, indented_end].join("\n")
         end
       end
     end

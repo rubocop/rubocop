@@ -49,19 +49,23 @@ module RuboCop
 
       private
 
-      def trigger_responding_cops(callback, node)
-        @callbacks[callback] ||= @cops.select do |cop|
-          cop.respond_to?(callback)
-        end
-        @callbacks[callback].each do |cop|
-          with_cop_error_handling(cop, node) do
-            cop.send(callback, node)
+      # There are cops/forces that require their own custom processing.
+      # If they define the #investigate method, all input parameters passed
+      # to the commissioner will be passed to the cop too in order to do
+      # its own processing.
+      def invoke_custom_processing(cops_or_forces, processed_source)
+        cops_or_forces.each do |cop|
+          next unless cop.respond_to?(:investigate)
+
+          with_cop_error_handling(cop) do
+            cop.investigate(processed_source)
           end
         end
       end
 
-      def reset_errors
-        @errors = Hash.new { |hash, k| hash[k] = [] }
+      # TODO: Bad design.
+      def prepare(processed_source)
+        @cops.each { |cop| cop.processed_source = processed_source }
       end
 
       def remove_irrelevant_cops(filename)
@@ -80,21 +84,17 @@ module RuboCop
         @callbacks.clear
       end
 
-      # TODO: Bad design.
-      def prepare(processed_source)
-        @cops.each { |cop| cop.processed_source = processed_source }
+      def reset_errors
+        @errors = Hash.new { |hash, k| hash[k] = [] }
       end
 
-      # There are cops/forces that require their own custom processing.
-      # If they define the #investigate method, all input parameters passed
-      # to the commissioner will be passed to the cop too in order to do
-      # its own processing.
-      def invoke_custom_processing(cops_or_forces, processed_source)
-        cops_or_forces.each do |cop|
-          next unless cop.respond_to?(:investigate)
-
-          with_cop_error_handling(cop) do
-            cop.investigate(processed_source)
+      def trigger_responding_cops(callback, node)
+        @callbacks[callback] ||= @cops.select do |cop|
+          cop.respond_to?(callback)
+        end
+        @callbacks[callback].each do |cop|
+          with_cop_error_handling(cop, node) do
+            cop.send(callback, node)
           end
         end
       end

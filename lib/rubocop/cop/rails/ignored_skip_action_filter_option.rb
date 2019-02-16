@@ -75,18 +75,18 @@ module RuboCop
 
         private
 
-        def options_hash(options)
-          options.pairs
-                 .select { |pair| pair.key.sym_type? }
-                 .map { |pair| [pair.key.value, pair] }.to_h
+        def if_and_except?(options)
+          options.key?(:if) && options.key?(:except)
         end
 
         def if_and_only?(options)
           options.key?(:if) && options.key?(:only)
         end
 
-        def if_and_except?(options)
-          options.key?(:if) && options.key?(:except)
+        def options_hash(options)
+          options.pairs
+                 .select { |pair| pair.key.sym_type? }
+                 .map { |pair| [pair.key.value, pair] }.to_h
         end
       end
     end

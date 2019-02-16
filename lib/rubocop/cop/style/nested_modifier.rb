@@ -18,30 +18,6 @@ module RuboCop
 
         MSG = 'Avoid using nested modifiers.'.freeze
 
-        def on_while(node)
-          check(node)
-        end
-
-        def on_until(node)
-          check(node)
-        end
-
-        def on_if(node)
-          check(node)
-        end
-
-        def check(node)
-          return if part_of_ignored_node?(node)
-          return unless modifier?(node) && modifier?(node.parent)
-
-          add_offense(node, location: :keyword)
-          ignore_node(node)
-        end
-
-        def modifier?(node)
-          node && node.basic_conditional? && node.modifier_form?
-        end
-
         def autocorrect(node)
           return unless node.if_type? && node.parent.if_type?
 
@@ -53,16 +29,12 @@ module RuboCop
           end
         end
 
-        def new_expression(outer_node, inner_node)
-          operator = replacement_operator(outer_node.keyword)
-          lh_operand = left_hand_operand(outer_node, operator)
-          rh_operand = right_hand_operand(inner_node, outer_node.keyword)
+        def check(node)
+          return if part_of_ignored_node?(node)
+          return unless modifier?(node) && modifier?(node.parent)
 
-          "#{outer_node.keyword} #{lh_operand} #{operator} #{rh_operand}"
-        end
-
-        def replacement_operator(keyword)
-          keyword == 'if'.freeze ? '&&'.freeze : '||'.freeze
+          add_offense(node, location: :keyword)
+          ignore_node(node)
         end
 
         def left_hand_operand(node, operator)
@@ -72,16 +44,44 @@ module RuboCop
           expr
         end
 
-        def right_hand_operand(node, left_hand_keyword)
-          expr = node.condition.source
-          expr = "(#{expr})" if requires_parens?(node.condition)
-          expr = "!#{expr}" unless left_hand_keyword == node.keyword
-          expr
+        def modifier?(node)
+          node && node.basic_conditional? && node.modifier_form?
+        end
+
+        def new_expression(outer_node, inner_node)
+          operator = replacement_operator(outer_node.keyword)
+          lh_operand = left_hand_operand(outer_node, operator)
+          rh_operand = right_hand_operand(inner_node, outer_node.keyword)
+
+          "#{outer_node.keyword} #{lh_operand} #{operator} #{rh_operand}"
+        end
+
+        def on_if(node)
+          check(node)
+        end
+
+        def on_until(node)
+          check(node)
+        end
+
+        def on_while(node)
+          check(node)
+        end
+
+        def replacement_operator(keyword)
+          keyword == 'if'.freeze ? '&&'.freeze : '||'.freeze
         end
 
         def requires_parens?(node)
           node.or_type? ||
             !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
+        end
+
+        def right_hand_operand(node, left_hand_keyword)
+          expr = node.condition.source
+          expr = "(#{expr})" if requires_parens?(node.condition)
+          expr = "!#{expr}" unless left_hand_keyword == node.keyword
+          expr
         end
       end
     end

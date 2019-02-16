@@ -10,13 +10,6 @@ module RuboCop
           true
         end
 
-        def deltas_for_first_pair(first_pair, _node)
-          {
-            separator: separator_delta(first_pair),
-            value: value_delta(first_pair)
-          }
-        end
-
         def deltas(first_pair, current_pair)
           if Util.begins_its_line?(current_pair.source_range)
             key_delta = first_pair.key_delta(current_pair)
@@ -27,6 +20,13 @@ module RuboCop
           else
             {}
           end
+        end
+
+        def deltas_for_first_pair(first_pair, _node)
+          {
+            separator: separator_delta(first_pair),
+            value: value_delta(first_pair)
+          }
         end
 
         private
@@ -97,13 +97,13 @@ module RuboCop
 
         attr_accessor :max_key_width
 
-        def key_delta(first_pair, current_pair)
-          first_pair.key_delta(current_pair)
-        end
-
         def hash_rocket_delta(first_pair, current_pair)
           first_pair.loc.column + max_key_width + 1 -
             current_pair.loc.operator.column
+        end
+
+        def key_delta(first_pair, current_pair)
+          first_pair.key_delta(current_pair)
         end
 
         def value_delta(first_pair, current_pair)
@@ -126,12 +126,12 @@ module RuboCop
 
         private
 
-        def key_delta(first_pair, current_pair)
-          first_pair.key_delta(current_pair, :right)
-        end
-
         def hash_rocket_delta(first_pair, current_pair)
           first_pair.delimiter_delta(current_pair)
+        end
+
+        def key_delta(first_pair, current_pair)
+          first_pair.key_delta(current_pair, :right)
         end
 
         def value_delta(first_pair, current_pair)

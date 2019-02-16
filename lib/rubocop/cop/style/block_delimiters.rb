@@ -75,6 +75,22 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
 
+        def autocorrect(node)
+          return if correction_would_break_code?(node)
+
+          if node.braces?
+            replace_braces_with_do_end(node.loc)
+          else
+            replace_do_end_with_braces(node.loc)
+          end
+        end
+
+        def on_block(node)
+          return if ignored_node?(node)
+
+          add_offense(node, location: :begin) unless proper_block_style?(node)
+        end
+
         def on_send(node)
           return unless node.arguments?
           return if node.parenthesized? || node.operator_method?
@@ -89,40 +105,10 @@ module RuboCop
           end
         end
 
-        def on_block(node)
-          return if ignored_node?(node)
-
-          add_offense(node, location: :begin) unless proper_block_style?(node)
-        end
-
-        def autocorrect(node)
-          return if correction_would_break_code?(node)
-
-          if node.braces?
-            replace_braces_with_do_end(node.loc)
-          else
-            replace_do_end_with_braces(node.loc)
-          end
-        end
-
         private
 
-        def line_count_based_message(node)
-          if node.multiline?
-            'Avoid using `{...}` for multi-line blocks.'
-          else
-            'Prefer `{...}` over `do...end` for single-line blocks.'
-          end
-        end
-
-        def semantic_message(node)
-          block_begin = node.loc.begin.source
-
-          if block_begin == '{'
-            'Prefer `do...end` over `{...}` for procedural blocks.'
-          else
-            'Prefer `{...}` over `do...end` for functional blocks.'
-          end
+        def array_or_range?(node)
+          node.array_type? || node.irange_type? || node.erange_type?
         end
 
         def braces_for_chaining_message(node)
@@ -137,11 +123,86 @@ module RuboCop
           end
         end
 
+        def braces_for_chaining_style?(node)
+          block_begin = node.loc.begin.source
+
+          block_begin == if node.multiline?
+                           (return_value_chaining?(node) ? '{' : 'do')
+                         else
+                           '{'
+                         end
+        end
+
+        def conditional?(node)
+          node.if_type? || node.or_type? || node.and_type?
+        end
+
+        def correction_would_break_code?(node)
+          return unless node.keywords?
+
+          node.send_node.arguments? && !node.send_node.parenthesized?
+        end
+
+        def functional_block?(node)
+          return_value_used?(node) || return_value_of_scope?(node)
+        end
+
+        def functional_method?(method_name)
+          cop_config['FunctionalMethods'].map(&:to_sym).include?(method_name)
+        end
+
+        # rubocop:disable Metrics/CyclomaticComplexity
+        def get_blocks(node, &block)
+          case node.type
+          when :block
+            yield node
+          when :send
+            get_blocks(node.receiver, &block) if node.receiver
+          when :hash
+            # A hash which is passed as method argument may have no braces
+            # In that case, one of the K/V pairs could contain a block node
+            # which could change in meaning if do...end replaced {...}
+            return if node.braces?
+
+            node.each_child_node { |child| get_blocks(child, &block) }
+          when :pair
+            node.each_child_node { |child| get_blocks(child, &block) }
+          end
+        end
+
+        def line_count_based_block_style?(node)
+          node.multiline? ^ node.braces?
+        end
+
+        def line_count_based_message(node)
+          if node.multiline?
+            'Avoid using `{...}` for multi-line blocks.'
+          else
+            'Prefer `{...}` over `do...end` for single-line blocks.'
+          end
+        end
+
         def message(node)
           case style
           when :line_count_based    then line_count_based_message(node)
           when :semantic            then semantic_message(node)
           when :braces_for_chaining then braces_for_chaining_message(node)
+          end
+        end
+
+        def procedural_method?(method_name)
+          cop_config['ProceduralMethods'].map(&:to_sym).include?(method_name)
+        end
+
+        # rubocop:enable Metrics/CyclomaticComplexity
+
+        def proper_block_style?(node)
+          return true if ignored_method?(node.method_name)
+
+          case style
+          when :line_count_based    then line_count_based_block_style?(node)
+          when :semantic            then semantic_block_style?(node)
+          when :braces_for_chaining then braces_for_chaining_style?(node)
           end
         end
 
@@ -170,88 +231,15 @@ module RuboCop
           end
         end
 
-        def whitespace_before?(range)
-          range.source_buffer.source[range.begin_pos - 1, 1] =~ /\s/
-        end
-
-        def whitespace_after?(range, length = 1)
-          range.source_buffer.source[range.begin_pos + length, 1] =~ /\s/
-        end
-
-        # rubocop:disable Metrics/CyclomaticComplexity
-        def get_blocks(node, &block)
-          case node.type
-          when :block
-            yield node
-          when :send
-            get_blocks(node.receiver, &block) if node.receiver
-          when :hash
-            # A hash which is passed as method argument may have no braces
-            # In that case, one of the K/V pairs could contain a block node
-            # which could change in meaning if do...end replaced {...}
-            return if node.braces?
-
-            node.each_child_node { |child| get_blocks(child, &block) }
-          when :pair
-            node.each_child_node { |child| get_blocks(child, &block) }
-          end
-        end
-        # rubocop:enable Metrics/CyclomaticComplexity
-
-        def proper_block_style?(node)
-          return true if ignored_method?(node.method_name)
-
-          case style
-          when :line_count_based    then line_count_based_block_style?(node)
-          when :semantic            then semantic_block_style?(node)
-          when :braces_for_chaining then braces_for_chaining_style?(node)
-          end
-        end
-
-        def line_count_based_block_style?(node)
-          node.multiline? ^ node.braces?
-        end
-
-        def semantic_block_style?(node)
-          method_name = node.method_name
-
-          if node.braces?
-            functional_method?(method_name) || functional_block?(node)
-          else
-            procedural_method?(method_name) || !return_value_used?(node)
-          end
-        end
-
-        def braces_for_chaining_style?(node)
-          block_begin = node.loc.begin.source
-
-          block_begin == if node.multiline?
-                           (return_value_chaining?(node) ? '{' : 'do')
-                         else
-                           '{'
-                         end
-        end
-
         def return_value_chaining?(node)
           node.parent && node.parent.send_type? && node.parent.dot?
         end
 
-        def correction_would_break_code?(node)
-          return unless node.keywords?
+        def return_value_of_scope?(node)
+          return unless node.parent
 
-          node.send_node.arguments? && !node.send_node.parenthesized?
-        end
-
-        def functional_method?(method_name)
-          cop_config['FunctionalMethods'].map(&:to_sym).include?(method_name)
-        end
-
-        def functional_block?(node)
-          return_value_used?(node) || return_value_of_scope?(node)
-        end
-
-        def procedural_method?(method_name)
-          cop_config['ProceduralMethods'].map(&:to_sym).include?(method_name)
+          conditional?(node.parent) || array_or_range?(node.parent) ||
+            node.parent.children.last == node
         end
 
         def return_value_used?(node)
@@ -266,19 +254,32 @@ module RuboCop
           end
         end
 
-        def return_value_of_scope?(node)
-          return unless node.parent
+        def semantic_block_style?(node)
+          method_name = node.method_name
 
-          conditional?(node.parent) || array_or_range?(node.parent) ||
-            node.parent.children.last == node
+          if node.braces?
+            functional_method?(method_name) || functional_block?(node)
+          else
+            procedural_method?(method_name) || !return_value_used?(node)
+          end
         end
 
-        def conditional?(node)
-          node.if_type? || node.or_type? || node.and_type?
+        def semantic_message(node)
+          block_begin = node.loc.begin.source
+
+          if block_begin == '{'
+            'Prefer `do...end` over `{...}` for procedural blocks.'
+          else
+            'Prefer `{...}` over `do...end` for functional blocks.'
+          end
         end
 
-        def array_or_range?(node)
-          node.array_type? || node.irange_type? || node.erange_type?
+        def whitespace_after?(range, length = 1)
+          range.source_buffer.source[range.begin_pos + length, 1] =~ /\s/
+        end
+
+        def whitespace_before?(range)
+          range.source_buffer.source[range.begin_pos - 1, 1] =~ /\s/
         end
       end
     end

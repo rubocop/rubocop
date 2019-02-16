@@ -40,6 +40,16 @@ module RuboCop
         MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, ' \
                        'is missing a note.'.freeze
 
+        def autocorrect(comment)
+          margin, first_word, colon, space, note = split_comment(comment)
+          return if note.nil?
+
+          length = concat_length(first_word, colon, space)
+          range = annotation_range(comment, margin, length)
+
+          ->(corrector) { corrector.replace(range, "#{first_word.upcase}: ") }
+        end
+
         def investigate(processed_source)
           processed_source.comments.each_with_index do |comment, index|
             next unless first_comment_line?(processed_source.comments, index) ||
@@ -58,26 +68,7 @@ module RuboCop
           end
         end
 
-        def autocorrect(comment)
-          margin, first_word, colon, space, note = split_comment(comment)
-          return if note.nil?
-
-          length = concat_length(first_word, colon, space)
-          range = annotation_range(comment, margin, length)
-
-          ->(corrector) { corrector.replace(range, "#{first_word.upcase}: ") }
-        end
-
         private
-
-        def first_comment_line?(comments, index)
-          index.zero? ||
-            comments[index - 1].loc.line < comments[index].loc.line - 1
-        end
-
-        def inline_comment?(comment)
-          !comment_line?(comment.loc.expression.source_line)
-        end
 
         def annotation_range(comment, margin, length)
           start = comment.loc.expression.begin_pos + margin.length
@@ -90,6 +81,15 @@ module RuboCop
 
         def correct_annotation?(first_word, colon, space, note)
           keyword?(first_word) && (colon && space && note || !colon && !note)
+        end
+
+        def first_comment_line?(comments, index)
+          index.zero? ||
+            comments[index - 1].loc.line < comments[index].loc.line - 1
+        end
+
+        def inline_comment?(comment)
+          !comment_line?(comment.loc.expression.source_line)
         end
       end
     end

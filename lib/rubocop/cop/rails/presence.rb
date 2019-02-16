@@ -70,6 +70,18 @@ module RuboCop
           }
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            redundant_receiver_and_other(node) do |receiver, other|
+              corrector.replace(node.source_range, replacement(receiver, other))
+            end
+
+            redundant_negative_receiver_and_other(node) do |receiver, other|
+              corrector.replace(node.source_range, replacement(receiver, other))
+            end
+          end
+        end
+
         def on_if(node)
           return if ignore_if_node?(node)
 
@@ -82,18 +94,6 @@ module RuboCop
           redundant_negative_receiver_and_other(node) do |receiver, other|
             unless ignore_other_node?(other) || receiver.nil?
               add_offense(node, message: message(node, receiver, other))
-            end
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            redundant_receiver_and_other(node) do |receiver, other|
-              corrector.replace(node.source_range, replacement(receiver, other))
-            end
-
-            redundant_negative_receiver_and_other(node) do |receiver, other|
-              corrector.replace(node.source_range, replacement(receiver, other))
             end
           end
         end

@@ -19,6 +19,26 @@ module RuboCop
 
     private
 
+    # Restore an offense object loaded from a JSON file.
+    def deserialize_offenses(offenses)
+      source_buffer = Parser::Source::Buffer.new(@filename)
+      source_buffer.source = File.read(@filename, encoding: Encoding::UTF_8)
+      offenses.map! do |o|
+        location = Parser::Source::Range.new(source_buffer,
+                                             o['location']['begin_pos'],
+                                             o['location']['end_pos'])
+        Cop::Offense.new(o['severity'], location,
+                         o['message'],
+                         o['cop_name'], o['status'].to_sym)
+      end
+    end
+
+    def message(offense)
+      # JSON.dump will fail if the offense message contains text which is not
+      # valid UTF-8
+      offense.message.scrub
+    end
+
     def serialize_offense(offense)
       {
         # Calling #to_s here ensures that the serialization works when using
@@ -33,26 +53,6 @@ module RuboCop
         cop_name: offense.cop_name,
         status: :uncorrected
       }
-    end
-
-    def message(offense)
-      # JSON.dump will fail if the offense message contains text which is not
-      # valid UTF-8
-      offense.message.scrub
-    end
-
-    # Restore an offense object loaded from a JSON file.
-    def deserialize_offenses(offenses)
-      source_buffer = Parser::Source::Buffer.new(@filename)
-      source_buffer.source = File.read(@filename, encoding: Encoding::UTF_8)
-      offenses.map! do |o|
-        location = Parser::Source::Range.new(source_buffer,
-                                             o['location']['begin_pos'],
-                                             o['location']['end_pos'])
-        Cop::Offense.new(o['severity'], location,
-                         o['message'],
-                         o['cop_name'], o['status'].to_sym)
-      end
     end
   end
 end

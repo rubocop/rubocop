@@ -25,44 +25,6 @@ module RuboCop
           @references = []
         end
 
-        def name
-          @node.children.first
-        end
-
-        def scope
-          @variable.scope
-        end
-
-        def reference!(node)
-          @references << node
-          @referenced = true
-        end
-
-        def used?
-          @variable.captured_by_block? || @referenced
-        end
-
-        def regexp_named_capture?
-          @node.type == REGEXP_NAMED_CAPTURE_TYPE
-        end
-
-        def operator_assignment?
-          return false unless meta_assignment_node
-
-          OPERATOR_ASSIGNMENT_TYPES.include?(meta_assignment_node.type)
-        end
-
-        def multiple_assignment?
-          return false unless meta_assignment_node
-
-          meta_assignment_node.type == MULTIPLE_ASSIGNMENT_TYPE
-        end
-
-        def operator
-          assignment_node = meta_assignment_node || @node
-          assignment_node.loc.operator.source
-        end
-
         def meta_assignment_node
           unless instance_variable_defined?(:@meta_assignment_node)
             @meta_assignment_node =
@@ -72,15 +34,45 @@ module RuboCop
           @meta_assignment_node
         end
 
-        private
+        def multiple_assignment?
+          return false unless meta_assignment_node
 
-        def operator_assignment_node
-          return nil unless node.parent
-          return nil unless OPERATOR_ASSIGNMENT_TYPES.include?(node.parent.type)
-          return nil unless node.sibling_index.zero?
-
-          node.parent
+          meta_assignment_node.type == MULTIPLE_ASSIGNMENT_TYPE
         end
+
+        def name
+          @node.children.first
+        end
+
+        def operator
+          assignment_node = meta_assignment_node || @node
+          assignment_node.loc.operator.source
+        end
+
+        def operator_assignment?
+          return false unless meta_assignment_node
+
+          OPERATOR_ASSIGNMENT_TYPES.include?(meta_assignment_node.type)
+        end
+
+        def reference!(node)
+          @references << node
+          @referenced = true
+        end
+
+        def regexp_named_capture?
+          @node.type == REGEXP_NAMED_CAPTURE_TYPE
+        end
+
+        def scope
+          @variable.scope
+        end
+
+        def used?
+          @variable.captured_by_block? || @referenced
+        end
+
+        private
 
         def multiple_assignment_node
           grandparent_node = node.parent ? node.parent.parent : nil
@@ -89,6 +81,14 @@ module RuboCop
           return nil unless node.parent.type == MULTIPLE_LEFT_HAND_SIDE_TYPE
 
           grandparent_node
+        end
+
+        def operator_assignment_node
+          return nil unless node.parent
+          return nil unless OPERATOR_ASSIGNMENT_TYPES.include?(node.parent.type)
+          return nil unless node.sibling_index.zero?
+
+          node.parent
         end
       end
     end

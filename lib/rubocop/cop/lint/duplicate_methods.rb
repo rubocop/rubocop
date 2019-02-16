@@ -58,6 +58,14 @@ module RuboCop
           @definitions = {}
         end
 
+        def on_alias(node)
+          return unless (name = method_alias?(node))
+          return if node.ancestors.any?(&:if_type?)
+          return if possible_dsl?(node)
+
+          found_instance_method(node, name)
+        end
+
         def on_def(node)
           # if a method definition is inside an if, it is very likely
           # that a different definition is used depending on platform, etc.
@@ -67,6 +75,10 @@ module RuboCop
           name, = *node
           found_instance_method(node, name)
         end
+
+        def_node_matcher :method_alias?, <<-PATTERN
+          (alias (sym $_name) sym)
+        PATTERN
 
         def on_defs(node)
           return if node.ancestors.any?(&:if_type?)
@@ -79,18 +91,6 @@ module RuboCop
           elsif receiver.self_type?
             check_self_receiver(node, name)
           end
-        end
-
-        def_node_matcher :method_alias?, <<-PATTERN
-          (alias (sym $_name) sym)
-        PATTERN
-
-        def on_alias(node)
-          return unless (name = method_alias?(node))
-          return if node.ancestors.any?(&:if_type?)
-          return if possible_dsl?(node)
-
-          found_instance_method(node, name)
         end
 
         def_node_matcher :alias_method?, <<-PATTERN
@@ -131,9 +131,14 @@ module RuboCop
           found_method(node, "#{enclosing}.#{name}")
         end
 
-        def message_for_dup(node, method_name)
-          format(MSG, method: method_name, defined: @definitions[method_name],
-                      current: source_location(node))
+        def found_attr(node, args, readable: false, writable: false)
+          args.each do |arg|
+            name = sym_name(arg)
+            next unless name
+
+            found_instance_method(node, name) if readable
+            found_instance_method(node, "#{name}=") if writable
+          end
         end
 
         def found_instance_method(node, name)
@@ -162,30 +167,6 @@ module RuboCop
           end
         end
 
-        def on_attr(node, attr_name, args)
-          case attr_name
-          when :attr
-            writable = args.size == 2 && args.last.true_type?
-            found_attr(node, [args.first], readable: true, writable: writable)
-          when :attr_reader
-            found_attr(node, args, readable: true)
-          when :attr_writer
-            found_attr(node, args, writable: true)
-          when :attr_accessor
-            found_attr(node, args, readable: true, writable: true)
-          end
-        end
-
-        def found_attr(node, args, readable: false, writable: false)
-          args.each do |arg|
-            name = sym_name(arg)
-            next unless name
-
-            found_instance_method(node, name) if readable
-            found_instance_method(node, "#{name}=") if writable
-          end
-        end
-
         def lookup_constant(node, const_name)
           # this method is quite imperfect and can be fooled
           # to do much better, we would need to do global analysis of the whole
@@ -206,6 +187,35 @@ module RuboCop
           end
         end
 
+        def message_for_dup(node, method_name)
+          format(MSG, method: method_name, defined: @definitions[method_name],
+                      current: source_location(node))
+        end
+
+        def on_attr(node, attr_name, args)
+          case attr_name
+          when :attr
+            writable = args.size == 2 && args.last.true_type?
+            found_attr(node, [args.first], readable: true, writable: writable)
+          when :attr_reader
+            found_attr(node, args, readable: true)
+          when :attr_writer
+            found_attr(node, args, writable: true)
+          when :attr_accessor
+            found_attr(node, args, readable: true, writable: true)
+          end
+        end
+
+        def possible_dsl?(node)
+          # DSL methods may evaluate a block in the context of a newly created
+          # class or module
+          # Assume that if a method definition is inside any block call which
+          # we can't identify, it could be a DSL
+          node.each_ancestor(:block).any? do |ancestor|
+            ancestor.method_name != :class_eval && !ancestor.class_constructor?
+          end
+        end
+
         def qualified_name(enclosing, namespace, mod_name)
           if enclosing != 'Object'
             if namespace
@@ -217,16 +227,6 @@ module RuboCop
             "#{namespace.const_name}::#{mod_name}"
           else
             mod_name
-          end
-        end
-
-        def possible_dsl?(node)
-          # DSL methods may evaluate a block in the context of a newly created
-          # class or module
-          # Assume that if a method definition is inside any block call which
-          # we can't identify, it could be a DSL
-          node.each_ancestor(:block).any? do |ancestor|
-            ancestor.method_name != :class_eval && !ancestor.class_constructor?
           end
         end
 

@@ -11,39 +11,6 @@ namespace :cut_release do
     end
   end
 
-  def update_readme(old_version, new_version)
-    readme = File.read('README.md')
-
-    File.open('README.md', 'w') do |f|
-      f << readme.sub(
-        "gem 'rubocop', '~> #{old_version}', require: false",
-        "gem 'rubocop', '~> #{new_version}', require: false"
-      )
-    end
-  end
-
-  def update_manual(old_version, new_version)
-    manual = File.read('manual/installation.md')
-
-    File.open('manual/installation.md', 'w') do |f|
-      f << manual.sub(
-        "gem 'rubocop', '~> #{old_version}', require: false",
-        "gem 'rubocop', '~> #{new_version}', require: false"
-      )
-    end
-  end
-
-  def update_issue_template(old_version, new_version)
-    issue_template = File.read('.github/ISSUE_TEMPLATE/bug_report.md')
-
-    File.open('.github/ISSUE_TEMPLATE/bug_report.md', 'w') do |f|
-      f << issue_template.sub(
-        "#{old_version} (using Parser ",
-        "#{new_version} (using Parser "
-      )
-    end
-  end
-
   def add_header_to_changelog(version)
     changelog = File.read('CHANGELOG.md')
     head, tail = changelog.split("## master (unreleased)\n\n", 2)
@@ -74,12 +41,6 @@ namespace :cut_release do
     new_changes
   end
 
-  def user_links(text)
-    names = text.scan(/\[@(\S+)\]\[\]/).map(&:first).uniq
-    names.map { |name| "[@#{name}]: https://github.com/#{name}" }
-         .join("\n")
-  end
-
   def run(release_type)
     old_version = Bump::Bump.current
     Bump::Bump.run(release_type, commit: false, bundle: false, tag: false)
@@ -92,5 +53,44 @@ namespace :cut_release do
     create_release_notes(new_version)
 
     puts "Changed version from #{old_version} to #{new_version}."
+  end
+
+  def update_issue_template(old_version, new_version)
+    issue_template = File.read('.github/ISSUE_TEMPLATE/bug_report.md')
+
+    File.open('.github/ISSUE_TEMPLATE/bug_report.md', 'w') do |f|
+      f << issue_template.sub(
+        "#{old_version} (using Parser ",
+        "#{new_version} (using Parser "
+      )
+    end
+  end
+
+  def update_manual(old_version, new_version)
+    manual = File.read('manual/installation.md')
+
+    File.open('manual/installation.md', 'w') do |f|
+      f << manual.sub(
+        "gem 'rubocop', '~> #{old_version}', require: false",
+        "gem 'rubocop', '~> #{new_version}', require: false"
+      )
+    end
+  end
+
+  def update_readme(old_version, new_version)
+    readme = File.read('README.md')
+
+    File.open('README.md', 'w') do |f|
+      f << readme.sub(
+        "gem 'rubocop', '~> #{old_version}', require: false",
+        "gem 'rubocop', '~> #{new_version}', require: false"
+      )
+    end
+  end
+
+  def user_links(text)
+    names = text.scan(/\[@(\S+)\]\[\]/).map(&:first).uniq
+    names.map { |name| "[@#{name}]: https://github.com/#{name}" }
+         .join("\n")
   end
 end

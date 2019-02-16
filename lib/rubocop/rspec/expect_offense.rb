@@ -58,6 +58,26 @@ module RuboCop
     # that there were no offenses. The `expect_offense` method has
     # to do more work by parsing out lines that contain carets.
     module ExpectOffense
+      # rubocop:enable
+
+      def expect_correction(correction)
+        unless @processed_source
+          raise '`expect_correction` must follow `expect_offense`'
+        end
+
+        corrector =
+          RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
+        new_source = corrector.rewrite
+
+        expect(new_source).to eq(correction)
+      end
+
+      def expect_no_offenses(source, file = nil)
+        inspect_source(source, file)
+
+        expect(cop.offenses).to be_empty
+      end
+
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def expect_offense(source, file = nil)
         RuboCop::Formatter::DisabledConfigFormatter
@@ -85,24 +105,6 @@ module RuboCop
         expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
-      def expect_correction(correction)
-        unless @processed_source
-          raise '`expect_correction` must follow `expect_offense`'
-        end
-
-        corrector =
-          RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
-        new_source = corrector.rewrite
-
-        expect(new_source).to eq(correction)
-      end
-
-      def expect_no_offenses(source, file = nil)
-        inspect_source(source, file)
-
-        expect(cop.offenses).to be_empty
-      end
 
       # Parsed representation of code annotated with the `^^^ Message` style
       class AnnotatedSource
@@ -140,6 +142,13 @@ module RuboCop
           @annotations = annotations.sort.freeze
         end
 
+        # Return the plain source code without annotations
+        #
+        # @return [String]
+        def plain_source
+          lines.join
+        end
+
         # Construct annotated source string (like what we parse)
         #
         # Reconstruct a deterministic annotated source string. This is
@@ -171,13 +180,6 @@ module RuboCop
           end
 
           reconstructed.join
-        end
-
-        # Return the plain source code without annotations
-        #
-        # @return [String]
-        def plain_source
-          lines.join
         end
 
         # Annotate the source code with the RuboCop offenses provided

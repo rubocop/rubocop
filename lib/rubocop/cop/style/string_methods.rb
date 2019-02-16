@@ -19,19 +19,19 @@ module RuboCop
 
         MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
 
-        def on_send(node)
-          return unless preferred_method(node.method_name)
-
-          add_offense(node, location: :selector)
-        end
-        alias on_csend on_send
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.loc.selector,
                               preferred_method(node.method_name))
           end
         end
+
+        def on_send(node)
+          return unless preferred_method(node.method_name)
+
+          add_offense(node, location: :selector)
+        end
+        alias on_csend on_send
 
         private
 

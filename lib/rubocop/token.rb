@@ -18,24 +18,82 @@ module RuboCop
       @text = text.to_s
     end
 
-    def line
-      @pos.line
+    def begin_pos
+      @pos.begin_pos
     end
 
     def column
       @pos.column
     end
 
-    def begin_pos
-      @pos.begin_pos
+    def comma?
+      type == :tCOMMA
+    end
+
+    ## Type Predicates
+
+    def comment?
+      type == :tCOMMENT
+    end
+
+    def end?
+      type == :kEND
     end
 
     def end_pos
       @pos.end_pos
     end
 
-    def to_s
-      "[[#{line}, #{column}], #{type}, #{text.inspect}]"
+    def equal_sign?
+      %i[tEQL tOP_ASGN].include?(type)
+    end
+
+    def left_array_bracket?
+      type == :tLBRACK
+    end
+
+    def left_brace?
+      type == :tLBRACE
+    end
+
+    def left_bracket?
+      %i[tLBRACK tLBRACK2].include?(type)
+    end
+
+    def left_curly_brace?
+      type == :tLCURLY
+    end
+
+    def left_parens?
+      %i[tLPAREN tLPAREN2].include?(type)
+    end
+
+    def left_ref_bracket?
+      type == :tLBRACK2
+    end
+
+    def line
+      @pos.line
+    end
+
+    def rescue_modifier?
+      type == :kRESCUE_MOD
+    end
+
+    def right_bracket?
+      type == :tRBRACK
+    end
+
+    def right_curly_brace?
+      type == :tRCURLY
+    end
+
+    def right_parens?
+      type == :tRPAREN
+    end
+
+    def semicolon?
+      type == :tSEMI
     end
 
     # Checks if there is whitespace after token
@@ -49,66 +107,8 @@ module RuboCop
       pos.source_buffer.source.match(/\G\s/, position)
     end
 
-    ## Type Predicates
-
-    def comment?
-      type == :tCOMMENT
-    end
-
-    def semicolon?
-      type == :tSEMI
-    end
-
-    def left_array_bracket?
-      type == :tLBRACK
-    end
-
-    def left_ref_bracket?
-      type == :tLBRACK2
-    end
-
-    def left_bracket?
-      %i[tLBRACK tLBRACK2].include?(type)
-    end
-
-    def right_bracket?
-      type == :tRBRACK
-    end
-
-    def left_brace?
-      type == :tLBRACE
-    end
-
-    def left_curly_brace?
-      type == :tLCURLY
-    end
-
-    def right_curly_brace?
-      type == :tRCURLY
-    end
-
-    def left_parens?
-      %i[tLPAREN tLPAREN2].include?(type)
-    end
-
-    def right_parens?
-      type == :tRPAREN
-    end
-
-    def comma?
-      type == :tCOMMA
-    end
-
-    def rescue_modifier?
-      type == :kRESCUE_MOD
-    end
-
-    def end?
-      type == :kEND
-    end
-
-    def equal_sign?
-      %i[tEQL tOP_ASGN].include?(type)
+    def to_s
+      "[[#{line}, #{column}], #{type}, #{text.inspect}]"
     end
   end
 end

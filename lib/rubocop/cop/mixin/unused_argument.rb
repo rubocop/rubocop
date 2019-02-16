@@ -7,14 +7,14 @@ module RuboCop
       module UnusedArgument
         extend NodePattern::Macros
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_argument(variable)
           end
+        end
+
+        def join_force?(force_class)
+          force_class == VariableForce
         end
 
         private

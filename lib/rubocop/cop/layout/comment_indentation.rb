@@ -38,17 +38,21 @@ module RuboCop
         MSG = 'Incorrect indentation detected (column %<column>d ' \
           'instead of %<correct_comment_indentation>d).'.freeze
 
-        def investigate(processed_source)
-          processed_source.each_comment { |comment| check(comment) }
-        end
-
         def autocorrect(comment)
           corrections = autocorrect_preceding_comments(comment) <<
                         autocorrect_one(comment)
           ->(corrector) { corrections.each { |corr| corr.call(corrector) } }
         end
 
+        def investigate(processed_source)
+          processed_source.each_comment { |comment| check(comment) }
+        end
+
         private
+
+        def autocorrect_one(comment)
+          AlignmentCorrector.correct(processed_source, comment, @column_delta)
+        end
 
         # Corrects all comment lines that occur immediately before the given
         # comment and have the same indentation. This is to avoid a long chain
@@ -67,15 +71,6 @@ module RuboCop
             line_no -= 1
           end
           corrections
-        end
-
-        def should_correct?(comment, column, line_no)
-          loc = comment.loc
-          loc.line == line_no && loc.column == column
-        end
-
-        def autocorrect_one(comment)
-          AlignmentCorrector.correct(processed_source, comment, @column_delta)
         end
 
         def check(comment)
@@ -102,24 +97,6 @@ module RuboCop
           )
         end
 
-        def message(column, correct_comment_indentation)
-          format(
-            MSG,
-            column: column,
-            correct_comment_indentation: correct_comment_indentation
-          )
-        end
-
-        def own_line_comment?(comment)
-          own_line = processed_source.lines[comment.loc.line - 1]
-          own_line =~ /\A\s*#/
-        end
-
-        def line_after_comment(comment)
-          lines = processed_source.lines
-          lines[comment.loc.line..-1].find { |line| !line.blank? }
-        end
-
         def correct_indentation(next_line)
           return 0 unless next_line
 
@@ -133,6 +110,29 @@ module RuboCop
 
         def less_indented?(line)
           line =~ /^\s*(end\b|[)}\]])/
+        end
+
+        def line_after_comment(comment)
+          lines = processed_source.lines
+          lines[comment.loc.line..-1].find { |line| !line.blank? }
+        end
+
+        def message(column, correct_comment_indentation)
+          format(
+            MSG,
+            column: column,
+            correct_comment_indentation: correct_comment_indentation
+          )
+        end
+
+        def own_line_comment?(comment)
+          own_line = processed_source.lines[comment.loc.line - 1]
+          own_line =~ /\A\s*#/
+        end
+
+        def should_correct?(comment, column, line_no)
+          loc = comment.loc
+          loc.line == line_no && loc.column == column
         end
 
         def two_alternatives?(line)

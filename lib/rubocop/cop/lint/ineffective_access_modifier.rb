@@ -67,6 +67,10 @@ module RuboCop
 
         private
 
+        def access_modifier?(node)
+          node.bare_access_modifier? && !node.method?(:module_function)
+        end
+
         def check_node(node)
           return unless node && node.begin_type?
 
@@ -79,10 +83,10 @@ module RuboCop
           end
         end
 
-        def private_class_method_names(node)
-          private_class_methods(node).to_a.flatten
-                                     .select(&:basic_literal?)
-                                     .map(&:value)
+        def correct_visibility?(node, modifier, ignored_methods)
+          return true if modifier.nil? || modifier.method_name == :public
+
+          ignored_methods.include?(node.method_name)
         end
 
         def format_message(modifier)
@@ -112,14 +116,10 @@ module RuboCop
           end
         end
 
-        def access_modifier?(node)
-          node.bare_access_modifier? && !node.method?(:module_function)
-        end
-
-        def correct_visibility?(node, modifier, ignored_methods)
-          return true if modifier.nil? || modifier.method_name == :public
-
-          ignored_methods.include?(node.method_name)
+        def private_class_method_names(node)
+          private_class_methods(node).to_a.flatten
+                                     .select(&:basic_literal?)
+                                     .map(&:value)
         end
       end
     end

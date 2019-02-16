@@ -23,19 +23,19 @@ module RuboCop
             (const ${nil? cbase} :BigDecimal) :new ...)
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.selector)
+            corrector.remove(node.loc.dot)
+          end
+        end
+
         def on_send(node)
           return unless big_decimal_new(node) do |captured_value|
             double_colon = captured_value ? '::' : ''
             message = format(MSG, double_colon: double_colon)
 
             add_offense(node, location: :selector, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.selector)
-            corrector.remove(node.loc.dot)
           end
         end
       end

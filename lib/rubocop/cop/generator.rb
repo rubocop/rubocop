@@ -112,21 +112,6 @@ module RuboCop
         raise ArgumentError, 'Specify a cop name with Department/Name style'
       end
 
-      def write_source
-        write_unless_file_exists(source_path, generated_source)
-      end
-
-      def write_spec
-        write_unless_file_exists(spec_path, generated_spec)
-      end
-
-      def inject_require(root_file_path: 'lib/rubocop.rb')
-        RequireFileInjector.new(
-          source_path: source_path,
-          root_file_path: root_file_path
-        ).inject
-      end
-
       def inject_config(config_file_path: 'config/default.yml')
         injector =
           ConfigurationInjector.new(configuration_file_path: config_file_path,
@@ -139,6 +124,13 @@ module RuboCop
         end
       end
 
+      def inject_require(root_file_path: 'lib/rubocop.rb')
+        RequireFileInjector.new(
+          source_path: source_path,
+          root_file_path: root_file_path
+        ).inject
+      end
+
       def todo
         <<-TODO.strip_indent
           Do 3 steps:
@@ -149,21 +141,26 @@ module RuboCop
         TODO
       end
 
+      def write_source
+        write_unless_file_exists(source_path, generated_source)
+      end
+
+      def write_spec
+        write_unless_file_exists(spec_path, generated_spec)
+      end
+
       private
 
       attr_reader :badge, :github_user, :output
 
-      def write_unless_file_exists(path, contents)
-        if File.exist?(path)
-          warn "rake new_cop: #{path} already exists!"
-          exit!
-        end
+      def bump_minor_version
+        versions = RuboCop::Version::STRING.split('.')
 
-        dir = File.dirname(path)
-        FileUtils.mkdir_p(dir) unless File.exist?(dir)
+        "#{versions[0]}.#{versions[1].succ}"
+      end
 
-        File.write(path, contents)
-        output.puts "[create] #{path}"
+      def generate(template)
+        format(template, department: badge.department, cop_name: badge.cop_name)
       end
 
       def generated_source
@@ -174,18 +171,13 @@ module RuboCop
         generate(SPEC_TEMPLATE)
       end
 
-      def generate(template)
-        format(template, department: badge.department, cop_name: badge.cop_name)
-      end
+      def snake_case(camel_case_string)
+        return 'rspec' if camel_case_string == 'RSpec'
 
-      def spec_path
-        File.join(
-          'spec',
-          'rubocop',
-          'cop',
-          snake_case(badge.department.to_s),
-          "#{snake_case(badge.cop_name.to_s)}_spec.rb"
-        )
+        camel_case_string
+          .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
+          .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
+          .downcase
       end
 
       def source_path
@@ -198,19 +190,27 @@ module RuboCop
         )
       end
 
-      def snake_case(camel_case_string)
-        return 'rspec' if camel_case_string == 'RSpec'
-
-        camel_case_string
-          .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
-          .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
-          .downcase
+      def spec_path
+        File.join(
+          'spec',
+          'rubocop',
+          'cop',
+          snake_case(badge.department.to_s),
+          "#{snake_case(badge.cop_name.to_s)}_spec.rb"
+        )
       end
 
-      def bump_minor_version
-        versions = RuboCop::Version::STRING.split('.')
+      def write_unless_file_exists(path, contents)
+        if File.exist?(path)
+          warn "rake new_cop: #{path} already exists!"
+          exit!
+        end
 
-        "#{versions[0]}.#{versions[1].succ}"
+        dir = File.dirname(path)
+        FileUtils.mkdir_p(dir) unless File.exist?(dir)
+
+        File.write(path, contents)
+        output.puts "[create] #{path}"
       end
     end
   end

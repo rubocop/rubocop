@@ -14,6 +14,21 @@ module RuboCop
 
       private
 
+      def report_highlighted_area(highlighted_area)
+        output.puts("#{' ' * highlighted_area.begin_pos}" \
+                    "#{'^' * highlighted_area.size}")
+      end
+
+      def report_line(location)
+        source_line = location.source_line
+
+        if location.first_line == location.last_line
+          output.puts(source_line)
+        else
+          output.puts("#{source_line} #{yellow(ELLIPSES)}")
+        end
+      end
+
       def report_offense(file, offense)
         output.printf("%s:%d:%d: %s: %s\n",
                       cyan(smart_path(file)), offense.line, offense.real_column,
@@ -33,21 +48,6 @@ module RuboCop
 
       def valid_line?(offense)
         !offense.location.source_line.blank?
-      end
-
-      def report_line(location)
-        source_line = location.source_line
-
-        if location.first_line == location.last_line
-          output.puts(source_line)
-        else
-          output.puts("#{source_line} #{yellow(ELLIPSES)}")
-        end
-      end
-
-      def report_highlighted_area(highlighted_area)
-        output.puts("#{' ' * highlighted_area.begin_pos}" \
-                    "#{'^' * highlighted_area.size}")
       end
     end
   end

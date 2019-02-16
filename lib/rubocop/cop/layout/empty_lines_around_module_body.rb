@@ -49,13 +49,13 @@ module RuboCop
 
         KIND = 'module'.freeze
 
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
+
         def on_module(node)
           _name, body = *node
           check(node, body)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
       end
     end

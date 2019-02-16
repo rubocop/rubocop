@@ -29,17 +29,23 @@ module RuboCop
           (pair (sym :location) (sym :expression))
         PATTERN
 
-        def on_send(node)
-          redundant_location_argument(node) { |argument| add_offense(argument) }
-        end
-
         def autocorrect(node)
           range = offending_range(node)
 
           ->(corrector) { corrector.remove(range) }
         end
 
+        def on_send(node)
+          redundant_location_argument(node) { |argument| add_offense(argument) }
+        end
+
         private
+
+        def offending_range(node)
+          with_space = range_with_surrounding_space(range: node.loc.expression)
+
+          range_with_surrounding_comma(with_space, :left)
+        end
 
         def redundant_location_argument(node)
           add_offense_kwargs(node) do |kwargs|
@@ -48,12 +54,6 @@ module RuboCop
 
             yield result if result
           end
-        end
-
-        def offending_range(node)
-          with_space = range_with_surrounding_space(range: node.loc.expression)
-
-          range_with_surrounding_comma(with_space, :left)
         end
       end
     end

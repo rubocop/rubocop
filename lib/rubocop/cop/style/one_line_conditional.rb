@@ -28,22 +28,42 @@ module RuboCop
         MSG = 'Favor the ternary operator (`?:`) ' \
               'over `%<keyword>s/then/else/end` constructs.'.freeze
 
-        def on_normal_if_unless(node)
-          return unless node.single_line? && node.else_branch
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, replacement(node))
           end
         end
 
+        def on_normal_if_unless(node)
+          return unless node.single_line? && node.else_branch
+
+          add_offense(node)
+        end
+
         private
+
+        def expr_replacement(node)
+          return 'nil' if node.nil?
+
+          requires_parentheses?(node) ? "(#{node.source})" : node.source
+        end
+
+        def keyword_with_changed_precedence?(node)
+          return false unless node.keyword?
+          return true if node.prefix_not?
+
+          !node.parenthesized_call?
+        end
 
         def message(node)
           format(MSG, keyword: node.keyword)
+        end
+
+        def method_call_with_changed_precedence?(node)
+          return false unless node.send_type? && node.arguments?
+          return false if node.parenthesized_call?
+
+          !node.operator_method?
         end
 
         def replacement(node)
@@ -60,18 +80,6 @@ module RuboCop
           to_ternary(node)
         end
 
-        def to_ternary(node)
-          cond, body, else_clause = *node
-          "#{expr_replacement(cond)} ? #{expr_replacement(body)} : " \
-            "#{expr_replacement(else_clause)}"
-        end
-
-        def expr_replacement(node)
-          return 'nil' if node.nil?
-
-          requires_parentheses?(node) ? "(#{node.source})" : node.source
-        end
-
         def requires_parentheses?(node)
           return true if %i[and or if].include?(node.type)
           return true if node.assignment?
@@ -80,18 +88,10 @@ module RuboCop
           keyword_with_changed_precedence?(node)
         end
 
-        def method_call_with_changed_precedence?(node)
-          return false unless node.send_type? && node.arguments?
-          return false if node.parenthesized_call?
-
-          !node.operator_method?
-        end
-
-        def keyword_with_changed_precedence?(node)
-          return false unless node.keyword?
-          return true if node.prefix_not?
-
-          !node.parenthesized_call?
+        def to_ternary(node)
+          cond, body, else_clause = *node
+          "#{expr_replacement(cond)} ? #{expr_replacement(body)} : " \
+            "#{expr_replacement(else_clause)}"
         end
       end
     end

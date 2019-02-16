@@ -33,10 +33,12 @@ module RuboCop
         MSG = 'Ensure that safe navigation is used consistently ' \
           'inside of `&&` and `||`.'.freeze
 
-        def on_csend(node)
-          return unless node.parent && node.parent.operator_keyword?
+        def autocorrect(node)
+          return unless node.dot?
 
-          check(node)
+          lambda do |corrector|
+            corrector.insert_before(node.loc.dot, '&')
+          end
         end
 
         def check(node)
@@ -58,12 +60,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          return unless node.dot?
+        def on_csend(node)
+          return unless node.parent && node.parent.operator_keyword?
 
-          lambda do |corrector|
-            corrector.insert_before(node.loc.dot, '&')
-          end
+          check(node)
         end
 
         private

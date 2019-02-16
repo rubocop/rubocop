@@ -46,13 +46,11 @@ module RuboCop
         PREFER_EACH = 'Prefer `each` over `for`.'.freeze
         PREFER_FOR = 'Prefer `for` over `each`.'.freeze
 
-        def on_for(node)
+        def autocorrect(node)
           if style == :each
-            add_offense(node, message: PREFER_EACH) do
-              opposite_style_detected
-            end
+            ForToEachCorrector.new(node)
           else
-            correct_style_detected
+            EachToForCorrector.new(node)
           end
         end
 
@@ -68,11 +66,13 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
+        def on_for(node)
           if style == :each
-            ForToEachCorrector.new(node)
+            add_offense(node, message: PREFER_EACH) do
+              opposite_style_detected
+            end
           else
-            EachToForCorrector.new(node)
+            correct_style_detected
           end
         end
 

@@ -46,6 +46,12 @@ module RuboCop
 
         private
 
+        def check_predicate(predicate, node)
+          return unless predicate.operator_keyword?
+
+          add_offense(node)
+        end
+
         def check_ternary(ternary, node)
           return unless ternary.condition.operator_keyword?
 
@@ -53,12 +59,6 @@ module RuboCop
                                 ternary.condition.source_range.end_pos)
 
           add_offense(range, location: range)
-        end
-
-        def check_predicate(predicate, node)
-          return unless predicate.operator_keyword?
-
-          add_offense(node)
         end
       end
     end

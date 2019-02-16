@@ -42,16 +42,6 @@ module RuboCop
           (lvasgn %1 ...)
         PATTERN
 
-        def on_def(node)
-          blockarg_def(node) do |argname, body|
-            next unless body
-
-            calls_to_report(argname, body).each do |blockcall|
-              add_offense(blockcall, message: format(MSG, argname: argname))
-            end
-          end
-        end
-
         # offenses are registered on the `block.call` nodes
         def autocorrect(node)
           _receiver, _method, *args = *node
@@ -70,7 +60,23 @@ module RuboCop
           ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
 
+        def on_def(node)
+          blockarg_def(node) do |argname, body|
+            next unless body
+
+            calls_to_report(argname, body).each do |blockcall|
+              add_offense(blockcall, message: format(MSG, argname: argname))
+            end
+          end
+        end
+
         private
+
+        def args_include_block_pass?(blockcall)
+          _receiver, _call, *args = *blockcall
+
+          args.any?(&:block_pass_type?)
+        end
 
         def calls_to_report(argname, body)
           return [] if blockarg_assigned?(body, argname)
@@ -80,12 +86,6 @@ module RuboCop
           return [] if calls.any? { |call| args_include_block_pass?(call) }
 
           calls
-        end
-
-        def args_include_block_pass?(blockcall)
-          _receiver, _call, *args = *blockcall
-
-          args.any?(&:block_pass_type?)
         end
       end
     end

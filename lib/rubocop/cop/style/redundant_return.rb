@@ -41,13 +41,6 @@ module RuboCop
         MSG = 'Redundant `return` detected.'.freeze
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'.freeze
 
-        def on_def(node)
-          return unless node.body
-
-          check_branch(node.body)
-        end
-        alias on_defs on_def
-
         def autocorrect(node) # rubocop:disable Metrics/MethodLength
           lambda do |corrector|
             unless arguments?(node.children)
@@ -67,13 +60,14 @@ module RuboCop
           end
         end
 
-        private
+        def on_def(node)
+          return unless node.body
 
-        def add_brackets(corrector, node)
-          kids = node.children.map(&:source_range)
-          corrector.insert_before(kids.first, '[')
-          corrector.insert_after(kids.last, ']')
+          check_branch(node.body)
         end
+        alias on_defs on_def
+
+        private
 
         def add_braces(corrector, node)
           kids = node.children.map(&:source_range)
@@ -81,11 +75,30 @@ module RuboCop
           corrector.insert_after(kids.last, '}')
         end
 
+        def add_brackets(corrector, node)
+          kids = node.children.map(&:source_range)
+          corrector.insert_before(kids.first, '[')
+          corrector.insert_after(kids.last, ']')
+        end
+
+        def allow_multiple_return_values?
+          cop_config['AllowMultipleReturnValues'] || false
+        end
+
         def arguments?(args)
           return false if args.empty?
           return true if args.size > 1
 
           !args.first.begin_type? || !args.first.children.empty?
+        end
+
+        def check_begin_node(node)
+          expressions = *node
+          last_expr = expressions.last
+
+          return unless last_expr && last_expr.return_type?
+
+          check_return_node(last_expr)
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity
@@ -101,14 +114,6 @@ module RuboCop
             check_begin_node(node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
-
-        def check_return_node(node)
-          return if cop_config['AllowMultipleReturnValues'] &&
-                    node.children.size > 1
-
-          add_offense(node, location: :keyword)
-        end
 
         def check_case_node(node)
           _cond, *when_nodes, else_node = *node
@@ -116,11 +121,9 @@ module RuboCop
           check_branch(else_node) if else_node
         end
 
-        def check_when_node(node)
-          return unless node
-
-          _cond, body = *node
-          check_branch(body) if body
+        def check_ensure_node(node)
+          rescue_node = node.node_parts[0]
+          check_branch(rescue_node)
         end
 
         def check_if_node(node)
@@ -138,22 +141,20 @@ module RuboCop
           end
         end
 
-        def check_ensure_node(node)
-          rescue_node = node.node_parts[0]
-          check_branch(rescue_node)
+        # rubocop:enable Metrics/CyclomaticComplexity
+
+        def check_return_node(node)
+          return if cop_config['AllowMultipleReturnValues'] &&
+                    node.children.size > 1
+
+          add_offense(node, location: :keyword)
         end
 
-        def check_begin_node(node)
-          expressions = *node
-          last_expr = expressions.last
+        def check_when_node(node)
+          return unless node
 
-          return unless last_expr && last_expr.return_type?
-
-          check_return_node(last_expr)
-        end
-
-        def allow_multiple_return_values?
-          cop_config['AllowMultipleReturnValues'] || false
+          _cond, body = *node
+          check_branch(body) if body
         end
 
         def message(node)

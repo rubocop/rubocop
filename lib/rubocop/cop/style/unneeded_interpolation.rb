@@ -24,10 +24,6 @@ module RuboCop
           [Style::LineEndConcatenation]
         end
 
-        def on_dstr(node)
-          add_offense(node) if single_interpolation?(node)
-        end
-
         def autocorrect(node)
           embedded_node = node.children.first
 
@@ -40,7 +36,47 @@ module RuboCop
           end
         end
 
+        def on_dstr(node)
+          add_offense(node) if single_interpolation?(node)
+        end
+
         private
+
+        def autocorrect_other(embedded_node, node)
+          loc = node.loc
+          embedded_loc = embedded_node.loc
+
+          lambda do |corrector|
+            corrector.replace(loc.begin, '')
+            corrector.replace(loc.end, '')
+            corrector.replace(embedded_loc.begin, '(')
+            corrector.replace(embedded_loc.end, ').to_s')
+          end
+        end
+
+        def autocorrect_single_variable_interpolation(embedded_node, node)
+          variable_loc = embedded_node.children.first.loc
+          replacement = "#{variable_loc.expression.source}.to_s"
+          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
+        end
+
+        def autocorrect_variable_interpolation(embedded_node, node)
+          replacement = "#{embedded_node.loc.expression.source}.to_s"
+          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
+        end
+
+        def embedded_in_percent_array?(node)
+          node.parent && node.parent.array_type? &&
+            percent_literal?(node.parent)
+        end
+
+        def implicit_concatenation?(node)
+          node.parent && node.parent.dstr_type?
+        end
+
+        def interpolation?(node)
+          variable_interpolation?(node) || node.begin_type?
+        end
 
         def single_interpolation?(node)
           node.children.one? &&
@@ -53,44 +89,8 @@ module RuboCop
           node.children.one? && variable_interpolation?(node.children.first)
         end
 
-        def interpolation?(node)
-          variable_interpolation?(node) || node.begin_type?
-        end
-
         def variable_interpolation?(node)
           node.variable? || node.reference?
-        end
-
-        def implicit_concatenation?(node)
-          node.parent && node.parent.dstr_type?
-        end
-
-        def embedded_in_percent_array?(node)
-          node.parent && node.parent.array_type? &&
-            percent_literal?(node.parent)
-        end
-
-        def autocorrect_variable_interpolation(embedded_node, node)
-          replacement = "#{embedded_node.loc.expression.source}.to_s"
-          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
-        end
-
-        def autocorrect_single_variable_interpolation(embedded_node, node)
-          variable_loc = embedded_node.children.first.loc
-          replacement = "#{variable_loc.expression.source}.to_s"
-          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
-        end
-
-        def autocorrect_other(embedded_node, node)
-          loc = node.loc
-          embedded_loc = embedded_node.loc
-
-          lambda do |corrector|
-            corrector.replace(loc.begin, '')
-            corrector.replace(loc.end, '')
-            corrector.replace(embedded_loc.begin, '(')
-            corrector.replace(embedded_loc.end, ').to_s')
-          end
         end
       end
     end

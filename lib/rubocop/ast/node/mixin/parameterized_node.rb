@@ -5,12 +5,20 @@ module RuboCop
     # Common functionality for nodes that are parameterized:
     # `send`, `super`, `zsuper`, `def`, `defs`
     module ParameterizedNode
-      # Checks whether this node's arguments are wrapped in parentheses.
+      # Checks whether this node has any arguments.
       #
-      # @return [Boolean] whether this node's arguments are
-      #                   wrapped in parentheses
-      def parenthesized?
-        loc.end && loc.end.is?(')')
+      # @return [Boolean] whether this node has any arguments
+      def arguments?
+        !arguments.empty?
+      end
+
+      # Whether the last argument of the node is a block pass,
+      # i.e. `&block`.
+      #
+      # @return [Boolean] whether the last argument of the node is a block pass
+      def block_argument?
+        arguments? &&
+          (last_argument.block_pass_type? || last_argument.blockarg_type?)
       end
 
       # A shorthand for getting the first argument of the node.
@@ -31,11 +39,12 @@ module RuboCop
         arguments[-1]
       end
 
-      # Checks whether this node has any arguments.
+      # Checks whether this node's arguments are wrapped in parentheses.
       #
-      # @return [Boolean] whether this node has any arguments
-      def arguments?
-        !arguments.empty?
+      # @return [Boolean] whether this node's arguments are
+      #                   wrapped in parentheses
+      def parenthesized?
+        loc.end && loc.end.is?(')')
       end
 
       # Checks whether any argument of the node is a splat
@@ -47,15 +56,6 @@ module RuboCop
           (arguments.any?(&:splat_type?) || arguments.any?(&:restarg_type?))
       end
       alias rest_argument? splat_argument?
-
-      # Whether the last argument of the node is a block pass,
-      # i.e. `&block`.
-      #
-      # @return [Boolean] whether the last argument of the node is a block pass
-      def block_argument?
-        arguments? &&
-          (last_argument.block_pass_type? || last_argument.blockarg_type?)
-      end
     end
   end
 end

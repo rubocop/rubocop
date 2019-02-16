@@ -40,6 +40,13 @@ module RuboCop
 
         MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.selector,
+                              preferred_method(node.loc.selector.source))
+          end
+        end
+
         def on_block(node)
           check_method_node(node.send_node)
         end
@@ -51,25 +58,18 @@ module RuboCop
           check_method_node(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              preferred_method(node.loc.selector.source))
-          end
-        end
-
         private
-
-        def message(node)
-          format(MSG,
-                 prefer: preferred_method(node.method_name),
-                 current: node.method_name)
-        end
 
         def check_method_node(node)
           return unless preferred_methods[node.method_name]
 
           add_offense(node, location: :selector)
+        end
+
+        def message(node)
+          format(MSG,
+                 prefer: preferred_method(node.method_name),
+                 current: node.method_name)
         end
       end
     end

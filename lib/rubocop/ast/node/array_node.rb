@@ -11,18 +11,13 @@ module RuboCop
         symbol: /^%[iI]/
       }.freeze
 
-      # Returns an array of all value nodes in the `array` literal.
+      # Checks whether the `array` literal is delimited by either percent or
+      # square brackets
       #
-      # @return [Array<Node>] an array of value nodes
-      def values
-        each_child_node.to_a
-      end
-
-      # Checks whether the `array` literal is delimited by square brackets.
-      #
-      # @return [Boolean] whether the array is enclosed in square brackets
-      def square_brackets?
-        loc.begin && loc.begin.is?('[')
+      # @return [Boolean] whether the array is enclosed in percent or square
+      # brackets
+      def bracketed?
+        square_brackets? || percent_literal?
       end
 
       # Checks whether the `array` literal is delimited by percent brackets.
@@ -44,13 +39,18 @@ module RuboCop
         end
       end
 
-      # Checks whether the `array` literal is delimited by either percent or
-      # square brackets
+      # Checks whether the `array` literal is delimited by square brackets.
       #
-      # @return [Boolean] whether the array is enclosed in percent or square
-      # brackets
-      def bracketed?
-        square_brackets? || percent_literal?
+      # @return [Boolean] whether the array is enclosed in square brackets
+      def square_brackets?
+        loc.begin && loc.begin.is?('[')
+      end
+
+      # Returns an array of all value nodes in the `array` literal.
+      #
+      # @return [Array<Node>] an array of value nodes
+      def values
+        each_child_node.to_a
       end
     end
   end

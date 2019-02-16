@@ -9,6 +9,16 @@ module RuboCop
       class << self
         attr_reader :processed_source
 
+        def add_space(processed_source, corrector, left_token, right_token)
+          @processed_source = processed_source
+          unless left_token.space_after?
+            corrector.insert_after(left_token.pos, ' ')
+          end
+          return if right_token.space_before?
+
+          corrector.insert_before(right_token.pos, ' ')
+        end
+
         def empty_corrections(processed_source, corrector, empty_config,
                               left_token, right_token)
           @processed_source = processed_source
@@ -32,16 +42,6 @@ module RuboCop
 
           range = side_space_range(range: right_token.pos, side: :left)
           corrector.remove(range)
-        end
-
-        def add_space(processed_source, corrector, left_token, right_token)
-          @processed_source = processed_source
-          unless left_token.space_after?
-            corrector.insert_after(left_token.pos, ' ')
-          end
-          return if right_token.space_before?
-
-          corrector.insert_before(right_token.pos, ' ')
         end
       end
     end

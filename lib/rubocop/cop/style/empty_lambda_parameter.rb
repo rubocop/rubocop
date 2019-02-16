@@ -22,13 +22,6 @@ module RuboCop
 
         MSG = 'Omit parentheses for the empty lambda parameters.'.freeze
 
-        def on_block(node)
-          send_node = node.send_node
-          return unless send_node.send_type?
-
-          check(node) if node.send_node.lambda_literal?
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             send_node = node.parent.send_node
@@ -38,6 +31,13 @@ module RuboCop
             )
             corrector.remove(range)
           end
+        end
+
+        def on_block(node)
+          send_node = node.send_node
+          return unless send_node.send_type?
+
+          check(node) if node.send_node.lambda_literal?
         end
       end
     end

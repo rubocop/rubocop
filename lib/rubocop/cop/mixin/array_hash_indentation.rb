@@ -6,19 +6,21 @@ module RuboCop
     module ArrayHashIndentation
       private
 
-      def each_argument_node(node, type)
-        left_parenthesis = node.loc.begin
+      def base_column(left_brace, left_parenthesis)
+        if style == brace_alignment_style
+          left_brace.column
+        elsif left_parenthesis && style == :special_inside_parentheses
+          left_parenthesis.column + 1
+        else
+          left_brace.source_line =~ /\S/
+        end
+      end
 
-        return unless left_parenthesis
-
-        node.arguments.each do |arg|
-          on_node(type, arg, :send) do |type_node|
-            left_brace = type_node.loc.begin
-            if left_brace && left_brace.line == left_parenthesis.line
-              yield type_node, left_parenthesis
-              ignore_node(type_node)
-            end
-          end
+      def check_expected_style(styles)
+        if styles.size > 1
+          ambiguous_style_detected(*styles)
+        else
+          correct_style_detected
         end
       end
 
@@ -34,24 +36,6 @@ module RuboCop
           check_expected_style(styles)
         else
           incorrect_style_detected(styles, first, left_parenthesis)
-        end
-      end
-
-      def check_expected_style(styles)
-        if styles.size > 1
-          ambiguous_style_detected(*styles)
-        else
-          correct_style_detected
-        end
-      end
-
-      def base_column(left_brace, left_parenthesis)
-        if style == brace_alignment_style
-          left_brace.column
-        elsif left_parenthesis && style == :special_inside_parentheses
-          left_parenthesis.column + 1
-        else
-          left_brace.source_line =~ /\S/
         end
       end
 
@@ -71,6 +55,22 @@ module RuboCop
         end
         styles << brace_alignment_style if column == left_brace.column
         styles
+      end
+
+      def each_argument_node(node, type)
+        left_parenthesis = node.loc.begin
+
+        return unless left_parenthesis
+
+        node.arguments.each do |arg|
+          on_node(type, arg, :send) do |type_node|
+            left_brace = type_node.loc.begin
+            if left_brace && left_brace.line == left_parenthesis.line
+              yield type_node, left_parenthesis
+              ignore_node(type_node)
+            end
+          end
+        end
       end
 
       def incorrect_style_detected(styles, first, left_parenthesis)

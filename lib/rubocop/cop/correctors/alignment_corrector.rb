@@ -12,6 +12,15 @@ module RuboCop
       class << self
         attr_reader :processed_source
 
+        def align_end(processed_source, node, align_to)
+          @processed_source = processed_source
+          whitespace = whitespace_range(node)
+          return false unless whitespace.source.strip.empty?
+
+          column = alignment_column(align_to)
+          ->(corrector) { corrector.replace(whitespace, ' ' * column) }
+        end
+
         def correct(processed_source, node, column_delta)
           return unless node
 
@@ -27,16 +36,17 @@ module RuboCop
           end
         end
 
-        def align_end(processed_source, node, align_to)
-          @processed_source = processed_source
-          whitespace = whitespace_range(node)
-          return false unless whitespace.source.strip.empty?
-
-          column = alignment_column(align_to)
-          ->(corrector) { corrector.replace(whitespace, ' ' * column) }
-        end
-
         private
+
+        def alignment_column(align_to)
+          if !align_to
+            0
+          elsif align_to.respond_to?(:loc)
+            align_to.source_range.column
+          else
+            align_to.column
+          end
+        end
 
         def autocorrect_line(corrector, line_begin_pos, expr, column_delta,
                              heredoc_ranges)
@@ -52,14 +62,6 @@ module RuboCop
           elsif range.source =~ /\A[ \t]+\z/
             remove(range, corrector)
           end
-        end
-
-        def heredoc_ranges(node)
-          return [] unless node.is_a?(Parser::AST::Node)
-
-          node.each_node(:dstr)
-              .select(&:heredoc?)
-              .map { |n| n.loc.heredoc_body.join(n.loc.heredoc_end) }
         end
 
         def block_comment_within?(expr)
@@ -80,6 +82,22 @@ module RuboCop
           range_between(pos_to_remove, pos_to_remove + column_delta.abs)
         end
 
+        def each_line(expr)
+          line_begin_pos = expr.begin_pos
+          expr.source.each_line do |line|
+            yield line_begin_pos
+            line_begin_pos += line.length
+          end
+        end
+
+        def heredoc_ranges(node)
+          return [] unless node.is_a?(Parser::AST::Node)
+
+          node.each_node(:dstr)
+              .select(&:heredoc?)
+              .map { |n| n.loc.heredoc_body.join(n.loc.heredoc_end) }
+        end
+
         def remove(range, corrector)
           original_stderr = $stderr
           $stderr = StringIO.new # Avoid error messages on console
@@ -91,28 +109,10 @@ module RuboCop
           $stderr = original_stderr
         end
 
-        def each_line(expr)
-          line_begin_pos = expr.begin_pos
-          expr.source.each_line do |line|
-            yield line_begin_pos
-            line_begin_pos += line.length
-          end
-        end
-
         def whitespace_range(node)
           begin_pos = node.loc.end.begin_pos
 
           range_between(begin_pos - node.loc.end.column, begin_pos)
-        end
-
-        def alignment_column(align_to)
-          if !align_to
-            0
-          elsif align_to.respond_to?(:loc)
-            align_to.source_range.column
-          else
-            align_to.column
-          end
         end
       end
     end

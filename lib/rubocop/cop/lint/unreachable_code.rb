@@ -61,6 +61,23 @@ module RuboCop
           }
         PATTERN
 
+        def check_case(node)
+          else_branch = node.else_branch
+          return false unless else_branch
+          return false unless flow_expression?(else_branch)
+
+          node.when_branches.all? do |branch|
+            branch.body && flow_expression?(branch.body)
+          end
+        end
+
+        def check_if(node)
+          if_branch = node.if_branch
+          else_branch = node.else_branch
+          if_branch && else_branch &&
+            flow_expression?(if_branch) && flow_expression?(else_branch)
+        end
+
         def flow_expression?(node)
           return true if flow_command?(node)
 
@@ -74,23 +91,6 @@ module RuboCop
             check_case(node)
           else
             false
-          end
-        end
-
-        def check_if(node)
-          if_branch = node.if_branch
-          else_branch = node.else_branch
-          if_branch && else_branch &&
-            flow_expression?(if_branch) && flow_expression?(else_branch)
-        end
-
-        def check_case(node)
-          else_branch = node.else_branch
-          return false unless else_branch
-          return false unless flow_expression?(else_branch)
-
-          node.when_branches.all? do |branch|
-            branch.body && flow_expression?(branch.body)
           end
         end
       end

@@ -16,48 +16,11 @@ module RuboCop
       OPERATOR_METHODS = %i[| ^ & <=> == === =~ > >= < <= << >> + - * /
                             % ** ~ +@ -@ !@ ~@ [] []= ! != !~ `].freeze
 
-      # Checks whether the method name matches the argument.
-      #
-      # @param [Symbol, String] name the method name to check for
-      # @return [Boolean] whether the method name matches the argument
-      def method?(name)
-        method_name == name.to_sym
-      end
-
-      # Checks whether the method is an operator method.
-      #
-      # @return [Boolean] whether the method is an operator
-      def operator_method?
-        OPERATOR_METHODS.include?(method_name)
-      end
-
-      # Checks whether the method is a comparison method.
-      #
-      # @return [Boolean] whether the method is a comparison
-      def comparison_method?
-        Node::COMPARISON_OPERATORS.include?(method_name)
-      end
-
       # Checks whether the method is an assignment method.
       #
       # @return [Boolean] whether the method is an assignment
       def assignment_method?
         !comparison_method? && method_name.to_s.end_with?('=')
-      end
-
-      # Checks whether the method is an enumerator method.
-      #
-      # @return [Boolean] whether the method is an enumerator
-      def enumerator_method?
-        ENUMERATOR_METHODS.include?(method_name) ||
-          method_name.to_s.start_with?('each_')
-      end
-
-      # Checks whether the method is a predicate method.
-      #
-      # @return [Boolean] whether the method is a predicate method
-      def predicate_method?
-        method_name.to_s.end_with?('?')
       end
 
       # Checks whether the method is a bang method.
@@ -75,11 +38,11 @@ module RuboCop
         method_name.to_s =~ /\A[A-Z]/
       end
 
-      # Checks whether the *explicit* receiver of this node is `self`.
+      # Checks whether the method is a comparison method.
       #
-      # @return [Boolean] whether the receiver of this node is `self`
-      def self_receiver?
-        receiver && receiver.self_type?
+      # @return [Boolean] whether the method is a comparison
+      def comparison_method?
+        Node::COMPARISON_OPERATORS.include?(method_name)
       end
 
       # Checks whether the *explicit* receiver of node is a `const` node.
@@ -89,11 +52,48 @@ module RuboCop
         receiver && receiver.const_type?
       end
 
+      # Checks whether the method is an enumerator method.
+      #
+      # @return [Boolean] whether the method is an enumerator
+      def enumerator_method?
+        ENUMERATOR_METHODS.include?(method_name) ||
+          method_name.to_s.start_with?('each_')
+      end
+
+      # Checks whether the method name matches the argument.
+      #
+      # @param [Symbol, String] name the method name to check for
+      # @return [Boolean] whether the method name matches the argument
+      def method?(name)
+        method_name == name.to_sym
+      end
+
       # Checks whether this is a negation method, i.e. `!` or keyword `not`.
       #
       # @return [Boolean] whether this method is a negation method
       def negation_method?
         receiver && method_name == :!
+      end
+
+      # Checks whether the method is an operator method.
+      #
+      # @return [Boolean] whether the method is an operator
+      def operator_method?
+        OPERATOR_METHODS.include?(method_name)
+      end
+
+      # Checks whether the method is a predicate method.
+      #
+      # @return [Boolean] whether the method is a predicate method
+      def predicate_method?
+        method_name.to_s.end_with?('?')
+      end
+
+      # Checks whether this is a prefix bang method, e.g. `!foo`.
+      #
+      # @return [Boolean] whether this method is a prefix bang
+      def prefix_bang?
+        negation_method? && loc.selector.is?('!')
       end
 
       # Checks whether this is a prefix not method, e.g. `not foo`.
@@ -103,11 +103,11 @@ module RuboCop
         negation_method? && loc.selector.is?('not')
       end
 
-      # Checks whether this is a prefix bang method, e.g. `!foo`.
+      # Checks whether the *explicit* receiver of this node is `self`.
       #
-      # @return [Boolean] whether this method is a prefix bang
-      def prefix_bang?
-        negation_method? && loc.selector.is?('!')
+      # @return [Boolean] whether the receiver of this node is `self`
+      def self_receiver?
+        receiver && receiver.self_type?
       end
     end
   end

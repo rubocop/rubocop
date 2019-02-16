@@ -51,15 +51,6 @@ module RuboCop
 
         minimum_target_ruby_version 2.3
 
-        def on_send(node)
-          try_call(node) do |try_method, dispatch|
-            return if try_method == :try && !cop_config['ConvertTry']
-            return unless dispatch.sym_type? && dispatch.value =~ /\w+[=!?]?/
-
-            add_offense(node, message: format(MSG, try: try_method))
-          end
-        end
-
         def autocorrect(node)
           method_node, *params = *node.arguments
           method = method_node.source[1..-1]
@@ -69,6 +60,15 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(range, replacement(method, params))
+          end
+        end
+
+        def on_send(node)
+          try_call(node) do |try_method, dispatch|
+            return if try_method == :try && !cop_config['ConvertTry']
+            return unless dispatch.sym_type? && dispatch.value =~ /\w+[=!?]?/
+
+            add_offense(node, message: format(MSG, try: try_method))
           end
         end
 

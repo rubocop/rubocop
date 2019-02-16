@@ -21,16 +21,6 @@ module RuboCop
       class LambdaCall < Cop
         include ConfigurableEnforcedStyle
 
-        def on_send(node)
-          return unless node.receiver && node.method?(:call)
-
-          if offense?(node)
-            add_offense(node) { opposite_style_detected }
-          else
-            correct_style_detected
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             if explicit_style?
@@ -45,12 +35,17 @@ module RuboCop
           end
         end
 
-        private
+        def on_send(node)
+          return unless node.receiver && node.method?(:call)
 
-        def offense?(node)
-          explicit_style? && node.implicit_call? ||
-            implicit_style? && !node.implicit_call?
+          if offense?(node)
+            add_offense(node) { opposite_style_detected }
+          else
+            correct_style_detected
+          end
         end
+
+        private
 
         def add_parentheses(node, corrector)
           if node.arguments.empty?
@@ -72,6 +67,14 @@ module RuboCop
           node.loc.expression.end
         end
 
+        def explicit_style?
+          style == :call
+        end
+
+        def implicit_style?
+          style == :braces
+        end
+
         def message(_node)
           if explicit_style?
             'Prefer the use of `lambda.call(...)` over `lambda.(...)`.'
@@ -80,12 +83,9 @@ module RuboCop
           end
         end
 
-        def implicit_style?
-          style == :braces
-        end
-
-        def explicit_style?
-          style == :call
+        def offense?(node)
+          explicit_style? && node.implicit_call? ||
+            implicit_style? && !node.implicit_call?
         end
       end
     end

@@ -7,6 +7,10 @@ module RuboCop
     # adding offenses for the faulty string nodes, and with filtering out
     # nodes.
     module StringHelp
+      def on_regexp(node)
+        ignore_node(node)
+      end
+
       def on_str(node)
         # Constants like __FILE__ are handled as strings,
         # but don't respond to begin.
@@ -18,10 +22,6 @@ module RuboCop
         else
           correct_style_detected
         end
-      end
-
-      def on_regexp(node)
-        ignore_node(node)
       end
 
       private

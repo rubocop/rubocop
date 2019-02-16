@@ -12,8 +12,45 @@ module RuboCop
 
       private
 
-      def style_parameter_name
-        'EnforcedStyleForMultiline'
+      # A single argument with the closing bracket on the same line as the end
+      # of the argument is not considered multiline, even if the argument
+      # itself might span multiple lines.
+      def allowed_multiline_argument?(node)
+        elements(node).one? && !Util.begins_its_line?(node.loc.end)
+      end
+
+      def any_heredoc?(items)
+        items.any? { |item| heredoc?(item) }
+      end
+
+      def autocorrect_range(item)
+        expr = item.source_range
+        ix = expr.source.rindex("\n") || 0
+        ix += expr.source[ix..-1] =~ /\S/
+
+        range_between(expr.begin_pos + ix, expr.end_pos)
+      end
+
+      # By default, there's no reason to avoid auto-correct.
+      def avoid_autocorrect?(_nodes)
+        false
+      end
+
+      def avoid_comma(kind, comma_begin_pos, extra_info)
+        range = range_between(comma_begin_pos, comma_begin_pos + 1)
+        article = kind =~ /array/ ? 'an' : 'a'
+        msg = format(
+          MSG,
+          command: 'Avoid',
+          unit: format(kind, article: article) + extra_info.to_s
+        )
+
+        add_offense(range, location: range, message: msg)
+      end
+
+      # Returns true if the node has round/square/curly brackets.
+      def brackets?(node)
+        node.loc.end
       end
 
       def check(node, items, kind, begin_pos, end_pos)
@@ -49,60 +86,6 @@ module RuboCop
               node.loc.end.begin_pos)
       end
 
-      def extra_avoid_comma_info
-        case style
-        when :comma
-          ', unless each item is on its own line'
-        when :consistent_comma
-          ', unless items are split onto multiple lines'
-        else
-          ''
-        end
-      end
-
-      def should_have_comma?(style, node)
-        case style
-        when :comma
-          multiline?(node) && no_elements_on_same_line?(node)
-        when :consistent_comma
-          multiline?(node) && !method_name_and_arguments_on_same_line?(node)
-        else
-          false
-        end
-      end
-
-      def inside_comment?(range, comma_offset)
-        processed_source.comments.any? do |comment|
-          comment_offset = comment.loc.expression.begin_pos - range.begin_pos
-          comment_offset >= 0 && comment_offset < comma_offset
-        end
-      end
-
-      # Returns true if the node has round/square/curly brackets.
-      def brackets?(node)
-        node.loc.end
-      end
-
-      # Returns true if the round/square/curly brackets of the given node are
-      # on different lines, each item within is on its own line, and the
-      # closing bracket is on its own line.
-      def multiline?(node)
-        node.multiline? && !allowed_multiline_argument?(node)
-      end
-
-      def method_name_and_arguments_on_same_line?(node)
-        node.send_type? &&
-          node.loc.selector.line == node.arguments.last.last_line &&
-          node.last_line == node.arguments.last.last_line
-      end
-
-      # A single argument with the closing bracket on the same line as the end
-      # of the argument is not considered multiline, even if the argument
-      # itself might span multiple lines.
-      def allowed_multiline_argument?(node)
-        elements(node).one? && !Util.begins_its_line?(node.loc.end)
-      end
-
       def elements(node)
         return node.children unless node.send_type?
 
@@ -118,59 +101,15 @@ module RuboCop
         end
       end
 
-      def no_elements_on_same_line?(node)
-        items = elements(node).map(&:source_range)
-        items << node.loc.end
-        items.each_cons(2).none? { |a, b| on_same_line?(a, b) }
-      end
-
-      def on_same_line?(range1, range2)
-        range1.last_line == range2.line
-      end
-
-      def avoid_comma(kind, comma_begin_pos, extra_info)
-        range = range_between(comma_begin_pos, comma_begin_pos + 1)
-        article = kind =~ /array/ ? 'an' : 'a'
-        msg = format(
-          MSG,
-          command: 'Avoid',
-          unit: format(kind, article: article) + extra_info.to_s
-        )
-
-        add_offense(range, location: range, message: msg)
-      end
-
-      def put_comma(node, items, kind)
-        return if avoid_autocorrect?(elements(node))
-
-        last_item = items.last
-        return if last_item.block_pass_type?
-
-        range = autocorrect_range(last_item)
-        msg = format(
-          MSG,
-          command: 'Put a',
-          unit: format(kind, article: 'a multiline')
-        )
-
-        add_offense(range, location: range, message: msg)
-      end
-
-      def autocorrect_range(item)
-        expr = item.source_range
-        ix = expr.source.rindex("\n") || 0
-        ix += expr.source[ix..-1] =~ /\S/
-
-        range_between(expr.begin_pos + ix, expr.end_pos)
-      end
-
-      # By default, there's no reason to avoid auto-correct.
-      def avoid_autocorrect?(_nodes)
-        false
-      end
-
-      def any_heredoc?(items)
-        items.any? { |item| heredoc?(item) }
+      def extra_avoid_comma_info
+        case style
+        when :comma
+          ', unless each item is on its own line'
+        when :consistent_comma
+          ', unless items are split onto multiple lines'
+        else
+          ''
+        end
       end
 
       def heredoc?(node)
@@ -210,6 +149,67 @@ module RuboCop
         return heredoc?(node.children.last) if node.children.size > 2
 
         false
+      end
+
+      def inside_comment?(range, comma_offset)
+        processed_source.comments.any? do |comment|
+          comment_offset = comment.loc.expression.begin_pos - range.begin_pos
+          comment_offset >= 0 && comment_offset < comma_offset
+        end
+      end
+
+      def method_name_and_arguments_on_same_line?(node)
+        node.send_type? &&
+          node.loc.selector.line == node.arguments.last.last_line &&
+          node.last_line == node.arguments.last.last_line
+      end
+
+      # Returns true if the round/square/curly brackets of the given node are
+      # on different lines, each item within is on its own line, and the
+      # closing bracket is on its own line.
+      def multiline?(node)
+        node.multiline? && !allowed_multiline_argument?(node)
+      end
+
+      def no_elements_on_same_line?(node)
+        items = elements(node).map(&:source_range)
+        items << node.loc.end
+        items.each_cons(2).none? { |a, b| on_same_line?(a, b) }
+      end
+
+      def on_same_line?(range1, range2)
+        range1.last_line == range2.line
+      end
+
+      def put_comma(node, items, kind)
+        return if avoid_autocorrect?(elements(node))
+
+        last_item = items.last
+        return if last_item.block_pass_type?
+
+        range = autocorrect_range(last_item)
+        msg = format(
+          MSG,
+          command: 'Put a',
+          unit: format(kind, article: 'a multiline')
+        )
+
+        add_offense(range, location: range, message: msg)
+      end
+
+      def should_have_comma?(style, node)
+        case style
+        when :comma
+          multiline?(node) && no_elements_on_same_line?(node)
+        when :consistent_comma
+          multiline?(node) && !method_name_and_arguments_on_same_line?(node)
+        else
+          false
+        end
+      end
+
+      def style_parameter_name
+        'EnforcedStyleForMultiline'
       end
     end
   end

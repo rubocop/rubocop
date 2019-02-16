@@ -32,25 +32,22 @@ module RuboCop
         MSG = 'This conditional expression can just be replaced ' \
               'by `%<msg>s`.'.freeze
 
-        def on_if(node)
-          return unless offense?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.loc.expression, replacement_condition(node))
           end
         end
 
+        def on_if(node)
+          return unless offense?(node)
+
+          add_offense(node)
+        end
+
         private
 
-        def message(node)
-          replacement = replacement_condition(node)
-          msg = node.elsif? ? "\n#{replacement}" : replacement
-
-          format(MSG, msg: msg)
+        def configured_indentation_width
+          super || 2
         end
 
         def_node_matcher :redundant_condition?, <<-RUBY
@@ -61,17 +58,8 @@ module RuboCop
           (if (send _ {:#{COMPARISON_OPERATORS.join(' :')}} _) false true)
         RUBY
 
-        def offense?(node)
-          return if node.modifier_form?
-
-          redundant_condition?(node) || redundant_condition_inverted?(node)
-        end
-
-        def replacement_condition(node)
-          condition = node.condition.source
-          expression = invert_expression?(node) ? "!(#{condition})" : condition
-
-          node.elsif? ? indented_else_node(expression, node) : expression
+        def indented_else_node(expression, node)
+          "else\n#{indentation(node)}#{expression}"
         end
 
         def invert_expression?(node)
@@ -84,12 +72,24 @@ module RuboCop
           )
         end
 
-        def indented_else_node(expression, node)
-          "else\n#{indentation(node)}#{expression}"
+        def message(node)
+          replacement = replacement_condition(node)
+          msg = node.elsif? ? "\n#{replacement}" : replacement
+
+          format(MSG, msg: msg)
         end
 
-        def configured_indentation_width
-          super || 2
+        def offense?(node)
+          return if node.modifier_form?
+
+          redundant_condition?(node) || redundant_condition_inverted?(node)
+        end
+
+        def replacement_condition(node)
+          condition = node.condition.source
+          expression = invert_expression?(node) ? "!(#{condition})" : condition
+
+          node.elsif? ? indented_else_node(expression, node) : expression
         end
       end
     end

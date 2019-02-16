@@ -31,12 +31,12 @@ module RuboCop
       class WhileUntilDo < Cop
         MSG = 'Do not use `do` with multi-line `%<keyword>s`.'.freeze
 
-        def on_while(node)
-          handle(node)
-        end
+        def autocorrect(node)
+          do_range = node.condition.source_range.end.join(node.loc.begin)
 
-        def on_until(node)
-          handle(node)
+          lambda do |corrector|
+            corrector.remove(do_range)
+          end
         end
 
         def handle(node)
@@ -46,12 +46,12 @@ module RuboCop
                             message: format(MSG, keyword: node.keyword))
         end
 
-        def autocorrect(node)
-          do_range = node.condition.source_range.end.join(node.loc.begin)
+        def on_until(node)
+          handle(node)
+        end
 
-          lambda do |corrector|
-            corrector.remove(do_range)
-          end
+        def on_while(node)
+          handle(node)
         end
       end
     end

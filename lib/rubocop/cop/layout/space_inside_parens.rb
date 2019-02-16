@@ -39,6 +39,16 @@ module RuboCop
         MSG       = 'Space inside parentheses detected.'.freeze
         MSG_SPACE = 'No space inside parentheses detected.'.freeze
 
+        def autocorrect(range)
+          lambda do |corrector|
+            if style == :space
+              corrector.insert_before(range, ' ')
+            else
+              corrector.remove(range)
+            end
+          end
+        end
+
         def investigate(processed_source)
           @processed_source = processed_source
 
@@ -53,17 +63,18 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          lambda do |corrector|
-            if style == :space
-              corrector.insert_before(range, ' ')
-            else
-              corrector.remove(range)
-            end
-          end
-        end
-
         private
+
+        def can_be_ignored?(token1, token2)
+          return true unless parens?(token1, token2)
+
+          # If the second token is a comment, that means that a line break
+          # follows, and that the rules for space inside don't apply.
+          return true if token2.comment?
+
+          # Ignore empty parens. # TODO: Could be configurable.
+          return true if token1.left_parens? && token2.right_parens?
+        end
 
         def each_extraneous_space(tokens)
           tokens.each_cons(2) do |token1, token2|
@@ -95,17 +106,6 @@ module RuboCop
 
         def parens?(token1, token2)
           token1.left_parens? || token2.right_parens?
-        end
-
-        def can_be_ignored?(token1, token2)
-          return true unless parens?(token1, token2)
-
-          # If the second token is a comment, that means that a line break
-          # follows, and that the rules for space inside don't apply.
-          return true if token2.comment?
-
-          # Ignore empty parens. # TODO: Could be configurable.
-          return true if token1.left_parens? && token2.right_parens?
         end
       end
     end

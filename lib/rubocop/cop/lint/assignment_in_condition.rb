@@ -48,20 +48,20 @@ module RuboCop
 
         private
 
-        def message(_node)
-          if safe_assignment_allowed?
-            MSG_WITH_SAFE_ASSIGNMENT_ALLOWED
-          else
-            MSG_WITHOUT_SAFE_ASSIGNMENT_ALLOWED
-          end
-        end
-
         def allowed_construct?(asgn_node)
           asgn_node.begin_type? || conditional_assignment?(asgn_node)
         end
 
         def conditional_assignment?(asgn_node)
           !asgn_node.loc.operator
+        end
+
+        def message(_node)
+          if safe_assignment_allowed?
+            MSG_WITH_SAFE_ASSIGNMENT_ALLOWED
+          else
+            MSG_WITHOUT_SAFE_ASSIGNMENT_ALLOWED
+          end
         end
 
         def skip_children?(asgn_node)

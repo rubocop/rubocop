@@ -46,6 +46,10 @@ module RuboCop
 
         private
 
+        def int_value(node)
+          node.children[0]
+        end
+
         def message(node)
           method_name = node.receiver.method_name
           caller_arg = node.receiver.first_argument
@@ -58,10 +62,6 @@ module RuboCop
           else
             format(MSG_FIRST, n: n, method: method_name)
           end
-        end
-
-        def int_value(node)
-          node.children[0]
         end
       end
     end

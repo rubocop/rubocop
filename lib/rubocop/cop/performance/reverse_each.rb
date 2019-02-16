@@ -22,6 +22,10 @@ module RuboCop
           (send $(send _ :reverse) :each)
         MATCHER
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.dot, UNDERSCORE) }
+        end
+
         def on_send(node)
           reverse_each?(node) do |receiver|
             location_of_reverse = receiver.loc.selector.begin_pos
@@ -31,10 +35,6 @@ module RuboCop
 
             add_offense(node, location: range)
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.dot, UNDERSCORE) }
         end
       end
     end

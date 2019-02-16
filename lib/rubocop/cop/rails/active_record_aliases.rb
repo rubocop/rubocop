@@ -20,6 +20,15 @@ module RuboCop
           update_attributes!: :update!
         }.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(
+              node.loc.selector,
+              ALIASES[node.method_name].to_s
+            )
+          end
+        end
+
         def on_send(node)
           ALIASES.each do |bad, good|
             next unless node.method?(bad)
@@ -33,15 +42,6 @@ module RuboCop
         end
 
         alias on_csend on_send
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(
-              node.loc.selector,
-              ALIASES[node.method_name].to_s
-            )
-          end
-        end
       end
     end
   end

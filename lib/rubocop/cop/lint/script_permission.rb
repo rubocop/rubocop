@@ -34,6 +34,12 @@ module RuboCop
         MSG = "Script file %<file>s doesn't have execute permission.".freeze
         SHEBANG = '#!'.freeze
 
+        def autocorrect(node)
+          lambda do |_corrector|
+            FileUtils.chmod('+x', node.loc.expression.source_buffer.name)
+          end
+        end
+
         def investigate(processed_source)
           return if @options.key?(:stdin)
           return if Platform.windows?
@@ -43,12 +49,6 @@ module RuboCop
           comment = processed_source.comments[0]
           message = format_message_from(processed_source)
           add_offense(comment, message: message)
-        end
-
-        def autocorrect(node)
-          lambda do |_corrector|
-            FileUtils.chmod('+x', node.loc.expression.source_buffer.name)
-          end
         end
 
         private

@@ -41,13 +41,13 @@ module RuboCop
 
         private
 
+        def allowed_method?(node)
+          node.assignment? || node.operator_method? || node.method?(:[])
+        end
+
         def ambiguous_block_association?(send_node)
           send_node.last_argument.block_type? &&
             !send_node.last_argument.send_node.arguments?
-        end
-
-        def allowed_method?(node)
-          node.assignment? || node.operator_method? || node.method?(:[])
         end
 
         def message(send_node)

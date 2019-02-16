@@ -8,14 +8,6 @@ module RuboCop
     module ArrayMinSize
       private
 
-      def below_array_length?(node)
-        node.values.length < min_size_config
-      end
-
-      def min_size_config
-        cop_config['MinSize']
-      end
-
       def array_style_detected(style, ary_size)
         cfg = config_to_allow_offenses
         return if cfg['Enabled'] == false
@@ -35,6 +27,10 @@ module RuboCop
         end
       end
 
+      def below_array_length?(node)
+        node.values.length < min_size_config
+      end
+
       def largest_brackets_size(style, ary_size)
         self.class.largest_brackets ||= -Float::INFINITY
 
@@ -43,6 +39,10 @@ module RuboCop
         end
 
         self.class.largest_brackets
+      end
+
+      def min_size_config
+        cop_config['MinSize']
       end
 
       def smallest_percent_size(style, ary_size)

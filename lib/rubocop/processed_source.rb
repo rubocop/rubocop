@@ -36,18 +36,70 @@ module RuboCop
       parse(source, ruby_version)
     end
 
-    def comment_config
-      @comment_config ||= CommentConfig.new(self)
-    end
-
-    def disabled_line_ranges
-      comment_config.cop_disabled_line_ranges
+    def [](*args)
+      lines[*args]
     end
 
     def ast_with_comments
       return if !ast || !comments
 
       @ast_with_comments ||= Parser::Source::Comment.associate(ast, comments)
+    end
+
+    def blank?
+      ast.nil?
+    end
+
+    # Raw source checksum for tracking infinite loops.
+    def checksum
+      Digest::MD5.hexdigest(@raw_source)
+    end
+
+    def comment_config
+      @comment_config ||= CommentConfig.new(self)
+    end
+
+    def commented?(source_range)
+      comment_lines.include?(source_range.line)
+    end
+
+    def comments_before_line(line)
+      comments.select { |c| c.location.line <= line }
+    end
+
+    def disabled_line_ranges
+      comment_config.cop_disabled_line_ranges
+    end
+
+    def each_comment
+      comments.each { |comment| yield comment }
+    end
+
+    def each_token
+      tokens.each { |token| yield token }
+    end
+
+    def file_path
+      buffer.name
+    end
+
+    def find_comment
+      comments.find { |comment| yield comment }
+    end
+
+    def find_token
+      tokens.find { |token| yield token }
+    end
+
+    def following_line(token)
+      lines[token.line]
+    end
+
+    def line_indentation(line_number)
+      lines[line_number - 1]
+        .match(/^(\s*)/)[1]
+        .to_s
+        .length
     end
 
     # Returns the source lines, line break characters removed, excluding a
@@ -66,51 +118,8 @@ module RuboCop
       end
     end
 
-    def [](*args)
-      lines[*args]
-    end
-
-    def valid_syntax?
-      return false if @parser_error
-
-      @diagnostics.none? { |d| %i[error fatal].include?(d.level) }
-    end
-
-    # Raw source checksum for tracking infinite loops.
-    def checksum
-      Digest::MD5.hexdigest(@raw_source)
-    end
-
-    def each_comment
-      comments.each { |comment| yield comment }
-    end
-
-    def find_comment
-      comments.find { |comment| yield comment }
-    end
-
-    def each_token
-      tokens.each { |token| yield token }
-    end
-
-    def find_token
-      tokens.find { |token| yield token }
-    end
-
-    def file_path
-      buffer.name
-    end
-
-    def blank?
-      ast.nil?
-    end
-
-    def commented?(source_range)
-      comment_lines.include?(source_range.line)
-    end
-
-    def comments_before_line(line)
-      comments.select { |c| c.location.line <= line }
+    def preceding_line(token)
+      lines[token.line - 2]
     end
 
     def start_with?(string)
@@ -119,25 +128,32 @@ module RuboCop
       self[0].start_with?(string)
     end
 
-    def preceding_line(token)
-      lines[token.line - 2]
-    end
+    def valid_syntax?
+      return false if @parser_error
 
-    def following_line(token)
-      lines[token.line]
-    end
-
-    def line_indentation(line_number)
-      lines[line_number - 1]
-        .match(/^(\s*)/)[1]
-        .to_s
-        .length
+      @diagnostics.none? { |d| %i[error fatal].include?(d.level) }
     end
 
     private
 
     def comment_lines
       @comment_lines ||= comments.map { |c| c.location.line }
+    end
+
+    def create_parser(ruby_version)
+      builder = RuboCop::AST::Builder.new
+
+      parser_class(ruby_version).new(builder).tap do |parser|
+        # On JRuby there's a risk that we hang in tokenize() if we
+        # don't set the all errors as fatal flag. The problem is caused by a bug
+        # in Racc that is discussed in issue #93 of the whitequark/parser
+        # project on GitHub.
+        parser.diagnostics.all_errors_are_fatal = (RUBY_ENGINE != 'ruby')
+        parser.diagnostics.ignore_warnings = false
+        parser.diagnostics.consumer = lambda do |diagnostic|
+          @diagnostics << diagnostic
+        end
+      end
     end
 
     def parse(source, ruby_version)
@@ -152,19 +168,6 @@ module RuboCop
       end
 
       @ast, @comments, @tokens = tokenize(create_parser(ruby_version))
-    end
-
-    def tokenize(parser)
-      begin
-        ast, comments, tokens = parser.tokenize(@buffer)
-        ast.complete! if ast
-      rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
-        # All errors are in diagnostics. No need to handle exception.
-      end
-
-      tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
-
-      [ast, comments, tokens]
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -191,20 +194,17 @@ module RuboCop
     end
     # rubocop:enable Metrics/MethodLength
 
-    def create_parser(ruby_version)
-      builder = RuboCop::AST::Builder.new
-
-      parser_class(ruby_version).new(builder).tap do |parser|
-        # On JRuby there's a risk that we hang in tokenize() if we
-        # don't set the all errors as fatal flag. The problem is caused by a bug
-        # in Racc that is discussed in issue #93 of the whitequark/parser
-        # project on GitHub.
-        parser.diagnostics.all_errors_are_fatal = (RUBY_ENGINE != 'ruby')
-        parser.diagnostics.ignore_warnings = false
-        parser.diagnostics.consumer = lambda do |diagnostic|
-          @diagnostics << diagnostic
-        end
+    def tokenize(parser)
+      begin
+        ast, comments, tokens = parser.tokenize(@buffer)
+        ast.complete! if ast
+      rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
+        # All errors are in diagnostics. No need to handle exception.
       end
+
+      tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
+
+      [ast, comments, tokens]
     end
   end
 end

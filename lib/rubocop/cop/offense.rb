@@ -67,6 +67,52 @@ module RuboCop
 
       # @api public
       #
+      # Returns `-1`, `0`, or `+1`
+      # if this offense is less than, equal to, or greater than `other`.
+      #
+      # @return [Integer]
+      #   comparison result
+      def <=>(other)
+        COMPARISON_ATTRIBUTES.each do |attribute|
+          result = send(attribute) <=> other.send(attribute)
+          return result unless result.zero?
+        end
+        0
+      end
+
+      # @api public
+      #
+      # @return [Boolean]
+      #   returns `true` if two offenses contain same attributes
+      def ==(other)
+        COMPARISON_ATTRIBUTES.all? do |attribute|
+          send(attribute) == other.send(attribute)
+        end
+      end
+
+      alias eql? ==
+
+      # @api private
+      def column
+        location.column
+      end
+
+      # @api private
+      def column_length
+        if first_line == last_line
+          column_range.count
+        else
+          source_line.length - column
+        end
+      end
+
+      # @api private
+      def column_range
+        location.column_range
+      end
+
+      # @api public
+      #
       # @!attribute [r] corrected
       #
       # @return [Boolean]
@@ -86,6 +132,17 @@ module RuboCop
         @status == :disabled
       end
 
+      # @api private
+      def first_line
+        location.first_line
+      end
+
+      def hash
+        COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|
+          hash ^ send(attribute).hash
+        end
+      end
+
       # @api public
       #
       # @return [Parser::Source::Range]
@@ -97,40 +154,8 @@ module RuboCop
       end
 
       # @api private
-      # This is just for debugging purpose.
-      def to_s
-        format('%<severity>s:%3<line>d:%3<column>d: %<message>s',
-               severity: severity.code, line: line,
-               column: real_column, message: message)
-      end
-
-      # @api private
-      def line
-        location.line
-      end
-
-      # @api private
-      def column
-        location.column
-      end
-
-      # @api private
-      def source_line
-        location.source_line
-      end
-
-      # @api private
-      def column_length
-        if first_line == last_line
-          column_range.count
-        else
-          source_line.length - column
-        end
-      end
-
-      # @api private
-      def first_line
-        location.first_line
+      def last_column
+        location.last_column
       end
 
       # @api private
@@ -139,13 +164,8 @@ module RuboCop
       end
 
       # @api private
-      def last_column
-        location.last_column
-      end
-
-      # @api private
-      def column_range
-        location.column_range
+      def line
+        location.line
       end
 
       # @api private
@@ -157,37 +177,17 @@ module RuboCop
         column + 1
       end
 
-      # @api public
-      #
-      # @return [Boolean]
-      #   returns `true` if two offenses contain same attributes
-      def ==(other)
-        COMPARISON_ATTRIBUTES.all? do |attribute|
-          send(attribute) == other.send(attribute)
-        end
+      # @api private
+      def source_line
+        location.source_line
       end
 
-      alias eql? ==
-
-      def hash
-        COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|
-          hash ^ send(attribute).hash
-        end
-      end
-
-      # @api public
-      #
-      # Returns `-1`, `0`, or `+1`
-      # if this offense is less than, equal to, or greater than `other`.
-      #
-      # @return [Integer]
-      #   comparison result
-      def <=>(other)
-        COMPARISON_ATTRIBUTES.each do |attribute|
-          result = send(attribute) <=> other.send(attribute)
-          return result unless result.zero?
-        end
-        0
+      # @api private
+      # This is just for debugging purpose.
+      def to_s
+        format('%<severity>s:%3<line>d:%3<column>d: %<message>s',
+               severity: severity.code, line: line,
+               column: real_column, message: message)
       end
     end
   end

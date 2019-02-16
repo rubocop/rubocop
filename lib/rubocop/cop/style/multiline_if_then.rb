@@ -24,19 +24,19 @@ module RuboCop
 
         MSG = 'Do not use `then` for multi-line `%<keyword>s`.'.freeze
 
-        def on_normal_if_unless(node)
-          return unless non_modifier_then?(node)
-
-          add_offense(node, location: :begin,
-                            message: format(MSG, keyword: node.keyword))
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.remove(
               range_with_surrounding_space(range: node.loc.begin, side: :left)
             )
           end
+        end
+
+        def on_normal_if_unless(node)
+          return unless non_modifier_then?(node)
+
+          add_offense(node, location: :begin,
+                            message: format(MSG, keyword: node.keyword))
         end
 
         private

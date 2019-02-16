@@ -75,10 +75,9 @@ module RuboCop
                      .freeze
         MSG_ALIGN = 'Align `)` with `(`.'.freeze
 
-        def on_send(node)
-          check(node, node.arguments)
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
         end
-        alias on_csend on_send
 
         def on_begin(node)
           check(node, node.children)
@@ -89,11 +88,19 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        def on_send(node)
+          check(node, node.arguments)
         end
+        alias on_csend on_send
 
         private
+
+        def all_elements_aligned?(elements)
+          elements
+            .map { |e| e.loc.column }
+            .uniq
+            .count == 1
+        end
 
         def check(node, elements)
           if elements.empty?
@@ -142,6 +149,14 @@ module RuboCop
                                        right_paren))
         end
 
+        def correct_column_candidates(node, left_paren)
+          [
+            processed_source.line_indentation(left_paren.line),
+            left_paren.column,
+            node.loc.column
+          ]
+        end
+
         def expected_column(left_paren, elements)
           if line_break_after_left_paren?(left_paren, elements)
             source_indent = processed_source
@@ -156,13 +171,6 @@ module RuboCop
           end
         end
 
-        def all_elements_aligned?(elements)
-          elements
-            .map { |e| e.loc.column }
-            .uniq
-            .count == 1
-        end
-
         def first_argument_line(elements)
           elements
             .first
@@ -170,12 +178,12 @@ module RuboCop
             .first_line
         end
 
-        def correct_column_candidates(node, left_paren)
-          [
-            processed_source.line_indentation(left_paren.line),
-            left_paren.column,
-            node.loc.column
-          ]
+        def indentation_width
+          @config.for_cop('IndentationWidth')['Width'] || 2
+        end
+
+        def line_break_after_left_paren?(left_paren, elements)
+          elements.first && elements.first.loc.line > left_paren.line
         end
 
         def message(correct_column, left_paren, right_paren)
@@ -188,14 +196,6 @@ module RuboCop
               actual: right_paren.column
             )
           end
-        end
-
-        def indentation_width
-          @config.for_cop('IndentationWidth')['Width'] || 2
-        end
-
-        def line_break_after_left_paren?(left_paren, elements)
-          elements.first && elements.first.loc.line > left_paren.line
         end
       end
     end

@@ -20,6 +20,10 @@ module RuboCop
         MSG = 'Do not put a space between a method name and the opening ' \
               'parenthesis.'.freeze
 
+        def autocorrect(pos_before_left_paren)
+          ->(corrector) { corrector.remove(pos_before_left_paren) }
+        end
+
         def on_def(node)
           args = node.arguments
           return unless args.loc.begin && args.loc.begin.is?('(')
@@ -32,10 +36,6 @@ module RuboCop
           add_offense(pos_before_left_paren, location: pos_before_left_paren)
         end
         alias on_defs on_def
-
-        def autocorrect(pos_before_left_paren)
-          ->(corrector) { corrector.remove(pos_before_left_paren) }
-        end
       end
     end
   end

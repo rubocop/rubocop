@@ -62,6 +62,22 @@ module RuboCop
 
         BRACKET_METHODS = %i[[] []=].freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            left, right = reference_brackets(node)
+
+            if empty_brackets?(left, right)
+              SpaceCorrector.empty_corrections(processed_source, corrector,
+                                               empty_config, left, right)
+            elsif style == :no_space
+              SpaceCorrector.remove_space(processed_source, corrector,
+                                          left, right)
+            else
+              SpaceCorrector.add_space(processed_source, corrector, left, right)
+            end
+          end
+        end
+
         def on_send(node)
           return if node.multiline?
           return unless bracket_method?(node)
@@ -83,45 +99,11 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            left, right = reference_brackets(node)
-
-            if empty_brackets?(left, right)
-              SpaceCorrector.empty_corrections(processed_source, corrector,
-                                               empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            else
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
-            end
-          end
-        end
-
         private
-
-        def reference_brackets(node)
-          tokens = tokens(node)
-          left = left_ref_bracket(node, tokens)
-          [left, closing_bracket(tokens, left)]
-        end
 
         def bracket_method?(node)
           _, method, = *node
           BRACKET_METHODS.include?(method)
-        end
-
-        def left_ref_bracket(node, tokens)
-          current_token = tokens.reverse.find(&:left_ref_bracket?)
-          previous_token = previous_token(current_token)
-
-          if node.method?(:[]=) ||
-             previous_token && !previous_token.right_bracket?
-            tokens.find(&:left_ref_bracket?)
-          else
-            current_token
-          end
         end
 
         def closing_bracket(tokens, opening_bracket)
@@ -137,13 +119,31 @@ module RuboCop
           end
         end
 
+        def empty_config
+          cop_config['EnforcedStyleForEmptyBrackets']
+        end
+
+        def left_ref_bracket(node, tokens)
+          current_token = tokens.reverse.find(&:left_ref_bracket?)
+          previous_token = previous_token(current_token)
+
+          if node.method?(:[]=) ||
+             previous_token && !previous_token.right_bracket?
+            tokens.find(&:left_ref_bracket?)
+          else
+            current_token
+          end
+        end
+
         def previous_token(current_token)
           index = processed_source.tokens.index(current_token)
           index.nil? || index.zero? ? nil : processed_source.tokens[index - 1]
         end
 
-        def empty_config
-          cop_config['EnforcedStyleForEmptyBrackets']
+        def reference_brackets(node)
+          tokens = tokens(node)
+          left = left_ref_bracket(node, tokens)
+          [left, closing_bracket(tokens, left)]
         end
       end
     end

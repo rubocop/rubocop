@@ -31,6 +31,14 @@ module RuboCop
 
         private
 
+        def allowed_non_ascii_chars
+          cop_config['AllowedChars'] || []
+        end
+
+        def first_non_ascii_chars(string)
+          string.match(/[^[:ascii:]]+/).to_s
+        end
+
         def first_offense_range(comment)
           expression    = comment.loc.expression
           first_offense = first_non_ascii_chars(comment.text)
@@ -42,17 +50,9 @@ module RuboCop
           range_between(start_position, end_position)
         end
 
-        def first_non_ascii_chars(string)
-          string.match(/[^[:ascii:]]+/).to_s
-        end
-
         def only_allowed_non_ascii_chars?(string)
           non_ascii = string.scan(/[^[:ascii:]]/)
           (non_ascii - allowed_non_ascii_chars).empty?
-        end
-
-        def allowed_non_ascii_chars
-          cop_config['AllowedChars'] || []
         end
       end
     end

@@ -54,17 +54,23 @@ module RuboCop
           @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }
         end
 
-        # Assignment of self.x
-
-        def on_or_asgn(node)
-          lhs, _rhs = *node
-          allow_self(lhs)
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.receiver.source_range)
+            corrector.remove(node.loc.dot)
+          end
         end
-        alias on_and_asgn on_or_asgn
 
-        def on_op_asgn(node)
-          lhs, _op, _rhs = *node
-          allow_self(lhs)
+        def on_args(node)
+          node.children.each { |arg| on_argument(arg) }
+        end
+
+        def on_block(node)
+          add_scope(node, @local_variables_scopes[node])
+        end
+
+        def on_blockarg(node)
+          on_argument(node)
         end
 
         # Using self.x to distinguish from local variable x
@@ -74,18 +80,23 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def on_args(node)
-          node.children.each { |arg| on_argument(arg) }
-        end
-
-        def on_blockarg(node)
-          on_argument(node)
-        end
-
         def on_lvasgn(node)
           lhs, rhs = *node
           @local_variables_scopes[rhs] << lhs
         end
+
+        def on_op_asgn(node)
+          lhs, _op, _rhs = *node
+          allow_self(lhs)
+        end
+
+        # Assignment of self.x
+
+        def on_or_asgn(node)
+          lhs, _rhs = *node
+          allow_self(lhs)
+        end
+        alias on_and_asgn on_or_asgn
 
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
@@ -96,17 +107,6 @@ module RuboCop
           add_offense(node)
         end
 
-        def on_block(node)
-          add_scope(node, @local_variables_scopes[node])
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.receiver.source_range)
-            corrector.remove(node.loc.dot)
-          end
-        end
-
         private
 
         def add_scope(node, local_variables = [])
@@ -115,22 +115,15 @@ module RuboCop
           end
         end
 
+        def allow_self(node)
+          return unless node.send_type? && node.self_receiver?
+
+          @allowed_send_nodes << node
+        end
+
         def allowed_send_node?(node)
           @allowed_send_nodes.include?(node) ||
             @local_variables_scopes[node].include?(node.method_name)
-        end
-
-        def regular_method_call?(node)
-          !(node.operator_method? ||
-            keyword?(node.method_name) ||
-            node.camel_case_method? ||
-            node.setter_method? ||
-            node.implicit_call?)
-        end
-
-        def on_argument(node)
-          name, = *node
-          @local_variables_scopes[node] << name
         end
 
         def keyword?(method_name)
@@ -141,10 +134,17 @@ module RuboCop
              yield __FILE__ __LINE__ __ENCODING__].include?(method_name)
         end
 
-        def allow_self(node)
-          return unless node.send_type? && node.self_receiver?
+        def on_argument(node)
+          name, = *node
+          @local_variables_scopes[node] << name
+        end
 
-          @allowed_send_nodes << node
+        def regular_method_call?(node)
+          !(node.operator_method? ||
+            keyword?(node.method_name) ||
+            node.camel_case_method? ||
+            node.setter_method? ||
+            node.implicit_call?)
         end
       end
     end

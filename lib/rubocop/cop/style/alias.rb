@@ -31,12 +31,14 @@ module RuboCop
         MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of ' \
                            '`alias %<current>s`.'.freeze
 
-        def on_send(node)
-          return unless node.command?(:alias_method)
-          return unless style == :prefer_alias && alias_keyword_possible?(node)
-
-          msg = format(MSG_ALIAS_METHOD, current: lexical_scope_type(node))
-          add_offense(node, location: :selector, message: msg)
+        def autocorrect(node)
+          if node.send_type?
+            correct_alias_method_to_alias(node)
+          elsif scope_type(node) == :dynamic || style == :prefer_alias_method
+            correct_alias_to_alias_method(node)
+          else
+            correct_alias_with_symbol_args(node)
+          end
         end
 
         def on_alias(node)
@@ -49,26 +51,15 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          if node.send_type?
-            correct_alias_method_to_alias(node)
-          elsif scope_type(node) == :dynamic || style == :prefer_alias_method
-            correct_alias_to_alias_method(node)
-          else
-            correct_alias_with_symbol_args(node)
-          end
+        def on_send(node)
+          return unless node.command?(:alias_method)
+          return unless style == :prefer_alias && alias_keyword_possible?(node)
+
+          msg = format(MSG_ALIAS_METHOD, current: lexical_scope_type(node))
+          add_offense(node, location: :selector, message: msg)
         end
 
         private
-
-        def alias_keyword_possible?(node)
-          scope_type(node) != :dynamic && node.arguments.all?(&:sym_type?)
-        end
-
-        def alias_method_possible?(node)
-          scope_type(node) != :instance_eval &&
-            node.children.none?(&:gvar_type?)
-        end
 
         def add_offense_for_args(node)
           existing_args  = node.children.map(&:source).join(' ')
@@ -80,31 +71,13 @@ module RuboCop
           add_offense(node, location: arg_ranges.reduce(&:join), message: msg)
         end
 
-        # In this expression, will `self` be the same as the innermost enclosing
-        # class or module block (:lexical)? Or will it be something else
-        # (:dynamic)? If we're in an instance_eval block, return that.
-        def scope_type(node)
-          while (parent = node.parent)
-            case parent.type
-            when :class, :module
-              return :lexical
-            when :def, :defs
-              return :dynamic
-            when :block
-              return :instance_eval if parent.method_name == :instance_eval
-
-              return :dynamic
-            end
-            node = parent
-          end
-          :lexical
+        def alias_keyword_possible?(node)
+          scope_type(node) != :dynamic && node.arguments.all?(&:sym_type?)
         end
 
-        def lexical_scope_type(node)
-          node.each_ancestor(:class, :module) do |ancestor|
-            return ancestor.class_type? ? 'in a class body' : 'in a module body'
-          end
-          'at the top level'
+        def alias_method_possible?(node)
+          scope_type(node) != :instance_eval &&
+            node.children.none?(&:gvar_type?)
         end
 
         def bareword?(sym_node)
@@ -134,6 +107,33 @@ module RuboCop
             corrector.replace(new.source_range, new.children.first.to_s)
             corrector.replace(old.source_range, old.children.first.to_s)
           end
+        end
+
+        def lexical_scope_type(node)
+          node.each_ancestor(:class, :module) do |ancestor|
+            return ancestor.class_type? ? 'in a class body' : 'in a module body'
+          end
+          'at the top level'
+        end
+
+        # In this expression, will `self` be the same as the innermost enclosing
+        # class or module block (:lexical)? Or will it be something else
+        # (:dynamic)? If we're in an instance_eval block, return that.
+        def scope_type(node)
+          while (parent = node.parent)
+            case parent.type
+            when :class, :module
+              return :lexical
+            when :def, :defs
+              return :dynamic
+            when :block
+              return :instance_eval if parent.method_name == :instance_eval
+
+              return :dynamic
+            end
+            node = parent
+          end
+          :lexical
         end
       end
     end

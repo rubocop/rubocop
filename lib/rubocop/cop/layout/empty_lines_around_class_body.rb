@@ -69,6 +69,10 @@ module RuboCop
 
         KIND = 'class'.freeze
 
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
+
         def on_class(node)
           _name, superclass, body = *node
 
@@ -80,10 +84,6 @@ module RuboCop
         def on_sclass(node)
           _obj, body = *node
           check(node, body)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
       end
     end

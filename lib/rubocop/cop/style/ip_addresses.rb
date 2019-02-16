@@ -24,6 +24,10 @@ module RuboCop
         IPV6_MAX_SIZE = 45 # IPv4-mapped IPv6 is the longest
         MSG = 'Do not hardcode IP addresses.'.freeze
 
+        # Dummy implementation of method in ConfigurableEnforcedStyle that is
+        # called from StringHelp.
+        def correct_style_detected; end
+
         def offense?(node)
           contents = node.source[1...-1]
           return false if contents.empty?
@@ -41,16 +45,7 @@ module RuboCop
         # called from StringHelp.
         def opposite_style_detected; end
 
-        # Dummy implementation of method in ConfigurableEnforcedStyle that is
-        # called from StringHelp.
-        def correct_style_detected; end
-
         private
-
-        def whitelist
-          whitelist = cop_config['Whitelist']
-          Array(whitelist).map(&:downcase)
-        end
 
         def could_be_ip?(str)
           # If the string is too long, it can't be an IP
@@ -61,14 +56,19 @@ module RuboCop
           starts_with_hex_or_colon?(str)
         end
 
-        def too_long?(str)
-          str.size > IPV6_MAX_SIZE
-        end
-
         def starts_with_hex_or_colon?(str)
           first_char = str[0].ord
           (48..58).cover?(first_char) || (65..70).cover?(first_char) ||
             (97..102).cover?(first_char)
+        end
+
+        def too_long?(str)
+          str.size > IPV6_MAX_SIZE
+        end
+
+        def whitelist
+          whitelist = cop_config['Whitelist']
+          Array(whitelist).map(&:downcase)
         end
       end
     end

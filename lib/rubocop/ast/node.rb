@@ -78,15 +78,40 @@ module RuboCop
         end
       end
 
-      # Returns the parent node, or `nil` if the receiver is a root node.
+      # Returns an array of ancestor nodes.
+      # This is a shorthand for `node.each_ancestor.to_a`.
       #
-      # @return [Node, nil] the parent node or `nil`
-      def parent
-        @mutable_attributes[:parent]
+      # @return [Array<Node>] an array of ancestor nodes
+      def ancestors
+        each_ancestor.to_a
       end
 
-      def parent=(node)
-        @mutable_attributes[:parent] = node
+      def argument?
+        parent && parent.send_type? && parent.arguments.include?(self)
+      end
+
+      def assignment?
+        ASSIGNMENTS.include?(type)
+      end
+
+      def basic_conditional?
+        BASIC_CONDITIONALS.include?(type)
+      end
+
+      def basic_literal?
+        BASIC_LITERALS.include?(type)
+      end
+
+      def chained?
+        parent && parent.send_type? && eql?(parent.receiver)
+      end
+
+      # Returns an array of child nodes.
+      # This is a shorthand for `node.each_child_node.to_a`.
+      #
+      # @return [Array<Node>] an array of child nodes
+      def child_nodes
+        each_child_node.to_a
       end
 
       def complete!
@@ -98,35 +123,36 @@ module RuboCop
         @mutable_attributes.frozen?
       end
 
-      protected :parent= # rubocop:disable Style/AccessModifierDeclarations
-
-      # Override `AST::Node#updated` so that `AST::Processor` does not try to
-      # mutate our ASTs. Since we keep references from children to parents and
-      # not just the other way around, we cannot update an AST and share
-      # identical subtrees. Rather, the entire AST must be copied any time any
-      # part of it is changed.
-      def updated(type = nil, children = nil, properties = {})
-        properties[:location] ||= @location
-        klass = RuboCop::AST::Builder::NODE_MAP[type || @type] || Node
-        klass.new(type || @type, children || @children, properties)
+      def conditional?
+        CONDITIONALS.include?(type)
       end
 
-      # Returns the index of the receiver node in its siblings. (Sibling index
-      # uses zero based numbering.)
-      #
-      # @return [Integer] the index of the receiver node in its siblings
-      def sibling_index
-        parent.children.index { |sibling| sibling.equal?(self) }
+      def const_name
+        return unless const_type?
+
+        namespace, name = *self
+        if namespace && !namespace.cbase_type?
+          "#{namespace.const_name}::#{name}"
+        else
+          name.to_s
+        end
       end
 
-      # Common destructuring method. This can be used to normalize
-      # destructuring for different variations of the node.
-      # Some node types override this with their own custom
-      # destructuring method.
+      def defined_module
+        namespace, name = *defined_module0
+        s(:const, namespace, name) if name
+      end
+
+      def defined_module_name
+        (const = defined_module) && const.const_name
+      end
+
+      # Returns an array of descendant nodes.
+      # This is a shorthand for `node.each_descendant.to_a`.
       #
-      # @return [Array<Node>] the different parts of the ndde
-      def node_parts
-        to_a
+      # @return [Array<Node>] an array of descendant nodes
+      def descendants
+        each_descendant.to_a
       end
 
       # Calls the given block for each ancestor node from parent to root.
@@ -153,14 +179,6 @@ module RuboCop
         visit_ancestors(types, &block)
 
         self
-      end
-
-      # Returns an array of ancestor nodes.
-      # This is a shorthand for `node.each_ancestor.to_a`.
-      #
-      # @return [Array<Node>] an array of ancestor nodes
-      def ancestors
-        each_ancestor.to_a
       end
 
       # Calls the given block for each child node.
@@ -196,14 +214,6 @@ module RuboCop
         self
       end
 
-      # Returns an array of child nodes.
-      # This is a shorthand for `node.each_child_node.to_a`.
-      #
-      # @return [Array<Node>] an array of child nodes
-      def child_nodes
-        each_child_node.to_a
-      end
-
       # Calls the given block for each descendant node with depth first order.
       # If no block is given, an `Enumerator` is returned.
       #
@@ -228,14 +238,6 @@ module RuboCop
         visit_descendants(types, &block)
 
         self
-      end
-
-      # Returns an array of descendant nodes.
-      # This is a shorthand for `node.each_descendant.to_a`.
-      #
-      # @return [Array<Node>] an array of descendant nodes
-      def descendants
-        each_descendant.to_a
       end
 
       # Calls the given block for the receiver and each descendant node in
@@ -270,34 +272,16 @@ module RuboCop
         self
       end
 
-      def source
-        loc.expression.source
+      def empty_source?
+        source_length.zero?
       end
 
-      def source_range
-        loc.expression
+      def equals_asgn?
+        EQUALS_ASSIGNMENTS.include?(type)
       end
 
-      def first_line
-        loc.line
-      end
-
-      def last_line
-        loc.last_line
-      end
-
-      def line_count
-        return 0 unless source_range
-
-        source_range.last_line - source_range.first_line + 1
-      end
-
-      def nonempty_line_count
-        source.lines.grep(/\S/).size
-      end
-
-      def source_length
-        source_range ? source_range.size : 0
+      def falsey_literal?
+        FALSEY_LITERALS.include?(type)
       end
 
       ## Destructuring
@@ -310,15 +294,8 @@ module RuboCop
       def_node_matcher :asgn_rhs, '[assignment? (... $_)]'
       def_node_matcher :str_content, '(str $_)'
 
-      def const_name
-        return unless const_type?
-
-        namespace, name = *self
-        if namespace && !namespace.cbase_type?
-          "#{namespace.const_name}::#{name}"
-        else
-          name.to_s
-        end
+      def first_line
+        loc.line
       end
 
       def_node_matcher :defined_module0, <<-PATTERN
@@ -331,25 +308,29 @@ module RuboCop
       private :defined_module0
       # rubocop:enable Style/AccessModifierDeclarations
 
-      def defined_module
-        namespace, name = *defined_module0
-        s(:const, namespace, name) if name
+      def immutable_literal?
+        IMMUTABLE_LITERALS.include?(type)
       end
 
-      def defined_module_name
-        (const = defined_module) && const.const_name
+      def keyword?
+        return true if special_keyword? || send_type? && prefix_not?
+        return false unless KEYWORDS.include?(type)
+
+        !OPERATOR_KEYWORDS.include?(type) || loc.operator.is?(type.to_s)
       end
 
-      ## Searching the AST
+      def last_line
+        loc.last_line
+      end
 
-      def parent_module_name
-        # what class or module is this method/constant/etc definition in?
-        # returns nil if answer cannot be determined
-        ancestors = each_ancestor(:class, :module, :sclass, :casgn, :block)
-        result    = ancestors.map do |ancestor|
-          parent_module_name_part(ancestor) { |full_name| return full_name }
-        end.compact.reverse.join('::')
-        result.empty? ? 'Object' : result
+      def line_count
+        return 0 unless source_range
+
+        source_range.last_line - source_range.first_line + 1
+      end
+
+      def literal?
+        LITERALS.include?(type)
       end
 
       ## Predicates
@@ -358,41 +339,42 @@ module RuboCop
         line_count > 1
       end
 
-      def single_line?
-        line_count == 1
-      end
-
-      def empty_source?
-        source_length.zero?
-      end
-
       # Some cops treat the shovel operator as a kind of assignment.
       def_node_matcher :assignment_or_similar?, <<-PATTERN
         {assignment? (send _recv :<< ...)}
       PATTERN
 
-      def literal?
-        LITERALS.include?(type)
-      end
-
-      def basic_literal?
-        BASIC_LITERALS.include?(type)
-      end
-
-      def truthy_literal?
-        TRUTHY_LITERALS.include?(type)
-      end
-
-      def falsey_literal?
-        FALSEY_LITERALS.include?(type)
-      end
-
       def mutable_literal?
         MUTABLE_LITERALS.include?(type)
       end
 
-      def immutable_literal?
-        IMMUTABLE_LITERALS.include?(type)
+      # Common destructuring method. This can be used to normalize
+      # destructuring for different variations of the node.
+      # Some node types override this with their own custom
+      # destructuring method.
+      #
+      # @return [Array<Node>] the different parts of the ndde
+      def node_parts
+        to_a
+      end
+
+      def nonempty_line_count
+        source.lines.grep(/\S/).size
+      end
+
+      def numeric_type?
+        int_type? || float_type?
+      end
+
+      def operator_keyword?
+        OPERATOR_KEYWORDS.include?(type)
+      end
+
+      # Returns the parent node, or `nil` if the receiver is a root node.
+      #
+      # @return [Node, nil] the parent node or `nil`
+      def parent
+        @mutable_attributes[:parent]
       end
 
       %i[literal basic_literal].each do |kind|
@@ -412,63 +394,103 @@ module RuboCop
         end
       end
 
-      def variable?
-        VARIABLES.include?(type)
+      def parent=(node)
+        @mutable_attributes[:parent] = node
       end
 
-      def reference?
-        REFERENCES.include?(type)
-      end
+      protected :parent= # rubocop:disable Style/AccessModifierDeclarations
 
-      def equals_asgn?
-        EQUALS_ASSIGNMENTS.include?(type)
-      end
+      ## Searching the AST
 
-      def shorthand_asgn?
-        SHORTHAND_ASSIGNMENTS.include?(type)
-      end
-
-      def assignment?
-        ASSIGNMENTS.include?(type)
-      end
-
-      def basic_conditional?
-        BASIC_CONDITIONALS.include?(type)
-      end
-
-      def conditional?
-        CONDITIONALS.include?(type)
-      end
-
-      def keyword?
-        return true if special_keyword? || send_type? && prefix_not?
-        return false unless KEYWORDS.include?(type)
-
-        !OPERATOR_KEYWORDS.include?(type) || loc.operator.is?(type.to_s)
-      end
-
-      def special_keyword?
-        SPECIAL_KEYWORDS.include?(source)
-      end
-
-      def operator_keyword?
-        OPERATOR_KEYWORDS.include?(type)
+      def parent_module_name
+        # what class or module is this method/constant/etc definition in?
+        # returns nil if answer cannot be determined
+        ancestors = each_ancestor(:class, :module, :sclass, :casgn, :block)
+        result    = ancestors.map do |ancestor|
+          parent_module_name_part(ancestor) { |full_name| return full_name }
+        end.compact.reverse.join('::')
+        result.empty? ? 'Object' : result
       end
 
       def parenthesized_call?
         loc.respond_to?(:begin) && loc.begin && loc.begin.is?('(')
       end
 
-      def chained?
-        parent && parent.send_type? && eql?(parent.receiver)
+      # rubocop:enable
+
+      # Some expressions are evaluated for their value, some for their side
+      # effects, and some for both.
+      # If we know that expressions are useful only for their return values,
+      # and have no side effects, that means we can reorder them, change the
+      # number of times they are evaluated, or replace them with other
+      # expressions which are equivalent in value.
+      # So, is evaluation of this node free of side effects?
+      #
+      def pure?
+        # Be conservative and return false if we're not sure
+        case type
+        when :__FILE__, :__LINE__, :const, :cvar, :defined?, :false, :float,
+             :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true, :regopt
+          true
+        when :and, :array, :begin, :case, :dstr, :dsym, :eflipflop, :ensure,
+             :erange, :for, :hash, :if, :iflipflop, :irange, :kwbegin, :not,
+             :or, :pair, :regexp, :until, :until_post, :when, :while,
+             :while_post
+          child_nodes.all?(&:pure?)
+        else
+          false
+        end
       end
 
-      def argument?
-        parent && parent.send_type? && parent.arguments.include?(self)
+      def reference?
+        REFERENCES.include?(type)
       end
 
-      def numeric_type?
-        int_type? || float_type?
+      def shorthand_asgn?
+        SHORTHAND_ASSIGNMENTS.include?(type)
+      end
+
+      # Returns the index of the receiver node in its siblings. (Sibling index
+      # uses zero based numbering.)
+      #
+      # @return [Integer] the index of the receiver node in its siblings
+      def sibling_index
+        parent.children.index { |sibling| sibling.equal?(self) }
+      end
+
+      def single_line?
+        line_count == 1
+      end
+
+      def source
+        loc.expression.source
+      end
+
+      def source_length
+        source_range ? source_range.size : 0
+      end
+
+      def source_range
+        loc.expression
+      end
+
+      def special_keyword?
+        SPECIAL_KEYWORDS.include?(source)
+      end
+
+      def truthy_literal?
+        TRUTHY_LITERALS.include?(type)
+      end
+
+      # Override `AST::Node#updated` so that `AST::Processor` does not try to
+      # mutate our ASTs. Since we keep references from children to parents and
+      # not just the other way around, we cannot update an AST and share
+      # identical subtrees. Rather, the entire AST must be copied any time any
+      # part of it is changed.
+      def updated(type = nil, children = nil, properties = {})
+        properties[:location] ||= @location
+        klass = RuboCop::AST::Builder::NODE_MAP[type || @type] || Node
+        klass.new(type || @type, children || @children, properties)
       end
 
       def_node_matcher :guard_clause?, <<-PATTERN
@@ -525,28 +547,8 @@ module RuboCop
       end
       # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
-      # Some expressions are evaluated for their value, some for their side
-      # effects, and some for both.
-      # If we know that expressions are useful only for their return values,
-      # and have no side effects, that means we can reorder them, change the
-      # number of times they are evaluated, or replace them with other
-      # expressions which are equivalent in value.
-      # So, is evaluation of this node free of side effects?
-      #
-      def pure?
-        # Be conservative and return false if we're not sure
-        case type
-        when :__FILE__, :__LINE__, :const, :cvar, :defined?, :false, :float,
-             :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true, :regopt
-          true
-        when :and, :array, :begin, :case, :dstr, :dsym, :eflipflop, :ensure,
-             :erange, :for, :hash, :if, :iflipflop, :irange, :kwbegin, :not,
-             :or, :pair, :regexp, :until, :until_post, :when, :while,
-             :while_post
-          child_nodes.all?(&:pure?)
-        else
-          false
-        end
+      def variable?
+        VARIABLES.include?(type)
       end
 
       protected
@@ -560,25 +562,9 @@ module RuboCop
 
       private
 
-      def visit_ancestors(types)
-        last_node = self
-
-        while (current_node = last_node.parent)
-          yield current_node if types.empty? ||
-                                types.include?(current_node.type)
-          last_node = current_node
-        end
-      end
-
       def begin_value_used?
         # the last child node determines the value of the parent
         sibling_index == parent.children.size - 1 ? parent.value_used? : false
-      end
-
-      def for_value_used?
-        # `for var in enum; body; end`
-        # (for <var> <enum> <body>)
-        sibling_index == 2 ? parent.value_used? : true
       end
 
       def case_if_value_used?
@@ -587,21 +573,22 @@ module RuboCop
         sibling_index.zero? ? true : parent.value_used?
       end
 
-      def while_until_value_used?
-        # (while <condition> <body>) -> always evaluates to `nil`
-        sibling_index.zero?
+      def for_value_used?
+        # `for var in enum; body; end`
+        # (for <var> <enum> <body>)
+        sibling_index == 2 ? parent.value_used? : true
       end
 
-      def parent_module_name_part(node)
-        case node.type
-        when :class, :module, :casgn
-          # TODO: if constant name has cbase (leading ::), then we don't need
-          # to keep traversing up through nested classes/modules
-          node.defined_module_name
-        when :sclass
-          yield parent_module_name_for_sclass(node)
-        else # block
-          parent_module_name_for_block(node) { yield nil }
+      def parent_module_name_for_block(ancestor)
+        if ancestor.method_name == :class_eval
+          # `class_eval` with no receiver applies to whatever module or class
+          # we are currently in
+          return unless (receiver = ancestor.receiver)
+
+          yield unless receiver.const_type?
+          receiver.const_name
+        elsif !new_class_or_module_block?(ancestor)
+          yield
         end
       end
 
@@ -617,17 +604,32 @@ module RuboCop
         end
       end
 
-      def parent_module_name_for_block(ancestor)
-        if ancestor.method_name == :class_eval
-          # `class_eval` with no receiver applies to whatever module or class
-          # we are currently in
-          return unless (receiver = ancestor.receiver)
-
-          yield unless receiver.const_type?
-          receiver.const_name
-        elsif !new_class_or_module_block?(ancestor)
-          yield
+      def parent_module_name_part(node)
+        case node.type
+        when :class, :module, :casgn
+          # TODO: if constant name has cbase (leading ::), then we don't need
+          # to keep traversing up through nested classes/modules
+          node.defined_module_name
+        when :sclass
+          yield parent_module_name_for_sclass(node)
+        else # block
+          parent_module_name_for_block(node) { yield nil }
         end
+      end
+
+      def visit_ancestors(types)
+        last_node = self
+
+        while (current_node = last_node.parent)
+          yield current_node if types.empty? ||
+                                types.include?(current_node.type)
+          last_node = current_node
+        end
+      end
+
+      def while_until_value_used?
+        # (while <condition> <body>) -> always evaluates to `nil`
+        sibling_index.zero?
       end
 
       def_node_matcher :new_class_or_module_block?, <<-PATTERN

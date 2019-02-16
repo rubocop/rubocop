@@ -18,10 +18,6 @@ module RuboCop
 
         def_node_matcher :offensive?, '(send nil? :assert (send ... :!) ...)'
 
-        def on_send(node)
-          add_offense(node) if offensive?(node)
-        end
-
         def autocorrect(node)
           expression = node.loc.expression
 
@@ -31,6 +27,10 @@ module RuboCop
               corrected_source(expression.source)
             )
           end
+        end
+
+        def on_send(node)
+          add_offense(node) if offensive?(node)
         end
 
         private

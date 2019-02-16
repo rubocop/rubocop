@@ -22,14 +22,14 @@ module RuboCop
           (send (const {nil? cbase} :YAML) :load ...)
         PATTERN
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.selector, 'safe_load') }
+        end
+
         def on_send(node)
           yaml_load(node) do
             add_offense(node, location: :selector)
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'safe_load') }
         end
       end
     end

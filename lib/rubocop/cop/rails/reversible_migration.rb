@@ -155,6 +155,14 @@ module RuboCop
           (send nil? :change_table $_ ...)
         PATTERN
 
+        def on_block(node)
+          return unless within_change_method?(node)
+          return if within_reversible_or_up_only_block?(node)
+          return if node.body.nil?
+
+          check_change_table_node(node.send_node, node.body)
+        end
+
         def on_send(node)
           return unless within_change_method?(node)
           return if within_reversible_or_up_only_block?(node)
@@ -166,31 +174,16 @@ module RuboCop
           check_remove_foreign_key_node(node)
         end
 
-        def on_block(node)
-          return unless within_change_method?(node)
-          return if within_reversible_or_up_only_block?(node)
-          return if node.body.nil?
-
-          check_change_table_node(node.send_node, node.body)
-        end
-
         private
 
-        def check_irreversible_schema_statement_node(node)
-          irreversible_schema_statement_call(node) do |method_name|
-            add_offense(node, message: format(MSG, action: method_name))
-          end
-        end
+        def all_hash_key?(args, *keys)
+          return false unless args && args.hash_type?
 
-        def check_drop_table_node(node)
-          drop_table_call(node) do
-            unless node.parent.block_type?
-              add_offense(
-                node,
-                message: format(MSG, action: 'drop_table(without block)')
-              )
-            end
+          hash_keys = args.keys.map do |key|
+            key.children.first.to_sym
           end
+
+          hash_keys & keys == keys
         end
 
         def check_change_column_default_node(node)
@@ -201,29 +194,6 @@ module RuboCop
                 message: format(
                   MSG, action: 'change_column_default(without :from and :to)'
                 )
-              )
-            end
-          end
-        end
-
-        def check_remove_column_node(node)
-          remove_column_call(node) do |args|
-            if args.to_a.size < 3
-              add_offense(
-                node,
-                message: format(MSG, action: 'remove_column(without type)')
-              )
-            end
-          end
-        end
-
-        def check_remove_foreign_key_node(node)
-          remove_foreign_key_call(node) do |arg|
-            if arg.hash_type?
-              add_offense(
-                node,
-                message: format(MSG,
-                                action: 'remove_foreign_key(without table)')
               )
             end
           end
@@ -257,6 +227,46 @@ module RuboCop
           )
         end
 
+        def check_drop_table_node(node)
+          drop_table_call(node) do
+            unless node.parent.block_type?
+              add_offense(
+                node,
+                message: format(MSG, action: 'drop_table(without block)')
+              )
+            end
+          end
+        end
+
+        def check_irreversible_schema_statement_node(node)
+          irreversible_schema_statement_call(node) do |method_name|
+            add_offense(node, message: format(MSG, action: method_name))
+          end
+        end
+
+        def check_remove_column_node(node)
+          remove_column_call(node) do |args|
+            if args.to_a.size < 3
+              add_offense(
+                node,
+                message: format(MSG, action: 'remove_column(without type)')
+              )
+            end
+          end
+        end
+
+        def check_remove_foreign_key_node(node)
+          remove_foreign_key_call(node) do |arg|
+            if arg.hash_type?
+              add_offense(
+                node,
+                message: format(MSG,
+                                action: 'remove_foreign_key(without table)')
+              )
+            end
+          end
+        end
+
         def within_change_method?(node)
           node.each_ancestor(:def).any? do |ancestor|
             ancestor.method?(:change)
@@ -269,16 +279,6 @@ module RuboCop
               ancestor.send_node.method?(:reversible) ||
               ancestor.send_node.method?(:up_only)
           end
-        end
-
-        def all_hash_key?(args, *keys)
-          return false unless args && args.hash_type?
-
-          hash_keys = args.keys.map do |key|
-            key.children.first.to_sym
-          end
-
-          hash_keys & keys == keys
         end
       end
     end

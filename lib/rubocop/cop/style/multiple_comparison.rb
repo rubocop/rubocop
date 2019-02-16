@@ -35,10 +35,36 @@ module RuboCop
            (send _ :== $lvar)}
         PATTERN
 
+        def comparison?(node)
+          simple_comparison?(node) || nested_comparison?(node)
+        end
+
+        def nested_comparison?(node)
+          if node.or_type?
+            node.node_parts.all? { |node_part| comparison? node_part }
+          else
+            false
+          end
+        end
+
         def nested_variable_comparison?(node)
           return false unless nested_comparison?(node)
 
           variables_in_node(node).count == 1
+        end
+
+        def root_of_or_node(or_node)
+          return or_node unless or_node.parent
+
+          if or_node.parent.or_type?
+            root_of_or_node(or_node.parent)
+          else
+            or_node
+          end
+        end
+
+        def variable_name(node)
+          node.children[0]
         end
 
         def variables_in_node(node)
@@ -59,32 +85,6 @@ module RuboCop
             return [variable_name(var)]
           end
           []
-        end
-
-        def variable_name(node)
-          node.children[0]
-        end
-
-        def nested_comparison?(node)
-          if node.or_type?
-            node.node_parts.all? { |node_part| comparison? node_part }
-          else
-            false
-          end
-        end
-
-        def comparison?(node)
-          simple_comparison?(node) || nested_comparison?(node)
-        end
-
-        def root_of_or_node(or_node)
-          return or_node unless or_node.parent
-
-          if or_node.parent.or_type?
-            root_of_or_node(or_node.parent)
-          else
-            or_node
-          end
         end
       end
     end

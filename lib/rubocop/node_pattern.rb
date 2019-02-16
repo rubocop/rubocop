@@ -132,13 +132,61 @@ module RuboCop
         run(node_var)
       end
 
-      def run(node_var)
-        tokens =
-          @string.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+      def compile_arg(token)
+        case token
+        when WILDCARD  then
+          name   = token[1..-1]
+          number = @unify[name] || fail_due_to('invalid in arglist: ' + token)
+          "temp#{number}"
+        when LITERAL   then token
+        when PARAM     then get_param(token[1..-1])
+        when CLOSING   then fail_due_to("#{token} in invalid position")
+        when nil       then fail_due_to('pattern ended prematurely')
+        else fail_due_to("invalid token in arglist: #{token.inspect}")
+        end
+      end
 
-        @match_code = compile_expr(tokens, node_var, false)
+      def compile_args(tokens)
+        index = tokens.find_index { |token| token == ')' }
 
-        fail_due_to('unbalanced pattern') unless tokens.empty?
+        tokens.slice!(0..index).each_with_object([]) do |token, args|
+          next if [')', ','].include?(token)
+
+          args << compile_arg(token)
+        end
+      end
+
+      def compile_ascend(tokens, cur_node, seq_head)
+        "(#{cur_node}.parent && " \
+          "#{compile_expr(tokens, "#{cur_node}.parent", seq_head)})"
+      end
+
+      def compile_capt_ellip(tokens, cur_node, terms, index)
+        capture = next_capture
+        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
+          terms << "(#{cur_node}.children.size > #{index})"
+          terms << term
+          terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
+        else
+          terms << "(#{cur_node}.children.size >= #{index})" if index > 0
+          terms << "(#{capture} = #{cur_node}.children[#{index}..-1])"
+        end
+        terms
+      end
+
+      def compile_capture(tokens, cur_node, seq_head)
+        "(#{next_capture} = #{cur_node}#{'.type' if seq_head}; " \
+          "#{compile_expr(tokens, cur_node, seq_head)})"
+      end
+
+      def compile_ellipsis(tokens, cur_node, terms, index)
+        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
+          terms << "(#{cur_node}.children.size > #{index})"
+          terms << term
+        elsif index > 0
+          terms << "(#{cur_node}.children.size >= #{index})"
+        end
+        terms
       end
 
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
@@ -168,6 +216,90 @@ module RuboCop
         else                fail_due_to("invalid token #{token.inspect}")
         end
       end
+
+      def compile_expr_with_capture_check(tokens, temp_node, seq_head, before,
+                                          after)
+        @captures = before
+        expr = compile_expr(tokens, temp_node, seq_head)
+        if @captures != after
+          fail_due_to('each branch of {} must have same # of captures')
+        end
+
+        expr
+      end
+
+      def compile_expr_with_captures(tokens, temp_node, seq_head)
+        captures_before = @captures
+        expr = compile_expr(tokens, temp_node, seq_head)
+
+        yield expr, captures_before, @captures
+      end
+
+      def compile_expr_with_index(tokens, cur_node, index)
+        if index.nil?
+          # in 'sequence head' position; some expressions are compiled
+          # differently at 'sequence head' (notably 'node type' expressions)
+          # grep for seq_head to see where it makes a difference
+          [compile_expr(tokens, cur_node, true), 0]
+        else
+          child_node = "#{cur_node}.children[#{index}]"
+          [compile_expr(tokens, child_node, false), index + 1]
+        end
+      end
+
+      def compile_funcall(tokens, cur_node, method, seq_head)
+        # call a method in the context which this pattern-matching
+        # code is used in. pass target value as an argument
+        method = method[1..-1] # drop the leading #
+        if method.end_with?('(') # is there an arglist?
+          args = compile_args(tokens)
+          method = method[0..-2] # drop the trailing (
+          "(#{method}(#{cur_node}#{'.type' if seq_head},#{args.join(',')}))"
+        else
+          "(#{method}(#{cur_node}#{'.type' if seq_head}))"
+        end
+      end
+
+      def compile_intersect(tokens, cur_node, seq_head)
+        fail_due_to('empty intersection') if tokens.first == ']'
+
+        with_temp_node(cur_node) do |init, temp_node|
+          terms = []
+          until tokens.first == ']'
+            terms << compile_expr(tokens, temp_node, seq_head)
+          end
+          tokens.shift
+
+          join_terms(init, terms, ' && ')
+        end
+      end
+
+      def compile_literal(cur_node, literal, seq_head)
+        "(#{cur_node}#{'.type' if seq_head} == #{literal})"
+      end
+
+      def compile_negation(tokens, cur_node, seq_head)
+        "(!#{compile_expr(tokens, cur_node, seq_head)})"
+      end
+
+      def compile_nodetype(cur_node, type)
+        "(#{cur_node} && #{cur_node}.#{type.tr('-', '_')}_type?)"
+      end
+
+      def compile_param(cur_node, number, seq_head)
+        "(#{cur_node}#{'.type' if seq_head} == #{get_param(number)})"
+      end
+
+      def compile_predicate(tokens, cur_node, predicate, seq_head)
+        if predicate.end_with?('(') # is there an arglist?
+          args = compile_args(tokens)
+          predicate = predicate[0..-2] # drop the trailing (
+          "(#{cur_node}#{'.type' if seq_head}.#{predicate}(#{args.join(',')}))"
+        else
+          "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+        end
+      end
+
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       def compile_seq(tokens, cur_node, seq_head)
@@ -182,6 +314,18 @@ module RuboCop
           terms = compile_seq_terms(tokens, temp_node)
 
           join_terms(init, terms, ' && ')
+        end
+      end
+
+      def compile_seq_tail(tokens, cur_node)
+        tokens.shift
+        if tokens.first == ')'
+          tokens.shift
+          nil
+        else
+          expr = compile_expr(tokens, cur_node, false)
+          fail_due_to('missing )') unless tokens.shift == ')'
+          expr
         end
       end
 
@@ -212,53 +356,6 @@ module RuboCop
         [terms, index]
       end
 
-      def compile_expr_with_index(tokens, cur_node, index)
-        if index.nil?
-          # in 'sequence head' position; some expressions are compiled
-          # differently at 'sequence head' (notably 'node type' expressions)
-          # grep for seq_head to see where it makes a difference
-          [compile_expr(tokens, cur_node, true), 0]
-        else
-          child_node = "#{cur_node}.children[#{index}]"
-          [compile_expr(tokens, child_node, false), index + 1]
-        end
-      end
-
-      def compile_ellipsis(tokens, cur_node, terms, index)
-        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
-          terms << "(#{cur_node}.children.size > #{index})"
-          terms << term
-        elsif index > 0
-          terms << "(#{cur_node}.children.size >= #{index})"
-        end
-        terms
-      end
-
-      def compile_capt_ellip(tokens, cur_node, terms, index)
-        capture = next_capture
-        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
-          terms << "(#{cur_node}.children.size > #{index})"
-          terms << term
-          terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
-        else
-          terms << "(#{cur_node}.children.size >= #{index})" if index > 0
-          terms << "(#{capture} = #{cur_node}.children[#{index}..-1])"
-        end
-        terms
-      end
-
-      def compile_seq_tail(tokens, cur_node)
-        tokens.shift
-        if tokens.first == ')'
-          tokens.shift
-          nil
-        else
-          expr = compile_expr(tokens, cur_node, false)
-          fail_due_to('missing )') unless tokens.shift == ')'
-          expr
-        end
-      end
-
       def compile_union(tokens, cur_node, seq_head)
         fail_due_to('empty union') if tokens.first == '}'
 
@@ -266,6 +363,89 @@ module RuboCop
           terms = union_terms(tokens, temp_node, seq_head)
           join_terms(init, terms, ' || ')
         end
+      end
+
+      def compile_wildcard(cur_node, name, seq_head)
+        if name.empty?
+          'true'
+        elsif @unify.key?(name)
+          # we have already seen a wildcard with this name before
+          # so the value it matched the first time will already be stored
+          # in a temp. check if this value matches the one stored in the temp
+          "(#{cur_node}#{'.type' if seq_head} == temp#{@unify[name]})"
+        else
+          n = @unify[name] = next_temp_value
+          # double assign to temp#{n} to avoid "assigned but unused variable"
+          "(temp#{n} = #{cur_node}#{'.type' if seq_head}; " \
+          "temp#{n} = temp#{n}; true)"
+        end
+      end
+
+      def emit_capture_list
+        (1..@captures).map { |n| "capture#{n}" }.join(',')
+      end
+
+      def emit_guard_clause
+        <<-RUBY
+          return unless node.is_a?(RuboCop::AST::Node)
+        RUBY
+      end
+
+      def emit_method_code
+        <<-RUBY
+          return unless #{@match_code}
+          block_given? ? yield(#{emit_capture_list}) : (return #{emit_retval})
+        RUBY
+      end
+
+      def emit_param_list
+        (1..@params).map { |n| "param#{n}" }.join(',')
+      end
+
+      def emit_retval
+        if @captures.zero?
+          'true'
+        elsif @captures == 1
+          'capture1'
+        else
+          "[#{emit_capture_list}]"
+        end
+      end
+
+      def emit_trailing_params
+        params = emit_param_list
+        params.empty? ? '' : ",#{params}"
+      end
+
+      def fail_due_to(message)
+        raise Invalid, "Couldn't compile due to #{message}. Pattern: #{@string}"
+      end
+
+      def get_param(number)
+        number = number.empty? ? 1 : Integer(number)
+        @params = number if number > @params
+        number.zero? ? @root : "param#{number}"
+      end
+
+      def join_terms(init, terms, operator)
+        "(#{init};#{terms.join(operator)})"
+      end
+
+      def next_capture
+        "capture#{@captures += 1}"
+      end
+
+      def next_temp_value
+        @temps += 1
+      end
+
+      def run(node_var)
+        tokens =
+          @string.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+
+        @match_code = compile_expr(tokens, node_var, false)
+
+        fail_due_to('unbalanced pattern') unless tokens.empty?
       end
 
       def union_terms(tokens, temp_node, seq_head)
@@ -286,181 +466,6 @@ module RuboCop
         end
       end
 
-      def compile_expr_with_captures(tokens, temp_node, seq_head)
-        captures_before = @captures
-        expr = compile_expr(tokens, temp_node, seq_head)
-
-        yield expr, captures_before, @captures
-      end
-
-      def compile_expr_with_capture_check(tokens, temp_node, seq_head, before,
-                                          after)
-        @captures = before
-        expr = compile_expr(tokens, temp_node, seq_head)
-        if @captures != after
-          fail_due_to('each branch of {} must have same # of captures')
-        end
-
-        expr
-      end
-
-      def compile_intersect(tokens, cur_node, seq_head)
-        fail_due_to('empty intersection') if tokens.first == ']'
-
-        with_temp_node(cur_node) do |init, temp_node|
-          terms = []
-          until tokens.first == ']'
-            terms << compile_expr(tokens, temp_node, seq_head)
-          end
-          tokens.shift
-
-          join_terms(init, terms, ' && ')
-        end
-      end
-
-      def compile_capture(tokens, cur_node, seq_head)
-        "(#{next_capture} = #{cur_node}#{'.type' if seq_head}; " \
-          "#{compile_expr(tokens, cur_node, seq_head)})"
-      end
-
-      def compile_negation(tokens, cur_node, seq_head)
-        "(!#{compile_expr(tokens, cur_node, seq_head)})"
-      end
-
-      def compile_ascend(tokens, cur_node, seq_head)
-        "(#{cur_node}.parent && " \
-          "#{compile_expr(tokens, "#{cur_node}.parent", seq_head)})"
-      end
-
-      def compile_wildcard(cur_node, name, seq_head)
-        if name.empty?
-          'true'
-        elsif @unify.key?(name)
-          # we have already seen a wildcard with this name before
-          # so the value it matched the first time will already be stored
-          # in a temp. check if this value matches the one stored in the temp
-          "(#{cur_node}#{'.type' if seq_head} == temp#{@unify[name]})"
-        else
-          n = @unify[name] = next_temp_value
-          # double assign to temp#{n} to avoid "assigned but unused variable"
-          "(temp#{n} = #{cur_node}#{'.type' if seq_head}; " \
-          "temp#{n} = temp#{n}; true)"
-        end
-      end
-
-      def compile_literal(cur_node, literal, seq_head)
-        "(#{cur_node}#{'.type' if seq_head} == #{literal})"
-      end
-
-      def compile_predicate(tokens, cur_node, predicate, seq_head)
-        if predicate.end_with?('(') # is there an arglist?
-          args = compile_args(tokens)
-          predicate = predicate[0..-2] # drop the trailing (
-          "(#{cur_node}#{'.type' if seq_head}.#{predicate}(#{args.join(',')}))"
-        else
-          "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
-        end
-      end
-
-      def compile_funcall(tokens, cur_node, method, seq_head)
-        # call a method in the context which this pattern-matching
-        # code is used in. pass target value as an argument
-        method = method[1..-1] # drop the leading #
-        if method.end_with?('(') # is there an arglist?
-          args = compile_args(tokens)
-          method = method[0..-2] # drop the trailing (
-          "(#{method}(#{cur_node}#{'.type' if seq_head},#{args.join(',')}))"
-        else
-          "(#{method}(#{cur_node}#{'.type' if seq_head}))"
-        end
-      end
-
-      def compile_nodetype(cur_node, type)
-        "(#{cur_node} && #{cur_node}.#{type.tr('-', '_')}_type?)"
-      end
-
-      def compile_param(cur_node, number, seq_head)
-        "(#{cur_node}#{'.type' if seq_head} == #{get_param(number)})"
-      end
-
-      def compile_args(tokens)
-        index = tokens.find_index { |token| token == ')' }
-
-        tokens.slice!(0..index).each_with_object([]) do |token, args|
-          next if [')', ','].include?(token)
-
-          args << compile_arg(token)
-        end
-      end
-
-      def compile_arg(token)
-        case token
-        when WILDCARD  then
-          name   = token[1..-1]
-          number = @unify[name] || fail_due_to('invalid in arglist: ' + token)
-          "temp#{number}"
-        when LITERAL   then token
-        when PARAM     then get_param(token[1..-1])
-        when CLOSING   then fail_due_to("#{token} in invalid position")
-        when nil       then fail_due_to('pattern ended prematurely')
-        else fail_due_to("invalid token in arglist: #{token.inspect}")
-        end
-      end
-
-      def next_capture
-        "capture#{@captures += 1}"
-      end
-
-      def get_param(number)
-        number = number.empty? ? 1 : Integer(number)
-        @params = number if number > @params
-        number.zero? ? @root : "param#{number}"
-      end
-
-      def join_terms(init, terms, operator)
-        "(#{init};#{terms.join(operator)})"
-      end
-
-      def emit_capture_list
-        (1..@captures).map { |n| "capture#{n}" }.join(',')
-      end
-
-      def emit_retval
-        if @captures.zero?
-          'true'
-        elsif @captures == 1
-          'capture1'
-        else
-          "[#{emit_capture_list}]"
-        end
-      end
-
-      def emit_param_list
-        (1..@params).map { |n| "param#{n}" }.join(',')
-      end
-
-      def emit_trailing_params
-        params = emit_param_list
-        params.empty? ? '' : ",#{params}"
-      end
-
-      def emit_guard_clause
-        <<-RUBY
-          return unless node.is_a?(RuboCop::AST::Node)
-        RUBY
-      end
-
-      def emit_method_code
-        <<-RUBY
-          return unless #{@match_code}
-          block_given? ? yield(#{emit_capture_list}) : (return #{emit_retval})
-        RUBY
-      end
-
-      def fail_due_to(message)
-        raise Invalid, "Couldn't compile due to #{message}. Pattern: #{@string}"
-      end
-
       def with_temp_node(cur_node)
         with_temp_variable do |temp_var|
           # double assign to temp#{n} to avoid "assigned but unused variable"
@@ -470,10 +475,6 @@ module RuboCop
 
       def with_temp_variable
         yield "temp#{next_temp_value}"
-      end
-
-      def next_temp_value
-        @temps += 1
       end
     end
     private_constant :Compiler
@@ -515,8 +516,11 @@ module RuboCop
         end
       end
 
-      def node_search_first(method_name, compiler, called_from)
-        node_search(method_name, compiler, 'return true', '', called_from)
+      def node_search(method_name, compiler, on_match, prelude, called_from)
+        src = node_search_body(method_name, compiler.emit_trailing_params,
+                               prelude, compiler.match_code, on_match)
+        filename, lineno = *called_from
+        class_eval(src, filename, lineno.to_i)
       end
 
       def node_search_all(method_name, compiler, called_from)
@@ -527,13 +531,6 @@ module RuboCop
 
         node_search(method_name, compiler, "yield(#{yieldval})", prelude,
                     called_from)
-      end
-
-      def node_search(method_name, compiler, on_match, prelude, called_from)
-        src = node_search_body(method_name, compiler.emit_trailing_params,
-                               prelude, compiler.match_code, on_match)
-        filename, lineno = *called_from
-        class_eval(src, filename, lineno.to_i)
       end
 
       def node_search_body(method_name, trailing_params, prelude, match_code,
@@ -549,6 +546,10 @@ module RuboCop
             nil
           end
         RUBY
+      end
+
+      def node_search_first(method_name, compiler, called_from)
+        node_search(method_name, compiler, 'return true', '', called_from)
       end
     end
 

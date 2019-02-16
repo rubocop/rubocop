@@ -35,6 +35,14 @@ module RuboCop
         ACCEPT_LEFT_SQUARE_BRACKET =
           %w[super yield].freeze
 
+        def autocorrect(range)
+          if space_before_missing?(range)
+            ->(corrector) { corrector.insert_before(range, ' '.freeze) }
+          else
+            ->(corrector) { corrector.insert_after(range, ' '.freeze) }
+          end
+        end
+
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
         end
@@ -49,6 +57,10 @@ module RuboCop
 
         def on_case(node)
           check(node, %i[keyword else].freeze)
+        end
+
+        def on_defined?(node)
+          check(node, [:keyword].freeze)
         end
 
         def on_ensure(node)
@@ -103,10 +115,6 @@ module RuboCop
           check(node, [:keyword].freeze)
         end
 
-        def on_zsuper(node)
-          check(node, [:keyword].freeze)
-        end
-
         def on_until(node)
           check(node, %i[begin end keyword].freeze)
         end
@@ -123,19 +131,26 @@ module RuboCop
           check(node, [:keyword].freeze)
         end
 
-        def on_defined?(node)
+        def on_zsuper(node)
           check(node, [:keyword].freeze)
         end
 
-        def autocorrect(range)
-          if space_before_missing?(range)
-            ->(corrector) { corrector.insert_before(range, ' '.freeze) }
-          else
-            ->(corrector) { corrector.insert_after(range, ' '.freeze) }
-          end
+        private
+
+        def accept_left_parenthesis?(range)
+          ACCEPT_LEFT_PAREN.include?(range.source)
         end
 
-        private
+        def accept_left_square_bracket?(range)
+          ACCEPT_LEFT_SQUARE_BRACKET.include?(range.source)
+        end
+
+        def accepted_opening_delimiter?(range, char)
+          return true unless char
+
+          accept_left_square_bracket?(range) && char == '[' ||
+            accept_left_parenthesis?(range) && char == '('
+        end
 
         def check(node, locations, begin_keyword = DO)
           locations.each do |loc|
@@ -164,14 +179,14 @@ module RuboCop
           offense(range, MSG_BEFORE) if space_before_missing?(range)
         end
 
-        def do?(node)
-          node.loc.begin && node.loc.begin.is?(DO)
-        end
-
         def check_keyword(node, range)
           offense(range, MSG_BEFORE) if space_before_missing?(range) &&
                                         !preceded_by_operator?(node, range)
           offense(range, MSG_AFTER) if space_after_missing?(range)
+        end
+
+        def do?(node)
+          node.loc.begin && node.loc.begin.is?(DO)
         end
 
         def offense(range, msg)
@@ -180,11 +195,19 @@ module RuboCop
                       message: format(msg, range: range.source))
         end
 
-        def space_before_missing?(range)
-          pos = range.begin_pos - 1
-          return false if pos < 0
+        def preceded_by_operator?(node, _range)
+          # regular dotted method calls bind more tightly than operators
+          # so we need to climb up the AST past them
+          node.each_ancestor do |ancestor|
+            return true if ancestor.and_type? || ancestor.or_type?
+            return false unless ancestor.send_type?
+            return true if ancestor.operator_method?
+          end
+          false
+        end
 
-          range.source_buffer.source[pos] !~ /[\s\(\|\{\[;,\*\=]/
+        def safe_navigation_call?(range, pos)
+          range.source_buffer.source[pos, 2].start_with?(SAFE_NAVIGATION)
         end
 
         def space_after_missing?(range)
@@ -197,34 +220,11 @@ module RuboCop
           char !~ /[\s;,#\\\)\}\]\.]/
         end
 
-        def accepted_opening_delimiter?(range, char)
-          return true unless char
+        def space_before_missing?(range)
+          pos = range.begin_pos - 1
+          return false if pos < 0
 
-          accept_left_square_bracket?(range) && char == '[' ||
-            accept_left_parenthesis?(range) && char == '('
-        end
-
-        def accept_left_parenthesis?(range)
-          ACCEPT_LEFT_PAREN.include?(range.source)
-        end
-
-        def accept_left_square_bracket?(range)
-          ACCEPT_LEFT_SQUARE_BRACKET.include?(range.source)
-        end
-
-        def safe_navigation_call?(range, pos)
-          range.source_buffer.source[pos, 2].start_with?(SAFE_NAVIGATION)
-        end
-
-        def preceded_by_operator?(node, _range)
-          # regular dotted method calls bind more tightly than operators
-          # so we need to climb up the AST past them
-          node.each_ancestor do |ancestor|
-            return true if ancestor.and_type? || ancestor.or_type?
-            return false unless ancestor.send_type?
-            return true if ancestor.operator_method?
-          end
-          false
+          range.source_buffer.source[pos] !~ /[\s\(\|\{\[;,\*\=]/
         end
       end
     end

@@ -43,63 +43,19 @@ module RuboCop
 
     private
 
-    def args_from_file
-      if File.exist?('.rubocop') && !File.directory?('.rubocop')
-        IO.readlines('.rubocop').map(&:strip)
-      else
-        []
+    def add_aliases(opts)
+      option(opts, '-l', '--lint') do
+        @options[:only] ||= []
+        @options[:only] << 'Lint'
       end
-    end
-
-    def args_from_env
-      Shellwords.split(ENV.fetch('RUBOCOP_OPTS', ''))
-    end
-
-    def define_options
-      OptionParser.new do |opts|
-        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
-
-        add_list_options(opts)
-        add_only_options(opts)
-        add_configuration_options(opts)
-        add_formatting_options(opts)
-
-        option(opts, '-r', '--require FILE') { |f| require f }
-
-        add_severity_option(opts)
-        add_flags_with_optional_args(opts)
-        add_boolean_flags(opts)
-        add_aliases(opts)
-
-        option(opts, '-s', '--stdin FILE')
+      option(opts, '-x', '--fix-layout') do
+        @options[:only] ||= []
+        @options[:only] << 'Layout'
+        @options[:auto_correct] = true
       end
-    end
-
-    def add_only_options(opts)
-      add_cop_selection_csv_option('except', opts)
-      add_cop_selection_csv_option('only', opts)
-      option(opts, '--only-guide-cops')
-    end
-
-    def add_cop_selection_csv_option(option, opts)
-      option(opts, "--#{option} [COP1,COP2,...]") do |list|
-        @options[:"#{option}"] =
-          if list.empty?
-            ['']
-          else
-            list.split(',').map do |c|
-              Cop::Cop.qualified_cop_name(c, "--#{option} option")
-            end
-          end
+      option(opts, '--safe-auto-correct') do
+        @options[:auto_correct] = true
       end
-    end
-
-    def add_configuration_options(opts)
-      option(opts, '-c', '--config FILE')
-      option(opts, '--force-exclusion')
-      option(opts, '--ignore-parent-exclusion')
-      option(opts, '--force-default-config')
-      add_auto_gen_options(opts)
     end
 
     def add_auto_gen_options(opts)
@@ -116,37 +72,6 @@ module RuboCop
       option(opts, '--auto-gen-only-exclude')
       option(opts, '--no-auto-gen-timestamp') do
         @options[:no_auto_gen_timestamp] = true
-      end
-    end
-
-    def add_formatting_options(opts)
-      option(opts, '-f', '--format FORMATTER') do |key|
-        @options[:formatters] ||= []
-        @options[:formatters] << [key]
-      end
-
-      option(opts, '-o', '--out FILE') do |path|
-        if @options[:formatters]
-          @options[:formatters].last << path
-        else
-          @options[:output_path] = path
-        end
-      end
-    end
-
-    def add_severity_option(opts)
-      table = RuboCop::Cop::Severity::CODE_TABLE.merge(A: :autocorrect)
-      option(opts, '--fail-level SEVERITY',
-             RuboCop::Cop::Severity::NAMES + [:autocorrect],
-             table) do |severity|
-        @options[:fail_level] = severity
-      end
-      option(opts, '--display-only-fail-level-offenses')
-    end
-
-    def add_flags_with_optional_args(opts)
-      option(opts, '--show-cops [COP1,COP2,...]') do |list|
-        @options[:show_cops] = list.nil? ? [] : list.split(',')
       end
     end
 
@@ -170,23 +95,106 @@ module RuboCop
       option(opts, '-P', '--parallel')
     end
 
-    def add_aliases(opts)
-      option(opts, '-l', '--lint') do
-        @options[:only] ||= []
-        @options[:only] << 'Lint'
+    def add_configuration_options(opts)
+      option(opts, '-c', '--config FILE')
+      option(opts, '--force-exclusion')
+      option(opts, '--ignore-parent-exclusion')
+      option(opts, '--force-default-config')
+      add_auto_gen_options(opts)
+    end
+
+    def add_cop_selection_csv_option(option, opts)
+      option(opts, "--#{option} [COP1,COP2,...]") do |list|
+        @options[:"#{option}"] =
+          if list.empty?
+            ['']
+          else
+            list.split(',').map do |c|
+              Cop::Cop.qualified_cop_name(c, "--#{option} option")
+            end
+          end
       end
-      option(opts, '-x', '--fix-layout') do
-        @options[:only] ||= []
-        @options[:only] << 'Layout'
-        @options[:auto_correct] = true
+    end
+
+    def add_flags_with_optional_args(opts)
+      option(opts, '--show-cops [COP1,COP2,...]') do |list|
+        @options[:show_cops] = list.nil? ? [] : list.split(',')
       end
-      option(opts, '--safe-auto-correct') do
-        @options[:auto_correct] = true
+    end
+
+    def add_formatting_options(opts)
+      option(opts, '-f', '--format FORMATTER') do |key|
+        @options[:formatters] ||= []
+        @options[:formatters] << [key]
+      end
+
+      option(opts, '-o', '--out FILE') do |path|
+        if @options[:formatters]
+          @options[:formatters].last << path
+        else
+          @options[:output_path] = path
+        end
       end
     end
 
     def add_list_options(opts)
       option(opts, '-L', '--list-target-files')
+    end
+
+    def add_only_options(opts)
+      add_cop_selection_csv_option('except', opts)
+      add_cop_selection_csv_option('only', opts)
+      option(opts, '--only-guide-cops')
+    end
+
+    def add_severity_option(opts)
+      table = RuboCop::Cop::Severity::CODE_TABLE.merge(A: :autocorrect)
+      option(opts, '--fail-level SEVERITY',
+             RuboCop::Cop::Severity::NAMES + [:autocorrect],
+             table) do |severity|
+        @options[:fail_level] = severity
+      end
+      option(opts, '--display-only-fail-level-offenses')
+    end
+
+    def args_from_env
+      Shellwords.split(ENV.fetch('RUBOCOP_OPTS', ''))
+    end
+
+    def args_from_file
+      if File.exist?('.rubocop') && !File.directory?('.rubocop')
+        IO.readlines('.rubocop').map(&:strip)
+      else
+        []
+      end
+    end
+
+    def define_options
+      OptionParser.new do |opts|
+        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
+
+        add_list_options(opts)
+        add_only_options(opts)
+        add_configuration_options(opts)
+        add_formatting_options(opts)
+
+        option(opts, '-r', '--require FILE') { |f| require f }
+
+        add_severity_option(opts)
+        add_flags_with_optional_args(opts)
+        add_boolean_flags(opts)
+        add_aliases(opts)
+
+        option(opts, '-s', '--stdin FILE')
+      end
+    end
+
+    # Finds the option in `args` starting with -- and converts it to a symbol,
+    # e.g. [..., '--auto-correct', ...] to :auto_correct.
+    def long_opt_symbol(args)
+      long_opt = args.find { |arg| arg.start_with?('--') }
+      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '')
+                     .tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
 
     # Sets a value in the @options hash, based on the given long option and its
@@ -198,14 +206,6 @@ module RuboCop
         @options[long_opt_symbol] = arg
         yield arg if block_given?
       end
-    end
-
-    # Finds the option in `args` starting with -- and converts it to a symbol,
-    # e.g. [..., '--auto-correct', ...] to :auto_correct.
-    def long_opt_symbol(args)
-      long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '')
-                     .tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
   end
 
@@ -252,6 +252,43 @@ module RuboCop
       @options = options
     end
 
+    def boolean_or_empty_cache?
+      !@options.key?(:cache) || %w[true false].include?(@options[:cache])
+    end
+
+    def display_only_fail_level_offenses_with_autocorrect?
+      @options[:display_only_fail_level_offenses] && @options[:autocorrect]
+    end
+
+    def except_syntax?
+      @options.key?(:except) &&
+        (@options[:except] & %w[Lint/Syntax Syntax]).any?
+    end
+
+    def incompatible_options
+      @incompatible_options ||= @options.keys & Options::EXITING_OPTIONS
+    end
+
+    def only_includes_unneeded_disable?
+      @options.key?(:only) &&
+        (@options[:only] & %w[Lint/UnneededCopDisableDirective
+                              UnneededCopDisableDirective]).any?
+    end
+
+    def validate_auto_gen_config
+      return if @options.key?(:auto_gen_config)
+
+      message = '--%<flag>s can only be used together with --auto-gen-config.'
+
+      %i[exclude_limit no_offense_counts no_auto_gen_timestamp
+         auto_gen_only_exclude].each do |option|
+        if @options.key?(option)
+          raise OptionArgumentError,
+                format(message, flag: option.to_s.tr('_', '-'))
+        end
+      end
+    end
+
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?
         raise OptionArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
@@ -277,18 +314,12 @@ module RuboCop
                                  "#{incompatible_options.inspect}"
     end
 
-    def validate_auto_gen_config
-      return if @options.key?(:auto_gen_config)
+    def validate_exclude_limit_option
+      return if @options[:exclude_limit] =~ /^\d+$/
 
-      message = '--%<flag>s can only be used together with --auto-gen-config.'
-
-      %i[exclude_limit no_offense_counts no_auto_gen_timestamp
-         auto_gen_only_exclude].each do |option|
-        if @options.key?(option)
-          raise OptionArgumentError,
-                format(message, flag: option.to_s.tr('_', '-'))
-        end
-      end
+      # Emulate OptionParser's behavior to make failures consistent regardless
+      # of option order.
+      raise OptionParser::MissingArgument
     end
 
     def validate_parallel
@@ -315,37 +346,6 @@ module RuboCop
       combos.each do |key, msg|
         raise OptionArgumentError, msg if @options.key?(key)
       end
-    end
-
-    def only_includes_unneeded_disable?
-      @options.key?(:only) &&
-        (@options[:only] & %w[Lint/UnneededCopDisableDirective
-                              UnneededCopDisableDirective]).any?
-    end
-
-    def display_only_fail_level_offenses_with_autocorrect?
-      @options[:display_only_fail_level_offenses] && @options[:autocorrect]
-    end
-
-    def except_syntax?
-      @options.key?(:except) &&
-        (@options[:except] & %w[Lint/Syntax Syntax]).any?
-    end
-
-    def boolean_or_empty_cache?
-      !@options.key?(:cache) || %w[true false].include?(@options[:cache])
-    end
-
-    def incompatible_options
-      @incompatible_options ||= @options.keys & Options::EXITING_OPTIONS
-    end
-
-    def validate_exclude_limit_option
-      return if @options[:exclude_limit] =~ /^\d+$/
-
-      # Emulate OptionParser's behavior to make failures consistent regardless
-      # of option order.
-      raise OptionParser::MissingArgument
     end
   end
 

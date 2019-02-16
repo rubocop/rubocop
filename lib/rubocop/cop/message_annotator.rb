@@ -69,6 +69,38 @@ module RuboCop
 
       private
 
+      def debug?
+        options[:debug]
+      end
+
+      def details
+        details = cop_config && cop_config['Details']
+        details.nil? || details.empty? ? nil : details
+      end
+
+      def display_cop_names?
+        return true if debug?
+        return false if options[:display_cop_names] == false
+        return true if options[:display_cop_names]
+
+        config.for_all_cops['DisplayCopNames']
+      end
+
+      def display_style_guide?
+        (options[:display_style_guide] ||
+         config.for_all_cops['DisplayStyleGuide']) &&
+          !urls.empty?
+      end
+
+      def extra_details?
+        options[:extra_details] || config.for_all_cops['ExtraDetails']
+      end
+
+      def reference_url
+        url = cop_config['Reference']
+        url.nil? || url.empty? ? nil : url
+      end
+
       def style_guide_url
         url = cop_config['StyleGuide']
         return nil if url.nil? || url.empty?
@@ -81,38 +113,6 @@ module RuboCop
             URI.join(base_url, url).to_s
           end
         end
-      end
-
-      def display_style_guide?
-        (options[:display_style_guide] ||
-         config.for_all_cops['DisplayStyleGuide']) &&
-          !urls.empty?
-      end
-
-      def reference_url
-        url = cop_config['Reference']
-        url.nil? || url.empty? ? nil : url
-      end
-
-      def extra_details?
-        options[:extra_details] || config.for_all_cops['ExtraDetails']
-      end
-
-      def debug?
-        options[:debug]
-      end
-
-      def display_cop_names?
-        return true if debug?
-        return false if options[:display_cop_names] == false
-        return true if options[:display_cop_names]
-
-        config.for_all_cops['DisplayCopNames']
-      end
-
-      def details
-        details = cop_config && cop_config['Details']
-        details.nil? || details.empty? ? nil : details
       end
     end
   end

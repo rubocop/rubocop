@@ -88,6 +88,13 @@ module RuboCop
         MSG_USE_SLASHES = 'Use `//` around regular expression.'.freeze
         MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            correct_delimiters(node, corrector)
+            correct_inner_slashes(node, corrector)
+          end
+        end
+
         def on_regexp(node)
           if slash_literal?(node)
             check_slash_literal(node)
@@ -96,30 +103,15 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            correct_delimiters(node, corrector)
-            correct_inner_slashes(node, corrector)
-          end
-        end
-
         private
 
-        def check_slash_literal(node)
-          return if allowed_slash_literal?(node)
-
-          add_offense(node, message: MSG_USE_PERCENT_R)
+        def allow_inner_slashes?
+          cop_config['AllowInnerSlashes']
         end
 
-        def check_percent_r_literal(node)
-          return if allowed_percent_r_literal?(node)
-
-          add_offense(node, message: MSG_USE_SLASHES)
-        end
-
-        def allowed_slash_literal?(node)
-          style == :slashes && !contains_disallowed_slash?(node) ||
-            allowed_mixed_slash?(node)
+        def allowed_mixed_percent_r?(node)
+          style == :mixed && node.multiline? ||
+            contains_disallowed_slash?(node)
         end
 
         def allowed_mixed_slash?(node)
@@ -133,9 +125,29 @@ module RuboCop
             allowed_mixed_percent_r?(node)
         end
 
-        def allowed_mixed_percent_r?(node)
-          style == :mixed && node.multiline? ||
-            contains_disallowed_slash?(node)
+        def allowed_slash_literal?(node)
+          style == :slashes && !contains_disallowed_slash?(node) ||
+            allowed_mixed_slash?(node)
+        end
+
+        def calculate_replacement(node)
+          if slash_literal?(node)
+            ['%r', ''].zip(preferred_delimiters).map(&:join)
+          else
+            %w[/ /]
+          end
+        end
+
+        def check_percent_r_literal(node)
+          return if allowed_percent_r_literal?(node)
+
+          add_offense(node, message: MSG_USE_SLASHES)
+        end
+
+        def check_slash_literal(node)
+          return if allowed_slash_literal?(node)
+
+          add_offense(node, message: MSG_USE_PERCENT_R)
         end
 
         def contains_disallowed_slash?(node)
@@ -144,24 +156,6 @@ module RuboCop
 
         def contains_slash?(node)
           node_body(node).include?('/')
-        end
-
-        def allow_inner_slashes?
-          cop_config['AllowInnerSlashes']
-        end
-
-        def node_body(node, include_begin_nodes: false)
-          types = include_begin_nodes ? %i[str begin] : %i[str]
-          node.each_child_node(*types).map(&:source).join
-        end
-
-        def slash_literal?(node)
-          node.loc.begin.source == '/'
-        end
-
-        def preferred_delimiters
-          config.for_cop('Style/PercentLiteralDelimiters') \
-            ['PreferredDelimiters']['%r'].split(//)
         end
 
         def correct_delimiters(node, corrector)
@@ -186,6 +180,22 @@ module RuboCop
           end
         end
 
+        def inner_slash_after_correction(node)
+          inner_slash_for(calculate_replacement(node).first)
+        end
+
+        def inner_slash_before_correction(node)
+          inner_slash_for(node.loc.begin.source)
+        end
+
+        def inner_slash_for(opening_delimiter)
+          if ['/', '%r/'].include?(opening_delimiter)
+            '\/'
+          else
+            '/'
+          end
+        end
+
         def inner_slash_indices(node)
           text    = node_body(node, include_begin_nodes: true)
           pattern = inner_slash_before_correction(node)
@@ -199,28 +209,18 @@ module RuboCop
           indices
         end
 
-        def inner_slash_before_correction(node)
-          inner_slash_for(node.loc.begin.source)
+        def node_body(node, include_begin_nodes: false)
+          types = include_begin_nodes ? %i[str begin] : %i[str]
+          node.each_child_node(*types).map(&:source).join
         end
 
-        def inner_slash_after_correction(node)
-          inner_slash_for(calculate_replacement(node).first)
+        def preferred_delimiters
+          config.for_cop('Style/PercentLiteralDelimiters') \
+            ['PreferredDelimiters']['%r'].split(//)
         end
 
-        def inner_slash_for(opening_delimiter)
-          if ['/', '%r/'].include?(opening_delimiter)
-            '\/'
-          else
-            '/'
-          end
-        end
-
-        def calculate_replacement(node)
-          if slash_literal?(node)
-            ['%r', ''].zip(preferred_delimiters).map(&:join)
-          else
-            %w[/ /]
-          end
+        def slash_literal?(node)
+          node.loc.begin.source == '/'
         end
       end
     end

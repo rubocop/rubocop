@@ -27,6 +27,14 @@ module RuboCop
 
       private
 
+      def interpret_hex(escape)
+        [escape[2..-1].hex].pack('C'.freeze)
+      end
+
+      def interpret_octal(escape)
+        [escape[1..-1].to_i(8)].pack('C'.freeze)
+      end
+
       def interpret_string_escape(escape)
         case escape[1]
         when 'u'.freeze then interpret_unicode(escape)
@@ -43,14 +51,6 @@ module RuboCop
         else
           [escape[2..-1].hex].pack('U'.freeze)
         end
-      end
-
-      def interpret_hex(escape)
-        [escape[2..-1].hex].pack('C'.freeze)
-      end
-
-      def interpret_octal(escape)
-        [escape[1..-1].to_i(8)].pack('C'.freeze)
       end
     end
   end

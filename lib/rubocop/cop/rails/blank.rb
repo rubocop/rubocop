@@ -81,30 +81,19 @@ module RuboCop
           (:if $(send $_ :present?) {nil? (...)} ...)
         PATTERN
 
-        def on_send(node)
-          return unless cop_config['NotPresent']
+        def autocorrect(node)
+          lambda do |corrector|
+            method_call, variable1 = unless_present?(node)
 
-          not_present?(node) do |receiver|
-            # accepts !present? if its in the body of a `blank?` method
-            next if defining_blank?(node.parent)
+            if method_call
+              corrector.replace(node.loc.keyword, 'if')
+              range = method_call.loc.expression
+            else
+              variable1, _variable2 = nil_or_empty?(node) || not_present?(node)
+              range = node.loc.expression
+            end
 
-            add_offense(node,
-                        message: format(MSG_NOT_PRESENT,
-                                        prefer: replacement(receiver),
-                                        current: node.source))
-          end
-        end
-
-        def on_or(node)
-          return unless cop_config['NilOrEmpty']
-
-          nil_or_empty?(node) do |var1, var2|
-            return unless var1 == var2
-
-            add_offense(node,
-                        message: format(MSG_NIL_OR_EMPTY,
-                                        prefer: replacement(var1),
-                                        current: node.source))
+            corrector.replace(range, replacement(variable1))
           end
         end
 
@@ -123,23 +112,38 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            method_call, variable1 = unless_present?(node)
+        def on_or(node)
+          return unless cop_config['NilOrEmpty']
 
-            if method_call
-              corrector.replace(node.loc.keyword, 'if')
-              range = method_call.loc.expression
-            else
-              variable1, _variable2 = nil_or_empty?(node) || not_present?(node)
-              range = node.loc.expression
-            end
+          nil_or_empty?(node) do |var1, var2|
+            return unless var1 == var2
 
-            corrector.replace(range, replacement(variable1))
+            add_offense(node,
+                        message: format(MSG_NIL_OR_EMPTY,
+                                        prefer: replacement(var1),
+                                        current: node.source))
+          end
+        end
+
+        def on_send(node)
+          return unless cop_config['NotPresent']
+
+          not_present?(node) do |receiver|
+            # accepts !present? if its in the body of a `blank?` method
+            next if defining_blank?(node.parent)
+
+            add_offense(node,
+                        message: format(MSG_NOT_PRESENT,
+                                        prefer: replacement(receiver),
+                                        current: node.source))
           end
         end
 
         private
+
+        def replacement(node)
+          node.respond_to?(:source) ? "#{node.source}.blank?" : 'blank?'
+        end
 
         def unless_condition(node, method_call)
           if node.modifier_form?
@@ -147,10 +151,6 @@ module RuboCop
           else
             node.loc.expression.begin.join(method_call.loc.expression)
           end
-        end
-
-        def replacement(node)
-          node.respond_to?(:source) ? "#{node.source}.blank?" : 'blank?'
         end
       end
     end

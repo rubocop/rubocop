@@ -25,16 +25,16 @@ module RuboCop
       class NegatedWhile < Cop
         include NegativeConditional
 
-        def on_while(node)
-          check_negative_conditional(node)
+        def autocorrect(node)
+          ConditionCorrector.correct_negative_condition(node)
         end
 
         def on_until(node)
           check_negative_conditional(node)
         end
 
-        def autocorrect(node)
-          ConditionCorrector.correct_negative_condition(node)
+        def on_while(node)
+          check_negative_conditional(node)
         end
 
         private

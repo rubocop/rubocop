@@ -77,21 +77,6 @@ module RuboCop
           (pair (sym :required) true)
         PATTERN
 
-        def on_send(node)
-          opt = extract_required_option(node)
-          return unless opt
-          return unless match_required_true?(opt) || match_required_false?(opt)
-
-          message =
-            if match_required_true?(opt)
-              SUPERFLOUS_REQUIRE_TRUE_MSG
-            elsif match_required_false?(opt)
-              SUPERFLOUS_REQUIRE_FALSE_MSG
-            end
-
-          add_offense(node, message: message, location: :selector)
-        end
-
         def autocorrect(node)
           opt = extract_required_option(node)
           return unless opt
@@ -113,6 +98,21 @@ module RuboCop
             match_required_true?(opt) ||
               match_required_false?(opt)
           end
+        end
+
+        def on_send(node)
+          opt = extract_required_option(node)
+          return unless opt
+          return unless match_required_true?(opt) || match_required_false?(opt)
+
+          message =
+            if match_required_true?(opt)
+              SUPERFLOUS_REQUIRE_TRUE_MSG
+            elsif match_required_false?(opt)
+              SUPERFLOUS_REQUIRE_FALSE_MSG
+            end
+
+          add_offense(node, message: message, location: :selector)
         end
       end
     end

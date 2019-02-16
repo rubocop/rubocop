@@ -19,6 +19,10 @@ module RuboCop
 
         MSG = 'Trailing whitespace detected.'.freeze
 
+        def autocorrect(range)
+          ->(corrector) { corrector.remove(range) }
+        end
+
         def investigate(processed_source)
           heredoc_ranges = extract_heredoc_ranges(processed_source.ast)
           processed_source.lines.each_with_index do |line, index|
@@ -33,19 +37,7 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
-        end
-
         private
-
-        def skip_heredoc?
-          cop_config.fetch('AllowInHeredoc', false)
-        end
-
-        def inside_heredoc?(heredoc_ranges, line_number)
-          heredoc_ranges.any? { |r| r.include?(line_number) }
-        end
 
         def extract_heredoc_ranges(ast)
           return [] unless ast
@@ -54,6 +46,14 @@ module RuboCop
             body = node.location.heredoc_body
             (body.first_line...body.last_line)
           end
+        end
+
+        def inside_heredoc?(heredoc_ranges, line_number)
+          heredoc_ranges.any? { |r| r.include?(line_number) }
+        end
+
+        def skip_heredoc?
+          cop_config.fetch('AllowInHeredoc', false)
         end
       end
     end

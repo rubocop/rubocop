@@ -41,24 +41,9 @@ module RuboCop
 
         private
 
-        def offending_node?(node)
-          return false unless called_on_string?(node)
-          return false unless method_with_format_args?(node)
-          return false if named_mode?(node) || splat_args?(node)
-
-          num_of_format_args, num_of_expected_fields = count_matches(node)
-
-          return false if num_of_format_args == :unknown
-
-          matched_arguments_count?(num_of_expected_fields, num_of_format_args)
-        end
-
-        def matched_arguments_count?(expected, passed)
-          if passed < 0
-            expected < passed.abs
-          else
-            expected != passed
-          end
+        # number of arguments required for the format sequence
+        def arguments_count(format)
+          format.scan('*').count + 1
         end
 
         def called_on_string?(node)
@@ -70,28 +55,8 @@ module RuboCop
           end
         end
 
-        def method_with_format_args?(node)
-          sprintf?(node) || format?(node) || percent?(node)
-        end
-
-        def named_mode?(node)
-          relevant_node = if sprintf?(node) || format?(node)
-                            node.first_argument
-                          elsif percent?(node)
-                            node.receiver
-                          end
-
-          !relevant_node.source.scan(NAMED_FIELD_REGEX).empty?
-        end
-
-        def splat_args?(node)
-          return false if percent?(node)
-
-          node.arguments.butfirst.any?(&:splat_type?)
-        end
-
-        def heredoc?(node)
-          node.first_argument.source[0, 2] == SHOVEL
+        def count_format_matches(node)
+          [node.arguments.count - 1, expected_fields_count(node.first_argument)]
         end
 
         def count_matches(node)
@@ -104,29 +69,17 @@ module RuboCop
           end
         end
 
+        def count_percent_matches(node)
+          [node.first_argument.child_nodes.count,
+           expected_fields_count(node.receiver)]
+        end
+
         def countable_format?(node)
           (sprintf?(node) || format?(node)) && !heredoc?(node)
         end
 
         def countable_percent?(node)
           percent?(node) && node.first_argument.array_type?
-        end
-
-        def count_format_matches(node)
-          [node.arguments.count - 1, expected_fields_count(node.first_argument)]
-        end
-
-        def count_percent_matches(node)
-          [node.first_argument.child_nodes.count,
-           expected_fields_count(node.receiver)]
-        end
-
-        def format_method?(name, node)
-          return false if node.const_receiver? &&
-                          !node.receiver.loc.name.is?(KERNEL)
-          return false unless node.method?(name)
-
-          node.arguments.size > 1 && node.first_argument.str_type?
         end
 
         def expected_fields_count(node)
@@ -144,23 +97,69 @@ module RuboCop
             .reduce(0) { |acc, elem| acc + arguments_count(elem[2]) }
         end
 
+        def format?(node)
+          format_method?(:format, node)
+        end
+
+        def format_method?(name, node)
+          return false if node.const_receiver? &&
+                          !node.receiver.loc.name.is?(KERNEL)
+          return false unless node.method?(name)
+
+          node.arguments.size > 1 && node.first_argument.str_type?
+        end
+
+        def heredoc?(node)
+          node.first_argument.source[0, 2] == SHOVEL
+        end
+
+        def matched_arguments_count?(expected, passed)
+          if passed < 0
+            expected < passed.abs
+          else
+            expected != passed
+          end
+        end
+
         def max_digit_dollar_num(node)
           node.source.scan(DIGIT_DOLLAR_FLAG).map do |digit_dollar_num|
             digit_dollar_num.first.to_i
           end.max
         end
 
-        # number of arguments required for the format sequence
-        def arguments_count(format)
-          format.scan('*').count + 1
+        def message(node)
+          num_args_for_format, num_expected_fields = count_matches(node)
+
+          method_name = node.method?(:%) ? 'String#%' : node.method_name
+
+          format(MSG, arg_num: num_args_for_format, method: method_name,
+                      field_num: num_expected_fields)
         end
 
-        def format?(node)
-          format_method?(:format, node)
+        def method_with_format_args?(node)
+          sprintf?(node) || format?(node) || percent?(node)
         end
 
-        def sprintf?(node)
-          format_method?(:sprintf, node)
+        def named_mode?(node)
+          relevant_node = if sprintf?(node) || format?(node)
+                            node.first_argument
+                          elsif percent?(node)
+                            node.receiver
+                          end
+
+          !relevant_node.source.scan(NAMED_FIELD_REGEX).empty?
+        end
+
+        def offending_node?(node)
+          return false unless called_on_string?(node)
+          return false unless method_with_format_args?(node)
+          return false if named_mode?(node) || splat_args?(node)
+
+          num_of_format_args, num_of_expected_fields = count_matches(node)
+
+          return false if num_of_format_args == :unknown
+
+          matched_arguments_count?(num_of_expected_fields, num_of_format_args)
         end
 
         def percent?(node)
@@ -176,13 +175,14 @@ module RuboCop
           percent
         end
 
-        def message(node)
-          num_args_for_format, num_expected_fields = count_matches(node)
+        def splat_args?(node)
+          return false if percent?(node)
 
-          method_name = node.method?(:%) ? 'String#%' : node.method_name
+          node.arguments.butfirst.any?(&:splat_type?)
+        end
 
-          format(MSG, arg_num: num_args_for_format, method: method_name,
-                      field_num: num_expected_fields)
+        def sprintf?(node)
+          format_method?(:sprintf, node)
         end
       end
     end

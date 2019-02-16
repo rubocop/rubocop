@@ -58,13 +58,13 @@ module RuboCop
             allowed_conditional_expression_on_rhs?(value)
         end
 
+        def allowed_conditional_expression_on_rhs?(node)
+          node && node.if_type? && contains_contant?(node)
+        end
+
         def allowed_method_call_on_rhs?(node)
           node && node.send_type? &&
             (node.receiver.nil? || !node.receiver.literal?)
-        end
-
-        def allowed_conditional_expression_on_rhs?(node)
-          node && node.if_type? && contains_contant?(node)
         end
 
         def contains_contant?(node)

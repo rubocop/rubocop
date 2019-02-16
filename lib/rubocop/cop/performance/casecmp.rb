@@ -42,6 +42,14 @@ module RuboCop
             $(send _ ${:downcase :upcase}))
         PATTERN
 
+        def autocorrect(node)
+          return unless (parts = take_method_apart(node))
+
+          receiver, method, arg, variable = parts
+
+          correction(node, receiver, method, arg, variable)
+        end
+
         def on_send(node)
           return unless downcase_eq(node) || eq_downcase(node)
           return unless (parts = take_method_apart(node))
@@ -55,15 +63,28 @@ module RuboCop
           )
         end
 
-        def autocorrect(node)
-          return unless (parts = take_method_apart(node))
+        private
 
-          receiver, method, arg, variable = parts
-
-          correction(node, receiver, method, arg, variable)
+        def build_good_method(arg, variable)
+          # We want resulting call to be parenthesized
+          # if arg already includes one or more sets of parens, don't add more
+          # or if method call already used parens, again, don't add more
+          if arg.send_type? || !parentheses?(arg)
+            "#{variable.source}.casecmp(#{arg.source}).zero?"
+          else
+            "#{variable.source}.casecmp#{arg.source}.zero?"
+          end
         end
 
-        private
+        def correction(node, _receiver, method, arg, variable)
+          lambda do |corrector|
+            corrector.insert_before(node.loc.expression, '!') if method == :!=
+
+            replacement = build_good_method(arg, variable)
+
+            corrector.replace(node.loc.expression, replacement)
+          end
+        end
 
         def take_method_apart(node)
           if downcase_downcase(node)
@@ -80,27 +101,6 @@ module RuboCop
           variable, = *receiver
 
           [receiver, method, arg, variable]
-        end
-
-        def correction(node, _receiver, method, arg, variable)
-          lambda do |corrector|
-            corrector.insert_before(node.loc.expression, '!') if method == :!=
-
-            replacement = build_good_method(arg, variable)
-
-            corrector.replace(node.loc.expression, replacement)
-          end
-        end
-
-        def build_good_method(arg, variable)
-          # We want resulting call to be parenthesized
-          # if arg already includes one or more sets of parens, don't add more
-          # or if method call already used parens, again, don't add more
-          if arg.send_type? || !parentheses?(arg)
-            "#{variable.source}.casecmp(#{arg.source}).zero?"
-          else
-            "#{variable.source}.casecmp#{arg.source}.zero?"
-          end
         end
       end
     end

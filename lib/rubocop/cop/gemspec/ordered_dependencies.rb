@@ -59,6 +59,15 @@ module RuboCop
               'Dependency `%<previous>s` should appear before `%<current>s`.'
               .freeze
 
+        def autocorrect(node)
+          OrderedGemCorrector.correct(
+            processed_source,
+            node,
+            previous_declaration(node),
+            treat_comments_as_separators
+          )
+        end
+
         def investigate(processed_source)
           return if processed_source.blank?
 
@@ -77,25 +86,16 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          OrderedGemCorrector.correct(
-            processed_source,
-            node,
-            previous_declaration(node),
-            treat_comments_as_separators
-          )
-        end
-
         private
+
+        def get_dependency_name(node)
+          node.method_name
+        end
 
         def previous_declaration(node)
           declarations = dependency_declarations(processed_source.ast)
           node_index = declarations.find_index(node)
           declarations.to_a[node_index - 1]
-        end
-
-        def get_dependency_name(node)
-          node.method_name
         end
 
         def_node_search :dependency_declarations, <<-PATTERN

@@ -31,13 +31,6 @@ module RuboCop
         MSG = "Place the first line of a multi-line method definition's " \
               'body on its own line.'.freeze
 
-        def on_def(node)
-          return unless trailing_body?(node)
-
-          add_offense(node, location: first_part_of(node.body))
-        end
-        alias on_defs on_def
-
         def autocorrect(node)
           lambda do |corrector|
             LineBreakCorrector.correct_trailing_body(
@@ -48,6 +41,13 @@ module RuboCop
             )
           end
         end
+
+        def on_def(node)
+          return unless trailing_body?(node)
+
+          add_offense(node, location: first_part_of(node.body))
+        end
+        alias on_defs on_def
       end
     end
   end

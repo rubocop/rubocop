@@ -34,15 +34,6 @@ module RuboCop
                     $str)
         PATTERN
 
-        def on_send(node)
-          string_replacement?(node) do |first_param, second_param|
-            return if accept_second_param?(second_param)
-            return if accept_first_param?(first_param)
-
-            offense(node, first_param, second_param)
-          end
-        end
-
         def autocorrect(node)
           _string, _method, first_param, second_param = *node
           first_source, = first_source(first_param)
@@ -57,6 +48,15 @@ module RuboCop
 
           replace_method(node, first_source, second_source, first_param,
                          replacement_method)
+        end
+
+        def on_send(node)
+          string_replacement?(node) do |first_param, second_param|
+            return if accept_second_param?(second_param)
+            return if accept_first_param?(first_param)
+
+            offense(node, first_param, second_param)
+          end
         end
 
         def replace_method(node, first, second, first_param, replacement)
@@ -75,11 +75,6 @@ module RuboCop
 
         private
 
-        def accept_second_param?(second_param)
-          second_source, = *second_param
-          second_source.length > 1
-        end
-
         def accept_first_param?(first_param)
           first_source, options = first_source(first_param)
           return true if first_source.nil?
@@ -96,15 +91,9 @@ module RuboCop
           first_source.length != 1
         end
 
-        def offense(node, first_param, second_param)
-          first_source, = first_source(first_param)
-          unless first_param.str_type?
-            first_source = interpret_string_escapes(first_source)
-          end
+        def accept_second_param?(second_param)
           second_source, = *second_param
-          message = message(node, first_source, second_source)
-
-          add_offense(node, location: range(node), message: message)
+          second_source.length > 1
         end
 
         def first_source(first_param)
@@ -118,11 +107,47 @@ module RuboCop
           end
         end
 
-        def source_from_regex_literal(node)
-          regex, options = *node
-          source, = *regex
-          options, = *options
-          [source, options]
+        def message(node, first_source, second_source)
+          replacement_method =
+            replacement_method(node, first_source, second_source)
+
+          format(MSG, prefer: replacement_method, current: node.method_name)
+        end
+
+        def method_suffix(node)
+          node.loc.end ? node.loc.end.source : ''
+        end
+
+        def offense(node, first_param, second_param)
+          first_source, = first_source(first_param)
+          unless first_param.str_type?
+            first_source = interpret_string_escapes(first_source)
+          end
+          second_source, = *second_param
+          message = message(node, first_source, second_source)
+
+          add_offense(node, location: range(node), message: message)
+        end
+
+        def range(node)
+          range_between(node.loc.selector.begin_pos, node.source_range.end_pos)
+        end
+
+        def remove_second_param(corrector, node, first_param)
+          end_range = range_between(first_param.source_range.end_pos,
+                                    node.source_range.end_pos)
+
+          corrector.replace(end_range, method_suffix(node))
+        end
+
+        def replacement_method(node, first_source, second_source)
+          replacement = if second_source.empty? && first_source.length == 1
+                          DELETE
+                        else
+                          TR
+                        end
+
+          "#{replacement}#{BANG if node.bang_method?}"
         end
 
         def source_from_regex_constructor(node)
@@ -136,36 +161,11 @@ module RuboCop
           end
         end
 
-        def range(node)
-          range_between(node.loc.selector.begin_pos, node.source_range.end_pos)
-        end
-
-        def replacement_method(node, first_source, second_source)
-          replacement = if second_source.empty? && first_source.length == 1
-                          DELETE
-                        else
-                          TR
-                        end
-
-          "#{replacement}#{BANG if node.bang_method?}"
-        end
-
-        def message(node, first_source, second_source)
-          replacement_method =
-            replacement_method(node, first_source, second_source)
-
-          format(MSG, prefer: replacement_method, current: node.method_name)
-        end
-
-        def method_suffix(node)
-          node.loc.end ? node.loc.end.source : ''
-        end
-
-        def remove_second_param(corrector, node, first_param)
-          end_range = range_between(first_param.source_range.end_pos,
-                                    node.source_range.end_pos)
-
-          corrector.replace(end_range, method_suffix(node))
+        def source_from_regex_literal(node)
+          regex, options = *node
+          source, = *regex
+          options, = *options
+          [source, options]
         end
       end
     end

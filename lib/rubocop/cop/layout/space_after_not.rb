@@ -16,6 +16,15 @@ module RuboCop
 
         MSG = 'Do not leave space between `!` and its argument.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(
+              range_between(node.loc.selector.end_pos,
+                            node.receiver.source_range.begin_pos)
+            )
+          end
+        end
+
         def on_send(node)
           return unless node.prefix_bang? && whitespace_after_operator?(node)
 
@@ -24,15 +33,6 @@ module RuboCop
 
         def whitespace_after_operator?(node)
           node.receiver.loc.column - node.loc.column > 1
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(
-              range_between(node.loc.selector.end_pos,
-                            node.receiver.source_range.begin_pos)
-            )
-          end
         end
       end
     end

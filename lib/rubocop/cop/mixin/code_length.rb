@@ -8,14 +8,6 @@ module RuboCop
 
       private
 
-      def max_length
-        cop_config['Max']
-      end
-
-      def count_comments?
-        cop_config['CountComments']
-      end
-
       def check_code_length(node)
         length = code_length(node)
 
@@ -29,9 +21,17 @@ module RuboCop
         end
       end
 
+      def count_comments?
+        cop_config['CountComments']
+      end
+
       # Returns true for lines that shall not be included in the count.
       def irrelevant_line(source_line)
         source_line.blank? || !count_comments? && comment_line?(source_line)
+      end
+
+      def max_length
+        cop_config['Max']
       end
     end
   end

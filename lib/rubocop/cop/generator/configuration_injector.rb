@@ -39,8 +39,8 @@ module RuboCop
           @configuration_entries ||= File.readlines(configuration_file_path)
         end
 
-        def new_configuration_entry
-          format(TEMPLATE, badge: badge, version_added: version_added)
+        def cop_name_line?(yaml)
+          yaml !~ /^[\s#]/
         end
 
         def find_target_line
@@ -52,8 +52,8 @@ module RuboCop
           configuration_entries.size - 1
         end
 
-        def cop_name_line?(yaml)
-          yaml !~ /^[\s#]/
+        def new_configuration_entry
+          format(TEMPLATE, badge: badge, version_added: version_added)
         end
       end
     end

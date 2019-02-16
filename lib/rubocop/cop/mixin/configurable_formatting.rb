@@ -16,19 +16,6 @@ module RuboCop
         end
       end
 
-      def report_opposing_styles(node, name)
-        alternative_styles.each do |alternative|
-          if valid_name?(node, name, alternative)
-            return unexpected_style_detected(alternative)
-          end
-        end
-      end
-
-      def valid_name?(node, name, given_style = style)
-        name.match(self.class::FORMATS.fetch(given_style)) ||
-          class_emitter_method?(node, name)
-      end
-
       # A class emitter method is a singleton method in a class/module, where
       # the method has the same name as a class defined in the class/module.
       def class_emitter_method?(node, name)
@@ -41,6 +28,19 @@ module RuboCop
         node.parent.each_child_node(:class).any? do |c|
           c.loc.name.is?(name.to_s)
         end
+      end
+
+      def report_opposing_styles(node, name)
+        alternative_styles.each do |alternative|
+          if valid_name?(node, name, alternative)
+            return unexpected_style_detected(alternative)
+          end
+        end
+      end
+
+      def valid_name?(node, name, given_style = style)
+        name.match(self.class::FORMATS.fetch(given_style)) ||
+          class_emitter_method?(node, name)
       end
     end
   end

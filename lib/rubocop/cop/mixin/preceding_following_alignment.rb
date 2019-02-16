@@ -7,16 +7,33 @@ module RuboCop
     module PrecedingFollowingAlignment
       private
 
-      def allow_for_alignment?
-        cop_config['AllowForAlignment']
+      def aligned_assignment?(range, line)
+        range.source[-1] == '=' && line[range.last_column - 1] == '='
       end
 
-      def aligned_with_something?(range)
-        aligned_with_adjacent_line?(range, method(:aligned_token?))
+      def aligned_char?(range, line)
+        line[range.column] == range.source[0]
       end
 
-      def aligned_with_operator?(range)
-        aligned_with_adjacent_line?(range, method(:aligned_operator?))
+      def aligned_comment_lines
+        @aligned_comment_lines ||=
+          processed_source.comments.map(&:loc).select do |r|
+            begins_its_line?(r.expression)
+          end.map(&:line)
+      end
+
+      def aligned_identical?(range, line)
+        range.source == line[range.column, range.size]
+      end
+
+      def aligned_operator?(range, line)
+        (aligned_identical?(range, line) || aligned_assignment?(range, line))
+      end
+
+      def aligned_token?(range, line)
+        aligned_words?(range, line) ||
+          aligned_char?(range, line) ||
+          aligned_assignment?(range, line)
       end
 
       def aligned_with_adjacent_line?(range, predicate)
@@ -27,6 +44,12 @@ module RuboCop
         aligned_with_any_line_range?([pre, post], range, &predicate)
       end
 
+      def aligned_with_any_line?(line_ranges, range, indent = nil, &predicate)
+        line_ranges.any? do |line_nos|
+          aligned_with_line?(line_nos, range, indent, &predicate)
+        end
+      end
+
       def aligned_with_any_line_range?(line_ranges, range, &predicate)
         return true if aligned_with_any_line?(line_ranges, range, &predicate)
 
@@ -35,12 +58,6 @@ module RuboCop
         base_indentation = processed_source.lines[range.line - 1] =~ /\S/
 
         aligned_with_any_line?(line_ranges, range, base_indentation, &predicate)
-      end
-
-      def aligned_with_any_line?(line_ranges, range, indent = nil, &predicate)
-        line_ranges.any? do |line_nos|
-          aligned_with_line?(line_nos, range, indent, &predicate)
-        end
       end
 
       def aligned_with_line?(line_nos, range, indent = nil)
@@ -57,37 +74,20 @@ module RuboCop
         false
       end
 
-      def aligned_comment_lines
-        @aligned_comment_lines ||=
-          processed_source.comments.map(&:loc).select do |r|
-            begins_its_line?(r.expression)
-          end.map(&:line)
+      def aligned_with_operator?(range)
+        aligned_with_adjacent_line?(range, method(:aligned_operator?))
       end
 
-      def aligned_token?(range, line)
-        aligned_words?(range, line) ||
-          aligned_char?(range, line) ||
-          aligned_assignment?(range, line)
-      end
-
-      def aligned_operator?(range, line)
-        (aligned_identical?(range, line) || aligned_assignment?(range, line))
+      def aligned_with_something?(range)
+        aligned_with_adjacent_line?(range, method(:aligned_token?))
       end
 
       def aligned_words?(range, line)
         line[range.column - 1, 2] =~ /\s\S/
       end
 
-      def aligned_char?(range, line)
-        line[range.column] == range.source[0]
-      end
-
-      def aligned_assignment?(range, line)
-        range.source[-1] == '=' && line[range.last_column - 1] == '='
-      end
-
-      def aligned_identical?(range, line)
-        range.source == line[range.column, range.size]
+      def allow_for_alignment?
+        cop_config['AllowForAlignment']
       end
     end
   end

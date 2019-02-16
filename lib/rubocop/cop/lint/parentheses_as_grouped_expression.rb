@@ -39,6 +39,10 @@ module RuboCop
 
         private
 
+        def space_range(expr, space_length)
+          range_between(expr.begin_pos - space_length, expr.begin_pos)
+        end
+
         def spaces_before_left_parenthesis(node)
           receiver = node.receiver
           receiver_length = if receiver
@@ -53,10 +57,6 @@ module RuboCop
 
           match = without_receiver.match(/^\s*&?\.?\s*#{method_regexp}(\s+)\(/)
           match ? match.captures[0].length : 0
-        end
-
-        def space_range(expr, space_length)
-          range_between(expr.begin_pos - space_length, expr.begin_pos)
         end
       end
     end

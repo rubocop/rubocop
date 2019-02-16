@@ -192,8 +192,14 @@ module RuboCop
           add_offense(node, message: message(options), location: :selector)
         end
 
-        def scope?(arguments)
-          arguments.any?(&:block_type?)
+        def options_contain_inverse_of?(options)
+          options.any? { |opt| inverse_of_option?(opt) }
+        end
+
+        def options_ignoring_inverse_of?(options)
+          options.any? do |opt|
+            through_option?(opt) || polymorphic_option?(opt)
+          end
         end
 
         def options_requiring_inverse_of?(options)
@@ -207,14 +213,14 @@ module RuboCop
           required || options.any? { |opt| as_option?(opt) }
         end
 
-        def options_ignoring_inverse_of?(options)
-          options.any? do |opt|
-            through_option?(opt) || polymorphic_option?(opt)
-          end
+        def same_context_in_with_options?(arg, recv)
+          return true if arg.nil? && recv.nil?
+
+          arg && recv && arg.children[0] == recv.children[0]
         end
 
-        def options_contain_inverse_of?(options)
-          options.any? { |opt| inverse_of_option?(opt) }
+        def scope?(arguments)
+          arguments.any?(&:block_type?)
         end
 
         def with_options_arguments(recv, node)
@@ -223,12 +229,6 @@ module RuboCop
               same_context_in_with_options?(block.arguments.first, recv)
           end
           blocks.flat_map { |n| n.send_node.arguments }
-        end
-
-        def same_context_in_with_options?(arg, recv)
-          return true if arg.nil? && recv.nil?
-
-          arg && recv && arg.children[0] == recv.children[0]
         end
 
         private

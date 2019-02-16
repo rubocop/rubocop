@@ -33,12 +33,12 @@ module RuboCop
 
         private
 
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :useless_else
-        end
-
         def alternative_message(_diagnostic)
           MSG
+        end
+
+        def relevant_diagnostic?(diagnostic)
+          diagnostic.reason == :useless_else
         end
       end
     end

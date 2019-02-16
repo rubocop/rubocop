@@ -86,6 +86,17 @@ module RuboCop
           powerpack: 'strip_indent'
         }.freeze
 
+        def autocorrect(node)
+          check_style!
+
+          case style
+          when :squiggly
+            correct_by_squiggly(node)
+          else
+            correct_by_library(node)
+          end
+        end
+
         def on_heredoc(node)
           body = heredoc_body(node)
           return if body.strip.empty?
@@ -104,28 +115,126 @@ module RuboCop
           add_offense(node, location: :heredoc_body)
         end
 
-        def autocorrect(node)
-          check_style!
+        private
 
+        def adjust_minus(corrector, node)
+          heredoc_beginning = node.loc.expression.source
+          corrected = heredoc_beginning.sub(/<<-?/, '<<~')
+          corrector.replace(node.loc.expression, corrected)
+        end
+
+        def adjust_squiggly(corrector, node)
+          corrector.replace(node.loc.heredoc_body, indented_body(node))
+          corrector.replace(node.loc.heredoc_end, indented_end(node))
+        end
+
+        def base_indent_level(node)
+          base_line_num = node.loc.expression.line
+          base_line = processed_source.lines[base_line_num - 1]
+          indent_level(base_line)
+        end
+
+        def check_style!
           case style
+          when nil
+            raise Warning, "Auto-correction does not work for #{cop_name}. " \
+                           'Please configure EnforcedStyle.'
           when :squiggly
-            correct_by_squiggly(node)
-          else
-            correct_by_library(node)
+            if target_ruby_version < 2.3
+              raise Warning, '`squiggly` style is selectable only on Ruby ' \
+                             "2.3 or higher for #{cop_name}."
+            end
           end
         end
 
-        private
-
-        def style
-          style = super
-          return style unless style == :auto_detection
-
-          if target_ruby_version >= 2.3
-            :squiggly
-          elsif rails?
-            :active_support
+        def correct_by_library(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.heredoc_body, indented_body(node))
+            corrected = ".#{STRIP_METHODS[style]}"
+            corrector.insert_after(node.loc.expression, corrected)
           end
+        end
+
+        def correct_by_squiggly(node)
+          return if target_ruby_version < 2.3
+
+          lambda do |corrector|
+            if heredoc_indent_type(node) == '~'
+              adjust_squiggly(corrector, node)
+            else
+              adjust_minus(corrector, node)
+            end
+          end
+        end
+
+        def heredoc_body(node)
+          node.loc.heredoc_body.source.scrub
+        end
+
+        def heredoc_end(node)
+          node.loc.heredoc_end.source.scrub
+        end
+
+        # Returns '~', '-' or nil
+        def heredoc_indent_type(node)
+          node.source[/^<<([~-])/, 1]
+        end
+
+        def indent_level(str)
+          indentations = str.lines
+                            .map { |line| line[/^\s*/] }
+                            .reject { |line| line == "\n" }
+          indentations.empty? ? 0 : indentations.min_by(&:size).size
+        end
+
+        def indentation_width
+          @config.for_cop('IndentationWidth')['Width'] || 2
+        end
+
+        def indented_body(node)
+          body = heredoc_body(node)
+          body_indent_level = indent_level(body)
+          correct_indent_level = base_indent_level(node) + indentation_width
+          body.gsub(/^\s{#{body_indent_level}}/, ' ' * correct_indent_level)
+        end
+
+        def indented_end(node)
+          end_ = heredoc_end(node)
+          end_indent_level = indent_level(end_)
+          correct_indent_level = base_indent_level(node)
+          if end_indent_level < correct_indent_level
+            end_.gsub(/^\s{#{end_indent_level}}/, ' ' * correct_indent_level)
+          else
+            end_
+          end
+        end
+
+        def library_message(indentation_width, method)
+          format(
+            LIBRARY_MSG,
+            indentation_width: indentation_width,
+            method: method
+          )
+        end
+
+        def line_too_long?(node)
+          return false if unlimited_heredoc_length?
+
+          body = heredoc_body(node)
+
+          expected_indent = base_indent_level(node) + indentation_width
+          actual_indent = indent_level(body)
+          increase_indent_level = expected_indent - actual_indent
+
+          longest_line(body).size + increase_indent_level >= max_line_length
+        end
+
+        def longest_line(lines)
+          lines.each_line.max_by { |line| line.chomp.size }.chomp
+        end
+
+        def max_line_length
+          config.for_cop('Metrics/LineLength')['Max']
         end
 
         def message(node)
@@ -140,14 +249,6 @@ module RuboCop
             method = "`String##{STRIP_METHODS[style]}`"
             library_message(indentation_width, method)
           end
-        end
-
-        def library_message(indentation_width, method)
-          format(
-            LIBRARY_MSG,
-            indentation_width: indentation_width,
-            method: method
-          )
         end
 
         def ruby23_message(indentation_width, current_indent_type)
@@ -173,120 +274,19 @@ module RuboCop
           )
         end
 
-        def line_too_long?(node)
-          return false if unlimited_heredoc_length?
+        def style
+          style = super
+          return style unless style == :auto_detection
 
-          body = heredoc_body(node)
-
-          expected_indent = base_indent_level(node) + indentation_width
-          actual_indent = indent_level(body)
-          increase_indent_level = expected_indent - actual_indent
-
-          longest_line(body).size + increase_indent_level >= max_line_length
-        end
-
-        def longest_line(lines)
-          lines.each_line.max_by { |line| line.chomp.size }.chomp
+          if target_ruby_version >= 2.3
+            :squiggly
+          elsif rails?
+            :active_support
+          end
         end
 
         def unlimited_heredoc_length?
           config.for_cop('Metrics/LineLength')['AllowHeredoc']
-        end
-
-        def max_line_length
-          config.for_cop('Metrics/LineLength')['Max']
-        end
-
-        def correct_by_squiggly(node)
-          return if target_ruby_version < 2.3
-
-          lambda do |corrector|
-            if heredoc_indent_type(node) == '~'
-              adjust_squiggly(corrector, node)
-            else
-              adjust_minus(corrector, node)
-            end
-          end
-        end
-
-        def adjust_squiggly(corrector, node)
-          corrector.replace(node.loc.heredoc_body, indented_body(node))
-          corrector.replace(node.loc.heredoc_end, indented_end(node))
-        end
-
-        def adjust_minus(corrector, node)
-          heredoc_beginning = node.loc.expression.source
-          corrected = heredoc_beginning.sub(/<<-?/, '<<~')
-          corrector.replace(node.loc.expression, corrected)
-        end
-
-        def correct_by_library(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.heredoc_body, indented_body(node))
-            corrected = ".#{STRIP_METHODS[style]}"
-            corrector.insert_after(node.loc.expression, corrected)
-          end
-        end
-
-        def check_style!
-          case style
-          when nil
-            raise Warning, "Auto-correction does not work for #{cop_name}. " \
-                           'Please configure EnforcedStyle.'
-          when :squiggly
-            if target_ruby_version < 2.3
-              raise Warning, '`squiggly` style is selectable only on Ruby ' \
-                             "2.3 or higher for #{cop_name}."
-            end
-          end
-        end
-
-        def indented_body(node)
-          body = heredoc_body(node)
-          body_indent_level = indent_level(body)
-          correct_indent_level = base_indent_level(node) + indentation_width
-          body.gsub(/^\s{#{body_indent_level}}/, ' ' * correct_indent_level)
-        end
-
-        def indented_end(node)
-          end_ = heredoc_end(node)
-          end_indent_level = indent_level(end_)
-          correct_indent_level = base_indent_level(node)
-          if end_indent_level < correct_indent_level
-            end_.gsub(/^\s{#{end_indent_level}}/, ' ' * correct_indent_level)
-          else
-            end_
-          end
-        end
-
-        def base_indent_level(node)
-          base_line_num = node.loc.expression.line
-          base_line = processed_source.lines[base_line_num - 1]
-          indent_level(base_line)
-        end
-
-        def indent_level(str)
-          indentations = str.lines
-                            .map { |line| line[/^\s*/] }
-                            .reject { |line| line == "\n" }
-          indentations.empty? ? 0 : indentations.min_by(&:size).size
-        end
-
-        # Returns '~', '-' or nil
-        def heredoc_indent_type(node)
-          node.source[/^<<([~-])/, 1]
-        end
-
-        def indentation_width
-          @config.for_cop('IndentationWidth')['Width'] || 2
-        end
-
-        def heredoc_body(node)
-          node.loc.heredoc_body.source.scrub
-        end
-
-        def heredoc_end(node)
-          node.loc.heredoc_end.source.scrub
         end
       end
     end

@@ -61,10 +61,13 @@ module RuboCop
         KEYWORDS = %w[begin class def end module].freeze
         ALLOWED_COMMENTS = %w[:nodoc: :yields: rubocop:disable].freeze
 
-        def offensive?(line)
-          line = line.lstrip
-          KEYWORDS.any? { |word| line =~ /^#{word}\s/ } &&
-            ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
+        def extract_heredoc_lines(ast)
+          return [] unless ast
+
+          ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
+            body = node.location.heredoc_body
+            (body.first_line...body.last_line)
+          end
         end
 
         def message(node)
@@ -73,13 +76,10 @@ module RuboCop
           format(MSG, keyword: keyword)
         end
 
-        def extract_heredoc_lines(ast)
-          return [] unless ast
-
-          ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
-            body = node.location.heredoc_body
-            (body.first_line...body.last_line)
-          end
+        def offensive?(line)
+          line = line.lstrip
+          KEYWORDS.any? { |word| line =~ /^#{word}\s/ } &&
+            ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
         end
       end
     end

@@ -42,6 +42,18 @@ module RuboCop
         SAME_LINE_OFFENSE = 'Right hand side of multi-line assignment is not ' \
           'on the same line as the assignment operator `=`.'.freeze
 
+        def autocorrect(node)
+          case style
+          when :new_line
+            ->(corrector) { corrector.insert_after(node.loc.operator, "\n") }
+          when :same_line
+            range = range_between(node.loc.operator.end_pos,
+                                  extract_rhs(node).source_range.begin_pos)
+
+            ->(corrector) { corrector.replace(range, ' ') }
+          end
+        end
+
         def check_assignment(node, rhs)
           return if node.send_type?
           return unless rhs
@@ -70,18 +82,6 @@ module RuboCop
           return unless node.loc.operator.line != rhs.first_line
 
           add_offense(node, message: SAME_LINE_OFFENSE)
-        end
-
-        def autocorrect(node)
-          case style
-          when :new_line
-            ->(corrector) { corrector.insert_after(node.loc.operator, "\n") }
-          when :same_line
-            range = range_between(node.loc.operator.end_pos,
-                                  extract_rhs(node).source_range.begin_pos)
-
-            ->(corrector) { corrector.replace(range, ' ') }
-          end
         end
 
         private

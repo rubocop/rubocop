@@ -29,18 +29,6 @@ module RuboCop
             (const ${nil? cbase} :URI) :regexp)
         PATTERN
 
-        def on_send(node)
-          uri_regexp_with_argument?(node) do |double_colon, arg|
-            register_offense(
-              node, top_level: double_colon ? '::' : '', arg: "('#{arg}')"
-            )
-          end
-
-          uri_regexp_without_argument?(node) do |double_colon|
-            register_offense(node, top_level: double_colon ? '::' : '')
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             if (captured_values = uri_regexp_with_argument?(node))
@@ -57,6 +45,18 @@ module RuboCop
               node.loc.expression,
               "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}"
             )
+          end
+        end
+
+        def on_send(node)
+          uri_regexp_with_argument?(node) do |double_colon, arg|
+            register_offense(
+              node, top_level: double_colon ? '::' : '', arg: "('#{arg}')"
+            )
+          end
+
+          uri_regexp_without_argument?(node) do |double_colon|
+            register_offense(node, top_level: double_colon ? '::' : '')
           end
         end
 

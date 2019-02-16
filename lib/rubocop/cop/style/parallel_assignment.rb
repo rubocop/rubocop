@@ -27,17 +27,6 @@ module RuboCop
 
         MSG = 'Do not use parallel assignment.'.freeze
 
-        def on_masgn(node)
-          lhs, rhs = *node
-          lhs_elements = *lhs
-          rhs_elements = [*rhs].compact # edge case for one constant
-
-          return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
-                    allowed_masign?(lhs_elements, rhs_elements)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             left, right = *node
@@ -51,12 +40,26 @@ module RuboCop
           end
         end
 
+        def on_masgn(node)
+          lhs, rhs = *node
+          lhs_elements = *lhs
+          rhs_elements = [*rhs].compact # edge case for one constant
+
+          return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
+                    allowed_masign?(lhs_elements, rhs_elements)
+
+          add_offense(node)
+        end
+
         private
 
-        def allowed_masign?(lhs_elements, rhs_elements)
-          lhs_elements.size != rhs_elements.size ||
-            !find_valid_order(lhs_elements,
-                              add_self_to_getters(rhs_elements))
+        # Converts (send nil :something) nodes to (send (:self) :something).
+        # This makes the sorting algorithm work for expressions such as
+        # `self.a, self.b = b, a`.
+        def add_self_to_getters(right_elements)
+          right_elements.map do |e|
+            implicit_self_getter?(e) { |var| s(:send, s(:self), var) } || e
+          end
         end
 
         def allowed_lhs?(node)
@@ -67,6 +70,12 @@ module RuboCop
           elements.one? || elements.any?(&:splat_type?)
         end
 
+        def allowed_masign?(lhs_elements, rhs_elements)
+          lhs_elements.size != rhs_elements.size ||
+            !find_valid_order(lhs_elements,
+                              add_self_to_getters(rhs_elements))
+        end
+
         def allowed_rhs?(node)
           # Edge case for one constant
           elements = [*node].compact
@@ -75,10 +84,6 @@ module RuboCop
           !node.array_type? ||
             return_of_method_call?(node) ||
             elements.any?(&:splat_type?)
-        end
-
-        def return_of_method_call?(node)
-          node.block_type? || node.send_type?
         end
 
         def assignment_corrector(node, order)
@@ -106,13 +111,8 @@ module RuboCop
           end
         end
 
-        # Converts (send nil :something) nodes to (send (:self) :something).
-        # This makes the sorting algorithm work for expressions such as
-        # `self.a, self.b = b, a`.
-        def add_self_to_getters(right_elements)
-          right_elements.map do |e|
-            implicit_self_getter?(e) { |var| s(:send, s(:self), var) } || e
-          end
+        def modifier_statement?(node)
+          node && %i[if while until].include?(node.type) && node.modifier_form?
         end
 
         def_node_matcher :implicit_self_getter?, '(send nil? $_)'
@@ -131,8 +131,22 @@ module RuboCop
             @assignments = assignments
           end
 
-          def tsort_each_node
-            @assignments.each { |a| yield a }
+          # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.
+          # Does `rhs` access the same value which is assigned by `lhs`?
+          def accesses?(rhs, lhs)
+            if lhs.method?(:[]=)
+              matching_calls(rhs, lhs.receiver, :[]).any? do |args|
+                args == lhs.arguments
+              end
+            else
+              access_method = lhs.method_name.to_s.chop.to_sym
+              matching_calls(rhs, lhs.receiver, access_method).any?
+            end
+          end
+
+          def dependency?(lhs, rhs)
+            uses_var?(rhs, var_name(lhs)) ||
+              lhs.send_type? && lhs.assignment_method? && accesses?(rhs, lhs)
           end
 
           def tsort_each_child(assignment)
@@ -149,27 +163,13 @@ module RuboCop
             end
           end
 
-          def dependency?(lhs, rhs)
-            uses_var?(rhs, var_name(lhs)) ||
-              lhs.send_type? && lhs.assignment_method? && accesses?(rhs, lhs)
-          end
-
-          # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.
-          # Does `rhs` access the same value which is assigned by `lhs`?
-          def accesses?(rhs, lhs)
-            if lhs.method?(:[]=)
-              matching_calls(rhs, lhs.receiver, :[]).any? do |args|
-                args == lhs.arguments
-              end
-            else
-              access_method = lhs.method_name.to_s.chop.to_sym
-              matching_calls(rhs, lhs.receiver, access_method).any?
-            end
+          def tsort_each_node
+            @assignments.each { |a| yield a }
           end
         end
 
-        def modifier_statement?(node)
-          node && %i[if while until].include?(node.type) && node.modifier_form?
+        def return_of_method_call?(node)
+          node.block_type? || node.send_type?
         end
 
         # An internal class for correcting parallel assignment
@@ -200,6 +200,14 @@ module RuboCop
 
           private
 
+          def cop_config
+            @config.for_cop('Style/ParallelAssignment')
+          end
+
+          def extract_sources(node)
+            node.children.map(&:source)
+          end
+
           def source(node)
             if node.str_type? && node.loc.begin.nil?
               "'#{node.source}'"
@@ -208,14 +216,6 @@ module RuboCop
             else
               node.source
             end
-          end
-
-          def extract_sources(node)
-            node.children.map(&:source)
-          end
-
-          def cop_config
-            @config.for_cop('Style/ParallelAssignment')
           end
         end
 
@@ -242,11 +242,6 @@ module RuboCop
 
           private
 
-          def def_correction(rescue_result)
-            "\nrescue" \
-              "\n#{offset(node)}#{rescue_result.source}"
-          end
-
           def begin_correction(rescue_result)
             "begin\n" \
               "#{indentation(node)}" \
@@ -254,6 +249,11 @@ module RuboCop
               "\n#{offset(node)}rescue\n" \
               "#{indentation(node)}#{rescue_result.source}" \
               "\n#{offset(node)}end"
+          end
+
+          def def_correction(rescue_result)
+            "\nrescue" \
+              "\n#{offset(node)}#{rescue_result.source}"
           end
         end
 

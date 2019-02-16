@@ -11,10 +11,6 @@ module RuboCop
 
       private
 
-      def message(length, max_length)
-        format(MSG, label: cop_label, length: length, max: max_length)
-      end
-
       def code_length(node)
         body = extract_body(node)
         lines = body && body.source.lines || []
@@ -33,6 +29,10 @@ module RuboCop
         end
 
         body
+      end
+
+      def message(length, max_length)
+        format(MSG, label: cop_label, length: length, max: max_length)
       end
     end
   end

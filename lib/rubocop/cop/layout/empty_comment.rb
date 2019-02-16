@@ -65,6 +65,21 @@ module RuboCop
 
         MSG = 'Source code comment is empty.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            previous_token = previous_token(node)
+            range = if previous_token && node.loc.line == previous_token.line
+                      range_with_surrounding_space(range: node.loc.expression,
+                                                   newlines: false)
+                    else
+                      range_by_whole_lines(node.loc.expression,
+                                           include_final_newline: true)
+                    end
+
+            corrector.remove(range)
+          end
+        end
+
         def investigate(processed_source)
           if allow_margin_comment?
             comments = concat_consecutive_comments(processed_source.comments)
@@ -85,22 +100,19 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            previous_token = previous_token(node)
-            range = if previous_token && node.loc.line == previous_token.line
-                      range_with_surrounding_space(range: node.loc.expression,
-                                                   newlines: false)
-                    else
-                      range_by_whole_lines(node.loc.expression,
-                                           include_final_newline: true)
-                    end
+        private
 
-            corrector.remove(range)
-          end
+        def allow_border_comment?
+          cop_config['AllowBorderComment']
         end
 
-        private
+        def allow_margin_comment?
+          cop_config['AllowMarginComment']
+        end
+
+        def comment_text(comment)
+          "#{comment.text.strip}\n"
+        end
 
         def concat_consecutive_comments(comments)
           prev_line = nil
@@ -119,6 +131,14 @@ module RuboCop
           end
         end
 
+        def current_token(node)
+          processed_source.find_token do |token|
+            token.pos.column == node.loc.column &&
+              token.pos.last_column == node.loc.last_column &&
+              token.line == node.loc.line
+          end
+        end
+
         def empty_comment_only?(comment_text)
           empty_comment_pattern = if allow_border_comment?
                                     /\A(#\n)+\z/
@@ -127,26 +147,6 @@ module RuboCop
                                   end
 
           !(comment_text =~ empty_comment_pattern).nil?
-        end
-
-        def comment_text(comment)
-          "#{comment.text.strip}\n"
-        end
-
-        def allow_border_comment?
-          cop_config['AllowBorderComment']
-        end
-
-        def allow_margin_comment?
-          cop_config['AllowMarginComment']
-        end
-
-        def current_token(node)
-          processed_source.find_token do |token|
-            token.pos.column == node.loc.column &&
-              token.pos.last_column == node.loc.last_column &&
-              token.line == node.loc.line
-          end
         end
 
         def previous_token(node)

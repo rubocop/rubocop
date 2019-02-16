@@ -20,14 +20,6 @@ module RuboCop
       class SpaceInsideRangeLiteral < Cop
         MSG = 'Space inside range literal.'.freeze
 
-        def on_irange(node)
-          check(node)
-        end
-
-        def on_erange(node)
-          check(node)
-        end
-
         def autocorrect(node)
           expression = node.source
           operator = node.loc.operator.source
@@ -41,6 +33,14 @@ module RuboCop
                 .sub(/#{operator_escaped}\s+/, operator)
             )
           end
+        end
+
+        def on_erange(node)
+          check(node)
+        end
+
+        def on_irange(node)
+          check(node)
         end
 
         private

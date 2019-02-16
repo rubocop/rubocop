@@ -20,6 +20,14 @@ module RuboCop
         MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX =
           /(?:[\S&&[^\\]](?:\\ )*)( {2,})(?=\S)/.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            each_unnecessary_space_match(node) do |range|
+              corrector.replace(range, ' ')
+            end
+          end
+        end
+
         def on_array(node)
           process(node, '%i', '%I', '%w', '%W')
         end
@@ -27,14 +35,6 @@ module RuboCop
         def on_percent_literal(node)
           each_unnecessary_space_match(node) do |range|
             add_offense(node, location: range)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            each_unnecessary_space_match(node) do |range|
-              corrector.replace(range, ' ')
-            end
           end
         end
 

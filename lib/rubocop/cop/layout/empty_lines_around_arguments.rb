@@ -43,18 +43,18 @@ module RuboCop
 
         MSG = 'Empty line detected around arguments.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            extra_lines(node) { |range| corrector.remove(range) }
+          end
+        end
+
         def on_send(node)
           return if node.single_line? || node.arguments.empty?
 
           extra_lines(node) { |range| add_offense(node, location: range) }
         end
         alias on_csend on_send
-
-        def autocorrect(node)
-          lambda do |corrector|
-            extra_lines(node) { |range| corrector.remove(range) }
-          end
-        end
 
         private
 
@@ -71,10 +71,8 @@ module RuboCop
           end
         end
 
-        def processed_lines(node)
-          line_numbers(node).each_with_object([]) do |num, array|
-            array << [processed_source.lines[num - 1], num]
-          end
+        def inner_lines(node)
+          [node.first_line + 1, node.last_line - 1]
         end
 
         def line_numbers(node)
@@ -86,12 +84,14 @@ module RuboCop
           line_nums.flatten.uniq - inner_lines.flatten - outer_lines(node)
         end
 
-        def inner_lines(node)
-          [node.first_line + 1, node.last_line - 1]
-        end
-
         def outer_lines(node)
           [node.first_line - 1, node.last_line + 1]
+        end
+
+        def processed_lines(node)
+          line_numbers(node).each_with_object([]) do |num, array|
+            array << [processed_source.lines[num - 1], num]
+          end
         end
       end
     end

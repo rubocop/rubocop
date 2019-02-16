@@ -37,6 +37,12 @@ module RuboCop
           )
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, replacement(node))
+          end
+        end
+
         def on_send(node)
           environment_str_comparison?(node) do |env_node|
             env, = *env_node
@@ -44,12 +50,6 @@ module RuboCop
           end
           environment_sym_comparison?(node) do |_|
             add_offense(node, message: SYM_MSG)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, replacement(node))
           end
         end
 

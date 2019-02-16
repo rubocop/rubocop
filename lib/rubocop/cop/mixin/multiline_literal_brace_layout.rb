@@ -9,6 +9,14 @@ module RuboCop
 
       private
 
+      def check(node)
+        case style
+        when :symmetrical then check_symmetrical(node)
+        when :new_line then check_new_line(node)
+        when :same_line then check_same_line(node)
+        end
+      end
+
       def check_brace_layout(node)
         return if ignored_literal?(node)
 
@@ -17,28 +25,6 @@ module RuboCop
         return if last_line_heredoc?(node.children.last)
 
         check(node)
-      end
-
-      # Returns true for the case
-      #   [a,
-      #    b # comment
-      #   ].some_method
-      def new_line_needed_before_closing_brace?(node)
-        last_element_line =
-          last_element_range_with_trailing_comma(node).last_line
-
-        last_element_commented =
-          processed_source.comments.any? { |c| c.loc.line == last_element_line }
-
-        last_element_commented && (node.chained? || node.argument?)
-      end
-
-      def check(node)
-        case style
-        when :symmetrical then check_symmetrical(node)
-        when :new_line then check_new_line(node)
-        when :same_line then check_same_line(node)
-        end
       end
 
       def check_new_line(node)
@@ -71,32 +57,26 @@ module RuboCop
         end
       end
 
-      def empty_literal?(node)
-        children(node).empty?
-      end
-
-      def implicit_literal?(node)
-        !node.loc.begin
-      end
-
-      def ignored_literal?(node)
-        implicit_literal?(node) || empty_literal?(node) || node.single_line?
-      end
-
       def children(node)
         node.children
       end
 
       # This method depends on the fact that we have guarded
       # against implicit and empty literals.
-      def opening_brace_on_same_line?(node)
-        node.loc.begin.line == children(node).first.first_line
-      end
-
-      # This method depends on the fact that we have guarded
-      # against implicit and empty literals.
       def closing_brace_on_same_line?(node)
         node.loc.end.line == children(node).last.last_line
+      end
+
+      def empty_literal?(node)
+        children(node).empty?
+      end
+
+      def ignored_literal?(node)
+        implicit_literal?(node) || empty_literal?(node) || node.single_line?
+      end
+
+      def implicit_literal?(node)
+        !node.loc.begin
       end
 
       # Starting with the parent node and recursively for the parent node's
@@ -135,6 +115,26 @@ module RuboCop
         return false unless node.respond_to?(:children)
 
         node.children.any? { |child| last_line_heredoc?(child, parent) }
+      end
+
+      # Returns true for the case
+      #   [a,
+      #    b # comment
+      #   ].some_method
+      def new_line_needed_before_closing_brace?(node)
+        last_element_line =
+          last_element_range_with_trailing_comma(node).last_line
+
+        last_element_commented =
+          processed_source.comments.any? { |c| c.loc.line == last_element_line }
+
+        last_element_commented && (node.chained? || node.argument?)
+      end
+
+      # This method depends on the fact that we have guarded
+      # against implicit and empty literals.
+      def opening_brace_on_same_line?(node)
+        node.loc.begin.line == children(node).first.first_line
       end
     end
   end

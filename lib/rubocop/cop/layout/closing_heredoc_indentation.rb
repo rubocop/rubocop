@@ -54,6 +54,12 @@ module RuboCop
         MSG_ARG = '`%<closing>s` is not aligned with `%<opening>s` or ' \
                   'beginning of method definition.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.heredoc_end, indented_end(node))
+          end
+        end
+
         def on_heredoc(node)
           return if heredoc_type(node) == SIMPLE_HEREDOC ||
                     opening_indentation(node) == closing_indentation(node) ||
@@ -62,17 +68,7 @@ module RuboCop
           add_offense(node, location: :heredoc_end)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.heredoc_end, indented_end(node))
-          end
-        end
-
         private
-
-        def opening_indentation(node)
-          indent_level(heredoc_opening(node))
-        end
 
         def argument_indentation_correct?(node)
           return unless node.argument? || node.chained?
@@ -86,12 +82,24 @@ module RuboCop
           indent_level(heredoc_closing(node))
         end
 
-        def heredoc_opening(node)
-          node.loc.expression.source_line
+        def find_node_used_heredoc_argument(node)
+          if node.parent && node.parent.send_type?
+            find_node_used_heredoc_argument(node.parent)
+          else
+            node
+          end
         end
 
         def heredoc_closing(node)
           node.loc.heredoc_end.source_line
+        end
+
+        def heredoc_opening(node)
+          node.loc.expression.source_line
+        end
+
+        def indent_level(source_line)
+          source_line[/\A */].length
         end
 
         def indented_end(node)
@@ -99,14 +107,6 @@ module RuboCop
           opening_indent = opening_indentation(node)
           closing_text = heredoc_closing(node)
           closing_text.gsub(/^\s{#{closing_indent}}/, ' ' * opening_indent)
-        end
-
-        def find_node_used_heredoc_argument(node)
-          if node.parent && node.parent.send_type?
-            find_node_used_heredoc_argument(node.parent)
-          else
-            node
-          end
         end
 
         def message(node)
@@ -117,8 +117,8 @@ module RuboCop
           )
         end
 
-        def indent_level(source_line)
-          source_line[/\A */].length
+        def opening_indentation(node)
+          indent_level(heredoc_opening(node))
         end
       end
     end

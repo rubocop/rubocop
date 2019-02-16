@@ -19,6 +19,12 @@ module RuboCop
         MSG = 'Replace interpolated variable `%<variable>s` ' \
               'with expression `#{%<variable>s}`.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, "{#{node.source}}")
+          end
+        end
+
         def on_dstr(node)
           check_for_interpolation(node)
         end
@@ -29,12 +35,6 @@ module RuboCop
 
         def on_xstr(node)
           check_for_interpolation(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, "{#{node.source}}")
-          end
         end
 
         private

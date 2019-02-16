@@ -26,19 +26,19 @@ module RuboCop
             (int ${0 1 2}))
         PATTERN
 
-        def on_send(node)
-          even_odd_candidate?(node) do |_base_number, method, arg|
-            replacement_method = replacement_method(arg, method)
-            add_offense(node, message: format(MSG, method: replacement_method))
-          end
-        end
-
         def autocorrect(node)
           even_odd_candidate?(node) do |base_number, method, arg|
             replacement_method = replacement_method(arg, method)
 
             correction = "#{base_number.source}.#{replacement_method}?"
             ->(corrector) { corrector.replace(node.source_range, correction) }
+          end
+        end
+
+        def on_send(node)
+          even_odd_candidate?(node) do |_base_number, method, arg|
+            replacement_method = replacement_method(arg, method)
+            add_offense(node, message: format(MSG, method: replacement_method))
           end
         end
 

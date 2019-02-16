@@ -27,11 +27,6 @@ module RuboCop
 
         MSG = 'Omit pipes for the empty block parameters.'.freeze
 
-        def on_block(node)
-          send_node = node.send_node
-          check(node) unless send_node.send_type? && send_node.lambda_literal?
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             block = node.parent
@@ -41,6 +36,11 @@ module RuboCop
             )
             corrector.remove(range)
           end
+        end
+
+        def on_block(node)
+          send_node = node.send_node
+          check(node) unless send_node.send_type? && send_node.lambda_literal?
         end
       end
     end

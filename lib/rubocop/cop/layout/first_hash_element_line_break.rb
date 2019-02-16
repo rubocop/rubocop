@@ -22,14 +22,14 @@ module RuboCop
         MSG = 'Add a line break before the first element of a ' \
               'multi-line hash.'.freeze
 
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
+
         def on_hash(node)
           # node.loc.begin tells us whether the hash opens with a {
           # If it doesn't, Style/FirstMethodArgumentLineBreak will handle it
           check_children_line_break(node, node.children) if node.loc.begin
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
         end
       end
     end

@@ -6,6 +6,10 @@ module RuboCop
     module Heredoc
       OPENING_DELIMITER = /(<<[~-]?)['"`]?([^'"`]+)['"`]?/.freeze
 
+      def on_heredoc(_node)
+        raise NotImplementedError
+      end
+
       def on_str(node)
         return unless node.heredoc?
 
@@ -13,10 +17,6 @@ module RuboCop
       end
       alias on_dstr on_str
       alias on_xstr on_str
-
-      def on_heredoc(_node)
-        raise NotImplementedError
-      end
 
       private
 

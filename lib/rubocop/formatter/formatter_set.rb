@@ -37,17 +37,6 @@ module RuboCop
         @options = options # CLI options
       end
 
-      def file_started(file, options)
-        @options = options[:cli_options]
-        @config_store = options[:config_store]
-        each { |f| f.file_started(file, options) }
-      end
-
-      def file_finished(file, offenses)
-        each { |f| f.file_finished(file, offenses) }
-        offenses
-      end
-
       def add_formatter(formatter_type, output_path = nil)
         if output_path
           dir_path = File.dirname(output_path)
@@ -66,18 +55,18 @@ module RuboCop
         end
       end
 
-      private
-
-      def formatter_class(formatter_type)
-        case formatter_type
-        when Class
-          formatter_type
-        when /\A[A-Z]/
-          custom_formatter_class(formatter_type)
-        else
-          builtin_formatter_class(formatter_type)
-        end
+      def file_finished(file, offenses)
+        each { |f| f.file_finished(file, offenses) }
+        offenses
       end
+
+      def file_started(file, options)
+        @options = options[:cli_options]
+        @config_store = options[:config_store]
+        each { |f| f.file_started(file, options) }
+      end
+
+      private
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
@@ -98,6 +87,17 @@ module RuboCop
         constant_names.shift if constant_names.first.empty?
         constant_names.reduce(Object) do |namespace, constant_name|
           namespace.const_get(constant_name, false)
+        end
+      end
+
+      def formatter_class(formatter_type)
+        case formatter_type
+        when Class
+          formatter_type
+        when /\A[A-Z]/
+          custom_formatter_class(formatter_type)
+        else
+          builtin_formatter_class(formatter_type)
         end
       end
     end

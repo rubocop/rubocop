@@ -32,6 +32,10 @@ module RuboCop
 
         MSG_INCONSISTENT = 'Inconsistent quote style.'.freeze
 
+        def autocorrect(node)
+          StringLiteralCorrector.correct(node, style)
+        end
+
         def on_dstr(node)
           # Strings which are continued across multiple lines using \
           # are parsed as a `dstr` node with `str` children
@@ -54,14 +58,32 @@ module RuboCop
           ignore_node(node)
         end
 
-        def autocorrect(node)
-          StringLiteralCorrector.correct(node, style)
-        end
-
         private
+
+        def accept_child_double_quotes?(nodes)
+          nodes.any? do |n|
+            n.dstr_type? || double_quotes_required?(n.source)
+          end
+        end
 
         def all_string_literals?(nodes)
           nodes.all? { |n| n.str_type? || n.dstr_type? }
+        end
+
+        def check_multiline_quote_style(node, quote)
+          range = node.source_range
+          children = node.children
+          if unexpected_single_quotes?(quote)
+            all_children_with_quotes = children.all? { |c| wrong_quotes?(c) }
+            add_offense(node, location: range) if all_children_with_quotes
+          elsif unexpected_double_quotes?(quote) &&
+                !accept_child_double_quotes?(children)
+            add_offense(node, location: range)
+          end
+        end
+
+        def consistent_multiline?
+          cop_config['ConsistentQuotesInMultiline']
         end
 
         def detect_quote_styles(node)
@@ -94,34 +116,12 @@ module RuboCop
           wrong_quotes?(node)
         end
 
-        def consistent_multiline?
-          cop_config['ConsistentQuotesInMultiline']
-        end
-
-        def check_multiline_quote_style(node, quote)
-          range = node.source_range
-          children = node.children
-          if unexpected_single_quotes?(quote)
-            all_children_with_quotes = children.all? { |c| wrong_quotes?(c) }
-            add_offense(node, location: range) if all_children_with_quotes
-          elsif unexpected_double_quotes?(quote) &&
-                !accept_child_double_quotes?(children)
-            add_offense(node, location: range)
-          end
-        end
-
-        def unexpected_single_quotes?(quote)
-          quote == "'" && style == :double_quotes
-        end
-
         def unexpected_double_quotes?(quote)
           quote == '"' && style == :single_quotes
         end
 
-        def accept_child_double_quotes?(nodes)
-          nodes.any? do |n|
-            n.dstr_type? || double_quotes_required?(n.source)
-          end
+        def unexpected_single_quotes?(quote)
+          quote == "'" && style == :double_quotes
         end
       end
     end

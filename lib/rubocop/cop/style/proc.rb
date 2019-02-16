@@ -19,14 +19,14 @@ module RuboCop
         def_node_matcher :proc_new?,
                          '(block $(send (const nil? :Proc) :new) ...)'
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.source_range, 'proc') }
+        end
+
         def on_block(node)
           proc_new?(node) do |block_method|
             add_offense(block_method)
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.source_range, 'proc') }
         end
       end
     end

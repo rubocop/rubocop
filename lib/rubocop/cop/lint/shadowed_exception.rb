@@ -67,28 +67,6 @@ module RuboCop
 
         private
 
-        def offense_range(rescues)
-          shadowing_rescue = find_shadowing_rescue(rescues)
-          expression = shadowing_rescue.loc.expression
-          range_between(expression.begin_pos, expression.end_pos)
-        end
-
-        def rescued_groups_for(rescues)
-          rescues.map do |group|
-            rescue_group, = *group
-            evaluate_exceptions(rescue_group)
-          end
-        end
-
-        def contains_multiple_levels_of_exceptions?(group)
-          # Always treat `Exception` as the highest level exception.
-          return true if group.size > 1 && group.include?(Exception)
-
-          group.combination(2).any? do |a, b|
-            compare_exceptions(a, b)
-          end
-        end
-
         def compare_exceptions(exception, other_exception)
           if system_call_err?(exception) && system_call_err?(other_exception)
             # This condition logic is for special case.
@@ -103,8 +81,13 @@ module RuboCop
           end
         end
 
-        def system_call_err?(error)
-          error && error.ancestors[1] == SystemCallError
+        def contains_multiple_levels_of_exceptions?(group)
+          # Always treat `Exception` as the highest level exception.
+          return true if group.size > 1 && group.include?(Exception)
+
+          group.combination(2).any? do |a, b|
+            compare_exceptions(a, b)
+          end
         end
 
         def evaluate_exceptions(rescue_group)
@@ -120,6 +103,40 @@ module RuboCop
           else
             # treat an empty `rescue` as `rescue StandardError`
             [StandardError]
+          end
+        end
+
+        def find_shadowing_rescue(rescues)
+          rescued_groups = rescued_groups_for(rescues)
+          rescued_groups.zip(rescues).each do |group, res|
+            return res if contains_multiple_levels_of_exceptions?(group)
+          end
+
+          rescued_groups.each_cons(2).with_index do |group_pair, i|
+            return rescues[i] unless sorted?(group_pair)
+          end
+        end
+
+        def offense_range(rescues)
+          shadowing_rescue = find_shadowing_rescue(rescues)
+          expression = shadowing_rescue.loc.expression
+          range_between(expression.begin_pos, expression.end_pos)
+        end
+
+        # @param [RuboCop::AST::Node] rescue_group is a node of array_type
+        def rescued_exceptions(rescue_group)
+          klasses = *rescue_group
+          klasses.map do |klass|
+            next unless klass.const_type?
+
+            klass.source
+          end.compact
+        end
+
+        def rescued_groups_for(rescues)
+          rescues.map do |group|
+            rescue_group, = *group
+            evaluate_exceptions(rescue_group)
           end
         end
 
@@ -139,25 +156,8 @@ module RuboCop
           end
         end
 
-        # @param [RuboCop::AST::Node] rescue_group is a node of array_type
-        def rescued_exceptions(rescue_group)
-          klasses = *rescue_group
-          klasses.map do |klass|
-            next unless klass.const_type?
-
-            klass.source
-          end.compact
-        end
-
-        def find_shadowing_rescue(rescues)
-          rescued_groups = rescued_groups_for(rescues)
-          rescued_groups.zip(rescues).each do |group, res|
-            return res if contains_multiple_levels_of_exceptions?(group)
-          end
-
-          rescued_groups.each_cons(2).with_index do |group_pair, i|
-            return rescues[i] unless sorted?(group_pair)
-          end
+        def system_call_err?(error)
+          error && error.ancestors[1] == SystemCallError
         end
       end
     end

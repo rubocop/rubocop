@@ -6,16 +6,16 @@ module RuboCop
     module SafeMode
       private
 
+      def rails?
+        config['Rails'] && config['Rails'].fetch('Enabled')
+      end
+
       def rails_safe_mode?
         safe_mode? || rails?
       end
 
       def safe_mode?
         cop_config['SafeMode']
-      end
-
-      def rails?
-        config['Rails'] && config['Rails'].fetch('Enabled')
       end
     end
   end

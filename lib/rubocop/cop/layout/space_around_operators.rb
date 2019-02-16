@@ -29,12 +29,24 @@ module RuboCop
           [Style::SelfAssignment]
         end
 
-        def on_pair(node)
-          return unless node.hash_rocket?
+        def autocorrect(range)
+          lambda do |corrector|
+            if range.source =~ /\*\*/
+              corrector.replace(range, '**')
+            elsif range.source.end_with?("\n")
+              corrector.replace(range, " #{range.source.strip}\n")
+            else
+              corrector.replace(range, " #{range.source.strip} ")
+            end
+          end
+        end
 
-          return if hash_table_style? && !node.parent.pairs_on_same_line?
+        def on_binary(node)
+          _, rhs, = *node
 
-          check_operator(node.loc.operator, node.source_range)
+          return unless rhs
+
+          check_operator(node.loc.operator, rhs.source_range)
         end
 
         def on_if(node)
@@ -42,6 +54,14 @@ module RuboCop
 
           check_operator(node.loc.question, node.if_branch.source_range)
           check_operator(node.loc.colon, node.else_branch.source_range)
+        end
+
+        def on_pair(node)
+          return unless node.hash_rocket?
+
+          return if hash_table_style? && !node.parent.pairs_on_same_line?
+
+          check_operator(node.loc.operator, node.source_range)
         end
 
         def on_resbody(node)
@@ -58,14 +78,6 @@ module RuboCop
           elsif regular_operator?(node)
             check_operator(node.loc.selector, node.first_argument.source_range)
           end
-        end
-
-        def on_binary(node)
-          _, rhs, = *node
-
-          return unless rhs
-
-          check_operator(node.loc.operator, rhs.source_range)
         end
 
         def on_special_asgn(node)
@@ -89,28 +101,10 @@ module RuboCop
         alias on_and_asgn on_binary
         alias on_op_asgn  on_special_asgn
 
-        def autocorrect(range)
-          lambda do |corrector|
-            if range.source =~ /\*\*/
-              corrector.replace(range, '**')
-            elsif range.source.end_with?("\n")
-              corrector.replace(range, " #{range.source.strip}\n")
-            else
-              corrector.replace(range, " #{range.source.strip} ")
-            end
-          end
-        end
-
         private
 
-        def regular_operator?(send_node)
-          !send_node.unary_operation? && !send_node.dot? &&
-            operator_with_regular_syntax?(send_node)
-        end
-
-        def operator_with_regular_syntax?(send_node)
-          send_node.operator_method? &&
-            !IRREGULAR_METHODS.include?(send_node.method_name)
+        def align_hash_cop_config
+          config.for_cop('Layout/AlignHash')
         end
 
         def check_operator(operator, right_operand)
@@ -120,6 +114,21 @@ module RuboCop
           offense(operator, with_space, right_operand) do |msg|
             add_offense(with_space, location: operator, message: msg)
           end
+        end
+
+        def excess_leading_space?(operator, with_space)
+          with_space.source.start_with?(EXCESSIVE_SPACE) &&
+            (!allow_for_alignment? || !aligned_with_operator?(operator))
+        end
+
+        def excess_trailing_space?(right_operand, with_space)
+          with_space.source.end_with?(EXCESSIVE_SPACE) &&
+            (!allow_for_alignment? || !aligned_with_something?(right_operand))
+        end
+
+        def hash_table_style?
+          align_hash_cop_config &&
+            align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
         end
 
         def offense(operator, with_space, right_operand)
@@ -139,23 +148,14 @@ module RuboCop
           end
         end
 
-        def excess_leading_space?(operator, with_space)
-          with_space.source.start_with?(EXCESSIVE_SPACE) &&
-            (!allow_for_alignment? || !aligned_with_operator?(operator))
+        def operator_with_regular_syntax?(send_node)
+          send_node.operator_method? &&
+            !IRREGULAR_METHODS.include?(send_node.method_name)
         end
 
-        def excess_trailing_space?(right_operand, with_space)
-          with_space.source.end_with?(EXCESSIVE_SPACE) &&
-            (!allow_for_alignment? || !aligned_with_something?(right_operand))
-        end
-
-        def align_hash_cop_config
-          config.for_cop('Layout/AlignHash')
-        end
-
-        def hash_table_style?
-          align_hash_cop_config &&
-            align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
+        def regular_operator?(send_node)
+          !send_node.unary_operation? && !send_node.dot? &&
+            operator_with_regular_syntax?(send_node)
         end
       end
     end

@@ -88,6 +88,20 @@ module RuboCop
           (resbody $(array (const nil? :StandardError)) _ _)
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            case style
+            when :implicit
+              error = rescue_standard_error?(node)
+              range = range_between(node.loc.keyword.end_pos,
+                                    error.loc.expression.end_pos)
+              corrector.remove(range)
+            when :explicit
+              corrector.insert_after(node.loc.keyword, ' StandardError')
+            end
+          end
+        end
+
         def on_resbody(node)
           return if rescue_modifier?(node)
 
@@ -101,20 +115,6 @@ module RuboCop
           when :explicit
             rescue_without_error_class?(node) do
               add_offense(node, location: :keyword, message: MSG_EXPLICIT)
-            end
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            case style
-            when :implicit
-              error = rescue_standard_error?(node)
-              range = range_between(node.loc.keyword.end_pos,
-                                    error.loc.expression.end_pos)
-              corrector.remove(range)
-            when :explicit
-              corrector.insert_after(node.loc.keyword, ' StandardError')
             end
           end
         end

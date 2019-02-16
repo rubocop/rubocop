@@ -32,10 +32,6 @@ module RuboCop
 
         private
 
-        def opening_line(node)
-          node.first_line
-        end
-
         def closing_line(node)
           node.arguments.last_line
         end
@@ -44,16 +40,20 @@ module RuboCop
           indentation_width(node) + definition_width(node) > max_line_length
         end
 
-        def indentation_width(node)
-          processed_source.line_indentation(node.loc.expression.line)
-        end
-
         def definition_width(node)
           node.source_range.begin.join(node.arguments.source_range.end).length
         end
 
+        def indentation_width(node)
+          processed_source.line_indentation(node.loc.expression.line)
+        end
+
         def max_line_length
           config.for_cop('Metrics/LineLength')['Max'] || 80
+        end
+
+        def opening_line(node)
+          node.first_line
         end
       end
     end

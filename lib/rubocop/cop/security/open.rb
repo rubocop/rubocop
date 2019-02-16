@@ -36,6 +36,18 @@ module RuboCop
 
         private
 
+        def composite_string?(node)
+          interpolated_string?(node) || concatenated_string?(node)
+        end
+
+        def concatenated_string?(node)
+          node.send_type? && node.method?(:+) && node.receiver.str_type?
+        end
+
+        def interpolated_string?(node)
+          node.dstr_type?
+        end
+
         def safe?(node)
           if simple_string?(node)
             safe_argument?(node.str_content)
@@ -52,18 +64,6 @@ module RuboCop
 
         def simple_string?(node)
           node.str_type?
-        end
-
-        def composite_string?(node)
-          interpolated_string?(node) || concatenated_string?(node)
-        end
-
-        def interpolated_string?(node)
-          node.dstr_type?
-        end
-
-        def concatenated_string?(node)
-          node.send_type? && node.method?(:+) && node.receiver.str_type?
         end
       end
     end

@@ -6,15 +6,15 @@ module RuboCop
     module MinBodyLength
       private
 
-      def min_body_length?(node)
-        (node.loc.end.line - node.loc.keyword.line) > min_body_length
-      end
-
       def min_body_length
         length = cop_config['MinBodyLength'] || 1
         return length if length.is_a?(Integer) && length > 0
 
         raise 'MinBodyLength needs to be a positive integer!'
+      end
+
+      def min_body_length?(node)
+        (node.loc.end.line - node.loc.keyword.line) > min_body_length
       end
     end
   end

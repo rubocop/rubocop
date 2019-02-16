@@ -11,19 +11,6 @@ module RuboCop
 
       attr_reader :column_delta
 
-      def configured_indentation_width
-        cop_config['IndentationWidth'] ||
-          config.for_cop('IndentationWidth')['Width']
-      end
-
-      def indentation(node)
-        offset(node) + (SPACE * configured_indentation_width)
-      end
-
-      def offset(node)
-        SPACE * node.loc.column
-      end
-
       def check_alignment(items, base_column = nil)
         unless items.empty?
           base_column ||= display_column(items.first.source_range)
@@ -44,6 +31,16 @@ module RuboCop
         end
       end
 
+      def configured_indentation_width
+        cop_config['IndentationWidth'] ||
+          config.for_cop('IndentationWidth')['Width']
+      end
+
+      def display_column(range)
+        line = processed_source.lines[range.line - 1]
+        Unicode::DisplayWidth.of(line[0, range.column])
+      end
+
       def each_bad_alignment(items, base_column)
         prev_line = -1
         items.each do |current|
@@ -57,17 +54,20 @@ module RuboCop
         end
       end
 
-      def display_column(range)
-        line = processed_source.lines[range.line - 1]
-        Unicode::DisplayWidth.of(line[0, range.column])
+      def end_of_line_comment(line)
+        processed_source.find_comment { |c| c.loc.line == line }
+      end
+
+      def indentation(node)
+        offset(node) + (SPACE * configured_indentation_width)
+      end
+
+      def offset(node)
+        SPACE * node.loc.column
       end
 
       def within?(inner, outer)
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
-      end
-
-      def end_of_line_comment(line)
-        processed_source.find_comment { |c| c.loc.line == line }
       end
     end
   end

@@ -50,6 +50,20 @@ module RuboCop
           }
         PATTERN
 
+        def autocorrect(node)
+          selector_node, selector, _counter = count_candidate?(node)
+          selector_loc = selector_node.loc.selector
+
+          return if selector == :reject
+
+          range = source_starting_at(node) { |n| n.loc.dot.begin_pos }
+
+          lambda do |corrector|
+            corrector.remove(range)
+            corrector.replace(selector_loc, 'count')
+          end
+        end
+
         def on_send(node)
           return if rails_safe_mode?
 
@@ -64,20 +78,6 @@ module RuboCop
                         location: range,
                         message: format(MSG, selector: selector,
                                              counter: counter))
-          end
-        end
-
-        def autocorrect(node)
-          selector_node, selector, _counter = count_candidate?(node)
-          selector_loc = selector_node.loc.selector
-
-          return if selector == :reject
-
-          range = source_starting_at(node) { |n| n.loc.dot.begin_pos }
-
-          lambda do |corrector|
-            corrector.remove(range)
-            corrector.replace(selector_loc, 'count')
           end
         end
 

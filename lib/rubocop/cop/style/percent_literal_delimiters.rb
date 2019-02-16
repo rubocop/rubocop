@@ -26,6 +26,25 @@ module RuboCop
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
 
+        def autocorrect(node)
+          type = type(node)
+
+          opening_delimiter, closing_delimiter = preferred_delimiters_for(type)
+
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, "#{type}#{opening_delimiter}")
+            corrector.replace(node.loc.end, closing_delimiter)
+          end
+        end
+
+        def message(node)
+          type = type(node)
+          delimiters = preferred_delimiters_for(type)
+
+          "`#{type}`-literals should be delimited by " \
+          "`#{delimiters[0]}` and `#{delimiters[1]}`."
+        end
+
         def on_array(node)
           process(node, '%w', '%W', '%i', '%I')
         end
@@ -47,45 +66,7 @@ module RuboCop
           process(node, '%x')
         end
 
-        def message(node)
-          type = type(node)
-          delimiters = preferred_delimiters_for(type)
-
-          "`#{type}`-literals should be delimited by " \
-          "`#{delimiters[0]}` and `#{delimiters[1]}`."
-        end
-
-        def autocorrect(node)
-          type = type(node)
-
-          opening_delimiter, closing_delimiter = preferred_delimiters_for(type)
-
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, "#{type}#{opening_delimiter}")
-            corrector.replace(node.loc.end, closing_delimiter)
-          end
-        end
-
         private
-
-        def on_percent_literal(node)
-          type = type(node)
-          return if uses_preferred_delimiter?(node, type) ||
-                    contains_preferred_delimiter?(node, type) ||
-                    include_same_character_as_used_for_delimiter?(node, type)
-
-          add_offense(node)
-        end
-
-        def preferred_delimiters_for(type)
-          PreferredDelimiters
-            .new(type, @config, nil)
-            .delimiters
-        end
-
-        def uses_preferred_delimiter?(node, type)
-          preferred_delimiters_for(type)[0] == begin_source(node)[-1]
-        end
 
         def contains_preferred_delimiter?(node, type)
           preferred_delimiters = preferred_delimiters_for(type)
@@ -105,6 +86,30 @@ module RuboCop
             .any? { |s| Regexp.new(escaped_delimiters) =~ s }
         end
 
+        def matchpairs(begin_delimiter)
+          {
+            '(' => %w[( )],
+            '[' => %w[[ ]],
+            '{' => %w[{ }],
+            '<' => %w[< >]
+          }.fetch(begin_delimiter, [begin_delimiter])
+        end
+
+        def on_percent_literal(node)
+          type = type(node)
+          return if uses_preferred_delimiter?(node, type) ||
+                    contains_preferred_delimiter?(node, type) ||
+                    include_same_character_as_used_for_delimiter?(node, type)
+
+          add_offense(node)
+        end
+
+        def preferred_delimiters_for(type)
+          PreferredDelimiters
+            .new(type, @config, nil)
+            .delimiters
+        end
+
         def string_source(node)
           if node.is_a?(String)
             node
@@ -113,13 +118,8 @@ module RuboCop
           end
         end
 
-        def matchpairs(begin_delimiter)
-          {
-            '(' => %w[( )],
-            '[' => %w[[ ]],
-            '{' => %w[{ }],
-            '<' => %w[< >]
-          }.fetch(begin_delimiter, [begin_delimiter])
+        def uses_preferred_delimiter?(node, type)
+          preferred_delimiters_for(type)[0] == begin_source(node)[-1]
         end
       end
     end

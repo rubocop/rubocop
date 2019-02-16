@@ -75,9 +75,12 @@ module RuboCop
 
         private
 
-        def offense?(node)
-          (group_style? && access_modifier_is_inlined?(node)) ||
-            (inline_style? && access_modifier_is_not_inlined?(node))
+        def access_modifier_is_inlined?(node)
+          node.arguments.any?
+        end
+
+        def access_modifier_is_not_inlined?(node)
+          !access_modifier_is_inlined?(node)
         end
 
         def group_style?
@@ -88,14 +91,6 @@ module RuboCop
           style == :inline
         end
 
-        def access_modifier_is_inlined?(node)
-          node.arguments.any?
-        end
-
-        def access_modifier_is_not_inlined?(node)
-          !access_modifier_is_inlined?(node)
-        end
-
         def message(node)
           access_modifier = node.loc.selector.source
 
@@ -104,6 +99,11 @@ module RuboCop
           elsif inline_style?
             format(INLINE_STYLE_MESSAGE, access_modifier: access_modifier)
           end
+        end
+
+        def offense?(node)
+          (group_style? && access_modifier_is_inlined?(node)) ||
+            (inline_style? && access_modifier_is_not_inlined?(node))
         end
       end
     end

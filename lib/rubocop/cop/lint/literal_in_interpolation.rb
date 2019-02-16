@@ -22,6 +22,13 @@ module RuboCop
         MSG = 'Literal interpolation detected.'.freeze
         COMPOSITE = %i[array hash pair irange erange].freeze
 
+        def autocorrect(node)
+          return if node.dstr_type? # nested, fixed in next iteration
+
+          value = autocorrected_value(node)
+          ->(corrector) { corrector.replace(node.parent.source_range, value) }
+        end
+
         def on_dstr(node)
           node.each_child_node(:begin) do |begin_node|
             final_node = begin_node.children.last
@@ -33,20 +40,7 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          return if node.dstr_type? # nested, fixed in next iteration
-
-          value = autocorrected_value(node)
-          ->(corrector) { corrector.replace(node.parent.source_range, value) }
-        end
-
         private
-
-        def special_keyword?(node)
-          # handle strings like __FILE__
-          (node.str_type? && !node.loc.respond_to?(:begin)) ||
-            node.source_range.is?('__LINE__')
-        end
 
         def autocorrected_value(node)
           case node.type
@@ -75,6 +69,12 @@ module RuboCop
           node.basic_literal? ||
             (COMPOSITE.include?(node.type) &&
               node.children.all? { |child| prints_as_self?(child) })
+        end
+
+        def special_keyword?(node)
+          # handle strings like __FILE__
+          (node.str_type? && !node.loc.respond_to?(:begin)) ||
+            node.source_range.is?('__LINE__')
         end
       end
     end

@@ -10,18 +10,18 @@ module RuboCop
       LOGICAL_OR   = '||'.freeze
       SEMANTIC_OR  = 'or'.freeze
 
-      # Returns the operator as a string.
-      #
-      # @return [String] the operator
-      def operator
-        loc.operator.source
-      end
-
       # Checks whether this is a logical operator.
       #
       # @return [Boolean] whether this is a logical operator
       def logical_operator?
         operator == LOGICAL_AND || operator == LOGICAL_OR
+      end
+
+      # Returns the operator as a string.
+      #
+      # @return [String] the operator
+      def operator
+        loc.operator.source
       end
 
       # Checks whether this is a semantic operator.

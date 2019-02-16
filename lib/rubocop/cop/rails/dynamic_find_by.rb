@@ -29,6 +29,17 @@ module RuboCop
         MSG = 'Use `%<static_name>s` instead of dynamic `%<method>s`.'.freeze
         METHOD_PATTERN = /^find_by_(.+?)(!)?$/.freeze
 
+        def autocorrect(node)
+          keywords = column_keywords(node.method_name)
+
+          return if keywords.size != node.arguments.size
+
+          lambda do |corrector|
+            autocorrect_method_name(corrector, node)
+            autocorrect_argument_keywords(corrector, node, keywords)
+          end
+        end
+
         def on_send(node)
           method_name = node.method_name.to_s
 
@@ -44,23 +55,7 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          keywords = column_keywords(node.method_name)
-
-          return if keywords.size != node.arguments.size
-
-          lambda do |corrector|
-            autocorrect_method_name(corrector, node)
-            autocorrect_argument_keywords(corrector, node, keywords)
-          end
-        end
-
         private
-
-        def autocorrect_method_name(corrector, node)
-          corrector.replace(node.loc.selector,
-                            static_method_name(node.method_name.to_s))
-        end
 
         def autocorrect_argument_keywords(corrector, node, keywords)
           keywords.each.with_index do |keyword, idx|
@@ -68,8 +63,9 @@ module RuboCop
           end
         end
 
-        def whitelist
-          cop_config['Whitelist']
+        def autocorrect_method_name(corrector, node)
+          corrector.replace(node.loc.selector,
+                            static_method_name(node.method_name.to_s))
         end
 
         def column_keywords(method)
@@ -84,6 +80,10 @@ module RuboCop
           return nil unless match
 
           match[2] ? 'find_by!' : 'find_by'
+        end
+
+        def whitelist
+          cop_config['Whitelist']
         end
       end
     end

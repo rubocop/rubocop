@@ -25,15 +25,15 @@ module RuboCop
            (send (const nil? :File) :dirname     (send (const nil? :File) :realpath #file_keyword?))}
         PATTERN
 
-        def on_send(node)
-          dir_replacement?(node) do
-            add_offense(node)
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, '__dir__')
+          end
+        end
+
+        def on_send(node)
+          dir_replacement?(node) do
+            add_offense(node)
           end
         end
 

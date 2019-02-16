@@ -28,12 +28,6 @@ module RuboCop
           (send (send _ {:< :> :<= :>=} $_) {:< :> :<= :>=} _)
         PATTERN
 
-        def on_send(node)
-          return unless multiple_compare?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           center = multiple_compare?(node)
           new_center = "#{center.source} && #{center.source}"
@@ -41,6 +35,12 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(center.source_range, new_center)
           end
+        end
+
+        def on_send(node)
+          return unless multiple_compare?(node)
+
+          add_offense(node)
         end
       end
     end

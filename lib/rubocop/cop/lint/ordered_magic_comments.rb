@@ -33,19 +33,6 @@ module RuboCop
         MSG = 'The encoding magic comment should precede all other ' \
               'magic comments.'.freeze
 
-        def investigate(processed_source)
-          return if processed_source.buffer.source.empty?
-
-          encoding_line, frozen_string_literal_line = magic_comment_lines
-
-          return unless encoding_line && frozen_string_literal_line
-          return if encoding_line < frozen_string_literal_line
-
-          range = processed_source.buffer.line_range(encoding_line + 1)
-
-          add_offense(range, location: range)
-        end
-
         def autocorrect(_node)
           encoding_line, frozen_string_literal_line = magic_comment_lines
 
@@ -57,6 +44,19 @@ module RuboCop
             corrector.replace(range1, range2.source)
             corrector.replace(range2, range1.source)
           end
+        end
+
+        def investigate(processed_source)
+          return if processed_source.buffer.source.empty?
+
+          encoding_line, frozen_string_literal_line = magic_comment_lines
+
+          return unless encoding_line && frozen_string_literal_line
+          return if encoding_line < frozen_string_literal_line
+
+          range = processed_source.buffer.line_range(encoding_line + 1)
+
+          add_offense(range, location: range)
         end
 
         private

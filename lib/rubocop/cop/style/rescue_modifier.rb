@@ -21,12 +21,6 @@ module RuboCop
 
         MSG = 'Avoid using `rescue` in its modifier form.'.freeze
 
-        def on_resbody(node)
-          return unless rescue_modifier?(node)
-
-          add_offense(node.parent)
-        end
-
         def autocorrect(node)
           operation, rescue_modifier, = *node
           *_, rescue_args = *rescue_modifier
@@ -42,6 +36,12 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(node.source_range, correction)
           end
+        end
+
+        def on_resbody(node)
+          return unless rescue_modifier?(node)
+
+          add_offense(node.parent)
         end
       end
     end

@@ -17,19 +17,6 @@ module RuboCop
 
         MSG = 'Add parentheses to nested method call `%<source>s`.'.freeze
 
-        def on_send(node)
-          return unless node.parenthesized?
-
-          node.each_child_node(:send, :csend) do |nested|
-            next if allowed_omission?(nested)
-
-            add_offense(nested,
-                        location: nested.source_range,
-                        message: format(MSG, source: nested.source))
-          end
-        end
-        alias on_csend on_send
-
         def autocorrect(nested)
           first_arg = nested.first_argument.source_range
           last_arg = nested.last_argument.source_range
@@ -43,6 +30,19 @@ module RuboCop
             corrector.insert_after(last_arg, ')')
           end
         end
+
+        def on_send(node)
+          return unless node.parenthesized?
+
+          node.each_child_node(:send, :csend) do |nested|
+            next if allowed_omission?(nested)
+
+            add_offense(nested,
+                        location: nested.source_range,
+                        message: format(MSG, source: nested.source))
+          end
+        end
+        alias on_csend on_send
 
         private
 

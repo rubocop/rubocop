@@ -679,16 +679,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'with no args' do
       let(:arguments) { [] }
 
-      # Extracts the first line out of the description
-      def short_description_of_cop(cop)
-        desc = full_description_of_cop(cop)
-        desc ? desc.lines.first.strip : ''
-      end
-
       # Gets the full description of the cop or nil if no description is set.
       def full_description_of_cop(cop)
         cop_config = global_conf.for_cop(cop)
         cop_config['Description']
+      end
+
+      # Extracts the first line out of the description
+      def short_description_of_cop(cop)
+        desc = full_description_of_cop(cop)
+        desc ? desc.lines.first.strip : ''
       end
 
       it 'prints all available cops and their description' do
@@ -988,20 +988,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it 'uses the class as a formatter' do
           module MyTool
             class RuboCopFormatter < RuboCop::Formatter::BaseFormatter
-              def started(all_files)
-                output.puts "started: #{all_files.join(',')}"
+              def file_finished(file, _offenses)
+                output.puts "file_finished: #{file}"
               end
 
               def file_started(file, _options)
                 output.puts "file_started: #{file}"
               end
 
-              def file_finished(file, _offenses)
-                output.puts "file_finished: #{file}"
-              end
-
               def finished(processed_files)
                 output.puts "finished: #{processed_files.join(',')}"
+              end
+
+              def started(all_files)
+                output.puts "started: #{all_files.join(',')}"
               end
             end
           end

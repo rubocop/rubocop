@@ -86,14 +86,18 @@ module RuboCop
 
         def_node_matcher :not_nil_check?, '(send (send $_ :nil?) :!)'
 
-        def on_if(node)
-          return if allowed_if_condition?(node)
+        def autocorrect(node)
+          _check, body, = node.node_parts
+          _checked_variable, matching_receiver, = extract_parts(node)
+          method_call, = matching_receiver.parent
 
-          check_node(node)
-        end
+          lambda do |corrector|
+            corrector.remove(begin_range(node, body))
+            corrector.remove(end_range(node, body))
+            corrector.insert_before(method_call.loc.dot, '&')
 
-        def on_and(node)
-          check_node(node)
+            add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
+          end
         end
 
         def check_node(node)
@@ -110,28 +114,64 @@ module RuboCop
           add_offense(node)
         end
 
+        def on_and(node)
+          check_node(node)
+        end
+
+        def on_if(node)
+          return if allowed_if_condition?(node)
+
+          check_node(node)
+        end
+
         def use_var_only_in_unless_modifier?(node, variable)
           node.if_type? && node.unless? && !method_called?(variable)
         end
 
-        def autocorrect(node)
-          _check, body, = node.node_parts
-          _checked_variable, matching_receiver, = extract_parts(node)
-          method_call, = matching_receiver.parent
+        private
 
-          lambda do |corrector|
-            corrector.remove(begin_range(node, body))
-            corrector.remove(end_range(node, body))
-            corrector.insert_before(method_call.loc.dot, '&')
+        def add_safe_nav_to_all_methods_in_chain(corrector,
+                                                 start_method,
+                                                 method_chain)
+          start_method.each_ancestor do |ancestor|
+            break unless %i[send block].include?(ancestor.type)
+            next unless ancestor.send_type?
 
-            add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
+            corrector.insert_before(ancestor.loc.dot, '&')
+
+            break if ancestor == method_chain
           end
         end
 
-        private
-
         def allowed_if_condition?(node)
           node.else? || node.elsif? || node.ternary?
+        end
+
+        def begin_range(node, method_call)
+          range_between(node.loc.expression.begin_pos,
+                        method_call.loc.expression.begin_pos)
+        end
+
+        def chain_size(method_chain, method)
+          method.each_ancestor(:send).inject(0) do |total, ancestor|
+            break total + 1 if ancestor == method_chain
+
+            total + 1
+          end
+        end
+
+        def end_range(node, method_call)
+          range_between(method_call.loc.expression.end_pos,
+                        node.loc.expression.end_pos)
+        end
+
+        def extract_common_parts(method_chain, checked_variable)
+          matching_receiver =
+            find_matching_receiver_invocation(method_chain, checked_variable)
+
+          method = matching_receiver.parent if matching_receiver
+
+          [checked_variable, matching_receiver, method]
         end
 
         def extract_parts(node)
@@ -141,15 +181,6 @@ module RuboCop
           when :and
             extract_parts_from_and(node)
           end
-        end
-
-        def extract_parts_from_if(node)
-          variable, receiver =
-            modifier_if_safe_navigation_candidate?(node)
-
-          checked_variable, matching_receiver, method =
-            extract_common_parts(receiver, variable)
-          [checked_variable, matching_receiver, receiver, method]
         end
 
         def extract_parts_from_and(node)
@@ -164,13 +195,13 @@ module RuboCop
           [checked_variable, matching_receiver, rhs, method]
         end
 
-        def extract_common_parts(method_chain, checked_variable)
-          matching_receiver =
-            find_matching_receiver_invocation(method_chain, checked_variable)
+        def extract_parts_from_if(node)
+          variable, receiver =
+            modifier_if_safe_navigation_candidate?(node)
 
-          method = matching_receiver.parent if matching_receiver
-
-          [checked_variable, matching_receiver, method]
+          checked_variable, matching_receiver, method =
+            extract_common_parts(receiver, variable)
+          [checked_variable, matching_receiver, receiver, method]
         end
 
         def find_matching_receiver_invocation(method_chain, checked_variable)
@@ -187,12 +218,20 @@ module RuboCop
           find_matching_receiver_invocation(receiver, checked_variable)
         end
 
-        def chain_size(method_chain, method)
-          method.each_ancestor(:send).inject(0) do |total, ancestor|
-            break total + 1 if ancestor == method_chain
+        def method_called?(send_node)
+          send_node.parent && send_node.parent.send_type?
+        end
 
-            total + 1
+        def negated?(send_node)
+          if method_called?(send_node)
+            negated?(send_node.parent)
+          else
+            send_node.send_type? && send_node.method?(:!)
           end
+        end
+
+        def unsafe_method?(send_node)
+          negated?(send_node) || send_node.assignment? || !send_node.dot?
         end
 
         def unsafe_method_used?(method_chain, method)
@@ -206,45 +245,6 @@ module RuboCop
             break true if unsafe_method?(ancestor)
             break true if nil_methods.include?(ancestor.method_name)
             break false if ancestor == method_chain
-          end
-        end
-
-        def unsafe_method?(send_node)
-          negated?(send_node) || send_node.assignment? || !send_node.dot?
-        end
-
-        def negated?(send_node)
-          if method_called?(send_node)
-            negated?(send_node.parent)
-          else
-            send_node.send_type? && send_node.method?(:!)
-          end
-        end
-
-        def method_called?(send_node)
-          send_node.parent && send_node.parent.send_type?
-        end
-
-        def begin_range(node, method_call)
-          range_between(node.loc.expression.begin_pos,
-                        method_call.loc.expression.begin_pos)
-        end
-
-        def end_range(node, method_call)
-          range_between(method_call.loc.expression.end_pos,
-                        node.loc.expression.end_pos)
-        end
-
-        def add_safe_nav_to_all_methods_in_chain(corrector,
-                                                 start_method,
-                                                 method_chain)
-          start_method.each_ancestor do |ancestor|
-            break unless %i[send block].include?(ancestor.type)
-            next unless ancestor.send_type?
-
-            corrector.insert_before(ancestor.loc.dot, '&')
-
-            break if ancestor == method_chain
           end
         end
       end

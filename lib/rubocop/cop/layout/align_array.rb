@@ -26,12 +26,12 @@ module RuboCop
         MSG = 'Align the elements of an array literal if they span more ' \
               'than one line.'.freeze
 
-        def on_array(node)
-          check_alignment(node.children)
-        end
-
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, column_delta)
+        end
+
+        def on_array(node)
+          check_alignment(node.children)
         end
       end
     end

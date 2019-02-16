@@ -62,6 +62,16 @@ module RuboCop
         ARRAY_MSG = 'Pass the contents of array literals ' \
           'directly to `when` conditions.'.freeze
 
+        def autocorrect(when_node)
+          lambda do |corrector|
+            if needs_reorder?(when_node)
+              reorder_condition(corrector, when_node)
+            else
+              inline_fix_branch(corrector, when_node)
+            end
+          end
+        end
+
         def on_case(case_node)
           when_conditions = case_node.when_branches.flat_map(&:conditions)
 
@@ -73,21 +83,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(when_node)
-          lambda do |corrector|
-            if needs_reorder?(when_node)
-              reorder_condition(corrector, when_node)
-            else
-              inline_fix_branch(corrector, when_node)
-            end
-          end
-        end
-
         private
 
-        def replacement(conditions)
-          reordered = conditions.partition(&:splat_type?).reverse
-          reordered.flatten.map(&:source).join(', ')
+        def indent_for(node)
+          ' ' * node.loc.column
         end
 
         def inline_fix_branch(corrector, when_node)
@@ -96,6 +95,34 @@ module RuboCop
                                 conditions[-1].loc.expression.end_pos)
 
           corrector.replace(range, replacement(conditions))
+        end
+
+        def needs_reorder?(when_node)
+          following_branches =
+            when_node.parent.when_branches[(when_node.branch_index + 1)..-1]
+
+          following_branches.any? do |when_branch|
+            when_branch.conditions.any? do |condition|
+              non_splat?(condition)
+            end
+          end
+        end
+
+        def new_branch_without_then(node, new_condition)
+          "\n#{indent_for(node)}when #{new_condition}" \
+          "\n#{indent_for(node.body)}#{node.body.source}"
+        end
+
+        def new_condition_with_then(node, new_condition)
+          "\n#{indent_for(node)}when " \
+          "#{new_condition} then #{node.body.source}"
+        end
+
+        def non_splat?(condition)
+          variable, = *condition
+
+          (condition.splat_type? && variable.array_type?) ||
+            !condition.splat_type?
         end
 
         def reorder_condition(corrector, when_node)
@@ -118,26 +145,9 @@ module RuboCop
           end
         end
 
-        def when_branch_range(when_node)
-          next_branch =
-            when_node.parent.when_branches[when_node.branch_index + 1]
-
-          range_between(when_node.source_range.begin_pos,
-                        next_branch.source_range.begin_pos)
-        end
-
-        def new_condition_with_then(node, new_condition)
-          "\n#{indent_for(node)}when " \
-          "#{new_condition} then #{node.body.source}"
-        end
-
-        def new_branch_without_then(node, new_condition)
-          "\n#{indent_for(node)}when #{new_condition}" \
-          "\n#{indent_for(node.body)}#{node.body.source}"
-        end
-
-        def indent_for(node)
-          ' ' * node.loc.column
+        def replacement(conditions)
+          reordered = conditions.partition(&:splat_type?).reverse
+          reordered.flatten.map(&:source).join(', ')
         end
 
         def splat_offenses(when_conditions)
@@ -154,22 +164,12 @@ module RuboCop
           offenses.compact
         end
 
-        def non_splat?(condition)
-          variable, = *condition
+        def when_branch_range(when_node)
+          next_branch =
+            when_node.parent.when_branches[when_node.branch_index + 1]
 
-          (condition.splat_type? && variable.array_type?) ||
-            !condition.splat_type?
-        end
-
-        def needs_reorder?(when_node)
-          following_branches =
-            when_node.parent.when_branches[(when_node.branch_index + 1)..-1]
-
-          following_branches.any? do |when_branch|
-            when_branch.conditions.any? do |condition|
-              non_splat?(condition)
-            end
-          end
+          range_between(when_node.source_range.begin_pos,
+                        next_branch.source_range.begin_pos)
         end
       end
     end

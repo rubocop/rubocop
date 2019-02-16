@@ -10,18 +10,11 @@ module RuboCop
 
       ARITHMETIC_OPERATORS = %i[+ - * / % **].freeze
 
-      # The receiving node of the method dispatch.
+      # Checks whether the dispatched method is an access modifier.
       #
-      # @return [Node, nil] the receiver of the dispatched method or `nil`
-      def receiver
-        node_parts[0]
-      end
-
-      # The name of the dispatched method as a symbol.
-      #
-      # @return [Symbol] the name of the dispatched method
-      def method_name
-        node_parts[1]
+      # @return [Boolean] whether the dispatched method is an access modifier
+      def access_modifier?
+        bare_access_modifier? || non_bare_access_modifier?
       end
 
       # An array containing the arguments of the dispatched method.
@@ -31,30 +24,12 @@ module RuboCop
         node_parts[2..-1]
       end
 
-      # The `block` node associated with this method dispatch, if any.
+      # Checks whether this node is an arithmetic operation
       #
-      # @return [BlockNode, nil] the `block` node associated with this method
-      #                          call or `nil`
-      def block_node
-        parent if block_literal?
-      end
-
-      # Checks whether the dispatched method is a macro method. A macro method
-      # is defined as a method that sits in a class, module, or block body and
-      # has an implicit receiver.
-      #
-      # @note This does not include DSLs that use nested blocks, like RSpec
-      #
-      # @return [Boolean] whether the dispatched method is a macro method
-      def macro?
-        !receiver && macro_scope?
-      end
-
-      # Checks whether the dispatched method is an access modifier.
-      #
-      # @return [Boolean] whether the dispatched method is an access modifier
-      def access_modifier?
-        bare_access_modifier? || non_bare_access_modifier?
+      # @return [Boolean] whether the dispatched method is an arithmetic
+      #                   operation
+      def arithmetic_operation?
+        ARITHMETIC_OPERATORS.include?(method_name)
       end
 
       # Checks whether the dispatched method is a bare access modifier that
@@ -66,13 +41,32 @@ module RuboCop
         macro? && bare_access_modifier_declaration?
       end
 
-      # Checks whether the dispatched method is a non-bare access modifier that
-      # affects only the method it receives.
+      # Checks whether this is a binary operation.
       #
-      # @return [Boolean] whether the dispatched method is a non-bare
-      #                   access modifier
-      def non_bare_access_modifier?
-        macro? && non_bare_access_modifier_declaration?
+      # @example
+      #
+      #   foo + bar
+      #
+      # @return [Bookean] whether this method is a binary operation
+      def binary_operation?
+        return false unless loc.selector
+
+        operator_method? && loc.expression.begin_pos != loc.selector.begin_pos
+      end
+
+      # Whether this method dispatch has an explicit block.
+      #
+      # @return [Boolean] whether the dispatched method has a block
+      def block_literal?
+        parent && parent.block_type? && eql?(parent.send_node)
+      end
+
+      # The `block` node associated with this method dispatch, if any.
+      #
+      # @return [BlockNode, nil] the `block` node associated with this method
+      #                          call or `nil`
+      def block_node
+        parent if block_literal?
       end
 
       # Checks whether the name of the dispatched method matches the argument
@@ -84,13 +78,26 @@ module RuboCop
         !receiver && method?(name)
       end
 
-      # Checks whether the dispatched method is a setter method.
+      # Checks whether the *explicit* receiver of this method dispatch is a
+      # `const` node.
       #
-      # @return [Boolean] whether the dispatched method is a setter
-      def setter_method?
-        loc.respond_to?(:operator) && loc.operator
+      # @return [Boolean] whether the receiver of this method dispatch
+      #                   is a `const` node
+      def const_receiver?
+        receiver && receiver.const_type?
       end
-      alias assignment? setter_method?
+
+      # Checks if this node is part of a chain of `def` modifiers.
+      #
+      # @example
+      #
+      #   private def foo; end
+      #
+      # @return [Boolean] whether the dispatched method is a `def` modifier
+      def def_modifier?
+        send_type? &&
+          [self, *each_descendant(:send)].any?(&:adjacent_def_modifier?)
+      end
 
       # Checks whether the dispatched method uses a dot to connect the
       # receiver and the method name.
@@ -111,56 +118,12 @@ module RuboCop
         loc.respond_to?(:dot) && loc.dot && loc.dot.is?('::')
       end
 
-      # Checks whether the *explicit* receiver of this method dispatch is
-      # `self`.
-      #
-      # @return [Boolean] whether the receiver of this method dispatch is `self`
-      def self_receiver?
-        receiver && receiver.self_type?
-      end
-
-      # Checks whether the *explicit* receiver of this method dispatch is a
-      # `const` node.
-      #
-      # @return [Boolean] whether the receiver of this method dispatch
-      #                   is a `const` node
-      def const_receiver?
-        receiver && receiver.const_type?
-      end
-
       # Checks whether the method dispatch is the implicit form of `#call`,
       # e.g. `foo.(bar)`.
       #
       # @return [Boolean] whether the method is the implicit form of `#call`
       def implicit_call?
         method?(:call) && !loc.selector
-      end
-
-      # Whether this method dispatch has an explicit block.
-      #
-      # @return [Boolean] whether the dispatched method has a block
-      def block_literal?
-        parent && parent.block_type? && eql?(parent.send_node)
-      end
-
-      # Checks whether this node is an arithmetic operation
-      #
-      # @return [Boolean] whether the dispatched method is an arithmetic
-      #                   operation
-      def arithmetic_operation?
-        ARITHMETIC_OPERATORS.include?(method_name)
-      end
-
-      # Checks if this node is part of a chain of `def` modifiers.
-      #
-      # @example
-      #
-      #   private def foo; end
-      #
-      # @return [Boolean] whether the dispatched method is a `def` modifier
-      def def_modifier?
-        send_type? &&
-          [self, *each_descendant(:send)].any?(&:adjacent_def_modifier?)
       end
 
       # Checks whether this is a lambda. Some versions of parser parses
@@ -182,6 +145,56 @@ module RuboCop
         block_literal? && loc.expression && loc.expression.source == '->'
       end
 
+      # Checks whether the dispatched method is a macro method. A macro method
+      # is defined as a method that sits in a class, module, or block body and
+      # has an implicit receiver.
+      #
+      # @note This does not include DSLs that use nested blocks, like RSpec
+      #
+      # @return [Boolean] whether the dispatched method is a macro method
+      def macro?
+        !receiver && macro_scope?
+      end
+
+      # The name of the dispatched method as a symbol.
+      #
+      # @return [Symbol] the name of the dispatched method
+      def method_name
+        node_parts[1]
+      end
+
+      # Checks whether the dispatched method is a non-bare access modifier that
+      # affects only the method it receives.
+      #
+      # @return [Boolean] whether the dispatched method is a non-bare
+      #                   access modifier
+      def non_bare_access_modifier?
+        macro? && non_bare_access_modifier_declaration?
+      end
+
+      # The receiving node of the method dispatch.
+      #
+      # @return [Node, nil] the receiver of the dispatched method or `nil`
+      def receiver
+        node_parts[0]
+      end
+
+      # Checks whether the *explicit* receiver of this method dispatch is
+      # `self`.
+      #
+      # @return [Boolean] whether the receiver of this method dispatch is `self`
+      def self_receiver?
+        receiver && receiver.self_type?
+      end
+
+      # Checks whether the dispatched method is a setter method.
+      #
+      # @return [Boolean] whether the dispatched method is a setter
+      def setter_method?
+        loc.respond_to?(:operator) && loc.operator
+      end
+      alias assignment? setter_method?
+
       # Checks whether this is a unary operation.
       #
       # @example
@@ -193,19 +206,6 @@ module RuboCop
         return false unless loc.selector
 
         operator_method? && loc.expression.begin_pos == loc.selector.begin_pos
-      end
-
-      # Checks whether this is a binary operation.
-      #
-      # @example
-      #
-      #   foo + bar
-      #
-      # @return [Bookean] whether this method is a binary operation
-      def binary_operation?
-        return false unless loc.selector
-
-        operator_method? && loc.expression.begin_pos != loc.selector.begin_pos
       end
 
       private

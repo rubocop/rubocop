@@ -32,14 +32,14 @@ module RuboCop
 
         private
 
-        def contains_described_class_msg?(node)
-          described_class_msg(node).any?
-        end
-
         def assertions_using_described_class_msg
           described_class_msg(processed_source.ast).reject do |node|
             node.ancestors.any?(&method(:rspec_expectation_on_msg?))
           end
+        end
+
+        def contains_described_class_msg?(node)
+          described_class_msg(node).any?
         end
 
         # Only process spec files

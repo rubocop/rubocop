@@ -59,6 +59,10 @@ module RuboCop
                       message: format(MSG, type: type))
         end
 
+        def compact_namespace?(node)
+          node.loc.name.source =~ /::/
+        end
+
         def namespace?(node)
           return false unless node
 
@@ -69,8 +73,12 @@ module RuboCop
           end
         end
 
-        def compact_namespace?(node)
-          node.loc.name.source =~ /::/
+        def nodoc(node)
+          processed_source.ast_with_comments[node.children.first].first
+        end
+
+        def nodoc?(comment, require_all = false)
+          comment.text =~ /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/
         end
 
         # First checks if the :nodoc: comment is associated with the
@@ -86,14 +94,6 @@ module RuboCop
           return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all)
 
           nodoc_comment?(node.parent, true)
-        end
-
-        def nodoc?(comment, require_all = false)
-          comment.text =~ /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/
-        end
-
-        def nodoc(node)
-          processed_source.ast_with_comments[node.children.first].first
         end
       end
     end

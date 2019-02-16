@@ -99,11 +99,18 @@ module RuboCop
           (send (regexp (str _) {(regopt) (regopt _)}) :=== !nil?)
         PATTERN
 
-        def match_with_lvasgn?(node)
-          return false unless node.match_with_lvasgn_type?
-
-          regexp, _rhs = *node
-          regexp.to_regexp.named_captures.empty?
+        def autocorrect(node)
+          lambda do |corrector|
+            if match_method?(node)
+              corrector.replace(node.loc.selector, 'match?')
+            elsif match_operator?(node) || match_threequals?(node)
+              recv, oper, arg = *node
+              correct_operator(corrector, recv, arg, oper)
+            elsif match_with_lvasgn?(node)
+              recv, arg = *node
+              correct_operator(corrector, recv, arg)
+            end
+          end
         end
 
         MATCH_NODE_PATTERN = <<-PATTERN.freeze
@@ -127,8 +134,11 @@ module RuboCop
           }
         PATTERN
 
-        def on_if(node)
-          check_condition(node.condition)
+        def match_with_lvasgn?(node)
+          return false unless node.match_with_lvasgn_type?
+
+          regexp, _rhs = *node
+          regexp.to_regexp.named_captures.empty?
         end
 
         def on_case(node)
@@ -141,18 +151,8 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if match_method?(node)
-              corrector.replace(node.loc.selector, 'match?')
-            elsif match_operator?(node) || match_threequals?(node)
-              recv, oper, arg = *node
-              correct_operator(corrector, recv, arg, oper)
-            elsif match_with_lvasgn?(node)
-              recv, arg = *node
-              correct_operator(corrector, recv, arg)
-            end
-          end
+        def on_if(node)
+          check_condition(node.condition)
         end
 
         private
@@ -165,8 +165,35 @@ module RuboCop
           end
         end
 
-        def message(node)
-          format(MSG, current: node.loc.selector.source)
+        def correct_operator(corrector, recv, arg, oper = nil)
+          op_range = correction_range(recv, arg)
+
+          if TYPES_IMPLEMENTING_MATCH.include?(recv.type)
+            corrector.replace(op_range, '.match?(')
+          elsif TYPES_IMPLEMENTING_MATCH.include?(arg.type)
+            corrector.replace(op_range, '.match?(')
+            swap_receiver_and_arg(corrector, recv, arg)
+          else
+            corrector.replace(op_range, '&.match?(')
+          end
+
+          corrector.insert_after(arg.loc.expression, ')')
+          corrector.insert_before(recv.loc.expression, '!') if oper == :!~
+        end
+
+        def correction_range(recv, arg)
+          buffer = processed_source.buffer
+          op_begin_pos = recv.loc.expression.end_pos
+          op_end_pos = arg.loc.expression.begin_pos
+          Parser::Source::Range.new(buffer, op_begin_pos, op_end_pos)
+        end
+
+        def find_last_match(body, range, scope_root)
+          last_matches(body).find do |ref|
+            ref_pos = ref.loc.expression.begin_pos
+            range.cover?(ref_pos) &&
+              scope_root(ref) == scope_root
+          end
         end
 
         def last_match_used?(match_node)
@@ -184,20 +211,27 @@ module RuboCop
           find_last_match(body, range, scope_root)
         end
 
+        def match_gvar?(sym)
+          %i[
+            $~
+            $MATCH
+            $PREMATCH
+            $POSTMATCH
+            $LAST_PAREN_MATCH
+            $LAST_MATCH_INFO
+          ].include?(sym)
+        end
+
+        def message(node)
+          format(MSG, current: node.loc.selector.source)
+        end
+
         def next_match_pos(body, match_node_pos, scope_root)
           node = search_match_nodes(body).find do |match|
             match.loc.expression.begin_pos > match_node_pos &&
               scope_root(match) == scope_root
           end
           node ? node.loc.expression.begin_pos : Float::INFINITY
-        end
-
-        def find_last_match(body, range, scope_root)
-          last_matches(body).find do |ref|
-            ref_pos = ref.loc.expression.begin_pos
-            range.cover?(ref_pos) &&
-              scope_root(ref) == scope_root
-          end
         end
 
         def scope_body(node)
@@ -221,43 +255,9 @@ module RuboCop
           end
         end
 
-        def match_gvar?(sym)
-          %i[
-            $~
-            $MATCH
-            $PREMATCH
-            $POSTMATCH
-            $LAST_PAREN_MATCH
-            $LAST_MATCH_INFO
-          ].include?(sym)
-        end
-
-        def correct_operator(corrector, recv, arg, oper = nil)
-          op_range = correction_range(recv, arg)
-
-          if TYPES_IMPLEMENTING_MATCH.include?(recv.type)
-            corrector.replace(op_range, '.match?(')
-          elsif TYPES_IMPLEMENTING_MATCH.include?(arg.type)
-            corrector.replace(op_range, '.match?(')
-            swap_receiver_and_arg(corrector, recv, arg)
-          else
-            corrector.replace(op_range, '&.match?(')
-          end
-
-          corrector.insert_after(arg.loc.expression, ')')
-          corrector.insert_before(recv.loc.expression, '!') if oper == :!~
-        end
-
         def swap_receiver_and_arg(corrector, recv, arg)
           corrector.replace(recv.loc.expression, arg.source)
           corrector.replace(arg.loc.expression, recv.source)
-        end
-
-        def correction_range(recv, arg)
-          buffer = processed_source.buffer
-          op_begin_pos = recv.loc.expression.end_pos
-          op_end_pos = arg.loc.expression.begin_pos
-          Parser::Source::Range.new(buffer, op_begin_pos, op_end_pos)
         end
       end
     end

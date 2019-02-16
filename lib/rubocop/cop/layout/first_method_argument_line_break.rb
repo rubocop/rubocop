@@ -26,6 +26,10 @@ module RuboCop
         MSG = 'Add a line break before the first argument of a ' \
               'multi-line method argument list.'.freeze
 
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
+
         def on_send(node)
           args = node.arguments
 
@@ -44,10 +48,6 @@ module RuboCop
           check_method_line_break(node, args)
         end
         alias on_csend on_send
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
-        end
       end
     end
   end

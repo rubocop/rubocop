@@ -17,12 +17,12 @@ module RuboCop
         matches_ignored_pattern?(line)
       end
 
-      def matches_ignored_pattern?(line)
-        ignored_patterns.any? { |pattern| Regexp.new(pattern).match(line) }
-      end
-
       def ignored_patterns
         cop_config['IgnoredPatterns'] || []
+      end
+
+      def matches_ignored_pattern?(line)
+        ignored_patterns.any? { |pattern| Regexp.new(pattern).match(line) }
       end
     end
   end

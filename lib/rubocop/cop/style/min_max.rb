@@ -17,6 +17,15 @@ module RuboCop
       class MinMax < Cop
         MSG = 'Use `%<receiver>s.minmax` instead of `%<offender>s`.'.freeze
 
+        def autocorrect(node)
+          receiver = node.children.first.receiver
+
+          lambda do |corrector|
+            corrector.replace(offending_range(node),
+                              "#{receiver.source}.minmax")
+          end
+        end
+
         def on_array(node)
           min_max_candidate(node) do |receiver|
             offender = offending_range(node)
@@ -27,20 +36,18 @@ module RuboCop
         end
         alias on_return on_array
 
-        def autocorrect(node)
-          receiver = node.children.first.receiver
-
-          lambda do |corrector|
-            corrector.replace(offending_range(node),
-                              "#{receiver.source}.minmax")
-          end
-        end
-
         private
 
         def_node_matcher :min_max_candidate, <<-PATTERN
           ({array return} (send [$_receiver !nil?] :min) (send [$_receiver !nil?] :max))
         PATTERN
+
+        def argument_range(node)
+          first_argument_range = node.children.first.loc.expression
+          last_argument_range  = node.children.last.loc.expression
+
+          first_argument_range.join(last_argument_range)
+        end
 
         def message(offender, receiver)
           format(MSG, offender: offender.source,
@@ -54,13 +61,6 @@ module RuboCop
           else
             node.loc.expression
           end
-        end
-
-        def argument_range(node)
-          first_argument_range = node.children.first.loc.expression
-          last_argument_range  = node.children.last.loc.expression
-
-          first_argument_range.join(last_argument_range)
         end
       end
     end

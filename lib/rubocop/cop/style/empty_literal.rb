@@ -33,6 +33,12 @@ module RuboCop
         def_node_matcher :hash_with_block,
                          '(block (send (const nil? :Hash) :new) args _)'
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(replacement_range(node), correction(node))
+          end
+        end
+
         def on_send(node)
           add_offense(node, message: ARR_MSG)  if offense_array_node?(node)
           add_offense(node, message: HASH_MSG) if offense_hash_node?(node)
@@ -46,59 +52,7 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(replacement_range(node), correction(node))
-          end
-        end
-
         private
-
-        def preferred_string_literal
-          enforce_double_quotes? ? '""' : "''"
-        end
-
-        def enforce_double_quotes?
-          string_literals_config['EnforcedStyle'] == 'double_quotes'
-        end
-
-        def string_literals_config
-          config.for_cop('Style/StringLiterals')
-        end
-
-        def first_argument_unparenthesized?(node)
-          parent = node.parent
-          unless parent && %i[send super zsuper].include?(parent.type)
-            return false
-          end
-
-          node.object_id == parent.arguments.first.object_id &&
-            !parentheses?(node.parent)
-        end
-
-        def replacement_range(node)
-          if hash_node(node) &&
-             first_argument_unparenthesized?(node)
-            # `some_method {}` is not same as `some_method Hash.new`
-            # because the braces are interpreted as a block. We will have
-            # to rewrite the arguments to wrap them in parenthesis.
-            args = node.parent.arguments
-
-            range_between(args[0].loc.expression.begin_pos - 1,
-                          args[-1].loc.expression.end_pos)
-          else
-            node.source_range
-          end
-        end
-
-        def offense_array_node?(node)
-          array_node(node) && !array_with_block(node.parent)
-        end
-
-        def offense_hash_node?(node)
-          # If Hash.new takes a block, it can't be changed to {}.
-          hash_node(node) && !hash_with_block(node.parent)
-        end
 
         def correction(node)
           if offense_array_node?(node)
@@ -116,6 +70,52 @@ module RuboCop
               '{}'
             end
           end
+        end
+
+        def enforce_double_quotes?
+          string_literals_config['EnforcedStyle'] == 'double_quotes'
+        end
+
+        def first_argument_unparenthesized?(node)
+          parent = node.parent
+          unless parent && %i[send super zsuper].include?(parent.type)
+            return false
+          end
+
+          node.object_id == parent.arguments.first.object_id &&
+            !parentheses?(node.parent)
+        end
+
+        def offense_array_node?(node)
+          array_node(node) && !array_with_block(node.parent)
+        end
+
+        def offense_hash_node?(node)
+          # If Hash.new takes a block, it can't be changed to {}.
+          hash_node(node) && !hash_with_block(node.parent)
+        end
+
+        def preferred_string_literal
+          enforce_double_quotes? ? '""' : "''"
+        end
+
+        def replacement_range(node)
+          if hash_node(node) &&
+             first_argument_unparenthesized?(node)
+            # `some_method {}` is not same as `some_method Hash.new`
+            # because the braces are interpreted as a block. We will have
+            # to rewrite the arguments to wrap them in parenthesis.
+            args = node.parent.arguments
+
+            range_between(args[0].loc.expression.begin_pos - 1,
+                          args[-1].loc.expression.end_pos)
+          else
+            node.source_range
+          end
+        end
+
+        def string_literals_config
+          config.for_cop('Style/StringLiterals')
         end
       end
     end

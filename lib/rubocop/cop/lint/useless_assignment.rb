@@ -34,10 +34,6 @@ module RuboCop
         include NameSimilarity
         MSG = 'Useless assignment to variable - `%<variable>s`.'.freeze
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_for_unused_assignments(variable)
@@ -60,6 +56,22 @@ module RuboCop
 
             add_offense(nil, location: location, message: message)
           end
+        end
+
+        def collect_variable_like_names(scope)
+          names = scope.each_node.with_object(Set.new) do |node, set|
+            if variable_like_method_invocation?(node)
+              _receiver, method_name, = *node
+              set << method_name
+            end
+          end
+
+          variable_names = scope.variables.each_value.map(&:name)
+          names.merge(variable_names)
+        end
+
+        def join_force?(force_class)
+          force_class == VariableForce
         end
 
         def message_for_useless_assignment(assignment)
@@ -93,11 +105,6 @@ module RuboCop
           "instead of `#{assignment.operator}`."
         end
 
-        def similar_name_message(variable)
-          similar_name = find_similar_name(variable.name, variable.scope)
-          " Did you mean `#{similar_name}`?" if similar_name
-        end
-
         # TODO: More precise handling (rescue, ensure, nested begin, etc.)
         def return_value_node_of_scope(scope)
           body_node = scope.body_node
@@ -109,16 +116,9 @@ module RuboCop
           end
         end
 
-        def collect_variable_like_names(scope)
-          names = scope.each_node.with_object(Set.new) do |node, set|
-            if variable_like_method_invocation?(node)
-              _receiver, method_name, = *node
-              set << method_name
-            end
-          end
-
-          variable_names = scope.variables.each_value.map(&:name)
-          names.merge(variable_names)
+        def similar_name_message(variable)
+          similar_name = find_similar_name(variable.name, variable.scope)
+          " Did you mean `#{similar_name}`?" if similar_name
         end
 
         def variable_like_method_invocation?(node)

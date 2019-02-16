@@ -71,21 +71,6 @@ module RuboCop
           }
         MATCHER
 
-        def on_send(node)
-          unneeded_sort?(node) do |sort_node, sorter, accessor|
-            range = range_between(
-              sort_node.loc.selector.begin_pos,
-              node.loc.expression.end_pos
-            )
-
-            add_offense(node,
-                        location: range,
-                        message: message(node,
-                                         sorter,
-                                         accessor))
-          end
-        end
-
         def autocorrect(node)
           sort_node, sorter, accessor = unneeded_sort?(node)
 
@@ -106,7 +91,48 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          unneeded_sort?(node) do |sort_node, sorter, accessor|
+            range = range_between(
+              sort_node.loc.selector.begin_pos,
+              node.loc.expression.end_pos
+            )
+
+            add_offense(node,
+                        location: range,
+                        message: message(node,
+                                         sorter,
+                                         accessor))
+          end
+        end
+
         private
+
+        # This gets the start of the accessor whether it has a dot
+        # (e.g. `.first`) or doesn't (e.g. `[0]`)
+        def accessor_start(node)
+          if node.loc.dot
+            node.loc.dot.begin_pos
+          else
+            node.loc.selector.begin_pos
+          end
+        end
+
+        def arg_node(node)
+          node.arguments.first
+        end
+
+        def arg_value(node)
+          arg_node(node).nil? ? nil : arg_node(node).node_parts.first
+        end
+
+        def base(accessor, arg)
+          if accessor == :first || (arg && arg.zero?)
+            'min'
+          elsif accessor == :last || arg == -1
+            'max'
+          end
+        end
 
         def message(node, sorter, accessor)
           accessor_source = range_between(
@@ -122,18 +148,6 @@ module RuboCop
                  accessor_source: accessor_source)
         end
 
-        def suggestion(sorter, accessor, arg)
-          base(accessor, arg) + suffix(sorter)
-        end
-
-        def base(accessor, arg)
-          if accessor == :first || (arg && arg.zero?)
-            'min'
-          elsif accessor == :last || arg == -1
-            'max'
-          end
-        end
-
         def suffix(sorter)
           if sorter == :sort
             ''
@@ -142,22 +156,8 @@ module RuboCop
           end
         end
 
-        def arg_node(node)
-          node.arguments.first
-        end
-
-        def arg_value(node)
-          arg_node(node).nil? ? nil : arg_node(node).node_parts.first
-        end
-
-        # This gets the start of the accessor whether it has a dot
-        # (e.g. `.first`) or doesn't (e.g. `[0]`)
-        def accessor_start(node)
-          if node.loc.dot
-            node.loc.dot.begin_pos
-          else
-            node.loc.selector.begin_pos
-          end
+        def suggestion(sorter, accessor, arg)
+          base(accessor, arg) + suffix(sorter)
         end
       end
     end

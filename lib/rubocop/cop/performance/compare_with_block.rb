@@ -44,6 +44,21 @@ module RuboCop
             (send (lvar %2) _method $...))
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            send, var_a, var_b, body = compare?(node)
+            method, arg, = replaceable_body?(body, var_a, var_b)
+            replacement =
+              if method == :[]
+                "#{send.method_name}_by { |a| a[#{arg.first.source}] }"
+              else
+                "#{send.method_name}_by(&:#{method})"
+              end
+            corrector.replace(compare_range(send, node),
+                              replacement)
+          end
+        end
+
         def on_block(node)
           compare?(node) do |send, var_a, var_b, body|
             replaceable_body?(body, var_a, var_b) do |method, args_a, args_b|
@@ -60,35 +75,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            send, var_a, var_b, body = compare?(node)
-            method, arg, = replaceable_body?(body, var_a, var_b)
-            replacement =
-              if method == :[]
-                "#{send.method_name}_by { |a| a[#{arg.first.source}] }"
-              else
-                "#{send.method_name}_by(&:#{method})"
-              end
-            corrector.replace(compare_range(send, node),
-                              replacement)
-          end
-        end
-
         private
 
-        def slow_compare?(method, args_a, args_b)
-          return false unless args_a == args_b
-
-          if method == :[]
-            return false unless args_a.size == 1
-
-            key = args_a.first
-            return false unless %i[sym str int].include?(key.type)
-          else
-            return false unless args_a.empty?
-          end
-          true
+        def compare_range(send, node)
+          range_between(send.loc.selector.begin_pos, node.loc.end.end_pos)
         end
 
         # rubocop:disable Metrics/MethodLength
@@ -113,8 +103,18 @@ module RuboCop
         end
         # rubocop:enable Metrics/MethodLength
 
-        def compare_range(send, node)
-          range_between(send.loc.selector.begin_pos, node.loc.end.end_pos)
+        def slow_compare?(method, args_a, args_b)
+          return false unless args_a == args_b
+
+          if method == :[]
+            return false unless args_a.size == 1
+
+            key = args_a.first
+            return false unless %i[sym str int].include?(key.type)
+          else
+            return false unless args_a.empty?
+          end
+          true
         end
       end
     end

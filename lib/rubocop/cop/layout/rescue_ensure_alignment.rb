@@ -31,14 +31,6 @@ module RuboCop
         RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
 
-        def on_resbody(node)
-          check(node) unless modifier?(node)
-        end
-
-        def on_ensure(node)
-          check(node)
-        end
-
         def autocorrect(node)
           whitespace = whitespace_range(node)
           # Some inline node is sitting before current node.
@@ -60,7 +52,78 @@ module RuboCop
             end
         end
 
+        def on_ensure(node)
+          check(node)
+        end
+
+        def on_resbody(node)
+          check(node) unless modifier?(node)
+        end
+
         private
+
+        def access_modifier_node(node)
+          return nil unless
+            ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS.include?(node.type)
+
+          access_modifier_node = node.ancestors.first
+          return nil unless
+            access_modifier_node.respond_to?(:access_modifier?) &&
+            access_modifier_node.access_modifier?
+
+          access_modifier_node
+        end
+
+        # We will use ancestor or wrapper with access modifier.
+
+        def alignment_node(node)
+          ancestor_node = ancestor_node(node)
+
+          return ancestor_node if ancestor_node.nil? ||
+                                  ancestor_node.kwbegin_type?
+
+          assignment_node = assignment_node(ancestor_node)
+          return assignment_node if same_line?(ancestor_node, assignment_node)
+
+          access_modifier_node = access_modifier_node(ancestor_node)
+          return access_modifier_node unless access_modifier_node.nil?
+
+          ancestor_node
+        end
+
+        def alignment_source(node, starting_loc)
+          ending_loc =
+            case node.type
+            when :block, :kwbegin
+              node.loc.begin
+            when :def, :defs, :class, :module
+              node.loc.name
+            else
+              # It is a wrapper with access modifier.
+              node.child_nodes.first.loc.name
+            end
+
+          range_between(starting_loc.begin_pos, ending_loc.end_pos).source
+        end
+
+        def ancestor_node(node)
+          ancestor_types =
+            if target_ruby_version >= 2.5
+              RUBY_2_5_ANCESTOR_TYPES
+            else
+              ANCESTOR_TYPES
+            end
+
+          node.each_ancestor(*ancestor_types).first
+        end
+
+        def assignment_node(node)
+          assignment_node = node.ancestors.first
+          return nil unless
+            assignment_node && assignment_node.assignment?
+
+          assignment_node
+        end
 
         # Check alignment of node with rescue or ensure modifiers.
 
@@ -92,69 +155,6 @@ module RuboCop
             begin_loc_line: alignment_loc.line,
             begin_loc_column: alignment_loc.column
           )
-        end
-
-        def alignment_source(node, starting_loc)
-          ending_loc =
-            case node.type
-            when :block, :kwbegin
-              node.loc.begin
-            when :def, :defs, :class, :module
-              node.loc.name
-            else
-              # It is a wrapper with access modifier.
-              node.child_nodes.first.loc.name
-            end
-
-          range_between(starting_loc.begin_pos, ending_loc.end_pos).source
-        end
-
-        # We will use ancestor or wrapper with access modifier.
-
-        def alignment_node(node)
-          ancestor_node = ancestor_node(node)
-
-          return ancestor_node if ancestor_node.nil? ||
-                                  ancestor_node.kwbegin_type?
-
-          assignment_node = assignment_node(ancestor_node)
-          return assignment_node if same_line?(ancestor_node, assignment_node)
-
-          access_modifier_node = access_modifier_node(ancestor_node)
-          return access_modifier_node unless access_modifier_node.nil?
-
-          ancestor_node
-        end
-
-        def ancestor_node(node)
-          ancestor_types =
-            if target_ruby_version >= 2.5
-              RUBY_2_5_ANCESTOR_TYPES
-            else
-              ANCESTOR_TYPES
-            end
-
-          node.each_ancestor(*ancestor_types).first
-        end
-
-        def assignment_node(node)
-          assignment_node = node.ancestors.first
-          return nil unless
-            assignment_node && assignment_node.assignment?
-
-          assignment_node
-        end
-
-        def access_modifier_node(node)
-          return nil unless
-            ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS.include?(node.type)
-
-          access_modifier_node = node.ancestors.first
-          return nil unless
-            access_modifier_node.respond_to?(:access_modifier?) &&
-            access_modifier_node.access_modifier?
-
-          access_modifier_node
         end
 
         def modifier?(node)

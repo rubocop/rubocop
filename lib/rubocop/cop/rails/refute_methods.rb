@@ -41,13 +41,6 @@ module RuboCop
 
         def_node_matcher :offensive?, '(send nil? #refute_method? ...)'
 
-        def on_send(node)
-          return unless offensive?(node)
-
-          message = offense_message(node.method_name)
-          add_offense(node, location: :selector, message: message)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(
@@ -57,11 +50,14 @@ module RuboCop
           end
         end
 
-        private
+        def on_send(node)
+          return unless offensive?(node)
 
-        def refute_method?(method_name)
-          OFFENSIVE_METHODS.include?(method_name)
+          message = offense_message(node.method_name)
+          add_offense(node, location: :selector, message: message)
         end
+
+        private
 
         def offense_message(method_name)
           format(
@@ -69,6 +65,10 @@ module RuboCop
             refute_method: method_name,
             assert_method: CORRECTIONS[method_name]
           )
+        end
+
+        def refute_method?(method_name)
+          OFFENSIVE_METHODS.include?(method_name)
         end
       end
     end

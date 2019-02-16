@@ -12,6 +12,15 @@ module RuboCop
       class << self
         attr_reader :processed_source
 
+        def break_line_before(range:, node:, corrector:, indent_steps: 1,
+                              configured_width:)
+          corrector.insert_before(
+            range,
+            "\n" + ' ' * (node.loc.keyword.column +
+                          indent_steps * configured_width)
+          )
+        end
+
         def correct_trailing_body(configured_width:, corrector:, node:,
                                   processed_source:)
           @processed_source = processed_source
@@ -23,15 +32,6 @@ module RuboCop
           move_comment(eol_comment: eol_comment, node: node,
                        corrector: corrector)
           remove_semicolon(node, corrector)
-        end
-
-        def break_line_before(range:, node:, corrector:, indent_steps: 1,
-                              configured_width:)
-          corrector.insert_before(
-            range,
-            "\n" + ' ' * (node.loc.keyword.column +
-                          indent_steps * configured_width)
-          )
         end
 
         def move_comment(eol_comment:, node:, corrector:)

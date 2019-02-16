@@ -47,6 +47,14 @@ module RuboCop
 
         private
 
+        def display_str(node)
+          if node.source =~ /\n/
+            str_content(node).inspect
+          else
+            node.source
+          end
+        end
+
         def each_bad_cons(node)
           node.children.each_cons(2) do |child_node1, child_node2|
             # `'abc' 'def'` -> (dstr (str "abc") (str "def"))
@@ -71,6 +79,14 @@ module RuboCop
           end
         end
 
+        def str_content(node)
+          if node.str_type?
+            node.children[0]
+          else
+            node.children.map { |c| str_content(c) }.join
+          end
+        end
+
         def string_literal?(node)
           node.str_type? ||
             (node.dstr_type? && node.children.all? { |c| string_literal?(c) })
@@ -78,22 +94,6 @@ module RuboCop
 
         def string_literals?(node1, node2)
           string_literal?(node1) && string_literal?(node2)
-        end
-
-        def display_str(node)
-          if node.source =~ /\n/
-            str_content(node).inspect
-          else
-            node.source
-          end
-        end
-
-        def str_content(node)
-          if node.str_type?
-            node.children[0]
-          else
-            node.children.map { |c| str_content(c) }.join
-          end
         end
       end
     end

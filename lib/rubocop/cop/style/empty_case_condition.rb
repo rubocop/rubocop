@@ -41,6 +41,15 @@ module RuboCop
         MSG = 'Do not use empty `case` condition, instead use an `if` '\
               'expression.'.freeze
 
+        def autocorrect(case_node)
+          when_branches = case_node.when_branches
+
+          lambda do |corrector|
+            correct_case_when(corrector, case_node, when_branches)
+            correct_when_conditions(corrector, when_branches)
+          end
+        end
+
         def on_case(case_node)
           return if case_node.condition
           return if case_node.when_branches.any? do |when_branch|
@@ -53,15 +62,6 @@ module RuboCop
           end
 
           add_offense(case_node, location: :keyword)
-        end
-
-        def autocorrect(case_node)
-          when_branches = case_node.when_branches
-
-          lambda do |corrector|
-            correct_case_when(corrector, case_node, when_branches)
-            correct_when_conditions(corrector, when_branches)
-          end
         end
 
         private

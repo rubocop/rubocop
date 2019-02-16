@@ -53,35 +53,6 @@ module RuboCop
                                       })
         PATTERN
 
-        def on_send(node)
-          return if part_of_ignored_node?(node)
-
-          inverse_candidate?(node) do |_method_call, lhs, method, rhs|
-            return unless inverse_methods.key?(method)
-            return if possible_class_hierarchy_check?(lhs, rhs, method)
-            return if negated?(node)
-
-            add_offense(node,
-                        message: format(MSG, method: method,
-                                             inverse: inverse_methods[method]))
-          end
-        end
-
-        def on_block(node)
-          inverse_block?(node) do |_method_call, method, block|
-            return unless inverse_blocks.key?(method)
-            return if negated?(node) && negated?(node.parent)
-
-            # Inverse method offenses inside of the block of an inverse method
-            # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,
-            # can cause auto-correction to apply improper corrections.
-            ignore_node(block)
-            add_offense(node,
-                        message: format(MSG, method: method,
-                                             inverse: inverse_blocks[method]))
-          end
-        end
-
         def autocorrect(node)
           method_call, _lhs, method, _rhs = inverse_candidate?(node)
 
@@ -121,16 +92,55 @@ module RuboCop
           end
         end
 
+        def on_block(node)
+          inverse_block?(node) do |_method_call, method, block|
+            return unless inverse_blocks.key?(method)
+            return if negated?(node) && negated?(node.parent)
+
+            # Inverse method offenses inside of the block of an inverse method
+            # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,
+            # can cause auto-correction to apply improper corrections.
+            ignore_node(block)
+            add_offense(node,
+                        message: format(MSG, method: method,
+                                             inverse: inverse_blocks[method]))
+          end
+        end
+
+        def on_send(node)
+          return if part_of_ignored_node?(node)
+
+          inverse_candidate?(node) do |_method_call, lhs, method, rhs|
+            return unless inverse_methods.key?(method)
+            return if possible_class_hierarchy_check?(lhs, rhs, method)
+            return if negated?(node)
+
+            add_offense(node,
+                        message: format(MSG, method: method,
+                                             inverse: inverse_methods[method]))
+          end
+        end
+
         private
 
-        def inverse_methods
-          @inverse_methods ||= cop_config['InverseMethods']
-                               .merge(cop_config['InverseMethods'].invert)
+        def camel_case_constant?(node)
+          node.const_type? && node.source =~ CAMEL_CASE
+        end
+
+        def end_parentheses(node, method_call)
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    method_call.loc.expression.end_pos,
+                                    node.loc.expression.end_pos)
         end
 
         def inverse_blocks
           @inverse_blocks ||= cop_config['InverseBlocks']
                               .merge(cop_config['InverseBlocks'].invert)
+        end
+
+        def inverse_methods
+          @inverse_methods ||= cop_config['InverseMethods']
+                               .merge(cop_config['InverseMethods'].invert)
         end
 
         def negated?(node)
@@ -143,12 +153,6 @@ module RuboCop
                                     method_call.loc.expression.begin_pos)
         end
 
-        def end_parentheses(node, method_call)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    method_call.loc.expression.end_pos,
-                                    node.loc.expression.end_pos)
-        end
-
         # When comparing classes, `!(Integer < Numeric)` is not the same as
         # `Integer > Numeric`.
         def possible_class_hierarchy_check?(lhs, rhs, method)
@@ -156,10 +160,6 @@ module RuboCop
             (camel_case_constant?(lhs) ||
              (rhs.size == 1 &&
               camel_case_constant?(rhs.first)))
-        end
-
-        def camel_case_constant?(node)
-          node.const_type? && node.source =~ CAMEL_CASE
         end
       end
     end

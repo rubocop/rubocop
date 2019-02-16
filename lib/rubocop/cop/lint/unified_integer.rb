@@ -24,18 +24,18 @@ module RuboCop
           (:const {nil? (:cbase)} ${:Fixnum :Bignum})
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.name, 'Integer')
+          end
+        end
+
         def on_const(node)
           klass = fixnum_or_bignum_const(node)
 
           return unless klass
 
           add_offense(node, message: format(MSG, klass: klass))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.name, 'Integer')
-          end
         end
       end
     end

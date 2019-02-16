@@ -180,30 +180,6 @@ module RuboCop
         MSG = 'Align the elements of a hash literal if they span more than ' \
               'one line.'.freeze
 
-        def on_send(node)
-          return if double_splat?(node)
-          return unless node.arguments?
-
-          last_argument = node.last_argument
-
-          return unless last_argument.hash_type? &&
-                        ignore_hash_argument?(last_argument)
-
-          ignore_node(last_argument)
-        end
-        alias on_super on_send
-        alias on_yield on_send
-
-        def on_hash(node)
-          return if ignored_node?(node)
-          return if node.pairs.empty? || node.single_line?
-
-          return unless alignment_for_hash_rockets.checkable_layout?(node) &&
-                        alignment_for_colons.checkable_layout?(node)
-
-          check_pairs(node)
-        end
-
         def autocorrect(node)
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
@@ -219,12 +195,59 @@ module RuboCop
           end
         end
 
+        def on_hash(node)
+          return if ignored_node?(node)
+          return if node.pairs.empty? || node.single_line?
+
+          return unless alignment_for_hash_rockets.checkable_layout?(node) &&
+                        alignment_for_colons.checkable_layout?(node)
+
+          check_pairs(node)
+        end
+
+        def on_send(node)
+          return if double_splat?(node)
+          return unless node.arguments?
+
+          last_argument = node.last_argument
+
+          return unless last_argument.hash_type? &&
+                        ignore_hash_argument?(last_argument)
+
+          ignore_node(last_argument)
+        end
+        alias on_super on_send
+        alias on_yield on_send
+
         private
 
         attr_accessor :column_deltas
 
-        def double_splat?(node)
-          node.children.last.is_a?(Symbol)
+        def adjust(corrector, delta, range)
+          if delta > 0
+            corrector.insert_before(range, ' ' * delta)
+          elsif delta < 0
+            range = range_between(range.begin_pos - delta.abs, range.begin_pos)
+            corrector.remove(range)
+          end
+        end
+
+        def alignment_for(pair)
+          if pair.hash_rocket?
+            alignment_for_hash_rockets
+          else
+            alignment_for_colons
+          end
+        end
+
+        def alignment_for_colons
+          @alignment_for_colons ||=
+            new_alignment('EnforcedColonStyle')
+        end
+
+        def alignment_for_hash_rockets
+          @alignment_for_hash_rockets ||=
+            new_alignment('EnforcedHashRocketStyle')
         end
 
         def check_pairs(node)
@@ -238,37 +261,6 @@ module RuboCop
                                  .deltas(first_pair, current)
             add_offense(current) unless good_alignment?
           end
-        end
-
-        def ignore_hash_argument?(node)
-          case cop_config['EnforcedLastArgumentHashStyle']
-          when 'always_inspect'  then false
-          when 'always_ignore'   then true
-          when 'ignore_explicit' then node.braces?
-          when 'ignore_implicit' then !node.braces?
-          end
-        end
-
-        def alignment_for(pair)
-          if pair.hash_rocket?
-            alignment_for_hash_rockets
-          else
-            alignment_for_colons
-          end
-        end
-
-        def alignment_for_hash_rockets
-          @alignment_for_hash_rockets ||=
-            new_alignment('EnforcedHashRocketStyle')
-        end
-
-        def alignment_for_colons
-          @alignment_for_colons ||=
-            new_alignment('EnforcedColonStyle')
-        end
-
-        def correct_no_value(key_delta, key)
-          ->(corrector) { adjust(corrector, key_delta, key) }
         end
 
         def correct_key_value(key_delta, key, value, separator)
@@ -288,6 +280,27 @@ module RuboCop
           end
         end
 
+        def correct_no_value(key_delta, key)
+          ->(corrector) { adjust(corrector, key_delta, key) }
+        end
+
+        def double_splat?(node)
+          node.children.last.is_a?(Symbol)
+        end
+
+        def good_alignment?
+          column_deltas.values.all?(&:zero?)
+        end
+
+        def ignore_hash_argument?(node)
+          case cop_config['EnforcedLastArgumentHashStyle']
+          when 'always_inspect'  then false
+          when 'always_ignore'   then true
+          when 'ignore_explicit' then node.braces?
+          when 'ignore_implicit' then !node.braces?
+          end
+        end
+
         def new_alignment(key)
           case cop_config[key]
           when 'key'       then KeyAlignment.new
@@ -295,19 +308,6 @@ module RuboCop
           when 'separator' then SeparatorAlignment.new
           else raise "Unknown #{key}: #{cop_config[key]}"
           end
-        end
-
-        def adjust(corrector, delta, range)
-          if delta > 0
-            corrector.insert_before(range, ' ' * delta)
-          elsif delta < 0
-            range = range_between(range.begin_pos - delta.abs, range.begin_pos)
-            corrector.remove(range)
-          end
-        end
-
-        def good_alignment?
-          column_deltas.values.all?(&:zero?)
         end
       end
     end

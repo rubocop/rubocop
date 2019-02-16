@@ -36,6 +36,12 @@ module RuboCop
 
         def_node_matcher :message_method_call, '(send nil? :message $_node)'
 
+        def autocorrect(node)
+          range = offending_range(node)
+
+          ->(corrector) { corrector.remove(range) }
+        end
+
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|
             find_offending_argument(node_arg, kwargs) do |pair|
@@ -44,19 +50,7 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          range = offending_range(node)
-
-          ->(corrector) { corrector.remove(range) }
-        end
-
         private
-
-        def offending_range(node)
-          with_space = range_with_surrounding_space(range: node.loc.expression)
-
-          range_with_surrounding_comma(with_space, :left)
-        end
 
         def find_offending_argument(searched_node, kwargs)
           kwargs.pairs.each do |pair|
@@ -66,6 +60,12 @@ module RuboCop
               yield pair if !node || node == searched_node
             end
           end
+        end
+
+        def offending_range(node)
+          with_space = range_with_surrounding_space(range: node.loc.expression)
+
+          range_with_surrounding_comma(with_space, :left)
         end
       end
     end

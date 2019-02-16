@@ -21,6 +21,13 @@ module RuboCop
 
         MSG = 'Missing space after `#`.'.freeze
 
+        def autocorrect(comment)
+          expr = comment.loc.expression
+          hash_mark = range_between(expr.begin_pos, expr.begin_pos + 1)
+
+          ->(corrector) { corrector.insert_after(hash_mark, ' ') }
+        end
+
         def investigate(processed_source)
           processed_source.each_comment do |comment|
             next unless comment.text =~ /\A#+[^#\s=:+-]/
@@ -30,29 +37,22 @@ module RuboCop
           end
         end
 
-        def autocorrect(comment)
-          expr = comment.loc.expression
-          hash_mark = range_between(expr.begin_pos, expr.begin_pos + 1)
-
-          ->(corrector) { corrector.insert_after(hash_mark, ' ') }
-        end
-
         private
 
         def allowed_on_first_line?(comment)
           shebang?(comment) || rackup_config_file? && rackup_options?(comment)
         end
 
-        def shebang?(comment)
-          comment.text.start_with?('#!')
+        def rackup_config_file?
+          File.basename(processed_source.file_path).eql?('config.ru')
         end
 
         def rackup_options?(comment)
           comment.text.start_with?('#\\')
         end
 
-        def rackup_config_file?
-          File.basename(processed_source.file_path).eql?('config.ru')
+        def shebang?(comment)
+          comment.text.start_with?('#!')
         end
       end
     end

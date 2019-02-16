@@ -13,23 +13,23 @@ module RuboCop
             !just_first_word_of_sentence?(first_word, colon, space, note)
         end
 
-        def split_comment(comment)
-          match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
-          return false unless match
-
-          match.captures
-        end
-
-        def keyword_appearance?(first_word, colon, space)
-          first_word && keyword?(first_word.upcase) && (colon || space)
-        end
-
         def just_first_word_of_sentence?(first_word, colon, space, note)
           first_word == first_word.capitalize && !colon && space && note
         end
 
         def keyword?(word)
           config.for_cop('Style/CommentAnnotation')['Keywords'].include?(word)
+        end
+
+        def keyword_appearance?(first_word, colon, space)
+          first_word && keyword?(first_word.upcase) && (colon || space)
+        end
+
+        def split_comment(comment)
+          match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
+          return false unless match
+
+          match.captures
         end
       end
     end

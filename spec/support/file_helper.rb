@@ -3,6 +3,10 @@
 require 'fileutils'
 
 module FileHelper
+  def create_empty_file(file_path)
+    create_file(file_path, '')
+  end
+
   def create_file(file_path, content)
     file_path = File.expand_path(file_path)
 
@@ -17,9 +21,5 @@ module FileHelper
         file.puts content.join("\n")
       end
     end
-  end
-
-  def create_empty_file(file_path)
-    create_file(file_path, '')
   end
 end

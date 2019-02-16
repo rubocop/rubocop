@@ -83,15 +83,12 @@ module RuboCop
 
         private
 
-        def check_deprecated_methods(node)
-          DEPRECATED_METHODS.each do |relevant:, deprecated:|
-            next unless node.method_name == deprecated.to_sym
+        def bad_days
+          BAD_DAYS - good_days
+        end
 
-            add_offense(node, location: :selector,
-                              message: format(DEPRECATED_MSG,
-                                              deprecated: deprecated,
-                                              relevant: relevant))
-          end
+        def bad_methods
+          %i[to_time to_time_in_current_zone]
         end
 
         def check_date_node(node)
@@ -105,8 +102,27 @@ module RuboCop
                             message: format(MSG, day: method_name.to_s))
         end
 
+        def check_deprecated_methods(node)
+          DEPRECATED_METHODS.each do |relevant:, deprecated:|
+            next unless node.method_name == deprecated.to_sym
+
+            add_offense(node, location: :selector,
+                              message: format(DEPRECATED_MSG,
+                                              deprecated: deprecated,
+                                              relevant: relevant))
+          end
+        end
+
         def extract_method_chain(node)
           [node, *node.each_ancestor(:send)].map(&:method_name)
+        end
+
+        def good_days
+          style == :strict ? [] : %i[current yesterday tomorrow]
+        end
+
+        def good_methods
+          style == :strict ? [] : TimeZone::ACCEPTED_METHODS
         end
 
         # checks that parent node of send_type
@@ -133,22 +149,6 @@ module RuboCop
           else
             node.arguments.one?
           end
-        end
-
-        def good_days
-          style == :strict ? [] : %i[current yesterday tomorrow]
-        end
-
-        def bad_days
-          BAD_DAYS - good_days
-        end
-
-        def bad_methods
-          %i[to_time to_time_in_current_zone]
-        end
-
-        def good_methods
-          style == :strict ? [] : TimeZone::ACCEPTED_METHODS
         end
       end
     end

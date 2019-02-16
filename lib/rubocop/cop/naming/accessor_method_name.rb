@@ -34,20 +34,20 @@ module RuboCop
 
         private
 
-        def message(node)
-          if bad_reader_name?(node)
-            MSG_READER
-          elsif bad_writer_name?(node)
-            MSG_WRITER
-          end
-        end
-
         def bad_reader_name?(node)
           node.method_name.to_s.start_with?('get_') && !node.arguments?
         end
 
         def bad_writer_name?(node)
           node.method_name.to_s.start_with?('set_') && node.arguments.one?
+        end
+
+        def message(node)
+          if bad_reader_name?(node)
+            MSG_READER
+          elsif bad_writer_name?(node)
+            MSG_WRITER
+          end
         end
       end
     end

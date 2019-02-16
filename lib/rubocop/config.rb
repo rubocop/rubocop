@@ -239,81 +239,12 @@ module RuboCop
       new(hash, path).check
     end
 
-    def check
-      deprecation_check do |deprecation_message|
-        warn("#{loaded_path} - #{deprecation_message}")
-      end
-      validate
-      make_excludes_absolute
-      self
-    end
-
     def [](key)
       @hash[key]
     end
 
     def []=(key, value)
       @hash[key] = value
-    end
-
-    def delete(key)
-      @hash.delete(key)
-    end
-
-    def each(&block)
-      @hash.each(&block)
-    end
-
-    def key?(key)
-      @hash.key?(key)
-    end
-
-    def keys
-      @hash.keys
-    end
-
-    def each_key(&block)
-      @hash.each_key(&block)
-    end
-
-    def map(&block)
-      @hash.map(&block)
-    end
-
-    def merge(other_hash)
-      @hash.merge(other_hash)
-    end
-
-    def to_h
-      @hash
-    end
-
-    def to_hash
-      @hash
-    end
-
-    def to_s
-      @to_s ||= @hash.to_s
-    end
-
-    def signature
-      @signature ||= Digest::MD5.hexdigest(to_s)
-    end
-
-    def make_excludes_absolute
-      each_key do |key|
-        validate_section_presence(key)
-        next unless self[key]['Exclude']
-
-        self[key]['Exclude'].map! do |exclude_elem|
-          if exclude_elem.is_a?(String) && !absolute?(exclude_elem)
-            File.expand_path(File.join(base_dir_for_path_parameters,
-                                       exclude_elem))
-          else
-            exclude_elem
-          end
-        end
-      end
     end
 
     def add_excludes_from_higher_level(highest_config)
@@ -328,6 +259,47 @@ module RuboCop
       end
     end
 
+    def allowed_camel_case_file?(file)
+      # Gemspecs are allowed to have dashes because that fits with bundler best
+      # practices in the case when the gem is nested under a namespace (e.g.,
+      # `bundler-console` conveys `Bundler::Console`).
+      return true if File.extname(file) == '.gemspec'
+
+      file_to_include?(file) do |pattern, relative_path, absolute_path|
+        pattern.to_s =~ /[A-Z]/ &&
+          (match_path?(pattern, relative_path) ||
+           match_path?(pattern, absolute_path))
+      end
+    end
+
+    # Paths specified in configuration files starting with .rubocop are
+    # relative to the directory where that file is. Paths in other config files
+    # are relative to the current directory. This is so that paths in
+    # config/default.yml, for example, are not relative to RuboCop's config
+    # directory since that wouldn't work.
+    def base_dir_for_path_parameters
+      @base_dir_for_path_parameters ||=
+        if File.basename(loaded_path).start_with?('.rubocop') &&
+           loaded_path != File.join(Dir.home, ConfigLoader::DOTFILE)
+          File.expand_path(File.dirname(loaded_path))
+        else
+          Dir.pwd
+        end
+    end
+
+    def check
+      deprecation_check do |deprecation_message|
+        warn("#{loaded_path} - #{deprecation_message}")
+      end
+      validate
+      make_excludes_absolute
+      self
+    end
+
+    def delete(key)
+      @hash.delete(key)
+    end
+
     def deprecation_check
       %w[Exclude Include].each do |key|
         plural = "#{key}s"
@@ -339,31 +311,19 @@ module RuboCop
       end
     end
 
-    def for_cop(cop)
-      @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
+    def each(&block)
+      @hash.each(&block)
     end
 
-    def for_all_cops
-      @for_all_cops ||= self['AllCops'] || {}
+    def each_key(&block)
+      @hash.each_key(&block)
     end
 
-    def validate
-      # Don't validate RuboCop's own files. Avoids infinite recursion.
-      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
-                                                    'config'))
-      return if File.expand_path(loaded_path).start_with?(base_config_path)
-
-      valid_cop_names, invalid_cop_names = keys.partition do |key|
-        ConfigLoader.default_configuration.key?(key)
+    def file_to_exclude?(file)
+      file = File.expand_path(file)
+      patterns_to_exclude.any? do |pattern|
+        match_path?(pattern, file)
       end
-
-      reject_obsolete_cops_and_parameters
-      warn_about_unrecognized_cops(invalid_cop_names)
-      check_target_ruby
-      validate_parameter_names(valid_cop_names)
-      validate_enforced_styles(valid_cop_names)
-      validate_syntax_cop
-      reject_mutually_exclusive_defaults
     end
 
     def file_to_include?(file)
@@ -387,17 +347,56 @@ module RuboCop
       end
     end
 
-    def allowed_camel_case_file?(file)
-      # Gemspecs are allowed to have dashes because that fits with bundler best
-      # practices in the case when the gem is nested under a namespace (e.g.,
-      # `bundler-console` conveys `Bundler::Console`).
-      return true if File.extname(file) == '.gemspec'
+    def for_all_cops
+      @for_all_cops ||= self['AllCops'] || {}
+    end
 
-      file_to_include?(file) do |pattern, relative_path, absolute_path|
-        pattern.to_s =~ /[A-Z]/ &&
-          (match_path?(pattern, relative_path) ||
-           match_path?(pattern, absolute_path))
+    def for_cop(cop)
+      @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
+    end
+
+    def key?(key)
+      @hash.key?(key)
+    end
+
+    def keys
+      @hash.keys
+    end
+
+    def make_excludes_absolute
+      each_key do |key|
+        validate_section_presence(key)
+        next unless self[key]['Exclude']
+
+        self[key]['Exclude'].map! do |exclude_elem|
+          if exclude_elem.is_a?(String) && !absolute?(exclude_elem)
+            File.expand_path(File.join(base_dir_for_path_parameters,
+                                       exclude_elem))
+          else
+            exclude_elem
+          end
+        end
       end
+    end
+
+    def map(&block)
+      @hash.map(&block)
+    end
+
+    def merge(other_hash)
+      @hash.merge(other_hash)
+    end
+
+    def path_relative_to_config(path)
+      relative_path(path, base_dir_for_path_parameters)
+    end
+
+    def patterns_to_exclude
+      for_all_cops['Exclude'] || []
+    end
+
+    def patterns_to_include
+      for_all_cops['Include'] || []
     end
 
     # Returns true if there's a chance that an Include pattern matches hidden
@@ -410,37 +409,18 @@ module RuboCop
       end
     end
 
-    def file_to_exclude?(file)
-      file = File.expand_path(file)
-      patterns_to_exclude.any? do |pattern|
-        match_path?(pattern, file)
-      end
+    def signature
+      @signature ||= Digest::MD5.hexdigest(to_s)
     end
 
-    def patterns_to_include
-      for_all_cops['Include'] || []
-    end
-
-    def patterns_to_exclude
-      for_all_cops['Exclude'] || []
-    end
-
-    def path_relative_to_config(path)
-      relative_path(path, base_dir_for_path_parameters)
-    end
-
-    # Paths specified in configuration files starting with .rubocop are
-    # relative to the directory where that file is. Paths in other config files
-    # are relative to the current directory. This is so that paths in
-    # config/default.yml, for example, are not relative to RuboCop's config
-    # directory since that wouldn't work.
-    def base_dir_for_path_parameters
-      @base_dir_for_path_parameters ||=
-        if File.basename(loaded_path).start_with?('.rubocop') &&
-           loaded_path != File.join(Dir.home, ConfigLoader::DOTFILE)
-          File.expand_path(File.dirname(loaded_path))
+    def target_rails_version
+      @target_rails_version ||=
+        if for_all_cops['TargetRailsVersion']
+          for_all_cops['TargetRailsVersion'].to_f
+        elsif target_rails_version_from_bundler_lock_file
+          target_rails_version_from_bundler_lock_file
         else
-          Dir.pwd
+          DEFAULT_RAILS_VERSION
         end
     end
 
@@ -464,121 +444,48 @@ module RuboCop
       end
     end
 
-    def target_rails_version
-      @target_rails_version ||=
-        if for_all_cops['TargetRailsVersion']
-          for_all_cops['TargetRailsVersion'].to_f
-        elsif target_rails_version_from_bundler_lock_file
-          target_rails_version_from_bundler_lock_file
-        else
-          DEFAULT_RAILS_VERSION
-        end
+    def to_h
+      @hash
+    end
+
+    def to_hash
+      @hash
+    end
+
+    def to_s
+      @to_s ||= @hash.to_s
+    end
+
+    def validate
+      # Don't validate RuboCop's own files. Avoids infinite recursion.
+      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
+                                                    'config'))
+      return if File.expand_path(loaded_path).start_with?(base_config_path)
+
+      valid_cop_names, invalid_cop_names = keys.partition do |key|
+        ConfigLoader.default_configuration.key?(key)
+      end
+
+      reject_obsolete_cops_and_parameters
+      warn_about_unrecognized_cops(invalid_cop_names)
+      check_target_ruby
+      validate_parameter_names(valid_cop_names)
+      validate_enforced_styles(valid_cop_names)
+      validate_syntax_cop
+      reject_mutually_exclusive_defaults
     end
 
     private
 
-    def warn_about_unrecognized_cops(invalid_cop_names)
-      invalid_cop_names.each do |name|
-        # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.registry.contains_cop_matching?([name])
+    def bundler_lock_file_path
+      return nil unless loaded_path
 
-        # Special case for inherit_mode, which is a directive that we keep in
-        # the configuration (even though it's not a cop), because it's easier
-        # to do so than to pass the value around to various methods.
-        next if name == 'inherit_mode'
-
-        warn Rainbow("Warning: unrecognized cop #{name} found in " \
-                     "#{smart_loaded_path}").yellow
+      base_path = base_dir_for_path_parameters
+      ['gems.locked', 'Gemfile.lock'].each do |file_name|
+        path = find_file_upwards(file_name, base_path)
+        return path if path
       end
-    end
-
-    def validate_syntax_cop
-      syntax_config = self['Lint/Syntax']
-      default_config = ConfigLoader.default_configuration['Lint/Syntax']
-
-      return unless syntax_config &&
-                    default_config.merge(syntax_config) != default_config
-
-      raise ValidationError,
-            "configuration for Syntax cop found in #{smart_loaded_path}\n" \
-            'It\'s not possible to disable this cop.'
-    end
-
-    def validate_section_presence(name)
-      return unless key?(name) && self[name].nil?
-
-      raise ValidationError,
-            "empty section #{name} found in #{smart_loaded_path}"
-    end
-
-    def validate_parameter_names(valid_cop_names)
-      valid_cop_names.each do |name|
-        validate_section_presence(name)
-        default_config = ConfigLoader.default_configuration[name]
-
-        self[name].each_key do |param|
-          next if COMMON_PARAMS.include?(param) || default_config.key?(param)
-
-          message =
-            "Warning: #{name} does not support #{param} parameter.\n\n" \
-            "Supported parameters are:\n\n" \
-            "  - #{(default_config.keys - INTERNAL_PARAMS).join("\n  - ")}\n"
-
-          warn Rainbow(message).yellow.to_s
-        end
-      end
-    end
-
-    def validate_enforced_styles(valid_cop_names)
-      valid_cop_names.each do |name|
-        styles = self[name].select { |key, _| key.start_with?('Enforced') }
-
-        styles.each do |style_name, style|
-          supported_key = RuboCop::Cop::Util.to_supported_styles(style_name)
-          valid = ConfigLoader.default_configuration[name][supported_key]
-          next unless valid
-          next if valid.include?(style)
-
-          msg = "invalid #{style_name} '#{style}' for #{name} found in " \
-            "#{smart_loaded_path}\n" \
-            "Valid choices are: #{valid.join(', ')}"
-          raise ValidationError, msg
-        end
-      end
-    end
-
-    def reject_obsolete_cops_and_parameters
-      messages = [
-        obsolete_cops,
-        obsolete_parameters
-      ].flatten.compact
-      return if messages.empty?
-
-      raise ValidationError, messages.join("\n")
-    end
-
-    def obsolete_parameters
-      OBSOLETE_PARAMETERS.map do |params|
-        obsolete_parameter_message(params[:cop], params[:parameter],
-                                   params[:alternative])
-      end
-    end
-
-    def obsolete_parameter_message(cop, parameter, alternative)
-      return unless self[cop] && self[cop].key?(parameter)
-
-      "obsolete parameter #{parameter} (for #{cop}) " \
-        "found in #{smart_loaded_path}" \
-        "\n#{alternative}"
-    end
-
-    def obsolete_cops
-      OBSOLETE_COPS.map do |cop_name, message|
-        next unless key?(cop_name) || key?(Cop::Badge.parse(cop_name).cop_name)
-
-        message + "\n(obsolete configuration found in #{smart_loaded_path}," \
-                   ' please update it)'
-      end
+      nil
     end
 
     def check_target_ruby
@@ -599,35 +506,54 @@ module RuboCop
       raise ValidationError, msg
     end
 
-    def target_ruby_source
-      case @target_ruby_version_source
-      when :ruby_version_file
-        "`#{RUBY_VERSION_FILENAME}`"
-      when :bundler_lock_file
-        "`#{bundler_lock_file_path}`"
-      when :rubocop_yml
-        "`TargetRubyVersion` parameter (in #{smart_loaded_path})"
+    def enable_cop?(qualified_cop_name, cop_options)
+      cop_department, cop_name = qualified_cop_name.split('/')
+      department = cop_name.nil?
+
+      unless department
+        department_options = self[cop_department]
+        if department_options && department_options['Enabled'] == false
+          return false
+        end
+      end
+
+      cop_options.fetch('Enabled', true)
+    end
+
+    def obsolete_cops
+      OBSOLETE_COPS.map do |cop_name, message|
+        next unless key?(cop_name) || key?(Cop::Badge.parse(cop_name).cop_name)
+
+        message + "\n(obsolete configuration found in #{smart_loaded_path}," \
+                   ' please update it)'
       end
     end
 
-    def ruby_version_file
-      @ruby_version_file ||=
-        find_file_upwards(RUBY_VERSION_FILENAME, base_dir_for_path_parameters)
+    def obsolete_parameter_message(cop, parameter, alternative)
+      return unless self[cop] && self[cop].key?(parameter)
+
+      "obsolete parameter #{parameter} (for #{cop}) " \
+        "found in #{smart_loaded_path}" \
+        "\n#{alternative}"
     end
 
-    def target_ruby_version_from_version_file
-      file = ruby_version_file
-      return unless file && File.file?(file)
-
-      @target_ruby_version_from_version_file ||=
-        File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
-          md[:version].to_f
-        end
+    def obsolete_parameters
+      OBSOLETE_PARAMETERS.map do |params|
+        obsolete_parameter_message(params[:cop], params[:parameter],
+                                   params[:alternative])
+      end
     end
 
-    def target_ruby_version_from_bundler_lock_file
-      @target_ruby_version_from_bundler_lock_file ||=
-        read_ruby_version_from_bundler_lock_file
+    def read_rails_version_from_bundler_lock_file
+      lock_file_path = bundler_lock_file_path
+      return nil unless lock_file_path
+
+      File.foreach(lock_file_path) do |line|
+        # If rails is in Gemfile.lock or gems.lock, there should be a line like:
+        #         rails (X.X.X)
+        result = line.match(/^\s+rails\s+\((\d+\.\d+)/)
+        return result.captures.first.to_f if result
+      end
     end
 
     def read_ruby_version_from_bundler_lock_file
@@ -657,34 +583,6 @@ module RuboCop
       end
     end
 
-    def target_rails_version_from_bundler_lock_file
-      @target_rails_version_from_bundler_lock_file ||=
-        read_rails_version_from_bundler_lock_file
-    end
-
-    def read_rails_version_from_bundler_lock_file
-      lock_file_path = bundler_lock_file_path
-      return nil unless lock_file_path
-
-      File.foreach(lock_file_path) do |line|
-        # If rails is in Gemfile.lock or gems.lock, there should be a line like:
-        #         rails (X.X.X)
-        result = line.match(/^\s+rails\s+\((\d+\.\d+)/)
-        return result.captures.first.to_f if result
-      end
-    end
-
-    def bundler_lock_file_path
-      return nil unless loaded_path
-
-      base_path = base_dir_for_path_parameters
-      ['gems.locked', 'Gemfile.lock'].each do |file_name|
-        path = find_file_upwards(file_name, base_path)
-        return path if path
-      end
-      nil
-    end
-
     def reject_mutually_exclusive_defaults
       disabled_by_default = for_all_cops['DisabledByDefault']
       enabled_by_default = for_all_cops['EnabledByDefault']
@@ -694,22 +592,124 @@ module RuboCop
       raise ValidationError, msg
     end
 
-    def enable_cop?(qualified_cop_name, cop_options)
-      cop_department, cop_name = qualified_cop_name.split('/')
-      department = cop_name.nil?
+    def reject_obsolete_cops_and_parameters
+      messages = [
+        obsolete_cops,
+        obsolete_parameters
+      ].flatten.compact
+      return if messages.empty?
 
-      unless department
-        department_options = self[cop_department]
-        if department_options && department_options['Enabled'] == false
-          return false
-        end
-      end
+      raise ValidationError, messages.join("\n")
+    end
 
-      cop_options.fetch('Enabled', true)
+    def ruby_version_file
+      @ruby_version_file ||=
+        find_file_upwards(RUBY_VERSION_FILENAME, base_dir_for_path_parameters)
     end
 
     def smart_loaded_path
       PathUtil.smart_path(@loaded_path)
+    end
+
+    def target_rails_version_from_bundler_lock_file
+      @target_rails_version_from_bundler_lock_file ||=
+        read_rails_version_from_bundler_lock_file
+    end
+
+    def target_ruby_source
+      case @target_ruby_version_source
+      when :ruby_version_file
+        "`#{RUBY_VERSION_FILENAME}`"
+      when :bundler_lock_file
+        "`#{bundler_lock_file_path}`"
+      when :rubocop_yml
+        "`TargetRubyVersion` parameter (in #{smart_loaded_path})"
+      end
+    end
+
+    def target_ruby_version_from_bundler_lock_file
+      @target_ruby_version_from_bundler_lock_file ||=
+        read_ruby_version_from_bundler_lock_file
+    end
+
+    def target_ruby_version_from_version_file
+      file = ruby_version_file
+      return unless file && File.file?(file)
+
+      @target_ruby_version_from_version_file ||=
+        File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
+          md[:version].to_f
+        end
+    end
+
+    def validate_enforced_styles(valid_cop_names)
+      valid_cop_names.each do |name|
+        styles = self[name].select { |key, _| key.start_with?('Enforced') }
+
+        styles.each do |style_name, style|
+          supported_key = RuboCop::Cop::Util.to_supported_styles(style_name)
+          valid = ConfigLoader.default_configuration[name][supported_key]
+          next unless valid
+          next if valid.include?(style)
+
+          msg = "invalid #{style_name} '#{style}' for #{name} found in " \
+            "#{smart_loaded_path}\n" \
+            "Valid choices are: #{valid.join(', ')}"
+          raise ValidationError, msg
+        end
+      end
+    end
+
+    def validate_parameter_names(valid_cop_names)
+      valid_cop_names.each do |name|
+        validate_section_presence(name)
+        default_config = ConfigLoader.default_configuration[name]
+
+        self[name].each_key do |param|
+          next if COMMON_PARAMS.include?(param) || default_config.key?(param)
+
+          message =
+            "Warning: #{name} does not support #{param} parameter.\n\n" \
+            "Supported parameters are:\n\n" \
+            "  - #{(default_config.keys - INTERNAL_PARAMS).join("\n  - ")}\n"
+
+          warn Rainbow(message).yellow.to_s
+        end
+      end
+    end
+
+    def validate_section_presence(name)
+      return unless key?(name) && self[name].nil?
+
+      raise ValidationError,
+            "empty section #{name} found in #{smart_loaded_path}"
+    end
+
+    def validate_syntax_cop
+      syntax_config = self['Lint/Syntax']
+      default_config = ConfigLoader.default_configuration['Lint/Syntax']
+
+      return unless syntax_config &&
+                    default_config.merge(syntax_config) != default_config
+
+      raise ValidationError,
+            "configuration for Syntax cop found in #{smart_loaded_path}\n" \
+            'It\'s not possible to disable this cop.'
+    end
+
+    def warn_about_unrecognized_cops(invalid_cop_names)
+      invalid_cop_names.each do |name|
+        # There could be a custom cop with this name. If so, don't warn
+        next if Cop::Cop.registry.contains_cop_matching?([name])
+
+        # Special case for inherit_mode, which is a directive that we keep in
+        # the configuration (even though it's not a cop), because it's easier
+        # to do so than to pass the value around to various methods.
+        next if name == 'inherit_mode'
+
+        warn Rainbow("Warning: unrecognized cop #{name} found in " \
+                     "#{smart_loaded_path}").yellow
+      end
     end
   end
   # rubocop:enable Metrics/ClassLength

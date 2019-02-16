@@ -39,12 +39,6 @@ module RuboCop
         MSG = 'Place the end statement of a multi-line method on ' \
               'its own line.'.freeze
 
-        def on_def(node)
-          return unless trailing_end?(node)
-
-          add_offense(node.to_a.last, location: end_token(node).pos)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             break_line_before_end(node, corrector)
@@ -52,27 +46,16 @@ module RuboCop
           end
         end
 
+        def on_def(node)
+          return unless trailing_end?(node)
+
+          add_offense(node.to_a.last, location: end_token(node).pos)
+        end
+
         private
-
-        def trailing_end?(node)
-          node.body &&
-            node.multiline? &&
-            body_and_end_on_same_line?(node)
-        end
-
-        def end_token(node)
-          @end_token ||= tokens(node).reverse.find(&:end?)
-        end
 
         def body_and_end_on_same_line?(node)
           end_token(node).line == token_before_end(node).line
-        end
-
-        def token_before_end(node)
-          @token_before_end ||= begin
-            i = tokens(node).index(end_token(node))
-            tokens(node)[i - 1]
-          end
         end
 
         def break_line_before_end(node, corrector)
@@ -82,10 +65,27 @@ module RuboCop
           )
         end
 
+        def end_token(node)
+          @end_token ||= tokens(node).reverse.find(&:end?)
+        end
+
         def remove_semicolon(node, corrector)
           return unless token_before_end(node).semicolon?
 
           corrector.remove(token_before_end(node).pos)
+        end
+
+        def token_before_end(node)
+          @token_before_end ||= begin
+            i = tokens(node).index(end_token(node))
+            tokens(node)[i - 1]
+          end
+        end
+
+        def trailing_end?(node)
+          node.body &&
+            node.multiline? &&
+            body_and_end_on_same_line?(node)
         end
       end
     end

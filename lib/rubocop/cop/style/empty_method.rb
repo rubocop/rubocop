@@ -47,6 +47,12 @@ module RuboCop
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
                        'next line.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, corrected(node))
+          end
+        end
+
         def on_def(node)
           return if node.body || comment_lines?(node)
           return if correct_style?(node)
@@ -55,16 +61,18 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, corrected(node))
-          end
-        end
-
         private
 
-        def message(_node)
-          compact_style? ? MSG_COMPACT : MSG_EXPANDED
+        def comment_lines?(node)
+          processed_source[line_range(node)].any? { |line| comment_line?(line) }
+        end
+
+        def compact?(node)
+          node.single_line?
+        end
+
+        def compact_style?
+          style == :compact
         end
 
         def correct_style?(node)
@@ -84,30 +92,22 @@ module RuboCop
           ["def #{signature}", 'end'].join(joint(node))
         end
 
+        def expanded?(node)
+          node.multiline?
+        end
+
+        def expanded_style?
+          style == :expanded
+        end
+
         def joint(node)
           indent = ' ' * node.loc.column
 
           compact_style? ? '; ' : "\n#{indent}"
         end
 
-        def comment_lines?(node)
-          processed_source[line_range(node)].any? { |line| comment_line?(line) }
-        end
-
-        def compact?(node)
-          node.single_line?
-        end
-
-        def expanded?(node)
-          node.multiline?
-        end
-
-        def compact_style?
-          style == :compact
-        end
-
-        def expanded_style?
-          style == :expanded
+        def message(_node)
+          compact_style? ? MSG_COMPACT : MSG_EXPANDED
         end
       end
     end

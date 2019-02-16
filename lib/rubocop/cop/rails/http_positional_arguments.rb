@@ -32,15 +32,6 @@ module RuboCop
           (send nil? {#{HTTP_METHODS.map(&:inspect).join(' ')}} !nil? $_ ...)
         PATTERN
 
-        def on_send(node)
-          http_request?(node) do |data|
-            return unless needs_conversion?(data)
-
-            add_offense(node, location: :selector,
-                              message: format(MSG, verb: node.method_name))
-          end
-        end
-
         # given a pre Rails 5 method: get :new, {user_id: @user.id}, {}
         #
         # @return lambda of auto correct procedure
@@ -57,24 +48,16 @@ module RuboCop
           end
         end
 
-        private
+        def on_send(node)
+          http_request?(node) do |data|
+            return unless needs_conversion?(data)
 
-        def needs_conversion?(data)
-          return true unless data.hash_type?
-
-          data.each_pair.none? do |pair|
-            special_keyword_arg?(pair.key) ||
-              format_arg?(pair.key) && data.pairs.one?
+            add_offense(node, location: :selector,
+                              message: format(MSG, verb: node.method_name))
           end
         end
 
-        def special_keyword_arg?(node)
-          node.sym_type? && KEYWORD_ARGS.include?(node.value)
-        end
-
-        def format_arg?(node)
-          node.sym_type? && node.value == :format
-        end
+        private
 
         def convert_hash_data(data, type)
           return '' if data.hash_type? && data.empty?
@@ -110,6 +93,23 @@ module RuboCop
           else
             '%<name>s %<action>s%<params>s%<session>s'
           end
+        end
+
+        def format_arg?(node)
+          node.sym_type? && node.value == :format
+        end
+
+        def needs_conversion?(data)
+          return true unless data.hash_type?
+
+          data.each_pair.none? do |pair|
+            special_keyword_arg?(pair.key) ||
+              format_arg?(pair.key) && data.pairs.one?
+          end
+        end
+
+        def special_keyword_arg?(node)
+          node.sym_type? && KEYWORD_ARGS.include?(node.value)
         end
       end
     end

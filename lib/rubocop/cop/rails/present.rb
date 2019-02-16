@@ -67,52 +67,6 @@ module RuboCop
           (:if $(send $_ :blank?) {nil? (...)} ...)
         PATTERN
 
-        def on_send(node)
-          return unless cop_config['NotBlank']
-
-          not_blank?(node) do |receiver|
-            add_offense(node,
-                        message: format(MSG_NOT_BLANK,
-                                        prefer: replacement(receiver),
-                                        current: node.source))
-          end
-        end
-
-        def on_and(node)
-          return unless cop_config['NotNilAndNotEmpty']
-
-          exists_and_not_empty?(node) do |var1, var2|
-            return unless var1 == var2
-
-            add_offense(node,
-                        message: format(MSG_EXISTS_AND_NOT_EMPTY,
-                                        prefer: replacement(var1),
-                                        current: node.source))
-          end
-        end
-
-        def on_or(node)
-          return unless cop_config['NilOrEmpty']
-
-          exists_and_not_empty?(node) do |var1, var2|
-            return unless var1 == var2
-
-            add_offense(node, message: MSG_EXISTS_AND_NOT_EMPTY)
-          end
-        end
-
-        def on_if(node)
-          return unless cop_config['UnlessBlank']
-          return unless node.unless?
-
-          unless_blank?(node) do |method_call, receiver|
-            range = unless_condition(node, method_call)
-            msg = format(MSG_UNLESS_BLANK, prefer: replacement(receiver),
-                                           current: range.source)
-            add_offense(node, location: range, message: msg)
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             method_call, variable1 = unless_blank?(node)
@@ -130,7 +84,57 @@ module RuboCop
           end
         end
 
+        def on_and(node)
+          return unless cop_config['NotNilAndNotEmpty']
+
+          exists_and_not_empty?(node) do |var1, var2|
+            return unless var1 == var2
+
+            add_offense(node,
+                        message: format(MSG_EXISTS_AND_NOT_EMPTY,
+                                        prefer: replacement(var1),
+                                        current: node.source))
+          end
+        end
+
+        def on_if(node)
+          return unless cop_config['UnlessBlank']
+          return unless node.unless?
+
+          unless_blank?(node) do |method_call, receiver|
+            range = unless_condition(node, method_call)
+            msg = format(MSG_UNLESS_BLANK, prefer: replacement(receiver),
+                                           current: range.source)
+            add_offense(node, location: range, message: msg)
+          end
+        end
+
+        def on_or(node)
+          return unless cop_config['NilOrEmpty']
+
+          exists_and_not_empty?(node) do |var1, var2|
+            return unless var1 == var2
+
+            add_offense(node, message: MSG_EXISTS_AND_NOT_EMPTY)
+          end
+        end
+
+        def on_send(node)
+          return unless cop_config['NotBlank']
+
+          not_blank?(node) do |receiver|
+            add_offense(node,
+                        message: format(MSG_NOT_BLANK,
+                                        prefer: replacement(receiver),
+                                        current: node.source))
+          end
+        end
+
         private
+
+        def replacement(node)
+          node.respond_to?(:source) ? "#{node.source}.present?" : 'present?'
+        end
 
         def unless_condition(node, method_call)
           if node.modifier_form?
@@ -138,10 +142,6 @@ module RuboCop
           else
             node.loc.expression.begin.join(method_call.loc.expression)
           end
-        end
-
-        def replacement(node)
-          node.respond_to?(:source) ? "#{node.source}.present?" : 'present?'
         end
       end
     end

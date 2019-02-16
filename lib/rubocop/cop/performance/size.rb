@@ -26,29 +26,17 @@ module RuboCop
       class Size < Cop
         MSG = 'Use `size` instead of `count`.'.freeze
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.selector, 'size') }
+        end
+
         def on_send(node)
           return unless eligible_node?(node)
 
           add_offense(node, location: :selector)
         end
 
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'size') }
-        end
-
         private
-
-        def eligible_node?(node)
-          return false unless node.method?(:count) && !node.arguments?
-
-          eligible_receiver?(node.receiver) && !allowed_parent?(node.parent)
-        end
-
-        def eligible_receiver?(node)
-          return false unless node
-
-          array?(node) || hash?(node)
-        end
 
         def allowed_parent?(node)
           node && node.block_type?
@@ -61,6 +49,18 @@ module RuboCop
           _, constant = *node.receiver
 
           constant == :Array || node.method_name == :to_a
+        end
+
+        def eligible_node?(node)
+          return false unless node.method?(:count) && !node.arguments?
+
+          eligible_receiver?(node.receiver) && !allowed_parent?(node.parent)
+        end
+
+        def eligible_receiver?(node)
+          return false unless node
+
+          array?(node) || hash?(node)
         end
 
         def hash?(node)

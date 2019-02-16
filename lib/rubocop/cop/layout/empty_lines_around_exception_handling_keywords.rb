@@ -63,6 +63,10 @@ module RuboCop
 
         MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'.freeze
 
+        def autocorrect(node)
+          EmptyLineCorrector.correct(node)
+        end
+
         def on_def(node)
           check_body(node.body)
         end
@@ -71,10 +75,6 @@ module RuboCop
         def on_kwbegin(node)
           body, = *node
           check_body(body)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
 
         private
@@ -94,14 +94,6 @@ module RuboCop
           end
         end
 
-        def message(location, keyword)
-          format(MSG, location: location, keyword: keyword)
-        end
-
-        def style
-          :no_empty_lines
-        end
-
         def keyword_locations(node)
           return [] unless node
 
@@ -115,6 +107,14 @@ module RuboCop
           end
         end
 
+        def keyword_locations_in_ensure(node)
+          ensure_body, = *node
+          [
+            node.loc.keyword,
+            *keyword_locations(ensure_body)
+          ]
+        end
+
         def keyword_locations_in_rescue(node)
           _begin_body, *resbodies, _else_body = *node
           [
@@ -123,12 +123,12 @@ module RuboCop
           ].compact
         end
 
-        def keyword_locations_in_ensure(node)
-          ensure_body, = *node
-          [
-            node.loc.keyword,
-            *keyword_locations(ensure_body)
-          ]
+        def message(location, keyword)
+          format(MSG, location: location, keyword: keyword)
+        end
+
+        def style
+          :no_empty_lines
         end
       end
     end

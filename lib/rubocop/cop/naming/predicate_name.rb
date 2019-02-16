@@ -28,21 +28,6 @@ module RuboCop
             ...)
         PATTERN
 
-        def on_send(node)
-          dynamic_method_define(node) do |method_name|
-            predicate_prefixes.each do |prefix|
-              next if allowed_method_name?(method_name.to_s, prefix)
-
-              add_offense(
-                node,
-                location: node.first_argument.loc.expression,
-                message: message(method_name,
-                                 expected_name(method_name.to_s, prefix))
-              )
-            end
-          end
-        end
-
         def on_def(node)
           predicate_prefixes.each do |prefix|
             method_name = node.method_name.to_s
@@ -57,6 +42,21 @@ module RuboCop
           end
         end
         alias on_defs on_def
+
+        def on_send(node)
+          dynamic_method_define(node) do |method_name|
+            predicate_prefixes.each do |prefix|
+              next if allowed_method_name?(method_name.to_s, prefix)
+
+              add_offense(
+                node,
+                location: node.first_argument.loc.expression,
+                message: message(method_name,
+                                 expected_name(method_name.to_s, prefix))
+              )
+            end
+          end
+        end
 
         private
 
@@ -81,8 +81,8 @@ module RuboCop
           "Rename `#{method_name}` to `#{new_name}`."
         end
 
-        def prefix_blacklist
-          cop_config['NamePrefixBlacklist']
+        def method_definition_macros(macro_name)
+          cop_config['MethodDefinitionMacros'].include?(macro_name.to_s)
         end
 
         def predicate_prefixes
@@ -93,8 +93,8 @@ module RuboCop
           cop_config['NameWhitelist']
         end
 
-        def method_definition_macros(macro_name)
-          cop_config['MethodDefinitionMacros'].include?(macro_name.to_s)
+        def prefix_blacklist
+          cop_config['NamePrefixBlacklist']
         end
       end
     end

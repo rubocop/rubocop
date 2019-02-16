@@ -39,6 +39,14 @@ module RuboCop
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
 
+        def autocorrect(node)
+          if style == :start_of_line && node.parent && node.parent.send_type?
+            AlignmentCorrector.align_end(processed_source, node, node.parent)
+          else
+            AlignmentCorrector.align_end(processed_source, node, node)
+          end
+        end
+
         def on_def(node)
           check_end_kw_in_node(node)
         end
@@ -59,14 +67,6 @@ module RuboCop
 
           check_end_kw_alignment(method_def, align_with)
           ignore_node(method_def) # Don't check the same `end` again.
-        end
-
-        def autocorrect(node)
-          if style == :start_of_line && node.parent && node.parent.send_type?
-            AlignmentCorrector.align_end(processed_source, node, node.parent)
-          else
-            AlignmentCorrector.align_end(processed_source, node, node)
-          end
         end
       end
     end

@@ -36,17 +36,6 @@ module RuboCop
         MIXIN_METHODS = %i[extend include prepend].freeze
         MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'.freeze
 
-        def on_class(node)
-          begin_node = node.child_nodes.find(&:begin_type?) || node
-          begin_node.each_child_node(:send).select(&:macro?).each do |macro|
-            next unless MIXIN_METHODS.include?(macro.method_name)
-
-            check(macro)
-          end
-        end
-
-        alias on_module on_class
-
         def autocorrect(node)
           range = node.loc.expression
           if separated_style?
@@ -64,19 +53,18 @@ module RuboCop
           ->(corrector) { corrector.replace(range, correction) }
         end
 
-        private
+        def on_class(node)
+          begin_node = node.child_nodes.find(&:begin_type?) || node
+          begin_node.each_child_node(:send).select(&:macro?).each do |macro|
+            next unless MIXIN_METHODS.include?(macro.method_name)
 
-        def range_to_remove_for_subsequent_mixin(mixins, node)
-          range = node.loc.expression
-          prev_mixin = mixins.each_cons(2) { |m, n| break m if n == node }
-          between = prev_mixin.loc.expression.end
-                              .join(range.begin)
-          # if separated from previous mixin with only whitespace?
-          if between.source !~ /\S/
-            range = range.join(between) # then remove that too
+            check(macro)
           end
-          range
         end
+
+        alias on_module on_class
+
+        private
 
         def check(send_node)
           if separated_style?
@@ -98,13 +86,21 @@ module RuboCop
           add_offense(send_node)
         end
 
-        def sibling_mixins(send_node)
-          siblings = send_node.parent.each_child_node(:send)
-                              .select(&:macro?)
-
-          siblings.select do |sibling_node|
-            sibling_node.method_name == send_node.method_name
+        def group_mixins(node, mixins)
+          _receiver, mixin, *_args = *node
+          all_mixin_arguments = mixins.reverse.flat_map do |m|
+            m.arguments.map(&:source)
           end
+
+          "#{mixin} #{all_mixin_arguments.join(', ')}"
+        end
+
+        def grouped_style?
+          style == :grouped
+        end
+
+        def indent(node)
+          ' ' * node.loc.column
         end
 
         def message(send_node)
@@ -114,12 +110,16 @@ module RuboCop
           format(MSG, mixin: send_node.method_name, suffix: suffix)
         end
 
-        def grouped_style?
-          style == :grouped
-        end
-
-        def separated_style?
-          style == :separated
+        def range_to_remove_for_subsequent_mixin(mixins, node)
+          range = node.loc.expression
+          prev_mixin = mixins.each_cons(2) { |m, n| break m if n == node }
+          between = prev_mixin.loc.expression.end
+                              .join(range.begin)
+          # if separated from previous mixin with only whitespace?
+          if between.source !~ /\S/
+            range = range.join(between) # then remove that too
+          end
+          range
         end
 
         def separate_mixins(node)
@@ -132,17 +132,17 @@ module RuboCop
           end
         end
 
-        def group_mixins(node, mixins)
-          _receiver, mixin, *_args = *node
-          all_mixin_arguments = mixins.reverse.flat_map do |m|
-            m.arguments.map(&:source)
-          end
-
-          "#{mixin} #{all_mixin_arguments.join(', ')}"
+        def separated_style?
+          style == :separated
         end
 
-        def indent(node)
-          ' ' * node.loc.column
+        def sibling_mixins(send_node)
+          siblings = send_node.parent.each_child_node(:send)
+                              .select(&:macro?)
+
+          siblings.select do |sibling_node|
+            sibling_node.method_name == send_node.method_name
+          end
         end
       end
     end

@@ -25,6 +25,12 @@ module RuboCop
 
         MSG = 'Add an empty line after magic comments.'.freeze
 
+        def autocorrect(token)
+          lambda do |corrector|
+            corrector.insert_before(token, "\n")
+          end
+        end
+
         def investigate(source)
           return unless source.ast &&
                         (last_magic_comment = last_magic_comment(source))
@@ -34,12 +40,6 @@ module RuboCop
             source_range(source.buffer, last_magic_comment.loc.line + 1, 0)
 
           add_offense(offending_range, location: offending_range)
-        end
-
-        def autocorrect(token)
-          lambda do |corrector|
-            corrector.insert_before(token, "\n")
-          end
         end
 
         private

@@ -40,16 +40,6 @@ module RuboCop
           attr_accessor :largest_brackets
         end
 
-        def on_array(node)
-          if bracketed_array_of?(:str, node)
-            return if complex_content?(node.values)
-
-            check_bracketed_array(node)
-          elsif node.percent_literal?(:string)
-            check_percent_array(node)
-          end
-        end
-
         def autocorrect(node)
           if style == :percent
             PercentLiteralCorrector
@@ -57,6 +47,16 @@ module RuboCop
               .correct(node, 'w')
           else
             correct_bracketed(node)
+          end
+        end
+
+        def on_array(node)
+          if bracketed_array_of?(:str, node)
+            return if complex_content?(node.values)
+
+            check_bracketed_array(node)
+          elsif node.percent_literal?(:string)
+            check_percent_array(node)
           end
         end
 
@@ -77,10 +77,6 @@ module RuboCop
           end
         end
 
-        def word_regex
-          Regexp.new(cop_config['WordRegex'])
-        end
-
         def correct_bracketed(node)
           words = node.children.map do |word|
             if word.dstr_type?
@@ -99,6 +95,10 @@ module RuboCop
 
         def trim_string_interporation_escape_character(str)
           str.gsub(/\\\#{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
+        end
+
+        def word_regex
+          Regexp.new(cop_config['WordRegex'])
         end
       end
     end

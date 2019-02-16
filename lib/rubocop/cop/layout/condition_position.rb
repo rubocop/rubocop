@@ -31,11 +31,11 @@ module RuboCop
           check(node)
         end
 
-        def on_while(node)
+        def on_until(node)
           check(node)
         end
 
-        def on_until(node)
+        def on_while(node)
           check(node)
         end
 

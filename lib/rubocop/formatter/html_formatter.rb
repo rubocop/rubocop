@@ -15,14 +15,14 @@ module RuboCop
         File.expand_path('../../../assets/output.html.erb', __dir__)
 
       Color = Struct.new(:red, :green, :blue, :alpha) do
-        def to_s
-          "rgba(#{values.join(', ')})"
-        end
-
         def fade_out(amount)
           dup.tap do |color|
             color.alpha -= amount
           end
+        end
+
+        def to_s
+          "rgba(#{values.join(', ')})"
         end
       end
 
@@ -32,10 +32,6 @@ module RuboCop
         super
         @files = []
         @summary = OpenStruct.new(offense_count: 0)
-      end
-
-      def started(target_files)
-        summary.target_files = target_files
       end
 
       def file_finished(file, offenses)
@@ -66,6 +62,10 @@ module RuboCop
         output.write html
       end
 
+      def started(target_files)
+        summary.target_files = target_files
+      end
+
       # This class provides helper methods used in the ERB template.
       class ERBContext
         include PathUtil
@@ -89,6 +89,11 @@ module RuboCop
           @summary = summary
         end
 
+        def base64_encoded_logo_image
+          image = File.read(LOGO_IMAGE_PATH, binmode: true)
+          Base64.encode64(image)
+        end
+
         # Make Kernel#binding public.
         def binding
           super
@@ -98,6 +103,10 @@ module RuboCop
           offense.message.gsub(/`(.+?)`/) do
             "<code>#{Regexp.last_match(1)}</code>"
           end
+        end
+
+        def escape(string)
+          CGI.escapeHTML(string)
         end
 
         def highlighted_source_line(offense)
@@ -113,9 +122,8 @@ module RuboCop
             '</span>'
         end
 
-        def source_before_highlight(offense)
-          source_line = offense.location.source_line
-          escape(source_line[0...offense.highlighted_area.begin_pos])
+        def possible_ellipses(location)
+          location.first_line == location.last_line ? '' : " #{ELLIPSES}"
         end
 
         def source_after_highlight(offense)
@@ -123,17 +131,9 @@ module RuboCop
           escape(source_line[offense.highlighted_area.end_pos..-1])
         end
 
-        def possible_ellipses(location)
-          location.first_line == location.last_line ? '' : " #{ELLIPSES}"
-        end
-
-        def escape(string)
-          CGI.escapeHTML(string)
-        end
-
-        def base64_encoded_logo_image
-          image = File.read(LOGO_IMAGE_PATH, binmode: true)
-          Base64.encode64(image)
+        def source_before_highlight(offense)
+          source_line = offense.location.source_line
+          escape(source_line[0...offense.highlighted_area.begin_pos])
         end
       end
     end

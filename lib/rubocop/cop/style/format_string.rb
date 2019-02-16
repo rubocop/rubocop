@@ -48,27 +48,6 @@ module RuboCop
         }
         PATTERN
 
-        def on_send(node)
-          formatter(node) do |selector|
-            detected_style = selector == :% ? :percent : selector
-
-            return if detected_style == style
-
-            add_offense(node, location: :selector,
-                              message: message(detected_style))
-          end
-        end
-
-        def message(detected_style)
-          format(MSG,
-                 prefer: method_name(style),
-                 current: method_name(detected_style))
-        end
-
-        def method_name(style_name)
-          style_name == :percent ? 'String#%' : style_name
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             _receiver, detected_method = *node
@@ -84,6 +63,27 @@ module RuboCop
                 corrector.replace(node.loc.selector, style.to_s)
               end
             end
+          end
+        end
+
+        def message(detected_style)
+          format(MSG,
+                 prefer: method_name(style),
+                 current: method_name(detected_style))
+        end
+
+        def method_name(style_name)
+          style_name == :percent ? 'String#%' : style_name
+        end
+
+        def on_send(node)
+          formatter(node) do |selector|
+            detected_style = selector == :% ? :percent : selector
+
+            return if detected_style == style
+
+            add_offense(node, location: :selector,
+                              message: message(detected_style))
           end
         end
 

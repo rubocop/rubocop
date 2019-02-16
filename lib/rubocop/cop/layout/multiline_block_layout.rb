@@ -43,18 +43,6 @@ module RuboCop
         ARG_MSG = 'Block argument expression is not on the same line as the ' \
                   'block start.'.freeze
 
-        def on_block(node)
-          return if node.single_line?
-
-          unless args_on_beginning_line?(node)
-            add_offense_for_expression(node, node.arguments, ARG_MSG)
-          end
-
-          return unless node.body && node.loc.begin.line == node.body.first_line
-
-          add_offense_for_expression(node, node.body, MSG)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             unless args_on_beginning_line?(node)
@@ -72,18 +60,30 @@ module RuboCop
           end
         end
 
-        private
+        def on_block(node)
+          return if node.single_line?
 
-        def args_on_beginning_line?(node)
-          !node.arguments? ||
-            node.loc.begin.line == node.arguments.loc.last_line
+          unless args_on_beginning_line?(node)
+            add_offense_for_expression(node, node.arguments, ARG_MSG)
+          end
+
+          return unless node.body && node.loc.begin.line == node.body.first_line
+
+          add_offense_for_expression(node, node.body, MSG)
         end
+
+        private
 
         def add_offense_for_expression(node, expr, msg)
           expression = expr.source_range
           range = range_between(expression.begin_pos, expression.end_pos)
 
           add_offense(node, location: range, message: msg)
+        end
+
+        def args_on_beginning_line?(node)
+          !node.arguments? ||
+            node.loc.begin.line == node.arguments.loc.last_line
         end
 
         def autocorrect_arguments(corrector, node)

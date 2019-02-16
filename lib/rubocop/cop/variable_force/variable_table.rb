@@ -13,28 +13,23 @@ module RuboCop
           @hook_receiver = hook_receiver
         end
 
-        def invoke_hook(hook_name, *args)
-          @hook_receiver.send(hook_name, *args) if @hook_receiver
+        def accessible_variables
+          scope_stack.reverse_each.each_with_object([]) do |scope, variables|
+            variables.concat(scope.variables.values)
+            break variables unless scope.node.block_type?
+          end
         end
 
-        def scope_stack
-          @scope_stack ||= []
-        end
+        def assign_to_variable(name, node)
+          variable = find_variable(name)
 
-        def push_scope(scope_node)
-          scope = Scope.new(scope_node)
-          invoke_hook(:before_entering_scope, scope)
-          scope_stack.push(scope)
-          invoke_hook(:after_entering_scope, scope)
-          scope
-        end
+          unless variable
+            raise "Assigning to undeclared local variable \"#{name}\" " \
+                 "at #{node.source_range}, #{node.inspect}"
+          end
 
-        def pop_scope
-          scope = current_scope
-          invoke_hook(:before_leaving_scope, scope)
-          scope_stack.pop
-          invoke_hook(:after_leaving_scope, scope)
-          scope
+          variable.assign(node)
+          mark_variable_as_captured_by_block_if_so(variable)
         end
 
         def current_scope
@@ -53,16 +48,37 @@ module RuboCop
           variable
         end
 
-        def assign_to_variable(name, node)
-          variable = find_variable(name)
+        def find_variable(name)
+          name = name.to_sym
 
-          unless variable
-            raise "Assigning to undeclared local variable \"#{name}\" " \
-                 "at #{node.source_range}, #{node.inspect}"
+          scope_stack.reverse_each do |scope|
+            variable = scope.variables[name]
+            return variable if variable
+            # Only block scope allows referencing outer scope variables.
+            return nil unless scope.node.block_type?
           end
 
-          variable.assign(node)
-          mark_variable_as_captured_by_block_if_so(variable)
+          nil
+        end
+
+        def invoke_hook(hook_name, *args)
+          @hook_receiver.send(hook_name, *args) if @hook_receiver
+        end
+
+        def pop_scope
+          scope = current_scope
+          invoke_hook(:before_leaving_scope, scope)
+          scope_stack.pop
+          invoke_hook(:after_leaving_scope, scope)
+          scope
+        end
+
+        def push_scope(scope_node)
+          scope = Scope.new(scope_node)
+          invoke_hook(:before_entering_scope, scope)
+          scope_stack.push(scope)
+          invoke_hook(:after_entering_scope, scope)
+          scope
         end
 
         def reference_variable(name, node)
@@ -91,28 +107,12 @@ module RuboCop
           mark_variable_as_captured_by_block_if_so(variable)
         end
 
-        def find_variable(name)
-          name = name.to_sym
-
-          scope_stack.reverse_each do |scope|
-            variable = scope.variables[name]
-            return variable if variable
-            # Only block scope allows referencing outer scope variables.
-            return nil unless scope.node.block_type?
-          end
-
-          nil
+        def scope_stack
+          @scope_stack ||= []
         end
 
         def variable_exist?(name)
           find_variable(name)
-        end
-
-        def accessible_variables
-          scope_stack.reverse_each.each_with_object([]) do |scope, variables|
-            variables.concat(scope.variables.values)
-            break variables unless scope.node.block_type?
-          end
         end
 
         private

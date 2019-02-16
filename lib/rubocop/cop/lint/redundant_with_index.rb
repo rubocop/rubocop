@@ -41,12 +41,6 @@ module RuboCop
             ...)
         PATTERN
 
-        def on_block(node)
-          redundant_with_index?(node) do |send|
-            add_offense(node, location: with_index_range(send))
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             redundant_with_index?(node) do |send|
@@ -57,6 +51,12 @@ module RuboCop
                 corrector.remove(send.loc.dot)
               end
             end
+          end
+        end
+
+        def on_block(node)
+          redundant_with_index?(node) do |send|
+            add_offense(node, location: with_index_range(send))
           end
         end
 

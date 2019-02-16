@@ -72,26 +72,26 @@ module RuboCop
 
         private
 
-        def special_file_keyword?(node)
-          node.str_type? &&
-            node.source == '__FILE__'
+        def add_offense_for_different_line(node, line_node, line_diff)
+          sign = line_diff > 0 ? :+ : :-
+          return if line_with_offset?(line_node, sign, line_diff.abs)
+
+          add_offense(
+            node,
+            location: line_node.loc.expression,
+            message: message_incorrect_line(line_node, sign, line_diff.abs)
+          )
         end
 
-        def special_line_keyword?(node)
-          node.int_type? &&
-            node.source == '__LINE__'
-        end
+        def add_offense_for_same_line(node, line_node)
+          return if special_line_keyword?(line_node)
 
-        # FIXME: It's a Style/ConditionalAssignment's false positive.
-        # rubocop:disable Style/ConditionalAssignment
-        def with_lineno?(node)
-          if node.method_name == :eval
-            node.arguments.size == 4
-          else
-            node.arguments.size == 3
-          end
+          add_offense(
+            node,
+            location: line_node.loc.expression,
+            message: message_incorrect_line(line_node, nil, 0)
+          )
         end
-        # rubocop:enable Style/ConditionalAssignment
 
         def message_incorrect_line(actual, sign, line_diff)
           expected =
@@ -114,6 +114,16 @@ module RuboCop
           end
         end
 
+        def special_file_keyword?(node)
+          node.str_type? &&
+            node.source == '__FILE__'
+        end
+
+        def special_line_keyword?(node)
+          node.int_type? &&
+            node.source == '__LINE__'
+        end
+
         def string_first_line(str_node)
           if str_node.heredoc?
             str_node.loc.heredoc_body.first_line
@@ -122,26 +132,16 @@ module RuboCop
           end
         end
 
-        def add_offense_for_same_line(node, line_node)
-          return if special_line_keyword?(line_node)
-
-          add_offense(
-            node,
-            location: line_node.loc.expression,
-            message: message_incorrect_line(line_node, nil, 0)
-          )
+        # FIXME: It's a Style/ConditionalAssignment's false positive.
+        # rubocop:disable Style/ConditionalAssignment
+        def with_lineno?(node)
+          if node.method_name == :eval
+            node.arguments.size == 4
+          else
+            node.arguments.size == 3
+          end
         end
-
-        def add_offense_for_different_line(node, line_node, line_diff)
-          sign = line_diff > 0 ? :+ : :-
-          return if line_with_offset?(line_node, sign, line_diff.abs)
-
-          add_offense(
-            node,
-            location: line_node.loc.expression,
-            message: message_incorrect_line(line_node, sign, line_diff.abs)
-          )
-        end
+        # rubocop:enable Style/ConditionalAssignment
       end
     end
   end

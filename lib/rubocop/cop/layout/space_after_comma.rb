@@ -21,13 +21,13 @@ module RuboCop
           PunctuationCorrector.add_space(comma)
         end
 
+        def kind(token)
+          'comma' if token.comma?
+        end
+
         def space_style_before_rcurly
           cfg = config.for_cop('Layout/SpaceInsideHashLiteralBraces')
           cfg['EnforcedStyle'] || 'space'
-        end
-
-        def kind(token)
-          'comma' if token.comma?
         end
       end
     end

@@ -4,20 +4,58 @@ module RuboCop
   module Cop
     # Handles `EnforcedStyle` configuration parameters.
     module ConfigurableEnforcedStyle
-      def opposite_style_detected
-        style_detected(alternative_style)
+      def alternative_style
+        if supported_styles.size != 2
+          raise 'alternative_style can only be used when there are exactly ' \
+               '2 SupportedStyles'
+        end
+        alternative_styles.first
+      end
+
+      def alternative_styles
+        (supported_styles - [style])
+      end
+
+      def ambiguous_style_detected(*possibilities)
+        style_detected(possibilities)
       end
 
       def correct_style_detected
         style_detected(style)
       end
 
-      def unexpected_style_detected(unexpected)
-        style_detected(unexpected)
+      def detected_style
+        Formatter::DisabledConfigFormatter.detected_styles[cop_name] ||= nil
       end
 
-      def ambiguous_style_detected(*possibilities)
-        style_detected(possibilities)
+      def detected_style=(style)
+        Formatter::DisabledConfigFormatter.detected_styles[cop_name] = style
+      end
+
+      def no_acceptable_style!
+        self.config_to_allow_offenses = { 'Enabled' => false }
+      end
+
+      alias conflicting_styles_detected no_acceptable_style!
+      alias unrecognized_style_detected no_acceptable_style!
+
+      def no_acceptable_style?
+        config_to_allow_offenses['Enabled'] == false
+      end
+
+      def opposite_style_detected
+        style_detected(alternative_style)
+      end
+
+      def style
+        @style ||= begin
+          s = cop_config[style_parameter_name].to_sym
+          unless supported_styles.include?(s)
+            raise "Unknown style #{s} selected!"
+          end
+
+          s
+        end
       end
 
       def style_detected(detected)
@@ -41,46 +79,8 @@ module RuboCop
         end
       end
 
-      def no_acceptable_style?
-        config_to_allow_offenses['Enabled'] == false
-      end
-
-      def no_acceptable_style!
-        self.config_to_allow_offenses = { 'Enabled' => false }
-      end
-
-      def detected_style
-        Formatter::DisabledConfigFormatter.detected_styles[cop_name] ||= nil
-      end
-
-      def detected_style=(style)
-        Formatter::DisabledConfigFormatter.detected_styles[cop_name] = style
-      end
-
-      alias conflicting_styles_detected no_acceptable_style!
-      alias unrecognized_style_detected no_acceptable_style!
-
-      def style
-        @style ||= begin
-          s = cop_config[style_parameter_name].to_sym
-          unless supported_styles.include?(s)
-            raise "Unknown style #{s} selected!"
-          end
-
-          s
-        end
-      end
-
-      def alternative_style
-        if supported_styles.size != 2
-          raise 'alternative_style can only be used when there are exactly ' \
-               '2 SupportedStyles'
-        end
-        alternative_styles.first
-      end
-
-      def alternative_styles
-        (supported_styles - [style])
+      def style_parameter_name
+        'EnforcedStyle'
       end
 
       def supported_styles
@@ -90,8 +90,8 @@ module RuboCop
         end
       end
 
-      def style_parameter_name
-        'EnforcedStyle'
+      def unexpected_style_detected(unexpected)
+        style_detected(unexpected)
       end
     end
   end

@@ -38,6 +38,40 @@ module RuboCop
           end
         end
 
+        def check_beginning(style, first_line)
+          check_source(style, first_line, 'beginning')
+        end
+
+        def check_both(style, first_line, last_line)
+          case style
+          when :beginning_only
+            check_beginning(:empty_lines, first_line)
+            check_ending(:no_empty_lines, last_line)
+          when :ending_only
+            check_beginning(:no_empty_lines, first_line)
+            check_ending(:empty_lines, last_line)
+          else
+            check_beginning(style, first_line)
+            check_ending(style, last_line)
+          end
+        end
+
+        def check_deferred_empty_line(body)
+          node = first_empty_line_required_child(body)
+          return unless node
+
+          line = previous_line_ignoring_comments(node.first_line)
+          return if processed_source[line].empty?
+
+          range = source_range(processed_source.buffer, line + 2, 0)
+
+          add_offense(
+            [:empty_lines, range],
+            location: range,
+            message: deferred_message(node)
+          )
+        end
+
         def check_empty_lines_except_namespace(body, first_line, last_line)
           if namespace?(body, with_one_child: true)
             check_both(:no_empty_lines, first_line, last_line)
@@ -62,26 +96,16 @@ module RuboCop
           end
         end
 
-        def check_both(style, first_line, last_line)
-          case style
-          when :beginning_only
-            check_beginning(:empty_lines, first_line)
-            check_ending(:no_empty_lines, last_line)
-          when :ending_only
-            check_beginning(:no_empty_lines, first_line)
-            check_ending(:empty_lines, last_line)
-          else
-            check_beginning(style, first_line)
-            check_ending(style, last_line)
-          end
-        end
-
-        def check_beginning(style, first_line)
-          check_source(style, first_line, 'beginning')
-        end
-
         def check_ending(style, last_line)
           check_source(style, last_line - 2, 'end')
+        end
+
+        def check_line(style, line, msg)
+          return unless yield(processed_source.lines[line])
+
+          offset = style == :empty_lines && msg.include?('end.') ? 2 : 1
+          range = source_range(processed_source.buffer, line + offset, 0)
+          add_offense([style, range], location: range, message: msg)
         end
 
         def check_source(style, line_no, desc)
@@ -95,38 +119,8 @@ module RuboCop
           end
         end
 
-        def check_line(style, line, msg)
-          return unless yield(processed_source.lines[line])
-
-          offset = style == :empty_lines && msg.include?('end.') ? 2 : 1
-          range = source_range(processed_source.buffer, line + offset, 0)
-          add_offense([style, range], location: range, message: msg)
-        end
-
-        def check_deferred_empty_line(body)
-          node = first_empty_line_required_child(body)
-          return unless node
-
-          line = previous_line_ignoring_comments(node.first_line)
-          return if processed_source[line].empty?
-
-          range = source_range(processed_source.buffer, line + 2, 0)
-
-          add_offense(
-            [:empty_lines, range],
-            location: range,
-            message: deferred_message(node)
-          )
-        end
-
-        def namespace?(body, with_one_child: false)
-          if body.begin_type?
-            return false if with_one_child
-
-            body.children.all? { |child| constant_definition?(child) }
-          else
-            constant_definition?(body)
-          end
+        def deferred_message(node)
+          format(MSG_DEFERRED, type: node.type)
         end
 
         def first_child_requires_empty_line?(body)
@@ -145,19 +139,25 @@ module RuboCop
           end
         end
 
+        def message(type, desc)
+          format(type, kind: self.class::KIND, location: desc)
+        end
+
+        def namespace?(body, with_one_child: false)
+          if body.begin_type?
+            return false if with_one_child
+
+            body.children.all? { |child| constant_definition?(child) }
+          else
+            constant_definition?(body)
+          end
+        end
+
         def previous_line_ignoring_comments(send_line)
           (send_line - 2).downto(0) do |line|
             return line unless comment_line?(processed_source[line])
           end
           0
-        end
-
-        def message(type, desc)
-          format(type, kind: self.class::KIND, location: desc)
-        end
-
-        def deferred_message(node)
-          format(MSG_DEFERRED, type: node.type)
         end
 
         def valid_body_style?(body)

@@ -70,17 +70,6 @@ module RuboCop
 
         MSG = 'Space inside %<problem>s.'.freeze
 
-        def on_hash(node)
-          tokens = processed_source.tokens
-
-          hash_literal_with_braces(node) do |begin_index, end_index|
-            check(tokens[begin_index], tokens[begin_index + 1])
-            return if begin_index == end_index - 1
-
-            check(tokens[end_index - 1], tokens[end_index])
-          end
-        end
-
         def autocorrect(range)
           lambda do |corrector|
             # It is possible that BracesAroundHashParameters will remove the
@@ -98,17 +87,25 @@ module RuboCop
           end
         end
 
+        def on_hash(node)
+          tokens = processed_source.tokens
+
+          hash_literal_with_braces(node) do |begin_index, end_index|
+            check(tokens[begin_index], tokens[begin_index + 1])
+            return if begin_index == end_index - 1
+
+            check(tokens[end_index - 1], tokens[end_index])
+          end
+        end
+
         private
 
-        def hash_literal_with_braces(node)
-          tokens = processed_source.tokens
-          begin_index = index_of_first_token(node)
-          return unless tokens[begin_index].left_brace?
-
-          end_index = index_of_last_token(node)
-          return unless tokens[end_index].right_curly_brace?
-
-          yield begin_index, end_index
+        def ambiguous_or_unexpected_style_detected(style, is_match)
+          if is_match
+            ambiguous_style_detected(style, :compact)
+          else
+            unexpected_style_detected(style)
+          end
         end
 
         def check(token1, token2)
@@ -140,6 +137,17 @@ module RuboCop
           end
         end
 
+        def hash_literal_with_braces(node)
+          tokens = processed_source.tokens
+          begin_index = index_of_first_token(node)
+          return unless tokens[begin_index].left_brace?
+
+          end_index = index_of_last_token(node)
+          return unless tokens[end_index].right_curly_brace?
+
+          yield begin_index, end_index
+        end
+
         def incorrect_style_detected(token1, token2,
                                      expect_space, is_empty_braces)
           brace = (token1.text == '{' ? token1 : token2).pos
@@ -155,19 +163,6 @@ module RuboCop
           end
         end
 
-        def ambiguous_or_unexpected_style_detected(style, is_match)
-          if is_match
-            ambiguous_style_detected(style, :compact)
-          else
-            unexpected_style_detected(style)
-          end
-        end
-
-        def offense?(token1, expect_space)
-          has_space = token1.space_after?
-          expect_space ? !has_space : has_space
-        end
-
         def message(brace, is_empty_braces, expect_space)
           inside_what = if is_empty_braces
                           'empty hash literal braces'
@@ -178,12 +173,17 @@ module RuboCop
           format(MSG, problem: "#{inside_what} #{problem}")
         end
 
-        def space_range(token_range)
-          if token_range.source == '{'
-            range_of_space_to_the_right(token_range)
-          else
-            range_of_space_to_the_left(token_range)
-          end
+        def offense?(token1, expect_space)
+          has_space = token1.space_after?
+          expect_space ? !has_space : has_space
+        end
+
+        def range_of_space_to_the_left(range)
+          src = range.source_buffer.source
+          begin_pos = range.begin_pos
+          begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
+
+          range_between(begin_pos, range.end_pos - 1)
         end
 
         def range_of_space_to_the_right(range)
@@ -194,12 +194,12 @@ module RuboCop
           range_between(range.begin_pos + 1, end_pos)
         end
 
-        def range_of_space_to_the_left(range)
-          src = range.source_buffer.source
-          begin_pos = range.begin_pos
-          begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
-
-          range_between(begin_pos, range.end_pos - 1)
+        def space_range(token_range)
+          if token_range.source == '{'
+            range_of_space_to_the_right(token_range)
+          else
+            range_of_space_to_the_left(token_range)
+          end
         end
       end
     end

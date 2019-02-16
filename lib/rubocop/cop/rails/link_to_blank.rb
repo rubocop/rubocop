@@ -29,19 +29,6 @@ module RuboCop
           (pair {(sym :rel) (str "rel")} (str _))
         PATTERN
 
-        def on_send(node)
-          return unless node.method?(:link_to)
-
-          option_nodes = node.each_child_node(:hash)
-
-          option_nodes.map(&:children).each do |options|
-            blank = options.find { |o| blank_target?(o) }
-            if blank && options.none? { |o| includes_noopener?(o) }
-              add_offense(blank)
-            end
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             send_node = node.parent.parent
@@ -60,7 +47,28 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return unless node.method?(:link_to)
+
+          option_nodes = node.each_child_node(:hash)
+
+          option_nodes.map(&:children).each do |options|
+            blank = options.find { |o| blank_target?(o) }
+            if blank && options.none? { |o| includes_noopener?(o) }
+              add_offense(blank)
+            end
+          end
+        end
+
         private
+
+        def add_rel(send_node, offence_node, corrector)
+          quote_style = offence_node.children.last.source[0]
+          new_rel_exp = ", rel: #{quote_style}noopener#{quote_style}"
+          range = send_node.arguments.last.source_range
+
+          corrector.insert_after(range, new_rel_exp)
+        end
 
         def append_to_rel(rel_node, corrector)
           existing_rel = rel_node.children.last.value
@@ -69,14 +77,6 @@ module RuboCop
             end_pos: -1
           )
           corrector.replace(str_range, "#{existing_rel} noopener")
-        end
-
-        def add_rel(send_node, offence_node, corrector)
-          quote_style = offence_node.children.last.source[0]
-          new_rel_exp = ", rel: #{quote_style}noopener#{quote_style}"
-          range = send_node.arguments.last.source_range
-
-          corrector.insert_after(range, new_rel_exp)
         end
 
         def contains_noopener?(str)

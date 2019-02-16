@@ -51,6 +51,10 @@ module RuboCop
         include Alignment
         include MultilineExpressionIndentation
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        end
+
         def validate_config
           return unless style == :aligned && cop_config['IndentationWidth']
 
@@ -61,28 +65,26 @@ module RuboCop
                 '`EnforcedStyle` is `indented`.'
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
 
-        def relevant_node?(send_node)
-          send_node.loc.dot # Only check method calls with dot operator
+        def align_with_base_message(rhs)
+          "Align `#{rhs.source}` with `#{base_source}` on line #{@base.line}."
         end
 
-        def offending_range(node, lhs, rhs, given_style)
-          return false unless begins_its_line?(rhs)
-          return false if not_for_this_cop?(node)
+        def alignment_base(node, rhs, given_style)
+          case given_style
+          when :aligned
+            semantic_alignment_base(node, rhs) ||
+              syntactic_alignment_base(node, rhs)
+          when :indented
+            nil
+          when :indented_relative_to_receiver
+            receiver_alignment_base(node)
+          end
+        end
 
-          @base = alignment_base(node, rhs, given_style)
-          correct_column = if @base
-                             @base.column + extra_indentation(given_style)
-                           else
-                             indentation(lhs) + correct_indentation(node)
-                           end
-          @column_delta = correct_column - rhs.column
-          rhs if @column_delta.nonzero?
+        def base_source
+          @base.source[/[^\n]*/]
         end
 
         def extra_indentation(given_style)
@@ -103,27 +105,6 @@ module RuboCop
           end
         end
 
-        def should_indent_relative_to_receiver?
-          @base && style == :indented_relative_to_receiver
-        end
-
-        def should_align_with_base?
-          @base && style != :indented_relative_to_receiver
-        end
-
-        def relative_to_receiver_message(rhs)
-          "Indent `#{rhs.source}` #{configured_indentation_width} spaces " \
-            "more than `#{base_source}` on line #{@base.line}."
-        end
-
-        def align_with_base_message(rhs)
-          "Align `#{rhs.source}` with `#{base_source}` on line #{@base.line}."
-        end
-
-        def base_source
-          @base.source[/[^\n]*/]
-        end
-
         def no_base_message(lhs, rhs, node)
           used_indentation = rhs.column - indentation(lhs)
           what = operation_description(node, rhs)
@@ -132,16 +113,88 @@ module RuboCop
             "spaces for indenting #{what} spanning multiple lines."
         end
 
-        def alignment_base(node, rhs, given_style)
-          case given_style
-          when :aligned
-            semantic_alignment_base(node, rhs) ||
-              syntactic_alignment_base(node, rhs)
-          when :indented
-            nil
-          when :indented_relative_to_receiver
-            receiver_alignment_base(node)
+        def offending_range(node, lhs, rhs, given_style)
+          return false unless begins_its_line?(rhs)
+          return false if not_for_this_cop?(node)
+
+          @base = alignment_base(node, rhs, given_style)
+          correct_column = if @base
+                             @base.column + extra_indentation(given_style)
+                           else
+                             indentation(lhs) + correct_indentation(node)
+                           end
+          @column_delta = correct_column - rhs.column
+          rhs if @column_delta.nonzero?
+        end
+
+        def operation_rhs(node)
+          receiver, = *node
+
+          operation_rhs = receiver.each_ancestor(:send).find do |rhs|
+            operator_rhs?(rhs, receiver)
           end
+
+          return unless operation_rhs
+
+          yield operation_rhs.first_argument
+        end
+
+        def operator_rhs?(node, receiver)
+          node.operator_method? && node.arguments? &&
+            within_node?(receiver, node.first_argument)
+        end
+
+        # a
+        #   .b
+        #   .c
+        def receiver_alignment_base(node)
+          node = node.receiver while node.receiver
+          node = node.parent
+          node = node.parent until node.loc.dot
+
+          node.receiver.source_range if node
+        end
+
+        def relative_to_receiver_message(rhs)
+          "Indent `#{rhs.source}` #{configured_indentation_width} spaces " \
+            "more than `#{base_source}` on line #{@base.line}."
+        end
+
+        def relevant_node?(send_node)
+          send_node.loc.dot # Only check method calls with dot operator
+        end
+
+        # a.b
+        #  .c
+        def semantic_alignment_base(node, rhs)
+          return unless rhs.source.start_with?('.')
+
+          node = semantic_alignment_node(node)
+          return unless node && node.loc.selector
+
+          node.loc.dot.join(node.loc.selector)
+        end
+
+        def semantic_alignment_node(node)
+          return if argument_in_method_call(node, :with_parentheses)
+
+          # descend to root of method chain
+          node = node.receiver while node.receiver
+          # ascend to first call which has a dot
+          node = node.parent
+          node = node.parent until node.loc.dot
+
+          return if node.loc.dot.line != node.first_line
+
+          node
+        end
+
+        def should_align_with_base?
+          @base && style != :indented_relative_to_receiver
+        end
+
+        def should_indent_relative_to_receiver?
+          @base && style == :indented_relative_to_receiver
         end
 
         def syntactic_alignment_base(lhs, rhs)
@@ -162,59 +215,6 @@ module RuboCop
           operation_rhs(lhs) do |base|
             return base.source_range
           end
-        end
-
-        # a.b
-        #  .c
-        def semantic_alignment_base(node, rhs)
-          return unless rhs.source.start_with?('.')
-
-          node = semantic_alignment_node(node)
-          return unless node && node.loc.selector
-
-          node.loc.dot.join(node.loc.selector)
-        end
-
-        # a
-        #   .b
-        #   .c
-        def receiver_alignment_base(node)
-          node = node.receiver while node.receiver
-          node = node.parent
-          node = node.parent until node.loc.dot
-
-          node.receiver.source_range if node
-        end
-
-        def semantic_alignment_node(node)
-          return if argument_in_method_call(node, :with_parentheses)
-
-          # descend to root of method chain
-          node = node.receiver while node.receiver
-          # ascend to first call which has a dot
-          node = node.parent
-          node = node.parent until node.loc.dot
-
-          return if node.loc.dot.line != node.first_line
-
-          node
-        end
-
-        def operation_rhs(node)
-          receiver, = *node
-
-          operation_rhs = receiver.each_ancestor(:send).find do |rhs|
-            operator_rhs?(rhs, receiver)
-          end
-
-          return unless operation_rhs
-
-          yield operation_rhs.first_argument
-        end
-
-        def operator_rhs?(node, receiver)
-          node.operator_method? && node.arguments? &&
-            within_node?(receiver, node.first_argument)
         end
       end
     end

@@ -35,6 +35,13 @@ module RuboCop
           verbose: %i[key? value?]
         }.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.selector,
+                              proper_method_name(node.loc.selector.source))
+          end
+        end
+
         def on_send(node)
           return unless node.arguments.one? &&
                         offending_selector?(node.method_name)
@@ -42,13 +49,6 @@ module RuboCop
           add_offense(node, location: :selector)
         end
         alias on_csend on_send
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              proper_method_name(node.loc.selector.source))
-          end
-        end
 
         private
 
@@ -58,16 +58,16 @@ module RuboCop
                  current: node.method_name)
         end
 
+        def offending_selector?(method_name)
+          OFFENDING_SELECTORS[style].include?(method_name)
+        end
+
         def proper_method_name(method_name)
           if style == :verbose
             "has_#{method_name}"
           else
             method_name.to_s.sub(/has_/, '')
           end
-        end
-
-        def offending_selector?(method_name)
-          OFFENDING_SELECTORS[style].include?(method_name)
         end
       end
     end

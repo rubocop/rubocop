@@ -13,30 +13,28 @@ module RuboCop
 
       module_function
 
+      def begins_its_line?(range)
+        (range.source_line =~ /\S/) == range.column
+      end
+
       def comment_line?(line_source)
         line_source =~ /^\s*#/
       end
 
-      def line_range(node)
-        node.first_line..node.last_line
+      # If converting a string to Ruby string literal source code, must
+      # double quotes be used?
+      def double_quotes_required?(string)
+        # Double quotes are required for strings which either:
+        # - Contain single quotes
+        # - Contain non-printable characters, which must use an escape
+
+        # Regex matches IF there is a ' or there is a \\ in the string that is
+        # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
+        string =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
       end
 
-      def parentheses?(node)
-        node.loc.respond_to?(:end) && node.loc.end &&
-          node.loc.end.is?(')'.freeze)
-      end
-
-      def on_node(syms, sexp, excludes = [], &block)
-        return to_enum(:on_node, syms, sexp, excludes) unless block_given?
-
-        yield sexp if Array(syms).include?(sexp.type)
-        return if Array(excludes).include?(sexp.type)
-
-        sexp.each_child_node { |elem| on_node(syms, elem, excludes, &block) }
-      end
-
-      def begins_its_line?(range)
-        (range.source_line =~ /\S/) == range.column
+      def escape_string(string)
+        string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
       end
 
       # Returns, for example, a bare `if` node if the given node is an `if`
@@ -57,24 +55,36 @@ module RuboCop
         node
       end
 
-      # If converting a string to Ruby string literal source code, must
-      # double quotes be used?
-      def double_quotes_required?(string)
-        # Double quotes are required for strings which either:
-        # - Contain single quotes
-        # - Contain non-printable characters, which must use an escape
+      def interpret_string_escapes(string)
+        StringInterpreter.interpret(string)
+      end
 
-        # Regex matches IF there is a ' or there is a \\ in the string that is
-        # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
-        string =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
+      def line_range(node)
+        node.first_line..node.last_line
       end
 
       def needs_escaping?(string)
         double_quotes_required?(escape_string(string))
       end
 
-      def escape_string(string)
-        string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
+      def on_node(syms, sexp, excludes = [], &block)
+        return to_enum(:on_node, syms, sexp, excludes) unless block_given?
+
+        yield sexp if Array(syms).include?(sexp.type)
+        return if Array(excludes).include?(sexp.type)
+
+        sexp.each_child_node { |elem| on_node(syms, elem, excludes, &block) }
+      end
+
+      def parentheses?(node)
+        node.loc.respond_to?(:end) && node.loc.end &&
+          node.loc.end.is?(')'.freeze)
+      end
+
+      def same_line?(node1, node2)
+        node1.respond_to?(:loc) &&
+          node2.respond_to?(:loc) &&
+          node1.loc.line == node2.loc.line
       end
 
       def to_string_literal(string)
@@ -83,16 +93,6 @@ module RuboCop
         else
           "'#{string.gsub('\\') { '\\\\' }}'"
         end
-      end
-
-      def interpret_string_escapes(string)
-        StringInterpreter.interpret(string)
-      end
-
-      def same_line?(node1, node2)
-        node1.respond_to?(:loc) &&
-          node2.respond_to?(:loc) &&
-          node1.loc.line == node2.loc.line
       end
 
       def to_supported_styles(enforced_style)

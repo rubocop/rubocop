@@ -41,6 +41,17 @@ module RuboCop
               '`TypeError` instead of catching the actual exception.'.freeze
         INVALID_TYPES = %i[array dstr float hash nil int str sym].freeze
 
+        def autocorrect(node)
+          rescued, _, _body = *node
+          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                            node.loc.keyword.end_pos,
+                                            rescued.loc.expression.end_pos)
+
+          lambda do |corrector|
+            corrector.replace(range, correction(*rescued))
+          end
+        end
+
         def on_resbody(node)
           rescued, _, _body = *node
           return if rescued.nil?
@@ -59,17 +70,6 @@ module RuboCop
           )
         end
 
-        def autocorrect(node)
-          rescued, _, _body = *node
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                            node.loc.keyword.end_pos,
-                                            rescued.loc.expression.end_pos)
-
-          lambda do |corrector|
-            corrector.replace(range, correction(*rescued))
-          end
-        end
-
         private
 
         def correction(*exceptions)
@@ -79,14 +79,14 @@ module RuboCop
           correction
         end
 
-        def valid_exceptions(exceptions)
-          exceptions - invalid_exceptions(exceptions)
-        end
-
         def invalid_exceptions(exceptions)
           exceptions.select do |exception|
             INVALID_TYPES.include?(exception.type)
           end
+        end
+
+        def valid_exceptions(exceptions)
+          exceptions - invalid_exceptions(exceptions)
         end
       end
     end

@@ -8,6 +8,11 @@ module RuboCop
         ignored_nodes << node
       end
 
+      def ignored_node?(node)
+        # Same object found in array?
+        ignored_nodes.any? { |n| n.equal?(node) }
+      end
+
       def part_of_ignored_node?(node)
         ignored_nodes.map(&:loc).any? do |ignored_loc|
           if ignored_loc.expression.begin_pos > node.source_range.begin_pos
@@ -21,11 +26,6 @@ module RuboCop
                             end
           ignored_end_pos >= node.source_range.end_pos
         end
-      end
-
-      def ignored_node?(node)
-        # Same object found in array?
-        ignored_nodes.any? { |n| n.equal?(node) }
       end
 
       private

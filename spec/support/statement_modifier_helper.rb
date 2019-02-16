@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module StatementModifierHelper
+  def autocorrect_really_short(keyword)
+    corrected = autocorrect_source(<<-RUBY.strip_indent)
+      #{keyword} a
+        b
+      end
+    RUBY
+    expect(corrected).to eq "b #{keyword} a\n"
+  end
+
   def check_empty(keyword)
     expect_no_offenses(<<-RUBY.strip_indent)
       #{keyword} cond
@@ -20,13 +29,13 @@ module StatementModifierHelper
     expect(cop.offenses.map { |o| o.location.source }).to eq([keyword])
   end
 
-  def autocorrect_really_short(keyword)
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
-      #{keyword} a
-        b
+  def check_short_multiline(keyword)
+    expect_no_offenses(<<-RUBY.strip_indent)
+      #{keyword} ENV['COVERAGE']
+        require 'simplecov'
+        SimpleCov.start
       end
     RUBY
-    expect(corrected).to eq "b #{keyword} a\n"
   end
 
   def check_too_long(keyword)
@@ -39,15 +48,6 @@ module StatementModifierHelper
       |  #{keyword} #{condition}
       |    #{body}
       |  end
-    RUBY
-  end
-
-  def check_short_multiline(keyword)
-    expect_no_offenses(<<-RUBY.strip_indent)
-      #{keyword} ENV['COVERAGE']
-        require 'simplecov'
-        SimpleCov.start
-      end
     RUBY
   end
 end

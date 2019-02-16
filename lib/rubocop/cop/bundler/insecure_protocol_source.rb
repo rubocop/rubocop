@@ -38,6 +38,14 @@ module RuboCop
             (sym ${:gemcutter :rubygems :rubyforge}))
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(
+              node.first_argument.loc.expression, "'https://rubygems.org'"
+            )
+          end
+        end
+
         def on_send(node)
           insecure_protocol_source?(node) do |source|
             message = format(MSG, source: source)
@@ -46,14 +54,6 @@ module RuboCop
               node,
               location: range(node.first_argument.loc.expression),
               message: message
-            )
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(
-              node.first_argument.loc.expression, "'https://rubygems.org'"
             )
           end
         end

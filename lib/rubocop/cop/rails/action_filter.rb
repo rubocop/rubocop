@@ -72,6 +72,13 @@ module RuboCop
 
         minimum_target_rails_version 4.0
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.selector,
+                              preferred_method(node.loc.selector.source).to_s)
+          end
+        end
+
         def on_block(node)
           check_method_node(node.send_node)
         end
@@ -80,14 +87,11 @@ module RuboCop
           check_method_node(node) unless node.receiver
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              preferred_method(node.loc.selector.source).to_s)
-          end
-        end
-
         private
+
+        def bad_methods
+          style == :action ? FILTER_METHODS : ACTION_METHODS
+        end
 
         def check_method_node(node)
           return unless bad_methods.include?(node.method_name)
@@ -95,17 +99,13 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
+        def good_methods
+          style == :action ? ACTION_METHODS : FILTER_METHODS
+        end
+
         def message(node)
           format(MSG, prefer: preferred_method(node.method_name),
                       current: node.method_name)
-        end
-
-        def bad_methods
-          style == :action ? FILTER_METHODS : ACTION_METHODS
-        end
-
-        def good_methods
-          style == :action ? ACTION_METHODS : FILTER_METHODS
         end
 
         def preferred_method(method)

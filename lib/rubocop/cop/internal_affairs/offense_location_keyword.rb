@@ -17,18 +17,18 @@ module RuboCop
         MSG = 'Use `:%<keyword>s` as the location argument to ' \
               '`#add_offense`.'.freeze
 
+        def autocorrect(node)
+          (*, keyword) = offending_location_argument(node.parent)
+
+          ->(corrector) { corrector.replace(node.source_range, ":#{keyword}") }
+        end
+
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|
             find_offending_argument(node_arg, kwargs) do |location, keyword|
               add_offense(location, message: format(MSG, keyword: keyword))
             end
           end
-        end
-
-        def autocorrect(node)
-          (*, keyword) = offending_location_argument(node.parent)
-
-          ->(corrector) { corrector.replace(node.source_range, ":#{keyword}") }
         end
 
         private

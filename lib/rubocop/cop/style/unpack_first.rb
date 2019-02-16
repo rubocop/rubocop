@@ -32,6 +32,15 @@ module RuboCop
           }
         PATTERN
 
+        def autocorrect(node)
+          unpack_and_first_element?(node) do |unpack_call, _unpack_arg|
+            lambda do |corrector|
+              corrector.remove(first_element_range(node, unpack_call))
+              corrector.replace(unpack_call.loc.selector, 'unpack1')
+            end
+          end
+        end
+
         def on_send(node)
           unpack_and_first_element?(node) do |unpack_call, unpack_arg|
             range = first_element_range(node, unpack_call)
@@ -40,15 +49,6 @@ module RuboCop
                              format: unpack_arg.source,
                              method: range.source)
             add_offense(node, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          unpack_and_first_element?(node) do |unpack_call, _unpack_arg|
-            lambda do |corrector|
-              corrector.remove(first_element_range(node, unpack_call))
-              corrector.replace(unpack_call.loc.selector, 'unpack1')
-            end
           end
         end
 

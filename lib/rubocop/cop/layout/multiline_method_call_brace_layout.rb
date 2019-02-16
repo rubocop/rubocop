@@ -105,12 +105,12 @@ module RuboCop
         ALWAYS_SAME_LINE_MESSAGE = 'Closing method call brace must be on ' \
           'the same line as the last argument.'.freeze
 
-        def on_send(node)
-          check_brace_layout(node)
-        end
-
         def autocorrect(node)
           MultilineLiteralBraceCorrector.new(node, processed_source)
+        end
+
+        def on_send(node)
+          check_brace_layout(node)
         end
 
         private

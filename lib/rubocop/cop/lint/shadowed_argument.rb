@@ -69,48 +69,30 @@ module RuboCop
 
         def_node_search :uses_var?, '(lvar %)'
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_argument(variable)
           end
         end
 
-        private
-
-        def check_argument(argument)
-          return unless argument.method_argument? || argument.block_argument?
-          # Block local variables, i.e., variables declared after ; inside
-          # |...| aren't really arguments.
-          return if argument.explicit_block_local_variable?
-
-          shadowing_assignment(argument) do |node|
-            message = format(MSG, argument: argument.name)
-
-            add_offense(node, message: message)
-          end
+        def join_force?(force_class)
+          force_class == VariableForce
         end
 
-        def shadowing_assignment(argument)
-          return unless argument.referenced?
+        private
 
-          assignment_without_argument_usage(argument) do |node, location_known|
-            assignment_without_usage_pos = node.source_range.begin_pos
+        # Get argument references without assignments' references
+        #
+        def argument_references(argument)
+          assignment_references = argument
+                                  .assignments
+                                  .flat_map(&:references)
+                                  .map(&:source_range)
 
-            references = argument_references(argument)
+          argument.references.reject do |ref|
+            next false unless ref.explicit?
 
-            # If argument was referenced before it was reassigned
-            # then it's not shadowed
-            next if references.any? do |reference|
-              next true if !reference.explicit? && ignore_implicit_references?
-
-              reference_pos(reference.node) <= assignment_without_usage_pos
-            end
-
-            yield location_known ? node : argument.declaration_node
+            assignment_references.include?(ref.node.source_range)
           end
         end
 
@@ -143,10 +125,21 @@ module RuboCop
           end
         end
 
-        def reference_pos(node)
-          node = node.parent.masgn_type? ? node.parent : node
+        def check_argument(argument)
+          return unless argument.method_argument? || argument.block_argument?
+          # Block local variables, i.e., variables declared after ; inside
+          # |...| aren't really arguments.
+          return if argument.explicit_block_local_variable?
 
-          node.source_range.begin_pos
+          shadowing_assignment(argument) do |node|
+            message = format(MSG, argument: argument.name)
+
+            add_offense(node, message: message)
+          end
+        end
+
+        def ignore_implicit_references?
+          cop_config['IgnoreImplicitReferences']
         end
 
         # Check whether the given node is nested into block or conditional.
@@ -158,23 +151,30 @@ module RuboCop
             node_within_block_or_conditional?(node.parent, stop_search_node)
         end
 
-        # Get argument references without assignments' references
-        #
-        def argument_references(argument)
-          assignment_references = argument
-                                  .assignments
-                                  .flat_map(&:references)
-                                  .map(&:source_range)
+        def reference_pos(node)
+          node = node.parent.masgn_type? ? node.parent : node
 
-          argument.references.reject do |ref|
-            next false unless ref.explicit?
-
-            assignment_references.include?(ref.node.source_range)
-          end
+          node.source_range.begin_pos
         end
 
-        def ignore_implicit_references?
-          cop_config['IgnoreImplicitReferences']
+        def shadowing_assignment(argument)
+          return unless argument.referenced?
+
+          assignment_without_argument_usage(argument) do |node, location_known|
+            assignment_without_usage_pos = node.source_range.begin_pos
+
+            references = argument_references(argument)
+
+            # If argument was referenced before it was reassigned
+            # then it's not shadowed
+            next if references.any? do |reference|
+              next true if !reference.explicit? && ignore_implicit_references?
+
+              reference_pos(reference.node) <= assignment_without_usage_pos
+            end
+
+            yield location_known ? node : argument.declaration_node
+          end
         end
       end
     end

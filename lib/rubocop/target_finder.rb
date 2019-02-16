@@ -11,12 +11,24 @@ module RuboCop
       @options = options
     end
 
-    def force_exclusion?
-      @options[:force_exclusion]
+    def all_cops_include
+      @config_store.for('.').for_all_cops['Include'].map(&:to_s)
+    end
+
+    def configured_include?(file)
+      @config_store.for('.').file_to_include?(file)
     end
 
     def debug?
       @options[:debug]
+    end
+
+    def excluded_dirs(base_dir)
+      all_cops_config = @config_store.for(base_dir).for_all_cops
+      dir_tree_excludes = all_cops_config['Exclude'].select do |pattern|
+        pattern.is_a?(String) && pattern.end_with?('/**/*')
+      end
+      dir_tree_excludes.map { |pattern| pattern.sub(%r{/\*\*/\*$}, '') }
     end
 
     def fail_fast?
@@ -41,6 +53,94 @@ module RuboCop
       end
 
       files.map { |f| File.expand_path(f) }.uniq
+    end
+
+    # Search for files recursively starting at the given base directory using
+    # the given flags that determine how the match is made. Excluded files will
+    # be removed later by the caller, but as an optimization find_files removes
+    # the top level directories that are excluded in configuration in the
+    # normal way (dir/**/*).
+    def find_files(base_dir, flags)
+      wanted_toplevel_dirs = toplevel_dirs(base_dir, flags) -
+                             excluded_dirs(base_dir)
+      wanted_toplevel_dirs.map! { |dir| dir << '/**/*' }
+
+      pattern = if wanted_toplevel_dirs.empty?
+                  # We need this special case to avoid creating the pattern
+                  # /**/* which searches the entire file system.
+                  ["#{base_dir}/**/*"]
+                else
+                  # Search the non-excluded top directories, but also add files
+                  # on the top level, which would otherwise not be found.
+                  wanted_toplevel_dirs.unshift("#{base_dir}/*")
+                end
+      Dir.glob(pattern, flags).select { |path| FileTest.file?(path) }
+    end
+
+    def force_exclusion?
+      @options[:force_exclusion]
+    end
+
+    def included_file?(file)
+      ruby_file?(file) || configured_include?(file)
+    end
+
+    def process_explicit_path(path)
+      files = path.include?('*') ? Dir[path] : [path]
+
+      files.select! { |file| included_file?(file) }
+
+      return files unless force_exclusion?
+
+      files.reject do |file|
+        config = @config_store.for(file)
+        config.file_to_exclude?(file)
+      end
+    end
+
+    def ruby_executable?(file)
+      return false unless File.extname(file).empty? && File.exist?(file)
+
+      first_line = File.open(file, &:readline)
+      !(first_line =~ /#!.*(#{ruby_interpreters(file).join('|')})/).nil?
+    rescue EOFError, ArgumentError => e
+      warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if debug?
+      false
+    end
+
+    def ruby_extension?(file)
+      ruby_extensions.include?(File.extname(file))
+    end
+
+    def ruby_extensions
+      ext_patterns = all_cops_include.select do |pattern|
+        pattern.start_with?('**/*.')
+      end
+      ext_patterns.map { |pattern| pattern.sub('**/*', '') }
+    end
+
+    def ruby_file?(file)
+      stdin? || ruby_extension?(file) || ruby_filename?(file) ||
+        ruby_executable?(file)
+    end
+
+    def ruby_filename?(file)
+      ruby_filenames.include?(File.basename(file))
+    end
+
+    def ruby_filenames
+      file_patterns = all_cops_include.reject do |pattern|
+        pattern.start_with?('**/*.')
+      end
+      file_patterns.map { |pattern| pattern.sub('**/', '') }
+    end
+
+    def ruby_interpreters(file)
+      @config_store.for(file).for_all_cops['RubyInterpreters']
+    end
+
+    def stdin?
+      @options.key?(:stdin)
     end
 
     # Finds all Ruby source files under the current or other supplied
@@ -78,109 +178,9 @@ module RuboCop
       base_dir_config.file_to_include?(file)
     end
 
-    # Search for files recursively starting at the given base directory using
-    # the given flags that determine how the match is made. Excluded files will
-    # be removed later by the caller, but as an optimization find_files removes
-    # the top level directories that are excluded in configuration in the
-    # normal way (dir/**/*).
-    def find_files(base_dir, flags)
-      wanted_toplevel_dirs = toplevel_dirs(base_dir, flags) -
-                             excluded_dirs(base_dir)
-      wanted_toplevel_dirs.map! { |dir| dir << '/**/*' }
-
-      pattern = if wanted_toplevel_dirs.empty?
-                  # We need this special case to avoid creating the pattern
-                  # /**/* which searches the entire file system.
-                  ["#{base_dir}/**/*"]
-                else
-                  # Search the non-excluded top directories, but also add files
-                  # on the top level, which would otherwise not be found.
-                  wanted_toplevel_dirs.unshift("#{base_dir}/*")
-                end
-      Dir.glob(pattern, flags).select { |path| FileTest.file?(path) }
-    end
-
     def toplevel_dirs(base_dir, flags)
       Dir.glob(File.join(base_dir, '*'), flags).select do |dir|
         File.directory?(dir) && !dir.end_with?('/.', '/..')
-      end
-    end
-
-    def excluded_dirs(base_dir)
-      all_cops_config = @config_store.for(base_dir).for_all_cops
-      dir_tree_excludes = all_cops_config['Exclude'].select do |pattern|
-        pattern.is_a?(String) && pattern.end_with?('/**/*')
-      end
-      dir_tree_excludes.map { |pattern| pattern.sub(%r{/\*\*/\*$}, '') }
-    end
-
-    def ruby_extension?(file)
-      ruby_extensions.include?(File.extname(file))
-    end
-
-    def ruby_extensions
-      ext_patterns = all_cops_include.select do |pattern|
-        pattern.start_with?('**/*.')
-      end
-      ext_patterns.map { |pattern| pattern.sub('**/*', '') }
-    end
-
-    def ruby_filename?(file)
-      ruby_filenames.include?(File.basename(file))
-    end
-
-    def ruby_filenames
-      file_patterns = all_cops_include.reject do |pattern|
-        pattern.start_with?('**/*.')
-      end
-      file_patterns.map { |pattern| pattern.sub('**/', '') }
-    end
-
-    def all_cops_include
-      @config_store.for('.').for_all_cops['Include'].map(&:to_s)
-    end
-
-    def ruby_executable?(file)
-      return false unless File.extname(file).empty? && File.exist?(file)
-
-      first_line = File.open(file, &:readline)
-      !(first_line =~ /#!.*(#{ruby_interpreters(file).join('|')})/).nil?
-    rescue EOFError, ArgumentError => e
-      warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if debug?
-      false
-    end
-
-    def ruby_interpreters(file)
-      @config_store.for(file).for_all_cops['RubyInterpreters']
-    end
-
-    def stdin?
-      @options.key?(:stdin)
-    end
-
-    def ruby_file?(file)
-      stdin? || ruby_extension?(file) || ruby_filename?(file) ||
-        ruby_executable?(file)
-    end
-
-    def configured_include?(file)
-      @config_store.for('.').file_to_include?(file)
-    end
-
-    def included_file?(file)
-      ruby_file?(file) || configured_include?(file)
-    end
-
-    def process_explicit_path(path)
-      files = path.include?('*') ? Dir[path] : [path]
-
-      files.select! { |file| included_file?(file) }
-
-      return files unless force_exclusion?
-
-      files.reject do |file|
-        config = @config_store.for(file)
-        config.file_to_exclude?(file)
       end
     end
   end

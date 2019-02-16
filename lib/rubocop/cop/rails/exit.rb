@@ -42,14 +42,14 @@ module RuboCop
             right_receiver?(node.receiver)
         end
 
-        def right_method_name?(method_name)
-          TARGET_METHODS.include?(method_name)
-        end
-
         # More than 1 argument likely means it is a different
         # `exit` implementation than the one we are preventing.
         def right_argument_count?(arg_nodes)
           arg_nodes.size <= 1
+        end
+
+        def right_method_name?(method_name)
+          TARGET_METHODS.include?(method_name)
         end
 
         # Only register if exit is being called explicitly on `Kernel`,

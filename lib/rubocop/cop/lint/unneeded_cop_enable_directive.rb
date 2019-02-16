@@ -38,6 +38,12 @@ module RuboCop
 
         MSG = 'Unnecessary enabling of %<cop>s.'.freeze
 
+        def autocorrect(comment_and_name)
+          lambda do |corrector|
+            corrector.remove(range_with_comma(*comment_and_name))
+          end
+        end
+
         def investigate(processed_source)
           return if processed_source.blank?
 
@@ -51,17 +57,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(comment_and_name)
-          lambda do |corrector|
-            corrector.remove(range_with_comma(*comment_and_name))
-          end
-        end
-
         private
 
-        def range_of_offense(comment, name)
-          start_pos = comment_start(comment) + cop_name_indention(comment, name)
-          range_between(start_pos, start_pos + name.size)
+        def all_or_name(name)
+          name == 'all' ? 'all cops' : name
         end
 
         def comment_start(comment)
@@ -70,6 +69,26 @@ module RuboCop
 
         def cop_name_indention(comment, name)
           comment.text.index(name)
+        end
+
+        def range_of_offense(comment, name)
+          start_pos = comment_start(comment) + cop_name_indention(comment, name)
+          range_between(start_pos, start_pos + name.size)
+        end
+
+        def range_to_remove(begin_pos, end_pos, comma_pos, comment)
+          start = comment_start(comment)
+          buffer = processed_source.buffer
+          range_class = Parser::Source::Range
+
+          case comma_pos
+          when :before
+            range_class.new(buffer, start + begin_pos - 1, start + end_pos)
+          when :after
+            range_class.new(buffer, start + begin_pos, start + end_pos + 1)
+          else
+            range_class.new(buffer, start, comment.loc.expression.end_pos)
+          end
         end
 
         def range_with_comma(comment, name)
@@ -90,25 +109,6 @@ module RuboCop
             end
 
           range_to_remove(begin_pos, end_pos, comma_pos, comment)
-        end
-
-        def range_to_remove(begin_pos, end_pos, comma_pos, comment)
-          start = comment_start(comment)
-          buffer = processed_source.buffer
-          range_class = Parser::Source::Range
-
-          case comma_pos
-          when :before
-            range_class.new(buffer, start + begin_pos - 1, start + end_pos)
-          when :after
-            range_class.new(buffer, start + begin_pos, start + end_pos + 1)
-          else
-            range_class.new(buffer, start, comment.loc.expression.end_pos)
-          end
-        end
-
-        def all_or_name(name)
-          name == 'all' ? 'all cops' : name
         end
       end
     end

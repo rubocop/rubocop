@@ -3,15 +3,6 @@
 RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
   subject(:cop) { described_class.new }
 
-  def code_without_accumulator(method_name)
-    <<-RUBY
-      (1..4).#{method_name}(0) do |acc, i|
-        next if i.odd?
-        acc + i
-      end
-    RUBY
-  end
-
   def code_with_accumulator(method_name)
     <<-RUBY
       (1..4).#{method_name}(0) do |acc, i|
@@ -29,6 +20,15 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
           acc << elem
         end
         acc
+      end
+    RUBY
+  end
+
+  def code_without_accumulator(method_name)
+    <<-RUBY
+      (1..4).#{method_name}(0) do |acc, i|
+        next if i.odd?
+        acc + i
       end
     RUBY
   end

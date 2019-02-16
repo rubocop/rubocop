@@ -21,11 +21,6 @@ module RuboCop
         MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with ' \
                 'just the message.'.freeze
 
-        def on_send(node)
-          exploded?(node) { return add_offense(node, message: MSG_1) }
-          compact?(node) { add_offense(node, message: MSG_2) }
-        end
-
         # Switch `raise RuntimeError, 'message'` to `raise 'message'`, and
         # `raise RuntimeError.new('message')` to `raise 'message'`.
         def autocorrect(node) # rubocop:disable Metrics/MethodLength
@@ -45,6 +40,11 @@ module RuboCop
               corrector.replace(new_call.source_range, message.source)
             end
           end
+        end
+
+        def on_send(node)
+          exploded?(node) { return add_offense(node, message: MSG_1) }
+          compact?(node) { add_offense(node, message: MSG_2) }
         end
 
         def_node_matcher :exploded?, <<-PATTERN

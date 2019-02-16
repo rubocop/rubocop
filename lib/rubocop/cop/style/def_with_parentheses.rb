@@ -37,6 +37,13 @@ module RuboCop
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
               'any arguments.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          end
+        end
+
         def on_def(node)
           return if node.single_line?
           return unless !node.arguments? && node.arguments.loc.begin
@@ -44,13 +51,6 @@ module RuboCop
           add_offense(node.arguments, location: :begin)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
-          end
-        end
       end
     end
   end

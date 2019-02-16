@@ -22,19 +22,6 @@ module RuboCop
 
         MSG = 'Freeze mutable objects assigned to constants.'.freeze
 
-        def on_casgn(node)
-          _scope, _const_name, value = *node
-          on_assignment(value)
-        end
-
-        def on_or_asgn(node)
-          lhs, value = *node
-
-          return unless lhs && lhs.casgn_type?
-
-          on_assignment(value)
-        end
-
         def autocorrect(node)
           expr = node.source_range
 
@@ -51,7 +38,24 @@ module RuboCop
           end
         end
 
+        def on_casgn(node)
+          _scope, _const_name, value = *node
+          on_assignment(value)
+        end
+
+        def on_or_asgn(node)
+          lhs, value = *node
+
+          return unless lhs && lhs.casgn_type?
+
+          on_assignment(value)
+        end
+
         private
+
+        def mutable_literal?(value)
+          value && value.mutable_literal?
+        end
 
         def on_assignment(value)
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
@@ -64,10 +68,6 @@ module RuboCop
                     frozen_string_literals_enabled?
 
           add_offense(value)
-        end
-
-        def mutable_literal?(value)
-          value && value.mutable_literal?
         end
 
         def_node_matcher :splat_value, <<-PATTERN

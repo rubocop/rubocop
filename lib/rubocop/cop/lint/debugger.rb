@@ -66,12 +66,12 @@ module RuboCop
 
         private
 
-        def message(node)
-          format(MSG, source: node.source)
-        end
-
         def binding_irb?(node)
           target_ruby_version >= 2.4 && binding_irb_call?(node)
+        end
+
+        def message(node)
+          format(MSG, source: node.source)
         end
       end
     end

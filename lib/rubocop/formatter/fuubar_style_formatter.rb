@@ -17,6 +17,35 @@ module RuboCop
         super
       end
 
+      def count_stats(offenses)
+        super
+
+        offenses = offenses.reject(&:corrected?)
+        return if offenses.empty?
+
+        offenses << @severest_offense if @severest_offense
+        @severest_offense = offenses.max_by(&:severity)
+      end
+
+      def file_finished(file, offenses)
+        count_stats(offenses)
+
+        unless offenses.empty?
+          @progressbar.clear
+          report_file(file, offenses)
+        end
+
+        with_color { @progressbar.increment }
+      end
+
+      def progressbar_color
+        if @severest_offense
+          COLOR_FOR_SEVERITY[@severest_offense.severity.name]
+        else
+          :green
+        end
+      end
+
       def started(target_files)
         super
 
@@ -37,27 +66,6 @@ module RuboCop
         with_color { @progressbar.start }
       end
 
-      def file_finished(file, offenses)
-        count_stats(offenses)
-
-        unless offenses.empty?
-          @progressbar.clear
-          report_file(file, offenses)
-        end
-
-        with_color { @progressbar.increment }
-      end
-
-      def count_stats(offenses)
-        super
-
-        offenses = offenses.reject(&:corrected?)
-        return if offenses.empty?
-
-        offenses << @severest_offense if @severest_offense
-        @severest_offense = offenses.max_by(&:severity)
-      end
-
       def with_color
         if rainbow.enabled
           output.write colorize('', progressbar_color).chomp(RESET_SEQUENCE)
@@ -65,14 +73,6 @@ module RuboCop
           output.write RESET_SEQUENCE
         else
           yield
-        end
-      end
-
-      def progressbar_color
-        if @severest_offense
-          COLOR_FOR_SEVERITY[@severest_offense.severity.name]
-        else
-          :green
         end
       end
     end

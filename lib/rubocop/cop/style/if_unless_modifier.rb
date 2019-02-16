@@ -31,6 +31,12 @@ module RuboCop
         ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
                               gvasgn ivasgn masgn].freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.source_range, to_modifier_form(node))
+          end
+        end
+
         def on_if(node)
           return unless eligible_node?(node)
           return if named_capture_in_condition?(node)
@@ -39,21 +45,22 @@ module RuboCop
                             message: format(MSG, keyword: node.keyword))
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.source_range, to_modifier_form(node))
-          end
-        end
-
         private
-
-        def named_capture_in_condition?(node)
-          node.condition.match_with_lvasgn_type?
-        end
 
         def eligible_node?(node)
           !non_eligible_if?(node) && !node.chained? &&
             !node.nested_conditional? && single_line_as_modifier?(node)
+        end
+
+        def first_line_comment(node)
+          comment =
+            processed_source.find_comment { |c| c.loc.line == node.loc.line }
+
+          comment ? comment.loc.expression.source : nil
+        end
+
+        def named_capture_in_condition?(node)
+          node.condition.match_with_lvasgn_type?
         end
 
         def non_eligible_if?(node)
@@ -77,13 +84,6 @@ module RuboCop
                         first_line_comment(node)].compact.join(' ')
 
           parenthesize?(node) ? "(#{expression})" : expression
-        end
-
-        def first_line_comment(node)
-          comment =
-            processed_source.find_comment { |c| c.loc.line == node.loc.line }
-
-          comment ? comment.loc.expression.source : nil
         end
       end
     end

@@ -53,12 +53,14 @@ module RuboCop
           $CLASSPATH $JRUBY_VERSION $JRUBY_REVISION $ENV_JAVA
         ].map(&:to_sym)
 
-        def user_vars
-          cop_config['AllowedVariables'].map(&:to_sym)
-        end
-
         def allowed_var?(global_var)
           BUILT_IN_VARS.include?(global_var) || user_vars.include?(global_var)
+        end
+
+        def check(node)
+          global_var, = *node
+
+          add_offense(node, location: :name) unless allowed_var?(global_var)
         end
 
         def on_gvar(node)
@@ -69,10 +71,8 @@ module RuboCop
           check(node)
         end
 
-        def check(node)
-          global_var, = *node
-
-          add_offense(node, location: :name) unless allowed_var?(global_var)
+        def user_vars
+          cop_config['AllowedVariables'].map(&:to_sym)
         end
       end
     end

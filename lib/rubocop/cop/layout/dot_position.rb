@@ -25,17 +25,6 @@ module RuboCop
       class DotPosition < Cop
         include ConfigurableEnforcedStyle
 
-        def on_send(node)
-          return unless node.dot? || ampersand_dot?(node)
-
-          if proper_dot_position?(node)
-            correct_style_detected
-          else
-            add_offense(node, location: :dot) { opposite_style_detected }
-          end
-        end
-        alias on_csend on_send
-
         def autocorrect(node)
           lambda do |corrector|
             dot = node.loc.dot.source
@@ -49,7 +38,33 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return unless node.dot? || ampersand_dot?(node)
+
+          if proper_dot_position?(node)
+            correct_style_detected
+          else
+            add_offense(node, location: :dot) { opposite_style_detected }
+          end
+        end
+        alias on_csend on_send
+
         private
+
+        def ampersand_dot?(node)
+          node.loc.respond_to?(:dot) && node.loc.dot && node.loc.dot.is?('&.')
+        end
+
+        def correct_dot_position_style?(dot_line, selector_line)
+          case style
+          when :leading then dot_line == selector_line
+          when :trailing then dot_line != selector_line
+          end
+        end
+
+        def line_between?(first_line, second_line)
+          (first_line - second_line) > 1
+        end
 
         def message(node)
           dot = node.loc.dot.source
@@ -80,24 +95,9 @@ module RuboCop
           correct_dot_position_style?(dot_line, selector_line)
         end
 
-        def line_between?(first_line, second_line)
-          (first_line - second_line) > 1
-        end
-
-        def correct_dot_position_style?(dot_line, selector_line)
-          case style
-          when :leading then dot_line == selector_line
-          when :trailing then dot_line != selector_line
-          end
-        end
-
         def selector_range(node)
           # l.(1) has no selector, so we use the opening parenthesis instead
           node.loc.selector || node.loc.begin
-        end
-
-        def ampersand_dot?(node)
-          node.loc.respond_to?(:dot) && node.loc.dot && node.loc.dot.is?('&.')
         end
       end
     end

@@ -73,6 +73,20 @@ module RuboCop
                 $_) :parent) :expand_path)
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            if (captured_values = file_expand_path(node))
+              current_path, default_dir = captured_values
+
+              autocorrect_expand_path(corrector, current_path, default_dir)
+            elsif (default_dir = pathname_parent_expand_path(node)) ||
+                  (default_dir = pathname_new_parent_expand_path(node))
+              corrector.replace(default_dir.loc.expression, '__dir__')
+              remove_parent_method(corrector, default_dir)
+            end
+          end
+        end
+
         def on_send(node)
           if (captured_values = file_expand_path(node))
             current_path, default_dir = captured_values
@@ -89,24 +103,37 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if (captured_values = file_expand_path(node))
-              current_path, default_dir = captured_values
+        private
 
-              autocorrect_expand_path(corrector, current_path, default_dir)
-            elsif (default_dir = pathname_parent_expand_path(node)) ||
-                  (default_dir = pathname_new_parent_expand_path(node))
-              corrector.replace(default_dir.loc.expression, '__dir__')
-              remove_parent_method(corrector, default_dir)
-            end
+        def arguments_range(node)
+          range_between(node.parent.first_argument.source_range.begin_pos,
+                        node.parent.last_argument.source_range.end_pos)
+        end
+
+        def autocorrect_expand_path(corrector, current_path, default_dir)
+          stripped_current_path = strip_surrounded_quotes!(current_path.source)
+
+          case depth(stripped_current_path)
+          when 0
+            range = arguments_range(current_path)
+
+            corrector.replace(range, '__FILE__')
+          when 1
+            range = arguments_range(current_path)
+
+            corrector.replace(range, '__dir__')
+          else
+            new_path = "'#{parent_path(stripped_current_path)}'"
+
+            corrector.replace(current_path.loc.expression, new_path)
+            corrector.replace(default_dir.loc.expression, '__dir__')
           end
         end
 
-        private
+        def depth(current_path)
+          paths = current_path.split(File::SEPARATOR)
 
-        def unrecommended_argument?(default_dir)
-          default_dir.source == '__FILE__'
+          paths.reject { |path| path == '.' }.count
         end
 
         def inspect_offense_for_expand_path(node, current_path, default_dir)
@@ -130,39 +157,6 @@ module RuboCop
           add_offense(node, location: :selector, message: message)
         end
 
-        def autocorrect_expand_path(corrector, current_path, default_dir)
-          stripped_current_path = strip_surrounded_quotes!(current_path.source)
-
-          case depth(stripped_current_path)
-          when 0
-            range = arguments_range(current_path)
-
-            corrector.replace(range, '__FILE__')
-          when 1
-            range = arguments_range(current_path)
-
-            corrector.replace(range, '__dir__')
-          else
-            new_path = "'#{parent_path(stripped_current_path)}'"
-
-            corrector.replace(current_path.loc.expression, new_path)
-            corrector.replace(default_dir.loc.expression, '__dir__')
-          end
-        end
-
-        def strip_surrounded_quotes!(path_string)
-          path_string.slice!(path_string.length - 1)
-          path_string.slice!(0)
-
-          path_string
-        end
-
-        def depth(current_path)
-          paths = current_path.split(File::SEPARATOR)
-
-          paths.reject { |path| path == '.' }.count
-        end
-
         def parent_path(current_path)
           paths = current_path.split(File::SEPARATOR)
 
@@ -184,9 +178,15 @@ module RuboCop
           corrector.remove(node.loc.selector)
         end
 
-        def arguments_range(node)
-          range_between(node.parent.first_argument.source_range.begin_pos,
-                        node.parent.last_argument.source_range.end_pos)
+        def strip_surrounded_quotes!(path_string)
+          path_string.slice!(path_string.length - 1)
+          path_string.slice!(0)
+
+          path_string
+        end
+
+        def unrecommended_argument?(default_dir)
+          default_dir.source == '__FILE__'
         end
       end
     end

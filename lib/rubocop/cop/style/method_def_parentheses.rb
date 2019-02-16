@@ -92,23 +92,6 @@ module RuboCop
         MSG_MISSING = 'Use def with parentheses when there are ' \
                       'parameters.'.freeze
 
-        def on_def(node)
-          args = node.arguments
-
-          if require_parentheses?(args)
-            if arguments_without_parentheses?(node)
-              missing_parentheses(node)
-            else
-              correct_style_detected
-            end
-          elsif parentheses?(args)
-            unwanted_parentheses(args)
-          else
-            correct_style_detected
-          end
-        end
-        alias on_defs on_def
-
         def autocorrect(node)
           lambda do |corrector|
             if node.args_type?
@@ -127,13 +110,24 @@ module RuboCop
           end
         end
 
-        private
+        def on_def(node)
+          args = node.arguments
 
-        def require_parentheses?(args)
-          style == :require_parentheses ||
-            (style == :require_no_parentheses_except_multiline &&
-             args.multiline?)
+          if require_parentheses?(args)
+            if arguments_without_parentheses?(node)
+              missing_parentheses(node)
+            else
+              correct_style_detected
+            end
+          elsif parentheses?(args)
+            unwanted_parentheses(args)
+          else
+            correct_style_detected
+          end
         end
+        alias on_defs on_def
+
+        private
 
         def arguments_without_parentheses?(node)
           node.arguments? && !parentheses?(node.arguments)
@@ -145,6 +139,12 @@ module RuboCop
           add_offense(node, location: location, message: MSG_MISSING) do
             unexpected_style_detected(:require_no_parentheses)
           end
+        end
+
+        def require_parentheses?(args)
+          style == :require_parentheses ||
+            (style == :require_no_parentheses_except_multiline &&
+             args.multiline?)
         end
 
         def unwanted_parentheses(args)

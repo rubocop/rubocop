@@ -23,11 +23,8 @@ module RuboCop
         end
       end
 
-      # The args node1 & node2 may represent a RuboCop::AST::Node
-      # or a Parser::Source::Comment. Both respond to #loc.
-      def preceding_comment?(node1, node2)
-        node1 && node2 && precede?(node2, node1) &&
-          comment_line?(node2.loc.expression.source)
+      def interpreter_directive_comment?(comment)
+        comment.text =~ /^#\s*(frozen_string_literal|encoding):/
       end
 
       # The args node1 & node2 may represent a RuboCop::AST::Node
@@ -36,14 +33,17 @@ module RuboCop
         node2.loc.line - node1.loc.line == 1
       end
 
+      # The args node1 & node2 may represent a RuboCop::AST::Node
+      # or a Parser::Source::Comment. Both respond to #loc.
+      def preceding_comment?(node1, node2)
+        node1 && node2 && precede?(node2, node1) &&
+          comment_line?(node2.loc.expression.source)
+      end
+
       def preceding_lines(node)
         processed_source.ast_with_comments[node].select do |line|
           line.loc.line < node.loc.line
         end
-      end
-
-      def interpreter_directive_comment?(comment)
-        comment.text =~ /^#\s*(frozen_string_literal|encoding):/
       end
 
       def rubocop_directive_comment?(comment)

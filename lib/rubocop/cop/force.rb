@@ -10,16 +10,20 @@ module RuboCop
         @all ||= []
       end
 
-      def self.inherited(subclass)
-        all << subclass
-      end
-
       def self.force_name
         name.split('::').last
       end
 
+      def self.inherited(subclass)
+        all << subclass
+      end
+
       def initialize(cops)
         @cops = cops
+      end
+
+      def investigate(_processed_source)
+        # Do custom processing and invoke #run_hook at arbitrary timing.
       end
 
       def name
@@ -32,10 +36,6 @@ module RuboCop
 
           cop.send(method_name, *args)
         end
-      end
-
-      def investigate(_processed_source)
-        # Do custom processing and invoke #run_hook at arbitrary timing.
       end
     end
   end

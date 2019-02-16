@@ -26,12 +26,12 @@ module RuboCop
 
         KIND = '`begin`'.freeze
 
-        def on_kwbegin(node)
-          check(node, nil)
-        end
-
         def autocorrect(node)
           EmptyLineCorrector.correct(node)
+        end
+
+        def on_kwbegin(node)
+          check(node, nil)
         end
 
         private

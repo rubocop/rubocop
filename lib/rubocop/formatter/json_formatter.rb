@@ -20,10 +20,6 @@ module RuboCop
         }
       end
 
-      def started(target_files)
-        output_hash[:summary][:target_file_count] = target_files.count
-      end
-
       def file_finished(file, offenses)
         output_hash[:files] << hash_for_file(file, offenses)
         output_hash[:summary][:offense_count] += offenses.count
@@ -34,30 +30,10 @@ module RuboCop
         output.write output_hash.to_json
       end
 
-      def metadata_hash
-        {
-          rubocop_version: RuboCop::Version::STRING,
-          ruby_engine: RUBY_ENGINE,
-          ruby_version: RUBY_VERSION,
-          ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
-          ruby_platform: RUBY_PLATFORM
-        }
-      end
-
       def hash_for_file(file, offenses)
         {
           path: smart_path(file),
           offenses: offenses.map { |o| hash_for_offense(o) }
-        }
-      end
-
-      def hash_for_offense(offense)
-        {
-          severity: offense.severity.name,
-          message: offense.message,
-          cop_name: offense.cop_name,
-          corrected: offense.corrected?,
-          location: hash_for_location(offense)
         }
       end
 
@@ -74,6 +50,30 @@ module RuboCop
           line: offense.line,
           column: offense.real_column
         }
+      end
+
+      def hash_for_offense(offense)
+        {
+          severity: offense.severity.name,
+          message: offense.message,
+          cop_name: offense.cop_name,
+          corrected: offense.corrected?,
+          location: hash_for_location(offense)
+        }
+      end
+
+      def metadata_hash
+        {
+          rubocop_version: RuboCop::Version::STRING,
+          ruby_engine: RUBY_ENGINE,
+          ruby_version: RUBY_VERSION,
+          ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
+          ruby_platform: RUBY_PLATFORM
+        }
+      end
+
+      def started(target_files)
+        output_hash[:summary][:target_file_count] = target_files.count
       end
     end
   end

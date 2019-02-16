@@ -30,12 +30,12 @@ module RuboCop
 
         private
 
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :ambiguous_literal
-        end
-
         def alternative_message(_diagnostic)
           MSG
+        end
+
+        def relevant_diagnostic?(diagnostic)
+          diagnostic.reason == :ambiguous_literal
         end
       end
     end

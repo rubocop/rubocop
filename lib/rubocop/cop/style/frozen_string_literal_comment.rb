@@ -63,6 +63,16 @@ module RuboCop
         MSG_UNNECESSARY = 'Unnecessary frozen string literal comment.'.freeze
         SHEBANG = '#!'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            if style == :never
+              remove_comment(corrector, node)
+            else
+              insert_comment(corrector)
+            end
+          end
+        end
+
         def investigate(processed_source)
           return if style == :when_needed && target_ruby_version < 2.3
           return if processed_source.tokens.empty?
@@ -74,24 +84,40 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if style == :never
-              remove_comment(corrector, node)
-            else
-              insert_comment(corrector)
-            end
-          end
-        end
-
         private
+
+        def check_for_comment(processed_source)
+          offense(processed_source) unless style == :never
+        end
 
         def check_for_no_comment(processed_source)
           unnecessary_comment_offense(processed_source) if style == :never
         end
 
-        def check_for_comment(processed_source)
-          offense(processed_source) unless style == :never
+        def correction_range
+          last_special_comment = last_special_comment(processed_source)
+
+          if last_special_comment.nil?
+            range_with_surrounding_space(range: processed_source.tokens[0],
+                                         side: :left)
+          else
+            last_special_comment.pos
+          end
+        end
+
+        def frozen_string_literal_comment(processed_source)
+          processed_source.find_token do |token|
+            token.text.start_with?(FrozenStringLiteral::FROZEN_STRING_LITERAL)
+          end
+        end
+
+        def insert_comment(corrector)
+          last_special_comment = last_special_comment(processed_source)
+          if last_special_comment.nil?
+            corrector.insert_before(correction_range, preceding_comment)
+          else
+            corrector.insert_after(correction_range, proceeding_comment)
+          end
         end
 
         def last_special_comment(processed_source)
@@ -109,40 +135,11 @@ module RuboCop
           token
         end
 
-        def frozen_string_literal_comment(processed_source)
-          processed_source.find_token do |token|
-            token.text.start_with?(FrozenStringLiteral::FROZEN_STRING_LITERAL)
-          end
-        end
-
         def offense(processed_source)
           last_special_comment = last_special_comment(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
           add_offense(last_special_comment, location: range)
-        end
-
-        def unnecessary_comment_offense(processed_source)
-          frozen_string_literal_comment =
-            frozen_string_literal_comment(processed_source)
-
-          add_offense(frozen_string_literal_comment,
-                      location: frozen_string_literal_comment.pos,
-                      message: MSG_UNNECESSARY)
-        end
-
-        def remove_comment(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.pos,
-                                                        side: :right))
-        end
-
-        def insert_comment(corrector)
-          last_special_comment = last_special_comment(processed_source)
-          if last_special_comment.nil?
-            corrector.insert_before(correction_range, preceding_comment)
-          else
-            corrector.insert_after(correction_range, proceeding_comment)
-          end
         end
 
         def preceding_comment
@@ -164,15 +161,18 @@ module RuboCop
           end
         end
 
-        def correction_range
-          last_special_comment = last_special_comment(processed_source)
+        def remove_comment(corrector, node)
+          corrector.remove(range_with_surrounding_space(range: node.pos,
+                                                        side: :right))
+        end
 
-          if last_special_comment.nil?
-            range_with_surrounding_space(range: processed_source.tokens[0],
-                                         side: :left)
-          else
-            last_special_comment.pos
-          end
+        def unnecessary_comment_offense(processed_source)
+          frozen_string_literal_comment =
+            frozen_string_literal_comment(processed_source)
+
+          add_offense(frozen_string_literal_comment,
+                      location: frozen_string_literal_comment.pos,
+                      message: MSG_UNNECESSARY)
         end
       end
     end

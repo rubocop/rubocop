@@ -37,6 +37,10 @@ module RuboCop
         include Alignment
         include MultilineExpressionIndentation
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        end
+
         def on_and(node)
           check_and_or(node)
         end
@@ -54,22 +58,23 @@ module RuboCop
                                 '`EnforcedStyle` is `indented`.'
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
-
-        def relevant_node?(node)
-          return false if node.send_type? && node.unary_operation?
-
-          !node.loc.dot # Don't check method calls with dot operator.
-        end
 
         def check_and_or(node)
           lhs, rhs = *node
           range = offending_range(node, lhs, rhs.source_range, style)
           check(range, node, lhs, rhs.source_range)
+        end
+
+        def message(node, lhs, rhs)
+          what = operation_description(node, rhs)
+          if should_align?(node, rhs, style)
+            "Align the operands of #{what} spanning multiple lines."
+          else
+            used_indentation = rhs.column - indentation(lhs)
+            "Use #{correct_indentation(node)} (not #{used_indentation}) " \
+              "spaces for indenting #{what} spanning multiple lines."
+          end
         end
 
         def offending_range(node, lhs, rhs, given_style)
@@ -85,6 +90,12 @@ module RuboCop
           rhs if @column_delta.nonzero?
         end
 
+        def relevant_node?(node)
+          return false if node.send_type? && node.unary_operation?
+
+          !node.loc.dot # Don't check method calls with dot operator.
+        end
+
         def should_align?(node, rhs, given_style)
           assignment_node = part_of_assignment_rhs(node, rhs)
           if assignment_node
@@ -96,17 +107,6 @@ module RuboCop
             (kw_node_with_special_indentation(node) ||
              assignment_node ||
              argument_in_method_call(node, :with_or_without_parentheses))
-        end
-
-        def message(node, lhs, rhs)
-          what = operation_description(node, rhs)
-          if should_align?(node, rhs, style)
-            "Align the operands of #{what} spanning multiple lines."
-          else
-            used_indentation = rhs.column - indentation(lhs)
-            "Use #{correct_indentation(node)} (not #{used_indentation}) " \
-              "spaces for indenting #{what} spanning multiple lines."
-          end
         end
       end
     end

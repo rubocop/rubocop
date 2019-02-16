@@ -37,12 +37,6 @@ module RuboCop
         def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
-        def on_send(node)
-          style_check?(node) do
-            add_offense(node, location: :selector)
-          end
-        end
-
         def autocorrect(node)
           new_code = if prefer_comparison?
                        node.source.sub('.nil?', ' == nil')
@@ -52,10 +46,20 @@ module RuboCop
           ->(corrector) { corrector.replace(node.source_range, new_code) }
         end
 
+        def on_send(node)
+          style_check?(node) do
+            add_offense(node, location: :selector)
+          end
+        end
+
         private
 
         def message(_node)
           prefer_comparison? ? EXPLICIT_MSG : PREDICATE_MSG
+        end
+
+        def prefer_comparison?
+          style == :comparison
         end
 
         def style_check?(node, &block)
@@ -64,10 +68,6 @@ module RuboCop
           else
             nil_comparison?(node, &block)
           end
-        end
-
-        def prefer_comparison?
-          style == :comparison
         end
       end
     end

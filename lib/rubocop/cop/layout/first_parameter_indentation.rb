@@ -147,6 +147,10 @@ module RuboCop
 
         MSG = 'Indent the first parameter one step more than %<base>s.'.freeze
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
+        end
+
         def on_send(node)
           return if !node.arguments? || node.operator_method?
 
@@ -156,27 +160,7 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
-
-        def message(arg_node)
-          return 'Bad indentation of the first parameter.' unless arg_node
-
-          send_node = arg_node.parent
-          text = base_range(send_node, arg_node).source.strip
-          base = if text !~ /\n/ && special_inner_call_indentation?(send_node)
-                   "`#{text}`"
-                 elsif comment_line?(text.lines.reverse_each.first)
-                   'the start of the previous line (not counting the comment)'
-                 else
-                   'the start of the previous line'
-                 end
-
-          format(MSG, base: base)
-        end
 
         def base_indentation(node)
           if special_inner_call_indentation?(node)
@@ -185,25 +169,6 @@ module RuboCop
             previous_code_line(node.first_argument.first_line) =~ /\S/
           end
         end
-
-        def special_inner_call_indentation?(node)
-          return false if style == :consistent
-          return true  if style == :consistent_relative_to_receiver
-
-          parent = node.parent
-
-          return false unless eligible_method_call?(parent)
-          return false if !parent.parenthesized? &&
-                          style == :special_for_inner_method_call_in_parentheses
-
-          # The node must begin inside the parent, otherwise node is the first
-          # part of a chained method call.
-          node.source_range.begin_pos > parent.source_range.begin_pos
-        end
-
-        def_node_matcher :eligible_method_call?, <<-PATTERN
-          (send _ !:[]= ...)
-        PATTERN
 
         def base_range(send_node, arg_node)
           range_between(send_node.source_range.begin_pos,
@@ -219,6 +184,26 @@ module RuboCop
           else
             display_column(range)
           end
+        end
+
+        def_node_matcher :eligible_method_call?, <<-PATTERN
+          (send _ !:[]= ...)
+        PATTERN
+
+        def message(arg_node)
+          return 'Bad indentation of the first parameter.' unless arg_node
+
+          send_node = arg_node.parent
+          text = base_range(send_node, arg_node).source.strip
+          base = if text !~ /\n/ && special_inner_call_indentation?(send_node)
+                   "`#{text}`"
+                 elsif comment_line?(text.lines.reverse_each.first)
+                   'the start of the previous line (not counting the comment)'
+                 else
+                   'the start of the previous line'
+                 end
+
+          format(MSG, base: base)
         end
 
         # Takes the line number of a given code line and returns a string
@@ -237,6 +222,21 @@ module RuboCop
             line = processed_source.lines[line_number - 1]
           end
           line
+        end
+
+        def special_inner_call_indentation?(node)
+          return false if style == :consistent
+          return true  if style == :consistent_relative_to_receiver
+
+          parent = node.parent
+
+          return false unless eligible_method_call?(parent)
+          return false if !parent.parenthesized? &&
+                          style == :special_for_inner_method_call_in_parentheses
+
+          # The node must begin inside the parent, otherwise node is the first
+          # part of a chained method call.
+          node.source_range.begin_pos > parent.source_range.begin_pos
         end
       end
     end

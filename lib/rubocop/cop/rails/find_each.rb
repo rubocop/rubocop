@@ -21,6 +21,10 @@ module RuboCop
         ].freeze
         IGNORED_METHODS = %i[order limit select].freeze
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.selector, 'find_each') }
+        end
+
         def on_send(node)
           return unless node.receiver &&
                         node.receiver.send_type? &&
@@ -32,19 +36,15 @@ module RuboCop
           add_offense(node, location: :selector)
         end
 
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'find_each') }
-        end
-
         private
-
-        def method_chain(node)
-          [*node.descendants.select(&:send_type?), node].map(&:method_name)
-        end
 
         def ignored_by_find_each?(relation_method)
           # Active Record's #find_each ignores various extra parameters
           IGNORED_METHODS.include?(relation_method)
+        end
+
+        def method_chain(node)
+          [*node.descendants.select(&:send_type?), node].map(&:method_name)
         end
       end
     end

@@ -23,14 +23,6 @@ module RuboCop
         BEGIN_LENGTH = "=begin\n".length
         END_LENGTH = "\n=end".length
 
-        def investigate(processed_source)
-          processed_source.each_comment do |comment|
-            next unless comment.document?
-
-            add_offense(comment)
-          end
-        end
-
         def autocorrect(comment)
           eq_begin, eq_end, contents = parts(comment)
 
@@ -44,6 +36,14 @@ module RuboCop
                                   .gsub(/\n(?=[^#])/, "\n# "))
             end
             corrector.remove(eq_end)
+          end
+        end
+
+        def investigate(processed_source)
+          processed_source.each_comment do |comment|
+            next unless comment.document?
+
+            add_offense(comment)
           end
         end
 

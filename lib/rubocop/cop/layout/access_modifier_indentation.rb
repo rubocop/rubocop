@@ -38,13 +38,16 @@ module RuboCop
 
         MSG = '%<style>s access modifiers like `%<node>s`.'.freeze
 
-        def on_class(node)
-          _name, _base_class, body = *node
-          check_body(body, node)
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
         end
 
-        def on_sclass(node)
-          _name, body = *node
+        def on_block(node)
+          check_body(node.body, node)
+        end
+
+        def on_class(node)
+          _name, _base_class, body = *node
           check_body(body, node)
         end
 
@@ -53,12 +56,9 @@ module RuboCop
           check_body(body, node)
         end
 
-        def on_block(node)
-          check_body(node.body, node)
-        end
-
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        def on_sclass(node)
+          _name, body = *node
+          check_body(body, node)
         end
 
         private
@@ -90,12 +90,12 @@ module RuboCop
           end
         end
 
-        def message(node)
-          format(MSG, style: style.capitalize, node: node.loc.selector.source)
-        end
-
         def expected_indent_offset
           style == :outdent ? 0 : configured_indentation_width
+        end
+
+        def message(node)
+          format(MSG, style: style.capitalize, node: node.loc.selector.source)
         end
 
         # An offset that is not expected, but correct if the configuration is

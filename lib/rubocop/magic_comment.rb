@@ -30,6 +30,26 @@ module RuboCop
       frozen_string_literal_specified? || encoding_specified?
     end
 
+    def encoding_specified?
+      specified?(encoding)
+    end
+
+    # Expose the `frozen_string_literal` value coerced to a boolean if possible.
+    #
+    # @return [Boolean] if value is `true` or `false`
+    # @return [nil] if frozen_string_literal comment isn't found
+    # @return [String] if comment is found but isn't true or false
+    def frozen_string_literal
+      return unless (setting = extract_frozen_string_literal)
+
+      case setting
+      when 'true'  then true
+      when 'false' then false
+      else
+        setting
+      end
+    end
+
     # Does the magic comment enable the frozen string literal feature.
     #
     # Test whether the frozen string literal value is `true`. Cannot
@@ -49,31 +69,7 @@ module RuboCop
       specified?(frozen_string_literal)
     end
 
-    # Expose the `frozen_string_literal` value coerced to a boolean if possible.
-    #
-    # @return [Boolean] if value is `true` or `false`
-    # @return [nil] if frozen_string_literal comment isn't found
-    # @return [String] if comment is found but isn't true or false
-    def frozen_string_literal
-      return unless (setting = extract_frozen_string_literal)
-
-      case setting
-      when 'true'  then true
-      when 'false' then false
-      else
-        setting
-      end
-    end
-
-    def encoding_specified?
-      specified?(encoding)
-    end
-
     private
-
-    def specified?(value)
-      !value.nil?
-    end
 
     # Match the entire comment string with a pattern and take the first capture.
     #
@@ -83,6 +79,10 @@ module RuboCop
     # @return [nil] otherwise
     def extract(pattern)
       @comment[pattern, 1]
+    end
+
+    def specified?(value)
+      !value.nil?
     end
 
     # Parent to Vim and Emacs magic comment handling.

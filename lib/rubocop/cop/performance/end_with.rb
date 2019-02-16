@@ -24,19 +24,6 @@ module RuboCop
            (send (regexp (str $#literal_at_end?) (regopt)) {:match :=~} $_)}
         PATTERN
 
-        def literal_at_end?(regex_str)
-          # is this regexp 'literal' in the sense of only matching literal
-          # chars, rather than using metachars like . and * and so on?
-          # also, is it anchored at the end of the string?
-          regex_str =~ /\A(?:#{LITERAL_REGEX})+\\z\z/
-        end
-
-        def on_send(node)
-          return unless redundant_regex?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           redundant_regex?(node) do |receiver, regex_str|
             receiver, regex_str = regex_str, receiver if receiver.is_a?(String)
@@ -49,6 +36,19 @@ module RuboCop
               corrector.replace(node.source_range, new_source)
             end
           end
+        end
+
+        def literal_at_end?(regex_str)
+          # is this regexp 'literal' in the sense of only matching literal
+          # chars, rather than using metachars like . and * and so on?
+          # also, is it anchored at the end of the string?
+          regex_str =~ /\A(?:#{LITERAL_REGEX})+\\z\z/
+        end
+
+        def on_send(node)
+          return unless redundant_regex?(node)
+
+          add_offense(node)
         end
       end
     end

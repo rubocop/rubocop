@@ -9,14 +9,14 @@ module RuboCop
       class ClassLength < Cop
         include ClassishLength
 
-        def on_class(node)
-          check_code_length(node)
-        end
-
         def on_casgn(node)
           class_definition?(node) do
             check_code_length(node)
           end
+        end
+
+        def on_class(node)
+          check_code_length(node)
         end
 
         private

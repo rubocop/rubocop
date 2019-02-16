@@ -71,13 +71,18 @@ module RuboCop
 
       # @api public
       #
-      # Invoked once before any files are inspected.
+      # Invoked at the end of inspecting each files.
       #
-      # @param target_files [Array(String)]
-      #   all target file paths to be inspected
+      # @param file [String]
+      #   the file path
+      #
+      # @param offenses [Array(RuboCop::Cop::Offense)]
+      #   all detected offenses for the file
       #
       # @return [void]
-      def started(target_files); end
+      #
+      # @see RuboCop::Cop::Offense
+      def file_finished(file, offenses); end
 
       # @api public
       #
@@ -94,21 +99,6 @@ module RuboCop
 
       # @api public
       #
-      # Invoked at the end of inspecting each files.
-      #
-      # @param file [String]
-      #   the file path
-      #
-      # @param offenses [Array(RuboCop::Cop::Offense)]
-      #   all detected offenses for the file
-      #
-      # @return [void]
-      #
-      # @see RuboCop::Cop::Offense
-      def file_finished(file, offenses); end
-
-      # @api public
-      #
       # Invoked after all files are inspected or interrupted by user.
       #
       # @param inspected_files [Array(String)]
@@ -118,6 +108,16 @@ module RuboCop
       #
       # @return [void]
       def finished(inspected_files); end
+
+      # @api public
+      #
+      # Invoked once before any files are inspected.
+      #
+      # @param target_files [Array(String)]
+      #   all target file paths to be inspected
+      #
+      # @return [void]
+      def started(target_files); end
     end
   end
 end

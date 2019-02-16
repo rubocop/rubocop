@@ -30,11 +30,43 @@ module RuboCop
 
       attr_reader :block_node, :method, :arguments
 
-      def remove_unparenthesized_whitespace(corrector)
-        return unless !arguments.empty? && !arguments.parenthesized_call?
+      def arg_to_unparenthesized_call?
+        current_node = block_node
 
-        remove_leading_whitespace(corrector)
-        remove_trailing_whitespace(corrector)
+        parent = current_node.parent
+
+        if parent && parent.pair_type?
+          current_node = parent.parent
+          parent = current_node.parent
+        end
+
+        return false unless parent && parent.send_type?
+        return false if parent.parenthesized_call?
+
+        current_node.sibling_index > 1
+      end
+
+      def arguments_begin_pos
+        arguments.loc.begin && arguments.loc.begin.begin_pos
+      end
+
+      def arguments_end_pos
+        arguments.loc.end && arguments.loc.end.end_pos
+      end
+
+      def block_begin
+        block_node.loc.begin
+      end
+
+      def block_end
+        block_node.loc.end
+      end
+
+      def insert_arguments(corrector)
+        return if arguments.empty?
+
+        arg_str = " |#{lambda_arg_string}|"
+        corrector.insert_after(block_node.loc.begin, arg_str)
       end
 
       def insert_separating_space(corrector)
@@ -43,21 +75,20 @@ module RuboCop
         corrector.insert_before(block_begin, ' ')
       end
 
-      def replace_selector(corrector)
-        corrector.replace(method.source_range, 'lambda')
+      def lambda_arg_string
+        arguments.children.map(&:source).join(', ')
+      end
+
+      def needs_separating_space?
+        block_begin.begin_pos == arguments_end_pos &&
+          selector_end.end_pos == arguments_begin_pos ||
+          block_begin.begin_pos == selector_end.end_pos
       end
 
       def remove_arguments(corrector)
         return if arguments.empty_and_without_delimiters?
 
         corrector.remove(arguments.source_range)
-      end
-
-      def insert_arguments(corrector)
-        return if arguments.empty?
-
-        arg_str = " |#{lambda_arg_string}|"
-        corrector.insert_after(block_node.loc.begin, arg_str)
       end
 
       def remove_leading_whitespace(corrector)
@@ -75,6 +106,13 @@ module RuboCop
         )
       end
 
+      def remove_unparenthesized_whitespace(corrector)
+        return unless !arguments.empty? && !arguments.parenthesized_call?
+
+        remove_leading_whitespace(corrector)
+        remove_trailing_whitespace(corrector)
+      end
+
       def replace_delimiters(corrector)
         return if block_node.braces? || !arg_to_unparenthesized_call?
 
@@ -84,50 +122,12 @@ module RuboCop
         corrector.replace(block_end, '}')
       end
 
-      def lambda_arg_string
-        arguments.children.map(&:source).join(', ')
-      end
-
-      def needs_separating_space?
-        block_begin.begin_pos == arguments_end_pos &&
-          selector_end.end_pos == arguments_begin_pos ||
-          block_begin.begin_pos == selector_end.end_pos
-      end
-
-      def arguments_end_pos
-        arguments.loc.end && arguments.loc.end.end_pos
-      end
-
-      def arguments_begin_pos
-        arguments.loc.begin && arguments.loc.begin.begin_pos
-      end
-
-      def block_end
-        block_node.loc.end
-      end
-
-      def block_begin
-        block_node.loc.begin
+      def replace_selector(corrector)
+        corrector.replace(method.source_range, 'lambda')
       end
 
       def selector_end
         method.loc.selector.end
-      end
-
-      def arg_to_unparenthesized_call?
-        current_node = block_node
-
-        parent = current_node.parent
-
-        if parent && parent.pair_type?
-          current_node = parent.parent
-          parent = current_node.parent
-        end
-
-        return false unless parent && parent.send_type?
-        return false if parent.parenthesized_call?
-
-        current_node.sibling_index > 1
       end
 
       def separating_space?

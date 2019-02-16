@@ -25,46 +25,6 @@ module RuboCop
         validate_config
       end
 
-      def autocorrect?
-        @options[:auto_correct]
-      end
-
-      def debug?
-        @options[:debug]
-      end
-
-      def inspect_file(processed_source)
-        # If we got any syntax errors, return only the syntax offenses.
-        unless processed_source.valid_syntax?
-          return Lint::Syntax.offenses_from_processed_source(
-            processed_source, @config, @options
-          )
-        end
-
-        offenses(processed_source)
-      end
-
-      def cops
-        only = @options.fetch(:only, [])
-        safe = @options.fetch(:safe, false)
-        @cops ||= @cop_classes.enabled(@config, only, safe).map do |cop_class|
-          cop_class.new(@config, @options)
-        end
-      end
-
-      def forces
-        @forces ||= forces_for(cops)
-      end
-
-      def forces_for(cops)
-        Force.all.each_with_object([]) do |force_class, forces|
-          joining_cops = cops.select { |cop| cop.join_force?(force_class) }
-          next if joining_cops.empty?
-
-          forces << force_class.new(joining_cops)
-        end
-      end
-
       def autocorrect(buffer, cops)
         @updated_source_file = false
         return unless autocorrect?
@@ -83,41 +43,47 @@ module RuboCop
         @updated_source_file = true
       end
 
+      def autocorrect?
+        @options[:auto_correct]
+      end
+
+      def cops
+        only = @options.fetch(:only, [])
+        safe = @options.fetch(:safe, false)
+        @cops ||= @cop_classes.enabled(@config, only, safe).map do |cop_class|
+          cop_class.new(@config, @options)
+        end
+      end
+
+      def debug?
+        @options[:debug]
+      end
+
+      def forces
+        @forces ||= forces_for(cops)
+      end
+
+      def forces_for(cops)
+        Force.all.each_with_object([]) do |force_class, forces|
+          joining_cops = cops.select { |cop| cop.join_force?(force_class) }
+          next if joining_cops.empty?
+
+          forces << force_class.new(joining_cops)
+        end
+      end
+
+      def inspect_file(processed_source)
+        # If we got any syntax errors, return only the syntax offenses.
+        unless processed_source.valid_syntax?
+          return Lint::Syntax.offenses_from_processed_source(
+            processed_source, @config, @options
+          )
+        end
+
+        offenses(processed_source)
+      end
+
       private
-
-      def offenses(processed_source)
-        # The autocorrection process may have to be repeated multiple times
-        # until there are no corrections left to perform
-        # To speed things up, run auto-correcting cops by themselves, and only
-        # run the other cops when no corrections are left
-        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
-
-        autocorrect =
-          investigate(autocorrect_cops, processed_source) do |offenses|
-            # We corrected some errors. Another round of inspection will be
-            # done, and any other offenses will be caught then, so we don't
-            # need to continue.
-            return offenses if autocorrect(processed_source.buffer,
-                                           autocorrect_cops)
-          end
-
-        other = investigate(other_cops, processed_source)
-
-        errors = autocorrect.errors.merge(other.errors)
-        process_commissioner_errors(processed_source.path, errors)
-
-        autocorrect.offenses.concat(other.offenses)
-      end
-
-      def investigate(cops, processed_source)
-        return Investigation.new([], {}) if cops.empty?
-
-        commissioner = Commissioner.new(cops, forces_for(cops))
-        offenses = commissioner.investigate(processed_source)
-        yield offenses if block_given?
-
-        Investigation.new(offenses, commissioner.errors)
-      end
 
       def autocorrect_all_cops(buffer, cops)
         corrector = Corrector.new(buffer)
@@ -143,10 +109,58 @@ module RuboCop
         end
       end
 
-      def validate_config
-        cops.each do |cop|
-          cop.validate_config if cop.respond_to?(:validate_config)
+      def handle_error(error, location, cop)
+        message = Rainbow("An error occurred while #{cop.name}" \
+                           " cop was inspecting #{location}.").red
+        @errors << message
+        warn message
+        if debug?
+          puts error.message, error.backtrace
+        else
+          warn 'To see the complete backtrace run rubocop -d.'
         end
+      end
+
+      def handle_warning(error, location)
+        message = Rainbow("#{error.message} (from file: #{location})").yellow
+
+        @warnings << message
+        warn message
+        puts error.backtrace if debug?
+      end
+
+      def investigate(cops, processed_source)
+        return Investigation.new([], {}) if cops.empty?
+
+        commissioner = Commissioner.new(cops, forces_for(cops))
+        offenses = commissioner.investigate(processed_source)
+        yield offenses if block_given?
+
+        Investigation.new(offenses, commissioner.errors)
+      end
+
+      def offenses(processed_source)
+        # The autocorrection process may have to be repeated multiple times
+        # until there are no corrections left to perform
+        # To speed things up, run auto-correcting cops by themselves, and only
+        # run the other cops when no corrections are left
+        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
+
+        autocorrect =
+          investigate(autocorrect_cops, processed_source) do |offenses|
+            # We corrected some errors. Another round of inspection will be
+            # done, and any other offenses will be caught then, so we don't
+            # need to continue.
+            return offenses if autocorrect(processed_source.buffer,
+                                           autocorrect_cops)
+          end
+
+        other = investigate(other_cops, processed_source)
+
+        errors = autocorrect.errors.merge(other.errors)
+        process_commissioner_errors(processed_source.path, errors)
+
+        autocorrect.offenses.concat(other.offenses)
       end
 
       def process_commissioner_errors(file, file_errors)
@@ -166,23 +180,9 @@ module RuboCop
         end
       end
 
-      def handle_warning(error, location)
-        message = Rainbow("#{error.message} (from file: #{location})").yellow
-
-        @warnings << message
-        warn message
-        puts error.backtrace if debug?
-      end
-
-      def handle_error(error, location, cop)
-        message = Rainbow("An error occurred while #{cop.name}" \
-                           " cop was inspecting #{location}.").red
-        @errors << message
-        warn message
-        if debug?
-          puts error.message, error.backtrace
-        else
-          warn 'To see the complete backtrace run rubocop -d.'
+      def validate_config
+        cops.each do |cop|
+          cop.validate_config if cop.respond_to?(:validate_config)
         end
       end
     end

@@ -32,10 +32,6 @@ module RuboCop
       class UnderscorePrefixedVariableName < Cop
         MSG = 'Do not use prefix `_` for a variable that is used.'.freeze
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_variable(variable)
@@ -55,6 +51,10 @@ module RuboCop
                      end
 
           add_offense(nil, location: location)
+        end
+
+        def join_force?(force_class)
+          force_class == VariableForce
         end
       end
     end

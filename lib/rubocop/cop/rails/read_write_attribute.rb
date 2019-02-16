@@ -33,12 +33,6 @@ module RuboCop
           }
         PATTERN
 
-        def on_send(node)
-          return unless read_write_attribute?(node)
-
-          add_offense(node, location: :selector)
-        end
-
         def autocorrect(node)
           case node.method_name
           when :read_attribute
@@ -48,6 +42,12 @@ module RuboCop
           end
 
           ->(corrector) { corrector.replace(node.source_range, replacement) }
+        end
+
+        def on_send(node)
+          return unless read_write_attribute?(node)
+
+          add_offense(node, location: :selector)
         end
 
         private

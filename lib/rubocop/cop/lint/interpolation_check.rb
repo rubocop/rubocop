@@ -20,6 +20,11 @@ module RuboCop
         MSG = 'Interpolation in single quoted string detected. '\
               'Use double quoted strings if you need interpolation.'.freeze
 
+        def heredoc?(node)
+          node.loc.is_a?(Parser::Source::Map::Heredoc) ||
+            (node.parent && heredoc?(node.parent))
+        end
+
         def on_str(node)
           return if heredoc?(node)
 
@@ -28,11 +33,6 @@ module RuboCop
           return unless node.source.scrub =~ /(?<!\\)#\{.*\}/
 
           add_offense(node)
-        end
-
-        def heredoc?(node)
-          node.loc.is_a?(Parser::Source::Map::Heredoc) ||
-            (node.parent && heredoc?(node.parent))
         end
       end
     end

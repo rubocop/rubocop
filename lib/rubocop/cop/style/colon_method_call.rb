@@ -29,6 +29,10 @@ module RuboCop
           [RedundantSelf]
         end
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.dot, '.') }
+        end
+
         def on_send(node)
           # ignore Java interop code like Java::int
           return if java_type_node?(node)
@@ -37,10 +41,6 @@ module RuboCop
           return if node.camel_case_method?
 
           add_offense(node, location: :dot)
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.dot, '.') }
         end
       end
     end

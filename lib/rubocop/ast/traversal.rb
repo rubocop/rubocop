@@ -7,13 +7,6 @@ module RuboCop
     # Override methods to perform custom processing. Remember to call `super`
     # if you want to recursively process descendant nodes.
     module Traversal
-      def walk(node)
-        return if node.nil?
-
-        send(:"on_#{node.type}", node)
-        nil
-      end
-
       NO_CHILD_NODES    = %i[true false nil int float complex
                              rational str sym regopt self lvar
                              ivar cvar gvar nth_ref back_ref cbase
@@ -64,11 +57,30 @@ module RuboCop
         RUBY
       end
 
-      def on_const(node)
-        return unless (child = node.children[0])
+      def on_block(node)
+        children = node.children
+        child = children[0]
+        send(:"on_#{child.type}", child) # can be send, zsuper...
+        on_args(children[1])
+        return unless (child = children[2])
 
         send(:"on_#{child.type}", child)
       end
+
+      def on_case(node)
+        node.children.each do |child|
+          send(:"on_#{child.type}", child) if child
+        end
+        nil
+      end
+
+      alias on_rescue  on_case
+      alias on_resbody on_case
+      alias on_ensure  on_case
+      alias on_for     on_case
+      alias on_when    on_case
+      alias on_irange  on_case
+      alias on_erange  on_case
 
       def on_casgn(node)
         children = node.children
@@ -92,30 +104,17 @@ module RuboCop
         send(:"on_#{child.type}", child)
       end
 
+      def on_const(node)
+        return unless (child = node.children[0])
+
+        send(:"on_#{child.type}", child)
+      end
+
       def on_def(node)
         children = node.children
         on_args(children[1])
         return unless (child = children[2])
 
-        send(:"on_#{child.type}", child)
-      end
-
-      def on_send(node)
-        node.children.each_with_index do |child, i|
-          next if i == 1
-
-          send(:"on_#{child.type}", child) if child
-        end
-        nil
-      end
-
-      alias on_csend on_send
-
-      def on_op_asgn(node)
-        children = node.children
-        child = children[0]
-        send(:"on_#{child.type}", child)
-        child = children[2]
         send(:"on_#{child.type}", child)
       end
 
@@ -141,6 +140,25 @@ module RuboCop
         send(:"on_#{child.type}", child)
       end
 
+      def on_op_asgn(node)
+        children = node.children
+        child = children[0]
+        send(:"on_#{child.type}", child)
+        child = children[2]
+        send(:"on_#{child.type}", child)
+      end
+
+      def on_send(node)
+        node.children.each_with_index do |child, i|
+          next if i == 1
+
+          send(:"on_#{child.type}", child) if child
+        end
+        nil
+      end
+
+      alias on_csend on_send
+
       def on_while(node)
         children = node.children
         child = children[0]
@@ -154,30 +172,12 @@ module RuboCop
       alias on_module on_while
       alias on_sclass on_while
 
-      def on_block(node)
-        children = node.children
-        child = children[0]
-        send(:"on_#{child.type}", child) # can be send, zsuper...
-        on_args(children[1])
-        return unless (child = children[2])
+      def walk(node)
+        return if node.nil?
 
-        send(:"on_#{child.type}", child)
-      end
-
-      def on_case(node)
-        node.children.each do |child|
-          send(:"on_#{child.type}", child) if child
-        end
+        send(:"on_#{node.type}", node)
         nil
       end
-
-      alias on_rescue  on_case
-      alias on_resbody on_case
-      alias on_ensure  on_case
-      alias on_for     on_case
-      alias on_when    on_case
-      alias on_irange  on_case
-      alias on_erange  on_case
     end
   end
 end

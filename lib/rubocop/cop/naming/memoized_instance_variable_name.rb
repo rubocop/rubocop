@@ -121,10 +121,6 @@ module RuboCop
 
         private
 
-        def style_parameter_name
-          'EnforcedStyleForLeadingUnderscores'
-        end
-
         def matches?(method_name, ivar_assign)
           return true if ivar_assign.nil? || method_name == :initialize
 
@@ -142,6 +138,10 @@ module RuboCop
                                         !variable_name.start_with?('_')
 
           MSG
+        end
+
+        def style_parameter_name
+          'EnforcedStyleForLeadingUnderscores'
         end
 
         def suggested_var(method_name)

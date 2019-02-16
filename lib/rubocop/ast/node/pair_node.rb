@@ -13,13 +13,6 @@ module RuboCop
       COLON = ':'.freeze
       SPACED_COLON = ': '.freeze
 
-      # Checks whether the `pair` uses a hash rocket delimiter.
-      #
-      # @return [Boolean] whether this `pair` uses a hash rocket delimiter
-      def hash_rocket?
-        loc.operator.is?(HASH_ROCKET)
-      end
-
       # Checks whether the `pair` uses a colon delimiter.
       #
       # @return [Boolean] whether this `pair` uses a colon delimiter
@@ -38,6 +31,13 @@ module RuboCop
         else
           hash_rocket? ? HASH_ROCKET : COLON
         end
+      end
+
+      # Checks whether the `pair` uses a hash rocket delimiter.
+      #
+      # @return [Boolean] whether this `pair` uses a hash rocket delimiter
+      def hash_rocket?
+        loc.operator.is?(HASH_ROCKET)
       end
 
       # Returns the inverse delimiter of the `pair` as a string.

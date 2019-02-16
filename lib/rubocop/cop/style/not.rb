@@ -27,12 +27,6 @@ module RuboCop
           :>= => :<
         }.freeze
 
-        def on_send(node)
-          return unless node.prefix_not?
-
-          add_offense(node, location: :selector)
-        end
-
         def autocorrect(node)
           range = range_with_surrounding_space(range: node.loc.selector,
                                                side: :right)
@@ -46,17 +40,13 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return unless node.prefix_not?
+
+          add_offense(node, location: :selector)
+        end
+
         private
-
-        def opposite_method?(child)
-          child.send_type? && OPPOSITE_METHODS.key?(child.method_name)
-        end
-
-        def requires_parens?(child)
-          child.and_type? || child.or_type? ||
-            child.send_type? && child.binary_operation? ||
-            child.if_type? && child.ternary?
-        end
 
         def correct_opposite_method(range, child)
           lambda do |corrector|
@@ -75,6 +65,16 @@ module RuboCop
 
         def correct_without_parens(range)
           ->(corrector) { corrector.replace(range, '!') }
+        end
+
+        def opposite_method?(child)
+          child.send_type? && OPPOSITE_METHODS.key?(child.method_name)
+        end
+
+        def requires_parens?(child)
+          child.and_type? || child.or_type? ||
+            child.send_type? && child.binary_operation? ||
+            child.if_type? && child.ternary?
         end
       end
     end

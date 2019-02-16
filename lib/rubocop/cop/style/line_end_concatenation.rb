@@ -35,12 +35,6 @@ module RuboCop
           [Style::UnneededInterpolation]
         end
 
-        def investigate(processed_source)
-          processed_source.tokens.each_index do |index|
-            check_token_set(index)
-          end
-        end
-
         def autocorrect(operator_range)
           # Include any trailing whitespace so we don't create a syntax error.
           operator_range = range_with_surrounding_space(range: operator_range,
@@ -52,6 +46,12 @@ module RuboCop
           operator_range = one_more_char if one_more_char.source.end_with?('\\')
 
           ->(corrector) { corrector.replace(operator_range, '\\') }
+        end
+
+        def investigate(processed_source)
+          processed_source.tokens.each_index do |index|
+            check_token_set(index)
+          end
         end
 
         private
@@ -72,21 +72,32 @@ module RuboCop
           add_offense(operator.pos, location: operator.pos)
         end
 
-        def eligible_successor?(successor)
-          successor && standard_string_literal?(successor)
+        def eligible_next_successor?(next_successor)
+          !(next_successor &&
+            HIGH_PRECEDENCE_OP_TOKEN_TYPES.include?(next_successor.type))
         end
 
         def eligible_operator?(operator)
           CONCAT_TOKEN_TYPES.include?(operator.type)
         end
 
-        def eligible_next_successor?(next_successor)
-          !(next_successor &&
-            HIGH_PRECEDENCE_OP_TOKEN_TYPES.include?(next_successor.type))
-        end
-
         def eligible_predecessor?(predecessor)
           standard_string_literal?(predecessor)
+        end
+
+        def eligible_successor?(successor)
+          successor && standard_string_literal?(successor)
+        end
+
+        def standard_string_literal?(token)
+          case token.type
+          when SIMPLE_STRING_TOKEN_TYPE
+            true
+          when *COMPLEX_STRING_EDGE_TOKEN_TYPES
+            QUOTE_DELIMITERS.include?(token.text)
+          else
+            false
+          end
         end
 
         def token_after_last_string(successor, base_index)
@@ -103,17 +114,6 @@ module RuboCop
             end
           end
           processed_source.tokens[index]
-        end
-
-        def standard_string_literal?(token)
-          case token.type
-          when SIMPLE_STRING_TOKEN_TYPE
-            true
-          when *COMPLEX_STRING_EDGE_TOKEN_TYPES
-            QUOTE_DELIMITERS.include?(token.text)
-          else
-            false
-          end
         end
       end
     end

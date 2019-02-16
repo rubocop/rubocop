@@ -85,6 +85,10 @@ module RuboCop
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
               'in a hash, relative to %<base_description>s.'.freeze
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        end
+
         def on_hash(node)
           check(node, nil) if node.loc.begin
         end
@@ -96,11 +100,18 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        # Returns the description of what the correct indentation is based on.
+        def base_description(left_parenthesis)
+          if style == :align_braces
+            'the position of the opening brace'
+          elsif left_parenthesis && style == :special_inside_parentheses
+            'the first position after the preceding left parenthesis'
+          else
+            'the start of the line where the left curly brace is'
+          end
+        end
 
         def brace_alignment_style
           :align_braces
@@ -126,6 +137,14 @@ module RuboCop
           check_right_brace(hash_node.loc.end, left_brace, left_parenthesis)
         end
 
+        def check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
+          key_lengths = hash_node.keys.map do |key|
+            key.source_range.length
+          end
+          check_first(hash_node.pairs.first, left_brace, left_parenthesis,
+                      key_lengths.max - key_lengths.first)
+        end
+
         def check_right_brace(right_brace, left_brace, left_parenthesis)
           # if the right brace is on the same line as the last value, accept
           return if right_brace.source_line[0...right_brace.column] =~ /\S/
@@ -146,37 +165,18 @@ module RuboCop
           add_offense(right_brace, location: right_brace, message: msg)
         end
 
-        def separator_style?(first_pair)
-          separator = first_pair.loc.operator
-          key = "Enforced#{separator.is?(':') ? 'Colon' : 'HashRocket'}Style"
-          config.for_cop('Layout/AlignHash')[key] == 'separator'
-        end
-
-        def check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
-          key_lengths = hash_node.keys.map do |key|
-            key.source_range.length
-          end
-          check_first(hash_node.pairs.first, left_brace, left_parenthesis,
-                      key_lengths.max - key_lengths.first)
-        end
-
-        # Returns the description of what the correct indentation is based on.
-        def base_description(left_parenthesis)
-          if style == :align_braces
-            'the position of the opening brace'
-          elsif left_parenthesis && style == :special_inside_parentheses
-            'the first position after the preceding left parenthesis'
-          else
-            'the start of the line where the left curly brace is'
-          end
-        end
-
         def message(base_description)
           format(
             MSG,
             configured_indentation_width: configured_indentation_width,
             base_description: base_description
           )
+        end
+
+        def separator_style?(first_pair)
+          separator = first_pair.loc.operator
+          key = "Enforced#{separator.is?(':') ? 'Colon' : 'HashRocket'}Style"
+          config.for_cop('Layout/AlignHash')[key] == 'separator'
         end
       end
     end

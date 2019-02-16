@@ -52,6 +52,10 @@ module RuboCop
       class TrailingCommaInArguments < Cop
         include TrailingComma
 
+        def autocorrect(range)
+          PunctuationCorrector.swap_comma(range)
+        end
+
         def on_send(node)
           return unless node.arguments? && node.parenthesized?
 
@@ -60,10 +64,6 @@ module RuboCop
                 node.source_range.end_pos)
         end
         alias on_csend on_send
-
-        def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
-        end
 
         private
 

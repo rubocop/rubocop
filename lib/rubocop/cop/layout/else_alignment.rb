@@ -36,6 +36,16 @@ module RuboCop
 
         MSG = 'Align `%<else_range>s` with `%<base_range>s`.'.freeze
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
+        end
+
+        def on_case(node)
+          return unless node.else?
+
+          check_alignment(node.when_branches.last.loc.keyword, node.loc.else)
+        end
+
         def on_if(node, base = nil)
           return if ignored_node?(node)
           return unless node.else? && begins_its_line?(node.loc.else)
@@ -53,21 +63,15 @@ module RuboCop
           check_alignment(base_range_of_rescue(node), node.loc.else)
         end
 
-        def on_case(node)
-          return unless node.else?
-
-          check_alignment(node.when_branches.last.loc.keyword, node.loc.else)
-        end
-
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
 
-        def check_nested(node, base)
-          on_if(node, base)
-          ignore_node(node)
+        def base_for_method_definition(node)
+          parent = node.parent
+          if parent && parent.send_type?
+            parent.loc.selector # For example "private def ..."
+          else
+            node.loc.keyword
+          end
         end
 
         def base_range_of_if(node, base)
@@ -90,13 +94,18 @@ module RuboCop
           end
         end
 
-        def base_for_method_definition(node)
-          parent = node.parent
-          if parent && parent.send_type?
-            parent.loc.selector # For example "private def ..."
-          else
-            node.loc.keyword
-          end
+        def check_alignment(base_range, else_range)
+          return unless begins_its_line?(else_range)
+
+          @column_delta = column_offset_between(base_range, else_range)
+          return if @column_delta.zero?
+
+          message = format(
+            MSG,
+            else_range: else_range.source,
+            base_range: base_range.source[/^\S*/]
+          )
+          add_offense(else_range, location: else_range, message: message)
         end
 
         def check_assignment(node, rhs)
@@ -115,18 +124,9 @@ module RuboCop
           check_nested(rhs, base)
         end
 
-        def check_alignment(base_range, else_range)
-          return unless begins_its_line?(else_range)
-
-          @column_delta = column_offset_between(base_range, else_range)
-          return if @column_delta.zero?
-
-          message = format(
-            MSG,
-            else_range: else_range.source,
-            base_range: base_range.source[/^\S*/]
-          )
-          add_offense(else_range, location: else_range, message: message)
+        def check_nested(node, base)
+          on_if(node, base)
+          ignore_node(node)
         end
       end
     end

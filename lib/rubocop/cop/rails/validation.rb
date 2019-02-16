@@ -50,12 +50,6 @@ module RuboCop
         DENYLIST = TYPES.map { |p| "validates_#{p}_of".to_sym }.freeze
         ALLOWLIST = TYPES.map { |p| "validates :column, #{p}: value" }.freeze
 
-        def on_send(node)
-          return unless !node.receiver && DENYLIST.include?(node.method_name)
-
-          add_offense(node, location: :selector)
-        end
-
         def autocorrect(node)
           last_argument = node.arguments.last
           return if !last_argument.literal? && !last_argument.splat_type?
@@ -66,15 +60,20 @@ module RuboCop
           end
         end
 
-        private
+        def on_send(node)
+          return unless !node.receiver && DENYLIST.include?(node.method_name)
 
-        def message(node)
-          format(MSG, prefer: preferred_method(node.method_name),
-                      current: node.method_name)
+          add_offense(node, location: :selector)
         end
 
-        def preferred_method(method)
-          ALLOWLIST[DENYLIST.index(method.to_sym)]
+        private
+
+        def braced_options(options)
+          if options.braces?
+            options.source
+          else
+            "{ #{options.source} }"
+          end
         end
 
         def correct_validate_type(corrector, node)
@@ -92,12 +91,13 @@ module RuboCop
           end
         end
 
-        def braced_options(options)
-          if options.braces?
-            options.source
-          else
-            "{ #{options.source} }"
-          end
+        def message(node)
+          format(MSG, prefer: preferred_method(node.method_name),
+                      current: node.method_name)
+        end
+
+        def preferred_method(method)
+          ALLOWLIST[DENYLIST.index(method.to_sym)]
         end
       end
     end

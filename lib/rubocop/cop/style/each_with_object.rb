@@ -26,21 +26,6 @@ module RuboCop
           (block $(send _ {:inject :reduce} _) $_ $_)
         PATTERN
 
-        def on_block(node)
-          each_with_object_candidate?(node) do |method, args, body|
-            _, method_name, method_arg = *method
-            return if simple_method_arg?(method_arg)
-
-            return_value = return_value(body)
-            return unless return_value
-            return unless first_argument_returned?(args, return_value)
-            return if accumulator_param_assigned_to?(body, args)
-
-            add_offense(node, location: method.loc.selector,
-                              message: format(MSG, method: method_name))
-          end
-        end
-
         # rubocop:disable Metrics/AbcSize
         def autocorrect(node)
           lambda do |corrector|
@@ -60,13 +45,24 @@ module RuboCop
             end
           end
         end
+
+        def on_block(node)
+          each_with_object_candidate?(node) do |method, args, body|
+            _, method_name, method_arg = *method
+            return if simple_method_arg?(method_arg)
+
+            return_value = return_value(body)
+            return unless return_value
+            return unless first_argument_returned?(args, return_value)
+            return if accumulator_param_assigned_to?(body, args)
+
+            add_offense(node, location: method.loc.selector,
+                              message: format(MSG, method: method_name))
+          end
+        end
         # rubocop:enable Metrics/AbcSize
 
         private
-
-        def simple_method_arg?(method_arg)
-          method_arg && method_arg.basic_literal?
-        end
 
         # if the accumulator parameter is assigned to in the block,
         # then we can't convert to each_with_object
@@ -82,13 +78,6 @@ module RuboCop
           end
         end
 
-        def return_value(body)
-          return unless body
-
-          return_value = body.begin_type? ? body.children.last : body
-          return_value if return_value && return_value.lvar_type?
-        end
-
         def first_argument_returned?(args, return_value)
           first_arg, = *args
           accumulator_var, = *first_arg
@@ -97,8 +86,19 @@ module RuboCop
           accumulator_var == return_var
         end
 
+        def return_value(body)
+          return unless body
+
+          return_value = body.begin_type? ? body.children.last : body
+          return_value if return_value && return_value.lvar_type?
+        end
+
         def return_value_occupies_whole_line?(node)
           whole_line_expression(node).source.strip == node.source
+        end
+
+        def simple_method_arg?(method_arg)
+          method_arg && method_arg.basic_literal?
         end
 
         def whole_line_expression(node)

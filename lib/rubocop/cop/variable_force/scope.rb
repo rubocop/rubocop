@@ -36,10 +36,6 @@ module RuboCop
           @node.equal?(other.node)
         end
 
-        def name
-          @node.method_name
-        end
-
         def body_node
           if naked_top_level?
             node
@@ -54,11 +50,6 @@ module RuboCop
           end
         end
 
-        def include?(target_node)
-          !belong_to_outer_scope?(target_node) &&
-            !belong_to_inner_scope?(target_node)
-        end
-
         def each_node(&block)
           return to_enum(__method__) unless block_given?
 
@@ -66,15 +57,31 @@ module RuboCop
           scan_node(node, &block)
         end
 
+        def include?(target_node)
+          !belong_to_outer_scope?(target_node) &&
+            !belong_to_inner_scope?(target_node)
+        end
+
+        def name
+          @node.method_name
+        end
+
         private
 
-        def scan_node(node, &block)
-          node.each_child_node do |child_node|
-            next unless include?(child_node)
-
-            yield child_node
-            scan_node(child_node, &block)
+        def ancestor_node?(target_node)
+          node.each_ancestor.any? do |ancestor_node|
+            ancestor_node.equal?(target_node)
           end
+        end
+
+        def belong_to_inner_scope?(target_node)
+          return false if !target_node.parent || target_node.parent.equal?(node)
+          return false unless SCOPE_TYPES.include?(target_node.parent.type)
+
+          indices = OUTER_SCOPE_CHILD_INDICES[target_node.parent.type]
+          return true unless indices
+
+          !indices.include?(target_node.sibling_index)
         end
 
         def belong_to_outer_scope?(target_node)
@@ -88,19 +95,12 @@ module RuboCop
           indices.include?(target_node.sibling_index)
         end
 
-        def belong_to_inner_scope?(target_node)
-          return false if !target_node.parent || target_node.parent.equal?(node)
-          return false unless SCOPE_TYPES.include?(target_node.parent.type)
+        def scan_node(node, &block)
+          node.each_child_node do |child_node|
+            next unless include?(child_node)
 
-          indices = OUTER_SCOPE_CHILD_INDICES[target_node.parent.type]
-          return true unless indices
-
-          !indices.include?(target_node.sibling_index)
-        end
-
-        def ancestor_node?(target_node)
-          node.each_ancestor.any? do |ancestor_node|
-            ancestor_node.equal?(target_node)
+            yield child_node
+            scan_node(child_node, &block)
           end
         end
       end

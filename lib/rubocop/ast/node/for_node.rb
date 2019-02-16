@@ -6,33 +6,11 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `for` nodes within RuboCop.
     class ForNode < Node
-      # Returns the keyword of the `for` statement as a string.
+      # Returns the body of the `for` loop.
       #
-      # @return [String] the keyword of the `until` statement
-      def keyword
-        'for'
-      end
-
-      # Checks whether the `for` node has a `do` keyword.
-      #
-      # @return [Boolean] whether the `for` node has a `do` keyword
-      def do?
-        loc.begin && loc.begin.is?('do')
-      end
-
-      # Checks whether this node body is a void context.
-      # Always `true` for `for`.
-      #
-      # @return [true] whether the `for` node body is a void context
-      def void_context?
-        true
-      end
-
-      # Returns the iteration variable of the `for` loop.
-      #
-      # @return [Node] The iteration variable of the `for` loop
-      def variable
-        node_parts[0]
+      # @return [Node, nil] The body of the `for` loop.
+      def body
+        node_parts[2]
       end
 
       # Returns the collection the `for` loop is iterating over.
@@ -42,11 +20,33 @@ module RuboCop
         node_parts[1]
       end
 
-      # Returns the body of the `for` loop.
+      # Checks whether the `for` node has a `do` keyword.
       #
-      # @return [Node, nil] The body of the `for` loop.
-      def body
-        node_parts[2]
+      # @return [Boolean] whether the `for` node has a `do` keyword
+      def do?
+        loc.begin && loc.begin.is?('do')
+      end
+
+      # Returns the keyword of the `for` statement as a string.
+      #
+      # @return [String] the keyword of the `until` statement
+      def keyword
+        'for'
+      end
+
+      # Returns the iteration variable of the `for` loop.
+      #
+      # @return [Node] The iteration variable of the `for` loop
+      def variable
+        node_parts[0]
+      end
+
+      # Checks whether this node body is a void context.
+      # Always `true` for `for`.
+      #
+      # @return [true] whether the `for` node body is a void context
+      def void_context?
+        true
       end
     end
   end

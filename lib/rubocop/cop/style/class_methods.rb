@@ -23,6 +23,10 @@ module RuboCop
       class ClassMethods < Cop
         MSG = 'Use `self.%<method>s` instead of `%<class>s.%<method>s`.'.freeze
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.name, 'self') }
+        end
+
         def on_class(node)
           name, _superclass, body = *node
           check(name, body)
@@ -31,10 +35,6 @@ module RuboCop
         def on_module(node)
           name, body = *node
           check(name, body)
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.name, 'self') }
         end
 
         private

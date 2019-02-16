@@ -28,15 +28,25 @@ module RuboCop
 
         attr_reader :require_entries, :root_file_path, :source_path, :output
 
+        def injectable_require_directive
+          "require_relative '#{require_path}'\n"
+        end
+
         def require_exists?
           require_entries.any? do |entry|
             entry == injectable_require_directive
           end
         end
 
-        def updated_directives
-          require_entries.insert(target_line,
-                                 injectable_require_directive).join
+        def require_path
+          path = source_path.relative_path_from(root_file_path.dirname)
+          path.to_s.sub('.rb', '')
+        end
+
+        def require_path_fragments(require_directove)
+          path = require_directove.match(REQUIRE_PATH)
+
+          path ? path.captures.first.split('/') : []
         end
 
         def target_line
@@ -58,19 +68,9 @@ module RuboCop
           end
         end
 
-        def require_path_fragments(require_directove)
-          path = require_directove.match(REQUIRE_PATH)
-
-          path ? path.captures.first.split('/') : []
-        end
-
-        def injectable_require_directive
-          "require_relative '#{require_path}'\n"
-        end
-
-        def require_path
-          path = source_path.relative_path_from(root_file_path.dirname)
-          path.to_s.sub('.rb', '')
+        def updated_directives
+          require_entries.insert(target_line,
+                                 injectable_require_directive).join
         end
       end
     end

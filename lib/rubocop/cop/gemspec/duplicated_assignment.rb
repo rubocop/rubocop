@@ -70,12 +70,6 @@ module RuboCop
 
         private
 
-        def match_block_variable_name?(receiver_name)
-          gem_specification(processed_source.ast) do |block_variable_name|
-            return block_variable_name == receiver_name
-          end
-        end
-
         def assignment_method?(method_name)
           method_name.to_s.end_with?('=')
         end
@@ -85,6 +79,12 @@ module RuboCop
             .group_by(&:method_name)
             .values
             .select { |nodes| nodes.size > 1 }
+        end
+
+        def match_block_variable_name?(receiver_name)
+          gem_specification(processed_source.ast) do |block_variable_name|
+            return block_variable_name == receiver_name
+          end
         end
 
         def register_offense(node, assignment, line_of_first_occurrence)

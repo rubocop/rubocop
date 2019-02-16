@@ -69,6 +69,15 @@ module RuboCop
           register_offense(node)
         end
 
+        def check_for_rails_root_join_with_slash_separated_path(node)
+          return unless style == :arguments
+          return unless rails_root_nodes?(node)
+          return unless rails_root_join_nodes?(node)
+          return unless node.arguments.any? { |arg| string_with_slash?(arg) }
+
+          register_offense(node)
+        end
+
         def check_for_rails_root_join_with_string_arguments(node)
           return unless style == :slashes
           return unless rails_root_nodes?(node)
@@ -79,17 +88,8 @@ module RuboCop
           register_offense(node)
         end
 
-        def check_for_rails_root_join_with_slash_separated_path(node)
-          return unless style == :arguments
-          return unless rails_root_nodes?(node)
-          return unless rails_root_join_nodes?(node)
-          return unless node.arguments.any? { |arg| string_with_slash?(arg) }
-
-          register_offense(node)
-        end
-
-        def string_with_slash?(node)
-          node.str_type? && node.source =~ %r{/}
+        def message(_node)
+          format(style == :arguments ? MSG_ARGUMENTS : MSG_SLASHES)
         end
 
         def register_offense(node)
@@ -99,8 +99,8 @@ module RuboCop
           add_offense(node, location: source_range)
         end
 
-        def message(_node)
-          format(style == :arguments ? MSG_ARGUMENTS : MSG_SLASHES)
+        def string_with_slash?(node)
+          node.str_type? && node.source =~ %r{/}
         end
       end
     end

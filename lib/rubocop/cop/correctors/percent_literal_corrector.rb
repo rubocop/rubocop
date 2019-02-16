@@ -23,33 +23,6 @@ module RuboCop
 
       private
 
-      def wrap_contents(node, contents, char, delimiters)
-        lambda do |corrector|
-          corrector.replace(
-            node.source_range,
-            "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}"
-          )
-        end
-      end
-
-      def escape_words?(node)
-        node.children.any? { |w| needs_escaping?(w.children[0]) }
-      end
-
-      def delimiters_for(type)
-        PreferredDelimiters
-          .new(type, config, preferred_delimiters)
-          .delimiters
-      end
-
-      def new_contents(node, escape, delimiters)
-        if node.multiline?
-          autocorrect_multiline_words(node, escape, delimiters)
-        else
-          autocorrect_words(node, escape, delimiters)
-        end
-      end
-
       def autocorrect_multiline_words(node, escape, delimiters)
         contents = process_multiline_words(node, escape, delimiters)
         contents << end_content(node.source)
@@ -60,6 +33,56 @@ module RuboCop
         node.children.map do |word_node|
           fix_escaped_content(word_node, escape, delimiters)
         end.join(' ')
+      end
+
+      def delimiters_for(type)
+        PreferredDelimiters
+          .new(type, config, preferred_delimiters)
+          .delimiters
+      end
+
+      def end_content(source)
+        result = /\A(\s*)\]/.match(source.split("\n").last)
+        ("\n" + result[1]) if result
+      end
+
+      def escape_words?(node)
+        node.children.any? { |w| needs_escaping?(w.children[0]) }
+      end
+
+      def first_line?(node, previous_line_num)
+        node.first_line == previous_line_num
+      end
+
+      def fix_escaped_content(word_node, escape, delimiters)
+        content = word_node.children.first.to_s
+        content = escape_string(content) if escape
+        substitute_escaped_delimiters(content, delimiters)
+        content
+      end
+
+      def line_breaks(node, source, previous_line_num, base_line_num, node_indx)
+        source_in_lines = source.split("\n")
+        if first_line?(node, previous_line_num)
+          node_indx.zero? && node.first_line == base_line_num ? '' : ' '
+        else
+          process_lines(node, previous_line_num, base_line_num, source_in_lines)
+        end
+      end
+
+      def new_contents(node, escape, delimiters)
+        if node.multiline?
+          autocorrect_multiline_words(node, escape, delimiters)
+        else
+          autocorrect_words(node, escape, delimiters)
+        end
+      end
+
+      def process_lines(node, previous_line_num, base_line_num, source_in_lines)
+        begin_line_num = previous_line_num - base_line_num + 1
+        end_line_num = node.first_line - base_line_num + 1
+        lines = source_in_lines[begin_line_num...end_line_num]
+        "\n#{(lines.join("\n").split(node.source).first || '')}"
       end
 
       def process_multiline_words(node, escape, delimiters)
@@ -77,40 +100,17 @@ module RuboCop
         end
       end
 
-      def line_breaks(node, source, previous_line_num, base_line_num, node_indx)
-        source_in_lines = source.split("\n")
-        if first_line?(node, previous_line_num)
-          node_indx.zero? && node.first_line == base_line_num ? '' : ' '
-        else
-          process_lines(node, previous_line_num, base_line_num, source_in_lines)
-        end
-      end
-
-      def first_line?(node, previous_line_num)
-        node.first_line == previous_line_num
-      end
-
-      def process_lines(node, previous_line_num, base_line_num, source_in_lines)
-        begin_line_num = previous_line_num - base_line_num + 1
-        end_line_num = node.first_line - base_line_num + 1
-        lines = source_in_lines[begin_line_num...end_line_num]
-        "\n#{(lines.join("\n").split(node.source).first || '')}"
-      end
-
-      def fix_escaped_content(word_node, escape, delimiters)
-        content = word_node.children.first.to_s
-        content = escape_string(content) if escape
-        substitute_escaped_delimiters(content, delimiters)
-        content
-      end
-
       def substitute_escaped_delimiters(content, delimiters)
         delimiters.each { |delim| content.gsub!(delim, "\\#{delim}") }
       end
 
-      def end_content(source)
-        result = /\A(\s*)\]/.match(source.split("\n").last)
-        ("\n" + result[1]) if result
+      def wrap_contents(node, contents, char, delimiters)
+        lambda do |corrector|
+          corrector.replace(
+            node.source_range,
+            "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}"
+          )
+        end
       end
     end
   end

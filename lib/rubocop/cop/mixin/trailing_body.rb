@@ -4,12 +4,6 @@ module RuboCop
   module Cop
     # Common methods shared by TrailingBody cops
     module TrailingBody
-      def trailing_body?(node)
-        body = node.to_a.reverse[0]
-        body && node.multiline? &&
-          body_on_first_line?(node, body)
-      end
-
       def body_on_first_line?(node, body)
         node.source_range.first_line == body.source_range.first_line
       end
@@ -20,6 +14,12 @@ module RuboCop
         else
           body.source_range
         end
+      end
+
+      def trailing_body?(node)
+        body = node.to_a.reverse[0]
+        body && node.multiline? &&
+          body_on_first_line?(node, body)
       end
     end
   end

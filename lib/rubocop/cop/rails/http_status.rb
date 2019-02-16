@@ -52,6 +52,13 @@ module RuboCop
           (pair (sym :status) ${int sym})
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            checker = checker_class.new(node)
+            corrector.replace(node.loc.expression, checker.preferred_style)
+          end
+        end
+
         def on_send(node)
           http_status(node) do |hash_node|
             status = status_code(hash_node)
@@ -68,21 +75,7 @@ module RuboCop
           RACK_LOADED
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            checker = checker_class.new(node)
-            corrector.replace(node.loc.expression, checker.preferred_style)
-          end
-        end
-
         private
-
-        def status_code(node)
-          node.each_pair.each do |pair|
-            status_pair?(pair) { |code| return code }
-          end
-          false
-        end
 
         def checker_class
           case style
@@ -91,6 +84,13 @@ module RuboCop
           when :numeric
             NumericStyleChecker
           end
+        end
+
+        def status_code(node)
+          node.each_pair.each do |pair|
+            status_pair?(pair) { |code| return code }
+          end
+          false
         end
 
         # :nodoc:
@@ -105,10 +105,6 @@ module RuboCop
             @node = node
           end
 
-          def offensive?
-            !node.sym_type? && !custom_http_status_code?
-          end
-
           def message
             if RACK_LOADED
               format(MSG, prefer: preferred_style, current: number.to_s)
@@ -117,23 +113,27 @@ module RuboCop
             end
           end
 
+          def offensive?
+            !node.sym_type? && !custom_http_status_code?
+          end
+
           def preferred_style
             symbol.inspect
           end
 
           private
 
-          def symbol
-            ::Rack::Utils::SYMBOL_TO_STATUS_CODE.key(number)
+          def custom_http_status_code?
+            node.int_type? &&
+              !::Rack::Utils::SYMBOL_TO_STATUS_CODE.value?(number)
           end
 
           def number
             node.children.first
           end
 
-          def custom_http_status_code?
-            node.int_type? &&
-              !::Rack::Utils::SYMBOL_TO_STATUS_CODE.value?(number)
+          def symbol
+            ::Rack::Utils::SYMBOL_TO_STATUS_CODE.key(number)
           end
         end
 
@@ -150,16 +150,16 @@ module RuboCop
             @node = node
           end
 
-          def offensive?
-            !node.int_type? && !permitted_symbol?
-          end
-
           def message
             if RACK_LOADED
               format(MSG, prefer: preferred_style, current: symbol.inspect)
             else
               DEFAULT_MSG
             end
+          end
+
+          def offensive?
+            !node.int_type? && !permitted_symbol?
           end
 
           def preferred_style
@@ -172,12 +172,12 @@ module RuboCop
             ::Rack::Utils::SYMBOL_TO_STATUS_CODE[symbol]
           end
 
-          def symbol
-            node.value
-          end
-
           def permitted_symbol?
             node.sym_type? && PERMITTED_STATUS.include?(node.value)
+          end
+
+          def symbol
+            node.value
           end
         end
       end

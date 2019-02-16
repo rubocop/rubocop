@@ -51,6 +51,10 @@ module RuboCop
 
         private
 
+        def first_non_ascii_chars(string)
+          string.match(/[^[:ascii:]]+/).to_s
+        end
+
         def first_offense_range(identifier)
           expression    = identifier.pos
           first_offense = first_non_ascii_chars(identifier.text)
@@ -60,10 +64,6 @@ module RuboCop
           end_position   = start_position + first_offense.length
 
           range_between(start_position, end_position)
-        end
-
-        def first_non_ascii_chars(string)
-          string.match(/[^[:ascii:]]+/).to_s
         end
       end
     end

@@ -24,6 +24,20 @@ module RuboCop
            (send (regexp (str $#literal_at_start?) (regopt)) {:match :=~} $_)}
         PATTERN
 
+        def autocorrect(node)
+          redundant_regex?(node) do |receiver, regex_str|
+            receiver, regex_str = regex_str, receiver if receiver.is_a?(String)
+            regex_str = regex_str[2..-1] # drop \A anchor
+            regex_str = interpret_string_escapes(regex_str)
+
+            lambda do |corrector|
+              new_source = receiver.source + '.start_with?(' +
+                           to_string_literal(regex_str) + ')'
+              corrector.replace(node.source_range, new_source)
+            end
+          end
+        end
+
         def literal_at_start?(regex_str)
           # is this regexp 'literal' in the sense of only matching literal
           # chars, rather than using metachars like `.` and `*` and so on?
@@ -38,20 +52,6 @@ module RuboCop
           return unless redundant_regex?(node)
 
           add_offense(node)
-        end
-
-        def autocorrect(node)
-          redundant_regex?(node) do |receiver, regex_str|
-            receiver, regex_str = regex_str, receiver if receiver.is_a?(String)
-            regex_str = regex_str[2..-1] # drop \A anchor
-            regex_str = interpret_string_escapes(regex_str)
-
-            lambda do |corrector|
-              new_source = receiver.source + '.start_with?(' +
-                           to_string_literal(regex_str) + ')'
-              corrector.replace(node.source_range, new_source)
-            end
-          end
         end
       end
     end

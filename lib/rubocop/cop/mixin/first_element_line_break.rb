@@ -7,19 +7,6 @@ module RuboCop
     module FirstElementLineBreak
       private
 
-      def check_method_line_break(node, children)
-        return if children.empty?
-
-        return unless method_uses_parens?(node, children.first)
-
-        check_children_line_break(node, children)
-      end
-
-      def method_uses_parens?(node, limit)
-        source = node.source_range.source_line[0...limit.loc.column]
-        source =~ /\s*\(\s*$/
-      end
-
       def check_children_line_break(node, children, start = node)
         return if children.size < 2
 
@@ -34,12 +21,25 @@ module RuboCop
         add_offense(min)
       end
 
+      def check_method_line_break(node, children)
+        return if children.empty?
+
+        return unless method_uses_parens?(node, children.first)
+
+        check_children_line_break(node, children)
+      end
+
       def first_by_line(nodes)
         nodes.min_by(&:first_line)
       end
 
       def last_by_line(nodes)
         nodes.max_by(&:last_line)
+      end
+
+      def method_uses_parens?(node, limit)
+        source = node.source_range.source_line[0...limit.loc.column]
+        source =~ /\s*\(\s*$/
       end
     end
   end

@@ -38,18 +38,26 @@ module RuboCop
 
     private
 
-    def request(uri = @uri, limit = 10, &block)
-      raise ArgumentError, 'HTTP redirect too deep' if limit.zero?
+    def cache_name_from_uri
+      uri = @uri.clone
+      uri.query = nil
+      uri.to_s.gsub!(/[^0-9A-Za-z]/, '-')
+    end
 
-      http = Net::HTTP.new(uri.hostname, uri.port)
-      http.use_ssl = uri.instance_of?(URI::HTTPS)
+    def cache_path
+      File.expand_path(".rubocop-#{cache_name_from_uri}", @base_dir)
+    end
 
-      generate_request(uri) do |request|
-        begin
-          handle_response(http.request(request), limit, &block)
-        rescue SocketError => err
-          handle_response(err, limit, &block)
-        end
+    def cache_path_exists?
+      @cache_path_exists ||= File.exist?(cache_path)
+    end
+
+    def cache_path_expired?
+      return true unless cache_path_exists?
+
+      @cache_path_expired ||= begin
+        file_age = (Time.now - File.stat(cache_path).mtime).to_f
+        (file_age / CACHE_LIFETIME) > 1
       end
     end
 
@@ -78,27 +86,19 @@ module RuboCop
       end
     end
 
-    def cache_path
-      File.expand_path(".rubocop-#{cache_name_from_uri}", @base_dir)
-    end
+    def request(uri = @uri, limit = 10, &block)
+      raise ArgumentError, 'HTTP redirect too deep' if limit.zero?
 
-    def cache_path_exists?
-      @cache_path_exists ||= File.exist?(cache_path)
-    end
+      http = Net::HTTP.new(uri.hostname, uri.port)
+      http.use_ssl = uri.instance_of?(URI::HTTPS)
 
-    def cache_path_expired?
-      return true unless cache_path_exists?
-
-      @cache_path_expired ||= begin
-        file_age = (Time.now - File.stat(cache_path).mtime).to_f
-        (file_age / CACHE_LIFETIME) > 1
+      generate_request(uri) do |request|
+        begin
+          handle_response(http.request(request), limit, &block)
+        rescue SocketError => err
+          handle_response(err, limit, &block)
+        end
       end
-    end
-
-    def cache_name_from_uri
-      uri = @uri.clone
-      uri.query = nil
-      uri.to_s.gsub!(/[^0-9A-Za-z]/, '-')
     end
   end
 end

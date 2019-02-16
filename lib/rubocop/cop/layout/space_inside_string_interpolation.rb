@@ -25,12 +25,6 @@ module RuboCop
         NO_SPACE_MSG = 'Space inside string interpolation detected.'.freeze
         SPACE_MSG = 'Missing space around string interpolation detected.'.freeze
 
-        def on_dstr(node)
-          each_style_violation(node) do |final_node|
-            add_offense(final_node)
-          end
-        end
-
         def autocorrect(node)
           new_source = style == :no_space ? node.source : " #{node.source} "
           lambda do |corrector|
@@ -38,6 +32,12 @@ module RuboCop
               range_with_surrounding_space(range: node.source_range),
               new_source
             )
+          end
+        end
+
+        def on_dstr(node)
+          each_style_violation(node) do |final_node|
+            add_offense(final_node)
           end
         end
 

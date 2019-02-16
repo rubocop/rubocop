@@ -16,6 +16,13 @@ module RuboCop
         ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
         SHEBANG = '#!'.freeze
 
+        def autocorrect(range)
+          lambda do |corrector|
+            corrector.remove(range_with_surrounding_space(range: range,
+                                                          side: :right))
+          end
+        end
+
         def investigate(processed_source)
           return if processed_source.buffer.source.empty?
 
@@ -26,29 +33,22 @@ module RuboCop
           add_offense(range, location: range, message: @message)
         end
 
-        def autocorrect(range)
-          lambda do |corrector|
-            corrector.remove(range_with_surrounding_space(range: range,
-                                                          side: :right))
-          end
-        end
-
         private
 
-        def offense(processed_source, line_number)
-          line = processed_source[line_number]
-
-          MSG_UNNECESSARY if encoding_omitable?(line)
+        def encoding_line_number(processed_source)
+          line_number = 0
+          line_number += 1 if processed_source[line_number].start_with?(SHEBANG)
+          line_number
         end
 
         def encoding_omitable?(line)
           line =~ ENCODING_PATTERN
         end
 
-        def encoding_line_number(processed_source)
-          line_number = 0
-          line_number += 1 if processed_source[line_number].start_with?(SHEBANG)
-          line_number
+        def offense(processed_source, line_number)
+          line = processed_source[line_number]
+
+          MSG_UNNECESSARY if encoding_omitable?(line)
         end
       end
     end

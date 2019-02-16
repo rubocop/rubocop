@@ -37,13 +37,6 @@ module RuboCop
           def_node_matcher aliased_method, options[:matcher]
         end
 
-        def on_send(node)
-          ALIASES.each_key do |aliased_method|
-            register_offense(node, aliased_method) if
-              public_send(aliased_method, node)
-          end
-        end
-
         def autocorrect(node)
           return false if append(node)
 
@@ -51,6 +44,13 @@ module RuboCop
             method_name = node.loc.selector.source
             replacement = ALIASES[method_name.to_sym][:original]
             corrector.replace(node.loc.selector, replacement.to_s)
+          end
+        end
+
+        def on_send(node)
+          ALIASES.each_key do |aliased_method|
+            register_offense(node, aliased_method) if
+              public_send(aliased_method, node)
           end
         end
 

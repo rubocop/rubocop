@@ -44,16 +44,14 @@ module RuboCop
         registry.without_department(:Test).cops
       end
 
-      def self.qualified_cop_name(name, origin)
-        registry.qualified_cop_name(name, origin)
-      end
-
-      def self.non_rails
-        registry.without_department(:Rails)
-      end
-
-      def self.inherited(subclass)
-        registry.enlist(subclass)
+      # List of cops that should not try to autocorrect at the same
+      # time as this cop
+      #
+      # @return [Array<RuboCop::Cop::Cop>]
+      #
+      # @api public
+      def self.autocorrect_incompatible_with
+        []
       end
 
       def self.badge
@@ -66,6 +64,10 @@ module RuboCop
 
       def self.department
         badge.department
+      end
+
+      def self.inherited(subclass)
+        registry.enlist(subclass)
       end
 
       def self.lint?
@@ -81,14 +83,12 @@ module RuboCop
           given_names.include?(department.to_s)
       end
 
-      # List of cops that should not try to autocorrect at the same
-      # time as this cop
-      #
-      # @return [Array<RuboCop::Cop::Cop>]
-      #
-      # @api public
-      def self.autocorrect_incompatible_with
-        []
+      def self.non_rails
+        registry.without_department(:Rails)
+      end
+
+      def self.qualified_cop_name(name, origin)
+        registry.qualified_cop_name(name, origin)
       end
 
       def initialize(config = nil, options = nil)
@@ -100,21 +100,6 @@ module RuboCop
         @corrected_nodes = {}
         @corrected_nodes.compare_by_identity
         @processed_source = nil
-      end
-
-      def join_force?(_force_class)
-        false
-      end
-
-      def cop_config
-        # Use department configuration as basis, but let individual cop
-        # configuration override.
-        @cop_config ||= @config.for_cop(self.class.department.to_s)
-                               .merge(@config.for_cop(self))
-      end
-
-      def message(_node = nil)
-        self.class::MSG
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity
@@ -133,16 +118,29 @@ module RuboCop
         @offenses << Offense.new(severity, loc, message, name, status)
         yield if block_given? && status != :disabled
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
-      def find_location(node, loc)
-        # Location can be provided as a symbol, e.g.: `:keyword`
-        loc.is_a?(Symbol) ? node.loc.public_send(loc) : loc
+      def config_to_allow_offenses
+        Formatter::DisabledConfigFormatter
+          .config_to_allow_offenses[cop_name] ||= {}
       end
 
-      def duplicate_location?(location)
-        @offenses.any? { |o| o.location == location }
+      def config_to_allow_offenses=(hash)
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] =
+          hash
       end
+
+      def cop_config
+        # Use department configuration as basis, but let individual cop
+        # configuration override.
+        @cop_config ||= @config.for_cop(self.class.department.to_s)
+                               .merge(@config.for_cop(self))
+      end
+
+      def cop_name
+        @cop_name ||= self.class.cop_name
+      end
+
+      alias name cop_name
 
       def correct(node)
         return :unsupported unless support_autocorrect?
@@ -157,41 +155,44 @@ module RuboCop
         :corrected
       end
 
-      def config_to_allow_offenses
-        Formatter::DisabledConfigFormatter
-          .config_to_allow_offenses[cop_name] ||= {}
+      def duplicate_location?(location)
+        @offenses.any? { |o| o.location == location }
       end
 
-      def config_to_allow_offenses=(hash)
-        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] =
-          hash
+      def excluded_file?(file)
+        !relevant_file?(file)
       end
 
-      def target_ruby_version
-        @config.target_ruby_version
+      # rubocop:enable Metrics/CyclomaticComplexity
+
+      def find_location(node, loc)
+        # Location can be provided as a symbol, e.g.: `:keyword`
+        loc.is_a?(Symbol) ? node.loc.public_send(loc) : loc
       end
 
-      def target_rails_version
-        @config.target_rails_version
+      def join_force?(_force_class)
+        false
+      end
+
+      def message(_node = nil)
+        self.class::MSG
       end
 
       def parse(source, path = nil)
         ProcessedSource.new(source, target_ruby_version, path)
       end
 
-      def cop_name
-        @cop_name ||= self.class.cop_name
-      end
-
-      alias name cop_name
-
       def relevant_file?(file)
         file_name_matches_any?(file, 'Include', true) &&
           !file_name_matches_any?(file, 'Exclude', false)
       end
 
-      def excluded_file?(file)
-        !relevant_file?(file)
+      def target_rails_version
+        @config.target_rails_version
+      end
+
+      def target_ruby_version
+        @config.target_ruby_version
       end
 
       private
@@ -200,6 +201,29 @@ module RuboCop
         RuboCop::Cop::MessageAnnotator.new(
           config, cop_config, @options
         ).annotate(message, name)
+      end
+
+      def custom_severity
+        severity = cop_config['Severity']
+        return unless severity
+
+        if Severity::NAMES.include?(severity.to_sym)
+          severity.to_sym
+        else
+          message = "Warning: Invalid severity '#{severity}'. " \
+            "Valid severities are #{Severity::NAMES.join(', ')}."
+          warn(Rainbow(message).red)
+        end
+      end
+
+      def default_severity
+        self.class.lint? ? :warning : :convention
+      end
+
+      def enabled_line?(line_number)
+        return true if @options[:ignore_disable_comments] || !@processed_source
+
+        @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
       end
 
       def file_name_matches_any?(file, parameter, default_result)
@@ -214,29 +238,6 @@ module RuboCop
           # Try with relative path.
           path ||= config.path_relative_to_config(file)
           match_path?(pattern, path)
-        end
-      end
-
-      def enabled_line?(line_number)
-        return true if @options[:ignore_disable_comments] || !@processed_source
-
-        @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
-      end
-
-      def default_severity
-        self.class.lint? ? :warning : :convention
-      end
-
-      def custom_severity
-        severity = cop_config['Severity']
-        return unless severity
-
-        if Severity::NAMES.include?(severity.to_sym)
-          severity.to_sym
-        else
-          message = "Warning: Invalid severity '#{severity}'. " \
-            "Valid severities are #{Severity::NAMES.join(', ')}."
-          warn(Rainbow(message).red)
         end
       end
     end

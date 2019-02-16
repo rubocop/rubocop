@@ -57,6 +57,15 @@ module RuboCop
         def_node_matcher :aggressive_node_match,
                          format(PATTERN, type: '_')
 
+        def autocorrect(node)
+          lambda do |corrector|
+            method = node.method_name
+
+            corrector.remove(dot_method_with_whitespace(method, node))
+            corrector.insert_before(node.receiver.loc.dot.begin, ".#{method}")
+          end
+        end
+
         def on_send(node)
           method = if style == :conservative
                      conservative_node_match(node)
@@ -70,25 +79,7 @@ module RuboCop
                             message: format(MSG, method: method))
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            method = node.method_name
-
-            corrector.remove(dot_method_with_whitespace(method, node))
-            corrector.insert_before(node.receiver.loc.dot.begin, ".#{method}")
-          end
-        end
-
         private
-
-        def style_parameter_name
-          'EnforcedStyle'
-        end
-
-        def dot_method_with_whitespace(method, node)
-          range_between(dot_method_begin_pos(method, node),
-                        node.loc.selector.end_pos)
-        end
 
         def dot_method_begin_pos(method, node)
           lines = node.source.split(NEWLINE)
@@ -98,6 +89,15 @@ module RuboCop
           else
             node.loc.dot.begin_pos
           end
+        end
+
+        def dot_method_with_whitespace(method, node)
+          range_between(dot_method_begin_pos(method, node),
+                        node.loc.selector.end_pos)
+        end
+
+        def style_parameter_name
+          'EnforcedStyle'
         end
       end
     end

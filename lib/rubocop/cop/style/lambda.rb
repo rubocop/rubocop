@@ -64,6 +64,16 @@ module RuboCop
 
         def_node_matcher :lambda_node?, '(block $(send nil? :lambda) ...)'
 
+        def autocorrect(node)
+          if node.send_node.source == 'lambda'
+            lambda do |corrector|
+              autocorrect_method_to_literal(corrector, node)
+            end
+          else
+            LambdaLiteralToMethodCorrector.new(node)
+          end
+        end
+
         def on_block(node)
           return unless node.lambda?
 
@@ -76,22 +86,21 @@ module RuboCop
                       message: message(node, selector))
         end
 
-        def autocorrect(node)
-          if node.send_node.source == 'lambda'
-            lambda do |corrector|
-              autocorrect_method_to_literal(corrector, node)
-            end
-          else
-            LambdaLiteralToMethodCorrector.new(node)
-          end
-        end
-
         private
 
-        def offending_selector?(node, selector)
-          lines = node.multiline? ? :multiline : :single_line
+        def autocorrect_method_to_literal(corrector, node)
+          block_method, args = *node
+          corrector.replace(block_method.source_range, '->')
+          return if args.children.empty?
 
-          selector == OFFENDING_SELECTORS[:style][style][lines]
+          arg_str = "(#{lambda_arg_string(args)})"
+          whitespace_and_old_args = node.loc.begin.end.join(args.loc.end)
+          corrector.insert_after(block_method.source_range, arg_str)
+          corrector.remove(whitespace_and_old_args)
+        end
+
+        def lambda_arg_string(args)
+          args.children.map(&:source).join(', ')
         end
 
         def message(node, selector)
@@ -109,19 +118,10 @@ module RuboCop
           end
         end
 
-        def autocorrect_method_to_literal(corrector, node)
-          block_method, args = *node
-          corrector.replace(block_method.source_range, '->')
-          return if args.children.empty?
+        def offending_selector?(node, selector)
+          lines = node.multiline? ? :multiline : :single_line
 
-          arg_str = "(#{lambda_arg_string(args)})"
-          whitespace_and_old_args = node.loc.begin.end.join(args.loc.end)
-          corrector.insert_after(block_method.source_range, arg_str)
-          corrector.remove(whitespace_and_old_args)
-        end
-
-        def lambda_arg_string(args)
-          args.children.map(&:source).join(', ')
+          selector == OFFENDING_SELECTORS[:style][style][lines]
         end
       end
     end

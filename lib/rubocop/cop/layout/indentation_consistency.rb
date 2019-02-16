@@ -123,16 +123,16 @@ module RuboCop
 
         MSG = 'Inconsistent indentation detected.'.freeze
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, column_delta)
+        end
+
         def on_begin(node)
           check(node)
         end
 
         def on_kwbegin(node)
           check(node)
-        end
-
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
         end
 
         private

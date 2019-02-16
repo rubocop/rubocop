@@ -68,6 +68,14 @@ module RuboCop
             @local = nil
           end
 
+          def constructor?(node)
+            return true if node.literal?
+            return false unless node.send_type?
+
+            _receiver, method = *node
+            method == :new
+          end
+
           def contain_local_object?(variable_name)
             return @local[variable_name] if @local
 
@@ -78,14 +86,15 @@ module RuboCop
             @local[variable_name]
           end
 
-          def scan(node, &block)
-            catch(:skip_children) do
-              yield node
+          def process_assignment(asgn_node, rhs_node)
+            lhs_variable_name, = *asgn_node
 
-              node.each_child_node do |child_node|
-                scan(child_node, &block)
-              end
-            end
+            @local[lhs_variable_name] = if rhs_node.variable?
+                                          rhs_variable_name, = *rhs_node
+                                          @local[rhs_variable_name]
+                                        else
+                                          constructor?(rhs_node)
+                                        end
           end
 
           def process_assignment_node(node)
@@ -100,6 +109,25 @@ module RuboCop
               _, rhs_node = *node
               process_assignment(node, rhs_node) if rhs_node
             end
+          end
+
+          def process_binary_operator_assignment(op_asgn_node)
+            lhs_node, = *op_asgn_node
+            return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
+
+            lhs_variable_name, = *lhs_node
+            @local[lhs_variable_name] = true
+
+            throw :skip_children
+          end
+
+          def process_logical_operator_assignment(asgn_node)
+            lhs_node, rhs_node = *asgn_node
+            return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
+
+            process_assignment(lhs_node, rhs_node)
+
+            throw :skip_children
           end
 
           def process_multiple_assignment(masgn_node)
@@ -121,42 +149,14 @@ module RuboCop
             throw :skip_children
           end
 
-          def process_logical_operator_assignment(asgn_node)
-            lhs_node, rhs_node = *asgn_node
-            return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
+          def scan(node, &block)
+            catch(:skip_children) do
+              yield node
 
-            process_assignment(lhs_node, rhs_node)
-
-            throw :skip_children
-          end
-
-          def process_binary_operator_assignment(op_asgn_node)
-            lhs_node, = *op_asgn_node
-            return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
-
-            lhs_variable_name, = *lhs_node
-            @local[lhs_variable_name] = true
-
-            throw :skip_children
-          end
-
-          def process_assignment(asgn_node, rhs_node)
-            lhs_variable_name, = *asgn_node
-
-            @local[lhs_variable_name] = if rhs_node.variable?
-                                          rhs_variable_name, = *rhs_node
-                                          @local[rhs_variable_name]
-                                        else
-                                          constructor?(rhs_node)
-                                        end
-          end
-
-          def constructor?(node)
-            return true if node.literal?
-            return false unless node.send_type?
-
-            _receiver, method = *node
-            method == :new
+              node.each_child_node do |child_node|
+                scan(child_node, &block)
+              end
+            end
           end
         end
       end

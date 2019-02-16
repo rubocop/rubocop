@@ -45,16 +45,6 @@ module RuboCop
 
         MSG = '%<type>s curly braces around a hash parameter.'.freeze
 
-        def on_send(node)
-          return if node.assignment_method? || node.operator_method?
-
-          return unless node.arguments? && node.last_argument.hash_type? &&
-                        !node.last_argument.empty?
-
-          check(node.last_argument, node.arguments)
-        end
-        alias on_csend on_send
-
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send
         # node, because that context is needed. When parsing the code to see if
         # the AST has changed, a braceless hash would not be parsed as a hash
@@ -73,7 +63,28 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return if node.assignment_method? || node.operator_method?
+
+          return unless node.arguments? && node.last_argument.hash_type? &&
+                        !node.last_argument.empty?
+
+          check(node.last_argument, node.arguments)
+        end
+        alias on_csend on_send
+
         private
+
+        def add_arg_offense(arg, type)
+          add_offense(arg.parent, location: arg.source_range,
+                                  message: format(MSG,
+                                                  type: type.to_s.capitalize))
+        end
+
+        def add_braces(corrector, node)
+          corrector.insert_before(node.source_range, '{')
+          corrector.insert_after(node.source_range, '}')
+        end
 
         def check(arg, args)
           if style == :braces && !arg.braces?
@@ -97,21 +108,6 @@ module RuboCop
           end
         end
 
-        def add_arg_offense(arg, type)
-          add_offense(arg.parent, location: arg.source_range,
-                                  message: format(MSG,
-                                                  type: type.to_s.capitalize))
-        end
-
-        def extra_space(hash_node)
-          {
-            newlines: extra_left_space?(hash_node) &&
-              extra_right_space?(hash_node),
-            left: extra_left_space?(hash_node),
-            right: extra_right_space?(hash_node)
-          }
-        end
-
         def extra_left_space?(hash_node)
           @extra_left_space ||= begin
             top_line = hash_node.source_range.source_line
@@ -125,6 +121,35 @@ module RuboCop
             bottom_line = processed_source.lines[bottom_line_number - 1]
             bottom_line.delete(' ') == '}'
           end
+        end
+
+        def extra_space(hash_node)
+          {
+            newlines: extra_left_space?(hash_node) &&
+              extra_right_space?(hash_node),
+            left: extra_left_space?(hash_node),
+            right: extra_right_space?(hash_node)
+          }
+        end
+
+        def left_brace_and_space(loc_begin, space)
+          range_with_surrounding_space(range: loc_begin,
+                                       side: :right,
+                                       newlines: space[:newlines],
+                                       whitespace: space[:left])
+        end
+
+        def left_whole_line_range(loc_begin)
+          if range_by_whole_lines(loc_begin).source.strip == '{'
+            range_by_whole_lines(loc_begin, include_final_newline: true)
+          else
+            loc_begin
+          end
+        end
+
+        def remove_braces_with_range(corrector, left_range, right_range)
+          corrector.remove(left_range)
+          corrector.remove(right_range)
         end
 
         def remove_braces_with_whitespace(corrector, node, space)
@@ -141,34 +166,6 @@ module RuboCop
           end
         end
 
-        def remove_braces_with_range(corrector, left_range, right_range)
-          corrector.remove(left_range)
-          corrector.remove(right_range)
-        end
-
-        def left_whole_line_range(loc_begin)
-          if range_by_whole_lines(loc_begin).source.strip == '{'
-            range_by_whole_lines(loc_begin, include_final_newline: true)
-          else
-            loc_begin
-          end
-        end
-
-        def right_whole_line_range(loc_end)
-          if range_by_whole_lines(loc_end).source.strip =~ /\A}\s*,?\z/
-            range_by_whole_lines(loc_end, include_final_newline: true)
-          else
-            loc_end
-          end
-        end
-
-        def left_brace_and_space(loc_begin, space)
-          range_with_surrounding_space(range: loc_begin,
-                                       side: :right,
-                                       newlines: space[:newlines],
-                                       whitespace: space[:left])
-        end
-
         def right_brace_and_space(loc_end, space)
           brace_and_space =
             range_with_surrounding_space(
@@ -180,9 +177,12 @@ module RuboCop
           range_with_surrounding_comma(brace_and_space, :left)
         end
 
-        def add_braces(corrector, node)
-          corrector.insert_before(node.source_range, '{')
-          corrector.insert_after(node.source_range, '}')
+        def right_whole_line_range(loc_end)
+          if range_by_whole_lines(loc_end).source.strip =~ /\A}\s*,?\z/
+            range_by_whole_lines(loc_end, include_final_newline: true)
+          else
+            loc_end
+          end
         end
       end
     end

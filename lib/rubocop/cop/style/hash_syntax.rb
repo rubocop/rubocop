@@ -62,6 +62,39 @@ module RuboCop
         MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash.".freeze
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'.freeze
 
+        def alternative_style
+          case style
+          when :hash_rockets then
+            :ruby19
+          when :ruby19, :ruby19_no_mixed_keys then
+            :hash_rockets
+          end
+        end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            if style == :hash_rockets || force_hash_rockets?(node.parent.pairs)
+              autocorrect_hash_rockets(corrector, node)
+            elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
+              autocorrect_no_mixed_keys(corrector, node)
+            else
+              autocorrect_ruby19(corrector, node)
+            end
+          end
+        end
+
+        def hash_rockets_check(pairs)
+          check(pairs, ':', MSG_HASH_ROCKETS)
+        end
+
+        def no_mixed_keys_check(pairs)
+          if !sym_indices?(pairs)
+            check(pairs, ':', MSG_NO_MIXED_KEYS)
+          else
+            check(pairs, pairs.first.inverse_delimiter, MSG_NO_MIXED_KEYS)
+          end
+        end
+
         def on_hash(node)
           pairs = node.pairs
 
@@ -82,10 +115,6 @@ module RuboCop
           check(pairs, '=>', MSG_19) if sym_indices?(pairs)
         end
 
-        def hash_rockets_check(pairs)
-          check(pairs, ':', MSG_HASH_ROCKETS)
-        end
-
         def ruby19_no_mixed_keys_check(pairs)
           if force_hash_rockets?(pairs)
             check(pairs, ':', MSG_HASH_ROCKETS)
@@ -96,46 +125,7 @@ module RuboCop
           end
         end
 
-        def no_mixed_keys_check(pairs)
-          if !sym_indices?(pairs)
-            check(pairs, ':', MSG_NO_MIXED_KEYS)
-          else
-            check(pairs, pairs.first.inverse_delimiter, MSG_NO_MIXED_KEYS)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if style == :hash_rockets || force_hash_rockets?(node.parent.pairs)
-              autocorrect_hash_rockets(corrector, node)
-            elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
-              autocorrect_no_mixed_keys(corrector, node)
-            else
-              autocorrect_ruby19(corrector, node)
-            end
-          end
-        end
-
-        def alternative_style
-          case style
-          when :hash_rockets then
-            :ruby19
-          when :ruby19, :ruby19_no_mixed_keys then
-            :hash_rockets
-          end
-        end
-
         private
-
-        def sym_indices?(pairs)
-          pairs.all? { |p| word_symbol_pair?(p) }
-        end
-
-        def word_symbol_pair?(pair)
-          return false unless pair.key.sym_type?
-
-          acceptable_19_syntax_symbol?(pair.key.source)
-        end
 
         def acceptable_19_syntax_symbol?(sym_name)
           sym_name.sub!(/\A:/, '')
@@ -152,34 +142,6 @@ module RuboCop
 
           # For more complicated hash keys, let the parser validate the syntax.
           parse("{ #{sym_name}: :foo }").valid_syntax?
-        end
-
-        def check(pairs, delim, msg)
-          pairs.each do |pair|
-            if pair.delimiter == delim
-              location = pair.source_range.begin.join(pair.loc.operator)
-              add_offense(pair, location: location, message: msg) do
-                opposite_style_detected
-              end
-            else
-              correct_style_detected
-            end
-          end
-        end
-
-        def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key
-          op = pair_node.loc.operator
-
-          range = range_between(key.source_range.begin_pos, op.end_pos)
-          range = range_with_surrounding_space(range: range, side: :right)
-
-          space = argument_without_space?(pair_node.parent) ? ' ' : ''
-
-          corrector.replace(
-            range,
-            range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
-          )
         end
 
         def argument_without_space?(node)
@@ -204,9 +166,47 @@ module RuboCop
           end
         end
 
+        def autocorrect_ruby19(corrector, pair_node)
+          key = pair_node.key
+          op = pair_node.loc.operator
+
+          range = range_between(key.source_range.begin_pos, op.end_pos)
+          range = range_with_surrounding_space(range: range, side: :right)
+
+          space = argument_without_space?(pair_node.parent) ? ' ' : ''
+
+          corrector.replace(
+            range,
+            range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
+          )
+        end
+
+        def check(pairs, delim, msg)
+          pairs.each do |pair|
+            if pair.delimiter == delim
+              location = pair.source_range.begin.join(pair.loc.operator)
+              add_offense(pair, location: location, message: msg) do
+                opposite_style_detected
+              end
+            else
+              correct_style_detected
+            end
+          end
+        end
+
         def force_hash_rockets?(pairs)
           cop_config['UseHashRocketsWithSymbolValues'] &&
             pairs.map(&:value).any?(&:sym_type?)
+        end
+
+        def sym_indices?(pairs)
+          pairs.all? { |p| word_symbol_pair?(p) }
+        end
+
+        def word_symbol_pair?(pair)
+          return false unless pair.key.sym_type?
+
+          acceptable_19_syntax_symbol?(pair.key.source)
         end
       end
     end

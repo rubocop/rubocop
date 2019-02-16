@@ -29,16 +29,16 @@ module RuboCop
           (send (const {nil? cbase} :JSON) ${:load :restore} ...)
         PATTERN
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node.loc.selector, 'parse') }
+        end
+
         def on_send(node)
           json_load(node) do |method|
             add_offense(node,
                         location: :selector,
                         message: format(MSG, method: method))
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'parse') }
         end
       end
     end

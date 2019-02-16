@@ -45,21 +45,21 @@ module RuboCop
           DeprecatedClassMethod.new(:Dir, :exists?, :exist?)
         ].freeze
 
-        def on_send(node)
-          check(node) do |data|
-            message = format(MSG, current: deprecated_method(data),
-                                  prefer: replacement_method(data))
-
-            add_offense(node, location: :selector, message: message)
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             check(node) do |data|
               corrector.replace(node.loc.selector,
                                 data.replacement_method.to_s)
             end
+          end
+        end
+
+        def on_send(node)
+          check(node) do |data|
+            message = format(MSG, current: deprecated_method(data),
+                                  prefer: replacement_method(data))
+
+            add_offense(node, location: :selector, message: message)
           end
         end
 
@@ -78,13 +78,13 @@ module RuboCop
           method_call(data.class_constant, data.deprecated_method)
         end
 
-        def replacement_method(data)
-          method_call(data.class_constant, data.replacement_method)
-        end
-
         def method_call(class_constant, method)
           format('%<constant>s.%<method>s', constant: class_constant,
                                             method: method)
+        end
+
+        def replacement_method(data)
+          method_call(data.class_constant, data.replacement_method)
         end
       end
     end

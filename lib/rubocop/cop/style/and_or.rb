@@ -42,19 +42,6 @@ module RuboCop
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
 
-        def on_and(node)
-          process_logical_operator(node) if style == :always
-        end
-        alias on_or on_and
-
-        def on_if(node)
-          on_conditionals(node) if style == :conditionals
-        end
-        alias on_while      on_if
-        alias on_while_post on_if
-        alias on_until      on_if
-        alias on_until_post on_if
-
         def autocorrect(node)
           lambda do |corrector|
             node.each_child_node do |expr|
@@ -71,39 +58,20 @@ module RuboCop
           end
         end
 
+        def on_and(node)
+          process_logical_operator(node) if style == :always
+        end
+        alias on_or on_and
+
+        def on_if(node)
+          on_conditionals(node) if style == :conditionals
+        end
+        alias on_while      on_if
+        alias on_while_post on_if
+        alias on_until      on_if
+        alias on_until_post on_if
+
         private
-
-        def on_conditionals(node)
-          node.condition.each_node(*AST::Node::OPERATOR_KEYWORDS) do |operator|
-            process_logical_operator(operator)
-          end
-        end
-
-        def process_logical_operator(node)
-          return if node.logical_operator?
-
-          add_offense(node, location: :operator)
-        end
-
-        def message(node)
-          format(MSG, prefer: node.alternate_operator, current: node.operator)
-        end
-
-        def correct_send(node, corrector)
-          return correct_not(node, node.receiver, corrector) if node.method?(:!)
-          return correct_setter(node, corrector) if node.setter_method?
-          return correct_other(node, corrector) if node.comparison_method?
-
-          return unless correctable_send?(node)
-
-          corrector.replace(whitespace_before_arg(node), '(')
-          corrector.insert_after(node.last_argument.source_range, ')')
-        end
-
-        def correct_setter(node, corrector)
-          corrector.insert_before(node.receiver.source_range, '(')
-          corrector.insert_after(node.last_argument.source_range, ')')
-        end
 
         # ! is a special case:
         # 'x and !obj.method arg' can be auto-corrected if we
@@ -128,8 +96,40 @@ module RuboCop
           corrector.insert_after(node.source_range, ')')
         end
 
+        def correct_send(node, corrector)
+          return correct_not(node, node.receiver, corrector) if node.method?(:!)
+          return correct_setter(node, corrector) if node.setter_method?
+          return correct_other(node, corrector) if node.comparison_method?
+
+          return unless correctable_send?(node)
+
+          corrector.replace(whitespace_before_arg(node), '(')
+          corrector.insert_after(node.last_argument.source_range, ')')
+        end
+
+        def correct_setter(node, corrector)
+          corrector.insert_before(node.receiver.source_range, '(')
+          corrector.insert_after(node.last_argument.source_range, ')')
+        end
+
         def correctable_send?(node)
           !node.parenthesized? && node.arguments? && !node.method?(:[])
+        end
+
+        def message(node)
+          format(MSG, prefer: node.alternate_operator, current: node.operator)
+        end
+
+        def on_conditionals(node)
+          node.condition.each_node(*AST::Node::OPERATOR_KEYWORDS) do |operator|
+            process_logical_operator(operator)
+          end
+        end
+
+        def process_logical_operator(node)
+          return if node.logical_operator?
+
+          add_offense(node, location: :operator)
         end
 
         def whitespace_before_arg(node)

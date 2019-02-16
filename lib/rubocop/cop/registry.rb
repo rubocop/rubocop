@@ -30,11 +30,16 @@ module RuboCop
         cops.each { |cop| enlist(cop) }
       end
 
-      def enlist(cop)
-        @registry[cop.badge] = cop
-        @departments[cop.department] ||= []
-        @departments[cop.department] << cop
-        @cops_by_cop_name[cop.cop_name] << cop
+      def ==(other)
+        cops == other.cops
+      end
+
+      def contains_cop_matching?(names)
+        cops.any? { |cop| cop.match?(names) }
+      end
+
+      def cops
+        @registry.values
       end
 
       # @return [Array<Symbol>] list of departments for current cops.
@@ -42,21 +47,44 @@ module RuboCop
         @departments.keys
       end
 
-      # @return [Registry] Cops for that specific department.
-      def with_department(department)
-        with(@departments.fetch(department, []))
+      def each(&block)
+        cops.each(&block)
       end
 
-      # @return [Registry] Cops not for a specific department.
-      def without_department(department)
-        without_department = @departments.dup
-        without_department.delete(department)
-
-        with(without_department.values.flatten)
+      def enabled(config, only, only_safe = false)
+        select do |cop|
+          only.include?(cop.cop_name) || enabled?(cop, config, only_safe)
+        end
       end
 
-      def contains_cop_matching?(names)
-        cops.any? { |cop| cop.match?(names) }
+      def enabled?(cop, config, only_safe)
+        cfg = config.for_cop(cop)
+        if only_safe
+          cfg.fetch('Enabled') && cfg.fetch('Safe', true)
+        else
+          cfg.fetch('Enabled')
+        end
+      end
+
+      def enlist(cop)
+        @registry[cop.badge] = cop
+        @departments[cop.department] ||= []
+        @departments[cop.department] << cop
+        @cops_by_cop_name[cop.cop_name] << cop
+      end
+
+      # @param [String] cop_name
+      # @return [Class, nil]
+      def find_by_cop_name(cop_name)
+        @cops_by_cop_name[cop_name].first
+      end
+
+      def length
+        @registry.size
+      end
+
+      def names
+        cops.map(&:cop_name)
       end
 
       # Convert a user provided cop name into a properly namespaced name
@@ -104,40 +132,8 @@ module RuboCop
         end
       end
 
-      # @return [Hash{String => Array<Class>}]
-      def to_h
-        @cops_by_cop_name
-      end
-
-      def cops
-        @registry.values
-      end
-
-      def length
-        @registry.size
-      end
-
-      def enabled(config, only, only_safe = false)
-        select do |cop|
-          only.include?(cop.cop_name) || enabled?(cop, config, only_safe)
-        end
-      end
-
-      def enabled?(cop, config, only_safe)
-        cfg = config.for_cop(cop)
-        if only_safe
-          cfg.fetch('Enabled') && cfg.fetch('Safe', true)
-        else
-          cfg.fetch('Enabled')
-        end
-      end
-
-      def names
-        cops.map(&:cop_name)
-      end
-
-      def ==(other)
-        cops == other.cops
+      def select(&block)
+        cops.select(&block)
       end
 
       def sort!
@@ -146,30 +142,34 @@ module RuboCop
         self
       end
 
-      def select(&block)
-        cops.select(&block)
+      # @return [Hash{String => Array<Class>}]
+      def to_h
+        @cops_by_cop_name
       end
 
-      def each(&block)
-        cops.each(&block)
+      # @return [Registry] Cops for that specific department.
+      def with_department(department)
+        with(@departments.fetch(department, []))
       end
 
-      # @param [String] cop_name
-      # @return [Class, nil]
-      def find_by_cop_name(cop_name)
-        @cops_by_cop_name[cop_name].first
+      # @return [Registry] Cops not for a specific department.
+      def without_department(department)
+        without_department = @departments.dup
+        without_department.delete(department)
+
+        with(without_department.values.flatten)
       end
 
       private
-
-      def with(cops)
-        self.class.new(cops)
-      end
 
       def qualify_badge(badge)
         @departments
           .map { |department, _| badge.with_department(department) }
           .select { |potential_badge| registered?(potential_badge) }
+      end
+
+      def registered?(badge)
+        @registry.key?(badge)
       end
 
       def resolve_badge(given_badge, real_badge, source_path)
@@ -182,8 +182,8 @@ module RuboCop
         real_badge.to_s
       end
 
-      def registered?(badge)
-        @registry.key?(badge)
+      def with(cops)
+        self.class.new(cops)
       end
     end
   end

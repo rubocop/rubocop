@@ -40,18 +40,8 @@ module RuboCop
       end
 
       # @api private
-      def to_s
-        @name.to_s
-      end
-
-      # @api private
-      def code
-        @name.to_s[0].upcase
-      end
-
-      # @api private
-      def level
-        NAMES.index(name) + 1
+      def <=>(other)
+        level <=> other.level
       end
 
       # @api private
@@ -64,13 +54,23 @@ module RuboCop
       end
 
       # @api private
+      def code
+        @name.to_s[0].upcase
+      end
+
+      # @api private
       def hash
         @name.hash
       end
 
       # @api private
-      def <=>(other)
-        level <=> other.level
+      def level
+        NAMES.index(name) + 1
+      end
+
+      # @api private
+      def to_s
+        @name.to_s
       end
     end
   end

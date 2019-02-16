@@ -33,25 +33,21 @@ module RuboCop
         MSG = 'Use underscores(_) as thousands separator and ' \
               'separate every 3 digits with them.'.freeze
 
-        def on_int(node)
-          check(node)
-        end
-
-        def on_float(node)
-          check(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.source_range, format_number(node))
           end
         end
 
-        private
-
-        def max_parameter_name
-          'MinDigits'
+        def on_float(node)
+          check(node)
         end
+
+        def on_int(node)
+          check(node)
+        end
+
+        private
 
         def check(node)
           int = integer_part(node)
@@ -68,10 +64,6 @@ module RuboCop
               self.config_to_allow_offenses = { 'Enabled' => false }
             end
           end
-        end
-
-        def short_group_regex
-          cop_config['Strict'] ? /_\d{1,2}(_|$)/ : /_\d{1,2}_/
         end
 
         def format_number(node)
@@ -92,8 +84,16 @@ module RuboCop
           end
         end
 
+        def max_parameter_name
+          'MinDigits'
+        end
+
         def min_digits
           cop_config['MinDigits']
+        end
+
+        def short_group_regex
+          cop_config['Strict'] ? /_\d{1,2}(_|$)/ : /_\d{1,2}_/
         end
       end
     end

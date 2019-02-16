@@ -17,6 +17,13 @@ module RuboCop
         MSG = 'Do not use parentheses for method calls with ' \
               'no arguments.'.freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          end
+        end
+
         def on_send(node)
           return if ineligible_node?(node)
           return unless !node.arguments? && node.parenthesized?
@@ -26,28 +33,7 @@ module RuboCop
           add_offense(node, location: node.loc.begin.join(node.loc.end))
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
-          end
-        end
-
         private
-
-        def ineligible_node?(node)
-          node.camel_case_method? || node.implicit_call? || node.prefix_not?
-        end
-
-        def same_name_assignment?(node)
-          any_assignment?(node) do |asgn_node|
-            if asgn_node.masgn_type?
-              next variable_in_mass_assignment?(node.method_name, asgn_node)
-            end
-
-            asgn_node.loc.name.source == node.method_name.to_s
-          end
-        end
 
         def any_assignment?(node)
           node.each_ancestor(*AST::Node::ASSIGNMENTS).any? do |asgn_node|
@@ -62,6 +48,20 @@ module RuboCop
             end
 
             yield asgn_node
+          end
+        end
+
+        def ineligible_node?(node)
+          node.camel_case_method? || node.implicit_call? || node.prefix_not?
+        end
+
+        def same_name_assignment?(node)
+          any_assignment?(node) do |asgn_node|
+            if asgn_node.masgn_type?
+              next variable_in_mass_assignment?(node.method_name, asgn_node)
+            end
+
+            asgn_node.loc.name.source == node.method_name.to_s
           end
         end
 

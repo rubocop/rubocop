@@ -10,10 +10,6 @@ module RuboCop
 
       attr_reader :cop_disabled_line_ranges
 
-      def started(_target_files)
-        @cop_disabled_line_ranges = {}
-      end
-
       def file_started(file, options)
         return unless options[:cop_disabled_line_ranges]
 
@@ -23,6 +19,10 @@ module RuboCop
 
       def finished(_inspected_files)
         cops_disabled_in_comments_summary
+      end
+
+      def started(_target_files)
+        @cop_disabled_line_ranges = {}
       end
 
       private

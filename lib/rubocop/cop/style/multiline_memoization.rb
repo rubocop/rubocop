@@ -35,14 +35,6 @@ module RuboCop
 
         MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'.freeze
 
-        def on_or_asgn(node)
-          _lhs, rhs = *node
-
-          return unless bad_rhs?(rhs)
-
-          add_offense(rhs, location: node.source_range)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             if style == :keyword
@@ -52,6 +44,14 @@ module RuboCop
               corrector.replace(node.loc.end, ')')
             end
           end
+        end
+
+        def on_or_asgn(node)
+          _lhs, rhs = *node
+
+          return unless bad_rhs?(rhs)
+
+          add_offense(rhs, location: node.source_range)
         end
 
         private

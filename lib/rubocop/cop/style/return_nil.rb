@@ -37,6 +37,13 @@ module RuboCop
         def_node_matcher :return_node?, '(return)'
         def_node_matcher :return_nil_node?, '(return nil)'
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrected = style == :return ? 'return' : 'return nil'
+            corrector.replace(node.source_range, corrected)
+          end
+        end
+
         def on_return(node)
           # Check Lint/NonLocalExitFromIterator first before this cop
           node.each_ancestor(:block, :def, :defs) do |n|
@@ -57,22 +64,15 @@ module RuboCop
           add_offense(node) unless correct_style?(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrected = style == :return ? 'return' : 'return nil'
-            corrector.replace(node.source_range, corrected)
-          end
-        end
-
         private
-
-        def message(_node)
-          style == :return ? RETURN_MSG : RETURN_NIL_MSG
-        end
 
         def correct_style?(node)
           style == :return && !return_nil_node?(node) ||
             style == :return_nil && !return_node?(node)
+        end
+
+        def message(_node)
+          style == :return ? RETURN_MSG : RETURN_NIL_MSG
         end
 
         def scoped_node?(node)

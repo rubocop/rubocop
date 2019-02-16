@@ -22,9 +22,12 @@ module RuboCop
 
       attr_reader :for_node, :variable_node, :collection_node
 
-      def correction
-        format(CORRECTION, collection: collection_source,
-                           argument: variable_node.source)
+      def collection_end
+        if collection_node.begin_type?
+          collection_node.loc.end
+        else
+          collection_node.loc.expression
+        end
       end
 
       def collection_source
@@ -35,8 +38,9 @@ module RuboCop
         end
       end
 
-      def requires_parentheses?
-        collection_node.irange_type? || collection_node.erange_type?
+      def correction
+        format(CORRECTION, collection: collection_source,
+                           argument: variable_node.source)
       end
 
       def end_position
@@ -51,14 +55,6 @@ module RuboCop
         for_node.loc.begin
       end
 
-      def collection_end
-        if collection_node.begin_type?
-          collection_node.loc.end
-        else
-          collection_node.loc.expression
-        end
-      end
-
       def offending_range
         replacement_range(end_position)
       end
@@ -67,6 +63,10 @@ module RuboCop
         Parser::Source::Range.new(for_node.loc.expression.source_buffer,
                                   for_node.loc.expression.begin_pos,
                                   end_pos)
+      end
+
+      def requires_parentheses?
+        collection_node.irange_type? || collection_node.erange_type?
       end
     end
   end

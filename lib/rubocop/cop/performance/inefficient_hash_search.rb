@@ -41,14 +41,6 @@ module RuboCop
           (send (send $_ {:keys :values}) :include? _)
         PATTERN
 
-        def on_send(node)
-          inefficient_include?(node) do |receiver|
-            return if receiver.nil?
-
-            add_offense(node)
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             # Replace `keys.include?` or `values.include?` with the appropriate
@@ -61,11 +53,22 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          inefficient_include?(node) do |receiver|
+            return if receiver.nil?
+
+            add_offense(node)
+          end
+        end
+
         private
 
-        def message(node)
-          "Use `##{autocorrect_method(node)}` instead of "\
-            "`##{current_method(node)}.include?`."
+        def autocorrect_argument(node)
+          node.arguments.first.source
+        end
+
+        def autocorrect_hash_expression(node)
+          node.receiver.receiver.source
         end
 
         def autocorrect_method(node)
@@ -79,19 +82,16 @@ module RuboCop
           node.receiver.method_name
         end
 
+        def message(node)
+          "Use `##{autocorrect_method(node)}` instead of "\
+            "`##{current_method(node)}.include?`."
+        end
+
         def use_long_method
           preferred_config = config.for_all_cops['Style/PreferredHashMethods']
           preferred_config &&
             preferred_config['EnforcedStyle'] == 'long' &&
             preferred_config['Enabled']
-        end
-
-        def autocorrect_argument(node)
-          node.arguments.first.source
-        end
-
-        def autocorrect_hash_expression(node)
-          node.receiver.receiver.source
         end
       end
     end

@@ -34,17 +34,17 @@ module RuboCop
 
         MSG = 'Surrounding space %<type>s in default value assignment.'.freeze
 
-        def on_optarg(node)
-          index = index_of_first_token(node)
-          arg, equals, value = processed_source.tokens[index, 3]
-          check_optarg(arg, equals, value)
-        end
-
         def autocorrect(range)
           m = range.source.match(/=\s*(\S+)/)
           rest = m ? m.captures[0] : ''
           replacement = style == :space ? ' = ' : '='
           ->(corrector) { corrector.replace(range, replacement + rest) }
+        end
+
+        def on_optarg(node)
+          index = index_of_first_token(node)
+          arg, equals, value = processed_source.tokens[index, 3]
+          check_optarg(arg, equals, value)
         end
 
         private
@@ -75,16 +75,16 @@ module RuboCop
           end
         end
 
-        def space_on_both_sides?(arg, equals)
-          arg.space_after? && equals.space_after?
+        def message(_node)
+          format(MSG, type: style == :space ? 'missing' : 'detected')
         end
 
         def no_surrounding_space?(arg, equals)
           !arg.space_after? && !equals.space_after?
         end
 
-        def message(_node)
-          format(MSG, type: style == :space ? 'missing' : 'detected')
+        def space_on_both_sides?(arg, equals)
+          arg.space_after? && equals.space_after?
         end
       end
     end

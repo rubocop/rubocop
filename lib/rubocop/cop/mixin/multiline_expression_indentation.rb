@@ -25,33 +25,37 @@ module RuboCop
 
       private
 
-      # In a chain of method calls, we regard the top send node as the base
-      # for indentation of all lines following the first. For example:
-      # a.
-      #   b c { block }.            <-- b is indented relative to a
-      #   d                         <-- d is indented relative to a
-      def left_hand_side(lhs)
-        lhs = lhs.parent while lhs.parent && lhs.parent.send_type?
-        lhs
-      end
+      def argument_in_method_call(node, kind)
+        node.each_ancestor(:send, :block).find do |a|
+          # If the node is inside a block, it makes no difference if that block
+          # is an argument in a method call. It doesn't count.
+          break false if a.block_type?
 
-      def right_hand_side(send_node)
-        if send_node.operator_method? && send_node.arguments?
-          send_node.first_argument.source_range # not used for method calls
-        else
-          regular_method_right_hand_side(send_node)
+          next if a.setter_method?
+
+          a.arguments.any? do |arg|
+            within_node?(node, arg) && (kind == :with_or_without_parentheses ||
+                                        kind == :with_parentheses &&
+                                        parentheses?(node.parent))
+          end
         end
       end
 
-      def regular_method_right_hand_side(send_node)
-        dot = send_node.loc.dot
-        selector = send_node.loc.selector
-        if send_node.dot? && selector && dot.line == selector.line
-          dot.join(selector)
-        elsif selector
-          selector
-        elsif send_node.implicit_call?
-          dot.join(send_node.loc.begin)
+      def assignment_rhs(node)
+        case node.type
+        when :casgn   then _scope, _lhs, rhs = *node
+        when :op_asgn then _lhs, _op, rhs = *node
+        when :send    then rhs = node.last_argument
+        else               _lhs, rhs = *node
+        end
+        rhs
+      end
+
+      def check(range, node, lhs, rhs)
+        if range
+          incorrect_style_detected(range, node, lhs, rhs)
+        else
+          correct_style_detected
         end
       end
 
@@ -82,12 +86,13 @@ module RuboCop
         end
       end
 
-      def check(range, node, lhs, rhs)
-        if range
-          incorrect_style_detected(range, node, lhs, rhs)
-        else
-          correct_style_detected
-        end
+      def disqualified_rhs?(candidate, ancestor)
+        UNALIGNED_RHS_TYPES.include?(ancestor.type) ||
+          ancestor.block_type? && part_of_block_body?(candidate, ancestor)
+      end
+
+      def grouped_expression?(node)
+        node.begin_type? && node.loc.respond_to?(:begin) && node.loc.begin
       end
 
       def incorrect_style_detected(range, node, lhs, rhs)
@@ -105,16 +110,21 @@ module RuboCop
         node.source_range.source_line =~ /\S/
       end
 
-      def operation_description(node, rhs)
-        kw_node_with_special_indentation(node) do |ancestor|
-          return keyword_message_tail(ancestor)
+      def indented_keyword_expression(node)
+        if node.for_type?
+          expression = node.collection
+        else
+          expression, = *node
         end
 
-        part_of_assignment_rhs(node, rhs) do |_node|
-          return ASSIGNMENT_MESSAGE_TAIL
-        end
+        expression
+      end
 
-        DEFAULT_MESSAGE_TAIL
+      def inside_arg_list_parentheses?(node, ancestor)
+        return false unless ancestor.send_type? && ancestor.parenthesized?
+
+        node.source_range.begin_pos > ancestor.loc.begin.begin_pos &&
+          node.source_range.end_pos < ancestor.loc.end.end_pos
       end
 
       def keyword_message_tail(node)
@@ -142,30 +152,33 @@ module RuboCop
         end
       end
 
-      def indented_keyword_expression(node)
-        if node.for_type?
-          expression = node.collection
-        else
-          expression, = *node
-        end
-
-        expression
+      # In a chain of method calls, we regard the top send node as the base
+      # for indentation of all lines following the first. For example:
+      # a.
+      #   b c { block }.            <-- b is indented relative to a
+      #   d                         <-- d is indented relative to a
+      def left_hand_side(lhs)
+        lhs = lhs.parent while lhs.parent && lhs.parent.send_type?
+        lhs
       end
 
-      def argument_in_method_call(node, kind)
-        node.each_ancestor(:send, :block).find do |a|
-          # If the node is inside a block, it makes no difference if that block
-          # is an argument in a method call. It doesn't count.
-          break false if a.block_type?
-
-          next if a.setter_method?
-
-          a.arguments.any? do |arg|
-            within_node?(node, arg) && (kind == :with_or_without_parentheses ||
-                                        kind == :with_parentheses &&
-                                        parentheses?(node.parent))
-          end
+      def not_for_this_cop?(node)
+        node.ancestors.any? do |ancestor|
+          grouped_expression?(ancestor) ||
+            inside_arg_list_parentheses?(node, ancestor)
         end
+      end
+
+      def operation_description(node, rhs)
+        kw_node_with_special_indentation(node) do |ancestor|
+          return keyword_message_tail(ancestor)
+        end
+
+        part_of_assignment_rhs(node, rhs) do |_node|
+          return ASSIGNMENT_MESSAGE_TAIL
+        end
+
+        DEFAULT_MESSAGE_TAIL
       end
 
       def part_of_assignment_rhs(node, candidate)
@@ -182,9 +195,40 @@ module RuboCop
         end
       end
 
-      def disqualified_rhs?(candidate, ancestor)
-        UNALIGNED_RHS_TYPES.include?(ancestor.type) ||
-          ancestor.block_type? && part_of_block_body?(candidate, ancestor)
+      def part_of_block_body?(candidate, block_node)
+        block_node.body && within_node?(candidate, block_node.body)
+      end
+
+      # Returns true if `node` is a conditional whose `body` and `condition`
+      # begin on the same line.
+      def postfix_conditional?(node)
+        node.if_type? && node.modifier_form?
+      end
+
+      def regular_method_right_hand_side(send_node)
+        dot = send_node.loc.dot
+        selector = send_node.loc.selector
+        if send_node.dot? && selector && dot.line == selector.line
+          dot.join(selector)
+        elsif selector
+          selector
+        elsif send_node.implicit_call?
+          dot.join(send_node.loc.begin)
+        end
+      end
+
+      def right_hand_side(send_node)
+        if send_node.operator_method? && send_node.arguments?
+          send_node.first_argument.source_range # not used for method calls
+        else
+          regular_method_right_hand_side(send_node)
+        end
+      end
+
+      # The []= operator and setters (a.b = c) are parsed as :send nodes.
+      def valid_method_rhs_candidate?(candidate, node)
+        node.setter_method? &&
+          valid_rhs_candidate?(candidate, node.last_argument)
       end
 
       def valid_rhs?(candidate, ancestor)
@@ -197,52 +241,8 @@ module RuboCop
         end
       end
 
-      # The []= operator and setters (a.b = c) are parsed as :send nodes.
-      def valid_method_rhs_candidate?(candidate, node)
-        node.setter_method? &&
-          valid_rhs_candidate?(candidate, node.last_argument)
-      end
-
       def valid_rhs_candidate?(candidate, node)
         !candidate || within_node?(candidate, node)
-      end
-
-      def part_of_block_body?(candidate, block_node)
-        block_node.body && within_node?(candidate, block_node.body)
-      end
-
-      def assignment_rhs(node)
-        case node.type
-        when :casgn   then _scope, _lhs, rhs = *node
-        when :op_asgn then _lhs, _op, rhs = *node
-        when :send    then rhs = node.last_argument
-        else               _lhs, rhs = *node
-        end
-        rhs
-      end
-
-      def not_for_this_cop?(node)
-        node.ancestors.any? do |ancestor|
-          grouped_expression?(ancestor) ||
-            inside_arg_list_parentheses?(node, ancestor)
-        end
-      end
-
-      def grouped_expression?(node)
-        node.begin_type? && node.loc.respond_to?(:begin) && node.loc.begin
-      end
-
-      def inside_arg_list_parentheses?(node, ancestor)
-        return false unless ancestor.send_type? && ancestor.parenthesized?
-
-        node.source_range.begin_pos > ancestor.loc.begin.begin_pos &&
-          node.source_range.end_pos < ancestor.loc.end.end_pos
-      end
-
-      # Returns true if `node` is a conditional whose `body` and `condition`
-      # begin on the same line.
-      def postfix_conditional?(node)
-        node.if_type? && node.modifier_form?
       end
 
       def within_node?(inner, outer)

@@ -26,6 +26,15 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
+        def autocorrect(range)
+          lambda do |corrector|
+            case range.source
+            when /^\s+$/ then corrector.remove(range)
+            else              corrector.insert_after(range, ' ')
+            end
+          end
+        end
+
         def on_block(node)
           arguments = node.arguments
 
@@ -36,27 +45,35 @@ module RuboCop
           check_each_arg(arguments)
         end
 
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /^\s+$/ then corrector.remove(range)
-            else              corrector.insert_after(range, ' ')
-            end
-          end
-        end
-
         private
 
-        def pipes(arguments)
-          [arguments.loc.begin, arguments.loc.end]
+        def check_after_closing_pipe(arguments)
+          _opening_pipe, closing_pipe = pipes(arguments)
+          block = arguments.parent
+
+          check_space(closing_pipe.end_pos, block.body.source_range.begin_pos,
+                      closing_pipe, 'after closing `|`')
         end
 
-        def pipes?(arguments)
-          pipes(arguments).none?(&:nil?)
+        def check_closing_pipe_space(args, closing_pipe)
+          last         = args.last.source_range
+          last_end_pos = last_end_pos_inside_pipes(last.end_pos)
+
+          check_space(last_end_pos, closing_pipe.begin_pos, last,
+                      'after last block parameter')
+          check_no_space(last_end_pos + 1, closing_pipe.begin_pos,
+                         'Extra space after last')
         end
 
-        def style_parameter_name
-          'EnforcedStyleInsidePipes'
+        def check_each_arg(args)
+          args.children.butfirst.each do |arg|
+            expr = arg.source_range
+            check_no_space(
+              range_with_surrounding_space(range: expr, side: :left).begin_pos,
+              expr.begin_pos - 1,
+              'Extra space before'
+            )
+          end
         end
 
         def check_inside_pipes(arguments)
@@ -73,12 +90,12 @@ module RuboCop
           end
         end
 
-        def check_after_closing_pipe(arguments)
-          _opening_pipe, closing_pipe = pipes(arguments)
-          block = arguments.parent
+        def check_no_space(space_begin_pos, space_end_pos, msg)
+          return if space_begin_pos >= space_end_pos
 
-          check_space(closing_pipe.end_pos, block.body.source_range.begin_pos,
-                      closing_pipe, 'after closing `|`')
+          range = range_between(space_begin_pos, space_end_pos)
+          add_offense(range, location: range,
+                             message: "#{msg} block parameter detected.")
         end
 
         def check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)
@@ -91,11 +108,6 @@ module RuboCop
                          closing_pipe.begin_pos, 'Space after last')
         end
 
-        def check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
-          check_opening_pipe_space(args, opening_pipe)
-          check_closing_pipe_space(args, closing_pipe)
-        end
-
         def check_opening_pipe_space(args, opening_pipe)
           first = args.first.source_range
 
@@ -105,43 +117,31 @@ module RuboCop
                          'Extra space before first')
         end
 
-        def check_closing_pipe_space(args, closing_pipe)
-          last         = args.last.source_range
-          last_end_pos = last_end_pos_inside_pipes(last.end_pos)
-
-          check_space(last_end_pos, closing_pipe.begin_pos, last,
-                      'after last block parameter')
-          check_no_space(last_end_pos + 1, closing_pipe.begin_pos,
-                         'Extra space after last')
-        end
-
-        def last_end_pos_inside_pipes(pos)
-          processed_source.buffer.source[pos] == ',' ? pos + 1 : pos
-        end
-
-        def check_each_arg(args)
-          args.children.butfirst.each do |arg|
-            expr = arg.source_range
-            check_no_space(
-              range_with_surrounding_space(range: expr, side: :left).begin_pos,
-              expr.begin_pos - 1,
-              'Extra space before'
-            )
-          end
-        end
-
         def check_space(space_begin_pos, space_end_pos, range, msg)
           return if space_begin_pos != space_end_pos
 
           add_offense(range, location: range, message: "Space #{msg} missing.")
         end
 
-        def check_no_space(space_begin_pos, space_end_pos, msg)
-          return if space_begin_pos >= space_end_pos
+        def check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+          check_opening_pipe_space(args, opening_pipe)
+          check_closing_pipe_space(args, closing_pipe)
+        end
 
-          range = range_between(space_begin_pos, space_end_pos)
-          add_offense(range, location: range,
-                             message: "#{msg} block parameter detected.")
+        def last_end_pos_inside_pipes(pos)
+          processed_source.buffer.source[pos] == ',' ? pos + 1 : pos
+        end
+
+        def pipes(arguments)
+          [arguments.loc.begin, arguments.loc.end]
+        end
+
+        def pipes?(arguments)
+          pipes(arguments).none?(&:nil?)
+        end
+
+        def style_parameter_name
+          'EnforcedStyleInsidePipes'
         end
       end
     end

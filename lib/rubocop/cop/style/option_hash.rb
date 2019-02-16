@@ -36,13 +36,13 @@ module RuboCop
 
         private
 
+        def super_used?(node)
+          node.parent.each_node(:zsuper).any?
+        end
+
         def suspicious_name?(arg_name)
           cop_config.key?('SuspiciousParamNames') &&
             cop_config['SuspiciousParamNames'].include?(arg_name.to_s)
-        end
-
-        def super_used?(node)
-          node.parent.each_node(:zsuper).any?
         end
       end
     end

@@ -6,6 +6,10 @@ module RuboCop
     # It automatically disables coloring if coloring is disabled in the process
     # globally or the formatter's output is not a terminal.
     module Colorizable
+      def colorize(string, *args)
+        rainbow.wrap(string).color(*args)
+      end
+
       def rainbow
         @rainbow ||= begin
           rainbow = Rainbow.new
@@ -16,10 +20,6 @@ module RuboCop
           end
           rainbow
         end
-      end
-
-      def colorize(string, *args)
-        rainbow.wrap(string).color(*args)
       end
 
       %i[

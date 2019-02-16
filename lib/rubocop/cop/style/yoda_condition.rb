@@ -67,6 +67,12 @@ module RuboCop
 
         NONCOMMUTATIVE_OPERATORS = %i[===].freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(actual_code_range(node), corrected_code(node))
+          end
+        end
+
         def on_send(node)
           return unless yoda_compatible_condition?(node)
           return if equality_only? && non_equality_operator?(node)
@@ -74,13 +80,18 @@ module RuboCop
           valid_yoda?(node) || add_offense(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(actual_code_range(node), corrected_code(node))
-          end
+        private
+
+        def actual_code_range(node)
+          range_between(
+            node.loc.expression.begin_pos, node.loc.expression.end_pos
+          )
         end
 
-        private
+        def corrected_code(node)
+          lhs, operator, rhs = *node
+          "#{rhs.source} #{reverse_comparison(operator)} #{lhs.source}"
+        end
 
         def enforce_yoda?
           style == :require_for_all_comparison_operators ||
@@ -92,9 +103,22 @@ module RuboCop
             style == :require_for_equality_operators_only
         end
 
-        def yoda_compatible_condition?(node)
-          node.comparison_method? &&
-            !noncommutative_operator?(node)
+        def message(node)
+          format(MSG, source: node.source)
+        end
+
+        def non_equality_operator?(node)
+          _, operator, = *node
+          !EQUALITY_OPERATORS.include?(operator)
+        end
+
+        def noncommutative_operator?(node)
+          _, operator, = *node
+          NONCOMMUTATIVE_OPERATORS.include?(operator)
+        end
+
+        def reverse_comparison(operator)
+          REVERSE_COMPARISON.fetch(operator.to_s, operator)
         end
 
         def valid_yoda?(node)
@@ -106,33 +130,9 @@ module RuboCop
           enforce_yoda? ? lhs.literal? : rhs.literal?
         end
 
-        def message(node)
-          format(MSG, source: node.source)
-        end
-
-        def corrected_code(node)
-          lhs, operator, rhs = *node
-          "#{rhs.source} #{reverse_comparison(operator)} #{lhs.source}"
-        end
-
-        def actual_code_range(node)
-          range_between(
-            node.loc.expression.begin_pos, node.loc.expression.end_pos
-          )
-        end
-
-        def reverse_comparison(operator)
-          REVERSE_COMPARISON.fetch(operator.to_s, operator)
-        end
-
-        def non_equality_operator?(node)
-          _, operator, = *node
-          !EQUALITY_OPERATORS.include?(operator)
-        end
-
-        def noncommutative_operator?(node)
-          _, operator, = *node
-          NONCOMMUTATIVE_OPERATORS.include?(operator)
+        def yoda_compatible_condition?(node)
+          node.comparison_method? &&
+            !noncommutative_operator?(node)
         end
       end
     end

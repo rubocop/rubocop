@@ -47,6 +47,12 @@ module RuboCop
           SystemExit
         ].freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, preferred_base_class)
+          end
+        end
+
         def on_class(node)
           _class, base_class, _body = *node
 
@@ -55,20 +61,14 @@ module RuboCop
           add_offense(base_class)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, preferred_base_class)
-          end
-        end
-
         private
-
-        def message(node)
-          format(MSG, prefer: preferred_base_class, current: node.const_name)
-        end
 
         def illegal_class_name?(class_node)
           ILLEGAL_CLASSES.include?(class_node.const_name)
+        end
+
+        def message(node)
+          format(MSG, prefer: preferred_base_class, current: node.const_name)
         end
 
         def preferred_base_class

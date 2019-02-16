@@ -26,12 +26,12 @@ module RuboCop
 
         KIND = 'block'.freeze
 
-        def on_block(node)
-          check(node, node.body)
-        end
-
         def autocorrect(node)
           EmptyLineCorrector.correct(node)
+        end
+
+        def on_block(node)
+          check(node, node.body)
         end
       end
     end

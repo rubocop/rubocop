@@ -57,10 +57,12 @@ module RuboCop
       class RedundantBegin < Cop
         MSG = 'Redundant `begin` block detected.'.freeze
 
-        def on_def(node)
-          check(node)
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          end
         end
-        alias on_defs on_def
 
         def on_block(node)
           return if target_ruby_version < 2.5
@@ -71,12 +73,10 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
-          end
+        def on_def(node)
+          check(node)
         end
+        alias on_defs on_def
 
         private
 

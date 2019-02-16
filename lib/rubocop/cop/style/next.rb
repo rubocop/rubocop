@@ -54,6 +54,16 @@ module RuboCop
         MSG = 'Use `next` to skip iteration.'.freeze
         EXIT_TYPES = %i[break return].freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            if node.modifier_form?
+              autocorrect_modifier(corrector, node)
+            else
+              autocorrect_block(corrector, node)
+            end
+          end
+        end
+
         def investigate(_processed_source)
           # When correcting nested offenses, we need to keep track of how much
           # we have adjusted the indentation of each line
@@ -73,39 +83,10 @@ module RuboCop
         alias on_until on_while
         alias on_for on_while
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.modifier_form?
-              autocorrect_modifier(corrector, node)
-            else
-              autocorrect_block(corrector, node)
-            end
-          end
-        end
-
         private
 
-        def check(node)
-          return unless node.body && ends_with_condition?(node.body)
-
-          offending_node = offense_node(node.body)
-
-          add_offense(offending_node,
-                      location: offense_location(offending_node))
-        end
-
-        def ends_with_condition?(body)
-          return true if simple_if_without_break?(body)
-
-          body.begin_type? && simple_if_without_break?(body.children.last)
-        end
-
-        def simple_if_without_break?(node)
-          return false unless if_without_else?(node)
-          return false if if_else_children?(node)
-          return false if allowed_modifier_if?(node)
-
-          !exit_body_type?(node)
+        def actual_indent(lines, buffer)
+          lines.map { |lineno| buffer.source_line(lineno) =~ /\S/ }.min
         end
 
         def allowed_modifier_if?(node)
@@ -114,41 +95,6 @@ module RuboCop
           else
             !min_body_length?(node)
           end
-        end
-
-        def if_else_children?(node)
-          node.each_child_node(:if).any?(&:else?)
-        end
-
-        def if_without_else?(node)
-          node && node.if_type? && !node.ternary? && !node.else?
-        end
-
-        def exit_body_type?(node)
-          return false unless node.if_branch
-
-          EXIT_TYPES.include?(node.if_branch.type)
-        end
-
-        def offense_node(body)
-          *_, condition = *body
-          condition && condition.if_type? ? condition : body
-        end
-
-        def offense_location(offense_node)
-          condition_expression, = *offense_node
-          offense_begin_pos = offense_node.source_range.begin
-          offense_begin_pos.join(condition_expression.source_range)
-        end
-
-        def autocorrect_modifier(corrector, node)
-          cond, if_body, else_body = *node
-          body = if_body || else_body
-
-          replacement = "next #{opposite_kw(if_body)} #{cond.source}\n" \
-                        "#{' ' * node.source_range.column}#{body.source}"
-
-          corrector.replace(node.source_range, replacement)
         end
 
         def autocorrect_block(corrector, node)
@@ -166,8 +112,23 @@ module RuboCop
           reindent(lines, cond, corrector)
         end
 
-        def opposite_kw(if_body)
-          if_body.nil? ? 'if' : 'unless'
+        def autocorrect_modifier(corrector, node)
+          cond, if_body, else_body = *node
+          body = if_body || else_body
+
+          replacement = "next #{opposite_kw(if_body)} #{cond.source}\n" \
+                        "#{' ' * node.source_range.column}#{body.source}"
+
+          corrector.replace(node.source_range, replacement)
+        end
+
+        def check(node)
+          return unless node.body && ends_with_condition?(node.body)
+
+          offending_node = offense_node(node.body)
+
+          add_offense(offending_node,
+                      location: offense_location(offending_node))
         end
 
         def cond_range(node, cond)
@@ -180,6 +141,10 @@ module RuboCop
           range_between(node.source_range.begin_pos, end_pos)
         end
 
+        def end_followed_by_whitespace_only?(source_buffer, end_pos)
+          source_buffer.source[end_pos..-1] =~ /\A\s*$/
+        end
+
         def end_range(node)
           source_buffer = node.source_range.source_buffer
           end_pos = node.loc.end.end_pos
@@ -190,18 +155,46 @@ module RuboCop
           range_between(begin_pos, end_pos)
         end
 
-        def end_followed_by_whitespace_only?(source_buffer, end_pos)
-          source_buffer.source[end_pos..-1] =~ /\A\s*$/
+        def ends_with_condition?(body)
+          return true if simple_if_without_break?(body)
+
+          body.begin_type? && simple_if_without_break?(body.children.last)
         end
 
-        def reindentable_lines(node)
-          buffer = node.source_range.source_buffer
+        def exit_body_type?(node)
+          return false unless node.if_branch
 
-          # end_range starts with the final newline of the if body
-          lines = (node.source_range.line + 1)...node.loc.end.line
-          lines = lines.to_a - heredoc_lines(node)
-          # Skip blank lines
-          lines.reject { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
+          EXIT_TYPES.include?(node.if_branch.type)
+        end
+
+        def heredoc_lines(node)
+          node.each_node(:dstr)
+              .select(&:heredoc?)
+              .map { |n| n.loc.heredoc_body }
+              .flat_map { |b| (b.line...b.last_line).to_a }
+        end
+
+        def if_else_children?(node)
+          node.each_child_node(:if).any?(&:else?)
+        end
+
+        def if_without_else?(node)
+          node && node.if_type? && !node.ternary? && !node.else?
+        end
+
+        def offense_location(offense_node)
+          condition_expression, = *offense_node
+          offense_begin_pos = offense_node.source_range.begin
+          offense_begin_pos.join(condition_expression.source_range)
+        end
+
+        def offense_node(body)
+          *_, condition = *body
+          condition && condition.if_type? ? condition : body
+        end
+
+        def opposite_kw(if_body)
+          if_body.nil? ? 'if' : 'unless'
         end
 
         # Adjust indentation of `lines` to match `node`
@@ -216,17 +209,6 @@ module RuboCop
           end
         end
 
-        def actual_indent(lines, buffer)
-          lines.map { |lineno| buffer.source_line(lineno) =~ /\S/ }.min
-        end
-
-        def heredoc_lines(node)
-          node.each_node(:dstr)
-              .select(&:heredoc?)
-              .map { |n| n.loc.heredoc_body }
-              .flat_map { |b| (b.line...b.last_line).to_a }
-        end
-
         def reindent_line(corrector, lineno, delta, buffer)
           adjustment = delta + @reindented_lines[lineno]
           @reindented_lines[lineno] = adjustment
@@ -237,6 +219,24 @@ module RuboCop
             corrector.insert_before(buffer.line_range(lineno),
                                     ' ' * -adjustment)
           end
+        end
+
+        def reindentable_lines(node)
+          buffer = node.source_range.source_buffer
+
+          # end_range starts with the final newline of the if body
+          lines = (node.source_range.line + 1)...node.loc.end.line
+          lines = lines.to_a - heredoc_lines(node)
+          # Skip blank lines
+          lines.reject { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
+        end
+
+        def simple_if_without_break?(node)
+          return false unless if_without_else?(node)
+          return false if if_else_children?(node)
+          return false if allowed_modifier_if?(node)
+
+          !exit_body_type?(node)
         end
       end
     end

@@ -28,19 +28,19 @@ module RuboCop
         @files_with_offenses ||= {}
       end
 
-      def file_started(_file, _file_info)
-        @exclude_limit_option = @options[:exclude_limit]
-        @exclude_limit = Integer(@exclude_limit_option ||
-          RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS)
-        @show_offense_counts = !@options[:no_offense_counts]
-      end
-
       def file_finished(file, offenses)
         offenses.each do |o|
           @cops_with_offenses[o.cop_name] += 1
           @files_with_offenses[o.cop_name] ||= Set.new
           @files_with_offenses[o.cop_name] << file
         end
+      end
+
+      def file_started(_file, _file_info)
+        @exclude_limit_option = @options[:exclude_limit]
+        @exclude_limit = Integer(@exclude_limit_option ||
+          RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS)
+        @show_offense_counts = !@options[:no_offense_counts]
       end
 
       def finished(_inspected_files)
@@ -72,14 +72,27 @@ module RuboCop
         command
       end
 
-      def timestamp
-        @options[:no_auto_gen_timestamp] ? '' : "on #{Time.now} "
+      def cop_config_params(default_cfg, cfg)
+        default_cfg.keys -
+          %w[Description StyleGuide Reference Enabled Exclude Safe
+             SafeAutoCorrect VersionAdded VersionChanged VersionRemoved] -
+          cfg.keys
       end
 
-      def output_offenses
-        @cops_with_offenses.sort.each do |cop_name, offense_count|
-          output_cop(cop_name, offense_count)
-        end
+      def default_config(cop_name)
+        RuboCop::ConfigLoader.default_configuration[cop_name]
+      end
+
+      def excludes(offending_files, cop_name, parent)
+        # Exclude properties in .rubocop_todo.yml override default ones, as well
+        # as any custom excludes in .rubocop.yml, so in order to retain those
+        # excludes we must copy them.
+        # There can be multiple .rubocop.yml files in subdirectories, but we
+        # just look at the current working directory
+        config = ConfigStore.new.for(parent)
+        cfg = config[cop_name] || {}
+
+        ((cfg['Exclude'] || []) + offending_files).uniq
       end
 
       def output_cop(cop_name, offense_count)
@@ -94,20 +107,6 @@ module RuboCop
         output_cop_comments(output_buffer, cfg, cop_name, offense_count)
         output_cop_config(output_buffer, cfg, cop_name)
         output.puts(output_buffer.string)
-      end
-
-      def set_max(cfg, cop_name)
-        return unless cfg[:exclude_limit]
-
-        # In case auto_gen_only_exclude is set, only modify the maximum if the
-        # files are not excluded one by one.
-        if !@options[:auto_gen_only_exclude] ||
-           @files_with_offenses[cop_name].size > @exclude_limit
-          cfg.merge!(cfg[:exclude_limit])
-        end
-
-        # Remove already used exclude_limit.
-        cfg.reject! { |key| key == :exclude_limit }
       end
 
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
@@ -129,11 +128,18 @@ module RuboCop
         output_cop_param_comments(output_buffer, params, default_cfg)
       end
 
-      def cop_config_params(default_cfg, cfg)
-        default_cfg.keys -
-          %w[Description StyleGuide Reference Enabled Exclude Safe
-             SafeAutoCorrect VersionAdded VersionChanged VersionRemoved] -
-          cfg.keys
+      def output_cop_config(output_buffer, cfg, cop_name)
+        # 'Enabled' option will be put into file only if exclude
+        # limit is exceeded.
+        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
+
+        output_buffer.puts "#{cop_name}:"
+        cfg_without_enabled.each do |key, value|
+          value = value[0] if value.is_a?(Array)
+          output_buffer.puts "  #{key}: #{value}"
+        end
+
+        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
       end
 
       def output_cop_param_comments(output_buffer, params, default_cfg)
@@ -151,35 +157,6 @@ module RuboCop
         end
       end
 
-      def default_config(cop_name)
-        RuboCop::ConfigLoader.default_configuration[cop_name]
-      end
-
-      def output_cop_config(output_buffer, cfg, cop_name)
-        # 'Enabled' option will be put into file only if exclude
-        # limit is exceeded.
-        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
-
-        output_buffer.puts "#{cop_name}:"
-        cfg_without_enabled.each do |key, value|
-          value = value[0] if value.is_a?(Array)
-          output_buffer.puts "  #{key}: #{value}"
-        end
-
-        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
-      end
-
-      def output_offending_files(output_buffer, cfg, cop_name)
-        return unless cfg.empty?
-
-        offending_files = @files_with_offenses[cop_name].sort
-        if offending_files.count > @exclude_limit
-          output_buffer.puts '  Enabled: false'
-        else
-          output_exclude_list(output_buffer, offending_files, cop_name)
-        end
-      end
-
       def output_exclude_list(output_buffer, offending_files, cop_name)
         require 'pathname'
         parent = Pathname.new(Dir.pwd)
@@ -188,18 +165,6 @@ module RuboCop
         excludes(offending_files, cop_name, parent).each do |exclude_path|
           output_exclude_path(output_buffer, exclude_path, parent)
         end
-      end
-
-      def excludes(offending_files, cop_name, parent)
-        # Exclude properties in .rubocop_todo.yml override default ones, as well
-        # as any custom excludes in .rubocop.yml, so in order to retain those
-        # excludes we must copy them.
-        # There can be multiple .rubocop.yml files in subdirectories, but we
-        # just look at the current working directory
-        config = ConfigStore.new.for(parent)
-        cfg = config[cop_name] || {}
-
-        ((cfg['Exclude'] || []) + offending_files).uniq
       end
 
       def output_exclude_path(output_buffer, exclude_path, parent)
@@ -213,6 +178,41 @@ module RuboCop
       rescue TypeError
         regexp = exclude_path
         output_buffer.puts "    - !ruby/regexp /#{regexp.source}/"
+      end
+
+      def output_offending_files(output_buffer, cfg, cop_name)
+        return unless cfg.empty?
+
+        offending_files = @files_with_offenses[cop_name].sort
+        if offending_files.count > @exclude_limit
+          output_buffer.puts '  Enabled: false'
+        else
+          output_exclude_list(output_buffer, offending_files, cop_name)
+        end
+      end
+
+      def output_offenses
+        @cops_with_offenses.sort.each do |cop_name, offense_count|
+          output_cop(cop_name, offense_count)
+        end
+      end
+
+      def set_max(cfg, cop_name)
+        return unless cfg[:exclude_limit]
+
+        # In case auto_gen_only_exclude is set, only modify the maximum if the
+        # files are not excluded one by one.
+        if !@options[:auto_gen_only_exclude] ||
+           @files_with_offenses[cop_name].size > @exclude_limit
+          cfg.merge!(cfg[:exclude_limit])
+        end
+
+        # Remove already used exclude_limit.
+        cfg.reject! { |key| key == :exclude_limit }
+      end
+
+      def timestamp
+        @options[:no_auto_gen_timestamp] ? '' : "on #{Time.now} "
       end
     end
   end

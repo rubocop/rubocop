@@ -40,6 +40,16 @@ module RuboCop
         COMPACT_MSG = 'Provide an exception object ' \
           'as an argument to `%<method>s`.'.freeze
 
+        def autocorrect(node)
+          replacement = if style == :compact
+                          correction_exploded_to_compact(node)
+                        else
+                          correction_compact_to_exploded(node)
+                        end
+
+          ->(corrector) { corrector.replace(node.source_range, replacement) }
+        end
+
         def on_send(node)
           return unless node.command?(:raise) || node.command?(:fail)
 
@@ -51,17 +61,45 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          replacement = if style == :compact
-                          correction_exploded_to_compact(node)
-                        else
-                          correction_compact_to_exploded(node)
-                        end
+        private
 
-          ->(corrector) { corrector.replace(node.source_range, replacement) }
+        def acceptable_exploded_args?(args)
+          # Allow code like `raise Ex.new(arg1, arg2)`.
+          return true if args.size > 1
+
+          # Disallow zero arguments.
+          return false if args.empty?
+
+          arg = args.first
+
+          # Allow code like `raise Ex.new(kw: arg)`.
+          # Allow code like `raise Ex.new(*args)`.
+          arg.hash_type? || arg.splat_type?
         end
 
-        private
+        def check_compact(node)
+          if node.arguments.size > 1
+            add_offense(node) do
+              opposite_style_detected
+            end
+          else
+            correct_style_detected
+          end
+        end
+
+        def check_exploded(node)
+          return correct_style_detected unless node.arguments.one?
+
+          first_arg = node.first_argument
+
+          return unless first_arg.send_type? && first_arg.method?(:new)
+
+          return if acceptable_exploded_args?(first_arg.arguments)
+
+          add_offense(node) do
+            opposite_style_detected
+          end
+        end
 
         def correction_compact_to_exploded(node)
           exception_node, _new, message_node = *node.first_argument
@@ -89,55 +127,17 @@ module RuboCop
           end
         end
 
-        def check_compact(node)
-          if node.arguments.size > 1
-            add_offense(node) do
-              opposite_style_detected
-            end
-          else
-            correct_style_detected
-          end
-        end
-
-        def check_exploded(node)
-          return correct_style_detected unless node.arguments.one?
-
-          first_arg = node.first_argument
-
-          return unless first_arg.send_type? && first_arg.method?(:new)
-
-          return if acceptable_exploded_args?(first_arg.arguments)
-
-          add_offense(node) do
-            opposite_style_detected
-          end
-        end
-
-        def acceptable_exploded_args?(args)
-          # Allow code like `raise Ex.new(arg1, arg2)`.
-          return true if args.size > 1
-
-          # Disallow zero arguments.
-          return false if args.empty?
-
-          arg = args.first
-
-          # Allow code like `raise Ex.new(kw: arg)`.
-          # Allow code like `raise Ex.new(*args)`.
-          arg.hash_type? || arg.splat_type?
-        end
-
-        def requires_parens?(parent)
-          parent.and_type? || parent.or_type? ||
-            parent.if_type? && parent.ternary?
-        end
-
         def message(node)
           if style == :compact
             format(COMPACT_MSG, method: node.method_name)
           else
             format(EXPLODED_MSG, method: node.method_name)
           end
+        end
+
+        def requires_parens?(parent)
+          parent.and_type? || parent.or_type? ||
+            parent.if_type? && parent.ternary?
         end
       end
     end

@@ -114,16 +114,19 @@ module RuboCop
         PERSIST_METHODS = (CREATE_PERSIST_METHODS +
                            MODIFY_PERSIST_METHODS).freeze
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             variable.assignments.each do |assignment|
               check_assignment(assignment)
             end
           end
+        end
+
+        def autocorrect(node)
+          save_loc = node.loc.selector
+          new_method = "#{node.method_name}!"
+
+          ->(corrector) { corrector.replace(save_loc, new_method) }
         end
 
         def check_assignment(assignment)
@@ -134,6 +137,10 @@ module RuboCop
           return if persisted_referenced?(assignment)
 
           add_offense_for_node(node, CREATE_MSG)
+        end
+
+        def join_force?(force_class)
+          force_class == VariableForce
         end
 
         def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity
@@ -148,13 +155,6 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          save_loc = node.loc.selector
-          new_method = "#{node.method_name}!"
-
-          ->(corrector) { corrector.replace(save_loc, new_method) }
-        end
-
         private
 
         def add_offense_for_node(node, msg = MSG)
@@ -164,24 +164,24 @@ module RuboCop
           add_offense(node, location: :selector, message: full_message)
         end
 
-        def right_assignment_node(assignment)
-          node = assignment.node.child_nodes.first
+        def allowed_receiver?(node)
+          return false unless node.receiver
+          return false unless cop_config['AllowedReceivers']
 
-          return node unless node && node.block_type?
-
-          node.send_node
-        end
-
-        def persisted_referenced?(assignment)
-          return unless assignment.referenced?
-
-          assignment.variable.references.any? do |reference|
-            call_to_persisted?(reference.node.parent)
+          cop_config['AllowedReceivers'].any? do |allowed_receiver|
+            receiver_chain_matches?(node, allowed_receiver)
           end
         end
 
-        def call_to_persisted?(node)
-          node.send_type? && node.method?(:persisted?)
+        def argument?(node)
+          assignable_node(node).argument?
+        end
+
+        def array_parent(node)
+          array = node.parent
+          return unless array && array.array_type?
+
+          array
         end
 
         def assignable_node(node)
@@ -193,21 +193,8 @@ module RuboCop
           assignable
         end
 
-        def hash_parent(node)
-          pair = node.parent
-          return unless pair && pair.pair_type?
-
-          hash = pair.parent
-          return unless hash && hash.hash_type?
-
-          hash
-        end
-
-        def array_parent(node)
-          array = node.parent
-          return unless array && array.array_type?
-
-          array
+        def call_to_persisted?(node)
+          node.send_type? && node.method?(:persisted?)
         end
 
         def check_used_in_conditional(node)
@@ -231,12 +218,68 @@ module RuboCop
             single_negative?(condition)
         end
 
-        def allowed_receiver?(node)
-          return false unless node.receiver
-          return false unless cop_config['AllowedReceivers']
+        # Const == Const
+        # ::Const == ::Const
+        # ::Const == Const
+        # Const == ::Const
+        # NameSpace::Const == Const
+        # NameSpace::Const == NameSpace::Const
+        # NameSpace::Const != ::Const
+        # Const != NameSpace::Const
+        def const_matches?(const, allowed_const)
+          parts = allowed_const.split('::').reverse.zip(
+            const.split('::').reverse
+          )
+          parts.all? do |(allowed_part, const_part)|
+            allowed_part == const_part.to_s
+          end
+        end
 
-          cop_config['AllowedReceivers'].any? do |allowed_receiver|
-            receiver_chain_matches?(node, allowed_receiver)
+        # Check argument signature as no arguments or one hash
+        def expected_signature?(node)
+          !node.arguments? ||
+            (node.arguments.one? &&
+              node.method_name != :destroy &&
+              (node.first_argument.hash_type? ||
+              !node.first_argument.literal?))
+        end
+
+        def explicit_return?(node)
+          ret = assignable_node(node).parent
+          ret && (ret.return_type? || ret.next_type?)
+        end
+
+        def hash_parent(node)
+          pair = node.parent
+          return unless pair && pair.pair_type?
+
+          hash = pair.parent
+          return unless hash && hash.hash_type?
+
+          hash
+        end
+
+        def implicit_return?(node)
+          return false unless cop_config['AllowImplicitReturn']
+
+          node = assignable_node(node)
+          method = node.parent
+          return unless method && (method.def_type? || method.block_type?)
+
+          method.children.size == node.sibling_index + 1
+        end
+
+        def persist_method?(node, methods = PERSIST_METHODS)
+          methods.include?(node.method_name) &&
+            expected_signature?(node) &&
+            !allowed_receiver?(node)
+        end
+
+        def persisted_referenced?(assignment)
+          return unless assignment.referenced?
+
+          assignment.variable.references.any? do |reference|
+            call_to_persisted?(reference.node.parent)
           end
         end
 
@@ -255,60 +298,17 @@ module RuboCop
           end
         end
 
-        # Const == Const
-        # ::Const == ::Const
-        # ::Const == Const
-        # Const == ::Const
-        # NameSpace::Const == Const
-        # NameSpace::Const == NameSpace::Const
-        # NameSpace::Const != ::Const
-        # Const != NameSpace::Const
-        def const_matches?(const, allowed_const)
-          parts = allowed_const.split('::').reverse.zip(
-            const.split('::').reverse
-          )
-          parts.all? do |(allowed_part, const_part)|
-            allowed_part == const_part.to_s
-          end
-        end
-
-        def implicit_return?(node)
-          return false unless cop_config['AllowImplicitReturn']
-
-          node = assignable_node(node)
-          method = node.parent
-          return unless method && (method.def_type? || method.block_type?)
-
-          method.children.size == node.sibling_index + 1
-        end
-
-        def argument?(node)
-          assignable_node(node).argument?
-        end
-
-        def explicit_return?(node)
-          ret = assignable_node(node).parent
-          ret && (ret.return_type? || ret.next_type?)
-        end
-
         def return_value_assigned?(node)
           assignment = assignable_node(node).parent
           assignment && assignment.lvasgn_type?
         end
 
-        def persist_method?(node, methods = PERSIST_METHODS)
-          methods.include?(node.method_name) &&
-            expected_signature?(node) &&
-            !allowed_receiver?(node)
-        end
+        def right_assignment_node(assignment)
+          node = assignment.node.child_nodes.first
 
-        # Check argument signature as no arguments or one hash
-        def expected_signature?(node)
-          !node.arguments? ||
-            (node.arguments.one? &&
-              node.method_name != :destroy &&
-              (node.first_argument.hash_type? ||
-              !node.first_argument.literal?))
+          return node unless node && node.block_type?
+
+          node.send_node
         end
       end
     end

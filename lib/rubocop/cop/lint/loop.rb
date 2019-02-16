@@ -44,11 +44,11 @@ module RuboCop
         MSG = 'Use `Kernel#loop` with `break` rather than ' \
               '`begin/end/until`(or `while`).'.freeze
 
-        def on_while_post(node)
+        def on_until_post(node)
           register_offense(node)
         end
 
-        def on_until_post(node)
+        def on_while_post(node)
           register_offense(node)
         end
 

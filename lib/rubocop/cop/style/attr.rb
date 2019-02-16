@@ -19,12 +19,6 @@ module RuboCop
 
         MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'.freeze
 
-        def on_send(node)
-          return unless node.command?(:attr) && node.arguments?
-
-          add_offense(node, location: :selector)
-        end
-
         def autocorrect(node)
           attr_name, setter = *node.arguments
 
@@ -39,6 +33,12 @@ module RuboCop
             corrector.replace(node.loc.selector, replacement_method(node))
             corrector.remove(remove) if remove
           end
+        end
+
+        def on_send(node)
+          return unless node.command?(:attr) && node.arguments?
+
+          add_offense(node, location: :selector)
         end
 
         private

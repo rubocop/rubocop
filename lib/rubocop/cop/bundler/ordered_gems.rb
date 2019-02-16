@@ -32,6 +32,15 @@ module RuboCop
               'section of the Gemfile. '\
               'Gem `%<previous>s` should appear before `%<current>s`.'.freeze
 
+        def autocorrect(node)
+          OrderedGemCorrector.correct(
+            processed_source,
+            node,
+            previous_declaration(node),
+            treat_comments_as_separators
+          )
+        end
+
         def investigate(processed_source)
           return if processed_source.blank?
 
@@ -45,15 +54,6 @@ module RuboCop
 
             register_offense(previous, current)
           end
-        end
-
-        def autocorrect(node)
-          OrderedGemCorrector.correct(
-            processed_source,
-            node,
-            previous_declaration(node),
-            treat_comments_as_separators
-          )
         end
 
         private

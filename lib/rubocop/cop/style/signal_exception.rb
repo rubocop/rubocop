@@ -115,6 +115,20 @@ module RuboCop
         def_node_search :custom_fail_methods,
                         '{(def :fail ...) (defs _ :fail ...)}'
 
+        def autocorrect(node)
+          lambda do |corrector|
+            name =
+              case style
+              when :semantic
+                command_or_kernel_call?(:raise, node) ? 'fail' : 'raise'
+              when :only_raise then 'raise'
+              when :only_fail then 'fail'
+              end
+
+            corrector.replace(node.loc.selector, name)
+          end
+        end
+
         def investigate(processed_source)
           ast = processed_source.ast
           @custom_fail_defined = ast && custom_fail_methods(ast).any?
@@ -145,30 +159,11 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            name =
-              case style
-              when :semantic
-                command_or_kernel_call?(:raise, node) ? 'fail' : 'raise'
-              when :only_raise then 'raise'
-              when :only_fail then 'fail'
-              end
-
-            corrector.replace(node.loc.selector, name)
-          end
-        end
-
         private
 
-        def message(method_name)
-          case style
-          when :semantic
-            method_name == :fail ? RAISE_MSG : FAIL_MSG
-          when :only_raise
-            'Always use `raise` to signal exceptions.'
-          when :only_fail
-            'Always use `fail` to signal exceptions.'
+        def allow(method_name, node)
+          each_command_or_kernel_call(method_name, node) do |send_node|
+            ignore_node(send_node)
           end
         end
 
@@ -194,15 +189,20 @@ module RuboCop
           node.command?(name) || kernel_call?(node, name)
         end
 
-        def allow(method_name, node)
-          each_command_or_kernel_call(method_name, node) do |send_node|
-            ignore_node(send_node)
-          end
-        end
-
         def each_command_or_kernel_call(method_name, node)
           on_node(:send, node, :rescue) do |send_node|
             yield send_node if command_or_kernel_call?(method_name, send_node)
+          end
+        end
+
+        def message(method_name)
+          case style
+          when :semantic
+            method_name == :fail ? RAISE_MSG : FAIL_MSG
+          when :only_raise
+            'Always use `raise` to signal exceptions.'
+          when :only_fail
+            'Always use `fail` to signal exceptions.'
           end
         end
       end

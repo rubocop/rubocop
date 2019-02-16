@@ -30,14 +30,6 @@ module RuboCop
         MSG = 'Favor modifier `%<keyword>s` usage when ' \
               'having a single-line body.'.freeze
 
-        def on_while(node)
-          check(node)
-        end
-
-        def on_until(node)
-          check(node)
-        end
-
         def autocorrect(node)
           oneline = "#{node.body.source} #{node.keyword} " \
                     "#{node.condition.source}"
@@ -45,6 +37,14 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(node.source_range, oneline)
           end
+        end
+
+        def on_until(node)
+          check(node)
+        end
+
+        def on_while(node)
+          check(node)
         end
 
         private

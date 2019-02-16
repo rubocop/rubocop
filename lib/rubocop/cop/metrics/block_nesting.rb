@@ -52,12 +52,12 @@ module RuboCop
           count_blocks? && node.block_type?
         end
 
-        def message(max)
-          "Avoid more than #{max} levels of block nesting."
-        end
-
         def count_blocks?
           cop_config['CountBlocks']
+        end
+
+        def message(max)
+          "Avoid more than #{max} levels of block nesting."
         end
       end
     end

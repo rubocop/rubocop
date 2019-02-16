@@ -81,16 +81,6 @@ module RuboCop
         MSG_USE_BACKTICKS = 'Use backticks around command string.'.freeze
         MSG_USE_PERCENT_X = 'Use `%x` around command string.'.freeze
 
-        def on_xstr(node)
-          return if node.heredoc?
-
-          if backtick_literal?(node)
-            check_backtick_literal(node)
-          else
-            check_percent_x_literal(node)
-          end
-        end
-
         def autocorrect(node)
           return if contains_backtick?(node)
 
@@ -106,22 +96,20 @@ module RuboCop
           end
         end
 
+        def on_xstr(node)
+          return if node.heredoc?
+
+          if backtick_literal?(node)
+            check_backtick_literal(node)
+          else
+            check_percent_x_literal(node)
+          end
+        end
+
         private
 
-        def check_backtick_literal(node)
-          return if allowed_backtick_literal?(node)
-
-          add_offense(node)
-        end
-
-        def check_percent_x_literal(node)
-          return if allowed_percent_x_literal?(node)
-
-          add_offense(node)
-        end
-
-        def message(node)
-          backtick_literal?(node) ? MSG_USE_PERCENT_X : MSG_USE_BACKTICKS
+        def allow_inner_backticks?
+          cop_config['AllowInnerBackticks']
         end
 
         def allowed_backtick_literal?(node)
@@ -144,16 +132,40 @@ module RuboCop
           end
         end
 
-        def contains_disallowed_backtick?(node)
-          !allow_inner_backticks? && contains_backtick?(node)
+        def backtick_literal?(node)
+          node.loc.begin.source == '`'
         end
 
-        def allow_inner_backticks?
-          cop_config['AllowInnerBackticks']
+        def check_backtick_literal(node)
+          return if allowed_backtick_literal?(node)
+
+          add_offense(node)
+        end
+
+        def check_percent_x_literal(node)
+          return if allowed_percent_x_literal?(node)
+
+          add_offense(node)
+        end
+
+        def command_delimiter
+          preferred_delimiters_config['%x']
         end
 
         def contains_backtick?(node)
           node_body(node) =~ /`/
+        end
+
+        def contains_disallowed_backtick?(node)
+          !allow_inner_backticks? && contains_backtick?(node)
+        end
+
+        def default_delimiter
+          preferred_delimiters_config['default']
+        end
+
+        def message(node)
+          backtick_literal?(node) ? MSG_USE_PERCENT_X : MSG_USE_BACKTICKS
         end
 
         def node_body(node)
@@ -161,20 +173,8 @@ module RuboCop
           loc.expression.source[loc.begin.length...-loc.end.length]
         end
 
-        def backtick_literal?(node)
-          node.loc.begin.source == '`'
-        end
-
         def preferred_delimiter
           (command_delimiter || default_delimiter).split(//)
-        end
-
-        def command_delimiter
-          preferred_delimiters_config['%x']
-        end
-
-        def default_delimiter
-          preferred_delimiters_config['default']
         end
 
         def preferred_delimiters_config

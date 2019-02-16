@@ -19,15 +19,15 @@ module RuboCop
       class EmptyInterpolation < Cop
         MSG = 'Empty interpolation detected.'.freeze
 
-        def on_dstr(node)
-          node.each_child_node(:begin) do |begin_node|
-            add_offense(begin_node) if begin_node.children.empty?
-          end
-        end
-
         def autocorrect(node)
           lambda do |collector|
             collector.remove(node.loc.expression)
+          end
+        end
+
+        def on_dstr(node)
+          node.each_child_node(:begin) do |begin_node|
+            add_offense(begin_node) if begin_node.children.empty?
           end
         end
       end

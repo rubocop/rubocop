@@ -26,16 +26,6 @@ module RuboCop
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed ' \
               'number of times.'.freeze
 
-        def on_block(node)
-          return unless offending_each_range(node)
-
-          send_node = node.send_node
-
-          range = send_node.receiver.source_range.join(send_node.loc.selector)
-
-          add_offense(node, location: range)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             range_type, min, max = offending_each_range(node)
@@ -45,6 +35,16 @@ module RuboCop
             corrector.replace(node.send_node.source_range,
                               "#{max - min}.times")
           end
+        end
+
+        def on_block(node)
+          return unless offending_each_range(node)
+
+          send_node = node.send_node
+
+          range = send_node.receiver.source_range.join(send_node.loc.selector)
+
+          add_offense(node, location: range)
         end
 
         private

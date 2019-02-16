@@ -119,21 +119,6 @@ module RuboCop
           (send nil? { :private :protected :public })
         PATTERN
 
-        # Validates code style on class declaration.
-        # Add offense when find a node out of expected order.
-        def on_class(class_node)
-          previous = -1
-          walk_over_nested_class_definition(class_node) do |node, category|
-            index = expected_order.index(category)
-            if index < previous
-              message = format(MSG, category: category,
-                                    previous: expected_order[previous])
-              add_offense(node, message: message)
-            end
-            previous = index
-          end
-        end
-
         # Autocorrect by swapping between two nodes autocorrecting them
         def autocorrect(node)
           node_classification = classify(node)
@@ -151,7 +136,58 @@ module RuboCop
           end
         end
 
+        # Validates code style on class declaration.
+        # Add offense when find a node out of expected order.
+        def on_class(class_node)
+          previous = -1
+          walk_over_nested_class_definition(class_node) do |node, category|
+            index = expected_order.index(category)
+            if index < previous
+              message = format(MSG, category: category,
+                                    previous: expected_order[previous])
+              add_offense(node, message: message)
+            end
+            previous = index
+          end
+        end
+
         private
+
+        def begin_pos_with_comment(node)
+          annotation_line = node.first_line - 1
+          first_comment = nil
+
+          processed_source.comments_before_line(annotation_line)
+                          .reverse_each do |comment|
+            if comment.location.line == annotation_line
+              first_comment = comment
+              annotation_line -= 1
+            end
+          end
+
+          start_line_position(first_comment || node)
+        end
+
+        def buffer
+          processed_source.buffer
+        end
+
+        # Setting categories hash allow you to group methods in group to match
+        # in the {expected_order}.
+        def categories
+          cop_config['Categories']
+        end
+
+        def class_elements(class_node)
+          *, class_def = class_node.children
+          return [] unless class_def
+
+          if class_def.def_type? || class_def.send_type?
+            [class_def]
+          else
+            class_def.children.compact
+          end
+        end
 
         # Classifies a node to match with something in the {expected_order}
         # @param node to be analysed
@@ -173,6 +209,17 @@ module RuboCop
           end.to_s
         end
 
+        def end_position_for(node)
+          end_line = buffer.line_for_position(node.loc.expression.end_pos)
+          buffer.line_range(end_line).end_pos
+        end
+
+        # Load expected order from `ExpectedOrder` config.
+        # Define new terms in the expected order by adding new {categories}.
+        def expected_order
+          cop_config['ExpectedOrder']
+        end
+
         # Categorize a method_name according to the {expected_order}
         # @param method_name try to match {categories} values
         # @return [String] with the key category or the `method_name` as string
@@ -180,43 +227,6 @@ module RuboCop
           name = method_name.to_s
           category, = categories.find { |_, names| names.include?(name) }
           category || name
-        end
-
-        def walk_over_nested_class_definition(class_node)
-          class_elements(class_node).each do |node|
-            classification = classify(node)
-            next if ignore?(classification)
-
-            yield node, classification
-          end
-        end
-
-        def class_elements(class_node)
-          *, class_def = class_node.children
-          return [] unless class_def
-
-          if class_def.def_type? || class_def.send_type?
-            [class_def]
-          else
-            class_def.children.compact
-          end
-        end
-
-        def ignore?(classification)
-          classification.nil? ||
-            classification.to_s.end_with?('=') ||
-            expected_order.index(classification).nil?
-        end
-
-        def node_visibility(node)
-          _, method_name, = *find_visibility_start(node)
-          method_name || :public
-        end
-
-        def find_visibility_start(node)
-          left_siblings_of(node)
-            .reverse
-            .find(&method(:visibility_block?))
         end
 
         # Navigate to find the last protected method
@@ -228,16 +238,10 @@ module RuboCop
           end || right.last
         end
 
-        def siblings_of(node)
-          node.parent.children
-        end
-
-        def right_siblings_of(node)
-          siblings_of(node)[node.sibling_index..-1]
-        end
-
-        def left_siblings_of(node)
-          siblings_of(node)[0, node.sibling_index]
+        def find_visibility_start(node)
+          left_siblings_of(node)
+            .reverse
+            .find(&method(:visibility_block?))
         end
 
         def humanize_node(node)
@@ -248,6 +252,29 @@ module RuboCop
             return "#{node_visibility(node)}_methods"
           end
           HUMANIZED_NODE_TYPE[node.type] || node.type
+        end
+
+        def ignore?(classification)
+          classification.nil? ||
+            classification.to_s.end_with?('=') ||
+            expected_order.index(classification).nil?
+        end
+
+        def left_siblings_of(node)
+          siblings_of(node)[0, node.sibling_index]
+        end
+
+        def node_visibility(node)
+          _, method_name, = *find_visibility_start(node)
+          method_name || :public
+        end
+
+        def right_siblings_of(node)
+          siblings_of(node)[node.sibling_index..-1]
+        end
+
+        def siblings_of(node)
+          node.parent.children
         end
 
         def source_range_with_comment(node)
@@ -264,44 +291,17 @@ module RuboCop
           Parser::Source::Range.new(buffer, begin_pos, end_pos)
         end
 
-        def end_position_for(node)
-          end_line = buffer.line_for_position(node.loc.expression.end_pos)
-          buffer.line_range(end_line).end_pos
-        end
-
-        def begin_pos_with_comment(node)
-          annotation_line = node.first_line - 1
-          first_comment = nil
-
-          processed_source.comments_before_line(annotation_line)
-                          .reverse_each do |comment|
-            if comment.location.line == annotation_line
-              first_comment = comment
-              annotation_line -= 1
-            end
-          end
-
-          start_line_position(first_comment || node)
-        end
-
         def start_line_position(node)
           buffer.line_range(node.loc.line).begin_pos - 1
         end
 
-        def buffer
-          processed_source.buffer
-        end
+        def walk_over_nested_class_definition(class_node)
+          class_elements(class_node).each do |node|
+            classification = classify(node)
+            next if ignore?(classification)
 
-        # Load expected order from `ExpectedOrder` config.
-        # Define new terms in the expected order by adding new {categories}.
-        def expected_order
-          cop_config['ExpectedOrder']
-        end
-
-        # Setting categories hash allow you to group methods in group to match
-        # in the {expected_order}.
-        def categories
-          cop_config['Categories']
+            yield node, classification
+          end
         end
       end
     end

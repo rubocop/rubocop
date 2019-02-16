@@ -10,31 +10,17 @@ module CopHelper
   let(:enabled_rails) { false }
   let(:rails_version) { false }
 
-  def inspect_source_file(source)
-    Tempfile.open('tmp') { |f| inspect_source(source, f) }
-  end
+  def _investigate(cop, processed_source)
+    forces = RuboCop::Cop::Force.all.each_with_object([]) do |klass, instances|
+      next unless cop.join_force?(klass)
 
-  def inspect_source(source, file = nil)
-    RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
-    RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-    processed_source = parse_source(source, file)
-    raise 'Error parsing example code' unless processed_source.valid_syntax?
-
-    _investigate(cop, processed_source)
-  end
-
-  def parse_source(source, file = nil)
-    if file && file.respond_to?(:write)
-      file.write(source)
-      file.rewind
-      file = file.path
+      instances << klass.new([cop])
     end
 
-    RuboCop::ProcessedSource.new(source, ruby_version, file)
-  end
-
-  def autocorrect_source_file(source)
-    Tempfile.open('tmp') { |f| autocorrect_source(source, f) }
+    commissioner =
+      RuboCop::Cop::Commissioner.new([cop], forces, raise_error: true)
+    commissioner.investigate(processed_source)
+    commissioner
   end
 
   def autocorrect_source(source, file = nil)
@@ -49,6 +35,10 @@ module CopHelper
     corrector.rewrite
   end
 
+  def autocorrect_source_file(source)
+    Tempfile.open('tmp') { |f| autocorrect_source(source, f) }
+  end
+
   def autocorrect_source_with_loop(source, file = nil)
     loop do
       cop.instance_variable_set(:@corrections, [])
@@ -59,17 +49,27 @@ module CopHelper
     end
   end
 
-  def _investigate(cop, processed_source)
-    forces = RuboCop::Cop::Force.all.each_with_object([]) do |klass, instances|
-      next unless cop.join_force?(klass)
+  def inspect_source(source, file = nil)
+    RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+    RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
+    processed_source = parse_source(source, file)
+    raise 'Error parsing example code' unless processed_source.valid_syntax?
 
-      instances << klass.new([cop])
+    _investigate(cop, processed_source)
+  end
+
+  def inspect_source_file(source)
+    Tempfile.open('tmp') { |f| inspect_source(source, f) }
+  end
+
+  def parse_source(source, file = nil)
+    if file && file.respond_to?(:write)
+      file.write(source)
+      file.rewind
+      file = file.path
     end
 
-    commissioner =
-      RuboCop::Cop::Commissioner.new([cop], forces, raise_error: true)
-    commissioner.investigate(processed_source)
-    commissioner
+    RuboCop::ProcessedSource.new(source, ruby_version, file)
   end
 end
 
@@ -78,12 +78,12 @@ module RuboCop
     # Monkey-patch Cop for tests to provide easy access to messages and
     # highlights.
     class Cop
-      def messages
-        offenses.sort.map(&:message)
-      end
-
       def highlights
         offenses.sort.map { |o| o.location.source }
+      end
+
+      def messages
+        offenses.sort.map(&:message)
       end
     end
   end

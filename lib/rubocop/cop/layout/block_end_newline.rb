@@ -30,6 +30,13 @@ module RuboCop
         MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
               .freeze
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(delimiter_range(node),
+                              "\n#{node.loc.end.source}#{offset(node)}")
+          end
+        end
+
         def on_block(node)
           return if node.single_line?
 
@@ -39,23 +46,16 @@ module RuboCop
           add_offense(node, location: :end)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(delimiter_range(node),
-                              "\n#{node.loc.end.source}#{offset(node)}")
-          end
-        end
-
         private
-
-        def message(node)
-          format(MSG, line: node.loc.end.line, column: node.loc.end.column + 1)
-        end
 
         def delimiter_range(node)
           Parser::Source::Range.new(node.loc.expression.source_buffer,
                                     node.children.last.loc.expression.end_pos,
                                     node.loc.expression.end_pos)
+        end
+
+        def message(node)
+          format(MSG, line: node.loc.end.line, column: node.loc.end.column + 1)
         end
       end
     end

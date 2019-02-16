@@ -74,8 +74,16 @@ module RuboCop
           end
         end
 
-        def unannotated_format?(node, detected_style)
-          detected_style == :unannotated && !includes_format_methods?(node)
+        def match_token(source_range)
+          supported_styles.each do |style_name|
+            pattern = STYLE_PATTERNS.fetch(style_name)
+            match = source_range.source.match(pattern)
+            next unless match
+
+            return [style_name, match.begin(:token), match.end(:token)]
+          end
+
+          nil
         end
 
         def message(detected_style)
@@ -90,12 +98,38 @@ module RuboCop
           when :unannotated then 'unannotated tokens (like `%s`)'
           end
         end
-        # rubocop:enable Style/FormatStringToken
 
-        def tokens(str_node, &block)
-          return if str_node.source == '__FILE__'
+        def placeholder_argument?(node)
+          return false unless node.parent
+          return true if node.parent.pair_type?
 
-          token_ranges(str_contents(str_node.loc), &block)
+          placeholder_argument?(node.parent)
+        end
+
+        def slice_source(source_range, new_begin, new_end)
+          Parser::Source::Range.new(
+            source_range.source_buffer,
+            new_begin,
+            new_end
+          )
+        end
+
+        def split_token(source_range, match_begin, match_end)
+          token =
+            slice_source(
+              source_range,
+              source_range.begin_pos + match_begin,
+              source_range.begin_pos + match_end
+            )
+
+          remainder =
+            slice_source(
+              source_range,
+              source_range.begin_pos + match_end,
+              source_range.end_pos
+            )
+
+          [token, remainder]
         end
 
         def str_contents(source_map)
@@ -120,49 +154,16 @@ module RuboCop
           end
         end
 
-        def match_token(source_range)
-          supported_styles.each do |style_name|
-            pattern = STYLE_PATTERNS.fetch(style_name)
-            match = source_range.source.match(pattern)
-            next unless match
+        # rubocop:enable Style/FormatStringToken
 
-            return [style_name, match.begin(:token), match.end(:token)]
-          end
+        def tokens(str_node, &block)
+          return if str_node.source == '__FILE__'
 
-          nil
+          token_ranges(str_contents(str_node.loc), &block)
         end
 
-        def split_token(source_range, match_begin, match_end)
-          token =
-            slice_source(
-              source_range,
-              source_range.begin_pos + match_begin,
-              source_range.begin_pos + match_end
-            )
-
-          remainder =
-            slice_source(
-              source_range,
-              source_range.begin_pos + match_end,
-              source_range.end_pos
-            )
-
-          [token, remainder]
-        end
-
-        def slice_source(source_range, new_begin, new_end)
-          Parser::Source::Range.new(
-            source_range.source_buffer,
-            new_begin,
-            new_end
-          )
-        end
-
-        def placeholder_argument?(node)
-          return false unless node.parent
-          return true if node.parent.pair_type?
-
-          placeholder_argument?(node.parent)
+        def unannotated_format?(node, detected_style)
+          detected_style == :unannotated && !includes_format_methods?(node)
         end
       end
     end

@@ -6,6 +6,10 @@ module RuboCop
     module MethodPreference
       private
 
+      def default_cop_config
+        ConfigLoader.default_configuration[cop_name]
+      end
+
       def preferred_method(method)
         preferred_methods[method.to_sym]
       end
@@ -20,10 +24,6 @@ module RuboCop
             overrides = merged.values - default.values
             merged.reject { |key, _| overrides.include?(key) }.symbolize_keys
           end
-      end
-
-      def default_cop_config
-        ConfigLoader.default_configuration[cop_name]
       end
     end
   end

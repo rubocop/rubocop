@@ -29,16 +29,16 @@ module RuboCop
           (send (send nil? :request) {:referer :referrer})
         PATTERN
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node, "request.#{style}") }
+        end
+
         def on_send(node)
           referer?(node) do
             return unless node.method?(wrong_method_name)
 
             add_offense(node.source_range, location: node.source_range)
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node, "request.#{style}") }
         end
 
         private

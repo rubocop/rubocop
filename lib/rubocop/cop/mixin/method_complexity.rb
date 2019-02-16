@@ -7,16 +7,16 @@ module RuboCop
       include ConfigurableMax
       extend NodePattern::Macros
 
-      def on_def(node)
-        check_complexity(node, node.method_name)
-      end
-      alias on_defs on_def
-
       def on_block(node)
         define_method?(node) do |name|
           check_complexity(node, name)
         end
       end
+
+      def on_def(node)
+        check_complexity(node, node.method_name)
+      end
+      alias on_defs on_def
 
       private
 

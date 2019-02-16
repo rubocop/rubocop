@@ -30,27 +30,34 @@ module RuboCop
       alias auto_gen_config? auto_gen_config
       alias ignore_parent_exclusion? ignore_parent_exclusion
 
-      def clear_options
-        @debug = @auto_gen_config = @options_config = nil
-        FileFinder.root_level = nil
+      def add_excludes_from_files(config, config_file)
+        found_files = find_files_upwards(DOTFILE, config_file, use_home: true)
+        return if found_files.empty?
+        return if PathUtil.relative_path(found_files.last) ==
+                  PathUtil.relative_path(config_file)
+
+        print 'AllCops/Exclude ' if debug?
+        config.add_excludes_from_higher_level(load_file(found_files.last))
       end
 
-      def load_file(file)
-        path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
+      def add_inheritance_from_auto_generated_file
+        file_string = " #{AUTO_GENERATED_FILE}"
 
-        hash = load_yaml_configuration(path)
+        config_file = options_config || DOTFILE
 
-        # Resolve requires first in case they define additional cops
-        resolver.resolve_requires(path, hash)
+        if File.exist?(config_file)
+          files = Array(load_yaml_configuration(config_file)['inherit_from'])
 
-        add_missing_namespaces(path, hash)
+          return if files.include?(AUTO_GENERATED_FILE)
 
-        resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
-        resolver.resolve_inheritance(path, hash, file, debug?)
+          files.unshift(AUTO_GENERATED_FILE)
+          file_string = "\n  - " + files.join("\n  - ") if files.size > 1
+          rubocop_yml_contents = existing_configuration(config_file)
+        end
 
-        hash.delete('inherit_from')
+        write_config_file(config_file, file_string, rubocop_yml_contents)
 
-        Config.create(hash, path)
+        puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
       def add_missing_namespaces(path, hash)
@@ -62,11 +69,9 @@ module RuboCop
         end
       end
 
-      # Return a recursive merge of two hashes. That is, a normal hash merge,
-      # with the addition that any value that is a hash, and occurs in both
-      # arguments, will also be merged. And so on.
-      def merge(base_hash, derived_hash)
-        resolver.merge(base_hash, derived_hash)
+      def clear_options
+        @debug = @auto_gen_config = @options_config = nil
+        FileFinder.root_level = nil
       end
 
       # Returns the path of .rubocop.yml searching upwards in the
@@ -90,21 +95,36 @@ module RuboCop
         merge_with_default(config, config_file)
       end
 
-      def add_excludes_from_files(config, config_file)
-        found_files = find_files_upwards(DOTFILE, config_file, use_home: true)
-        return if found_files.empty?
-        return if PathUtil.relative_path(found_files.last) ==
-                  PathUtil.relative_path(config_file)
-
-        print 'AllCops/Exclude ' if debug?
-        config.add_excludes_from_higher_level(load_file(found_files.last))
-      end
-
       def default_configuration
         @default_configuration ||= begin
                                      print 'Default ' if debug?
                                      load_file(DEFAULT_FILE)
                                    end
+      end
+
+      def load_file(file)
+        path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
+
+        hash = load_yaml_configuration(path)
+
+        # Resolve requires first in case they define additional cops
+        resolver.resolve_requires(path, hash)
+
+        add_missing_namespaces(path, hash)
+
+        resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
+        resolver.resolve_inheritance(path, hash, file, debug?)
+
+        hash.delete('inherit_from')
+
+        Config.create(hash, path)
+      end
+
+      # Return a recursive merge of two hashes. That is, a normal hash merge,
+      # with the addition that any value that is a hash, and occurs in both
+      # arguments, will also be merged. And so on.
+      def merge(base_hash, derived_hash)
+        resolver.merge(base_hash, derived_hash)
       end
 
       # Merges the given configuration with the default one. If
@@ -117,43 +137,24 @@ module RuboCop
         resolver.merge_with_default(config, config_file)
       end
 
-      def add_inheritance_from_auto_generated_file
-        file_string = " #{AUTO_GENERATED_FILE}"
-
-        config_file = options_config || DOTFILE
-
-        if File.exist?(config_file)
-          files = Array(load_yaml_configuration(config_file)['inherit_from'])
-
-          return if files.include?(AUTO_GENERATED_FILE)
-
-          files.unshift(AUTO_GENERATED_FILE)
-          file_string = "\n  - " + files.join("\n  - ") if files.size > 1
-          rubocop_yml_contents = existing_configuration(config_file)
-        end
-
-        write_config_file(config_file, file_string, rubocop_yml_contents)
-
-        puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
-      end
-
       private
+
+      def check_duplication(yaml_code, absolute_path)
+        smart_path = PathUtil.smart_path(absolute_path)
+        YAMLDuplicationChecker.check(yaml_code, absolute_path) do |key1, key2|
+          value = key1.value
+          line1 = key1.start_line + 1
+          line2 = key2.start_line + 1
+          message = "#{smart_path}:#{line1}: " \
+                    "`#{value}` is concealed by line #{line2}"
+          warn Rainbow(message).yellow
+        end
+      end
 
       def existing_configuration(config_file)
         IO.read(config_file, encoding: Encoding::UTF_8)
           .sub(%r{^inherit_from: *[.\/\w]+}, '')
           .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+}, '')
-      end
-
-      def write_config_file(file_name, file_string, rubocop_yml_contents)
-        File.open(file_name, 'w') do |f|
-          f.write "inherit_from:#{file_string}\n"
-          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents =~ /\S/
-        end
-      end
-
-      def resolver
-        @resolver ||= ConfigLoaderResolver.new
       end
 
       def load_yaml_configuration(absolute_path)
@@ -170,18 +171,6 @@ module RuboCop
         hash
       end
 
-      def check_duplication(yaml_code, absolute_path)
-        smart_path = PathUtil.smart_path(absolute_path)
-        YAMLDuplicationChecker.check(yaml_code, absolute_path) do |key1, key2|
-          value = key1.value
-          line1 = key1.start_line + 1
-          line2 = key2.start_line + 1
-          message = "#{smart_path}:#{line1}: " \
-                    "`#{value}` is concealed by line #{line2}"
-          warn Rainbow(message).yellow
-        end
-      end
-
       # Read the specified file, or exit with a friendly, concise message on
       # stderr. Care is taken to use the standard OS exit code for a "file not
       # found" error.
@@ -190,6 +179,17 @@ module RuboCop
       rescue Errno::ENOENT
         raise ConfigNotFoundError,
               "Configuration file not found: #{absolute_path}"
+      end
+
+      def resolver
+        @resolver ||= ConfigLoaderResolver.new
+      end
+
+      def write_config_file(file_name, file_string, rubocop_yml_contents)
+        File.open(file_name, 'w') do |f|
+          f.write "inherit_from:#{file_string}\n"
+          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents =~ /\S/
+        end
       end
 
       def yaml_safe_load(yaml_code, filename)

@@ -52,6 +52,86 @@ module RuboCop
 
       attr_reader :corrections, :diagnostics
 
+      # Inserts new code after the given source range.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [String] content
+      def insert_after(range, content)
+        validate_range range
+        @source_rewriter.insert_after(range, content)
+      end
+
+      # Inserts new code before the given source range.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [String] content
+      def insert_before(range, content)
+        validate_range range
+        # TODO: Fix Cops using bad ranges instead
+        if range.end_pos > @source_buffer.source.size
+          range = range.with(end_pos: @source_buffer.source.size)
+        end
+
+        @source_rewriter.insert_before(range, content)
+      end
+
+      # Removes the source range.
+      #
+      # @param [Parser::Source::Range] range
+      def remove(range)
+        validate_range range
+        @source_rewriter.remove(range)
+      end
+
+      # Removes `size` characters from the beginning of the given range.
+      # If `size` is greater than the size of `range`, the removed region can
+      # overrun the end of `range`.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [Integer] size
+      def remove_leading(range, size)
+        validate_range range
+        to_remove = Parser::Source::Range.new(range.source_buffer,
+                                              range.begin_pos,
+                                              range.begin_pos + size)
+        @source_rewriter.remove(to_remove)
+      end
+
+      # Removes `size` characters prior to the source range.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [Integer] size
+      def remove_preceding(range, size)
+        validate_range range
+        to_remove = Parser::Source::Range.new(range.source_buffer,
+                                              range.begin_pos - size,
+                                              range.begin_pos)
+        @source_rewriter.remove(to_remove)
+      end
+
+      # Removes `size` characters from the end of the given range.
+      # If `size` is greater than the size of `range`, the removed region can
+      # overrun the beginning of `range`.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [Integer] size
+      def remove_trailing(range, size)
+        validate_range range
+        to_remove = Parser::Source::Range.new(range.source_buffer,
+                                              range.end_pos - size,
+                                              range.end_pos)
+        @source_rewriter.remove(to_remove)
+      end
+
+      # Replaces the code of the source range `range` with `content`.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [String] content
+      def replace(range, content)
+        validate_range range
+        @source_rewriter.replace(range, content)
+      end
+
       # Does the actual rewrite and returns string corresponding to
       # the rewritten source.
       #
@@ -69,86 +149,6 @@ module RuboCop
         # rubocop:enable Lint/HandleExceptions
 
         @source_rewriter.process
-      end
-
-      # Removes the source range.
-      #
-      # @param [Parser::Source::Range] range
-      def remove(range)
-        validate_range range
-        @source_rewriter.remove(range)
-      end
-
-      # Inserts new code before the given source range.
-      #
-      # @param [Parser::Source::Range] range
-      # @param [String] content
-      def insert_before(range, content)
-        validate_range range
-        # TODO: Fix Cops using bad ranges instead
-        if range.end_pos > @source_buffer.source.size
-          range = range.with(end_pos: @source_buffer.source.size)
-        end
-
-        @source_rewriter.insert_before(range, content)
-      end
-
-      # Inserts new code after the given source range.
-      #
-      # @param [Parser::Source::Range] range
-      # @param [String] content
-      def insert_after(range, content)
-        validate_range range
-        @source_rewriter.insert_after(range, content)
-      end
-
-      # Replaces the code of the source range `range` with `content`.
-      #
-      # @param [Parser::Source::Range] range
-      # @param [String] content
-      def replace(range, content)
-        validate_range range
-        @source_rewriter.replace(range, content)
-      end
-
-      # Removes `size` characters prior to the source range.
-      #
-      # @param [Parser::Source::Range] range
-      # @param [Integer] size
-      def remove_preceding(range, size)
-        validate_range range
-        to_remove = Parser::Source::Range.new(range.source_buffer,
-                                              range.begin_pos - size,
-                                              range.begin_pos)
-        @source_rewriter.remove(to_remove)
-      end
-
-      # Removes `size` characters from the beginning of the given range.
-      # If `size` is greater than the size of `range`, the removed region can
-      # overrun the end of `range`.
-      #
-      # @param [Parser::Source::Range] range
-      # @param [Integer] size
-      def remove_leading(range, size)
-        validate_range range
-        to_remove = Parser::Source::Range.new(range.source_buffer,
-                                              range.begin_pos,
-                                              range.begin_pos + size)
-        @source_rewriter.remove(to_remove)
-      end
-
-      # Removes `size` characters from the end of the given range.
-      # If `size` is greater than the size of `range`, the removed region can
-      # overrun the beginning of `range`.
-      #
-      # @param [Parser::Source::Range] range
-      # @param [Integer] size
-      def remove_trailing(range, size)
-        validate_range range
-        to_remove = Parser::Source::Range.new(range.source_buffer,
-                                              range.end_pos - size,
-                                              range.end_pos)
-        @source_rewriter.remove(to_remove)
       end
 
       private

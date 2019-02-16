@@ -103,6 +103,12 @@ module RuboCop
         MSG_EMPTY = '`%<type>s` condition requires an empty ' \
                     '`else`-clause.'.freeze
 
+        def on_case(node)
+          return if if_style?
+
+          check(node)
+        end
+
         def on_normal_if_unless(node)
           return if case_style?
           return if unless_else_cop_enabled? && node.unless?
@@ -110,13 +116,11 @@ module RuboCop
           check(node)
         end
 
-        def on_case(node)
-          return if if_style?
-
-          check(node)
-        end
-
         private
+
+        def case_style?
+          style == :case
+        end
 
         def check(node)
           return if node.else?
@@ -132,6 +136,24 @@ module RuboCop
           add_offense(node)
         end
 
+        def empty_else_config
+          config.for_cop('Style/EmptyElse')
+        end
+
+        def empty_else_cop_enabled?
+          empty_else_config.fetch('Enabled')
+        end
+
+        def empty_else_style
+          return unless empty_else_config.key?('EnforcedStyle')
+
+          empty_else_config['EnforcedStyle'].to_sym
+        end
+
+        def if_style?
+          style == :if
+        end
+
         def message(node)
           template = case empty_else_style
                      when :empty
@@ -145,34 +167,12 @@ module RuboCop
           format(template, type: node.type)
         end
 
-        def if_style?
-          style == :if
-        end
-
-        def case_style?
-          style == :case
-        end
-
-        def unless_else_cop_enabled?
-          unless_else_config.fetch('Enabled')
-        end
-
         def unless_else_config
           config.for_cop('Style/UnlessElse')
         end
 
-        def empty_else_cop_enabled?
-          empty_else_config.fetch('Enabled')
-        end
-
-        def empty_else_style
-          return unless empty_else_config.key?('EnforcedStyle')
-
-          empty_else_config['EnforcedStyle'].to_sym
-        end
-
-        def empty_else_config
-          config.for_cop('Style/EmptyElse')
+        def unless_else_cop_enabled?
+          unless_else_config.fetch('Enabled')
         end
       end
     end

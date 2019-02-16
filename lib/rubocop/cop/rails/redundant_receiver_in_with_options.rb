@@ -79,6 +79,14 @@ module RuboCop
           (send ...)
         PATTERN
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(node.receiver.source_range)
+            corrector.remove(node.loc.dot)
+            corrector.remove(block_argument_range(node))
+          end
+        end
+
         def on_block(node)
           with_options?(node) do |arg, body|
             return unless all_block_nodes_in(body).count.zero?
@@ -91,14 +99,6 @@ module RuboCop
                 add_offense(send_node, location: receiver.source_range)
               end
             end
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.receiver.source_range)
-            corrector.remove(node.loc.dot)
-            corrector.remove(block_argument_range(node))
           end
         end
 
@@ -116,6 +116,10 @@ module RuboCop
           )
         end
 
+        def same_value?(arg_node, recv_node)
+          recv_node && recv_node.children[0] == arg_node.children[0]
+        end
+
         def search_begin_pos_of_space_before_block_argument(begin_pos)
           position = begin_pos - 1
 
@@ -124,10 +128,6 @@ module RuboCop
           else
             begin_pos
           end
-        end
-
-        def same_value?(arg_node, recv_node)
-          recv_node && recv_node.children[0] == arg_node.children[0]
         end
       end
     end

@@ -20,18 +20,6 @@ module RuboCop
           [Layout::SpaceAroundOperators]
         end
 
-        def on_lvasgn(node)
-          check(node, :lvar)
-        end
-
-        def on_ivasgn(node)
-          check(node, :ivar)
-        end
-
-        def on_cvasgn(node)
-          check(node, :cvar)
-        end
-
         def autocorrect(node)
           _var_name, rhs = *node
 
@@ -42,7 +30,36 @@ module RuboCop
           end
         end
 
+        def on_cvasgn(node)
+          check(node, :cvar)
+        end
+
+        def on_ivasgn(node)
+          check(node, :ivar)
+        end
+
+        def on_lvasgn(node)
+          check(node, :lvar)
+        end
+
         private
+
+        def apply_autocorrect(node, rhs, operator, new_rhs)
+          lambda do |corrector|
+            corrector.insert_before(node.loc.operator, operator)
+            corrector.replace(rhs.source_range, new_rhs.source)
+          end
+        end
+
+        def autocorrect_boolean_node(node, rhs)
+          _first_operand, second_operand = *rhs
+          apply_autocorrect(node, rhs, rhs.loc.operator.source, second_operand)
+        end
+
+        def autocorrect_send_node(node, rhs)
+          _receiver, method_name, args = *rhs
+          apply_autocorrect(node, rhs, method_name.to_s, args)
+        end
 
         def check(node, var_type)
           var_name, rhs = *node
@@ -55,16 +72,6 @@ module RuboCop
           end
         end
 
-        def check_send_node(node, rhs, var_name, var_type)
-          receiver, method_name, *_args = *rhs
-          return unless OPS.include?(method_name)
-
-          target_node = s(var_type, var_name)
-          return unless receiver == target_node
-
-          add_offense(node, message: format(MSG, method: method_name))
-        end
-
         def check_boolean_node(node, rhs, var_name, var_type)
           first_operand, _second_operand = *rhs
 
@@ -75,21 +82,14 @@ module RuboCop
           add_offense(node, message: format(MSG, method: operator))
         end
 
-        def autocorrect_send_node(node, rhs)
-          _receiver, method_name, args = *rhs
-          apply_autocorrect(node, rhs, method_name.to_s, args)
-        end
+        def check_send_node(node, rhs, var_name, var_type)
+          receiver, method_name, *_args = *rhs
+          return unless OPS.include?(method_name)
 
-        def autocorrect_boolean_node(node, rhs)
-          _first_operand, second_operand = *rhs
-          apply_autocorrect(node, rhs, rhs.loc.operator.source, second_operand)
-        end
+          target_node = s(var_type, var_name)
+          return unless receiver == target_node
 
-        def apply_autocorrect(node, rhs, operator, new_rhs)
-          lambda do |corrector|
-            corrector.insert_before(node.loc.operator, operator)
-            corrector.replace(rhs.source_range, new_rhs.source)
-          end
+          add_offense(node, message: format(MSG, method: method_name))
         end
       end
     end

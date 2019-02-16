@@ -25,14 +25,6 @@ module RuboCop
         MSG_REQUIRE = 'Wrap stabby lambda arguments with parentheses.'.freeze
         MSG_NO_REQUIRE = 'Do not wrap stabby lambda arguments ' \
                          'with parentheses.'.freeze
-        def on_send(node)
-          return unless stabby_lambda_with_args?(node)
-          return unless redundant_parentheses?(node) ||
-                        missing_parentheses?(node)
-
-          add_offense(node.block_node.arguments)
-        end
-
         def autocorrect(node)
           if style == :require_parentheses
             missing_parentheses_corrector(node)
@@ -41,18 +33,22 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return unless stabby_lambda_with_args?(node)
+          return unless redundant_parentheses?(node) ||
+                        missing_parentheses?(node)
+
+          add_offense(node.block_node.arguments)
+        end
+
         private
-
-        def missing_parentheses?(node)
-          style == :require_parentheses && !parentheses?(node)
-        end
-
-        def redundant_parentheses?(node)
-          style == :require_no_parentheses && parentheses?(node)
-        end
 
         def message(_node)
           style == :require_parentheses ? MSG_REQUIRE : MSG_NO_REQUIRE
+        end
+
+        def missing_parentheses?(node)
+          style == :require_parentheses && !parentheses?(node)
         end
 
         def missing_parentheses_corrector(node)
@@ -64,6 +60,18 @@ module RuboCop
           end
         end
 
+        def parentheses?(node)
+          node.block_node.arguments.loc.begin
+        end
+
+        def redundant_parentheses?(node)
+          style == :require_no_parentheses && parentheses?(node)
+        end
+
+        def stabby_lambda_with_args?(node)
+          node.lambda_literal? && node.block_node.arguments?
+        end
+
         def unwanted_parentheses_corrector(node)
           lambda do |corrector|
             args_loc = node.loc
@@ -71,14 +79,6 @@ module RuboCop
             corrector.replace(args_loc.begin, '')
             corrector.remove(args_loc.end)
           end
-        end
-
-        def stabby_lambda_with_args?(node)
-          node.lambda_literal? && node.block_node.arguments?
-        end
-
-        def parentheses?(node)
-          node.block_node.arguments.loc.begin
         end
       end
     end

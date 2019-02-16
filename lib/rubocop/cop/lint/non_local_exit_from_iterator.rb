@@ -67,12 +67,12 @@ module RuboCop
 
         private
 
-        def scoped_node?(node)
-          node.def_type? || node.defs_type? || node.lambda?
-        end
-
         def return_value?(return_node)
           !return_node.children.empty?
+        end
+
+        def scoped_node?(node)
+          node.def_type? || node.defs_type? || node.lambda?
         end
 
         def_node_matcher :chained_send?, '(send !nil? ...)'

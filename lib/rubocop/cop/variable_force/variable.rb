@@ -29,12 +29,32 @@ module RuboCop
           @captured_by_block = false
         end
 
+        def argument?
+          ARGUMENT_DECLARATION_TYPES.include?(@declaration_node.type)
+        end
+
         def assign(node)
           @assignments << Assignment.new(node, self)
         end
 
-        def referenced?
-          !@references.empty?
+        def block_argument?
+          argument? && @scope.node.block_type?
+        end
+
+        def capture_with_block!
+          @captured_by_block = true
+        end
+
+        def explicit_block_local_variable?
+          @declaration_node.shadowarg_type?
+        end
+
+        def keyword_argument?
+          %i[kwarg kwoptarg].include?(@declaration_node.type)
+        end
+
+        def method_argument?
+          argument? && %i[def defs].include?(@scope.node.type)
         end
 
         # rubocop:disable Metrics/AbcSize
@@ -59,8 +79,12 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize
 
-        def capture_with_block!
-          @captured_by_block = true
+        def referenced?
+          !@references.empty?
+        end
+
+        def should_be_unused?
+          name.to_s.start_with?('_')
         end
 
         # This is a convenient way to check whether the variable is used
@@ -73,30 +97,6 @@ module RuboCop
         # So we consider it's used to suppress false positive offenses.
         def used?
           @captured_by_block || referenced?
-        end
-
-        def should_be_unused?
-          name.to_s.start_with?('_')
-        end
-
-        def argument?
-          ARGUMENT_DECLARATION_TYPES.include?(@declaration_node.type)
-        end
-
-        def method_argument?
-          argument? && %i[def defs].include?(@scope.node.type)
-        end
-
-        def block_argument?
-          argument? && @scope.node.block_type?
-        end
-
-        def keyword_argument?
-          %i[kwarg kwoptarg].include?(@declaration_node.type)
-        end
-
-        def explicit_block_local_variable?
-          @declaration_node.shadowarg_type?
         end
       end
     end

@@ -7,14 +7,6 @@ module RuboCop
     module OrderedGemNode
       private
 
-      def get_source_range(node, comments_as_separators)
-        unless comments_as_separators
-          first_comment = processed_source.ast_with_comments[node].first
-          return first_comment.loc.expression unless first_comment.nil?
-        end
-        node.source_range
-      end
-
       def case_insensitive_out_of_order?(string_a, string_b)
         string_a.downcase < string_b.downcase
       end
@@ -27,13 +19,10 @@ module RuboCop
         previous.source_range.last_line == first_line - 1
       end
 
-      def register_offense(previous, current)
-        message = format(
-          self.class::MSG,
-          previous: gem_name(current),
-          current: gem_name(previous)
-        )
-        add_offense(current, message: message)
+      def find_gem_name(gem_node)
+        return gem_node.str_content if gem_node.str_type?
+
+        find_gem_name(gem_node.receiver)
       end
 
       def gem_name(declaration_node)
@@ -42,10 +31,21 @@ module RuboCop
         find_gem_name(gem_node)
       end
 
-      def find_gem_name(gem_node)
-        return gem_node.str_content if gem_node.str_type?
+      def get_source_range(node, comments_as_separators)
+        unless comments_as_separators
+          first_comment = processed_source.ast_with_comments[node].first
+          return first_comment.loc.expression unless first_comment.nil?
+        end
+        node.source_range
+      end
 
-        find_gem_name(gem_node.receiver)
+      def register_offense(previous, current)
+        message = format(
+          self.class::MSG,
+          previous: gem_name(current),
+          current: gem_name(previous)
+        )
+        add_offense(current, message: message)
       end
 
       def treat_comments_as_separators

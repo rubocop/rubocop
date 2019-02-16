@@ -40,16 +40,6 @@ module RuboCop
           attr_accessor :largest_brackets
         end
 
-        def on_array(node)
-          if bracketed_array_of?(:sym, node)
-            return if symbols_contain_spaces?(node)
-
-            check_bracketed_array(node)
-          elsif node.percent_literal?(:symbol)
-            check_percent_array(node)
-          end
-        end
-
         def autocorrect(node)
           if style == :percent
             PercentLiteralCorrector
@@ -60,28 +50,23 @@ module RuboCop
           end
         end
 
-        private
+        def on_array(node)
+          if bracketed_array_of?(:sym, node)
+            return if symbols_contain_spaces?(node)
 
-        def symbols_contain_spaces?(node)
-          node.children.any? do |sym|
-            content, = *sym
-            content =~ / /
+            check_bracketed_array(node)
+          elsif node.percent_literal?(:symbol)
+            check_percent_array(node)
           end
         end
+
+        private
 
         def correct_bracketed(node)
           syms = node.children.map { |c| to_symbol_literal(c.value.to_s) }
 
           lambda do |corrector|
             corrector.replace(node.source_range, "[#{syms.join(', ')}]")
-          end
-        end
-
-        def to_symbol_literal(string)
-          if symbol_without_quote?(string)
-            ":#{string}"
-          else
-            ":#{to_string_literal(string)}"
           end
         end
 
@@ -104,6 +89,21 @@ module RuboCop
             string =~ /\A\$[a-zA-Z_]\w*\z/ ||
             special_gvars.include?(string) ||
             redefinable_operators.include?(string)
+        end
+
+        def symbols_contain_spaces?(node)
+          node.children.any? do |sym|
+            content, = *sym
+            content =~ / /
+          end
+        end
+
+        def to_symbol_literal(string)
+          if symbol_without_quote?(string)
+            ":#{string}"
+          else
+            ":#{to_string_literal(string)}"
+          end
         end
       end
     end

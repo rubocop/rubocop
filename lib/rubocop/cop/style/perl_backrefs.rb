@@ -15,10 +15,6 @@ module RuboCop
       class PerlBackrefs < Cop
         MSG = 'Avoid the use of Perl-style backrefs.'.freeze
 
-        def on_nth_ref(node)
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             backref, = *node
@@ -31,6 +27,10 @@ module RuboCop
                                 "Regexp.last_match(#{backref})")
             end
           end
+        end
+
+        def on_nth_ref(node)
+          add_offense(node)
         end
       end
     end

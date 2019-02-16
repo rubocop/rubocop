@@ -53,6 +53,14 @@ module RuboCop
           'negative?' => '<'
         }.freeze
 
+        def autocorrect(node)
+          _, replacement = check(node)
+
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, replacement)
+          end
+        end
+
         def on_send(node)
           return if node.each_ancestor(:send, :block).any? do |ancestor|
             ignored_method?(ancestor.method_name)
@@ -66,14 +74,6 @@ module RuboCop
                       message: format(MSG,
                                       prefer: replacement,
                                       current: node.source))
-        end
-
-        def autocorrect(node)
-          _, replacement = check(node)
-
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement)
-          end
         end
 
         private
@@ -91,12 +91,11 @@ module RuboCop
           [numeric, replacement(numeric, operator)]
         end
 
-        def replacement(numeric, operation)
-          if style == :predicate
-            [parenthesized_source(numeric),
-             REPLACEMENTS.invert[operation.to_s]].join('.')
-          else
-            [numeric.source, REPLACEMENTS[operation.to_s], 0].join(' ')
+        def invert
+          lambda do |comparison, numeric|
+            comparison = { :> => :<, :< => :> }[comparison] || comparison
+
+            [numeric, comparison]
           end
         end
 
@@ -108,8 +107,13 @@ module RuboCop
           end
         end
 
-        def require_parentheses?(node)
-          node.send_type? && node.binary_operation? && !node.parenthesized?
+        def replacement(numeric, operation)
+          if style == :predicate
+            [parenthesized_source(numeric),
+             REPLACEMENTS.invert[operation.to_s]].join('.')
+          else
+            [numeric.source, REPLACEMENTS[operation.to_s], 0].join(' ')
+          end
         end
 
         def replacement_supported?(operator)
@@ -120,12 +124,8 @@ module RuboCop
           end
         end
 
-        def invert
-          lambda do |comparison, numeric|
-            comparison = { :> => :<, :< => :> }[comparison] || comparison
-
-            [numeric, comparison]
-          end
+        def require_parentheses?(node)
+          node.send_type? && node.binary_operation? && !node.parenthesized?
         end
 
         def_node_matcher :predicate, <<-PATTERN

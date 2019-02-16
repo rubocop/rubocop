@@ -31,10 +31,6 @@ module RuboCop
 
       attr_reader :node, :processed_source
 
-      def correct_same_line_brace(corrector)
-        corrector.insert_before(node.loc.end, "\n".freeze)
-      end
-
       def correct_next_line_brace(corrector)
         corrector.remove(
           range_with_surrounding_space(range: node.loc.end, side: :left)
@@ -44,6 +40,10 @@ module RuboCop
           last_element_range_with_trailing_comma(node),
           node.loc.end.source
         )
+      end
+
+      def correct_same_line_brace(corrector)
+        corrector.insert_before(node.loc.end, "\n".freeze)
       end
 
       def last_element_range_with_trailing_comma(node)

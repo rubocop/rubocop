@@ -6,40 +6,11 @@ module RuboCop
     # node when the builder constructs the AST, making its methods available
     # to all `hash` nodes within RuboCop.
     class HashNode < Node
-      # Returns an array of all the key value pairs in the `hash` literal.
+      # Checks whether the `hash` literal is delimited by curly braces.
       #
-      # @return [Array<PairNode>] an array of `pair` nodes
-      def pairs
-        each_pair.to_a
-      end
-
-      # Checks whether the `hash` node contains any `pair`- or `kwsplat` nodes.
-      #
-      # @return[Boolean] whether the `hash` is empty
-      def empty?
-        children.empty?
-      end
-
-      # Calls the given block for each `pair` node in the `hash` literal.
-      # If no block is given, an `Enumerator` is returned.
-      #
-      # @return [self] if a block is given
-      # @return [Enumerator] if no block is given
-      def each_pair
-        return each_child_node(:pair).to_enum unless block_given?
-
-        each_child_node(:pair) do |pair|
-          yield(*pair)
-        end
-
-        self
-      end
-
-      # Returns an array of all the keys in the `hash` literal.
-      #
-      # @return [Array<Node>] an array of keys in the `hash` literal
-      def keys
-        each_key.to_a
+      # @return [Boolean] whether the `hash` literal is enclosed in braces
+      def braces?
+        loc.end && loc.end.is?('}')
       end
 
       # Calls the given block for each `key` node in the `hash` literal.
@@ -57,11 +28,19 @@ module RuboCop
         self
       end
 
-      # Returns an array of all the values in the `hash` literal.
+      # Calls the given block for each `pair` node in the `hash` literal.
+      # If no block is given, an `Enumerator` is returned.
       #
-      # @return [Array<Node>] an array of values in the `hash` literal
-      def values
-        each_pair.map(&:value)
+      # @return [self] if a block is given
+      # @return [Enumerator] if no block is given
+      def each_pair
+        return each_child_node(:pair).to_enum unless block_given?
+
+        each_child_node(:pair) do |pair|
+          yield(*pair)
+        end
+
+        self
       end
 
       # Calls the given block for each `value` node in the `hash` literal.
@@ -79,6 +58,35 @@ module RuboCop
         self
       end
 
+      # Checks whether the `hash` node contains any `pair`- or `kwsplat` nodes.
+      #
+      # @return[Boolean] whether the `hash` is empty
+      def empty?
+        children.empty?
+      end
+
+      # Returns an array of all the keys in the `hash` literal.
+      #
+      # @return [Array<Node>] an array of keys in the `hash` literal
+      def keys
+        each_key.to_a
+      end
+
+      # Checks whether this `hash` uses a mix of hash rocket and colon
+      # delimiters for its pairs.
+      #
+      # @return [Boolean] whether the `hash` uses mixed delimiters
+      def mixed_delimiters?
+        pairs.map(&:delimiter).uniq.size > 1
+      end
+
+      # Returns an array of all the key value pairs in the `hash` literal.
+      #
+      # @return [Array<PairNode>] an array of `pair` nodes
+      def pairs
+        each_pair.to_a
+      end
+
       # Checks whether any of the key value pairs in the `hash` literal are on
       # the same line.
       #
@@ -90,19 +98,11 @@ module RuboCop
         pairs.each_cons(2).any? { |first, second| first.same_line?(second) }
       end
 
-      # Checks whether this `hash` uses a mix of hash rocket and colon
-      # delimiters for its pairs.
+      # Returns an array of all the values in the `hash` literal.
       #
-      # @return [Boolean] whether the `hash` uses mixed delimiters
-      def mixed_delimiters?
-        pairs.map(&:delimiter).uniq.size > 1
-      end
-
-      # Checks whether the `hash` literal is delimited by curly braces.
-      #
-      # @return [Boolean] whether the `hash` literal is enclosed in braces
-      def braces?
-        loc.end && loc.end.is?('}')
+      # @return [Array<Node>] an array of values in the `hash` literal
+      def values
+        each_pair.map(&:value)
       end
     end
   end

@@ -26,6 +26,13 @@ module RuboCop
 
         MSG = 'Tab detected.'.freeze
 
+        def autocorrect(range)
+          lambda do |corrector|
+            spaces = ' ' * configured_indentation_width
+            corrector.replace(range, range.source.gsub(/\t/, spaces))
+          end
+        end
+
         def investigate(processed_source)
           str_ranges = string_literal_ranges(processed_source.ast)
 
@@ -42,13 +49,6 @@ module RuboCop
                                  col...match.end(0))
 
             add_offense(range, location: range)
-          end
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            spaces = ' ' * configured_indentation_width
-            corrector.replace(range, range.source.gsub(/\t/, spaces))
           end
         end
 

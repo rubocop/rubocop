@@ -18,13 +18,13 @@ module RuboCop
           PunctuationCorrector.add_space(semicolon)
         end
 
+        def kind(token)
+          'semicolon' if token.semicolon?
+        end
+
         def space_style_before_rcurly
           cfg = config.for_cop('Layout/SpaceInsideBlockBraces')
           cfg['EnforcedStyle'] || 'space'
-        end
-
-        def kind(token)
-          'semicolon' if token.semicolon?
         end
       end
     end

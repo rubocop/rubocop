@@ -62,12 +62,6 @@ module RuboCop
 
         private
 
-        def check_ending_if(node)
-          return if accepted_form?(node, true) || !min_body_length?(node)
-
-          add_offense(node, location: :keyword)
-        end
-
         def accepted_form?(node, ending = false)
           accepted_if?(node, ending) || node.condition.multiline?
         end
@@ -80,6 +74,12 @@ module RuboCop
           else
             !node.else? || node.elsif?
           end
+        end
+
+        def check_ending_if(node)
+          return if accepted_form?(node, true) || !min_body_length?(node)
+
+          add_offense(node, location: :keyword)
         end
 
         def contains_guard_clause?(node)

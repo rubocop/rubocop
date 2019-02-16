@@ -20,6 +20,12 @@ module RuboCop
 
         MSG = 'Do not use semicolons to terminate expressions.'.freeze
 
+        def autocorrect(range)
+          return unless range
+
+          ->(corrector) { corrector.remove(range) }
+        end
+
         def investigate(processed_source)
           return if processed_source.blank?
 
@@ -55,16 +61,17 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          return unless range
-
-          ->(corrector) { corrector.remove(range) }
-        end
-
         private
 
         def check_for_line_terminator_or_opener
           each_semicolon { |line, column| convention_on(line, column, true) }
+        end
+
+        def convention_on(line, column, autocorrect)
+          range = source_range(@processed_source.buffer, line, column)
+          # Don't attempt to autocorrect if semicolon is separating statements
+          # on the same line
+          add_offense(autocorrect ? range : nil, location: range)
         end
 
         def each_semicolon
@@ -76,13 +83,6 @@ module RuboCop
 
         def tokens_for_lines
           @processed_source.tokens.group_by(&:line)
-        end
-
-        def convention_on(line, column, autocorrect)
-          range = source_range(@processed_source.buffer, line, column)
-          # Don't attempt to autocorrect if semicolon is separating statements
-          # on the same line
-          add_offense(autocorrect ? range : nil, location: range)
         end
       end
     end

@@ -30,16 +30,6 @@ module RuboCop
         MSG = "Within `%w`/`%W`, quotes and ',' are unnecessary and may be " \
           'unwanted in the resulting strings.'.freeze
 
-        def on_array(node)
-          process(node, '%w', '%W')
-        end
-
-        def on_percent_literal(node)
-          return unless contains_quotes_or_commas?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             node.values.each do |value|
@@ -53,6 +43,16 @@ module RuboCop
               end
             end
           end
+        end
+
+        def on_array(node)
+          process(node, '%w', '%W')
+        end
+
+        def on_percent_literal(node)
+          return unless contains_quotes_or_commas?(node)
+
+          add_offense(node)
         end
 
         private

@@ -44,6 +44,19 @@ module RuboCop
               _))
         PATTERN
 
+        def autocorrect(node)
+          if ternary_assignment?(node)
+            variable, default = take_variable_and_default_from_ternary(node)
+          else
+            variable, default = take_variable_and_default_from_unless(node)
+          end
+
+          lambda do |corrector|
+            corrector.replace(node.source_range,
+                              "#{variable} ||= #{default.source}")
+          end
+        end
+
         def on_if(node)
           return unless unless_assignment?(node)
 
@@ -59,19 +72,6 @@ module RuboCop
         alias on_ivasgn on_lvasgn
         alias on_cvasgn on_lvasgn
         alias on_gvasgn on_lvasgn
-
-        def autocorrect(node)
-          if ternary_assignment?(node)
-            variable, default = take_variable_and_default_from_ternary(node)
-          else
-            variable, default = take_variable_and_default_from_unless(node)
-          end
-
-          lambda do |corrector|
-            corrector.replace(node.source_range,
-                              "#{variable} ||= #{default.source}")
-          end
-        end
 
         private
 

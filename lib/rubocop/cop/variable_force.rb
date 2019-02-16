@@ -67,10 +67,6 @@ module RuboCop
         end
       end
 
-      def variable_table
-        @variable_table ||= VariableTable.new(self)
-      end
-
       # Starting point.
       def investigate(processed_source)
         root_node = processed_source.ast
@@ -87,7 +83,50 @@ module RuboCop
         process_children(node) unless retval == :skip_children
       end
 
+      def variable_table
+        @variable_table ||= VariableTable.new(self)
+      end
+
       private
+
+      def descendant_reference(node)
+        case node.type
+        when :lvar
+          VariableReference.new(node.children.first)
+        when :lvasgn
+          AssignmentReference.new(node)
+        when *OPERATOR_ASSIGNMENT_TYPES
+          asgn_node = node.children.first
+          if asgn_node.lvasgn_type?
+            VariableReference.new(asgn_node.children.first)
+          end
+        end
+      end
+
+      def each_descendant_reference(loop_node)
+        # #each_descendant does not consider scope,
+        # but we don't need to care about it here.
+        loop_node.each_descendant do |node|
+          reference = descendant_reference(node)
+
+          yield reference if reference
+        end
+      end
+
+      def find_variables_in_loop(loop_node)
+        referenced_variable_names_in_loop = []
+        assignment_nodes_in_loop = []
+
+        each_descendant_reference(loop_node) do |reference|
+          if reference.assignment?
+            assignment_nodes_in_loop << reference.node
+          else
+            referenced_variable_names_in_loop << reference.name
+          end
+        end
+
+        [referenced_variable_names_in_loop, assignment_nodes_in_loop]
+      end
 
       # This is called for each scope recursively.
       def inspect_variables_in_scope(scope_node)
@@ -96,16 +135,27 @@ module RuboCop
         variable_table.pop_scope
       end
 
-      def process_children(origin_node)
-        origin_node.each_child_node do |child_node|
-          next if scanned_node?(child_node)
+      # Mark all assignments which are referenced in the same loop
+      # as referenced by ignoring AST order since they would be referenced
+      # in next iteration.
+      def mark_assignments_as_referenced_in_loop(node)
+        referenced_variable_names_in_loop, assignment_nodes_in_loop =
+          find_variables_in_loop(node)
 
-          process_node(child_node)
+        referenced_variable_names_in_loop.each do |name|
+          variable = variable_table.find_variable(name)
+          # Non related references which are caught in the above scan
+          # would be skipped here.
+          next unless variable
+
+          variable.assignments.each do |assignment|
+            next if assignment_nodes_in_loop.none? do |assignment_node|
+                      assignment_node.equal?(assignment.node)
+                    end
+
+            assignment.reference!(node)
+          end
         end
-      end
-
-      def skip_children!
-        :skip_children
       end
 
       # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
@@ -135,36 +185,26 @@ module RuboCop
           :process_scope
         end
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
-      def process_variable_declaration(node)
-        variable_name = node.children.first
+      def process_children(origin_node)
+        origin_node.each_child_node do |child_node|
+          next if scanned_node?(child_node)
 
-        # restarg and kwrestarg would have no name:
-        #
-        #   def initialize(*)
-        #   end
-        return unless variable_name
-
-        variable_table.declare_variable(variable_name, node)
+          process_node(child_node)
+        end
       end
 
-      def process_variable_assignment(node)
-        name = node.children.first
-
-        unless variable_table.variable_exist?(name)
-          variable_table.declare_variable(name, node)
+      def process_loop(node)
+        if POST_CONDITION_LOOP_TYPES.include?(node.type)
+          # See the comment at the end of file for this behavior.
+          condition_node, body_node = *node
+          process_node(body_node)
+          process_node(condition_node)
+        else
+          process_children(node)
         end
 
-        # Need to scan rhs before assignment so that we can mark previous
-        # assignments as referenced if rhs has referencing to the variable
-        # itself like:
-        #
-        #   foo = 1
-        #   foo = foo + 1
-        process_children(node)
-
-        variable_table.assign_to_variable(name, node)
+        mark_assignments_as_referenced_in_loop(node)
 
         skip_children!
       end
@@ -189,11 +229,83 @@ module RuboCop
         skip_children!
       end
 
-      def regexp_captured_names(node)
-        regexp_string = node.children[0].children[0] || ''
-        regexp = Regexp.new(regexp_string)
+      def process_rescue(node)
+        resbody_nodes = node.each_child_node(:resbody)
 
-        regexp.named_captures.keys
+        contain_retry = resbody_nodes.any? do |resbody_node|
+          resbody_node.each_descendant.any?(&:retry_type?)
+        end
+
+        # Treat begin..rescue..end with retry as a loop.
+        process_loop(node) if contain_retry
+      end
+
+      def process_scope(node)
+        if TWISTED_SCOPE_TYPES.include?(node.type)
+          # See the comment at the end of file for this behavior.
+          twisted_nodes = [node.children[0]]
+          twisted_nodes << node.children[1] if node.class_type?
+          twisted_nodes.compact!
+
+          twisted_nodes.each do |twisted_node|
+            process_node(twisted_node)
+            scanned_nodes << twisted_node
+          end
+        end
+
+        inspect_variables_in_scope(node)
+        skip_children!
+      end
+
+      def process_send(node)
+        _receiver, method_name, args = *node
+        return unless method_name == :binding
+        return if args && !args.children.empty?
+
+        variable_table.accessible_variables.each do |variable|
+          variable.reference!(node)
+        end
+      end
+
+      def process_variable_assignment(node)
+        name = node.children.first
+
+        unless variable_table.variable_exist?(name)
+          variable_table.declare_variable(name, node)
+        end
+
+        # Need to scan rhs before assignment so that we can mark previous
+        # assignments as referenced if rhs has referencing to the variable
+        # itself like:
+        #
+        #   foo = 1
+        #   foo = foo + 1
+        process_children(node)
+
+        variable_table.assign_to_variable(name, node)
+
+        skip_children!
+      end
+
+      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
+
+      def process_variable_declaration(node)
+        variable_name = node.children.first
+
+        # restarg and kwrestarg would have no name:
+        #
+        #   def initialize(*)
+        #   end
+        return unless variable_name
+
+        variable_table.declare_variable(variable_name, node)
+      end
+
+      def process_variable_multiple_assignment(node)
+        lhs_node, rhs_node = *node
+        process_node(rhs_node)
+        process_node(lhs_node)
+        skip_children!
       end
 
       # rubocop:disable Metrics/AbcSize
@@ -235,42 +347,9 @@ module RuboCop
       end
       # rubocop:enable Metrics/AbcSize
 
-      def process_variable_multiple_assignment(node)
-        lhs_node, rhs_node = *node
-        process_node(rhs_node)
-        process_node(lhs_node)
-        skip_children!
-      end
-
       def process_variable_referencing(node)
         name = node.children.first
         variable_table.reference_variable(name, node)
-      end
-
-      def process_loop(node)
-        if POST_CONDITION_LOOP_TYPES.include?(node.type)
-          # See the comment at the end of file for this behavior.
-          condition_node, body_node = *node
-          process_node(body_node)
-          process_node(condition_node)
-        else
-          process_children(node)
-        end
-
-        mark_assignments_as_referenced_in_loop(node)
-
-        skip_children!
-      end
-
-      def process_rescue(node)
-        resbody_nodes = node.each_child_node(:resbody)
-
-        contain_retry = resbody_nodes.any? do |resbody_node|
-          resbody_node.each_descendant.any?(&:retry_type?)
-        end
-
-        # Treat begin..rescue..end with retry as a loop.
-        process_loop(node) if contain_retry
       end
 
       def process_zero_arity_super(node)
@@ -281,93 +360,11 @@ module RuboCop
         end
       end
 
-      def process_scope(node)
-        if TWISTED_SCOPE_TYPES.include?(node.type)
-          # See the comment at the end of file for this behavior.
-          twisted_nodes = [node.children[0]]
-          twisted_nodes << node.children[1] if node.class_type?
-          twisted_nodes.compact!
+      def regexp_captured_names(node)
+        regexp_string = node.children[0].children[0] || ''
+        regexp = Regexp.new(regexp_string)
 
-          twisted_nodes.each do |twisted_node|
-            process_node(twisted_node)
-            scanned_nodes << twisted_node
-          end
-        end
-
-        inspect_variables_in_scope(node)
-        skip_children!
-      end
-
-      def process_send(node)
-        _receiver, method_name, args = *node
-        return unless method_name == :binding
-        return if args && !args.children.empty?
-
-        variable_table.accessible_variables.each do |variable|
-          variable.reference!(node)
-        end
-      end
-
-      # Mark all assignments which are referenced in the same loop
-      # as referenced by ignoring AST order since they would be referenced
-      # in next iteration.
-      def mark_assignments_as_referenced_in_loop(node)
-        referenced_variable_names_in_loop, assignment_nodes_in_loop =
-          find_variables_in_loop(node)
-
-        referenced_variable_names_in_loop.each do |name|
-          variable = variable_table.find_variable(name)
-          # Non related references which are caught in the above scan
-          # would be skipped here.
-          next unless variable
-
-          variable.assignments.each do |assignment|
-            next if assignment_nodes_in_loop.none? do |assignment_node|
-                      assignment_node.equal?(assignment.node)
-                    end
-
-            assignment.reference!(node)
-          end
-        end
-      end
-
-      def find_variables_in_loop(loop_node)
-        referenced_variable_names_in_loop = []
-        assignment_nodes_in_loop = []
-
-        each_descendant_reference(loop_node) do |reference|
-          if reference.assignment?
-            assignment_nodes_in_loop << reference.node
-          else
-            referenced_variable_names_in_loop << reference.name
-          end
-        end
-
-        [referenced_variable_names_in_loop, assignment_nodes_in_loop]
-      end
-
-      def each_descendant_reference(loop_node)
-        # #each_descendant does not consider scope,
-        # but we don't need to care about it here.
-        loop_node.each_descendant do |node|
-          reference = descendant_reference(node)
-
-          yield reference if reference
-        end
-      end
-
-      def descendant_reference(node)
-        case node.type
-        when :lvar
-          VariableReference.new(node.children.first)
-        when :lvasgn
-          AssignmentReference.new(node)
-        when *OPERATOR_ASSIGNMENT_TYPES
-          asgn_node = node.children.first
-          if asgn_node.lvasgn_type?
-            VariableReference.new(asgn_node.children.first)
-          end
-        end
+        regexp.named_captures.keys
       end
 
       # Use Node#equal? for accurate check.
@@ -379,6 +376,10 @@ module RuboCop
 
       def scanned_nodes
         @scanned_nodes ||= []
+      end
+
+      def skip_children!
+        :skip_children
       end
 
       # Hooks invoked by VariableTable.

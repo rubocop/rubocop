@@ -71,12 +71,12 @@ module RuboCop
 
         private
 
-        def message(node)
-          format(MSG, method: node.method_name)
-        end
-
         def blacklist
           cop_config['Blacklist'] || []
+        end
+
+        def message(node)
+          format(MSG, method: node.method_name)
         end
 
         def whitelist

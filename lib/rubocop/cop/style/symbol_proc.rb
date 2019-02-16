@@ -31,6 +31,20 @@ module RuboCop
           [Layout::SpaceBeforeBlockBraces]
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            block_send_or_super, _block_args, block_body = *node
+            _receiver, method_name, _args = *block_body
+
+            if super?(block_send_or_super)
+              args = *block_send_or_super
+            else
+              _breceiver, _bmethod_name, *args = *block_send_or_super
+            end
+            autocorrect_method(corrector, node, args, method_name)
+          end
+        end
+
         def on_block(node)
           symbol_proc?(node) do |send_or_super, block_args, method|
             block_method_name = resolve_block_method_name(send_or_super)
@@ -48,40 +62,7 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            block_send_or_super, _block_args, block_body = *node
-            _receiver, method_name, _args = *block_body
-
-            if super?(block_send_or_super)
-              args = *block_send_or_super
-            else
-              _breceiver, _bmethod_name, *args = *block_send_or_super
-            end
-            autocorrect_method(corrector, node, args, method_name)
-          end
-        end
-
         private
-
-        def resolve_block_method_name(block_send_or_super)
-          return :super if super?(block_send_or_super)
-
-          _receiver, method_name, _args = *block_send_or_super
-          method_name
-        end
-
-        def offense(node, method_name, block_method_name)
-          block_start = node.loc.begin.begin_pos
-          block_end = node.loc.end.end_pos
-          range = range_between(block_start, block_end)
-
-          add_offense(node,
-                      location: range,
-                      message: format(MSG,
-                                      method: method_name,
-                                      block_method: block_method_name))
-        end
 
         def autocorrect_method(corrector, node, args, method_name)
           if args.empty?
@@ -104,12 +85,6 @@ module RuboCop
           corrector.remove(block_range_with_space(node))
         end
 
-        def block_range_with_space(node)
-          block_range = range_between(begin_pos_for_replacement(node),
-                                      node.loc.end.end_pos)
-          range_with_surrounding_space(range: block_range, side: :left)
-        end
-
         def begin_pos_for_replacement(node)
           block_send_or_super, _block_args, _block_body = *node
           expr = block_send_or_super.source_range
@@ -119,6 +94,31 @@ module RuboCop
           else
             node.loc.begin.begin_pos
           end
+        end
+
+        def block_range_with_space(node)
+          block_range = range_between(begin_pos_for_replacement(node),
+                                      node.loc.end.end_pos)
+          range_with_surrounding_space(range: block_range, side: :left)
+        end
+
+        def offense(node, method_name, block_method_name)
+          block_start = node.loc.begin.begin_pos
+          block_end = node.loc.end.end_pos
+          range = range_between(block_start, block_end)
+
+          add_offense(node,
+                      location: range,
+                      message: format(MSG,
+                                      method: method_name,
+                                      block_method: block_method_name))
+        end
+
+        def resolve_block_method_name(block_send_or_super)
+          return :super if super?(block_send_or_super)
+
+          _receiver, method_name, _args = *block_send_or_super
+          method_name
         end
 
         def super?(node)

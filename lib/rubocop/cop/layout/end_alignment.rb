@@ -72,24 +72,10 @@ module RuboCop
         include EndKeywordAlignment
         include RangeHelp
 
-        def on_class(node)
-          check_other_alignment(node)
-        end
-
-        def on_module(node)
-          check_other_alignment(node)
-        end
-
-        def on_if(node)
-          check_other_alignment(node) unless node.ternary?
-        end
-
-        def on_while(node)
-          check_other_alignment(node)
-        end
-
-        def on_until(node)
-          check_other_alignment(node)
+        def autocorrect(node)
+          AlignmentCorrector.align_end(processed_source,
+                                       node,
+                                       alignment_node(node))
         end
 
         def on_case(node)
@@ -100,54 +86,27 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.align_end(processed_source,
-                                       node,
-                                       alignment_node(node))
+        def on_class(node)
+          check_other_alignment(node)
+        end
+
+        def on_if(node)
+          check_other_alignment(node) unless node.ternary?
+        end
+
+        def on_module(node)
+          check_other_alignment(node)
+        end
+
+        def on_until(node)
+          check_other_alignment(node)
+        end
+
+        def on_while(node)
+          check_other_alignment(node)
         end
 
         private
-
-        def check_assignment(node, rhs)
-          # If there are method calls chained to the right hand side of the
-          # assignment, we let rhs be the receiver of those method calls before
-          # we check if it's an if/unless/while/until.
-          return unless (rhs = first_part_of_call_chain(rhs))
-          return unless rhs.conditional?
-          return if rhs.if_type? && rhs.ternary?
-
-          check_asgn_alignment(node, rhs)
-        end
-
-        def check_asgn_alignment(outer_node, inner_node)
-          align_with = {
-            keyword: inner_node.loc.keyword,
-            start_of_line: start_line_range(inner_node),
-            variable: asgn_variable_align_with(outer_node, inner_node)
-          }
-
-          check_end_kw_alignment(inner_node, align_with)
-          ignore_node(inner_node)
-        end
-
-        def asgn_variable_align_with(outer_node, inner_node)
-          expr = outer_node.source_range
-
-          if !line_break_before_keyword?(expr, inner_node)
-            range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
-          else
-            inner_node.loc.keyword
-          end
-        end
-
-        def check_other_alignment(node)
-          align_with = {
-            keyword: node.loc.keyword,
-            variable: node.loc.keyword,
-            start_of_line: start_line_range(node)
-          }
-          check_end_kw_alignment(node, align_with)
-        end
 
         def alignment_node(node)
           if style == :keyword
@@ -172,6 +131,47 @@ module RuboCop
             # RHS.
             node
           end
+        end
+
+        def asgn_variable_align_with(outer_node, inner_node)
+          expr = outer_node.source_range
+
+          if !line_break_before_keyword?(expr, inner_node)
+            range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
+          else
+            inner_node.loc.keyword
+          end
+        end
+
+        def check_asgn_alignment(outer_node, inner_node)
+          align_with = {
+            keyword: inner_node.loc.keyword,
+            start_of_line: start_line_range(inner_node),
+            variable: asgn_variable_align_with(outer_node, inner_node)
+          }
+
+          check_end_kw_alignment(inner_node, align_with)
+          ignore_node(inner_node)
+        end
+
+        def check_assignment(node, rhs)
+          # If there are method calls chained to the right hand side of the
+          # assignment, we let rhs be the receiver of those method calls before
+          # we check if it's an if/unless/while/until.
+          return unless (rhs = first_part_of_call_chain(rhs))
+          return unless rhs.conditional?
+          return if rhs.if_type? && rhs.ternary?
+
+          check_asgn_alignment(node, rhs)
+        end
+
+        def check_other_alignment(node)
+          align_with = {
+            keyword: node.loc.keyword,
+            variable: node.loc.keyword,
+            start_of_line: start_line_range(node)
+          }
+          check_end_kw_alignment(node, align_with)
         end
 
         def start_line_range(node)

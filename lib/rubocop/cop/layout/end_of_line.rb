@@ -65,11 +65,6 @@ module RuboCop
           end
         end
 
-        # If there is no LF on the last line, we don't care if there's no CR.
-        def unimportant_missing_cr?(index, last_line, line)
-          style == :crlf && index == last_line - 1 && line !~ /\n$/
-        end
-
         def offense_message(line)
           effective_style = if style == :native
                               Platform.windows? ? :crlf : :lf
@@ -80,6 +75,11 @@ module RuboCop
           when :lf then MSG_DETECTED if line =~ /\r$/
           else MSG_MISSING if line !~ /\r$/
           end
+        end
+
+        # If there is no LF on the last line, we don't care if there's no CR.
+        def unimportant_missing_cr?(index, last_line, line)
+          style == :crlf && index == last_line - 1 && line !~ /\n$/
         end
       end
     end

@@ -16,11 +16,6 @@ module RuboCop
     class WorstOffendersFormatter < BaseFormatter
       attr_reader :offense_counts
 
-      def started(target_files)
-        super
-        @offense_counts = {}
-      end
-
       def file_finished(file, offenses)
         return if offenses.empty?
 
@@ -30,6 +25,10 @@ module RuboCop
 
       def finished(_inspected_files)
         report_summary(@offense_counts)
+      end
+
+      def ordered_offense_counts(offense_counts)
+        Hash[offense_counts.sort_by { |k, v| [-v, k] }]
       end
 
       # rubocop:disable Metrics/AbcSize
@@ -50,8 +49,9 @@ module RuboCop
       end
       # rubocop:enable Metrics/AbcSize
 
-      def ordered_offense_counts(offense_counts)
-        Hash[offense_counts.sort_by { |k, v| [-v, k] }]
+      def started(target_files)
+        super
+        @offense_counts = {}
       end
 
       def total_offense_count(offense_counts)

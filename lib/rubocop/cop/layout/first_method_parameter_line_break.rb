@@ -32,14 +32,14 @@ module RuboCop
         MSG = 'Add a line break before the first parameter of a ' \
               'multi-line method parameter list.'.freeze
 
+        def autocorrect(node)
+          EmptyLineCorrector.insert_before(node)
+        end
+
         def on_def(node)
           check_method_line_break(node, node.arguments)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
-        end
       end
     end
   end

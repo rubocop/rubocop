@@ -29,10 +29,6 @@ module RuboCop
           ^lambda_or_proc?
         PATTERN
 
-        def message(node)
-          format(MSG, max: max_params, count: args_count(node))
-        end
-
         def args_count(node)
           if count_keyword_args?
             node.children.size
@@ -41,12 +37,16 @@ module RuboCop
           end
         end
 
+        def count_keyword_args?
+          cop_config['CountKeywordArgs']
+        end
+
         def max_params
           cop_config['Max']
         end
 
-        def count_keyword_args?
-          cop_config['CountKeywordArgs']
+        def message(node)
+          format(MSG, max: max_params, count: args_count(node))
         end
       end
     end

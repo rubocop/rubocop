@@ -22,14 +22,14 @@ module RuboCop
 
         MSG = 'Indentation of first line in file detected.'.freeze
 
+        def autocorrect(range)
+          ->(corrector) { corrector.remove(range) }
+        end
+
         def investigate(_processed_source)
           space_before(first_token) do |space|
             add_offense(space, location: first_token.pos)
           end
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
         end
 
         private

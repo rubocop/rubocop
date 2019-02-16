@@ -41,10 +41,6 @@ module RuboCop
 
         private
 
-        def message(_node)
-          format(MSG, style: style)
-        end
-
         def correct_case_delimiters?(node)
           delimiter_string(node) == correct_delimiters(node)
         end
@@ -55,6 +51,10 @@ module RuboCop
           else
             delimiter_string(node).downcase
           end
+        end
+
+        def message(_node)
+          format(MSG, style: style)
         end
       end
     end

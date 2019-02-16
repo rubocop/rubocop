@@ -15,12 +15,6 @@ module RuboCop
         @dot = green(DOT)
       end
 
-      def started(target_files)
-        super
-        @offenses_for_files = {}
-        output.puts "Inspecting #{pluralize(target_files.size, 'file')}"
-      end
-
       def file_finished(file, offenses)
         unless offenses.empty?
           count_stats(offenses)
@@ -57,6 +51,12 @@ module RuboCop
                end
 
         output.write mark
+      end
+
+      def started(target_files)
+        super
+        @offenses_for_files = {}
+        output.puts "Inspecting #{pluralize(target_files.size, 'file')}"
       end
     end
   end

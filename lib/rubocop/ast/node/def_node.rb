@@ -9,20 +9,6 @@ module RuboCop
       include ParameterizedNode
       include MethodIdentifierPredicates
 
-      # Checks whether this node body is a void context.
-      #
-      # @return [Boolean] whether the `def` node body is a void context
-      def void_context?
-        method?(:initialize) || assignment_method?
-      end
-
-      # The name of the defined method as a symbol.
-      #
-      # @return [Symbol] the name of the defined method
-      def method_name
-        node_parts[2]
-      end
-
       # An array containing the arguments of the method definition.
       #
       # @return [Array<Node>] the arguments of the method definition
@@ -41,11 +27,11 @@ module RuboCop
         node_parts[0]
       end
 
-      # The receiver of the method definition, if any.
+      # The name of the defined method as a symbol.
       #
-      # @return [Node, nil] the receiver of the method definition, or `nil`.
-      def receiver
-        node_parts[3]
+      # @return [Symbol] the name of the defined method
+      def method_name
+        node_parts[2]
       end
 
       # Custom destructuring method. This can be used to normalize
@@ -65,6 +51,20 @@ module RuboCop
       # @return [Array] the different parts of the `def` or `defs` node
       def node_parts
         to_a.reverse
+      end
+
+      # The receiver of the method definition, if any.
+      #
+      # @return [Node, nil] the receiver of the method definition, or `nil`.
+      def receiver
+        node_parts[3]
+      end
+
+      # Checks whether this node body is a void context.
+      #
+      # @return [Boolean] whether the `def` node body is a void context
+      def void_context?
+        method?(:initialize) || assignment_method?
       end
     end
   end

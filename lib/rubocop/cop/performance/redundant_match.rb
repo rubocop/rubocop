@@ -32,14 +32,6 @@ module RuboCop
           ^({if while until case while_post until_post} equal?(%0) ...)
         PATTERN
 
-        def on_send(node)
-          return unless match_call?(node) &&
-                        (!node.value_used? || only_truthiness_matters?(node)) &&
-                        !(node.parent && node.parent.block_type?)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           # Regexp#match can take a second argument, but this cop doesn't
           # register an offense in that case
@@ -49,6 +41,14 @@ module RuboCop
             node.receiver.source + ' =~ ' + node.first_argument.source
 
           ->(corrector) { corrector.replace(node.source_range, new_source) }
+        end
+
+        def on_send(node)
+          return unless match_call?(node) &&
+                        (!node.value_used? || only_truthiness_matters?(node)) &&
+                        !(node.parent && node.parent.block_type?)
+
+          add_offense(node)
         end
       end
     end

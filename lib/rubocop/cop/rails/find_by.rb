@@ -23,17 +23,6 @@ module RuboCop
           (send ({send csend} _ :where ...) {:first :take})
         PATTERN
 
-        def on_send(node)
-          return unless where_first?(node)
-
-          range = range_between(node.receiver.loc.selector.begin_pos,
-                                node.loc.selector.end_pos)
-
-          add_offense(node, location: range,
-                            message: format(MSG, method: node.method_name))
-        end
-        alias on_csend on_send
-
         def autocorrect(node)
           # Don't autocorrect where(...).first, because it can return different
           # results from find_by. (They order records differently, so the
@@ -49,6 +38,17 @@ module RuboCop
             corrector.replace(first_loc, '')
           end
         end
+
+        def on_send(node)
+          return unless where_first?(node)
+
+          range = range_between(node.receiver.loc.selector.begin_pos,
+                                node.loc.selector.end_pos)
+
+          add_offense(node, location: range,
+                            message: format(MSG, method: node.method_name))
+        end
+        alias on_csend on_send
       end
     end
   end

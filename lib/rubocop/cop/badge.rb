@@ -57,12 +57,12 @@ module RuboCop
           (!qualified? || department == other.department)
       end
 
-      def to_s
-        qualified? ? "#{department}/#{cop_name}" : cop_name
-      end
-
       def qualified?
         !department.nil?
+      end
+
+      def to_s
+        qualified? ? "#{department}/#{cop_name}" : cop_name
       end
 
       def with_department(department)

@@ -30,18 +30,18 @@ module RuboCop
           }
         PATTERN
 
-        def on_pair(node)
-          return unless string_hash_key?(node)
-          return if receive_environments_method?(node)
-
-          add_offense(node.key)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             symbol_content = node.str_content.to_sym.inspect
             corrector.replace(node.source_range, symbol_content)
           end
+        end
+
+        def on_pair(node)
+          return unless string_hash_key?(node)
+          return if receive_environments_method?(node)
+
+          add_offense(node.key)
         end
       end
     end

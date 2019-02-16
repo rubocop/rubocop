@@ -36,6 +36,10 @@ module RuboCop
 
         private
 
+        def blacklisted_delimiters
+          cop_config['Blacklist'] || []
+        end
+
         def meaningful_delimiters?(node)
           delimiters = delimiter_string(node)
 
@@ -44,10 +48,6 @@ module RuboCop
           blacklisted_delimiters.none? do |blacklisted_delimiter|
             delimiters =~ Regexp.new(blacklisted_delimiter)
           end
-        end
-
-        def blacklisted_delimiters
-          cop_config['Blacklist'] || []
         end
       end
     end

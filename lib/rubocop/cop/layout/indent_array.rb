@@ -87,6 +87,10 @@ module RuboCop
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
               'in an array, relative to %<base_description>s.'.freeze
 
+        def autocorrect(node)
+          AlignmentCorrector.correct(processed_source, node, @column_delta)
+        end
+
         def on_array(node)
           check(node, nil) if node.loc.begin
         end
@@ -98,11 +102,18 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        # Returns the description of what the correct indentation is based on.
+        def base_description(left_parenthesis)
+          if style == :align_brackets
+            'the position of the opening bracket'
+          elsif left_parenthesis && style == :special_inside_parentheses
+            'the first position after the preceding left parenthesis'
+          else
+            'the start of the line where the left square bracket is'
+          end
+        end
 
         def brace_alignment_style
           :align_brackets
@@ -141,17 +152,6 @@ module RuboCop
                   ' where the left bracket is.'
                 end
           add_offense(right_bracket, location: right_bracket, message: msg)
-        end
-
-        # Returns the description of what the correct indentation is based on.
-        def base_description(left_parenthesis)
-          if style == :align_brackets
-            'the position of the opening bracket'
-          elsif left_parenthesis && style == :special_inside_parentheses
-            'the first position after the preceding left parenthesis'
-          else
-            'the start of the line where the left square bracket is'
-          end
         end
 
         def message(base_description)

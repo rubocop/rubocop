@@ -26,23 +26,31 @@ module RuboCop
         def_node_matcher :arg_in_call_with_block?,
                          '^^(block (send _ _ equal?(%0) ...) ...)'
 
+        def autocorrect(node)
+          ParenthesesCorrector.correct(node)
+        end
+
         def on_begin(node)
           return if !parentheses?(node) || parens_allowed?(node)
 
           check(node)
         end
 
-        def autocorrect(node)
-          ParenthesesCorrector.correct(node)
-        end
-
         private
 
-        def parens_allowed?(node)
-          empty_parentheses?(node) ||
-            hash_literal_as_first_arg?(node) ||
-            rescue?(node) ||
-            allowed_expression?(node)
+        def allowed_ancestor?(node)
+          # Don't flag `break(1)`, etc
+          keyword_ancestor?(node) && parens_required?(node)
+        end
+
+        def allowed_array_or_hash_element?(node)
+          # Don't flag
+          # ```
+          # { a: (1
+          #      ), }
+          # ```
+          (hash_element?(node) || array_element?(node)) &&
+            only_closing_paren_before_comma?(node)
         end
 
         def allowed_expression?(node)
@@ -50,11 +58,6 @@ module RuboCop
             allowed_method_call?(node) ||
             allowed_array_or_hash_element?(node) ||
             allowed_multiple_expression?(node)
-        end
-
-        def allowed_ancestor?(node)
-          # Don't flag `break(1)`, etc
-          keyword_ancestor?(node) && parens_required?(node)
         end
 
         def allowed_method_call?(node)
@@ -71,15 +74,14 @@ module RuboCop
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
         end
 
-        def empty_parentheses?(node)
-          # Don't flag `()`
-          node.children.empty?
+        def array_element?(node)
+          node.parent && node.parent.array_type?
         end
 
-        def hash_literal_as_first_arg?(node)
-          # Don't flag `method ({key: value})`
-          node.children.first.hash_type? && first_argument?(node) &&
-            !parentheses?(node.parent)
+        def call_chain_starts_with_int?(begin_node, send_node)
+          recv = first_part_of_call_chain(send_node)
+          recv && recv.int_type? && (parent = begin_node.parent) &&
+            parent.send_type? && (parent.method?(:-@) || parent.method?(:+@))
         end
 
         def check(begin_node)
@@ -117,59 +119,33 @@ module RuboCop
           offense(begin_node, 'an unary operation')
         end
 
-        def offense(node, msg)
-          add_offense(node, message: "Don't use parentheses around #{msg}.")
-        end
-
-        def suspect_unary?(node)
-          node.send_type? && node.unary_operation? && !node.prefix_not?
-        end
-
-        def keyword_ancestor?(node)
-          node.parent && node.parent.keyword?
-        end
-
-        def allowed_array_or_hash_element?(node)
-          # Don't flag
-          # ```
-          # { a: (1
-          #      ), }
-          # ```
-          (hash_element?(node) || array_element?(node)) &&
-            only_closing_paren_before_comma?(node)
-        end
-
-        def hash_element?(node)
-          node.parent && node.parent.pair_type?
-        end
-
-        def array_element?(node)
-          node.parent && node.parent.array_type?
-        end
-
-        def only_closing_paren_before_comma?(node)
-          source_buffer = node.source_range.source_buffer
-          line_range = source_buffer.line_range(node.loc.end.line)
-
-          line_range.source =~ /^\s*\)\s*,/
-        end
-
         def disallowed_literal?(begin_node, node)
           node.literal? &&
             !ALLOWED_LITERALS.include?(node.type) &&
             !raised_to_power_negative_numeric?(begin_node, node)
         end
 
-        def raised_to_power_negative_numeric?(begin_node, node)
-          return false unless node.numeric_type?
+        def empty_parentheses?(node)
+          # Don't flag `()`
+          node.children.empty?
+        end
 
-          siblings = begin_node.parent && begin_node.parent.children
-          return false if siblings.nil?
+        def first_argument?(node)
+          first_send_argument?(node) || first_super_argument?(node)
+        end
 
-          next_sibling = siblings[begin_node.sibling_index + 1]
-          base_value = node.children.first
+        def hash_element?(node)
+          node.parent && node.parent.pair_type?
+        end
 
-          base_value < 0 && next_sibling == :**
+        def hash_literal_as_first_arg?(node)
+          # Don't flag `method ({key: value})`
+          node.children.first.hash_type? && first_argument?(node) &&
+            !parentheses?(node.parent)
+        end
+
+        def keyword_ancestor?(node)
+          node.parent && node.parent.keyword?
         end
 
         def keyword_with_redundant_parentheses?(node)
@@ -195,12 +171,38 @@ module RuboCop
           args.empty? || parentheses?(send_node) || square_brackets?(send_node)
         end
 
+        def offense(node, msg)
+          add_offense(node, message: "Don't use parentheses around #{msg}.")
+        end
+
         def only_begin_arg?(args)
           args.one? && args.first.begin_type?
         end
 
-        def first_argument?(node)
-          first_send_argument?(node) || first_super_argument?(node)
+        def only_closing_paren_before_comma?(node)
+          source_buffer = node.source_range.source_buffer
+          line_range = source_buffer.line_range(node.loc.end.line)
+
+          line_range.source =~ /^\s*\)\s*,/
+        end
+
+        def parens_allowed?(node)
+          empty_parentheses?(node) ||
+            hash_literal_as_first_arg?(node) ||
+            rescue?(node) ||
+            allowed_expression?(node)
+        end
+
+        def raised_to_power_negative_numeric?(begin_node, node)
+          return false unless node.numeric_type?
+
+          siblings = begin_node.parent && begin_node.parent.children
+          return false if siblings.nil?
+
+          next_sibling = siblings[begin_node.sibling_index + 1]
+          base_value = node.children.first
+
+          base_value < 0 && next_sibling == :**
         end
 
         def_node_matcher :first_send_argument?, <<-PATTERN
@@ -211,10 +213,8 @@ module RuboCop
           ^(super equal?(%0) ...)
         PATTERN
 
-        def call_chain_starts_with_int?(begin_node, send_node)
-          recv = first_part_of_call_chain(send_node)
-          recv && recv.int_type? && (parent = begin_node.parent) &&
-            parent.send_type? && (parent.method?(:-@) || parent.method?(:+@))
+        def suspect_unary?(node)
+          node.send_type? && node.unary_operation? && !node.prefix_not?
         end
       end
     end

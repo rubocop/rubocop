@@ -20,12 +20,6 @@ module RuboCop
         MSG = 'Do not use the character literal - ' \
               'use string literal instead.'.freeze
 
-        def offense?(node)
-          # we don't register an offense for things like ?\C-\M-d
-          node.loc.begin.is?('?') &&
-            node.source.size.between?(2, 3)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             string = node.source[1..-1]
@@ -42,11 +36,17 @@ module RuboCop
 
         # Dummy implementation of method in ConfigurableEnforcedStyle that is
         # called from StringHelp.
-        def opposite_style_detected; end
+        def correct_style_detected; end
+
+        def offense?(node)
+          # we don't register an offense for things like ?\C-\M-d
+          node.loc.begin.is?('?') &&
+            node.source.size.between?(2, 3)
+        end
 
         # Dummy implementation of method in ConfigurableEnforcedStyle that is
         # called from StringHelp.
-        def correct_style_detected; end
+        def opposite_style_detected; end
       end
     end
   end

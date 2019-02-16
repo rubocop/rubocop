@@ -93,18 +93,18 @@ module RuboCop
       class UselessAccessModifier < Cop
         MSG = 'Useless `%<current>s` access modifier.'.freeze
 
+        def on_block(node)
+          return unless eval_call?(node)
+
+          check_node(node.body)
+        end
+
         def on_class(node)
           check_node(node.children[2]) # class body
         end
 
         def on_module(node)
           check_node(node.children[1]) # module body
-        end
-
-        def on_block(node)
-          return unless eval_call?(node)
-
-          check_node(node.body)
         end
 
         def on_sclass(node)
@@ -129,25 +129,35 @@ module RuboCop
           (block (send (const nil? {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
-        def check_node(node)
-          return if node.nil?
-
-          if node.begin_type?
-            check_scope(node)
-          elsif node.send_type? && node.bare_access_modifier?
-            add_offense(node, message: format(MSG, current: node.method_name))
-          end
-        end
-
         def access_modifier?(node)
           node.bare_access_modifier? ||
             node.method_name == :private_class_method
         end
 
-        def check_scope(node)
-          cur_vis, unused = check_child_nodes(node, nil, :public)
+        def any_context_creating_methods?(child)
+          cop_config.fetch('ContextCreatingMethods', []).any? do |m|
+            matcher_name = "#{m}_block?".to_sym
+            unless respond_to?(matcher_name)
+              self.class.def_node_matcher matcher_name, <<-PATTERN
+                (block (send {nil? const} {:#{m}} ...) ...)
+              PATTERN
+            end
 
-          add_offense(unused, message: format(MSG, current: cur_vis)) if unused
+            send(matcher_name, child)
+          end
+        end
+
+        def any_method_definition?(child)
+          cop_config.fetch('MethodCreatingMethods', []).any? do |m|
+            matcher_name = "#{m}_method?".to_sym
+            unless respond_to?(matcher_name)
+              self.class.def_node_matcher matcher_name, <<-PATTERN
+                {def (send nil? :#{m} ...)}
+              PATTERN
+            end
+
+            send(matcher_name, child)
+          end
         end
 
         def check_child_nodes(node, unused, cur_vis)
@@ -164,15 +174,6 @@ module RuboCop
           end
 
           [cur_vis, unused]
-        end
-
-        def check_send_node(node, cur_vis, unused)
-          if node.bare_access_modifier?
-            check_new_visibility(node, unused, node.method_name, cur_vis)
-          elsif node.method_name == :private_class_method && !node.arguments?
-            add_offense(node, message: format(MSG, current: node.method_name))
-            [cur_vis, unused]
-          end
         end
 
         def check_new_visibility(node, unused, new_vis, cur_vis)
@@ -192,28 +193,29 @@ module RuboCop
           [new_vis, unused]
         end
 
-        def method_definition?(child)
-          static_method_definition?(child) ||
-            dynamic_method_definition?(child) ||
-            any_method_definition?(child)
-        end
+        def check_node(node)
+          return if node.nil?
 
-        def any_method_definition?(child)
-          cop_config.fetch('MethodCreatingMethods', []).any? do |m|
-            matcher_name = "#{m}_method?".to_sym
-            unless respond_to?(matcher_name)
-              self.class.def_node_matcher matcher_name, <<-PATTERN
-                {def (send nil? :#{m} ...)}
-              PATTERN
-            end
-
-            send(matcher_name, child)
+          if node.begin_type?
+            check_scope(node)
+          elsif node.send_type? && node.bare_access_modifier?
+            add_offense(node, message: format(MSG, current: node.method_name))
           end
         end
 
-        def start_of_new_scope?(child)
-          child.module_type? || child.class_type? ||
-            child.sclass_type? || eval_call?(child)
+        def check_scope(node)
+          cur_vis, unused = check_child_nodes(node, nil, :public)
+
+          add_offense(unused, message: format(MSG, current: cur_vis)) if unused
+        end
+
+        def check_send_node(node, cur_vis, unused)
+          if node.bare_access_modifier?
+            check_new_visibility(node, unused, node.method_name, cur_vis)
+          elsif node.method_name == :private_class_method && !node.arguments?
+            add_offense(node, message: format(MSG, current: node.method_name))
+            [cur_vis, unused]
+          end
         end
 
         def eval_call?(child)
@@ -222,17 +224,15 @@ module RuboCop
             any_context_creating_methods?(child)
         end
 
-        def any_context_creating_methods?(child)
-          cop_config.fetch('ContextCreatingMethods', []).any? do |m|
-            matcher_name = "#{m}_block?".to_sym
-            unless respond_to?(matcher_name)
-              self.class.def_node_matcher matcher_name, <<-PATTERN
-                (block (send {nil? const} {:#{m}} ...) ...)
-              PATTERN
-            end
+        def method_definition?(child)
+          static_method_definition?(child) ||
+            dynamic_method_definition?(child) ||
+            any_method_definition?(child)
+        end
 
-            send(matcher_name, child)
-          end
+        def start_of_new_scope?(child)
+          child.module_type? || child.class_type? ||
+            child.sclass_type? || eval_call?(child)
         end
       end
     end

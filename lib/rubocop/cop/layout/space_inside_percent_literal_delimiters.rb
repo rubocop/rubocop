@@ -24,24 +24,24 @@ module RuboCop
         BEGIN_REGEX = /\A( +)/.freeze
         END_REGEX = /(?<!\\)( +)\z/.freeze
 
-        def on_array(node)
-          process(node, '%i', '%I', '%w', '%W')
-        end
-
-        def on_xstr(node)
-          process(node, '%x')
-        end
-
-        def on_percent_literal(node)
-          add_offenses_for_unnecessary_spaces(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             regex_matches(node) do |match_range|
               corrector.remove(match_range)
             end
           end
+        end
+
+        def on_array(node)
+          process(node, '%i', '%I', '%w', '%W')
+        end
+
+        def on_percent_literal(node)
+          add_offenses_for_unnecessary_spaces(node)
+        end
+
+        def on_xstr(node)
+          process(node, '%x')
         end
 
         private

@@ -30,6 +30,15 @@ module RuboCop
         STRING_INTERPOLATION_REGEXP = /#\{.+}/.freeze
         ESCAPED_NON_BACKSLASH = /\\[^\\]/.freeze
 
+        def autocorrect(node)
+          delimiter =
+            node.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
+          lambda do |corrector|
+            corrector.replace(node.loc.begin, delimiter)
+            corrector.replace(node.loc.end, delimiter)
+          end
+        end
+
         def on_dstr(node)
           return unless string_literal?(node)
 
@@ -45,16 +54,28 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          delimiter =
-            node.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, delimiter)
-            corrector.replace(node.loc.end, delimiter)
-          end
+        private
+
+        def acceptable_capital_q?(node)
+          src = node.source
+          src.include?(QUOTE) &&
+            (src =~ STRING_INTERPOLATION_REGEXP ||
+            (node.str_type? && double_quotes_required?(src)))
         end
 
-        private
+        def acceptable_q?(node)
+          src = node.source
+
+          return true if src =~ STRING_INTERPOLATION_REGEXP
+
+          src.scan(/\\./).any? { |s| s =~ ESCAPED_NON_BACKSLASH }
+        end
+
+        def allowed_percent_q?(node)
+          node.source.start_with?(PERCENT_Q) && acceptable_q?(node) ||
+            node.source.start_with?(PERCENT_CAPITAL_Q) &&
+              acceptable_capital_q?(node)
+        end
 
         def check(node)
           return unless start_with_percent_q_variant?(node)
@@ -67,12 +88,6 @@ module RuboCop
           node.source.include?(SINGLE_QUOTE) && node.source.include?(QUOTE)
         end
 
-        def allowed_percent_q?(node)
-          node.source.start_with?(PERCENT_Q) && acceptable_q?(node) ||
-            node.source.start_with?(PERCENT_CAPITAL_Q) &&
-              acceptable_capital_q?(node)
-        end
-
         def message(node)
           src = node.source
           extra = if src.start_with?(PERCENT_CAPITAL_Q)
@@ -83,28 +98,13 @@ module RuboCop
           format(MSG, q_type: src[0, 2], extra: extra)
         end
 
-        def string_literal?(node)
-          node.loc.respond_to?(:begin) && node.loc.respond_to?(:end) &&
-            node.loc.begin && node.loc.end
-        end
-
         def start_with_percent_q_variant?(string)
           string.source.start_with?(PERCENT_Q, PERCENT_CAPITAL_Q)
         end
 
-        def acceptable_q?(node)
-          src = node.source
-
-          return true if src =~ STRING_INTERPOLATION_REGEXP
-
-          src.scan(/\\./).any? { |s| s =~ ESCAPED_NON_BACKSLASH }
-        end
-
-        def acceptable_capital_q?(node)
-          src = node.source
-          src.include?(QUOTE) &&
-            (src =~ STRING_INTERPOLATION_REGEXP ||
-            (node.str_type? && double_quotes_required?(src)))
+        def string_literal?(node)
+          node.loc.respond_to?(:begin) && node.loc.respond_to?(:end) &&
+            node.loc.begin && node.loc.end
         end
       end
     end

@@ -28,14 +28,6 @@ module RuboCop
 
         MSG = 'Use `%%%<good>s` instead of `%%%<bad>s`.'.freeze
 
-        def on_dstr(node)
-          check(node)
-        end
-
-        def on_str(node)
-          check(node)
-        end
-
         def autocorrect(node)
           src = node.loc.begin.source
           replacement = src.start_with?('%Q') ? '%' : '%Q'
@@ -44,7 +36,21 @@ module RuboCop
           end
         end
 
+        def on_dstr(node)
+          check(node)
+        end
+
+        def on_str(node)
+          check(node)
+        end
+
         private
+
+        def add_offense_for_wrong_style(node, good, bad)
+          add_offense(node, location: :begin, message: format(MSG,
+                                                              good: good,
+                                                              bad: bad))
+        end
 
         def check(node)
           return if node.heredoc?
@@ -59,18 +65,12 @@ module RuboCop
           end
         end
 
-        def requires_percent_q?(source)
-          style == :percent_q && source =~ /^%[^\w]/
-        end
-
         def requires_bare_percent?(source)
           style == :bare_percent && source =~ /^%Q/
         end
 
-        def add_offense_for_wrong_style(node, good, bad)
-          add_offense(node, location: :begin, message: format(MSG,
-                                                              good: good,
-                                                              bad: bad))
+        def requires_percent_q?(source)
+          style == :percent_q && source =~ /^%[^\w]/
         end
       end
     end

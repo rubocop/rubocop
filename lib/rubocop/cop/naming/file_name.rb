@@ -47,52 +47,12 @@ module RuboCop
 
         private
 
-        def for_bad_filename(file_path)
-          basename = File.basename(file_path)
-          msg = if filename_good?(basename)
-                  return unless expect_matching_definition?
-                  return if find_class_or_module(processed_source.ast,
-                                                 to_namespace(file_path))
-
-                  no_definition_message(basename, file_path)
-                else
-                  return if ignore_executable_scripts? &&
-                            processed_source.start_with?('#!')
-
-                  other_message(basename)
-                end
-
-          yield source_range(processed_source.buffer, 1, 0), msg
-        end
-
-        def no_definition_message(basename, file_path)
-          format(MSG_NO_DEFINITION,
-                 basename: basename,
-                 namespace: to_namespace(file_path).join('::'))
-        end
-
-        def other_message(basename)
-          if regex
-            format(MSG_REGEX, basename: basename, regex: regex)
-          else
-            format(MSG_SNAKE_CASE, basename: basename)
-          end
-        end
-
-        def ignore_executable_scripts?
-          cop_config['IgnoreExecutableScripts']
+        def allowed_acronyms
+          cop_config['AllowedAcronyms'] || []
         end
 
         def expect_matching_definition?
           cop_config['ExpectMatchingDefinition']
-        end
-
-        def regex
-          cop_config['Regex']
-        end
-
-        def allowed_acronyms
-          cop_config['AllowedAcronyms'] || []
         end
 
         def filename_good?(basename)
@@ -123,6 +83,42 @@ module RuboCop
 
           nil
         end
+
+        def for_bad_filename(file_path)
+          basename = File.basename(file_path)
+          msg = if filename_good?(basename)
+                  return unless expect_matching_definition?
+                  return if find_class_or_module(processed_source.ast,
+                                                 to_namespace(file_path))
+
+                  no_definition_message(basename, file_path)
+                else
+                  return if ignore_executable_scripts? &&
+                            processed_source.start_with?('#!')
+
+                  other_message(basename)
+                end
+
+          yield source_range(processed_source.buffer, 1, 0), msg
+        end
+
+        def ignore_executable_scripts?
+          cop_config['IgnoreExecutableScripts']
+        end
+
+        def match?(expected)
+          expected.empty? || expected == [:Object]
+        end
+
+        def match_acronym?(expected, name)
+          expected = expected.to_s
+          name = name.to_s
+
+          allowed_acronyms.any? do |acronym|
+            expected.gsub(acronym.capitalize, acronym) == name
+          end
+        end
+
         # rubocop:enable Metrics/CyclomaticComplexity
 
         def match_namespace(node, namespace, expected)
@@ -137,6 +133,20 @@ module RuboCop
           end
 
           match?(expected)
+        end
+
+        def no_definition_message(basename, file_path)
+          format(MSG_NO_DEFINITION,
+                 basename: basename,
+                 namespace: to_namespace(file_path).join('::'))
+        end
+
+        def other_message(basename)
+          if regex
+            format(MSG_REGEX, basename: basename, regex: regex)
+          else
+            format(MSG_SNAKE_CASE, basename: basename)
+          end
         end
 
         def partial_matcher!(expected)
@@ -155,17 +165,13 @@ module RuboCop
           end
         end
 
-        def match?(expected)
-          expected.empty? || expected == [:Object]
+        def regex
+          cop_config['Regex']
         end
 
-        def match_acronym?(expected, name)
-          expected = expected.to_s
-          name = name.to_s
-
-          allowed_acronyms.any? do |acronym|
-            expected.gsub(acronym.capitalize, acronym) == name
-          end
+        def to_module_name(basename)
+          words = basename.sub(/\..*/, '').split('_')
+          words.map(&:capitalize).join.to_sym
         end
 
         def to_namespace(path)
@@ -193,11 +199,6 @@ module RuboCop
           else
             components[start_index..-1].map { |c| to_module_name(c) }
           end
-        end
-
-        def to_module_name(basename)
-          words = basename.sub(/\..*/, '').split('_')
-          words.map(&:capitalize).join.to_sym
         end
       end
     end

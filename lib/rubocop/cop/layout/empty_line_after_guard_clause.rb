@@ -41,6 +41,18 @@ module RuboCop
         MSG = 'Add empty line after guard clause.'.freeze
         END_OF_HEREDOC_LINE = 1
 
+        def autocorrect(node)
+          lambda do |corrector|
+            node_range = if node.respond_to?(:heredoc?) && node.heredoc?
+                           range_by_whole_lines(node.loc.heredoc_body)
+                         else
+                           range_by_whole_lines(node.source_range)
+                         end
+
+            corrector.insert_after(node_range, "\n")
+          end
+        end
+
         def on_if(node)
           return if correct_style?(node)
 
@@ -57,19 +69,11 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            node_range = if node.respond_to?(:heredoc?) && node.heredoc?
-                           range_by_whole_lines(node.loc.heredoc_body)
-                         else
-                           range_by_whole_lines(node.source_range)
-                         end
-
-            corrector.insert_after(node_range, "\n")
-          end
-        end
-
         private
+
+        def contains_guard_clause?(node)
+          node.if_branch && node.if_branch.guard_clause?
+        end
 
         def correct_style?(node)
           !contains_guard_clause?(node) ||
@@ -78,33 +82,16 @@ module RuboCop
             next_sibling_empty_or_guard_clause?(node)
         end
 
-        def contains_guard_clause?(node)
-          node.if_branch && node.if_branch.guard_clause?
+        def heredoc_line(node, heredoc_node)
+          heredoc_body = heredoc_node.loc.heredoc_body
+          num_of_heredoc_lines =
+            heredoc_body.last_line - heredoc_body.first_line
+
+          node.last_line + num_of_heredoc_lines + END_OF_HEREDOC_LINE
         end
 
-        def next_line_empty?(line)
-          processed_source[line].blank?
-        end
-
-        def next_line_rescue_or_ensure?(node)
-          parent = node.parent
-          parent.nil? || parent.rescue_type? || parent.ensure_type?
-        end
-
-        def next_sibling_parent_empty_or_else?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
-          return true if next_sibling.nil?
-
-          parent = next_sibling.parent
-
-          parent && parent.if_type? && parent.else?
-        end
-
-        def next_sibling_empty_or_guard_clause?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
-          return true if next_sibling.nil?
-
-          next_sibling.if_type? && contains_guard_clause?(next_sibling)
+        def last_argument(node)
+          node.if_branch.children.last
         end
 
         def last_argument_is_heredoc?(node)
@@ -117,16 +104,29 @@ module RuboCop
           last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
         end
 
-        def last_argument(node)
-          node.if_branch.children.last
+        def next_line_empty?(line)
+          processed_source[line].blank?
         end
 
-        def heredoc_line(node, heredoc_node)
-          heredoc_body = heredoc_node.loc.heredoc_body
-          num_of_heredoc_lines =
-            heredoc_body.last_line - heredoc_body.first_line
+        def next_line_rescue_or_ensure?(node)
+          parent = node.parent
+          parent.nil? || parent.rescue_type? || parent.ensure_type?
+        end
 
-          node.last_line + num_of_heredoc_lines + END_OF_HEREDOC_LINE
+        def next_sibling_empty_or_guard_clause?(node)
+          next_sibling = node.parent.children[node.sibling_index + 1]
+          return true if next_sibling.nil?
+
+          next_sibling.if_type? && contains_guard_clause?(next_sibling)
+        end
+
+        def next_sibling_parent_empty_or_else?(node)
+          next_sibling = node.parent.children[node.sibling_index + 1]
+          return true if next_sibling.nil?
+
+          parent = next_sibling.parent
+
+          parent && parent.if_type? && parent.else?
         end
 
         def offense_location(node)

@@ -55,14 +55,6 @@ module RuboCop
             {:succ :pred :next})
         PATTERN
 
-        def on_send(node)
-          return unless integer_op_rand?(node) ||
-                        rand_op_integer?(node) ||
-                        rand_modified?(node)
-
-          add_offense(node)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             if integer_op_rand?(node)
@@ -78,7 +70,30 @@ module RuboCop
           end
         end
 
+        def on_send(node)
+          return unless integer_op_rand?(node) ||
+                        rand_op_integer?(node) ||
+                        rand_modified?(node)
+
+          add_offense(node)
+        end
+
         private
+
+        def boundaries_from_random_node(random_node)
+          children = random_node.children
+
+          case random_node.type
+          when :int
+            [0, int_from_int_node(random_node) - 1]
+          when :irange
+            [int_from_int_node(children.first),
+             int_from_int_node(children[1])]
+          when :erange
+            [int_from_int_node(children.first),
+             int_from_int_node(children[1]) - 1]
+          end
+        end
 
         def corrected_integer_op_rand(node)
           left, operator, right = *node
@@ -94,6 +109,20 @@ module RuboCop
             "#{prefix}(#{offset + left_int}..#{offset + right_int})"
           else
             "#{prefix}(#{offset - right_int}..#{offset - left_int})"
+          end
+        end
+
+        def corrected_rand_modified(node)
+          rand, method = *node
+          prefix_node, _, random_node = *rand
+
+          prefix = prefix_from_prefix_node(prefix_node)
+          left_int, right_int = boundaries_from_random_node(random_node)
+
+          if %i[succ next].include?(method)
+            "#{prefix}(#{left_int + 1}..#{right_int + 1})"
+          elsif method == :pred
+            "#{prefix}(#{left_int - 1}..#{right_int - 1})"
           end
         end
 
@@ -114,18 +143,8 @@ module RuboCop
           end
         end
 
-        def corrected_rand_modified(node)
-          rand, method = *node
-          prefix_node, _, random_node = *rand
-
-          prefix = prefix_from_prefix_node(prefix_node)
-          left_int, right_int = boundaries_from_random_node(random_node)
-
-          if %i[succ next].include?(method)
-            "#{prefix}(#{left_int + 1}..#{right_int + 1})"
-          elsif method == :pred
-            "#{prefix}(#{left_int - 1}..#{right_int - 1})"
-          end
+        def int_from_int_node(node)
+          node.children.first
         end
 
         def prefix_from_prefix_node(node)
@@ -135,25 +154,6 @@ module RuboCop
             _, prefix = *node
             "#{prefix}.rand"
           end
-        end
-
-        def boundaries_from_random_node(random_node)
-          children = random_node.children
-
-          case random_node.type
-          when :int
-            [0, int_from_int_node(random_node) - 1]
-          when :irange
-            [int_from_int_node(children.first),
-             int_from_int_node(children[1])]
-          when :erange
-            [int_from_int_node(children.first),
-             int_from_int_node(children[1]) - 1]
-          end
-        end
-
-        def int_from_int_node(node)
-          node.children.first
         end
       end
     end

@@ -14,7 +14,7 @@ module RuboCop
       # `hash` elements.
       #
       # @return [false]
-      def hash_rocket?
+      def colon?
         false
       end
 
@@ -22,15 +22,8 @@ module RuboCop
       # `hash` elements.
       #
       # @return [false]
-      def colon?
+      def hash_rocket?
         false
-      end
-
-      # Returns the operator for the `kwsplat` as a string.
-      #
-      # @return [String] the double splat operator
-      def operator
-        DOUBLE_SPLAT
       end
 
       # Custom destructuring method. This is used to normalize the branches
@@ -39,6 +32,13 @@ module RuboCop
       # @return [Array<KeywordSplatNode>] the different parts of the `kwsplat`
       def node_parts
         [self, self]
+      end
+
+      # Returns the operator for the `kwsplat` as a string.
+      #
+      # @return [String] the double splat operator
+      def operator
+        DOUBLE_SPLAT
       end
     end
   end

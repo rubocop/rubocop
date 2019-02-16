@@ -20,14 +20,6 @@ module RuboCop
           (send (send $_ :type) :== (sym $_))
         PATTERN
 
-        def on_send(node)
-          node_type_check(node) do |_receiver, node_type|
-            return unless Parser::Meta::NODE_TYPES.include?(node_type)
-
-            add_offense(node, message: format(MSG, type: node_type))
-          end
-        end
-
         def autocorrect(node)
           receiver, node_type = node_type_check(node)
           range = Parser::Source::Range.new(node.source_range.source_buffer,
@@ -36,6 +28,14 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(range, "#{node_type}_type?")
+          end
+        end
+
+        def on_send(node)
+          node_type_check(node) do |_receiver, node_type|
+            return unless Parser::Meta::NODE_TYPES.include?(node_type)
+
+            add_offense(node, message: format(MSG, type: node_type))
           end
         end
       end

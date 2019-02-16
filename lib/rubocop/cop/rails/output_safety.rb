@@ -78,10 +78,6 @@ module RuboCop
 
         private
 
-        def non_interpolated_string?(node)
-          node.receiver && node.receiver.str_type? && !node.receiver.dstr_type?
-        end
-
         def looks_like_rails_html_safe?(node)
           node.receiver && node.method?(:html_safe) && !node.arguments?
         end
@@ -92,6 +88,10 @@ module RuboCop
 
         def looks_like_rails_safe_concat?(node)
           node.method?(:safe_concat) && node.arguments.one?
+        end
+
+        def non_interpolated_string?(node)
+          node.receiver && node.receiver.str_type? && !node.receiver.dstr_type?
         end
       end
     end

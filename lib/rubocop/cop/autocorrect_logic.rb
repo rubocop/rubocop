@@ -8,14 +8,6 @@ module RuboCop
         autocorrect_requested? && support_autocorrect? && autocorrect_enabled?
       end
 
-      def autocorrect_requested?
-        @options.fetch(:auto_correct, false)
-      end
-
-      def support_autocorrect?
-        respond_to?(:autocorrect)
-      end
-
       def autocorrect_enabled?
         # allow turning off autocorrect on a cop by cop basis
         return true unless cop_config
@@ -27,6 +19,14 @@ module RuboCop
         end
 
         true
+      end
+
+      def autocorrect_requested?
+        @options.fetch(:auto_correct, false)
+      end
+
+      def support_autocorrect?
+        respond_to?(:autocorrect)
       end
     end
   end

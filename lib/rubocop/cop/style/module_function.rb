@@ -60,15 +60,6 @@ module RuboCop
         def_node_matcher :extend_self_node?, '(send nil? :extend self)'
         def_node_matcher :private_directive?, '(send nil? :private ...)'
 
-        def on_module(node)
-          _name, body = *node
-          return unless body && body.begin_type?
-
-          each_wrong_style(body.children) do |child_node|
-            add_offense(child_node)
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             if extend_self_node?(node)
@@ -76,6 +67,15 @@ module RuboCop
             else
               corrector.replace(node.source_range, 'extend self')
             end
+          end
+        end
+
+        def on_module(node)
+          _name, body = *node
+          return unless body && body.begin_type?
+
+          each_wrong_style(body.children) do |child_node|
+            add_offense(child_node)
           end
         end
 

@@ -20,11 +20,6 @@ module RuboCop
         fatal: :red
       }.freeze
 
-      def started(_target_files)
-        @total_offense_count = 0
-        @total_correction_count = 0
-      end
-
       def file_finished(file, offenses)
         return if offenses.empty?
 
@@ -58,11 +53,15 @@ module RuboCop
         output.puts report.summary
       end
 
+      def started(_target_files)
+        @total_offense_count = 0
+        @total_correction_count = 0
+      end
+
       private
 
-      def count_stats(offenses)
-        @total_offense_count += offenses.count
-        @total_correction_count += offenses.count(&:corrected?)
+      def annotate_message(msg)
+        msg.gsub(/`(.*?)`/m, yellow('\1'))
       end
 
       def colored_severity_code(offense)
@@ -70,8 +69,9 @@ module RuboCop
         colorize(offense.severity.code, color)
       end
 
-      def annotate_message(msg)
-        msg.gsub(/`(.*?)`/m, yellow('\1'))
+      def count_stats(offenses)
+        @total_offense_count += offenses.count
+        @total_correction_count += offenses.count(&:corrected?)
       end
 
       def message(offense)
@@ -103,6 +103,13 @@ module RuboCop
 
         attr_reader :rainbow
 
+        def corrections
+          text = pluralize(@correction_count, 'offense')
+          color = @correction_count == @offense_count ? :green : :cyan
+
+          colorize(text, color)
+        end
+
         def files
           pluralize(@file_count, 'file')
         end
@@ -110,13 +117,6 @@ module RuboCop
         def offenses
           text = pluralize(@offense_count, 'offense', no_for_zero: true)
           color = @offense_count.zero? ? :green : :red
-
-          colorize(text, color)
-        end
-
-        def corrections
-          text = pluralize(@correction_count, 'offense')
-          color = @correction_count == @offense_count ? :green : :cyan
 
           colorize(text, color)
         end

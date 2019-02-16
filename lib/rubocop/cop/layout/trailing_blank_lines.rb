@@ -41,6 +41,12 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
+        def autocorrect(range)
+          lambda do |corrector|
+            corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
+          end
+        end
+
         def investigate(processed_source)
           buffer = processed_source.buffer
           return if buffer.source.empty?
@@ -61,25 +67,7 @@ module RuboCop
                            whitespace_at_end)
         end
 
-        def autocorrect(range)
-          lambda do |corrector|
-            corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
-          end
-        end
-
         private
-
-        def offense_detected(buffer, wanted_blank_lines, blank_lines,
-                             whitespace_at_end)
-          begin_pos = buffer.source.length - whitespace_at_end.length
-          autocorrect_range = range_between(begin_pos, buffer.source.length)
-          begin_pos += 1 unless whitespace_at_end.empty?
-          report_range = range_between(begin_pos, buffer.source.length)
-
-          add_offense(autocorrect_range,
-                      location: report_range,
-                      message: message(wanted_blank_lines, blank_lines))
-        end
 
         def ends_in_end?(processed_source)
           buffer = processed_source.buffer
@@ -106,6 +94,18 @@ module RuboCop
             format('%<current>d trailing blank lines %<prefer>sdetected.',
                    current: blank_lines, prefer: instead_of)
           end
+        end
+
+        def offense_detected(buffer, wanted_blank_lines, blank_lines,
+                             whitespace_at_end)
+          begin_pos = buffer.source.length - whitespace_at_end.length
+          autocorrect_range = range_between(begin_pos, buffer.source.length)
+          begin_pos += 1 unless whitespace_at_end.empty?
+          report_range = range_between(begin_pos, buffer.source.length)
+
+          add_offense(autocorrect_range,
+                      location: report_range,
+                      message: message(wanted_blank_lines, blank_lines))
         end
       end
     end

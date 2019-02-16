@@ -26,6 +26,10 @@ module RuboCop
         MSG = 'Extra blank line detected.'.freeze
         LINE_OFFSET = 2
 
+        def autocorrect(range)
+          ->(corrector) { corrector.remove(range) }
+        end
+
         def investigate(processed_source)
           return if processed_source.tokens.empty?
 
@@ -37,10 +41,6 @@ module RuboCop
           each_extra_empty_line(lines.sort) do |range|
             add_offense(range, location: range)
           end
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
         end
 
         private

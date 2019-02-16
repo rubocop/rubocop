@@ -16,12 +16,8 @@ module RuboCop
       class SpaceAfterColon < Cop
         MSG = 'Space missing after colon.'.freeze
 
-        def on_pair(node)
-          return unless node.colon?
-
-          colon = node.loc.operator
-
-          add_offense(colon, location: colon) unless followed_by_space?(colon)
+        def autocorrect(range)
+          ->(corrector) { corrector.insert_after(range, ' ') }
         end
 
         def on_kwoptarg(node)
@@ -32,8 +28,12 @@ module RuboCop
           add_offense(colon, location: colon) unless followed_by_space?(colon)
         end
 
-        def autocorrect(range)
-          ->(corrector) { corrector.insert_after(range, ' ') }
+        def on_pair(node)
+          return unless node.colon?
+
+          colon = node.loc.operator
+
+          add_offense(colon, location: colon) unless followed_by_space?(colon)
         end
 
         private

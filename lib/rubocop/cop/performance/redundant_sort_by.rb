@@ -24,6 +24,11 @@ module RuboCop
           (block $(send _ :sort_by) (args (arg $_x)) (lvar _x))
         PATTERN
 
+        def autocorrect(node)
+          send, = *node
+          ->(corrector) { corrector.replace(sort_by_range(send, node), 'sort') }
+        end
+
         def on_block(node)
           redundant_sort_by(node) do |send, var_name|
             range = sort_by_range(send, node)
@@ -32,11 +37,6 @@ module RuboCop
                         location: range,
                         message: format(MSG, var: var_name))
           end
-        end
-
-        def autocorrect(node)
-          send, = *node
-          ->(corrector) { corrector.replace(sort_by_range(send, node), 'sort') }
         end
 
         private

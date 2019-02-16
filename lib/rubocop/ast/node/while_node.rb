@@ -9,11 +9,11 @@ module RuboCop
       include ConditionalNode
       include ModifierNode
 
-      # Returns the keyword of the `while` statement as a string.
+      # Checks whether the `until` node has a `do` keyword.
       #
-      # @return [String] the keyword of the `while` statement
-      def keyword
-        'while'
+      # @return [Boolean] whether the `until` node has a `do` keyword
+      def do?
+        loc.begin && loc.begin.is?('do')
       end
 
       # Returns the inverse keyword of the `while` node as a string.
@@ -24,11 +24,11 @@ module RuboCop
         'until'
       end
 
-      # Checks whether the `until` node has a `do` keyword.
+      # Returns the keyword of the `while` statement as a string.
       #
-      # @return [Boolean] whether the `until` node has a `do` keyword
-      def do?
-        loc.begin && loc.begin.is?('do')
+      # @return [String] the keyword of the `while` statement
+      def keyword
+        'while'
       end
     end
   end

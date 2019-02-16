@@ -24,16 +24,6 @@ module RuboCop
 
         def_node_matcher :to_s_without_args?, '(send _ :to_s)'
 
-        def on_dstr(node)
-          node.each_child_node(:begin) do |begin_node|
-            final_node = begin_node.children.last
-
-            next unless to_s_without_args?(final_node)
-
-            add_offense(final_node, location: :selector)
-          end
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             receiver = node.receiver
@@ -45,6 +35,16 @@ module RuboCop
                 'self'
               end
             )
+          end
+        end
+
+        def on_dstr(node)
+          node.each_child_node(:begin) do |begin_node|
+            final_node = begin_node.children.last
+
+            next unless to_s_without_args?(final_node)
+
+            add_offense(final_node, location: :selector)
           end
         end
 

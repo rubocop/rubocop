@@ -30,6 +30,14 @@ module RuboCop
               'Prefer `%<code>s`.'.freeze
         UNDERSCORE = '_'.freeze
 
+        def autocorrect(node)
+          ranges = unneeded_ranges(node)
+
+          lambda do |corrector|
+            ranges.each { |range| corrector.remove(range) if range }
+          end
+        end
+
         def on_masgn(node)
           ranges = unneeded_ranges(node)
 
@@ -44,15 +52,16 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          ranges = unneeded_ranges(node)
+        private
 
-          lambda do |corrector|
-            ranges.each { |range| corrector.remove(range) if range }
-          end
+        def allow_named_underscore_variables
+          @allow_named_underscore_variables ||=
+            cop_config['AllowNamedUnderscoreVariables']
         end
 
-        private
+        def children_offenses(variables)
+          variables.select(&:mlhs_type?).flat_map { |v| unneeded_ranges(v) }
+        end
 
         def find_first_offense(variables)
           first_offense = find_first_possible_offense(variables.reverse)
@@ -79,35 +88,6 @@ module RuboCop
           end
         end
 
-        def splat_variable_before?(first_offense, variables)
-          # Account for cases like `_, *rest, _`, where we would otherwise get
-          # the index of the first underscore.
-          first_offense_index = reverse_index(variables, first_offense)
-
-          variables[0...first_offense_index].any?(&:splat_type?)
-        end
-
-        def reverse_index(collection, item)
-          collection.size - 1 - collection.reverse.index(item)
-        end
-
-        def allow_named_underscore_variables
-          @allow_named_underscore_variables ||=
-            cop_config['AllowNamedUnderscoreVariables']
-        end
-
-        def unneeded_ranges(node)
-          node.masgn_type? ? (mlhs_node, = *node) : mlhs_node = node
-          variables = *mlhs_node
-
-          main_offense = main_node_offense(node)
-          if main_offense.nil?
-            children_offenses(variables)
-          else
-            children_offenses(variables) << main_offense
-          end
-        end
-
         def main_node_offense(node)
           node.masgn_type? ? (mlhs_node, right = *node) : mlhs_node = node
 
@@ -128,12 +108,35 @@ module RuboCop
                         node.loc.operator.begin_pos)
         end
 
-        def children_offenses(variables)
-          variables.select(&:mlhs_type?).flat_map { |v| unneeded_ranges(v) }
+        def range_for_parentheses(offense, left)
+          range_between(
+            offense.source_range.begin_pos - 1,
+            left.loc.expression.end_pos - 1
+          )
         end
 
-        def unused_variables_only?(offense, variables)
-          offense.source_range == variables.first.source_range
+        def reverse_index(collection, item)
+          collection.size - 1 - collection.reverse.index(item)
+        end
+
+        def splat_variable_before?(first_offense, variables)
+          # Account for cases like `_, *rest, _`, where we would otherwise get
+          # the index of the first underscore.
+          first_offense_index = reverse_index(variables, first_offense)
+
+          variables[0...first_offense_index].any?(&:splat_type?)
+        end
+
+        def unneeded_ranges(node)
+          node.masgn_type? ? (mlhs_node, = *node) : mlhs_node = node
+          variables = *mlhs_node
+
+          main_offense = main_node_offense(node)
+          if main_offense.nil?
+            children_offenses(variables)
+          else
+            children_offenses(variables) << main_offense
+          end
         end
 
         def unused_range(node_type, mlhs_node, right)
@@ -149,11 +152,8 @@ module RuboCop
           range_between(start_range, end_range)
         end
 
-        def range_for_parentheses(offense, left)
-          range_between(
-            offense.source_range.begin_pos - 1,
-            left.loc.expression.end_pos - 1
-          )
+        def unused_variables_only?(offense, variables)
+          offense.source_range == variables.first.source_range
         end
       end
     end

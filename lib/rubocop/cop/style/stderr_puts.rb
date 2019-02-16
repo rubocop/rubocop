@@ -26,16 +26,16 @@ module RuboCop
             ...)
         PATTERN
 
-        def on_send(node)
-          return unless stderr_puts?(node)
-
-          add_offense(node, location: stderr_puts_range(node))
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(stderr_puts_range(node), 'warn')
           end
+        end
+
+        def on_send(node)
+          return unless stderr_puts?(node)
+
+          add_offense(node, location: stderr_puts_range(node))
         end
 
         private

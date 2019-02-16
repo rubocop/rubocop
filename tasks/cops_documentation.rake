@@ -10,69 +10,18 @@ end
 
 desc 'Generate docs of all cops departments'
 task generate_cops_documentation: :yard_for_generate_documentation do
-  def cops_of_department(cops, department)
-    cops.with_department(department).sort!
-  end
+  def assert_manual_synchronized
+    # Do not print diff and yield whether exit code was zero
+    sh('git diff --quiet manual') do |outcome, _|
+      return if outcome
 
-  def cops_body(config, cop, description, examples_objects, pars)
-    content = h2(cop.cop_name)
-    content << properties(config, cop)
-    content << "#{description}\n"
-    content << examples(examples_objects) if examples_objects.count > 0
-    content << configurations(pars)
-    content << references(config, cop)
-    content
-  end
+      # Output diff before raising error
+      sh('GIT_PAGER=cat git diff manual')
 
-  def examples(examples_object)
-    examples_object.each_with_object(h3('Examples').dup) do |example, content|
-      content << h4(example.name) unless example.name == ''
-      content << code_example(example)
+      warn 'The manual directory is out of sync. ' \
+        'Run `rake generate_cops_documentation` and commit the results.'
+      exit!
     end
-  end
-
-  # rubocop:disable Metrics/MethodLength
-  def properties(config, cop)
-    header = [
-      'Enabled by default', 'Safe', 'Supports autocorrection', 'VersionAdded',
-      'VersionChanged'
-    ]
-    config = config.for_cop(cop)
-    safe_auto_correct = config.fetch('SafeAutoCorrect', true)
-    autocorrect = if cop.new.support_autocorrect?
-                    "Yes #{'(Unsafe)' unless safe_auto_correct}"
-                  else
-                    'No'
-                  end
-    content = [[
-      config.fetch('Enabled') ? 'Enabled' : 'Disabled',
-      config.fetch('Safe', true) ? 'Yes' : 'No',
-      autocorrect,
-      config.fetch('VersionAdded', '-'),
-      config.fetch('VersionChanged', '-')
-    ]]
-    to_table(header, content) + "\n"
-  end
-  # rubocop:enable Metrics/MethodLength
-
-  def h2(title)
-    content = "\n".dup
-    content << "## #{title}\n"
-    content << "\n"
-    content
-  end
-
-  def h3(title)
-    content = "\n".dup
-    content << "### #{title}\n"
-    content << "\n"
-    content
-  end
-
-  def h4(title)
-    content = "#### #{title}\n".dup
-    content << "\n"
-    content
   end
 
   def code_example(ruby_code)
@@ -81,20 +30,6 @@ task generate_cops_documentation: :yard_for_generate_documentation do
                         .gsub('@bad', '# bad').strip
     content << "\n```\n"
     content
-  end
-
-  def configurations(pars)
-    return '' if pars.empty?
-
-    header = ['Name', 'Default value', 'Configurable values']
-    configs = pars.each_key.reject { |key| key.start_with?('Supported') }
-    content = configs.map do |name|
-      configurable = configurable_values(pars, name)
-      default = format_table_value(pars[name])
-      [name, default, configurable]
-    end
-
-    h3('Configurable attributes') + to_table(header, content)
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
@@ -124,15 +59,40 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       end
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength
 
-  def to_table(header, content)
-    table = [
-      header.join(' | '),
-      Array.new(header.size, '---').join(' | ')
-    ]
-    table.concat(content.map { |c| c.join(' | ') })
-    table.join("\n") + "\n"
+  def configurations(pars)
+    return '' if pars.empty?
+
+    header = ['Name', 'Default value', 'Configurable values']
+    configs = pars.each_key.reject { |key| key.start_with?('Supported') }
+    content = configs.map do |name|
+      configurable = configurable_values(pars, name)
+      default = format_table_value(pars[name])
+      [name, default, configurable]
+    end
+
+    h3('Configurable attributes') + to_table(header, content)
+  end
+
+  def cops_body(config, cop, description, examples_objects, pars)
+    content = h2(cop.cop_name)
+    content << properties(config, cop)
+    content << "#{description}\n"
+    content << examples(examples_objects) if examples_objects.count > 0
+    content << configurations(pars)
+    content << references(config, cop)
+    content
+  end
+
+  def cops_of_department(cops, department)
+    cops.with_department(department).sort!
+  end
+
+  def examples(examples_object)
+    examples_object.each_with_object(h3('Examples').dup) do |example, content|
+      content << h4(example.name) unless example.name == ''
+      content << code_example(example)
+    end
   end
 
   def format_table_value(val)
@@ -150,28 +110,41 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     value.gsub("#{Dir.pwd}/", '').rstrip
   end
 
-  def references(config, cop)
-    cop_config = config.for_cop(cop)
-    urls = RuboCop::Cop::MessageAnnotator.new(config, cop_config, {}).urls
-    return '' if urls.empty?
-
-    content = h3('References')
-    content << urls.map { |url| "* [#{url}](#{url})" }.join("\n")
+  def h2(title)
+    content = "\n".dup
+    content << "## #{title}\n"
     content << "\n"
     content
   end
 
-  def print_cops_of_department(cops, department, config)
-    selected_cops = cops_of_department(cops, department)
-    content = "# #{department}\n".dup
-    selected_cops.each do |cop|
-      content << print_cop_with_doc(cop, config)
+  def h3(title)
+    content = "\n".dup
+    content << "### #{title}\n"
+    content << "\n"
+    content
+  end
+
+  def h4(title)
+    content = "#### #{title}\n".dup
+    content << "\n"
+    content
+  end
+
+  def main
+    cops   = RuboCop::Cop::Cop.registry
+    config = RuboCop::ConfigLoader.default_configuration
+    config['Rails']['Enabled'] = true
+
+    YARD::Registry.load!
+    cops.departments.sort!.each do |department|
+      print_cops_of_department(cops, department, config)
     end
-    file_name = "#{Dir.pwd}/manual/cops_#{department.downcase}.md"
-    File.open(file_name, 'w') do |file|
-      puts "* generated #{file_name}"
-      file.write(content.strip + "\n")
-    end
+
+    print_table_of_contents(cops)
+
+    assert_manual_synchronized if ENV['CI'] == 'true'
+  ensure
+    RuboCop::ConfigLoader.default_configuration = nil
   end
 
   def print_cop_with_doc(cop, config)
@@ -192,16 +165,17 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     cops_body(config, cop, description, examples_object, pars)
   end
 
-  def table_of_content_for_department(cops, department)
-    type_title = department[0].upcase + department[1..-1]
-    filename = "cops_#{department.downcase}.md"
-    content = "#### Department [#{type_title}](#{filename})\n\n".dup
-    cops_of_department(cops, department.to_sym).each do |cop|
-      anchor = cop.cop_name.sub('/', '').downcase
-      content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
+  def print_cops_of_department(cops, department, config)
+    selected_cops = cops_of_department(cops, department)
+    content = "# #{department}\n".dup
+    selected_cops.each do |cop|
+      content << print_cop_with_doc(cop, config)
     end
-
-    content
+    file_name = "#{Dir.pwd}/manual/cops_#{department.downcase}.md"
+    File.open(file_name, 'w') do |file|
+      puts "* generated #{file_name}"
+      file.write(content.strip + "\n")
+    end
   end
 
   def print_table_of_contents(cops)
@@ -219,6 +193,39 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     File.write(path, content)
   end
 
+  def properties(config, cop)
+    header = [
+      'Enabled by default', 'Safe', 'Supports autocorrection', 'VersionAdded',
+      'VersionChanged'
+    ]
+    config = config.for_cop(cop)
+    safe_auto_correct = config.fetch('SafeAutoCorrect', true)
+    autocorrect = if cop.new.support_autocorrect?
+                    "Yes #{'(Unsafe)' unless safe_auto_correct}"
+                  else
+                    'No'
+                  end
+    content = [[
+      config.fetch('Enabled') ? 'Enabled' : 'Disabled',
+      config.fetch('Safe', true) ? 'Yes' : 'No',
+      autocorrect,
+      config.fetch('VersionAdded', '-'),
+      config.fetch('VersionChanged', '-')
+    ]]
+    to_table(header, content) + "\n"
+  end
+
+  def references(config, cop)
+    cop_config = config.for_cop(cop)
+    urls = RuboCop::Cop::MessageAnnotator.new(config, cop_config, {}).urls
+    return '' if urls.empty?
+
+    content = h3('References')
+    content << urls.map { |url| "* [#{url}](#{url})" }.join("\n")
+    content << "\n"
+    content
+  end
+
   def table_contents(cops)
     cops
       .departments
@@ -228,35 +235,27 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       .join("\n")
   end
 
-  def assert_manual_synchronized
-    # Do not print diff and yield whether exit code was zero
-    sh('git diff --quiet manual') do |outcome, _|
-      return if outcome
-
-      # Output diff before raising error
-      sh('GIT_PAGER=cat git diff manual')
-
-      warn 'The manual directory is out of sync. ' \
-        'Run `rake generate_cops_documentation` and commit the results.'
-      exit!
+  def table_of_content_for_department(cops, department)
+    type_title = department[0].upcase + department[1..-1]
+    filename = "cops_#{department.downcase}.md"
+    content = "#### Department [#{type_title}](#{filename})\n\n".dup
+    cops_of_department(cops, department.to_sym).each do |cop|
+      anchor = cop.cop_name.sub('/', '').downcase
+      content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
     end
+
+    content
   end
 
-  def main
-    cops   = RuboCop::Cop::Cop.registry
-    config = RuboCop::ConfigLoader.default_configuration
-    config['Rails']['Enabled'] = true
+  # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength
 
-    YARD::Registry.load!
-    cops.departments.sort!.each do |department|
-      print_cops_of_department(cops, department, config)
-    end
-
-    print_table_of_contents(cops)
-
-    assert_manual_synchronized if ENV['CI'] == 'true'
-  ensure
-    RuboCop::ConfigLoader.default_configuration = nil
+  def to_table(header, content)
+    table = [
+      header.join(' | '),
+      Array.new(header.size, '---').join(' | ')
+    ]
+    table.concat(content.map { |c| c.join(' | ') })
+    table.join("\n") + "\n"
   end
 
   main

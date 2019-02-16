@@ -8,13 +8,6 @@ module RuboCop
     class CaseNode < Node
       include ConditionalNode
 
-      # Returns the keyword of the `case` statement as a string.
-      #
-      # @return [String] the keyword of the `case` statement
-      def keyword
-        'case'
-      end
-
       # Calls the given block for each `when` node in the `case` statement.
       # If no block is given, an `Enumerator` is returned.
       #
@@ -30,11 +23,11 @@ module RuboCop
         self
       end
 
-      # Returns an array of all the when branches in the `case` statement.
+      # Checks whether this case statement has an `else` branch.
       #
-      # @return [Array<WhenNode>] an array of `when` nodes
-      def when_branches
-        node_parts[1...-1]
+      # @return [Boolean] whether the `case` statement has an `else` branch
+      def else?
+        loc.else
       end
 
       # Returns the else branch of the `case` statement, if any.
@@ -45,11 +38,18 @@ module RuboCop
         node_parts[-1]
       end
 
-      # Checks whether this case statement has an `else` branch.
+      # Returns the keyword of the `case` statement as a string.
       #
-      # @return [Boolean] whether the `case` statement has an `else` branch
-      def else?
-        loc.else
+      # @return [String] the keyword of the `case` statement
+      def keyword
+        'case'
+      end
+
+      # Returns an array of all the when branches in the `case` statement.
+      #
+      # @return [Array<WhenNode>] an array of `when` nodes
+      def when_branches
+        node_parts[1...-1]
       end
     end
   end

@@ -81,6 +81,11 @@ module RuboCop
             (const {nil? cbase} :ERB) :new $...)
         PATTERN
 
+        def correct_arguments?(arguments)
+          arguments.size == 1 ||
+            arguments.size == 2 && arguments[1].hash_type?
+        end
+
         def on_send(node)
           erb_new_with_non_keyword_arguments(node) do |arguments|
             return if correct_arguments?(arguments)
@@ -95,11 +100,6 @@ module RuboCop
               )
             end
           end
-        end
-
-        def correct_arguments?(arguments)
-          arguments.size == 1 ||
-            arguments.size == 2 && arguments[1].hash_type?
         end
       end
     end

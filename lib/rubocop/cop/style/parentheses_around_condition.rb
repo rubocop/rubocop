@@ -43,6 +43,10 @@ module RuboCop
         include SafeAssignment
         include Parentheses
 
+        def autocorrect(node)
+          ParenthesesCorrector.correct(node)
+        end
+
         def on_if(node)
           return if node.ternary?
 
@@ -54,15 +58,34 @@ module RuboCop
         end
         alias on_until on_while
 
-        def autocorrect(node)
-          ParenthesesCorrector.correct(node)
-        end
-
         private
 
         def_node_matcher :control_op_condition, <<-PATTERN
           (begin $_ ...)
         PATTERN
+
+        def allow_multiline_conditions?
+          cop_config['AllowInMultilineConditions']
+        end
+
+        def message(node)
+          kw = node.parent.keyword
+          article = kw == 'while' ? 'a' : 'an'
+          "Don't use parentheses around the condition of #{article} `#{kw}`."
+        end
+
+        def modifier_op?(node)
+          return false if node.if_type? && node.ternary?
+          return true if node.rescue_type?
+
+          node.basic_conditional? && node.modifier_form?
+        end
+
+        def parens_allowed?(node)
+          parens_required?(node) ||
+            (safe_assignment?(node) && safe_assignment_allowed?) ||
+            (node.multiline? && allow_multiline_conditions?)
+        end
 
         def process_control_op(node)
           cond = node.condition
@@ -73,29 +96,6 @@ module RuboCop
 
             add_offense(cond)
           end
-        end
-
-        def modifier_op?(node)
-          return false if node.if_type? && node.ternary?
-          return true if node.rescue_type?
-
-          node.basic_conditional? && node.modifier_form?
-        end
-
-        def message(node)
-          kw = node.parent.keyword
-          article = kw == 'while' ? 'a' : 'an'
-          "Don't use parentheses around the condition of #{article} `#{kw}`."
-        end
-
-        def parens_allowed?(node)
-          parens_required?(node) ||
-            (safe_assignment?(node) && safe_assignment_allowed?) ||
-            (node.multiline? && allow_multiline_conditions?)
-        end
-
-        def allow_multiline_conditions?
-          cop_config['AllowInMultilineConditions']
         end
       end
     end

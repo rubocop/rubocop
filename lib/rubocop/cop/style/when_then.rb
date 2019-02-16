@@ -20,16 +20,16 @@ module RuboCop
       class WhenThen < Cop
         MSG = 'Do not use `when x;`. Use `when x then` instead.'.freeze
 
-        def on_when(node)
-          return if node.multiline? || node.then? || !node.body
-
-          add_offense(node, location: :begin)
-        end
-
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.loc.begin, ' then')
           end
+        end
+
+        def on_when(node)
+          return if node.multiline? || node.then? || !node.body
+
+          add_offense(node, location: :begin)
         end
       end
     end

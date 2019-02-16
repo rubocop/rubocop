@@ -22,14 +22,6 @@ module RuboCop
                   'instead of `.times.%<map_or_collect>s`'.freeze
         MESSAGE_ONLY_IF = 'only if `%<count>s` is always 0 or more'.freeze
 
-        def on_send(node)
-          check(node)
-        end
-
-        def on_block(node)
-          check(node)
-        end
-
         def autocorrect(node)
           map_or_collect, count = times_map_call(node)
 
@@ -40,6 +32,14 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(map_or_collect.loc.expression, replacement)
           end
+        end
+
+        def on_block(node)
+          check(node)
+        end
+
+        def on_send(node)
+          check(node)
         end
 
         private

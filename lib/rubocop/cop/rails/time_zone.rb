@@ -80,19 +80,21 @@ module RuboCop
 
         private
 
-        def check_time_node(klass, node)
-          chain = extract_method_chain(node)
-          return if danger_chain?(chain)
+        def acceptable?
+          style == :flexible
+        end
 
-          return check_localtime(node) if need_check_localtime?(chain)
+        def acceptable_methods(klass, method_name, node)
+          acceptable = [
+            "`Time.zone.#{safe_method(method_name, node)}`",
+            "`#{klass}.current`"
+          ]
 
-          method_name = (chain & DANGEROUS_METHODS).join('.')
+          ACCEPTED_METHODS.each do |am|
+            acceptable << "`#{klass}.#{method_name}.#{am}`"
+          end
 
-          return if offset_provided?(node)
-
-          message = build_message(klass, method_name, node)
-
-          add_offense(node, location: :selector, message: message)
+          acceptable
         end
 
         # rubocop:disable Metrics/MethodLength
@@ -113,6 +115,46 @@ module RuboCop
                    prefer: "Time.zone.#{safe_method_name}")
           end
         end
+
+        def check_localtime(node)
+          selector_node = node
+
+          while node && node.send_type?
+            break if extract_method(node) == :localtime
+
+            node = node.parent
+          end
+
+          return if node.arguments?
+
+          add_offense(selector_node,
+                      location: :selector, message: MSG_LOCALTIME)
+        end
+
+        def check_time_node(klass, node)
+          chain = extract_method_chain(node)
+          return if danger_chain?(chain)
+
+          return check_localtime(node) if need_check_localtime?(chain)
+
+          method_name = (chain & DANGEROUS_METHODS).join('.')
+
+          return if offset_provided?(node)
+
+          message = build_message(klass, method_name, node)
+
+          add_offense(node, location: :selector, message: message)
+        end
+
+        def danger_chain?(chain)
+          (chain & DANGEROUS_METHODS).empty? || !(chain & good_methods).empty?
+        end
+
+        def extract_method(node)
+          _receiver, method_name, *_args = *node
+          method_name
+        end
+
         # rubocop:enable Metrics/MethodLength
 
         def extract_method_chain(node)
@@ -124,9 +166,12 @@ module RuboCop
           chain
         end
 
-        def extract_method(node)
-          _receiver, method_name, *_args = *node
-          method_name
+        def good_methods
+          if style == :strict
+            GOOD_METHODS
+          else
+            GOOD_METHODS + [:current] + ACCEPTED_METHODS
+          end
         end
 
         # Only add the method to the chain if the method being
@@ -150,62 +195,8 @@ module RuboCop
           receiver == node
         end
 
-        def safe_method(method_name, node)
-          return method_name unless method_name == 'new'
-
-          if node.arguments?
-            'local'
-          else
-            'now'
-          end
-        end
-
-        def check_localtime(node)
-          selector_node = node
-
-          while node && node.send_type?
-            break if extract_method(node) == :localtime
-
-            node = node.parent
-          end
-
-          return if node.arguments?
-
-          add_offense(selector_node,
-                      location: :selector, message: MSG_LOCALTIME)
-        end
-
-        def danger_chain?(chain)
-          (chain & DANGEROUS_METHODS).empty? || !(chain & good_methods).empty?
-        end
-
         def need_check_localtime?(chain)
           acceptable? && chain.include?(:localtime)
-        end
-
-        def acceptable?
-          style == :flexible
-        end
-
-        def good_methods
-          if style == :strict
-            GOOD_METHODS
-          else
-            GOOD_METHODS + [:current] + ACCEPTED_METHODS
-          end
-        end
-
-        def acceptable_methods(klass, method_name, node)
-          acceptable = [
-            "`Time.zone.#{safe_method(method_name, node)}`",
-            "`#{klass}.current`"
-          ]
-
-          ACCEPTED_METHODS.each do |am|
-            acceptable << "`#{klass}.#{method_name}.#{am}`"
-          end
-
-          acceptable
         end
 
         # Time.new can be called with a time zone offset
@@ -214,6 +205,16 @@ module RuboCop
         # Time.new(1988, 3, 15, 3, 0, 0, "-05:00")
         def offset_provided?(node)
           node.arguments.size >= 7
+        end
+
+        def safe_method(method_name, node)
+          return method_name unless method_name == 'new'
+
+          if node.arguments?
+            'local'
+          else
+            'now'
+          end
         end
       end
     end

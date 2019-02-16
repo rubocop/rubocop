@@ -23,15 +23,6 @@ module RuboCop
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in ' \
                                     'your RuboCop config'.freeze
 
-        def investigate(processed_source)
-          return if notice.empty?
-          return if notice_found?(processed_source)
-
-          range = source_range(processed_source.buffer, 1, 0)
-          add_offense(insert_notice_before(processed_source),
-                      location: range, message: format(MSG, notice: notice))
-        end
-
         def autocorrect(token)
           raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
 
@@ -47,14 +38,26 @@ module RuboCop
           end
         end
 
-        private
+        def investigate(processed_source)
+          return if notice.empty?
+          return if notice_found?(processed_source)
 
-        def notice
-          cop_config['Notice']
+          range = source_range(processed_source.buffer, 1, 0)
+          add_offense(insert_notice_before(processed_source),
+                      location: range, message: format(MSG, notice: notice))
         end
+
+        private
 
         def autocorrect_notice
           cop_config['AutocorrectNotice']
+        end
+
+        def encoding_token?(processed_source, token_index)
+          return false if token_index >= processed_source.tokens.size
+
+          token = processed_source.tokens[token_index]
+          token.comment? && token.text =~ /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/
         end
 
         def insert_notice_before(processed_source)
@@ -64,18 +67,8 @@ module RuboCop
           processed_source.tokens[token_index]
         end
 
-        def shebang_token?(processed_source, token_index)
-          return false if token_index >= processed_source.tokens.size
-
-          token = processed_source.tokens[token_index]
-          token.comment? && token.text =~ /^#!.*$/
-        end
-
-        def encoding_token?(processed_source, token_index)
-          return false if token_index >= processed_source.tokens.size
-
-          token = processed_source.tokens[token_index]
-          token.comment? && token.text =~ /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+        def notice
+          cop_config['Notice']
         end
 
         def notice_found?(processed_source)
@@ -88,6 +81,13 @@ module RuboCop
             break if notice_found
           end
           notice_found
+        end
+
+        def shebang_token?(processed_source, token_index)
+          return false if token_index >= processed_source.tokens.size
+
+          token = processed_source.tokens[token_index]
+          token.comment? && token.text =~ /^#!.*$/
         end
       end
     end

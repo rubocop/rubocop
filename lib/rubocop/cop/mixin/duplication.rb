@@ -6,12 +6,13 @@ module RuboCop
     module Duplication
       private
 
-      # Whether the `collection` contains any duplicates.
+      # Returns the consecutive duplicates, leaving out the first instance of
+      # the duplicated elements.
       #
-      # @param [Array] collection an array to check for duplicates
-      # @return [Boolean] whether the array contains any duplicates
-      def duplicates?(collection)
-        collection.size > 1 && collection.size > collection.uniq.size
+      # @param [Array] collection an array to return consecutive duplicates for
+      # @return [Array] the consecutive duplicates
+      def consecutive_duplicates(collection)
+        grouped_duplicates(collection).flat_map { |items| items[1..-1] }
       end
 
       # Returns all duplicates, including the first instance of the duplicated
@@ -23,13 +24,12 @@ module RuboCop
         grouped_duplicates(collection).flatten
       end
 
-      # Returns the consecutive duplicates, leaving out the first instance of
-      # the duplicated elements.
+      # Whether the `collection` contains any duplicates.
       #
-      # @param [Array] collection an array to return consecutive duplicates for
-      # @return [Array] the consecutive duplicates
-      def consecutive_duplicates(collection)
-        grouped_duplicates(collection).flat_map { |items| items[1..-1] }
+      # @param [Array] collection an array to check for duplicates
+      # @return [Boolean] whether the array contains any duplicates
+      def duplicates?(collection)
+        collection.size > 1 && collection.size > collection.uniq.size
       end
 
       # Returns a hash of grouped duplicates. The key will be the first
