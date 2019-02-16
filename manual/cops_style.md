@@ -3360,7 +3360,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.11 | 0.53
+Enabled | Yes | Yes (Unsafe) | 0.11 | 0.65
 
 This cop checks for use of `extend self` or `module_function` in a
 module.
@@ -3370,7 +3370,7 @@ Supported styles are: module_function, extend_self.
 In case there are private methods, the cop won't be activated.
 Otherwise, it forces to change the flow of the default code.
 
-These offenses are not auto-corrected since there are different
+These offenses are not safe to auto-correct since there are different
 implications to each approach.
 
 ### Examples
@@ -3422,6 +3422,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `module_function` | `module_function`, `extend_self`
+Autocorrect | `false` | Boolean
 
 ### References
 
