@@ -10,6 +10,7 @@ RSpec.describe RuboCop::AST::RangeNode do
       end
 
       it { expect(range_node.is_a?(described_class)).to be(true) }
+      it { expect(range_node.range_type?).to be(true) }
     end
 
     context 'with an exclusive range' do
@@ -18,6 +19,7 @@ RSpec.describe RuboCop::AST::RangeNode do
       end
 
       it { expect(range_node.is_a?(described_class)).to be(true) }
+      it { expect(range_node.range_type?).to be(true) }
     end
 
     context 'with an infinite range' do
@@ -27,6 +29,7 @@ RSpec.describe RuboCop::AST::RangeNode do
       end
 
       it { expect(range_node.is_a?(described_class)).to be(true) }
+      it { expect(range_node.range_type?).to be(true) }
     end
   end
 end
