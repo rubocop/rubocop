@@ -27,6 +27,7 @@
 ### New features
 
 * [#6126](https://github.com/rubocop-hq/rubocop/pull/6126): Add an experimental strict mode to `Style/MutableConstant` that will freeze all constants, rather than just literals. ([@rrosenblum][])
+* New cop `Link/MemoizationWithParameters` checks for memoized variables depending on parameters. ([@mbuffa][])
 
 ### Bug fixes
 
@@ -48,7 +49,6 @@
 
 * [#6704](https://github.com/rubocop-hq/rubocop/pull/6704): Add new `Rails/ReflectionClassName` cop. ([@Bhacaz][])
 * [#6643](https://github.com/rubocop-hq/rubocop/pull/6643): Support `AllowParenthesesInCamelCaseMethod` option on `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@dazuma][])
-* New cop `Link/MemoizationWithParameters` checks for memoized variables depending on parameters. ([@mbuffa][])
 
 ### Bug fixes
 

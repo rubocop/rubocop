@@ -1101,7 +1101,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | - | -
+Enabled | Yes | No | 0.64.0 | -
 
 This cop checks potentially buggy usages of the ||= operators that
 store dynamic values in instance variables based on method parameters.
