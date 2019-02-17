@@ -1333,12 +1333,12 @@ Lint/Loop:
   Enabled: true
   VersionAdded: '0.9'
 
-Lint/MemorizationWithParameters:
+Lint/MemoizationWithParameters:
   Description: >-
-                 Use an instance variable such as a Hash to store method returns
-                 called with parameter(s).
+                 Use an instance variable such as a Hash to store the
+                 result of a computation depending on parameter(s).
   Enabled: true
-  VersionAdded: '0.61'
+  VersionAdded: '0.63.1'
 
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'

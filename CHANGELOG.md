@@ -48,6 +48,7 @@
 
 * [#6704](https://github.com/rubocop-hq/rubocop/pull/6704): Add new `Rails/ReflectionClassName` cop. ([@Bhacaz][])
 * [#6643](https://github.com/rubocop-hq/rubocop/pull/6643): Support `AllowParenthesesInCamelCaseMethod` option on `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@dazuma][])
+* New cop `Link/MemoizationWithParameters` checks for memoized variables depending on parameters. ([@mbuffa][])
 
 ### Bug fixes
 
@@ -160,7 +161,6 @@
 * [#6475](https://github.com/rubocop-hq/rubocop/pull/6475): Support brace correction on `Style/Lambda`. ([@r7kamura][])
 * [#6469](https://github.com/rubocop-hq/rubocop/pull/6469): Enforce no parentheses style in the `Style/MethodCallWithArgsParentheses` cop. ([@gsamokovarov][])
 * New cop `Performance/OpenStruct` checks for `OpenStruct.new` calls. ([@xlts][])
-* New cop `Link/MemorizationWithParameters` checks for methods with memorized and parameterized return values. ([@mbuffa][])
 
 ### Bug fixes
 

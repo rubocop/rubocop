@@ -1097,11 +1097,11 @@ end
 
 * [https://github.com/rubocop-hq/ruby-style-guide#loop-with-break](https://github.com/rubocop-hq/ruby-style-guide#loop-with-break)
 
-## Lint/MemorizationWithParameters
+## Lint/MemoizationWithParameters
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.61 | -
+Enabled | Yes | No | - | -
 
 This cop checks potentially buggy usages of the ||= operators that
 store dynamic values in instance variables based on method parameters.

@@ -23,9 +23,9 @@ module RuboCop
       #     @foo ||= {}
       #     @foo[bar] ||= baz(bar)
       #   end
-      class MemorizationWithParameters < Cop
-        MSG = 'Use an instance variable such as a Hash to store method' \
-              ' returns called with parameter(s).'.freeze
+      class MemoizationWithParameters < Cop
+        MSG = 'Use an instance variable such as a Hash to store the ' \
+              'result of a computation depending on parameter(s).'.freeze
 
         def_node_search :memoization, '(or_asgn (ivasgn _) $_)'
         def_node_search :contains_argument?, '(lvar %1)'
