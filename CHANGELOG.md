@@ -8,8 +8,8 @@
 
 ### Bug fixes
 
-* [#6765](https://github.com/rubocop-hq/rubocop/pull/6765): Fix false positives in keyword arguments for `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@gsamokovarov]][])
-* [#6763](https://github.com/rubocop-hq/rubocop/pull/6763): Fix false positives in range literals for `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@gsamokovarov]][])
+* [#6765](https://github.com/rubocop-hq/rubocop/pull/6765): Fix false positives in keyword arguments for `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@gsamokovarov][])
+* [#6763](https://github.com/rubocop-hq/rubocop/pull/6763): Fix false positives in range literals for `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@gsamokovarov][])
 * [#6748](https://github.com/rubocop-hq/rubocop/issues/6748): Fix `Style/RaiseArgs` auto-correction breaking in contexts that require parentheses. ([@drenmi][])
 * [#6751](https://github.com/rubocop-hq/rubocop/issues/6751): Prevent `Style/OneLineConditional` from breaking on `retry` and `break` keywords. ([@drenmi][])
 
