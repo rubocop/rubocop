@@ -131,8 +131,7 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          node.irange_type? ||
-            node.erange_type? ||
+          node.range_type? ||
             (node.send_type? && node.loc.dot.nil?)
         end
 

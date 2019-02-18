@@ -36,7 +36,7 @@ module RuboCop
       end
 
       def requires_parentheses?
-        collection_node.irange_type? || collection_node.erange_type?
+        collection_node.range_type?
       end
 
       def end_position
