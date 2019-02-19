@@ -416,6 +416,31 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           )
         RUBY
       end
+
+      it 'does not break when a method call is chaned on the offending one' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo.bar(
+            baz: 1,
+          ).fetch(:qux)
+        RUBY
+      end
+
+      it 'does not break when a safe method call is chained on the ' \
+         'offending one', :ruby23 do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo
+            &.do_something(:bar, :baz)
+        RUBY
+      end
+
+      it 'does not break when a safe method call is chained on the ' \
+         'offending one', :ruby23 do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo.bar(
+            baz: 1,
+          )&.fetch(:qux)
+        RUBY
+      end
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
