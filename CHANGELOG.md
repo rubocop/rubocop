@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.65.0 (2019-02-19)
+
 ### New features
 
 * [#6126](https://github.com/rubocop-hq/rubocop/pull/6126): Add an experimental strict mode to `Style/MutableConstant` that will freeze all constants, rather than just literals. ([@rrosenblum][])
