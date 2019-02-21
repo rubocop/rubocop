@@ -31,7 +31,7 @@ automatically fix some of the problems for you.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**Please consider [supporting financially its ongoing development](#funding).**
+**Please consider [financially supporting its ongoing development](#funding).**
 
 ## Installation
 
@@ -50,7 +50,7 @@ gem 'rubocop', require: false
 RuboCop's development is moving at a very rapid pace and there are
 often backward-incompatible changes between minor releases (since we
 haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
-might want to use a conservative version locking in your `Gemfile`:
+might want to use a conservative version lock in your `Gemfile`:
 
 ```rb
 gem 'rubocop', '~> 0.65.0', require: false
