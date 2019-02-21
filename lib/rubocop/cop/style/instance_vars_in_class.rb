@@ -72,30 +72,38 @@ module RuboCop
               ':%<var_name>s` instead of `%<usage>s`.'.freeze
 
         def on_ivar(node)
-          return if !in_class?(node) || in_initializer?(node)
+          return if not_an_offense?(node)
 
-          var_name, = *node
-          var_name = var_name.to_s[1..-1]
+          variable_name = extract_variable_name(node)
 
           case node.type
           when :ivasgn
-            usage = "@#{var_name}="
+            usage = "@#{variable_name}="
             type = 'accessor'
           when :ivar
-            usage = "@#{var_name}"
+            usage = "@#{variable_name}"
             type = 'reader'
           else
             return
           end
 
-          add_offense(node, message: format_message(type, usage, var_name))
+          add_offense(node, message: format_message(type, usage, variable_name))
         end
         alias on_ivasgn on_ivar
 
         private
 
+        def extract_variable_name(node)
+          var_name, = *node
+          var_name.to_s[1..-1]
+        end
+
         def format_message(type, usage, var_name)
           format(MSG, type: type, var_name: var_name, usage: usage)
+        end
+
+        def not_an_offense?(node)
+          !in_class?(node) || in_initializer?(node) || in_memoize?(node)
         end
 
         def in_class?(node)
@@ -107,6 +115,10 @@ module RuboCop
             method, = *n
             method == :initialize
           end
+        end
+
+        def in_memoize?(node)
+          node.parent.or_asgn_type?
         end
       end
     end

@@ -49,5 +49,17 @@ RSpec.describe RuboCop::Cop::Style::InstanceVarsInClass do
         RUBY
       end
     end
+
+    context 'when used to memoize' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          class TestClass
+            def foo
+              @foo ||= "bar"
+            end
+          end
+        RUBY
+      end
+    end
   end
 end
