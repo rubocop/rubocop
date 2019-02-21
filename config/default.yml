@@ -3315,6 +3315,14 @@ Style/InlineComment:
   Enabled: false
   VersionAdded: '0.23'
 
+Style/InstanceVarsInClass:
+  Description: >-
+                 This cop checks for instance variables used in classes outside of the initializer.
+                 It encourages using attr_reader or attr_accessor to set up safer methods to read from
+                 or write to your instance variable.
+  Enabled: false
+  VersionAdded: '0.66'
+
 Style/InverseMethods:
   Description: >-
                  Use the inverse method instead of `!.method`
