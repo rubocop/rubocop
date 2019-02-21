@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     expect_no_offenses('{}')
   end
 
-  include_examples 'multiline literal brace layout' do
+  it_behaves_like 'multiline literal brace layout' do
     let(:open) { '{' }
     let(:close) { '}' }
     let(:a) { 'a: 1' }
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     end
   end
 
-  include_examples 'multiline literal brace layout method argument' do
+  it_behaves_like 'multiline literal brace layout method argument' do
     let(:open) { '{' }
     let(:close) { '}' }
     let(:a) { 'a: 1' }
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     let(:multi) { ['[', '1', ']'] }
   end
 
-  include_examples 'multiline literal brace layout trailing comma' do
+  it_behaves_like 'multiline literal brace layout trailing comma' do
     let(:open) { '{' }
     let(:close) { '}' }
     let(:a) { 'a: 1' }
