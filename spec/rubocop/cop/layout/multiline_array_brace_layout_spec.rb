@@ -28,6 +28,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
   it_behaves_like 'multiline literal brace layout method argument' do
     let(:open) { '[' }
     let(:close) { ']' }
+    let(:a) { 'a: 1' }
+    let(:b) { 'b: 2' }
   end
 
   it_behaves_like 'multiline literal brace layout trailing comma' do
