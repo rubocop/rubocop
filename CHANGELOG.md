@@ -11,6 +11,7 @@
 
 * [#6766](https://github.com/rubocop-hq/rubocop/pull/6766): Drop support for Ruby 2.2.0 and 2.2.1. ([@pocke][])
 * [#6733](https://github.com/rubocop-hq/rubocop/pull/6733): Warn duplicated keys in `.rubocop.yml`. ([@pocke][])
+* [#6769](https://github.com/rubocop-hq/rubocop/pull/6769): Replace md5 with sha1 for FIPS compliance. ([@dirtyharrycallahan][])
 
 ## 0.64.0 (2019-02-10)
 
