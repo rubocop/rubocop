@@ -39,11 +39,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems are not alphabetically sorted' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'rubocop'
-      gem 'rspec'
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'rubocop'
@@ -71,12 +66,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem declaration takes several lines' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'rubocop',
-          '0.1.1'
-      gem 'rspec'
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'rubocop',
@@ -153,14 +142,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gem groups is separated by multiline comment' do
-    let(:source) { <<-RUBY.strip_indent }
-      # For code quality
-      gem 'rubocop'
-      # For
-      # test
-      gem 'rspec'
-    RUBY
-
     context 'with TreatCommentsAsGroupSeparators: true' do
       let(:treat_comments_as_group_separators) { true }
 
@@ -242,11 +223,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem that starts with a capital letter is not sorted' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'Z'
-      gem 'a'
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'Z'
@@ -262,16 +238,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When there are duplicated gems in group' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'a'
-
-      group :development do
-        gem 'b'
-        gem 'c'
-        gem 'b'
-      end
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'a'

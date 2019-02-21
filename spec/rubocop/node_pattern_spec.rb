@@ -1089,7 +1089,6 @@ RSpec.describe RuboCop::NodePattern do
   describe 'commas' do
     context 'with commas randomly strewn around' do
       let(:pattern) { ',,(,send,, ,int,:+, int ), ' }
-      let(:ruby) { '1 + 2' }
 
       it_behaves_like 'invalid'
     end
