@@ -7,6 +7,7 @@
 ### New features
 
 * [#6126](https://github.com/rubocop-hq/rubocop/pull/6126): Add an experimental strict mode to `Style/MutableConstant` that will freeze all constants, rather than just literals. ([@rrosenblum][])
+* Add `IncludedMacros` to `Style/MethodCallWithArgsParentheses` to allow including specific macros when `IgnoreMacros` is true. ([@maxh][])
 
 ### Bug fixes
 

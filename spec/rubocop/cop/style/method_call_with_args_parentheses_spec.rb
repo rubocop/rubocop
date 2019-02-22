@@ -698,4 +698,91 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
   end
+
+  context 'when inspecting macro methods with IncludedMacros' do
+    let(:cop_config) do
+      {
+        'IgnoreMacros' => 'true',
+        'IncludedMacros' => ['bar']
+      }
+    end
+
+    context 'in a class body' do
+      it 'finds offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          class Foo
+            bar :abc
+            ^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+      end
+
+      it 'does autocorrect' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          class Foo
+            bar :abc
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          class Foo
+            bar(:abc)
+          end
+        RUBY
+      end
+    end
+
+    context 'in a module body' do
+      it 'finds offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          module Foo
+            bar :abc
+            ^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+      end
+
+      it 'does autocorrect' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          module Foo
+            bar :abc
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          module Foo
+            bar(:abc)
+          end
+        RUBY
+      end
+    end
+
+    context 'for a macro not on the included list' do
+      it 'finds offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          module Foo
+            baz :abc
+          end
+        RUBY
+      end
+    end
+
+    context 'for a macro in both IncludedMacros and IgnoredMethods' do
+      let(:cop_config) do
+        {
+          'IgnoreMacros' => 'true',
+          'IncludedMacros' => ['bar'],
+          'IgnoredMethods' => ['bar']
+        }
+      end
+
+      it 'finds offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          module Foo
+            bar :abc
+          end
+        RUBY
+      end
+    end
+  end
 end
