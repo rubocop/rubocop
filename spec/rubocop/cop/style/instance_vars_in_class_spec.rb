@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::InstanceVarsInClass do
           class TestClass
             def foo
               @instance_variable
-              ^^^^^^^^^^^^^^^^^^ Outside of the initializer, use an `attr_reader :instance_variable` instead of `@instance_variable`.
+              ^^^^^^^^^^^^^^^^^^ Define an `attr_reader :instance_variable` and use that to access the variable instead of using the `@instance_variable` directly. You may also want to make this `attr_*` private with `private :instance_variable`.
             end
           end
         RUBY
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::InstanceVarsInClass do
         class TestClass
           def foo
             @instance_variable = 1
-            ^^^^^^^^^^^^^^^^^^^^^^ Outside of the initializer, use an `attr_accessor :instance_variable` instead of `@instance_variable=`.
+            ^^^^^^^^^^^^^^^^^^^^^^ Define an `attr_accessor :instance_variable` and use that to access the variable instead of using the `@instance_variable=` directly. You may also want to make this `attr_*` private with `private :instance_variable`.
           end
         end
       RUBY

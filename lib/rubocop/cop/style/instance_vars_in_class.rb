@@ -68,8 +68,10 @@ module RuboCop
       #   end
       #
       class InstanceVarsInClass < Cop
-        MSG = 'Outside of the initializer, use an `attr_%<type>s ' \
-              ':%<var_name>s` instead of `%<usage>s`.'.freeze
+        MSG = 'Define an `attr_%<type>s :%<var_name>s` and use that to ' \
+              'access the variable instead of using the `%<usage>s` ' \
+              'directly. You may also want to make this `attr_*` ' \
+              'private with `private :%<var_name>s`.'.freeze
 
         def on_ivar(node)
           return if not_an_offense?(node)
