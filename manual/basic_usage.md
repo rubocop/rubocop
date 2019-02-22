@@ -106,7 +106,7 @@ Command flag                    | Description
 `-d/--debug`                    | Displays some extra debug output.
 `-D/--[no-]display-cop-names`   | Displays cop names in offense messages. Default is true.
 `-E/--extra-details`            | Displays extra details in offense messages.
-`-f/--format`                   | Choose a formatter.
+`-f/--format`                   | Choose a formatter, see [Formatters](formatters.md).
 `-F/--fail-fast`                | Inspects in modification time order and stops after first file with offenses.
 `-h/--help`                     | Print usage information.
 `-l/--lint`                     | Run only lint cops.
