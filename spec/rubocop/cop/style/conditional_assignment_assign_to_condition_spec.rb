@@ -2139,91 +2139,75 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   context 'EndAlignment configured to start_of_line' do
     subject(:cop) { described_class.new(config) }
 
-    let(:config) do
-      RuboCop::Config.new('Style/ConditionalAssignment' => {
-                            'Enabled' => true,
-                            'SingleLineConditionsOnly' => false,
-                            'IncludeTernaryExpressions' => true
-                          },
-                          'Layout/EndAlignment' => {
-                            'EnforcedStyleAlignWith' => 'start_of_line',
-                            'Enabled' => true
-                          },
-                          'Metrics/LineLength' => {
-                            'Max' => 80,
-                            'Enabled' => true
-                          })
+    context 'auto-correct' do
+      it 'uses proper end alignment in if' do
+        source = <<-RUBY.strip_indent
+          if foo
+            a =  b
+          elsif bar
+            a = c
+          else
+            a = d
+          end
+        RUBY
 
-      context 'auto-correct' do
-        it 'uses proper end alignment in if' do
-          source = <<-RUBY.strip_indent
-            if foo
-              a =  b
-            elsif bar
-              a = c
-            else
-              a = d
-            end
-          RUBY
+        new_source = autocorrect_source(source)
 
-          new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          a = if foo
+            b
+          elsif bar
+            c
+          else
+            d
+          end
+        RUBY
+      end
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
-            a = if foo
-              b
-            elsif bar
-              c
-            else
-              d
-            end
-          RUBY
-        end
+      it 'uses proper end alignment in unless' do
+        source = <<-RUBY.strip_indent
+          unless foo
+            a = b
+          else
+            a = d
+          end
+        RUBY
 
-        it 'uses proper end alignment in unless' do
-          source = <<-RUBY.strip_indent
-            unless foo
-              a = b
-            else
-              a = d
-            end
-          RUBY
+        new_source = autocorrect_source(source)
 
-          new_source = autocorrect_source(source)
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          a = unless foo
+            b
+          else
+            d
+          end
+        RUBY
+      end
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
-            a = unless foo
-              b
-            else
-              d
-            end
-          RUBY
-        end
+      it 'uses proper end alignment in case' do
+        source = <<-RUBY.strip_indent
+          case foo
+          when bar
+            a = b
+          when baz
+            a = c
+          else
+            a = d
+          end
+        RUBY
 
-        it 'uses proper end alignment in case' do
-          source = <<-RUBY.strip_indent
-            case foo
-            when bar
-              a = b
-            when baz
-              a = c
-            else
-              a = d
-            end
-          RUBY
+        new_source = autocorrect_source(source)
 
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
-            a = case foo
-            when bar
-              b
-            when baz
-              c
-            else
-              d
-            end
-          RUBY
-        end
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          a = case foo
+          when bar
+            b
+          when baz
+            c
+          else
+            d
+          end
+        RUBY
       end
     end
   end

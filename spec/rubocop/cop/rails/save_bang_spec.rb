@@ -3,6 +3,8 @@
 RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
   subject(:cop) { described_class.new(config) }
 
+  let(:cop_config) { { 'AllowImplicitReturn' => true } }
+
   shared_examples 'checks_common_offense' do |method|
     it "when using #{method} with arguments" do
       inspect_source("object.#{method}(name: 'Tom', age: 20)")
@@ -515,8 +517,6 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
   end
 
   described_class::MODIFY_PERSIST_METHODS.each do |method|
-    let(:cop_config) { { 'AllowImplicitReturn' => true } }
-
     context method.to_s do
       it_behaves_like('checks_common_offense', method)
       it_behaves_like('checks_variable_return_use_offense', method, true)
@@ -553,8 +553,6 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
   end
 
   described_class::CREATE_PERSIST_METHODS.each do |method|
-    let(:cop_config) { { 'AllowImplicitReturn' => true } }
-
     context method.to_s do
       it_behaves_like('checks_common_offense', method)
       it_behaves_like('checks_variable_return_use_offense', method, false)

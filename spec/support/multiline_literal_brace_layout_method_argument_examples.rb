@@ -26,6 +26,8 @@ shared_examples_for 'multiline literal brace layout method argument' do
     end
 
     context 'but no comment after the last element' do
+      let(:b_comment) { '' }
+
       it 'autocorrects the closing brace' do
         new_source = autocorrect_source(source)
 

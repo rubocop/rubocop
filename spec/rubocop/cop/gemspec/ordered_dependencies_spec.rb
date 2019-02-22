@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     end
   end
 
-  include_examples 'ordered dependency', 'add_dependency' do
+  it_behaves_like 'ordered dependency', 'add_dependency' do
     let(:offense_message) { <<-RUBY.strip_indent }
       Gem::Specification.new do |spec|
         spec.add_dependency 'rubocop'
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     RUBY
   end
 
-  include_examples 'ordered dependency', 'add_runtime_dependency' do
+  it_behaves_like 'ordered dependency', 'add_runtime_dependency' do
     let(:offense_message) { <<-RUBY.strip_indent }
       Gem::Specification.new do |spec|
         spec.add_runtime_dependency 'rubocop'
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
     RUBY
   end
 
-  include_examples 'ordered dependency', 'add_development_dependency' do
+  it_behaves_like 'ordered dependency', 'add_development_dependency' do
     let(:offense_message) { <<-RUBY.strip_indent }
       Gem::Specification.new do |spec|
         spec.add_development_dependency 'rubocop'
