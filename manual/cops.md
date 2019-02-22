@@ -452,6 +452,7 @@ In the following section you find all available cops:
 * [Style/ImplicitRuntimeError](cops_style.md#styleimplicitruntimeerror)
 * [Style/InfiniteLoop](cops_style.md#styleinfiniteloop)
 * [Style/InlineComment](cops_style.md#styleinlinecomment)
+* [Style/InstanceVarsInClass](cops_style.md#styleinstancevarsinclass)
 * [Style/InverseMethods](cops_style.md#styleinversemethods)
 * [Style/IpAddresses](cops_style.md#styleipaddresses)
 * [Style/Lambda](cops_style.md#stylelambda)

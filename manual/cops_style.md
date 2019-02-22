@@ -2556,6 +2556,78 @@ foo.each do |f|
 end
 ```
 
+## Style/InstanceVarsInClass
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.66 | -
+
+This cop checks for instance variables used in classes outside of the
+initializer. It encourages using attr_reader or attr_accessor to set
+up safer methods to read from or write to your instance variable.
+
+In Rails projects, it's probably good to exclude controllers, jobs,
+and mailers straightaway.
+
+```yaml
+Exclude:
+  - "app/controllers/**/*"
+  - "app/jobs/**/*"
+  - "app/mailers/**/*"
+```
+
+### Examples
+
+```ruby
+# bad
+class Foo
+  def initialize
+    @foo = "bar"
+  end
+
+  def instance_method
+    @foo
+  end
+end
+
+# bad
+class Foo
+  def initialize
+    @foo = "bar"
+  end
+
+  def instance_method
+    @foo = "baz"
+  end
+end
+
+# good
+class Foo
+  attr_reader :foo
+
+  def initialize
+    @foo = "bar"
+  end
+
+  def instance_method
+    foo
+  end
+end
+
+# good
+class Foo
+  attr_accessor :foo
+
+  def initialize
+    @foo = "bar"
+  end
+
+  def instance_method
+    foo = "baz"
+  end
+end
+```
+
 ## Style/InverseMethods
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

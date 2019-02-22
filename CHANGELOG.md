@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6787](https://github.com/rubocop-hq/rubocop/pull/6787): Add `Style/InstanceVarsInClass` cop to encourage `attr_reader` / `attr_accessor` over using instance variables directly in classes. ([@anujbiyani][])
+
 ### Changes
 
 * [#6688](https://github.com/rubocop-hq/rubocop/pull/6688): Add `iterator?` to deprecated methods and prefer `block_given?` instead. ([@tejasbubane][])
@@ -3828,3 +3832,4 @@
 [@mhelmetag]: https://github.com/mhelmetag
 [@Bhacaz]: https://github.com/bhacaz
 [@enkessler]: https://github.com/enkessler
+[@anujbiyani]: https://github.com/anujbiyani
