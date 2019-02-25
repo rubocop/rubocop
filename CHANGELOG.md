@@ -21,6 +21,7 @@
 * [#6800](https://github.com/rubocop-hq/rubocop/issues/6800): Fix an incorrect auto-correct for `Rails/Validation` when method arguments are enclosed in parentheses. ([@koic][])
 * [#6808](https://github.com/rubocop-hq/rubocop/issues/6808): Prevent false positive in `Naming/ConstantName` when assigning a frozen range. ([@drenmi][])
 * Fix the calculation of `Metrics/AbcSize`. Comparison methods and `else` branches add to the comparison count. ([@rrosenblum][])
+* [#6791](https://github.com/rubocop-hq/rubocop/pull/6791): Allow `Rails/ReflectionClassName` to use symbol argument for `class_name`. ([@unasuke][])
 
 ### Changes
 
@@ -3853,3 +3854,4 @@
 [@Bhacaz]: https://github.com/bhacaz
 [@enkessler]: https://github.com/enkessler
 [@tagliala]: https://github.com/tagliala
+[@unasuke]: https://github.com/unasuke
