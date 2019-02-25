@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#6688](https://github.com/rubocop-hq/rubocop/pull/6688): Add `iterator?` to deprecated methods and prefer `block_given?` instead. ([@tejasbubane][])
+
 ## 0.65.0 (2019-02-19)
 
 ### New features
