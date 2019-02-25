@@ -1072,6 +1072,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
             end
           RUBY
         end
+
+        it 'registers an offense and corrects for bad modifier indentation ' \
+           'before good method definition' do
+          expect_offense(<<-RUBY.strip_indent)
+            class Foo
+                  private
+            ^^^^^^ Use 2 (not 6) spaces for indentation.
+
+              def foo
+              end
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            class Foo
+              private
+
+              def foo
+              end
+            end
+          RUBY
+        end
       end
 
       context 'when consistency style is normal' do
