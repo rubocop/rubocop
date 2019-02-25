@@ -64,11 +64,11 @@ module RuboCop
     # @example `expect_offense` and `expect_no_corrections`
     #
     #   expect_offense(<<-RUBY.strip_indent)
-    #       a do
-    #         b
-    #       end.c
-    #       ^^^^^ Avoid chaining a method call on a do...end block.
-    #     RUBY
+    #     a do
+    #       b
+    #     end.c
+    #     ^^^^^ Avoid chaining a method call on a do...end block.
+    #   RUBY
     #
     #   expect_no_corrections
     module ExpectOffense
