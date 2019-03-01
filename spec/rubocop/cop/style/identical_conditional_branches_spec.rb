@@ -176,4 +176,16 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
       RUBY
     end
   end
+
+  context 'with empty brace' do
+    it 'does not raise any error' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if condition
+          ()
+        else
+          ()
+        end
+      RUBY
+    end
+  end
 end

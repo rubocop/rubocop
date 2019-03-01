@@ -344,6 +344,8 @@ module RuboCop
           return unless body_node.begin_type?
 
           starting_node = body_node.children.first
+          return unless starting_node
+
           starting_node.send_type? && starting_node.bare_access_modifier?
         end
 

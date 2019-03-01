@@ -210,6 +210,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         RUBY
       end
 
+      it 'does not raise any error with empty braces' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          if cond
+            ()
+          else
+            ()
+          end
+        RUBY
+      end
+
       describe '#autocorrect' do
         it 'corrects bad indentation' do
           corrected = autocorrect_source(<<-RUBY.strip_indent)

@@ -94,6 +94,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
+  it "doesn't crash with empty braces" do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if condition
+        ()
+      else
+        ()
+      end
+    RUBY
+  end
+
   shared_examples 'comparison methods' do |method|
     it 'registers an offense for comparison methods in if else' do
       expect_offense(<<-RUBY.strip_indent)
