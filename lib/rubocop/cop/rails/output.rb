@@ -21,10 +21,27 @@ module RuboCop
           (send nil? {:ap :p :pp :pretty_print :print :puts} ...)
         PATTERN
 
+        def_node_matcher :io_output?, <<-PATTERN
+          (send
+            {
+              (gvar #match_gvar?)
+              {(const nil? :STDOUT) (const nil? :STDERR)}
+            }
+            {:binwrite :syswrite :write :write_nonblock}
+            ...)
+        PATTERN
+
         def on_send(node)
-          return unless output?(node) && node.arguments?
+          return unless (output?(node) || io_output?(node)) &&
+                        node.arguments?
 
           add_offense(node, location: :selector)
+        end
+
+        private
+
+        def match_gvar?(sym)
+          %i[$stdout $stderr].include?(sym)
         end
       end
     end
