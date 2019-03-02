@@ -27,6 +27,7 @@
 
 ### Changes
 
+* Add `$stdout`/`$stderr` and `STDOUT`/`STDERR` method calls to `Rails/Output`. ([@elebow][])
 * [#6688](https://github.com/rubocop-hq/rubocop/pull/6688): Add `iterator?` to deprecated methods and prefer `block_given?` instead. ([@tejasbubane][])
 * [#6806](https://github.com/rubocop-hq/rubocop/pull/6806): Remove `powerpack` dependency. ([@dduugg][])
 * [#6810](https://github.com/rubocop-hq/rubocop/pull/6810): Exclude gemspec file by default for `Metrics/BlockLength` cop. ([@koic][])
