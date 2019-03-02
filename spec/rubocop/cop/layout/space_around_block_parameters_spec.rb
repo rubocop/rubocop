@@ -89,6 +89,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
+    it 'registers an offense for space with parens' do
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |a,  (x,  y),  z| puts x }
+                     ^ Extra space before block parameter detected.
+                          ^ Extra space before block parameter detected.
+                               ^ Extra space before block parameter detected.
+      RUBY
+    end
+
     context 'trailing comma' do
       it 'registers an offense for space after the last comma' do
         expect_offense(<<-RUBY.strip_indent)
@@ -212,6 +221,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       expect_offense(<<-RUBY.strip_indent)
         {}.each { | x,   y | puts x }
                       ^^ Extra space before block parameter detected.
+      RUBY
+    end
+
+    it 'registers an offense for space with parens at middle' do
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |(x,  y),  z| puts x }
+                   ^^^^^^^ Space before first block parameter missing.
+                      ^ Extra space before block parameter detected.
+                           ^ Extra space before block parameter detected.
+                             ^ Space after last block parameter missing.
       RUBY
     end
 
