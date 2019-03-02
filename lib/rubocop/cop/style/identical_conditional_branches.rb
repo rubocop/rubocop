@@ -69,11 +69,6 @@ module RuboCop
           return if node.elsif?
 
           branches = expand_elses(node.else_branch).unshift(node.if_branch)
-
-          # return if any branch is empty. An empty branch can be an `if`
-          # without an `else` or a branch that contains only comments.
-          return if branches.any?(&:nil?)
-
           check_branches(branches)
         end
 
@@ -81,19 +76,20 @@ module RuboCop
           return unless node.else? && node.else_branch
 
           branches = node.when_branches.map(&:body).push(node.else_branch)
-
-          return if branches.any?(&:nil?)
-
           check_branches(branches)
         end
 
         private
 
         def check_branches(branches)
-          tails = branches.compact.map { |branch| tail(branch) }
-          check_expressions(tails)
-          heads = branches.compact.map { |branch| head(branch) }
-          check_expressions(heads)
+          # return if any branch is empty. An empty branch can be an `if`
+          # without an `else` or a branch that contains only comments.
+          return if branches.any?(&:nil?)
+
+          tails = branches.map { |branch| tail(branch) }
+          check_expressions(tails) if tails.none?(&:nil?)
+          heads = branches.map { |branch| head(branch) }
+          check_expressions(heads) if tails.none?(&:nil?)
         end
 
         def check_expressions(expressions)

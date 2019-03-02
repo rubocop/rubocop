@@ -55,6 +55,7 @@ module RuboCop
 
           first_else = else_branch.children.first
 
+          return unless first_else
           return unless first_else.source_range.line == node.loc.else.line
 
           add_offense(first_else)
