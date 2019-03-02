@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
   end
 
-  context 'when EnforcedStyle is array' do
+  context 'when EnforcedStyle is brackets' do
     let(:cop_config) { { 'EnforcedStyle' => 'brackets', 'MinSize' => 0 } }
 
     it 'does not register an offense for arrays of symbols' do
@@ -166,6 +166,11 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     it 'autocorrects an array starting with %i' do
       new_source = autocorrect_source('%i(one @two $three four-five)')
       expect(new_source).to eq("[:one, :@two, :$three, :'four-five']")
+    end
+
+    it 'autocorrects an array has interpolations' do
+      new_source = autocorrect_source('%I(#{foo} #{foo}bar foo#{bar} foo)')
+      expect(new_source).to eq('[:"#{foo}", :"#{foo}bar", :"foo#{bar}", :foo]')
     end
   end
 
