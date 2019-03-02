@@ -90,6 +90,11 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     expect(corrected).to eq 'a = -123_456.78'
   end
 
+  it 'autocorrects numbers with spaces between leading minus and numbers' do
+    corrected = autocorrect_source("a = -\n  12345")
+    expect(corrected).to eq 'a = -12_345'
+  end
+
   context 'strict' do
     let(:cop_config) do
       {

@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def format_number(node)
-          int_part, float_part = node.source.split('.')
+          int_part, float_part = node.source.gsub(/\s+/, '').split('.')
           int_part = Integer(int_part)
           formatted_int = int_part
                           .abs
