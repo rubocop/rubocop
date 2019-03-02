@@ -39,6 +39,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
                         'Use the `lambda` method for all lambdas.'
         it_behaves_like 'auto-correct', 'f = lambda { x }'
       end
+
+      context 'without argument parens and spaces' do
+        let(:source) { 'f = ->x{ p x }' }
+
+        it_behaves_like 'registers an offense',
+                        'Use the `lambda` method for all lambdas.'
+        it_behaves_like 'auto-correct', 'f = lambda{ |x| p x }'
+      end
     end
 
     context 'with a multiline lambda literal' do
