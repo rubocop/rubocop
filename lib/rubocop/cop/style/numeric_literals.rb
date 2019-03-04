@@ -32,6 +32,7 @@ module RuboCop
 
         MSG = 'Use underscores(_) as thousands separator and ' \
               'separate every 3 digits with them.'.freeze
+        DELIMITER_REGEXP = /[eE.]/.freeze
 
         def on_int(node)
           check(node)
@@ -75,7 +76,20 @@ module RuboCop
         end
 
         def format_number(node)
-          int_part, float_part = node.source.gsub(/\s+/, '').split('.')
+          source = node.source.gsub(/\s+/, '')
+          int_part, additional_part = source.split(DELIMITER_REGEXP, 2)
+          formatted_int = format_int_part(int_part)
+          delimiter = source[DELIMITER_REGEXP]
+
+          if additional_part
+            formatted_int + delimiter + additional_part
+          else
+            formatted_int
+          end
+        end
+
+        # @param int_part [String]
+        def format_int_part(int_part)
           int_part = Integer(int_part)
           formatted_int = int_part
                           .abs
@@ -84,12 +98,7 @@ module RuboCop
                           .gsub(/...(?=.)/, '\&_')
                           .reverse
           formatted_int.insert(0, '-') if int_part < 0
-
-          if float_part
-            format('%<int>s.%<float>s', int: formatted_int, float: float_part)
-          else
-            formatted_int
-          end
+          formatted_int
         end
 
         def min_digits
