@@ -101,6 +101,8 @@ module RuboCop
               node.loc.begin
             when :def, :defs, :class, :module
               node.loc.name
+            when :lvasgn
+              node.child_nodes.first.loc.begin
             else
               # It is a wrapper with access modifier.
               node.child_nodes.first.loc.name
@@ -114,11 +116,15 @@ module RuboCop
         def alignment_node(node)
           ancestor_node = ancestor_node(node)
 
-          return ancestor_node if ancestor_node.nil? ||
-                                  ancestor_node.kwbegin_type?
+          return if ancestor_node.nil?
 
           assignment_node = assignment_node(ancestor_node)
-          return assignment_node if same_line?(ancestor_node, assignment_node)
+
+          if assignment_node && same_line?(ancestor_node, assignment_node)
+            return assignment_node
+          end
+
+          return ancestor_node if ancestor_node.kwbegin_type?
 
           access_modifier_node = access_modifier_node(ancestor_node)
           return access_modifier_node unless access_modifier_node.nil?
