@@ -24,7 +24,7 @@ Max | `15` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.44 | 0.58
+Enabled | Yes | No | 0.44 | 0.66
 
 This cop checks if the length of a block exceeds some maximum value.
 Comment lines can optionally be ignored.
@@ -38,6 +38,7 @@ Name | Default value | Configurable values
 CountComments | `false` | Boolean
 Max | `25` | Integer
 ExcludedMethods | `refine` | Array
+Exclude | `**/*.gemspec` | Array
 
 ## Metrics/BlockNesting
 

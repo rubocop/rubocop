@@ -4,7 +4,6 @@ $LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'rubocop/version'
 require 'English'
 
-# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |s|
   s.name = 'rubocop'
   s.version = RuboCop::Version::STRING
@@ -45,4 +44,3 @@ Gem::Specification.new do |s|
   s.add_development_dependency('bundler', '>= 1.3.0', '< 3.0')
   s.add_development_dependency('rack', '>= 2.0')
 end
-# rubocop:enable Metrics/BlockLength

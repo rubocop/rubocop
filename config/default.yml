@@ -1643,13 +1643,15 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   VersionAdded: '0.44'
-  VersionChanged: '0.58'
+  VersionChanged: '0.66'
   CountComments: false  # count full line comments?
   Max: 25
   ExcludedMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
     - refine
+  Exclude:
+    - '**/*.gemspec'
 
 Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting'
