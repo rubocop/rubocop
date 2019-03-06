@@ -61,13 +61,13 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   context 'prefer `block_given?` over `iterator?`' do
     it 'registers an offense for iterator?' do
       expect_offense(<<-RUBY.strip_indent)
-        iterator?(o)
+        iterator?
         ^^^^^^^^^ `iterator?` is deprecated in favor of `block_given?`.
       RUBY
     end
 
     it 'does not register an offense for block_given?' do
-      expect_no_offenses('block_given?(o)')
+      expect_no_offenses('block_given?')
     end
 
     it 'autocorrects `iterator?` to `block_given?`' do
