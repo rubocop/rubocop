@@ -30,7 +30,7 @@ module RuboCop
         #
         #   return true if ruby_version >= 3.1
         #
-        # And the above `ruby_version >= 3.1` is undecidedd whether it will be
+        # And the above `ruby_version >= 3.1` is undecided whether it will be
         # Ruby 3.1, 3.2, 4.0 or others.
         # See https://bugs.ruby-lang.org/issues/8976#note-41 for details.
         return false unless ruby_version >= 2.3
