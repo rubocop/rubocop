@@ -45,6 +45,13 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
         RUBY
       end
 
+      it 'registers an offence when using a symbol for the target value' do
+        expect_offense(<<-RUBY.strip_indent)
+          link_to 'Click here', 'https://www.example.com', target: :_blank
+                                                           ^^^^^^^^^^^^^^^ Specify a `:rel` option containing noopener.
+        RUBY
+      end
+
       it 'registers an offence and auto-corrects when using the block syntax' do
         expect_offense(<<-RUBY.strip_indent)
           link_to 'https://www.example.com', target: '_blank' do
