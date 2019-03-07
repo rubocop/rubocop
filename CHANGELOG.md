@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#6821](https://github.com/rubocop-hq/rubocop/pull/6821): Fix false negative for Rails/LinkToBlank when `_blank` is a symbol. ([@Intrepidd][])
 * [#6699](https://github.com/rubocop-hq/rubocop/issues/6699): Fix infinite loop for `Layout/IndentationWidth` and `Layout/IndentationConsistency` when bad modifier indentation before good method definition. ([@koic][])
 * [#6777](https://github.com/rubocop-hq/rubocop/issues/6777): Fix a false positive for `Style/TrivialAccessors` when using trivial reader/writer methods at the top level. ([@koic][])
 * [#6799](https://github.com/rubocop-hq/rubocop/pull/6799): Fix errors for `Style/ConditionalAssignment`, `Style/IdenticalConditionalBranches`, `Lint/ElseLayout`, and `Layout/IndentationWidth` with empty braces. ([@pocke][])
