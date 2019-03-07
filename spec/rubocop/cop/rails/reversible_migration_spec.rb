@@ -114,6 +114,12 @@ RSpec.describe RuboCop::Cop::Rails::ReversibleMigration, :config do
       change_column_default(:posts, :state, from: nil, to: "draft")
     RUBY
 
+    it_behaves_like 'accepts',
+                    'change_column_default(*column :from and :to)', <<-RUBY
+      columns = [:foo, :bar]
+      change_column_default(*columns, from: nil, to: "draft")
+    RUBY
+
     it_behaves_like 'offense',
                     'change_column_default(without :from and :to)', <<-RUBY
       change_column_default(:suppliers, :qualification, 'new')
