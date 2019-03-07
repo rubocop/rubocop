@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
+
 ### Bug fixes
 
 * [#6821](https://github.com/rubocop-hq/rubocop/pull/6821): Fix false negative for Rails/LinkToBlank when `_blank` is a symbol. ([@Intrepidd][])

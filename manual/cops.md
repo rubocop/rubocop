@@ -417,6 +417,7 @@ In the following section you find all available cops:
 * [Style/CommentAnnotation](cops_style.md#stylecommentannotation)
 * [Style/CommentedKeyword](cops_style.md#stylecommentedkeyword)
 * [Style/ConditionalAssignment](cops_style.md#styleconditionalassignment)
+* [Style/ConstantVisibility](cops_style.md#styleconstantvisibility)
 * [Style/Copyright](cops_style.md#stylecopyright)
 * [Style/DateTime](cops_style.md#styledatetime)
 * [Style/DefWithParentheses](cops_style.md#styledefwithparentheses)
