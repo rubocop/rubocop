@@ -140,7 +140,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :change_column_default_call, <<-PATTERN
-          (send nil? :change_column_default _ _ $...)
+          (send nil? :change_column_default {[(sym _) (sym _)] (splat _)} $...)
         PATTERN
 
         def_node_matcher :remove_column_call, <<-PATTERN
@@ -195,7 +195,7 @@ module RuboCop
 
         def check_change_column_default_node(node)
           change_column_default_call(node) do |args|
-            unless all_hash_key?(args.first, :from, :to)
+            unless all_hash_key?(args.last, :from, :to)
               add_offense(
                 node,
                 message: format(
