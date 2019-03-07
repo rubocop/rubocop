@@ -12,6 +12,7 @@
 * [#6803](https://github.com/rubocop-hq/rubocop/pull/6803): Fix error for `Style/NumericLiterals` on a literal that contains spaces. ([@pocke][])
 * [#6801](https://github.com/rubocop-hq/rubocop/pull/6801): Fix auto-correction for `Style/Lambda` with no-space argument. ([@pocke][])
 * [#6804](https://github.com/rubocop-hq/rubocop/pull/6804): Fix auto-correction of `Style/NumericLiterals` on numeric literal with exponent. ([@pocke][])
+* [#6800](https://github.com/rubocop-hq/rubocop/issues/6800): Fix an incorrect auto-correct for `Rails/Validation` when method arguments are enclosed in parentheses. ([@koic][])
 
 ### Changes
 

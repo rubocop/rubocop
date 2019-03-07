@@ -45,6 +45,19 @@ RSpec.describe RuboCop::Cop::Rails::Validation do
 
         include_examples 'auto-corrects'
       end
+
+      context "with validates_#{type}_of " \
+              'when method arguments are enclosed in parentheses' do
+        let(:auto_corrected_source) do
+          "validates(:full_name, :birth_date, #{type}: true)"
+        end
+
+        let(:source) do
+          "validates_#{type}_of(:full_name, :birth_date)"
+        end
+
+        include_examples 'auto-corrects'
+      end
     end
 
     context 'with single attribute name' do
