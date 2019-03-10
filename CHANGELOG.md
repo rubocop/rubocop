@@ -6,6 +6,7 @@
 
 * Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
 * [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding #to_json. ([@allcentury][])
+* [#5184](https://github.com/rubocop-hq/rubocop/issues/5184): Add new multiline element line break cops. ([@maxh][])
 
 ### Bug fixes
 

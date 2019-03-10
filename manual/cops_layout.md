@@ -2767,6 +2767,32 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
+## Layout/MultilineArrayLineBreaks
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.66 | -
+
+This cop ensures that each item in a multi-line array
+starts on a separate line.
+
+### Examples
+
+```ruby
+# bad
+[
+  a, b,
+  c
+]
+
+# good
+[
+  a,
+  b,
+  c
+]
+```
+
 ## Layout/MultilineAssignmentLayout
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2966,6 +2992,57 @@ line as the last element of the hash.
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
+
+## Layout/MultilineHashKeyLineBreaks
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.66 | -
+
+This cop ensures that each key in a multi-line hash
+starts on a separate line.
+
+### Examples
+
+```ruby
+# bad
+{
+  a: 1, b: 2,
+  c: 3
+}
+
+# good
+{
+  a: 1,
+  b: 2,
+  c: 3
+}
+```
+
+## Layout/MultilineMethodArgumentLineBreaks
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.66 | -
+
+This cop ensures that each argument in a multi-line method call
+starts on a separate line.
+
+### Examples
+
+```ruby
+# bad
+foo(a, b,
+  c
+)
+
+# good
+foo(
+  a,
+  b,
+  c
+)
+```
 
 ## Layout/MultilineMethodCallBraceLayout
 

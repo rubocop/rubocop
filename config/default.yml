@@ -768,6 +768,13 @@ Layout/MultilineArrayBraceLayout:
     - new_line
     - same_line
 
+Layout/MultilineArrayLineBreaks:
+  Description: >-
+                 Checks that each item in a multi-line array literal
+                 starts on a separate line.
+  Enabled: false
+  VersionAdded: '0.66'
+
 Layout/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
   StyleGuide: '#indent-conditional-assignment'
@@ -810,6 +817,20 @@ Layout/MultilineHashBraceLayout:
     - symmetrical
     - new_line
     - same_line
+
+Layout/MultilineHashKeyLineBreaks:
+  Description: >-
+                 Checks that each item in a multi-line hash literal
+                 starts on a separate line.
+  Enabled: false
+  VersionAdded: '0.66'
+
+Layout/MultilineMethodArgumentLineBreaks:
+  Description: >-
+                 Checks that each argument in a multi-line method call
+                 starts on a separate line.
+  Enabled: false
+  VersionAdded: '0.66'
 
 Layout/MultilineMethodCallBraceLayout:
   Description: >-
