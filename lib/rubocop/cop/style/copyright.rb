@@ -20,7 +20,7 @@ module RuboCop
 
         MSG = 'Include a copyright notice matching /%<notice>s/ before ' \
               'any code.'.freeze
-        AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in' \
+        AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in ' \
                                     'your RuboCop config'.freeze
 
         def investigate(processed_source)

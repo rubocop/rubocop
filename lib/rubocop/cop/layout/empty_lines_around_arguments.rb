@@ -48,6 +48,7 @@ module RuboCop
 
           extra_lines(node) { |range| add_offense(node, location: range) }
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           lambda do |corrector|

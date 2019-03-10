@@ -11,6 +11,14 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
   end
 
   it 'registers an offense for camel case in const name' \
+     'when using frozen range assignment' do
+    expect_offense(<<-RUBY.strip_indent)
+      TopCase = (1..5).freeze
+      ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+    RUBY
+  end
+
+  it 'registers an offense for camel case in const name' \
      'when using frozen object assignment' do
     expect_offense(<<-RUBY.strip_indent)
       TopCase = 5.freeze
@@ -108,5 +116,28 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
       a::Bar_foo = 10
          ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
+  end
+
+  context 'when a rhs is a conditional expression' do
+    context 'when conditional branches contain only constants' do
+      it 'does not check names' do
+        expect_no_offenses('Investigation = if true then Foo else Bar end')
+      end
+    end
+
+    context 'when conditional branches contain a value other than a constant' do
+      it 'does not check names' do
+        expect_no_offenses('Investigation = if true then "foo" else Bar end')
+      end
+    end
+
+    context 'when conditional branches contain only string values' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          TopCase = if true then 'foo' else 'bar' end
+          ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
+        RUBY
+      end
+    end
   end
 end

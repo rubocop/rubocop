@@ -7,7 +7,7 @@ module RuboCop
       private
 
       def integer_part(node)
-        node.source.sub(/^[+-]/, '').split('.').first
+        node.source.sub(/^[+-]/, '').split(/[eE.]/, 2).first
       end
     end
   end

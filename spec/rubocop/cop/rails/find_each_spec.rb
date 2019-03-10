@@ -45,15 +45,25 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
   end
 
   it 'auto-corrects each to find_each' do
-    new_source = autocorrect_source('User.all.each { |u| u.x }')
+    expect_offense(<<-RUBY.strip_indent)
+      User.all.each { |u| u.x }
+               ^^^^ Use `find_each` instead of `each`.
+    RUBY
 
-    expect(new_source).to eq('User.all.find_each { |u| u.x }')
+    expect_correction(<<-RUBY.strip_indent)
+      User.all.find_each { |u| u.x }
+    RUBY
   end
 
   it 'registers an offense with non-send ancestors' do
-    inspect_source('class C; User.all.each { |u| u.x }; end')
+    expect_offense(<<-RUBY.strip_indent)
+      class C; User.all.each { |u| u.x }; end
+                        ^^^^ Use `find_each` instead of `each`.
+    RUBY
 
-    expect(cop.messages).to eq(['Use `find_each` instead of `each`.'])
+    expect_correction(<<-RUBY.strip_indent)
+      class C; User.all.find_each { |u| u.x }; end
+    RUBY
   end
 
   it 'does not register an offense when using order(...) earlier' do

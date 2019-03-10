@@ -56,4 +56,14 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   it 'handles modifier forms' do
     expect_no_offenses('x if something')
   end
+
+  it 'handles empty braces' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if something
+        ()
+      else
+        ()
+      end
+    RUBY
+  end
 end

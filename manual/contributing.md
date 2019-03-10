@@ -38,7 +38,7 @@ are merged in `master` (or the latest stable branch).
 You can install `MkDocs` locally and use the command `mkdocs serve` to see the
 result of changes you make to the manual locally:
 
-```
+```sh
 $ cd path/to/rubocop/repo
 $ mkdocs serve
 ```

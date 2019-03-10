@@ -16,6 +16,9 @@ module RuboCop
 
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
+    INTERNAL_PARAMS = %w[Description StyleGuide VersionAdded
+                         VersionChanged Reference Safe SafeAutoCorrect].freeze
+
     # 2.2 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.2
     KNOWN_RUBIES = [2.2, 2.3, 2.4, 2.5, 2.6].freeze
@@ -23,6 +26,8 @@ module RuboCop
     RUBY_VERSION_FILENAME = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
+      'Style/FlipFlop' =>
+        'The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.',
       'Style/TrailingComma' =>
         'The `Style/TrailingComma` cop no longer exists. Please use ' \
         '`Style/TrailingCommaInArguments`, ' \
@@ -509,12 +514,17 @@ module RuboCop
     def validate_parameter_names(valid_cop_names)
       valid_cop_names.each do |name|
         validate_section_presence(name)
-        self[name].each_key do |param|
-          next if COMMON_PARAMS.include?(param) ||
-                  ConfigLoader.default_configuration[name].key?(param)
+        default_config = ConfigLoader.default_configuration[name]
 
-          warn Rainbow("Warning: unrecognized parameter #{name}:#{param} " \
-                       "found in #{smart_loaded_path}").yellow
+        self[name].each_key do |param|
+          next if COMMON_PARAMS.include?(param) || default_config.key?(param)
+
+          message =
+            "Warning: #{name} does not support #{param} parameter.\n\n" \
+            "Supported parameters are:\n\n" \
+            "  - #{(default_config.keys - INTERNAL_PARAMS).join("\n  - ")}\n"
+
+          warn Rainbow(message).yellow.to_s
         end
       end
     end

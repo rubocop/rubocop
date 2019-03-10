@@ -14,6 +14,8 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
       expect_offense(<<-RUBY.strip_indent)
         class A; "abc" "def"; end
                  ^^^^^^^^^^^ Combine "abc" and "def" into a single string literal, rather than using implicit string concatenation.
+        class B; 'ghi' 'jkl'; end
+                 ^^^^^^^^^^^ Combine 'ghi' and 'jkl' into a single string literal, rather than using implicit string concatenation.
       RUBY
     end
   end
@@ -32,7 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
   context 'when the string literals contain newlines' do
     it 'registers an offense' do
       inspect_source(<<-RUBY.strip_indent)
-        def method; "ab\\nc" "de\\nf"; end
+        def method; "ab\nc" "de\nf"; end
       RUBY
 
       expect(cop.offenses.size).to eq(1)

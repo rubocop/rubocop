@@ -978,8 +978,8 @@ Enabled | Yes | No | 0.51 | -
 This cop checks for comments put on the same line as some keywords.
 These keywords are: `begin`, `class`, `def`, `end`, `module`.
 
-Note that some comments (such as `:nodoc:` and `rubocop:disable`) are
-allowed.
+Note that some comments (`:nodoc:`, `:yields:, and `rubocop:disable`)
+are allowed.
 
 ### Examples
 
@@ -1122,6 +1122,37 @@ Name | Default value | Configurable values
 EnforcedStyle | `assign_to_condition` | `assign_to_condition`, `assign_inside_condition`
 SingleLineConditionsOnly | `true` | Boolean
 IncludeTernaryExpressions | `true` | Boolean
+
+## Style/ConstantVisibility
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.66 | -
+
+This cop checks that constants defined in classes and modules have
+an explicit visibility declaration. By default, Ruby makes all class-
+and module constants public, which litters the public API of the
+class or module. Explicitly declaring a visibility makes intent more
+clear, and prevents outside actors from touching private state.
+
+### Examples
+
+```ruby
+# bad
+class Foo
+  BAR = 42
+  BAZ = 43
+end
+
+# good
+class Foo
+  BAR = 42
+  private_constant :BAR
+
+  BAZ = 43
+  public_constant :BAZ
+end
+```
 
 ## Style/Copyright
 
@@ -1889,32 +1920,6 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ```
 
-## Style/FlipFlop
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.16 | -
-
-This cop looks for uses of flip flop operator
-
-### Examples
-
-```ruby
-# bad
-(1..20).each do |x|
-  puts x if (x == 5) .. (x == 10)
-end
-
-# good
-(1..20).each do |x|
-  puts x if (x >= 5) && (x <= 10)
-end
-```
-
-### References
-
-* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
-
 ## Style/For
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2090,10 +2095,10 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.36 | 0.47
 
-This cop is designed to help upgrade to Ruby 3.0. It will add the
+This cop is designed to help upgrade to after Ruby 3.0. It will add the
 comment `# frozen_string_literal: true` to the top of files to
 enable frozen string literals. Frozen string literals may be default
-in Ruby 3.0. The comment will be added below a shebang and encoding
+after Ruby 3.0. The comment will be added below a shebang and encoding
 comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 ### Examples
@@ -2764,7 +2769,7 @@ EnforcedStyle | `call` | `call`, `braces`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.18 | -
+Enabled | Yes | Yes (Unsafe) | 0.18 | 0.64
 
 This cop checks for string literal concatenation at
 the end of a line.
@@ -2797,7 +2802,7 @@ In the default style (require_parentheses), macro methods are ignored.
 Additional methods can be added to the `IgnoredMethods` list. This
 option is valid only in the default style.
 
-In the alternative style (omit_parentheses), there are two additional
+In the alternative style (omit_parentheses), there are three additional
 options.
 
 1. `AllowParenthesesInChaining` is `false` by default. Setting it to
@@ -2808,9 +2813,15 @@ options.
     to `true` allows the presence of parentheses in multi-line method
     calls.
 
+3. `AllowParenthesesInCamelCaseMethod` is `false` by default. This
+    allows the presence of parentheses when calling a method whose name
+    begins with a capital letter and which has no arguments. Setting it
+    to `true` allows the presence of parentheses in such a method call
+    even with arguments.
+
 ### Examples
 
-#### EnforcedStyle: require_parentheses
+#### EnforcedStyle: require_parentheses (default)
 
 ```ruby
 # bad
@@ -2896,6 +2907,22 @@ foo().bar(1)
 
 # good
 foo().bar 1
+
+# AllowParenthesesInCamelCaseMethod: false (default)
+
+# bad
+Array(1)
+
+# good
+Array 1
+
+# AllowParenthesesInCamelCaseMethod: true
+
+# good
+Array(1)
+
+# good
+Array 1
 ```
 
 ### Configurable attributes
@@ -2906,6 +2933,7 @@ IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
 AllowParenthesesInMultilineCall | `false` | Boolean
 AllowParenthesesInChaining | `false` | Boolean
+AllowParenthesesInCamelCaseMethod | `false` | Boolean
 EnforcedStyle | `require_parentheses` | `require_parentheses`, `omit_parentheses`
 
 ### References
@@ -3363,14 +3391,17 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.11 | 0.53
+Enabled | Yes | Yes (Unsafe) | 0.11 | 0.65
 
 This cop checks for use of `extend self` or `module_function` in a
 module.
 
 Supported styles are: module_function, extend_self.
 
-These offenses are not auto-corrected since there are different
+In case there are private methods, the cop won't be activated.
+Otherwise, it forces to change the flow of the default code.
+
+These offenses are not safe to auto-correct since there are different
 implications to each approach.
 
 ### Examples
@@ -3387,6 +3418,17 @@ end
 # good
 module Test
   module_function
+  # ...
+end
+```
+#### EnforcedStyle: module_function (default)
+
+```ruby
+# good
+module Test
+  extend self
+  # ...
+  private
   # ...
 end
 ```
@@ -3411,6 +3453,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `module_function` | `module_function`, `extend_self`
+Autocorrect | `false` | Boolean
 
 ### References
 
@@ -3619,12 +3662,22 @@ foo if ['a', 'b', 'c'].include?(a)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | -
+Enabled | Yes | Yes  | 0.34 | 0.65
 
 This cop checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
 
+Strict mode can be used to freeze all constants, rather than
+just literals.
+Strict mode is considered an experimental feature. It has not been
+updated with an exhaustive list of all methods that will produce
+frozen objects so there is a decent chance of getting some false
+positives. Luckily, there is no harm in freezing an already
+frozen object.
+
 ### Examples
+
+#### EnforcedStyle: literals (default)
 
 ```ruby
 # bad
@@ -3635,9 +3688,41 @@ CONST = [1, 2, 3].freeze
 
 # good
 CONST = <<~TESTING.freeze
-This is a heredoc
+  This is a heredoc
 TESTING
+
+# good
+CONST = Something.new
 ```
+#### EnforcedStyle: strict
+
+```ruby
+# bad
+CONST = Something.new
+
+# bad
+CONST = Struct.new do
+  def foo
+    puts 1
+  end
+end
+
+# good
+CONST = Something.new.freeze
+
+# good
+CONST = Struct.new do
+  def foo
+    puts 1
+  end
+end.freeze
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `literals` | `literals`, `strict`
 
 ## Style/NegatedIf
 
@@ -5901,7 +5986,7 @@ This cop checks symbol literal syntax.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.26 | 0.40
+Enabled | Yes | Yes (Unsafe) | 0.26 | 0.64
 
 Use symbols as procs when possible.
 
@@ -6070,6 +6155,9 @@ This cop checks for trailing comma in argument lists.
 method(1, 2,)
 
 # good
+method(1, 2)
+
+# good
 method(
   1, 2,
   3,
@@ -6088,6 +6176,9 @@ method(
 method(1, 2,)
 
 # good
+method(1, 2)
+
+# good
 method(
   1,
   2,
@@ -6098,6 +6189,9 @@ method(
 ```ruby
 # bad
 method(1, 2,)
+
+# good
+method(1, 2)
 
 # good
 method(
@@ -6696,15 +6790,15 @@ WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.50
+Enabled | Yes | Yes  | 0.49 | 0.63
 
-This cop checks for Yoda conditions, i.e. comparison operations where
-readability is reduced because the operands are not ordered the same
-way as they would be ordered in spoken English.
+This cop can either enforce or forbid Yoda conditions,
+i.e. comparison operations where the order of expression is reversed.
+eg. `5 == x`
 
 ### Examples
 
-#### EnforcedStyle: all_comparison_operators (default)
+#### EnforcedStyle: forbid_for_all_comparison_operators (default)
 
 ```ruby
 # bad
@@ -6719,7 +6813,7 @@ foo == "bar"
 foo <= 42
 bar > 10
 ```
-#### EnforcedStyle: equality_operators_only
+#### EnforcedStyle: forbid_for_equality_operators_only
 
 ```ruby
 # bad
@@ -6730,12 +6824,38 @@ bar > 10
 99 >= foo
 3 < a && a < 5
 ```
+#### EnforcedStyle: require_for_all_comparison_operators
+
+```ruby
+# bad
+foo == 99
+foo == "bar"
+foo <= 42
+bar > 10
+
+# good
+99 == foo
+"bar" != foo
+42 >= foo
+10 < bar
+```
+#### EnforcedStyle: require_for_equality_operators_only
+
+```ruby
+# bad
+99 >= foo
+3 < a && a < 5
+
+# good
+99 == foo
+"bar" != foo
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `all_comparison_operators` | `all_comparison_operators`, `equality_operators_only`
+EnforcedStyle | `forbid_for_all_comparison_operators` | `forbid_for_all_comparison_operators`, `forbid_for_equality_operators_only`, `require_for_all_comparison_operators`, `require_for_equality_operators_only`
 
 ### References
 

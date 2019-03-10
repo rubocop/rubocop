@@ -10,14 +10,8 @@ RSpec.describe RuboCop::Cop::Style::EmptyLambdaParameter do
       -> () { do_something }
          ^^ Omit parentheses for the empty lambda parameters.
     RUBY
-  end
 
-  it 'auto-corrects for a lambda' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      -> () { do_something }
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect_correction(<<-RUBY.strip_indent)
       -> { do_something }
     RUBY
   end

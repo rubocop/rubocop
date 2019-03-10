@@ -398,7 +398,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Metrics/LineLength:
             Max: 95
         YAML
-        Dir.chdir('dir') { expect(cli.run(%w[--auto-gen-config])).to eq(0) }
+        RuboCop::PathUtil.chdir('dir') do
+          expect(cli.run(%w[--auto-gen-config])).to eq(0)
+        end
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
@@ -808,6 +810,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'generates Exclude instead of Max when --auto-gen-only-exclude is' \
        ' used' do
       create_file('example1.rb', ['#' * 90,
+                                  '#' * 90,
                                   'puts 123456'])
       create_file('example2.rb', <<-RUBY.strip_indent)
         def function(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
@@ -818,8 +821,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # absolute Exclude paths will point into this example's work directory.
       RuboCop::ConfigLoader.default_configuration = nil
 
-      expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude'])).to eq(0)
+      expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude',
+                      '--exclude-limit', '1'])).to eq(0)
       actual = IO.read('.rubocop_todo.yml').split($RS)
+
+      # With --exclude-limit 1 we get MinDigits generated for NumericLiterals
+      # because there's one offense in each file. The other cops have offenses
+      # in just one file, even though there may be more than one offense for
+      # the same cop in a single file. Exclude properties are generated for
+      # them.
       expect(actual.grep(/^[^#]/).join($RS)).to eq(<<-YAML.strip_indent.chomp)
         Lint/UnusedMethodArgument:
           Exclude:
@@ -828,9 +838,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Exclude:
             - 'example2.rb'
         Style/NumericLiterals:
-          Exclude:
-            - 'example1.rb'
-            - 'example2.rb'
+          MinDigits: 7
         Metrics/LineLength:
           Exclude:
             - 'example1.rb'

@@ -120,14 +120,20 @@ module RuboCop
         end
 
         def check_each_arg(args)
-          args.children.butfirst.each do |arg|
-            expr = arg.source_range
-            check_no_space(
-              range_with_surrounding_space(range: expr, side: :left).begin_pos,
-              expr.begin_pos - 1,
-              'Extra space before'
-            )
+          args.children.each do |arg|
+            check_arg(arg)
           end
+        end
+
+        def check_arg(arg)
+          arg.children.each { |a| check_arg(a) } if arg.mlhs_type?
+
+          expr = arg.source_range
+          check_no_space(
+            range_with_surrounding_space(range: expr, side: :left).begin_pos,
+            expr.begin_pos - 1,
+            'Extra space before'
+          )
         end
 
         def check_space(space_begin_pos, space_end_pos, range, msg)

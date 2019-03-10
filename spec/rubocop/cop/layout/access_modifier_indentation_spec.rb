@@ -103,12 +103,12 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'accepts misaligned private in blocks that are not recognized as ' \
-       'class/module definitions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+    it 'registers an offense for access modifiers in arbitrary blocks' do
+      expect_offense(<<-RUBY.strip_indent)
         Test = func do
 
         private
+        ^^^^^^^ Indent access modifiers like `private`.
 
           def test; end
         end
@@ -156,6 +156,17 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
         class Test
 
           protected
+
+          def test; end
+        end
+      RUBY
+    end
+
+    it 'accepts properly indented private in module defined with Module.new' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Test = Module.new do
+
+          private
 
           def test; end
         end

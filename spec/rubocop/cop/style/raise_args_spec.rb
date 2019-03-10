@@ -20,6 +20,45 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'when used in a ternary expression' do
+      it 'registers an offense and auto-corrects' do
+        expect_offense(<<-RUBY.strip_indent)
+          foo ? raise(Ex, 'error') : bar
+                ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          foo ? raise(Ex.new('error')) : bar
+        RUBY
+      end
+    end
+
+    context 'when used in a logical and expression' do
+      it 'registers an offense and auto-corrects' do
+        expect_offense(<<-RUBY.strip_indent)
+          bar && raise(Ex, 'error')
+                 ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          bar && raise(Ex.new('error'))
+        RUBY
+      end
+    end
+
+    context 'when used in a logical or expression' do
+      it 'registers an offense and auto-corrects' do
+        expect_offense(<<-RUBY.strip_indent)
+          bar || raise(Ex, 'error')
+                 ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          bar || raise(Ex.new('error'))
+        RUBY
+      end
+    end
+
     context 'with correct + opposite' do
       it 'reports an offense' do
         expect_offense(<<-RUBY.strip_indent)
@@ -108,6 +147,45 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
         it 'auto-corrects to exploded style' do
           new_source = autocorrect_source('raise Ex.new')
           expect(new_source).to eq('raise Ex')
+        end
+      end
+
+      context 'when used in a ternary expression' do
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<-RUBY.strip_indent)
+            foo ? raise(Ex.new('error')) : bar
+                  ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            foo ? raise(Ex, 'error') : bar
+          RUBY
+        end
+      end
+
+      context 'when used in a logical and expression' do
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<-RUBY.strip_indent)
+            bar && raise(Ex.new('error'))
+                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            bar && raise(Ex, 'error')
+          RUBY
+        end
+      end
+
+      context 'when used in a logical or expression' do
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<-RUBY.strip_indent)
+            bar || raise(Ex.new('error'))
+                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            bar || raise(Ex, 'error')
+          RUBY
         end
       end
     end

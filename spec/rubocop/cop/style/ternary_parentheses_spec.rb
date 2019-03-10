@@ -155,7 +155,8 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
                       'foo = 1 + 1 == 2 ? a : b'
 
       it_behaves_like 'code with offense',
-                      'foo = (foo1 == foo2) ? a : b'
+                      'foo = (foo1 == foo2) ? a : b',
+                      'foo = foo1 == foo2 ? a : b'
 
       it_behaves_like 'code with offense',
                       'foo = (bar && baz) ? a : b',
@@ -278,6 +279,23 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
     context 'with method call condition' do
       it_behaves_like 'code with offense',
                       'foo = (defined? bar) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      '(%w(a b).include? params[:t]) ? "ab" : "c"'
+
+      it_behaves_like 'code with offense',
+                      '(%w(a b).include? params[:t], 3) ? "ab" : "c"'
+
+      it_behaves_like 'code with offense',
+                      '(%w(a b).include?(params[:t], x)) ? "ab" : "c"',
+                      '%w(a b).include?(params[:t], x) ? "ab" : "c"'
+
+      it_behaves_like 'code with offense',
+                      '(%w(a b).include? "a") ? "ab" : "c"'
+
+      it_behaves_like 'code with offense',
+                      '(%w(a b).include?("a")) ? "ab" : "c"',
+                      '%w(a b).include?("a") ? "ab" : "c"'
 
       it_behaves_like 'code with offense',
                       'foo = (baz? bar) ? a : b'

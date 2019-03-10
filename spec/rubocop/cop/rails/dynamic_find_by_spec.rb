@@ -138,4 +138,16 @@ RSpec.describe RuboCop::Cop::Rails::DynamicFindBy, :config do
       User.find_by_sql(["select * from users where name = ?", name])
     RUBY
   end
+
+  context 'when using safe navigation operator', :ruby23 do
+    context 'with dynamic find_by_*' do
+      let(:source) { 'user&.find_by_name(name)' }
+
+      include_examples(
+        'register an offense and auto correct',
+        'Use `find_by` instead of dynamic `find_by_name`.',
+        'user&.find_by(name: name)'
+      )
+    end
+  end
 end

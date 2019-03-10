@@ -225,4 +225,57 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
       end
     end
   end
+
+  context 'when inverted condition (unless)' do
+    it 'registers no offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        unless a
+          b
+        else
+          c
+        end
+      RUBY
+    end
+
+    context 'when condition and else branch are same' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          unless b
+          ^^^^^^^^ Use double pipes `||` instead.
+            y(x, z)
+          else
+            b
+          end
+        RUBY
+      end
+
+      context 'when unless branch is complex' do
+        it 'registers no offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            unless b
+              c
+              d
+            else
+              b
+            end
+          RUBY
+        end
+      end
+    end
+
+    describe '#autocorrection' do
+      it 'auto-corrects offense' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          unless b
+            c
+          else
+            b
+          end
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          b || c
+        RUBY
+      end
+    end
+  end
 end

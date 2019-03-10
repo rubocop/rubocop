@@ -62,6 +62,13 @@ module RuboCop
       @pwd = nil
     end
 
+    def self.chdir(dir, &block)
+      reset_pwd
+      Dir.chdir(dir, &block)
+    ensure
+      reset_pwd
+    end
+
     def hidden_file_in_not_hidden_dir?(pattern, path)
       File.fnmatch?(
         pattern, path,

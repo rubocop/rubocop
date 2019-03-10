@@ -146,6 +146,7 @@ module RuboCop
 
           add_offense_for_node(node)
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           save_loc = node.loc.selector

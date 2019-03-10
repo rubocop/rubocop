@@ -96,7 +96,7 @@ module RuboCop
 
         def check_begin(node)
           expressions = *node
-          expressions = expressions.drop_last(1) unless in_void_context?(node)
+          expressions.pop unless in_void_context?(node)
           expressions.each do |expr|
             check_expression(expr)
           end

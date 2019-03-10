@@ -350,6 +350,8 @@ module RuboCop
         end
 
         def lhs_all_match?(branches)
+          return true if branches.empty?
+
           first_lhs = lhs(branches.first)
           branches.all? { |branch| lhs(branch) == first_lhs }
         end
@@ -372,7 +374,7 @@ module RuboCop
         def allowed_statements?(branches)
           return false unless branches.all?
 
-          statements = branches.map { |branch| tail(branch) }
+          statements = branches.map { |branch| tail(branch) }.compact
 
           lhs_all_match?(statements) && statements.none?(&:masgn_type?) &&
             assignment_types_match?(*statements)

@@ -17,13 +17,14 @@ module RuboCop
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
               '`send`.'.freeze
 
-        def_node_matcher :sending?, '(send _ :send ...)'
+        def_node_matcher :sending?, '({send csend} _ :send ...)'
 
         def on_send(node)
           return unless sending?(node) && node.arguments?
 
           add_offense(node, location: :selector)
         end
+        alias on_csend on_send
       end
     end
   end

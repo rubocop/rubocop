@@ -75,6 +75,20 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         RUBY
       end
 
+      it 'accepts a correctly indented ) inside a block' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          block_adds_extra_indentation do
+            some_method(a,
+              x: 1,
+              y: 2
+            )
+            b =
+              some_method(a,
+                         )
+          end
+        RUBY
+      end
+
       it 'autocorrects misindented )' do
         corrected = autocorrect_source(<<-RUBY.strip_indent)
           some_method(a,
@@ -113,6 +127,27 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         expect_no_offenses(<<-RUBY.strip_indent)
           some_method(
                      )
+        RUBY
+      end
+    end
+
+    context 'with first multiline arg on new line' do
+      it 'accepts ) on the same level as ( with args on same line' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          where(
+            "multiline
+             condition", second_arg
+          )
+        RUBY
+      end
+
+      it 'accepts ) on the same level as ( with second arg on new line' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          where(
+            "multiline
+             condition",
+            second_arg
+          )
         RUBY
       end
     end
@@ -279,6 +314,11 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          foo = some_method(
+          )
+        RUBY
       end
     end
   end
@@ -346,6 +386,17 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                  )
                  .methC
       RUBY
+    end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for misaligned )' do
+        expect_offense(<<-RUBY.strip_indent)
+          receiver&.some_method(
+            a
+            )
+            ^ Indent `)` to column 0 (not 2)
+        RUBY
+      end
     end
   end
 

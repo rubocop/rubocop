@@ -107,7 +107,7 @@ NodePattern.new('send').match(node) # => true
 ```
 
 It matches because the root is a `send` type. Now lets match it deeply using
-parens to define details for sub-nodes. If you don't care about what a internal
+parens to define details for sub-nodes. If you don't care about what an internal
 node is, you can use `...` to skip it and just consider " a node".
 
 ```ruby
@@ -368,7 +368,7 @@ To make it fast and do not get confused with other cops in action,  you can use
 `--only` parameter in the command line to filter by your cop name:
 
 ```sh
-rubocop --only Style/SimplifyNotEmptyWithAny
+$ rubocop --only Style/SimplifyNotEmptyWithAny
 ```
 
 In the end, do not forget to run `rake generate_cops_documentation` to update

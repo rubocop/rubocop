@@ -16,15 +16,6 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
   end
 
   context 'when the last argument is an options hash named something else' do
-    let(:source) do
-      <<-RUBY.strip_indent
-        def steep(flavor, duration, config={})
-          mug = config.fetch(:mug)
-          prep(flavor, duration, mug)
-        end
-      RUBY
-    end
-
     it 'does not register an offense' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def steep(flavor, duration, config={})

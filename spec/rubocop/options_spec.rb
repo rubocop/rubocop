@@ -105,6 +105,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -S, --display-style-guide        Display style guide URLs in offense messages.
               -R, --rails                      Run extra Rails cops.
               -a, --auto-correct               Auto-correct offenses.
+                  --ignore-disable-comments    Run cops even when they are disabled locally
+                                               with a comment.
                   --safe                       Run only safe cops.
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.

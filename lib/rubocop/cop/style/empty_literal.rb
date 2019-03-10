@@ -67,10 +67,13 @@ module RuboCop
         end
 
         def first_argument_unparenthesized?(node)
-          return false unless node.parent && node.parent.send_type?
+          parent = node.parent
+          unless parent && %i[send super zsuper].include?(parent.type)
+            return false
+          end
 
-          _receiver, _method_name, *args = *node.parent
-          node.object_id == args.first.object_id && !parentheses?(node.parent)
+          node.object_id == parent.arguments.first.object_id &&
+            !parentheses?(node.parent)
         end
 
         def replacement_range(node)
@@ -79,7 +82,7 @@ module RuboCop
             # `some_method {}` is not same as `some_method Hash.new`
             # because the braces are interpreted as a block. We will have
             # to rewrite the arguments to wrap them in parenthesis.
-            _receiver, _method_name, *args = *node.parent
+            args = node.parent.arguments
 
             range_between(args[0].loc.expression.begin_pos - 1,
                           args[-1].loc.expression.end_pos)
@@ -107,7 +110,7 @@ module RuboCop
               # `some_method {}` is not same as `some_method Hash.new`
               # because the braces are interpreted as a block. We will have
               # to rewrite the arguments to wrap them in parenthesis.
-              _receiver, _method_name, *args = *node.parent
+              args = node.parent.arguments
               "(#{args[1..-1].map(&:source).unshift('{}').join(', ')})"
             else
               '{}'

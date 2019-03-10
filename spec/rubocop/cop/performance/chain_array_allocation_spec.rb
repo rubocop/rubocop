@@ -4,8 +4,9 @@ RSpec.describe RuboCop::Cop::Performance::ChainArrayAllocation, :config do
   subject(:cop) { described_class.new(config) }
 
   def generate_message(method_one, method_two)
-    "Use `#{method_one}...#{method_two}!` instead of `#{method_one}"\
-    "...#{method_two}`."
+    "Use unchained `#{method_one}!` and `#{method_two}!` "\
+    '(followed by `return array` if required) instead of '\
+    "chaining `#{method_one}...#{method_two}`."
   end
 
   shared_examples 'map_and_flat' do |method, method_two|

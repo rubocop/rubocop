@@ -3,11 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for Yoda conditions, i.e. comparison operations where
-      # readability is reduced because the operands are not ordered the same
-      # way as they would be ordered in spoken English.
+      # This cop can either enforce or forbid Yoda conditions,
+      # i.e. comparison operations where the order of expression is reversed.
+      # eg. `5 == x`
       #
-      # @example EnforcedStyle: all_comparison_operators (default)
+      # @example EnforcedStyle: forbid_for_all_comparison_operators (default)
       #   # bad
       #   99 == foo
       #   "bar" != foo
@@ -20,7 +20,7 @@ module RuboCop
       #   foo <= 42
       #   bar > 10
       #
-      # @example EnforcedStyle: equality_operators_only
+      # @example EnforcedStyle: forbid_for_equality_operators_only
       #   # bad
       #   99 == foo
       #   "bar" != foo
@@ -28,6 +28,28 @@ module RuboCop
       #   # good
       #   99 >= foo
       #   3 < a && a < 5
+      #
+      # @example EnforcedStyle: require_for_all_comparison_operators
+      #   # bad
+      #   foo == 99
+      #   foo == "bar"
+      #   foo <= 42
+      #   bar > 10
+      #
+      #   # good
+      #   99 == foo
+      #   "bar" != foo
+      #   42 >= foo
+      #   10 < bar
+      #
+      # @example EnforcedStyle: require_for_equality_operators_only
+      #   # bad
+      #   99 >= foo
+      #   3 < a && a < 5
+      #
+      #   # good
+      #   99 == foo
+      #   "bar" != foo
       class YodaCondition < Cop
         include ConfigurableEnforcedStyle
         include RangeHelp
@@ -46,9 +68,10 @@ module RuboCop
         NONCOMMUTATIVE_OPERATORS = %i[===].freeze
 
         def on_send(node)
-          return unless yoda_condition?(node)
+          return unless yoda_compatible_condition?(node)
+          return if equality_only? && non_equality_operator?(node)
 
-          add_offense(node)
+          valid_yoda?(node) || add_offense(node)
         end
 
         def autocorrect(node)
@@ -59,17 +82,28 @@ module RuboCop
 
         private
 
-        def yoda_condition?(node)
-          return false unless node.comparison_method?
+        def enforce_yoda?
+          style == :require_for_all_comparison_operators ||
+            style == :require_for_equality_operators_only
+        end
 
-          lhs, operator, rhs = *node
-          if check_equality_only?
-            return false if non_equality_operator?(operator)
-          end
+        def equality_only?
+          style == :forbid_for_equality_operators_only ||
+            style == :require_for_equality_operators_only
+        end
 
-          return false if noncommutative_operator?(operator)
+        def yoda_compatible_condition?(node)
+          node.comparison_method? &&
+            !noncommutative_operator?(node)
+        end
 
-          lhs.literal? && !rhs.literal?
+        def valid_yoda?(node)
+          lhs, _operator, rhs = *node
+
+          return true if lhs.literal? && rhs.literal? ||
+                         !lhs.literal? && !rhs.literal?
+
+          enforce_yoda? ? lhs.literal? : rhs.literal?
         end
 
         def message(node)
@@ -91,15 +125,13 @@ module RuboCop
           REVERSE_COMPARISON.fetch(operator.to_s, operator)
         end
 
-        def check_equality_only?
-          style == :equality_operators_only
-        end
-
-        def non_equality_operator?(operator)
+        def non_equality_operator?(node)
+          _, operator, = *node
           !EQUALITY_OPERATORS.include?(operator)
         end
 
-        def noncommutative_operator?(operator)
+        def noncommutative_operator?(node)
+          _, operator, = *node
           NONCOMMUTATIVE_OPERATORS.include?(operator)
         end
       end
