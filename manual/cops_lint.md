@@ -2020,6 +2020,29 @@ This is not actually a cop. It does not inspect anything. It just
 provides methods to repack Parser's diagnostics/errors
 into RuboCop's offenses.
 
+## Lint/ToJSON
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | - | -
+
+This cop checks to make sure `#to_json` includes an optional argument.
+When overriding `#to_json`, callers may invoke JSON
+generation via `JSON.generate(your_obj)`.  Since `JSON#generate` allows
+for an optional argument, your method should too.
+
+### Examples
+
+```ruby
+# bad
+def to_json
+end
+
+# good
+def to_json(_opts)
+end
+```
+
 ## Lint/UnderscorePrefixedVariableName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
