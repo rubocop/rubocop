@@ -106,6 +106,13 @@ RSpec.describe RuboCop::NodePattern do
         expect(instance.to_s).to include pattern
       end
     end
+
+    describe 'marshal compatibility' do
+      let(:instance) { Marshal.load(Marshal.dump(super())) }
+      let(:ruby) { 'obj.method' }
+
+      it_behaves_like 'matching'
+    end
   end
 
   describe 'literals' do
