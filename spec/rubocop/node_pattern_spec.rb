@@ -100,6 +100,12 @@ RSpec.describe RuboCop::NodePattern do
         expect(instance.pattern).to eq pattern
       end
     end
+
+    describe '#to_s' do
+      it 'is instructive' do
+        expect(instance.to_s).to include pattern
+      end
+    end
   end
 
   describe 'literals' do

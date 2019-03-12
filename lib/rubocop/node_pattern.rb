@@ -561,6 +561,10 @@ module RuboCop
             "#{compiler.emit_method_code}end"
       instance_eval(src)
     end
+
+    def to_s
+      "#<#{self.class} #{pattern}>"
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength, Metrics/CyclomaticComplexity
