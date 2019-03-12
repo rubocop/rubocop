@@ -94,6 +94,12 @@ RSpec.describe RuboCop::NodePattern do
       # this is an (op-asgn ...) node
       it_behaves_like 'matching'
     end
+
+    describe '#pattern' do
+      it 'returns the pattern' do
+        expect(instance.pattern).to eq pattern
+      end
+    end
   end
 
   describe 'literals' do
