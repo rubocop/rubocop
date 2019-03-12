@@ -562,6 +562,14 @@ module RuboCop
       instance_eval(src)
     end
 
+    def marshal_load(pattern)
+      initialize pattern
+    end
+
+    def marshal_dump
+      pattern
+    end
+
     def to_s
       "#<#{self.class} #{pattern}>"
     end
