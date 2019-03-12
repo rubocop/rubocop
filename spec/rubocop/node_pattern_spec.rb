@@ -113,6 +113,20 @@ RSpec.describe RuboCop::NodePattern do
 
       it_behaves_like 'matching'
     end
+
+    describe '#dup' do
+      let(:instance) { super().dup }
+      let(:ruby) { 'obj.method' }
+
+      it_behaves_like 'matching'
+    end
+
+    describe 'yaml compatibility' do
+      let(:instance) { YAML.safe_load(YAML.dump(super()), [described_class]) }
+      let(:ruby) { 'obj.method' }
+
+      it_behaves_like 'matching'
+    end
   end
 
   describe 'literals' do

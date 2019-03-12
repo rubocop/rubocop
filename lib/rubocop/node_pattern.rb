@@ -562,6 +562,13 @@ module RuboCop
       instance_eval(src)
     end
 
+    def match(*args)
+      # If we're here, it's because the singleton method has not been defined,
+      # either because we've been dup'ed or serialized through YAML
+      initialize(pattern)
+      match(*args)
+    end
+
     def marshal_load(pattern)
       initialize pattern
     end
