@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Remove Performance cops. ([@koic][])
+
 ## 0.67.2 (2019-04-05)
 
 ### Bug fixes

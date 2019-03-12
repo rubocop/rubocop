@@ -3,6 +3,7 @@
 inherit_from: .rubocop_todo.yml
 require:
   - rubocop/cop/internal_affairs
+  - rubocop-performance
   - rubocop-rspec
 
 AllCops:

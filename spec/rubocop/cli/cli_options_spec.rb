@@ -605,18 +605,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'shows reference entry' do
-      create_file('example1.rb', '[1, 2, 3].reverse.each { |e| puts e }')
+      create_file('example1.rb', "JSON.load('{}')")
       file = abs('example1.rb')
-      url = 'https://github.com/JuanitoFatas/fast-ruby' \
-            '#enumerablereverseeach-vs-enumerablereverse_each-code'
+      url = 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html' \
+            '#method-i-load'
 
       expect(cli.run(['--format',
                       'emacs',
                       '--display-style-guide',
                       'example1.rb'])).to eq(1)
 
-      output = "#{file}:1:11: C: Performance/ReverseEach: " \
-               "Use `reverse_each` instead of `reverse.each`. (#{url})"
+      output = "#{file}:1:6: C: Security/JSONLoad: " \
+               "Prefer `JSON.parse` over `JSON.load`. (#{url})"
       expect($stdout.string.lines.to_a[-1])
         .to eq([output, ''].join("\n"))
     end

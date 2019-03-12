@@ -50,9 +50,9 @@ RSpec.describe RuboCop::CommentConfig do
         '# rubocop:disable Layout/BlockAlignment some comment why',
         '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
         '# rubocop:enable Lint/RandOne foo bar!',            # 43
-        '# rubocop:disable FlatMap',
-        '[1, 2, 3, 4].map { |e| [e, e] }.flatten(1)',
-        '# rubocop:enable FlatMap',
+        '# rubocop:disable EmptyInterpolation',
+        '"result is #{}"',
+        '# rubocop:enable EmptyInterpolation',
         '# rubocop:disable RSpec/Example',
         '# rubocop:disable Custom2/Number9'                  # 48
       ].join("\n")
@@ -93,11 +93,12 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports enabling/disabling cops without a prefix' do
-      flat_map_disabled_lines = disabled_lines_of_cop('Performance/FlatMap')
+      empty_interpolation_disabled_lines =
+        disabled_lines_of_cop('Lint/EmptyInterpolation')
 
       expected = (44..46).to_a
 
-      expect(flat_map_disabled_lines & expected).to eq(expected)
+      expect(empty_interpolation_disabled_lines & expected).to eq(expected)
     end
 
     it 'supports disabling all lines after a directive' do

@@ -26,9 +26,6 @@ module RuboCop
     RUBY_VERSION_FILENAME = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
-      'Performance/LstripRstrip' =>
-        'The `Performance/LstripRstrip` cop has been moved ' \
-        'to `Style/Strip`',
       'Style/FlipFlop' =>
         'The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.',
       'Style/TrailingComma' =>
@@ -113,10 +110,6 @@ module RuboCop
       'Lint/DefEndAlignment' =>
         'The `Lint/DefEndAlignment` cop has been renamed to ' \
           '`Layout/DefEndAlignment`.',
-      'Performance/HashEachMethods' =>
-        'The `Performance/HashEachMethods` cop has been removed ' \
-          'since it no longer provides performance benefits in ' \
-          'modern rubies.',
       'Style/MethodMissing' =>
         'The `Style/MethodMissing` cop has been split into ' \
           '`Style/MethodMissingSuper` and `Style/MissingRespondToMissing`.'
