@@ -552,7 +552,10 @@ module RuboCop
       end
     end
 
+    attr_reader :pattern
+
     def initialize(str)
+      @pattern = str
       compiler = Compiler.new(str)
       src = "def match(node0#{compiler.emit_trailing_params});" \
             "#{compiler.emit_method_code}end"
