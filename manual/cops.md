@@ -51,11 +51,6 @@ found for the inspected code.
 Naming cops check for naming issue of your code, such as method name, constant
 name, file name, etc.
 
-### Performance
-
-Performance cops catch Ruby idioms which are known to be slower than another,
-semantically equivalent idiom.
-
 ### Security
 
 Security cops checks for method calls and constructs which are known to be
@@ -303,34 +298,6 @@ In the following section you find all available cops:
 * [Naming/UncommunicativeMethodParamName](cops_naming.md#naminguncommunicativemethodparamname)
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
-
-#### Department [Performance](cops_performance.md)
-
-* [Performance/Caller](cops_performance.md#performancecaller)
-* [Performance/CaseWhenSplat](cops_performance.md#performancecasewhensplat)
-* [Performance/Casecmp](cops_performance.md#performancecasecmp)
-* [Performance/ChainArrayAllocation](cops_performance.md#performancechainarrayallocation)
-* [Performance/CompareWithBlock](cops_performance.md#performancecomparewithblock)
-* [Performance/Count](cops_performance.md#performancecount)
-* [Performance/Detect](cops_performance.md#performancedetect)
-* [Performance/DoubleStartEndWith](cops_performance.md#performancedoublestartendwith)
-* [Performance/EndWith](cops_performance.md#performanceendwith)
-* [Performance/FixedSize](cops_performance.md#performancefixedsize)
-* [Performance/FlatMap](cops_performance.md#performanceflatmap)
-* [Performance/InefficientHashSearch](cops_performance.md#performanceinefficienthashsearch)
-* [Performance/OpenStruct](cops_performance.md#performanceopenstruct)
-* [Performance/RangeInclude](cops_performance.md#performancerangeinclude)
-* [Performance/RedundantBlockCall](cops_performance.md#performanceredundantblockcall)
-* [Performance/RedundantMatch](cops_performance.md#performanceredundantmatch)
-* [Performance/RedundantMerge](cops_performance.md#performanceredundantmerge)
-* [Performance/RegexpMatch](cops_performance.md#performanceregexpmatch)
-* [Performance/ReverseEach](cops_performance.md#performancereverseeach)
-* [Performance/Size](cops_performance.md#performancesize)
-* [Performance/StartWith](cops_performance.md#performancestartwith)
-* [Performance/StringReplacement](cops_performance.md#performancestringreplacement)
-* [Performance/TimesMap](cops_performance.md#performancetimesmap)
-* [Performance/UnfreezeString](cops_performance.md#performanceunfreezestring)
-* [Performance/UriDefaultParser](cops_performance.md#performanceuridefaultparser)
 
 #### Department [Rails](cops_rails.md)
 
