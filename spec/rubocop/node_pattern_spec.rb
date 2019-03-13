@@ -127,6 +127,17 @@ RSpec.describe RuboCop::NodePattern do
 
       it_behaves_like 'matching'
     end
+
+    describe '#==' do
+      let(:pattern) { "  (send  42 \n :to_s ) " }
+
+      it 'returns true iff the patterns are similar' do
+        expect(instance == instance.dup).to eq true
+        expect(instance == 42).to eq false
+        expect(instance == described_class.new('(send)')).to eq false
+        expect(instance == described_class.new('(send 42 :to_s)')).to eq true
+      end
+    end
   end
 
   describe 'literals' do

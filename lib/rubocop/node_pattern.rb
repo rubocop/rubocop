@@ -133,8 +133,7 @@ module RuboCop
       end
 
       def run(node_var)
-        tokens =
-          @string.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+        tokens = Compiler.tokens(@string)
 
         @match_code = compile_expr(tokens, node_var, false)
 
@@ -475,6 +474,10 @@ module RuboCop
       def next_temp_value
         @temps += 1
       end
+
+      def self.tokens(pattern)
+        pattern.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+      end
     end
     private_constant :Compiler
 
@@ -576,6 +579,12 @@ module RuboCop
     def marshal_dump
       pattern
     end
+
+    def ==(other)
+      other.is_a?(NodePattern) &&
+        Compiler.tokens(other.pattern) == Compiler.tokens(pattern)
+    end
+    alias eql? ==
 
     def to_s
       "#<#{self.class} #{pattern}>"
