@@ -180,9 +180,14 @@ module RuboCop
         # temp variable as 'cur_node'
         with_temp_node(cur_node) do |init, temp_node|
           terms = compile_seq_terms(tokens, temp_node)
+          terms.unshift(compile_guard_clause(temp_node))
 
           join_terms(init, terms, " &&\n")
         end
+      end
+
+      def compile_guard_clause(cur_node)
+        "#{cur_node}.is_a?(RuboCop::AST::Node)"
       end
 
       def compile_seq_terms(tokens, cur_node)
@@ -444,12 +449,6 @@ module RuboCop
         params.empty? ? '' : ",#{params}"
       end
 
-      def emit_guard_clause
-        <<-RUBY
-          return unless node.is_a?(RuboCop::AST::Node)
-        RUBY
-      end
-
       def emit_method_code
         <<-RUBY
           return unless #{@match_code}
@@ -491,7 +490,6 @@ module RuboCop
         compiler = Compiler.new(pattern_str, 'node')
         src = "def #{method_name}(node = self" \
               "#{compiler.emit_trailing_params});" \
-              "#{compiler.emit_guard_clause}" \
               "#{compiler.emit_method_code};end"
 
         location = caller_locations(1, 1).first

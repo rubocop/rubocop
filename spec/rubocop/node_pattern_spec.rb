@@ -160,6 +160,13 @@ RSpec.describe RuboCop::NodePattern do
 
       it_behaves_like 'matching'
     end
+
+    context 'against a node pattern (bug #5470)' do
+      let(:pattern) { '(:send (:const ...) ...)' }
+      let(:ruby) { 'foo' }
+
+      it_behaves_like 'nonmatching'
+    end
   end
 
   describe 'simple sequence' do
@@ -433,6 +440,20 @@ RSpec.describe RuboCop::NodePattern do
       let(:captured_val) { :send }
 
       it_behaves_like 'single capture'
+    end
+
+    context 'in head position in a sequence against nil (bug #5470)' do
+      let(:pattern) { '($_ ...)' }
+      let(:ruby) { '' }
+
+      it_behaves_like 'nonmatching'
+    end
+
+    context 'in head position in a sequence against literal (bug #5470)' do
+      let(:pattern) { '(int ($_ ...))' }
+      let(:ruby) { '42' }
+
+      it_behaves_like 'nonmatching'
     end
 
     context 'in non-head position in a sequence' do
