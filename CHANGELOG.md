@@ -57,6 +57,7 @@
 
 * [#6704](https://github.com/rubocop-hq/rubocop/pull/6704): Add new `Rails/ReflectionClassName` cop. ([@Bhacaz][])
 * [#6643](https://github.com/rubocop-hq/rubocop/pull/6643): Support `AllowParenthesesInCamelCaseMethod` option on `Style/MethodCallWithArgsParentheses` `omit_parentheses`. ([@dazuma][])
+* [#6346](https://github.com/rubocop-hq/rubocop/issues/6346): Add auto-correction to `Rails/TimeZone`. ([@dcluna][])
 
 ### Bug fixes
 
@@ -3854,6 +3855,7 @@
 [@mhelmetag]: https://github.com/mhelmetag
 [@Bhacaz]: https://github.com/bhacaz
 [@enkessler]: https://github.com/enkessler
+[@dcluna]: https://github.com/dcluna
 [@tagliala]: https://github.com/tagliala
 [@unasuke]: https://github.com/unasuke
 [@elmasantos]: https://github.com/elmasantos
