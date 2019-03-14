@@ -54,6 +54,10 @@ module RuboCop
 
         SPECIAL_MODIFIERS = %w[private protected].freeze
 
+        def_node_matcher :access_modifier?, <<-PATTERN
+          [(send ...) access_modifier?]
+        PATTERN
+
         def on_rescue(node)
           _begin_node, *_rescue_nodes, else_node = *node
           check_indentation(node.loc.else, else_node)
@@ -119,6 +123,7 @@ module RuboCop
           check_indentation(base.source_range, body)
           ignore_node(node.first_argument)
         end
+        alias on_csend on_send
 
         def on_def(node)
           return if ignored_node?(node)
@@ -160,21 +165,35 @@ module RuboCop
         private
 
         def check_members(base, members)
-          check_indentation(base, members.first)
+          check_indentation(base, select_check_member(members.first))
 
           return unless members.any? && members.first.begin_type?
 
           if indentation_consistency_style == 'rails'
-            each_member(members) do |member, previous_modifier|
-              check_indentation(previous_modifier, member,
-                                indentation_consistency_style)
-            end
+            check_members_for_rails_style(members)
           else
             members.first.children.each do |member|
               next if member.send_type? && member.access_modifier?
 
               check_indentation(base, member)
             end
+          end
+        end
+
+        def select_check_member(member)
+          return unless member
+
+          if access_modifier?(member.children.first)
+            member.children.first
+          else
+            member
+          end
+        end
+
+        def check_members_for_rails_style(members)
+          each_member(members) do |member, previous_modifier|
+            check_indentation(previous_modifier, member,
+                              indentation_consistency_style)
           end
         end
 
@@ -234,7 +253,7 @@ module RuboCop
         def check_indentation(base_loc, body_node, style = 'normal')
           return unless indentation_to_check?(base_loc, body_node)
 
-          indentation = body_node.loc.column - effective_column(base_loc)
+          indentation = column_offset_between(body_node.loc, base_loc)
           @column_delta = configured_indentation_width - indentation
           return if @column_delta.zero?
 
@@ -325,6 +344,8 @@ module RuboCop
           return unless body_node.begin_type?
 
           starting_node = body_node.children.first
+          return unless starting_node
+
           starting_node.send_type? && starting_node.bare_access_modifier?
         end
 

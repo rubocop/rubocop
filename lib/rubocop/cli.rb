@@ -263,7 +263,7 @@ module RuboCop
 
     def config_lines(cop)
       cnf = @config_store.for(Dir.pwd).for_cop(cop)
-      cnf.to_yaml.lines.to_a.butfirst.map { |line| '  ' + line }
+      cnf.to_yaml.lines.to_a.drop(1).map { |line| '  ' + line }
     end
 
     def display_warning_summary(warnings)

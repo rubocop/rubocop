@@ -53,6 +53,7 @@ module RuboCop
 
           check(node.last_argument, node.arguments)
         end
+        alias on_csend on_send
 
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send
         # node, because that context is needed. When parsing the code to see if

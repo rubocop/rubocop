@@ -20,7 +20,7 @@ module RuboCop
         TARGET_SELECTORS = %i[first take].freeze
 
         def_node_matcher :where_first?, <<-PATTERN
-          (send (send _ :where ...) {:first :take})
+          (send ({send csend} _ :where ...) {:first :take})
         PATTERN
 
         def on_send(node)
@@ -32,6 +32,7 @@ module RuboCop
           add_offense(node, location: range,
                             message: format(MSG, method: node.method_name))
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           # Don't autocorrect where(...).first, because it can return different

@@ -218,6 +218,13 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'accepts both hash rockets and ruby19 syntax in the same code' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          rocket_required = { :a => :b }
+          ruby19_required = { c: 3 }
+        RUBY
+      end
+
       it 'auto-corrects to ruby19 style when there are no symbol values' do
         new_source = autocorrect_source('{ :a => 1, :b => 2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')

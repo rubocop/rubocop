@@ -1302,7 +1302,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                   'fake2.rb']
         expect(cli.run(argv)).to eq(2)
         expect($stderr.string).to include(
-          '-s/--stdin requires exactly one path.'
+          '-s/--stdin requires exactly one path'
         )
       ensure
         $stdin = STDIN

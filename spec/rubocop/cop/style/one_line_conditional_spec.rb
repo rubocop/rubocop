@@ -38,6 +38,13 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
     end
   end
 
+  context 'one line if/then/else/end when `then` branch has no body' do
+    let(:source) { 'if cond then else dont end' }
+
+    include_examples 'offense', 'if'
+    include_examples 'autocorrect', 'cond ? nil : dont'
+  end
+
   context 'one line if/then/end' do
     let(:source) { 'if cond then run end' }
 
@@ -100,5 +107,27 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
      'operator method calls' do
     corrected = autocorrect_source('if 0 + 0 then 1 + 1 else 2 + 2 end')
     expect(corrected).to eq('0 + 0 ? 1 + 1 : 2 + 2')
+  end
+
+  it 'does not break when one of the branches contains a retry keyword' do
+    expect_offense(<<-RUBY.strip_indent)
+      if true then retry else 7 end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over `if/then/else/end` constructs.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      true ? retry : 7
+    RUBY
+  end
+
+  it 'does not break when one of the branches contains a break keyword' do
+    expect_offense(<<-RUBY.strip_indent)
+      if true then break else 7 end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over `if/then/else/end` constructs.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      true ? break : 7
+    RUBY
   end
 end

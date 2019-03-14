@@ -1191,6 +1191,12 @@ Lint/DeprecatedClassMethods:
   Enabled: true
   VersionAdded: '0.19'
 
+Lint/DisjunctiveAssignmentInConstructor:
+  Description: 'In constructor, plain assignment is preferred over disjunctive.'
+  Enabled: true
+  Safe: false
+  VersionAdded: '0.62'
+
 Lint/DuplicateCaseCondition:
   Description: 'Do not repeat values in case conditionals.'
   Enabled: true
@@ -1254,6 +1260,12 @@ Lint/ErbNewArguments:
   Description: 'Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.'
   Enabled: true
   VersionAdded: '0.56'
+
+Lint/FlipFlop:
+  Description: 'Checks for flip-flops'
+  StyleGuide: '#no-flip-flops'
+  Enabled: true
+  VersionAdded: '0.16'
 
 Lint/FloatOutOfRange:
   Description: >-
@@ -1512,6 +1524,10 @@ Lint/Syntax:
   VersionAdded: '0.9'
 
 
+Lint/ToJSON:
+  Description: 'Ensure #to_json includes an optional argument.'
+  Enabled: true
+
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
@@ -1625,9 +1641,12 @@ Metrics/AbcSize:
   Description: >-
                  A calculated magnitude based on number of assignments,
                  branches, and conditions.
-  Reference: 'http://c2.com/cgi/wiki?AbcMetric'
+  Reference:
+    - http://c2.com/cgi/wiki?AbcMetric
+    - https://en.wikipedia.org/wiki/ABC_Software_Metric'
   Enabled: true
   VersionAdded: '0.27'
+  VersionChanged: '0.66'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   Max: 15
@@ -1636,13 +1655,15 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   VersionAdded: '0.44'
-  VersionChanged: '0.58'
+  VersionChanged: '0.66'
   CountComments: false  # count full line comments?
   Max: 25
   ExcludedMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
     - refine
+  Exclude:
+    - '**/*.gemspec'
 
 Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting'
@@ -2079,6 +2100,7 @@ Performance/RangeInclude:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
   Enabled: true
   VersionAdded: '0.36'
+  Safe: false
 
 Performance/RedundantBlockCall:
   Description: 'Use `yield` instead of `block.call`.'
@@ -2232,6 +2254,13 @@ Rails/AssertNot:
   VersionAdded: '0.56'
   Include:
     - '**/test/**/*'
+
+Rails/BelongsTo:
+  Description: >-
+                  Use `optional: true` instead of `required: false` for
+                  `belongs_to` relations'
+  Enabled: true
+  VersionAdded: '0.62'
 
 Rails/Blank:
   Description: 'Enforces use of `blank?`.'
@@ -2389,6 +2418,14 @@ Rails/HttpStatus:
     - numeric
     - symbolic
 
+Rails/IgnoredSkipActionFilterOption:
+  Description: 'Checks that `if` and `only` (or `except`) are not used together as options of `skip_*` action filter.'
+  Reference: 'https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options'
+  Enabled: true
+  VersionAdded: '0.63'
+  Include:
+    - app/controllers/**/*.rb
+
 Rails/InverseOf:
   Description: 'Checks for associations where the inverse cannot be determined automatically.'
   Enabled: true
@@ -2403,6 +2440,12 @@ Rails/LexicallyScopedActionFilter:
   VersionAdded: '0.52'
   Include:
     - app/controllers/**/*.rb
+
+Rails/LinkToBlank:
+  Description: 'Checks that `link_to` with a `target: "_blank"` have a `rel: "noopener"` option passed to them.'
+  Reference: https://mathiasbynens.github.io/rel-noopener/
+  Enabled: true
+  VersionAdded: '0.62'
 
 Rails/NotNullColumn:
   Description: 'Do not add a NOT NULL column without a default value'
@@ -2463,6 +2506,11 @@ Rails/RedundantReceiverInWithOptions:
   Description: 'Checks for redundant receiver in `with_options`.'
   Enabled: true
   VersionAdded: '0.52'
+
+Rails/ReflectionClassName:
+  Description: 'Use a string for `class_name` option value in the definition of a reflection.'
+  Enabled: true
+  VersionAdded: '0.64'
 
 Rails/RefuteMethods:
   Description: 'Use `assert_not` methods instead of `refute` methods.'
@@ -2986,6 +3034,13 @@ Style/ConditionalAssignment:
 #   Notice: 'Copyright (\(c\) )?2015 Yahoo! Inc'
 #   AutocorrectNotice: '# Copyright (c) 2015 Yahoo! Inc.'
 #
+Style/ConstantVisibility:
+  Description: >-
+                 Check that class- and module constants have
+                 visibility declarations.
+  Enabled: false
+  VersionAdded: '0.66'
+
 Style/Copyright:
   Description: 'Include a copyright notice in each file before any code.'
   Enabled: false
@@ -3127,12 +3182,6 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
-Style/FlipFlop:
-  Description: 'Checks for flip flops'
-  StyleGuide: '#no-flip-flops'
-  Enabled: true
-  VersionAdded: '0.16'
-
 Style/For:
   Description: 'Checks use of for or each in multiline loops.'
   StyleGuide: '#no-for-loops'
@@ -3173,7 +3222,7 @@ Style/FormatStringToken:
 Style/FrozenStringLiteralComment:
   Description: >-
                  Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+                 to help transition to frozen string literals by default.
   Enabled: true
   VersionAdded: '0.36'
   VersionChanged: '0.47'
@@ -3351,7 +3400,9 @@ Style/LineEndConcatenation:
                  Use \ instead of + or << to concatenate two string literals at
                  line end.
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.18'
+  VersionChanged: '0.64'
 
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
@@ -3363,6 +3414,7 @@ Style/MethodCallWithArgsParentheses:
   IgnoredMethods: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
+  AllowParenthesesInCamelCaseMethod: false
   EnforcedStyle: require_parentheses
   SupportedStyles:
     - require_parentheses
@@ -3459,11 +3511,13 @@ Style/ModuleFunction:
   StyleGuide: '#module-function'
   Enabled: true
   VersionAdded: '0.11'
-  VersionChanged: '0.53'
+  VersionChanged: '0.65'
   EnforcedStyle: module_function
   SupportedStyles:
     - module_function
     - extend_self
+  Autocorrect: false
+  SafeAutoCorrect: false
 
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
@@ -3518,6 +3572,17 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
+  VersionChanged: '0.65'
+  EnforcedStyle: literals
+  SupportedStyles:
+    # literals: freeze literals assigned to constants
+    # strict: freeze all constants
+    # Strict mode is considered an experimental feature. It has not been updated
+    # with an exhaustive list of all methods that will produce frozen objects so
+    # there is a decent chance of getting some false positives. Luckily, there is
+    # no harm in freezing an already frozen object.
+    - literals
+    - strict
 
 Style/NegatedIf:
   Description: >-
@@ -3897,7 +3962,7 @@ Style/SafeNavigation:
                   safe navigation (`&.`).
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '0.44'
+  VersionChanged: '0.56'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
@@ -3907,7 +3972,6 @@ Style/SafeNavigation:
     - presence
     - try
     - try!
-  VersionChanged: '0.56'
 
 Style/SelfAssignment:
   Description: >-
@@ -4065,8 +4129,9 @@ Style/SymbolLiteral:
 Style/SymbolProc:
   Description: 'Use symbols as procs instead of blocks when possible.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.26'
-  VersionChanged: '0.40'
+  VersionChanged: '0.64'
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   IgnoredMethods:
@@ -4291,17 +4356,21 @@ Style/WordArray:
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
 Style/YodaCondition:
-  Description: 'Do not use literals as the first operand of a comparison.'
+  Description: 'Forbid or enforce yoda conditions.'
   Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
   Enabled: true
-  EnforcedStyle: all_comparison_operators
+  EnforcedStyle: forbid_for_all_comparison_operators
   SupportedStyles:
     # check all comparison operators
-    - all_comparison_operators
+    - forbid_for_all_comparison_operators
     # check only equality operators: `!=` and `==`
-    - equality_operators_only
+    - forbid_for_equality_operators_only
+    # enforce yoda for all comparison operators
+    - require_for_all_comparison_operators
+    # enforce yoda only for equality operators: `!=` and `==`
+    - require_for_equality_operators_only
   VersionAdded: '0.49'
-  VersionChanged: '0.50'
+  VersionChanged: '0.63'
 
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'

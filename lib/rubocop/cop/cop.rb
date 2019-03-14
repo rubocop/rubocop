@@ -218,7 +218,7 @@ module RuboCop
       end
 
       def enabled_line?(line_number)
-        return true unless @processed_source
+        return true if @options[:ignore_disable_comments] || !@processed_source
 
         @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
       end

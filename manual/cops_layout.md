@@ -2241,7 +2241,7 @@ but_in_a_method_call({
 ```ruby
 # The `consistent` style enforces that the first key in a hash
 # literal where the opening brace and the first key are on
-# seprate lines is indented the same as a hash literal which is not
+# separate lines is indented the same as a hash literal which is not
 # defined inside a method call.
 
 # bad
@@ -3820,9 +3820,15 @@ array = [a, b, c, d]
 
 # bad
 array = [ a, [ b, c ] ]
+array = [
+  [ a ],
+  [ b, c ]
+]
 
 # good
 array = [ a, [ b, c ]]
+array = [[ a ],
+  [ b, c ]]
 ```
 #### EnforcedStyleForEmptyBrackets: no_space (default)
 
@@ -4022,9 +4028,11 @@ h = {a: 1, b: 2}
 
 # bad
 h = { a: { b: 2 } }
+foo = { { a: 1 } => { b: { c: 2 } } }
 
 # good
 h = { a: { b: 2 }}
+foo = {{ a: 1 } => { b: { c: 2 }}}
 ```
 #### EnforcedStyleForEmptyBraces: no_space (default)
 

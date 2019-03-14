@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Config do
       it 'prints a warning message' do
         configuration # ConfigLoader.load_file will validate config
         expect($stderr.string).to match(
-          %r{unrecognized parameter Metrics/LineLength:Min}
+          %r{Metrics/LineLength does not support Min parameter.}
         )
       end
     end

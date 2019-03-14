@@ -96,6 +96,7 @@ module RuboCop
             check(array_node, left_parenthesis)
           end
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, @column_delta)

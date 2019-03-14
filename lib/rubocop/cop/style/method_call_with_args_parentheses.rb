@@ -10,7 +10,7 @@ module RuboCop
       # Additional methods can be added to the `IgnoredMethods` list. This
       # option is valid only in the default style.
       #
-      # In the alternative style (omit_parentheses), there are two additional
+      # In the alternative style (omit_parentheses), there are three additional
       # options.
       #
       # 1. `AllowParenthesesInChaining` is `false` by default. Setting it to
@@ -21,7 +21,13 @@ module RuboCop
       #     to `true` allows the presence of parentheses in multi-line method
       #     calls.
       #
-      # @example EnforcedStyle: require_parentheses
+      # 3. `AllowParenthesesInCamelCaseMethod` is `false` by default. This
+      #     allows the presence of parentheses when calling a method whose name
+      #     begins with a capital letter and which has no arguments. Setting it
+      #     to `true` allows the presence of parentheses in such a method call
+      #     even with arguments.
+      #
+      # @example EnforcedStyle: require_parentheses (default)
       #
       #
       #   # bad
@@ -106,6 +112,22 @@ module RuboCop
       #
       #   # good
       #   foo().bar 1
+      #
+      #   # AllowParenthesesInCamelCaseMethod: false (default)
+      #
+      #   # bad
+      #   Array(1)
+      #
+      #   # good
+      #   Array 1
+      #
+      #   # AllowParenthesesInCamelCaseMethod: true
+      #
+      #   # good
+      #   Array(1)
+      #
+      #   # good
+      #   Array 1
       class MethodCallWithArgsParentheses < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
@@ -120,6 +142,7 @@ module RuboCop
             add_offense_for_omit_parentheses(node)
           end
         end
+        alias on_csend on_send
         alias on_super on_send
         alias on_yield on_send
 
@@ -155,8 +178,8 @@ module RuboCop
           return unless node.parenthesized?
           return if node.implicit_call?
           return if super_call_without_arguments?(node)
-          return if camel_case_method_call_without_arguments?(node)
-          return if eligible_for_parentheses_presence?(node)
+          return if allowed_camel_case_method_call?(node)
+          return if legitimate_call_with_parentheses?(node)
 
           add_offense(node, location: node.loc.begin.join(node.loc.end))
         end
@@ -221,14 +244,17 @@ module RuboCop
           node.super_type? && node.arguments.none?
         end
 
-        def camel_case_method_call_without_arguments?(node)
-          node.camel_case_method? && node.arguments.none?
+        def allowed_camel_case_method_call?(node)
+          node.camel_case_method? &&
+            (node.arguments.none? ||
+             cop_config['AllowParenthesesInCamelCaseMethod'])
         end
 
-        def eligible_for_parentheses_presence?(node)
+        def legitimate_call_with_parentheses?(node)
           call_in_literals?(node) ||
             call_with_ambiguous_arguments?(node) ||
             call_in_logical_operators?(node) ||
+            call_in_optional_arguments?(node) ||
             allowed_multiline_call_with_parentheses?(node) ||
             allowed_chained_call_with_parentheses?(node)
         end
@@ -237,30 +263,42 @@ module RuboCop
           node.parent &&
             (node.parent.pair_type? ||
              node.parent.array_type? ||
+             node.parent.range_type? ||
+             splat?(node.parent) ||
              ternary_if?(node.parent))
         end
 
         def call_in_logical_operators?(node)
           node.parent &&
             (logical_operator?(node.parent) ||
-             node.parent.descendants.any?(&method(:logical_operator?)))
+             node.parent.send_type? &&
+             node.parent.arguments.any?(&method(:logical_operator?)))
+        end
+
+        def call_in_optional_arguments?(node)
+          node.parent &&
+            (node.parent.optarg_type? || node.parent.kwoptarg_type?)
         end
 
         def call_with_ambiguous_arguments?(node)
           call_with_braced_block?(node) ||
-            call_as_argument?(node) ||
+            call_as_argument_or_chain?(node) ||
             hash_literal_in_arguments?(node) ||
             node.descendants.any? do |n|
-              splat?(n) || ternary_if?(n) || logical_operator?(n)
+              ambigious_literal?(n) || logical_operator?(n) ||
+                call_with_braced_block?(n)
             end
         end
 
         def call_with_braced_block?(node)
-          node.block_node && node.block_node.braces?
+          (node.send_type? || node.super_type?) &&
+            node.block_node && node.block_node.braces?
         end
 
-        def call_as_argument?(node)
-          node.parent && node.parent.send_type?
+        def call_as_argument_or_chain?(node)
+          node.parent &&
+            (node.parent.send_type? && !assigned_before?(node.parent, node) ||
+             node.parent.csend_type? || node.parent.super_type?)
         end
 
         def hash_literal_in_arguments?(node)
@@ -275,13 +313,17 @@ module RuboCop
         end
 
         def allowed_chained_call_with_parentheses?(node)
-          return unless cop_config['AllowParenthesesInChaining']
+          return false unless cop_config['AllowParenthesesInChaining']
 
           previous = node.descendants.first
           return false unless previous && previous.send_type?
 
           previous.parenthesized? ||
             allowed_chained_call_with_parentheses?(previous)
+        end
+
+        def ambigious_literal?(node)
+          splat?(node) || ternary_if?(node) || regexp_slash_literal?(node)
         end
 
         def splat?(node)
@@ -298,6 +340,15 @@ module RuboCop
 
         def hash_literal?(node)
           node.hash_type? && node.braces?
+        end
+
+        def regexp_slash_literal?(node)
+          node.regexp_type? && node.loc.begin.source == '/'
+        end
+
+        def assigned_before?(node, target)
+          node.assignment? &&
+            node.loc.operator.begin < target.loc.begin
         end
       end
     end

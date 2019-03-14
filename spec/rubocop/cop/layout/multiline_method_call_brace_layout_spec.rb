@@ -31,12 +31,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     RUBY
   end
 
-  include_examples 'multiline literal brace layout' do
+  it_behaves_like 'multiline literal brace layout' do
     let(:open) { 'foo(' }
     let(:close) { ')' }
   end
 
-  include_examples 'multiline literal brace layout trailing comma' do
+  it_behaves_like 'multiline literal brace layout trailing comma' do
     let(:open) { 'foo(' }
     let(:close) { ')' }
   end

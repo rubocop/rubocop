@@ -21,7 +21,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'checks a Rakefile but Style/FileName does not report' do
         create_file('Rakefile', 'x = 1')
         create_empty_file('other/empty')
-        Dir.chdir('other') do
+        RuboCop::PathUtil.chdir('other') do
           expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
         end
         expect($stdout.string)
@@ -602,7 +602,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Exclude:
               - lib/example.rb
         YAML
-        Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
+        RuboCop::PathUtil.chdir('lib') { expect(cli.run([])).to eq(0) }
         expect($stdout.string).to include('no offenses detected')
       end
 
@@ -624,7 +624,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Exclude:
               - lib/example.rb
         YAML
-        Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
+        RuboCop::PathUtil.chdir('lib') { expect(cli.run([])).to eq(0) }
         expect($stdout.string).to include('no offenses detected')
         expect($stderr.string.empty?).to be(true)
       end
@@ -1074,12 +1074,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Exclude:
             - ignored/**
       YAML
-      expect(File).not_to receive(:open).with(%r{/ignored/})
       allow(File).to receive(:open).and_call_original
       expect(cli.run(%w[--format simple example])).to eq(0)
-      expect($stdout.string)
-        .to eq(['', '0 files inspected, no offenses detected',
-                ''].join("\n"))
+      expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+
+        0 files inspected, no offenses detected
+      OUTPUT
+      expect(File).not_to have_received(:open).with(%r{/ignored/})
     end
 
     it 'can be configured with option to disable a certain error' do
@@ -1442,10 +1443,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       YAML
 
       expect(cli.run(%w[--format simple example])).to eq(1)
-      expect($stderr.string)
-        .to eq(['Warning: unrecognized parameter Metrics/LineLength:Min ' \
-                'found in example/.rubocop.yml',
-                ''].join("\n"))
+
+      expect($stderr.string).to eq(<<-RESULT.strip_margin('|'))
+        |Warning: Metrics/LineLength does not support Min parameter.
+        |
+        |Supported parameters are:
+        |
+        |  - Enabled
+        |  - Max
+        |  - AllowHeredoc
+        |  - AllowURI
+        |  - URISchemes
+        |  - IgnoreCopDirectives
+        |  - IgnoredPatterns
+      RESULT
     end
 
     it 'prints an error message for an unrecognized EnforcedStyle' do

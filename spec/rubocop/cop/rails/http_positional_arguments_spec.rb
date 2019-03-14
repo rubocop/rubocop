@@ -107,12 +107,20 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
         get :create, user_id: @user.id
         ^^^ Use keyword arguments instead of positional arguments for http call: `get`.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        get :create, params: { user_id: @user.id }
+      RUBY
     end
 
     it 'registers an offense for post method' do
       expect_offense(<<-RUBY.strip_indent)
         post :create, user_id: @user.id
         ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post :create, params: { user_id: @user.id }
       RUBY
     end
 
@@ -121,12 +129,20 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
         patch :update, user_id: @user.id
         ^^^^^ Use keyword arguments instead of positional arguments for http call: `patch`.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        patch :update, params: { user_id: @user.id }
+      RUBY
     end
 
     it 'registers an offense for put method' do
       expect_offense(<<-RUBY.strip_indent)
         put :create, user_id: @user.id
         ^^^ Use keyword arguments instead of positional arguments for http call: `put`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        put :create, params: { user_id: @user.id }
       RUBY
     end
 
@@ -135,12 +151,20 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
         delete :create, user_id: @user.id
         ^^^^^^ Use keyword arguments instead of positional arguments for http call: `delete`.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        delete :create, params: { user_id: @user.id }
+      RUBY
     end
 
     it 'registers an offense for head method' do
       expect_offense(<<-RUBY.strip_indent)
         head :create, user_id: @user.id
         ^^^^ Use keyword arguments instead of positional arguments for http call: `head`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        head :create, params: { user_id: @user.id }
       RUBY
     end
 
@@ -181,11 +205,10 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
           get :new, user_id: @user.id
           ^^^ Use keyword arguments instead of positional arguments for http call: `get`.
         RUBY
-      end
 
-      it 'autocorrects offense' do
-        new_source = autocorrect_source('get :new, user_id: @user.id')
-        expect(new_source).to eq('get :new, params: { user_id: @user.id }')
+        expect_correction(<<-RUBY.strip_indent)
+          get :new, params: { user_id: @user.id }
+        RUBY
       end
 
       describe 'no params' do
@@ -197,8 +220,9 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     describe '.patch' do
       it 'autocorrects offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           patch :update,
+          ^^^^^ Use keyword arguments instead of positional arguments for http call: `patch`.
                 id: @user.id,
                 ac: {
                   article_id: @article1.id,
@@ -207,7 +231,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
                 }
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           patch :update, params: { id: @user.id, ac: {
                   article_id: @article1.id,
                   profile_id: @profile1.id,
@@ -219,8 +243,9 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     describe '.post' do
       it 'autocorrects offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        expect_offense(<<-RUBY.strip_indent)
           post :create,
+          ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
                id: @user.id,
                ac: {
                  article_id: @article1.id,
@@ -229,7 +254,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
                }
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
         post :create, params: { id: @user.id, ac: {
                article_id: @article1.id,
                profile_id: @profile1.id,
@@ -246,77 +271,113 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
     end
 
     it 'auto-corrects http action when method' do
-      new_source = autocorrect_source('post user_attrs, id: 1')
-      expect(new_source).to eq('post user_attrs, params: { id: 1 }')
+      expect_offense(<<-RUBY.strip_indent)
+        post user_attrs, id: 1
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post user_attrs, params: { id: 1 }
+      RUBY
     end
 
     it 'auto-corrects http action when symbol' do
-      new_source = autocorrect_source('post :user_attrs, id: 1')
-      expect(new_source).to eq('post :user_attrs, params: { id: 1 }')
+      expect_offense(<<-RUBY.strip_indent)
+        post :user_attrs, id: 1
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post :user_attrs, params: { id: 1 }
+      RUBY
     end
 
     it 'maintains parentheses when auto-correcting' do
-      new_source = autocorrect_source('post(:user_attrs, id: 1)')
-      expect(new_source).to eq('post(:user_attrs, params: { id: 1 })')
+      expect_offense(<<-RUBY.strip_indent)
+        post(:user_attrs, id: 1)
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post(:user_attrs, params: { id: 1 })
+      RUBY
     end
 
     it 'maintains quotes when auto-correcting' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         get '/auth/linkedin/callback', id: 1
+        ^^^ Use keyword arguments instead of positional arguments for http call: `get`.
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+
+      expect_correction(<<-RUBY.strip_indent)
         get '/auth/linkedin/callback', params: { id: 1 }
       RUBY
     end
 
     it 'does add session keyword when session is used' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         get some_path(profile.id), {}, 'HTTP_REFERER' => p_url(p.id).to_s
+        ^^^ Use keyword arguments instead of positional arguments for http call: `get`.
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         get some_path(profile.id), session: { 'HTTP_REFERER' => p_url(p.id).to_s }
       RUBY
     end
 
     it 'does not duplicate brackets when hash is already supplied' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         get some_path(profile.id), { user_id: @user.id, profile_id: p.id }, 'HTTP_REFERER' => p_url(p.id).to_s
+        ^^^ Use keyword arguments instead of positional arguments for http call: `get`.
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         get some_path(profile.id), params: { user_id: @user.id, profile_id: p.id }, session: { 'HTTP_REFERER' => p_url(p.id).to_s }
       RUBY
     end
 
     it 'auto-corrects http action when params is a method call' do
-      new_source = autocorrect_source('post :create, confirmation_data')
-      expect(new_source).to eq('post :create, params: confirmation_data')
+      expect_offense(<<-RUBY.strip_indent)
+        post :create, confirmation_data
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post :create, params: confirmation_data
+      RUBY
     end
 
     it 'auto-corrects http action when parameter matches ' \
       'special keyword name' do
-      new_source = autocorrect_source(<<-RUBY)
+      expect_offense(<<-RUBY.strip_indent)
         post :create, id: 7, comment: { body: "hei" }
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
       RUBY
 
-      expect(new_source).to eq(<<-RUBY)
+      expect_correction(<<-RUBY.strip_indent)
         post :create, params: { id: 7, comment: { body: "hei" } }
       RUBY
     end
 
     it 'auto-corrects http action when format keyword included but not alone' do
-      new_source = autocorrect_source('post :create, id: 7, format: :rss')
-      expect(new_source).to eq('post :create, params: { id: 7, format: :rss }')
+      expect_offense(<<-RUBY.strip_indent)
+        post :create, id: 7, format: :rss
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post :create, params: { id: 7, format: :rss }
+      RUBY
     end
 
     it 'auto-corrects http action when params is a lvar' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         params = { id: 1 }
         post user_attrs, params
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         params = { id: 1 }
         post user_attrs, params: params
       RUBY
@@ -324,16 +385,23 @@ RSpec.describe RuboCop::Cop::Rails::HttpPositionalArguments do
 
     it 'auto-corrects http action when params and action name ' \
       'are method calls' do
-      new_source = autocorrect_source('post user_attrs, params')
-      expect(new_source).to eq('post user_attrs, params: params')
+      expect_offense(<<-RUBY.strip_indent)
+        post user_attrs, params
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        post user_attrs, params: params
+      RUBY
     end
 
     it 'auto-corrects http action when params is a method call with chain' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      expect_offense(<<-RUBY.strip_indent)
         post user_attrs, params.merge(foo: bar)
+        ^^^^ Use keyword arguments instead of positional arguments for http call: `post`.
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         post user_attrs, params: params.merge(foo: bar)
       RUBY
     end

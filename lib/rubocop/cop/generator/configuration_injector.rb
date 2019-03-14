@@ -45,14 +45,15 @@ module RuboCop
 
         def find_target_line
           configuration_entries.find.with_index do |line, index|
-            next if comment?(line)
+            next unless cop_name_line?(line)
 
-            break index if badge.to_s < line
+            return index if badge.to_s < line
           end
+          configuration_entries.size - 1
         end
 
-        def comment?(yaml)
-          yaml =~ /^[\s#]/
+        def cop_name_line?(yaml)
+          yaml !~ /^[\s#]/
         end
       end
     end

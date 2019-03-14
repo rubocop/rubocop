@@ -31,7 +31,7 @@ module RuboCop
       attr_reader :block_node, :method, :arguments
 
       def remove_unparenthesized_whitespace(corrector)
-        return unless !arguments.empty? && !arguments.parenthesized_call?
+        return if arguments.empty? || arguments.parenthesized_call?
 
         remove_leading_whitespace(corrector)
         remove_trailing_whitespace(corrector)
@@ -69,10 +69,8 @@ module RuboCop
       end
 
       def remove_trailing_whitespace(corrector)
-        corrector.remove_preceding(
-          block_begin,
-          block_begin.begin_pos - arguments.source_range.end_pos - 1
-        )
+        size = block_begin.begin_pos - arguments.source_range.end_pos - 1
+        corrector.remove_preceding(block_begin, size) if size > 0
       end
 
       def replace_delimiters(corrector)

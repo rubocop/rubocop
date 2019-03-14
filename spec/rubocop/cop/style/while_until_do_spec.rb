@@ -9,12 +9,22 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilDo do
                  ^^ Do not use `do` with multi-line `while`.
       end
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      while cond
+      end
+    RUBY
   end
 
   it 'registers an offense for do in multiline until' do
     expect_offense(<<-RUBY.strip_indent)
       until cond do
                  ^^ Do not use `do` with multi-line `until`.
+      end
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      until cond
       end
     RUBY
   end
@@ -36,28 +46,6 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilDo do
 
   it 'accepts multi-line until without do' do
     expect_no_offenses(<<-RUBY.strip_indent)
-      until cond
-      end
-    RUBY
-  end
-
-  it 'auto-corrects the usage of "do" in multiline while' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      while cond do
-      end
-    RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      while cond
-      end
-    RUBY
-  end
-
-  it 'auto-corrects the usage of "do" in multiline until' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      until cond do
-      end
-    RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
       until cond
       end
     RUBY

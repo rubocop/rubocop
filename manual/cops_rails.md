@@ -162,6 +162,60 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/test/**/*` | Array
 
+## Rails/BelongsTo
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.62 | -
+
+This cop looks for belongs_to associations where we control whether the
+association is required via the deprecated `required` option instead.
+
+Since Rails 5, belongs_to associations are required by default and this
+can be controlled through the use of `optional: true`.
+
+From the release notes:
+
+    belongs_to will now trigger a validation error by default if the
+    association is not present. You can turn this off on a
+    per-association basis with optional: true. Also deprecate required
+    option in favor of optional for belongs_to. (Pull Request)
+
+In the case that the developer is doing `required: false`, we
+definitely want to autocorrect to `optional: true`.
+
+However, without knowing whether they've set overridden the default
+value of `config.active_record.belongs_to_required_by_default`, we
+can't say whether it's safe to remove `required: true` or whether we
+should replace it with `optional: false` (or, similarly, remove a
+superfluous `optional: false`). Therefore, in the cases we're using
+`required: true`, we'll simply invert it to `optional: false` and the
+user can remove depending on their defaults.
+
+### Examples
+
+```ruby
+# bad
+class Post < ApplicationRecord
+  belongs_to :blog, required: false
+end
+
+# good
+class Post < ApplicationRecord
+  belongs_to :blog, optional: true
+end
+
+# bad
+class Post < ApplicationRecord
+  belongs_to :blog, required: true
+end
+
+# good
+class Post < ApplicationRecord
+  belongs_to :blog, optional: false
+end
+```
+
 ## Rails/Blank
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -215,6 +269,11 @@ end
 # good
 if foo.blank?
   something
+end
+
+# good
+def blank?
+  !present?
 end
 ```
 
@@ -388,7 +447,6 @@ Date.current
 Date.yesterday
 Date.today
 date.to_time
-date.to_time_in_current_zone
 
 # good
 Time.zone.today
@@ -406,7 +464,7 @@ Time.zone.today
 Time.zone.today - 1.day
 Date.current
 Date.yesterday
-date.to_time_in_current_zone
+date.in_time_zone
 ```
 
 ### Configurable attributes
@@ -876,6 +934,58 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `symbolic` | `numeric`, `symbolic`
 
+## Rails/IgnoredSkipActionFilterOption
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.63 | -
+
+This cop checks that `if` and `only` (or `except`) are not used together
+as options of `skip_*` action filter.
+
+The `if` option will be ignored when `if` and `only` are used together.
+Similarly, the `except` option will be ignored when `if` and `except`
+are used together.
+
+### Examples
+
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    only: :show, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name == "show" }
+end
+```
+```ruby
+# bad
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    except: :admin, if: :trusted_origin?
+end
+
+# good
+class MyPageController < ApplicationController
+  skip_before_action :login_required,
+    if: -> { trusted_origin? && action_name != "admin" }
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/controllers/**/*.rb` | Array
+
+### References
+
+* [https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options](https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-_normalize_callback_options)
+
 ## Rails/InverseOf
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -919,9 +1029,8 @@ end
 # good
 class Blog < ApplicationRecord
   has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: :blog
-  )
+           -> { order(published_at: :desc) },
+           inverse_of: :blog)
 end
 
 class Post < ApplicationRecord
@@ -943,9 +1052,8 @@ end
 # When you don't want to use the inverse association.
 class Blog < ApplicationRecord
   has_many(:posts,
-    -> { order(published_at: :desc) },
-    inverse_of: false
-  )
+           -> { order(published_at: :desc) },
+           inverse_of: false)
 end
 ```
 ```ruby
@@ -1088,6 +1196,31 @@ Include | `app/controllers/**/*.rb` | Array
 ### References
 
 * [https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter](https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter)
+
+## Rails/LinkToBlank
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.62 | -
+
+This cop checks for calls to `link_to` that contain a
+`target: '_blank'` but no `rel: 'noopener'`. This can be a security
+risk as the loaded page will have control over the previous page
+and could change its location for phishing purposes.
+
+### Examples
+
+```ruby
+# bad
+link_to 'Click here', url, target: '_blank'
+
+# good
+link_to 'Click here', url, target: '_blank', rel: 'noopener'
+```
+
+### References
+
+* [https://mathiasbynens.github.io/rel-noopener/](https://mathiasbynens.github.io/rel-noopener/)
 
 ## Rails/NotNullColumn
 
@@ -1437,6 +1570,26 @@ with_options options: false do |merger|
     merger.invoke(another_receiver)
   end
 end
+```
+
+## Rails/ReflectionClassName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.64 | -
+
+This cop checks if the value of the option `class_name`, in
+the definition of a reflection is a string.
+
+### Examples
+
+```ruby
+# bad
+has_many :accounts, class_name: Account
+has_many :accounts, class_name: Account.name
+
+# good
+has_many :accounts, class_name: 'Account'
 ```
 
 ## Rails/RefuteMethods
@@ -1924,7 +2077,7 @@ Whitelist | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.30 | 0.33
+Enabled | Yes | Yes  | 0.30 | 0.33
 
 This cop checks for the use of Time methods without zone.
 

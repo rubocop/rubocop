@@ -4,10 +4,64 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
   subject(:cop) { described_class.new }
 
   context 'read_attribute' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects a symbol' do
       expect_offense(<<-RUBY.strip_indent)
         res = read_attribute(:test)
               ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        res = self[:test]
+      RUBY
+    end
+
+    it 'register an offense and corrects a string' do
+      expect_offense(<<-RUBY.strip_indent)
+        res = read_attribute('test')
+              ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        res = self['test']
+      RUBY
+    end
+
+    it 'autocorrects without parentheses' do
+      expect_offense(<<-RUBY.strip_indent)
+        res = read_attribute 'test'
+              ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        res = self['test']
+      RUBY
+    end
+
+    it 'corrects an expression' do
+      expect_offense(<<-RUBY.strip_indent)
+        res = read_attribute('test_' + postfix)
+              ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        res = self['test_' + postfix]
+      RUBY
+    end
+
+    it 'corrects multiline' do
+      expect_offense(<<-RUBY.strip_indent)
+        res = read_attribute(
+              ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
+        (
+        'test_' + postfix
+        ).to_sym
+        )
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        res = self[(
+        'test_' + postfix
+        ).to_sym]
       RUBY
     end
 
@@ -17,112 +71,74 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
   end
 
   context 'write_attribute' do
-    it 'registers an offense' do
+    context 'when using a symbol for the attribute' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<-RUBY.strip_indent)
+          write_attribute(:test, val)
+          ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          self[:test] = val
+        RUBY
+      end
+    end
+
+    context 'when using a string for the attribute' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<-RUBY.strip_indent)
+          write_attribute('attr', 'test')
+          ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          self['attr'] = 'test'
+        RUBY
+      end
+    end
+
+    it 'registers an offense and corrects without parentheses' do
       expect_offense(<<-RUBY.strip_indent)
-        write_attribute(:test, val)
+        write_attribute 'attr', 'test'
         ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        self['attr'] = 'test'
+      RUBY
+    end
+
+    it 'corrects assignment with chained methods' do
+      expect_offense(<<-RUBY.strip_indent)
+        write_attribute(:attr, 'test_' + postfix)
+        ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        self[:attr] = 'test_' + postfix
+      RUBY
+    end
+
+    it 'autocorrects multiline' do
+      expect_offense(<<-RUBY.strip_indent)
+        write_attribute(
+        ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
+        :attr,
+        (
+        'test_' + postfix
+        ).to_sym
+        )
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        self[:attr] = (
+        'test_' + postfix
+        ).to_sym
       RUBY
     end
 
     it 'registers no offense with explicit receiver' do
       expect_no_offenses('object.write_attribute(:test, val)')
-    end
-  end
-
-  describe '#autocorrect' do
-    context 'write_attribute' do
-      it 'autocorrects symbol' do
-        source = 'write_attribute(:attr, var)'
-        corrected_source = 'self[:attr] = var'
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects string' do
-        source = "write_attribute('attr', 'test')"
-        corrected_source = "self['attr'] = 'test'"
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects without parentheses' do
-        source = "write_attribute 'attr', 'test'"
-        corrected_source = "self['attr'] = 'test'"
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects expression' do
-        source = "write_attribute(:attr, 'test_' + postfix)"
-        corrected_source = "self[:attr] = 'test_' + postfix"
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects multiline' do
-        source = <<-RUBY.strip_indent
-          write_attribute(
-          :attr,
-          (
-          'test_' + postfix
-          ).to_sym
-          )
-        RUBY
-        corrected_source = <<-RUBY.strip_indent
-          self[:attr] = (
-          'test_' + postfix
-          ).to_sym
-        RUBY
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-    end
-
-    context 'read_attribute' do
-      it 'autocorrects symbol' do
-        source = 'res = read_attribute(:test)'
-        corrected_source = 'res = self[:test]'
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects string' do
-        source = "res = read_attribute('test')"
-        corrected_source = "res = self['test']"
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects without parentheses' do
-        source = "res = read_attribute 'test'"
-        corrected_source = "res = self['test']"
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects expression' do
-        source = "res = read_attribute('test_' + postfix)"
-        corrected_source = "res = self['test_' + postfix]"
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
-
-      it 'autocorrects multiline' do
-        source = <<-RUBY.strip_indent
-          res = read_attribute(
-          (
-          'test_' + postfix
-          ).to_sym
-          )
-        RUBY
-        corrected_source = <<-RUBY.strip_indent
-          res = self[(
-          'test_' + postfix
-          ).to_sym]
-        RUBY
-
-        expect(autocorrect_source(source)).to eq(corrected_source)
-      end
     end
   end
 end

@@ -122,6 +122,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         "baz"
         ] # test
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        %w(
+        foo
+        bar
+        baz
+        ) # test
+      RUBY
     end
 
     it 'auto-corrects an array of words' do

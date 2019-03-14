@@ -70,11 +70,10 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationJob do
           class MyJob < ActiveJob::Base; end
                         ^^^^^^^^^^^^^^^ Jobs should subclass `ApplicationJob`.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        expect(autocorrect_source('class MyJob < ActiveJob::Base; end'))
-          .to eq('class MyJob < ApplicationJob; end')
+        expect_correction(<<-RUBY.strip_indent)
+          class MyJob < ApplicationJob; end
+        RUBY
       end
     end
 
@@ -99,30 +98,36 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationJob do
     end
 
     it 'corrects jobs defined using Class.new' do
-      source = 'MyJob = Class.new(ActiveJob::Base)'
-      inspect_source(source)
-      expect(cop.messages).to eq(['Jobs should subclass `ApplicationJob`.'])
-      expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(source))
-        .to eq('MyJob = Class.new(ApplicationJob)')
+      expect_offense(<<-RUBY.strip_indent)
+        MyJob = Class.new(ActiveJob::Base)
+                          ^^^^^^^^^^^^^^^ Jobs should subclass `ApplicationJob`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        MyJob = Class.new(ApplicationJob)
+      RUBY
     end
 
     it 'corrects nested jobs defined using Class.new' do
-      source = 'Nested::MyJob = Class.new(ActiveJob::Base)'
-      inspect_source(source)
-      expect(cop.messages).to eq(['Jobs should subclass `ApplicationJob`.'])
-      expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(source))
-        .to eq('Nested::MyJob = Class.new(ApplicationJob)')
+      expect_offense(<<-RUBY.strip_indent)
+        Nested::MyJob = Class.new(ActiveJob::Base)
+                                  ^^^^^^^^^^^^^^^ Jobs should subclass `ApplicationJob`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        Nested::MyJob = Class.new(ApplicationJob)
+      RUBY
     end
 
     it 'corrects anonymous jobs' do
-      source = 'Class.new(ActiveJob::Base) {}'
-      inspect_source(source)
-      expect(cop.messages).to eq(['Jobs should subclass `ApplicationJob`.'])
-      expect(cop.highlights).to eq(['ActiveJob::Base'])
-      expect(autocorrect_source(source))
-        .to eq('Class.new(ApplicationJob) {}')
+      expect_offense(<<-RUBY.strip_indent)
+        Class.new(ActiveJob::Base) {}
+                  ^^^^^^^^^^^^^^^ Jobs should subclass `ApplicationJob`.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        Class.new(ApplicationJob) {}
+      RUBY
     end
 
     it 'allows ApplicationJob defined using Class.new' do

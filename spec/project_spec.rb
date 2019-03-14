@@ -10,15 +10,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
       .map(&:cop_name)
   end
 
-  shared_context 'configuration file' do |config_path|
-    subject(:config) { RuboCop::ConfigLoader.load_file(config_path) }
+  describe 'default configuration file' do
+    subject(:config) { RuboCop::ConfigLoader.load_file('config/default.yml') }
 
     let(:configuration_keys) { config.keys }
-    let(:raw_configuration) { config.to_h.values }
-  end
-
-  describe 'default configuration file' do
-    include_context 'configuration file', 'config/default.yml'
 
     it 'has configuration for all cops' do
       expect(configuration_keys).to match_array(%w[AllCops Rails] + cop_names)
@@ -54,6 +49,15 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       raise errors.join("\n") unless errors.empty?
     end
+
+    it 'does not have nay duplication' do
+      fname = File.expand_path('../config/default.yml', __dir__)
+      content = File.read(fname)
+      RuboCop::YAMLDuplicationChecker.check(content, fname) do |key1, key2|
+        raise "#{fname} has duplication of #{key1.value} " \
+              "on line #{key1.start_line} and line #{key2.start_line}"
+      end
+    end
   end
 
   describe 'cop message' do
@@ -77,8 +81,18 @@ RSpec.describe 'RuboCop Project', type: :feature do
       File.read(path)
     end
 
+    let(:lines) { changelog.each_line }
+
+    let(:non_reference_lines) do
+      lines.take_while { |line| !line.start_with?('[@') }
+    end
+
     it 'has newline at end of file' do
       expect(changelog.end_with?("\n")).to be true
+    end
+
+    it 'has either entries, headers, or empty lines' do
+      expect(non_reference_lines).to all(match(/^(\*|#|$)/))
     end
 
     it 'has link definitions for all implicit links' do
@@ -92,8 +106,6 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     describe 'entry' do
       subject(:entries) { lines.grep(/^\*/).map(&:chomp) }
-
-      let(:lines) { changelog.each_line }
 
       it 'has a whitespace between the * and the body' do
         expect(entries).to all(match(/^\* \S/))

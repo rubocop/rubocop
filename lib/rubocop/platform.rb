@@ -5,7 +5,7 @@ module RuboCop
   # on.
   module Platform
     def self.windows?
-      RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/
+      RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/
     end
   end
 end

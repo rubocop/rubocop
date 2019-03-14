@@ -98,6 +98,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
         Cop2:
           Exclude:
             - "**/*.blah"
+            - !ruby/regexp /.*/bar/*/foo\.rb$/
       YAML
 
       formatter.started(['test_a.rb', 'test_b.rb'])
@@ -121,6 +122,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        'Cop2:',
        '  Exclude:',
        "    - '**/*.blah'",
+       "    - !ruby/regexp /.*/bar/*/foo\.rb$/",
        "    - 'test_a.rb'",
        ''].join("\n")
     end

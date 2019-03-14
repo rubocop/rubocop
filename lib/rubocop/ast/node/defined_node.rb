@@ -8,6 +8,10 @@ module RuboCop
     class DefinedNode < Node
       include ParameterizedNode
       include MethodDispatchNode
+
+      def node_parts
+        [nil, :defined?, *to_a]
+      end
     end
   end
 end

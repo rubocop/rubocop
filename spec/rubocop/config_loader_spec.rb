@@ -665,10 +665,10 @@ RSpec.describe RuboCop::ConfigLoader do
         gem_class = Struct.new(:gem_dir)
         %w[gemone gemtwo].each do |gem_name|
           mock_spec = gem_class.new(File.join(gem_root, gem_name))
-          expect(Gem::Specification).to receive(:find_by_name)
-            .at_least(:once).with(gem_name).and_return(mock_spec)
+          allow(Gem::Specification).to receive(:find_by_name)
+            .with(gem_name).and_return(mock_spec)
         end
-        expect(Gem).to receive(:path).at_least(:once).and_return([gem_root])
+        allow(Gem).to receive(:path).and_return([gem_root])
 
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # overridden in local.yml
@@ -973,6 +973,22 @@ RSpec.describe RuboCop::ConfigLoader do
         )
       end
     end
+
+    context 'when the file has duplicated keys' do
+      it 'outputs a warning' do
+        create_file(configuration_path, <<-YAML.strip_indent)
+          Style/Encoding:
+            Enabled: true
+
+          Style/Encoding:
+            Enabled: false
+        YAML
+
+        expect do
+          load_file
+        end.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
+      end
+    end
   end
 
   describe '.merge' do
@@ -1052,7 +1068,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     it 'uses paths relative to the .rubocop.yml, not cwd' do
       config_path = described_class.configuration_file_for('.')
-      Dir.chdir '..' do
+      RuboCop::PathUtil.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end
@@ -1070,7 +1086,7 @@ RSpec.describe RuboCop::ConfigLoader do
     it 'works without a starting .' do
       config_path = described_class.configuration_file_for('.')
       $LOAD_PATH.unshift(File.dirname(config_path))
-      Dir.chdir '..' do
+      RuboCop::PathUtil.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end

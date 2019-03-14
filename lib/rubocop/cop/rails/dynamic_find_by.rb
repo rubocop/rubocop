@@ -42,6 +42,7 @@ module RuboCop
                       message: format(MSG, static_name: static_name,
                                            method: node.method_name))
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           keywords = column_keywords(node.method_name)

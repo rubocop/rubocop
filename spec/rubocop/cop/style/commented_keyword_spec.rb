@@ -123,6 +123,13 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword do
       end
     RUBY
     expect_no_offenses(<<-RUBY.strip_indent)
+      class X
+        def y # :yields:
+          yield
+        end
+      end
+    RUBY
+    expect_no_offenses(<<-RUBY.strip_indent)
       def x # rubocop:disable Metrics/MethodLength
         y
       end

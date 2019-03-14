@@ -5,18 +5,15 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
   describe 'String' do
     describe '#starts_with?' do
-      it 'is registered as an offense' do
+      it 'registers as an offense and corrects' do
         expect_offense(<<-RUBY.strip_indent)
           'some_string'.starts_with?('prefix')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `start_with?` instead of `starts_with?`.
         RUBY
-      end
 
-      it 'is autocorrected' do
-        new_source = autocorrect_source(
-          "'some_string'.starts_with?('prefix')"
-        )
-        expect(new_source).to eq "'some_string'.start_with?('prefix')"
+        expect_correction(<<-RUBY.strip_indent)
+          'some_string'.start_with?('prefix')
+        RUBY
       end
     end
 
@@ -27,18 +24,15 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
     end
 
     describe '#ends_with?' do
-      it 'is registered as an offense' do
+      it 'registers as an offense and corrects' do
         expect_offense(<<-RUBY.strip_indent)
           'some_string'.ends_with?('prefix')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `end_with?` instead of `ends_with?`.
         RUBY
-      end
 
-      it 'is autocorrected' do
-        new_source = autocorrect_source(
-          "'some_string'.ends_with?('prefix')"
-        )
-        expect(new_source).to eq "'some_string'.end_with?('prefix')"
+        expect_correction(<<-RUBY.strip_indent)
+          'some_string'.end_with?('prefix')
+        RUBY
       end
     end
 
@@ -51,17 +45,15 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
 
   describe 'Array' do
     describe '#append' do
-      it 'is registered as an offense' do
+      it 'registers as an offense and does not correct' do
         expect_offense(<<-RUBY.strip_indent)
           [1, 'a', 3].append('element')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `<<` instead of `append`.
         RUBY
-      end
 
-      it 'is not autocorrected' do
-        source = "[1, 'a', 3].append('element')"
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq source
+        expect_correction(<<-RUBY.strip_indent)
+          [1, 'a', 3].append('element')
+        RUBY
       end
     end
 
@@ -72,18 +64,15 @@ RSpec.describe RuboCop::Cop::Rails::ActiveSupportAliases do
     end
 
     describe '#prepend' do
-      it 'is registered as an offense' do
+      it 'registers as an offense and corrects' do
         expect_offense(<<-RUBY.strip_indent)
           [1, 'a', 3].prepend('element')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `unshift` instead of `prepend`.
         RUBY
-      end
 
-      it 'is autocorrected' do
-        new_source = autocorrect_source(
-          "[1, 'a', 3].prepend('element')"
-        )
-        expect(new_source).to eq "[1, 'a', 3].unshift('element')"
+        expect_correction(<<-RUBY.strip_indent)
+          [1, 'a', 3].unshift('element')
+        RUBY
       end
     end
 
