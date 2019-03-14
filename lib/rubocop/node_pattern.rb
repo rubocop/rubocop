@@ -556,7 +556,7 @@ module RuboCop
       compiler = Compiler.new(str)
       src = "def match(node0#{compiler.emit_trailing_params});" \
             "#{compiler.emit_method_code}end"
-      instance_eval(src)
+      instance_eval(src, __FILE__, __LINE__ + 1)
     end
   end
 end
