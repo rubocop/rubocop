@@ -1479,6 +1479,11 @@ Lint/SafeNavigationConsistency:
     - try!
 
 
+Lint/SafeNavigationWithEmpty:
+  Description: 'Avoid `foo&.empty?` in conditionals.'
+  Enabled: true
+  VersionAdded: '0.62'
+
 Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'
   Enabled: true
