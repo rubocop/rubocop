@@ -3,11 +3,6 @@
 RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   subject(:cop) { described_class.new }
 
-  let(:error_message) do
-    'Parenthesize the param `%s` to make sure that the block will be ' \
-      'associated with the `%s` method call.'
-  end
-
   shared_examples 'accepts' do |code|
     it 'does not register an offense' do
       expect_no_offenses(code)
@@ -66,6 +61,15 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
           Foo.some_method a { |el| puts el }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
         RUBY
+      end
+
+      context 'when using safe navigation operator', :ruby23 do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            Foo&.some_method a { |el| puts el }
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
+          RUBY
+        end
       end
     end
 

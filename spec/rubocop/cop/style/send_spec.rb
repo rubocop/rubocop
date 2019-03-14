@@ -12,6 +12,15 @@ RSpec.describe RuboCop::Cop::Style::Send do
         RUBY
       end
 
+      context 'when using safe navigation operator', :ruby23 do
+        it 'registers an offense for an invocation with args' do
+          expect_offense(<<-RUBY.strip_indent)
+            Object&.send(:inspect)
+                    ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
+          RUBY
+        end
+      end
+
       it 'does not register an offense for an invocation without args' do
         expect_no_offenses('Object.send')
       end

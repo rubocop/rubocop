@@ -20,6 +20,8 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
                                       ^^^ Prefer `:moved_permanently` over `301` to define HTTP status code.
         redirect_to action: 'index', status: 301
                                              ^^^ Prefer `:moved_permanently` over `301` to define HTTP status code.
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: 301
+                                                                          ^^^ Prefer `:moved_permanently` over `301` to define HTTP status code.
       RUBY
 
       expect_correction(<<-RUBY.strip_indent)
@@ -29,6 +31,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
         render plain: 'foo/bar', status: :not_modified
         redirect_to root_url, status: :moved_permanently
         redirect_to action: 'index', status: :moved_permanently
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: :moved_permanently
       RUBY
     end
 
@@ -38,6 +41,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
         render json: { foo: bar }, status: :not_found
         render plain: 'foo/bar', status: :not_modified
         redirect_to root_url, status: :moved_permanently
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: :moved_permanently
       RUBY
     end
 
@@ -47,6 +51,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
         render json: { foo: bar }, status: 550
         render plain: 'foo/bar', status: 550
         redirect_to root_url, status: 550
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: 550
       RUBY
     end
 
@@ -63,6 +68,8 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
                                            ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
           redirect_to root_url, status: 301
                                         ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
+          redirect_to root_path(utm_source: :pr, utm_medium: :web), status: 301
+                                                                            ^^^ Prefer `symbolic` over `numeric` to define HTTP status code.
         RUBY
 
         expect_correction(<<-RUBY)
@@ -70,6 +77,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
           render json: { foo: 'bar' }, status: 404
           render plain: 'foo/bar', status: 304
           redirect_to root_url, status: 301
+          redirect_to root_path(utm_source: :pr, utm_medium: :web), status: 301
         RUBY
       end
     end
@@ -92,6 +100,8 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
                                       ^^^^^^^^^^^^^^^^^^ Prefer `301` over `:moved_permanently` to define HTTP status code.
         redirect_to action: 'index', status: :moved_permanently
                                              ^^^^^^^^^^^^^^^^^^ Prefer `301` over `:moved_permanently` to define HTTP status code.
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: :moved_permanently
+                                                                          ^^^^^^^^^^^^^^^^^^ Prefer `301` over `:moved_permanently` to define HTTP status code.
       RUBY
 
       expect_correction(<<-RUBY.strip_indent)
@@ -101,6 +111,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
         render plain: 'foo/bar', status: 304
         redirect_to root_url, status: 301
         redirect_to action: 'index', status: 301
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: 301
       RUBY
     end
 
@@ -110,6 +121,7 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
         render json: { foo: bar }, status: 404
         render plain: 'foo/bar', status: 304
         redirect_to root_url, status: 301
+        redirect_to root_path(utm_source: :pr, utm_medium: :web), status: 301
       RUBY
     end
 
@@ -135,6 +147,8 @@ RSpec.describe RuboCop::Cop::Rails::HttpStatus, :config do
                                            ^^^^^^^^^^^^^ Prefer `numeric` over `symbolic` to define HTTP status code.
           redirect_to root_url, status: :moved_permanently
                                         ^^^^^^^^^^^^^^^^^^ Prefer `numeric` over `symbolic` to define HTTP status code.
+          redirect_to root_path(utm_source: :pr, utm_medium: :web), status: :moved_permanently
+                                                                            ^^^^^^^^^^^^^^^^^^ Prefer `numeric` over `symbolic` to define HTTP status code.
         RUBY
       end
     end

@@ -32,6 +32,8 @@ module RuboCop
           end
         end
 
+        alias on_csend on_send
+
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(

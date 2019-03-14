@@ -10,15 +10,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
       .map(&:cop_name)
   end
 
-  shared_context 'configuration file' do |config_path|
-    subject(:config) { RuboCop::ConfigLoader.load_file(config_path) }
+  describe 'default configuration file' do
+    subject(:config) { RuboCop::ConfigLoader.load_file('config/default.yml') }
 
     let(:configuration_keys) { config.keys }
-    let(:raw_configuration) { config.to_h.values }
-  end
-
-  describe 'default configuration file' do
-    include_context 'configuration file', 'config/default.yml'
 
     it 'has configuration for all cops' do
       expect(configuration_keys).to match_array(%w[AllCops Rails] + cop_names)
@@ -53,6 +48,15 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
 
       raise errors.join("\n") unless errors.empty?
+    end
+
+    it 'does not have nay duplication' do
+      fname = File.expand_path('../config/default.yml', __dir__)
+      content = File.read(fname)
+      RuboCop::YAMLDuplicationChecker.check(content, fname) do |key1, key2|
+        raise "#{fname} has duplication of #{key1.value} " \
+              "on line #{key1.start_line} and line #{key2.start_line}"
+      end
     end
   end
 

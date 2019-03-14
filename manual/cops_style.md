@@ -1123,6 +1123,37 @@ EnforcedStyle | `assign_to_condition` | `assign_to_condition`, `assign_inside_co
 SingleLineConditionsOnly | `true` | Boolean
 IncludeTernaryExpressions | `true` | Boolean
 
+## Style/ConstantVisibility
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.66 | -
+
+This cop checks that constants defined in classes and modules have
+an explicit visibility declaration. By default, Ruby makes all class-
+and module constants public, which litters the public API of the
+class or module. Explicitly declaring a visibility makes intent more
+clear, and prevents outside actors from touching private state.
+
+### Examples
+
+```ruby
+# bad
+class Foo
+  BAR = 42
+  BAZ = 43
+end
+
+# good
+class Foo
+  BAR = 42
+  private_constant :BAR
+
+  BAZ = 43
+  public_constant :BAZ
+end
+```
+
 ## Style/Copyright
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -3360,7 +3391,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.11 | 0.53
+Enabled | Yes | Yes (Unsafe) | 0.11 | 0.65
 
 This cop checks for use of `extend self` or `module_function` in a
 module.
@@ -3370,7 +3401,7 @@ Supported styles are: module_function, extend_self.
 In case there are private methods, the cop won't be activated.
 Otherwise, it forces to change the flow of the default code.
 
-These offenses are not auto-corrected since there are different
+These offenses are not safe to auto-correct since there are different
 implications to each approach.
 
 ### Examples
@@ -3422,6 +3453,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `module_function` | `module_function`, `extend_self`
+Autocorrect | `false` | Boolean
 
 ### References
 
@@ -3630,12 +3662,22 @@ foo if ['a', 'b', 'c'].include?(a)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | -
+Enabled | Yes | Yes  | 0.34 | 0.65
 
 This cop checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
 
+Strict mode can be used to freeze all constants, rather than
+just literals.
+Strict mode is considered an experimental feature. It has not been
+updated with an exhaustive list of all methods that will produce
+frozen objects so there is a decent chance of getting some false
+positives. Luckily, there is no harm in freezing an already
+frozen object.
+
 ### Examples
+
+#### EnforcedStyle: literals (default)
 
 ```ruby
 # bad
@@ -3646,9 +3688,41 @@ CONST = [1, 2, 3].freeze
 
 # good
 CONST = <<~TESTING.freeze
-This is a heredoc
+  This is a heredoc
 TESTING
+
+# good
+CONST = Something.new
 ```
+#### EnforcedStyle: strict
+
+```ruby
+# bad
+CONST = Something.new
+
+# bad
+CONST = Struct.new do
+  def foo
+    puts 1
+  end
+end
+
+# good
+CONST = Something.new.freeze
+
+# good
+CONST = Struct.new do
+  def foo
+    puts 1
+  end
+end.freeze
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `literals` | `literals`, `strict`
 
 ## Style/NegatedIf
 

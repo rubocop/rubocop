@@ -18,7 +18,7 @@ module RuboCop
         MSG = 'Specify a `:rel` option containing noopener.'.freeze
 
         def_node_matcher :blank_target?, <<-PATTERN
-          (pair {(sym :target) (str "target")} (str "_blank"))
+          (pair {(sym :target) (str "target")} {(str "_blank") (sym :_blank)})
         PATTERN
 
         def_node_matcher :includes_noopener?, <<-PATTERN

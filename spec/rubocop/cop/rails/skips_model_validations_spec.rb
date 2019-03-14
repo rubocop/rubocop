@@ -77,6 +77,15 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
              ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
       RUBY
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for `update_attribute`' do
+        expect_offense(<<-RUBY.strip_indent)
+        user&.update_attribute(:website, 'example.com')
+              ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
+        RUBY
+      end
+    end
   end
 
   context 'with whitelist' do
@@ -92,6 +101,15 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
         user.toggle!(:active)
              ^^^^^^^ Avoid using `toggle!` because it skips validations.
       RUBY
+    end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for method not in whitelist' do
+        expect_offense(<<-RUBY.strip_indent)
+        user&.toggle!(:active)
+              ^^^^^^^ Avoid using `toggle!` because it skips validations.
+        RUBY
+      end
     end
 
     it 'accepts method in whitelist, superseding the blacklist' do

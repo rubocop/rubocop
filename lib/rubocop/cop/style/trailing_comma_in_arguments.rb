@@ -59,6 +59,7 @@ module RuboCop
                 node.last_argument.source_range.end_pos,
                 node.source_range.end_pos)
         end
+        alias on_csend on_send
 
         def autocorrect(range)
           PunctuationCorrector.swap_comma(range)

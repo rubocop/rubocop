@@ -73,6 +73,36 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         HELP
       RUBY
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for trailing comma in a method call' do
+        expect_offense(<<-RUBY.strip_indent)
+        receiver&.some_method(a, b, c, )
+                                     ^ Avoid comma after the last parameter of a method call#{extra_info}.
+        RUBY
+      end
+
+      it 'registers an offense for trailing comma in a method call with hash' \
+        ' parameters at the end' do
+        expect_offense(<<-RUBY.strip_indent)
+        receiver&.some_method(a, b, c: 0, d: 1, )
+                                              ^ Avoid comma after the last parameter of a method call#{extra_info}.
+        RUBY
+      end
+
+      it 'auto-corrects unwanted comma in a method call' do
+        new_source = autocorrect_source('receiver&.some_method(a, b, c, )')
+        expect(new_source).to eq('receiver&.some_method(a, b, c )')
+      end
+
+      it 'auto-corrects unwanted comma in a method call with hash parameters' \
+        ' at the end' do
+        new_source = autocorrect_source(
+          'receiver&.some_method(a, b, c: 0, d: 1, )'
+        )
+        expect(new_source).to eq('receiver&.some_method(a, b, c: 0, d: 1 )')
+      end
+    end
   end
 
   context 'with single line list of values' do
@@ -384,6 +414,31 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           method(
             1,
           )
+        RUBY
+      end
+
+      it 'does not break when a method call is chaned on the offending one' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo.bar(
+            baz: 1,
+          ).fetch(:qux)
+        RUBY
+      end
+
+      it 'does not break when a safe method call is chained on the ' \
+         'offending one', :ruby23 do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo
+            &.do_something(:bar, :baz)
+        RUBY
+      end
+
+      it 'does not break when a safe method call is chained on the ' \
+         'offending one', :ruby23 do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          foo.bar(
+            baz: 1,
+          )&.fetch(:qux)
         RUBY
       end
     end

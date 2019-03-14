@@ -421,6 +421,16 @@ RSpec.describe RuboCop::Cop::Layout::AlignParameters do
           end
         RUBY
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for parameters with single indent' do
+        expect_offense(<<-RUBY.strip_indent)
+          receiver&.function(a,
+            if b then c else d end)
+            ^^^^^^^^^^^^^^^^^^^^^^ Align the parameters of a method call if they span more than one line.
+        RUBY
+      end
+    end
   end
 
   context 'aligned with fixed indentation' do

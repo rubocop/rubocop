@@ -60,8 +60,13 @@ module RuboCop
 
         def allowed_method_call_on_rhs?(node)
           node && node.send_type? &&
-            (node.receiver.nil? || !node.receiver.literal?)
+            (node.receiver.nil? || !literal_receiver?(node))
         end
+
+        def_node_matcher :literal_receiver?, <<-PATTERN
+          {(send literal? ...)
+           (send (begin literal?) ...)}
+        PATTERN
 
         def allowed_conditional_expression_on_rhs?(node)
           node && node.if_type? && contains_contant?(node)

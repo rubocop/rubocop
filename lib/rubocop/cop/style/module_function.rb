@@ -46,7 +46,7 @@ module RuboCop
       #     # ...
       #   end
       #
-      # These offenses are not auto-corrected since there are different
+      # These offenses are not safe to auto-correct since there are different
       # implications to each approach.
       class ModuleFunction < Cop
         include ConfigurableEnforcedStyle

@@ -398,7 +398,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Metrics/LineLength:
             Max: 95
         YAML
-        Dir.chdir('dir') { expect(cli.run(%w[--auto-gen-config])).to eq(0) }
+        RuboCop::PathUtil.chdir('dir') do
+          expect(cli.run(%w[--auto-gen-config])).to eq(0)
+        end
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
