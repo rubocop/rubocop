@@ -181,7 +181,7 @@ module RuboCop
         with_temp_node(cur_node) do |init, temp_node|
           terms = compile_seq_terms(tokens, temp_node)
 
-          join_terms(init, terms, ' && ')
+          join_terms(init, terms, " &&\n")
         end
       end
 
