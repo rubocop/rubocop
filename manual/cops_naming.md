@@ -441,6 +441,9 @@ This cop makes sure that predicates are named properly.
 
 ```ruby
 # bad
+def is_even(value)
+end
+
 def is_even?(value)
 end
 
@@ -449,6 +452,9 @@ def even?(value)
 end
 
 # bad
+def has_value
+end
+
 def has_value?
 end
 

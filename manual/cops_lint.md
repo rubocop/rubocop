@@ -270,14 +270,14 @@ This cop checks for uses of the deprecated class method usages.
 
 File.exists?(some_path)
 Dir.exists?(some_path)
-iterator?(some_path)
+iterator?
 ```
 ```ruby
 # good
 
 File.exist?(some_path)
 Dir.exist?(some_path)
-block_given?(some_path)
+block_given?
 ```
 
 ## Lint/DisjunctiveAssignmentInConstructor
@@ -1788,6 +1788,31 @@ Name | Default value | Configurable values
 --- | --- | ---
 Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
+## Lint/SafeNavigationWithEmpty
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.62 | -
+
+This cop checks to make sure safe navigation isn't used with `empty?` in
+a conditional.
+
+While the safe navigation operator is generally a good idea, when
+checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
+do the opposite of what the author intends.
+
+### Examples
+
+```ruby
+# bad
+return if foo&.empty?
+return unless foo&.empty?
+
+# good
+return if foo && foo.empty?
+return unless foo && foo.empty?
+```
+
 ## Lint/ScriptPermission
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2019,6 +2044,29 @@ Enabled | Yes | No | 0.9 | -
 This is not actually a cop. It does not inspect anything. It just
 provides methods to repack Parser's diagnostics/errors
 into RuboCop's offenses.
+
+## Lint/ToJSON
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | - | -
+
+This cop checks to make sure `#to_json` includes an optional argument.
+When overriding `#to_json`, callers may invoke JSON
+generation via `JSON.generate(your_obj)`.  Since `JSON#generate` allows
+for an optional argument, your method should too.
+
+### Examples
+
+```ruby
+# bad
+def to_json
+end
+
+# good
+def to_json(_opts)
+end
+```
 
 ## Lint/UnderscorePrefixedVariableName
 

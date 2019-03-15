@@ -11,7 +11,7 @@ module RuboCop
       #
       #   File.exists?(some_path)
       #   Dir.exists?(some_path)
-      #   iterator?(some_path)
+      #   iterator?
       #
       # @example
       #
@@ -19,7 +19,7 @@ module RuboCop
       #
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
-      #   block_given?(some_path)
+      #   block_given?
       class DeprecatedClassMethods < Cop
         # Inner class to DeprecatedClassMethods.
         # This class exists to add abstraction and clean naming to the

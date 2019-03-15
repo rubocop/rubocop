@@ -87,8 +87,9 @@ module RuboCop
               "#{validate_type}: #{braced_options(last_argument)}"
             )
           else
-            corrector.insert_after(node.loc.expression,
-                                   ", #{validate_type}: true")
+            range = last_argument.source_range
+
+            corrector.insert_after(range, ", #{validate_type}: true")
           end
         end
 

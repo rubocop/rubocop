@@ -9,7 +9,7 @@ require 'rubocop/cop/internal_affairs'
 
 require 'webmock/rspec'
 
-require 'powerpack/string/strip_margin'
+require_relative 'core_ext/string'
 require 'pry'
 
 # Require supporting files exposed for testing.
