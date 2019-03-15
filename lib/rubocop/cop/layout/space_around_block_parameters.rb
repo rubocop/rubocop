@@ -36,11 +36,19 @@ module RuboCop
           check_each_arg(arguments)
         end
 
-        def autocorrect(range)
+        # @param target [RuboCop::AST::Node,Parser::Source::Range]
+        def autocorrect(target)
           lambda do |corrector|
-            case range.source
-            when /^\s+$/ then corrector.remove(range)
-            else              corrector.insert_after(range, ' ')
+            if target.is_a?(RuboCop::AST::Node)
+              if target.parent.children.first == target
+                corrector.insert_before(target.source_range, ' ')
+              else
+                corrector.insert_after(target.source_range, ' ')
+              end
+            elsif target.source =~ /^\s+$/
+              corrector.remove(target)
+            else
+              corrector.insert_after(target, ' ')
             end
           end
         end
@@ -97,11 +105,12 @@ module RuboCop
         end
 
         def check_opening_pipe_space(args, opening_pipe)
-          first = args.first.source_range
+          first_arg = args.first
+          range = first_arg.source_range
 
-          check_space(opening_pipe.end_pos, first.begin_pos, first,
-                      'before first block parameter')
-          check_no_space(opening_pipe.end_pos, first.begin_pos - 1,
+          check_space(opening_pipe.end_pos, range.begin_pos, range,
+                      'before first block parameter', first_arg)
+          check_no_space(opening_pipe.end_pos, range.begin_pos - 1,
                          'Extra space before first')
         end
 
@@ -136,10 +145,11 @@ module RuboCop
           )
         end
 
-        def check_space(space_begin_pos, space_end_pos, range, msg)
+        def check_space(space_begin_pos, space_end_pos, range, msg, node = nil)
           return if space_begin_pos != space_end_pos
 
-          add_offense(range, location: range, message: "Space #{msg} missing.")
+          target = node || range
+          add_offense(target, location: range, message: "Space #{msg} missing.")
         end
 
         def check_no_space(space_begin_pos, space_end_pos, msg)

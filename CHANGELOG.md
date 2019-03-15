@@ -17,6 +17,7 @@
 * [#6799](https://github.com/rubocop-hq/rubocop/pull/6799): Fix errors for `Style/ConditionalAssignment`, `Style/IdenticalConditionalBranches`, `Lint/ElseLayout`, and `Layout/IndentationWidth` with empty braces. ([@pocke][])
 * [#6802](https://github.com/rubocop-hq/rubocop/pull/6802): Fix auto-correction for `Style/SymbolArray` with array contains interpolation when `EnforcedStyle` is `brackets`. ([@pocke][])
 * [#6797](https://github.com/rubocop-hq/rubocop/pull/6797): Fix false negative for Layout/SpaceAroundBlockParameters on block parameter with parens. ([@pocke][])
+* [#6798](https://github.com/rubocop-hq/rubocop/pull/6798): Fix infinite loop for `Layout/SpaceAroundBlockParameters` with `EnforcedStyleInsidePipes: :space`. ([@pocke][])
 * [#6803](https://github.com/rubocop-hq/rubocop/pull/6803): Fix error for `Style/NumericLiterals` on a literal that contains spaces. ([@pocke][])
 * [#6801](https://github.com/rubocop-hq/rubocop/pull/6801): Fix auto-correction for `Style/Lambda` with no-space argument. ([@pocke][])
 * [#6804](https://github.com/rubocop-hq/rubocop/pull/6804): Fix auto-correction of `Style/NumericLiterals` on numeric literal with exponent. ([@pocke][])
