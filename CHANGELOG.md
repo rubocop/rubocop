@@ -33,6 +33,7 @@
 * [#6810](https://github.com/rubocop-hq/rubocop/pull/6810): Exclude gemspec file by default for `Metrics/BlockLength` cop. ([@koic][])
 * [#6813](https://github.com/rubocop-hq/rubocop/pull/6813): Allow unicode/display_width dependency version 1.5.0. ([@tagliala][])
 * [#6675](https://github.com/rubocop-hq/rubocop/issues/6675): Avoid printing deprecation warnings about constants. ([@elmasantos][])
+* [#6746](https://github.com/rubocop-hq/rubocop/issues/6746): Avoid offense on `$stderr.puts` with no arguments. ([@luciamo][])
 
 ## 0.65.0 (2019-02-19)
 
@@ -3862,3 +3863,4 @@
 [@tagliala]: https://github.com/tagliala
 [@unasuke]: https://github.com/unasuke
 [@elmasantos]: https://github.com/elmasantos
+[@luciamo]: https://github.com/luciamo
