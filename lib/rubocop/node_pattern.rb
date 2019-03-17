@@ -230,9 +230,10 @@ module RuboCop
       end
 
       def compile_ellipsis(tokens, cur_node, terms, index, capture = nil)
-        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
+        tail = compile_seq_tail(tokens, "#{cur_node}.children.last")
+        if !tail.empty?
           terms << "(#{cur_node}.children.size > #{index})"
-          terms << term
+          terms.concat tail
           if capture
             terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
           end
@@ -249,11 +250,11 @@ module RuboCop
         tokens.shift
         if tokens.first == ')'
           tokens.shift
-          nil
+          []
         else
           expr = compile_expr(tokens, cur_node, false)
           fail_due_to('missing )') unless tokens.shift == ')'
-          expr
+          [expr]
         end
       end
 
