@@ -199,7 +199,8 @@ module RuboCop
             when REST
               return compile_ellipsis(tokens, cur_node, terms, index)
             when CAPTURED_REST
-              return compile_capt_ellip(tokens, cur_node, terms, index)
+              return compile_ellipsis(tokens, cur_node, terms, index,
+                                      next_capture)
             end
           end
 
@@ -231,25 +232,18 @@ module RuboCop
         end
       end
 
-      def compile_ellipsis(tokens, cur_node, terms, index)
+      def compile_ellipsis(tokens, cur_node, terms, index, capture = nil)
         if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
           terms << "(#{cur_node}.children.size > #{index})"
           terms << term
-        elsif index > 0
-          terms << "(#{cur_node}.children.size >= #{index})"
-        end
-        terms
-      end
-
-      def compile_capt_ellip(tokens, cur_node, terms, index)
-        capture = next_capture
-        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
-          terms << "(#{cur_node}.children.size > #{index})"
-          terms << term
-          terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
+          if capture
+            terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
+          end
         else
           terms << "(#{cur_node}.children.size >= #{index})" if index > 0
-          terms << "(#{capture} = #{cur_node}.children[#{index}..-1])"
+          if capture
+            terms << "(#{capture} = #{cur_node}.children[#{index}..-1])"
+          end
         end
         terms
       end
