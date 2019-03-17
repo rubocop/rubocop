@@ -118,6 +118,9 @@ module RuboCop
       PARAM     = /\A#{PARAM_NUMBER}\Z/.freeze
       CLOSING   = /\A(?:\)|\}|\])\Z/.freeze
 
+      REST      = '...'.freeze
+      CAPTURED_REST = '$...'.freeze
+
       attr_reader :match_code
 
       def initialize(str, node_var = 'node0')
@@ -193,9 +196,9 @@ module RuboCop
         ret, size =
           compile_seq_terms_with_size(tokens, cur_node) do |token, terms, index|
             case token
-            when '...'.freeze
+            when REST
               return compile_ellipsis(tokens, cur_node, terms, index)
-            when '$...'.freeze
+            when CAPTURED_REST
               return compile_capt_ellip(tokens, cur_node, terms, index)
             end
           end
