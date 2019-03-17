@@ -195,12 +195,9 @@ module RuboCop
       def compile_seq_terms(tokens, cur_node)
         ret, size =
           compile_seq_terms_with_size(tokens, cur_node) do |token, terms, index|
-            case token
-            when REST
-              return compile_ellipsis(tokens, cur_node, terms, index)
-            when CAPTURED_REST
-              return compile_ellipsis(tokens, cur_node, terms, index,
-                                      next_capture)
+            capture = next_capture if token == CAPTURED_REST
+            if capture || token == REST
+              return compile_ellipsis(tokens, cur_node, terms, index, capture)
             end
           end
 
