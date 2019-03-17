@@ -195,7 +195,7 @@ module RuboCop
       end
 
       def compile_seq_terms(tokens, cur_node)
-        ret, size =
+        ret =
           compile_seq_terms_with_size(tokens, cur_node) do |token, terms, index|
             capture = next_capture if token == CAPTURED_REST
             if capture || token == REST
@@ -203,8 +203,7 @@ module RuboCop
               return compile_ellipsis(tokens, cur_node, terms, index, capture)
             end
           end
-
-        ret << "(#{cur_node}.children.size == #{size})"
+        ret << "(#{cur_node}.children.size == #{ret.size - 1})"
       end
 
       def compile_seq_terms_with_size(tokens, cur_node)
@@ -218,7 +217,7 @@ module RuboCop
         end
 
         tokens.shift # drop concluding )
-        [terms, index]
+        terms
       end
 
       def compile_expr_with_index(tokens, cur_node, index)
