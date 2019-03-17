@@ -61,6 +61,24 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
           expect(cop.offenses.size).to eq(1)
         end
       end
+
+      context 'autocorrect' do
+        let(:cop_config) do
+          { 'AutoCorrect' => 'true', 'EnforcedStyle' => 'strict' }
+        end
+
+        described_class::DANGEROUS_METHODS.each do |a_method|
+          it 'corrects the error' do
+            source = <<-RUBY.strip_indent
+              #{klass}.#{a_method}
+            RUBY
+            new_source = autocorrect_source(source)
+            expect(new_source).to eq(<<-RUBY.strip_indent)
+              #{klass}.zone.#{a_method}
+            RUBY
+          end
+        end
+      end
     end
 
     it 'registers an offense for Time.parse' do
@@ -239,6 +257,24 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
           expect_no_offenses(<<-RUBY.strip_indent)
             #{klass}.current.#{a_method}
           RUBY
+        end
+
+        context 'autocorrect' do
+          let(:cop_config) do
+            { 'AutoCorrect' => 'true', 'EnforcedStyle' => 'flexible' }
+          end
+
+          it 'corrects the error' do
+            source = <<-RUBY.strip_indent
+              #{klass}.#{a_method}
+            RUBY
+            new_source = autocorrect_source(source)
+            unless a_method == :current
+              expect(new_source).to eq(<<-RUBY.strip_indent)
+                #{klass}.#{a_method}.in_time_zone
+              RUBY
+            end
+          end
         end
       end
     end

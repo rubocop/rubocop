@@ -4,31 +4,43 @@
 
 ### New features
 
+* [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add `AllowBeforeTrailingComments` option on `Layout/ExtraSpacing` cop. ([@davearonson][])
+* New cop `Lint/SafeNavigationWithEmpty` checks for `foo&.empty?` in conditionals. ([@rspeicher][])
 * Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
 * [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding #to_json. ([@allcentury][])
+* [#6346](https://github.com/rubocop-hq/rubocop/issues/6346): Add auto-correction to `Rails/TimeZone`. ([@dcluna][])
 
 ### Bug fixes
 
+* [#4321](https://github.com/rubocop-hq/rubocop/pull/4321): Fix false offense for Style/RedundantSelf when the method is also defined on `Kernel`. ([@mikegee][])
 * [#6821](https://github.com/rubocop-hq/rubocop/pull/6821): Fix false negative for Rails/LinkToBlank when `_blank` is a symbol. ([@Intrepidd][])
 * [#6699](https://github.com/rubocop-hq/rubocop/issues/6699): Fix infinite loop for `Layout/IndentationWidth` and `Layout/IndentationConsistency` when bad modifier indentation before good method definition. ([@koic][])
 * [#6777](https://github.com/rubocop-hq/rubocop/issues/6777): Fix a false positive for `Style/TrivialAccessors` when using trivial reader/writer methods at the top level. ([@koic][])
 * [#6799](https://github.com/rubocop-hq/rubocop/pull/6799): Fix errors for `Style/ConditionalAssignment`, `Style/IdenticalConditionalBranches`, `Lint/ElseLayout`, and `Layout/IndentationWidth` with empty braces. ([@pocke][])
 * [#6802](https://github.com/rubocop-hq/rubocop/pull/6802): Fix auto-correction for `Style/SymbolArray` with array contains interpolation when `EnforcedStyle` is `brackets`. ([@pocke][])
 * [#6797](https://github.com/rubocop-hq/rubocop/pull/6797): Fix false negative for Layout/SpaceAroundBlockParameters on block parameter with parens. ([@pocke][])
+* [#6798](https://github.com/rubocop-hq/rubocop/pull/6798): Fix infinite loop for `Layout/SpaceAroundBlockParameters` with `EnforcedStyleInsidePipes: :space`. ([@pocke][])
 * [#6803](https://github.com/rubocop-hq/rubocop/pull/6803): Fix error for `Style/NumericLiterals` on a literal that contains spaces. ([@pocke][])
 * [#6801](https://github.com/rubocop-hq/rubocop/pull/6801): Fix auto-correction for `Style/Lambda` with no-space argument. ([@pocke][])
 * [#6804](https://github.com/rubocop-hq/rubocop/pull/6804): Fix auto-correction of `Style/NumericLiterals` on numeric literal with exponent. ([@pocke][])
 * [#6800](https://github.com/rubocop-hq/rubocop/issues/6800): Fix an incorrect auto-correct for `Rails/Validation` when method arguments are enclosed in parentheses. ([@koic][])
 * [#6808](https://github.com/rubocop-hq/rubocop/issues/6808): Prevent false positive in `Naming/ConstantName` when assigning a frozen range. ([@drenmi][])
 * Fix the calculation of `Metrics/AbcSize`. Comparison methods and `else` branches add to the comparison count. ([@rrosenblum][])
+* [#6791](https://github.com/rubocop-hq/rubocop/pull/6791): Allow `Rails/ReflectionClassName` to use symbol argument for `class_name`. ([@unasuke][])
+* [#5465](https://github.com/rubocop-hq/rubocop/issues/5465): Fix `Layout/ClassStructure` to allow grouping macros by their visibility. ([@gprado][])
+* [#6461](https://github.com/rubocop-hq/rubocop/pull/6461): Restrict `Ctrl-C` handling to RuboCop's loop and simplify it to a single phase. ([@deivid-rodriguez][])
 
 ### Changes
 
+* Add `$stdout`/`$stderr` and `STDOUT`/`STDERR` method calls to `Rails/Output`. ([@elebow][])
 * [#6688](https://github.com/rubocop-hq/rubocop/pull/6688): Add `iterator?` to deprecated methods and prefer `block_given?` instead. ([@tejasbubane][])
 * [#6806](https://github.com/rubocop-hq/rubocop/pull/6806): Remove `powerpack` dependency. ([@dduugg][])
 * [#6810](https://github.com/rubocop-hq/rubocop/pull/6810): Exclude gemspec file by default for `Metrics/BlockLength` cop. ([@koic][])
 * [#6813](https://github.com/rubocop-hq/rubocop/pull/6813): Allow unicode/display_width dependency version 1.5.0. ([@tagliala][])
 * Make `Style/RedundantFreeze` aware of methods that will produce frozen objects. ([@rrosenblum][])
+* [#6675](https://github.com/rubocop-hq/rubocop/issues/6675): Avoid printing deprecation warnings about constants. ([@elmasantos][])
+* [#6746](https://github.com/rubocop-hq/rubocop/issues/6746): Avoid offense on `$stderr.puts` with no arguments. ([@luciamo][])
+* Replace md5 with sha1 for FIPS compliance. ([@dirtyharrycallahan][])
 
 ## 0.65.0 (2019-02-19)
 
@@ -3828,6 +3840,7 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@davearonson]: https://github.com/davearonson
 [@timon]: https://github.com/timon
 [@gsamokovarov]: https://github.com/gsamokovarov
 [@itsWill]: https://github.com/itsWill
@@ -3839,6 +3852,7 @@
 [@timmcanty]: https://github.com/timmcanty
 [@tom-lord]: https://github.com/tom-lord
 [@bayandin]: https://github.com/bayandin
+[@rspeicher]: https://github.com/rspeicher
 [@nadiyaka]: https://github.com/nadiyaka
 [@allcentury]: https://github.com/allcentury
 [@antonzaytsev]: https://github.com/antonzaytsev
@@ -3853,4 +3867,9 @@
 [@mhelmetag]: https://github.com/mhelmetag
 [@Bhacaz]: https://github.com/bhacaz
 [@enkessler]: https://github.com/enkessler
+[@dcluna]: https://github.com/dcluna
 [@tagliala]: https://github.com/tagliala
+[@unasuke]: https://github.com/unasuke
+[@elmasantos]: https://github.com/elmasantos
+[@luciamo]: https://github.com/luciamo
+[@dirtyharrycallahan]: https://github.com/dirtyharrycallahan

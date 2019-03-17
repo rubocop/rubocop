@@ -581,6 +581,10 @@ Layout/ExtraSpacing:
   # things with the previous or next line, not counting empty lines or comment
   # lines.
   AllowForAlignment: true
+  # When true, allows things like 'obj.meth(arg)  # comment',
+  # rather than insisting on 'obj.meth(arg) # comment'.
+  # If done for alignment, either this OR AllowForAlignment will allow it.
+  AllowBeforeTrailingComments: false
   # When true, forces the alignment of `=` in assignments on consecutive lines.
   ForceEqualSignAlignment: false
 
@@ -1478,6 +1482,11 @@ Lint/SafeNavigationConsistency:
     - try
     - try!
 
+
+Lint/SafeNavigationWithEmpty:
+  Description: 'Avoid `foo&.empty?` in conditionals.'
+  Enabled: true
+  VersionAdded: '0.62'
 
 Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'

@@ -198,6 +198,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       a_long_var_name = 100 # this is 100
     RUBY
 
+    # WARNING: see mention in tests for AllowBeforeTrailingComments
+    # before modifying this test case, or its name
     'aligning tokens with empty line between' => <<-RUBY.strip_indent,
       unless nochdir
         Dir.chdir "/"    # Release old working directory.
@@ -250,6 +252,68 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
             expect(cop.offenses.empty?).to be(false)
           end
         end
+      end
+    end
+  end
+
+  context 'when AllowBeforeTrailingComments is' do
+    let(:allow_alignment) { false }
+    let(:cop_config) do
+      { 'AllowForAlignment' => allow_alignment,
+        'AllowBeforeTrailingComments' => allow_comments }
+    end
+    let(:src_with_extra) { '  object.method(argument)  # this is a comment' }
+
+    context 'true' do
+      let(:allow_comments) { true }
+
+      it 'allows it' do
+        expect_no_offenses(src_with_extra)
+      end
+      context "doesn't interfere with AllowForAlignment" do
+        context 'being true' do
+          let(:allow_alignment) { true }
+
+          sources.each do |reason, src|
+            context "such as #{reason}" do
+              it 'allows it' do
+                expect_no_offenses(src)
+              end
+            end
+          end
+        end
+
+        context 'being false' do
+          sources.each do |reason, src|
+            context "such as #{reason}" do
+              it 'registers offense(s)' do
+                inspect_source(src)
+                # In this one specific test case, the extra space in question
+                # is to align comments, so it would be allowed by EITHER ONE
+                # being true.  Yes, that means technically it interferes a bit,
+                # but specifically in the way it was intended to.
+                if reason == 'aligning tokens with empty line between'
+                  expect(cop.offenses.empty?).to be(true)
+                else
+                  expect(cop.offenses.empty?).to be(false)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
+    context 'false' do
+      let(:allow_comments) { false }
+
+      it 'regsiters offense' do
+        inspect_source(src_with_extra)
+        expect(cop.offenses.empty?).to be(false)
+      end
+      it 'does not trigger on only one space before comment' do
+        src_without_extra = src_with_extra.gsub(/\s*#/, ' #')
+        expect_no_offenses(src_without_extra)
       end
     end
   end

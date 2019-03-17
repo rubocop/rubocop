@@ -8,35 +8,43 @@ module RuboCop
       # `Categories` allows us to map macro names into a category.
       #
       # Consider an example of code style that covers the following order:
+      # - Module inclusion (include, prepend, extend)
       # - Constants
       # - Associations (has_one, has_many)
-      # - Attributes (attr_accessor, attr_writer, attr_reader)
+      # - Public attribute macros (attr_accessor, attr_writer, attr_reader)
+      # - Other macros (validates, validate)
+      # - Public class methods
       # - Initializer
-      # - Instance methods
-      # - Protected methods
-      # - Private methods
+      # - Public instance methods
+      # - Protected attribute macros (attr_accessor, attr_writer, attr_reader)
+      # - Protected instance methods
+      # - Private attribute macros (attr_accessor, attr_writer, attr_reader)
+      # - Private instance methods
       #
       # You can configure the following order:
       #
       # ```yaml
       #  Layout/ClassStructure:
-      #    Categories:
-      #      module_inclusion:
-      #        - include
-      #        - prepend
-      #        - extend
       #    ExpectedOrder:
-      #        - module_inclusion
-      #        - constants
-      #        - public_class_methods
-      #        - initializer
-      #        - public_methods
-      #        - protected_methods
-      #        - private_methods
-      #
+      #      - module_inclusion
+      #      - constants
+      #      - association
+      #      - public_attribute_macros
+      #      - public_delegate
+      #      - macros
+      #      - public_class_methods
+      #      - initializer
+      #      - public_methods
+      #      - protected_attribute_macros
+      #      - protected_methods
+      #      - private_attribute_macros
+      #      - private_delegate
+      #      - private_methods
       # ```
+      #
       # Instead of putting all literals in the expected order, is also
-      # possible to group categories of macros.
+      # possible to group categories of macros. Visibility levels are handled
+      # automatically.
       #
       # ```yaml
       #  Layout/ClassStructure:
@@ -44,10 +52,17 @@ module RuboCop
       #      association:
       #        - has_many
       #        - has_one
-      #      attribute:
+      #      attribute_macros:
       #        - attr_accessor
       #        - attr_reader
       #        - attr_writer
+      #      macros:
+      #        - validates
+      #        - validate
+      #      module_inclusion:
+      #        - include
+      #        - prepend
+      #        - extend
       # ```
       #
       # @example
@@ -73,11 +88,14 @@ module RuboCop
       #     # constants are next
       #     SOME_CONSTANT = 20
       #
-      #     # afterwards we have attribute macros
+      #     # afterwards we have public attribute macros
       #     attr_reader :name
       #
       #     # followed by other macros (if any)
       #     validates :name
+      #
+      #     # then we have public delegate macros
+      #     delegate :to_s, to: :name
       #
       #     # public class methods are next in line
       #     def self.some_method
@@ -91,13 +109,21 @@ module RuboCop
       #     def some_method
       #     end
       #
-      #     # protected and private methods are grouped near the end
+      #     # protected attribute macros and methods go next
       #     protected
+      #
+      #     attr_reader :protected_name
       #
       #     def some_protected_method
       #     end
       #
+      #     # private attribute macros, delegate macros and methods
+      #     # are grouped near the end
       #     private
+      #
+      #     attr_reader :private_name
+      #
+      #     delegate :some_private_delegate, to: :name
       #
       #     def some_private_method
       #     end
@@ -108,7 +134,8 @@ module RuboCop
         HUMANIZED_NODE_TYPE = {
           casgn: :constants,
           defs: :class_methods,
-          def: :public_methods
+          def: :public_methods,
+          sclass: :class_singleton
         }.freeze
 
         VISIBILITY_SCOPES = %i[private protected public].freeze
@@ -167,19 +194,23 @@ module RuboCop
           when :block
             classify(node.send_node)
           when :send
-            find_category(node.method_name)
+            find_category(node)
           else
             humanize_node(node)
           end.to_s
         end
 
-        # Categorize a method_name according to the {expected_order}
-        # @param method_name try to match {categories} values
+        # Categorize a node according to the {expected_order}
+        # Try to match {categories} values against the node's method_name given
+        # also its visibility.
+        # @param node to be analysed.
         # @return [String] with the key category or the `method_name` as string
-        def find_category(method_name)
-          name = method_name.to_s
+        def find_category(node)
+          name = node.method_name.to_s
           category, = categories.find { |_, names| names.include?(name) }
-          category || name
+          key = category || name
+          visibility_key = "#{node_visibility(node)}_#{key}"
+          expected_order.include?(visibility_key) ? visibility_key : key
         end
 
         def walk_over_nested_class_definition(class_node)
