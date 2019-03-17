@@ -38,7 +38,7 @@ module RuboCop
       def file_finished(file, offenses)
         offenses.each do |o|
           @cops_with_offenses[o.cop_name] += 1
-          @files_with_offenses[o.cop_name] ||= []
+          @files_with_offenses[o.cop_name] ||= Set.new
           @files_with_offenses[o.cop_name] << file
         end
       end
@@ -85,7 +85,7 @@ module RuboCop
       def output_cop(cop_name, offense_count)
         output.puts
         cfg = self.class.config_to_allow_offenses[cop_name] || {}
-        set_max(cfg, offense_count)
+        set_max(cfg, cop_name)
 
         # To avoid malformed YAML when potentially reading the config in
         # #excludes, we use an output buffer and append it to the actual output
@@ -96,13 +96,14 @@ module RuboCop
         output.puts(output_buffer.string)
       end
 
-      def set_max(cfg, offense_count)
+      def set_max(cfg, cop_name)
         return unless cfg[:exclude_limit]
 
         # In case auto_gen_only_exclude is set, only modify the maximum if the
         # files are not excluded one by one.
-        if !@options[:auto_gen_only_exclude] || offense_count > @exclude_limit
-          cfg.merge! cfg[:exclude_limit]
+        if !@options[:auto_gen_only_exclude] ||
+           @files_with_offenses[cop_name].size > @exclude_limit
+          cfg.merge!(cfg[:exclude_limit])
         end
 
         # Remove already used exclude_limit.
@@ -171,7 +172,7 @@ module RuboCop
       def output_offending_files(output_buffer, cfg, cop_name)
         return unless cfg.empty?
 
-        offending_files = @files_with_offenses[cop_name].uniq.sort
+        offending_files = @files_with_offenses[cop_name].sort
         if offending_files.count > @exclude_limit
           output_buffer.puts '  Enabled: false'
         else
@@ -184,8 +185,8 @@ module RuboCop
         parent = Pathname.new(Dir.pwd)
 
         output_buffer.puts '  Exclude:'
-        excludes(offending_files, cop_name, parent).each do |file|
-          output_exclude_path(output_buffer, file, parent)
+        excludes(offending_files, cop_name, parent).each do |exclude_path|
+          output_exclude_path(output_buffer, exclude_path, parent)
         end
       end
 
@@ -201,12 +202,17 @@ module RuboCop
         ((cfg['Exclude'] || []) + offending_files).uniq
       end
 
-      def output_exclude_path(output_buffer, file, parent)
-        file_path = Pathname.new(file)
+      def output_exclude_path(output_buffer, exclude_path, parent)
+        # exclude_path is either relative path, an absolute path, or a regexp.
+        file_path = Pathname.new(exclude_path)
         relative = file_path.relative_path_from(parent)
         output_buffer.puts "    - '#{relative}'"
       rescue ArgumentError
+        file = exclude_path
         output_buffer.puts "    - '#{file}'"
+      rescue TypeError
+        regexp = exclude_path
+        output_buffer.puts "    - !ruby/regexp /#{regexp.source}/"
       end
     end
   end

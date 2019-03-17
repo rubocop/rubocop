@@ -14,28 +14,40 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
           def test; end
         end
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        module Test
+          module_function
+          def test; end
+        end
+      RUBY
+    end
+
+    it 'accepts for `extend self` in a module with private methods' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+          extend self
+          def test; end
+          private
+          def test_private;end
+        end
+      RUBY
+    end
+
+    it 'accepts for `extend self` in a module with declarative private' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+          extend self
+          def test; end
+          private :test
+        end
+      RUBY
     end
 
     it 'accepts `extend self` in a class' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class Test
           extend self
-        end
-      RUBY
-    end
-
-    it 'auto-corrects `extend self` to `module_function`' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        module Foo
-          extend self
-          def test; end
-        end
-      RUBY
-
-      expect(corrected).to eq <<-RUBY.strip_indent
-        module Foo
-          module_function
-          def test; end
         end
       RUBY
     end
@@ -52,6 +64,13 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
           def test; end
         end
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        module Test
+          extend self
+          def test; end
+        end
+      RUBY
     end
 
     it 'accepts module_function with an argument' do
@@ -59,22 +78,6 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         module Test
           def test; end
           module_function :test
-        end
-      RUBY
-    end
-
-    it 'auto-corrects `module_function` to `extend self`' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        module Foo
-          module_function
-          def test; end
-        end
-      RUBY
-
-      expect(corrected).to eq <<-RUBY.strip_indent
-        module Foo
-          extend self
-          def test; end
         end
       RUBY
     end

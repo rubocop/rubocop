@@ -95,8 +95,8 @@ RuboCop::RakeTask.new
 If you run `rake -T`, the following two RuboCop tasks should show up:
 
 ```sh
-rake rubocop                                  # Run RuboCop
-rake rubocop:auto_correct                     # Auto-correct RuboCop offenses
+$ rake rubocop                                  # Run RuboCop
+$ rake rubocop:auto_correct                     # Auto-correct RuboCop offenses
 ```
 
 The above will use default values

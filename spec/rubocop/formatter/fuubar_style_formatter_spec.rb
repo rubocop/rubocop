@@ -51,7 +51,17 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     def offense(severity, status = :uncorrected)
-      source_range = double('source_range').as_null_object
+      source_buffer = Parser::Source::Buffer.new('test', 1)
+      source = Array.new(9) do |index|
+        "This is line #{index + 1}."
+      end
+      source_buffer.source = source.join("\n")
+      line_length = source[0].length + 1
+
+      source_range = Parser::Source::Range.new(source_buffer,
+                                               line_length + 2,
+                                               line_length + 3)
+
       RuboCop::Cop::Offense.new(
         severity, source_range,
         'message', 'Cop', status

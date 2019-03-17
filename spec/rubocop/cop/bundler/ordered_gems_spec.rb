@@ -39,22 +39,14 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems are not alphabetically sorted' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'rubocop'
-      gem 'rspec'
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'rubocop'
         gem 'rspec'
         ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop'
       RUBY
@@ -74,12 +66,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem declaration takes several lines' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'rubocop',
-          '0.1.1'
-      gem 'rspec'
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'rubocop',
@@ -87,11 +73,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rspec'
         ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'rspec'
         gem 'rubocop',
             '0.1.1'
@@ -159,14 +142,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gem groups is separated by multiline comment' do
-    let(:source) { <<-RUBY.strip_indent }
-      # For code quality
-      gem 'rubocop'
-      # For
-      # test
-      gem 'rspec'
-    RUBY
-
     context 'with TreatCommentsAsGroupSeparators: true' do
       let(:treat_comments_as_group_separators) { true }
 
@@ -191,11 +166,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           gem 'rspec'
           ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source_with_loop(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           # For
           # test
           gem 'rspec'
@@ -251,22 +223,14 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When a gem that starts with a capital letter is not sorted' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'Z'
-      gem 'a'
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'Z'
         gem 'a'
         ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `a` should appear before `Z`.
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'a'
         gem 'Z'
       RUBY
@@ -274,16 +238,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When there are duplicated gems in group' do
-    let(:source) { <<-RUBY.strip_indent }
-      gem 'a'
-
-      group :development do
-        gem 'b'
-        gem 'c'
-        gem 'b'
-      end
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         gem 'a'
@@ -295,11 +249,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `b` should appear before `c`.
         end
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         gem 'a'
 
         group :development do

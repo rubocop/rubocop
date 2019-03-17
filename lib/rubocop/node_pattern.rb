@@ -133,8 +133,7 @@ module RuboCop
       end
 
       def run(node_var)
-        tokens =
-          @string.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+        tokens = Compiler.tokens(@string)
 
         @match_code = compile_expr(tokens, node_var, false)
 
@@ -180,9 +179,14 @@ module RuboCop
         # temp variable as 'cur_node'
         with_temp_node(cur_node) do |init, temp_node|
           terms = compile_seq_terms(tokens, temp_node)
+          terms.unshift(compile_guard_clause(temp_node))
 
-          join_terms(init, terms, ' && ')
+          join_terms(init, terms, " &&\n")
         end
+      end
+
+      def compile_guard_clause(cur_node)
+        "#{cur_node}.is_a?(RuboCop::AST::Node)"
       end
 
       def compile_seq_terms(tokens, cur_node)
@@ -444,12 +448,6 @@ module RuboCop
         params.empty? ? '' : ",#{params}"
       end
 
-      def emit_guard_clause
-        <<-RUBY
-          return unless node.is_a?(RuboCop::AST::Node)
-        RUBY
-      end
-
       def emit_method_code
         <<-RUBY
           return unless #{@match_code}
@@ -475,6 +473,10 @@ module RuboCop
       def next_temp_value
         @temps += 1
       end
+
+      def self.tokens(pattern)
+        pattern.scan(TOKEN).reject { |token| token =~ /\A#{SEPARATORS}\Z/ }
+      end
     end
     private_constant :Compiler
 
@@ -491,7 +493,6 @@ module RuboCop
         compiler = Compiler.new(pattern_str, 'node')
         src = "def #{method_name}(node = self" \
               "#{compiler.emit_trailing_params});" \
-              "#{compiler.emit_guard_clause}" \
               "#{compiler.emit_method_code};end"
 
         location = caller_locations(1, 1).first
@@ -552,11 +553,39 @@ module RuboCop
       end
     end
 
+    attr_reader :pattern
+
     def initialize(str)
+      @pattern = str
       compiler = Compiler.new(str)
       src = "def match(node0#{compiler.emit_trailing_params});" \
             "#{compiler.emit_method_code}end"
-      instance_eval(src)
+      instance_eval(src, __FILE__, __LINE__ + 1)
+    end
+
+    def match(*args)
+      # If we're here, it's because the singleton method has not been defined,
+      # either because we've been dup'ed or serialized through YAML
+      initialize(pattern)
+      match(*args)
+    end
+
+    def marshal_load(pattern)
+      initialize pattern
+    end
+
+    def marshal_dump
+      pattern
+    end
+
+    def ==(other)
+      other.is_a?(NodePattern) &&
+        Compiler.tokens(other.pattern) == Compiler.tokens(pattern)
+    end
+    alias eql? ==
+
+    def to_s
+      "#<#{self.class} #{pattern}>"
     end
   end
 end

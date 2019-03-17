@@ -42,6 +42,7 @@ module RuboCop
 
           check_alignment(node.arguments, base_column(node, node.arguments))
         end
+        alias on_csend on_send
         alias on_def  on_send
         alias on_defs on_send
 
@@ -52,7 +53,11 @@ module RuboCop
         private
 
         def message(node)
-          type = node && node.parent.send_type? ? 'call' : 'definition'
+          type = if node && (node.parent.send_type? || node.parent.csend_type?)
+                   'call'
+                 else
+                   'definition'
+                 end
           msg = fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG
 
           format(msg, type: type)

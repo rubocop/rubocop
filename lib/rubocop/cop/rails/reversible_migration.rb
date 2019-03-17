@@ -124,7 +124,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @see http://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html
+      # @see https://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html
       class ReversibleMigration < Cop
         MSG = '%<action>s is not reversible.'.freeze
         IRREVERSIBLE_CHANGE_TABLE_CALLS = %i[

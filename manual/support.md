@@ -27,7 +27,7 @@ from other RuboCop users there.
 We're also encouraging users to ask RuboCop-related questions on StackOverflow.
 
 When doing so you should use the
-[RuboCop](http://stackoverflow.com/questions/tagged/rubocop) tag (ideally combined
+[RuboCop](https://stackoverflow.com/questions/tagged/rubocop) tag (ideally combined
 with the tag `ruby`).
 
 ## Bountysource

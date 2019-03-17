@@ -47,8 +47,9 @@ module RuboCop
         HAS_MUTATION_ALTERNATIVE = ':collect :compact :flatten :map :reject '\
                                    ':reverse :rotate :select :shuffle :sort '\
                                    ':uniq '.freeze
-        MSG = 'Use `%<method>s...%<second_method>s!` instead of `%<method>s' \
-              '...%<second_method>s`.'.freeze
+        MSG = 'Use unchained `%<method>s!` and `%<second_method>s!` '\
+              '(followed by `return array` if required) instead of chaining '\
+              '`%<method>s...%<second_method>s`.'.freeze
 
         def_node_matcher :flat_map_candidate?, <<-PATTERN
           {

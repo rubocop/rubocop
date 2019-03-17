@@ -9,9 +9,12 @@ RSpec.describe RuboCop::Cop::Rails::Output do
       puts "sinbad"
       print "abbe busoni"
       pp "monte cristo"
+      $stdout.write "lord wilmore"
+      $stderr.syswrite "faria"
+      STDOUT.write "bertuccio"
     RUBY
     inspect_source(source)
-    expect(cop.offenses.size).to eq(4)
+    expect(cop.offenses.size).to eq(7)
   end
 
   it 'does not record an offense for methods with a receiver' do
@@ -27,6 +30,8 @@ RSpec.describe RuboCop::Cop::Rails::Output do
       print
       pp
       puts
+      $stdout.write
+      STDERR.write
     RUBY
   end
 
@@ -34,6 +39,8 @@ RSpec.describe RuboCop::Cop::Rails::Output do
     expect_no_offenses(<<-RUBY.strip_indent)
       # print "test"
       # p
+      # $stdout.write
+      # STDERR.binwrite
     RUBY
   end
 end

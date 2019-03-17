@@ -101,12 +101,17 @@ module RuboCop
 
           checked_variable, receiver, method_chain, method = extract_parts(node)
           return unless receiver == checked_variable
+          return if use_var_only_in_unless_modifier?(node, checked_variable)
           # method is already a method call so this is actually checking for a
           # chain greater than 2
           return if chain_size(method_chain, method) > 1
           return if unsafe_method_used?(method_chain, method)
 
           add_offense(node)
+        end
+
+        def use_var_only_in_unless_modifier?(node, variable)
+          node.if_type? && node.unless? && !method_called?(variable)
         end
 
         def autocorrect(node)
@@ -209,11 +214,15 @@ module RuboCop
         end
 
         def negated?(send_node)
-          if send_node.parent && send_node.parent.send_type?
+          if method_called?(send_node)
             negated?(send_node.parent)
           else
             send_node.send_type? && send_node.method?(:!)
           end
+        end
+
+        def method_called?(send_node)
+          send_node.parent && send_node.parent.send_type?
         end
 
         def begin_range(node, method_call)

@@ -50,8 +50,8 @@ module RuboCop
 
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
-      TWISTED_SCOPE_TYPES = %i[block class sclass defs].freeze
-      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + %i[module def]).freeze
+      TWISTED_SCOPE_TYPES = %i[block class sclass defs module].freeze
+      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:def]).freeze
 
       SEND_TYPE = :send
 
@@ -196,6 +196,7 @@ module RuboCop
         regexp.named_captures.keys
       end
 
+      # rubocop:disable Metrics/AbcSize
       def process_variable_operator_assignment(node)
         if LOGICAL_OPERATOR_ASSIGNMENT_TYPES.include?(node.type)
           asgn_node, rhs_node = *node
@@ -232,6 +233,7 @@ module RuboCop
 
         skip_children!
       end
+      # rubocop:enable Metrics/AbcSize
 
       def process_variable_multiple_assignment(node)
         lhs_node, rhs_node = *node

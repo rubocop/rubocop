@@ -51,6 +51,18 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
         RUBY
       end
 
+      context 'when using safe navigation operator', :ruby23 do
+        it 'registers an offense for an under-indented first parameter' do
+          expect_offense(<<-RUBY.strip_indent)
+            receiver&.run(
+             :foo,
+             ^^^^ Indent the first parameter one step more than the start of the previous line.
+                bar: 3
+            )
+          RUBY
+        end
+      end
+
       it 'auto-corrects nested offenses' do
         new_source = autocorrect_source(<<-RUBY.strip_indent)
           foo(

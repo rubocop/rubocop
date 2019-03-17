@@ -132,9 +132,7 @@ module RuboCop
           variable = ivar_assign.children.first
           variable_name = variable.to_s.sub('@', '')
 
-          return false unless valid_leading_underscore?(variable_name)
-
-          variable_name.sub(/\A_/, '') == method_name.sub(/\A_/, '')
+          variable_name_candidates(method_name).include?(variable_name)
         end
 
         def message(variable)
@@ -152,14 +150,19 @@ module RuboCop
           style == :required ? "_#{suggestion}" : suggestion
         end
 
-        def valid_leading_underscore?(variable_name)
+        def variable_name_candidates(method_name)
+          no_underscore = method_name.sub(/\A_/, '')
+          with_underscore = "_#{method_name}"
           case style
           when :required
-            variable_name.start_with?('_')
+            [with_underscore,
+             method_name.start_with?('_') ? method_name : nil].compact
           when :disallowed
-            !variable_name.start_with?('_')
+            [method_name, no_underscore]
+          when :optional
+            [method_name, with_underscore, no_underscore]
           else
-            true
+            raise 'Unreachable'
           end
         end
       end

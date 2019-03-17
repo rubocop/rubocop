@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.49 | 
+Enabled | Yes | No | 0.49 | -
 
 This cop identifies places where `caller[n]`
 can be replaced by `caller(n..n).first`.
@@ -95,7 +95,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop identifies places where a case-insensitive string comparison
 can better be implemented using `casecmp`.
@@ -123,7 +123,7 @@ str.casecmp('ABC').zero?
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.59 | 
+Disabled | Yes | No | 0.59 | -
 
 This cop is used to identify usages of
 Each of these methods (`compact`, `flatten`, `map`) will generate a
@@ -154,7 +154,7 @@ array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.46 | 
+Enabled | Yes | Yes  | 0.46 | -
 
 This cop identifies places where `sort { |a, b| a.foo <=> b.foo }`
 can be replaced by `sort_by(&:foo)`.
@@ -234,7 +234,7 @@ SafeMode | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 0.39
+Enabled | Yes | Yes  | 0.30 | 0.39
 
 This cop is used to identify usages of
 `select.first`, `select.last`, `find_all.first`, and `find_all.last`
@@ -334,7 +334,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.35 | 
+Enabled | Yes | No | 0.35 | -
 
 Do not compute the size of statically sized objects.
 
@@ -385,7 +385,7 @@ waldo.size
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | -
 
 This cop is used to identify usages of
 
@@ -416,7 +416,7 @@ EnabledForFlattenWithoutParams | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.56 | 
+Enabled | No | Yes  | 0.56 | -
 
 This cop checks for inefficient searching of keys and values within
 hashes.
@@ -462,7 +462,7 @@ h = { a: 1, b: 2 }; h.value?(nil)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop identifies places where `lstrip.rstrip` can be replaced by
 `strip`.
@@ -478,17 +478,53 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 'abc'.strip
 ```
 
+## Performance/OpenStruct
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | No | No | 0.61 | -
+
+This cop checks for `OpenStruct.new` calls.
+Instantiation of an `OpenStruct` invalidates
+Ruby global method cache as it causes dynamic method
+definition during program runtime.
+This could have an effect on performance,
+especially in case of single-threaded
+applications with multiple `OpenStruct` instantiations.
+
+### Examples
+
+```ruby
+# bad
+class MyClass
+  def my_method
+    OpenStruct.new(my_key1: 'my_value1', my_key2: 'my_value2')
+  end
+end
+
+# good
+class MyClass
+  MyStruct = Struct.new(:my_key1, :my_key2)
+  def my_method
+    MyStruct.new('my_value1', 'my_value2')
+  end
+end
+```
+
 ## Performance/RangeInclude
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | No | Yes  | 0.36 | -
 
 This cop identifies uses of `Range#include?`, which iterates over each
 item in a `Range` to see if a specified item is there. In contrast,
 `Range#cover?` simply compares the target item with the beginning and
 end points of the `Range`. In a great majority of cases, this is what
 is wanted.
+
+This cop is `Safe: false` by default because `Range#include?` and
+`Range#cover?` are not equivalent behaviour.
 
 ### Examples
 
@@ -513,7 +549,7 @@ is wanted.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop identifies the use of a `&block` parameter and `block.call`
 where `yield` would do just as well.
@@ -546,7 +582,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop identifies the use of `Regexp#match` or `String#match`, which
 returns `#<MatchData>`/`nil`. The return value of `=~` is an integral
@@ -570,7 +606,7 @@ return value unless regex =~ 'str'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop identifies places where `Hash#merge!` can be replaced by
 `Hash#[]=`.
@@ -597,7 +633,7 @@ MaxKeyValuePairs | `2` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 
+Enabled | Yes | Yes  | 0.36 | -
 
 This cop identifies places where `sort_by { ... }` can be replaced by
 `sort`.
@@ -619,7 +655,7 @@ array.sort
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.47 | 
+Enabled | Yes | Yes  | 0.47 | -
 
 In Ruby 2.4, `String#match?`, `Regexp#match?`, and `Symbol#match?`
 have been added. The methods are faster than `match`.
@@ -702,7 +738,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | -
 
 This cop is used to identify usages of `reverse.each` and
 change them to use `reverse_each` instead.
@@ -725,7 +761,7 @@ change them to use `reverse_each` instead.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | -
 
 This cop is used to identify usages of `shuffle.first`,
 `shuffle.last`, and `shuffle[]` and change them to use
@@ -763,7 +799,7 @@ This cop is used to identify usages of `shuffle.first`,
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.3 | 
+Enabled | Yes | Yes  | 0.30 | -
 
 This cop is used to identify usages of `count` on an
 `Array` and `Hash` and change them to `size`.
@@ -829,7 +865,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.33 | 
+Enabled | Yes | Yes  | 0.33 | -
 
 This cop identifies places where `gsub` can be replaced by
 `tr` or `delete`.
@@ -858,7 +894,7 @@ This cop identifies places where `gsub` can be replaced by
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes (Unsafe) | 0.36 | 0.5
+Enabled | Yes | Yes (Unsafe) | 0.36 | 0.50
 
 This cop checks for .times.map calls.
 In most cases such calls can be replaced
@@ -888,7 +924,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | -
 
 In Ruby 2.3 or later, use unary plus operator to unfreeze a string
 literal instead of `String#dup` and `String.new`.
@@ -918,7 +954,7 @@ String.new('something')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | 
+Enabled | Yes | Yes  | 0.55 | -
 
 This cop is used to identify instances of sorting and then
 taking only the first or last element. The same behavior can
@@ -973,7 +1009,7 @@ arr.max_by(&:foo)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop identifies places where `URI::Parser.new`
 can be replaced by `URI::DEFAULT_PARSER`.

@@ -143,6 +143,8 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
   it 'auto-corrects' do
     new_source = autocorrect_source(<<-RUBY.strip_indent)
        # comment
+       # comment
+       # comment
       hash1 = { a: 0,
            # comment
                 bb: 1,
@@ -168,6 +170,8 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
         end
     RUBY
     expect(new_source).to eq(<<-RUBY.strip_indent)
+      # comment
+      # comment
       # comment
       hash1 = { a: 0,
                 # comment

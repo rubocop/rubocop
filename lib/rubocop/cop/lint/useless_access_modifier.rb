@@ -134,7 +134,7 @@ module RuboCop
 
           if node.begin_type?
             check_scope(node)
-          elsif node.send_type? && access_modifier?(node)
+          elsif node.send_type? && node.bare_access_modifier?
             add_offense(node, message: format(MSG, current: node.method_name))
           end
         end

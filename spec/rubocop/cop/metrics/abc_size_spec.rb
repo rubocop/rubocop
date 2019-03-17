@@ -51,8 +51,8 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
        'scores' do
       expect_offense(<<-RUBY.strip_indent)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [6.4/0]
-          my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 3, 2
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [5.74/0]
+          my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 1, 4
           my_options.each do |key, value|           # 0, 1, 0
             p key                                   # 0, 1, 0
             p value                                 # 0, 1, 0
@@ -95,10 +95,10 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
   end
 
-  context 'when Max is 1.8' do
-    let(:cop_config) { { 'Max' => 1.8 } }
+  context 'when Max is 2.3' do
+    let(:cop_config) { { 'Max' => 2.3 } }
 
-    it 'accepts a total score of 1.7' do
+    it 'accepts a total score of 2.24' do
       expect_no_offenses(<<-RUBY.strip_indent)
         def method_name
           y = 1 if y == 1
@@ -108,10 +108,10 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
   end
 
   {
-    1.3 => '3.74/1.3', # no more than 2 decimals reported
-    10.3 => '37.42/10.3',
-    100.321 => '374.2/100.3', # 4 significant digits, so only 1 decimal here
-    1000.3 => '3742/1000'
+    1.3 => '4.24/1.3', # no more than 2 decimals reported
+    10.3 => '42.43/10.3',
+    100.321 => '424.3/100.3', # 4 significant digits, so only 1 decimal here
+    1000.3 => '4243/1000'
   }.each do |max, presentation|
     context "when Max is #{max}" do
       let(:cop_config) { { 'Max' => max } }

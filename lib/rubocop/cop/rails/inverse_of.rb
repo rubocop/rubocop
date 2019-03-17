@@ -38,9 +38,8 @@ module RuboCop
       #   # good
       #   class Blog < ApplicationRecord
       #     has_many(:posts,
-      #       -> { order(published_at: :desc) },
-      #       inverse_of: :blog
-      #     )
+      #              -> { order(published_at: :desc) },
+      #              inverse_of: :blog)
       #   end
       #
       #   class Post < ApplicationRecord
@@ -62,9 +61,8 @@ module RuboCop
       #   # When you don't want to use the inverse association.
       #   class Blog < ApplicationRecord
       #     has_many(:posts,
-      #       -> { order(published_at: :desc) },
-      #       inverse_of: false
-      #     )
+      #              -> { order(published_at: :desc) },
+      #              inverse_of: false)
       #   end
       #
       # @example
@@ -128,8 +126,8 @@ module RuboCop
       #     has_many :physicians, through: :appointments
       #   end
       #
-      # @see http://guides.rubyonrails.org/association_basics.html#bi-directional-associations
-      # @see http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#module-ActiveRecord::Associations::ClassMethods-label-Setting+Inverses
+      # @see https://guides.rubyonrails.org/association_basics.html#bi-directional-associations
+      # @see https://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#module-ActiveRecord::Associations::ClassMethods-label-Setting+Inverses
       class InverseOf < Cop
         extend TargetRailsVersion
 

@@ -16,6 +16,21 @@ RSpec.describe RuboCop::Cop::Style::UnneededCapitalW do
       %W(cat dog)
       ^^^^^^^^^^^ Do not use `%W` unless interpolation is needed. If not, use `%w`.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      %w(cat dog)
+    RUBY
+  end
+
+  it 'registers an offense for misused %W with different bracket' do
+    expect_offense(<<-RUBY.strip_indent)
+      %W[cat dog]
+      ^^^^^^^^^^^ Do not use `%W` unless interpolation is needed. If not, use `%w`.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      %w[cat dog]
+    RUBY
   end
 
   it 'registers no offense for %W with interpolation' do
@@ -69,15 +84,5 @@ RSpec.describe RuboCop::Cop::Style::UnneededCapitalW do
 
   it 'does not register an offense for array with empty strings' do
     expect_no_offenses('["", "two", "three"]')
-  end
-
-  it 'auto-corrects an array of words' do
-    new_source = autocorrect_source('%W(one two three)')
-    expect(new_source).to eq('%w(one two three)')
-  end
-
-  it 'auto-corrects an array of words with different bracket' do
-    new_source = autocorrect_source('%W[one two three]')
-    expect(new_source).to eq('%w[one two three]')
   end
 end

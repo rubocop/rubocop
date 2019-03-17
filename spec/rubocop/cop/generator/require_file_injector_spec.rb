@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
   around do |example|
     Dir.mktmpdir('rubocop-require_file_injector_spec-') do |dir|
-      Dir.chdir(dir) do
+      RuboCop::PathUtil.chdir(dir) do
         Dir.mkdir('lib')
         example.run
       end
@@ -36,10 +36,11 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
         require_relative 'rubocop/version'
 
+        require_relative 'rubocop/cop/lint/flip_flop'
+
         require_relative 'rubocop/cop/style/end_block'
         require_relative 'rubocop/cop/style/even_odd'
         require_relative 'rubocop/cop/style/file_name'
-        require_relative 'rubocop/cop/style/flip_flop'
 
         require_relative 'rubocop/cop/rails/action_filter'
 
@@ -61,11 +62,12 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
         require_relative 'rubocop/version'
 
+        require_relative 'rubocop/cop/lint/flip_flop'
+
         require_relative 'rubocop/cop/style/end_block'
         require_relative 'rubocop/cop/style/even_odd'
         require_relative 'rubocop/cop/style/fake_cop'
         require_relative 'rubocop/cop/style/file_name'
-        require_relative 'rubocop/cop/style/flip_flop'
 
         require_relative 'rubocop/cop/rails/action_filter'
 
@@ -97,10 +99,11 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
         require_relative 'rubocop/version'
 
+        require_relative 'rubocop/cop/lint/flip_flop'
+
         require_relative 'rubocop/cop/style/end_block'
         require_relative 'rubocop/cop/style/even_odd'
         require_relative 'rubocop/cop/style/file_name'
-        require_relative 'rubocop/cop/style/flip_flop'
 
         require_relative 'rubocop/cop/rails/action_filter'
 
@@ -122,10 +125,11 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
         require_relative 'rubocop/version'
 
+        require_relative 'rubocop/cop/lint/flip_flop'
+
         require_relative 'rubocop/cop/style/end_block'
         require_relative 'rubocop/cop/style/even_odd'
         require_relative 'rubocop/cop/style/file_name'
-        require_relative 'rubocop/cop/style/flip_flop'
         require_relative 'rubocop/cop/style/the_end_of_style'
 
         require_relative 'rubocop/cop/rails/action_filter'
@@ -156,11 +160,12 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
       require_relative 'rubocop/version'
 
+      require_relative 'rubocop/cop/lint/flip_flop'
+
       require_relative 'rubocop/cop/style/end_block'
       require_relative 'rubocop/cop/style/even_odd'
       require_relative 'rubocop/cop/style/fake_cop'
       require_relative 'rubocop/cop/style/file_name'
-      require_relative 'rubocop/cop/style/flip_flop'
 
       require_relative 'rubocop/cop/rails/action_filter'
 
@@ -194,11 +199,12 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
       require_relative 'rubocop/version'
 
+      require_relative 'rubocop/cop/lint/flip_flop'
+
       require_relative 'rubocop/cop/style/end_block'
       require_relative 'rubocop/cop/style/even_odd'
       require_relative 'rubocop/cop/style/fake_cop'
       require_relative 'rubocop/cop/style/file_name'
-      require_relative 'rubocop/cop/style/flip_flop'
 
       require_relative 'rubocop/cop/rails/action_filter'
 

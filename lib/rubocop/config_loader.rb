@@ -44,7 +44,6 @@ module RuboCop
         resolver.resolve_requires(path, hash)
 
         add_missing_namespaces(path, hash)
-        target_ruby_version_to_f!(hash)
 
         resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolver.resolve_inheritance(path, hash, file, debug?)
@@ -118,33 +117,33 @@ module RuboCop
         resolver.merge_with_default(config, config_file)
       end
 
-      def target_ruby_version_to_f!(hash)
-        version = 'TargetRubyVersion'
-        return unless hash['AllCops'] && hash['AllCops'][version]
-
-        hash['AllCops'][version] = hash['AllCops'][version].to_f
-      end
-
       def add_inheritance_from_auto_generated_file
         file_string = " #{AUTO_GENERATED_FILE}"
 
         config_file = options_config || DOTFILE
+
         if File.exist?(config_file)
           files = Array(load_yaml_configuration(config_file)['inherit_from'])
+
           return if files.include?(AUTO_GENERATED_FILE)
 
           files.unshift(AUTO_GENERATED_FILE)
           file_string = "\n  - " + files.join("\n  - ") if files.size > 1
-          rubocop_yml_contents = IO.read(config_file, encoding: Encoding::UTF_8)
-                                   .sub(%r{^inherit_from: *[.\/\w]+}, '')
-                                   .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+},
-                                        '')
+          rubocop_yml_contents = existing_configuration(config_file)
         end
+
         write_config_file(config_file, file_string, rubocop_yml_contents)
+
         puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
       private
+
+      def existing_configuration(config_file)
+        IO.read(config_file, encoding: Encoding::UTF_8)
+          .sub(%r{^inherit_from: *[.\/\w]+}, '')
+          .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+}, '')
+      end
 
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
@@ -159,6 +158,7 @@ module RuboCop
 
       def load_yaml_configuration(absolute_path)
         yaml_code = read_file(absolute_path)
+        check_duplication(yaml_code, absolute_path)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
         puts "configuration from #{absolute_path}" if debug?
@@ -168,6 +168,18 @@ module RuboCop
         end
 
         hash
+      end
+
+      def check_duplication(yaml_code, absolute_path)
+        smart_path = PathUtil.smart_path(absolute_path)
+        YAMLDuplicationChecker.check(yaml_code, absolute_path) do |key1, key2|
+          value = key1.value
+          line1 = key1.start_line + 1
+          line2 = key2.start_line + 1
+          message = "#{smart_path}:#{line1}: " \
+                    "`#{value}` is concealed by line #{line2}"
+          warn Rainbow(message).yellow
+        end
       end
 
       # Read the specified file, or exit with a friendly, concise message on
@@ -184,16 +196,14 @@ module RuboCop
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
           SafeYAML.load(yaml_code, filename,
                         whitelisted_tags: %w[!ruby/regexp])
-        elsif RUBY_VERSION >= '2.6'
+        else
           YAML.safe_load(
             yaml_code,
-            whitelist_classes: [Regexp, Symbol],
-            whitelist_symbols: [],
+            permitted_classes: [Regexp, Symbol],
+            permitted_symbols: [],
             aliases: false,
             filename: filename
           )
-        else
-          YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
         end
       end
     end

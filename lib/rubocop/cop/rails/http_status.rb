@@ -143,7 +143,7 @@ module RuboCop
                 'to define HTTP status code.'.freeze
           DEFAULT_MSG = 'Prefer `numeric` over `symbolic` ' \
                         'to define HTTP status code.'.freeze
-          WHITELIST_STATUS = %i[error success missing redirect].freeze
+          PERMITTED_STATUS = %i[error success missing redirect].freeze
 
           attr_reader :node
           def initialize(node)
@@ -151,7 +151,7 @@ module RuboCop
           end
 
           def offensive?
-            !node.int_type? && !whitelisted_symbol?
+            !node.int_type? && !permitted_symbol?
           end
 
           def message
@@ -176,8 +176,8 @@ module RuboCop
             node.value
           end
 
-          def whitelisted_symbol?
-            node.sym_type? && WHITELIST_STATUS.include?(node.value)
+          def permitted_symbol?
+            node.sym_type? && PERMITTED_STATUS.include?(node.value)
           end
         end
       end

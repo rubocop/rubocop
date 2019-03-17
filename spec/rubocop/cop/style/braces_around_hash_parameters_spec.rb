@@ -53,6 +53,16 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       RUBY
     end
 
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for one non-hash parameter followed by a hash ' \
+         'parameter with braces' do
+        expect_offense(<<-RUBY.strip_indent)
+          a&.where(1, { y: 2 })
+                      ^^^^^^^^ Redundant curly braces around a hash parameter.
+        RUBY
+      end
+    end
+
     it 'registers an offense for one object method hash parameter with ' \
        'braces' do
       expect_offense(<<-RUBY.strip_indent)
@@ -349,6 +359,25 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
             foo: 1,
             bar: 2,
         )
+        RUBY
+      end
+
+      it 'corrects when the opening brace is before the first hash element' \
+         'at same line' do
+        corrected = autocorrect_source(<<-RUBY.strip_indent)
+          foo = Foo.new(
+            { foo: 'foo',
+              bar: 'bar',
+              baz: 'this is the last element'}
+          )
+        RUBY
+
+        expect(corrected).to eq(<<-RUBY.strip_indent)
+          foo = Foo.new(
+             foo: 'foo',
+              bar: 'bar',
+              baz: 'this is the last element'
+          )
         RUBY
       end
     end

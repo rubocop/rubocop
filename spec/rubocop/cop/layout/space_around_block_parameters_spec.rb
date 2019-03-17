@@ -89,6 +89,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
+    it 'registers an offense for space with parens' do
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |a,  (x,  y),  z| puts x }
+                     ^ Extra space before block parameter detected.
+                          ^ Extra space before block parameter detected.
+                               ^ Extra space before block parameter detected.
+      RUBY
+    end
+
     context 'trailing comma' do
       it 'registers an offense for space after the last comma' do
         expect_offense(<<-RUBY.strip_indent)
@@ -215,6 +224,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
+    it 'registers an offense for space with parens at middle' do
+      expect_offense(<<-RUBY.strip_indent)
+        {}.each { |(x,  y),  z| puts x }
+                   ^^^^^^^ Space before first block parameter missing.
+                      ^ Extra space before block parameter detected.
+                           ^ Extra space before block parameter detected.
+                             ^ Space after last block parameter missing.
+      RUBY
+    end
+
     context 'trailing comma' do
       it 'accepts space after the last comma' do
         expect_no_offenses('{}.each { | x, | puts x }')
@@ -231,6 +250,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     it 'auto-corrects block arguments inside Hash#each' do
       new_source = autocorrect_source('{}.each { |  x=5,  (y,*z)|puts x }')
       expect(new_source).to eq('{}.each { | x=5, (y,*z) | puts x }')
+    end
+
+    it 'auto-corrects missing space before first argument' do
+      new_source = autocorrect_source_with_loop('{}.each { |x, z| puts x }')
+      expect(new_source).to eq('{}.each { | x, z | puts x }')
     end
 
     it 'auto-corrects lambda args' do

@@ -10,6 +10,9 @@ module RuboCop
       #   method(1, 2,)
       #
       #   # good
+      #   method(1, 2)
+      #
+      #   # good
       #   method(
       #     1, 2,
       #     3,
@@ -26,6 +29,9 @@ module RuboCop
       #   method(1, 2,)
       #
       #   # good
+      #   method(1, 2)
+      #
+      #   # good
       #   method(
       #     1,
       #     2,
@@ -34,6 +40,9 @@ module RuboCop
       # @example EnforcedStyleForMultiline: no_comma (default)
       #   # bad
       #   method(1, 2,)
+      #
+      #   # good
+      #   method(1, 2)
       #
       #   # good
       #   method(
@@ -50,6 +59,7 @@ module RuboCop
                 node.last_argument.source_range.end_pos,
                 node.source_range.end_pos)
         end
+        alias on_csend on_send
 
         def autocorrect(range)
           PunctuationCorrector.swap_comma(range)

@@ -53,6 +53,7 @@ module RuboCop
 
           check(node.last_argument, node.arguments)
         end
+        alias on_csend on_send
 
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send
         # node, because that context is needed. When parsing the code to see if
@@ -154,7 +155,7 @@ module RuboCop
         end
 
         def right_whole_line_range(loc_end)
-          if range_by_whole_lines(loc_end).source.strip =~ /}\s*,?\z/
+          if range_by_whole_lines(loc_end).source.strip =~ /\A}\s*,?\z/
             range_by_whole_lines(loc_end, include_final_newline: true)
           else
             loc_end

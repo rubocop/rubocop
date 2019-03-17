@@ -148,6 +148,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
+    it 'registers an offence for not having a frozen string literal comment ' \
+       'when there is only a shebang' do
+      expect_offense(<<-RUBY.strip_indent)
+        #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+    end
+
     context 'auto-correct' do
       it 'adds a frozen string literal comment to the first line if one is ' \
          'missing' do
@@ -252,6 +260,18 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           # frozen_string_literal: true
 
           puts 1
+        RUBY
+      end
+
+      it 'adds a frozen string literal comment after a shebang when there is ' \
+         'only a shebang' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          #!/usr/bin/env ruby
+          # frozen_string_literal: true
         RUBY
       end
     end

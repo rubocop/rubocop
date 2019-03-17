@@ -66,6 +66,8 @@ module RuboCop
         MSG = 'Tagging a string as html safe may be a security risk.'.freeze
 
         def on_send(node)
+          return if non_interpolated_string?(node)
+
           return unless looks_like_rails_html_safe?(node) ||
                         looks_like_rails_raw?(node) ||
                         looks_like_rails_safe_concat?(node)
@@ -75,6 +77,10 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def non_interpolated_string?(node)
+          node.receiver && node.receiver.str_type? && !node.receiver.dstr_type?
+        end
 
         def looks_like_rails_html_safe?(node)
           node.receiver && node.method?(:html_safe) && !node.arguments?

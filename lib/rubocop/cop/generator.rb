@@ -98,6 +98,11 @@ module RuboCop
         end
       SPEC
 
+      CONFIGURATION_ADDED_MESSAGE = <<-MESSAGE.strip_indent
+        [modify] A configuration for the cop is added into %<configuration_file_path>s.
+                 If you want to disable the cop by default, set `Enabled` option to false.
+      MESSAGE
+
       def initialize(name, github_user, output: $stdout)
         @badge = Badge.parse(name)
         @github_user = github_user
@@ -123,24 +128,15 @@ module RuboCop
       end
 
       def inject_config(config_file_path: 'config/default.yml')
-        config = File.readlines(config_file_path)
-        content = <<-YAML.strip_indent
-          #{badge}:
-            Description: 'TODO: Write a description of the cop.'
-            Enabled: true
-            VersionAdded: #{bump_minor_version}
+        injector =
+          ConfigurationInjector.new(configuration_file_path: config_file_path,
+                                    badge: badge,
+                                    version_added: bump_minor_version)
 
-        YAML
-        target_line = config.find.with_index(1) do |line, index|
-          next if line =~ /^[\s#]/
-          break index - 1 if badge.to_s < line
+        injector.inject do
+          output.puts(format(CONFIGURATION_ADDED_MESSAGE,
+                             configuration_file_path: config_file_path))
         end
-        config.insert(target_line, content)
-        File.write(config_file_path, config.join)
-        output.puts <<-MESSAGE.strip_indent
-          [modify] A configuration for the cop is added into #{config_file_path}.
-                   If you want to disable the cop by default, set `Enabled` option to false.
-        MESSAGE
       end
 
       def todo

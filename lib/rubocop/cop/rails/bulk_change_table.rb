@@ -63,8 +63,8 @@ module RuboCop
       #     end
       #   end
       #
-      # @see http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
-      # @see http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/Table.html
+      # @see https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
+      # @see https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/Table.html
       class BulkChangeTable < Cop
         MSG_FOR_CHANGE_TABLE = <<-MSG.strip_indent.chomp
           You can combine alter queries using `bulk: true` options.

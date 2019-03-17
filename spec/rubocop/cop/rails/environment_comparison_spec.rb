@@ -5,32 +5,25 @@ RSpec.describe RuboCop::Cop::Rails::EnvironmentComparison do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `Rails.env == production`' do
+  it 'registers an offense and corrects comparing Rails.env to a string' do
     expect_offense(<<-RUBY.strip_indent)
       Rails.env == 'production'
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `Rails.env.production?` over `Rails.env == 'production'`.
-      Rails.env == :development
-      ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not compare `Rails.env` with a symbol, it will always evaluate to `false`.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      Rails.env.production?
     RUBY
   end
 
-  it 'autocorrects a string' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      Rails.env == 'development'
+  it 'registers an offense and corrects comparing Rails.env to a symbol' do
+    expect_offense(<<-RUBY.strip_indent)
+      Rails.env == :production
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Do not compare `Rails.env` with a symbol, it will always evaluate to `false`.
     RUBY
 
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      Rails.env.development?
-    RUBY
-  end
-
-  it 'autocorrects a symbol' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      Rails.env == :test
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      Rails.env.test?
+    expect_correction(<<-RUBY.strip_indent)
+      Rails.env.production?
     RUBY
   end
 

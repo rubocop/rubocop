@@ -139,6 +139,25 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
       expect(urls).to eq(%w[https://example.com/some_style_guide])
     end
 
+    it 'returns an empty array if the reference url is blank' do
+      config['Cop/Cop'] = {
+        'Reference' => ''
+      }
+
+      expect(urls.empty?).to be(true)
+    end
+
+    it 'returns multiple reference urls' do
+      config['Cop/Cop'] = {
+        'Reference' => ['https://example.com/some_style_guide',
+                        'https://example.com/some_other_guide',
+                        '']
+      }
+
+      expect(urls).to eq(['https://example.com/some_style_guide',
+                          'https://example.com/some_other_guide'])
+    end
+
     it 'returns style guide and reference url when they are specified' do
       config['Cop/Cop'] = {
         'StyleGuide' => '#target_based_url',
