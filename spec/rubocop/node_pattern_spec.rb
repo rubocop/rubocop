@@ -1173,6 +1173,18 @@ RSpec.describe RuboCop::NodePattern do
       it_behaves_like 'invalid'
     end
 
+    context 'with unmatched opening paren and `...`' do
+      let(:pattern) { '(send ...' }
+
+      it_behaves_like 'invalid'
+    end
+
+    context 'with too many terms after `...`' do
+      let(:pattern) { '(send ... 1 2)' }
+
+      it_behaves_like 'invalid'
+    end
+
     context 'with unmatched closing paren' do
       let(:pattern) { '(send (const)))' }
 
