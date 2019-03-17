@@ -4,7 +4,7 @@
 
 ### New features
 
-* [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add AllowBeforeTrailingComments option on Layout/ExtraSpacing cop. ([@davearonson][])
+* [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add `AllowBeforeTrailingComments` option on `Layout/ExtraSpacing` cop. ([@davearonson][])
 * New cop `Lint/SafeNavigationWithEmpty` checks for `foo&.empty?` in conditionals. ([@rspeicher][])
 * Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
 * [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding #to_json. ([@allcentury][])
@@ -27,6 +27,8 @@
 * [#6808](https://github.com/rubocop-hq/rubocop/issues/6808): Prevent false positive in `Naming/ConstantName` when assigning a frozen range. ([@drenmi][])
 * Fix the calculation of `Metrics/AbcSize`. Comparison methods and `else` branches add to the comparison count. ([@rrosenblum][])
 * [#6791](https://github.com/rubocop-hq/rubocop/pull/6791): Allow `Rails/ReflectionClassName` to use symbol argument for `class_name`. ([@unasuke][])
+* [#5465](https://github.com/rubocop-hq/rubocop/issues/5465): Fix `Layout/ClassStructure` to allow grouping macros by their visibility. ([@gprado][])
+* [#6461](https://github.com/rubocop-hq/rubocop/pull/6461): Restrict `Ctrl-C` handling to RuboCop's loop and simplify it to a single phase. ([@deivid-rodriguez][])
 
 ### Changes
 
@@ -75,7 +77,6 @@
 * [#6382](https://github.com/rubocop-hq/rubocop/issues/6382): Fix `Layout/IndentationWidth` with `Layout/EndAlignment` set to start_of_line. ([@dischorde][], [@siegfault][], [@mhelmetag][])
 * [#6710](https://github.com/rubocop-hq/rubocop/issues/6710): Fix `Naming/MemoizedInstanceVariableName` on method starts with underscore. ([@pocke][])
 * [#6722](https://github.com/rubocop-hq/rubocop/issues/6722): Fix an error for `Style/OneLineConditional` when `then` branch has no body. ([@koic][])
-* [#5465](https://github.com/rubocop-hq/rubocop/issues/5465): Fix `Layout/ClassStructure` to allow grouping macros by their visibility. ([@gprado][])
 * [#6702](https://github.com/rubocop-hq/rubocop/pull/6702): Fix `TrailingComma` regression where heredoc with commas caused false positives. ([@abrom][])
 * [#6737](https://github.com/rubocop-hq/rubocop/issues/6737): Fix an incorrect auto-correct for `Rails/LinkToBlank` when `link_to` method arguments are enclosed in parentheses. ([@koic][])
 * [#6720](https://github.com/rubocop-hq/rubocop/issues/6720): Fix detection of `:native` line ending for `Layout/EndOfLine` on JRuby. ([@enkessler][])
@@ -156,7 +157,6 @@
 * [#6594](https://github.com/rubocop-hq/rubocop/pull/6594): Fix a false positive for `Rails/OutputSafety` when the receiver is a non-interpolated string literal. ([@amatsuda][])
 * [#6574](https://github.com/rubocop-hq/rubocop/pull/6574): Fix `Style/AccessModifierIndentation` not handling arbitrary blocks. ([@deivid-rodriguez][])
 * [#6370](https://github.com/rubocop-hq/rubocop/issues/6370): Fix the enforcing style from `extend self` into `module_function` when there are private methods. ([@Ruffeng][])
-* [#6461](https://github.com/rubocop-hq/rubocop/pull/6461): Restrict Ctrl-C handling to RuboCop's loop and simplify it to a single phase. ([@deivid-rodriguez][])
 
 ### Changes
 
