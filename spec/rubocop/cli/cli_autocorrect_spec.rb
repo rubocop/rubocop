@@ -238,7 +238,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             func({
                    @abc => 0,
                    @xyz => 1,
-                 },)
+                 })
             func(
               {
                 abc: 0,
@@ -453,7 +453,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'caching' do
-    let(:cache) { double('cache', 'valid?' => true, 'load' => cached_offenses) }
+    let(:cache) do
+      instance_double(RuboCop::ResultCache, 'valid?' => true,
+                                            'load' => cached_offenses)
+    end
     let(:source) { %(puts "Hi"\n) }
 
     before do
@@ -983,12 +986,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       #{e}:1:1: C: Style/Documentation: Missing top-level class documentation comment.
       #{e}:2:1: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
       #{e}:2:1: C: [Corrected] Layout/EmptyLinesAroundAccessModifier: Keep a blank line after `private`.
+      #{e}:2:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 0) spaces for indentation.
+      #{e}:2:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
       #{e}:2:3: W: Lint/UselessAccessModifier: Useless `private` access modifier.
+      #{e}:2:5: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
       #{e}:3:7: C: [Corrected] Style/MutableConstant: Freeze mutable objects assigned to constants.
       #{e}:3:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
       #{e}:3:8: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       #{e}:3:15: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       #{e}:3:21: C: [Corrected] Style/TrailingCommaInArrayLiteral: Avoid comma after the last item of an array.
+      #{e}:4:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
+      #{e}:4:3: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
+      #{e}:4:5: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
       #{e}:4:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
     RESULT
   end

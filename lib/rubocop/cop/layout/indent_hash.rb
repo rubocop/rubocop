@@ -45,7 +45,7 @@ module RuboCop
       # @example EnforcedStyle: consistent
       #   # The `consistent` style enforces that the first key in a hash
       #   # literal where the opening brace and the first key are on
-      #   # seprate lines is indented the same as a hash literal which is not
+      #   # separate lines is indented the same as a hash literal which is not
       #   # defined inside a method call.
       #
       #   # bad
@@ -94,6 +94,7 @@ module RuboCop
             check(hash_node, left_parenthesis)
           end
         end
+        alias on_csend on_send
 
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, @column_delta)

@@ -16,8 +16,6 @@ RSpec.describe RuboCop::Cop::Lint::FloatOutOfRange do
   end
 
   context 'on whopping big floats which tip the scales' do
-    let(:source) { '9.9999e999' }
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         9.9999e999
@@ -27,8 +25,6 @@ RSpec.describe RuboCop::Cop::Lint::FloatOutOfRange do
   end
 
   context 'on floats so close to zero that nobody can tell the difference' do
-    let(:source) { '1.0e-400' }
-
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
         1.0e-400

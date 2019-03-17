@@ -626,7 +626,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       file = abs('example1.rb')
       style_guide_link = 'https://github.com/rubocop-hq/ruby-style-guide' \
                          '#instance-vars'
-      reference_link = 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
+      reference_link = 'https://www.zenspider.com/ruby/quickref.html'
 
       expect(cli.run(['--format',
                       'emacs',
@@ -739,8 +739,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            '  Description: No hard tabs.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
-           /^  VersionAdded: [0-9\.]+$/,
-           /^  VersionChanged: [0-9\.]+$/,
+           /^  VersionAdded: '[0-9\.]+'$/,
+           /^  VersionChanged: '[0-9\.]+'$/,
            '  IndentationWidth:'].join("\n")
         )
       end
@@ -1302,7 +1302,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                   'fake2.rb']
         expect(cli.run(argv)).to eq(2)
         expect($stderr.string).to include(
-          '-s/--stdin requires exactly one path.'
+          '-s/--stdin requires exactly one path'
         )
       ensure
         $stdin = STDIN

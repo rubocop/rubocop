@@ -9,6 +9,10 @@ module RuboCop
 
   # This class handles command line options.
   class Options
+    E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
+      'root of the project. RuboCop will use this path to determine which ' \
+      'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
+      'like Naming/FileName can be checked.'.freeze
     EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
@@ -24,11 +28,9 @@ module RuboCop
       @validator.validate_compatibility
 
       if @options[:stdin]
-        # The parser has put the file name given after --stdin into
-        # @options[:stdin]. The args array should be empty.
-        if args.any?
-          raise OptionArgumentError, '-s/--stdin requires exactly one path.'
-        end
+        # The parser will put the file name given after --stdin into
+        # @options[:stdin]. If it did, then the args array should be empty.
+        raise OptionArgumentError, E_STDIN_NO_PATH if args.any?
 
         # We want the STDIN contents in @options[:stdin] and the file name in
         # args to simplify the rest of the processing.
@@ -157,6 +159,7 @@ module RuboCop
       option(opts, '-S', '--display-style-guide')
       option(opts, '-R', '--rails')
       option(opts, '-a', '--auto-correct')
+      option(opts, '--ignore-disable-comments')
 
       option(opts, '--safe')
 
@@ -373,6 +376,8 @@ module RuboCop
       force_exclusion: ['Force excluding files specified in the',
                         'configuration `Exclude` even if they are',
                         'explicitly passed as arguments.'],
+      ignore_disable_comments: ['Run cops even when they are disabled locally',
+                                'with a comment.'],
       ignore_parent_exclusion: ['Prevent from inheriting AllCops/Exclude from',
                                 'parent folders.'],
       force_default_config: ['Use default configuration even if configuration',

@@ -33,7 +33,9 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   let(:assignment) { described_class.new(lvasgn_node, variable) }
 
   describe '.new' do
-    let(:variable) { double('variable') }
+    let(:variable) do
+      instance_double(RuboCop::Cop::VariableForce::Variable)
+    end
 
     context 'when an assignment node is passed' do
       it 'does not raise error' do

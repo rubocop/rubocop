@@ -23,7 +23,7 @@ module RuboCop
                              preexe postexe match_current_line defined?
                              arg_expr].freeze
       MANY_CHILD_NODES  = %i[dstr dsym xstr regexp array hash pair
-                             irange erange mlhs masgn or_asgn and_asgn
+                             mlhs masgn or_asgn and_asgn
                              undef alias args super yield or and
                              while_post until_post iflipflop eflipflop
                              match_with_lvasgn begin kwbegin return].freeze
@@ -176,6 +176,8 @@ module RuboCop
       alias on_ensure  on_case
       alias on_for     on_case
       alias on_when    on_case
+      alias on_irange  on_case
+      alias on_erange  on_case
     end
   end
 end

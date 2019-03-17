@@ -17,4 +17,10 @@ RSpec.describe RuboCop::Cop::Style::StderrPuts do
 
     expect(new_source).to eq "warn('hello')"
   end
+
+  it 'registers no offense when using `$stderr.puts` with no arguments' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      $stderr.puts
+    RUBY
+  end
 end

@@ -47,7 +47,7 @@ module RuboCop
           lambda do |corrector|
             if node.ternary?
               corrector.replace(range_of_offense(node), '||')
-            elsif node.modifier_form?
+            elsif node.modifier_form? || !node.else_branch
               corrector.replace(node.source_range, node.if_branch.source)
             else
               corrected = make_ternary_form(node)
@@ -60,7 +60,7 @@ module RuboCop
         private
 
         def message(node)
-          if node.modifier_form?
+          if node.modifier_form? || !node.else_branch
             UNNEEDED_CONDITION
           else
             MSG
@@ -96,8 +96,9 @@ module RuboCop
         end
 
         def make_ternary_form(node)
-          ternary_form = [node.if_branch.source,
-                          else_source(node.else_branch)].join(' || ')
+          _condition, if_branch, else_branch = *node
+          ternary_form = [if_branch.source,
+                          else_source(else_branch)].join(' || ')
 
           if node.parent && node.parent.send_type?
             "(#{ternary_form})"

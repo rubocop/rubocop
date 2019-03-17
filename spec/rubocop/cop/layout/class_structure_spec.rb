@@ -10,17 +10,32 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           module_inclusion
           constants
           attribute_macros
+          delegate
           macros
           public_class_methods
           initializer
           public_methods
+          protected_attribute_macros
           protected_methods
+          private_attribute_macros
+          private_delegate
           private_methods
         ],
         'Categories' => {
-          'macros' => %w[validates validate],
-          'module_inclusion' => %w[prepend extend include],
-          'attribute_macros' => %w[attr_accessor attr_reader attr_writer]
+          'attribute_macros' => %w[
+            attr_accessor
+            attr_reader
+            attr_writer
+          ],
+          'macros' => %w[
+            validates
+            validate
+          ],
+          'module_inclusion' => %w[
+            prepend
+            extend
+            include
+          ]
         }
       }
     )
@@ -43,6 +58,9 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           # afterwards we have attribute macros
           attr_reader :name
 
+          # then we have public delegate macros
+          delegate :to_s, to: :name
+
           # followed by other macros (if any)
           validates :name
 
@@ -58,13 +76,20 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           def some_method
           end
 
-          # protected and private methods are grouped near the end
+          # protected attribute macros and methods go next
           protected
+
+          attr_reader :protected_name
 
           def some_protected_method
           end
 
+          # private attribute macros, delegate macros and methods are grouped near the end
           private
+
+          attr_reader :private_name
+
+          delegate :some_private_delegate, to: :name
 
           def some_private_method
           end

@@ -53,11 +53,7 @@ module RuboCop
           return if rescue_modifier?(node)
 
           _body, *rescues, _else = *node
-          rescued_groups = rescues.each_with_object([]) do |group, exceptions|
-            rescue_group, = *group
-
-            exceptions << evaluate_exceptions(rescue_group)
-          end
+          rescued_groups = rescued_groups_for(rescues)
 
           rescue_group_rescues_multiple_levels = rescued_groups.any? do |group|
             contains_multiple_levels_of_exceptions?(group)
@@ -72,25 +68,21 @@ module RuboCop
         private
 
         def offense_range(rescues)
-          first_rescue = rescues.first
-          last_rescue = rescues.last
-          last_exceptions, = *last_rescue
-          # last_rescue clause may not specify exception class
-          end_pos = if last_exceptions
-                      last_exceptions.loc.expression.end_pos
-                    else
-                      last_rescue.loc.keyword.end_pos
-                    end
+          shadowing_rescue = find_shadowing_rescue(rescues)
+          expression = shadowing_rescue.loc.expression
+          range_between(expression.begin_pos, expression.end_pos)
+        end
 
-          range_between(first_rescue.loc.expression.begin_pos, end_pos)
+        def rescued_groups_for(rescues)
+          rescues.map do |group|
+            rescue_group, = *group
+            evaluate_exceptions(rescue_group)
+          end
         end
 
         def contains_multiple_levels_of_exceptions?(group)
-          if group.size > 1 && group.include?(Exception)
-            # Treat `Exception` as the highest level exception unless `nil` was
-            # also rescued
-            return !(group.size == 2 && group.include?(NilClass))
-          end
+          # Always treat `Exception` as the highest level exception.
+          return true if group.size > 1 && group.include?(Exception)
 
           group.combination(2).any? do |a, b|
             compare_exceptions(a, b)
@@ -115,12 +107,25 @@ module RuboCop
           error && error.ancestors[1] == SystemCallError
         end
 
+        def silence_warnings
+          # Replaces Kernel::silence_warnings since it hides any warnings,
+          # including the RuboCop ones
+          old_verbose = $VERBOSE
+          $VERBOSE = nil
+          yield
+        ensure
+          $VERBOSE = old_verbose
+        end
+
         def evaluate_exceptions(rescue_group)
           if rescue_group
             rescued_exceptions = rescued_exceptions(rescue_group)
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
-                converted << Kernel.const_get(exception)
+                silence_warnings do
+                  # Avoid printing deprecation warnings about constants
+                  converted << Kernel.const_get(exception)
+                end
               rescue NameError
                 converted << nil
               end
@@ -155,6 +160,17 @@ module RuboCop
 
             klass.source
           end.compact
+        end
+
+        def find_shadowing_rescue(rescues)
+          rescued_groups = rescued_groups_for(rescues)
+          rescued_groups.zip(rescues).each do |group, res|
+            return res if contains_multiple_levels_of_exceptions?(group)
+          end
+
+          rescued_groups.each_cons(2).with_index do |group_pair, i|
+            return rescues[i] unless sorted?(group_pair)
+          end
         end
       end
     end

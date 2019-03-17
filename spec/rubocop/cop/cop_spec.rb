@@ -84,8 +84,30 @@ RSpec.describe RuboCop::Cop::Cop do
 
   it 'will warn if custom severity is invalid' do
     cop.config[cop.name] = { 'Severity' => 'superbad' }
-    expect(cop).to receive(:warn)
+    expect { cop.add_offense(nil, location: location, message: 'message') }
+      .to output(/Warning: Invalid severity 'superbad'./).to_stderr
+  end
+
+  it 'will set offense as disabled if ignore_disable_comments is false' do
+    comment_config = instance_double(RuboCop::CommentConfig,
+                                     cop_enabled_at_line?: false)
+    processed_source = instance_double(RuboCop::ProcessedSource,
+                                       comment_config: comment_config)
+    cop.processed_source = processed_source
+    cop.instance_variable_set(:@options, ignore_disable_comments: false)
     cop.add_offense(nil, location: location, message: 'message')
+    expect(cop.offenses.first.status).to eq :disabled
+  end
+
+  it 'will not set offense as disabled if ignore_disable_comments is true' do
+    comment_config = instance_double(RuboCop::CommentConfig,
+                                     cop_enabled_at_line?: false)
+    processed_source = instance_double(RuboCop::ProcessedSource,
+                                       comment_config: comment_config)
+    cop.processed_source = processed_source
+    cop.instance_variable_set(:@options, ignore_disable_comments: true)
+    cop.add_offense(nil, location: location, message: 'message')
+    expect(cop.offenses.first.status).not_to eq :disabled
   end
 
   it 'registers offense with its name' do

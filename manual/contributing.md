@@ -28,7 +28,7 @@ adding or improving Cop descriptions.
 The manual is generated from the markdown files in the
 [doc](https://github.com/rubocop-hq/rubocop/tree/master/manual) folder of RuboCop's
 GitHub repo and is published to [Read the Docs](readthedocs.org). The
-[MkDocs](http://www.mkdocs.org/) tool is used to convert the markdown sources to
+[MkDocs](https://www.mkdocs.org/) tool is used to convert the markdown sources to
 HTML.
 
 To make changes to the manual you simply have to change the files under
@@ -38,7 +38,7 @@ are merged in `master` (or the latest stable branch).
 You can install `MkDocs` locally and use the command `mkdocs serve` to see the
 result of changes you make to the manual locally:
 
-```
+```sh
 $ cd path/to/rubocop/repo
 $ mkdocs serve
 ```

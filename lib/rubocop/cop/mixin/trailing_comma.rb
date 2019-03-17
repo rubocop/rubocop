@@ -19,9 +19,11 @@ module RuboCop
       def check(node, items, kind, begin_pos, end_pos)
         after_last_item = range_between(begin_pos, end_pos)
 
-        return if heredoc?(after_last_item.source)
-
-        comma_offset = after_last_item.source =~ /,/
+        # If there is any heredoc in items, then match the comma succeeding
+        # any whitespace (except newlines), otherwise allow for newlines
+        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
+        comma_offset = after_last_item.source =~ comma_regex &&
+                       after_last_item.source.index(',')
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
@@ -63,7 +65,7 @@ module RuboCop
         when :comma
           multiline?(node) && no_elements_on_same_line?(node)
         when :consistent_comma
-          multiline?(node)
+          multiline?(node) && !method_name_and_arguments_on_same_line?(node)
         else
           false
         end
@@ -76,10 +78,6 @@ module RuboCop
         end
       end
 
-      def heredoc?(source_after_last_item)
-        source_after_last_item =~ /\w/
-      end
-
       # Returns true if the node has round/square/curly brackets.
       def brackets?(node)
         node.loc.end
@@ -89,31 +87,33 @@ module RuboCop
       # on different lines, each item within is on its own line, and the
       # closing bracket is on its own line.
       def multiline?(node)
-        # No need to process anything if the whole node is not multiline
-        # Without the 2nd check, Foo.new({}) is considered multiline, which
-        # it should not be. Essentially, if there are no elements, the
-        # expression can not be multiline.
-        return false unless node.multiline?
+        node.multiline? && !allowed_multiline_argument?(node)
+      end
 
-        items = elements(node).map(&:source_range)
-        return false if items.empty?
+      def method_name_and_arguments_on_same_line?(node)
+        %i[send csend].include?(node.type) &&
+          node.loc.selector.line == node.arguments.last.last_line &&
+          node.last_line == node.arguments.last.last_line
+      end
 
-        items << node.loc.begin << node.loc.end
-        (items.map(&:first_line) + items.map(&:last_line)).uniq.size > 1
+      # A single argument with the closing bracket on the same line as the end
+      # of the argument is not considered multiline, even if the argument
+      # itself might span multiple lines.
+      def allowed_multiline_argument?(node)
+        elements(node).one? && !Util.begins_its_line?(node.loc.end)
       end
 
       def elements(node)
-        return node.children unless node.send_type?
+        return node.children unless %i[csend send].include?(node.type)
 
-        _receiver, _method_name, *args = *node
-        args.flat_map do |a|
+        node.arguments.flat_map do |argument|
           # For each argument, if it is a multi-line hash without braces,
           # then promote the hash elements to method arguments
           # for the purpose of determining multi-line-ness.
-          if a.hash_type? && a.multiline? && !a.braces?
-            a.children
+          if argument.hash_type? && argument.multiline? && !argument.braces?
+            argument.children
           else
-            a
+            argument
           end
         end
       end
@@ -166,6 +166,49 @@ module RuboCop
 
       # By default, there's no reason to avoid auto-correct.
       def avoid_autocorrect?(_nodes)
+        false
+      end
+
+      def any_heredoc?(items)
+        items.any? { |item| heredoc?(item) }
+      end
+
+      def heredoc?(node)
+        return false unless node.is_a?(RuboCop::AST::Node)
+        return true if node.loc.respond_to?(:heredoc_body)
+
+        return heredoc_send?(node) if node.send_type?
+
+        # handle hash values
+        #
+        #   some_method({
+        #     'auth' => <<-SOURCE
+        #       ...
+        #     SOURCE
+        #   })
+        if node.pair_type? || node.hash_type?
+          return heredoc?(node.children.last)
+        end
+
+        false
+      end
+
+      def heredoc_send?(node)
+        # handle heredocs with methods
+        #
+        #   some_method(<<-CODE.strip.chomp)
+        #     ...
+        #   CODE
+        return heredoc?(node.children.first) if node.children.size == 2
+        # handle nested methods
+        #
+        #   some_method(
+        #     another_method(<<-CODE.strip.chomp)
+        #       ...
+        #     CODE
+        #   )
+        return heredoc?(node.children.last) if node.children.size > 2
+
         false
       end
     end

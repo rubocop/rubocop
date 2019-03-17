@@ -33,7 +33,8 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with `blank?` method', 'x&.foo.blank?'],
       ['safe navigation with `try` method', 'a&.b.try(:c)'],
       ['safe navigation with assignment method', 'x&.foo = bar'],
-      ['safe navigation with self assignment method', 'x&.foo += bar']
+      ['safe navigation with self assignment method', 'x&.foo += bar'],
+      ['safe navigation with `to_d` method', 'x&.foo.to_d']
     ].each do |name, code|
       include_examples 'accepts', name, code
     end

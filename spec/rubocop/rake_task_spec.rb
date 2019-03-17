@@ -44,11 +44,12 @@ RSpec.describe RuboCop::RakeTask do
     it 'runs with default options' do
       described_class.new
 
-      cli = double('cli', run: 0)
+      cli = instance_spy(RuboCop::CLI, run: 0)
       allow(RuboCop::CLI).to receive(:new) { cli }
-      expect(cli).to receive(:run).with([])
 
       Rake::Task['rubocop'].execute
+
+      expect(cli).to have_received(:run).with([])
     end
 
     it 'runs with specified options if a block is given' do
@@ -60,12 +61,13 @@ RSpec.describe RuboCop::RakeTask do
         task.verbose = false
       end
 
-      cli = double('cli', run: 0)
+      cli = instance_spy(RuboCop::CLI, run: 0)
       allow(RuboCop::CLI).to receive(:new) { cli }
       options = ['--format', 'files', '--display-cop-names', 'lib/**/*.rb']
-      expect(cli).to receive(:run).with(options)
 
       Rake::Task['rubocop'].execute
+
+      expect(cli).to have_received(:run).with(options)
     end
 
     it 'allows nested arrays inside formatters, options, and requires' do
@@ -75,13 +77,14 @@ RSpec.describe RuboCop::RakeTask do
         task.options = [['--display-cop-names']]
       end
 
-      cli = double('cli', run: 0)
+      cli = instance_spy(RuboCop::CLI, run: 0)
       allow(RuboCop::CLI).to receive(:new) { cli }
       options = ['--format', 'files', '--require', 'library',
                  '--display-cop-names']
-      expect(cli).to receive(:run).with(options)
 
       Rake::Task['rubocop'].execute
+
+      expect(cli).to have_received(:run).with(options)
     end
 
     it 'will not error when result is not 0 and fail_on_error is false' do
@@ -89,7 +92,7 @@ RSpec.describe RuboCop::RakeTask do
         task.fail_on_error = false
       end
 
-      cli = double('cli', run: 1)
+      cli = instance_double(RuboCop::CLI, run: 1)
       allow(RuboCop::CLI).to receive(:new) { cli }
 
       expect { Rake::Task['rubocop'].execute }.not_to raise_error
@@ -98,7 +101,7 @@ RSpec.describe RuboCop::RakeTask do
     it 'exits when result is not 0 and fail_on_error is true' do
       described_class.new
 
-      cli = double('cli', run: 1)
+      cli = instance_double(RuboCop::CLI, run: 1)
       allow(RuboCop::CLI).to receive(:new) { cli }
 
       expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
@@ -133,12 +136,13 @@ RSpec.describe RuboCop::RakeTask do
       it 'runs with --auto-correct' do
         described_class.new
 
-        cli = double('cli', run: 0)
+        cli = instance_spy(RuboCop::CLI, run: 0)
         allow(RuboCop::CLI).to receive(:new) { cli }
         options = ['--auto-correct']
-        expect(cli).to receive(:run).with(options)
 
         Rake::Task['rubocop:auto_correct'].execute
+
+        expect(cli).to have_received(:run).with(options)
       end
 
       it 'runs with with the options that were passed to its parent task' do
@@ -150,12 +154,13 @@ RSpec.describe RuboCop::RakeTask do
           task.verbose = false
         end
 
-        cli = double('cli', run: 0)
+        cli = instance_double(RuboCop::CLI, run: 0)
         allow(RuboCop::CLI).to receive(:new) { cli }
         options = ['--auto-correct', '--format', 'files', '-D', 'lib/**/*.rb']
-        expect(cli).to receive(:run).with(options)
 
         Rake::Task['rubocop:auto_correct'].execute
+
+        expect(cli).to have_received(:run).with(options)
       end
     end
   end

@@ -26,7 +26,6 @@ module RuboCop
       #   Date.yesterday
       #   Date.today
       #   date.to_time
-      #   date.to_time_in_current_zone
       #
       #   # good
       #   Time.zone.today
@@ -42,7 +41,7 @@ module RuboCop
       #   Time.zone.today - 1.day
       #   Date.current
       #   Date.yesterday
-      #   date.to_time_in_current_zone
+      #   date.in_time_zone
       #
       class Date < Cop
         include ConfigurableEnforcedStyle
@@ -54,6 +53,13 @@ module RuboCop
                    'know nothing about the time zone in use.'.freeze
 
         BAD_DAYS = %i[today current yesterday tomorrow].freeze
+
+        DEPRECATED_METHODS = [
+          { deprecated: 'to_time_in_current_zone', relevant: 'in_time_zone' }
+        ].freeze
+
+        DEPRECATED_MSG = '`%<deprecated>s` is deprecated. ' \
+                         'Use `%<relevant>s` instead.'.freeze
 
         def on_const(node)
           mod, klass = *node.children
@@ -68,11 +74,25 @@ module RuboCop
 
           return if safe_chain?(node) || safe_to_time?(node)
 
+          check_deprecated_methods(node)
+
           add_offense(node, location: :selector,
                             message: format(MSG_SEND, method: node.method_name))
         end
+        alias on_csend on_send
 
         private
+
+        def check_deprecated_methods(node)
+          DEPRECATED_METHODS.each do |relevant:, deprecated:|
+            next unless node.method_name == deprecated.to_sym
+
+            add_offense(node, location: :selector,
+                              message: format(DEPRECATED_MSG,
+                                              deprecated: deprecated,
+                                              relevant: relevant))
+          end
+        end
 
         def check_date_node(node)
           chain = extract_method_chain(node)
@@ -124,7 +144,7 @@ module RuboCop
         end
 
         def bad_methods
-          style == :strict ? %i[to_time to_time_in_current_zone] : [:to_time]
+          %i[to_time to_time_in_current_zone]
         end
 
         def good_methods

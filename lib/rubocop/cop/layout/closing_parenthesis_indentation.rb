@@ -78,6 +78,7 @@ module RuboCop
         def on_send(node)
           check(node, node.arguments)
         end
+        alias on_csend on_send
 
         def on_begin(node)
           check(node, node.children)
@@ -133,6 +134,7 @@ module RuboCop
           # Although there are multiple choices for a correct column,
           # select the first one of candidates to determine a specification.
           correct_column = candidates.first
+          @column_delta = correct_column - right_paren.column
           add_offense(right_paren,
                       location: right_paren,
                       message: message(correct_column,
@@ -141,15 +143,16 @@ module RuboCop
         end
 
         def expected_column(left_paren, elements)
-          if !line_break_after_left_paren?(left_paren, elements) &&
-             all_elements_aligned?(elements)
-            left_paren.column
-          else
+          if line_break_after_left_paren?(left_paren, elements)
             source_indent = processed_source
-                            .line_indentation(last_argument_line(elements))
+                            .line_indentation(first_argument_line(elements))
             new_indent    = source_indent - indentation_width
 
             new_indent < 0 ? 0 : new_indent
+          elsif all_elements_aligned?(elements)
+            left_paren.column
+          else
+            processed_source.line_indentation(first_argument_line(elements))
           end
         end
 
@@ -160,9 +163,9 @@ module RuboCop
             .count == 1
         end
 
-        def last_argument_line(elements)
+        def first_argument_line(elements)
           elements
-            .last
+            .first
             .loc
             .first_line
         end

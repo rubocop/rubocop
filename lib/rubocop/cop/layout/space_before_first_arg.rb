@@ -40,6 +40,7 @@ module RuboCop
 
           add_offense(space, location: space) if space.length != 1
         end
+        alias on_csend on_send
 
         def autocorrect(range)
           ->(corrector) { corrector.replace(range, ' ') }

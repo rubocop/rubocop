@@ -27,6 +27,25 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
       RUBY
     end
 
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for method call with two spaces before the ' \
+         'first arg' do
+        expect_offense(<<-RUBY.strip_indent)
+          a&.something  y, z
+                      ^^ Put one space between the method name and the first argument.
+        RUBY
+      end
+
+      it 'auto-corrects extra space' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          a&.something  y, z
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          a&.something y, z
+        RUBY
+      end
+    end
+
     it 'registers an offense for method call with no spaces before the '\
        'first arg' do
       inspect_source(<<-RUBY.strip_indent)

@@ -66,12 +66,14 @@ module RuboCop
         def correction_compact_to_exploded(node)
           exception_node, _new, message_node = *node.first_argument
 
-          message = message_node && message_node.source
+          arguments =
+            [exception_node, message_node].compact.map(&:source).join(', ')
 
-          correction = exception_node.const_name.to_s
-          correction = "#{correction}, #{message}" if message
-
-          "#{node.method_name} #{correction}"
+          if node.parent && requires_parens?(node.parent)
+            "#{node.method_name}(#{arguments})"
+          else
+            "#{node.method_name} #{arguments}"
+          end
         end
 
         def correction_exploded_to_compact(node)
@@ -79,7 +81,12 @@ module RuboCop
           return node.source if message_nodes.size > 1
 
           argument = message_nodes.first.source
-          "#{node.method_name} #{exception_node.const_name}.new(#{argument})"
+
+          if node.parent && requires_parens?(node.parent)
+            "#{node.method_name}(#{exception_node.const_name}.new(#{argument}))"
+          else
+            "#{node.method_name} #{exception_node.const_name}.new(#{argument})"
+          end
         end
 
         def check_compact(node)
@@ -118,6 +125,11 @@ module RuboCop
           # Allow code like `raise Ex.new(kw: arg)`.
           # Allow code like `raise Ex.new(*args)`.
           arg.hash_type? || arg.splat_type?
+        end
+
+        def requires_parens?(parent)
+          parent.and_type? || parent.or_type? ||
+            parent.if_type? && parent.ternary?
         end
 
         def message(node)

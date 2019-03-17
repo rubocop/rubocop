@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Formatter::BaseFormatter do
-  include FileHelper
+  include_context 'cli spec behavior'
 
   describe 'how the API methods are invoked', :isolated_environment do
-    subject(:formatter) { double('formatter').as_null_object }
+    subject(:formatter) { instance_double(described_class).as_null_object }
 
     let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new) }
     let(:output) { $stdout.string }
@@ -18,14 +18,9 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
       allow(RuboCop::Formatter::SimpleTextFormatter)
         .to receive(:new).and_return(formatter)
-      $stdout = StringIO.new
       # avoid intermittent failure caused when another test set global
       # options on ConfigLoader
       RuboCop::ConfigLoader.clear_options
-    end
-
-    after do
-      $stdout = STDOUT
     end
 
     def run
@@ -34,7 +29,7 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
     describe 'invocation order' do
       subject(:formatter) do
-        formatter = double('formatter')
+        formatter = instance_spy(described_class)
         %i[started file_started file_finished finished output]
           .each do |message|
           allow(formatter).to receive(message) do
@@ -60,6 +55,8 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
     end
 
     shared_examples 'receives all file paths' do |method_name|
+      before { run }
+
       it 'receives all file paths' do
         expected_paths = [
           '1_offense.rb',
@@ -67,21 +64,18 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
           'no_offense.rb'
         ].map { |path| File.expand_path(path) }.sort
 
-        expect(formatter).to receive(method_name) do |all_files|
+        expect(formatter).to have_received(method_name) do |all_files|
           expect(all_files.sort).to eq(expected_paths)
         end
-
-        run
       end
 
       describe 'the passed files paths' do
         it 'is frozen' do
-          expect(formatter).to receive(method_name) do |all_files|
+          expect(formatter).to have_received(method_name) do |all_files|
             all_files.each do |path|
               expect(path.frozen?).to be(true)
             end
           end
-          run
         end
       end
     end
@@ -106,40 +100,42 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
             end
           end
 
-          allow(runner).to receive(:aborting?) do
-            formatter.processed_file_count == 2
-          end
+          allow(runner).to receive(:process_file)
+            .and_wrap_original do |m, *args|
+              raise Interrupt if formatter.processed_file_count == 2
 
-          expect(formatter).to receive(:finished) do |processed_files|
-            expect(processed_files.size).to eq(2)
-          end
+              m.call(*args)
+            end
 
           run
+
+          expect(formatter).to have_received(:finished) do |processed_files|
+            expect(processed_files.size).to eq(2)
+          end
         end
       end
     end
 
     shared_examples 'receives a file path' do |method_name|
+      before { run }
+
       it 'receives a file path' do
-        expect(formatter).to receive(method_name)
+        expect(formatter).to have_received(method_name)
           .with(File.expand_path('1_offense.rb'), anything)
 
-        expect(formatter).to receive(method_name)
+        expect(formatter).to have_received(method_name)
           .with(File.expand_path('4_offenses.rb'), anything)
 
-        expect(formatter).to receive(method_name)
+        expect(formatter).to have_received(method_name)
           .with(File.expand_path('no_offense.rb'), anything)
-
-        run
       end
 
       describe 'the passed path' do
         it 'is frozen' do
           expect(formatter)
-            .to receive(method_name).exactly(3).times do |path|
+            .to have_received(method_name).exactly(3).times do |path|
             expect(path.frozen?).to be(true)
           end
-          run
         end
       end
     end
@@ -148,9 +144,8 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
       include_examples 'receives a file path', :file_started
 
       it 'receives file specific information hash' do
-        expect(formatter).to receive(:file_started)
+        expect(formatter).to have_received(:file_started)
           .with(anything, an_instance_of(Hash)).exactly(3).times
-        run
       end
     end
 
@@ -158,7 +153,7 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
       include_examples 'receives a file path', :file_finished
 
       it 'receives an array of detected offenses for the file' do
-        expect(formatter).to receive(:file_finished)
+        expect(formatter).to have_received(:file_finished)
           .exactly(3).times do |file, offenses|
           case File.basename(file)
           when '1_offense.rb'
@@ -173,7 +168,6 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
           expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) })
             .to be_truthy
         end
-        run
       end
     end
   end

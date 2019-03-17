@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.48 | 
+Enabled | Yes | No | 0.48 | -
 
 This cop checks for ambiguous block association with method
 when param passed without parentheses.
@@ -37,7 +37,7 @@ foo = ->(bar) { bar.baz }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | 
+Enabled | Yes | No | 0.17 | -
 
 This cop checks for ambiguous operators in the first argument of a
 method invocation without parentheses.
@@ -66,7 +66,7 @@ do_something(*some_array)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | 
+Enabled | Yes | No | 0.17 | -
 
 This cop checks for ambiguous regexp literals in the first argument of
 a method invocation without parentheses.
@@ -92,7 +92,7 @@ do_something(/pattern/i)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for assignments in the conditions of
 if/while/until.
@@ -128,7 +128,7 @@ AllowSafeAssignment | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 `BigDecimal.new()` is deprecated since BigDecimal 1.3.3.
 This cop identifies places where `BigDecimal.new()`
@@ -148,7 +148,7 @@ BigDecimal(123.456, 3)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | -
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
@@ -174,7 +174,7 @@ false
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.33 | 
+Enabled | Yes | No | 0.33 | -
 
 This cop checks for circular argument references in optional keyword
 arguments and optional ordinal arguments.
@@ -259,7 +259,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.19 | 
+Enabled | Yes | Yes  | 0.19 | -
 
 This cop checks for uses of the deprecated class method usages.
 
@@ -269,18 +269,51 @@ This cop checks for uses of the deprecated class method usages.
 # bad
 
 File.exists?(some_path)
+Dir.exists?(some_path)
+iterator?
 ```
 ```ruby
 # good
 
 File.exist?(some_path)
+Dir.exist?(some_path)
+block_given?
+```
+
+## Lint/DisjunctiveAssignmentInConstructor
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | No | 0.62 | -
+
+This cop checks constructors for disjunctive assignments that should
+be plain assignments.
+
+So far, this cop is only concerned with disjunctive assignment of
+instance variables.
+
+In ruby, an instance variable is nil until a value is assigned, so the
+disjunction is unnecessary. A plain assignment has the same effect.
+
+### Examples
+
+```ruby
+# bad
+def initialize
+  @x ||= 1
+end
+
+# good
+def initialize
+  @x = 1
+end
 ```
 
 ## Lint/DuplicateCaseCondition
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.45 | 
+Enabled | Yes | No | 0.45 | -
 
 This cop checks that there are no repeated conditions
 used in case 'when' expressions.
@@ -312,7 +345,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.29 | 
+Enabled | Yes | No | 0.29 | -
 
 This cop checks for duplicated instance (or singleton) method
 definitions.
@@ -364,7 +397,7 @@ alias bar foo
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.34 | 
+Enabled | Yes | No | 0.34 | -
 
 This cop checks for duplicated keys in hash literals.
 
@@ -387,7 +420,7 @@ hash = { food: 'apple', other_food: 'orange' }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.31 | 
+Enabled | Yes | No | 0.31 | -
 
 This cop checks if each_with_object is called with an immutable
 argument. Since the argument is the object that the given block shall
@@ -413,7 +446,7 @@ sum = numbers.each_with_object(num) { |e, a| a += e }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | 
+Enabled | Yes | No | 0.17 | -
 
 This cop checks for odd else block layout - like
 having an expression on the same line as the else keyword,
@@ -445,7 +478,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.1 | 0.48
+Enabled | Yes | Yes  | 0.10 | 0.48
 
 This cop checks for empty `ensure` blocks
 
@@ -496,7 +529,7 @@ AutoCorrect | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.45 | 
+Enabled | Yes | No | 0.45 | -
 
 This cop checks for the presence of empty expressions.
 
@@ -523,7 +556,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.2 | 0.45
+Enabled | Yes | Yes  | 0.20 | 0.45
 
 This cop checks for empty interpolation.
 
@@ -544,7 +577,7 @@ This cop checks for empty interpolation.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.45 | 
+Enabled | Yes | No | 0.45 | -
 
 This cop checks for the presence of `when` branches without a body.
 
@@ -571,7 +604,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for END blocks in method definitions.
 
@@ -602,7 +635,7 @@ END { do_something }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for *return* from an *ensure* block.
 Explicit return from an ensure block alters the control flow
@@ -639,7 +672,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.56 | 
+Enabled | Yes | No | 0.56 | -
 
 This cop emulates the following Ruby warnings in Ruby 2.6.
 
@@ -699,11 +732,38 @@ else
 end
 ```
 
+## Lint/FlipFlop
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.16 | -
+
+This cop looks for uses of flip-flop operator.
+flip-flop operator is deprecated since Ruby 2.6.0.
+
+### Examples
+
+```ruby
+# bad
+(1..20).each do |x|
+  puts x if (x == 5) .. (x == 10)
+end
+
+# good
+(1..20).each do |x|
+  puts x if (x >= 5) && (x <= 10)
+end
+```
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
+
 ## Lint/FloatOutOfRange
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 This cop identifies Float literals which are, like, really really really
 really really really really really big. Too big. No-one needs Floats
@@ -726,7 +786,7 @@ float = 42.9
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.33 | 
+Enabled | Yes | No | 0.33 | -
 
 This lint sees if there is a mismatch between the number of
 expected fields for format/sprintf/#% and what is actually
@@ -749,7 +809,7 @@ format('A value: %s and another: %i', a_value, another)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for *rescue* blocks with no body.
 
@@ -800,7 +860,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 This cop checks for implicit string concatenation of string literals
 which are on the same line.
@@ -827,7 +887,7 @@ array = [
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 This cop checks for `private` or `protected` access modifiers which are
 applied to a singleton method. These access modifiers do not make
@@ -876,7 +936,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | 
+Enabled | Yes | Yes  | 0.41 | -
 
 This cop looks for error classes inheriting from `Exception`
 and its standard library subclasses, excluding subclasses of
@@ -918,7 +978,7 @@ EnforcedStyle | `runtime_error` | `runtime_error`, `standard_error`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | -
 
 This cop checks for interpolation in a single quoted string.
 
@@ -939,7 +999,7 @@ foo = "something with #{interpolation} inside"
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.51 | 
+Enabled | Yes | No | 0.51 | -
 
 This cop checks for literals used as the conditions or as
 operands in and/or expressions serving as the conditions of
@@ -994,7 +1054,7 @@ This cop checks for interpolated literals.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for uses of *begin...end while/until something*.
 
@@ -1041,7 +1101,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.52 | 
+Enabled | Yes | No | 0.52 | -
 
 This cop checks that there is an `# rubocop:enable ...` statement
 after a `# rubocop:disable ...` statement. This will prevent leaving
@@ -1094,7 +1154,7 @@ MaximumRangeSize | `Infinity` | Float
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.47 | 
+Enabled | Yes | Yes  | 0.47 | -
 
 In math and Python, we can use `x < y < z` style comparison to compare
 multiple value. However, we can't use the comparison in Ruby. However,
@@ -1120,7 +1180,7 @@ x < y && y < z
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.32 | 
+Enabled | Yes | No | 0.32 | -
 
 This cop checks for nested method definitions.
 
@@ -1181,7 +1241,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.52 | 
+Enabled | Yes | No | 0.52 | -
 
 This cop checks for nested percent literals.
 
@@ -1202,7 +1262,7 @@ attributes = {
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 Don't omit the accumulator when calling `next` in a `reduce` block.
 
@@ -1229,7 +1289,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.3 | 
+Enabled | Yes | No | 0.30 | -
 
 This cop checks for non-local exits from iterators without a return
 value. It registers an offense under these conditions:
@@ -1272,7 +1332,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.53 | 
+Disabled | Yes | No | 0.53 | -
 
 This cop warns the usage of unsafe number conversions. Unsafe
 number conversion can cause unexpected error if auto type conversion
@@ -1298,7 +1358,7 @@ Complex('10')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 Checks the proper ordering of magic comments and whether
 a magic comment is not placed before a shebang.
@@ -1330,7 +1390,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.12 | 
+Enabled | Yes | No | 0.12 | -
 
 Checks for space between the name of a called method and a left
 parenthesis.
@@ -1356,7 +1416,7 @@ puts(x + y)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | 
+Enabled | Yes | Yes  | 0.41 | -
 
 This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 
@@ -1381,7 +1441,7 @@ rather than meant to be part of the resulting strings.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | 
+Enabled | Yes | Yes  | 0.41 | -
 
 This cop checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
 
@@ -1406,7 +1466,7 @@ rather than meant to be part of the resulting symbols.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.36 | 
+Enabled | Yes | No | 0.36 | -
 
 This cop checks for `rand(1)` calls.
 Such calls always return `0`.
@@ -1431,7 +1491,7 @@ rand(-1.0)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop checks for redundant `with_index`.
 
@@ -1463,7 +1523,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.51 | 
+Enabled | Yes | Yes  | 0.51 | -
 
 This cop checks for redundant `with_object`.
 
@@ -1495,7 +1555,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.51 | 
+Enabled | Yes | No | 0.51 | -
 
 This cop checks for regexp literals used as `match-current-line`.
 If a regexp literal is in condition, the regexp matches `$_` implicitly.
@@ -1518,7 +1578,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.18 | 
+Enabled | Yes | No | 0.18 | -
 
 This cop checks for expressions where there is a call to a predicate
 method with at least one argument, where no parentheses are used around
@@ -1583,7 +1643,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 
+Enabled | Yes | Yes  | 0.49 | -
 
 Check for arguments to `rescue` that will result in a `TypeError`
 if an exception is raised.
@@ -1624,7 +1684,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | -
 
 This cop checks for the use of a return with a value in a context
 where the value will be ignored. (initialize and setter methods)
@@ -1694,7 +1754,7 @@ Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | 
+Enabled | Yes | Yes  | 0.55 | -
 
 This cop check to make sure that if safe navigation is used for a method
 call in an `&&` or `||` condition that safe navigation is used for all
@@ -1728,11 +1788,36 @@ Name | Default value | Configurable values
 --- | --- | ---
 Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
+## Lint/SafeNavigationWithEmpty
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.62 | -
+
+This cop checks to make sure safe navigation isn't used with `empty?` in
+a conditional.
+
+While the safe navigation operator is generally a good idea, when
+checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
+do the opposite of what the author intends.
+
+### Examples
+
+```ruby
+# bad
+return if foo&.empty?
+return unless foo&.empty?
+
+# good
+return if foo && foo.empty?
+return unless foo && foo.empty?
+```
+
 ## Lint/ScriptPermission
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.5
+Enabled | Yes | Yes  | 0.49 | 0.50
 
 This cop checks if a file which has a shebang line as
 its first line is granted execute permission.
@@ -1768,7 +1853,7 @@ puts 'hello, world'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.52 | 
+Enabled | Yes | No | 0.52 | -
 
 This cop checks for shadowed arguments.
 
@@ -1844,7 +1929,7 @@ IgnoreImplicitReferences | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.41 | 
+Enabled | Yes | No | 0.41 | -
 
 This cop checks for a rescued exception that get shadowed by a
 less specific exception being rescued before a more specific
@@ -1892,7 +1977,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop looks for use of the same name as outer local variables
 for block arguments or block local variables.
@@ -1928,7 +2013,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.19 | 0.2
+Enabled | Yes | Yes  | 0.19 | 0.20
 
 This cop checks for string conversion in string interpolation,
 which is redundant.
@@ -1954,17 +2039,40 @@ which is redundant.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This is not actually a cop. It does not inspect anything. It just
 provides methods to repack Parser's diagnostics/errors
 into RuboCop's offenses.
 
+## Lint/ToJSON
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | - | -
+
+This cop checks to make sure `#to_json` includes an optional argument.
+When overriding `#to_json`, callers may invoke JSON
+generation via `JSON.generate(your_obj)`.  Since `JSON#generate` allows
+for an optional argument, your method should too.
+
+### Examples
+
+```ruby
+# bad
+def to_json
+end
+
+# good
+def to_json(_opts)
+end
+```
+
 ## Lint/UnderscorePrefixedVariableName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.21 | 
+Enabled | Yes | No | 0.21 | -
 
 This cop checks for underscore-prefixed variables that are actually
 used.
@@ -1997,7 +2105,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | 
+Enabled | Yes | Yes  | 0.43 | -
 
 This cop checks for using Fixnum or Bignum constant.
 
@@ -2019,7 +2127,7 @@ This cop checks for using Fixnum or Bignum constant.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop detects instances of rubocop:disable comments that can be
 removed without causing any offenses to be reported. It's implemented
@@ -2047,7 +2155,7 @@ x += 1
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | 
+Enabled | Yes | Yes  | 0.53 | -
 
 This cop detects instances of rubocop:enable comments that can be
 removed.
@@ -2084,7 +2192,7 @@ baz
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.51 | 
+Enabled | Yes | Yes  | 0.51 | -
 
 Checks for unnecessary `require` statement.
 
@@ -2112,7 +2220,7 @@ require 'unloaded_feature'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | 
+Enabled | Yes | Yes  | 0.43 | -
 
 This cop checks for unneeded usages of splat expansion
 
@@ -2166,7 +2274,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for unreachable code.
 The check are based on the presence of flow of control
@@ -2293,7 +2401,7 @@ IgnoreEmptyMethods | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.5 | 
+Enabled | Yes | No | 0.50 | -
 
 This cop identifies places where `URI.escape` can be replaced by
 `CGI.escape`, `URI.encode_www_form`, or `URI.encode_www_form_component`
@@ -2329,7 +2437,7 @@ URI.decode_www_form_component(enc_uri)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.5 | 
+Enabled | Yes | Yes  | 0.50 | -
 
 This cop identifies places where `URI.regexp` is obsolete and should
 not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
@@ -2348,7 +2456,7 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.2 | 0.47
+Enabled | Yes | No | 0.20 | 0.47
 
 This cop checks for redundant access modifiers, including those with no
 code, those which are repeated, and leading `public` modifiers in a
@@ -2450,7 +2558,7 @@ MethodCreatingMethods | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.11 | 
+Enabled | Yes | No | 0.11 | -
 
 This cop checks for every useless assignment to local variable in every
 scope.
@@ -2489,7 +2597,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.11 | 
+Enabled | Yes | No | 0.11 | -
 
 This cop checks for comparison of something with itself.
 
@@ -2505,7 +2613,7 @@ x.top >= x.top
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | 
+Enabled | Yes | No | 0.17 | -
 
 This cop checks for useless `else` in `begin..end` without `rescue`.
 
@@ -2536,7 +2644,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | 
+Enabled | Yes | No | 0.13 | -
 
 This cop checks for setter call to local variable as the final
 expression of a function definition.
@@ -2565,7 +2673,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 
+Enabled | Yes | No | 0.9 | -
 
 This cop checks for operators, variables, literals, and nonmutating
 methods used in void context.

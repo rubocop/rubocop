@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Generator do
     it 'refuses to overwrite existing files' do
       new_cop = described_class.new('Layout/Tab', 'your_id')
 
-      expect(new_cop).to receive(:exit!)
+      allow(new_cop).to receive(:exit!)
       expect { new_cop.write_source }
         .to output(
           "rake new_cop: lib/rubocop/cop/layout/tab.rb already exists!\n"
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Generator do
     it 'refuses to overwrite existing files' do
       new_cop = described_class.new('Layout/Tab', 'your_id')
 
-      expect(new_cop).to receive(:exit!)
+      allow(new_cop).to receive(:exit!)
       expect { new_cop.write_spec }
         .to output(
           "rake new_cop: spec/rubocop/cop/layout/tab_spec.rb already exists!\n"
@@ -192,17 +192,21 @@ RSpec.describe RuboCop::Cop::Generator do
       YAML
     end
 
-    it 'inserts the cop in alphabetical' do
+    it 'inserts the cop in alphabetical order' do
       stub_const('RuboCop::Version::STRING', '0.58.2')
 
-      expect(File).to receive(:write).with(path, <<-YAML.strip_indent)
+      allow(File).to receive(:write)
+
+      generator.inject_config(config_file_path: path)
+
+      expect(File).to have_received(:write).with(path, <<-YAML.strip_indent)
         Style/Alias:
           Enabled: true
 
         Style/FakeCop:
           Description: 'TODO: Write a description of the cop.'
           Enabled: true
-          VersionAdded: 0.59
+          VersionAdded: '0.59'
 
         Style/Lambda:
           Enabled: true
@@ -210,7 +214,6 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/SpecialGlobalVars:
           Enabled: true
       YAML
-      generator.inject_config(config_file_path: path)
       expect(stdout.string).to eq(<<-MESSAGE.strip_indent)
         [modify] A configuration for the cop is added into #{path}.
                  If you want to disable the cop by default, set `Enabled` option to false.

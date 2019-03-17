@@ -19,8 +19,8 @@ module RuboCop
 
     MAX_ITERATIONS = 200
 
-    attr_reader :errors, :warnings, :aborting
-    alias aborting? aborting
+    attr_reader :errors, :warnings
+    attr_writer :aborting
 
     def initialize(options, config_store)
       @options = options
@@ -38,10 +38,16 @@ module RuboCop
         warm_cache(target_files) if @options[:parallel]
         inspect_files(target_files)
       end
+    rescue Interrupt
+      self.aborting = true
+      warn ''
+      warn 'Exiting...'
+
+      false
     end
 
-    def abort
-      @aborting = true
+    def aborting?
+      @aborting
     end
 
     private
@@ -73,8 +79,6 @@ module RuboCop
 
     def each_inspected_file(files)
       files.reduce(true) do |all_passed, file|
-        break false if aborting?
-
         offenses = process_file(file)
         yield file
 

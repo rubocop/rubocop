@@ -60,4 +60,14 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   it 'does not register an offense for a call with multiple arguments' do
     expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
+
+  context 'when using safe navigation operator', :ruby23 do
+    it 'registers an offense for method call with space before the ' \
+       'parenthesis' do
+      expect_offense(<<-RUBY.strip_indent)
+        a&.func (x)
+               ^ `(...)` interpreted as grouped expression.
+      RUBY
+    end
+  end
 end

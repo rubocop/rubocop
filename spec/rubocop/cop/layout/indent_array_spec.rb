@@ -203,6 +203,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentArray do
           RUBY
         end
 
+        context 'when using safe navigation operator', :ruby23 do
+          it "registers an offense for 'consistent' indentation" do
+            expect_offense(<<-RUBY.strip_indent)
+              receiver&.func([
+                1
+                ^ Use 2 spaces for indentation in an array, relative to the first position after the preceding left parenthesis.
+              ])
+              ^ Indent the right bracket the same as the first position after the preceding left parenthesis.
+            RUBY
+          end
+        end
+
         it "registers an offense for 'align_brackets' indentation" do
           expect_offense(<<-RUBY.strip_indent)
             var = [

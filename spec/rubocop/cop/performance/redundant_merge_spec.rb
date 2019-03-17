@@ -46,7 +46,15 @@ RSpec.describe RuboCop::Cop::Performance::RedundantMerge, :config do
   end
 
   context 'when any argument is a double splat' do
-    it 'does not register an offense' do
+    it 'does not register an offense when the only argument is a' \
+       'double splat' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo.merge!(**bar)
+      RUBY
+    end
+
+    it 'does not register an offense when there are multiple arguments ' \
+       'and at least one is a double splat' do
       expect_no_offenses(<<-RUBY.strip_indent)
         foo.merge!(baz: qux, **bar)
       RUBY

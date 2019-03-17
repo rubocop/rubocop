@@ -3,10 +3,10 @@
 module RuboCop
   module Cop
     module Style
-      # This cop is designed to help upgrade to Ruby 3.0. It will add the
+      # This cop is designed to help upgrade to after Ruby 3.0. It will add the
       # comment `# frozen_string_literal: true` to the top of files to
       # enable frozen string literals. Frozen string literals may be default
-      # in Ruby 3.0. The comment will be added below a shebang and encoding
+      # after Ruby 3.0. The comment will be added below a shebang and encoding
       # comment. The frozen string literal comment is only valid in Ruby 2.3+.
       #
       # @example EnforcedStyle: when_needed (default)
@@ -101,9 +101,9 @@ module RuboCop
             token_number += 1
           end
 
-          if processed_source.tokens[token_number].text =~
-             Encoding::ENCODING_PATTERN
-            token = processed_source.tokens[token_number]
+          next_token = processed_source.tokens[token_number]
+          if next_token && next_token.text =~ Encoding::ENCODING_PATTERN
+            token = next_token
           end
 
           token
@@ -155,7 +155,9 @@ module RuboCop
 
         def proceeding_comment
           last_special_comment = last_special_comment(processed_source)
-          if processed_source.following_line(last_special_comment).empty?
+          following_line = processed_source.following_line(last_special_comment)
+
+          if following_line && following_line.empty?
             "\n#{FROZEN_STRING_LITERAL_ENABLED}"
           else
             "\n#{FROZEN_STRING_LITERAL_ENABLED}\n"

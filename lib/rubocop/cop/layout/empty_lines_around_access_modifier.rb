@@ -29,20 +29,33 @@ module RuboCop
         MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after ' \
                                '`%<modifier>s`.'.freeze
 
+        def initialize(config = nil, options = nil)
+          super
+
+          @block_line = nil
+        end
+
         def on_class(node)
           _name, superclass, _body = *node
 
-          @class_or_module_def = superclass || node.source_range
+          @class_or_module_def_first_line = if superclass
+                                              superclass.first_line
+                                            else
+                                              node.source_range.first_line
+                                            end
+          @class_or_module_def_last_line = node.source_range.last_line
         end
 
         def on_module(node)
-          @class_or_module_def = node.source_range
+          @class_or_module_def_first_line = node.source_range.first_line
+          @class_or_module_def_last_line = node.source_range.last_line
         end
 
         def on_sclass(node)
           self_node, _body = *node
 
-          @class_or_module_def = self_node.source_range
+          @class_or_module_def_first_line = self_node.source_range.first_line
+          @class_or_module_def_last_line = self_node.source_range.last_line
         end
 
         def on_block(node)
@@ -100,9 +113,9 @@ module RuboCop
         end
 
         def class_def?(line)
-          return false unless @class_or_module_def
+          return false unless @class_or_module_def_first_line
 
-          line == @class_or_module_def.first_line + 1
+          line == @class_or_module_def_first_line + 1
         end
 
         def block_start?(line)
@@ -112,9 +125,9 @@ module RuboCop
         end
 
         def body_end?(line)
-          return false unless @class_or_module_def
+          return false unless @class_or_module_def_last_line
 
-          line == @class_or_module_def.last_line - 1
+          line == @class_or_module_def_last_line - 1
         end
 
         def message(node)

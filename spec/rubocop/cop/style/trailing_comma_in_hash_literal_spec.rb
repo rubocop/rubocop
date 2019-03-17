@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
         expect_offense(<<-RUBY.strip_indent)
           MAP = { a: 1001,
                   b: 2020,
-                  c: 3333 # ,
+                  c: 3333 # a comment,
                   ^^^^^^^ Put a comma after the last item of a multiline hash.
           }
         RUBY
@@ -154,12 +154,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
         RUBY
       end
 
-      it 'accepts missing comma after a heredoc' do
-        # A heredoc that's the last item in a literal or parameter list can not
-        # have a trailing comma. It's a syntax error.
+      it 'accepts trailing comma after a heredoc' do
         expect_no_offenses(<<-RUBY.strip_indent)
           route(help: {
-            'auth' => <<-HELP.chomp
+            'auth' => <<-HELP.chomp,
           ...
           HELP
           })
@@ -238,12 +236,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
         RUBY
       end
 
-      it 'accepts missing comma after a heredoc' do
-        # A heredoc that's the last item in a literal or parameter list can not
-        # have a trailing comma. It's a syntax error.
+      it 'accepts trailing comma after a heredoc' do
         expect_no_offenses(<<-RUBY.strip_indent)
           route(help: {
-            'auth' => <<-HELP.chomp
+            'auth' => <<-HELP.chomp,
           ...
           HELP
           })

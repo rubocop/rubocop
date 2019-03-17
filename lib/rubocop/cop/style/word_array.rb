@@ -96,10 +96,6 @@ module RuboCop
             corrector.replace(node.source_range, "[#{words.join(', ')}]")
           end
         end
-
-        def trim_string_interporation_escape_character(str)
-          str.gsub(/\\\#{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
-        end
       end
     end
   end

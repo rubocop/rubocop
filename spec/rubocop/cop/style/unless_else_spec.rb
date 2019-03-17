@@ -4,24 +4,17 @@ RSpec.describe RuboCop::Cop::Style::UnlessElse do
   subject(:cop) { described_class.new }
 
   context 'unless with else' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         unless x # negative 1
+        ^^^^^^^^^^^^^^^^^^^^^ Do not use `unless` with `else`. Rewrite these with the positive case first.
           a = 1 # negative 2
         else # positive 1
           a = 0 # positive 2
         end
       RUBY
-    end
 
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it 'auto-corrects' do
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         if x # positive 1
           a = 0 # positive 2
         else # negative 1
@@ -32,9 +25,10 @@ RSpec.describe RuboCop::Cop::Style::UnlessElse do
   end
 
   context 'unless with nested if-else' do
-    let(:source) do
-      <<-RUBY.strip_indent
+    it 'registers an offense' do
+      expect_offense(<<-RUBY.strip_indent)
         unless(x)
+        ^^^^^^^^^ Do not use `unless` with `else`. Rewrite these with the positive case first.
           if(y == 0)
             a = 0
           elsif(z == 0)
@@ -46,16 +40,8 @@ RSpec.describe RuboCop::Cop::Style::UnlessElse do
           a = 3
         end
       RUBY
-    end
 
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it 'auto-corrects' do
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         if(x)
           a = 3
         else

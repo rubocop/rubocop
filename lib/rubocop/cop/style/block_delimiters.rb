@@ -307,7 +307,7 @@ module RuboCop
         end
 
         def array_or_range?(node)
-          node.array_type? || node.irange_type? || node.erange_type?
+          node.array_type? || node.range_type?
         end
       end
     end

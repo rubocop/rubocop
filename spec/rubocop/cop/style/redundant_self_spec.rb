@@ -210,4 +210,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     new_source = autocorrect_source('self.x')
     expect(new_source).to eq('x')
   end
+
+  it 'accepts a self receiver of methods also defined on `Kernel`' do
+    expect_no_offenses('self.open')
+  end
 end

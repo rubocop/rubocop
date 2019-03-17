@@ -67,6 +67,8 @@ module RuboCop
         end
 
         def expr_replacement(node)
+          return 'nil' if node.nil?
+
           requires_parentheses?(node) ? "(#{node.source})" : node.source
         end
 
@@ -89,7 +91,7 @@ module RuboCop
           return false unless node.keyword?
           return true if node.prefix_not?
 
-          !node.parenthesized_call?
+          node.arguments? && !node.parenthesized_call?
         end
       end
     end

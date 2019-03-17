@@ -73,6 +73,18 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
         end
       end
 
+      context 'when `if` condition and `then` branch are the same ' \
+              'and it has no `else` branch' do
+        it 'registers an offense' do
+          expect_offense(<<-RUBY.strip_indent)
+            if do_something
+            ^^^^^^^^^^^^^^^ This condition is not needed.
+              do_something
+            end
+          RUBY
+        end
+      end
+
       context 'when using ternary if in `else` branch' do
         it 'registers no offense' do
           expect_no_offenses(<<-RUBY.strip_indent)
@@ -161,6 +173,19 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
           ary << (foo || bar)
         RUBY
       end
+
+      it 'when `if` condition and `then` branch are the same ' \
+         'and it has no `else` branch' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          if do_something
+            do_something
+          end
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          do_something
+        RUBY
+      end
     end
   end
 
@@ -197,6 +222,59 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
       it 'auto-corrects functions' do
         new_source = autocorrect_source('a = b(x) ? b(x) : c')
         expect(new_source).to eq('a = b(x) || c')
+      end
+    end
+  end
+
+  context 'when inverted condition (unless)' do
+    it 'registers no offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        unless a
+          b
+        else
+          c
+        end
+      RUBY
+    end
+
+    context 'when condition and else branch are same' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          unless b
+          ^^^^^^^^ Use double pipes `||` instead.
+            y(x, z)
+          else
+            b
+          end
+        RUBY
+      end
+
+      context 'when unless branch is complex' do
+        it 'registers no offense' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            unless b
+              c
+              d
+            else
+              b
+            end
+          RUBY
+        end
+      end
+    end
+
+    describe '#autocorrection' do
+      it 'auto-corrects offense' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          unless b
+            c
+          else
+            b
+          end
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          b || c
+        RUBY
       end
     end
   end

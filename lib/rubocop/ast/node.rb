@@ -54,7 +54,7 @@ module RuboCop
       OPERATOR_KEYWORDS = %i[and or].freeze
       SPECIAL_KEYWORDS = %w[__FILE__ __LINE__ __ENCODING__].freeze
 
-      # @see http://rubydoc.info/gems/ast/AST/Node:initialize
+      # @see https://www.rubydoc.info/gems/ast/AST/Node:initialize
       def initialize(type, children = [], properties = {})
         @mutable_attributes = {}
 
@@ -469,6 +469,10 @@ module RuboCop
 
       def numeric_type?
         int_type? || float_type?
+      end
+
+      def range_type?
+        irange_type? || erange_type?
       end
 
       def_node_matcher :guard_clause?, <<-PATTERN

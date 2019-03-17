@@ -178,6 +178,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'when private_class_method is used with arguments' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class SomeClass
+          private_class_method def self.some_method
+            puts 10
+          end
+        end
+      RUBY
+    end
+  end
+
   context "when using ActiveSupport's `concerning` method" do
     let(:config) do
       RuboCop::Config.new(

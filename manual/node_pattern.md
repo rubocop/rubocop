@@ -13,7 +13,7 @@ and solves a problem that RuboCop contributors were facing for a long time:
 
 - Ability to declaratively define rules for node search, matching, and capture.
 
-The code below belongs to [Style/ArrayJoin](http://www.rubydoc.info/github/rubocop-hq/RuboCop/RuboCop/Cop/Style/ArrayJoin)
+The code below belongs to [Style/ArrayJoin](https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Style/ArrayJoin)
 cop and it's in favor of `Array#join` over `Array#*`. Then it tries to find
 code like `%w(one two three) * ", "` and suggest to use `#join` instead.
 
@@ -50,7 +50,7 @@ Parens delimits navigation inside node and its children.
 
 A simple integer like `1` is represented by `(int 1)` in the AST.
 
-```
+```sh
 $ ruby-parse -e '1'
 (int 1)
 ```
@@ -78,7 +78,7 @@ final with the same results. For example, let's use `sum(1,2)`.
 We can also have `sum(1,2,3,n)` and the arguments can vary. The objective is
 match all. So, let's check how it looks like in the AST:
 
-```
+```sh
 $ ruby-parse -e 'sum(1,2)'
 (send nil :sum
   (int 1)
@@ -87,7 +87,7 @@ $ ruby-parse -e 'sum(1,2)'
 
 Or with more children:
 
-```
+```sh
 $ ruby-parse -e 'sum(1,2,3,n)'
 (send nil :sum
   (int 1)
@@ -106,7 +106,7 @@ The first case can be addressed with an expression like:
 
 Lets make it a bit more complex and introduce floats:
 
-```
+```sh
 $ ruby-parse -e '1'
 (int 1)
 $ ruby-parse -e '1.0'
@@ -157,7 +157,7 @@ You can also use it at the node level, asking for each child:
 - `(int odd?)` will match only with odd numbers, asking it to the current
   number.
 
-## `[]` for "AND"`
+## `[]` for "AND"
 
 Imagine you want to check if the number is `odd?` and also positive numbers:
 
@@ -191,8 +191,8 @@ We can use the `#prime?` method directly in the expression:
 
 The RuboCop base includes two useful methods to use the node pattern with Ruby in a
 simple way. You can use the macros to define methods. The basics are
-[def_node_matcher](http://www.rubydoc.info/github/bbatsov/RuboCop/RuboCop/NodePattern/Macros#def_node_matcher-instance_method)
-and [def_node_search](http://www.rubydoc.info/github/bbatsov/RuboCop/RuboCop/NodePattern/Macros#def_node_search-instance_method).
+[def_node_matcher](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern/Macros#def_node_matcher-instance_method)
+and [def_node_search](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern/Macros#def_node_search-instance_method).
 
 When you define a pattern, it creates a method that accepts a node and tries to match.
 
@@ -200,7 +200,7 @@ Lets create an example where we're trying to find the symbols `user` and
 `current_user` in expressions like: `user: current_user` or
 `current_user: User.first`, so the objective here is pick all keys:
 
-```
+```sh
 $ ruby-parse -e ':current_user'
 (sym :current_user)
 $ ruby-parse -e ':user'
@@ -223,7 +223,7 @@ def_node_matcher :user_symbol?, '(sym {:current_user :user})'
 Now let's go deeply combining the previous expression and also match if the
 current symbol is being called from an initialization method, like:
 
-```
+```sh
 $ ruby-parse -e 'Comment.new(user: current_user)'
 (send
   (const nil :Comment) :new
@@ -261,7 +261,7 @@ PATTERN
 
 Take a special attention to nil behavior:
 
-```
+```sh
 $ ruby-parse -e 'nil'
 (nil)
 ```
@@ -269,7 +269,7 @@ In this case, the `nil` implicit matches with expressions like: `nil`, `(nil)`, 
 
 But, nil is also used to represent a call from `nothing` from a simple method call:
 
-```
+```sh
 $ ruby-parse -e 'method'
 (send nil :method)
 ```
@@ -286,7 +286,7 @@ matched with an expression like:
 Curious about how it works?
 
 Check more details in the
-[documentation](http://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
+[documentation](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
 or browse the [source code](https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/node_pattern.rb)
 directly. It's easy to read and hack on.
 

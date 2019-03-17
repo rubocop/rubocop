@@ -48,8 +48,8 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       config.fetch('Enabled') ? 'Enabled' : 'Disabled',
       config.fetch('Safe', true) ? 'Yes' : 'No',
       autocorrect,
-      config.fetch('VersionAdded', ''),
-      config.fetch('VersionChanged', '')
+      config.fetch('VersionAdded', '-'),
+      config.fetch('VersionChanged', '-')
     ]]
     to_table(header, content) + "\n"
   end
