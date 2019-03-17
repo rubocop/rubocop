@@ -230,6 +230,7 @@ module RuboCop
       end
 
       def compile_ellipsis(tokens, cur_node, terms, index, capture = nil)
+        tokens.shift # drop ellipsis
         tail = compile_seq_tail(tokens, "#{cur_node}.children.last")
         terms << "(#{cur_node}.children.size >= #{index + tail.size})"
         terms.concat tail
@@ -241,7 +242,6 @@ module RuboCop
       end
 
       def compile_seq_tail(tokens, cur_node)
-        tokens.shift
         if tokens.first == ')'
           tokens.shift
           []
