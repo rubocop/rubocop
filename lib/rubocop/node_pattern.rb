@@ -231,17 +231,11 @@ module RuboCop
 
       def compile_ellipsis(tokens, cur_node, terms, index, capture = nil)
         tail = compile_seq_tail(tokens, "#{cur_node}.children.last")
-        if !tail.empty?
-          terms << "(#{cur_node}.children.size > #{index})"
-          terms.concat tail
-          if capture
-            terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
-          end
-        else
-          terms << "(#{cur_node}.children.size >= #{index})" if index > 0
-          if capture
-            terms << "(#{capture} = #{cur_node}.children[#{index}..-1])"
-          end
+        terms << "(#{cur_node}.children.size >= #{index + tail.size})"
+        terms.concat tail
+        if capture
+          range = index..-tail.size - 1
+          terms << "(#{capture} = #{cur_node}.children[#{range}])"
         end
         terms
       end
