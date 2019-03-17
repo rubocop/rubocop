@@ -199,6 +199,7 @@ module RuboCop
           compile_seq_terms_with_size(tokens, cur_node) do |token, terms, index|
             capture = next_capture if token == CAPTURED_REST
             if capture || token == REST
+              index = 0 if index == SEQ_HEAD_INDEX # Consider ($...) as (_ $...)
               return compile_ellipsis(tokens, cur_node, terms, index, capture)
             end
           end
@@ -210,7 +211,7 @@ module RuboCop
         index = SEQ_HEAD_INDEX
         terms = []
         until tokens.first == ')'
-          yield tokens.first, terms, [index, 0].max
+          yield tokens.first, terms, index
           term = compile_expr_with_index(tokens, cur_node, index)
           index += 1
           terms << term
