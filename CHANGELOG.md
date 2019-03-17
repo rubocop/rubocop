@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#6393](https://github.com/rubocop-hq/rubocop/issues/6393): Add AllowBracesOnProceduralOneLiners option to fine-tune Style/BlockDelimiter's semantic mode. ([@davearonson][])
 * [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add `AllowBeforeTrailingComments` option on `Layout/ExtraSpacing` cop. ([@davearonson][])
 * New cop `Lint/SafeNavigationWithEmpty` checks for `foo&.empty?` in conditionals. ([@rspeicher][])
 * Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
