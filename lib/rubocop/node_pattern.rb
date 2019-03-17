@@ -37,8 +37,7 @@ module RuboCop
   #     '(send !const ...)' # ! negates the next part of the pattern
   #     '$(send const ...)' # arbitrary matching can be performed on a capture
   #     '(send _recv _msg)' # wildcards can be named (for readability)
-  #     '(send ... :new)'   # you can specifically match against the last child
-  #                         # (this only works for the very last)
+  #     '(send ... :new)'   # you can match against the last children
   #     '(send $...)'       # capture all the children as an array
   #     '(send $... int)'   # capture all children but the last as an array
   #     '(send _x :+ _x)'   # unification is performed on named wildcards
@@ -234,7 +233,7 @@ module RuboCop
 
       def compile_ellipsis(tokens, cur_node, terms, index, capture = nil)
         tokens.shift # drop ellipsis
-        tail = compile_seq_tail(tokens, "#{cur_node}.children.last")
+        tail = compile_seq_tail(tokens, cur_node)
         terms << "(#{cur_node}.children.size >= #{index + tail.size})"
         terms.concat tail
         if capture
@@ -245,14 +244,15 @@ module RuboCop
       end
 
       def compile_seq_tail(tokens, cur_node)
-        if tokens.first == ')'
-          tokens.shift
-          []
-        else
-          expr = compile_expr(tokens, cur_node, false)
-          fail_due_to('missing )') unless tokens.shift == ')'
-          [expr]
+        child_node = "#{cur_node}.children[%<revindex>i]"
+        terms = []
+        until tokens.first == ')'
+          terms << compile_expr(tokens, child_node, false)
         end
+        tokens.shift # drop ')'
+        # E.g. for terms.size == 3, we want to replace the three [%<revindex>i]
+        # with [-3], [-2] and [-1]
+        terms.map.with_index { |term, i| format term, revindex: i - terms.size }
       end
 
       def compile_union(tokens, cur_node, seq_head)
