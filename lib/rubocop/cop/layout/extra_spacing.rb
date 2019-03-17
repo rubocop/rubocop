@@ -19,6 +19,17 @@ module RuboCop
       #   # bad for any configuration
       #   set_app("RuboCop")
       #   website  = "https://github.com/rubocop-hq/rubocop"
+      #
+      #   # good only if AllowBeforeTrailingComments is true
+      #   object.method(arg)  # this is a comment
+      #
+      #   # good even if AllowBeforeTrailingComments is false or not set
+      #   object.method(arg) # this is a comment
+      #
+      #   # good with either AllowBeforeTrailingComments or AllowForAlignment
+      #   object.method(arg)         # this is a comment
+      #   another_object.method(arg) # this is another comment
+      #   some_object.method(arg)    # this is some comment
       class ExtraSpacing < Cop
         include PrecedingFollowingAlignment
         include RangeHelp
@@ -98,6 +109,9 @@ module RuboCop
         end
 
         def check_other(token1, token2, ast)
+          return false if allow_for_trailing_comments? &&
+                          token2.text.start_with?('#')
+
           extra_space_range(token1, token2) do |range|
             # Unary + doesn't appear as a token and needs special handling.
             next if ignored_range?(ast, range.begin_pos)
@@ -221,6 +235,10 @@ module RuboCop
           optargs    = processed_source.ast.each_node(:optarg)
           optarg_eql = optargs.map { |o| o.loc.operator.begin_pos }.to_set
           asgn_tokens.reject { |t| optarg_eql.include?(t.begin_pos) }
+        end
+
+        def allow_for_trailing_comments?
+          cop_config['AllowBeforeTrailingComments']
         end
       end
     end

@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add AllowBeforeTrailingComments option on Layout/ExtraSpacing cop. ([@davearonson][])
 * New cop `Lint/SafeNavigationWithEmpty` checks for `foo&.empty?` in conditionals. ([@rspeicher][])
 * Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
 * [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding #to_json. ([@allcentury][])
@@ -3837,6 +3838,7 @@
 [@andrew-aladev]: https://github.com/andrew-aladev
 [@y-yagi]: https://github.com/y-yagi
 [@DiscoStarslayer]: https://github.com/DiscoStarslayer
+[@davearonson]: https://github.com/davearonson
 [@timon]: https://github.com/timon
 [@gsamokovarov]: https://github.com/gsamokovarov
 [@itsWill]: https://github.com/itsWill
