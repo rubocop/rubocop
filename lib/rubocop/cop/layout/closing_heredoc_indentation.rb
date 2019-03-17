@@ -74,24 +74,12 @@ module RuboCop
           indent_level(heredoc_opening(node))
         end
 
-        def empty_heredoc?(node)
-          node.loc.heredoc_body.source.empty? || !contents_indentation(node)
-        end
-
         def argument_indentation_correct?(node)
           return unless node.argument? || node.chained?
 
           opening_indentation(
             find_node_used_heredoc_argument(node.parent)
           ) == closing_indentation(node)
-        end
-
-        def contents_indentation(node)
-          source_lines = node.loc.heredoc_body.source.split("\n")
-
-          source_lines.reject(&:empty?).map do |line|
-            indent_level(line)
-          end.min
         end
 
         def closing_indentation(node)

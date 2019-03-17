@@ -65,6 +65,16 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     RUBY
   end
 
+  it 'handles numeric literal with exponent' do
+    expect_offense(<<-RUBY.strip_indent)
+      a = 10e10
+      b = 3e12345
+      c = 12.345e3
+      d = 12345e3
+          ^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+    RUBY
+  end
+
   it 'autocorrects a long integer offense' do
     corrected = autocorrect_source('a = 123456')
     expect(corrected).to eq 'a = 123_456'
@@ -88,6 +98,26 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   it 'autocorrects negative floating-point numbers' do
     corrected = autocorrect_source('a = -123456.78')
     expect(corrected).to eq 'a = -123_456.78'
+  end
+
+  it 'autocorrects numbers with spaces between leading minus and numbers' do
+    corrected = autocorrect_source("a = -\n  12345")
+    expect(corrected).to eq 'a = -12_345'
+  end
+
+  it 'autocorrects numeric literal with exponent' do
+    corrected = autocorrect_source('a = 12345e3')
+    expect(corrected).to eq 'a = 12_345e3'
+  end
+
+  it 'autocorrects numeric literal with exponent and dot' do
+    corrected = autocorrect_source('a = 12345.6e3')
+    expect(corrected).to eq 'a = 12_345.6e3'
+  end
+
+  it 'autocorrects numeric literal with exponent (large E) and dot' do
+    corrected = autocorrect_source('a = 12345.6E3')
+    expect(corrected).to eq 'a = 12_345.6E3'
   end
 
   context 'strict' do

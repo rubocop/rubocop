@@ -78,6 +78,7 @@ module RuboCop
         def on_send(node)
           check(node, node.arguments)
         end
+        alias on_csend on_send
 
         def on_begin(node)
           check(node, node.children)

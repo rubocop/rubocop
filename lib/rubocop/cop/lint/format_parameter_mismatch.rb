@@ -87,7 +87,7 @@ module RuboCop
         def splat_args?(node)
           return false if percent?(node)
 
-          node.arguments.butfirst.any?(&:splat_type?)
+          node.arguments.drop(1).any?(&:splat_type?)
         end
 
         def heredoc?(node)

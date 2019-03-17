@@ -31,6 +31,7 @@ module RuboCop
         MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'.freeze
 
         def on_def(node)
+          return if top_level_node?(node)
           return if in_module_or_instance_eval?(node)
           return if ignore_class_methods? && node.defs_type?
 
@@ -179,6 +180,10 @@ module RuboCop
                "#{indent}end"].join("\n")
             )
           end
+        end
+
+        def top_level_node?(node)
+          node.parent.nil?
         end
       end
     end

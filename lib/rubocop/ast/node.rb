@@ -471,6 +471,10 @@ module RuboCop
         int_type? || float_type?
       end
 
+      def range_type?
+        irange_type? || erange_type?
+      end
+
       def_node_matcher :guard_clause?, <<-PATTERN
         [{(send nil? {:raise :fail} ...) return break next} single_line?]
       PATTERN

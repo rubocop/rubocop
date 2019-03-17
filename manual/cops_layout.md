@@ -2267,7 +2267,7 @@ but_in_a_method_call({
 ```ruby
 # The `consistent` style enforces that the first key in a hash
 # literal where the opening brace and the first key are on
-# seprate lines is indented the same as a hash literal which is not
+# separate lines is indented the same as a hash literal which is not
 # defined inside a method call.
 
 # bad

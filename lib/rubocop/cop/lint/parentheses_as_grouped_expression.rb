@@ -35,6 +35,7 @@ module RuboCop
 
           add_offense(nil, location: range)
         end
+        alias on_csend on_send
 
         private
 
@@ -50,7 +51,7 @@ module RuboCop
           # Escape question mark if any.
           method_regexp = Regexp.escape(node.method_name)
 
-          match = without_receiver.match(/^\s*\.?\s*#{method_regexp}(\s+)\(/)
+          match = without_receiver.match(/^\s*&?\.?\s*#{method_regexp}(\s+)\(/)
           match ? match.captures[0].length : 0
         end
 

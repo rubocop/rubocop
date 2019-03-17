@@ -12,49 +12,66 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
   let(:formatter_output_path) { 'formatter_output.txt' }
   let(:formatter_output) { File.read(formatter_output_path) }
 
-  describe '#trap_interrupt' do
+  context '#run when interrupted' do
     include_context 'cli spec behavior'
 
     let(:runner) { described_class.new({}, RuboCop::ConfigStore.new) }
-    let(:interrupt_handlers) { [] }
 
     before do
-      allow(Signal).to receive(:trap).with('INT') do |&block|
-        interrupt_handlers << block
-      end
+      create_empty_file('example.rb')
     end
 
-    def interrupt
-      interrupt_handlers.each(&:call)
+    def interrupt(pid)
+      Process.kill 'INT', pid
     end
 
-    it 'adds a handler for SIGINT' do
-      expect(interrupt_handlers.empty?).to be(true)
-      runner.trap_interrupt
-      expect(interrupt_handlers.size).to eq(1)
-    end
+    def wait_for_input(io)
+      line = nil
 
-    context 'with SIGINT once' do
-      it 'aborts processing' do
-        runner.trap_interrupt
-
-        expect { interrupt }.to change(runner, :aborting?).from(false).to(true)
+      until line
+        line = io.gets
+        sleep 0.1
       end
 
-      it 'does not exit immediately' do
-        runner.trap_interrupt
-        expect_any_instance_of(Object).not_to receive(:exit)
-        expect_any_instance_of(Object).not_to receive(:exit!)
-        interrupt
-      end
+      line
     end
 
-    context 'with SIGINT twice' do
-      it 'exits immediately' do
-        runner.trap_interrupt
-        expect_any_instance_of(Object).to receive(:exit!).with(1)
-        interrupt
-        interrupt
+    around do |example|
+      old_handler = Signal.trap('INT', 'DEFAULT')
+      example.run
+      Signal.trap('INT', old_handler)
+    end
+
+    context 'with SIGINT' do
+      it 'returns false' do
+        skip unless Process.respond_to?(:fork)
+
+        # Make sure the runner works slowly and thus is interruptible
+        allow(runner).to receive(:process_file) do
+          sleep 99
+        end
+
+        rd, wr = IO.pipe
+
+        pid = Process.fork do
+          rd.close
+          wr.puts 'READY'
+          wr.puts runner.run(['example.rb'])
+          wr.close
+        end
+
+        wr.close
+
+        # Make sure the runner has started by waiting for a specific message
+        line = wait_for_input(rd)
+        expect(line.chomp).to eq('READY')
+
+        # Interrupt the runner
+        interrupt(pid)
+
+        # Make sure the runner returns false
+        line = wait_for_input(rd)
+        expect(line.chomp).to eq('false')
       end
     end
   end

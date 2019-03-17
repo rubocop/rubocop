@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
   around do |example|
     Dir.mktmpdir('rubocop-require_file_injector_spec-') do |dir|
-      Dir.chdir(dir) do
+      RuboCop::PathUtil.chdir(dir) do
         Dir.mkdir('lib')
         example.run
       end

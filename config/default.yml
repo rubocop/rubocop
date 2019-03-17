@@ -1479,6 +1479,11 @@ Lint/SafeNavigationConsistency:
     - try!
 
 
+Lint/SafeNavigationWithEmpty:
+  Description: 'Avoid `foo&.empty?` in conditionals.'
+  Enabled: true
+  VersionAdded: '0.62'
+
 Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'
   Enabled: true
@@ -1518,6 +1523,10 @@ Lint/Syntax:
   Enabled: true
   VersionAdded: '0.9'
 
+
+Lint/ToJSON:
+  Description: 'Ensure #to_json includes an optional argument.'
+  Enabled: true
 
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
@@ -1632,9 +1641,12 @@ Metrics/AbcSize:
   Description: >-
                  A calculated magnitude based on number of assignments,
                  branches, and conditions.
-  Reference: 'http://c2.com/cgi/wiki?AbcMetric'
+  Reference:
+    - http://c2.com/cgi/wiki?AbcMetric
+    - https://en.wikipedia.org/wiki/ABC_Software_Metric'
   Enabled: true
   VersionAdded: '0.27'
+  VersionChanged: '0.66'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   Max: 15
@@ -1643,13 +1655,15 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   VersionAdded: '0.44'
-  VersionChanged: '0.58'
+  VersionChanged: '0.66'
   CountComments: false  # count full line comments?
   Max: 25
   ExcludedMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
     - refine
+  Exclude:
+    - '**/*.gemspec'
 
 Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting'
@@ -3020,6 +3034,13 @@ Style/ConditionalAssignment:
 #   Notice: 'Copyright (\(c\) )?2015 Yahoo! Inc'
 #   AutocorrectNotice: '# Copyright (c) 2015 Yahoo! Inc.'
 #
+Style/ConstantVisibility:
+  Description: >-
+                 Check that class- and module constants have
+                 visibility declarations.
+  Enabled: false
+  VersionAdded: '0.66'
+
 Style/Copyright:
   Description: 'Include a copyright notice in each file before any code.'
   Enabled: false
@@ -3490,11 +3511,13 @@ Style/ModuleFunction:
   StyleGuide: '#module-function'
   Enabled: true
   VersionAdded: '0.11'
-  VersionChanged: '0.53'
+  VersionChanged: '0.65'
   EnforcedStyle: module_function
   SupportedStyles:
     - module_function
     - extend_self
+  Autocorrect: false
+  SafeAutoCorrect: false
 
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
@@ -3549,6 +3572,17 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
+  VersionChanged: '0.65'
+  EnforcedStyle: literals
+  SupportedStyles:
+    # literals: freeze literals assigned to constants
+    # strict: freeze all constants
+    # Strict mode is considered an experimental feature. It has not been updated
+    # with an exhaustive list of all methods that will produce frozen objects so
+    # there is a decent chance of getting some false positives. Luckily, there is
+    # no harm in freezing an already frozen object.
+    - literals
+    - strict
 
 Style/NegatedIf:
   Description: >-
@@ -3928,7 +3962,7 @@ Style/SafeNavigation:
                   safe navigation (`&.`).
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '0.44'
+  VersionChanged: '0.56'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
@@ -3938,7 +3972,6 @@ Style/SafeNavigation:
     - presence
     - try
     - try!
-  VersionChanged: '0.56'
 
 Style/SelfAssignment:
   Description: >-
@@ -4096,8 +4129,9 @@ Style/SymbolLiteral:
 Style/SymbolProc:
   Description: 'Use symbols as procs instead of blocks when possible.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.26'
-  VersionChanged: '0.40'
+  VersionChanged: '0.64'
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   IgnoredMethods:

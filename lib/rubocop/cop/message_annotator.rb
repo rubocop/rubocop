@@ -64,7 +64,7 @@ module RuboCop
       end
 
       def urls
-        [style_guide_url, reference_url].compact
+        [style_guide_url, *reference_urls].compact
       end
 
       private
@@ -89,9 +89,9 @@ module RuboCop
           !urls.empty?
       end
 
-      def reference_url
-        url = cop_config['Reference']
-        url.nil? || url.empty? ? nil : url
+      def reference_urls
+        urls = Array(cop_config['Reference'])
+        urls.nil? || urls.empty? ? nil : urls.reject(&:empty?)
       end
 
       def extra_details?

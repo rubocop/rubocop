@@ -17,11 +17,13 @@ module RuboCop
       end
 
       def check(node, items, kind, begin_pos, end_pos)
-        return if heredoc?(items.last)
-
         after_last_item = range_between(begin_pos, end_pos)
 
-        comma_offset = after_last_item.source =~ /,/
+        # If there is any heredoc in items, then match the comma succeeding
+        # any whitespace (except newlines), otherwise allow for newlines
+        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
+        comma_offset = after_last_item.source =~ comma_regex &&
+                       after_last_item.source.index(',')
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
@@ -89,7 +91,7 @@ module RuboCop
       end
 
       def method_name_and_arguments_on_same_line?(node)
-        node.send_type? &&
+        %i[send csend].include?(node.type) &&
           node.loc.selector.line == node.arguments.last.last_line &&
           node.last_line == node.arguments.last.last_line
       end
@@ -102,7 +104,7 @@ module RuboCop
       end
 
       def elements(node)
-        return node.children unless node.send_type?
+        return node.children unless %i[csend send].include?(node.type)
 
         node.arguments.flat_map do |argument|
           # For each argument, if it is a multi-line hash without braces,
@@ -165,6 +167,10 @@ module RuboCop
       # By default, there's no reason to avoid auto-correct.
       def avoid_autocorrect?(_nodes)
         false
+      end
+
+      def any_heredoc?(items)
+        items.any? { |item| heredoc?(item) }
       end
 
       def heredoc?(node)

@@ -18,7 +18,7 @@ module RuboCop
         MSG = 'Specify a `:rel` option containing noopener.'.freeze
 
         def_node_matcher :blank_target?, <<-PATTERN
-          (pair {(sym :target) (str "target")} (str "_blank"))
+          (pair {(sym :target) (str "target")} {(str "_blank") (sym :_blank)})
         PATTERN
 
         def_node_matcher :includes_noopener?, <<-PATTERN
@@ -74,7 +74,9 @@ module RuboCop
         def add_rel(send_node, offence_node, corrector)
           quote_style = offence_node.children.last.source[0]
           new_rel_exp = ", rel: #{quote_style}noopener#{quote_style}"
-          corrector.insert_after(send_node.loc.expression, new_rel_exp)
+          range = send_node.arguments.last.source_range
+
+          corrector.insert_after(range, new_rel_exp)
         end
 
         def contains_noopener?(str)

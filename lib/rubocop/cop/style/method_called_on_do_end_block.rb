@@ -39,6 +39,7 @@ module RuboCop
 
           add_offense(nil, location: range)
         end
+        alias on_csend on_send
       end
     end
   end

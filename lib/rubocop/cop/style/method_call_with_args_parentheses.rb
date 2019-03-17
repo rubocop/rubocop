@@ -142,6 +142,7 @@ module RuboCop
             add_offense_for_omit_parentheses(node)
           end
         end
+        alias on_csend on_send
         alias on_super on_send
         alias on_yield on_send
 
@@ -262,6 +263,7 @@ module RuboCop
           node.parent &&
             (node.parent.pair_type? ||
              node.parent.array_type? ||
+             node.parent.range_type? ||
              splat?(node.parent) ||
              ternary_if?(node.parent))
         end
@@ -274,7 +276,8 @@ module RuboCop
         end
 
         def call_in_optional_arguments?(node)
-          node.parent && node.parent.optarg_type?
+          node.parent &&
+            (node.parent.optarg_type? || node.parent.kwoptarg_type?)
         end
 
         def call_with_ambiguous_arguments?(node)

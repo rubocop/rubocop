@@ -28,6 +28,7 @@ module RuboCop
 
         def on_args(node)
           return if super_used?(node)
+          return if whitelist.include?(node.parent.method_name.to_s)
 
           option_hash(node) do |options|
             add_offense(options)
@@ -35,6 +36,10 @@ module RuboCop
         end
 
         private
+
+        def whitelist
+          cop_config['Whitelist'] || []
+        end
 
         def suspicious_name?(arg_name)
           cop_config.key?('SuspiciousParamNames') &&

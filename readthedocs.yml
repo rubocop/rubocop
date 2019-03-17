@@ -1,2 +1,5 @@
+build:
+    image: stable
+
 formats:
     - htmlzip

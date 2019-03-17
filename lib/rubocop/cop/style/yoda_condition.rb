@@ -97,11 +97,6 @@ module RuboCop
             !noncommutative_operator?(node)
         end
 
-        def both_literals?(node)
-          lhs, _operator, rhs = *node
-          lhs.literal? && rhs.literal?
-        end
-
         def valid_yoda?(node)
           lhs, _operator, rhs = *node
 

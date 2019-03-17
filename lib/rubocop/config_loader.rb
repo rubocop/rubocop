@@ -158,6 +158,7 @@ module RuboCop
 
       def load_yaml_configuration(absolute_path)
         yaml_code = read_file(absolute_path)
+        check_duplication(yaml_code, absolute_path)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
         puts "configuration from #{absolute_path}" if debug?
@@ -167,6 +168,18 @@ module RuboCop
         end
 
         hash
+      end
+
+      def check_duplication(yaml_code, absolute_path)
+        smart_path = PathUtil.smart_path(absolute_path)
+        YAMLDuplicationChecker.check(yaml_code, absolute_path) do |key1, key2|
+          value = key1.value
+          line1 = key1.start_line + 1
+          line2 = key2.start_line + 1
+          message = "#{smart_path}:#{line1}: " \
+                    "`#{value}` is concealed by line #{line2}"
+          warn Rainbow(message).yellow
+        end
       end
 
       # Read the specified file, or exit with a friendly, concise message on
@@ -183,8 +196,7 @@ module RuboCop
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
           SafeYAML.load(yaml_code, filename,
                         whitelisted_tags: %w[!ruby/regexp])
-        # Ruby 2.6+
-        elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0.pre1')
+        else
           YAML.safe_load(
             yaml_code,
             permitted_classes: [Regexp, Symbol],
@@ -192,8 +204,6 @@ module RuboCop
             aliases: false,
             filename: filename
           )
-        else
-          YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
         end
       end
     end

@@ -103,6 +103,36 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
         RUBY
       end
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for correct + opposite' do
+        expect_offense(<<-RUBY.strip_indent)
+          something
+            &.method_name
+          something&.
+                   ^^ Place the &. on the next line, together with the method name.
+            method_name
+        RUBY
+      end
+
+      it 'accepts leading do in multi-line method call' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          something
+            &.method_name
+        RUBY
+      end
+
+      it 'auto-corrects trailing dot in multi-line call' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          something&.
+            method_name
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          something
+            &.method_name
+        RUBY
+      end
+    end
   end
 
   context 'Trailing dots style' do
@@ -167,6 +197,34 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
         something.
           (1)
       RUBY
+    end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for correct + opposite' do
+        expect_offense(<<-RUBY.strip_indent)
+        something
+          &.method_name
+          ^^ Place the &. on the previous line, together with the method call receiver.
+        RUBY
+      end
+
+      it 'accepts trailing dot in multi-line method call' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          something&.
+            method_name
+        RUBY
+      end
+
+      it 'auto-corrects leading dot in multi-line call' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          something
+            &.method_name
+        RUBY
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          something&.
+            method_name
+        RUBY
+      end
     end
   end
 end

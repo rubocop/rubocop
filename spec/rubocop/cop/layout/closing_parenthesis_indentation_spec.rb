@@ -387,6 +387,17 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                  .methC
       RUBY
     end
+
+    context 'when using safe navigation operator', :ruby23 do
+      it 'registers an offense for misaligned )' do
+        expect_offense(<<-RUBY.strip_indent)
+          receiver&.some_method(
+            a
+            )
+            ^ Indent `)` to column 0 (not 2)
+        RUBY
+      end
+    end
   end
 
   context 'for method definitions' do

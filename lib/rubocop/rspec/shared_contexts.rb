@@ -23,7 +23,7 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
         working_dir = File.join(tmpdir, 'work')
         Dir.mkdir(working_dir)
 
-        Dir.chdir(working_dir) do
+        RuboCop::PathUtil.chdir(working_dir) do
           example.run
         end
       ensure

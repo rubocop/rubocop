@@ -17,24 +17,48 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        begin
-          something
-            rescue
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         begin
           something
         rescue
             error
         end
       RUBY
+    end
+
+    context 'as RHS of assignment' do
+      it 'accepts multi-line, aligned' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          x ||= begin
+                  1
+                rescue
+                  2
+                end
+        RUBY
+      end
+
+      it 'accepts multi-line, indented' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          x ||=
+            begin
+              1
+            rescue
+              2
+            end
+        RUBY
+      end
+
+      it 'registers offense for incorrect alignment' do
+        expect_offense(<<-RUBY.strip_indent)
+          x ||= begin
+            1
+          rescue
+          ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
+            2
+          end
+        RUBY
+      end
     end
   end
 
@@ -48,18 +72,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        def test
-          something
-            rescue
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         def test
           something
         rescue
@@ -79,18 +93,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        def Test.test
-          something
-            rescue
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         def Test.test
           something
         rescue
@@ -110,18 +114,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        class C
-          something
-            rescue
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         class C
           something
         rescue
@@ -141,18 +135,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        module M
-          something
-            rescue
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         module M
           something
         rescue
@@ -172,18 +156,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        begin
-          something
-            ensure
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         begin
           something
         ensure
@@ -203,18 +177,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        def test
-          something
-            ensure
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         def test
           something
         ensure
@@ -234,18 +198,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        def Test.test
-          something
-            ensure
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         def Test.test
           something
         ensure
@@ -265,18 +219,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        class C
-          something
-            ensure
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         class C
           something
         ensure
@@ -296,18 +240,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             error
         end
       RUBY
-    end
 
-    it 'corrects the alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        module M
-          something
-            ensure
-            error
-        end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         module M
           something
         ensure
@@ -484,20 +418,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           end
         RUBY
-      end
 
-      it 'corrects the alignment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          def foo
-            [1, 2, 3].each do |el|
-              el.to_s
-          rescue StandardError => _exception
-              next
-            end
-          end
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           def foo
             [1, 2, 3].each do |el|
               el.to_s
@@ -548,10 +470,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             'baz'
           end
         RUBY
-      end
 
-      it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           private def test
             'foo'
           rescue
@@ -560,16 +480,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         RUBY
       end
 
-      it 'corrects the alignment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          private def test
-            'foo'
-            rescue
-            'baz'
-          end
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           private def test
             'foo'
           rescue
@@ -589,10 +501,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             'baz'
           end
         RUBY
-      end
 
-      it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           private def Test.test
             'foo'
           rescue
@@ -601,16 +511,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         RUBY
       end
 
-      it 'corrects the alignment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          private def Test.test
-            'foo'
-            rescue
-            'baz'
-          end
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           private def Test.test
             'foo'
           rescue
@@ -630,10 +532,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             'baz'
           end
         RUBY
-      end
 
-      it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           private def test
             'foo'
           ensure
@@ -642,16 +542,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         RUBY
       end
 
-      it 'corrects the alignment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          private def test
-            'foo'
-            ensure
-            'baz'
-          end
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           private def test
             'foo'
           ensure
@@ -671,10 +563,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             'baz'
           end
         RUBY
-      end
 
-      it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           private def Test.test
             'foo'
           ensure
@@ -683,16 +573,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         RUBY
       end
 
-      it 'corrects the alignment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          private def Test.test
-            'foo'
-            ensure
-            'baz'
-          end
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+      it 'correct alignment' do
+        expect_no_offenses(<<-RUBY.strip_indent)
           private def Test.test
             'foo'
           ensure
@@ -719,23 +601,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           end
         RUBY
-      end
 
-      it 'does not correct alignment' do
-        source = <<-RUBY.strip_indent
-          def test
-          'foo'; rescue; 'baz'
-          end
-
-          def test
-            begin
-            'foo'; rescue; 'baz'
-            end
-          end
-        RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect_no_corrections
       end
     end
 
@@ -754,23 +621,8 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           end
         RUBY
-      end
 
-      it 'does not correct alignment' do
-        source = <<-RUBY.strip_indent
-          def test
-          'foo'; ensure; 'baz'
-          end
-
-          def test
-            begin
-            'foo'; ensure; 'baz'
-            end
-          end
-        RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
+        expect_no_corrections
       end
     end
   end
