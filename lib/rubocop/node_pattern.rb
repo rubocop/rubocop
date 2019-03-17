@@ -123,6 +123,8 @@ module RuboCop
 
       attr_reader :match_code
 
+      SEQ_HEAD_INDEX = -1
+
       def initialize(str, node_var = 'node0')
         @string   = str
         @root     = node_var
@@ -205,11 +207,12 @@ module RuboCop
       end
 
       def compile_seq_terms_with_size(tokens, cur_node)
-        index = nil
+        index = SEQ_HEAD_INDEX
         terms = []
         until tokens.first == ')'
-          yield tokens.first, terms, index || 0
-          term, index = compile_expr_with_index(tokens, cur_node, index)
+          yield tokens.first, terms, [index, 0].max
+          term = compile_expr_with_index(tokens, cur_node, index)
+          index += 1
           terms << term
         end
 
@@ -218,14 +221,14 @@ module RuboCop
       end
 
       def compile_expr_with_index(tokens, cur_node, index)
-        if index.nil?
+        if index == SEQ_HEAD_INDEX
           # in 'sequence head' position; some expressions are compiled
           # differently at 'sequence head' (notably 'node type' expressions)
           # grep for seq_head to see where it makes a difference
-          [compile_expr(tokens, cur_node, true), 0]
+          compile_expr(tokens, cur_node, true)
         else
           child_node = "#{cur_node}.children[#{index}]"
-          [compile_expr(tokens, child_node, false), index + 1]
+          compile_expr(tokens, child_node, false)
         end
       end
 
