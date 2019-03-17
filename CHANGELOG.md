@@ -39,6 +39,7 @@
 * [#6813](https://github.com/rubocop-hq/rubocop/pull/6813): Allow unicode/display_width dependency version 1.5.0. ([@tagliala][])
 * [#6675](https://github.com/rubocop-hq/rubocop/issues/6675): Avoid printing deprecation warnings about constants. ([@elmasantos][])
 * [#6746](https://github.com/rubocop-hq/rubocop/issues/6746): Avoid offense on `$stderr.puts` with no arguments. ([@luciamo][])
+* Replace md5 with sha1 for FIPS compliance. ([@dirtyharrycallahan][])
 
 ## 0.65.0 (2019-02-19)
 
@@ -3870,3 +3871,4 @@
 [@unasuke]: https://github.com/unasuke
 [@elmasantos]: https://github.com/elmasantos
 [@luciamo]: https://github.com/luciamo
+[@dirtyharrycallahan]: https://github.com/dirtyharrycallahan
