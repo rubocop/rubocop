@@ -37,6 +37,7 @@
 * [#6806](https://github.com/rubocop-hq/rubocop/pull/6806): Remove `powerpack` dependency. ([@dduugg][])
 * [#6810](https://github.com/rubocop-hq/rubocop/pull/6810): Exclude gemspec file by default for `Metrics/BlockLength` cop. ([@koic][])
 * [#6813](https://github.com/rubocop-hq/rubocop/pull/6813): Allow unicode/display_width dependency version 1.5.0. ([@tagliala][])
+* Make `Style/RedundantFreeze` aware of methods that will produce frozen objects. ([@rrosenblum][])
 * [#6675](https://github.com/rubocop-hq/rubocop/issues/6675): Avoid printing deprecation warnings about constants. ([@elmasantos][])
 * [#6746](https://github.com/rubocop-hq/rubocop/issues/6746): Avoid offense on `$stderr.puts` with no arguments. ([@luciamo][])
 * Replace md5 with sha1 for FIPS compliance. ([@dirtyharrycallahan][])

@@ -4865,7 +4865,7 @@ raise 'message'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | -
+Enabled | Yes | Yes  | 0.34 | 0.66
 
 This cop check for uses of Object#freeze on immutable objects.
 
