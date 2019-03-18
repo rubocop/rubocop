@@ -585,6 +585,14 @@ RSpec.describe RuboCop::NodePattern do
       it_behaves_like 'single capture'
     end
 
+    context 'with remaining patterns at the end' do
+      let(:pattern) { '(send $... int int)' }
+      let(:ruby) { '[].push(1, 2, 3)' }
+      let(:captured_val) { [s(:array), :push, s(:int, 1)] }
+
+      it_behaves_like 'single capture'
+    end
+
     context 'with a remaining sequence at the end' do
       let(:pattern) { '(send $... (int 4))' }
       let(:ruby) { '5 + 4' }
@@ -800,6 +808,14 @@ RSpec.describe RuboCop::NodePattern do
       let(:captured_val) { s(:int, 4) }
 
       it_behaves_like 'single capture'
+    end
+
+    context 'preceding multiple captures' do
+      let(:pattern) { '(send array :push ... $_ $_)' }
+      let(:ruby) { '[1].push(2, 3, 4, 5)' }
+      let(:captured_vals) { [s(:int, 4), s(:int, 5)] }
+
+      it_behaves_like 'multiple capture'
     end
 
     context 'with a wildcard at the end, but no remaining child to match it' do
@@ -1169,6 +1185,12 @@ RSpec.describe RuboCop::NodePattern do
 
     context 'with unmatched opening paren' do
       let(:pattern) { '(send (const)' }
+
+      it_behaves_like 'invalid'
+    end
+
+    context 'with unmatched opening paren and `...`' do
+      let(:pattern) { '(send ...' }
 
       it_behaves_like 'invalid'
     end

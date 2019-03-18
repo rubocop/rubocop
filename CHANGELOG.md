@@ -10,6 +10,7 @@
 * Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
 * [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding #to_json. ([@allcentury][])
 * [#6346](https://github.com/rubocop-hq/rubocop/issues/6346): Add auto-correction to `Rails/TimeZone`. ([@dcluna][])
+* [#6840](https://github.com/rubocop-hq/rubocop/issues/6840): Node patterns now allow unlimited elements after `...`. ([@marcandre][])
 
 ### Bug fixes
 
