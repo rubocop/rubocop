@@ -4,18 +4,18 @@
 
 ### New features
 
-* [#6393](https://github.com/rubocop-hq/rubocop/issues/6393): Add AllowBracesOnProceduralOneLiners option to fine-tune Style/BlockDelimiter's semantic mode. ([@davearonson][])
+* [#6393](https://github.com/rubocop-hq/rubocop/issues/6393): Add `AllowBracesOnProceduralOneLiners` option to fine-tune `Style/BlockDelimiter`'s semantic mode. ([@davearonson][])
 * [#6383](https://github.com/rubocop-hq/rubocop/issues/6383): Add `AllowBeforeTrailingComments` option on `Layout/ExtraSpacing` cop. ([@davearonson][])
 * New cop `Lint/SafeNavigationWithEmpty` checks for `foo&.empty?` in conditionals. ([@rspeicher][])
-* Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class- and module constants. ([@drenmi][])
-* [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding #to_json. ([@allcentury][])
+* Add new `Style/ConstantVisibility` cop for enforcing visibility declarations of class and module constants. ([@drenmi][])
+* [#6378](https://github.com/rubocop-hq/rubocop/issues/6378): Add `Lint/ToJSON` cop to enforce an argument when overriding `#to_json`. ([@allcentury][])
 * [#6346](https://github.com/rubocop-hq/rubocop/issues/6346): Add auto-correction to `Rails/TimeZone`. ([@dcluna][])
 * [#6840](https://github.com/rubocop-hq/rubocop/issues/6840): Node patterns now allow unlimited elements after `...`. ([@marcandre][])
 
 ### Bug fixes
 
-* [#4321](https://github.com/rubocop-hq/rubocop/pull/4321): Fix false offense for Style/RedundantSelf when the method is also defined on `Kernel`. ([@mikegee][])
-* [#6821](https://github.com/rubocop-hq/rubocop/pull/6821): Fix false negative for Rails/LinkToBlank when `_blank` is a symbol. ([@Intrepidd][])
+* [#4321](https://github.com/rubocop-hq/rubocop/pull/4321): Fix false offense for `Style/RedundantSelf` when the method is also defined on `Kernel`. ([@mikegee][])
+* [#6821](https://github.com/rubocop-hq/rubocop/pull/6821): Fix false negative for `Rails/LinkToBlank` when `_blank` is a symbol. ([@Intrepidd][])
 * [#6699](https://github.com/rubocop-hq/rubocop/issues/6699): Fix infinite loop for `Layout/IndentationWidth` and `Layout/IndentationConsistency` when bad modifier indentation before good method definition. ([@koic][])
 * [#6777](https://github.com/rubocop-hq/rubocop/issues/6777): Fix a false positive for `Style/TrivialAccessors` when using trivial reader/writer methods at the top level. ([@koic][])
 * [#6799](https://github.com/rubocop-hq/rubocop/pull/6799): Fix errors for `Style/ConditionalAssignment`, `Style/IdenticalConditionalBranches`, `Lint/ElseLayout`, and `Layout/IndentationWidth` with empty braces. ([@pocke][])
