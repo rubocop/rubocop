@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.66.0 (2019-03-18)
+
 ### New features
 
 * [#6393](https://github.com/rubocop-hq/rubocop/issues/6393): Add `AllowBracesOnProceduralOneLiners` option to fine-tune `Style/BlockDelimiter`'s semantic mode. ([@davearonson][])
