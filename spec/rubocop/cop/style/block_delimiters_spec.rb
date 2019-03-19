@@ -490,6 +490,45 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
+    it 'allows when :[] is chained' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo = [{foo: :bar}].find { |h|
+          h.key?(:foo)
+        }[:foo]
+      RUBY
+    end
+
+    it 'allows do/end inside Hash[]' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Hash[
+          {foo: :bar}.map do |k, v|
+            [k, v]
+          end
+        ]
+      RUBY
+    end
+
+    it 'allows chaining to } inside of Hash[]' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Hash[
+          {foo: :bar}.map { |k, v|
+            [k, v]
+          }.uniq
+        ]
+      RUBY
+    end
+
+    it 'disallows {} with no chain inside of Hash[]' do
+      expect_offense(<<-RUBY.strip_indent)
+        Hash[
+          {foo: :bar}.map { |k, v|
+                          ^ Prefer `do...end` for multi-line blocks without chaining.
+            [k, v]
+          }
+        ]
+      RUBY
+    end
+
     context 'when there are braces around a multi-line block' do
       it 'registers an offense in the simple case' do
         expect_offense(<<-RUBY.strip_indent)
