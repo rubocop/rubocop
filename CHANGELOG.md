@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
+
 ## 0.66.0 (2019-03-18)
 
 ### New features

@@ -9,6 +9,18 @@ require 'benchmark'
 cli = RuboCop::CLI.new
 result = 0
 
+if defined?(Bundler)
+  gemfile_lock = Bundler.read_file(Bundler.default_lockfile)
+  parser = Bundler::LockfileParser.new(gemfile_lock)
+
+  unless parser.dependencies['rubocop-performance']
+    warn Rainbow(<<-MESSAGE.strip_indent).yellow.to_s
+      [Warn] Performance Cops will be removed from RuboCop 0.68. Use rubocop-performance gem instead.
+             https://github.com/rubocop-hq/rubocop/tree/master/manual/migrate_performance_cops.md
+    MESSAGE
+  end
+end
+
 time = Benchmark.realtime do
   result = cli.run
 end
