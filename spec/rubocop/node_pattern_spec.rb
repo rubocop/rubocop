@@ -140,6 +140,47 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
+  describe 'node type' do
+    describe 'in seq head' do
+      let(:pattern) { '(send ...)' }
+
+      context 'on a node with the same type' do
+        let(:ruby) { '@ivar + 2' }
+
+        it_behaves_like 'matching'
+      end
+
+      context 'on a child with a different type' do
+        let(:ruby) { '@ivar += 2' }
+
+        it_behaves_like 'nonmatching'
+      end
+    end
+
+    describe 'for a child' do
+      let(:pattern) { '(_ send ...)' }
+
+      context 'on a child with the same type' do
+        let(:ruby) { 'foo.bar' }
+
+        it_behaves_like 'matching'
+      end
+
+      context 'on a child with a different type' do
+        let(:ruby) { '@ivar.bar' }
+
+        it_behaves_like 'nonmatching'
+      end
+
+      context 'on a child litteral' do
+        let(:pattern) { '(_ _ send)' }
+        let(:ruby) { '42.bar' }
+
+        it_behaves_like 'nonmatching'
+      end
+    end
+  end
+
   describe 'literals' do
     context 'negative integer literals' do
       let(:pattern) { '(int -100)' }
