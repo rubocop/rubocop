@@ -19,5 +19,5 @@ group :test do
   gem 'webmock', require: false
 end
 
-local_gemfile = 'Gemfile.local'
+local_gemfile = File.expand_path('Gemfile.local', __dir__)
 eval_gemfile local_gemfile if File.exist?(local_gemfile)
