@@ -1511,6 +1511,44 @@ Include | `app/models/**/*.rb` | Array
 
 * [https://github.com/rubocop-hq/rails-style-guide#read-attribute](https://github.com/rubocop-hq/rails-style-guide#read-attribute)
 
+## Rails/RedundantAllowNil
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.67 | -
+
+Checks Rails model validations for a redundant `allow_nil` when
+`allow_blank` is present.
+
+### Examples
+
+```ruby
+# bad
+validates :x, length: { is: 5 }, allow_nil: true, allow_blank: true
+
+# bad
+validates :x, length: { is: 5 }, allow_nil: false, allow_blank: true
+
+# bad
+validates :x, length: { is: 5 }, allow_nil: false, allow_blank: false
+
+# good
+validates :x, length: { is: 5 }, allow_blank: true
+
+# good
+validates :x, length: { is: 5 }, allow_blank: false
+
+# good
+# Here, `nil` is valid but `''` is not
+validates :x, length: { is: 5 }, allow_nil: true, allow_blank: false
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
+
 ## Rails/RedundantReceiverInWithOptions
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
