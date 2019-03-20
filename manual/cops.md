@@ -368,6 +368,7 @@ In the following section you find all available cops:
 * [Rails/Presence](cops_rails.md#railspresence)
 * [Rails/Present](cops_rails.md#railspresent)
 * [Rails/ReadWriteAttribute](cops_rails.md#railsreadwriteattribute)
+* [Rails/RedundantAllowNil](cops_rails.md#railsredundantallownil)
 * [Rails/RedundantReceiverInWithOptions](cops_rails.md#railsredundantreceiverinwithoptions)
 * [Rails/ReflectionClassName](cops_rails.md#railsreflectionclassname)
 * [Rails/RefuteMethods](cops_rails.md#railsrefutemethods)

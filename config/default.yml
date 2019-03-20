@@ -2501,6 +2501,15 @@ Rails/ReadWriteAttribute:
   Include:
     - app/models/**/*.rb
 
+Rails/RedundantAllowNil:
+  Description: >-
+                 Finds redundant use of `allow_nil` when `allow_blank` is set to
+                 certain values in model validations.
+  Enabled: true
+  VersionAdded: '0.67'
+  Include:
+    - app/models/**/*.rb
+
 Rails/RedundantReceiverInWithOptions:
   Description: 'Checks for redundant receiver in `with_options`.'
   Enabled: true
