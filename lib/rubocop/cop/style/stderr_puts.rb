@@ -17,12 +17,14 @@ module RuboCop
       class StderrPuts < Cop
         include RangeHelp
 
-        MSG = 'Use `warn` instead of `$stderr.puts` to allow such output ' \
-              'to be disabled.'.freeze
+        MSG =
+          'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
+          .freeze
 
         def_node_matcher :stderr_puts?, <<-PATTERN
           (send
-            (gvar #stderr_gvar?) :puts $_
+            {(gvar #stderr_gvar?) (const nil? :STDERR)}
+            :puts $_
             ...)
         PATTERN
 
@@ -39,6 +41,10 @@ module RuboCop
         end
 
         private
+
+        def message(node)
+          format(MSG, bad: "#{node.receiver.source}.#{node.method_name}")
+        end
 
         def stderr_gvar?(sym)
           sym == :$stderr
