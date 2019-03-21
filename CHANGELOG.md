@@ -4,6 +4,7 @@
 
 ### Bug fixes
 * [#6855](https://github.com/rubocop-hq/rubocop/pull/6855): Fix an exception in `Rails/RedundantReceiverInWithOptions` when the body is empty. ([@ericsullivan][])
+* [#6856](https://github.com/rubocop-hq/rubocop/pull/6856): Fix auto-correction for `Style/BlockComments` when the file is missing a trailing blank line. ([@ericsullivan][])
 
 ### Changes
 
