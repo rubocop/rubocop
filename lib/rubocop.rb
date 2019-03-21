@@ -559,6 +559,7 @@ require_relative 'rubocop/cop/style/zero_length_predicate'
 
 require_relative 'rubocop/cop/rails/action_filter'
 require_relative 'rubocop/cop/rails/active_record_aliases'
+require_relative 'rubocop/cop/rails/active_record_override'
 require_relative 'rubocop/cop/rails/active_support_aliases'
 require_relative 'rubocop/cop/rails/application_job'
 require_relative 'rubocop/cop/rails/application_record'

@@ -69,6 +69,42 @@ Book.update_attributes!(author: 'Alice')
 Book.update!(author: 'Alice')
 ```
 
+## Rails/ActiveRecordOverride
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.67 | -
+
+Checks for overriding built-in Active Record methods instead of using
+callbacks.
+
+### Examples
+
+```ruby
+# bad
+class Book < ApplicationRecord
+  def save
+    self.title = title.upcase!
+    super
+  end
+end
+
+# good
+class Book < ApplicationRecord
+  before_save :upcase_title
+
+  def upcase_title
+    self.title = title.upcase!
+  end
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
+
 ## Rails/ActiveSupportAliases
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

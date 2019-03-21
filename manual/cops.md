@@ -335,6 +335,7 @@ In the following section you find all available cops:
 
 * [Rails/ActionFilter](cops_rails.md#railsactionfilter)
 * [Rails/ActiveRecordAliases](cops_rails.md#railsactiverecordaliases)
+* [Rails/ActiveRecordOverride](cops_rails.md#railsactiverecordoverride)
 * [Rails/ActiveSupportAliases](cops_rails.md#railsactivesupportaliases)
 * [Rails/ApplicationJob](cops_rails.md#railsapplicationjob)
 * [Rails/ApplicationRecord](cops_rails.md#railsapplicationrecord)
