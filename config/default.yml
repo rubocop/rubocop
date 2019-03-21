@@ -2229,6 +2229,15 @@ Rails/ActiveRecordAliases:
   Enabled: true
   VersionAdded: '0.53'
 
+Rails/ActiveRecordOverride:
+  Description: >-
+                  Check for overriding Active Record methods instead of using
+                  callbacks.
+  Enabled: true
+  VersionAdded: '0.67'
+  Include:
+    - app/models/**/*.rb
+
 Rails/ActiveSupportAliases:
   Description: >-
                   Avoid ActiveSupport aliases of standard ruby methods:
