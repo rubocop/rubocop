@@ -372,7 +372,8 @@ module RuboCop
       end
 
       def compile_nodetype(cur_node, type)
-        "(#{cur_node} && #{cur_node}.#{type.tr('-', '_')}_type?)"
+        "(#{cur_node}.is_a?(RuboCop::AST::Node) && " \
+          "#{cur_node}.#{type.tr('-', '_')}_type?)"
       end
 
       def compile_param(cur_node, number, seq_head)
