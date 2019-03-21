@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Bug fixes
+* [#6855](https://github.com/rubocop-hq/rubocop/pull/6855): Fix an exception in `Rails/RedundantReceiverInWithOptions` when the body is empty. ([@ericsullivan][])
+
 ### Changes
 
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
@@ -3882,3 +3885,4 @@
 [@elmasantos]: https://github.com/elmasantos
 [@luciamo]: https://github.com/luciamo
 [@dirtyharrycallahan]: https://github.com/dirtyharrycallahan
+[@ericsullivan]: https://github.com/ericsullivan
