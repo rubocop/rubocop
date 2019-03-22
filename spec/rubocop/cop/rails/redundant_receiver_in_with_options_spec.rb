@@ -87,12 +87,20 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when empty' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        with_options options: false do |merger|
+        end
+      RUBY
+    end
   end
 
   context 'rails <= 4.1' do
     let(:rails_version) { 4.1 }
 
-    it 'registers an offense when using explicit receiver in `with_options`' do
+    it 'does not register an offense when using explicit receiver in ' \
+       '`with_options`' do
       expect_no_offenses(<<-RUBY.strip_indent)
         class Account < ApplicationRecord
           with_options dependent: :destroy do |assoc|
