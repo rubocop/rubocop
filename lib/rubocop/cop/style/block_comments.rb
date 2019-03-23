@@ -52,9 +52,17 @@ module RuboCop
         def parts(comment)
           expr = comment.loc.expression
           eq_begin = expr.resize(BEGIN_LENGTH)
-          eq_end = range_between(expr.end_pos - END_LENGTH, expr.end_pos)
+          eq_end = eq_end_part(comment, expr)
           contents = range_between(eq_begin.end_pos, eq_end.begin_pos)
           [eq_begin, eq_end, contents]
+        end
+
+        def eq_end_part(comment, expr)
+          if comment.text.chomp == comment.text
+            range_between(expr.end_pos - END_LENGTH - 1, expr.end_pos - 2)
+          else
+            range_between(expr.end_pos - END_LENGTH, expr.end_pos)
+          end
         end
       end
     end
