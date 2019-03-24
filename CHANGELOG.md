@@ -3,8 +3,10 @@
 ## master (unreleased)
 
 ### Bug fixes
+
 * [#6855](https://github.com/rubocop-hq/rubocop/pull/6855): Fix an exception in `Rails/RedundantReceiverInWithOptions` when the body is empty. ([@ericsullivan][])
 * [#6856](https://github.com/rubocop-hq/rubocop/pull/6856): Fix auto-correction for `Style/BlockComments` when the file is missing a trailing blank line. ([@ericsullivan][])
+* [#6858](https://github.com/rubocop-hq/rubocop/issues/6858): Fix an incorrect auto-correct for `Lint/ToJSON` when there are no `to_json` arguments. ([@koic][])
 
 ### Changes
 

@@ -2064,7 +2064,7 @@ def to_json
 end
 
 # good
-def to_json(_opts)
+def to_json(*_args)
 end
 ```
 
