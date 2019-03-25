@@ -50,4 +50,12 @@ RSpec.describe RuboCop::Cop::Rails::ReflectionClassName do
       belongs_to :account, class_name: :Account
     RUBY
   end
+
+  it 'does not register an offense when using self for `class_name`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      has_many :accounts, class_name: self, foreign_key: :account_id
+      has_one :account, class_name: self
+      belongs_to :account, class_name: self
+    RUBY
+  end
 end

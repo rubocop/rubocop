@@ -21,7 +21,7 @@ module RuboCop
         PATTERN
 
         def_node_search :reflection_class_name, <<-PATTERN
-          (pair (sym :class_name) [!str !sym])
+          (pair (sym :class_name) [!str !sym !self])
         PATTERN
 
         def on_send(node)
