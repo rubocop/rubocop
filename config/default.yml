@@ -368,7 +368,7 @@ Layout/CaseIndentation:
 
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
-  StyleGuide: 'https://github.com/rubocop-hq/ruby-style-guide#consistent-classes'
+  StyleGuide: '#consistent-classes'
   Enabled: false
   VersionAdded: '0.52'
   Categories:
