@@ -13,7 +13,7 @@ module RuboCop
       #
       #   # good
       #   'abc'.strip
-      class LstripRstrip < Cop
+      class Strip < Cop
         include RangeHelp
 
         MSG = 'Use `strip` instead of `%<methods>s`.'.freeze

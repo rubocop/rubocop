@@ -28,7 +28,7 @@ module RuboCop
     OBSOLETE_COPS = {
       'Performance/LstripRstrip' =>
         'The `Performance/LstripRstrip` cop has been moved ' \
-        'to `Style/LstripRstrip`',
+        'to `Style/Strip`',
       'Style/FlipFlop' =>
         'The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.',
       'Style/TrailingComma' =>

@@ -3426,11 +3426,6 @@ Style/LineEndConcatenation:
   VersionAdded: '0.18'
   VersionChanged: '0.64'
 
-Style/LstripRstrip:
-  Description: 'Use `strip` instead of `lstrip.rstrip`.'
-  Enabled: true
-  VersionAdded: '0.36'
-
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
   StyleGuide: '#method-invocation-parens'
@@ -4130,6 +4125,11 @@ Style/StringMethods:
   #     intern: to_sym
   PreferredMethods:
     intern: to_sym
+
+Style/Strip:
+  Description: 'Use `strip` instead of `lstrip.rstrip`.'
+  Enabled: true
+  VersionAdded: '0.36'
 
 Style/StructInheritance:
   Description: 'Checks for inheritance from Struct.new.'

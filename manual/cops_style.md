@@ -2814,26 +2814,6 @@ some_str = 'ala' \
            'bala'
 ```
 
-## Style/LstripRstrip
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | -
-
-This cop identifies places where `lstrip.rstrip` can be replaced by
-`strip`.
-
-### Examples
-
-```ruby
-# bad
-'abc'.lstrip.rstrip
-'abc'.rstrip.lstrip
-
-# good
-'abc'.strip
-```
-
 ## Style/MethodCallWithArgsParentheses
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -5940,6 +5920,26 @@ from the String class.
 Name | Default value | Configurable values
 --- | --- | ---
 PreferredMethods | `{"intern"=>"to_sym"}` | 
+
+## Style/Strip
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | -
+
+This cop identifies places where `lstrip.rstrip` can be replaced by
+`strip`.
+
+### Examples
+
+```ruby
+# bad
+'abc'.lstrip.rstrip
+'abc'.rstrip.lstrip
+
+# good
+'abc'.strip
+```
 
 ## Style/StructInheritance
 
