@@ -12,6 +12,7 @@
 ### Changes
 
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
+* [#6637](https://github.com/rubocop-hq/rubocop/issues/6637): Move `LstripRstrip` from `Performance` to `Style` department. ([@anuja-joshi][])
 
 ## 0.66.0 (2019-03-18)
 
@@ -3891,3 +3892,4 @@
 [@dirtyharrycallahan]: https://github.com/dirtyharrycallahan
 [@ericsullivan]: https://github.com/ericsullivan
 [@aeroastro]: https://github.com/aeroastro
+[@anuja-joshi]: https://github.com/anuja-joshi

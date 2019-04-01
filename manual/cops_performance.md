@@ -458,26 +458,6 @@ h = { a: 1, b: 2 }; h.value?(nil)
 
 * [https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code](https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code)
 
-## Performance/LstripRstrip
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | -
-
-This cop identifies places where `lstrip.rstrip` can be replaced by
-`strip`.
-
-### Examples
-
-```ruby
-# bad
-'abc'.lstrip.rstrip
-'abc'.rstrip.lstrip
-
-# good
-'abc'.strip
-```
-
 ## Performance/OpenStruct
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

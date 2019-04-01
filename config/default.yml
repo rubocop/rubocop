@@ -2088,11 +2088,6 @@ Performance/InefficientHashSearch:
   VersionAdded: '0.56'
   Safe: false
 
-Performance/LstripRstrip:
-  Description: 'Use `strip` instead of `lstrip.rstrip`.'
-  Enabled: true
-  VersionAdded: '0.36'
-
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
   Enabled: false
@@ -3430,6 +3425,11 @@ Style/LineEndConcatenation:
   SafeAutoCorrect: false
   VersionAdded: '0.18'
   VersionChanged: '0.64'
+
+Style/LstripRstrip:
+  Description: 'Use `strip` instead of `lstrip.rstrip`.'
+  Enabled: true
+  VersionAdded: '0.36'
 
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
