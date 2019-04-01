@@ -14,6 +14,7 @@
 
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
 * [#6637](https://github.com/rubocop-hq/rubocop/issues/6637): Move `LstripRstrip` from `Performance` to `Style` department and rename it to `Strip`. ([@anuja-joshi][])
+* [#6875](https://github.com/rubocop-hq/rubocop/pull/6875): Mention block form of `Struct.new` in ` Style/StructInheritance`. ([@XrXr][])
 
 ## 0.66.0 (2019-03-18)
 
@@ -3894,3 +3895,4 @@
 [@ericsullivan]: https://github.com/ericsullivan
 [@aeroastro]: https://github.com/aeroastro
 [@anuja-joshi]: https://github.com/anuja-joshi
+[@XrXr]: https://github.com/XrXr
