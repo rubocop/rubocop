@@ -115,6 +115,14 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
           RUBY
         end
       end
+
+      context 'when the rel is symbol noopener' do
+        it 'register no offence' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            link_to 'Click here', 'https://www.example.com', target: :_blank, rel: :noopener
+          RUBY
+        end
+      end
     end
   end
 end

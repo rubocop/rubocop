@@ -9,6 +9,7 @@
 * [#6858](https://github.com/rubocop-hq/rubocop/issues/6858): Fix an incorrect auto-correct for `Lint/ToJSON` when there are no `to_json` arguments. ([@koic][])
 * [#6865](https://github.com/rubocop-hq/rubocop/pull/6865): Fix deactivated `StyleGuideBaseURL` for `Layout/ClassStructure`. ([@aeroastro][])
 * [#6868](https://github.com/rubocop-hq/rubocop/pull/6868): Fix `Rails/LinkToBlank` auto-correct bug when using symbol for target. ([@r7kamura][])
+* [#6869](https://github.com/rubocop-hq/rubocop/pull/6869): Fix false positive for `Rails/LinkToBlank` when rel is a symbol value. ([@r7kamura][])
 
 ### Changes
 

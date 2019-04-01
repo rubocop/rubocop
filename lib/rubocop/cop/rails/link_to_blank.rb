@@ -22,7 +22,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :includes_noopener?, <<-PATTERN
-          (pair {(sym :rel) (str "rel")} (str #contains_noopener?))
+          (pair {(sym :rel) (str "rel")} ({str sym} #contains_noopener?))
         PATTERN
 
         def_node_matcher :rel_node?, <<-PATTERN
@@ -80,10 +80,10 @@ module RuboCop
           corrector.insert_after(range, new_rel_exp)
         end
 
-        def contains_noopener?(str)
-          return false unless str
+        def contains_noopener?(value)
+          return false unless value
 
-          str.split(' ').include?('noopener')
+          value.to_s.split(' ').include?('noopener')
         end
       end
     end
