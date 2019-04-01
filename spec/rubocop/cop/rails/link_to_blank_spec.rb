@@ -81,6 +81,17 @@ RSpec.describe RuboCop::Cop::Rails::LinkToBlank do
           end
         RUBY
       end
+
+      it 'autocorrects with a new rel when using a symbol for the target \
+          value' do
+        new_source = autocorrect_source(<<-RUBY.strip_indent)
+          link_to 'Click here', 'https://www.example.com', target: :_blank
+        RUBY
+
+        expect(new_source).to eq(<<-RUBY.strip_indent)
+          link_to 'Click here', 'https://www.example.com', target: :_blank, rel: :noopener
+        RUBY
+      end
     end
 
     context 'when using rel' do

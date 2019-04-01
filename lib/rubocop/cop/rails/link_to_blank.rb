@@ -72,8 +72,9 @@ module RuboCop
         end
 
         def add_rel(send_node, offence_node, corrector)
-          quote_style = offence_node.children.last.source[0]
-          new_rel_exp = ", rel: #{quote_style}noopener#{quote_style}"
+          opening_quote = offence_node.children.last.source[0]
+          closing_quote = opening_quote == ':' ? '' : opening_quote
+          new_rel_exp = ", rel: #{opening_quote}noopener#{closing_quote}"
           range = send_node.arguments.last.source_range
 
           corrector.insert_after(range, new_rel_exp)
