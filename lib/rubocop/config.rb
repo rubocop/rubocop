@@ -26,6 +26,9 @@ module RuboCop
     RUBY_VERSION_FILENAME = '.ruby-version'.freeze
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
+      'Performance/LstripRstrip' =>
+        'The `Performance/LstripRstrip` cop has been moved ' \
+        'to `Style/LstripRstrip`',
       'Style/FlipFlop' =>
         'The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.',
       'Style/TrailingComma' =>

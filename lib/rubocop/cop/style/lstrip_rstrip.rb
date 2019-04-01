@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Performance
+    module Style
       # This cop identifies places where `lstrip.rstrip` can be replaced by
       # `strip`.
       #
