@@ -2275,6 +2275,7 @@ Rails/Blank:
   Description: 'Enforces use of `blank?`.'
   Enabled: true
   VersionAdded: '0.48'
+  VersionChanged: '0.67'
   # Convert usages of `nil? || empty?` to `blank?`
   NilOrEmpty: true
   # Convert usages of `!present?` to `blank?`
@@ -2494,6 +2495,7 @@ Rails/Present:
   Description: 'Enforces use of `present?`.'
   Enabled: true
   VersionAdded: '0.48'
+  VersionChanged: '0.67'
   # Convert usages of `!nil? && !empty?` to `present?`
   NotNilAndNotEmpty: true
   # Convert usages of `!blank?` to `present?`
