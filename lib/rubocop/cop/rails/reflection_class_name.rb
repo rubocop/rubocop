@@ -13,6 +13,7 @@ module RuboCop
       #
       #   # good
       #   has_many :accounts, class_name: 'Account'
+      #   has_many :children, class_name: self.name
       class ReflectionClassName < Cop
         MSG = 'Use a string value for `class_name`.'.freeze
 
@@ -21,7 +22,7 @@ module RuboCop
         PATTERN
 
         def_node_search :reflection_class_name, <<-PATTERN
-          (pair (sym :class_name) [!str !sym !self])
+          (pair (sym :class_name) {const (send const ...)})
         PATTERN
 
         def on_send(node)
