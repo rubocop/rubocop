@@ -8,6 +8,7 @@
 
 ### Bug fixes
 
+* [#6761](https://github.com/rubocop-hq/rubocop/issues/6761): Make `Naming/UncommunicativeMethodParamName` account for param names prefixed with underscores. ([@thomthom][])
 * [#6855](https://github.com/rubocop-hq/rubocop/pull/6855): Fix an exception in `Rails/RedundantReceiverInWithOptions` when the body is empty. ([@ericsullivan][])
 * [#6856](https://github.com/rubocop-hq/rubocop/pull/6856): Fix auto-correction for `Style/BlockComments` when the file is missing a trailing blank line. ([@ericsullivan][])
 * [#6858](https://github.com/rubocop-hq/rubocop/issues/6858): Fix an incorrect auto-correct for `Lint/ToJSON` when there are no `to_json` arguments. ([@koic][])
@@ -3899,3 +3900,4 @@
 [@ericsullivan]: https://github.com/ericsullivan
 [@aeroastro]: https://github.com/aeroastro
 [@anuja-joshi]: https://github.com/anuja-joshi
+[@thomthom]: https://github.com/thomthom

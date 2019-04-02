@@ -147,6 +147,22 @@ RSpec.describe RuboCop::Cop::Naming::UncommunicativeMethodParamName, :config do
       RUBY
     end
 
+    it 'accepts param names prefixed with underscore' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def quux(_foo1, _foo2)
+          do_stuff
+        end
+      RUBY
+    end
+
+    it 'accepts underscore param names' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        def quux(_)
+          do_stuff
+        end
+      RUBY
+    end
+
     it 'registers unlisted offensive names' do
       expect_offense(<<-RUBY.strip_indent)
         def quux(bar, bar1)
