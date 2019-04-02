@@ -17,6 +17,7 @@
 * [#6868](https://github.com/rubocop-hq/rubocop/pull/6868): Fix `Rails/LinkToBlank` auto-correct bug when using symbol for target. ([@r7kamura][])
 * [#6869](https://github.com/rubocop-hq/rubocop/pull/6869): Fix false positive for `Rails/LinkToBlank` when rel is a symbol value. ([@r7kamura][])
 * Add `IncludedMacros` param to default rubocop config for `Style/MethodCallWithArgsParentheses`. ([@maxh][])
+* [#6785](https://github.com/rubocop-hq/rubocop/issues/6785): Do not register an offense for `Rails/Present` or `Rails/Blank` in an `unless else` context when `Style/UnlessElse` is enabled. ([@rrosenblum][])
 
 ### Changes
 

@@ -198,23 +198,59 @@ RSpec.describe RuboCop::Cop::Rails::Present, :config do
       end
 
       context 'unless blank? with an else' do
-        it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
-            unless foo.blank?
-            ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
-              something
-            else
-              something_else
-            end
-          RUBY
+        context 'Style/UnlessElse disabled' do
+          let(:config) do
+            RuboCop::Config.new(
+              'Rails/Present' => {
+                'UnlessBlank' => true
+              },
+              'Style/UnlessElse' => {
+                'Enabled' => false
+              }
+            )
+          end
 
-          expect_correction(<<-RUBY.strip_indent)
-            if foo.present?
-              something
-            else
-              something_else
-            end
-          RUBY
+          it 'registers an offense' do
+            expect_offense(<<-RUBY.strip_indent)
+              unless foo.blank?
+              ^^^^^^^^^^^^^^^^^ Use `if foo.present?` instead of `unless foo.blank?`.
+                something
+              else
+                something_else
+              end
+            RUBY
+
+            expect_correction(<<-RUBY.strip_indent)
+              if foo.present?
+                something
+              else
+                something_else
+              end
+            RUBY
+          end
+        end
+
+        context 'Style/UnlessElse enabled' do
+          let(:config) do
+            RuboCop::Config.new(
+              'Rails/Present' => {
+                'UnlessBlank' => true
+              },
+              'Style/UnlessElse' => {
+                'Enabled' => true
+              }
+            )
+          end
+
+          it 'does not registers an offense' do
+            expect_no_offenses(<<-RUBY.strip_indent)
+              unless foo.blank?
+                something
+              else
+                something_else
+              end
+            RUBY
+          end
         end
       end
     end

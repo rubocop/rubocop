@@ -6,7 +6,10 @@ module RuboCop
       # This cop checks for code that can be written with simpler conditionals
       # using `Object#present?` defined by Active Support.
       #
-      # simpler conditionals.
+      # Interaction with `Style/UnlessElse`:
+      # The configuration of `NotBlank` will not produce an offense in the
+      # context of `unless else` if `Style/UnlessElse` is inabled. This is
+      # to prevent interference between the auto-correction of the two cops.
       #
       # @example NotNilAndNotEmpty: true (default)
       #   # Converts usages of `!nil? && !empty?` to `present?`
@@ -104,6 +107,7 @@ module RuboCop
         def on_if(node)
           return unless cop_config['UnlessBlank']
           return unless node.unless?
+          return if node.else? && config.for_cop('Style/UnlessElse')['Enabled']
 
           unless_blank?(node) do |method_call, receiver|
             range = unless_condition(node, method_call)
