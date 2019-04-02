@@ -1590,6 +1590,7 @@ has_many :accounts, class_name: Account.name
 
 # good
 has_many :accounts, class_name: 'Account'
+has_many :children, class_name: self.name
 ```
 
 ## Rails/RefuteMethods
