@@ -1164,7 +1164,7 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.52 | -
+Enabled | No | No | 0.52 | -
 
 This cop checks that methods specified in the filter's `only` or
 `except` options are defined within the same class or module.
