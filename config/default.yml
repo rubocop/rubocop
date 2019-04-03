@@ -3452,6 +3452,7 @@ Style/MethodCallWithArgsParentheses:
   VersionChanged: '0.61'
   IgnoreMacros: true
   IgnoredMethods: []
+  IncludedMacros: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
   AllowParenthesesInCamelCaseMethod: false
