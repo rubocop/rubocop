@@ -2445,6 +2445,7 @@ Rails/LexicallyScopedActionFilter:
   Description: "Checks that methods specified in the filter's `only` or `except` options are explicitly defined in the controller."
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter'
   Enabled: true
+  Safe: false
   VersionAdded: '0.52'
   Include:
     - app/controllers/**/*.rb

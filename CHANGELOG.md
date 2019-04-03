@@ -19,6 +19,7 @@
 
 ### Changes
 
+* [#6854](https://github.com/rubocop-hq/rubocop/pull/6854): Mark Rails/LexicallyScopedActionFilter as unsafe and document risks. ([@urbanautomaton][])
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
 * [#6637](https://github.com/rubocop-hq/rubocop/issues/6637): Move `LstripRstrip` from `Performance` to `Style` department and rename it to `Strip`. ([@anuja-joshi][])
 
