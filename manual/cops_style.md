@@ -2960,6 +2960,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
+IncludedMacros | `[]` | Array
 AllowParenthesesInMultilineCall | `false` | Boolean
 AllowParenthesesInChaining | `false` | Boolean
 AllowParenthesesInCamelCaseMethod | `false` | Boolean
