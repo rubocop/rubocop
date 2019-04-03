@@ -908,6 +908,14 @@ RSpec.describe RuboCop::NodePattern do
       let(:ruby) { '1.inc' }
 
       it_behaves_like 'matching'
+
+      context 'with name containing a numeral' do
+        before { RuboCop::AST::Node.def_node_matcher :custom_42?, 'send_type?' }
+
+        let(:pattern) { 'custom_42?' }
+
+        it_behaves_like 'matching'
+      end
     end
 
     context 'at head position of a sequence' do
