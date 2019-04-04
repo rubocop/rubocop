@@ -5,7 +5,7 @@ module RuboCop
   module YAMLDuplicationChecker
     def self.check(yaml_string, filename, &on_duplicated)
       # Specify filename to display helpful message when it raises an error.
-      tree = YAML.parse(yaml_string, filename: filename)
+      tree = YAML.parse(yaml_string, filename)
       return unless tree
 
       traverse(tree, &on_duplicated)

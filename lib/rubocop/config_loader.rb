@@ -206,10 +206,16 @@ module RuboCop
         smart_path = PathUtil.smart_path(absolute_path)
         YAMLDuplicationChecker.check(yaml_code, absolute_path) do |key1, key2|
           value = key1.value
-          line1 = key1.start_line + 1
-          line2 = key2.start_line + 1
-          message = "#{smart_path}:#{line1}: " \
-                    "`#{value}` is concealed by line #{line2}"
+          # .start_line is only available since ruby 2.5 / psych 3.0
+          message = if key1.respond_to? :start_line
+                      line1 = key1.start_line + 1
+                      line2 = key2.start_line + 1
+                      "#{smart_path}:#{line1}: " \
+                      "`#{value}` is concealed by line #{line2}"
+                    else
+                      "#{smart_path}: " \
+                        "`#{value}` is concealed by duplicate"
+                    end
           warn Rainbow(message).yellow
         end
       end
@@ -228,7 +234,8 @@ module RuboCop
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
           SafeYAML.load(yaml_code, filename,
                         whitelisted_tags: %w[!ruby/regexp])
-        else
+        # Ruby 2.6+
+        elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
           YAML.safe_load(
             yaml_code,
             permitted_classes: [Regexp, Symbol],
@@ -236,6 +243,8 @@ module RuboCop
             aliases: false,
             filename: filename
           )
+        else
+          YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
         end
       end
     end
