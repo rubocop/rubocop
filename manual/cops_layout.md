@@ -157,6 +157,7 @@ options are:
   - key (left align keys, one space before hash rockets and values)
   - separator (align hash rockets and colons, right align keys)
   - table (left align keys, hash rockets, and values)
+  - table_or_key (allows either table or key)
 
 The treatment of hashes passed as the last argument to a method call
 can also be configured. The options are:
@@ -347,8 +348,8 @@ do_something({foo: 1,
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`
-EnforcedColonStyle | `key` | `key`, `separator`, `table`
+EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`, `table_or_key`
+EnforcedColonStyle | `key` | `key`, `separator`, `table`, `table_or_key`
 EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
 
 ## Layout/AlignParameters
