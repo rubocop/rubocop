@@ -109,6 +109,7 @@ In the following section you find all available cops:
 * [Layout/AlignArray](cops_layout.md#layoutalignarray)
 * [Layout/AlignHash](cops_layout.md#layoutalignhash)
 * [Layout/AlignParameters](cops_layout.md#layoutalignparameters)
+* [Layout/AutocorrectableLineLength](cops_layout.md#layoutautocorrectablelinelength)
 * [Layout/BlockAlignment](cops_layout.md#layoutblockalignment)
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)

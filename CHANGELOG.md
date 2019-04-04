@@ -2,11 +2,16 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add `AutocorrectableLineLength` cop. ([@maxh][])
+
 ## 0.67.1 (2019-04-04)
 
 ### Changes
 
 * [#6881](https://github.com/rubocop-hq/rubocop/pull/6881): Set default `PreferredName` to `e` for `Naming/RescuedExceptionsVariableName`. ([@koic][])
+### New features
 
 ## 0.67.0 (2019-04-04)
 

@@ -340,6 +340,47 @@ IndentationWidth | `<none>` | Integer
 
 * [https://github.com/rubocop-hq/ruby-style-guide#no-double-indent](https://github.com/rubocop-hq/ruby-style-guide#no-double-indent)
 
+## Layout/AutocorrectableLineLength
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.68 | -
+
+This cop programmatically shortens certain long lines by
+inserting line breaks into expressions that can be safely
+split across lines. These include arrays, hashs, and
+method calls with argument lists.
+
+It works best with other layout cops such as
+MultilineHashBraceLayout, which will insert line breaks
+before each element in subsequent autocorrect passes.
+
+For example, let's say the max columns in 25:
+
+### Examples
+
+```ruby
+# bad
+{foo: "0000000000", bar: "0000000000", baz: "0000000000"}
+
+# good
+{foo: "0000000000",
+bar: "0000000000", baz: "0000000000"}
+
+# good (with complementary cops enabled)
+{
+  foo: "0000000000",
+  bar: "0000000000",
+  baz: "0000000000",
+}
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `80` | Integer
+
 ## Layout/BlockAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

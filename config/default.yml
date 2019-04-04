@@ -331,6 +331,12 @@ Layout/AlignParameters:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/AutocorrectableLineLength:
+  Description: 'Conservatively inserts line breaks to break certain long lines.'
+  Enabled: false
+  Max: 80
+  VersionAdded: '0.68'
+
 Layout/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
