@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
   end
 
-  context 'when many arguments are on mutliple lines, two on same line' do
+  context 'when many arguments are on multiple lines, two on same line' do
     it 'adds an offense' do
       expect_offense(
         <<-RUBY
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
   end
 
-  context 'when many arguments are on mutliple lines, three on same line' do
+  context 'when many arguments are on multiple lines, three on same line' do
     it 'adds an offense' do
       expect_offense(
         <<-RUBY
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
   end
 
-  context 'when many arguments are on mutliple lines, three on same line' do
+  context 'when many arguments are on multiple lines, three on same line' do
     it 'adds an offense' do
       expect_offense(
         <<-RUBY
