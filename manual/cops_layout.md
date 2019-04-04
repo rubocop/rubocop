@@ -2809,7 +2809,7 @@ EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.66 | -
+Disabled | Yes | Yes  | 0.67 | -
 
 This cop ensures that each item in a multi-line array
 starts on a separate line.
@@ -3035,7 +3035,7 @@ EnforcedStyle | `symmetrical` | `symmetrical`, `new_line`, `same_line`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.66 | -
+Disabled | Yes | Yes  | 0.67 | -
 
 This cop ensures that each key in a multi-line hash
 starts on a separate line.
@@ -3061,7 +3061,7 @@ starts on a separate line.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.66 | -
+Disabled | Yes | Yes  | 0.67 | -
 
 This cop ensures that each argument in a multi-line method call
 starts on a separate line.
