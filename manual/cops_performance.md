@@ -458,26 +458,6 @@ h = { a: 1, b: 2 }; h.value?(nil)
 
 * [https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code](https://github.com/JuanitoFatas/fast-ruby#hashkey-instead-of-hashkeysinclude-code)
 
-## Performance/LstripRstrip
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | -
-
-This cop identifies places where `lstrip.rstrip` can be replaced by
-`strip`.
-
-### Examples
-
-```ruby
-# bad
-'abc'.lstrip.rstrip
-'abc'.rstrip.lstrip
-
-# good
-'abc'.strip
-```
-
 ## Performance/OpenStruct
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -629,28 +609,6 @@ MaxKeyValuePairs | `2` | Integer
 
 * [https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code](https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code)
 
-## Performance/RedundantSortBy
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | -
-
-This cop identifies places where `sort_by { ... }` can be replaced by
-`sort`.
-
-### Examples
-
-```ruby
-# bad
-array.sort_by { |x| x }
-array.sort_by do |var|
-  var
-end
-
-# good
-array.sort
-```
-
 ## Performance/RegexpMatch
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -756,44 +714,6 @@ change them to use `reverse_each` instead.
 ### References
 
 * [https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code](https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code)
-
-## Performance/Sample
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.30 | -
-
-This cop is used to identify usages of `shuffle.first`,
-`shuffle.last`, and `shuffle[]` and change them to use
-`sample` instead.
-
-### Examples
-
-```ruby
-# bad
-[1, 2, 3].shuffle.first
-[1, 2, 3].shuffle.first(2)
-[1, 2, 3].shuffle.last
-[2, 1, 3].shuffle.at(0)
-[2, 1, 3].shuffle.slice(0)
-[1, 2, 3].shuffle[2]
-[1, 2, 3].shuffle[0, 2]    # sample(2) will do the same
-[1, 2, 3].shuffle[0..2]    # sample(3) will do the same
-[1, 2, 3].shuffle(random: Random.new).first
-
-# good
-[1, 2, 3].shuffle
-[1, 2, 3].sample
-[1, 2, 3].sample(3)
-[1, 2, 3].shuffle[1, 3]    # sample(3) might return a longer Array
-[1, 2, 3].shuffle[1..3]    # sample(3) might return a longer Array
-[1, 2, 3].shuffle[foo, bar]
-[1, 2, 3].shuffle(random: Random.new)
-```
-
-### References
-
-* [https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code](https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code)
 
 ## Performance/Size
 
@@ -948,61 +868,6 @@ String.new('something')
 # good
 +'something'
 +''
-```
-
-## Performance/UnneededSort
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | -
-
-This cop is used to identify instances of sorting and then
-taking only the first or last element. The same behavior can
-be accomplished without a relatively expensive sort by using
-`Enumerable#min` instead of sorting and taking the first
-element and `Enumerable#max` instead of sorting and taking the
-last element. Similarly, `Enumerable#min_by` and
-`Enumerable#max_by` can replace `Enumerable#sort_by` calls
-after which only the first or last element is used.
-
-### Examples
-
-```ruby
-# bad
-[2, 1, 3].sort.first
-[2, 1, 3].sort[0]
-[2, 1, 3].sort.at(0)
-[2, 1, 3].sort.slice(0)
-
-# good
-[2, 1, 3].min
-
-# bad
-[2, 1, 3].sort.last
-[2, 1, 3].sort[-1]
-[2, 1, 3].sort.at(-1)
-[2, 1, 3].sort.slice(-1)
-
-# good
-[2, 1, 3].max
-
-# bad
-arr.sort_by(&:foo).first
-arr.sort_by(&:foo)[0]
-arr.sort_by(&:foo).at(0)
-arr.sort_by(&:foo).slice(0)
-
-# good
-arr.min_by(&:foo)
-
-# bad
-arr.sort_by(&:foo).last
-arr.sort_by(&:foo)[-1]
-arr.sort_by(&:foo).at(-1)
-arr.sort_by(&:foo).slice(-1)
-
-# good
-arr.max_by(&:foo)
 ```
 
 ## Performance/UriDefaultParser

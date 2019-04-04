@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Performance
+    module Style
       # This cop is used to identify instances of sorting and then
       # taking only the first or last element. The same behavior can
       # be accomplished without a relatively expensive sort by using

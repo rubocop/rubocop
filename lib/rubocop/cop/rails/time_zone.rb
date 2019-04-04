@@ -78,6 +78,16 @@ module RuboCop
           check_time_node(klass, node.parent) if TIMECLASS.include?(klass)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            if acceptable?
+              corrector.insert_after(node.source_range, '.in_time_zone')
+            else
+              corrector.insert_after(node.children[0].source_range, '.zone')
+            end
+          end
+        end
+
         private
 
         def check_time_node(klass, node)

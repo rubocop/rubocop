@@ -47,4 +47,25 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       end
     RUBY
   end
+
+  it 'auto-corrects a block comment into a regular comment (without trailing' \
+    'newline)' do
+    source = <<-RUBY.strip_indent
+      =begin
+      comment line 1
+
+      comment line 2
+      =end
+    RUBY
+
+    new_source = autocorrect_source(source.chomp)
+
+    expected_source = <<-RUBY.strip_indent
+      # comment line 1
+      #
+      # comment line 2
+    RUBY
+
+    expect(new_source).to eq(expected_source)
+  end
 end

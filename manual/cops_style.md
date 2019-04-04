@@ -422,6 +422,30 @@ foo = map { |x|
 map { |x|
   x
 }.inspect
+
+# The AllowBracesOnProceduralOneLiners option is ignored unless the
+# EnforcedStyle is set to `semantic`. If so:
+
+# If the AllowBracesOnProceduralOneLiners option is unspecified, or
+# set to `false` or any other falsey value, then semantic purity is
+# maintained, so one-line procedural blocks must use do-end, not
+# braces.
+
+# bad
+collection.each { |element| puts element }
+
+# good
+collection.each do |element| puts element end
+
+# If the AllowBracesOnProceduralOneLiners option is set to `true`, or
+# any other truthy value, then one-line procedural blocks may use
+# either style. (There is no setting for requiring braces on them.)
+
+# good
+collection.each { |element| puts element }
+
+# also good
+collection.each do |element| puts element end
 ```
 #### EnforcedStyle: braces_for_chaining
 
@@ -445,6 +469,7 @@ EnforcedStyle | `line_count_based` | `line_count_based`, `semantic`, `braces_for
 ProceduralMethods | `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `measure`, `new`, `realtime`, `tap`, `with_object` | Array
 FunctionalMethods | `let`, `let!`, `subject`, `watch` | Array
 IgnoredMethods | `lambda`, `proc`, `it` | Array
+AllowBracesOnProceduralOneLiners | `false` | Boolean
 
 ### References
 
@@ -2800,7 +2825,11 @@ method calls containing parameters.
 
 In the default style (require_parentheses), macro methods are ignored.
 Additional methods can be added to the `IgnoredMethods` list. This
-option is valid only in the default style.
+option is valid only in the default style. Macros can be included by
+either setting `IgnoreMacros` to false or adding specific macros to
+the `IncludedMacros` list. If a method is listed in both
+`IncludedMacros` and `IgnoredMethods`, then the latter takes
+precedence (that is, the method is ignored).
 
 In the alternative style (omit_parentheses), there are three additional
 options.
@@ -2931,6 +2960,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 IgnoreMacros | `true` | Boolean
 IgnoredMethods | `[]` | Array
+IncludedMacros | `[]` | Array
 AllowParenthesesInMultilineCall | `false` | Boolean
 AllowParenthesesInChaining | `false` | Boolean
 AllowParenthesesInCamelCaseMethod | `false` | Boolean
@@ -4865,7 +4895,7 @@ raise 'message'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.34 | -
+Enabled | Yes | Yes  | 0.34 | 0.66
 
 This cop check for uses of Object#freeze on immutable objects.
 
@@ -4998,6 +5028,28 @@ end
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#no-self-unless-required](https://github.com/rubocop-hq/ruby-style-guide#no-self-unless-required)
+
+## Style/RedundantSortBy
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | -
+
+This cop identifies places where `sort_by { ... }` can be replaced by
+`sort`.
+
+### Examples
+
+```ruby
+# bad
+array.sort_by { |x| x }
+array.sort_by do |var|
+  var
+end
+
+# good
+array.sort
+```
 
 ## Style/RegexpLiteral
 
@@ -5337,6 +5389,44 @@ Name | Default value | Configurable values
 --- | --- | ---
 ConvertCodeThatCanStartToReturnNil | `false` | Boolean
 Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+
+## Style/Sample
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.30 | -
+
+This cop is used to identify usages of `shuffle.first`,
+`shuffle.last`, and `shuffle[]` and change them to use
+`sample` instead.
+
+### Examples
+
+```ruby
+# bad
+[1, 2, 3].shuffle.first
+[1, 2, 3].shuffle.first(2)
+[1, 2, 3].shuffle.last
+[2, 1, 3].shuffle.at(0)
+[2, 1, 3].shuffle.slice(0)
+[1, 2, 3].shuffle[2]
+[1, 2, 3].shuffle[0, 2]    # sample(2) will do the same
+[1, 2, 3].shuffle[0..2]    # sample(3) will do the same
+[1, 2, 3].shuffle(random: Random.new).first
+
+# good
+[1, 2, 3].shuffle
+[1, 2, 3].sample
+[1, 2, 3].sample(3)
+[1, 2, 3].shuffle[1, 3]    # sample(3) might return a longer Array
+[1, 2, 3].shuffle[1..3]    # sample(3) might return a longer Array
+[1, 2, 3].shuffle[foo, bar]
+[1, 2, 3].shuffle(random: Random.new)
+```
+
+### References
+
+* [https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code](https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code)
 
 ## Style/SelfAssignment
 
@@ -5892,6 +5982,26 @@ Name | Default value | Configurable values
 --- | --- | ---
 PreferredMethods | `{"intern"=>"to_sym"}` | 
 
+## Style/Strip
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.36 | -
+
+This cop identifies places where `lstrip.rstrip` can be replaced by
+`strip`.
+
+### Examples
+
+```ruby
+# bad
+'abc'.lstrip.rstrip
+'abc'.rstrip.lstrip
+
+# good
+'abc'.strip
+```
+
 ## Style/StructInheritance
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -5905,10 +6015,17 @@ This cop checks for inheritance from Struct.new.
 ```ruby
 # bad
 class Person < Struct.new(:first_name, :last_name)
+  def age
+    42
+  end
 end
 
 # good
-Person = Struct.new(:first_name, :last_name)
+Person = Struct.new(:first_name, :last_name) do
+  def age
+    42
+  end
+end
 ```
 
 ### References
@@ -6587,6 +6704,61 @@ question = '"What did you say?"'
 ### References
 
 * [https://github.com/rubocop-hq/ruby-style-guide#percent-q](https://github.com/rubocop-hq/ruby-style-guide#percent-q)
+
+## Style/UnneededSort
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.55 | -
+
+This cop is used to identify instances of sorting and then
+taking only the first or last element. The same behavior can
+be accomplished without a relatively expensive sort by using
+`Enumerable#min` instead of sorting and taking the first
+element and `Enumerable#max` instead of sorting and taking the
+last element. Similarly, `Enumerable#min_by` and
+`Enumerable#max_by` can replace `Enumerable#sort_by` calls
+after which only the first or last element is used.
+
+### Examples
+
+```ruby
+# bad
+[2, 1, 3].sort.first
+[2, 1, 3].sort[0]
+[2, 1, 3].sort.at(0)
+[2, 1, 3].sort.slice(0)
+
+# good
+[2, 1, 3].min
+
+# bad
+[2, 1, 3].sort.last
+[2, 1, 3].sort[-1]
+[2, 1, 3].sort.at(-1)
+[2, 1, 3].sort.slice(-1)
+
+# good
+[2, 1, 3].max
+
+# bad
+arr.sort_by(&:foo).first
+arr.sort_by(&:foo)[0]
+arr.sort_by(&:foo).at(0)
+arr.sort_by(&:foo).slice(0)
+
+# good
+arr.min_by(&:foo)
+
+# bad
+arr.sort_by(&:foo).last
+arr.sort_by(&:foo)[-1]
+arr.sort_by(&:foo).at(-1)
+arr.sort_by(&:foo).slice(-1)
+
+# good
+arr.max_by(&:foo)
+```
 
 ## Style/UnpackFirst
 

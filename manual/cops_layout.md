@@ -552,35 +552,43 @@ Checks if the code style follows the ExpectedOrder configuration:
 `Categories` allows us to map macro names into a category.
 
 Consider an example of code style that covers the following order:
+- Module inclusion (include, prepend, extend)
 - Constants
 - Associations (has_one, has_many)
-- Attributes (attr_accessor, attr_writer, attr_reader)
+- Public attribute macros (attr_accessor, attr_writer, attr_reader)
+- Other macros (validates, validate)
+- Public class methods
 - Initializer
-- Instance methods
-- Protected methods
-- Private methods
+- Public instance methods
+- Protected attribute macros (attr_accessor, attr_writer, attr_reader)
+- Protected instance methods
+- Private attribute macros (attr_accessor, attr_writer, attr_reader)
+- Private instance methods
 
 You can configure the following order:
 
 ```yaml
  Layout/ClassStructure:
-   Categories:
-     module_inclusion:
-       - include
-       - prepend
-       - extend
    ExpectedOrder:
-       - module_inclusion
-       - constants
-       - public_class_methods
-       - initializer
-       - public_methods
-       - protected_methods
-       - private_methods
-
+     - module_inclusion
+     - constants
+     - association
+     - public_attribute_macros
+     - public_delegate
+     - macros
+     - public_class_methods
+     - initializer
+     - public_methods
+     - protected_attribute_macros
+     - protected_methods
+     - private_attribute_macros
+     - private_delegate
+     - private_methods
 ```
+
 Instead of putting all literals in the expected order, is also
-possible to group categories of macros.
+possible to group categories of macros. Visibility levels are handled
+automatically.
 
 ```yaml
  Layout/ClassStructure:
@@ -588,10 +596,17 @@ possible to group categories of macros.
      association:
        - has_many
        - has_one
-     attribute:
+     attribute_macros:
        - attr_accessor
        - attr_reader
        - attr_writer
+     macros:
+       - validates
+       - validate
+     module_inclusion:
+       - include
+       - prepend
+       - extend
 ```
 
 ### Examples
@@ -619,11 +634,14 @@ class Person
   # constants are next
   SOME_CONSTANT = 20
 
-  # afterwards we have attribute macros
+  # afterwards we have public attribute macros
   attr_reader :name
 
   # followed by other macros (if any)
   validates :name
+
+  # then we have public delegate macros
+  delegate :to_s, to: :name
 
   # public class methods are next in line
   def self.some_method
@@ -637,13 +655,21 @@ class Person
   def some_method
   end
 
-  # protected and private methods are grouped near the end
+  # protected attribute macros and methods go next
   protected
+
+  attr_reader :protected_name
 
   def some_protected_method
   end
 
+  # private attribute macros, delegate macros and methods
+  # are grouped near the end
   private
+
+  attr_reader :private_name
+
+  delegate :some_private_delegate, to: :name
 
   def some_private_method
   end
@@ -1785,6 +1811,17 @@ puts        "rubocop"          if     debug
 # bad for any configuration
 set_app("RuboCop")
 website  = "https://github.com/rubocop-hq/rubocop"
+
+# good only if AllowBeforeTrailingComments is true
+object.method(arg)  # this is a comment
+
+# good even if AllowBeforeTrailingComments is false or not set
+object.method(arg) # this is a comment
+
+# good with either AllowBeforeTrailingComments or AllowForAlignment
+object.method(arg)         # this is a comment
+another_object.method(arg) # this is another comment
+some_object.method(arg)    # this is some comment
 ```
 
 ### Configurable attributes
@@ -1792,6 +1829,7 @@ website  = "https://github.com/rubocop-hq/rubocop"
 Name | Default value | Configurable values
 --- | --- | ---
 AllowForAlignment | `true` | Boolean
+AllowBeforeTrailingComments | `false` | Boolean
 ForceEqualSignAlignment | `false` | Boolean
 
 ## Layout/FirstArrayElementLineBreak

@@ -32,6 +32,8 @@ See [development](development.md).
 
 #### Known Custom Cops
 
+* [rubocop-performance](https://github.com/rubocop-hq/rubocop-performance) -
+  Performance optimization analysis
 * [rubocop-rspec](https://github.com/rubocop-hq/rubocop-rspec) -
   RSpec-specific analysis
 * [rubocop-thread_safety](https://github.com/covermymeds/rubocop-thread_safety) -

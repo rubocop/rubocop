@@ -368,7 +368,7 @@ Layout/CaseIndentation:
 
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
-  StyleGuide: 'https://github.com/rubocop-hq/ruby-style-guide#consistent-classes'
+  StyleGuide: '#consistent-classes'
   Enabled: false
   VersionAdded: '0.52'
   Categories:
@@ -581,6 +581,10 @@ Layout/ExtraSpacing:
   # things with the previous or next line, not counting empty lines or comment
   # lines.
   AllowForAlignment: true
+  # When true, allows things like 'obj.meth(arg)  # comment',
+  # rather than insisting on 'obj.meth(arg) # comment'.
+  # If done for alignment, either this OR AllowForAlignment will allow it.
+  AllowBeforeTrailingComments: false
   # When true, forces the alignment of `=` in assignments on consecutive lines.
   ForceEqualSignAlignment: false
 
@@ -1500,6 +1504,11 @@ Lint/SafeNavigationConsistency:
     - try!
 
 
+Lint/SafeNavigationWithEmpty:
+  Description: 'Avoid `foo&.empty?` in conditionals.'
+  Enabled: true
+  VersionAdded: '0.62'
+
 Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'
   Enabled: true
@@ -2100,11 +2109,6 @@ Performance/InefficientHashSearch:
   VersionAdded: '0.56'
   Safe: false
 
-Performance/LstripRstrip:
-  Description: 'Use `strip` instead of `lstrip.rstrip`.'
-  Enabled: true
-  VersionAdded: '0.36'
-
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
   Enabled: false
@@ -2139,11 +2143,6 @@ Performance/RedundantMerge:
   # Max number of key-value pairs to consider an offense
   MaxKeyValuePairs: 2
 
-Performance/RedundantSortBy:
-  Description: 'Use `sort` instead of `sort_by { |x| x }`.'
-  Enabled: true
-  VersionAdded: '0.36'
-
 Performance/RegexpMatch:
   Description: >-
                   Use `match?` instead of `Regexp#match`, `String#match`, `Symbol#match`,
@@ -2155,14 +2154,6 @@ Performance/RegexpMatch:
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
-  Enabled: true
-  VersionAdded: '0.30'
-
-Performance/Sample:
-  Description: >-
-                  Use `sample` instead of `shuffle.first`,
-                  `shuffle.last`, and `shuffle[Integer]`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
   Enabled: true
   VersionAdded: '0.30'
 
@@ -2208,13 +2199,6 @@ Performance/UnfreezeString:
   Enabled: true
   VersionAdded: '0.50'
 
-Performance/UnneededSort:
-  Description: >-
-                  Use `min` instead of `sort.first`,
-                  `max_by` instead of `sort_by...last`, etc.
-  Enabled: true
-  VersionAdded: '0.55'
-
 Performance/UriDefaultParser:
   Description: 'Use `URI::DEFAULT_PARSER` instead of `URI::Parser.new`.'
   Enabled: true
@@ -2245,6 +2229,15 @@ Rails/ActiveRecordAliases:
                   Use `update!` instead of `update_attributes!`.
   Enabled: true
   VersionAdded: '0.53'
+
+Rails/ActiveRecordOverride:
+  Description: >-
+                  Check for overriding Active Record methods instead of using
+                  callbacks.
+  Enabled: true
+  VersionAdded: '0.67'
+  Include:
+    - app/models/**/*.rb
 
 Rails/ActiveSupportAliases:
   Description: >-
@@ -2453,6 +2446,7 @@ Rails/LexicallyScopedActionFilter:
   Description: "Checks that methods specified in the filter's `only` or `except` options are explicitly defined in the controller."
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#lexically-scoped-action-filter'
   Enabled: true
+  Safe: false
   VersionAdded: '0.52'
   Include:
     - app/controllers/**/*.rb
@@ -2515,6 +2509,15 @@ Rails/ReadWriteAttribute:
   Enabled: true
   VersionAdded: '0.20'
   VersionChanged: '0.29'
+  Include:
+    - app/models/**/*.rb
+
+Rails/RedundantAllowNil:
+  Description: >-
+                 Finds redundant use of `allow_nil` when `allow_blank` is set to
+                 certain values in model validations.
+  Enabled: true
+  VersionAdded: '0.67'
   Include:
     - app/models/**/*.rb
 
@@ -2794,8 +2797,9 @@ Style/BlockDelimiters:
     - line_count_based
     # The `semantic` style enforces braces around functional blocks, where the
     # primary purpose of the block is to return a value and do..end for
-    # procedural blocks, where the primary purpose of the block is its
-    # side-effects.
+    # multi-line procedural blocks, where the primary purpose of the block is
+    # its side-effects. Single-line procedural blocks may only use do-end,
+    # unless AllowBracesOnProceduralOneLiners has a truthy value (see below).
     #
     # This looks at the usage of a block's method to determine its type (e.g. is
     # the result of a `map` assigned to a variable or passed to another
@@ -2856,6 +2860,28 @@ Style/BlockDelimiters:
     - lambda
     - proc
     - it
+  # The AllowBracesOnProceduralOneLiners option is ignored unless the
+  # EnforcedStyle is set to `semantic`. If so:
+  #
+  # If AllowBracesOnProceduralOneLiners is unspecified, or set to any
+  # falsey value, then semantic purity is maintained, so one-line
+  # procedural blocks must use do-end, not braces.
+  #
+  #   # bad
+  #   collection.each { |element| puts element }
+  #
+  #   # good
+  #   collection.each do |element| puts element end
+  #
+  # If AllowBracesOnProceduralOneLiners is set to any truthy value,
+  # then one-line procedural blocks may use either style.
+  #
+  #   # good
+  #   collection.each { |element| puts element }
+  #
+  #   # also good
+  #   collection.each do |element| puts element end
+  AllowBracesOnProceduralOneLiners: false
 
 Style/BracesAroundHashParameters:
   Description: 'Enforce braces style around hash parameters.'
@@ -3428,6 +3454,7 @@ Style/MethodCallWithArgsParentheses:
   VersionChanged: '0.61'
   IgnoreMacros: true
   IgnoredMethods: []
+  IncludedMacros: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
   AllowParenthesesInCamelCaseMethod: false
@@ -3904,6 +3931,7 @@ Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
   Enabled: true
   VersionAdded: '0.34'
+  VersionChanged: '0.66'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."
@@ -3925,6 +3953,11 @@ Style/RedundantSelf:
   Enabled: true
   VersionAdded: '0.10'
   VersionChanged: '0.13'
+
+Style/RedundantSortBy:
+  Description: 'Use `sort` instead of `sort_by { |x| x }`.'
+  Enabled: true
+  VersionAdded: '0.36'
 
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
@@ -3988,6 +4021,14 @@ Style/SafeNavigation:
     - presence
     - try
     - try!
+
+Style/Sample:
+  Description: >-
+                  Use `sample` instead of `shuffle.first`,
+                  `shuffle.last`, and `shuffle[Integer]`.
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
+  Enabled: true
+  VersionAdded: '0.30'
 
 Style/SelfAssignment:
   Description: >-
@@ -4118,6 +4159,11 @@ Style/StringMethods:
   #     intern: to_sym
   PreferredMethods:
     intern: to_sym
+
+Style/Strip:
+  Description: 'Use `strip` instead of `lstrip.rstrip`.'
+  Enabled: true
+  VersionAdded: '0.36'
 
 Style/StructInheritance:
   Description: 'Checks for inheritance from Struct.new.'
@@ -4314,6 +4360,13 @@ Style/UnneededPercentQ:
   StyleGuide: '#percent-q'
   Enabled: true
   VersionAdded: '0.24'
+
+Style/UnneededSort:
+  Description: >-
+                  Use `min` instead of `sort.first`,
+                  `max_by` instead of `sort_by...last`, etc.
+  Enabled: true
+  VersionAdded: '0.55'
 
 Style/UnpackFirst:
   Description: >-

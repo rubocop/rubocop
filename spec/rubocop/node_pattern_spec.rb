@@ -12,23 +12,24 @@ RSpec.describe RuboCop::NodePattern do
 
   let(:node) { root_node }
   let(:params) { [] }
+  let(:instance) { described_class.new(pattern) }
 
   shared_examples 'matching' do
     include RuboCop::AST::Sexp
     it 'matches' do
-      expect(described_class.new(pattern).match(node, *params)).to be true
+      expect(instance.match(node, *params)).to be true
     end
   end
 
   shared_examples 'nonmatching' do
     it "doesn't match" do
-      expect(described_class.new(pattern).match(node, *params).nil?).to be(true)
+      expect(instance.match(node, *params).nil?).to be(true)
     end
   end
 
   shared_examples 'invalid' do
     it 'is invalid' do
-      expect { described_class.new(pattern) }
+      expect { instance }
         .to raise_error(RuboCop::NodePattern::Invalid)
     end
   end
@@ -37,7 +38,7 @@ RSpec.describe RuboCop::NodePattern do
     include RuboCop::AST::Sexp
     it 'yields captured value(s) and returns true if there is a block' do
       expect do |probe|
-        compiled = described_class.new(pattern)
+        compiled = instance
         retval = compiled.match(node, *params) do |capture|
           probe.to_proc.call(capture)
           :retval_from_block
@@ -47,7 +48,7 @@ RSpec.describe RuboCop::NodePattern do
     end
 
     it 'returns captured values if there is no block' do
-      retval = described_class.new(pattern).match(node, *params)
+      retval = instance.match(node, *params)
       expect(retval).to eq captured_val
     end
   end
@@ -56,7 +57,7 @@ RSpec.describe RuboCop::NodePattern do
     include RuboCop::AST::Sexp
     it 'yields captured value(s) and returns true if there is a block' do
       expect do |probe|
-        compiled = described_class.new(pattern)
+        compiled = instance
         retval = compiled.match(node, *params) do |*captures|
           probe.to_proc.call(captures)
           :retval_from_block
@@ -66,7 +67,7 @@ RSpec.describe RuboCop::NodePattern do
     end
 
     it 'returns captured values if there is no block' do
-      retval = described_class.new(pattern).match(node, *params)
+      retval = instance.match(node, *params)
       expect(retval).to eq captured_vals
     end
   end
@@ -92,6 +93,91 @@ RSpec.describe RuboCop::NodePattern do
 
       # this is an (op-asgn ...) node
       it_behaves_like 'matching'
+    end
+
+    describe '#pattern' do
+      it 'returns the pattern' do
+        expect(instance.pattern).to eq pattern
+      end
+    end
+
+    describe '#to_s' do
+      it 'is instructive' do
+        expect(instance.to_s).to include pattern
+      end
+    end
+
+    describe 'marshal compatibility' do
+      let(:instance) { Marshal.load(Marshal.dump(super())) }
+      let(:ruby) { 'obj.method' }
+
+      it_behaves_like 'matching'
+    end
+
+    describe '#dup' do
+      let(:instance) { super().dup }
+      let(:ruby) { 'obj.method' }
+
+      it_behaves_like 'matching'
+    end
+
+    describe 'yaml compatibility' do
+      let(:instance) { YAML.safe_load(YAML.dump(super()), [described_class]) }
+      let(:ruby) { 'obj.method' }
+
+      it_behaves_like 'matching'
+    end
+
+    describe '#==' do
+      let(:pattern) { "  (send  42 \n :to_s ) " }
+
+      it 'returns true iff the patterns are similar' do
+        expect(instance == instance.dup).to eq true
+        expect(instance == 42).to eq false
+        expect(instance == described_class.new('(send)')).to eq false
+        expect(instance == described_class.new('(send 42 :to_s)')).to eq true
+      end
+    end
+  end
+
+  describe 'node type' do
+    describe 'in seq head' do
+      let(:pattern) { '(send ...)' }
+
+      context 'on a node with the same type' do
+        let(:ruby) { '@ivar + 2' }
+
+        it_behaves_like 'matching'
+      end
+
+      context 'on a child with a different type' do
+        let(:ruby) { '@ivar += 2' }
+
+        it_behaves_like 'nonmatching'
+      end
+    end
+
+    describe 'for a child' do
+      let(:pattern) { '(_ send ...)' }
+
+      context 'on a child with the same type' do
+        let(:ruby) { 'foo.bar' }
+
+        it_behaves_like 'matching'
+      end
+
+      context 'on a child with a different type' do
+        let(:ruby) { '@ivar.bar' }
+
+        it_behaves_like 'nonmatching'
+      end
+
+      context 'on a child litteral' do
+        let(:pattern) { '(_ _ send)' }
+        let(:ruby) { '42.bar' }
+
+        it_behaves_like 'nonmatching'
+      end
     end
   end
 
@@ -159,6 +245,13 @@ RSpec.describe RuboCop::NodePattern do
       let(:ruby) { 'foo' }
 
       it_behaves_like 'matching'
+    end
+
+    context 'against a node pattern (bug #5470)' do
+      let(:pattern) { '(:send (:const ...) ...)' }
+      let(:ruby) { 'foo' }
+
+      it_behaves_like 'nonmatching'
     end
   end
 
@@ -435,6 +528,20 @@ RSpec.describe RuboCop::NodePattern do
       it_behaves_like 'single capture'
     end
 
+    context 'in head position in a sequence against nil (bug #5470)' do
+      let(:pattern) { '($_ ...)' }
+      let(:ruby) { '' }
+
+      it_behaves_like 'nonmatching'
+    end
+
+    context 'in head position in a sequence against literal (bug #5470)' do
+      let(:pattern) { '(int ($_ ...))' }
+      let(:ruby) { '42' }
+
+      it_behaves_like 'nonmatching'
+    end
+
     context 'in non-head position in a sequence' do
       let(:pattern) { '(send $_ ...)' }
       let(:ruby) { 'A.method' }
@@ -515,6 +622,14 @@ RSpec.describe RuboCop::NodePattern do
       let(:pattern) { '(send $... int)' }
       let(:ruby) { '5 + 4' }
       let(:captured_val) { [s(:int, 5), :+] }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'with remaining patterns at the end' do
+      let(:pattern) { '(send $... int int)' }
+      let(:ruby) { '[].push(1, 2, 3)' }
+      let(:captured_val) { [s(:array), :push, s(:int, 1)] }
 
       it_behaves_like 'single capture'
     end
@@ -736,6 +851,14 @@ RSpec.describe RuboCop::NodePattern do
       it_behaves_like 'single capture'
     end
 
+    context 'preceding multiple captures' do
+      let(:pattern) { '(send array :push ... $_ $_)' }
+      let(:ruby) { '[1].push(2, 3, 4, 5)' }
+      let(:captured_vals) { [s(:int, 4), s(:int, 5)] }
+
+      it_behaves_like 'multiple capture'
+    end
+
     context 'with a wildcard at the end, but no remaining child to match it' do
       let(:pattern) { '(send array :zip array ... _)' }
       let(:ruby) { '[1,2].zip([3,4])' }
@@ -785,6 +908,14 @@ RSpec.describe RuboCop::NodePattern do
       let(:ruby) { '1.inc' }
 
       it_behaves_like 'matching'
+
+      context 'with name containing a numeral' do
+        before { RuboCop::AST::Node.def_node_matcher :custom_42?, 'send_type?' }
+
+        let(:pattern) { 'custom_42?' }
+
+        it_behaves_like 'matching'
+      end
     end
 
     context 'at head position of a sequence' do
@@ -1103,6 +1234,12 @@ RSpec.describe RuboCop::NodePattern do
 
     context 'with unmatched opening paren' do
       let(:pattern) { '(send (const)' }
+
+      it_behaves_like 'invalid'
+    end
+
+    context 'with unmatched opening paren and `...`' do
+      let(:pattern) { '(send ...' }
 
       it_behaves_like 'invalid'
     end

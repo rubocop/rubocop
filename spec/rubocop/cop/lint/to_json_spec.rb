@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Lint::ToJSON do
 
   it 'does not register an offense when using `#to_json` with arguments' do
     expect_no_offenses(<<-RUBY.strip_indent)
-      def to_json(opts)
+      def to_json(*_args)
       end
     RUBY
   end
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::ToJSON do
       end
     RUBY
     expect(corrected).to eq(<<-RUBY.strip_indent)
-      def to_json(_opts)
+      def to_json(*_args)
       end
     RUBY
   end

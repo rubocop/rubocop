@@ -7,6 +7,9 @@ module RuboCop
       #
       # @example
       #   # bad
+      #   def is_even(value)
+      #   end
+      #
       #   def is_even?(value)
       #   end
       #
@@ -15,6 +18,9 @@ module RuboCop
       #   end
       #
       #   # bad
+      #   def has_value
+      #   end
+      #
       #   def has_value?
       #   end
       #

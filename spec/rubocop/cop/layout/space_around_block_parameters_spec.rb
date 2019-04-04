@@ -252,6 +252,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       expect(new_source).to eq('{}.each { | x=5, (y,*z) | puts x }')
     end
 
+    it 'auto-corrects missing space before first argument' do
+      new_source = autocorrect_source_with_loop('{}.each { |x, z| puts x }')
+      expect(new_source).to eq('{}.each { | x, z | puts x }')
+    end
+
     it 'auto-corrects lambda args' do
       new_source = autocorrect_source('->(  x,  y) { puts x }')
       expect(new_source).to eq('->( x, y ) { puts x }')

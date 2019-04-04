@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Performance
+    module Style
       # This cop identifies places where `sort_by { ... }` can be replaced by
       # `sort`.
       #
