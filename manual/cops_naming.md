@@ -497,7 +497,7 @@ the required name of the variable. Its default is `e`.
 # bad
 begin
   # do something
-rescue MyException => exc
+rescue MyException => exception
   # do something
 end
 
@@ -521,7 +521,7 @@ end
 # good
 begin
   # do something
-rescue MyException => ex
+rescue MyException => exception
   # do something
 end
 ```
@@ -530,7 +530,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-PreferredName | `ex` | String
+PreferredName | `e` | String
 
 ## Naming/UncommunicativeBlockParamName
 

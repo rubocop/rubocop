@@ -104,14 +104,14 @@ module RuboCop
       # cops' `#investigate` methods.
       def with_cop_error_handling(cop, node = nil)
         yield
-      rescue StandardError => ex
-        raise ex if @options[:raise_error]
+      rescue StandardError => e
+        raise e if @options[:raise_error]
 
         if node
           line = node.first_line
           column = node.loc.column
         end
-        error = CopError.new(ex, line, column)
+        error = CopError.new(e, line, column)
         @errors[cop] << error
       end
     end
