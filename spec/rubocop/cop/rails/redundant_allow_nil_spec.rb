@@ -3,6 +3,30 @@
 RSpec.describe RuboCop::Cop::Rails::RedundantAllowNil do
   subject(:cop) { described_class.new }
 
+  context 'when not using both `allow_nil` and `allow_blank`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        validates :email, presence: true
+      RUBY
+    end
+  end
+
+  context 'when using only `allow_nil`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        validates :email, allow_nil: true
+      RUBY
+    end
+  end
+
+  context 'when using only `allow_blank`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        validates :email, allow_blank: true
+      RUBY
+    end
+  end
+
   context 'when both allow_nil and allow_blank are true' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
