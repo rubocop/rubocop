@@ -714,6 +714,14 @@ Layout/IndentHeredoc:
     - powerpack
     - unindent
 
+Layout/IndentMultilineClosingBrace:
+  Description: >-
+                 Checks that the closing brace of a multi-line expression
+                 aligns with the beginning of the first line containing
+                 the expression.
+  Enabled: false
+  VersionAdded: '0.66'
+
 Layout/IndentationConsistency:
   Description: 'Keep indentation straight.'
   StyleGuide: '#spaces-indentation'

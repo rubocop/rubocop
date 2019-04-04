@@ -2416,6 +2416,34 @@ EnforcedStyle | `auto_detection` | `auto_detection`, `squiggly`, `active_support
 
 * [https://github.com/rubocop-hq/ruby-style-guide#squiggly-heredocs](https://github.com/rubocop-hq/ruby-style-guide#squiggly-heredocs)
 
+## Layout/IndentMultilineClosingBrace
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.66 | -
+
+This cop checks for indentation of the closing brace in a
+multi-line expression.
+
+Right brace in multi-line expression must align with the
+beginning of the first line containing the expression.
+
+### Examples
+
+```ruby
+# bad
+foo(
+  a,
+  b
+      )
+
+# good
+foo(
+  a,
+  b
+)
+```
+
 ## Layout/IndentationConsistency
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

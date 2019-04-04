@@ -145,6 +145,7 @@ In the following section you find all available cops:
 * [Layout/IndentAssignment](cops_layout.md#layoutindentassignment)
 * [Layout/IndentHash](cops_layout.md#layoutindenthash)
 * [Layout/IndentHeredoc](cops_layout.md#layoutindentheredoc)
+* [Layout/IndentMultilineClosingBrace](cops_layout.md#layoutindentmultilineclosingbrace)
 * [Layout/IndentationConsistency](cops_layout.md#layoutindentationconsistency)
 * [Layout/IndentationWidth](cops_layout.md#layoutindentationwidth)
 * [Layout/InitialIndentation](cops_layout.md#layoutinitialindentation)
