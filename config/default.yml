@@ -2122,11 +2122,6 @@ Performance/RedundantMerge:
   # Max number of key-value pairs to consider an offense
   MaxKeyValuePairs: 2
 
-Performance/RedundantSortBy:
-  Description: 'Use `sort` instead of `sort_by { |x| x }`.'
-  Enabled: true
-  VersionAdded: '0.36'
-
 Performance/RegexpMatch:
   Description: >-
                   Use `match?` instead of `Regexp#match`, `String#match`, `Symbol#match`,
@@ -2138,14 +2133,6 @@ Performance/RegexpMatch:
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
-  Enabled: true
-  VersionAdded: '0.30'
-
-Performance/Sample:
-  Description: >-
-                  Use `sample` instead of `shuffle.first`,
-                  `shuffle.last`, and `shuffle[Integer]`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
   Enabled: true
   VersionAdded: '0.30'
 
@@ -2190,13 +2177,6 @@ Performance/UnfreezeString:
   Description: 'Use unary plus to get an unfrozen string literal.'
   Enabled: true
   VersionAdded: '0.50'
-
-Performance/UnneededSort:
-  Description: >-
-                  Use `min` instead of `sort.first`,
-                  `max_by` instead of `sort_by...last`, etc.
-  Enabled: true
-  VersionAdded: '0.55'
 
 Performance/UriDefaultParser:
   Description: 'Use `URI::DEFAULT_PARSER` instead of `URI::Parser.new`.'
@@ -3953,6 +3933,11 @@ Style/RedundantSelf:
   VersionAdded: '0.10'
   VersionChanged: '0.13'
 
+Style/RedundantSortBy:
+  Description: 'Use `sort` instead of `sort_by { |x| x }`.'
+  Enabled: true
+  VersionAdded: '0.36'
+
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'
@@ -4015,6 +4000,14 @@ Style/SafeNavigation:
     - presence
     - try
     - try!
+
+Style/Sample:
+  Description: >-
+                  Use `sample` instead of `shuffle.first`,
+                  `shuffle.last`, and `shuffle[Integer]`.
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
+  Enabled: true
+  VersionAdded: '0.30'
 
 Style/SelfAssignment:
   Description: >-
@@ -4346,6 +4339,13 @@ Style/UnneededPercentQ:
   StyleGuide: '#percent-q'
   Enabled: true
   VersionAdded: '0.24'
+
+Style/UnneededSort:
+  Description: >-
+                  Use `min` instead of `sort.first`,
+                  `max_by` instead of `sort_by...last`, etc.
+  Enabled: true
+  VersionAdded: '0.55'
 
 Style/UnpackFirst:
   Description: >-
