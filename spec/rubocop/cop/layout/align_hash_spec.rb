@@ -709,6 +709,226 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
   end
 
+  context 'with multiple preferred(key and table) alignment configuration' do
+    let(:cop_config) do
+      {
+        'EnforcedHashRocketStyle' => 'table_or_key',
+        'EnforcedColonStyle' => 'table_or_key'
+      }
+    end
+
+    it 'accepts aligned hash keys, by keys' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash1 = {
+          a: 0,
+          bbb: 1
+        }
+        hash2 = {
+          'a' => 0,
+          'bbb' => 1
+        }
+      RUBY
+    end
+
+    it 'accepts aligned hash keys, by table' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash1 = {
+          a:   0,
+          bbb: 1
+        }
+        hash2 = {
+          'a'   => 0,
+          'bbb' => 1
+        }
+      RUBY
+    end
+
+    it 'accepts aligned hash keys, by both' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        hash1 = {
+          a:   0,
+          bbb: 1
+        }
+        hash2 = {
+          a: 0,
+          bbb: 1
+        }
+
+        hash3 = {
+          'a'   => 0,
+          'bbb' => 1
+        }
+        hash4 = {
+          'a' => 0,
+          'bbb' => 1
+        }
+      RUBY
+    end
+
+    it 'accepts an empty hash' do
+      expect_no_offenses('h = {}')
+    end
+
+    describe 'registers an offense' do
+      it 'for misaligned hash values' do
+        expect_offense(<<-RUBY.strip_indent)
+          hash = {
+              'a' =>  0,
+              ^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            'bbb' => 1
+            ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          }
+        RUBY
+      end
+
+      it 'for misaligned hash values, prefer table when least offenses' do
+        expect_offense(<<-RUBY.strip_indent)
+          hash = {
+            'abcdefg' => 0,
+            'abcdef'  => 0,
+            'gijk'    => 0,
+            'a'       => 0,
+            'b' => 1,
+            ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+                  'c' => 1
+                  ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          }
+        RUBY
+      end
+
+      it 'for misaligned hash values, prefer key when least offenses' do
+        expect_offense(<<-RUBY.strip_indent)
+          hash = {
+            'abcdefg' => 0,
+            'abcdef'  => 0,
+            ^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            'gijk' => 0,
+            'a' => 0,
+            'b' => 1,
+                  'c' => 1
+                  ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          }
+        RUBY
+      end
+
+      it 'for misaligned hash values, works separate for each hash' do
+        expect_offense(<<-RUBY.strip_indent)
+          hash = {
+            'abcdefg' => 0,
+            'abcdef'  => 0,
+            ^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            'gijk' => 0
+          }
+
+          hash = {
+            'abcdefg' => 0,
+            'abcdef'       => 0,
+            ^^^^^^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            'gijk' => 0
+          }
+        RUBY
+      end
+
+      describe 'auto-corrects an offense' do
+        it 'for misaligned hash values' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            hash = {
+                'a' =>  0,
+              'bbb' => 1
+            }
+          RUBY
+
+          expect(new_source).to eq(<<-RUBY.strip_indent)
+            hash = {
+                'a' => 0,
+                'bbb' => 1
+            }
+          RUBY
+        end
+
+        it 'for misaligned hash values, prefer table when least offenses' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            hash = {
+              'abcdefg' => 0,
+              'abcdef'  => 0,
+              'gijk'    => 0,
+              'a'       => 0,
+              'b' => 1,
+                    'c' => 1
+            }
+          RUBY
+
+          expect(new_source).to eq(<<-RUBY.strip_indent)
+            hash = {
+              'abcdefg' => 0,
+              'abcdef'  => 0,
+              'gijk'    => 0,
+              'a'       => 0,
+              'b'       => 1,
+              'c'       => 1
+            }
+          RUBY
+        end
+
+        it 'for misaligned hash values, prefer key when least offenses' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            hash = {
+              'abcdefg' => 0,
+              'abcdef'  => 0,
+              'gijk' => 0,
+              'a' => 0,
+              'b' => 1,
+                    'c' => 1
+            }
+          RUBY
+
+          expect(new_source).to eq(<<-RUBY.strip_indent)
+            hash = {
+              'abcdefg' => 0,
+              'abcdef' => 0,
+              'gijk' => 0,
+              'a' => 0,
+              'b' => 1,
+              'c' => 1
+            }
+          RUBY
+        end
+
+        it 'for misaligned hash values, works separate for each hash' do
+          new_source = autocorrect_source(<<-RUBY.strip_indent)
+            hash = {
+              'abcdefg' => 0,
+              'abc'     => 0,
+              'abcdef'  => 0,
+              'gijk' => 0
+            }
+
+            hash = {
+              'abcdefg' => 0,
+              'abcdef'       => 0,
+              'gijk' => 0
+            }
+          RUBY
+
+          expect(new_source).to eq(<<-RUBY.strip_indent)
+            hash = {
+              'abcdefg' => 0,
+              'abc'     => 0,
+              'abcdef'  => 0,
+              'gijk'    => 0
+            }
+
+            hash = {
+              'abcdefg' => 0,
+              'abcdef' => 0,
+              'gijk' => 0
+            }
+          RUBY
+        end
+      end
+    end
+  end
+
   context 'with different settings for => and :' do
     let(:cop_config) do
       {
