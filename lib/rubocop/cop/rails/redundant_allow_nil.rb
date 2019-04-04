@@ -39,14 +39,12 @@ module RuboCop
           return unless node.method_name == :validates
 
           allow_nil, allow_blank = find_allow_nil_and_allow_blank(node)
+          return unless allow_nil && allow_blank
+
           allow_nil_val = allow_nil.children.last
           allow_blank_val = allow_blank.children.last
 
-          if allow_nil_val.type == allow_blank_val.type
-            add_offense(allow_nil, message: MSG_SAME)
-          elsif allow_nil_val.false_type? && allow_blank_val.true_type?
-            add_offense(allow_nil, message: MSG_ALLOW_NIL_FALSE)
-          end
+          offense(allow_nil_val, allow_blank_val, allow_nil)
         end
 
         def autocorrect(node)
@@ -65,6 +63,14 @@ module RuboCop
         end
 
         private
+
+        def offense(allow_nil_val, allow_blank_val, allow_nil)
+          if allow_nil_val.type == allow_blank_val.type
+            add_offense(allow_nil, message: MSG_SAME)
+          elsif allow_nil_val.false_type? && allow_blank_val.true_type?
+            add_offense(allow_nil, message: MSG_ALLOW_NIL_FALSE)
+          end
+        end
 
         def find_allow_nil_and_allow_blank(node)
           allow_nil = nil

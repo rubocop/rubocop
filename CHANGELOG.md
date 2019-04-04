@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6882](https://github.com/rubocop-hq/rubocop/issues/6882): Fix an error for `Rails/RedundantAllowNil` when not using both `allow_nil` and `allow_blank`. ([@koic][])
+
 ## 0.67.1 (2019-04-04)
 
 ### Changes
