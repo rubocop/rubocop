@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#5184](https://github.com/rubocop-hq/rubocop/issues/5184): Add new multiline element line break cops. ([@maxh][])
 * Add new cop `Rails/ActiveRecordOverride` that checks for overriding Active Record methods instead of using callbacks. ([@elebow][])
 * Add new cop `Rails/RedundantAllowNil` that checks for cases when `allow_blank` makes `allow_nil` unnecessary in model validations. ([@elebow][])
 
