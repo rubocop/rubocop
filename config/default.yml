@@ -1939,7 +1939,7 @@ Naming/RescuedExceptionsVariableName:
   Description: 'Use consistent rescued exceptions variables naming.'
   Enabled: true
   VersionAdded: '0.67'
-  PreferredName: ex
+  PreferredName: e
 
 Naming/UncommunicativeBlockParamName:
   Description: >-

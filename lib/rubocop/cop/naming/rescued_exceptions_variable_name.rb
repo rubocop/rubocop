@@ -13,7 +13,7 @@ module RuboCop
       #   # bad
       #   begin
       #     # do something
-      #   rescue MyException => exc
+      #   rescue MyException => exception
       #     # do something
       #   end
       #
@@ -35,7 +35,7 @@ module RuboCop
       #   # good
       #   begin
       #     # do something
-      #   rescue MyException => ex
+      #   rescue MyException => exception
       #     # do something
       #   end
       #

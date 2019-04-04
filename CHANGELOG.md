@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#6881](https://github.com/rubocop-hq/rubocop/pull/6881): Set default `PreferredName` to `e` for `Naming/RescuedExceptionsVariableName`. ([@koic][])
+
 ## 0.67.0 (2019-04-04)
 
 ### New features
