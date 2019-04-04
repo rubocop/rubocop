@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.67.0 (2019-04-04)
+
 ### New features
 
 * [#5184](https://github.com/rubocop-hq/rubocop/issues/5184): Add new multiline element line break cops. ([@maxh][])
