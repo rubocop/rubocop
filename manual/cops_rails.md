@@ -69,6 +69,42 @@ Book.update_attributes!(author: 'Alice')
 Book.update!(author: 'Alice')
 ```
 
+## Rails/ActiveRecordOverride
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.67 | -
+
+Checks for overriding built-in Active Record methods instead of using
+callbacks.
+
+### Examples
+
+```ruby
+# bad
+class Book < ApplicationRecord
+  def save
+    self.title = title.upcase!
+    super
+  end
+end
+
+# good
+class Book < ApplicationRecord
+  before_save :upcase_title
+
+  def upcase_title
+    self.title = title.upcase!
+  end
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
+
 ## Rails/ActiveSupportAliases
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -1128,15 +1164,18 @@ Include | `app/models/**/*.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.52 | -
+Enabled | No | No | 0.52 | -
 
 This cop checks that methods specified in the filter's `only` or
 `except` options are defined within the same class or module.
 
-You can technically specify methods of superclass or methods added
-by mixins on the filter, but these confuse developers. If you
-specify methods that are defined in other classes or modules, you
-should define the filter in that class or module.
+You can technically specify methods of superclass or methods added by
+mixins on the filter, but these can confuse developers. If you specify
+methods that are defined in other classes or modules, you should
+define the filter in that class or module.
+
+If you rely on behaviour defined in the superclass actions, you must
+remember to invoke `super` in the subclass actions.
 
 ### Examples
 
@@ -1183,6 +1222,29 @@ module FooMixin
 
   def foo
     # something
+  end
+end
+```
+```ruby
+class ContentController < ApplicationController
+  def update
+    @content.update(content_attributes)
+  end
+end
+
+class ArticlesController < ContentController
+  before_action :load_article, only: [:update]
+
+  # the cop requires this method, but it relies on behaviour defined
+  # in the superclass, so needs to invoke `super`
+  def update
+    super
+  end
+
+  private
+
+  def load_article
+    @content = Article.find(params[:article_id])
   end
 end
 ```
@@ -1510,6 +1572,44 @@ Include | `app/models/**/*.rb` | Array
 ### References
 
 * [https://github.com/rubocop-hq/rails-style-guide#read-attribute](https://github.com/rubocop-hq/rails-style-guide#read-attribute)
+
+## Rails/RedundantAllowNil
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.67 | -
+
+Checks Rails model validations for a redundant `allow_nil` when
+`allow_blank` is present.
+
+### Examples
+
+```ruby
+# bad
+validates :x, length: { is: 5 }, allow_nil: true, allow_blank: true
+
+# bad
+validates :x, length: { is: 5 }, allow_nil: false, allow_blank: true
+
+# bad
+validates :x, length: { is: 5 }, allow_nil: false, allow_blank: false
+
+# good
+validates :x, length: { is: 5 }, allow_blank: true
+
+# good
+validates :x, length: { is: 5 }, allow_blank: false
+
+# good
+# Here, `nil` is valid but `''` is not
+validates :x, length: { is: 5 }, allow_nil: true, allow_blank: false
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/models/**/*.rb` | Array
 
 ## Rails/RedundantReceiverInWithOptions
 

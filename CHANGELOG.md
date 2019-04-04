@@ -2,16 +2,25 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add new cop `Rails/ActiveRecordOverride` that checks for overriding Active Record methods instead of using callbacks. ([@elebow][])
+* Add new cop `Rails/RedundantAllowNil` that checks for cases when `allow_blank` makes `allow_nil` unnecessary in model validations. ([@elebow][])
+
 ### Bug fixes
 
+* [#6761](https://github.com/rubocop-hq/rubocop/issues/6761): Make `Naming/UncommunicativeMethodParamName` account for param names prefixed with underscores. ([@thomthom][])
 * [#6855](https://github.com/rubocop-hq/rubocop/pull/6855): Fix an exception in `Rails/RedundantReceiverInWithOptions` when the body is empty. ([@ericsullivan][])
 * [#6856](https://github.com/rubocop-hq/rubocop/pull/6856): Fix auto-correction for `Style/BlockComments` when the file is missing a trailing blank line. ([@ericsullivan][])
 * [#6858](https://github.com/rubocop-hq/rubocop/issues/6858): Fix an incorrect auto-correct for `Lint/ToJSON` when there are no `to_json` arguments. ([@koic][])
 * [#6865](https://github.com/rubocop-hq/rubocop/pull/6865): Fix deactivated `StyleGuideBaseURL` for `Layout/ClassStructure`. ([@aeroastro][])
 * [#6868](https://github.com/rubocop-hq/rubocop/pull/6868): Fix `Rails/LinkToBlank` auto-correct bug when using symbol for target. ([@r7kamura][])
+* [#6869](https://github.com/rubocop-hq/rubocop/pull/6869): Fix false positive for `Rails/LinkToBlank` when rel is a symbol value. ([@r7kamura][])
+* Add `IncludedMacros` param to default rubocop config for `Style/MethodCallWithArgsParentheses`. ([@maxh][])
 
 ### Changes
 
+* [#6854](https://github.com/rubocop-hq/rubocop/pull/6854): Mark Rails/LexicallyScopedActionFilter as unsafe and document risks. ([@urbanautomaton][])
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Warn for Performance Cops. ([@koic][])
 * [#6637](https://github.com/rubocop-hq/rubocop/issues/6637): Move `LstripRstrip` from `Performance` to `Style` department and rename it to `Strip`. ([@anuja-joshi][])
 * [#6875](https://github.com/rubocop-hq/rubocop/pull/6875): Mention block form of `Struct.new` in ` Style/StructInheritance`. ([@XrXr][])
@@ -3896,3 +3905,4 @@
 [@aeroastro]: https://github.com/aeroastro
 [@anuja-joshi]: https://github.com/anuja-joshi
 [@XrXr]: https://github.com/XrXr
+[@thomthom]: https://github.com/thomthom

@@ -96,11 +96,11 @@ module RuboCop
     # Builds Ruby code which implements a pattern
     class Compiler
       SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
-      IDENTIFIER   = /[a-zA-Z_-]/.freeze
+      IDENTIFIER   = /[a-zA-Z_][a-zA-Z0-9_-]*/.freeze
       META         = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./.freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
-      METHOD_NAME  = /\#?#{IDENTIFIER}+[\!\?]?\(?/.freeze
+      METHOD_NAME  = /\#?#{IDENTIFIER}[\!\?]?\(?/.freeze
       PARAM_NUMBER = /%\d*/.freeze
 
       SEPARATORS = /[\s]+/.freeze
@@ -109,9 +109,10 @@ module RuboCop
 
       TOKEN = /\G(?:#{SEPARATORS}|#{TOKENS}|.)/.freeze
 
-      NODE      = /\A#{IDENTIFIER}+\Z/.freeze
-      PREDICATE = /\A#{IDENTIFIER}+\?\(?\Z/.freeze
-      WILDCARD  = /\A_#{IDENTIFIER}*\Z/.freeze
+      NODE      = /\A#{IDENTIFIER}\Z/.freeze
+      PREDICATE = /\A#{IDENTIFIER}\?\(?\Z/.freeze
+      WILDCARD  = /\A_(?:#{IDENTIFIER})?\Z/.freeze
+
       FUNCALL   = /\A\##{METHOD_NAME}/.freeze
       LITERAL   = /\A(?:#{SYMBOL}|#{NUMBER}|#{STRING})\Z/.freeze
       PARAM     = /\A#{PARAM_NUMBER}\Z/.freeze
