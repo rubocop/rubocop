@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
+* [#6888](https://github.com/rubocop-hq/rubocop/issues/6888): Fix an error for `Rails/ActiveRecordOverride ` when no `parent_class` present. ([@diachini][])
 
 ### Changes
 
@@ -3937,3 +3938,4 @@
 [@XrXr]: https://github.com/XrXr
 [@thomthom]: https://github.com/thomthom
 [@Blue-Pix]: https://github.com/Blue-Pix
+[@diachini]: https://github.com/diachini
