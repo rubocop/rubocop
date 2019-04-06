@@ -33,7 +33,41 @@ RSpec.describe RuboCop::ConfigLoader do
         end
       end
 
-      context 'and no config file exists in home directory' do
+      context 'but a config file exists in default XDG config directory' do
+        before { create_empty_file('~/.config/rubocop/config.yml') }
+
+        it 'returns the path to the file in XDG directory' do
+          expect(configuration_file_for).to end_with(
+            'home/.config/rubocop/config.yml'
+          )
+        end
+      end
+
+      context 'but a config file exists in a custom XDG config directory' do
+        before do
+          ENV['XDG_CONFIG_HOME'] = '~/xdg-stuff'
+          create_empty_file('~/xdg-stuff/rubocop/config.yml')
+        end
+
+        it 'returns the path to the file in XDG directory' do
+          expect(configuration_file_for).to end_with(
+            'home/xdg-stuff/rubocop/config.yml'
+          )
+        end
+      end
+
+      context 'but a config file exists in both home and XDG directories' do
+        before do
+          create_empty_file('~/.config/rubocop/config.yml')
+          create_empty_file('~/.rubocop.yml')
+        end
+
+        it 'returns the path to the file in home directory' do
+          expect(configuration_file_for).to end_with('home/.rubocop.yml')
+        end
+      end
+
+      context 'and no config file exists in home or XDG directory' do
         it 'falls back to the provided default file' do
           expect(configuration_file_for).to end_with('config/default.yml')
         end
