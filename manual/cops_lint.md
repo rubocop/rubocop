@@ -2077,7 +2077,13 @@ Enabled | Yes | No | 0.21 | -
 This cop checks for underscore-prefixed variables that are actually
 used.
 
+Since block keyword arguments cannot be arbitrarily named at call
+sites, the `AllowKeywordBlockArguments` will allow use of underscore-
+prefixed block keyword arguments.
+
 ### Examples
+
+#### AllowKeywordBlockArguments: false (default)
 
 ```ruby
 # bad
@@ -2085,21 +2091,36 @@ used.
 [1, 2, 3].each do |_num|
   do_something(_num)
 end
-```
-```ruby
+
+query(:sales) do |_id:, revenue:, cost:|
+  {_id: _id, profit: revenue - cost}
+end
+
 # good
 
 [1, 2, 3].each do |num|
   do_something(num)
 end
-```
-```ruby
-# good
 
 [1, 2, 3].each do |_num|
   do_something # not using `_num`
 end
 ```
+#### AllowKeywordBlockArguments: true
+
+```ruby
+# good
+
+query(:sales) do |_id:, revenue:, cost:|
+  {_id: _id, profit: revenue - cost}
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowKeywordBlockArguments | `false` | Boolean
 
 ## Lint/UnifiedInteger
 
