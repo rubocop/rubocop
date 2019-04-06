@@ -2345,7 +2345,9 @@ Rails/DynamicFindBy:
   Description: 'Use `find_by` instead of dynamic `find_by_*`.'
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#find_by'
   Enabled: true
+  Safe: false
   VersionAdded: '0.44'
+  VersionChanged: '0.68'
   Whitelist:
     - find_by_sql
 
