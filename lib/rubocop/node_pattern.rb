@@ -125,6 +125,12 @@ module RuboCop
 
       SEQ_HEAD_INDEX = -1
 
+      # Placeholders while compiling, see with_..._context methods
+      CUR_PLACEHOLDER = '@@@cur'.freeze
+      CUR_NODE = "#{CUR_PLACEHOLDER} node@@@".freeze
+      CUR_ELEMENT = "#{CUR_PLACEHOLDER} element@@@".freeze
+      SEQ_HEAD_GUARD = '@@@seq guard head@@@'.freeze
+
       def initialize(str, node_var = 'node0')
         @string   = str
         @root     = node_var
@@ -140,33 +146,39 @@ module RuboCop
       def run(node_var)
         @tokens = Compiler.tokens(@string)
 
-        @match_code = compile_expr(node_var, false)
+        @match_code = with_context(compile_expr, node_var, use_temp_node: false)
 
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
 
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      def compile_expr(cur_node, seq_head)
+      def compile_expr
         # read a single pattern-matching expression from the token stream,
         # return Ruby code which performs the corresponding matching operation
-        # on 'cur_node' (which is Ruby code which evaluates to an AST node)
         #
         # the 'pattern-matching' expression may be a composite which
-        # contains an arbitrary number of sub-expressions
+        # contains an arbitrary number of sub-expressions, but that composite
+        # must all have precedence higher or equal to that of `&&`
+        #
+        # Expressions may use placeholders like:
+        #   CUR_NODE: Ruby code that evaluates to an AST node
+        #   CUR_ELEMENT: Either the node or the type if in first element of
+        #   a sequence (aka seq_head, e.g. "(seq_head first_node_arg ...")
+
         token = tokens.shift
         case token
-        when '('       then compile_seq(cur_node, seq_head)
-        when '{'       then compile_union(cur_node, seq_head)
-        when '['       then compile_intersect(cur_node, seq_head)
-        when '!'       then compile_negation(cur_node, seq_head)
-        when '$'       then compile_capture(cur_node, seq_head)
-        when '^'       then compile_ascend(cur_node)
-        when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
-        when FUNCALL   then compile_funcall(cur_node, token, seq_head)
-        when LITERAL   then compile_literal(cur_node, token, seq_head)
-        when PREDICATE then compile_predicate(cur_node, token, seq_head)
-        when NODE      then compile_nodetype(cur_node, token)
-        when PARAM     then compile_param(cur_node, token[1..-1], seq_head)
+        when '('       then compile_seq
+        when '{'       then compile_union
+        when '['       then compile_intersect
+        when '!'       then compile_negation
+        when '$'       then compile_capture
+        when '^'       then compile_ascend
+        when WILDCARD  then compile_wildcard(token[1..-1])
+        when FUNCALL   then compile_funcall(token)
+        when LITERAL   then compile_literal(token)
+        when PREDICATE then compile_predicate(token)
+        when NODE      then compile_nodetype(token)
+        when PARAM     then compile_param(token[1..-1])
         when CLOSING   then fail_due_to("#{token} in invalid position")
         when nil       then fail_due_to('pattern ended prematurely')
         else                fail_due_to("invalid token #{token.inspect}")
@@ -174,44 +186,36 @@ module RuboCop
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-      def compile_seq(cur_node, seq_head)
+      def compile_seq
         fail_due_to('empty parentheses') if tokens.first == ')'
-        fail_due_to('parentheses at sequence head') if seq_head
 
-        # 'cur_node' is a Ruby expression which evaluates to an AST node,
-        # but we don't know how expensive it is
-        # to be safe, cache the node in a temp variable and then use the
-        # temp variable as 'cur_node'
-        with_temp_node(cur_node) do |init, temp_node|
-          terms = compile_seq_terms(temp_node)
-          terms.unshift(compile_guard_clause(temp_node))
-
-          join_terms(init, terms, " &&\n")
-        end
+        terms = compile_seq_terms
+        terms.unshift(compile_guard_clause)
+        terms.join(" &&\n") << SEQ_HEAD_GUARD
       end
 
-      def compile_guard_clause(cur_node)
-        "#{cur_node}.is_a?(RuboCop::AST::Node)"
+      def compile_guard_clause
+        "#{CUR_NODE}.is_a?(RuboCop::AST::Node)"
       end
 
-      def compile_seq_terms(cur_node)
+      def compile_seq_terms
         ret =
-          compile_seq_terms_with_size(cur_node) do |token, terms, index|
+          compile_seq_terms_with_size do |token, terms, index|
             capture = next_capture if token == CAPTURED_REST
             if capture || token == REST
               index = 0 if index == SEQ_HEAD_INDEX # Consider ($...) as (_ $...)
-              return compile_ellipsis(cur_node, terms, index, capture)
+              return compile_ellipsis(terms, index, capture)
             end
           end
-        ret << "(#{cur_node}.children.size == #{ret.size - 1})"
+        ret << "#{CUR_NODE}.children.size == #{ret.size - 1}"
       end
 
-      def compile_seq_terms_with_size(cur_node)
+      def compile_seq_terms_with_size
         index = SEQ_HEAD_INDEX
         terms = []
         until tokens.first == ')'
           yield tokens.first, terms, index
-          term = compile_expr_with_index(cur_node, index)
+          term = compile_expr_with_index(index)
           index += 1
           terms << term
         end
@@ -220,61 +224,51 @@ module RuboCop
         terms
       end
 
-      def compile_expr_with_index(cur_node, index)
+      def compile_expr_with_index(index)
         if index == SEQ_HEAD_INDEX
-          # in 'sequence head' position; some expressions are compiled
-          # differently at 'sequence head' (notably 'node type' expressions)
-          # grep for seq_head to see where it makes a difference
-          compile_expr(cur_node, true)
+          with_seq_head_context(compile_expr)
         else
-          child_node = "#{cur_node}.children[#{index}]"
-          compile_expr(child_node, false)
+          with_child_context(compile_expr, index)
         end
       end
 
-      def compile_ellipsis(cur_node, terms, index, capture = nil)
+      def compile_ellipsis(terms, index, capture = nil)
         tokens.shift # drop ellipsis
-        tail = compile_seq_tail(cur_node)
-        terms << "(#{cur_node}.children.size >= #{index + tail.size})"
+        tail = compile_seq_tail
+        terms << "#{CUR_NODE}.children.size >= #{index + tail.size}"
         terms.concat tail
         if capture
           range = index..-tail.size - 1
-          terms << "(#{capture} = #{cur_node}.children[#{range}])"
+          terms << "(#{capture} = #{CUR_NODE}.children[#{range}])"
         end
         terms
       end
 
-      def compile_seq_tail(cur_node)
-        child_node = "#{cur_node}.children[%<revindex>i]"
+      def compile_seq_tail
         terms = []
-        until tokens.first == ')'
-          terms << compile_expr(child_node, false)
-        end
+        terms << compile_expr until tokens.first == ')'
         tokens.shift # drop ')'
-        # E.g. for terms.size == 3, we want to replace the three [%<revindex>i]
-        # with [-3], [-2] and [-1]
-        terms.map.with_index { |term, i| format term, revindex: i - terms.size }
+        terms.map.with_index do |term, i|
+          with_child_context(term, i - terms.size)
+        end
       end
 
-      def compile_union(cur_node, seq_head)
+      def compile_union
         fail_due_to('empty union') if tokens.first == '}'
 
-        with_temp_node(cur_node) do |init, temp_node|
-          terms = union_terms(temp_node, seq_head)
-          join_terms(init, terms, ' || ')
-        end
+        union = union_terms.join(' || ')
+        "(#{union})"
       end
 
-      def union_terms(temp_node, seq_head)
+      def union_terms
         # we need to ensure that each branch of the {} contains the same
         # number of captures (since only one branch of the {} can actually
         # match, the same variables are used to hold the captures for each
         # branch)
-        compile_expr_with_captures(temp_node, seq_head) do |term, before, after|
+        compile_expr_with_captures do |term, before, after|
           terms = [term]
           until tokens.first == '}'
-            terms << compile_expr_with_capture_check(temp_node,
-                                                     seq_head, before, after)
+            terms << compile_expr_with_capture_check(before, after)
           end
           tokens.shift
 
@@ -282,17 +276,16 @@ module RuboCop
         end
       end
 
-      def compile_expr_with_captures(temp_node, seq_head)
+      def compile_expr_with_captures
         captures_before = @captures
-        expr = compile_expr(temp_node, seq_head)
+        expr = compile_expr
 
         yield expr, captures_before, @captures
       end
 
-      def compile_expr_with_capture_check(temp_node, seq_head, before,
-                                          after)
+      def compile_expr_with_capture_check(before, after)
         @captures = before
-        expr = compile_expr(temp_node, seq_head)
+        expr = compile_expr
         if @captures != after
           fail_due_to('each branch of {} must have same # of captures')
         end
@@ -300,84 +293,77 @@ module RuboCop
         expr
       end
 
-      def compile_intersect(cur_node, seq_head)
+      def compile_intersect
         fail_due_to('empty intersection') if tokens.first == ']'
 
-        with_temp_node(cur_node) do |init, temp_node|
-          terms = []
-          until tokens.first == ']'
-            terms << compile_expr(temp_node, seq_head)
-          end
-          tokens.shift
+        terms = []
+        terms << compile_expr until tokens.first == ']'
+        tokens.shift
 
-          join_terms(init, terms, ' && ')
-        end
+        terms.join(' && ')
       end
 
-      def compile_capture(cur_node, seq_head)
-        "(#{next_capture} = #{cur_node}#{'.type' if seq_head}; " \
-          "#{compile_expr(cur_node, seq_head)})"
+      def compile_capture
+        "(#{next_capture} = #{CUR_ELEMENT}; #{compile_expr})"
       end
 
-      def compile_negation(cur_node, seq_head)
-        "(!#{compile_expr(cur_node, seq_head)})"
+      def compile_negation
+        "!(#{compile_expr})"
       end
 
-      def compile_ascend(cur_node)
-        "(#{cur_node}.parent && " \
-          "#{compile_expr("#{cur_node}.parent", false)})"
+      def compile_ascend
+        with_context("#{CUR_NODE} && #{compile_expr}", "#{CUR_NODE}.parent")
       end
 
-      def compile_wildcard(cur_node, name, seq_head)
+      def compile_wildcard(name)
         if name.empty?
           'true'
         elsif @unify.key?(name)
           # we have already seen a wildcard with this name before
           # so the value it matched the first time will already be stored
           # in a temp. check if this value matches the one stored in the temp
-          "(#{cur_node}#{'.type' if seq_head} == temp#{@unify[name]})"
+          "#{CUR_ELEMENT} == temp#{@unify[name]}"
         else
           n = @unify[name] = next_temp_value
           # double assign to temp#{n} to avoid "assigned but unused variable"
-          "(temp#{n} = #{cur_node}#{'.type' if seq_head}; " \
+          "(temp#{n} = #{CUR_ELEMENT}; " \
           "temp#{n} = temp#{n}; true)"
         end
       end
 
-      def compile_literal(cur_node, literal, seq_head)
-        "(#{cur_node}#{'.type' if seq_head} == #{literal})"
+      def compile_literal(literal)
+        "#{CUR_ELEMENT} == #{literal}"
       end
 
-      def compile_predicate(cur_node, predicate, seq_head)
+      def compile_predicate(predicate)
         if predicate.end_with?('(') # is there an arglist?
           args = compile_args(tokens)
           predicate = predicate[0..-2] # drop the trailing (
-          "(#{cur_node}#{'.type' if seq_head}.#{predicate}(#{args.join(',')}))"
+          "#{CUR_ELEMENT}.#{predicate}(#{args.join(',')})"
         else
-          "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+          "#{CUR_ELEMENT}.#{predicate}"
         end
       end
 
-      def compile_funcall(cur_node, method, seq_head)
+      def compile_funcall(method)
         # call a method in the context which this pattern-matching
         # code is used in. pass target value as an argument
         method = method[1..-1] # drop the leading #
         if method.end_with?('(') # is there an arglist?
           args = compile_args(tokens)
           method = method[0..-2] # drop the trailing (
-          "(#{method}(#{cur_node}#{'.type' if seq_head},#{args.join(',')}))"
+          "#{method}(#{CUR_ELEMENT},#{args.join(',')})"
         else
-          "(#{method}(#{cur_node}#{'.type' if seq_head}))"
+          "#{method}(#{CUR_ELEMENT})"
         end
       end
 
-      def compile_nodetype(cur_node, type)
-        "(#{cur_node}.is_a?(RuboCop::AST::Node) && " \
-          "#{cur_node}.#{type.tr('-', '_')}_type?)"
+      def compile_nodetype(type)
+        "#{compile_guard_clause} && #{CUR_NODE}.#{type.tr('-', '_')}_type?"
       end
 
-      def compile_param(cur_node, number, seq_head)
-        "(#{cur_node}#{'.type' if seq_head} == #{get_param(number)})"
+      def compile_param(number)
+        "#{CUR_ELEMENT} == #{get_param(number)}"
       end
 
       def compile_args(tokens)
@@ -412,10 +398,6 @@ module RuboCop
         number = number.empty? ? 1 : Integer(number)
         @params = number if number > @params
         number.zero? ? @root : "param#{number}"
-      end
-
-      def join_terms(init, terms, operator)
-        "(#{init};#{terms.join(operator)})"
       end
 
       def emit_capture_list
@@ -454,9 +436,9 @@ module RuboCop
 
       def with_temp_node(cur_node)
         with_temp_variable do |temp_var|
-          # double assign to temp#{n} to avoid "assigned but unused variable"
-          yield "#{temp_var} = #{cur_node}; #{temp_var} = #{temp_var}", temp_var
+          yield "(#{temp_var} = #{cur_node})", temp_var
         end
+          .gsub("\n", "\n  ") # Nicer indent for debugging
       end
 
       def with_temp_variable
@@ -465,6 +447,47 @@ module RuboCop
 
       def next_temp_value
         @temps += 1
+      end
+
+      def auto_use_temp_node?(code)
+        code.scan(CUR_PLACEHOLDER).count > 1
+      end
+
+      # with_<...>_context methods are used whenever the context,
+      # i.e the current node or the current element can be determined.
+
+      def with_child_context(code, child_index)
+        with_context(code, "#{CUR_NODE}.children[#{child_index}]")
+      end
+
+      def with_context(code, cur_node,
+                       use_temp_node: auto_use_temp_node?(code))
+        if use_temp_node
+          with_temp_node(cur_node) do |init, temp_var|
+            substitute_cur_node(code, temp_var, first_cur_node: init)
+          end
+        else
+          substitute_cur_node(code, cur_node)
+        end
+      end
+
+      def with_seq_head_context(code)
+        if code.include?(SEQ_HEAD_GUARD)
+          fail_due_to('parentheses at sequence head')
+        end
+
+        code.gsub CUR_ELEMENT, "#{CUR_NODE}.type"
+      end
+
+      def substitute_cur_node(code, cur_node, first_cur_node: cur_node)
+        iter = 0
+        code
+          .gsub(CUR_ELEMENT, CUR_NODE)
+          .gsub(CUR_NODE) do
+            iter += 1
+            iter == 1 ? first_cur_node : cur_node
+          end
+          .gsub(SEQ_HEAD_GUARD, '')
       end
 
       def self.tokens(pattern)
