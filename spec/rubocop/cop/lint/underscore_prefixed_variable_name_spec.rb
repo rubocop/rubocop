@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) { { 'AllowKeywordBlockArguments' => false } }
 
   context 'when an underscore-prefixed variable is used' do
     it 'registers an offense' do
@@ -49,13 +51,40 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
   end
 
   context 'when an underscore-prefixed block argument is used' do
+    [true, false].each do |config|
+      let(:cop_config) { { 'AllowKeywordBlockArguments' => config } }
+
+      it 'registers an offense' do
+        expect_offense(<<-RUBY.strip_indent)
+          1.times do |_foo|
+                      ^^^^ Do not use prefix `_` for a variable that is used.
+            puts _foo
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when an underscore-prefixed keyword block argument is used' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
-        1.times do |_foo|
-                    ^^^^ Do not use prefix `_` for a variable that is used.
+        define_method(:foo) do |_foo: 'default'|
+                                ^^^^ Do not use prefix `_` for a variable that is used.
           puts _foo
         end
       RUBY
+    end
+
+    context 'when AllowKeywordBlockArguments is set' do
+      let(:cop_config) { { 'AllowKeywordBlockArguments' => true } }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          define_method(:foo) do |_foo: 'default'|
+            puts _foo
+          end
+        RUBY
+      end
     end
   end
 

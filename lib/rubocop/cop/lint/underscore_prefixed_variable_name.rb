@@ -6,7 +6,11 @@ module RuboCop
       # This cop checks for underscore-prefixed variables that are actually
       # used.
       #
-      # @example
+      # Since block keyword arguments cannot be arbitrarily named at call
+      # sites, the `AllowKeywordBlockArguments` will allow use of underscore-
+      # prefixed block keyword arguments.
+      #
+      # @example AllowKeywordBlockArguments: false (default)
       #
       #   # bad
       #
@@ -14,7 +18,9 @@ module RuboCop
       #     do_something(_num)
       #   end
       #
-      # @example
+      #   query(:sales) do |_id:, revenue:, cost:|
+      #     {_id: _id, profit: revenue - cost}
+      #   end
       #
       #   # good
       #
@@ -22,13 +28,18 @@ module RuboCop
       #     do_something(num)
       #   end
       #
-      # @example
-      #
-      #   # good
-      #
       #   [1, 2, 3].each do |_num|
       #     do_something # not using `_num`
       #   end
+      #
+      # @example AllowKeywordBlockArguments: true
+      #
+      #   # good
+      #
+      #   query(:sales) do |_id:, revenue:, cost:|
+      #     {_id: _id, profit: revenue - cost}
+      #   end
+      #
       class UnderscorePrefixedVariableName < Cop
         MSG = 'Do not use prefix `_` for a variable that is used.'.freeze
 
@@ -45,6 +56,7 @@ module RuboCop
         def check_variable(variable)
           return unless variable.should_be_unused?
           return if variable.references.none?(&:explicit?)
+          return if allowed_keyword_block_argument?(variable)
 
           node = variable.declaration_node
 
@@ -55,6 +67,14 @@ module RuboCop
                      end
 
           add_offense(nil, location: location)
+        end
+
+        private
+
+        def allowed_keyword_block_argument?(variable)
+          variable.block_argument? &&
+            variable.keyword_argument? &&
+            cop_config['AllowKeywordBlockArguments']
         end
       end
     end

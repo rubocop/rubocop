@@ -1564,6 +1564,7 @@ Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
   VersionAdded: '0.21'
+  AllowKeywordBlockArguments: false
 
 Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum'
