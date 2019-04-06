@@ -1126,6 +1126,36 @@ RSpec.describe RuboCop::NodePattern do
       end
     end
 
+    context 'within sequence' do
+      let(:ruby) { '1.inc' }
+
+      context 'not in head' do
+        let(:ruby) { '1.inc' }
+        let(:pattern) { '(send ^send :inc)' }
+
+        it_behaves_like 'matching'
+
+        context 'of a sequence' do
+          let(:pattern) { '(send ^(send _ _) :inc)' }
+
+          it_behaves_like 'matching'
+        end
+      end
+
+      context 'in head' do
+        let(:node) { root_node.children[0] }
+        let(:pattern) { '(^send 1)' }
+
+        it_behaves_like 'matching'
+
+        context 'of a sequence' do
+          let(:pattern) { '(^(send _ _) 1)' }
+
+          it_behaves_like 'matching'
+        end
+      end
+    end
+
     context 'repeated twice' do
       # ascends to grandparent node
       let(:pattern) { '^^block' }

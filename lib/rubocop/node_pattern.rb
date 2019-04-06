@@ -160,7 +160,7 @@ module RuboCop
         when '['       then compile_intersect(tokens, cur_node, seq_head)
         when '!'       then compile_negation(tokens, cur_node, seq_head)
         when '$'       then compile_capture(tokens, cur_node, seq_head)
-        when '^'       then compile_ascend(tokens, cur_node, seq_head)
+        when '^'       then compile_ascend(tokens, cur_node)
         when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
         when FUNCALL   then compile_funcall(tokens, cur_node, token, seq_head)
         when LITERAL   then compile_literal(cur_node, token, seq_head)
@@ -324,9 +324,9 @@ module RuboCop
         "(!#{compile_expr(tokens, cur_node, seq_head)})"
       end
 
-      def compile_ascend(tokens, cur_node, seq_head)
+      def compile_ascend(tokens, cur_node)
         "(#{cur_node}.parent && " \
-          "#{compile_expr(tokens, "#{cur_node}.parent", seq_head)})"
+          "#{compile_expr(tokens, "#{cur_node}.parent", false)})"
       end
 
       def compile_wildcard(cur_node, name, seq_head)
