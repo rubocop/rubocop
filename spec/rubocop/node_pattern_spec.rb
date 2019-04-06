@@ -223,6 +223,21 @@ RSpec.describe RuboCop::NodePattern do
 
       it_behaves_like 'matching'
     end
+
+    describe 'bare literal' do
+      let(:ruby) { ':bar' }
+      let(:pattern) { ':bar' }
+
+      context 'on a node' do
+        it_behaves_like 'nonmatching'
+      end
+
+      context 'on a matching literal' do
+        let(:node) { root_node.children[0] }
+
+        it_behaves_like 'matching'
+      end
+    end
   end
 
   describe 'nil' do
@@ -469,6 +484,13 @@ RSpec.describe RuboCop::NodePattern do
       context 'containing integer literals' do
         let(:pattern) { '(send (int {1 10}) :abs)' }
         let(:ruby) { '10.abs' }
+
+        it_behaves_like 'matching'
+      end
+
+      context 'containing mixed node and literals' do
+        let(:pattern) { '(send {int nil?} ...)' }
+        let(:ruby) { 'obj' }
 
         it_behaves_like 'matching'
       end
