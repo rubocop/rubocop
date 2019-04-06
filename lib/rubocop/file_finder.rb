@@ -13,16 +13,16 @@ module RuboCop
       @root_level == path.to_s
     end
 
-    def find_file_upwards(filename, start_dir, use_home: false)
-      traverse_files_upwards(filename, start_dir, use_home) do |file|
+    def find_file_upwards(filename, start_dir)
+      traverse_files_upwards(filename, start_dir) do |file|
         # minimize iteration for performance
         return file if file
       end
     end
 
-    def find_files_upwards(filename, start_dir, use_home: false)
+    def find_files_upwards(filename, start_dir)
       files = []
-      traverse_files_upwards(filename, start_dir, use_home) do |file|
+      traverse_files_upwards(filename, start_dir) do |file|
         files << file
       end
       files
@@ -30,18 +30,13 @@ module RuboCop
 
     private
 
-    def traverse_files_upwards(filename, start_dir, use_home)
+    def traverse_files_upwards(filename, start_dir)
       Pathname.new(start_dir).expand_path.ascend do |dir|
         break if FileFinder.root_level?(dir)
 
         file = dir + filename
         yield(file.to_s) if file.exist?
       end
-
-      return unless use_home && ENV.key?('HOME')
-
-      file = File.join(Dir.home, filename)
-      yield(file) if File.exist?(file)
     end
   end
 end
