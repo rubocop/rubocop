@@ -46,7 +46,7 @@ module RuboCop
       class Date < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Do not use `Date.%<day>s` without zone. Use ' \
+        MSG = 'Do not use `Date.%<method_called>s` without zone. Use ' \
               '`Time.zone.%<day>s` instead.'.freeze
 
         MSG_SEND = 'Do not use `%<method>s` on Date objects, because they ' \
@@ -101,8 +101,13 @@ module RuboCop
 
           method_name = (chain & bad_days).join('.')
 
+          day = method_name
+          day = 'today' if method_name == 'current'
+
           add_offense(node, location: :selector,
-                            message: format(MSG, day: method_name.to_s))
+                            message: format(MSG,
+                                            method_called: method_name,
+                                            day: day))
         end
 
         def extract_method_chain(node)
