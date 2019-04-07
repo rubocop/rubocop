@@ -24,6 +24,9 @@
 * [#6972](https://github.com/rubocop-hq/rubocop/issues/6972): Fix a false positive for `Style/MixinUsage` when using inside block and `if` condition is after `include`. ([@koic][])
 * [#6738](https://github.com/rubocop-hq/rubocop/issues/6738): Prevent auto-correct conflict of `Style/Next` and `Style/SafeNavigation`. ([@hoshinotsuyoshi][])
 * [#6847](https://github.com/rubocop-hq/rubocop/pull/6847): Fix `Style/BlockDelimiters` to properly check if the node is chaned when `braces_for_chaining` is set. ([@att14][])
+### Bug fixes
+
+* Replace `Time.zone.current` with `Time.zone.today` on `Rails::Date` cop message. ([@vfonic][])
 
 ## 0.68.0 (2019-04-29)
 

@@ -6,19 +6,46 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
   context 'when EnforcedStyle is "strict"' do
     let(:cop_config) { { 'EnforcedStyle' => 'strict' } }
 
-    %w[today current yesterday tomorrow].each do |day|
-      it "registers an offense for Date.#{day}" do
-        inspect_source("Date.#{day}")
-        expect(cop.offenses.size).to eq(1)
+    shared_examples 'offense' do |method, message|
+      it "registers an offense for #{method}" do
+        inspect_source(method)
+        expect(cop.messages).to eq([message])
       end
+    end
 
-      it "registers an offense for ::Date.#{day}" do
-        inspect_source("::Date.#{day}")
-        expect(cop.offenses.size).to eq(1)
-      end
+    %w[today yesterday tomorrow].each do |day|
+      it_behaves_like(
+        'offense',
+        "Date.#{day}",
+        "Do not use `Date.#{day}` without zone. Use `Time.zone.#{day}` instead."
+      )
+
+      it_behaves_like(
+        'offense',
+        "::Date.#{day}",
+        "Do not use `Date.#{day}` without zone. Use `Time.zone.#{day}` instead."
+      )
 
       it "accepts Some::Date.#{day}" do
         expect_no_offenses("Some::Date.#{day}")
+      end
+    end
+
+    context 'when using Date.current' do
+      it_behaves_like(
+        'offense',
+        'Date.current',
+        'Do not use `Date.current` without zone. Use `Time.zone.today` instead.'
+      )
+
+      it_behaves_like(
+        'offense',
+        '::Date.current',
+        'Do not use `Date.current` without zone. Use `Time.zone.today` instead.'
+      )
+
+      it 'accepts Some::Date.current' do
+        expect_no_offenses('Some::Date.current')
       end
     end
 
@@ -40,7 +67,7 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
       end
 
       it "accepts variable #{method} as range end" do
-        expect_no_offenses("from_time..#{method}")
+        expect_no_offenses("date..#{method}")
       end
     end
 
