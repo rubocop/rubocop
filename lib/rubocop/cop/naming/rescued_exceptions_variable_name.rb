@@ -24,6 +24,13 @@ module RuboCop
       #     # do something
       #   end
       #
+      #   # good
+      #   begin
+      #     # do something
+      #   rescue MyException => _e
+      #     # do something
+      #   end
+      #
       # @example PreferredName: exception
       #   # bad
       #   begin
@@ -36,6 +43,13 @@ module RuboCop
       #   begin
       #     # do something
       #   rescue MyException => exception
+      #     # do something
+      #   end
+      #
+      #   # good
+      #   begin
+      #     # do something
+      #   rescue MyException => _exception
       #     # do something
       #   end
       #
@@ -62,7 +76,11 @@ module RuboCop
         private
 
         def preferred_name
-          @preferred_name ||= cop_config.fetch('PreferredName', 'e')
+          @preferred_name ||= begin
+            name = cop_config.fetch('PreferredName', 'e')
+            name = "_#{name}" if variable_name.to_s.start_with?('_')
+            name
+          end
         end
 
         def variable_name

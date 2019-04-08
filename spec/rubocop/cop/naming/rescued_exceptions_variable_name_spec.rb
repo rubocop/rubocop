@@ -25,11 +25,40 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
 
+        it 'registers an offense when using `_exc`' do
+          expect_offense(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue MyException => _exc
+                                  ^^^^ Use `_e` instead of `_exc`.
+              # do something
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue MyException => _e
+              # do something
+            end
+          RUBY
+        end
+
         it 'does not register an offense when using `e`' do
           expect_no_offenses(<<-RUBY.strip_indent)
             begin
               something
             rescue MyException => e
+              # do something
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when using `_e`' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue MyException => _e
               # do something
             end
           RUBY
@@ -70,11 +99,40 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
 
+        it 'registers an offense when using `_exc`' do
+          expect_offense(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue _exc
+                   ^^^^ Use `_e` instead of `_exc`.
+              # do something
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue _e
+              # do something
+            end
+          RUBY
+        end
+
         it 'does not register an offense when using `e`' do
           expect_no_offenses(<<-RUBY.strip_indent)
             begin
               something
             rescue e
+              # do something
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when using `_e`' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue _e
               # do something
             end
           RUBY
@@ -121,11 +179,40 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
       RUBY
     end
 
+    it 'registers an offense when using `_e`' do
+      expect_offense(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue MyException => _e
+                              ^^ Use `_exception` instead of `_e`.
+          # do something
+        end
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue MyException => _exception
+          # do something
+        end
+      RUBY
+    end
+
     it 'does not register an offense when using `exception`' do
       expect_no_offenses(<<-RUBY.strip_indent)
         begin
           something
         rescue MyException => exception
+          # do something
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `_exception`' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue MyException => _exception
           # do something
         end
       RUBY
