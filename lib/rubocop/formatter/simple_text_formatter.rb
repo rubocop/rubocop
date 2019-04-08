@@ -23,6 +23,18 @@ module RuboCop
       def started(_target_files)
         @total_offense_count = 0
         @total_correction_count = 0
+
+        return unless defined?(Bundler)
+
+        gemfile_lock = Bundler.read_file(Bundler.default_lockfile)
+        parser = Bundler::LockfileParser.new(gemfile_lock)
+
+        return if parser.dependencies['rubocop-performance']
+
+        warn Rainbow(<<-MESSAGE.strip_indent).yellow.to_s
+          [Warn] Performance Cops will be removed from RuboCop 0.68. Use rubocop-performance gem instead.
+                 https://github.com/rubocop-hq/rubocop/tree/master/manual/migrate_performance_cops.md
+        MESSAGE
       end
 
       def file_finished(file, offenses)

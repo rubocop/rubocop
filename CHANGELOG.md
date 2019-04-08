@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
+* Remove the warning about `rubocop-performance` from non-related output formats. ([@AlexWayfer][])
 
 ### Changes
 
