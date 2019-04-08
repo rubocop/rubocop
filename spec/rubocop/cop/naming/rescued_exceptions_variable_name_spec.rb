@@ -101,6 +101,88 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
       end
+
+      context 'with method as `Exception`' do
+        it 'does not register an offense without variable name' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue ActiveSupport::JSON.my_method
+              # do something
+            end
+          RUBY
+        end
+
+        it 'does not register an offense with expected variable name' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue ActiveSupport::JSON.my_method => e
+              # do something
+            end
+          RUBY
+        end
+
+        it 'registers an offense with unexpected variable name' do
+          expect_offense(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue ActiveSupport::JSON.my_method => exc
+                                                    ^^^ Use `e` instead of `exc`.
+              # do something
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue ActiveSupport::JSON.my_method => e
+              # do something
+            end
+          RUBY
+        end
+      end
+
+      context 'with splat operator as `Exception` list' do
+        it 'does not register an offense without variable name' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue *handled
+              # do something
+            end
+          RUBY
+        end
+
+        it 'does not register an offense with expected variable name' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue *handled => e
+              # do something
+            end
+          RUBY
+        end
+
+        it 'registers an offense with unexpected variable name' do
+          expect_offense(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue *handled => exc
+                               ^^^ Use `e` instead of `exc`.
+              # do something
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue *handled => e
+              # do something
+            end
+          RUBY
+        end
+      end
     end
 
     context 'with implicit rescue' do

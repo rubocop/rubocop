@@ -61,7 +61,8 @@ module RuboCop
           return unless exception_type || @exception_name
 
           @exception_name ||= exception_type.children.first
-          return if @exception_name.const_type? ||
+
+          return if !@exception_name.lvasgn_type? ||
                     variable_name == preferred_name
 
           add_offense(node, location: offense_range(node))
