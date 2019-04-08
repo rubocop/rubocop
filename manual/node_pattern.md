@@ -70,7 +70,7 @@ value:
 
 ## `...` for several subsequent nodes
 
-Where `_` matches a single node, `...` eagerly matches one or more subsequent nodes.
+Where `_` matches a single node, `...` eagerly matches zero or more subsequent nodes.
 
 It's useful when you want to check some internal nodes but with a
 final with the same results. For example, let's use `sum(1,2)`.
