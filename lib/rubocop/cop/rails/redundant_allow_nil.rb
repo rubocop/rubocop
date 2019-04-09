@@ -79,10 +79,10 @@ module RuboCop
           node.each_descendant do |descendant|
             next unless descendant.pair_type?
 
-            key = descendant.children.first.value
+            key = descendant.children.first.source
 
-            allow_nil = descendant if key == :allow_nil
-            allow_blank = descendant if key == :allow_blank
+            allow_nil = descendant if key == 'allow_nil'
+            allow_blank = descendant if key == 'allow_blank'
 
             break if allow_nil && allow_blank
           end

@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
+
 ### Changes
 
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Remove Performance cops. ([@koic][])
@@ -3931,3 +3935,4 @@
 [@anuja-joshi]: https://github.com/anuja-joshi
 [@XrXr]: https://github.com/XrXr
 [@thomthom]: https://github.com/thomthom
+[@Blue-Pix]: https://github.com/Blue-Pix
