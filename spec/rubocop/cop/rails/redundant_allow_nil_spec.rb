@@ -73,4 +73,12 @@ RSpec.describe RuboCop::Cop::Rails::RedundantAllowNil do
       RUBY
     end
   end
+
+  context 'when using string interpolation' do
+    it 'registers no offense' do
+      expect_no_offenses(<<-'RUBY'.strip_indent)
+        validates :details, "path_to_dynamic_validation/#{with_interpolation}": true
+      RUBY
+    end
+  end
 end
