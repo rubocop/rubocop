@@ -507,6 +507,13 @@ begin
 rescue MyException => e
   # do something
 end
+
+# good
+begin
+  # do something
+rescue MyException => _e
+  # do something
+end
 ```
 #### PreferredName: exception
 
@@ -522,6 +529,13 @@ end
 begin
   # do something
 rescue MyException => exception
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => _exception
   # do something
 end
 ```
