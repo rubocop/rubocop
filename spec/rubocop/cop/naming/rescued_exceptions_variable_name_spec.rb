@@ -15,6 +15,14 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
               # do something
             end
           RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue MyException => e
+              # do something
+            end
+          RUBY
         end
 
         it 'does not register an offense when using `e`' do
@@ -49,6 +57,14 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
               something
             rescue exc
                    ^^^ Use `e` instead of `exc`.
+              # do something
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue e
               # do something
             end
           RUBY
@@ -92,6 +108,14 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           something
         rescue MyException => e
                               ^ Use `exception` instead of `e`.
+          # do something
+        end
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue MyException => exception
           # do something
         end
       RUBY

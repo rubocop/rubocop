@@ -53,6 +53,12 @@ module RuboCop
           add_offense(node, location: location)
         end
 
+        def autocorrect(_node)
+          lambda do |corrector|
+            corrector.replace(location, preferred_name)
+          end
+        end
+
         private
 
         def preferred_name

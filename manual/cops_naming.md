@@ -481,7 +481,7 @@ Exclude | `spec/**/*` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.67 | -
+Enabled | Yes | Yes  | 0.67 | 0.68
 
 This cop makes sure that rescued exceptions variables are named as
 expected.
