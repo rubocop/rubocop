@@ -18,6 +18,7 @@
 * Add auto-correction to `Naming/RescuedExceptionsVariableName`. ([@anthony-robin][])
 * [#6903](https://github.com/rubocop-hq/rubocop/issues/6903): Handle variables prefixed with `_` in `Naming/RescuedExceptionsVariableName` cop. ([@anthony-robin][])
 * [#6917](https://github.com/rubocop-hq/rubocop/issues/6917): Bump Bundler dependency to >= 1.15.0. ([@koic][])
+* Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
 
 ### New features
 
