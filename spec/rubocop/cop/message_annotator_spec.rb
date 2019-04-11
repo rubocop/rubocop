@@ -16,6 +16,18 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
       end
     end
 
+    context 'when the output format is JSON' do
+      let(:options) do
+        {
+          format: 'json'
+        }
+      end
+
+      it 'returns the message unannotated' do
+        expect(annotate).to eq('message')
+      end
+    end
+
     context 'with options on' do
       let(:options) do
         {
