@@ -58,6 +58,11 @@ module RuboCop
 
       def command
         command = 'rubocop --auto-gen-config'
+
+        if @options[:auto_gen_only_exclude]
+          command += ' --auto-gen-only-exclude'
+        end
+
         if @exclude_limit_option
           command +=
             format(' --exclude-limit %<limit>d',
