@@ -1625,7 +1625,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           /Supported versions: 2.2, 2.3, 2.4, 2.5, 2.6/
         )
         expect($stderr.string.strip).to match(
-          /Try updatiing Rubocop to a newer version/
+            /Try updatiing Rubocop to a newer version/
         )
       end
     end
