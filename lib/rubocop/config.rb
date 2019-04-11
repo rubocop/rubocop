@@ -591,6 +591,7 @@ module RuboCop
             end
 
       msg += "\nSupported versions: #{KNOWN_RUBIES.join(', ')}"
+      msg += "\nTry updatiing Rubocop to a newer version"
 
       raise ValidationError, msg
     end
