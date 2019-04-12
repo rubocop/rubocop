@@ -71,9 +71,8 @@ module RuboCop
         config = handle_disabled_by_default(config, default_configuration)
       end
 
-      Config.new(merge(default_configuration, config,
-                       inherit_mode: config['inherit_mode'] || {}),
-                 config_file)
+      opts = { inherit_mode: config['inherit_mode'] || {}, unset_nil: true }
+      Config.new(merge(default_configuration, config, opts), config_file)
     end
 
     # Return a recursive merge of two hashes. That is, a normal hash merge,
@@ -85,7 +84,9 @@ module RuboCop
       result = base_hash.merge(derived_hash)
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
       keys_appearing_in_both.each do |key|
-        if base_hash[key].is_a?(Hash)
+        if opts[:unset_nil] && derived_hash[key].nil?
+          result.delete(key)
+        elsif base_hash[key].is_a?(Hash)
           result[key] = merge(base_hash[key], derived_hash[key], **opts)
         elsif should_union?(base_hash, key, opts[:inherit_mode])
           result[key] = base_hash[key] | derived_hash[key]
