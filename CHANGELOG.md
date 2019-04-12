@@ -13,6 +13,7 @@
 * Do not annotate message with cop name in JSON output. ([@elebow][])
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
 * [#6941](https://github.com/rubocop-hq/rubocop/issues/6941): Add missing absence validations to `Rails/Validation`. ([@jmanian][])
+* [#6926](https://github.com/rubocop-hq/rubocop/issues/6926): [Fix #6926] Allow nil values to unset config defaults. ([@dduugg][])
 
 ### Changes
 

@@ -277,6 +277,45 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits and overrides a hash with nil' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+          Style/InverseMethods:
+            InverseMethods:
+              :any?: :none?
+              :even?: :odd?
+              :==: :!=
+              :=~: :!~
+              :<: :>=
+              :>: :<=
+        YAML
+
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          inherit_from: .rubocop_parent.yml
+
+          Style/InverseMethods:
+            InverseMethods:
+              :<: ~
+              :>: ~
+              :foo: :bar
+        YAML
+      end
+
+      it 'removes hash keys with nil values' do
+        inverse_methods =
+          configuration_from_file['Style/InverseMethods']['InverseMethods']
+        expect(inverse_methods).to eq(
+          '==': :!=,
+          '=~': :!~,
+          any?: :none?,
+          even?: :odd?,
+          foo: :bar
+        )
+      end
+    end
+
     context 'when inherit_mode is set to merge for Exclude' do
       let(:file_path) { '.rubocop.yml' }
 
