@@ -330,7 +330,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for private indented to method depth in singleton' \
+    it 'registers offense for private indented to method depth in singleton ' \
        'class' do
       expect_offense(<<-RUBY.strip_indent)
         class << self
