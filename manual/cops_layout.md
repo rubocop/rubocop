@@ -747,11 +747,21 @@ This cop checks the indentation of hanging closing parentheses in
 method calls, method definitions, and grouped expressions. A hanging
 closing parenthesis means `)` preceded by a line break.
 
+The default style is called 'consistent'. An alternative
+style is 'beginning_of_first_line'. The examples below illustrates
+the expected behavior.
+
+Note that the behavior in `consistent` mode is dependent on the
+indentation of the parameters in the method call. You can use other
+cops such as `FirstParameterIndentation` to adjust that.
+
 ### Examples
+
+#### EnforcedStyle: consistent (default)
 
 ```ruby
 # bad
-some_method(
+foo = some_method(
   a,
   b
   )
@@ -760,7 +770,7 @@ some_method(
   a, b
   )
 
-some_method(a, b, c
+foo = some_method(a, b, c
   )
 
 some_method(a,
@@ -777,7 +787,7 @@ some_method(a,
 
 # good: when first param is on a new line, right paren is *always*
 #       outdented by IndentationWidth
-some_method(
+foo = some_method(
   a,
   b
 )
@@ -808,6 +818,70 @@ some_method(a,
   y: 2
 )
 ```
+#### EnforcedStyle: beginning_of_first_line
+
+```ruby
+# bad
+foo = some_method(
+  a,
+  b
+  )
+
+some_method(
+  a, b
+  )
+
+some_method(a, b, c
+  )
+
+some_method(a,
+            b,
+            c
+  )
+
+some_method(a,
+  x: 1,
+  y: 2
+  )
+
+# good: closing paren aligns with the beginning of the first line
+#       containing the expression (even when the first
+#       first parameter is on the same line as the opening
+#       parenthesis, or when the parameters are indented
+#       in a non-standard way)
+foo = some_method(
+  a,
+  b
+)
+
+some_method(
+  a, b
+)
+
+some_method(a, b, c
+)
+
+some_method(a,
+            b,
+            c
+)
+
+some_method(a,
+  x: 1,
+  y: 2
+)
+
+some_method(a,
+    x: 1,
+    y: 2
+)
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `consistent` | `consistent`, `beginning_of_first_line`
 
 ## Layout/CommentIndentation
 

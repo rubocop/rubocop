@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#5975](https://github.com/rubocop-hq/rubocop/issues/5975): [Fix #5975] Add `beginning_of_first_line` mode to `Layout/ClosingParenthesisIndentation`. ([@maxh][])
+
 ### Bug fixes
 
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])

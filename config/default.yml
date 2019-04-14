@@ -394,6 +394,10 @@ Layout/ClosingParenthesisIndentation:
   Description: 'Checks the indentation of hanging closing parentheses.'
   Enabled: true
   VersionAdded: '0.49'
+  EnforcedStyle: consistent
+  SupportedStyles:
+    - consistent
+    - beginning_of_first_line
 
 Layout/CommentIndentation:
   Description: 'Indentation of comments.'

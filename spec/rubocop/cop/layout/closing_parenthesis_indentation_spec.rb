@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+
+  let(:config) do
+    RuboCop::Config.new('Layout/ClosingParenthesisIndentation' => cop_config)
+  end
+  let(:cop_config) do
+    {} # default config
+  end
 
   context 'for method calls' do
     context 'with line break before 1st parameter' do
@@ -553,5 +560,403 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         y
       end
     RUBY
+  end
+
+  context 'beginning_of_first_line mode' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'beginning_of_first_line' }
+    end
+
+    context 'method calls' do
+      context 'strangely aligned method params' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              expect(foo.find_by(
+                 bar: 1,
+                    bat: 2,
+              )).to eq(nil)
+            RUBY
+          )
+        end
+      end
+
+      context 'when one line' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz("abc", "def")
+            RUBY
+          )
+        end
+      end
+
+      context 'when no args' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz()
+            RUBY
+          )
+        end
+      end
+
+      context 'when no parens' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz "abc",
+               "def"
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren is on ending line' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz("abc",
+               "def")
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren on ending line and first arg is on new line' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz(
+               "abc",
+               "123",
+               "345",
+               "def",  )
+            RUBY
+          )
+        end
+      end
+
+      context 'when no args' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              foo.to eq 1
+            RUBY
+          )
+        end
+      end
+
+      context 'when multiple calls on separate lines' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              allow(obj).to(
+                receive(:message).and_throw(:this_symbol)
+              )
+            RUBY
+          )
+        end
+      end
+
+      context 'when method and object are on different lines' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              foo(:bar)
+                .bar(:baz)
+            RUBY
+          )
+        end
+      end
+
+      context 'when method and object on different lines with nested calls' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              allow(obj)
+                .to(receive(:message))
+            RUBY
+          )
+        end
+      end
+
+      context 'when hash args with braces' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz({
+                    a: "abc",
+                    b: "def",
+              })
+            RUBY
+          )
+        end
+      end
+
+      context 'when hash args without braces' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              taz(
+                    a: "abc",
+                    b: "def",
+              )
+            RUBY
+          )
+        end
+      end
+
+      context 'when do block' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              context 'when do block' do
+                it 'something' do
+                  foo.bar(2)
+                end
+              end
+            RUBY
+          )
+        end
+      end
+
+      context 'when eq on other line' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              expect(new_source).to eq(
+                something
+              )
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren isnt indented enough' do
+        it 'adds an offense' do
+          expect_offense(
+            <<-RUBY
+                taz(
+                  "abc",
+                  "foo",
+              )
+              ^ Indent `)` to align with the beginning of the first line containing the expression.
+            RUBY
+          )
+        end
+
+        it 'autocorrects the offense' do
+          new_source = autocorrect_source(
+            <<-RUBY
+                taz(
+                  "abc",
+                  "foo",
+              )
+            RUBY
+          )
+
+          expect(new_source).to eq(
+            <<-RUBY
+              \s\staz(
+              \s\s  "abc",
+              \s\s  "foo",
+              \s\s)
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren is indented too much' do
+        it 'adds an offense' do
+          expect_offense(
+            <<-RUBY
+              taz(
+                  "abc",
+                  "foo",
+                    )
+                    ^ Indent `)` to align with the beginning of the first line containing the expression.
+            RUBY
+          )
+        end
+
+        it 'autocorrects the offense' do
+          new_source = autocorrect_source(
+            <<-RUBY
+              taz(
+                  "abc",
+                  "foo",
+                    )
+            RUBY
+          )
+
+          expect(new_source).to eq(
+            <<-RUBY
+              taz(
+                  "abc",
+                  "foo",
+              )
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren is indented too much and all params on same line' do
+        it 'adds an offense' do
+          expect_offense(
+            <<-RUBY
+              taz("abc", "foo",
+                    )
+                    ^ Indent `)` to align with the beginning of the first line containing the expression.
+            RUBY
+          )
+        end
+
+        it 'autocorrects the offense' do
+          new_source = autocorrect_source(
+            <<-RUBY
+              taz("abc", "foo",
+                    )
+            RUBY
+          )
+
+          expect(new_source).to eq(
+            <<-RUBY
+              taz("abc", "foo",
+              )
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren is indented not enough and params aligned' do
+        it 'adds an offense' do
+          expect_offense(
+            <<-RUBY
+              taz("abc",
+                  "foo",
+                    )
+                    ^ Indent `)` to align with the beginning of the first line containing the expression.
+            RUBY
+          )
+        end
+
+        it 'autocorrects the offense' do
+          new_source = autocorrect_source(
+            <<-RUBY
+              taz("abc",
+                  "foo",
+                    )
+            RUBY
+          )
+
+          expect(new_source).to eq(
+            <<-RUBY
+              taz("abc",
+                  "foo",
+              )
+            RUBY
+          )
+        end
+      end
+    end
+
+    context 'paren expressions' do
+      context 'when eq on other line' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              foo = (
+                something
+              )
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren isnt indented enough' do
+        it 'adds an offense' do
+          expect_offense(
+            <<-RUBY
+              foo = (
+                something
+            )
+            ^ Indent `)` to align with the beginning of the first line containing the expression.
+            RUBY
+          )
+        end
+
+        it 'autocorrects the offense' do
+          new_source = autocorrect_source(
+            <<-RUBY
+              foo = (
+                something
+            )
+            RUBY
+          )
+
+          expect(new_source).to eq(
+            <<-RUBY
+              foo = (
+                something
+              )
+            RUBY
+          )
+        end
+      end
+    end
+
+    context 'method definitions' do
+      context 'when eq on other line' do
+        it 'does not add any offenses' do
+          expect_no_offenses(
+            <<-RUBY
+              def foo(
+                something
+              )
+                something_else
+              end
+            RUBY
+          )
+        end
+      end
+
+      context 'when paren isnt indented enough' do
+        it 'adds an offense' do
+          expect_offense(
+            <<-RUBY
+              def foo(
+                something
+            )
+            ^ Indent `)` to align with the beginning of the first line containing the expression.
+                something_else
+              end
+            RUBY
+          )
+        end
+
+        it 'autocorrects the offense' do
+          new_source = autocorrect_source(
+            <<-RUBY
+              def foo(
+                something
+            )
+                something_else
+              end
+            RUBY
+          )
+
+          expect(new_source).to eq(
+            <<-RUBY
+              def foo(
+                something
+              )
+                something_else
+              end
+            RUBY
+          )
+        end
+      end
+    end
   end
 end

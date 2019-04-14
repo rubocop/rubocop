@@ -7,10 +7,18 @@ module RuboCop
       # method calls, method definitions, and grouped expressions. A hanging
       # closing parenthesis means `)` preceded by a line break.
       #
-      # @example
+      # The default style is called 'consistent'. An alternative
+      # style is 'beginning_of_first_line'. The examples below illustrates
+      # the expected behavior.
+      #
+      # Note that the behavior in `consistent` mode is dependent on the
+      # indentation of the parameters in the method call. You can use other
+      # cops such as `FirstParameterIndentation` to adjust that.
+      #
+      # @example EnforcedStyle: consistent (default)
       #
       #   # bad
-      #   some_method(
+      #   foo = some_method(
       #     a,
       #     b
       #     )
@@ -19,7 +27,7 @@ module RuboCop
       #     a, b
       #     )
       #
-      #   some_method(a, b, c
+      #   foo = some_method(a, b, c
       #     )
       #
       #   some_method(a,
@@ -36,7 +44,7 @@ module RuboCop
       #
       #   # good: when first param is on a new line, right paren is *always*
       #   #       outdented by IndentationWidth
-      #   some_method(
+      #   foo = some_method(
       #     a,
       #     b
       #   )
@@ -67,12 +75,70 @@ module RuboCop
       #     y: 2
       #   )
       #
+      # @example EnforcedStyle: beginning_of_first_line
+      #
+      #   # bad
+      #   foo = some_method(
+      #     a,
+      #     b
+      #     )
+      #
+      #   some_method(
+      #     a, b
+      #     )
+      #
+      #   some_method(a, b, c
+      #     )
+      #
+      #   some_method(a,
+      #               b,
+      #               c
+      #     )
+      #
+      #   some_method(a,
+      #     x: 1,
+      #     y: 2
+      #     )
+      #
+      #   # good: closing paren aligns with the beginning of the first line
+      #   #       containing the expression (even when the first
+      #   #       first parameter is on the same line as the opening
+      #   #       parenthesis, or when the parameters are indented
+      #   #       in a non-standard way)
+      #   foo = some_method(
+      #     a,
+      #     b
+      #   )
+      #
+      #   some_method(
+      #     a, b
+      #   )
+      #
+      #   some_method(a, b, c
+      #   )
+      #
+      #   some_method(a,
+      #               b,
+      #               c
+      #   )
+      #
+      #   some_method(a,
+      #     x: 1,
+      #     y: 2
+      #   )
+      #
+      #   some_method(a,
+      #       x: 1,
+      #       y: 2
+      #   )
       #
       class ClosingParenthesisIndentation < Cop
         include Alignment
 
         MSG_INDENT = 'Indent `)` to column %<expected>d (not %<actual>d)'
                      .freeze
+        MSG_BEGINNING_OF_FIRST_LINE = 'Indent `)` to align with the ' \
+          'beginning of the first line containing the expression.'.freeze
         MSG_ALIGN = 'Align `)` with `(`.'.freeze
 
         def on_send(node)
@@ -96,6 +162,14 @@ module RuboCop
         private
 
         def check(node, elements)
+          if beginning_of_first_line_mode?
+            check_in_beginning_of_first_line_mode(node, elements)
+          else
+            check_in_consistent_mode(node, elements)
+          end
+        end
+
+        def check_in_consistent_mode(node, elements)
           if elements.empty?
             check_for_no_elements(node)
           else
@@ -196,6 +270,44 @@ module RuboCop
 
         def line_break_after_left_paren?(left_paren, elements)
           elements.first && elements.first.loc.line > left_paren.line
+        end
+
+        def beginning_of_first_line_mode?
+          cop_config['EnforcedStyle'] == 'beginning_of_first_line'
+        end
+
+        def check_in_beginning_of_first_line_mode(node, elements)
+          return unless expression_uses_braces?(node)
+          return if right_paren_on_same_line_as_last_element?(node, elements)
+          return if node.loc.begin.first_line == node.loc.end.last_line
+
+          @column_delta = beginning_of_first_line_column_delta(node)
+
+          return if @column_delta.zero?
+
+          add_offense(
+            node.loc.end,
+            location: node.loc.end,
+            message: MSG_BEGINNING_OF_FIRST_LINE
+          )
+        end
+
+        def beginning_of_first_line_column_delta(node)
+          first_line_index = node.loc.begin.line - 1
+          first_line = processed_source.lines[first_line_index]
+
+          first_line_indent = first_line[/\A */].size
+          closing_brace_indent = node.loc.end.column
+
+          first_line_indent - closing_brace_indent
+        end
+
+        def expression_uses_braces?(node)
+          node.loc.begin
+        end
+
+        def right_paren_on_same_line_as_last_element?(node, elements)
+          elements.last && node.last_line == elements.last.last_line
         end
       end
     end
