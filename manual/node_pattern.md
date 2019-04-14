@@ -72,6 +72,9 @@ value:
 
 Where `_` matches a single node, `...` eagerly matches zero or more subsequent nodes.
 
+`...` can only be used to match the last children, and can't be used to match
+children in the middle or the beginning.
+
 It's useful when you want to check some internal nodes but with a
 final with the same results. For example, let's use `sum(1,2)`.
 
@@ -237,7 +240,7 @@ And we can also reuse this and check if it's a constructor:
 
 ```
 def_node_matcher :initializing_with_user?, <<~PATTERN
-  (send ... :new (hash (pair #user_symbol?)))
+  (send _ :new (hash (pair #user_symbol?)))
 PATTERN
 ```
 
