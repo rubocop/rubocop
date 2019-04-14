@@ -300,6 +300,9 @@ Enabled | Yes | Yes  | 0.49 | -
 Here we check if the parameters on a multi-line method call or
 definition are aligned.
 
+To set the alignment of the first parameter, use the cop
+FirstParameterIndentation.
+
 ### Examples
 
 #### EnforcedStyle: with_first_parameter (default)
@@ -1940,9 +1943,13 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 0.56
 
-This cop checks the indentation of the first parameter in a method call.
-Parameters after the first one are checked by Layout/AlignParameters,
-not by this cop.
+This cop checks the indentation of the first parameter in a method call
+or definition. Parameters after the first one are checked by
+Layout/AlignParameters, not by this cop.
+
+By default, this cop is enabled for method calls and disabled for
+method definitions. To enable it for method definitions, set the param
+`IgnoreMethodDefinitions` to false.
 
 ### Examples
 
@@ -2090,6 +2097,7 @@ second_param
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
+IgnoreMethodDefinitions | `true` | Boolean
 IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentArray

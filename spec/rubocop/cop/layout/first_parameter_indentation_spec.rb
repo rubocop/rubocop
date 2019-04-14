@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    { 'EnforcedStyle' => style }
+    { 'EnforcedStyle' => style, 'IgnoreMethodDefinitions' => false }
   end
 
   let(:other_cops) do
@@ -741,6 +741,230 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
                     bar: 3))
         RUBY
       end
+    end
+  end
+
+  context 'method definitions' do
+    let(:indentation_width) { 2 }
+
+    context 'method definitions ignored' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => style, 'IgnoreMethodDefinitions' => true }
+      end
+      let(:style) { 'consistent' }
+
+      it 'ignores incorrectly indented first element' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def abc(
+                      foo,
+                      bar,
+                      baz
+          )
+            foo
+          end
+        RUBY
+      end
+    end
+
+    shared_examples 'common method def behavior' do
+      context 'no paren method defs' do
+        it 'ignores' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def abc foo, bar, baz
+              foo
+            end
+          RUBY
+        end
+
+        it 'ignores with hash args' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def abc foo: 1, bar: 3, baz: 3
+              foo
+            end
+          RUBY
+        end
+      end
+
+      context 'one line' do
+        it 'ignores' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def abc(foo, bar, baz)
+              foo
+            end
+          RUBY
+        end
+
+        it 'ignores with hash args' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def abc(foo: 1, bar: 3, baz: 3)
+              foo
+            end
+          RUBY
+        end
+      end
+
+      context 'valid indentation on multi-line defs' do
+        it 'accepts correctly indented first element' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def abc(
+              foo,
+              bar,
+              baz
+            )
+              foo
+            end
+          RUBY
+        end
+
+        it 'accepts correctly indented first element hash' do
+          expect_no_offenses(<<-RUBY.strip_indent)
+            def abc(
+              foo: 1,
+              bar: 3,
+              baz: 3
+            )
+              foo
+            end
+          RUBY
+        end
+      end
+
+      context 'invalid indentation on multi-line defs' do
+        context 'normal arguments' do
+          it 'auto-corrects incorrectly indented first element' do
+            corrected = autocorrect_source(<<-RUBY.strip_indent)
+              def abc(
+                          foo,
+                          bar,
+                          baz
+              )
+                foo
+              end
+            RUBY
+            expect(corrected).to eq <<-RUBY.strip_indent
+              def abc(
+                foo,
+                          bar,
+                          baz
+              )
+                foo
+              end
+            RUBY
+          end
+        end
+
+        context 'hash arguments' do
+          it 'auto-corrects incorrectly indented first element' do
+            corrected = autocorrect_source(<<-RUBY.strip_indent)
+              def abc(
+                          foo: 1,
+                          bar: 3,
+                          baz: 3
+              )
+                foo
+              end
+            RUBY
+            expect(corrected).to eq <<-RUBY.strip_indent
+              def abc(
+                foo: 1,
+                          bar: 3,
+                          baz: 3
+              )
+                foo
+              end
+            RUBY
+          end
+        end
+      end
+    end
+
+    context 'consistent style ' do
+      let(:style) { 'consistent' }
+
+      include_examples 'common method def behavior'
+
+      it 'detects incorrectly indented first element hash key static' do
+        expect_offense(<<-RUBY.strip_indent)
+          def self.abc(
+                    foo: 1,
+                    ^^^^^^ Indent the first parameter one step more than the start of the previous line.
+                    bar: 3,
+                    baz: 3
+          )
+            foo
+          end
+        RUBY
+      end
+
+      it 'detects incorrectly indented first element hash key' do
+        expect_offense(<<-RUBY.strip_indent)
+          def abc(
+                    foo: 1,
+                    ^^^^^^ Indent the first parameter one step more than the start of the previous line.
+                    bar: 3,
+                    baz: 3
+          )
+            foo
+          end
+        RUBY
+      end
+
+      it 'detects incorrectly indented first element' do
+        expect_offense(<<-RUBY.strip_indent)
+          def abc(
+                      foo,
+                      ^^^ Indent the first parameter one step more than the start of the previous line.
+                      bar,
+                      baz
+          )
+            foo
+          end
+        RUBY
+      end
+    end
+
+    context 'consistent_relative_to_receiver style ' do
+      let(:style) { 'consistent_relative_to_receiver' }
+
+      include_examples 'common method def behavior'
+
+      it 'detects incorrectly indented first element hash key' do
+        expect_offense(<<-RUBY.strip_indent)
+          def abc(
+                    foo: 1,
+                    ^^^^^^ Indent the first parameter one step more than `(`.
+                    bar: 3,
+                    baz: 3
+          )
+            foo
+          end
+        RUBY
+      end
+
+      it 'detects incorrectly indented first element' do
+        expect_offense(<<-RUBY.strip_indent)
+          def abc(
+                      foo,
+                      ^^^ Indent the first parameter one step more than `(`.
+                      bar,
+                      baz
+          )
+            foo
+          end
+        RUBY
+      end
+    end
+
+    context 'special_for_inner_method_call style ' do
+      let(:style) { 'special_for_inner_method_call' }
+
+      include_examples 'common method def behavior'
+    end
+
+    context 'special_for_inner_method_call_in_parentheses style ' do
+      let(:style) { 'special_for_inner_method_call_in_parentheses' }
+
+      include_examples 'common method def behavior'
     end
   end
 end

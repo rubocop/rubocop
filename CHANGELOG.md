@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add `IgnoreMethodDefinitions` option to `Layout/FirstParameterIndentation` to support indent method definition params. ([@maxh][])
+
 ### Bug fixes
 
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])

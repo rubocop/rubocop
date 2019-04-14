@@ -622,6 +622,7 @@ Layout/FirstParameterIndentation:
   VersionAdded: '0.49'
   VersionChanged: '0.56'
   EnforcedStyle: special_for_inner_method_call_in_parentheses
+  IgnoreMethodDefinitions: true
   SupportedStyles:
     # The first parameter should always be indented one step more than the
     # preceding line.

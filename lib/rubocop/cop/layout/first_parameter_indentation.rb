@@ -4,9 +4,13 @@ module RuboCop
   module Cop
     # rubocop:disable Metrics/LineLength
     module Layout
-      # This cop checks the indentation of the first parameter in a method call.
-      # Parameters after the first one are checked by Layout/AlignParameters,
-      # not by this cop.
+      # This cop checks the indentation of the first parameter in a method call
+      # or definition. Parameters after the first one are checked by
+      # Layout/AlignParameters, not by this cop.
+      #
+      # By default, this cop is enabled for method calls and disabled for
+      # method definitions. To enable it for method definitions, set the param
+      # `IgnoreMethodDefinitions` to false.
       #
       # @example
       #
@@ -156,6 +160,13 @@ module RuboCop
         end
         alias on_csend on_send
 
+        def on_def(node)
+          return if ignore_method_definitions?
+
+          on_send(node)
+        end
+        alias on_defs on_def
+
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, column_delta)
         end
@@ -237,6 +248,10 @@ module RuboCop
             line = processed_source.lines[line_number - 1]
           end
           line
+        end
+
+        def ignore_method_definitions?
+          cop_config['IgnoreMethodDefinitions']
         end
       end
     end
