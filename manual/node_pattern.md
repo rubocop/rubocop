@@ -244,22 +244,6 @@ def_node_matcher :initializing_with_user?, <<~PATTERN
 PATTERN
 ```
 
-Improving a bit more, let's make it accepts `update`, and `create`.
-
-Instead of make our call more complex, we can define another matcher:
-
-```ruby
-def_node_matcher :model_methods?, '{:new :create :update}'
-```
-
-And combine again:
-
-```ruby
-def_node_matcher :model_method_called_with_user?, <<~PATTERN
-  (send ... #model_methods? (hash (pair #user_symbol?)))
-PATTERN
-```
-
 ## `nil` or `nil?`
 
 Take a special attention to nil behavior:
