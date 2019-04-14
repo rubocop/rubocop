@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
   context 'when EnforcedStyle is "strict"' do
     let(:cop_config) { { 'EnforcedStyle' => 'strict' } }
 
-    described_class::TIMECLASS.each do |klass|
+    described_class::TIMECLASSES.each do |klass|
       it "registers an offense for #{klass}.now" do
         inspect_source("#{klass}.now")
         expect(cop.offenses.size).to eq(1)
@@ -31,10 +31,10 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.first.message).to include('`Time.zone.local`')
       end
 
-      it 'does not register an offense when a .new method is made
-        independently of the Time class' do
+      it "does not register an offense when a .new method is called
+        independently of the #{klass} class" do
         expect_no_offenses(<<-RUBY.strip_indent)
-          Range.new(1, Time.days_in_month(date.month, date.year))
+          Range.new(1, #{klass}.class.to_s)
         RUBY
       end
 
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
 
       it "accepts Some::#{klass}.now" do
         expect_no_offenses(<<-RUBY.strip_indent)
-          Some::#{klass}.forward(0).strftime('%H:%M')
+          Some::#{klass}.now(0).strftime('%H:%M')
         RUBY
       end
 
@@ -59,6 +59,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
         it "registers an offense #{klass}.now.#{a_method}" do
           inspect_source("#{klass}.now.#{a_method}")
           expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to include('`Time.zone.now`')
         end
       end
 
@@ -67,15 +68,29 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
           { 'AutoCorrect' => 'true', 'EnforcedStyle' => 'strict' }
         end
 
-        described_class::DANGEROUS_METHODS.each do |a_method|
+        it 'autocorrects correctly' do
+          source = "#{klass}.now.in_time_zone"
+          new_source = autocorrect_source(source)
+          expect(new_source).to eq('Time.zone.now')
+        end
+
+        # :current is a special case and is treated separately below
+        (described_class::DANGEROUS_METHODS - [:current]).each do |a_method|
           it 'corrects the error' do
             source = <<-RUBY.strip_indent
               #{klass}.#{a_method}
             RUBY
             new_source = autocorrect_source(source)
             expect(new_source).to eq(<<-RUBY.strip_indent)
-              #{klass}.zone.#{a_method}
+              Time.zone.#{a_method}
             RUBY
+          end
+        end
+
+        describe '.current' do
+          it 'corrects the error' do
+            new_source = autocorrect_source("#{klass}.current")
+            expect(new_source).to eq('Time.zone.now')
           end
         end
       end
@@ -199,7 +214,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
   context 'when EnforcedStyle is "flexible"' do
     let(:cop_config) { { 'EnforcedStyle' => 'flexible' } }
 
-    described_class::TIMECLASS.each do |klass|
+    described_class::TIMECLASSES.each do |klass|
       it "registers an offense for #{klass}.now" do
         inspect_source("#{klass}.now")
         expect(cop.offenses.size).to eq(1)
@@ -271,7 +286,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
             new_source = autocorrect_source(source)
             unless a_method == :current
               expect(new_source).to eq(<<-RUBY.strip_indent)
-                #{klass}.#{a_method}.in_time_zone
+                #{klass}.zone.#{a_method}
               RUBY
             end
           end

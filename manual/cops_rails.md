@@ -2190,7 +2190,7 @@ Enabled | No | Yes  | 0.30 | 0.68
 This cop checks for the use of Time methods without zone.
 
 Built on top of Ruby on Rails style guide (https://github.com/rubocop-hq/rails-style-guide#time)
-and the article http://danilenko.org/2012/7/6/rails_timezones/ .
+and the article http://danilenko.org/2012/7/6/rails_timezones/
 
 Two styles are supported for this cop. When EnforcedStyle is 'strict'
 then only use of Time.zone is allowed.

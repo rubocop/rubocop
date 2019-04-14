@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#6900](https://github.com/rubocop-hq/rubocop/issues/6900): Fix `Rails/TimeZone` autocorrect `Time.current` to `Time.zone.now`. ([@vfonic][])
+* [#6900](https://github.com/rubocop-hq/rubocop/issues/6900): Fix `Rails/TimeZone` to prefer `Time.zone.#{method}` over other acceptable corrections. ([@vfonic][])
+
 ## 0.68.0 (2019-04-29)
 
 ### New features
