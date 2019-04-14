@@ -238,7 +238,7 @@ $ ruby-parse -e 'Comment.new(user: current_user)'
 
 And we can also reuse this and check if it's a constructor:
 
-```
+```ruby
 def_node_matcher :initializing_with_user?, <<~PATTERN
   (send _ :new (hash (pair #user_symbol?)))
 PATTERN
