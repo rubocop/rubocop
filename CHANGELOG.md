@@ -6,6 +6,7 @@
 
 * [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
 * Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
+* [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
 
 ### Bug fixes
 
@@ -19,10 +20,6 @@
 * [#6903](https://github.com/rubocop-hq/rubocop/issues/6903): Handle variables prefixed with `_` in `Naming/RescuedExceptionsVariableName` cop. ([@anthony-robin][])
 * [#6917](https://github.com/rubocop-hq/rubocop/issues/6917): Bump Bundler dependency to >= 1.15.0. ([@koic][])
 * Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
-
-### New features
-
-* [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
 
 ## 0.67.2 (2019-04-05)
 
