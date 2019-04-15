@@ -5,6 +5,7 @@
 ### New features
 
 * [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
+* Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
 
 ### Bug fixes
 
