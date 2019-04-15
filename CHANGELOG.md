@@ -8,6 +8,7 @@
 
 ### Bug fixes
 
+* Do not annotate message with cop name in JSON output. ([@elebow][])
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
 
 ### Changes
