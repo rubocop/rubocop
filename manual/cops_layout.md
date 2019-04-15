@@ -2092,6 +2092,62 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
 IndentationWidth | `<none>` | Integer
 
+## Layout/HeredocArgumentClosingParenthesis
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.68 | -
+
+This cop checks for the placement of the closing parenthesis
+in a method call that passes a HEREDOC string as an argument.
+It should be placed at the end of the line containing the
+opening HEREDOC tag.
+
+### Examples
+
+```ruby
+# bad
+
+   foo(<<-SQL
+     bar
+   SQL
+   )
+
+   foo(<<-SQL, 123, <<-NOSQL,
+     bar
+   SQL
+     baz
+   NOSQL
+   )
+
+   foo(
+     bar(<<-SQL
+       baz
+     SQL
+     ),
+     123,
+   )
+
+# good
+
+   foo(<<-SQL)
+     bar
+   SQL
+
+   foo(<<-SQL, 123, <<-NOSQL)
+     bar
+   SQL
+     baz
+   NOSQL
+
+   foo(
+     bar(<<-SQL),
+       baz
+     SQL
+     123,
+   )
+```
+
 ## Layout/IndentArray
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

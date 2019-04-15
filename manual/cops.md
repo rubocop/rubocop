@@ -136,6 +136,7 @@ In the following section you find all available cops:
 * [Layout/FirstMethodArgumentLineBreak](cops_layout.md#layoutfirstmethodargumentlinebreak)
 * [Layout/FirstMethodParameterLineBreak](cops_layout.md#layoutfirstmethodparameterlinebreak)
 * [Layout/FirstParameterIndentation](cops_layout.md#layoutfirstparameterindentation)
+* [Layout/HeredocArgumentClosingParenthesis](cops_layout.md#layoutheredocargumentclosingparenthesis)
 * [Layout/IndentArray](cops_layout.md#layoutindentarray)
 * [Layout/IndentAssignment](cops_layout.md#layoutindentassignment)
 * [Layout/IndentHash](cops_layout.md#layoutindenthash)
