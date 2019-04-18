@@ -12,6 +12,7 @@
 
 * Do not annotate message with cop name in JSON output. ([@elebow][])
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
+* [#6888](https://github.com/rubocop-hq/rubocop/issues/6888): Fix an error for `Rails/ActiveRecordOverride ` when no `parent_class` present. ([@diachini][])
 * [#6941](https://github.com/rubocop-hq/rubocop/issues/6941): Add missing absence validations to `Rails/Validation`. ([@jmanian][])
 * [#6926](https://github.com/rubocop-hq/rubocop/issues/6926): [Fix #6926] Allow nil values to unset config defaults. ([@dduugg][])
 * [#6946](https://github.com/rubocop-hq/rubocop/pull/6946): Allow `Rails/ReflectionClassName` to use string interpolation for `class_name`. ([@r7kamura][])
@@ -3948,5 +3949,6 @@
 [@XrXr]: https://github.com/XrXr
 [@thomthom]: https://github.com/thomthom
 [@Blue-Pix]: https://github.com/Blue-Pix
+[@diachini]: https://github.com/diachini
 [@Mange]: https://github.com/Mange
 [@jmanian]: https://github.com/jmanian

@@ -41,6 +41,8 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
   it 'registers an offense when overriding update' do
     expect_offense(<<-RUBY.strip_indent)
       class X < ActiveModel::Base
+        module_function
+
         def update
         ^^^^^^^^^^ Use `before_update`, `around_update`, or `after_update` callbacks instead of overriding the Active Record method `update`.
           super
@@ -80,6 +82,18 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
           def save
             super
           end
+        end
+      RUBY
+    end
+  end
+
+  context 'when class has no parent specified' do
+    it 'registers no offense when overriding save' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class X
+          def initialize; end
+
+          def save; end
         end
       RUBY
     end
