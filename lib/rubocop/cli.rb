@@ -41,10 +41,15 @@ module RuboCop
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
-      validate_options_vs_config
-      act_on_options
-      apply_default_formatter
-      execute_runners(paths)
+
+      if @options[:init]
+        init_dotfile
+      else
+        validate_options_vs_config
+        act_on_options
+        apply_default_formatter
+        execute_runners(paths)
+      end
     rescue ConfigNotFoundError, IncorrectCopNameError, OptionArgumentError => e
       warn e.message
       STATUS_ERROR
@@ -130,6 +135,37 @@ module RuboCop
         f.write(line_length_contents)
       end
       result
+    end
+
+    def init_dotfile
+      path = File.expand_path(ConfigLoader::DOTFILE)
+
+      if File.exist?(ConfigLoader::DOTFILE)
+        warn Rainbow("#{ConfigLoader::DOTFILE} already exists at #{path}").red
+
+        STATUS_ERROR
+      else
+        description = <<-DESC.strip_indent
+          # The behavior of RuboCop can be controlled via the .rubocop.yml
+          # configuration file. It makes it possible to enable/disable
+          # certain cops (checks) and to alter their behavior if they accept
+          # any parameters. The file can be placed either in your home
+          # directory or in some project directory.
+          #
+          # RuboCop will start looking for the configuration file in the directory
+          # where the inspected file is and continue its way up to the root directory.
+          #
+          # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
+        DESC
+
+        File.open(ConfigLoader::DOTFILE, 'w') do |f|
+          f.write(description)
+        end
+
+        puts "Writing new #{ConfigLoader::DOTFILE} to #{path}"
+
+        STATUS_SUCCESS
+      end
     end
 
     def reset_config_and_auto_gen_file

@@ -35,6 +35,12 @@ RSpec.describe RuboCop::Cop::Rails::ReflectionClassName do
     end
   end
 
+  it 'does not register an offense when using string with interpolation' do
+    expect_no_offenses(<<-'RUBY'.strip_indent)
+      has_many :accounts, class_name: "#{prefix}Account"
+    RUBY
+  end
+
   it 'does not register an offense when using `foreign_key :account_id`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       has_many :accounts, class_name: 'Account', foreign_key: :account_id

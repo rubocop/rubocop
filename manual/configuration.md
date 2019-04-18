@@ -4,10 +4,8 @@ The behavior of RuboCop can be controlled via the
 [.rubocop.yml](https://github.com/rubocop-hq/rubocop/blob/master/.rubocop.yml)
 configuration file. It makes it possible to enable/disable certain cops
 (checks) and to alter their behavior if they accept any parameters. The file
-can be placed either in your home directory or in some project directory.
-
-RuboCop will start looking for the configuration file in the directory
-where the inspected file is and continue its way up to the root directory.
+can be placed in your home directory, XDG config directory, or in some project
+directory.
 
 The file has the following format:
 
@@ -25,6 +23,34 @@ Metrics/LineLength:
 
     Qualifying cop name with its type, e.g., `Style`, is recommended,
     but not necessary as long as the cop name is unique across all types.
+
+### Config file locations
+
+RuboCop will start looking for the configuration file in the directory
+where the inspected file is and continue its way up to the root directory.
+
+If it cannot be found until reaching the project's root directory, then it will
+be searched for in the user's global config locations, which consists of a
+dotfile or a config file inside the [XDG Base Directory
+specification][xdg-basedir-spec].
+
+* `~/.rubocop.yml`
+* `$XDG_HOME/rubocop/config.yml` (expands to `~/.config/rubocop/config.yml` if
+  `$XDG_CONFIG_HOME` is not set)
+
+If both files exist, the dotfile will be selected.
+
+As an example, if RuboCop is invoked from inside `/path/to/project/lib/utils`,
+then RuboCop will use the config as specified inside the first of the following
+files:
+
+* `/path/to/project/lib/utils/.rubocop.yml`
+* `/path/to/project/lib/.rubocop.yml`
+* `/path/to/project/.rubocop.yml`
+* `/.rubocop.yml`
+* `~/.rubocop.yml`
+* `~/.config/rubocop/config.yml`
+* [RuboCop's default configuration][1]
 
 ### Inheritance
 
@@ -215,9 +241,9 @@ In this example the `Exclude` would only include `bar.rb`.
 
 The file [config/default.yml][1] under the RuboCop home directory contains the
 default settings that all configurations inherit from. Project and personal
-`.rubocop.yml` files need only make settings that are different from the default
-ones. If there is no `.rubocop.yml` file in the project or home directory,
-`config/default.yml` will be used.
+`.rubocop.yml` files need only make settings that are different from the
+default ones. If there is no `.rubocop.yml` file in the project, home or XDG
+directories, `config/default.yml` will be used.
 
 ### Including/Excluding files
 
@@ -424,7 +450,7 @@ Metrics/LineLength:
     compromise.
 ```
 
-These details will only be seen when rubocop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global rubocop configuration. 
+These details will only be seen when rubocop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global rubocop configuration.
 
 #### AutoCorrect
 
@@ -521,3 +547,4 @@ for x in (0..19) # rubocop:disable Style/For
 ```
 
 [1]: https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml
+[xdg-basedir-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html

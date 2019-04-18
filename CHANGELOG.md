@@ -2,10 +2,20 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
+* Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
+* [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
+
 ### Bug fixes
 
+* Do not annotate message with cop name in JSON output. ([@elebow][])
 * [#6914](https://github.com/rubocop-hq/rubocop/issues/6914): [Fix #6914] Fix an error for `Rails/RedundantAllowNil` when with interpolations. ([@Blue-Pix][])
 * [#6888](https://github.com/rubocop-hq/rubocop/issues/6888): Fix an error for `Rails/ActiveRecordOverride ` when no `parent_class` present. ([@diachini][])
+* [#6941](https://github.com/rubocop-hq/rubocop/issues/6941): Add missing absence validations to `Rails/Validation`. ([@jmanian][])
+* [#6926](https://github.com/rubocop-hq/rubocop/issues/6926): [Fix #6926] Allow nil values to unset config defaults. ([@dduugg][])
+* [#6946](https://github.com/rubocop-hq/rubocop/pull/6946): Allow `Rails/ReflectionClassName` to use string interpolation for `class_name`. ([@r7kamura][])
 
 ### Changes
 
@@ -13,6 +23,7 @@
 * Add auto-correction to `Naming/RescuedExceptionsVariableName`. ([@anthony-robin][])
 * [#6903](https://github.com/rubocop-hq/rubocop/issues/6903): Handle variables prefixed with `_` in `Naming/RescuedExceptionsVariableName` cop. ([@anthony-robin][])
 * [#6917](https://github.com/rubocop-hq/rubocop/issues/6917): Bump Bundler dependency to >= 1.15.0. ([@koic][])
+* Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
 
 ## 0.67.2 (2019-04-05)
 
@@ -3939,3 +3950,5 @@
 [@thomthom]: https://github.com/thomthom
 [@Blue-Pix]: https://github.com/Blue-Pix
 [@diachini]: https://github.com/diachini
+[@Mange]: https://github.com/Mange
+[@jmanian]: https://github.com/jmanian

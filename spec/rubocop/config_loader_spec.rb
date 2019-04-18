@@ -33,7 +33,41 @@ RSpec.describe RuboCop::ConfigLoader do
         end
       end
 
-      context 'and no config file exists in home directory' do
+      context 'but a config file exists in default XDG config directory' do
+        before { create_empty_file('~/.config/rubocop/config.yml') }
+
+        it 'returns the path to the file in XDG directory' do
+          expect(configuration_file_for).to end_with(
+            'home/.config/rubocop/config.yml'
+          )
+        end
+      end
+
+      context 'but a config file exists in a custom XDG config directory' do
+        before do
+          ENV['XDG_CONFIG_HOME'] = '~/xdg-stuff'
+          create_empty_file('~/xdg-stuff/rubocop/config.yml')
+        end
+
+        it 'returns the path to the file in XDG directory' do
+          expect(configuration_file_for).to end_with(
+            'home/xdg-stuff/rubocop/config.yml'
+          )
+        end
+      end
+
+      context 'but a config file exists in both home and XDG directories' do
+        before do
+          create_empty_file('~/.config/rubocop/config.yml')
+          create_empty_file('~/.rubocop.yml')
+        end
+
+        it 'returns the path to the file in home directory' do
+          expect(configuration_file_for).to end_with('home/.rubocop.yml')
+        end
+      end
+
+      context 'and no config file exists in home or XDG directory' do
         it 'falls back to the provided default file' do
           expect(configuration_file_for).to end_with('config/default.yml')
         end
@@ -240,6 +274,45 @@ RSpec.describe RuboCop::ConfigLoader do
           expect(excludes)
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
         end.to output(/#{message}/).to_stdout
+      end
+    end
+
+    context 'when a file inherits and overrides a hash with nil' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+          Style/InverseMethods:
+            InverseMethods:
+              :any?: :none?
+              :even?: :odd?
+              :==: :!=
+              :=~: :!~
+              :<: :>=
+              :>: :<=
+        YAML
+
+        create_file('.rubocop.yml', <<-YAML.strip_indent)
+          inherit_from: .rubocop_parent.yml
+
+          Style/InverseMethods:
+            InverseMethods:
+              :<: ~
+              :>: ~
+              :foo: :bar
+        YAML
+      end
+
+      it 'removes hash keys with nil values' do
+        inverse_methods =
+          configuration_from_file['Style/InverseMethods']['InverseMethods']
+        expect(inverse_methods).to eq(
+          '==': :!=,
+          '=~': :!~,
+          any?: :none?,
+          even?: :odd?,
+          foo: :bar
+        )
       end
     end
 

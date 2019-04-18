@@ -61,6 +61,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --no-auto-gen-timestamp      Do not include the date and time when
                                                the --auto-gen-config was run in the file it
                                                generates.
+                  --init                       Generate a .rubocop.yml file in the current directory.
               -f, --format FORMATTER           Choose an output formatter. This option
                                                can be specified multiple times to enable
                                                multiple formatters at the same time.

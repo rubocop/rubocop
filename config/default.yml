@@ -641,6 +641,13 @@ Layout/FirstParameterIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/HeredocArgumentClosingParenthesis:
+  Description: >-
+                 Checks for the placement of the closing parenthesis in a
+                 method call that passes a HEREDOC string as an argument.
+  Enabled: false
+  VersionAdded: '0.68'
+
 Layout/IndentArray:
   Description: >-
                  Checks the indentation of the first element in an array

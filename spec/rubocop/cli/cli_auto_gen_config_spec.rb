@@ -845,6 +845,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       YAML
     end
 
+    it 'includes --auto-gen-only-exclude in the command comment when given' do
+      create_file('example1.rb', ['$!'])
+      expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude',
+                      '--exclude-limit', '1'])).to eq(0)
+
+      command = '# `rubocop --auto-gen-config --auto-gen-only-exclude ' \
+                '--exclude-limit 1`'
+      expect(IO.readlines('.rubocop_todo.yml')[1].chomp).to eq(command)
+    end
+
     it 'does not include a timestamp when --no-auto-gen-timestamp is used' do
       create_file('example1.rb', ['$!'])
       expect(cli.run(['--auto-gen-config', '--no-auto-gen-timestamp'])).to eq(0)
