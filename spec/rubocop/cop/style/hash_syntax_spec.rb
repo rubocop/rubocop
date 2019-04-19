@@ -387,6 +387,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'accepts new syntax when keys are interpolated string' do
+        expect_no_offenses('{"#{foo}": 1, "#{@foo}": 2, "#@foo": 3}')
+      end
+
       it 'auto-corrects old to new style' do
         new_source = autocorrect_source('{ :a => 1, :b => 2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
@@ -502,6 +506,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+      end
+
+      it 'accepts new syntax when keys are interpolated string' do
+        expect_no_offenses('{"#{foo}": 1, "#{@foo}": 2, "#@foo": 3}')
       end
 
       it 'auto-corrects old to new style' do
