@@ -452,6 +452,21 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects Style/InverseMethods and Style/Not offenses' do
+    source = <<-'RUBY'.strip_indent
+      x.select {|y| not y.z }
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only', 'Style/InverseMethods,Style/Not'
+                   ])).to eq(0)
+    corrected = <<-'RUBY'.strip_indent
+      x.reject {|y|  y.z }
+    RUBY
+    expect(IO.read('example.rb')).to eq(corrected)
+  end
+
   describe 'caching' do
     let(:cache) do
       instance_double(RuboCop::ResultCache, 'valid?' => true,
