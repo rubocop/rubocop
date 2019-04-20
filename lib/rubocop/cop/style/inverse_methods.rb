@@ -37,6 +37,10 @@ module RuboCop
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::Not]
+        end
+
         def_node_matcher :inverse_candidate?, <<-PATTERN
           {
             (send $(send $(...) $_ $...) :!)
