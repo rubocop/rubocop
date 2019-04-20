@@ -17,6 +17,7 @@
 * [#6926](https://github.com/rubocop-hq/rubocop/issues/6926): [Fix #6926] Allow nil values to unset config defaults. ([@dduugg][])
 * [#6946](https://github.com/rubocop-hq/rubocop/pull/6946): Allow `Rails/ReflectionClassName` to use string interpolation for `class_name`. ([@r7kamura][])
 * [#6778](https://github.com/rubocop-hq/rubocop/issues/6778): Fix a false positive in `Style/HashSyntax` cop when a hash key is an interpolated string and EnforcedStyle is ruby19_no_mixed_keys. ([@tatsuyafw][])
+* [#6902](https://github.com/rubocop-hq/rubocop/issues/6902): Fix a bug where `Naming/RescuedExceptionsVariableName` would handle an only first rescue for multiple rescue groups. ([@tatsuyafw][])
 
 ### Changes
 
