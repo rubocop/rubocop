@@ -12,6 +12,18 @@ module RuboCop
       def body
         node_parts[2]
       end
+
+      # Returns the exception variable of the `rescue` clause.
+      #
+      # @return [Node, nil] The exception variable of the `resbody`.
+      def exception_variable
+        variable = node_parts[1]
+        return variable if variable
+
+        # When resbody is an implicit rescue (i.e. `rescue e` style),
+        # the exception variable is descendants[1].
+        descendants[1]
+      end
     end
   end
 end

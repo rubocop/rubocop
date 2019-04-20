@@ -44,6 +44,31 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
 
+        it 'registers offenses when using `foo` and `bar` ' \
+           'in multiple rescues' do
+          expect_offense(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue FooException => foo
+                                   ^^^ Use `e` instead of `foo`.
+              # do something
+            rescue BarException => bar
+                                   ^^^ Use `e` instead of `bar`.
+              # do something
+            end
+          RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            begin
+              something
+            rescue FooException => e
+              # do something
+            rescue BarException => e
+              # do something
+            end
+          RUBY
+        end
+
         it 'does not register an offense when using `e`' do
           expect_no_offenses(<<-RUBY.strip_indent)
             begin
@@ -193,6 +218,30 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         begin
           something
         rescue MyException => _exception
+          # do something
+        end
+      RUBY
+    end
+
+    it 'registers offenses when using `foo` and `bar` in multiple rescues' do
+      expect_offense(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue FooException => foo
+                               ^^^ Use `exception` instead of `foo`.
+          # do something
+        rescue BarException => bar
+                               ^^^ Use `exception` instead of `bar`.
+          # do something
+        end
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        begin
+          something
+        rescue FooException => exception
+          # do something
+        rescue BarException => exception
           # do something
         end
       RUBY

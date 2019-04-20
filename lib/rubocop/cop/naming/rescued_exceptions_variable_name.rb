@@ -64,16 +64,21 @@ module RuboCop
           return if @exception_name.const_type? ||
                     variable_name == preferred_name
 
-          add_offense(node, location: location)
+          add_offense(node, location: offense_range(node))
         end
 
-        def autocorrect(_node)
+        def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(location, preferred_name)
+            corrector.replace(offense_range(node), preferred_name)
           end
         end
 
         private
+
+        def offense_range(resbody)
+          variable = resbody.exception_variable
+          variable.loc.expression
+        end
 
         def preferred_name
           @preferred_name ||= begin
@@ -84,11 +89,11 @@ module RuboCop
         end
 
         def variable_name
-          @variable_name ||= location.source
+          location.source
         end
 
         def location
-          @location ||= @exception_name.loc.expression
+          @exception_name.loc.expression
         end
 
         def message(_node = nil)
