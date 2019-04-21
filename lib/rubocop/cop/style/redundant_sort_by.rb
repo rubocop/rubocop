@@ -35,7 +35,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          send, = *node
+          send = node.send_node
           ->(corrector) { corrector.replace(sort_by_range(send, node), 'sort') }
         end
 

@@ -71,7 +71,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            _receiver, detected_method = *node
+            detected_method = node.method_name
 
             case detected_method
             when :%

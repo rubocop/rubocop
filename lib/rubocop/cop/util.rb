@@ -45,11 +45,9 @@ module RuboCop
         while node
           case node.type
           when :send
-            receiver, _method_name, _args = *node
-            node = receiver
+            node = node.receiver
           when :block
-            method, _args, _body = *node
-            node = method
+            node = node.send_node
           else
             break
           end

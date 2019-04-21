@@ -32,8 +32,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          condition, = *node
-          body_range = range_between_condition_and_else(node, condition)
+          body_range = range_between_condition_and_else(node, node.condition)
           else_range = range_between_else_and_end(node)
 
           lambda do |corrector|

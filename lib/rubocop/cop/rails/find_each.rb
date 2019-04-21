@@ -39,7 +39,7 @@ module RuboCop
         private
 
         def method_chain(node)
-          [*node.descendants.select(&:send_type?), node].map(&:method_name)
+          node.each_node(:send).map(&:method_name)
         end
 
         def ignored_by_find_each?(relation_method)
