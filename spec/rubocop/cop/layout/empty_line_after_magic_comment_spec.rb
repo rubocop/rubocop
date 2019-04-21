@@ -11,6 +11,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
       class Foo; end
       ^ Add an empty line after magic comments.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      class Foo; end
+    RUBY
   end
 
   it 'registers an offense for documentation immediately following comment' do
@@ -18,6 +24,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
       # frozen_string_literal: true
       # Documentation for Foo
       ^ Add an empty line after magic comments.
+      class Foo; end
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      # Documentation for Foo
       class Foo; end
     RUBY
   end
@@ -28,6 +41,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
       # frozen_string_literal: true
       class Foo; end
       ^ Add an empty line after magic comments.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      # encoding: utf-8
+      # frozen_string_literal: true
+
+      class Foo; end
     RUBY
   end
 
@@ -45,32 +65,5 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
 
   it 'accepts a source file with only a magic comment' do
     expect_no_offenses('# frozen_string_literal: true')
-  end
-
-  it 'autocorrects by adding a newline' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      # frozen_string_literal: true
-      class Foo; end
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      # frozen_string_literal: true\n
-      class Foo; end
-    RUBY
-  end
-
-  it 'autocorrects by adding a newline above the documentation' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      # frozen_string_literal: true
-      # Documentation for Foo
-      class Foo; end
-    RUBY
-
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      # frozen_string_literal: true
-
-      # Documentation for Foo
-      class Foo; end
-    RUBY
   end
 end

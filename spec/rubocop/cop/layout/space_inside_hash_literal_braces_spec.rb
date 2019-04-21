@@ -17,11 +17,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = { }
              ^ Space inside empty hash literal braces detected.
       RUBY
-    end
 
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source('h = { }')
-      expect(new_source).to eq('h = {}')
+      expect_correction(<<-RUBY.strip_indent)
+        h = {}
+      RUBY
     end
   end
 
@@ -37,11 +36,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = {}
             ^ Space inside empty hash literal braces missing.
       RUBY
-    end
 
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source('h = {}')
-      expect(new_source).to eq('h = { }')
+      expect_correction(<<-RUBY.strip_indent)
+        h = { }
+      RUBY
     end
   end
 
@@ -54,6 +52,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
           ^ Space inside { missing.
                  ^ Space inside } missing.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      h = { a: 1, b: 2 }
+      h = { a => 1 }
+    RUBY
   end
 
   it 'registers an offense for correct + opposite' do
@@ -61,16 +64,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
       h = { a: 1}
                 ^ Space inside } missing.
     RUBY
-  end
 
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
-      h = {a: 1, b: 2}
-      h = {a => 1 }
-    RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
-      h = { a: 1, b: 2 }
-      h = { a => 1 }
+    expect_correction(<<-RUBY.strip_indent)
+      h = { a: 1 }
     RUBY
   end
 
@@ -83,6 +79,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
              ^ Space inside { detected.
                         ^ Space inside } detected.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        h = {a: 1, b: 2}
+      RUBY
     end
 
     it 'registers an offense for opposite + correct' do
@@ -90,16 +90,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = {a: 1 }
                  ^ Space inside } detected.
       RUBY
-    end
 
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        h = { a: 1, b: 2 }
-        h = {a => 1 }
-      RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
-        h = {a: 1, b: 2}
-        h = {a => 1}
+      expect_correction(<<-RUBY.strip_indent)
+        h = {a: 1}
       RUBY
     end
 
@@ -143,6 +136,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = { a: { a: 1, b: 2 } }
                                ^ Space inside } detected.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        h = { a: { a: 1, b: 2 }}
+      RUBY
     end
 
     it 'registers an offense for opposite + correct' do
@@ -150,27 +147,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = {a: 1 }
             ^ Space inside { missing.
       RUBY
-    end
 
-    it 'auto-corrects hashes with no space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        h = {a: 1, b: 2}
-        h = {a => 1 }
-      RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
-        h = { a: 1, b: 2 }
-        h = { a => 1 }
-      RUBY
-    end
-
-    it 'auto-corrects nested hashes with spaces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        h = { a: { a: 1, b: 2 } }
-        h = {a => method { 1 } }
-      RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
-        h = { a: { a: 1, b: 2 }}
-        h = { a => method { 1 }}
+      expect_correction(<<-RUBY.strip_indent)
+        h = { a: 1 }
       RUBY
     end
 
@@ -182,6 +161,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = {a => 1}
                    ^ Space inside } missing.
             ^ Space inside { missing.
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        h = { a: 1, b: 2 }
+        h = { a => 1 }
       RUBY
     end
 

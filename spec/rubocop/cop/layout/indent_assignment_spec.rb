@@ -17,6 +17,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
       if b ; end
       ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      a =
+        if b ; end
+    RUBY
   end
 
   it 'allows assignments that do not start on a newline' do
@@ -48,6 +53,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
       if b ; end
       ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      a,
+      b =
+        if b ; end
+    RUBY
   end
 
   it 'ignores comparison operators' do
@@ -55,21 +66,6 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
       a ===
       if b ; end
     RUBY
-  end
-
-  it 'auto-corrects indentation' do
-    new_source = autocorrect_source(
-      <<-RUBY.strip_indent
-        a =
-        if b ; end
-      RUBY
-    )
-
-    expect(new_source)
-      .to eq(<<-RUBY.strip_indent)
-        a =
-          if b ; end
-      RUBY
   end
 
   context 'when indentation width is overridden for this cop only' do
@@ -83,18 +79,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
     end
 
     it 'auto-corrects indentation' do
-      new_source = autocorrect_source(
-        <<-RUBY.strip_indent
-          a =
-            if b ; end
-        RUBY
-      )
+      expect_offense(<<-RUBY.strip_indent)
+        a =
+          if b ; end
+          ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
+      RUBY
 
-      expect(new_source)
-        .to eq(<<-RUBY.strip_indent)
-          a =
-                 if b ; end
-        RUBY
+      expect_correction(<<-RUBY.strip_indent)
+        a =
+               if b ; end
+      RUBY
     end
   end
 end

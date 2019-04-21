@@ -37,21 +37,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           end
         end
       RUBY
-    end
 
-    it 'auto-corrects' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        class J
-          def n
-          end # n-related
-          # checks something o-related
-          # and more
-          def o
-          end
-        end
-      RUBY
-
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         class J
           def n
           end # n-related
@@ -113,21 +100,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
             end
           end
         RUBY
-      end
 
-      it 'autocorrects it' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          class Test
-            def self.foo
-              true
-            end
-            def self.bar
-              true
-            end
-          end
-        RUBY
-
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           class Test
             def self.foo
               true
@@ -154,21 +128,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
             end
           end
         RUBY
-      end
 
-      it 'autocorrects it' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          class Test
-            def foo
-              true
-            end
-            def self.bar
-              true
-            end
-          end
-        RUBY
-
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           class Test
             def foo
               true
@@ -256,14 +217,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       def b; end
       ^^^ Use empty lines between method definitions.
     RUBY
-  end
 
-  it 'auto-corrects adjacent one-liners by default' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
-      def a; end
-      def b; end
-    RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect_correction(<<-RUBY.strip_indent)
       def a; end
 
       def b; end
@@ -366,19 +321,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         ^^^ Use empty lines between method definitions.
         end
       RUBY
-    end
 
-    it 'auto-corrects' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        def n
-        end
-
-
-        def o
-        end
-      RUBY
-
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         def n
         end
 
@@ -400,36 +344,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         ^^^ Use empty lines between method definitions.
         end
       RUBY
-    end
 
-    it 'auto-corrects when there are no new lines' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        def n
-        end
-        def o
-        end
-      RUBY
-
-      expect(corrected).to eq(<<-RUBY.strip_indent)
-        def n
-        end
-
-
-        def o
-        end
-      RUBY
-    end
-
-    it 'auto-corrects when there are too few new lines' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        def n
-        end
-
-        def o
-        end
-      RUBY
-
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         def n
         end
 

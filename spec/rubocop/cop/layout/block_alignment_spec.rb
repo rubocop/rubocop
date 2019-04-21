@@ -14,15 +14,8 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
           end
           ^^^ `end` at 2, 2 is not aligned with `test do` at 1, 0.
       RUBY
-    end
 
-    it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        test do
-          end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         test do
         end
       RUBY
@@ -36,15 +29,8 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
           end
           ^^^ `end` at 2, 2 is not aligned with `test do |ala|` at 1, 0.
       RUBY
-    end
 
-    it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        test do |ala|
-          end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         test do |ala|
         end
       RUBY
@@ -84,22 +70,15 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
             end
             ^^^ `end` at 2, 4 is not aligned with `a = b = c = test do |ala|` at 1, 0.
       RUBY
-    end
 
-    it 'accepts end aligned with the first variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         a = b = c = test do |ala|
         end
       RUBY
     end
 
-    it 'auto-corrects alignment to the first variable' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        a = b = c = test do |ala|
-            end
-      RUBY
-
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+    it 'accepts end aligned with the first variable' do
+      expect_no_offenses(<<-RUBY.strip_indent)
         a = b = c = test do |ala|
         end
       RUBY
@@ -122,6 +101,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 2, 2 is not aligned with `variable = test do |ala|` at 1, 0.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      variable = test do |ala|
+      end
+    RUBY
   end
 
   context 'when the block is defined on the next line' do
@@ -142,25 +126,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 4, 0 is not aligned with `a_long_method_that_dont_fit_on_the_line do |v|` at 2, 2.
       RUBY
-    end
 
-    it 'auto-corrects alignment' do
-      new_source = autocorrect_source(
-        <<-RUBY.strip_indent
-          variable =
-            a_long_method_that_dont_fit_on_the_line do |v|
-              v.foo
+      expect_correction(<<-RUBY.strip_indent)
+        variable =
+          a_long_method_that_dont_fit_on_the_line do |v|
+            v.foo
           end
-        RUBY
-      )
-
-      expect(new_source)
-        .to eq(<<-RUBY.strip_indent)
-          variable =
-            a_long_method_that_dont_fit_on_the_line do |v|
-              v.foo
-            end
-        RUBY
+      RUBY
     end
   end
 
@@ -199,6 +171,20 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
                 ^^^ `end` at 10, 8 is not aligned with `bar.get_stuffs` at 2, 2 or `.select do |stuff|` at 8, 6.
         end
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        def foo(bar)
+          bar.get_stuffs
+              .reject do |stuff|
+                stuff.with_a_very_long_expression_that_doesnt_fit_the_line
+          end.select do |stuff|
+                stuff.another_very_long_expression_that_doesnt_fit_the_line
+          end
+              .select do |stuff|
+                stuff.another_very_long_expression_that_doesnt_fit_the_line
+          end
+        end
+      RUBY
     end
 
     # Example from issue 393 of rubocop-hq/rubocop on github:
@@ -233,39 +219,6 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
       RUBY
     end
-
-    it 'auto-corrects misaligned ends with the start of the expression' do
-      src = <<-RUBY.strip_indent
-        def foo(bar)
-          bar.get_stuffs
-              .reject do |stuff|
-                stuff.with_a_very_long_expression_that_doesnt_fit_the_line
-                end.select do |stuff|
-                stuff.another_very_long_expression_that_doesnt_fit_the_line
-            end
-              .select do |stuff|
-                stuff.another_very_long_expression_that_doesnt_fit_the_line
-                end
-        end
-      RUBY
-
-      aligned_src = <<-RUBY.strip_indent
-        def foo(bar)
-          bar.get_stuffs
-              .reject do |stuff|
-                stuff.with_a_very_long_expression_that_doesnt_fit_the_line
-          end.select do |stuff|
-                stuff.another_very_long_expression_that_doesnt_fit_the_line
-          end
-              .select do |stuff|
-                stuff.another_very_long_expression_that_doesnt_fit_the_line
-          end
-        end
-      RUBY
-
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(aligned_src)
-    end
   end
 
   context 'when variables of a mass assignment spans several lines' do
@@ -286,23 +239,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
             end
             ^^^ `end` at 4, 4 is not aligned with `e,` at 1, 0 or `f = [5, 6].map do |i|` at 2, 0.
       RUBY
-    end
 
-    it 'auto-corrects' do
-      src = <<-RUBY.strip_indent
-        e,
-        f = [5, 6].map do |i|
-          i - 5
-            end
-      RUBY
-      corrected = <<-RUBY.strip_indent
+      expect_correction(<<-RUBY.strip_indent)
         e,
         f = [5, 6].map do |i|
           i - 5
         end
       RUBY
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(corrected)
     end
   end
 
@@ -320,6 +263,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 2, 2 is not aligned with `@variable = test do |ala|` at 1, 0.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      @variable = test do |ala|
+      end
+    RUBY
   end
 
   it 'accepts end aligned with a class variable' do
@@ -334,6 +282,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       @@variable = test do |ala|
         end
         ^^^ `end` at 2, 2 is not aligned with `@@variable = test do |ala|` at 1, 0.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      @@variable = test do |ala|
+      end
     RUBY
   end
 
@@ -350,6 +303,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 2, 2 is not aligned with `$variable = test do |ala|` at 1, 0.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      $variable = test do |ala|
+      end
+    RUBY
   end
 
   it 'accepts end aligned with a constant' do
@@ -364,6 +322,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       Module::CONSTANT = test do |ala|
         end
         ^^^ `end` at 2, 2 is not aligned with `Module::CONSTANT = test do |ala|` at 1, 0.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      Module::CONSTANT = test do |ala|
+      end
     RUBY
   end
 
@@ -382,6 +345,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 3, 2 is not aligned with `parser.children << lambda do |token|` at 1, 0.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      parser.children << lambda do |token|
+        token << 1
+      end
+    RUBY
   end
 
   it 'accepts end aligned with a method call with arguments' do
@@ -399,6 +368,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         v = 1
         end
         ^^^ `end` at 3, 2 is not aligned with `@h[:f] = f.each_pair.map do |f, v|` at 1, 0.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      @h[:f] = f.each_pair.map do |f, v|
+        v = 1
+      end
     RUBY
   end
 
@@ -669,24 +644,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
           end
           ^^^ `end` at 4, 2 is not aligned with `foo.bar` at 1, 0.
       RUBY
-    end
 
-    it 'autocorrects' do
-      src = <<-RUBY.strip_indent
-        foo.bar
-          .each do
-            baz
-          end
-      RUBY
-      corrected = <<-RUBY.strip_indent
+      expect_correction(<<-RUBY.strip_indent)
         foo.bar
           .each do
             baz
         end
       RUBY
-
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(corrected)
     end
   end
 
@@ -712,24 +676,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 4, 0 is not aligned with `.each do` at 2, 2.
       RUBY
-    end
 
-    it 'autocorrects' do
-      src = <<-RUBY.strip_indent
-        foo.bar
-          .each do
-            baz
-        end
-      RUBY
-      corrected = <<-RUBY.strip_indent
+      expect_correction(<<-RUBY.strip_indent)
         foo.bar
           .each do
             baz
           end
       RUBY
-
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(corrected)
     end
   end
 end

@@ -12,6 +12,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
       1 ..2
       ^^^^^ Space inside range literal.
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      1..2
+      1..2
+      1..2
+    RUBY
   end
 
   it 'accepts no space inside .. literal' do
@@ -26,6 +32,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
       ^^^^^^ Space inside range literal.
       1 ...2
       ^^^^^^ Space inside range literal.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      1...2
+      1...2
+      1...2
     RUBY
   end
 
@@ -50,15 +62,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
           ^^^^ Space inside range literal.
           10
     RUBY
-  end
 
-  it 'autocorrects space around .. literal' do
-    corrected = autocorrect_source('1  .. 2')
-    expect(corrected).to eq('1..2')
-  end
-
-  it 'autocorrects space around ... literal' do
-    corrected = autocorrect_source('1  ... 2')
-    expect(corrected).to eq('1...2')
+    expect_correction(<<-RUBY.strip_indent)
+      x = 0..10
+    RUBY
   end
 end

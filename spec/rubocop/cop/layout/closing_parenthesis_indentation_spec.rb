@@ -12,15 +12,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          some_method(
-            a
-            )
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           some_method(
             a
           )
@@ -43,14 +36,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           )
           ^ Align `)` with `(`.
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          some_method(a
-          )
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           some_method(a
                      )
         RUBY
@@ -162,15 +149,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             )
             ^ Align `)` with `(`.
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          foo = some_method(
-                             a
-            )
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           foo = some_method(
                              a
                            )
@@ -192,6 +172,11 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           foo = some_method(a
           )
           ^ Align `)` with `(`.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          foo = some_method(a
+                           )
         RUBY
       end
 
@@ -231,23 +216,13 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         RUBY
       end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          foo = some_method(a
-          )
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
-          foo = some_method(a
-                           )
-        RUBY
-      end
-
       it 'accepts a correctly aligned )' do
         expect_no_offenses(<<-RUBY.strip_indent)
           foo = some_method(a
                            )
         RUBY
       end
+
       it 'accepts a correctly indented )' do
         expect_no_offenses(<<-RUBY.strip_indent)
           foo = some_method(a,
@@ -410,16 +385,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             ^ Indent `)` to column 0 (not 2)
           end
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          def some_method(
-            a
-            )
-          end
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           def some_method(
             a
           )
@@ -445,15 +412,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           ^ Align `)` with `(`.
           end
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          def some_method(a
-          )
-          end
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           def some_method(a
                          )
           end
@@ -486,15 +446,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          w = x * (
-            y + z
-            )
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           w = x * (
             y + z
           )
@@ -517,14 +470,8 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           )
           ^ Align `)` with `(`.
         RUBY
-      end
 
-      it 'autocorrects misaligned )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
-          w = x * (y + z
-            )
-        RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect_correction(<<-RUBY.strip_indent)
           w = x * (y + z
                   )
         RUBY

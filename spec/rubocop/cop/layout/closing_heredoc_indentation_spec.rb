@@ -95,6 +95,16 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
         end
       end
     RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      class Test
+        def foo
+          <<-SQL
+            bar
+          SQL
+        end
+      end
+    RUBY
   end
 
   it 'registers an offense for incorrectly indented empty heredocs' do
@@ -104,6 +114,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
 
           NIL
       ^^^^^^^ `NIL` is not aligned with `<<-NIL`.
+      end
+    RUBY
+
+    expect_correction(<<-RUBY.strip_indent)
+      def foo
+        <<-NIL
+
+        NIL
       end
     RUBY
   end
@@ -126,28 +144,5 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
       NIL
       end
     RUBY
-  end
-
-  describe '#autocorrect' do
-    it 'corrects bad indentation' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        class Test
-          def foo
-            <<-SQL
-              bar
-          SQL
-          end
-        end
-      RUBY
-      expect(corrected).to eq <<-RUBY.strip_indent
-        class Test
-          def foo
-            <<-SQL
-              bar
-            SQL
-          end
-        end
-      RUBY
-    end
   end
 end
