@@ -111,10 +111,7 @@ module RuboCop
 
         def collect_variable_like_names(scope)
           names = scope.each_node.with_object(Set.new) do |node, set|
-            if variable_like_method_invocation?(node)
-              _receiver, method_name, = *node
-              set << method_name
-            end
+            set << node.method_name if variable_like_method_invocation?(node)
           end
 
           variable_names = scope.variables.each_value.map(&:name)
@@ -124,8 +121,7 @@ module RuboCop
         def variable_like_method_invocation?(node)
           return false unless node.send_type?
 
-          receiver, _method_name, *args = *node
-          receiver.nil? && args.empty?
+          node.receiver.nil? && !node.arguments?
         end
       end
     end

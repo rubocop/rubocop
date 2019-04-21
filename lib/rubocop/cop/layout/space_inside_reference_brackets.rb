@@ -108,8 +108,7 @@ module RuboCop
         end
 
         def bracket_method?(node)
-          _, method, = *node
-          BRACKET_METHODS.include?(method)
+          BRACKET_METHODS.include?(node.method_name)
         end
 
         def left_ref_bracket(node, tokens)

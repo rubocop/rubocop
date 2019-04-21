@@ -128,15 +128,10 @@ module RuboCop
         def extract_method_chain(node)
           chain = []
           while !node.nil? && node.send_type?
-            chain << extract_method(node) if method_from_time_class?(node)
+            chain << node.method_name if method_from_time_class?(node)
             node = node.parent
           end
           chain
-        end
-
-        def extract_method(node)
-          _receiver, method_name, *_args = *node
-          method_name
         end
 
         # Only add the method to the chain if the method being
@@ -155,9 +150,7 @@ module RuboCop
         def method_send?(node)
           return false unless node.parent && node.parent.send_type?
 
-          receiver, _method_name, *_args = *node.parent
-
-          receiver == node
+          node.parent.receiver == node
         end
 
         def safe_method(method_name, node)
@@ -174,7 +167,7 @@ module RuboCop
           selector_node = node
 
           while node && node.send_type?
-            break if extract_method(node) == :localtime
+            break if node.method_name == :localtime
 
             node = node.parent
           end

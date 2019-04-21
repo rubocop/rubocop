@@ -64,20 +64,18 @@ module RuboCop
           return if node.ancestors.any?(&:if_type?)
           return if possible_dsl?(node)
 
-          name, = *node
-          found_instance_method(node, name)
+          found_instance_method(node, node.method_name)
         end
 
         def on_defs(node)
           return if node.ancestors.any?(&:if_type?)
           return if possible_dsl?(node)
 
-          receiver, name, = *node
-          if receiver.const_type?
-            _, const_name = *receiver
-            check_const_receiver(node, name, const_name)
-          elsif receiver.self_type?
-            check_self_receiver(node, name)
+          if node.receiver.const_type?
+            _, const_name = *node.receiver
+            check_const_receiver(node, node.method_name, const_name)
+          elsif node.receiver.self_type?
+            check_self_receiver(node, node.method_name)
           end
         end
 

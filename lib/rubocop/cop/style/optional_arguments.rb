@@ -22,10 +22,7 @@ module RuboCop
               'of the argument list.'.freeze
 
         def on_def(node)
-          _method, arguments, = *node
-          arguments = *arguments
-
-          each_misplaced_optional_arg(arguments) do |argument|
+          each_misplaced_optional_arg(node.arguments) do |argument|
             add_offense(argument)
           end
         end

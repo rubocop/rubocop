@@ -24,15 +24,11 @@ module RuboCop
 
       def extract_body(node)
         case node.type
-        when :block, :def
-          _receiver_or_method, _args, body = *node
-        when :defs
-          _self, _method, _args, body = *node
+        when :block, :def, :defs
+          node.body
         else
-          body = node
+          node
         end
-
-        body
       end
     end
   end

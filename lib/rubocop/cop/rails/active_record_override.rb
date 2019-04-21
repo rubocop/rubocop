@@ -33,7 +33,6 @@ module RuboCop
                                    ActiveRecord::Base].freeze
 
         def on_def(node)
-          method_name = node.method_name
           return unless BAD_METHODS.include?(node.method_name)
 
           parent_class_name = find_parent_class_name(node)
@@ -41,7 +40,7 @@ module RuboCop
 
           return unless node.descendants.any?(&:zsuper_type?)
 
-          add_offense(node, message: message(method_name))
+          add_offense(node, message: message(node.method_name))
         end
 
         private
