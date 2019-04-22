@@ -56,13 +56,7 @@ module RuboCop
         def on_send(node)
           return if whitelist.include?(node.method_name.to_s)
           return unless blacklist.include?(node.method_name.to_s)
-
-          _receiver, method_name, *args = *node
-
-          if METHODS_WITH_ARGUMENTS.include?(method_name.to_s) && args.empty?
-            return
-          end
-
+          return if allowed_method?(node)
           return if good_touch?(node)
 
           add_offense(node, location: :selector)
@@ -73,6 +67,11 @@ module RuboCop
 
         def message(node)
           format(MSG, method: node.method_name)
+        end
+
+        def allowed_method?(node)
+          METHODS_WITH_ARGUMENTS.include?(node.method_name.to_s) &&
+            !node.arguments?
         end
 
         def blacklist
