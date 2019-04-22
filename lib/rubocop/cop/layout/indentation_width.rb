@@ -110,8 +110,6 @@ module RuboCop
           super
           return unless node.adjacent_def_modifier?
 
-          *_, body = *node.first_argument
-
           def_end_config = config.for_cop('Layout/DefEndAlignment')
           style = def_end_config['EnforcedStyleAlignWith'] || 'start_of_line'
           base = if style == 'def'
@@ -120,7 +118,7 @@ module RuboCop
                    leftmost_modifier_of(node) || node
                  end
 
-          check_indentation(base.source_range, body)
+          check_indentation(base.source_range, node.first_argument.body)
           ignore_node(node.first_argument)
         end
         alias on_csend on_send
