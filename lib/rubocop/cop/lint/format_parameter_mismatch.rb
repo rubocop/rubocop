@@ -61,14 +61,10 @@ module RuboCop
           end
         end
 
-        def called_on_string?(node)
-          receiver_node, _method, format_string, = *node
-          if receiver_node.nil? || receiver_node.const_type?
-            format_string && format_string.str_type?
-          else
-            receiver_node.str_type?
-          end
-        end
+        def_node_matcher :called_on_string?, <<-PATTERN
+          {(send {nil? const_type?} _ (str _) ...)
+           (send (str ...) ...)}
+        PATTERN
 
         def method_with_format_args?(node)
           sprintf?(node) || format?(node) || percent?(node)
