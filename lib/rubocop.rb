@@ -93,6 +93,7 @@ require_relative 'rubocop/cop/mixin/array_min_size'
 require_relative 'rubocop/cop/mixin/array_syntax'
 require_relative 'rubocop/cop/mixin/alignment'
 require_relative 'rubocop/cop/mixin/check_assignment'
+require_relative 'rubocop/cop/mixin/check_line_breakable'
 require_relative 'rubocop/cop/mixin/configurable_max'
 require_relative 'rubocop/cop/mixin/code_length' # relies on configurable_max
 require_relative 'rubocop/cop/mixin/classish_length' # relies on code_length

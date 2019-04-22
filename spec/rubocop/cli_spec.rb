@@ -1480,6 +1480,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         |Supported parameters are:
         |
         |  - Enabled
+        |  - AutoCorrect
         |  - Max
         |  - AllowHeredoc
         |  - AllowURI
