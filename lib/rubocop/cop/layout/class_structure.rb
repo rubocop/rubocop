@@ -240,8 +240,8 @@ module RuboCop
         end
 
         def node_visibility(node)
-          _, method_name, = *find_visibility_start(node)
-          method_name || :public
+          scope = find_visibility_start(node)
+          scope && scope.method_name || :public
         end
 
         def find_visibility_start(node)
@@ -272,9 +272,8 @@ module RuboCop
         end
 
         def humanize_node(node)
-          method_name, = *node
           if node.def_type?
-            return :initializer if method_name == :initialize
+            return :initializer if node.method?(:initialize)
 
             return "#{node_visibility(node)}_methods"
           end
