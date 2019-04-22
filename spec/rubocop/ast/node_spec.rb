@@ -79,10 +79,9 @@ RSpec.describe RuboCop::AST::Node do
         let(:src) { 'if a then b else c end' }
 
         it 'is true only for the condition' do
-          condition, true_branch, false_branch = *node
-          expect(condition.used?).to be(true)
-          expect(true_branch.used?).to be(false)
-          expect(false_branch.used?).to be(false)
+          expect(node.condition.used?).to be(true)
+          expect(node.if_branch.used?).to be(false)
+          expect(node.else_branch.used?).to be(false)
         end
       end
     end
@@ -110,9 +109,8 @@ RSpec.describe RuboCop::AST::Node do
       let(:src) { 'while a; b; end' }
 
       it 'is true only for the condition' do
-        condition, body = *node
-        expect(condition.used?).to be(true)
-        expect(body.used?).to be(false)
+        expect(node.condition.used?).to be(true)
+        expect(node.body.used?).to be(false)
       end
     end
   end
