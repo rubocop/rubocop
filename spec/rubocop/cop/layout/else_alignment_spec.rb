@@ -24,16 +24,32 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
          func2
         end
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        if cond
+          func1
+        else
+         func2
+        end
+      RUBY
     end
 
     it 'registers an offense for misaligned elsif' do
-      expect_offense(<<-RUBY.strip_indent)
-          if a1
-            b1
-        elsif a2
-        ^^^^^ Align `elsif` with `if`.
-            b2
-          end
+      expect_offense(<<-RUBY.strip_margin('|'))
+      |    if a1
+      |      b1
+      |  elsif a2
+      |  ^^^^^ Align `elsif` with `if`.
+      |      b2
+      |    end
+      RUBY
+
+      expect_correction(<<-RUBY.strip_margin('|'))
+      |    if a1
+      |      b1
+      |    elsif a2
+      |      b2
+      |    end
       RUBY
     end
 
@@ -47,29 +63,6 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
             "BBBB-BBBB-BBBB-BBBB"
           end
       RUBY
-    end
-
-    describe '#autocorrect' do
-      it 'corrects bad alignment' do
-        corrected = autocorrect_source(<<-RUBY.strip_margin('|'))
-        |    if a1
-        |      b1
-        |      elsif a2
-        |      b2
-        |  else
-        |      c
-        |    end
-        RUBY
-        expect(corrected).to eq(<<-RUBY.strip_margin('|'))
-        |    if a1
-        |      b1
-        |    elsif a2
-        |      b2
-        |    else
-        |      c
-        |    end
-        RUBY
-      end
     end
 
     it 'accepts a one line if statement' do
@@ -218,21 +211,12 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
                 1
               end
             RUBY
-          end
 
-          it 'autocorrects bad alignment' do
-            corrected = autocorrect_source(<<-RUBY.strip_indent)
+            expect_correction(<<-RUBY.strip_indent)
               var = if a
-                b1
-              else
-                b2
-              end
-            RUBY
-            expect(corrected).to eq <<-RUBY.strip_indent
-              var = if a
-                b1
-                    else
-                b2
+                0
+                    elsif b
+                1
               end
             RUBY
           end

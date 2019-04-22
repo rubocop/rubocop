@@ -92,17 +92,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL)
             foo
           SQL
@@ -119,17 +110,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL.strip_indent
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL.strip_indent)
             foo
           SQL
@@ -146,17 +128,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL.strip_indent,
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL.strip_indent)
             foo
           SQL
@@ -173,17 +146,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(foo: <<-SQL
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(foo: <<-SQL)
             foo
           SQL
@@ -200,17 +164,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(foo(<<-SQL)
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(foo(<<-SQL))
             foo
           SQL
@@ -227,17 +182,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<~SQL
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<~SQL)
             foo
           SQL
@@ -254,17 +200,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL,
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL)
             foo
           SQL
@@ -281,17 +218,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL    ,
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL)
             foo
           SQL
@@ -308,20 +236,9 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL    ,
-               ,
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL)
-               ,
             foo
           SQL
         RUBY
@@ -339,19 +256,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL, <<-NOSQL
-            foo
-          SQL
-            bar
-          NOSQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL, <<-NOSQL)
             foo
           SQL
@@ -372,19 +278,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           ).bar(123).baz(456)
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL, <<-NOSQL
-            foo
-          SQL
-            bar
-          NOSQL
-          ).bar(123).baz(456)
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL, <<-NOSQL)
             foo
           SQL
@@ -404,17 +299,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(<<-SQL, 123
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(<<-SQL, 123)
             foo
           SQL
@@ -431,17 +317,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          foo(123, <<-SQL
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           foo(123, <<-SQL)
             foo
           SQL
@@ -458,17 +335,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          Foo.new(123, <<-SQL
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           Foo.new(123, <<-SQL)
             foo
           SQL
@@ -485,17 +353,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          raise Foo.new(123, <<-SQL
-            foo
-          SQL
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           raise Foo.new(123, <<-SQL)
             foo
           SQL
@@ -516,21 +375,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             789,
           )
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          bar(
-            foo(123, <<-SQL
-              foo
-            SQL
-            ),
-            456,
-            789,
-          )
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           bar(
             foo(123, <<-SQL),
               foo
@@ -555,21 +401,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             789,
           ]
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          [
-            foo(123, <<-SQL
-              foo
-            SQL
-            )      ,
-            456,
-            789,
-          ]
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           [
             foo(123, <<-SQL),
               foo
@@ -596,23 +429,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             789,
           ]
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          [
-            foo(123, <<-SQL, 456, 789, <<-NOSQL,
-              foo
-            SQL
-              bar
-            NOSQL
-            )      ,
-            456,
-            789,
-          ]
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           [
             foo(123, <<-SQL, 456, 789, <<-NOSQL),
               foo
@@ -641,23 +459,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             789,
           ]
         RUBY
-      end
 
-      it 'autocorrects' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
-          [
-            foo(foo(foo(123, <<-SQL, 456, 789, <<-NOSQL), 456), 400,
-              foo
-            SQL
-              bar
-            NOSQL
-            )      ,
-            456,
-            789,
-          ]
-        RUBY
-
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect_correction(<<-RUBY.strip_indent)
           [
             foo(foo(foo(123, <<-SQL, 456, 789, <<-NOSQL), 456), 400),
               foo

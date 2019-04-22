@@ -13,6 +13,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
         g = (a + 3 )
                   ^ Space inside parentheses detected.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        f(3)
+        g = (a + 3)
+      RUBY
     end
 
     it 'accepts parentheses in block parameter list' do
@@ -39,17 +44,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
           1)
       RUBY
     end
-
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        f( 3)
-        g = ( a + 3 )
-      RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
-        f(3)
-        g = (a + 3)
-      RUBY
-    end
   end
 
   context 'when EnforcedStyle is space' do
@@ -65,13 +59,24 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
               ^ No space inside parentheses detected.
                   ^ No space inside parentheses detected.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        f( 3 )
+        g = ( a + 3 )
+        split( "\\n" )
+      RUBY
     end
 
-    it 'accepts parentheses in block parameter list with no spaces' do
+    it 'registers an offense in block parameter list with no spaces' do
       expect_offense(<<-RUBY.strip_indent)
         list.inject( Tms.new ) { |sum, (label, item)|
                                         ^ No space inside parentheses detected.
                                                    ^ No space inside parentheses detected.
+        }
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        list.inject( Tms.new ) { |sum, ( label, item )|
         }
       RUBY
     end
@@ -95,25 +100,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       expect_no_offenses(<<-RUBY.strip_indent)
         f( # Comment
           1 )
-      RUBY
-    end
-
-    it 'auto-corrects wanted space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
-        f(3)
-        f( 3)
-        f(3 )
-        g = (a + 3)
-        g = ( a + 3)
-        g = (a + 3 )
-      RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
-        f( 3 )
-        f( 3 )
-        f( 3 )
-        g = ( a + 3 )
-        g = ( a + 3 )
-        g = ( a + 3 )
       RUBY
     end
   end

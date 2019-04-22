@@ -113,15 +113,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentHash do
          ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
         }
       RUBY
-    end
 
-    it 'auto-corrects incorrectly indented first pair' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        a << {
-         a: 1
-        }
-      RUBY
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect_correction(<<-RUBY.strip_indent)
         a << {
           a: 1
         }
@@ -164,17 +157,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentHash do
          c: 3
         }
       RUBY
-    end
 
-    it 'auto-corrects incorrectly indented first pair' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
-        a = {
-            a: 1,
-          b: 2,
-         c: 3
-        }
-      RUBY
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect_correction(<<-RUBY.strip_indent)
         a = {
           a: 1,
           b: 2,
