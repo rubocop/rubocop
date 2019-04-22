@@ -20,6 +20,7 @@
 * [#6778](https://github.com/rubocop-hq/rubocop/issues/6778): Fix a false positive in `Style/HashSyntax` cop when a hash key is an interpolated string and EnforcedStyle is ruby19_no_mixed_keys. ([@tatsuyafw][])
 * [#6902](https://github.com/rubocop-hq/rubocop/issues/6902): Fix a bug where `Naming/RescuedExceptionsVariableName` would handle an only first rescue for multiple rescue groups. ([@tatsuyafw][])
 * [#6860](https://github.com/rubocop-hq/rubocop/issues/6860): Prevent auto-correct conflict of `Style/InverseMethods` and `Style/Not`. ([@hoshinotsuyoshi][])
+* [#6935](https://github.com/rubocop-hq/rubocop/issues/6935): `Layout/AccessModifierIndentation` should ignore access modifiers that apply to specific methods. ([@deivid-rodriguez][])
 
 ### Changes
 
