@@ -56,10 +56,12 @@ module RuboCop
         private
 
         def replacement(node)
-          receiver, _, compared = *node
-          environment, = *compared
-          "#{receiver.source}.#{environment}?"
+          "#{node.receiver.source}.#{content(node.first_argument)}?"
         end
+
+        def_node_matcher :content, <<-PATTERN
+          ({str sym} $_)
+        PATTERN
       end
     end
   end
