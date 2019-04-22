@@ -70,12 +70,12 @@ module RuboCop
         def expand_elsif(node, elsif_branches = [])
           return [] if node.nil? || !node.if_type?
 
-          _condition, elsif_branch, else_branch = *node
-          elsif_branches << elsif_branch
-          if else_branch && else_branch.if_type?
-            expand_elsif(else_branch, elsif_branches)
+          elsif_branches << node.if_branch
+
+          if node.else_branch && node.else_branch.if_type?
+            expand_elsif(node.else_branch, elsif_branches)
           else
-            elsif_branches << else_branch
+            elsif_branches << node.else_branch
           end
           elsif_branches
         end
@@ -326,10 +326,8 @@ module RuboCop
             CaseCorrector.correct(self, node)
           elsif node.ternary?
             TernaryCorrector.correct(node)
-          elsif node.if?
+          elsif node.if? || node.unless?
             IfCorrector.correct(self, node)
-          elsif node.unless?
-            UnlessCorrector.correct(self, node)
           end
         end
 
@@ -519,18 +517,18 @@ module RuboCop
           private
 
           def correction(node)
-            condition, if_branch, else_branch = *node
-
-            "#{lhs(if_branch)}#{ternary(condition, if_branch, else_branch)}"
+            "#{lhs(node.if_branch)}#{ternary(node)}"
           end
 
-          def ternary(condition, if_branch, else_branch)
-            _variable, *_operator, if_rhs = *if_branch
-            _else_variable, *_operator, else_rhs = *else_branch
+          def ternary(node)
+            _variable, *_operator, if_rhs = *node.if_branch
+            _else_variable, *_operator, else_rhs = *node.else_branch
 
-            expr = "#{condition.source} ? #{if_rhs.source} : #{else_rhs.source}"
+            expr = "#{node.condition.source} ? " \
+                   "#{if_rhs.source} : " \
+                   "#{else_rhs.source}"
 
-            element_assignment?(if_branch) ? "(#{expr})" : expr
+            element_assignment?(node.if_branch) ? "(#{expr})" : expr
           end
 
           def element_assignment?(node)
@@ -574,7 +572,7 @@ module RuboCop
             lambda do |corrector|
               corrector.remove(assignment)
 
-              extract_branches(condition).flatten.each do |branch|
+              condition.branches.flatten.each do |branch|
                 move_branch_inside_condition(corrector, branch, condition,
                                              assignment, column)
               end
@@ -584,17 +582,10 @@ module RuboCop
           private
 
           def extract_tail_branches(node)
-            if_branch, elsif_branches, else_branch = extract_branches(node)
+            if_branch, *elsif_branches, else_branch = *node.branches
             elsif_branches.map! { |branch| tail(branch) }
 
             [tail(if_branch), elsif_branches, tail(else_branch)]
-          end
-
-          def extract_branches(node)
-            _condition, if_branch, else_branch = *node
-            elsif_branches, else_branch = expand_elses(else_branch)
-
-            [if_branch, elsif_branches, else_branch]
           end
 
           def move_branch_inside_condition(corrector, branch, condition,
@@ -653,10 +644,10 @@ module RuboCop
             [when_branches, tail(else_branch)]
           end
 
-          def extract_branches(node)
-            _condition, *when_branches, else_branch = *node
-            when_branches = expand_when_branches(when_branches)
-            [when_branches, else_branch]
+          def extract_branches(case_node)
+            when_branches = expand_when_branches(case_node.when_branches)
+
+            [when_branches, case_node.else_branch]
           end
 
           def move_branch_inside_condition(corrector, branch, condition,
@@ -670,26 +661,6 @@ module RuboCop
             parent_keyword = branch.parent.loc.keyword
             corrector.remove_preceding(parent_keyword,
                                        parent_keyword.column - column)
-          end
-        end
-      end
-
-      # Corrector to correct conditional assignment in `unless` statements.
-      class UnlessCorrector
-        class << self
-          include ConditionalAssignmentHelper
-          include ConditionalCorrectorHelper
-
-          def correct(cop, node)
-            ->(corrector) { correct_if_branches(corrector, cop, node) }
-          end
-
-          private
-
-          def extract_tail_branches(node)
-            _condition, else_branch, if_branch = *node
-
-            [tail(if_branch), [], tail(else_branch)]
           end
         end
       end
