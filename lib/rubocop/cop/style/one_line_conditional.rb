@@ -61,9 +61,11 @@ module RuboCop
         end
 
         def to_ternary(node)
-          "#{expr_replacement(node.condition)} ? " \
-            "#{expr_replacement(node.if_branch)} : " \
-            "#{expr_replacement(node.else_branch)}"
+          condition, if_branch, else_branch = *node
+
+          "#{expr_replacement(condition)} ? " \
+            "#{expr_replacement(if_branch)} : " \
+            "#{expr_replacement(else_branch)}"
         end
 
         def expr_replacement(node)
