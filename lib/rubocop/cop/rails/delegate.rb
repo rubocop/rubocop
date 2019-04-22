@@ -68,11 +68,10 @@ module RuboCop
         end
 
         def autocorrect(node)
-          method_name, _args, body = *node
-          delegation = ["delegate :#{body.method_name}",
-                        "to: :#{body.receiver.method_name}"]
+          delegation = ["delegate :#{node.body.method_name}",
+                        "to: :#{node.body.receiver.method_name}"]
 
-          if method_name == prefixed_method_name(body)
+          if node.method_name == prefixed_method_name(node.body)
             delegation << ['prefix: true']
           end
 
@@ -84,11 +83,9 @@ module RuboCop
         private
 
         def trivial_delegate?(def_node)
-          method_name, args, body = *def_node
-
           delegate?(def_node) &&
-            method_name_matches?(method_name, body) &&
-            arguments_match?(args, body)
+            method_name_matches?(def_node.method_name, def_node.body) &&
+            arguments_match?(def_node.arguments, def_node.body)
         end
 
         def arguments_match?(arg_array, body)
