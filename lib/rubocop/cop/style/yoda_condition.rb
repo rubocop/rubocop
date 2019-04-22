@@ -98,7 +98,8 @@ module RuboCop
         end
 
         def valid_yoda?(node)
-          lhs, _operator, rhs = *node
+          lhs = node.receiver
+          rhs = node.first_argument
 
           return true if lhs.literal? && rhs.literal? ||
                          !lhs.literal? && !rhs.literal?
@@ -111,8 +112,10 @@ module RuboCop
         end
 
         def corrected_code(node)
-          lhs, operator, rhs = *node
-          "#{rhs.source} #{reverse_comparison(operator)} #{lhs.source}"
+          lhs = node.receiver
+          rhs = node.first_argument
+
+          "#{rhs.source} #{reverse_comparison(node.method_name)} #{lhs.source}"
         end
 
         def actual_code_range(node)
@@ -126,13 +129,11 @@ module RuboCop
         end
 
         def non_equality_operator?(node)
-          _, operator, = *node
-          !EQUALITY_OPERATORS.include?(operator)
+          !EQUALITY_OPERATORS.include?(node.method_name)
         end
 
         def noncommutative_operator?(node)
-          _, operator, = *node
-          NONCOMMUTATIVE_OPERATORS.include?(operator)
+          NONCOMMUTATIVE_OPERATORS.include?(node.method_name)
         end
       end
     end
