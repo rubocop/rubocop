@@ -16,6 +16,7 @@ module RuboCop
     class Builder < Parser::Builders::Default
       NODE_MAP = {
         and: AndNode,
+        alias: AliasNode,
         args: ArgsNode,
         array: ArrayNode,
         block: BlockNode,
