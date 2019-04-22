@@ -531,6 +531,7 @@ RSpec.describe RuboCop::ConfigLoader do
               default_config['Metrics/LineLength']['VersionAdded'],
               'VersionChanged' =>
               default_config['Metrics/LineLength']['VersionChanged'],
+              'AutoCorrect' => false,
               'Max' => 77,
               'AllowHeredoc' => true,
               'AllowURI' => true,
@@ -634,6 +635,7 @@ RSpec.describe RuboCop::ConfigLoader do
               default_config['Metrics/LineLength']['VersionAdded'],
               'VersionChanged' =>
               default_config['Metrics/LineLength']['VersionChanged'],
+              'AutoCorrect' => false,
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,

@@ -44,6 +44,7 @@ module RuboCop
         invoke_custom_processing(@cops, processed_source)
         invoke_custom_processing(@forces, processed_source)
         walk(processed_source.ast) unless processed_source.blank?
+        invoke_custom_post_walk_processing(@cops, processed_source)
         @cops.flat_map(&:offenses)
       end
 
@@ -89,12 +90,35 @@ module RuboCop
       # If they define the #investigate method, all input parameters passed
       # to the commissioner will be passed to the cop too in order to do
       # its own processing.
+      #
+      # These custom processors are invoked before the AST traversal,
+      # so they can build initial state that is later used by callbacks
+      # during the AST traversal.
       def invoke_custom_processing(cops_or_forces, processed_source)
         cops_or_forces.each do |cop|
           next unless cop.respond_to?(:investigate)
 
           with_cop_error_handling(cop) do
             cop.investigate(processed_source)
+          end
+        end
+      end
+
+      # There are cops that require their own custom processing **after**
+      # the AST traversal. By performing the walk before invoking these
+      # custom processors, we allow these cops to build their own
+      # state during the primary AST traversal instead of performing their
+      # own AST traversals. Minimizing the number of walks is more efficient.
+      #
+      # If they define the #investigate_post_walk method, all input parameters
+      # passed to the commissioner will be passed to the cop too in order to do
+      # its own processing.
+      def invoke_custom_post_walk_processing(cops, processed_source)
+        cops.each do |cop|
+          next unless cop.respond_to?(:investigate_post_walk)
+
+          with_cop_error_handling(cop) do
+            cop.investigate_post_walk(processed_source)
           end
         end
       end

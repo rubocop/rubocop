@@ -7,6 +7,7 @@
 * [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
 * Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
 * [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
+* Add initial autocorrection support to `Metrics/LineLength`. ([@maxh][])
 
 ### Bug fixes
 

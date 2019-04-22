@@ -53,7 +53,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                   - 'example.rb'
 
               # Offense count: 2
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # Cop supports --auto-correct.
+              # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
               # URISchemes: http, https
               Metrics/LineLength:
                 Max: 99
@@ -166,7 +167,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             .to eq(<<-YAML.strip_indent)
 
               # Offense count: 1
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # Cop supports --auto-correct.
+              # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
               # URISchemes: http, https
               Metrics/LineLength:
                 Max: 99
@@ -304,8 +306,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 1',
-                '# Configuration parameters: AllowHeredoc, AllowURI, ' \
-                'URISchemes, IgnoreCopDirectives, IgnoredPatterns.',
+                '# Cop supports --auto-correct.',
+                '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+                'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+                'IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Metrics/LineLength:',
                 '  Max: 85'])
@@ -341,8 +345,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 '  MinDigits: 7',
                 '',
                 '# Offense count: 1',
-                '# Configuration parameters: AllowHeredoc, AllowURI, ' \
-                'URISchemes, IgnoreCopDirectives, IgnoredPatterns.',
+                '# Cop supports --auto-correct.',
+                '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+                'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+                'IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Metrics/LineLength:',
                 '  Max: 81',
@@ -508,8 +514,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          "    - 'example1.rb'",
          '',
          '# Offense count: 2',
-         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, ' \
-         'IgnoreCopDirectives, IgnoredPatterns.',
+         '# Cop supports --auto-correct.',
+         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+         'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Metrics/LineLength:',
          '  Max: 90']
@@ -593,8 +601,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          "    - 'example1.rb'",
          '',
          '# Offense count: 3',
-         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, ' \
-         'IgnoreCopDirectives, IgnoredPatterns.',
+         '# Cop supports --auto-correct.',
+         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+         'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Metrics/LineLength:',
          '  Max: 90']
@@ -791,8 +801,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          '  Exclude:',
          "    - 'example1.rb'",
          '',
-         '# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, ' \
-         'IgnoreCopDirectives, IgnoredPatterns.',
+         '# Cop supports --auto-correct.',
+         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+         'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Metrics/LineLength:',
          '  Max: 90']
