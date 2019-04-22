@@ -132,42 +132,38 @@ module RuboCop
 
         def offense_node(body)
           *_, condition = *body
+
           condition && condition.if_type? ? condition : body
         end
 
         def offense_location(offense_node)
-          condition_expression, = *offense_node
           offense_begin_pos = offense_node.source_range.begin
-          offense_begin_pos.join(condition_expression.source_range)
+          offense_begin_pos.join(offense_node.condition.source_range)
         end
 
         def autocorrect_modifier(corrector, node)
-          cond, if_body, else_body = *node
-          body = if_body || else_body
+          body = node.if_branch || node.else_branch
 
-          replacement = "next #{opposite_kw(if_body)} #{cond.source}\n" \
-                        "#{' ' * node.source_range.column}#{body.source}"
+          replacement =
+            "next #{node.inverse_keyword} #{node.condition.source}\n" \
+            "#{' ' * node.source_range.column}#{body.source}"
 
           corrector.replace(node.source_range, replacement)
         end
 
         def autocorrect_block(corrector, node)
-          cond, if_body, = *node
+          next_code = "next #{node.inverse_keyword} #{node.condition.source}"
 
-          next_code = "next #{opposite_kw(if_body)} #{cond.source}"
           corrector.insert_before(node.source_range, next_code)
 
-          corrector.remove(cond_range(node, cond))
+          corrector.remove(cond_range(node, node.condition))
           corrector.remove(end_range(node))
 
           lines = reindentable_lines(node)
+
           return if lines.empty?
 
-          reindent(lines, cond, corrector)
-        end
-
-        def opposite_kw(if_body)
-          if_body.nil? ? 'if' : 'unless'
+          reindent(lines, node.condition, corrector)
         end
 
         def cond_range(node, cond)
