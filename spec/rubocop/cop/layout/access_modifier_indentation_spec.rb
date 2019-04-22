@@ -306,6 +306,25 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
+    it 'accepts private with argument indented to method depth in a class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Test
+
+          def test; end
+          private :test
+        end
+      RUBY
+    end
+
+    it 'accepts private def indented to method depth in a class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class Test
+
+          private def test; end
+        end
+      RUBY
+    end
+
     it 'registers offense for private indented to method depth in a module' do
       expect_offense(<<-RUBY.strip_indent)
         module Test
@@ -314,6 +333,25 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           ^^^^^^^ Outdent access modifiers like `private`.
 
           def test; end
+        end
+      RUBY
+    end
+
+    it 'accepts private with argument indented to method depth in a module' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+
+          def test; end
+          private :test
+        end
+      RUBY
+    end
+
+    it 'accepts private def indented to method depth in a module' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+
+          private def test; end
         end
       RUBY
     end
@@ -330,7 +368,27 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for private indented to method depth in singleton' \
+    it 'accepts module fn with argument indented to ' \
+       'method depth in a module' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+
+          def test; end
+          module_function :test
+        end
+      RUBY
+    end
+
+    it 'accepts module fn def indented to method depth in a module' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        module Test
+
+          module_function def test; end
+        end
+      RUBY
+    end
+
+    it 'registers offense for private indented to method depth in singleton ' \
        'class' do
       expect_offense(<<-RUBY.strip_indent)
         class << self
@@ -339,6 +397,26 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           ^^^^^^^ Outdent access modifiers like `private`.
 
           def test; end
+        end
+      RUBY
+    end
+
+    it 'accepts private with argument indented to ' \
+       'method depth in singleton class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class << self
+
+          def test; end
+          private :test
+        end
+      RUBY
+    end
+
+    it 'accepts private def indented to method depth in singleton class' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        class << self
+
+          private def test; end
         end
       RUBY
     end
@@ -356,6 +434,27 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
+    it 'accepts private with argument indented to method depth in class ' \
+       'defined with Class.new' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Test = Class.new do
+
+          def test; end
+          private :test
+        end
+      RUBY
+    end
+
+    it 'accepts private def indented to method depth in class defined with ' \
+       'Class.new' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Test = Class.new do
+
+          private def test; end
+        end
+      RUBY
+    end
+
     it 'registers offense for private indented to method depth in module ' \
        'defined with Module.new' do
       expect_offense(<<-RUBY.strip_indent)
@@ -365,6 +464,27 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           ^^^^^^^ Outdent access modifiers like `private`.
 
           def test; end
+        end
+      RUBY
+    end
+
+    it 'accepts private with argument indented to method depth in module ' \
+       'defined with Module.new' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Test = Module.new do
+
+          def test; end
+          private :test
+        end
+      RUBY
+    end
+
+    it 'accepts private def indented to method depth in module defined with ' \
+       'Module.new' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        Test = Module.new do
+
+          private def test; end
         end
       RUBY
     end

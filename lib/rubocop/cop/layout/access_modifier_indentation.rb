@@ -3,8 +3,9 @@
 module RuboCop
   module Cop
     module Layout
-      # Modifiers should be indented as deep as method definitions, or as deep
-      # as the class/module keyword, depending on configuration.
+      # Bare access modifiers (those not applying to specific methods) should be
+      # indented as deep as method definitions, or as deep as the class/module
+      # keyword, depending on configuration.
       #
       # @example EnforcedStyle: indent (default)
       #   # bad
@@ -67,7 +68,8 @@ module RuboCop
           return if body.nil? # Empty class etc.
           return unless body.begin_type?
 
-          modifiers = body.each_child_node(:send).select(&:access_modifier?)
+          modifiers = body.each_child_node(:send)
+                          .select(&:bare_access_modifier?)
           end_range = node.loc.end
 
           modifiers.each { |modifier| check_modifier(modifier, end_range) }
