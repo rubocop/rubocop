@@ -32,46 +32,38 @@ module RuboCop
         end
 
         def on_block(node)
-          symbol_proc?(node) do |send_or_super, block_args, method|
-            block_method_name = resolve_block_method_name(send_or_super)
-
+          symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             # TODO: Rails-specific handling that we should probably make
             # configurable - https://github.com/rubocop-hq/rubocop/issues/1485
             # we should ignore lambdas & procs
-            return if proc_node?(send_or_super)
-            return if %i[lambda proc].include?(block_method_name)
-            return if ignored_method?(block_method_name)
-            return if block_args.children.size == 1 &&
-                      block_args.source.include?(',')
+            return if proc_node?(dispatch_node)
+            return if %i[lambda proc].include?(dispatch_node.method_name)
+            return if ignored_method?(dispatch_node.method_name)
+            return if destructuring_block_argument?(arguments_node)
 
-            offense(node, method, block_method_name)
+            register_offense(node, method_name, dispatch_node.method_name)
           end
+        end
+
+        def destructuring_block_argument?(argument_node)
+          argument_node.one? && argument_node.source.include?(',')
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            block_send_or_super, _block_args, block_body = *node
-            _receiver, method_name, _args = *block_body
-
-            if super?(block_send_or_super)
-              args = *block_send_or_super
+            if node.send_node.arguments?
+              autocorrect_with_args(corrector, node,
+                                    node.send_node.arguments,
+                                    node.body.method_name)
             else
-              _breceiver, _bmethod_name, *args = *block_send_or_super
+              autocorrect_without_args(corrector, node)
             end
-            autocorrect_method(corrector, node, args, method_name)
           end
         end
 
         private
 
-        def resolve_block_method_name(block_send_or_super)
-          return :super if super?(block_send_or_super)
-
-          _receiver, method_name, _args = *block_send_or_super
-          method_name
-        end
-
-        def offense(node, method_name, block_method_name)
+        def register_offense(node, method_name, block_method_name)
           block_start = node.loc.begin.begin_pos
           block_end = node.loc.end.end_pos
           range = range_between(block_start, block_end)
@@ -83,16 +75,9 @@ module RuboCop
                                       block_method: block_method_name))
         end
 
-        def autocorrect_method(corrector, node, args, method_name)
-          if args.empty?
-            autocorrect_no_args(corrector, node, method_name)
-          else
-            autocorrect_with_args(corrector, node, args, method_name)
-          end
-        end
-
-        def autocorrect_no_args(corrector, node, method_name)
-          corrector.replace(block_range_with_space(node), "(&:#{method_name})")
+        def autocorrect_without_args(corrector, node)
+          corrector.replace(block_range_with_space(node),
+                            "(&:#{node.body.method_name})")
         end
 
         def autocorrect_with_args(corrector, node, args, method_name)
@@ -119,10 +104,6 @@ module RuboCop
           else
             node.loc.begin.begin_pos
           end
-        end
-
-        def super?(node)
-          SUPER_TYPES.include?(node.type)
         end
       end
     end
