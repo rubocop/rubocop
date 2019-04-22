@@ -110,14 +110,18 @@ module RuboCop
         end
 
         def autocorrect_method_to_literal(corrector, node)
-          block_method, args = *node
-          corrector.replace(block_method.source_range, '->')
-          return if args.children.empty?
+          corrector.replace(node.send_node.source_range, '->')
 
-          arg_str = "(#{lambda_arg_string(args)})"
-          whitespace_and_old_args = node.loc.begin.end.join(args.loc.end)
-          corrector.insert_after(block_method.source_range, arg_str)
-          corrector.remove(whitespace_and_old_args)
+          return unless node.arguments?
+
+          arg_str = "(#{lambda_arg_string(node.arguments)})"
+
+          corrector.insert_after(node.send_node.source_range, arg_str)
+          corrector.remove(arguments_with_whitespace(node))
+        end
+
+        def arguments_with_whitespace(node)
+          node.loc.begin.end.join(node.arguments.loc.end)
         end
 
         def lambda_arg_string(args)
