@@ -3,34 +3,32 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # Checks that node destructuring is done either using the node
-      # extensions or using a splat.
+      # Checks that node destructuring is using the node extensions.
       #
       # @example Using splat expansion
       #
       #   # bad
-      #   receiver, method_name, arguments = send_node.children
-      #
-      #   # good
-      #   receiver, method_name, arguments = *send_node
-      #
-      # @example Using node extensions
+      #   _receiver, method_name, _arguments = send_node.children
       #
       #   # bad
-      #   _receiver, method_name, _arguments = send_node.children
+      #   _receiver, method_name, _arguments = *send_node
       #
       #   # good
       #   method_name = send_node.method_name
       class NodeDestructuring < Cop
-        MSG = 'Use the methods provided with the node extensions or ' \
-              'destructure the node using `*`.'.freeze
+        MSG = 'Use the methods provided with the node extensions instead ' \
+              'of manually destructuring nodes.'.freeze
 
-        def_node_matcher :node_children_destructuring?, <<-PATTERN
-          (masgn (mlhs ...) (send (send nil? [#node_suffix? _]) :children))
+        def_node_matcher :node_variable?, <<-PATTERN
+          {(lvar [#node_suffix? _]) (send nil? [#node_suffix? _])}
+        PATTERN
+
+        def_node_matcher :node_destructuring?, <<-PATTERN
+          {(masgn (mlhs ...) {(send #node_variable? :children) (array (splat #node_variable?))})}
         PATTERN
 
         def on_masgn(node)
-          node_children_destructuring?(node) do
+          node_destructuring?(node) do
             add_offense(node)
           end
         end

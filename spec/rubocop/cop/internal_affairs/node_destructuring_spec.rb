@@ -7,21 +7,22 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeDestructuring do
     it 'registers an offense when receiver is named `node`' do
       expect_offense(<<-RUBY.strip_indent, 'example_cop.rb')
         lhs, rhs = node.children
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions or destructure the node using `*`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions instead of manually destructuring nodes.
       RUBY
     end
 
     it 'registers an offense when receiver is named `send_node`' do
       expect_offense(<<-RUBY.strip_indent, 'example_cop.rb')
         lhs, rhs = send_node.children
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions or destructure the node using `*`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions instead of manually destructuring nodes.
       RUBY
     end
   end
 
-  it 'does not register an offense for a predicate node type check' do
-    expect_no_offenses(<<-RUBY.strip_indent, 'example_spec.rb')
+  it 'registers an offense when destructuring using a splat' do
+    expect_offense(<<-RUBY.strip_indent, 'example_spec.rb')
       lhs, rhs = *node
+      ^^^^^^^^^^^^^^^^ Use the methods provided with the node extensions instead of manually destructuring nodes.
     RUBY
   end
 
