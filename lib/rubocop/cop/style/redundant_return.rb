@@ -90,6 +90,8 @@ module RuboCop
 
         # rubocop:disable Metrics/CyclomaticComplexity
         def check_branch(node)
+          return unless node
+
           case node.type
           when :return then check_return_node(node)
           when :case   then check_case_node(node)
@@ -111,25 +113,15 @@ module RuboCop
         end
 
         def check_case_node(node)
-          _cond, *when_nodes, else_node = *node
-          when_nodes.each { |when_node| check_when_node(when_node) }
-          check_branch(else_node) if else_node
-        end
-
-        def check_when_node(node)
-          return unless node
-
-          _cond, body = *node
-          check_branch(body) if body
+          node.when_branches.each { |when_node| check_branch(when_node.body) }
+          check_branch(node.else_branch)
         end
 
         def check_if_node(node)
           return if node.modifier_form? || node.ternary?
 
-          _cond, if_node, else_node = *node.node_parts
-
-          check_branch(if_node) if if_node
-          check_branch(else_node) if else_node
+          check_branch(node.if_branch)
+          check_branch(node.else_branch)
         end
 
         def check_rescue_node(node)
