@@ -80,81 +80,78 @@ module RuboCop
 
         private
 
+        def_node_matcher :random_call, <<-PATTERN
+          {(send (send $_ _ $_) ...)
+           (send _ _ (send $_ _ $_))}
+        PATTERN
+
         def corrected_integer_op_rand(node)
-          left, operator, right = *node
+          random_call(node) do |prefix_node, random_node|
+            prefix = prefix_from_prefix_node(prefix_node)
+            left_int, right_int = boundaries_from_random_node(random_node)
 
-          offset = int_from_int_node(left)
+            offset = to_int(node.receiver)
 
-          prefix_node, _, random_node = *right
-
-          prefix = prefix_from_prefix_node(prefix_node)
-          left_int, right_int = boundaries_from_random_node(random_node)
-
-          if operator == :+
-            "#{prefix}(#{offset + left_int}..#{offset + right_int})"
-          else
-            "#{prefix}(#{offset - right_int}..#{offset - left_int})"
+            if node.method?(:+)
+              "#{prefix}(#{offset + left_int}..#{offset + right_int})"
+            else
+              "#{prefix}(#{offset - right_int}..#{offset - left_int})"
+            end
           end
         end
 
         def corrected_rand_op_integer(node)
-          left, operator, right = *node
+          random_call(node) do |prefix_node, random_node|
+            prefix = prefix_from_prefix_node(prefix_node)
+            left_int, right_int = boundaries_from_random_node(random_node)
 
-          prefix_node, _, random_node = *left
+            offset = to_int(node.first_argument)
 
-          offset = int_from_int_node(right)
-
-          prefix = prefix_from_prefix_node(prefix_node)
-          left_int, right_int = boundaries_from_random_node(random_node)
-
-          if operator == :+
-            "#{prefix}(#{left_int + offset}..#{right_int + offset})"
-          else
-            "#{prefix}(#{left_int - offset}..#{right_int - offset})"
+            if node.method?(:+)
+              "#{prefix}(#{left_int + offset}..#{right_int + offset})"
+            else
+              "#{prefix}(#{left_int - offset}..#{right_int - offset})"
+            end
           end
         end
 
         def corrected_rand_modified(node)
-          rand, method = *node
-          prefix_node, _, random_node = *rand
+          random_call(node) do |prefix_node, random_node|
+            prefix = prefix_from_prefix_node(prefix_node)
+            left_int, right_int = boundaries_from_random_node(random_node)
 
-          prefix = prefix_from_prefix_node(prefix_node)
-          left_int, right_int = boundaries_from_random_node(random_node)
-
-          if %i[succ next].include?(method)
-            "#{prefix}(#{left_int + 1}..#{right_int + 1})"
-          elsif method == :pred
-            "#{prefix}(#{left_int - 1}..#{right_int - 1})"
+            if %i[succ next].include?(node.method_name)
+              "#{prefix}(#{left_int + 1}..#{right_int + 1})"
+            elsif node.method?(:pred)
+              "#{prefix}(#{left_int - 1}..#{right_int - 1})"
+            end
           end
         end
 
+        def_node_matcher :namespace, <<-PATTERN
+          {$nil? (const nil? $_)}
+        PATTERN
+
         def prefix_from_prefix_node(node)
-          if node.nil?
-            'rand'
-          else
-            _, prefix = *node
-            "#{prefix}.rand"
+          namespace(node) do |namespace|
+            [namespace, 'rand'].compact.join('.')
           end
         end
 
         def boundaries_from_random_node(random_node)
-          children = random_node.children
-
           case random_node.type
           when :int
-            [0, int_from_int_node(random_node) - 1]
+            [0, to_int(random_node) - 1]
           when :irange
-            [int_from_int_node(children.first),
-             int_from_int_node(children[1])]
+            [to_int(random_node.begin), to_int(random_node.end)]
           when :erange
-            [int_from_int_node(children.first),
-             int_from_int_node(children[1]) - 1]
+            [to_int(random_node.begin), to_int(random_node.end) - 1]
           end
         end
 
-        def int_from_int_node(node)
-          node.children.first
-        end
+        def_node_matcher :to_int, <<-PATTERN
+          (int $_)
+        PATTERN
       end
     end
   end
