@@ -50,17 +50,16 @@ module RuboCop
         end
 
         def check_defs(name, node)
-          definee, method_name, _args, _body = *node
           # check if the class/module name matches the definee for the defs node
-          return unless name == definee
+          return unless name == node.receiver
 
-          _, class_name = *definee
-          add_offense(definee, location: :name,
-                               message: message(class_name, method_name))
+          add_offense(node.receiver, location: :name)
         end
 
-        def message(class_name, method_name)
-          format(MSG, method: method_name, class: class_name)
+        def message(node)
+          _, class_name = *node
+
+          format(MSG, method: node.parent.method_name, class: class_name)
         end
       end
     end
