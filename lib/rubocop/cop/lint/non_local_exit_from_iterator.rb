@@ -49,16 +49,14 @@ module RuboCop
           return_node.each_ancestor(:block, :def, :defs) do |node|
             break if scoped_node?(node)
 
-            send_node, args_node, _body_node = *node
-
             # if a proc is passed to `Module#define_method` or
             # `Object#define_singleton_method`, `return` will not cause a
             # non-local exit error
-            break if define_method?(send_node)
+            break if define_method?(node.send_node)
 
-            next if args_node.children.empty?
+            next unless node.arguments?
 
-            if chained_send?(send_node)
+            if chained_send?(node.send_node)
               add_offense(return_node, location: :keyword)
               break
             end
