@@ -201,10 +201,8 @@ module RuboCop
         end
 
         def operation_rhs(node)
-          receiver, = *node
-
-          operation_rhs = receiver.each_ancestor(:send).find do |rhs|
-            operator_rhs?(rhs, receiver)
+          operation_rhs = node.receiver.each_ancestor(:send).find do |rhs|
+            operator_rhs?(rhs, node.receiver)
           end
 
           return unless operation_rhs
