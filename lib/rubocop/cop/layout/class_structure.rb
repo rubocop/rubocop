@@ -223,7 +223,8 @@ module RuboCop
         end
 
         def class_elements(class_node)
-          *, class_def = class_node.children
+          class_def = class_node.body
+
           return [] unless class_def
 
           if class_def.def_type? || class_def.send_type?
