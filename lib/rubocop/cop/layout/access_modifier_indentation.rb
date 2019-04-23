@@ -40,23 +40,13 @@ module RuboCop
         MSG = '%<style>s access modifiers like `%<node>s`.'.freeze
 
         def on_class(node)
-          _name, _base_class, body = *node
-          check_body(body, node)
-        end
+          return unless node.body && node.body.begin_type?
 
-        def on_sclass(node)
-          _name, body = *node
-          check_body(body, node)
-        end
-
-        def on_module(node)
-          _name, body = *node
-          check_body(body, node)
-        end
-
-        def on_block(node)
           check_body(node.body, node)
         end
+        alias on_sclass on_class
+        alias on_module on_class
+        alias on_block  on_class
 
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, @column_delta)
@@ -65,9 +55,6 @@ module RuboCop
         private
 
         def check_body(body, node)
-          return if body.nil? # Empty class etc.
-          return unless body.begin_type?
-
           modifiers = body.each_child_node(:send)
                           .select(&:bare_access_modifier?)
           end_range = node.loc.end
