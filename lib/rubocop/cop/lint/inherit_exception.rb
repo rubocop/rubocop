@@ -48,11 +48,10 @@ module RuboCop
         ].freeze
 
         def on_class(node)
-          _class, base_class, _body = *node
+          return unless node.parent_class &&
+                        illegal_class_name?(node.parent_class)
 
-          return unless base_class && illegal_class_name?(base_class)
-
-          add_offense(base_class)
+          add_offense(node.parent_class)
         end
 
         def autocorrect(node)
