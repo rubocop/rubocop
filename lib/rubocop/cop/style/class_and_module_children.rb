@@ -31,36 +31,30 @@ module RuboCop
                       'nested style.'.freeze
 
         def on_class(node)
-          _name, superclass, body = *node
-          return if superclass && style != :nested
+          return if node.parent_class && style != :nested
 
-          check_style(node, body)
+          check_style(node, node.body)
         end
 
         def on_module(node)
-          _name, body = *node
-          check_style(node, body)
+          check_style(node, node.body)
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            if node.class_type?
-              name, superclass, body = *node
-              return if superclass && style != :nested
-            else
-              name, body = *node
-            end
-            nest_or_compact(corrector, node, name, body)
+            return if node.class_type? && node.parent_class && style != :nested
+
+            nest_or_compact(corrector, node)
           end
         end
 
         private
 
-        def nest_or_compact(corrector, node, name, body)
+        def nest_or_compact(corrector, node)
           if style == :nested
             nest_definition(corrector, node)
           else
-            compact_definition(corrector, node, name, body)
+            compact_definition(corrector, node)
           end
         end
 
@@ -91,17 +85,21 @@ module RuboCop
           corrector.replace(node.loc.end, replacement)
         end
 
-        def compact_definition(corrector, node, name, body)
-          compact_node(corrector, node, name, body)
-          remove_end(corrector, body)
+        def compact_definition(corrector, node)
+          compact_node(corrector, node)
+          remove_end(corrector, node.body)
         end
 
-        def compact_node(corrector, node, name, body)
-          const_name = "#{name.const_name}::#{body.children.first.const_name}"
-          replacement = "#{body.type} #{const_name}"
+        def compact_node(corrector, node)
+          replacement = "#{node.body.type} #{compact_identifier_name(node)}"
           range = range_between(node.loc.keyword.begin_pos,
-                                body.loc.name.end_pos)
+                                node.body.loc.name.end_pos)
           corrector.replace(range, replacement)
+        end
+
+        def compact_identifier_name(node)
+          "#{node.identifier.const_name}::" \
+            "#{node.body.children.first.const_name}"
         end
 
         def remove_end(corrector, body)
