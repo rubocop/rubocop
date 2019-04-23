@@ -33,17 +33,13 @@ module RuboCop
         def_node_search :outer_module, '(const (const nil? _) _)'
 
         def on_class(node)
-          _, _, body = *node
+          return unless node.body
 
-          return unless body
-
-          check(node, body, :class)
+          check(node, node.body, :class)
         end
 
         def on_module(node)
-          _, body = *node
-
-          check(node, body, :module)
+          check(node, node.body, :module)
         end
 
         private
