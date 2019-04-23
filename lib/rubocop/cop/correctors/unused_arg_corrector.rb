@@ -15,14 +15,26 @@ module RuboCop
           @processed_source = processed_source
 
           if node.blockarg_type?
-            lambda do |corrector|
-              range = range_with_surrounding_space(range: node.source_range,
-                                                   side: :left)
-              range = range_with_surrounding_comma(range, :left)
-              corrector.remove(range)
-            end
+            correct_for_blockarg_type(node)
           else
-            ->(corrector) { corrector.insert_before(node.loc.name, '_') }
+            lambda do |corrector|
+              variable_name = if node.optarg_type?
+                                node.node_parts[0]
+                              else
+                                # Extract only a var name without splat (`*`)
+                                node.source.gsub(/\A\*+/, '')
+                              end
+              corrector.replace(node.loc.name, "_#{variable_name}")
+            end
+          end
+        end
+
+        def correct_for_blockarg_type(node)
+          lambda do |corrector|
+            range = range_with_surrounding_space(range: node.source_range,
+                                                 side: :left)
+            range = range_with_surrounding_comma(range, :left)
+            corrector.remove(range)
           end
         end
       end
