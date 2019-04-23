@@ -151,6 +151,25 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     shared_examples 'all variable types' do |variable|
       context 'modifier if' do
+        shared_examples 'safe guarding logical break keywords' do |keyword|
+          it "allows a method call being passed to #{keyword} safe guarded " \
+            'by an object check' do
+            expect_no_offenses(<<-RUBY.strip_indent)
+              something.each do
+                #{keyword} #{variable}.bar if #{variable}
+              end
+            RUBY
+          end
+        end
+
+        it_behaves_like 'safe guarding logical break keywords', 'break'
+        it_behaves_like 'safe guarding logical break keywords', 'fail'
+        it_behaves_like 'safe guarding logical break keywords', 'next'
+        it_behaves_like 'safe guarding logical break keywords', 'raise'
+        it_behaves_like 'safe guarding logical break keywords', 'return'
+        it_behaves_like 'safe guarding logical break keywords', 'throw'
+        it_behaves_like 'safe guarding logical break keywords', 'yield'
+
         it 'registers an offense for a method call that nil responds to ' \
         'safe guarded by an object check' do
           inspect_source("#{variable}.to_i if #{variable}")
