@@ -70,16 +70,13 @@ module RuboCop
         KIND = 'class'.freeze
 
         def on_class(node)
-          _name, superclass, body = *node
+          first_line = node.parent_class.first_line if node.parent_class
 
-          adjusted_first_line = superclass.first_line if superclass
-
-          check(node, body, adjusted_first_line: adjusted_first_line)
+          check(node, node.body, adjusted_first_line: first_line)
         end
 
         def on_sclass(node)
-          _obj, body = *node
-          check(node, body)
+          check(node, node.body)
         end
 
         def autocorrect(node)
