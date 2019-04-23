@@ -36,10 +36,8 @@ module RuboCop
         end
 
         def on_class(node)
-          _name, superclass, _body = *node
-
-          @class_or_module_def_first_line = if superclass
-                                              superclass.first_line
+          @class_or_module_def_first_line = if node.parent_class
+                                              node.parent_class.first_line
                                             else
                                               node.source_range.first_line
                                             end
@@ -52,10 +50,10 @@ module RuboCop
         end
 
         def on_sclass(node)
-          self_node, _body = *node
-
-          @class_or_module_def_first_line = self_node.source_range.first_line
-          @class_or_module_def_last_line = self_node.source_range.last_line
+          @class_or_module_def_first_line =
+            node.identifier.source_range.first_line
+          @class_or_module_def_last_line =
+            node.identifier.source_range.last_line
         end
 
         def on_block(node)
