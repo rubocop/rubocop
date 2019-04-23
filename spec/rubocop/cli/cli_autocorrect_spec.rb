@@ -467,6 +467,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects `Lint/Lambda` and `Lint/UnusedBlockArgument` offenses' do
+    source = <<-'RUBY'.strip_indent
+      c = -> event do
+        puts 'Hello world'
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only', 'Lint/Lambda,Lint/UnusedBlockArgument'
+                   ])).to eq(0)
+    corrected = <<-'RUBY'.strip_indent
+      c = lambda do |_event|
+        puts 'Hello world'
+      end
+    RUBY
+    expect(IO.read('example.rb')).to eq(corrected)
+  end
+
   describe 'caching' do
     let(:cache) do
       instance_double(RuboCop::ResultCache, 'valid?' => true,

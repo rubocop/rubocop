@@ -21,6 +21,7 @@
 * [#6902](https://github.com/rubocop-hq/rubocop/issues/6902): Fix a bug where `Naming/RescuedExceptionsVariableName` would handle an only first rescue for multiple rescue groups. ([@tatsuyafw][])
 * [#6860](https://github.com/rubocop-hq/rubocop/issues/6860): Prevent auto-correct conflict of `Style/InverseMethods` and `Style/Not`. ([@hoshinotsuyoshi][])
 * [#6935](https://github.com/rubocop-hq/rubocop/issues/6935): `Layout/AccessModifierIndentation` should ignore access modifiers that apply to specific methods. ([@deivid-rodriguez][])
+* [#6956](https://github.com/rubocop-hq/rubocop/issues/6956): Prevent auto-correct confliction of `Lint/Lambda` and `Lint/UnusedBlockArgument`. ([@koic][])
 
 ### Changes
 
