@@ -90,21 +90,11 @@ module RuboCop
           check_members(end_loc, [node.body])
         end
 
-        def on_module(node)
-          _module_name, *members = *node
-          check_members(node.loc.keyword, members)
-        end
-
         def on_class(node)
-          _class_name, _base_class, *members = *node
-          check_members(node.loc.keyword, members)
+          check_members(node.loc.keyword, [node.body])
         end
-
-        def on_sclass(node)
-          _class_name, *members = *node
-
-          check_members(node.loc.keyword, members)
-        end
+        alias on_sclass on_class
+        alias on_module on_class
 
         def on_send(node)
           super
