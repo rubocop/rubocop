@@ -22,6 +22,7 @@ module RuboCop
         block: BlockNode,
         break: BreakNode,
         case: CaseNode,
+        class: ClassNode,
         def: DefNode,
         defined?: DefinedNode,
         defs: DefNode,
