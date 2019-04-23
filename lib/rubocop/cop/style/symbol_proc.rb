@@ -96,8 +96,7 @@ module RuboCop
         end
 
         def begin_pos_for_replacement(node)
-          block_send_or_super, _block_args, _block_body = *node
-          expr = block_send_or_super.source_range
+          expr = node.send_node.source_range
 
           if (paren_pos = (expr.source =~ /\(\s*\)$/))
             expr.begin_pos + paren_pos
