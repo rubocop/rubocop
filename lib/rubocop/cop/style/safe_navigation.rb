@@ -65,6 +65,8 @@ module RuboCop
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'.freeze
+        LOGIC_JUMP_KEYWORDS = %i[break fail next raise
+                                 return throw yield].freeze
 
         minimum_target_ruby_version 2.3
 
@@ -149,6 +151,7 @@ module RuboCop
 
           checked_variable, matching_receiver, method =
             extract_common_parts(receiver, variable)
+          matching_receiver = nil if LOGIC_JUMP_KEYWORDS.include?(receiver.type)
           [checked_variable, matching_receiver, receiver, method]
         end
 
