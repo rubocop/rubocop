@@ -24,10 +24,9 @@ module RuboCop
               'Use a block to customize the struct.'.freeze
 
         def on_class(node)
-          _name, superclass, _body = *node
-          return unless struct_constructor?(superclass)
+          return unless struct_constructor?(node.parent_class)
 
-          add_offense(node, location: superclass.source_range)
+          add_offense(node, location: node.parent_class.source_range)
         end
 
         def_node_matcher :struct_constructor?, <<-PATTERN
