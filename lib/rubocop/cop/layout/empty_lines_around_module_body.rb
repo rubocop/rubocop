@@ -50,8 +50,7 @@ module RuboCop
         KIND = 'module'.freeze
 
         def on_module(node)
-          _name, body = *node
-          check(node, body)
+          check(node, node.body)
         end
 
         def autocorrect(node)
