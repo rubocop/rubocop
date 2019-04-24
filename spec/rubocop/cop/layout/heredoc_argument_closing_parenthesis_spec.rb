@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -198,7 +198,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             bar
           NOSQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             bar
           NOSQL
           ).bar(123).baz(456)
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -333,7 +333,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -351,7 +351,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             foo
           SQL
           )
-          ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
         expect_correction(<<-RUBY.strip_indent)
@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
               foo
             SQL
             ),
-            ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
             456,
             789,
           )
@@ -396,7 +396,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
               foo
             SQL
             )      ,
-            ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
             456,
             789,
           ]
@@ -424,7 +424,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
               bar
             NOSQL
             )      ,
-            ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
             456,
             789,
           ]
@@ -454,7 +454,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
               bar
             NOSQL
             )      ,
-            ^ Put the closing parenthesis for a method call with a HEREDOC paramater on the same line as the HEREDOC opening.
+            ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
             456,
             789,
           ]
