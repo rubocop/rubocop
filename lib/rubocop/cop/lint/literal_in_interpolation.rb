@@ -55,11 +55,19 @@ module RuboCop
           when :float
             node.children.last.to_f.to_s
           when :str
-            node.children.last
+            autocorrected_value_for_string(node)
           when :sym
             autocorrected_value_for_symbol(node)
           else
             node.source.gsub('"', '\"')
+          end
+        end
+
+        def autocorrected_value_for_string(node)
+          if node.source.start_with?("'", '%q')
+            node.children.last.inspect[1..-2]
+          else
+            node.children.last
           end
         end
 

@@ -24,6 +24,7 @@
 * [#6935](https://github.com/rubocop-hq/rubocop/issues/6935): `Layout/AccessModifierIndentation` should ignore access modifiers that apply to specific methods. ([@deivid-rodriguez][])
 * [#6956](https://github.com/rubocop-hq/rubocop/issues/6956): Prevent auto-correct confliction of `Lint/Lambda` and `Lint/UnusedBlockArgument`. ([@koic][])
 * [#6915](https://github.com/rubocop-hq/rubocop/issues/6915): Fix false positive in `Style/SafeNavigation` when a modifier if is safe guarding a method call being passed to `break`, `fail`, `next`, `raise`, `return`, `throw`, and `yield`. ([@rrosenblum][])
+* [#6822](https://github.com/rubocop-hq/rubocop/issues/6822): Fix Lint/LiteralInInterpolation autocorrection for single quotes. ([@hoshinotsuyoshi][])
 
 ### Changes
 
