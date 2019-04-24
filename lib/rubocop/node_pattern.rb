@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'delegate'
+require 'erb'
+
 # rubocop:disable Metrics/ClassLength, Metrics/CyclomaticComplexity
 module RuboCop
   # This class performs a pattern-matching operation on an AST node.
@@ -38,6 +41,12 @@ module RuboCop
   #     '$(send const ...)' # arbitrary matching can be performed on a capture
   #     '(send _recv _msg)' # wildcards can be named (for readability)
   #     '(send ... :new)'   # you can match against the last children
+  #     '(array <str sym>)' # you can match children in any order. This
+  #                         # would match `['x', :y]` as well as `[:y, 'x']
+  #     '(_ <str sym ...>)' # will match if arguments have at least a `str` and
+  #                         # a `sym` node, but can have more.
+  #     '(array <$str $_>)' # captures are in the order of the pattern,
+  #                         # irrespective of the actual order of the children
   #     '(send $...)'       # capture all the children as an array
   #     '(send $... int)'   # capture all children but the last as an array
   #     '(send _x :+ _x)'   # unification is performed on named wildcards
@@ -97,7 +106,7 @@ module RuboCop
     class Compiler
       SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
       IDENTIFIER   = /[a-zA-Z_][a-zA-Z0-9_-]*/.freeze
-      META         = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./.freeze
+      META         = /\(|\)|\{|\}|\[|\]|\<|\>|\$\.\.\.|\$|!|\^|\.\.\./.freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
       METHOD_NAME  = /\#?#{IDENTIFIER}[\!\?]?\(?/.freeze
@@ -121,7 +130,7 @@ module RuboCop
       REST      = '...'.freeze
       CAPTURED_REST = '$...'.freeze
 
-      attr_reader :match_code, :tokens
+      attr_reader :match_code, :tokens, :captures
 
       SEQ_HEAD_INDEX = -1
 
@@ -131,6 +140,24 @@ module RuboCop
       CUR_ELEMENT = "#{CUR_PLACEHOLDER} element@@@".freeze
       SEQ_HEAD_GUARD = '@@@seq guard head@@@'.freeze
 
+      line = __LINE__
+      ANY_ORDER_TEMPLATE = ERB.new <<-RUBY.strip_indent.gsub("-%>\n", '%>')
+        <% if capture_rest %>(<%= capture_rest %> = []) && <% end -%>
+        <%= CUR_NODE %>.children[<%= range %>].each_with_object({}) { |<%= child %>, <%= matched %>|
+          case
+          <% patterns.each_with_index do |pattern, i| -%>
+          when !<%= matched %>[<%= i %>] && <%=
+            with_context(pattern, child, use_temp_node: false)
+          %> then <%= matched %>[<%= i %>] = true
+          <% end -%>
+          <% if !rest %>  else break({})
+          <% elsif capture_rest %>  else <%= capture_rest %> << <%= child %>
+          <% end -%>
+          end
+        }.size == <%= patterns.size -%>
+      RUBY
+      ANY_ORDER_TEMPLATE.location = [__FILE__, line + 1]
+
       def initialize(str, node_var = 'node0')
         @string   = str
         @root     = node_var
@@ -139,7 +166,6 @@ module RuboCop
         @captures = 0  # number of captures seen
         @unify    = {} # named wildcard -> temp variable number
         @params   = 0  # highest % (param) number seen
-
         run(node_var)
       end
 
@@ -147,12 +173,14 @@ module RuboCop
         @tokens = Compiler.tokens(@string)
 
         @match_code = with_context(compile_expr, node_var, use_temp_node: false)
+        @match_code.prepend("(captures = Array.new(#{@captures})) && ") \
+          if @captures > 0
 
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
 
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      def compile_expr
+      def compile_expr(token = tokens.shift)
         # read a single pattern-matching expression from the token stream,
         # return Ruby code which performs the corresponding matching operation
         #
@@ -164,8 +192,6 @@ module RuboCop
         #   CUR_NODE: Ruby code that evaluates to an AST node
         #   CUR_ELEMENT: Either the node or the type if in first element of
         #   a sequence (aka seq_head, e.g. "(seq_head first_node_arg ...")
-
-        token = tokens.shift
         case token
         when '('       then compile_seq
         when '{'       then compile_union
@@ -186,121 +212,194 @@ module RuboCop
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-      def compile_seq
-        fail_due_to('empty parentheses') if tokens.first == ')'
+      def tokens_until(stop, what)
+        return to_enum __method__, stop, what unless block_given?
 
-        terms = compile_seq_terms
-        terms.unshift(compile_guard_clause)
-        terms.join(" &&\n") << SEQ_HEAD_GUARD
+        fail_due_to("empty #{what}") if tokens.first == stop && what
+        yield until tokens.first == stop
+        tokens.shift
+      end
+
+      def compile_seq
+        terms = tokens_until(')', 'sequence').map { variadic_seq_term }
+        Sequence.new(self, *terms).compile
       end
 
       def compile_guard_clause
         "#{CUR_NODE}.is_a?(RuboCop::AST::Node)"
       end
 
-      def compile_seq_terms
-        ret =
-          compile_seq_terms_with_size do |token, terms, index|
-            capture = next_capture if token == CAPTURED_REST
-            if capture || token == REST
-              index = 0 if index == SEQ_HEAD_INDEX # Consider ($...) as (_ $...)
-              return compile_ellipsis(terms, index, capture)
+      def variadic_seq_term
+        token = tokens.shift
+        case token
+        when CAPTURED_REST then compile_captured_ellipsis
+        when REST          then compile_ellipsis
+        when '<'           then compile_any_order
+        else                    [1, compile_expr(token)]
+        end
+      end
+
+      # @private
+      # Builds Ruby code for a sequence
+      # (head *first_terms variadic_term *last_terms)
+      class Sequence < SimpleDelegator
+        def initialize(compiler, *arity_term_list)
+          @arities, @terms = arity_term_list.transpose
+
+          super(compiler)
+          @variadic_index = @arities.find_index { |a| a.is_a?(Range) }
+          fail_due_to 'multiple variable patterns in same sequence' \
+            if @variadic_index && !@arities.one? { |a| a.is_a?(Range) }
+        end
+
+        def compile
+          [
+            compile_guard_clause,
+            compile_child_nb_guard,
+            compile_seq_head,
+            *compile_first_terms,
+            compile_variadic_term,
+            *compile_last_terms
+          ].compact.join(" &&\n") << SEQ_HEAD_GUARD
+        end
+
+        private
+
+        def first_terms_arity
+          first_terms_range { |r| @arities[r].inject(0, :+) } || 0
+        end
+
+        def last_terms_arity
+          last_terms_range { |r| @arities[r].inject(0, :+) } || 0
+        end
+
+        def first_terms_range
+          yield 1..(@variadic_index || @terms.size) - 1 if seq_head?
+        end
+
+        def last_terms_range
+          yield @variadic_index + 1...@terms.size if @variadic_index
+        end
+
+        def seq_head?
+          @variadic_index != 0
+        end
+
+        def compile_child_nb_guard
+          min = first_terms_arity + last_terms_arity
+          "#{CUR_NODE}.children.size #{@variadic_index ? '>' : '='}= #{min}"
+        end
+
+        def term(index, range)
+          t = @terms[index]
+          if t.respond_to? :call
+            t.call(range)
+          else
+            with_child_context(t, range.begin)
+          end
+        end
+
+        def compile_seq_head
+          return unless seq_head?
+
+          fail_due_to 'sequences can not start with <' \
+            if @terms[0].respond_to? :call
+
+          with_seq_head_context(@terms[0])
+        end
+
+        def compile_first_terms
+          first_terms_range { |range| compile_terms(range, 0) }
+        end
+
+        def compile_last_terms
+          last_terms_range { |r| compile_terms(r, -last_terms_arity) }
+        end
+
+        def compile_terms(index_range, start)
+          index_range.map do |i|
+            current = start
+            start += @arities.fetch(i)
+            term(i, current..start - 1)
+          end
+        end
+
+        def compile_variadic_term
+          variadic_arity { |arity| term(@variadic_index, arity) }
+        end
+
+        def variadic_arity
+          return unless @variadic_index
+
+          first = @variadic_index > 0 ? first_terms_arity : SEQ_HEAD_INDEX
+          yield first..-last_terms_arity - 1
+        end
+      end
+      private_constant :Sequence
+
+      def compile_captured_ellipsis
+        capture = next_capture
+        block = lambda { |range|
+          # Consider ($...) like (_ $...):
+          range = 0..range.end if range.begin == SEQ_HEAD_INDEX
+          "(#{capture} = #{CUR_NODE}.children[#{range}])"
+        }
+        [0..Float::INFINITY, block]
+      end
+
+      def compile_ellipsis
+        [0..Float::INFINITY, 'true']
+      end
+
+      def compile_any_order # rubocop:disable Metrics/MethodLength
+        rest = capture_rest = nil
+        patterns = []
+        with_temp_variables do |child, matched|
+          tokens_until('>', 'any child').each do
+            fail_due_to 'ellipsis must be at the end of <>' if rest
+            token = tokens.shift
+            case token
+            when CAPTURED_REST then rest = capture_rest = next_capture
+            when REST          then rest = true
+            else patterns << compile_expr(token)
             end
           end
-        ret << "#{CUR_NODE}.children.size == #{ret.size - 1}"
-      end
-
-      def compile_seq_terms_with_size
-        index = SEQ_HEAD_INDEX
-        terms = []
-        until tokens.first == ')'
-          yield tokens.first, terms, index
-          term = compile_expr_with_index(index)
-          index += 1
-          terms << term
-        end
-
-        tokens.shift # drop concluding )
-        terms
-      end
-
-      def compile_expr_with_index(index)
-        if index == SEQ_HEAD_INDEX
-          with_seq_head_context(compile_expr)
-        else
-          with_child_context(compile_expr, index)
+          [rest ? patterns.size..Float::INFINITY : patterns.size,
+           ->(range) { ANY_ORDER_TEMPLATE.result(binding) }]
         end
       end
 
-      def compile_ellipsis(terms, index, capture = nil)
-        tokens.shift # drop ellipsis
-        tail = compile_seq_tail
-        terms << "#{CUR_NODE}.children.size >= #{index + tail.size}"
-        terms.concat tail
-        if capture
-          range = index..-tail.size - 1
-          terms << "(#{capture} = #{CUR_NODE}.children[#{range}])"
-        end
-        terms
-      end
+      def insure_same_captures(enum, what)
+        return to_enum __method__, enum, what unless block_given?
 
-      def compile_seq_tail
-        terms = []
-        terms << compile_expr until tokens.first == ')'
-        tokens.shift # drop ')'
-        terms.map.with_index do |term, i|
-          with_child_context(term, i - terms.size)
+        captures_before = captures_after = nil
+        enum.each do
+          captures_before ||= @captures
+          @captures = captures_before
+          yield
+          captures_after ||= @captures
+          if captures_after != @captures
+            fail_due_to("each #{what} must have same # of captures")
+          end
         end
       end
 
       def compile_union
-        fail_due_to('empty union') if tokens.first == '}'
-
-        union = union_terms.join(' || ')
-        "(#{union})"
-      end
-
-      def union_terms
         # we need to ensure that each branch of the {} contains the same
         # number of captures (since only one branch of the {} can actually
         # match, the same variables are used to hold the captures for each
         # branch)
-        compile_expr_with_captures do |term, before, after|
-          terms = [term]
-          until tokens.first == '}'
-            terms << compile_expr_with_capture_check(before, after)
-          end
-          tokens.shift
+        enum = tokens_until('}', 'union')
+        terms = insure_same_captures(enum, 'branch of {}')
+                .map { compile_expr }
 
-          terms
-        end
-      end
-
-      def compile_expr_with_captures
-        captures_before = @captures
-        expr = compile_expr
-
-        yield expr, captures_before, @captures
-      end
-
-      def compile_expr_with_capture_check(before, after)
-        @captures = before
-        expr = compile_expr
-        if @captures != after
-          fail_due_to('each branch of {} must have same # of captures')
-        end
-
-        expr
+        "(#{terms.join(' || ')})"
       end
 
       def compile_intersect
-        fail_due_to('empty intersection') if tokens.first == ']'
-
-        terms = []
-        terms << compile_expr until tokens.first == ']'
-        tokens.shift
-
-        terms.join(' && ')
+        tokens_until(']', 'intersection')
+          .map { compile_expr }
+          .join(' && ')
       end
 
       def compile_capture
@@ -391,7 +490,9 @@ module RuboCop
       end
 
       def next_capture
-        "capture#{@captures += 1}"
+        index = @captures
+        @captures += 1
+        "captures[#{index}]"
       end
 
       def get_param(number)
@@ -400,17 +501,24 @@ module RuboCop
         number.zero? ? @root : "param#{number}"
       end
 
-      def emit_capture_list
-        (1..@captures).map { |n| "capture#{n}" }.join(',')
+      def emit_yield_capture(when_no_capture = '')
+        yield_val = if @captures.zero?
+                      when_no_capture
+                    elsif @captures == 1
+                      'captures[0]' # Circumvent https://github.com/jruby/jruby/issues/5710
+                    else
+                      '*captures'
+                    end
+        "yield(#{yield_val})"
       end
 
       def emit_retval
         if @captures.zero?
           'true'
         elsif @captures == 1
-          'capture1'
+          'captures[0]'
         else
-          "[#{emit_capture_list}]"
+          'captures'
         end
       end
 
@@ -426,7 +534,7 @@ module RuboCop
       def emit_method_code
         <<-RUBY
           return unless #{@match_code}
-          block_given? ? yield(#{emit_capture_list}) : (return #{emit_retval})
+          block_given? ? #{emit_yield_capture} : (return #{emit_retval})
         RUBY
       end
 
@@ -435,14 +543,15 @@ module RuboCop
       end
 
       def with_temp_node(cur_node)
-        with_temp_variable do |temp_var|
-          yield "(#{temp_var} = #{cur_node})", temp_var
+        with_temp_variables do |node|
+          yield "(#{node} = #{cur_node})", node
         end
           .gsub("\n", "\n  ") # Nicer indent for debugging
       end
 
-      def with_temp_variable
-        yield "temp#{next_temp_value}"
+      def with_temp_variables(&block)
+        names = block.parameters.map { |_, name| "#{name}#{next_temp_value}" }
+        yield(*names)
       end
 
       def next_temp_value
@@ -537,13 +646,11 @@ module RuboCop
       end
 
       def node_search_all(method_name, compiler, called_from)
-        yieldval = compiler.emit_capture_list
-        yieldval = 'node' if yieldval.empty?
+        yield_code = compiler.emit_yield_capture('node')
         prelude = "return enum_for(:#{method_name}, node0" \
                   "#{compiler.emit_trailing_params}) unless block_given?"
 
-        node_search(method_name, compiler, "yield(#{yieldval})", prelude,
-                    called_from)
+        node_search(method_name, compiler, yield_code, prelude, called_from)
       end
 
       def node_search(method_name, compiler, on_match, prelude, called_from)

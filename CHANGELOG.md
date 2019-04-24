@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#6841](https://github.com/rubocop-hq/rubocop/issues/6841): Node patterns can now match children in any order using `<>`. ([@marcandre][])
 * [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
 * Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
 * [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
