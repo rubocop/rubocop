@@ -3,6 +3,10 @@
 require 'parser/current'
 
 RSpec.describe RuboCop::NodePattern do
+  before { $VERBOSE = true }
+
+  after { $VERBOSE = false }
+
   let(:root_node) do
     buffer = Parser::Source::Buffer.new('(string)', 1)
     buffer.source = ruby
@@ -122,7 +126,10 @@ RSpec.describe RuboCop::NodePattern do
     end
 
     describe 'yaml compatibility' do
-      let(:instance) { YAML.safe_load(YAML.dump(super()), [described_class]) }
+      let(:instance) do
+        YAML.safe_load(YAML.dump(super()),
+                       permitted_classes: [described_class])
+      end
       let(:ruby) { 'obj.method' }
 
       it_behaves_like 'matching'
@@ -456,7 +463,7 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
-  describe 'sets' do
+  describe 'unions' do
     context 'at the top level' do
       context 'containing symbol literals' do
         context 'when the AST has a matching symbol' do
@@ -711,9 +718,17 @@ RSpec.describe RuboCop::NodePattern do
 
       it_behaves_like 'single capture'
     end
+
+    context 'after a child' do
+      let(:pattern) { '(send (int 10) $...)' }
+      let(:ruby) { '10 * 1' }
+      let(:captured_val) { [:*, s(:int, 1)] }
+
+      it_behaves_like 'single capture'
+    end
   end
 
-  describe 'captures within sets' do
+  describe 'captures within union' do
     context 'on simple subpatterns' do
       let(:pattern) { '{$send $int $float}' }
       let(:ruby) { '2.0' }
@@ -1277,9 +1292,135 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
+  describe 'in any order' do
+    let(:ruby) { '[:hello, "world", 1, 2, 3]' }
+
+    context 'without ellipsis' do
+      context 'with matching children' do
+        let(:pattern) { '(array <(str $_) (int 1) (int 3) (int $_) $_>)' }
+
+        let(:captured_vals) { ['world', 2, s(:sym, :hello)] }
+
+        it_behaves_like 'multiple capture'
+      end
+
+      context 'with too many children' do
+        let(:pattern) { '(array <(str $_) (int 1) (int 3) (int $_)>)' }
+
+        it_behaves_like 'nonmatching'
+      end
+
+      context 'with too few children' do
+        let(:pattern) { '(array <(str $_) (int 1) (int 3) (int $_) _ _>)' }
+
+        it_behaves_like 'nonmatching'
+      end
+    end
+
+    context 'with a captured ellipsis' do
+      context 'matching non sequential children' do
+        let(:pattern) { '(array <(str "world") (int 2) $...>)' }
+
+        let(:captured_val) { [s(:sym, :hello), s(:int, 1), s(:int, 3)] }
+
+        it_behaves_like 'single capture'
+      end
+
+      context 'matching all children' do
+        let(:pattern) { '(array <(str "world") (int 2) _ _ _ $...>)' }
+
+        let(:captured_val) { [] }
+
+        it_behaves_like 'single capture'
+      end
+
+      context 'nested' do
+        let(:ruby) { '[:x, 1, [:y, 2, 3], 42]' }
+        let(:pattern) { '(array <(int $_) (array <(int $_) $...>) $...>)' }
+
+        let(:captured_vals) do
+          [1, 2, [s(:sym, :y), s(:int, 3)],
+           [s(:sym, :x), s(:int, 42)]]
+        end
+
+        it_behaves_like 'multiple capture'
+      end
+    end
+
+    context 'with an ellipsis' do
+      let(:pattern) { '(array <(str "world") (int 2) ...> $_)' }
+
+      let(:captured_val) { s(:int, 3) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'doubled' do
+      context 'separated by fixed argument' do
+        let(:pattern) { '(array <(str $_) (sym $_)> $_ <(int 3) (int $_)>)' }
+
+        let(:captured_vals) { ['world', :hello, s(:int, 1), 2] }
+
+        it_behaves_like 'multiple capture'
+      end
+
+      context 'separated by an ellipsis' do
+        let(:pattern) { '(array <(str $_) (sym $_)> $... <(int 3) (int $_)>)' }
+
+        let(:captured_vals) { ['world', :hello, [s(:int, 1)], 2] }
+
+        it_behaves_like 'multiple capture'
+      end
+    end
+
+    describe 'invalid' do
+      context 'at the beginning of a sequence' do
+        let(:pattern) { '(<(str $_) (sym $_)> ...)' }
+
+        it_behaves_like 'invalid'
+      end
+
+      context 'containing ellipsis not at the end' do
+        let(:pattern) { '(array <(str $_) ... (sym $_)>)' }
+
+        it_behaves_like 'invalid'
+      end
+
+      context 'with an ellipsis inside and outside' do
+        let(:pattern) { '(array <(str $_) (sym $_) ...> ...)' }
+
+        it_behaves_like 'invalid'
+      end
+
+      context 'doubled with ellipsis' do
+        let(:pattern) { '(array <(str $_) ...> <(str $_) ...>)' }
+
+        it_behaves_like 'invalid'
+      end
+
+      context 'nested' do
+        let(:pattern) { '(array <(str $_) <int sym>> ...)' }
+
+        it_behaves_like 'invalid'
+      end
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }
+
+      it_behaves_like 'invalid'
+    end
+
+    context 'with empty union' do
+      let(:pattern) { '{}' }
+
+      it_behaves_like 'invalid'
+    end
+
+    context 'with empty intersection' do
+      let(:pattern) { '[]' }
 
       it_behaves_like 'invalid'
     end
