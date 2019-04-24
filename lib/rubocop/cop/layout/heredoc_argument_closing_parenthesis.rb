@@ -54,7 +54,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
-        'HEREDOC paramater on the same line as the HEREDOC opening.'.freeze
+        'HEREDOC parameter on the same line as the HEREDOC opening.'.freeze
 
         STRING_TYPES = %i[str dstr xstr].freeze
         def on_send(node)
