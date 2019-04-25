@@ -2848,6 +2848,18 @@ Style/CollectionMethods:
     detect: 'find'
     find_all: 'select'
 
+Style/CollectionMethodsFilter:
+  Description: >-
+    Preferred #filter, #find_all or #select for picking elements
+    from collection.
+  StyleGuide: '#map-find-select-reduce-size'
+  Enabled: false
+  VersionAdded: '0.68'
+  Safe: false
+  PreferredMethods:
+    select: 'filter'
+    find_all: 'filter'
+
 Style/ColonMethodCall:
   Description: 'Do not use :: for method call.'
   StyleGuide: '#double-colons'

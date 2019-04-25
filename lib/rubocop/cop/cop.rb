@@ -53,6 +53,8 @@ module RuboCop
       end
 
       def self.inherited(subclass)
+        # this allows cops inheriting from other cops
+        registry = self.registry || superclass.registry
         registry.enlist(subclass)
       end
 

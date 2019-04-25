@@ -386,6 +386,7 @@ In the following section you find all available cops:
 * [Style/ClassMethods](cops_style.md#styleclassmethods)
 * [Style/ClassVars](cops_style.md#styleclassvars)
 * [Style/CollectionMethods](cops_style.md#stylecollectionmethods)
+* [Style/CollectionMethodsFilter](cops_style.md#stylecollectionmethodsfilter)
 * [Style/ColonMethodCall](cops_style.md#stylecolonmethodcall)
 * [Style/ColonMethodDefinition](cops_style.md#stylecolonmethoddefinition)
 * [Style/CommandLiteral](cops_style.md#stylecommandliteral)

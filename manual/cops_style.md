@@ -801,6 +801,52 @@ PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "
 
 * [https://github.com/rubocop-hq/ruby-style-guide#map-find-select-reduce-size](https://github.com/rubocop-hq/ruby-style-guide#map-find-select-reduce-size)
 
+## Style/CollectionMethodsFilter
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | No | Yes  | 0.68 | -
+
+This cop enforces the use of consistent method name between `filter`,
+`select` and `find_all` from the Enumerable module.
+
+Unfortunately we cannot actually know if a method is from
+Enumerable or not (static analysis limitation), so this cop
+can yield some false positives.
+
+You can customize the mapping from undesired method to desired method.
+
+This cop is only applicable for ruby 2.6 and above.
+
+e.g. to use `select` over `find_all`:
+
+  Style/CollectionMethods:
+    PreferredMethods:
+      find_all: 'select'
+
+The default mapping for `PreferredMethods` behaves as follows.
+
+### Examples
+
+```ruby
+# bad
+items.find_all
+items.select
+
+# good
+items.filter
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+PreferredMethods | `{"select"=>"filter", "find_all"=>"filter"}` | 
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#map-find-select-reduce-size](https://github.com/rubocop-hq/ruby-style-guide#map-find-select-reduce-size)
+
 ## Style/ColonMethodCall
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

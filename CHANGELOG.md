@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6970](https://github.com/rubocop-hq/rubocop/pull/6970): Add Style/CollectionMethodsFilter which prefers `Enumerable#filter` over `Enumerable#find_all` and `Enumerable#select`. ([@vfonic][])
+
 ## 0.68.0 (2019-04-29)
 
 ### New features
