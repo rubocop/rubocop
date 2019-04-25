@@ -26,6 +26,7 @@
 
 ### Changes
 
+* [#6966](https://github.com/rubocop-hq/rubocop/pull/6966): Mark Rails/TimeZone as unsafe. ([@vfonic][])
 * [#5977](https://github.com/rubocop-hq/rubocop/issues/5977): Remove Performance cops. ([@koic][])
 * Add auto-correction to `Naming/RescuedExceptionsVariableName`. ([@anthony-robin][])
 * [#6903](https://github.com/rubocop-hq/rubocop/issues/6903): Handle variables prefixed with `_` in `Naming/RescuedExceptionsVariableName` cop. ([@anthony-robin][])
@@ -3960,3 +3961,4 @@
 [@diachini]: https://github.com/diachini
 [@Mange]: https://github.com/Mange
 [@jmanian]: https://github.com/jmanian
+[@vfonic]: https://github.com/vfonic

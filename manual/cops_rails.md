@@ -2185,7 +2185,7 @@ Whitelist | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.30 | 0.33
+Enabled | No | Yes  | 0.30 | 0.68
 
 This cop checks for the use of Time methods without zone.
 
