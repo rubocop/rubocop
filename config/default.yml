@@ -2424,8 +2424,9 @@ Rails/TimeZone:
   StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#time'
   Reference: 'http://danilenko.org/2012/7/6/rails_timezones'
   Enabled: true
+  Safe: false
   VersionAdded: '0.30'
-  VersionChanged: '0.33'
+  VersionChanged: '0.68'
   # The value `strict` means that `Time` should be used with `zone`.
   # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
   EnforcedStyle: flexible
