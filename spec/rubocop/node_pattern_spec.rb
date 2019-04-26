@@ -127,8 +127,7 @@ RSpec.describe RuboCop::NodePattern do
 
     describe 'yaml compatibility' do
       let(:instance) do
-        YAML.safe_load(YAML.dump(super()),
-                       permitted_classes: [described_class])
+        YAML.safe_load(YAML.dump(super()), [described_class])
       end
       let(:ruby) { 'obj.method' }
 

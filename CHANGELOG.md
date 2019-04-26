@@ -34,6 +34,7 @@
 * [#6917](https://github.com/rubocop-hq/rubocop/issues/6917): Bump Bundler dependency to >= 1.15.0. ([@koic][])
 * Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
 * [#6887](https://github.com/rubocop-hq/rubocop/pull/6887): Allow `Lint/UnderscorePrefixedVariableName` cop to be configured to allow use of block keyword args. ([@dduugg][])
+* [#6885](https://github.com/rubocop-hq/rubocop/pull/6885): Revert adding psych >= 3.1 as runtime dependency. ([@andreaseger][])
 
 ## 0.67.2 (2019-04-05)
 
@@ -3963,3 +3964,4 @@
 [@Mange]: https://github.com/Mange
 [@jmanian]: https://github.com/jmanian
 [@vfonic]: https://github.com/vfonic
+[@andreaseger]: https://github.com/andreaseger

@@ -26,17 +26,32 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
 
     include_examples 'call block'
 
-    it 'calls block with keys' do
-      key1 = nil
-      key2 = nil
-      check(yaml) do |key_a, key_b|
-        key1 = key_a
-        key2 = key_b
+    context '< Ruby 2.5', if: RUBY_VERSION < '2.5' do
+      it 'calls block with keys' do
+        key1 = nil
+        key2 = nil
+        check(yaml) do |key_a, key_b|
+          key1 = key_a
+          key2 = key_b
+        end
+        expect(key1.value).to eq('Layout/Tab')
+        expect(key2.value).to eq('Layout/Tab')
       end
-      expect(key1.start_line).to eq(0)
-      expect(key2.start_line).to eq(3)
-      expect(key1.value).to eq('Layout/Tab')
-      expect(key2.value).to eq('Layout/Tab')
+    end
+
+    context '>= Ruby 2.5', if: RUBY_VERSION >= '2.5' do
+      it 'calls block with keys' do
+        key1 = nil
+        key2 = nil
+        check(yaml) do |key_a, key_b|
+          key1 = key_a
+          key2 = key_b
+        end
+        expect(key1.start_line).to eq(0)
+        expect(key2.start_line).to eq(3)
+        expect(key1.value).to eq('Layout/Tab')
+        expect(key2.value).to eq('Layout/Tab')
+      end
     end
   end
 
@@ -49,17 +64,32 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
 
     include_examples 'call block'
 
-    it 'calls block with keys' do
-      key1 = nil
-      key2 = nil
-      check(yaml) do |key_a, key_b|
-        key1 = key_a
-        key2 = key_b
+    context '< Ruby 2.5', if: RUBY_VERSION < '2.5' do
+      it 'calls block with keys' do
+        key1 = nil
+        key2 = nil
+        check(yaml) do |key_a, key_b|
+          key1 = key_a
+          key2 = key_b
+        end
+        expect(key1.value).to eq('Enabled')
+        expect(key2.value).to eq('Enabled')
       end
-      expect(key1.start_line).to eq(1)
-      expect(key2.start_line).to eq(2)
-      expect(key1.value).to eq('Enabled')
-      expect(key2.value).to eq('Enabled')
+    end
+
+    context '>= Ruby 2.5', if: RUBY_VERSION >= '2.5' do
+      it 'calls block with keys' do
+        key1 = nil
+        key2 = nil
+        check(yaml) do |key_a, key_b|
+          key1 = key_a
+          key2 = key_b
+        end
+        expect(key1.start_line).to eq(1)
+        expect(key2.start_line).to eq(2)
+        expect(key1.value).to eq('Enabled')
+        expect(key2.value).to eq('Enabled')
+      end
     end
   end
 
