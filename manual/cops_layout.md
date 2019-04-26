@@ -157,7 +157,6 @@ options are:
   - key (left align keys, one space before hash rockets and values)
   - separator (align hash rockets and colons, right align keys)
   - table (left align keys, hash rockets, and values)
-  - or a list of the above options
 
 The treatment of hashes passed as the last argument to a method call
 can also be configured. The options are:
@@ -165,7 +164,9 @@ can also be configured. The options are:
   - always_inspect
   - always_ignore
   - ignore_implicit (without curly braces)
-  - ignore_explicit (with curly braces)
+
+Alternatively you can specify multiple allowed styles. That's done by
+passing a list of styles to EnforcedStyles.
 
 ### Examples
 
