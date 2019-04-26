@@ -182,24 +182,6 @@ jobs:
     steps:
       *rubocop_steps
 
-  # With JIT compiler enabled!
-  ruby-head-spec-with-jit:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      RUBYOPT: '--jit'
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-head-rubocop-with-jit:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      RUBYOPT: '--jit'
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
   # JRuby 9.2
   jruby-9.2-spec:
     docker:
@@ -311,12 +293,8 @@ workflows:
       - ruby-head-spec:
           requires:
             - cc-setup
-      - ruby-head-spec-with-jit:
-          requires:
-            - cc-setup
       - ruby-head-ascii_spec
       - ruby-head-rubocop
-      - ruby-head-rubocop-with-jit
       - jruby-9.2-spec:
           requires:
             - cc-setup
