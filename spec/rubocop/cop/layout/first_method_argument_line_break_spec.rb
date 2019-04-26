@@ -25,6 +25,20 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
       RUBY
     end
 
+    it 'detects the offense when using `super`' do
+      expect_offense(<<-RUBY.strip_indent)
+        super(bar,
+              ^^^ Add a line break before the first argument of a multi-line method argument list.
+          baz)
+      RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        super(
+        bar,
+          baz)
+      RUBY
+    end
+
     context 'when using safe navigation operator', :ruby23 do
       it 'detects the offense' do
         expect_offense(<<-RUBY.strip_indent)
