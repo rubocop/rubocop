@@ -712,8 +712,8 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
   context 'with multiple preferred(key and table) alignment configuration' do
     let(:cop_config) do
       {
-        'EnforcedHashRocketStyle' => 'table_or_key',
-        'EnforcedColonStyle' => 'table_or_key'
+        'EnforcedHashRocketStyle' => %w[key table],
+        'EnforcedColonStyle' => %w[key table]
       }
     end
 
@@ -846,31 +846,42 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
           RUBY
         end
 
-        it 'for misaligned hash values, prefer table when least offenses' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            hash = {
-              'abcdefg' => 0,
-              'abcdef'  => 0,
-              'gijk'    => 0,
-              'a'       => 0,
-              'b' => 1,
-                    'c' => 1
+        describe 'table and key config' do
+          let(:cop_config) do
+            {
+              'EnforcedHashRocketStyle' => %w[table key],
+              'EnforcedColonStyle' => %w[table key]
             }
-          RUBY
+          end
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
-            hash = {
-              'abcdefg' => 0,
-              'abcdef'  => 0,
-              'gijk'    => 0,
-              'a'       => 0,
-              'b'       => 1,
-              'c'       => 1
-            }
-          RUBY
+          it 'for misaligned hash values, '\
+             'prefer table because it is specified first' do
+            new_source = autocorrect_source(<<-RUBY.strip_indent)
+              hash = {
+                'abcdefg' => 0,
+                'abcdef'  => 0,
+                'gijk'    => 0,
+                'a'       => 0,
+                'b' => 1,
+                      'c' => 1
+              }
+            RUBY
+
+            expect(new_source).to eq(<<-RUBY.strip_indent)
+              hash = {
+                'abcdefg' => 0,
+                'abcdef'  => 0,
+                'gijk'    => 0,
+                'a'       => 0,
+                'b'       => 1,
+                'c'       => 1
+              }
+            RUBY
+          end
         end
 
-        it 'for misaligned hash values, prefer key when least offenses' do
+        it 'for misaligned hash values, '\
+           'prefer key because it is specified first' do
           new_source = autocorrect_source(<<-RUBY.strip_indent)
             hash = {
               'abcdefg' => 0,
@@ -890,38 +901,6 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
               'a' => 0,
               'b' => 1,
               'c' => 1
-            }
-          RUBY
-        end
-
-        it 'for misaligned hash values, works separate for each hash' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
-            hash = {
-              'abcdefg' => 0,
-              'abc'     => 0,
-              'abcdef'  => 0,
-              'gijk' => 0
-            }
-
-            hash = {
-              'abcdefg' => 0,
-              'abcdef'       => 0,
-              'gijk' => 0
-            }
-          RUBY
-
-          expect(new_source).to eq(<<-RUBY.strip_indent)
-            hash = {
-              'abcdefg' => 0,
-              'abc'     => 0,
-              'abcdef'  => 0,
-              'gijk'    => 0
-            }
-
-            hash = {
-              'abcdefg' => 0,
-              'abcdef' => 0,
-              'gijk' => 0
             }
           RUBY
         end

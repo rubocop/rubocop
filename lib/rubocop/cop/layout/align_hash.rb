@@ -10,7 +10,6 @@ module RuboCop
       #   - key (left align keys, one space before hash rockets and values)
       #   - separator (align hash rockets and colons, right align keys)
       #   - table (left align keys, hash rockets, and values)
-      #   - table_or_key (allows either table or key)
       #
       # The treatment of hashes passed as the last argument to a method call
       # can also be configured. The options are:
@@ -18,7 +17,9 @@ module RuboCop
       #   - always_inspect
       #   - always_ignore
       #   - ignore_implicit (without curly braces)
-      #   - ignore_explicit (with curly braces)
+      #
+      # Alternatively you can specify multiple allowed styles. That's done by
+      # passing a list of styles to EnforcedStyles.
       #
       # @example EnforcedHashRocketStyle: key (default)
       #   # bad
@@ -208,18 +209,10 @@ module RuboCop
         end
 
         def autocorrect(node)
-          # We can't use the instance variable inside the lambda. That would
-          # just give each lambda the same reference and they would all get the
-          # last value of each. A local variable fixes the problem.
-          delta = least_offended_column_deltas[node]
+          delta = column_deltas[alignment_for(node).first.class][node]
+          return if delta.nil?
 
-          if !node.value
-            correct_no_value(delta[:key] || 0, node.source_range)
-          else
-            correct_key_value(delta, node.key.source_range,
-                              node.value.source_range,
-                              node.loc.operator)
-          end
+          correct_node(node, delta)
         end
 
         attr_accessor :offences_by
@@ -293,9 +286,18 @@ module RuboCop
             new_alignment('EnforcedColonStyle')
         end
 
-        def least_offended_column_deltas
-          least_offences_format, = offences_by.min_by { |_, v| v.length }
-          column_deltas[least_offences_format]
+        def correct_node(node, delta)
+          # We can't use the instance variable inside the lambda. That would
+          # just give each lambda the same reference and they would all get the
+          # last value of each. A local variable fixes the problem.
+
+          if !node.value
+            correct_no_value(delta[:key] || 0, node.source_range)
+          else
+            correct_key_value(delta, node.key.source_range,
+                              node.value.source_range,
+                              node.loc.operator)
+          end
         end
 
         def correct_no_value(key_delta, key)
@@ -321,13 +323,20 @@ module RuboCop
         end
 
         def new_alignment(key)
-          {
-            'key' => [KeyAlignment.new],
-            'table' => [TableAlignment.new],
-            'separator' => [SeparatorAlignment.new],
-            'table_or_key' => [TableAlignment.new, KeyAlignment.new]
-          }.fetch(cop_config[key]) do
-            raise "Unknown #{key}: #{cop_config[key]}"
+          formats = cop_config[key]
+          formats = [formats] if formats.is_a? String
+
+          formats.uniq.map do |format|
+            case format
+            when 'key'
+              KeyAlignment.new
+            when 'table'
+              TableAlignment.new
+            when 'separator'
+              SeparatorAlignment.new
+            else
+              raise "Unknown #{key}: #{formats}"
+            end
           end
         end
 
