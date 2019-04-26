@@ -95,9 +95,23 @@ module RuboCop
       #     word.flip.flop
       #   }.join("-")
       #
+      # @example EnforcedStyle: always_braces
+      #   # bad
+      #   words.each do |word|
+      #     word.flip.flop
+      #   end
+      #
+      #   # good
+      #   words.each { |word|
+      #     word.flip.flop
+      #   }
+      #
       class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
+
+        ALWAYS_BRACES_MESSAGE = 'Prefer `{...}` over `do...end` for blocks.'
+                                .freeze
 
         def on_send(node)
           return unless node.arguments?
@@ -166,6 +180,7 @@ module RuboCop
           when :line_count_based    then line_count_based_message(node)
           when :semantic            then semantic_message(node)
           when :braces_for_chaining then braces_for_chaining_message(node)
+          when :always_braces       then ALWAYS_BRACES_MESSAGE
           end
         end
 
@@ -229,6 +244,7 @@ module RuboCop
           when :line_count_based    then line_count_based_block_style?(node)
           when :semantic            then semantic_block_style?(node)
           when :braces_for_chaining then braces_for_chaining_style?(node)
+          when :always_braces       then braces_style?(node)
           end
         end
 
@@ -255,6 +271,10 @@ module RuboCop
                          else
                            '{'
                          end
+        end
+
+        def braces_style?(node)
+          node.loc.begin.source == '{'
         end
 
         def return_value_chaining?(node)

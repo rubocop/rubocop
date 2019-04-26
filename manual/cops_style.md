@@ -460,12 +460,25 @@ words.each { |word|
   word.flip.flop
 }.join("-")
 ```
+#### EnforcedStyle: always_braces
+
+```ruby
+# bad
+words.each do |word|
+  word.flip.flop
+end
+
+# good
+words.each { |word|
+  word.flip.flop
+}
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `line_count_based` | `line_count_based`, `semantic`, `braces_for_chaining`
+EnforcedStyle | `line_count_based` | `line_count_based`, `semantic`, `braces_for_chaining`, `always_braces`
 ProceduralMethods | `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `measure`, `new`, `realtime`, `tap`, `with_object` | Array
 FunctionalMethods | `let`, `let!`, `subject`, `watch` | Array
 IgnoredMethods | `lambda`, `proc`, `it` | Array
