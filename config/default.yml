@@ -260,6 +260,7 @@ Layout/AlignHash:
                  Align the elements of a hash literal if they span more than
                  one line.
   Enabled: true
+  AllowMultipleStyles: true
   VersionAdded: '0.49'
   # Alignment of entries using hash rocket as separator. Valid values are:
   #

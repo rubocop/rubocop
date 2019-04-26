@@ -87,7 +87,10 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     return '' if pars.empty?
 
     header = ['Name', 'Default value', 'Configurable values']
-    configs = pars.each_key.reject { |key| key.start_with?('Supported') }
+    configs = pars
+              .each_key
+              .reject { |key| key.start_with?('Supported') }
+              .reject { |key| key.start_with?('AllowMultipleStyles') }
     content = configs.map do |name|
       configurable = configurable_values(pars, name)
       default = format_table_value(pars[name])

@@ -174,6 +174,70 @@ RSpec.describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration includes multiple valid EnforcedStyle' do
+      before do
+        create_file(configuration_path, <<-YAML.strip_indent)
+          Layout/AlignHash:
+            EnforcedHashRocketStyle:
+              - key
+              - table
+        YAML
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.not_to raise_error
+      end
+    end
+
+    context 'when the configuration includes multiple valid EnforcedStyle '\
+            'and one invalid style' do
+      before do
+        create_file(configuration_path, <<-YAML.strip_indent)
+          Layout/AlignHash:
+            EnforcedHashRocketStyle:
+              - key
+              - trailing_comma
+        YAML
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /trailing_comma/)
+      end
+    end
+
+    context 'when the configuration includes multiple '\
+            'but config does not allow' do
+      before do
+        create_file(configuration_path, <<-YAML.strip_indent)
+          Layout/SpaceAroundBlockParameters:
+            EnforcedStyleInsidePipes:
+              - space
+        YAML
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /space/)
+      end
+    end
+
+    context 'when the configuration includes multiple invalid EnforcedStyle' do
+      before do
+        create_file(configuration_path, <<-YAML.strip_indent)
+          Layout/AlignHash:
+            EnforcedHashRocketStyle:
+              - table
+              - itisinvalid
+        YAML
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+      end
+    end
+
     context 'when the configuration includes an obsolete cop' do
       before do
         create_file(configuration_path, <<~YAML)
