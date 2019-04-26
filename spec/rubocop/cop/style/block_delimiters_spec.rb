@@ -507,4 +507,97 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
     end
   end
+
+  context 'always braces' do
+    cop_config = {
+      'EnforcedStyle' => 'always_braces',
+      'IgnoredMethods' => %w[proc]
+    }
+
+    let(:cop_config) { cop_config }
+
+    it 'registers an offense for a single line block with do-end' do
+      expect_offense(<<-RUBY.strip_indent)
+        each do |x| end
+             ^^ Prefer `{...}` over `do...end` for blocks.
+      RUBY
+    end
+
+    it 'accepts a single line block with braces' do
+      expect_no_offenses('each { |x| }')
+    end
+
+    it 'registers an offence for a multi-line block with do-end' do
+      expect_offense(<<-RUBY.strip_indent)
+        each do |x|
+             ^^ Prefer `{...}` over `do...end` for blocks.
+        end
+      RUBY
+    end
+
+    it 'auto-corrects do and end for single line blocks to { and }' do
+      new_source = autocorrect_source('block do |x| end')
+      expect(new_source).to eq('block { |x| }')
+    end
+
+    it 'does not auto-correct do-end if {} would change the meaning' do
+      src = "s.subspec 'Subspec' do |sp| end"
+      new_source = autocorrect_source(src)
+      expect(new_source).to eq(src)
+    end
+
+    it 'accepts a multi-line block that needs braces to be valid ruby' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        puts [1, 2, 3].map { |n|
+          n * n
+        }, 1
+      RUBY
+    end
+
+    it 'registers an offense for multi-line chained do-end blocks' do
+      expect_offense(<<-RUBY.strip_indent)
+        each do |x|
+             ^^ Prefer `{...}` over `do...end` for blocks.
+        end.map(&:to_s)
+      RUBY
+    end
+
+    it 'auto-corrects do-end for chained blocks' do
+      src = <<-RUBY.strip_indent
+        each do |x|
+        end.map(&:to_s)
+      RUBY
+      new_source = autocorrect_source(src)
+      expect(new_source).to eq(<<-RUBY.strip_indent)
+        each { |x|
+        }.map(&:to_s)
+      RUBY
+    end
+
+    it 'accepts a multi-line functional block with do-end if it is ' \
+       'an ignored method' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        foo = proc do
+          puts 42
+        end
+      RUBY
+    end
+
+    context 'when there are braces around a multi-line block' do
+      it 'registers an offense in the simple case' do
+        expect_offense(<<-RUBY.strip_indent)
+          each do |x|
+               ^^ Prefer `{...}` over `do...end` for blocks.
+          end
+        RUBY
+      end
+
+      it 'allows when the block is being chained' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          each { |x|
+          }.map(&:to_sym)
+        RUBY
+      end
+    end
+  end
 end

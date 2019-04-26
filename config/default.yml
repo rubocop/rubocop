@@ -2663,6 +2663,8 @@ Style/BlockDelimiters:
     # return value is being chained with another method (in which case braces
     # are enforced).
     - braces_for_chaining
+    # The `always_braces` style always enforces braces.
+    - always_braces
   ProceduralMethods:
     # Methods that are known to be procedural in nature but look functional from
     # their usage, e.g.
