@@ -9,6 +9,7 @@
 * Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
 * [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
 * Add initial autocorrection support to `Metrics/LineLength`. ([@maxh][])
+* Add `Layout/IndentFirstParameter`. ([@maxh][])
 * [#6974](https://github.com/rubocop-hq/rubocop/issues/6974): Make `Layout/FirstMethodArgumentLineBreak` aware of calling using `super`. ([@koic][])
 
 ### Bug fixes
@@ -36,6 +37,7 @@
 * Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
 * [#6887](https://github.com/rubocop-hq/rubocop/pull/6887): Allow `Lint/UnderscorePrefixedVariableName` cop to be configured to allow use of block keyword args. ([@dduugg][])
 * [#6885](https://github.com/rubocop-hq/rubocop/pull/6885): Revert adding psych >= 3.1 as runtime dependency. ([@andreaseger][])
+* Rename `Layout/FirstParameterIndentation` to `Layout/IndentFirstArgument`. ([@maxh][])
 * Extract method call argument alignment behavior from `Layout/AlignParameters` into `Layout/AlignArguments`. ([@maxh][])
 
 ## 0.67.2 (2019-04-05)

@@ -2035,164 +2035,6 @@ def method foo,
 end
 ```
 
-## Layout/FirstParameterIndentation
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.56
-
-This cop checks the indentation of the first parameter in a method call.
-Parameters after the first one are checked by Layout/AlignParameters,
-not by this cop.
-
-### Examples
-
-```ruby
-# bad
-some_method(
-first_param,
-second_param)
-
-foo = some_method(
-first_param,
-second_param)
-
-foo = some_method(nested_call(
-nested_first_param),
-second_param)
-
-foo = some_method(
-nested_call(
-nested_first_param),
-second_param)
-
-some_method nested_call(
-nested_first_param),
-second_param
-```
-#### EnforcedStyle: consistent
-
-```ruby
-# The first parameter should always be indented one step more than the
-# preceding line.
-
-# good
-some_method(
-  first_param,
-second_param)
-
-foo = some_method(
-  first_param,
-second_param)
-
-foo = some_method(nested_call(
-  nested_first_param),
-second_param)
-
-foo = some_method(
-  nested_call(
-    nested_first_param),
-second_param)
-
-some_method nested_call(
-  nested_first_param),
-second_param
-```
-#### EnforcedStyle: consistent_relative_to_receiver
-
-```ruby
-# The first parameter should always be indented one level relative to
-# the parent that is receiving the parameter
-
-# good
-some_method(
-  first_param,
-second_param)
-
-foo = some_method(
-        first_param,
-second_param)
-
-foo = some_method(nested_call(
-                    nested_first_param),
-second_param)
-
-foo = some_method(
-        nested_call(
-          nested_first_param),
-second_param)
-
-some_method nested_call(
-              nested_first_param),
-second_params
-```
-#### EnforcedStyle: special_for_inner_method_call
-
-```ruby
-# The first parameter should normally be indented one step more than
-# the preceding line, but if it's a parameter for a method call that
-# is itself a parameter in a method call, then the inner parameter
-# should be indented relative to the inner method.
-
-# good
-some_method(
-  first_param,
-second_param)
-
-foo = some_method(
-  first_param,
-second_param)
-
-foo = some_method(nested_call(
-                    nested_first_param),
-second_param)
-
-foo = some_method(
-  nested_call(
-    nested_first_param),
-second_param)
-
-some_method nested_call(
-              nested_first_param),
-second_param
-```
-#### EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
-
-```ruby
-# Same as `special_for_inner_method_call` except that the special rule
-# only applies if the outer method call encloses its arguments in
-# parentheses.
-
-# good
-some_method(
-  first_param,
-second_param)
-
-foo = some_method(
-  first_param,
-second_param)
-
-foo = some_method(nested_call(
-                    nested_first_param),
-second_param)
-
-foo = some_method(
-  nested_call(
-    nested_first_param),
-second_param)
-
-some_method nested_call(
-  nested_first_param),
-second_param
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
-IndentationWidth | `<none>` | Integer
-
 ## Layout/HeredocArgumentClosingParenthesis
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2380,6 +2222,217 @@ value =
 
 Name | Default value | Configurable values
 --- | --- | ---
+IndentationWidth | `<none>` | Integer
+
+## Layout/IndentFirstArgument
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | -
+
+This cop checks the indentation of the first argument in a method call
+or definition.
+
+### Examples
+
+```ruby
+# bad
+some_method(
+first_param,
+second_param)
+
+foo = some_method(
+first_param,
+second_param)
+
+foo = some_method(nested_call(
+nested_first_param),
+second_param)
+
+foo = some_method(
+nested_call(
+nested_first_param),
+second_param)
+
+some_method nested_call(
+nested_first_param),
+second_param
+```
+#### EnforcedStyle: consistent
+
+```ruby
+# The first argument should always be indented one step more than the
+# preceding line.
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+  nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+  nested_first_param),
+second_param
+```
+#### EnforcedStyle: consistent_relative_to_receiver
+
+```ruby
+# The first argument should always be indented one level relative to
+# the parent that is receiving the argument
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+        first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+        nested_call(
+          nested_first_param),
+second_param)
+
+some_method nested_call(
+              nested_first_param),
+second_params
+```
+#### EnforcedStyle: special_for_inner_method_call
+
+```ruby
+# The first argument should normally be indented one step more than
+# the preceding line, but if it's a argument for a method call that
+# is itself a argument in a method call, then the inner argument
+# should be indented relative to the inner method.
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+              nested_first_param),
+second_param
+```
+#### EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
+
+```ruby
+# Same as `special_for_inner_method_call` except that the special rule
+# only applies if the outer method call encloses its arguments in
+# parentheses.
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+  nested_first_param),
+second_param
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
+IndentationWidth | `<none>` | Integer
+
+## Layout/IndentFirstParameter
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.68
+
+This cop checks the indentation of the first parameter in a method call.
+Parameters after the first one are checked by Layout/AlignParameters,
+not by this cop.
+
+### Examples
+
+```ruby
+# bad
+def some_method(
+first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: consistent
+
+```ruby
+# The first parameter should always be indented one step more than the
+# preceding line.
+
+# good
+def some_method(
+  first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: align_parentheses
+
+```ruby
+# The first parameter should always be indented one step more than the
+# opening parenthesis.
+
+# good
+def some_method(
+                 first_param,
+second_param)
+  123
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `align_parentheses`
 IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHash
