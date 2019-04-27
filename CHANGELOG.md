@@ -9,6 +9,7 @@
 * Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
 * [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
 * Add initial autocorrection support to `Metrics/LineLength`. ([@maxh][])
+* [#6974](https://github.com/rubocop-hq/rubocop/issues/6974): Make `Layout/FirstMethodArgumentLineBreak` aware of calling using `super`. ([@koic][])
 
 ### Bug fixes
 
