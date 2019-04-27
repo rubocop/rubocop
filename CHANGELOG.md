@@ -35,6 +35,7 @@
 * Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
 * [#6887](https://github.com/rubocop-hq/rubocop/pull/6887): Allow `Lint/UnderscorePrefixedVariableName` cop to be configured to allow use of block keyword args. ([@dduugg][])
 * [#6885](https://github.com/rubocop-hq/rubocop/pull/6885): Revert adding psych >= 3.1 as runtime dependency. ([@andreaseger][])
+* Extract method call argument alignment behavior from `Layout/AlignParameters` into `Layout/AlignArguments`. ([@maxh][])
 
 ## 0.67.2 (2019-04-05)
 

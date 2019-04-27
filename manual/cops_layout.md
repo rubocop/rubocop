@@ -54,6 +54,65 @@ IndentationWidth | `<none>` | Integer
 
 * [https://github.com/rubocop-hq/ruby-style-guide#indent-public-private-protected](https://github.com/rubocop-hq/ruby-style-guide#indent-public-private-protected)
 
+## Layout/AlignArguments
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | -
+
+Here we check if the arguments on a multi-line method
+definition are aligned.
+
+### Examples
+
+#### EnforcedStyle: with_first_argument (default)
+
+```ruby
+# good
+
+foo :bar,
+    :baz
+
+foo(
+  :bar,
+  :baz
+)
+
+# bad
+
+foo :bar,
+  :baz
+
+foo(
+  :bar,
+    :baz
+)
+```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+foo :bar,
+  :baz
+
+# bad
+
+foo :bar,
+    :baz
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_argument` | `with_first_argument`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#no-double-indent](https://github.com/rubocop-hq/ruby-style-guide#no-double-indent)
+
 ## Layout/AlignArray
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -296,10 +355,13 @@ EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ign
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.68
 
 Here we check if the parameters on a multi-line method call or
 definition are aligned.
+
+To set the alignment of the first argument, use the cop
+FirstParameterIndentation.
 
 ### Examples
 
@@ -308,26 +370,64 @@ definition are aligned.
 ```ruby
 # good
 
-foo :bar,
-    :baz
+def foo(bar,
+        baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
 
 # bad
 
-foo :bar,
-  :baz
+def foo(bar,
+     baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
 ```
 #### EnforcedStyle: with_fixed_indentation
 
 ```ruby
 # good
 
-foo :bar,
-  :baz
+def foo(bar,
+  baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
 
 # bad
 
-foo :bar,
-    :baz
+def foo(bar,
+        baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
 ```
 
 ### Configurable attributes

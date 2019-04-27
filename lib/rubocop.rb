@@ -180,6 +180,7 @@ require_relative 'rubocop/cop/gemspec/ordered_dependencies'
 require_relative 'rubocop/cop/gemspec/required_ruby_version'
 
 require_relative 'rubocop/cop/layout/access_modifier_indentation'
+require_relative 'rubocop/cop/layout/align_arguments'
 require_relative 'rubocop/cop/layout/align_array'
 require_relative 'rubocop/cop/layout/align_hash'
 require_relative 'rubocop/cop/layout/align_parameters'
