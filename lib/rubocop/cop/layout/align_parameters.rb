@@ -6,45 +6,83 @@ module RuboCop
       # Here we check if the parameters on a multi-line method call or
       # definition are aligned.
       #
+      # To set the alignment of the first argument, use the cop
+      # FirstParameterIndentation.
+      #
       # @example EnforcedStyle: with_first_parameter (default)
       #   # good
       #
-      #   foo :bar,
-      #       :baz
+      #   def foo(bar,
+      #           baz)
+      #     123
+      #   end
+      #
+      #   def foo(
+      #     bar,
+      #     baz
+      #   )
+      #     123
+      #   end
       #
       #   # bad
       #
-      #   foo :bar,
-      #     :baz
+      #   def foo(bar,
+      #        baz)
+      #     123
+      #   end
+      #
+      #   # bad
+      #
+      #   def foo(
+      #     bar,
+      #        baz)
+      #     123
+      #   end
       #
       # @example EnforcedStyle: with_fixed_indentation
       #   # good
       #
-      #   foo :bar,
-      #     :baz
+      #   def foo(bar,
+      #     baz)
+      #     123
+      #   end
+      #
+      #   def foo(
+      #     bar,
+      #     baz
+      #   )
+      #     123
+      #   end
       #
       #   # bad
       #
-      #   foo :bar,
-      #       :baz
+      #   def foo(bar,
+      #           baz)
+      #     123
+      #   end
+      #
+      #   # bad
+      #
+      #   def foo(
+      #     bar,
+      #        baz)
+      #     123
+      #   end
       class AlignParameters < Cop
         include Alignment
 
-        ALIGN_PARAMS_MSG = 'Align the parameters of a method %<type>s if ' \
+        ALIGN_PARAMS_MSG = 'Align the parameters of a method definition if ' \
           'they span more than one line.'.freeze
 
         FIXED_INDENT_MSG = 'Use one level of indentation for parameters ' \
-          'following the first line of a multi-line method %<type>s.'.freeze
+          'following the first line of a multi-line method definition.'.freeze
 
-        def on_send(node)
-          return if node.arguments.size < 2 ||
-                    node.send_type? && node.method?(:[]=)
+        def on_def(node)
+          return if node.arguments.size < 2
 
           check_alignment(node.arguments, base_column(node, node.arguments))
         end
-        alias on_csend on_send
-        alias on_def  on_send
-        alias on_defs on_send
+        alias on_defs on_def
 
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, column_delta)
@@ -52,15 +90,8 @@ module RuboCop
 
         private
 
-        def message(node)
-          type = if node && (node.parent.send_type? || node.parent.csend_type?)
-                   'call'
-                 else
-                   'definition'
-                 end
-          msg = fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG
-
-          format(msg, type: type)
+        def message(_node)
+          fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG
         end
 
         def fixed_indentation?
@@ -79,14 +110,7 @@ module RuboCop
         end
 
         def target_method_lineno(node)
-          if node.def_type? || node.defs_type?
-            node.loc.keyword.line
-          elsif node.loc.selector
-            node.loc.selector.line
-          else
-            # l.(1) has no selector, so we use the opening parenthesis instead
-            node.loc.begin.line
-          end
+          node.loc.keyword.line
         end
       end
     end
