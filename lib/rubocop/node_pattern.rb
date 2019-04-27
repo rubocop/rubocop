@@ -106,7 +106,7 @@ module RuboCop
     class Compiler
       SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
       IDENTIFIER   = /[a-zA-Z_][a-zA-Z0-9_-]*/.freeze
-      META         = /\(|\)|\{|\}|\[|\]|\<|\>|\$\.\.\.|\$|!|\^|\.\.\./.freeze
+      META         = Regexp.union(%w"( ) { } [ ] $< < > $... $ ! ^ ...").freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
       METHOD_NAME  = /\#?#{IDENTIFIER}[\!\?]?\(?/.freeze
@@ -143,7 +143,9 @@ module RuboCop
       line = __LINE__
       ANY_ORDER_TEMPLATE = ERB.new <<-RUBY.strip_indent.gsub("-%>\n", '%>')
         <% if capture_rest %>(<%= capture_rest %> = []) && <% end -%>
-        <%= CUR_NODE %>.children[<%= range %>].each_with_object({}) { |<%= child %>, <%= matched %>|
+        <% if capture_all %>(<%= capture_all %> = <% end -%>
+        <%= CUR_NODE %>.children[<%= range %>]<% if capture_all %>)<% end -%>
+        .each_with_object({}) { |<%= child %>, <%= matched %>|
           case
           <% patterns.each_with_index do |pattern, i| -%>
           when !<%= matched %>[<%= i %>] && <%=
@@ -234,6 +236,7 @@ module RuboCop
         case token
         when CAPTURED_REST then compile_captured_ellipsis
         when REST          then compile_ellipsis
+        when '$<'          then compile_any_order(next_capture)
         when '<'           then compile_any_order
         else                    [1, compile_expr(token)]
         end
@@ -351,7 +354,8 @@ module RuboCop
         [0..Float::INFINITY, 'true']
       end
 
-      def compile_any_order # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength
+      def compile_any_order(capture_all = nil)
         rest = capture_rest = nil
         patterns = []
         with_temp_variables do |child, matched|
@@ -368,6 +372,7 @@ module RuboCop
            ->(range) { ANY_ORDER_TEMPLATE.result(binding) }]
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
       def insure_same_captures(enum, what)
         return to_enum __method__, enum, what unless block_given?
