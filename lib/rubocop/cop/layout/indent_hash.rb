@@ -80,7 +80,7 @@ module RuboCop
       class IndentHash < Cop
         include Alignment
         include ConfigurableEnforcedStyle
-        include ArrayHashIndentation
+        include MultilineElementIndentation
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
               'in a hash, relative to %<base_description>s.'.freeze

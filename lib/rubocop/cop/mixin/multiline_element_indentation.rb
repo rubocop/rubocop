@@ -2,8 +2,9 @@
 
 module RuboCop
   module Cop
-    # Common code for indenting literal arrays and hashes.
-    module ArrayHashIndentation
+    # Common code for indenting the first elements in multiline
+    # array literals, hash literals, and method definitions.
+    module MultilineElementIndentation
       private
 
       def each_argument_node(node, type)
