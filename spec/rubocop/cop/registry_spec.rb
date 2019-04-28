@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Registry do
       module Cop
         module Test
           # Create another cop with a different namespace
-          class IndentArray < Cop
+          class IndentFirstArrayElement < Cop
           end
         end
 
@@ -26,10 +26,10 @@ RSpec.describe RuboCop::Cop::Registry do
     [
       RuboCop::Cop::Lint::BooleanSymbol,
       RuboCop::Cop::Lint::DuplicateMethods,
-      RuboCop::Cop::Layout::IndentArray,
+      RuboCop::Cop::Layout::IndentFirstArrayElement,
       RuboCop::Cop::Metrics::MethodLength,
       RuboCop::Cop::RSpec::Foo,
-      RuboCop::Cop::Test::IndentArray
+      RuboCop::Cop::Test::IndentFirstArrayElement
     ]
   end
 
@@ -64,7 +64,8 @@ RSpec.describe RuboCop::Cop::Registry do
 
   context '#contains_cop_matching?' do
     it 'can find cops matching a given name' do
-      expect(registry.contains_cop_matching?(['Test/IndentArray'])).to be(true)
+      result = registry.contains_cop_matching?(['Test/IndentFirstArrayElement'])
+      expect(result).to be(true)
     end
 
     it 'returns false for cops not included in the store' do
@@ -76,8 +77,11 @@ RSpec.describe RuboCop::Cop::Registry do
     let(:origin) { '/app/.rubocop.yml' }
 
     it 'gives back already properly qualified names' do
-      expect(registry.qualified_cop_name('Layout/IndentArray', origin))
-        .to eql('Layout/IndentArray')
+      result = registry.qualified_cop_name(
+        'Layout/IndentFirstArrayElement',
+        origin
+      )
+      expect(result).to eql('Layout/IndentFirstArrayElement')
     end
 
     it 'qualifies names without a namespace' do
@@ -102,11 +106,11 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'raises an error when a cop name is ambiguous' do
-      expect { registry.qualified_cop_name('IndentArray', origin) }
+      expect { registry.qualified_cop_name('IndentFirstArrayElement', origin) }
         .to raise_error(RuboCop::Cop::AmbiguousCopName).with_message(
-          'Ambiguous cop name `IndentArray` used in /app/.rubocop.yml needs ' \
-          'department qualifier. Did you mean Layout/IndentArray or ' \
-          'Test/IndentArray?'
+          'Ambiguous cop name `IndentFirstArrayElement` used in ' \
+          '/app/.rubocop.yml needs department qualifier. Did you mean ' \
+          'Layout/IndentFirstArrayElement or Test/IndentFirstArrayElement?'
         )
     end
 
@@ -119,9 +123,13 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.to_h).to eql(
       'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
       'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/IndentArray' => [RuboCop::Cop::Layout::IndentArray],
+      'Layout/IndentFirstArrayElement' => [
+        RuboCop::Cop::Layout::IndentFirstArrayElement
+      ],
       'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
-      'Test/IndentArray' => [RuboCop::Cop::Test::IndentArray],
+      'Test/IndentFirstArrayElement' => [
+        RuboCop::Cop::Test::IndentFirstArrayElement
+      ],
       'RSpec/Foo' => [RuboCop::Cop::RSpec::Foo]
     )
   end
@@ -139,7 +147,7 @@ RSpec.describe RuboCop::Cop::Registry do
   context '#enabled' do
     let(:config) do
       RuboCop::Config.new(
-        'Test/IndentArray' => { 'Enabled' => false },
+        'Test/IndentFirstArrayElement' => { 'Enabled' => false },
         'RSpec/Foo' => { 'Safe' => false }
       )
     end
@@ -149,7 +157,8 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'overrides config if :only includes the cop' do
-      expect(registry.enabled(config, ['Test/IndentArray'])).to eql(cops)
+      result = registry.enabled(config, ['Test/IndentFirstArrayElement'])
+      expect(result).to eql(cops)
     end
 
     it 'selects only safe cops if :safe passed' do
@@ -163,10 +172,10 @@ RSpec.describe RuboCop::Cop::Registry do
       [
         'Lint/BooleanSymbol',
         'Lint/DuplicateMethods',
-        'Layout/IndentArray',
+        'Layout/IndentFirstArrayElement',
         'Metrics/MethodLength',
         'RSpec/Foo',
-        'Test/IndentArray'
+        'Test/IndentFirstArrayElement'
       ]
     )
   end

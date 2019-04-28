@@ -77,7 +77,7 @@ module RuboCop
       #   and_now_for_something = {
       #                             completely: :different
       #                           }
-      class IndentHash < Cop
+      class IndentFirstHashElement < Cop
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation

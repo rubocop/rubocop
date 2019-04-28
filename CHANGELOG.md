@@ -39,6 +39,7 @@
 * [#6885](https://github.com/rubocop-hq/rubocop/pull/6885): Revert adding psych >= 3.1 as runtime dependency. ([@andreaseger][])
 * Rename `Layout/FirstParameterIndentation` to `Layout/IndentFirstArgument`. ([@maxh][])
 * Extract method call argument alignment behavior from `Layout/AlignParameters` into `Layout/AlignArguments`. ([@maxh][])
+* Rename `IndentArray` and `IndentHash` to `IndentFirstArrayElement` and `IndentFirstHashElement`. ([@maxh][])
 
 ## 0.67.2 (2019-04-05)
 
