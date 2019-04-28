@@ -58,13 +58,13 @@ module RuboCop
 
         STRING_TYPES = %i[str dstr xstr].freeze
         def on_send(node)
-          heredoc = extract_heredoc_argument(node)
-          return unless heredoc
+          heredoc_arg = extract_heredoc_argument(node)
+          return unless heredoc_arg
 
-          outermost_send = outermost_send_with_parens(heredoc)
+          outermost_send = outermost_send_on_same_line(heredoc_arg)
           return unless outermost_send
           return unless outermost_send.loc.end
-          return unless heredoc.first_line != outermost_send.loc.end.line
+          return unless heredoc_arg.first_line != outermost_send.loc.end.line
 
           add_offense(outermost_send, location: :end)
         end
@@ -111,38 +111,28 @@ module RuboCop
 
         private
 
-        def outermost_send_with_parens(heredoc)
+        def outermost_send_on_same_line(heredoc)
           previous = heredoc
           current = previous.parent
-          until containing_send?(current, previous, heredoc)
+          until send_missing_closing_parens?(current, previous, heredoc)
             previous = current
             current = current.parent
             return unless previous && current
           end
-
-          while containing_send?(current, previous, heredoc)
-            outermost_with_parens = current if send_with_parens?(current)
-            previous = current
-            current = current.parent
-          end
-
-          outermost_with_parens
+          current
         end
 
-        def containing_send?(parent, child, heredoc)
+        def send_missing_closing_parens?(parent, child, heredoc)
           send_node?(parent) &&
             parent.arguments.include?(child) &&
-            parent.first_line == heredoc.last_line
+            parent.loc.begin &&
+            parent.loc.end.line != heredoc.last_line
         end
 
         def send_node?(node)
           return nil unless node
 
           node.send_type? || node.csend_type?
-        end
-
-        def send_with_parens?(node)
-          !node.loc.end.nil?
         end
 
         def extract_heredoc_argument(node)
@@ -153,9 +143,7 @@ module RuboCop
 
         def extract_heredoc(node)
           return node if heredoc_node?(node)
-          if node.send_type? && heredoc_node?(node.receiver)
-            return node.receiver
-          end
+          return node.receiver if single_line_send_with_heredoc_receiver?(node)
 
           return unless node.hash_type?
 
@@ -167,6 +155,13 @@ module RuboCop
 
         def heredoc_node?(node)
           node && STRING_TYPES.include?(node.type) && node.heredoc?
+        end
+
+        def single_line_send_with_heredoc_receiver?(node)
+          return false unless node.send_type?
+          return false unless heredoc_node?(node.receiver)
+
+          node.receiver.location.heredoc_end.end_pos > node.source_range.end_pos
         end
 
         # Closing parenthesis helpers.
