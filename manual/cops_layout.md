@@ -2091,105 +2091,6 @@ opening HEREDOC tag.
    )
 ```
 
-## Layout/IndentArray
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
-
-This cop checks the indentation of the first element in an array literal
-where the opening bracket and the first element are on separate lines.
-The other elements' indentations are handled by the AlignArray cop.
-
-By default, array literals that are arguments in a method call with
-parentheses, and where the opening square bracket of the array is on the
-same line as the opening parenthesis of the method call, shall have
-their first element indented one step (two spaces) more than the
-position inside the opening parenthesis.
-
-Other array literals shall have their first element indented one step
-more than the start of the line where the opening square bracket is.
-
-This default style is called 'special_inside_parentheses'. Alternative
-styles are 'consistent' and 'align_brackets'. Here are examples:
-
-### Examples
-
-#### EnforcedStyle: special_inside_parentheses (default)
-
-```ruby
-# The `special_inside_parentheses` style enforces that the first
-# element in an array literal where the opening bracket and first
-# element are on seprate lines is indented one step (two spaces) more
-# than the position inside the opening parenthesis.
-
-#bad
-array = [
-  :value
-]
-and_in_a_method_call([
-  :no_difference
-                     ])
-
-#good
-array = [
-  :value
-]
-but_in_a_method_call([
-                       :its_like_this
-                     ])
-```
-#### EnforcedStyle: consistent
-
-```ruby
-# The `consistent` style enforces that the first element in an array
-# literal where the opening bracket and the first element are on
-# seprate lines is indented the same as an array literal which is not
-# defined inside a method call.
-
-#bad
-# consistent
-array = [
-  :value
-]
-but_in_a_method_call([
-                       :its_like_this
-])
-
-#good
-array = [
-  :value
-]
-and_in_a_method_call([
-  :no_difference
-])
-```
-#### EnforcedStyle: align_brackets
-
-```ruby
-# The `align_brackets` style enforces that the opening and closing
-# brackets are indented to the same position.
-
-#bad
-# align_brackets
-and_now_for_something = [
-                          :completely_different
-]
-
-#good
-# align_brackets
-and_now_for_something = [
-                          :completely_different
-                        ]
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_brackets`
-IndentationWidth | `<none>` | Integer
-
 ## Layout/IndentAssignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2381,65 +2282,110 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentFirstParameter
+## Layout/IndentFirstArrayElement
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
+Enabled | Yes | Yes  | 0.68 | -
 
-This cop checks the indentation of the first parameter in a method call.
-Parameters after the first one are checked by Layout/AlignParameters,
-not by this cop.
+This cop checks the indentation of the first element in an array literal
+where the opening bracket and the first element are on separate lines.
+The other elements' indentations are handled by the AlignArray cop.
+
+By default, array literals that are arguments in a method call with
+parentheses, and where the opening square bracket of the array is on the
+same line as the opening parenthesis of the method call, shall have
+their first element indented one step (two spaces) more than the
+position inside the opening parenthesis.
+
+Other array literals shall have their first element indented one step
+more than the start of the line where the opening square bracket is.
+
+This default style is called 'special_inside_parentheses'. Alternative
+styles are 'consistent' and 'align_brackets'. Here are examples:
 
 ### Examples
 
+#### EnforcedStyle: special_inside_parentheses (default)
+
 ```ruby
-# bad
-def some_method(
-first_param,
-second_param)
-  123
-end
+# The `special_inside_parentheses` style enforces that the first
+# element in an array literal where the opening bracket and first
+# element are on seprate lines is indented one step (two spaces) more
+# than the position inside the opening parenthesis.
+
+#bad
+array = [
+  :value
+]
+and_in_a_method_call([
+  :no_difference
+                     ])
+
+#good
+array = [
+  :value
+]
+but_in_a_method_call([
+                       :its_like_this
+                     ])
 ```
 #### EnforcedStyle: consistent
 
 ```ruby
-# The first parameter should always be indented one step more than the
-# preceding line.
+# The `consistent` style enforces that the first element in an array
+# literal where the opening bracket and the first element are on
+# seprate lines is indented the same as an array literal which is not
+# defined inside a method call.
 
-# good
-def some_method(
-  first_param,
-second_param)
-  123
-end
+#bad
+# consistent
+array = [
+  :value
+]
+but_in_a_method_call([
+                       :its_like_this
+])
+
+#good
+array = [
+  :value
+]
+and_in_a_method_call([
+  :no_difference
+])
 ```
-#### EnforcedStyle: align_parentheses
+#### EnforcedStyle: align_brackets
 
 ```ruby
-# The first parameter should always be indented one step more than the
-# opening parenthesis.
+# The `align_brackets` style enforces that the opening and closing
+# brackets are indented to the same position.
 
-# good
-def some_method(
-                 first_param,
-second_param)
-  123
-end
+#bad
+# align_brackets
+and_now_for_something = [
+                          :completely_different
+]
+
+#good
+# align_brackets
+and_now_for_something = [
+                          :completely_different
+                        ]
 ```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `align_parentheses`
+EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_brackets`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentHash
+## Layout/IndentFirstHashElement
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.68 | -
 
 This cop checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
@@ -2530,6 +2476,60 @@ and_now_for_something = {
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_braces`
+IndentationWidth | `<none>` | Integer
+
+## Layout/IndentFirstParameter
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.68
+
+This cop checks the indentation of the first parameter in a method call.
+Parameters after the first one are checked by Layout/AlignParameters,
+not by this cop.
+
+### Examples
+
+```ruby
+# bad
+def some_method(
+first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: consistent
+
+```ruby
+# The first parameter should always be indented one step more than the
+# preceding line.
+
+# good
+def some_method(
+  first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: align_parentheses
+
+```ruby
+# The first parameter should always be indented one step more than the
+# opening parenthesis.
+
+# good
+def some_method(
+                 first_param,
+second_param)
+  123
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `align_parentheses`
 IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHeredoc

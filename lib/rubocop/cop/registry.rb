@@ -65,17 +65,17 @@ module RuboCop
       #
       #   cops = RuboCop::Cop::Cop.all
       #   cops.
-      #     qualified_cop_name('Layout/IndentArray') # => 'Layout/IndentArray'
+      #     qualified_cop_name('Layout/EndOfLine') # => 'Layout/EndOfLine'
       #
       # @example fixes incorrect namespaces
       #
       #   cops = RuboCop::Cop::Cop.all
-      #   cops.qualified_cop_name('Lint/IndentArray') # => 'Layout/IndentArray'
+      #   cops.qualified_cop_name('Lint/EndOfLine') # => 'Layout/EndOfLine'
       #
       # @example namespaces bare cop identifiers
       #
       #   cops = RuboCop::Cop::Cop.all
-      #   cops.qualified_cop_name('IndentArray') # => 'Layout/IndentArray'
+      #   cops.qualified_cop_name('EndOfLine') # => 'Layout/EndOfLine'
       #
       # @example passes back unrecognized cop names
       #

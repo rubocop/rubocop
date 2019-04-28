@@ -132,9 +132,10 @@ are recommended to further format the broken lines.
   - AlignHash
   - AlignParameters
   - ClosingParenthesisIndentation
-  - FirstParameterIndentation
-  - IndentArray
-  - IndentHash
+  - IndentFirstArgument
+  - IndentFirstArrayElement
+  - IndentFirstHashElement
+  - IndentFirstParameter
   - MultilineArrayLineBreaks
   - MultilineHashBraceLayout
   - MultilineHashKeyLineBreaks

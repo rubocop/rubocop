@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::IndentHash do
+RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHash do
                               align_braces]
     }
     RuboCop::Config.new('Layout/AlignHash' => align_hash_config,
-                        'Layout/IndentHash' =>
+                        'Layout/IndentFirstHashElement' =>
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
                         ),
