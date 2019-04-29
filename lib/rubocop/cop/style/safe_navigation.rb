@@ -72,7 +72,7 @@ module RuboCop
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)
-        def_node_matcher :modifier_if_safe_navigation_candidate?, <<-PATTERN
+        def_node_matcher :modifier_if_safe_navigation_candidate, <<-PATTERN
           {
             (if {
                   (send $_ {:nil? :!})
@@ -147,7 +147,7 @@ module RuboCop
 
         def extract_parts_from_if(node)
           variable, receiver =
-            modifier_if_safe_navigation_candidate?(node)
+            modifier_if_safe_navigation_candidate(node)
 
           checked_variable, matching_receiver, method =
             extract_common_parts(receiver, variable)
