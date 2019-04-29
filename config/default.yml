@@ -1360,6 +1360,13 @@ Lint/HandleExceptions:
   Enabled: true
   VersionAdded: '0.9'
 
+Lint/HeredocMethodCallPosition:
+  Description: >-
+                 Checks for the ordering of a method call where
+                 the receiver of the call is a HEREDOC.
+  Enabled: false
+  VersionAdded: '0.68'
+
 Lint/ImplicitStringConcatenation:
   Description: >-
                  Checks for adjacent string literals on the same line, which

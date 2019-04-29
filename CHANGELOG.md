@@ -11,6 +11,8 @@
 * Add initial autocorrection support to `Metrics/LineLength`. ([@maxh][])
 * Add `Layout/IndentFirstParameter`. ([@maxh][])
 * [#6974](https://github.com/rubocop-hq/rubocop/issues/6974): Make `Layout/FirstMethodArgumentLineBreak` aware of calling using `super`. ([@koic][])
+* Add new `Lint/HeredocMethodCallPosition` cop. ([@maxh][])
+
 
 ### Bug fixes
 

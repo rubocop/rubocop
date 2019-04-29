@@ -216,6 +216,7 @@ In the following section you find all available cops:
 * [Lint/FloatOutOfRange](cops_lint.md#lintfloatoutofrange)
 * [Lint/FormatParameterMismatch](cops_lint.md#lintformatparametermismatch)
 * [Lint/HandleExceptions](cops_lint.md#linthandleexceptions)
+* [Lint/HeredocMethodCallPosition](cops_lint.md#lintheredocmethodcallposition)
 * [Lint/ImplicitStringConcatenation](cops_lint.md#lintimplicitstringconcatenation)
 * [Lint/IneffectiveAccessModifier](cops_lint.md#lintineffectiveaccessmodifier)
 * [Lint/InheritException](cops_lint.md#lintinheritexception)
