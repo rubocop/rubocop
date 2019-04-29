@@ -46,6 +46,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'mutable objects', '(1..5)'
   it_behaves_like 'mutable objects', '(1...5)'
   it_behaves_like 'mutable objects', "('a' + 'b')"
+  it_behaves_like 'mutable objects', "('a' * 20)"
   it_behaves_like 'mutable objects', '(a + b)'
 
   it 'allows .freeze on  method call' do
