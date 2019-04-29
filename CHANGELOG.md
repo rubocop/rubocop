@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#6994](https://github.com/rubocop-hq/rubocop/pull/6994): Mark Naming/RescuedExceptionsVariableName as unsafe. ([@vfonic][])
+
 ## 0.68.0 (2019-04-29)
 
 ### New features
