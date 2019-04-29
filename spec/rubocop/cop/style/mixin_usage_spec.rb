@@ -62,6 +62,15 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
       RUBY
     end
 
+    it 'does not register an offense when using inside block ' \
+       'and `if` condition is after `include`' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        klass.class_eval do
+          include M if defined?(M)
+        end
+      RUBY
+    end
+
     it "doesn't register an offense when `include` call is a method argument" do
       expect_no_offenses(<<-RUBY.strip_indent)
         do_something(include(M))
