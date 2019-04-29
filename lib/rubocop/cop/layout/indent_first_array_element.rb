@@ -79,10 +79,10 @@ module RuboCop
       #   and_now_for_something = [
       #                             :completely_different
       #                           ]
-      class IndentArray < Cop
+      class IndentFirstArrayElement < Cop
         include Alignment
         include ConfigurableEnforcedStyle
-        include ArrayHashIndentation
+        include MultilineElementIndentation
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
               'in an array, relative to %<base_description>s.'.freeze

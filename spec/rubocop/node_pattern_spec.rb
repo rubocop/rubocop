@@ -127,6 +127,7 @@ RSpec.describe RuboCop::NodePattern do
 
     describe 'yaml compatibility' do
       let(:instance) do
+        $VERBOSE = false
         YAML.safe_load(YAML.dump(super()), [described_class])
       end
       let(:ruby) { 'obj.method' }
@@ -1352,6 +1353,15 @@ RSpec.describe RuboCop::NodePattern do
       let(:captured_val) { s(:int, 3) }
 
       it_behaves_like 'single capture'
+    end
+
+    context 'captured' do
+      context 'without ellipsis' do
+        let(:pattern) { '(array sym $<int int _ _>)' }
+        let(:captured_val) { node.children.last(4) }
+
+        it_behaves_like 'single capture'
+      end
     end
 
     context 'doubled' do

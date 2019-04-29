@@ -52,6 +52,15 @@ module RuboCop
         'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
         'duplicate of `Layout/SpaceBeforeFirstArg`. Please use ' \
         '`Layout/SpaceBeforeFirstArg` instead.',
+      'Layout/FirstParameterIndentation' =>
+        'The `Layout/FirstParameterIndentation` cop has been renamed to ' \
+        '`Layout/IndentFirstArgument`.',
+      'Layout/IndentArray' =>
+        'The `Layout/IndentArray` cop has been renamed to ' \
+        '`Layout/IndentFirstArrayElement`.',
+      'Layout/IndentHash' =>
+        'The `Layout/IndentHash` cop has been renamed to ' \
+        '`Layout/IndentFirstHashElement`.',
       'Layout/SpaceAfterControlKeyword' =>
         'The `Layout/SpaceAfterControlKeyword` cop has been removed. Please ' \
         'use `Layout/SpaceAroundKeyword` instead.',

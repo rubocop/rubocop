@@ -4,11 +4,14 @@
 
 ### New features
 
+* [#6973](https://github.com/rubocop-hq/rubocop/pull/6973): Add `always_braces` to `Style/BlockDelimiter`. ([@iGEL][])
 * [#6841](https://github.com/rubocop-hq/rubocop/issues/6841): Node patterns can now match children in any order using `<>`. ([@marcandre][])
 * [#6928](https://github.com/rubocop-hq/rubocop/pull/6928): Add `--init` option for generate `.rubocop.yml` file in the current directory. ([@koic][])
 * Add new `Layout/HeredocArgumentClosingParenthesis` cop. ([@maxh][])
 * [#6895](https://github.com/rubocop-hq/rubocop/pull/6895): Add support for XDG config home for user-config. ([@Mange][], [@tejasbubane][])
 * Add initial autocorrection support to `Metrics/LineLength`. ([@maxh][])
+* Add `Layout/IndentFirstParameter`. ([@maxh][])
+* [#6974](https://github.com/rubocop-hq/rubocop/issues/6974): Make `Layout/FirstMethodArgumentLineBreak` aware of calling using `super`. ([@koic][])
 
 ### Bug fixes
 
@@ -25,6 +28,7 @@
 * [#6956](https://github.com/rubocop-hq/rubocop/issues/6956): Prevent auto-correct confliction of `Lint/Lambda` and `Lint/UnusedBlockArgument`. ([@koic][])
 * [#6915](https://github.com/rubocop-hq/rubocop/issues/6915): Fix false positive in `Style/SafeNavigation` when a modifier if is safe guarding a method call being passed to `break`, `fail`, `next`, `raise`, `return`, `throw`, and `yield`. ([@rrosenblum][])
 * [#6822](https://github.com/rubocop-hq/rubocop/issues/6822): Fix Lint/LiteralInInterpolation autocorrection for single quotes. ([@hoshinotsuyoshi][])
+* [#6985](https://github.com/rubocop-hq/rubocop/issues/6985): Fix an incorrect auto-correct for `Lint/LiteralInInterpolation` if contains array percent literal. ([@yakout][])
 
 ### Changes
 
@@ -36,6 +40,9 @@
 * Add `--auto-gen-only-exclude` to the command outputted in `rubocop_todo.yml` if the option is specified. ([@dvandersluis][])
 * [#6887](https://github.com/rubocop-hq/rubocop/pull/6887): Allow `Lint/UnderscorePrefixedVariableName` cop to be configured to allow use of block keyword args. ([@dduugg][])
 * [#6885](https://github.com/rubocop-hq/rubocop/pull/6885): Revert adding psych >= 3.1 as runtime dependency. ([@andreaseger][])
+* Rename `Layout/FirstParameterIndentation` to `Layout/IndentFirstArgument`. ([@maxh][])
+* Extract method call argument alignment behavior from `Layout/AlignParameters` into `Layout/AlignArguments`. ([@maxh][])
+* Rename `IndentArray` and `IndentHash` to `IndentFirstArrayElement` and `IndentFirstHashElement`. ([@maxh][])
 
 ## 0.67.2 (2019-04-05)
 
@@ -3966,3 +3973,4 @@
 [@jmanian]: https://github.com/jmanian
 [@vfonic]: https://github.com/vfonic
 [@andreaseger]: https://github.com/andreaseger
+[@yakout]: https://github.com/yakout

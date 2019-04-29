@@ -54,6 +54,65 @@ IndentationWidth | `<none>` | Integer
 
 * [https://github.com/rubocop-hq/ruby-style-guide#indent-public-private-protected](https://github.com/rubocop-hq/ruby-style-guide#indent-public-private-protected)
 
+## Layout/AlignArguments
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | -
+
+Here we check if the arguments on a multi-line method
+definition are aligned.
+
+### Examples
+
+#### EnforcedStyle: with_first_argument (default)
+
+```ruby
+# good
+
+foo :bar,
+    :baz
+
+foo(
+  :bar,
+  :baz
+)
+
+# bad
+
+foo :bar,
+  :baz
+
+foo(
+  :bar,
+    :baz
+)
+```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+foo :bar,
+  :baz
+
+# bad
+
+foo :bar,
+    :baz
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_argument` | `with_first_argument`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#no-double-indent](https://github.com/rubocop-hq/ruby-style-guide#no-double-indent)
+
 ## Layout/AlignArray
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -296,10 +355,13 @@ EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ign
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.68
 
 Here we check if the parameters on a multi-line method call or
 definition are aligned.
+
+To set the alignment of the first argument, use the cop
+FirstParameterIndentation.
 
 ### Examples
 
@@ -308,26 +370,64 @@ definition are aligned.
 ```ruby
 # good
 
-foo :bar,
-    :baz
+def foo(bar,
+        baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
 
 # bad
 
-foo :bar,
-  :baz
+def foo(bar,
+     baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
 ```
 #### EnforcedStyle: with_fixed_indentation
 
 ```ruby
 # good
 
-foo :bar,
-  :baz
+def foo(bar,
+  baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
 
 # bad
 
-foo :bar,
-    :baz
+def foo(bar,
+        baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
 ```
 
 ### Configurable attributes
@@ -1935,15 +2035,104 @@ def method foo,
 end
 ```
 
-## Layout/FirstParameterIndentation
+## Layout/HeredocArgumentClosingParenthesis
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.56
+Disabled | Yes | Yes  | 0.68 | -
 
-This cop checks the indentation of the first parameter in a method call.
-Parameters after the first one are checked by Layout/AlignParameters,
-not by this cop.
+This cop checks for the placement of the closing parenthesis
+in a method call that passes a HEREDOC string as an argument.
+It should be placed at the end of the line containing the
+opening HEREDOC tag.
+
+### Examples
+
+```ruby
+# bad
+
+   foo(<<-SQL
+     bar
+   SQL
+   )
+
+   foo(<<-SQL, 123, <<-NOSQL,
+     bar
+   SQL
+     baz
+   NOSQL
+   )
+
+   foo(
+     bar(<<-SQL
+       baz
+     SQL
+     ),
+     123,
+   )
+
+# good
+
+   foo(<<-SQL)
+     bar
+   SQL
+
+   foo(<<-SQL, 123, <<-NOSQL)
+     bar
+   SQL
+     baz
+   NOSQL
+
+   foo(
+     bar(<<-SQL),
+       baz
+     SQL
+     123,
+   )
+```
+
+## Layout/IndentAssignment
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | -
+
+This cop checks the indentation of the first line of the
+right-hand-side of a multi-line assignment.
+
+The indentation of the remaining lines can be corrected with
+other cops such as `IndentationConsistency` and `EndAlignment`.
+
+### Examples
+
+```ruby
+# bad
+value =
+if foo
+  'bar'
+end
+
+# good
+value =
+  if foo
+    'bar'
+  end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+IndentationWidth | `<none>` | Integer
+
+## Layout/IndentFirstArgument
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | -
+
+This cop checks the indentation of the first argument in a method call
+or definition.
 
 ### Examples
 
@@ -1973,7 +2162,7 @@ second_param
 #### EnforcedStyle: consistent
 
 ```ruby
-# The first parameter should always be indented one step more than the
+# The first argument should always be indented one step more than the
 # preceding line.
 
 # good
@@ -2001,8 +2190,8 @@ second_param
 #### EnforcedStyle: consistent_relative_to_receiver
 
 ```ruby
-# The first parameter should always be indented one level relative to
-# the parent that is receiving the parameter
+# The first argument should always be indented one level relative to
+# the parent that is receiving the argument
 
 # good
 some_method(
@@ -2029,9 +2218,9 @@ second_params
 #### EnforcedStyle: special_for_inner_method_call
 
 ```ruby
-# The first parameter should normally be indented one step more than
-# the preceding line, but if it's a parameter for a method call that
-# is itself a parameter in a method call, then the inner parameter
+# The first argument should normally be indented one step more than
+# the preceding line, but if it's a argument for a method call that
+# is itself a argument in a method call, then the inner argument
 # should be indented relative to the inner method.
 
 # good
@@ -2093,67 +2282,11 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
 IndentationWidth | `<none>` | Integer
 
-## Layout/HeredocArgumentClosingParenthesis
+## Layout/IndentFirstArrayElement
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.68 | -
-
-This cop checks for the placement of the closing parenthesis
-in a method call that passes a HEREDOC string as an argument.
-It should be placed at the end of the line containing the
-opening HEREDOC tag.
-
-### Examples
-
-```ruby
-# bad
-
-   foo(<<-SQL
-     bar
-   SQL
-   )
-
-   foo(<<-SQL, 123, <<-NOSQL,
-     bar
-   SQL
-     baz
-   NOSQL
-   )
-
-   foo(
-     bar(<<-SQL
-       baz
-     SQL
-     ),
-     123,
-   )
-
-# good
-
-   foo(<<-SQL)
-     bar
-   SQL
-
-   foo(<<-SQL, 123, <<-NOSQL)
-     bar
-   SQL
-     baz
-   NOSQL
-
-   foo(
-     bar(<<-SQL),
-       baz
-     SQL
-     123,
-   )
-```
-
-## Layout/IndentArray
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.68 | -
 
 This cop checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
@@ -2248,45 +2381,11 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_brackets`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentAssignment
+## Layout/IndentFirstHashElement
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
-
-This cop checks the indentation of the first line of the
-right-hand-side of a multi-line assignment.
-
-The indentation of the remaining lines can be corrected with
-other cops such as `IndentationConsistency` and `EndAlignment`.
-
-### Examples
-
-```ruby
-# bad
-value =
-if foo
-  'bar'
-end
-
-# good
-value =
-  if foo
-    'bar'
-  end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-IndentationWidth | `<none>` | Integer
-
-## Layout/IndentHash
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.68 | -
 
 This cop checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
@@ -2377,6 +2476,60 @@ and_now_for_something = {
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_braces`
+IndentationWidth | `<none>` | Integer
+
+## Layout/IndentFirstParameter
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.68
+
+This cop checks the indentation of the first parameter in a method call.
+Parameters after the first one are checked by Layout/AlignParameters,
+not by this cop.
+
+### Examples
+
+```ruby
+# bad
+def some_method(
+first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: consistent
+
+```ruby
+# The first parameter should always be indented one step more than the
+# preceding line.
+
+# good
+def some_method(
+  first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: align_parentheses
+
+```ruby
+# The first parameter should always be indented one step more than the
+# opening parenthesis.
+
+# good
+def some_method(
+                 first_param,
+second_param)
+  123
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `align_parentheses`
 IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHeredoc

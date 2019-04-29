@@ -219,6 +219,34 @@ Layout/AccessModifierIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/AlignArguments:
+  Description: >-
+                 Align the arguments of a method call if they span more
+                 than one line.
+  StyleGuide: '#no-double-indent'
+  Enabled: true
+  VersionAdded: '0.68'
+  # Alignment of arguments in multi-line method calls.
+  #
+  # The `with_first_argument` style aligns the following lines along the same
+  # column as the first parameter.
+  #
+  #     method_call(a,
+  #                 b)
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the method call.
+  #
+  #     method_call(a,
+  #       b)
+  EnforcedStyle: with_first_argument
+  SupportedStyles:
+    - with_first_argument
+    - with_fixed_indentation
+  # By default, the indentation width from Layout/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
 Layout/AlignArray:
   Description: >-
                  Align the elements of an array literal if they span more than
@@ -305,23 +333,24 @@ Layout/AlignHash:
 
 Layout/AlignParameters:
   Description: >-
-                 Align the parameters of a method call if they span more
+                 Align the parameters of a method definition if they span more
                  than one line.
   StyleGuide: '#no-double-indent'
   Enabled: true
   VersionAdded: '0.49'
+  VersionChanged: '0.68'
   # Alignment of parameters in multi-line method calls.
   #
   # The `with_first_parameter` style aligns the following lines along the same
   # column as the first parameter.
   #
-  #     method_call(a,
-  #                 b)
+  #     def method_foo(a,
+  #                    b)
   #
   # The `with_fixed_indentation` style aligns the following lines with one
   # level of indentation relative to the start of the line with the method call.
   #
-  #     method_call(a,
+  #     def method_foo(a,
   #       b)
   EnforcedStyle: with_first_parameter
   SupportedStyles:
@@ -616,11 +645,27 @@ Layout/FirstMethodParameterLineBreak:
   Enabled: false
   VersionAdded: '0.49'
 
-Layout/FirstParameterIndentation:
-  Description: 'Checks the indentation of the first parameter in a method call.'
+Layout/HeredocArgumentClosingParenthesis:
+  Description: >-
+                 Checks for the placement of the closing parenthesis in a
+                 method call that passes a HEREDOC string as an argument.
+  Enabled: false
+  VersionAdded: '0.68'
+
+Layout/IndentAssignment:
+  Description: >-
+                 Checks the indentation of the first line of the
+                 right-hand-side of a multi-line assignment.
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '0.56'
+  # By default, the indentation width from `Layout/IndentationWidth` is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
+Layout/IndentFirstArgument:
+  Description: 'Checks the indentation of the first argument in a method call.'
+  Enabled: true
+  VersionAdded: '0.68'
   EnforcedStyle: special_for_inner_method_call_in_parentheses
   SupportedStyles:
     # The first parameter should always be indented one step more than the
@@ -641,19 +686,12 @@ Layout/FirstParameterIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/HeredocArgumentClosingParenthesis:
-  Description: >-
-                 Checks for the placement of the closing parenthesis in a
-                 method call that passes a HEREDOC string as an argument.
-  Enabled: false
-  VersionAdded: '0.68'
-
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   Description: >-
                  Checks the indentation of the first element in an array
                  literal.
   Enabled: true
-  VersionAdded: '0.49'
+  VersionAdded: '0.68'
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -674,20 +712,10 @@ Layout/IndentArray:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/IndentAssignment:
-  Description: >-
-                 Checks the indentation of the first line of the
-                 right-hand-side of a multi-line assignment.
-  Enabled: true
-  VersionAdded: '0.49'
-  # By default, the indentation width from `Layout/IndentationWidth` is used
-  # But it can be overridden by setting this parameter
-  IndentationWidth: ~
-
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
-  VersionAdded: '0.49'
+  VersionAdded: '0.68'
   # The value `special_inside_parentheses` means that hash literals with braces
   # that have their opening brace on the same line as a surrounding opening
   # round parenthesis, shall have their first key indented relative to the
@@ -704,6 +732,21 @@ Layout/IndentHash:
     - special_inside_parentheses
     - consistent
     - align_braces
+  # By default, the indentation width from `Layout/IndentationWidth` is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
+Layout/IndentFirstParameter:
+  Description: >-
+                 Checks the indentation of the first parameter in a
+                 method definition.
+  Enabled: true
+  VersionAdded: '0.49'
+  VersionChanged: '0.68'
+  EnforcedStyle: special_for_inner_method_call_in_parentheses
+  SupportedStyles:
+    - consistent
+    - align_parentheses
   # By default, the indentation width from `Layout/IndentationWidth` is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
@@ -2620,6 +2663,8 @@ Style/BlockDelimiters:
     # return value is being chained with another method (in which case braces
     # are enforced).
     - braces_for_chaining
+    # The `always_braces` style always enforces braces.
+    - always_braces
   ProceduralMethods:
     # Methods that are known to be procedural in nature but look functional from
     # their usage, e.g.

@@ -90,6 +90,13 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', ':"symbol"', 'symbol')
   it_behaves_like('literal interpolation', 1..2)
   it_behaves_like('literal interpolation', 1...2)
+  it_behaves_like('literal interpolation', '%w[]', '[]')
+  it_behaves_like('literal interpolation', '%w[v1]', '[\"v1\"]')
+  it_behaves_like('literal interpolation', '%w[v1 v2]', '[\"v1\", \"v2\"]')
+  it_behaves_like('literal interpolation', '%i[s1 s2]', '[\"s1\", \"s2\"]')
+  it_behaves_like('literal interpolation', '%I[s1 s2]', '[\"s1\", \"s2\"]')
+  it_behaves_like('literal interpolation', '%i[s1     s2]', '[\"s1\", \"s2\"]')
+  it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[\"s1\", \"s2\"]')
 
   it 'handles nested interpolations when auto-correction' do
     corrected = autocorrect_source(%("this is \#{"\#{1}"} silly"))

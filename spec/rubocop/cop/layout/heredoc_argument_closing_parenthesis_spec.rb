@@ -67,15 +67,32 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       RUBY
     end
 
-    context 'double case new line' do
-      it 'ignores' do
+    context 'invocation after the HEREDOC' do
+      it 'ignores tr' do
         expect_no_offenses(<<-RUBY.strip_indent)
           foo(
-            <<-SQL, <<-NOSQL
-            foo
+            <<-SQL.tr("z", "t"))
+            baz
           SQL
-            bar
-          NOSQL
+        RUBY
+      end
+
+      it 'ignores random call' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          description(
+            <<-TEXT.foo)
+            foobarbaz
+          TEXT
+        RUBY
+      end
+
+      it 'ignores random call after' do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          description(
+            <<-TEXT
+            foobarbaz
+          TEXT
+          .foo
           )
         RUBY
       end
@@ -470,6 +487,87 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
             456,
             789,
           ]
+        RUBY
+      end
+    end
+
+    context 'complex incorrect case with multiple calls' do
+      it 'detects and fixes the first' do
+        expect_offense(<<-RUBY.strip_indent)
+          query.order(Arel.sql(<<-SQL,
+            foo
+          SQL
+                              ))
+                              ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          query.order(Arel.sql(<<-SQL)
+            foo
+          SQL
+                              )
+        RUBY
+      end
+
+      it 'detects and fixes the second' do
+        expect_offense(<<-RUBY.strip_indent)
+          query.order(Arel.sql(<<-SQL)
+            foo
+          SQL
+                              )
+                              ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          query.order(Arel.sql(<<-SQL))
+            foo
+          SQL
+        RUBY
+      end
+    end
+
+    context 'complex incorrect case with multiple calls' do
+      it 'detects and fixes the first' do
+        expect_offense(<<-RUBY.strip_indent)
+          query.joins({
+            foo: []
+          }).order(Arel.sql(<<-SQL),
+            bar
+          SQL
+                  )
+                  ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          query.joins({
+            foo: []
+          }).order(Arel.sql(<<-SQL))
+            bar
+          SQL
+        RUBY
+      end
+    end
+
+    context 'double case new line' do
+      it 'detects and fixes' do
+        expect_offense(<<-RUBY.strip_indent)
+          foo(
+            <<-SQL, <<-NOSQL
+            foo
+          SQL
+            bar
+          NOSQL
+          )
+          ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          foo(
+            <<-SQL, <<-NOSQL)
+            foo
+          SQL
+            bar
+          NOSQL
         RUBY
       end
     end

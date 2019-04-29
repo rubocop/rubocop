@@ -53,7 +53,7 @@ module RuboCop
           @class_or_module_def_first_line =
             node.identifier.source_range.first_line
           @class_or_module_def_last_line =
-            node.identifier.source_range.last_line
+            node.source_range.last_line
         end
 
         def on_block(node)
