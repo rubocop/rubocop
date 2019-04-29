@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.68.0 (2019-04-29)
+
 ### New features
 
 * [#6973](https://github.com/rubocop-hq/rubocop/pull/6973): Add `always_braces` to `Style/BlockDelimiter`. ([@iGEL][])
