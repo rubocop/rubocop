@@ -152,4 +152,42 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   it_behaves_like('non-special string literal interpolation', %('foo'))
   it_behaves_like('non-special string literal interpolation', %("foo"))
+
+  it 'handles double quotes in single quotes when auto-correction' do
+    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+      "this is #{'"'} silly"
+    RUBY
+    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+      "this is \" silly"
+    RUBY
+  end
+
+  it 'handles backslach in single quotes when auto-correction' do
+    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+      x = "ABC".gsub(/(A)(B)(C)/, "D#{'\2'}F")
+      "this is #{'\n'} silly"
+      "this is #{%q(\n)} silly"
+    RUBY
+    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+      x = "ABC".gsub(/(A)(B)(C)/, "D\\2F")
+      "this is \\n silly"
+      "this is \\n silly"
+    RUBY
+  end
+
+  it 'handles backslach in double quotes when auto-correction' do
+    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+      "this is #{"\n"} silly"
+      "this is #{%(\n)} silly"
+      "this is #{%Q(\n)} silly"
+    RUBY
+    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+      "this is 
+       silly"
+      "this is 
+       silly"
+      "this is 
+       silly"
+    RUBY
+  end
 end
