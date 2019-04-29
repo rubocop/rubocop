@@ -48,8 +48,8 @@ module RuboCop
           }
         PATTERN
 
-        def_node_matcher :status_pair?, <<-PATTERN
-          (pair (sym :status) ${int sym})
+        def_node_matcher :status_code, <<-PATTERN
+          (hash <(pair (sym :status) ${int sym}) ...>)
         PATTERN
 
         def on_send(node)
@@ -76,13 +76,6 @@ module RuboCop
         end
 
         private
-
-        def status_code(node)
-          node.each_pair.each do |pair|
-            status_pair?(pair) { |code| return code }
-          end
-          false
-        end
 
         def checker_class
           case style

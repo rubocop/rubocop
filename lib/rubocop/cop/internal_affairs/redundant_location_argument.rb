@@ -21,12 +21,10 @@ module RuboCop
 
         MSG = 'Redundant location argument to `#add_offense`.'.freeze
 
-        def_node_matcher :add_offense_kwargs, <<-PATTERN
-          (send nil? :add_offense _ $hash)
-        PATTERN
-
-        def_node_matcher :redundant_location_argument?, <<-PATTERN
-          (pair (sym :location) (sym :expression))
+        def_node_matcher :redundant_location_argument, <<-PATTERN
+          (send nil? :add_offense _
+            (hash <$(pair (sym :location) (sym :expression)) ...>)
+          )
         PATTERN
 
         def on_send(node)
@@ -37,17 +35,6 @@ module RuboCop
           range = offending_range(node)
 
           ->(corrector) { corrector.remove(range) }
-        end
-
-        private
-
-        def redundant_location_argument(node)
-          add_offense_kwargs(node) do |kwargs|
-            result =
-              kwargs.pairs.find { |arg| redundant_location_argument?(arg) }
-
-            yield result if result
-          end
         end
 
         def offending_range(node)

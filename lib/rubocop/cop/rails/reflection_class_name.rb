@@ -16,21 +16,20 @@ module RuboCop
       class ReflectionClassName < Cop
         MSG = 'Use a string value for `class_name`.'.freeze
 
-        def_node_matcher :association_with_options?, <<-PATTERN
-          (send nil? {:has_many :has_one :belongs_to} _ (hash $...))
+        def_node_matcher :association_with_reflection, <<-PATTERN
+          (send nil? {:has_many :has_one :belongs_to} _
+            (hash <$#reflection_class_name ...>)
+          )
         PATTERN
 
-        def_node_search :reflection_class_name, <<-PATTERN
+        def_node_matcher :reflection_class_name, <<-PATTERN
           (pair (sym :class_name) [!dstr !str !sym])
         PATTERN
 
         def on_send(node)
-          return unless association_with_options?(node)
-
-          reflection_class_name = reflection_class_name(node).first
-          return unless reflection_class_name
-
-          add_offense(node, location: reflection_class_name.loc.expression)
+          association_with_reflection(node) do |reflection_class_name|
+            add_offense(node, location: reflection_class_name.loc.expression)
+          end
         end
       end
     end
