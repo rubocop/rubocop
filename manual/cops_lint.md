@@ -856,6 +856,42 @@ end
 
 * [https://github.com/rubocop-hq/ruby-style-guide#dont-hide-exceptions](https://github.com/rubocop-hq/ruby-style-guide#dont-hide-exceptions)
 
+## Lint/HeredocMethodCallPosition
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.68 | -
+
+This cop checks for the ordering of a method call where
+the receiver of the call is a HEREDOC.
+
+### Examples
+
+```ruby
+# bad
+
+   <<-SQL
+     bar
+   SQL
+   .strip_indent
+
+   <<-SQL
+     bar
+   SQL
+   .strip_indent
+   .trim
+
+# good
+
+   <<-SQL.strip_indent
+     bar
+   SQL
+
+   <<-SQL.strip_indent.trim
+     bar
+   SQL
+```
+
 ## Lint/ImplicitStringConcatenation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
