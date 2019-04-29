@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#6995](https://github.com/rubocop-hq/rubocop/pull/6995): Fix an incorrect auto-correct for `Style/RedundantParentheses` when enclosed in parentheses at `while-post` or `until-post`. ([@koic][])
+* [#6996](https://github.com/rubocop-hq/rubocop/pull/6996): Fix a false positive for `Style/RedundantFreeze` when freezing the result of `String#*`. ([@bquorning][])
 
 ## 0.68.0 (2019-04-29)
 
