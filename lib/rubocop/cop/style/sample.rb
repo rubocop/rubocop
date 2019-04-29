@@ -77,10 +77,9 @@ module RuboCop
         end
 
         def sample_size_for_one_arg(arg)
-          case arg.type
-          when :erange, :irange
+          if arg.range_type?
             range_size(arg)
-          when :int
+          elsif arg.int_type?
             [0, -1].include?(arg.to_a.first) ? nil : :unknown
           else
             :unknown
