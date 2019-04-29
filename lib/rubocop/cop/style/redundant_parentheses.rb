@@ -28,6 +28,8 @@ module RuboCop
 
         def on_begin(node)
           return if !parentheses?(node) || parens_allowed?(node)
+          return if node.parent && (node.parent.while_post_type? ||
+                                    node.parent.until_post_type?)
 
           check(node)
         end
