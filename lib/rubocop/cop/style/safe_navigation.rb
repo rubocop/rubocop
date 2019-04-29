@@ -151,7 +151,11 @@ module RuboCop
 
           checked_variable, matching_receiver, method =
             extract_common_parts(receiver, variable)
-          matching_receiver = nil if LOGIC_JUMP_KEYWORDS.include?(receiver.type)
+
+          if receiver && LOGIC_JUMP_KEYWORDS.include?(receiver.type)
+            matching_receiver = nil
+          end
+
           [checked_variable, matching_receiver, receiver, method]
         end
 
