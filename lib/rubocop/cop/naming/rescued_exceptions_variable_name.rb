@@ -69,7 +69,16 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
+            offending_name = node.exception_variable.children.first
             corrector.replace(offense_range(node), preferred_name)
+
+            return unless node.body
+
+            node.body.each_descendant(:lvar) do |var|
+              next unless var.children.first == offending_name
+
+              corrector.replace(var.loc.expression, preferred_name)
+            end
           end
         end
 

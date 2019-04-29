@@ -176,6 +176,27 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
       end
     end
+
+    context 'with variable being referenced' do
+      it 'renames the variable references when auto-correcting' do
+        expect_offense(<<-RUBY.strip_indent)
+          begin
+            get something
+          rescue ActiveResource::Redirection => redirection
+                                                ^^^^^^^^^^^ Use `e` instead of `redirection`.
+            redirect_to redirection.response['Location']
+          end
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          begin
+            get something
+          rescue ActiveResource::Redirection => e
+            redirect_to e.response['Location']
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with the `PreferredName` setup' do
