@@ -2529,7 +2529,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `align_parentheses`
+EnforcedStyle | `consistent` | `consistent`, `align_parentheses`
 IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHeredoc
