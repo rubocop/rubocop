@@ -31,7 +31,7 @@ module RuboCop
           _scope, _lhs, rhs = *node
         elsif node.op_asgn_type?
           _lhs, _op, rhs = *node
-        elsif node.send_type? || node.csend_type?
+        elsif node.call_type?
           rhs = node.last_argument
         elsif node.assignment?
           _lhs, rhs = *node

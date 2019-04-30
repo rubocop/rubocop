@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7007](https://github.com/rubocop-hq/rubocop/pull/7007): Fix `Style/BlockDelimiters` with `braces_for_chaining` style false positive, when chaining using safe navigation. ([@Darhazer][])
+
+
 ## 0.68.1 (2019-04-30)
 
 ### Bug fixes

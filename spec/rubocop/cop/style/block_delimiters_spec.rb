@@ -176,6 +176,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             each { |x| puts x }
                  ^ Prefer `do...end` over `{...}` for procedural blocks.
           RUBY
+
+          expect_correction(<<-RUBY.strip_indent)
+            each do |x| puts x end
+          RUBY
         end
 
         it 'accepts a single line block with do-end if it is procedural' do
@@ -467,15 +471,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
              ^^ Prefer `{...}` over `do...end` for multi-line chained blocks.
         end.map(&:to_s)
       RUBY
-    end
 
-    it 'auto-corrects do-end for chained blocks' do
-      src = <<-RUBY.strip_indent
-        each do |x|
-        end.map(&:to_s)
-      RUBY
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         each { |x|
         }.map(&:to_s)
       RUBY
@@ -545,6 +542,21 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
     end
+
+    context 'with safe navigation', :ruby23 do
+      it 'registers an offense for multi-line chained do-end blocks' do
+        expect_offense(<<-RUBY.strip_indent)
+          arr&.each do |x|
+                    ^^ Prefer `{...}` over `do...end` for multi-line chained blocks.
+          end&.map(&:to_s)
+        RUBY
+
+        expect_correction(<<-RUBY.strip_indent)
+          arr&.each { |x|
+          }&.map(&:to_s)
+        RUBY
+      end
+    end
   end
 
   context 'always braces' do
@@ -560,6 +572,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         each do |x| end
              ^^ Prefer `{...}` over `do...end` for blocks.
       RUBY
+
+      expect_correction(<<-RUBY.strip_indent)
+        each { |x| }
+      RUBY
     end
 
     it 'accepts a single line block with braces' do
@@ -572,11 +588,6 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
              ^^ Prefer `{...}` over `do...end` for blocks.
         end
       RUBY
-    end
-
-    it 'auto-corrects do and end for single line blocks to { and }' do
-      new_source = autocorrect_source('block do |x| end')
-      expect(new_source).to eq('block { |x| }')
     end
 
     it 'does not auto-correct do-end if {} would change the meaning' do
@@ -599,15 +610,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
              ^^ Prefer `{...}` over `do...end` for blocks.
         end.map(&:to_s)
       RUBY
-    end
 
-    it 'auto-corrects do-end for chained blocks' do
-      src = <<-RUBY.strip_indent
-        each do |x|
-        end.map(&:to_s)
-      RUBY
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect_correction(<<-RUBY.strip_indent)
         each { |x|
         }.map(&:to_s)
       RUBY
