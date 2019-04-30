@@ -8,6 +8,7 @@
 * [#6996](https://github.com/rubocop-hq/rubocop/pull/6996): Fix a false positive for `Style/RedundantFreeze` when freezing the result of `String#*`. ([@bquorning][])
 * [#6998](https://github.com/rubocop-hq/rubocop/pull/6998): Fix autocorrect of `Naming/RescuedExceptionsVariableName` to also rename all references to the variable. ([@Darhazer][])
 * [#6992](https://github.com/rubocop-hq/rubocop/pull/6992): Fix unknown default configuration for `Layout/IndentFirstParameter` cop. ([@drenmi][])
+* [#6972](https://github.com/rubocop-hq/rubocop/issues/6972): Fix a false positive for `Style/MixinUsage` when using inside block and `if` condition is after `include`. ([@koic][])
 
 ## 0.68.0 (2019-04-29)
 
