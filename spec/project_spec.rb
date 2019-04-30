@@ -40,10 +40,16 @@ RSpec.describe 'RuboCop Project', type: :feature do
       cop_names.each do |name|
         enforced_styles = config[name]
                           .select { |key, _| key.start_with?('Enforced') }
-        enforced_styles.each_key do |style_name|
+        enforced_styles.each do |style_name, style|
           supported_key = RuboCop::Cop::Util.to_supported_styles(style_name)
           valid = config[name][supported_key]
-          errors.push("#{supported_key} is missing for #{name}") unless valid
+          unless valid
+            errors.push("#{supported_key} is missing for #{name}")
+            next
+          end
+          next if valid.include?(style)
+
+          errors.push("invalid #{style_name} '#{style}' for #{name} found")
         end
       end
 

@@ -11,6 +11,7 @@
 * [#6992](https://github.com/rubocop-hq/rubocop/pull/6992): Fix unknown default configuration for `Layout/IndentFirstParameter` cop. ([@drenmi][])
 * [#6972](https://github.com/rubocop-hq/rubocop/issues/6972): Fix a false positive for `Style/MixinUsage` when using inside block and `if` condition is after `include`. ([@koic][])
 * [#6738](https://github.com/rubocop-hq/rubocop/issues/6738): Prevent auto-correct conflict of `Style/Next` and `Style/SafeNavigation`. ([@hoshinotsuyoshi][])
+* [#6847](https://github.com/rubocop-hq/rubocop/pull/6847): Fix `Style/BlockDelimiters` to properly check if the node is chaned when `braces_for_chaining` is set. ([@att14][])
 
 ## 0.68.0 (2019-04-29)
 
@@ -3990,3 +3991,4 @@
 [@andreaseger]: https://github.com/andreaseger
 [@yakout]: https://github.com/yakout
 [@RicardoTrindade]: https://github.com/RicardoTrindade
+[@att14]: https://github.com/att14
