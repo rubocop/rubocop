@@ -54,6 +54,10 @@ module RuboCop
         MSG = 'Use `next` to skip iteration.'.freeze
         EXIT_TYPES = %i[break return].freeze
 
+        def self.autocorrect_incompatible_with
+          [Style::SafeNavigation]
+        end
+
         def investigate(_processed_source)
           # When correcting nested offenses, we need to keep track of how much
           # we have adjusted the indentation of each line

@@ -467,6 +467,36 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects Style/Next and Style/SafeNavigation offenses' do
+    create_file('.rubocop.yml', <<-YAML.strip_indent)
+      AllCops:
+        TargetRubyVersion: 2.3
+    YAML
+    source = <<-'RUBY'.strip_indent
+      until x
+        if foo
+          foo.some_method do
+            y
+          end
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only', 'Style/Next,Style/SafeNavigation'
+                   ])).to eq(0)
+    corrected = <<-'RUBY'.strip_indent
+      until x
+        next unless foo
+        foo.some_method do
+          y
+        end
+      end
+    RUBY
+    expect(IO.read('example.rb')).to eq(corrected)
+  end
+
   it 'corrects `Lint/Lambda` and `Lint/UnusedBlockArgument` offenses' do
     source = <<-'RUBY'.strip_indent
       c = -> event do
