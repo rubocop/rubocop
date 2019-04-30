@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.68.1 (2019-04-30)
+
 ### Bug fixes
 
 * [#6993](https://github.com/rubocop-hq/rubocop/pull/6993): Allowing for empty if blocks, preventing `Style/SafeNavigation` from crashing. ([@RicardoTrindade][])
