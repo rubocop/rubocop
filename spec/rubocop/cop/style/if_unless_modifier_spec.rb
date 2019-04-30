@@ -253,6 +253,16 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     RUBY
   end
 
+  context 'with safe navigation', :ruby23 do
+    it 'accepts if-end followed by a chained call' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if test
+          something
+        end&.inspect
+      RUBY
+    end
+  end
+
   it "doesn't break if-end when used as RHS of local var assignment" do
     corrected = autocorrect_source(<<-RUBY.strip_indent)
       a = if b

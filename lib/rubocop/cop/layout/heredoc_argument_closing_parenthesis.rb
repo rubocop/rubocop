@@ -56,7 +56,6 @@ module RuboCop
         MSG = 'Put the closing parenthesis for a method call with a ' \
         'HEREDOC parameter on the same line as the HEREDOC opening.'.freeze
 
-        STRING_TYPES = %i[str dstr xstr].freeze
         def on_send(node)
           heredoc_arg = extract_heredoc_argument(node)
           return unless heredoc_arg
@@ -123,16 +122,11 @@ module RuboCop
         end
 
         def send_missing_closing_parens?(parent, child, heredoc)
-          send_node?(parent) &&
+          parent &&
+            parent.call_type? &&
             parent.arguments.include?(child) &&
             parent.loc.begin &&
             parent.loc.end.line != heredoc.last_line
-        end
-
-        def send_node?(node)
-          return nil unless node
-
-          node.send_type? || node.csend_type?
         end
 
         def extract_heredoc_argument(node)
@@ -154,7 +148,7 @@ module RuboCop
         end
 
         def heredoc_node?(node)
-          node && STRING_TYPES.include?(node.type) && node.heredoc?
+          node.respond_to?(:heredoc?) && node.heredoc?
         end
 
         def single_line_send_with_heredoc_receiver?(node)

@@ -459,8 +459,12 @@ module RuboCop
         loc.respond_to?(:begin) && loc.begin && loc.begin.is?('(')
       end
 
+      def call_type?
+        send_type? || csend_type?
+      end
+
       def chained?
-        parent && parent.send_type? && eql?(parent.receiver)
+        parent && parent.call_type? && eql?(parent.receiver)
       end
 
       def argument?
