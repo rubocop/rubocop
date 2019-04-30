@@ -30,6 +30,7 @@ module RuboCop
       #   !(foo.class < Numeric) # Checking class hierarchy is allowed
       class InverseMethods < Cop
         include IgnoredNode
+        include RangeHelp
 
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
@@ -121,6 +122,11 @@ module RuboCop
             selector[0] = '='
             corrector.replace(block.loc.selector, selector)
           else
+            if block.loc.dot
+              range = dot_range(block.loc)
+              corrector.remove(range)
+            end
+
             corrector.remove(block.loc.selector)
           end
         end
@@ -164,6 +170,10 @@ module RuboCop
 
         def camel_case_constant?(node)
           node.const_type? && node.source =~ CAMEL_CASE
+        end
+
+        def dot_range(loc)
+          range_between(loc.dot.begin_pos, loc.expression.end_pos)
         end
       end
     end
