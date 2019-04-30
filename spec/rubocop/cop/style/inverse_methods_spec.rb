@@ -254,6 +254,18 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
         expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
       end
 
+      it 'corrects an inverted method call when using `BasicObject#!`' do
+        new_source = autocorrect_source("foo.#{method} { |e| e.bar?.! }")
+
+        expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
+      end
+
+      it 'corrects an inverted method call when using `BasicObject#  !`' do
+        new_source = autocorrect_source("foo.#{method} { |e| e.bar?.  ! }")
+
+        expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
+      end
+
       it 'corrects a complex inverted method call' do
         source = "puts 1 if !foo.#{method} { |e| !e.bar? }"
         new_source = autocorrect_source(source)

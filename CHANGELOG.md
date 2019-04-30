@@ -40,6 +40,7 @@
 * [#6915](https://github.com/rubocop-hq/rubocop/issues/6915): Fix false positive in `Style/SafeNavigation` when a modifier if is safe guarding a method call being passed to `break`, `fail`, `next`, `raise`, `return`, `throw`, and `yield`. ([@rrosenblum][])
 * [#6822](https://github.com/rubocop-hq/rubocop/issues/6822): Fix Lint/LiteralInInterpolation autocorrection for single quotes. ([@hoshinotsuyoshi][])
 * [#6985](https://github.com/rubocop-hq/rubocop/issues/6985): Fix an incorrect auto-correct for `Lint/LiteralInInterpolation` if contains array percent literal. ([@yakout][])
+* [#7003](https://github.com/rubocop-hq/rubocop/pull/7003): Fix an incorrect auto-correct for `Style/InverseMethods` when using `BasicObject#!`. ([@koic][])
 
 ### Changes
 
