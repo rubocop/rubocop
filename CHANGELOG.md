@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#6993](https://github.com/rubocop-hq/rubocop/pull/6993): Allowing for empty if blocks, preventing `Style/SafeNavigation` from crashing. ([@RicardoTrindade][])
 * [#6995](https://github.com/rubocop-hq/rubocop/pull/6995): Fix an incorrect auto-correct for `Style/RedundantParentheses` when enclosed in parentheses at `while-post` or `until-post`. ([@koic][])
 * [#6996](https://github.com/rubocop-hq/rubocop/pull/6996): Fix a false positive for `Style/RedundantFreeze` when freezing the result of `String#*`. ([@bquorning][])
 * [#6998](https://github.com/rubocop-hq/rubocop/pull/6998): Fix autocorrect of `Naming/RescuedExceptionsVariableName` to also rename all references to the variable. ([@Darhazer][])
@@ -3987,3 +3988,4 @@
 [@vfonic]: https://github.com/vfonic
 [@andreaseger]: https://github.com/andreaseger
 [@yakout]: https://github.com/yakout
+[@RicardoTrindade]: https://github.com/RicardoTrindade
