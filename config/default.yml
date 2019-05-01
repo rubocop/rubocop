@@ -650,6 +650,7 @@ Layout/HeredocArgumentClosingParenthesis:
                  Checks for the placement of the closing parenthesis in a
                  method call that passes a HEREDOC string as an argument.
   Enabled: false
+  StyleGuide: '#heredoc-argument-closing-parentheses'
   VersionAdded: '0.68'
 
 Layout/IndentAssignment:
@@ -1365,6 +1366,7 @@ Lint/HeredocMethodCallPosition:
                  Checks for the ordering of a method call where
                  the receiver of the call is a HEREDOC.
   Enabled: false
+  StyleGuide: '#heredoc-method-calls'
   VersionAdded: '0.68'
 
 Lint/ImplicitStringConcatenation:

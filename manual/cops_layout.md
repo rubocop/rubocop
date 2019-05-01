@@ -2091,6 +2091,10 @@ opening HEREDOC tag.
    )
 ```
 
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#heredoc-argument-closing-parentheses](https://github.com/rubocop-hq/ruby-style-guide#heredoc-argument-closing-parentheses)
+
 ## Layout/IndentAssignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
