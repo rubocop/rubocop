@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* Add support for subclassing using `Class.new` to `Lint/InheritException`. ([@houli][])
+
 ### Bug fixes
 
 * [#7007](https://github.com/rubocop-hq/rubocop/pull/7007): Fix `Style/BlockDelimiters` with `braces_for_chaining` style false positive, when chaining using safe navigation. ([@Darhazer][])
@@ -3999,3 +4002,4 @@
 [@yakout]: https://github.com/yakout
 [@RicardoTrindade]: https://github.com/RicardoTrindade
 [@att14]: https://github.com/att14
+[@houli]: https://github.com/houli
