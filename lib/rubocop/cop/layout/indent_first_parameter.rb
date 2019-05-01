@@ -16,7 +16,7 @@ module RuboCop
       #     123
       #   end
       #
-      # @example EnforcedStyle: consistent
+      # @example EnforcedStyle: consistent (default)
       #   # The first parameter should always be indented one step more than the
       #   # preceding line.
       #
