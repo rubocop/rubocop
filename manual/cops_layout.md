@@ -2498,7 +2498,7 @@ second_param)
   123
 end
 ```
-#### EnforcedStyle: consistent
+#### EnforcedStyle: consistent (default)
 
 ```ruby
 # The first parameter should always be indented one step more than the
