@@ -16,8 +16,6 @@ module RuboCop
       class RedundantParentheses < Cop
         include Parentheses
 
-        ALLOWED_LITERALS = %i[irange erange].freeze
-
         def_node_matcher :square_brackets?,
                          '(send {(send _recv _msg) str array hash} :[] ...)'
         def_node_matcher :range_end?, '^^{irange erange}'
@@ -28,6 +26,8 @@ module RuboCop
 
         def on_begin(node)
           return if !parentheses?(node) || parens_allowed?(node)
+          return if node.parent && (node.parent.while_post_type? ||
+                                    node.parent.until_post_type?)
 
           check(node)
         end
@@ -156,7 +156,7 @@ module RuboCop
 
         def disallowed_literal?(begin_node, node)
           node.literal? &&
-            !ALLOWED_LITERALS.include?(node.type) &&
+            !node.range_type? &&
             !raised_to_power_negative_numeric?(begin_node, node)
         end
 

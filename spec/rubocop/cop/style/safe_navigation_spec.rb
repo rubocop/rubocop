@@ -144,6 +144,15 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       RUBY
     end
 
+    it 'allows for empty if blocks with comments' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        if foo
+          # a random commnet
+          # TODO: Implement this before
+        end
+      RUBY
+    end
+
     it 'allows a method call as a parameter when the parameter is ' \
       'safe guarded with an object check' do
       expect_no_offenses('foo(bar.baz) if bar')

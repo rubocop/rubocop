@@ -197,6 +197,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
     RUBY
   end
 
+  it 'accepts parentheses when enclosed in parentheses at `while-post`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      begin
+        do_something
+      end while(bar)
+    RUBY
+  end
+
+  it 'accepts parentheses when enclosed in parentheses at `until-post`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      begin
+        do_something
+      end until(bar)
+    RUBY
+  end
+
   it 'accepts parentheses when they touch the preceding keyword' do
     expect_no_offenses('if x; y else(1) end')
   end

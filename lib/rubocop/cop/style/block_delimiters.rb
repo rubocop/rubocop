@@ -165,7 +165,7 @@ module RuboCop
 
         def braces_for_chaining_message(node)
           if node.multiline?
-            if return_value_chaining?(node)
+            if node.chained?
               'Prefer `{...}` over `do...end` for multi-line chained blocks.'
             else
               'Prefer `do...end` for multi-line blocks without chaining.'
@@ -267,7 +267,7 @@ module RuboCop
           block_begin = node.loc.begin.source
 
           block_begin == if node.multiline?
-                           (return_value_chaining?(node) ? '{' : 'do')
+                           (node.chained? ? '{' : 'do')
                          else
                            '{'
                          end
@@ -275,10 +275,6 @@ module RuboCop
 
         def braces_style?(node)
           node.loc.begin.source == '{'
-        end
-
-        def return_value_chaining?(node)
-          node.parent && node.parent.send_type? && node.parent.dot?
         end
 
         def correction_would_break_code?(node)

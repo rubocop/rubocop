@@ -212,7 +212,7 @@ module RuboCop
 
       def_node_matcher :macro_scope?, <<-PATTERN
         {^{({sclass class module block} ...) class_constructor?}
-         ^^{({sclass class module block} ... (begin ...)) class_constructor?}
+         ^^{({sclass class module block} ... ({begin if} ...)) class_constructor?}
          ^#macro_kwbegin_wrapper?
          #root_node?}
       PATTERN

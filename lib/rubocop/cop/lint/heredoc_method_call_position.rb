@@ -36,7 +36,6 @@ module RuboCop
         MSG = 'Put a method call with a HEREDOC receiver on the ' \
         'same line as the HEREDOC opening.'.freeze
 
-        STRING_TYPES = %i[str dstr xstr].freeze
         def on_send(node)
           heredoc = heredoc_node_descendent_receiver(node)
           return unless heredoc
@@ -72,11 +71,11 @@ module RuboCop
         def send_node?(node)
           return nil unless node
 
-          node.send_type? || node.csend_type?
+          node.call_type?
         end
 
         def heredoc_node?(node)
-          node && STRING_TYPES.include?(node.type) && node.heredoc?
+          node.respond_to?(:heredoc?) && node.heredoc?
         end
 
         def call_after_heredoc_range(heredoc)

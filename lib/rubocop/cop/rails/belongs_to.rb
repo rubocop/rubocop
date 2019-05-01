@@ -66,52 +66,34 @@ module RuboCop
           'this option altogether'.freeze
 
         def_node_matcher :match_belongs_to_with_options, <<-PATTERN
-          (send $_ :belongs_to _ (hash $...))
-        PATTERN
-
-        def_node_matcher :match_required_false?, <<-PATTERN
-          (pair (sym :required) false)
-        PATTERN
-
-        def_node_matcher :match_required_true?, <<-PATTERN
-          (pair (sym :required) true)
+          (send _ :belongs_to _
+            (hash <$(pair (sym :required) ${true false}) ...>)
+          )
         PATTERN
 
         def on_send(node)
-          opt = extract_required_option(node)
-          return unless opt
-          return unless match_required_true?(opt) || match_required_false?(opt)
+          match_belongs_to_with_options(node) do |_option_node, option_value|
+            message =
+              if option_value.true_type?
+                SUPERFLOUS_REQUIRE_TRUE_MSG
+              elsif option_value.false_type?
+                SUPERFLOUS_REQUIRE_FALSE_MSG
+              end
 
-          message =
-            if match_required_true?(opt)
-              SUPERFLOUS_REQUIRE_TRUE_MSG
-            elsif match_required_false?(opt)
-              SUPERFLOUS_REQUIRE_FALSE_MSG
-            end
-
-          add_offense(node, message: message, location: :selector)
-        end
-
-        def autocorrect(node)
-          opt = extract_required_option(node)
-          return unless opt
-
-          lambda do |corrector|
-            if match_required_true?(opt)
-              corrector.replace(opt.loc.expression, 'optional: false')
-            elsif match_required_false?(opt)
-              corrector.replace(opt.loc.expression, 'optional: true')
-            end
+            add_offense(node, message: message, location: :selector)
           end
         end
 
-        def extract_required_option(node)
-          _, opts = match_belongs_to_with_options(node)
-          return unless opts
+        def autocorrect(node)
+          option_node, option_value = match_belongs_to_with_options(node)
+          return unless option_node
 
-          opts.find do |opt|
-            match_required_true?(opt) ||
-              match_required_false?(opt)
+          lambda do |corrector|
+            if option_value.true_type?
+              corrector.replace(option_node.loc.expression, 'optional: false')
+            elsif option_value.false_type?
+              corrector.replace(option_node.loc.expression, 'optional: true')
+            end
           end
         end
       end

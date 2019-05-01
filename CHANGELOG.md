@@ -6,6 +6,20 @@
 
 * [#6900](https://github.com/rubocop-hq/rubocop/issues/6900): Fix `Rails/TimeZone` autocorrect `Time.current` to `Time.zone.now`. ([@vfonic][])
 * [#6900](https://github.com/rubocop-hq/rubocop/issues/6900): Fix `Rails/TimeZone` to prefer `Time.zone.#{method}` over other acceptable corrections. ([@vfonic][])
+* [#7007](https://github.com/rubocop-hq/rubocop/pull/7007): Fix `Style/BlockDelimiters` with `braces_for_chaining` style false positive, when chaining using safe navigation. ([@Darhazer][])
+
+## 0.68.1 (2019-04-30)
+
+### Bug fixes
+
+* [#6993](https://github.com/rubocop-hq/rubocop/pull/6993): Allowing for empty if blocks, preventing `Style/SafeNavigation` from crashing. ([@RicardoTrindade][])
+* [#6995](https://github.com/rubocop-hq/rubocop/pull/6995): Fix an incorrect auto-correct for `Style/RedundantParentheses` when enclosed in parentheses at `while-post` or `until-post`. ([@koic][])
+* [#6996](https://github.com/rubocop-hq/rubocop/pull/6996): Fix a false positive for `Style/RedundantFreeze` when freezing the result of `String#*`. ([@bquorning][])
+* [#6998](https://github.com/rubocop-hq/rubocop/pull/6998): Fix autocorrect of `Naming/RescuedExceptionsVariableName` to also rename all references to the variable. ([@Darhazer][])
+* [#6992](https://github.com/rubocop-hq/rubocop/pull/6992): Fix unknown default configuration for `Layout/IndentFirstParameter` cop. ([@drenmi][])
+* [#6972](https://github.com/rubocop-hq/rubocop/issues/6972): Fix a false positive for `Style/MixinUsage` when using inside block and `if` condition is after `include`. ([@koic][])
+* [#6738](https://github.com/rubocop-hq/rubocop/issues/6738): Prevent auto-correct conflict of `Style/Next` and `Style/SafeNavigation`. ([@hoshinotsuyoshi][])
+* [#6847](https://github.com/rubocop-hq/rubocop/pull/6847): Fix `Style/BlockDelimiters` to properly check if the node is chaned when `braces_for_chaining` is set. ([@att14][])
 
 ## 0.68.0 (2019-04-29)
 
@@ -38,6 +52,7 @@
 * [#6915](https://github.com/rubocop-hq/rubocop/issues/6915): Fix false positive in `Style/SafeNavigation` when a modifier if is safe guarding a method call being passed to `break`, `fail`, `next`, `raise`, `return`, `throw`, and `yield`. ([@rrosenblum][])
 * [#6822](https://github.com/rubocop-hq/rubocop/issues/6822): Fix Lint/LiteralInInterpolation autocorrection for single quotes. ([@hoshinotsuyoshi][])
 * [#6985](https://github.com/rubocop-hq/rubocop/issues/6985): Fix an incorrect auto-correct for `Lint/LiteralInInterpolation` if contains array percent literal. ([@yakout][])
+* [#7003](https://github.com/rubocop-hq/rubocop/pull/7003): Fix an incorrect auto-correct for `Style/InverseMethods` when using `BasicObject#!`. ([@koic][])
 
 ### Changes
 
@@ -3983,3 +3998,5 @@
 [@vfonic]: https://github.com/vfonic
 [@andreaseger]: https://github.com/andreaseger
 [@yakout]: https://github.com/yakout
+[@RicardoTrindade]: https://github.com/RicardoTrindade
+[@att14]: https://github.com/att14

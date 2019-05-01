@@ -743,7 +743,7 @@ Layout/IndentFirstParameter:
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '0.68'
-  EnforcedStyle: special_for_inner_method_call_in_parentheses
+  EnforcedStyle: consistent
   SupportedStyles:
     - consistent
     - align_parentheses
