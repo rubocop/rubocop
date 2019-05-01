@@ -10,6 +10,7 @@
 * [#6900](https://github.com/rubocop-hq/rubocop/issues/6900): Fix `Rails/TimeZone` autocorrect `Time.current` to `Time.zone.now`. ([@vfonic][])
 * [#6900](https://github.com/rubocop-hq/rubocop/issues/6900): Fix `Rails/TimeZone` to prefer `Time.zone.#{method}` over other acceptable corrections. ([@vfonic][])
 * [#7007](https://github.com/rubocop-hq/rubocop/pull/7007): Fix `Style/BlockDelimiters` with `braces_for_chaining` style false positive, when chaining using safe navigation. ([@Darhazer][])
+* [#6880](https://github.com/rubocop-hq/rubocop/issues/6880): Fix `.rubocop` file parsing. ([@hoshinotsuyoshi][])
 
 ## 0.68.1 (2019-04-30)
 

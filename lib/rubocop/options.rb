@@ -45,7 +45,7 @@ module RuboCop
 
     def args_from_file
       if File.exist?('.rubocop') && !File.directory?('.rubocop')
-        IO.readlines('.rubocop').map(&:strip)
+        File.read('.rubocop').shellsplit
       else
         []
       end
