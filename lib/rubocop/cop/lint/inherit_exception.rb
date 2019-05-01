@@ -13,18 +13,26 @@ module RuboCop
       #
       #   class C < Exception; end
       #
+      #   C = Class.new(Exception)
+      #
       #   # good
       #
       #   class C < RuntimeError; end
+      #
+      #   C = Class.new(RuntimeError)
       #
       # @example EnforcedStyle: standard_error
       #   # bad
       #
       #   class C < Exception; end
       #
+      #   C = Class.new(Exception)
+      #
       #   # good
       #
       #   class C < StandardError; end
+      #
+      #   C = Class.new(StandardError)
       class InheritException < Cop
         include ConfigurableEnforcedStyle
 
@@ -47,11 +55,24 @@ module RuboCop
           SystemExit
         ].freeze
 
+        def_node_matcher :class_new_call?, <<-PATTERN
+          (send
+            (const {cbase nil?} :Class) :new
+            $(const {cbase nil?} _))
+        PATTERN
+
         def on_class(node)
           return unless node.parent_class &&
                         illegal_class_name?(node.parent_class)
 
           add_offense(node.parent_class)
+        end
+
+        def on_send(node)
+          constant = class_new_call?(node)
+          return unless constant && illegal_class_name?(constant)
+
+          add_offense(constant)
         end
 
         def autocorrect(node)
