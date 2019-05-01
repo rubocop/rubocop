@@ -892,6 +892,10 @@ the receiver of the call is a HEREDOC.
    SQL
 ```
 
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#heredoc-method-calls](https://github.com/rubocop-hq/ruby-style-guide#heredoc-method-calls)
+
 ## Lint/ImplicitStringConcatenation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
