@@ -7,6 +7,10 @@
 * [#6649](https://github.com/rubocop-hq/rubocop/pull/6649): `Layout/AlignHash` supports list of options. ([@stoivo][])
 * Add `IgnoreMethodPatterns` config option to `Style/MethodCallWithArgsParentheses`. ([@tejasbubane][])
 
+### Bug fixes
+
+* [#7013](https://github.com/rubocop-hq/rubocop/pull/7013): Respect DisabledByDefault for custom cops. ([@XrXr][])
+
 ## 0.69.0 (2019-05-13)
 
 ### New features

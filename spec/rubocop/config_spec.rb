@@ -730,6 +730,40 @@ RSpec.describe RuboCop::Config do
         expect(cop_enabled(cop_class)).to be true
       end
     end
+
+    context 'when configuration has no mention of a cop' do
+      let(:hash) do
+        {}
+      end
+
+      it 'enables the cop that is not mentioned' do
+        expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
+      end
+
+      context 'when all cops are disabled by default' do
+        let(:hash) do
+          {
+            'AllCops' => { 'DisabledByDefault' => true }
+          }
+        end
+
+        it 'disables the cop that is not mentioned' do
+          expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be false
+        end
+      end
+
+      context 'when all cops are explicitly enabled by default' do
+        let(:hash) do
+          {
+            'AllCops' => { 'EnabledByDefault' => true }
+          }
+        end
+
+        it 'enables the cop that is not mentioned' do
+          expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
+        end
+      end
+    end
   end
 
   describe '#target_rails_version' do
