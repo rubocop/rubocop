@@ -28,6 +28,11 @@ module RuboCop
       #   foo == bar
       #   !!('foo' =~ /^\w+$/)
       #   !(foo.class < Numeric) # Checking class hierarchy is allowed
+      #   # Blocks with guard clauses are ignored:
+      #   foo.select do |f|
+      #     next if f.zero?
+      #     f != 1
+      #   end
       class InverseMethods < Cop
         include IgnoredNode
         include RangeHelp
@@ -76,6 +81,7 @@ module RuboCop
           inverse_block?(node) do |_method_call, method, block|
             return unless inverse_blocks.key?(method)
             return if negated?(node) && negated?(node.parent)
+            return if node.each_node(:next).any?
 
             # Inverse method offenses inside of the block of an inverse method
             # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,

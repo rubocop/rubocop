@@ -50,6 +50,20 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     expect_no_offenses('!!foo.reject { |e| !e }')
   end
 
+  it 'allows an inverse method in a block with next' do
+    expect_no_offenses(<<~RUBY)
+      class TestClass
+        def test_method
+          [1, 2, 3, 4].select do |number|
+            next if number == 4
+
+            number != 2
+          end
+        end
+      end
+    RUBY
+  end
+
   context 'auto-correct' do
     it 'corrects !.none? with a symbol proc to any?' do
       new_source = autocorrect_source('!foo.none?(&:even?)')
