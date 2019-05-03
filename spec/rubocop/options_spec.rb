@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     context '.rubocop file' do
       before do
-        create_file('.rubocop', %w[--color --fail-level C])
+        create_file('.rubocop', '--color --fail-level C')
       end
 
       it 'has lower precedence then command line options' do
@@ -378,7 +378,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'has higher precedence then options from .rubocop file' do
-        create_file('.rubocop', %w[--color --fail-level C])
+        create_file('.rubocop', '--color --fail-level C')
 
         with_env_options '--fail-level W' do
           expect(parsed_options).to eq(color: false, fail_level: :warning)
