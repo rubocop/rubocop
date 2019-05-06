@@ -24,7 +24,7 @@ module RuboCop
         include MultilineElementLineBreaks
 
         MSG = 'Each key in a multi-line hash must start on a ' \
-          'separate line.'.freeze
+          'separate line.'
 
         def on_hash(node)
           # This cop only deals with hashes wrapped by a set of curly

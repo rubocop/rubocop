@@ -17,7 +17,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `for` node has a `do` keyword
       def do?
-        loc.begin && loc.begin.is?('do')
+        loc.begin&.is?('do')
       end
 
       # Checks whether this node body is a void context.

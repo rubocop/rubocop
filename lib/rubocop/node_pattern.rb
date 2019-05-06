@@ -127,18 +127,18 @@ module RuboCop
       PARAM     = /\A#{PARAM_NUMBER}\Z/.freeze
       CLOSING   = /\A(?:\)|\}|\])\Z/.freeze
 
-      REST      = '...'.freeze
-      CAPTURED_REST = '$...'.freeze
+      REST      = '...'
+      CAPTURED_REST = '$...'
 
       attr_reader :match_code, :tokens, :captures
 
       SEQ_HEAD_INDEX = -1
 
       # Placeholders while compiling, see with_..._context methods
-      CUR_PLACEHOLDER = '@@@cur'.freeze
-      CUR_NODE = "#{CUR_PLACEHOLDER} node@@@".freeze
-      CUR_ELEMENT = "#{CUR_PLACEHOLDER} element@@@".freeze
-      SEQ_HEAD_GUARD = '@@@seq guard head@@@'.freeze
+      CUR_PLACEHOLDER = '@@@cur'
+      CUR_NODE = "#{CUR_PLACEHOLDER} node@@@"
+      CUR_ELEMENT = "#{CUR_PLACEHOLDER} element@@@"
+      SEQ_HEAD_GUARD = '@@@seq guard head@@@'
 
       line = __LINE__
       ANY_ORDER_TEMPLATE = ERB.new <<-RUBY.strip_indent.gsub("-%>\n", '%>')
@@ -176,7 +176,7 @@ module RuboCop
 
         @match_code = with_context(compile_expr, node_var, use_temp_node: false)
         @match_code.prepend("(captures = Array.new(#{@captures})) && ") \
-          if @captures > 0
+          if @captures.positive?
 
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
@@ -334,7 +334,7 @@ module RuboCop
         def variadic_arity
           return unless @variadic_index
 
-          first = @variadic_index > 0 ? first_terms_arity : SEQ_HEAD_INDEX
+          first = @variadic_index.positive? ? first_terms_arity : SEQ_HEAD_INDEX
           yield first..-last_terms_arity - 1
         end
       end

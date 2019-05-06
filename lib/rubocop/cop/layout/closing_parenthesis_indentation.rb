@@ -72,8 +72,8 @@ module RuboCop
         include Alignment
 
         MSG_INDENT = 'Indent `)` to column %<expected>d (not %<actual>d)'
-                     .freeze
-        MSG_ALIGN = 'Align `)` with `(`.'.freeze
+
+        MSG_ALIGN = 'Align `)` with `(`.'
 
         def on_send(node)
           check(node, node.arguments)
@@ -148,7 +148,7 @@ module RuboCop
                             .line_indentation(first_argument_line(elements))
             new_indent    = source_indent - indentation_width
 
-            new_indent < 0 ? 0 : new_indent
+            new_indent.negative? ? 0 : new_indent
           elsif all_elements_aligned?(elements)
             left_paren.column
           else

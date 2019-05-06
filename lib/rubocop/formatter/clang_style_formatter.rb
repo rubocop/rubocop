@@ -6,7 +6,7 @@ module RuboCop
     # The precise location of the problem is shown together with the
     # relevant source code.
     class ClangStyleFormatter < SimpleTextFormatter
-      ELLIPSES = '...'.freeze
+      ELLIPSES = '...'
 
       def report_file(file, offenses)
         offenses.each { |offense| report_offense(file, offense) }

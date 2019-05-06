@@ -26,7 +26,7 @@ module RuboCop
 
         MSG = 'Favor modifier `%<keyword>s` usage when having a single-line ' \
               'body. Another good alternative is the usage of control flow ' \
-              '`&&`/`||`.'.freeze
+              '`&&`/`||`.'
 
         ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
                               gvasgn ivasgn masgn].freeze

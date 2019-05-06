@@ -7,7 +7,7 @@ module RuboCop
     module Alignment
       private
 
-      SPACE = ' '.freeze
+      SPACE = ' '
 
       attr_reader :column_delta
 

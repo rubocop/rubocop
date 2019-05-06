@@ -61,7 +61,7 @@ module RuboCop
       class EmptyLinesAroundExceptionHandlingKeywords < Cop
         include EmptyLinesAroundBody
 
-        MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'.freeze
+        MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'
 
         def on_def(node)
           check_body(node.body)

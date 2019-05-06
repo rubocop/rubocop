@@ -32,7 +32,7 @@ module RuboCop
         include IgnoredNode
         include RangeHelp
 
-        MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'.freeze
+        MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze

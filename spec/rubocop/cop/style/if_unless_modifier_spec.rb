@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
-  it 'accepts if-end followed by a chained call' do
+  it 'accepts if-end followed by a chained call using `.`' do
     expect_no_offenses(<<-RUBY.strip_indent)
       if test
         something
@@ -253,14 +253,12 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     RUBY
   end
 
-  context 'with safe navigation', :ruby23 do
-    it 'accepts if-end followed by a chained call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        if test
-          something
-        end&.inspect
-      RUBY
-    end
+  it 'accepts if-end followed by a chained call using `&.`' do
+    expect_no_offenses(<<-RUBY.strip_indent)
+      if test
+        something
+      end&.inspect
+    RUBY
   end
 
   it "doesn't break if-end when used as RHS of local var assignment" do
@@ -472,7 +470,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       expect_offense(<<-RUBY.strip_indent)
         if foo
         ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
-          "This string would make the line longer than eighty characters if combined with the statement." 
+          "This string would make the line longer than eighty characters if combined with the statement."
         end
       RUBY
     end

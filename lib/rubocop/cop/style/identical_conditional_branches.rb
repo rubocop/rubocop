@@ -63,7 +63,7 @@ module RuboCop
       #     do_z
       #   end
       class IdenticalConditionalBranches < Cop
-        MSG = 'Move `%<source>s` out of the conditional.'.freeze
+        MSG = 'Move `%<source>s` out of the conditional.'
 
         def on_if(node)
           return if node.elsif?

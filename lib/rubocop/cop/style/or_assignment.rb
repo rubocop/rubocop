@@ -27,7 +27,7 @@ module RuboCop
       #   # good - set name to 'Bozhidar', only if it's nil or false
       #   name ||= 'Bozhidar'
       class OrAssignment < Cop
-        MSG = 'Use the double pipe equals operator `||=` instead.'.freeze
+        MSG = 'Use the double pipe equals operator `||=` instead.'
 
         def_node_matcher :ternary_assignment?, <<-PATTERN
           ({lvasgn ivasgn cvasgn gvasgn} _var

@@ -8,7 +8,7 @@ module RuboCop
       extend NodePattern::Macros
 
       MSG = 'Favor `%<inverse>s` over `%<current>s` for ' \
-            'negative conditions.'.freeze
+            'negative conditions.'
 
       private
 

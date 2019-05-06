@@ -23,7 +23,7 @@ module RuboCop
         include RangeHelp
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
-        EXCESSIVE_SPACE = '  '.freeze
+        EXCESSIVE_SPACE = '  '
 
         def self.autocorrect_incompatible_with
           [Style::SelfAssignment]

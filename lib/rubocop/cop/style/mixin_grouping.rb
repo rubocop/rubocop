@@ -34,7 +34,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MIXIN_METHODS = %i[extend include prepend].freeze
-        MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'.freeze
+        MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'
 
         def on_class(node)
           begin_node = node.child_nodes.find(&:begin_type?) || node

@@ -21,7 +21,7 @@ module RuboCop
       class DuplicatedKey < Cop
         include Duplication
 
-        MSG = 'Duplicated key in hash literal.'.freeze
+        MSG = 'Duplicated key in hash literal.'
 
         def on_hash(node)
           keys = node.keys.select(&:recursive_basic_literal?)

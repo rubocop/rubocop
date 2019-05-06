@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Rails::DynamicFindBy, :config do
     RUBY
   end
 
-  context 'when using safe navigation operator', :ruby23 do
+  context 'when using safe navigation operator' do
     context 'with dynamic find_by_*' do
       let(:source) { 'user&.find_by_name(name)' }
 

@@ -19,7 +19,7 @@ module RuboCop
       #     super
       #   end
       class MethodMissingSuper < Cop
-        MSG = 'When using `method_missing`, fall back on `super`.'.freeze
+        MSG = 'When using `method_missing`, fall back on `super`.'
 
         def on_def(node)
           return unless node.method?(:method_missing)

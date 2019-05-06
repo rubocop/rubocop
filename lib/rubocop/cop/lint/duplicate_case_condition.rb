@@ -28,7 +28,7 @@ module RuboCop
       #     do_something_else
       #   end
       class DuplicateCaseCondition < Cop
-        MSG = 'Duplicate `when` condition detected.'.freeze
+        MSG = 'Duplicate `when` condition detected.'
 
         def on_case(case_node)
           case_node.when_branches.each_with_object([]) do |when_node, previous|

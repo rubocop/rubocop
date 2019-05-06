@@ -116,7 +116,7 @@ module RuboCop
       #
       # @return [Boolean] whether the receiver of this method dispatch is `self`
       def self_receiver?
-        receiver && receiver.self_type?
+        receiver&.self_type?
       end
 
       # Checks whether the *explicit* receiver of this method dispatch is a
@@ -125,7 +125,7 @@ module RuboCop
       # @return [Boolean] whether the receiver of this method dispatch
       #                   is a `const` node
       def const_receiver?
-        receiver && receiver.const_type?
+        receiver&.const_type?
       end
 
       # Checks whether the method dispatch is the implicit form of `#call`,
@@ -140,7 +140,7 @@ module RuboCop
       #
       # @return [Boolean] whether the dispatched method has a block
       def block_literal?
-        parent && parent.block_type? && eql?(parent.send_node)
+        parent&.block_type? && eql?(parent.send_node)
       end
 
       # Checks whether this node is an arithmetic operation

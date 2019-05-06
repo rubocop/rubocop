@@ -19,7 +19,7 @@ module RuboCop
       #   Marshal.load(Marshal.dump({}))
       #
       class MarshalLoad < Cop
-        MSG = 'Avoid using `Marshal.%<method>s`.'.freeze
+        MSG = 'Avoid using `Marshal.%<method>s`.'
 
         def_node_matcher :marshal_load, <<-PATTERN
           (send (const {nil? cbase} :Marshal) ${:load :restore}

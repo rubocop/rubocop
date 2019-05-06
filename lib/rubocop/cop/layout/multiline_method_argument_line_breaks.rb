@@ -23,7 +23,7 @@ module RuboCop
         include(MultilineElementLineBreaks)
 
         MSG = 'Each argument in a multi-line method call must start ' \
-          'on a separate line.'.freeze
+          'on a separate line.'
 
         def on_send(node)
           args = node.arguments

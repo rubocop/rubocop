@@ -70,7 +70,7 @@ module RuboCop
 
       def remove_trailing_whitespace(corrector)
         size = block_begin.begin_pos - arguments.source_range.end_pos - 1
-        corrector.remove_preceding(block_begin, size) if size > 0
+        corrector.remove_preceding(block_begin, size) if size.positive?
       end
 
       def replace_delimiters(corrector)
@@ -93,11 +93,11 @@ module RuboCop
       end
 
       def arguments_end_pos
-        arguments.loc.end && arguments.loc.end.end_pos
+        arguments.loc.end&.end_pos
       end
 
       def arguments_begin_pos
-        arguments.loc.begin && arguments.loc.begin.begin_pos
+        arguments.loc.begin&.begin_pos
       end
 
       def block_end
@@ -117,12 +117,12 @@ module RuboCop
 
         parent = current_node.parent
 
-        if parent && parent.pair_type?
+        if parent&.pair_type?
           current_node = parent.parent
           parent = current_node.parent
         end
 
-        return false unless parent && parent.send_type?
+        return false unless parent&.send_type?
         return false if parent.parenthesized_call?
 
         current_node.sibling_index > 1

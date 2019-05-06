@@ -18,7 +18,7 @@ module RuboCop
       #   when 2 then 'bar'
       #   end
       class WhenThen < Cop
-        MSG = 'Do not use `when x;`. Use `when x then` instead.'.freeze
+        MSG = 'Do not use `when x;`. Use `when x then` instead.'
 
         def on_when(node)
           return if node.multiline? || node.then? || !node.body

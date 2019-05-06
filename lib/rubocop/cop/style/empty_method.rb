@@ -43,9 +43,9 @@ module RuboCop
       class EmptyMethod < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_COMPACT = 'Put empty method definitions on a single line.'.freeze
+        MSG_COMPACT = 'Put empty method definitions on a single line.'
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
-                       'next line.'.freeze
+                       'next line.'
 
         def on_def(node)
           return if node.body || comment_lines?(node)

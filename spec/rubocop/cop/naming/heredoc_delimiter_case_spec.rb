@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
     end
 
-    context 'with a squiggly heredoc', :ruby23 do
+    context 'with a squiggly heredoc' do
       it 'registers an offense with a lowercase delimiter' do
         expect_offense(<<-RUBY.strip_indent)
           <<~sql
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
     end
 
-    context 'with a squiggly heredoc', :ruby23 do
+    context 'with a squiggly heredoc' do
       it 'does not register an offense with a lowercase delimiter' do
         expect_no_offenses(<<-RUBY.strip_indent)
           <<~sql

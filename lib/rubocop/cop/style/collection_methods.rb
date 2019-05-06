@@ -38,7 +38,7 @@ module RuboCop
       class CollectionMethods < Cop
         include MethodPreference
 
-        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 
         def on_block(node)
           check_method_node(node.send_node)

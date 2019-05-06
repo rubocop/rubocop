@@ -85,7 +85,7 @@ module RuboCop
         include MultilineElementIndentation
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
-              'in an array, relative to %<base_description>s.'.freeze
+              'in an array, relative to %<base_description>s.'
 
         def on_array(node)
           check(node, nil) if node.loc.begin

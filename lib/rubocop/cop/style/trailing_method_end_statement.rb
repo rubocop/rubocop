@@ -37,7 +37,7 @@ module RuboCop
         include Alignment
 
         MSG = 'Place the end statement of a multi-line method on ' \
-              'its own line.'.freeze
+              'its own line.'
 
         def on_def(node)
           return unless trailing_end?(node)

@@ -34,9 +34,9 @@ module RuboCop
         include PrecedingFollowingAlignment
         include RangeHelp
 
-        MSG_UNNECESSARY = 'Unnecessary spacing detected.'.freeze
+        MSG_UNNECESSARY = 'Unnecessary spacing detected.'
         MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s ' \
-                             'assignment.'.freeze
+                             'assignment.'
 
         def investigate(processed_source)
           return if processed_source.blank?
@@ -171,7 +171,7 @@ module RuboCop
         end
 
         def aligned_with_previous_comment?(index)
-          index > 0 && comment_column(index - 1) == comment_column(index)
+          index.positive? && comment_column(index - 1) == comment_column(index)
         end
 
         def aligned_with_next_comment?(index)
@@ -202,9 +202,9 @@ module RuboCop
 
           diff = align_to - token.pos.last_column
 
-          if diff > 0
+          if diff.positive?
             corrector.insert_before(token.pos, ' ' * diff)
-          elsif diff < 0
+          elsif diff.negative?
             corrector.remove_preceding(token.pos, -diff)
           end
         end

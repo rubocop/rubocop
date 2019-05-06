@@ -16,11 +16,11 @@ module RuboCop
       class IfWithSemicolon < Cop
         include OnNormalIfUnless
 
-        MSG = 'Do not use if x; Use the ternary operator instead.'.freeze
+        MSG = 'Do not use if x; Use the ternary operator instead.'
 
         def on_normal_if_unless(node)
           beginning = node.loc.begin
-          return unless beginning && beginning.is?(';')
+          return unless beginning&.is?(';')
 
           add_offense(node)
         end

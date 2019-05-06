@@ -8,7 +8,7 @@ module RuboCop
     class ProgressFormatter < ClangStyleFormatter
       include TextUtil
 
-      DOT = '.'.freeze
+      DOT = '.'
 
       def initialize(output, options = {})
         super

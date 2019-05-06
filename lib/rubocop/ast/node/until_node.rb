@@ -28,7 +28,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `until` node has a `do` keyword
       def do?
-        loc.begin && loc.begin.is?('do')
+        loc.begin&.is?('do')
       end
     end
   end

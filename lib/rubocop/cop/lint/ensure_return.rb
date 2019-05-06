@@ -29,7 +29,7 @@ module RuboCop
       #     do_something_else
       #   end
       class EnsureReturn < Cop
-        MSG = 'Do not return from an `ensure` block.'.freeze
+        MSG = 'Do not return from an `ensure` block.'
 
         def on_ensure(node)
           ensure_body = node.body

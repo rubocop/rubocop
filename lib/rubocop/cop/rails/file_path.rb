@@ -30,9 +30,9 @@ module RuboCop
         include RangeHelp
 
         MSG_SLASHES = 'Please use `Rails.root.join(\'path/to\')` ' \
-                      'instead.'.freeze
+                      'instead.'
         MSG_ARGUMENTS = 'Please use `Rails.root.join(\'path\', \'to\')` ' \
-                        'instead.'.freeze
+                        'instead.'
 
         def_node_matcher :file_join_nodes?, <<-PATTERN
           (send (const nil? :File) :join ...)

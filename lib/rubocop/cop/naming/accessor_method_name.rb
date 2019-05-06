@@ -22,8 +22,8 @@ module RuboCop
       #   def attribute
       #   end
       class AccessorMethodName < Cop
-        MSG_READER = 'Do not prefix reader method names with `get_`.'.freeze
-        MSG_WRITER = 'Do not prefix writer method names with `set_`.'.freeze
+        MSG_READER = 'Do not prefix reader method names with `get_`.'
+        MSG_WRITER = 'Do not prefix writer method names with `set_`.'
 
         def on_def(node)
           return unless bad_reader_name?(node) || bad_writer_name?(node)

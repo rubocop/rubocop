@@ -24,7 +24,7 @@ module RuboCop
         include PercentLiteral
 
         MSG = "Within `%i`/`%I`, ':' and ',' are unnecessary and may be " \
-          'unwanted in the resulting symbols.'.freeze
+          'unwanted in the resulting symbols.'
 
         def on_array(node)
           process(node, '%i', '%I')

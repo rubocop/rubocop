@@ -44,7 +44,7 @@ module RuboCop
           # We must not change indentation of heredoc strings.
           return if heredoc_ranges.any? { |h| within?(range, h) }
 
-          if column_delta > 0
+          if column_delta.positive?
             unless range.source == "\n"
               # TODO: Fix ranges instead of using `begin`
               corrector.insert_before(range.begin, ' ' * column_delta)
@@ -71,7 +71,7 @@ module RuboCop
         def calculate_range(expr, line_begin_pos, column_delta)
           starts_with_space =
             expr.source_buffer.source[line_begin_pos].start_with?(' ')
-          pos_to_remove = if column_delta > 0 || starts_with_space
+          pos_to_remove = if column_delta.positive? || starts_with_space
                             line_begin_pos
                           else
                             line_begin_pos - column_delta.abs

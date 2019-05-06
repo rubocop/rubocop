@@ -42,7 +42,7 @@ module RuboCop
       #     end
       #   end
       class RedundantSelf < Cop
-        MSG = 'Redundant `self` detected.'.freeze
+        MSG = 'Redundant `self` detected.'
         KERNEL_METHODS = Kernel.methods(false)
 
         def self.autocorrect_incompatible_with
@@ -90,7 +90,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
-          return if node.parent && node.parent.mlhs_type?
+          return if node.parent&.mlhs_type?
 
           return if allowed_send_node?(node)
 

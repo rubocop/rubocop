@@ -19,7 +19,7 @@ module RuboCop
         include Alignment
         include TrailingBody
 
-        MSG = 'Place the first line of class body on its own line.'.freeze
+        MSG = 'Place the first line of class body on its own line.'
 
         def on_class(node)
           return unless trailing_body?(node)

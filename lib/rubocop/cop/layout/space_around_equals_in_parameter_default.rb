@@ -32,7 +32,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Surrounding space %<type>s in default value assignment.'.freeze
+        MSG = 'Surrounding space %<type>s in default value assignment.'
 
         def on_optarg(node)
           index = index_of_first_token(node)

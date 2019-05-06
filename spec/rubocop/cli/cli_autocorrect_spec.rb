@@ -13,6 +13,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('.rubocop.yml', <<-YAML.strip_indent)
       Layout/AlignHash:
         EnforcedColonStyle: table
+      Style/FrozenStringLiteralComment:
+        Enabled: false
     YAML
     source = <<-RUBY.strip_indent
       hash = {
@@ -59,6 +61,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     # 1=>2 is changed to 1 => 2. The rest is unchanged.
     # SpaceAroundOperators leaves it to AlignHash when the style is table.
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
       a = { 1 => 2, a => b }
       hash = {
         :alice => {
@@ -143,6 +147,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
+            # frozen_string_literal: true
+
             func({
                    @abc => 0,
                    @xyz => 1,
@@ -173,6 +179,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
+            # frozen_string_literal: true
+
             func(
               @abc => 0,
               @xyz => 1,
@@ -199,6 +207,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
+            # frozen_string_literal: true
+
             func(
               @abc => 0,
               @xyz => 1,
@@ -235,6 +245,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
+            # frozen_string_literal: true
+
             func({
                    @abc => 0,
                    @xyz => 1,
@@ -265,6 +277,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
+            # frozen_string_literal: true
+
             func(
               @abc => 0,
               @xyz => 1,
@@ -291,6 +305,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         let(:expected_corrected_source) do
           <<-RUBY.strip_indent
+            # frozen_string_literal: true
+
             func(
               @abc => 0,
               @xyz => 1,
@@ -354,6 +370,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       let(:corrected_source) do
         <<-RUBY.strip_indent
+          # frozen_string_literal: true
+
           [ a[b], c[d], [ 1, 2 ] ]
           foo[[ 3, 4 ], [ 5, 6 ]]
         RUBY
@@ -368,6 +386,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       let(:corrected_source) do
         <<-RUBY.strip_indent
+          # frozen_string_literal: true
+
           [a[ b ], c[ d ], [1, 2]]
           foo[ [3, 4], [5, 6] ]
         RUBY
@@ -382,6 +402,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       let(:corrected_source) do
         <<-RUBY.strip_indent
+          # frozen_string_literal: true
+
           [ a[b], c[d], [ 1, 2 ]]
           foo[[ 3, 4 ], [ 5, 6 ]]
         RUBY
@@ -396,6 +418,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       let(:corrected_source) do
         <<-RUBY.strip_indent
+          # frozen_string_literal: true
+
           [ a[ b ], c[ d ], [ 1, 2 ]]
           foo[ [ 3, 4 ], [ 5, 6 ] ]
         RUBY
@@ -419,6 +443,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(0)
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       def verify_section
         scroll_down_until_element_exists
       rescue StandardError
@@ -441,7 +467,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(0)
-    corrected = ["puts 'foo' \\",
+    corrected = ['# frozen_string_literal: true',
+                 '',
+                 "puts 'foo' \\",
                  '     "#{bar}"',
                  # Expressions that need correction from only one of these cops
                  # are corrected as expected.
@@ -543,7 +571,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'corrects offenses' do
         allow(cache).to receive(:save)
         expect(cli.run(['--auto-correct'])).to eq(0)
-        expect(IO.read('example.rb')).to eq("puts 'Hi'\n")
+        expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+          # frozen_string_literal: true
+
+          puts 'Hi'
+        RUBY
       end
     end
   end
@@ -568,6 +600,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         corrected = case style
                     when :semantic
                       <<-RUBY.strip_indent
+                        # frozen_string_literal: true
+
                         r = foo.map { |a|
                           a.bar.to_s
                         }
@@ -577,6 +611,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       RUBY
                     when :braces_for_chaining
                       <<-RUBY.strip_indent
+                        # frozen_string_literal: true
+
                         r = foo.map do |a|
                           a.bar.to_s
                         end
@@ -586,6 +622,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       RUBY
                     when :line_count_based
                       <<-RUBY.strip_indent
+                        # frozen_string_literal: true
+
                         r = foo.map do |a|
                           a.bar.to_s
                         end
@@ -621,6 +659,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     YAML
     expect(cli.run(['--auto-correct'])).to eq(0)
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       # comment 1
 
       # comment 2
@@ -651,14 +691,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct --format simple])).to eq(1)
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
       == example.rb ==
-      C:  1:  1: Style/Documentation: Missing top-level class documentation comment.
-      W:  2:  3: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
-      W:  4: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
-      W:  6:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
+      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      C:  3:  1: Style/Documentation: Missing top-level class documentation comment.
+      W:  4:  3: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
+      W:  6: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
+      W:  8:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
-      1 file inspected, 4 offenses detected, 3 offenses corrected
+      1 file inspected, 5 offenses detected, 4 offenses corrected
     RESULT
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       class A
         def func
           x = foo # rubocop:disable Lint/UselessAssignment
@@ -709,6 +752,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(1)
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       def func
         foo
         bar
@@ -757,6 +802,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(0)
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       render_views
       describe 'GET index' do
         it 'returns http success' do
@@ -788,6 +835,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(0)
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       require 'spec_helper'
       describe ArticlesController do
         render_views
@@ -808,7 +857,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     source = ['foo.map{ |a| a.nil? }']
     create_file('example.rb', source)
     expect(cli.run(['-D', '--auto-correct'])).to eq(0)
-    corrected = "foo.map(&:nil?)\n"
+    corrected = "# frozen_string_literal: true\n\nfoo.map(&:nil?)\n"
     expect(IO.read('example.rb')).to eq(corrected)
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
@@ -860,6 +909,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['-D', '--auto-correct'])).to eq(0)
     corrected =
       <<-RUBY.strip_indent
+        # frozen_string_literal: true
+
         expect(subject[:address]).to eq(
           street1: '1 Market',
           street2: '#200',
@@ -878,6 +929,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       Style/CommandLiteral:
         Exclude:
           - example.rb
+      Style/FrozenStringLiteralComment:
+        Enabled: false
     YAML
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect($stdout.string).to include('no offenses detected')
@@ -916,6 +969,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         module Bar
           class Goo
             def something
@@ -960,6 +1015,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         module Foo
           class Bar
             # This is a nice long
@@ -983,6 +1040,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         (1..10).each do |i|
           puts i
         end
@@ -995,16 +1054,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         assert_post_status_code 400, 's', type: 'bad'
       RUBY
     e = abs('example.rb')
     # TODO: Don't report that a problem is corrected when it
     # actually went away due to another correction.
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
+      #{e}:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
       #{e}:1:35: C: [Corrected] Layout/SpaceInsideHashLiteralBraces: Space inside { missing.
       #{e}:1:35: C: [Corrected] Style/BracesAroundHashParameters: Redundant curly braces around a hash parameter.
       #{e}:1:36: C: [Corrected] Style/HashSyntax: Use the new Ruby 1.9 hash syntax.
       #{e}:1:50: C: [Corrected] Layout/SpaceInsideHashLiteralBraces: Space inside } missing.
+      #{e}:3:35: C: [Corrected] Style/BracesAroundHashParameters: Redundant curly braces around a hash parameter.
     RESULT
   end
 
@@ -1022,6 +1085,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
       class Test
         def f; end
       end
@@ -1039,6 +1104,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     expect(cli.run(%w[--auto-correct --format emacs])).to eq(1)
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
       class Dsl
         private
 
@@ -1047,22 +1114,23 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     e = abs('example.rb')
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
-      #{e}:1:1: C: Style/Documentation: Missing top-level class documentation comment.
+      #{e}:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
       #{e}:2:1: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
       #{e}:2:1: C: [Corrected] Layout/EmptyLinesAroundAccessModifier: Keep a blank line after `private`.
       #{e}:2:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 0) spaces for indentation.
-      #{e}:2:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
-      #{e}:2:3: W: Lint/UselessAccessModifier: Useless `private` access modifier.
-      #{e}:2:5: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
+      #{e}:3:1: C: Style/Documentation: Missing top-level class documentation comment.
       #{e}:3:7: C: [Corrected] Style/MutableConstant: Freeze mutable objects assigned to constants.
       #{e}:3:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
       #{e}:3:8: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       #{e}:3:15: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       #{e}:3:21: C: [Corrected] Style/TrailingCommaInArrayLiteral: Avoid comma after the last item of an array.
       #{e}:4:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
-      #{e}:4:3: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
-      #{e}:4:5: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
-      #{e}:4:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
+      #{e}:4:3: W: Lint/UselessAccessModifier: Useless `private` access modifier.
+      #{e}:4:5: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
+      #{e}:6:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
+      #{e}:6:3: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
+      #{e}:6:5: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
+      #{e}:6:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
     RESULT
   end
 
@@ -1076,6 +1144,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
       module A
         module B
       end end
@@ -1094,6 +1164,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct --format offenses])).to eq(0)
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
       # comment
+      # frozen_string_literal: true
+
       def func1
         do_something
       end
@@ -1110,8 +1182,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       2   Style/SingleLineMethods
       1   Layout/EmptyLineBetweenDefs
       1   Style/DefWithParentheses
+      1   Style/FrozenStringLiteralComment
       --
-      13  Total
+      14  Total
 
     RESULT
   end
@@ -1127,6 +1200,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         raise NotImplementedError,
               'Method should be overridden in child classes'
       RUBY
@@ -1136,14 +1211,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       Offenses:
 
+      example.rb:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      fail NotImplementedError,
+      ^
       example.rb:1:1: C: [Corrected] Style/SignalException: Always use raise to signal exceptions.
       fail NotImplementedError,
       ^^^^
-      example.rb:2:6: C: [Corrected] Layout/AlignArguments: Align the arguments of a method call if they span more than one line.
+      example.rb:4:6: C: [Corrected] Layout/AlignArguments: Align the arguments of a method call if they span more than one line.
            'Method should be overridden in child classes'
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-      1 file inspected, 2 offenses detected, 2 offenses corrected
+      1 file inspected, 3 offenses detected, 3 offenses corrected
     RESULT
   end
 
@@ -1159,6 +1237,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         # Example class.
         class Klass
           def f; end
@@ -1171,10 +1251,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       Offenses:
 
-      example.rb:3:1: C: [Corrected] Layout/EmptyLinesAroundClassBody: Extra empty line detected at class body beginning.
+      example.rb:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      # Example class.
+      ^
       example.rb:3:1: C: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
+      example.rb:5:1: C: [Corrected] Layout/EmptyLinesAroundClassBody: Extra empty line detected at class body beginning.
 
-      1 file inspected, 2 offenses detected, 2 offenses corrected
+      1 file inspected, 3 offenses detected, 3 offenses corrected
     RESULT
   end
 
@@ -1186,18 +1269,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     expect(cli.run(%w[-D --auto-correct])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb'))
-      .to eq(<<-RUBY.strip_indent)
-        def primes(limit)
-          1.upto(limit).select(&:even?)
-        end
-      RUBY
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      def primes(limit)
+        1.upto(limit).select(&:even?)
+      end
+    RUBY
     expect($stdout.string)
       .to eq(['Inspecting 1 file',
               'C',
               '',
               'Offenses:',
               '',
+              'example.rb:1:1: C: [Corrected] ' \
+              'Style/FrozenStringLiteralComment: Missing magic comment ' \
+              '# frozen_string_literal: true.',
+              'def primes limit',
+              '^',
               'example.rb:1:12: C: [Corrected] ' \
               'Style/MethodDefParentheses: ' \
               'Use def with parentheses when there are parameters.',
@@ -1208,7 +1297,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               '  1.upto(limit).select { |i| i.even? }',
               '                       ^^^^^^^^^^^^^^^',
               '',
-              '1 file inspected, 2 offenses detected, 2 offenses ' \
+              '1 file inspected, 3 offenses detected, 3 offenses ' \
               'corrected',
               ''].join("\n"))
   end
@@ -1223,13 +1312,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       .to eq(<<-RESULT.strip_indent)
 
         4  Layout/SpaceAfterComma
-        2  Style/WordArray
+        4  Style/WordArray
+        1  Style/FrozenStringLiteralComment
         --
-        6  Total
+        9  Total
 
       RESULT
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         f(type: %w[offline offline_payment],
           bar_colors: %w[958c12 953579 ff5800 0085cc])
       RUBY
@@ -1240,25 +1332,40 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 "I18n.t('description',:property_name => property.name)")
     expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:1:21: C: [Corrected] " \
+      .to eq(["#{abs('example.rb')}:1:1: C: [Corrected] " \
+              'Style/FrozenStringLiteralComment: Missing magic comment ' \
+              '`# frozen_string_literal: true`.',
+              "#{abs('example.rb')}:1:21: C: [Corrected] " \
               'Layout/SpaceAfterComma: Space missing after comma.',
               "#{abs('example.rb')}:1:22: C: [Corrected] " \
               'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               ''].join("\n"))
-    expect(IO.read('example.rb'))
-      .to eq("I18n.t('description', property_name: property.name)\n")
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      I18n.t('description', property_name: property.name)
+    RUBY
   end
 
   it 'can correct HashSyntax and SpaceAroundOperators offenses' do
     create_file('example.rb', '{ :b=>1 }')
     expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
-    expect(IO.read('example.rb')).to eq("{ b: 1 }\n")
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      { b: 1 }
+    RUBY
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:1:3: C: [Corrected] " \
+      .to eq(["#{abs('example.rb')}:1:1: C: [Corrected] " \
+              'Style/FrozenStringLiteralComment: Missing magic comment ' \
+              '`# frozen_string_literal: true`.',
+              "#{abs('example.rb')}:1:3: C: [Corrected] " \
               'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               "#{abs('example.rb')}:1:5: C: [Corrected] " \
               'Layout/SpaceAroundOperators: Surrounding space missing for ' \
               'operator `=>`.',
+              "#{abs('example.rb')}:3:3: C: [Corrected] " \
+              'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               ''].join("\n"))
   end
 
@@ -1294,9 +1401,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', 'Hash.new()')
     expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq("{}\n")
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      {}
+    RUBY
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
       #{abs('example.rb')}:1:1: C: [Corrected] Style/EmptyLiteral: Use hash literal `{}` instead of `Hash.new`.
+      #{abs('example.rb')}:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
       #{abs('example.rb')}:1:9: C: [Corrected] Style/MethodCallWithoutArgsParentheses: Do not use parentheses for method calls with no arguments.
     RESULT
   end
@@ -1317,6 +1429,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+
         CONVERSION_CORRESPONDENCE = {
                         match_for_should: :match,
                     match_for_should_not: :match_when_negated,
@@ -1335,6 +1449,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     RUBY
     corrected = <<-RUBY.strip_indent
+      # frozen_string_literal: true
+
       func a do b end
       Signal.trap('TERM') { system(cmd); exit }
       def self.some_method(foo, bar: 1)
@@ -1343,7 +1459,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     create_file('.rubocop.yml', <<-YAML.strip_indent)
       AllCops:
-        TargetRubyVersion: 2.2
+        TargetRubyVersion: 2.3
     YAML
     create_file('example.rb', src)
     expect(cli.run(%w[-a -f simple])).to eq(1)
@@ -1351,11 +1467,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<-RESULT.strip_indent)
       == example.rb ==
-      C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
-      C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
-      W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
+      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      C:  3:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
+      C:  4: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
+      W:  5: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
-      1 file inspected, 3 offenses detected
+      1 file inspected, 4 offenses detected, 1 offense corrected
     RESULT
   end
 
@@ -1365,7 +1482,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--auto-correct])).to eq(0)
     end
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq("some_method(a)\n")
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      some_method(a)
+    RUBY
   end
 
   it 'does not hang SpaceAfterPunctuation and ' \
@@ -1375,7 +1496,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--auto-correct])).to eq(0)
     end
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq("puts [1]\n")
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      puts [1]
+    RUBY
   end
 
   it 'can be disabled for any cop in configuration' do
@@ -1386,7 +1511,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     YAML
     expect(cli.run(%w[--auto-correct])).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq("puts \"Hello\", 123_456\n")
+    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
+      puts \"Hello\", 123_456
+    RUBY
   end
 
   it 'handles different SpaceInsideBlockBraces and ' \
@@ -1407,6 +1536,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct])).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
       {foo: bar,
        bar: baz,}
       foo.each { bar; }
@@ -1425,6 +1556,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stderr.string).to eq('')
     expect(cli.run(%w[--auto-correct])).to eq(0)
     expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+      # frozen_string_literal: true
+
       def method_a
         do_something(a: 1)
       end

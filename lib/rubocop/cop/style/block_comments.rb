@@ -19,7 +19,7 @@ module RuboCop
       class BlockComments < Cop
         include RangeHelp
 
-        MSG = 'Do not use block comments.'.freeze
+        MSG = 'Do not use block comments.'
         BEGIN_LENGTH = "=begin\n".length
         END_LENGTH = "\n=end".length
 

@@ -18,7 +18,7 @@ module RuboCop
       #   assert_not_equal true, false
       #
       class RefuteMethods < Cop
-        MSG = 'Prefer `%<assert_method>s` over `%<refute_method>s`.'.freeze
+        MSG = 'Prefer `%<assert_method>s` over `%<refute_method>s`.'
 
         CORRECTIONS = {
           refute: 'assert_not',

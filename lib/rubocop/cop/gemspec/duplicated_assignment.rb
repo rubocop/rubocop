@@ -38,7 +38,7 @@ module RuboCop
         include RangeHelp
 
         MSG = '`%<assignment>s` method calls already given on line '\
-              '%<line_of_first_occurrence>d of the gemspec.'.freeze
+              '%<line_of_first_occurrence>d of the gemspec.'
 
         def_node_search :gem_specification, <<-PATTERN
           (block

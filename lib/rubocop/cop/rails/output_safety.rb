@@ -63,7 +63,7 @@ module RuboCop
       #   # => ActiveSupport::SafeBuffer
       #   #    "&lt;b&gt;hi&lt;/b&gt; <span>&lt;b&gt;hi&lt;/b&gt;</span>"
       class OutputSafety < Cop
-        MSG = 'Tagging a string as html safe may be a security risk.'.freeze
+        MSG = 'Tagging a string as html safe may be a security risk.'
 
         def on_send(node)
           return if non_interpolated_string?(node)
@@ -79,7 +79,7 @@ module RuboCop
         private
 
         def non_interpolated_string?(node)
-          node.receiver && node.receiver.str_type? && !node.receiver.dstr_type?
+          node.receiver&.str_type? && !node.receiver.dstr_type?
         end
 
         def looks_like_rails_html_safe?(node)

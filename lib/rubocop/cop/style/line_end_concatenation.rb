@@ -23,7 +23,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `\\` instead of `+` or `<<` to concatenate ' \
-              'those strings.'.freeze
+              'those strings.'
         CONCAT_TOKEN_TYPES = %i[tPLUS tLSHFT].freeze
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
         COMPLEX_STRING_EDGE_TOKEN_TYPES = %i[tSTRING_BEG tSTRING_END].freeze
@@ -94,7 +94,7 @@ module RuboCop
           begin_token, end_token = COMPLEX_STRING_EDGE_TOKEN_TYPES
           if successor.type == begin_token
             ends_to_find = 1
-            while ends_to_find > 0
+            while ends_to_find.positive?
               case processed_source.tokens[index].type
               when begin_token then ends_to_find += 1
               when end_token then ends_to_find -= 1

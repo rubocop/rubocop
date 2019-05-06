@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
         expect(cop.offenses.size).to eq(1)
       end
 
-      context 'when using safe navigation operator', :ruby23 do
+      context 'when using safe navigation operator' do
         it "registers an offense for ##{method}" do
           inspect_source("date&.#{method}")
           expect(cop.offenses.size).to eq(1)

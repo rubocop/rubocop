@@ -46,9 +46,9 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Re-enable %<cop>s cop with `# rubocop:enable` after ' \
-              'disabling it.'.freeze
+              'disabling it.'
         MSG_BOUND = 'Re-enable %<cop>s cop within %<max_range>s lines after ' \
-                    'disabling it.'.freeze
+                    'disabling it.'
 
         def investigate(processed_source)
           max_range = cop_config['MaximumRangeSize']

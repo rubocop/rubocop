@@ -51,7 +51,7 @@ module RuboCop
         include MinBodyLength
         include RangeHelp
 
-        MSG = 'Use `next` to skip iteration.'.freeze
+        MSG = 'Use `next` to skip iteration.'
         EXIT_TYPES = %i[break return].freeze
 
         def self.autocorrect_incompatible_with
@@ -125,7 +125,7 @@ module RuboCop
         end
 
         def if_without_else?(node)
-          node && node.if_type? && !node.ternary? && !node.else?
+          node&.if_type? && !node.ternary? && !node.else?
         end
 
         def exit_body_type?(node)
@@ -137,7 +137,7 @@ module RuboCop
         def offense_node(body)
           *_, condition = *body
 
-          condition && condition.if_type? ? condition : body
+          condition&.if_type? ? condition : body
         end
 
         def offense_location(offense_node)
@@ -231,9 +231,9 @@ module RuboCop
           adjustment = delta + @reindented_lines[lineno]
           @reindented_lines[lineno] = adjustment
 
-          if adjustment > 0
+          if adjustment.positive?
             corrector.remove_leading(buffer.line_range(lineno), adjustment)
-          elsif adjustment < 0
+          elsif adjustment.negative?
             corrector.insert_before(buffer.line_range(lineno),
                                     ' ' * -adjustment)
           end

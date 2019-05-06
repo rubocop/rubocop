@@ -58,7 +58,7 @@ module RuboCop
         include IgnoredPattern
         include RangeHelp
 
-        MSG = 'Line is too long. [%<length>d/%<max>d]'.freeze
+        MSG = 'Line is too long. [%<length>d/%<max>d]'
 
         def on_potential_breakable_node(node)
           check_for_breakable_node(node)

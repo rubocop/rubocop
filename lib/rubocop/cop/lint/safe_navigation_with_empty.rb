@@ -21,7 +21,7 @@ module RuboCop
       #
       class SafeNavigationWithEmpty < Cop
         MSG = 'Avoid calling `empty?` with the safe navigation operator ' \
-          'in conditionals.'.freeze
+          'in conditionals.'
 
         def_node_matcher :safe_navigation_empty_in_conditional?, <<-PATTERN
           (if (csend (send ...) :empty?) ...)

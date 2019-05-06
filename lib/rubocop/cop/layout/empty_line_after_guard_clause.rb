@@ -38,7 +38,7 @@ module RuboCop
       class EmptyLineAfterGuardClause < Cop
         include RangeHelp
 
-        MSG = 'Add empty line after guard clause.'.freeze
+        MSG = 'Add empty line after guard clause.'
         END_OF_HEREDOC_LINE = 1
 
         def on_if(node)
@@ -79,7 +79,7 @@ module RuboCop
         end
 
         def contains_guard_clause?(node)
-          node.if_branch && node.if_branch.guard_clause?
+          node.if_branch&.guard_clause?
         end
 
         def next_line_empty?(line)
@@ -97,7 +97,7 @@ module RuboCop
 
           parent = next_sibling.parent
 
-          parent && parent.if_type? && parent.else?
+          parent&.if_type? && parent&.else?
         end
 
         def next_sibling_empty_or_guard_clause?(node)
@@ -110,7 +110,7 @@ module RuboCop
         def last_argument_is_heredoc?(node)
           last_children = node.if_branch
 
-          return false unless last_children && last_children.send_type?
+          return false unless last_children&.send_type?
 
           last_argument = last_argument(node)
 
@@ -130,7 +130,7 @@ module RuboCop
         end
 
         def offense_location(node)
-          if node.loc && node.loc.end
+          if node.loc&.end
             :end
           else
             :expression

@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Rails::OutputSafety do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense' do
         expect_offense(<<-RUBY.strip_indent)
           foo&.safe_concat('bar')
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Rails::OutputSafety do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for variable receiver and no argument' do
         expect_offense(<<-RUBY.strip_indent)
           foo&.html_safe

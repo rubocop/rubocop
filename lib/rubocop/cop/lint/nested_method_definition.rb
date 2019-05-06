@@ -56,7 +56,7 @@ module RuboCop
       #   end
       class NestedMethodDefinition < Cop
         MSG = 'Method definitions must not be nested. ' \
-              'Use `lambda` instead.'.freeze
+              'Use `lambda` instead.'
 
         def on_def(node)
           find_nested_defs(node) do |nested_def_node|

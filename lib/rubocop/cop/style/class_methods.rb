@@ -21,7 +21,7 @@ module RuboCop
       #     end
       #   end
       class ClassMethods < Cop
-        MSG = 'Use `self.%<method>s` instead of `%<class>s.%<method>s`.'.freeze
+        MSG = 'Use `self.%<method>s` instead of `%<class>s.%<method>s`.'
 
         def on_class(node)
           return unless node.body

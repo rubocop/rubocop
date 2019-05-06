@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::Send do
         RUBY
       end
 
-      context 'when using safe navigation operator', :ruby23 do
+      context 'when using safe navigation operator' do
         it 'registers an offense for an invocation with args' do
           expect_offense(<<-RUBY.strip_indent)
             Object&.send(:inspect)

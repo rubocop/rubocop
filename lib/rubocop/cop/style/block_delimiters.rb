@@ -111,7 +111,6 @@ module RuboCop
         include IgnoredMethods
 
         ALWAYS_BRACES_MESSAGE = 'Prefer `{...}` over `do...end` for blocks.'
-                                .freeze
 
         def on_send(node)
           return unless node.arguments?

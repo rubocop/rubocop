@@ -29,7 +29,7 @@ module RuboCop
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
               '%<number_object>s.%<to_method>s, use stricter '\
-              '%<corrected_method>s.'.freeze
+              '%<corrected_method>s.'
 
         def_node_matcher :to_method, <<-PATTERN
           (send $_ ${:to_i :to_f :to_c})

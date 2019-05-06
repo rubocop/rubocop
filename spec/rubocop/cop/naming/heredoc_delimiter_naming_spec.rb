@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
   end
 
-  context 'with a squiggly heredoc', :ruby23 do
+  context 'with a squiggly heredoc' do
     it 'registers an offense with a non-meaningful delimiter' do
       expect_offense(<<-RUBY.strip_indent)
         <<~END
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
   end
 
-  context 'with a naked heredoc', :ruby23 do
+  context 'with a naked heredoc' do
     it 'registers an offense with a non-meaningful delimiter' do
       expect_offense(<<-RUBY.strip_indent)
         <<END

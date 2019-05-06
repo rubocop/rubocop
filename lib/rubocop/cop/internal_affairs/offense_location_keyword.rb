@@ -15,7 +15,7 @@ module RuboCop
       #   add_offense(node, location: :selector)
       class OffenseLocationKeyword < Cop
         MSG = 'Use `:%<keyword>s` as the location argument to ' \
-              '`#add_offense`.'.freeze
+              '`#add_offense`.'
 
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|

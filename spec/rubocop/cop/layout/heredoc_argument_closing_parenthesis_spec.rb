@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       end
     end
 
-    context 'simple incorrect case squiggles', :ruby23 do
+    context 'simple incorrect case squiggles' do
       it 'detects' do
         expect_offense(<<-RUBY.strip_indent)
           foo(<<~SQL

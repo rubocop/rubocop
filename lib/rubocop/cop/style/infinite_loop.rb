@@ -18,7 +18,7 @@ module RuboCop
       class InfiniteLoop < Cop
         LEADING_SPACE = /\A(\s*)/.freeze
 
-        MSG = 'Use `Kernel#loop` for infinite loops.'.freeze
+        MSG = 'Use `Kernel#loop` for infinite loops.'
 
         def join_force?(force_class)
           force_class == VariableForce

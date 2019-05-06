@@ -18,7 +18,7 @@ module RuboCop
       #   %w(foo bar baz).join(",")
       #
       class ArrayJoin < Cop
-        MSG = 'Favor `Array#join` over `Array#*`.'.freeze
+        MSG = 'Favor `Array#join` over `Array#*`.'
 
         def_node_matcher :join_candidate?, '(send $array :* $str)'
 

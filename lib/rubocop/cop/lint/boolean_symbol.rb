@@ -23,7 +23,7 @@ module RuboCop
       #   false
       class BooleanSymbol < Cop
         MSG = 'Symbol with a boolean name - ' \
-              'you probably meant to use `%<boolean>s`.'.freeze
+              'you probably meant to use `%<boolean>s`.'
 
         def_node_matcher :boolean_symbol?, '(sym {:true :false})'
 

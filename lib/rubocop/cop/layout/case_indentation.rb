@@ -72,7 +72,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Indent `when` %<depth>s `%<base>s`.'.freeze
+        MSG = 'Indent `when` %<depth>s `%<base>s`.'
 
         def on_case(case_node)
           return if case_node.single_line?

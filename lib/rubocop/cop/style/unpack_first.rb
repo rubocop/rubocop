@@ -23,7 +23,7 @@ module RuboCop
         minimum_target_ruby_version 2.4
 
         MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of '\
-          '`%<receiver>s.unpack(%<format>s)%<method>s`.'.freeze
+          '`%<receiver>s.unpack(%<format>s)%<method>s`.'
 
         def_node_matcher :unpack_and_first_element?, <<-PATTERN
           {

@@ -47,13 +47,13 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Do not use `%<current>s` without zone. Use `%<prefer>s` ' \
-              'instead.'.freeze
+              'instead.'
 
         MSG_ACCEPTABLE = 'Do not use `%<current>s` without zone. ' \
-                         'Use one of %<prefer>s instead.'.freeze
+                         'Use one of %<prefer>s instead.'
 
         MSG_LOCALTIME = 'Do not use `Time.localtime` without ' \
-                        'offset or zone.'.freeze
+                        'offset or zone.'
 
         TIMECLASSES = %i[Time DateTime].freeze
 
@@ -97,7 +97,7 @@ module RuboCop
           return unless time_methods_called.include?(:in_time_zone) ||
                         time_methods_called.include?(:zone)
 
-          while node && node.send_type?
+          while node&.send_type?
             if node.children.last == :in_time_zone
               in_time_zone_with_dot =
                 node.loc.selector.adjust(begin_pos: -1)
@@ -160,7 +160,7 @@ module RuboCop
         # checks that parent node of send_type
         # and receiver is the given node
         def method_send?(node)
-          return false unless node.parent && node.parent.send_type?
+          return false unless node.parent&.send_type?
 
           node.parent.receiver == node
         end
@@ -176,7 +176,7 @@ module RuboCop
         def check_localtime(node)
           selector_node = node
 
-          while node && node.send_type?
+          while node&.send_type?
             break if node.method_name == :localtime
 
             node = node.parent

@@ -93,17 +93,17 @@ module RuboCop
 
         SAME_LINE_MESSAGE = 'The closing array brace must be on the same ' \
           'line as the last array element when the opening brace is on the ' \
-          'same line as the first array element.'.freeze
+          'same line as the first array element.'
 
         NEW_LINE_MESSAGE = 'The closing array brace must be on the line ' \
           'after the last array element when the opening brace is on a ' \
-          'separate line from the first array element.'.freeze
+          'separate line from the first array element.'
 
         ALWAYS_NEW_LINE_MESSAGE = 'The closing array brace must be on the ' \
-          'line after the last array element.'.freeze
+          'line after the last array element.'
 
         ALWAYS_SAME_LINE_MESSAGE = 'The closing array brace must be on the ' \
-          'same line as the last array element.'.freeze
+          'same line as the last array element.'
 
         def on_array(node)
           check_brace_layout(node)

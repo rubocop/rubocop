@@ -191,42 +191,37 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         end
 
         message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                  "some library(e.g. ActiveSupport's `String#strip_heredoc`)."
+                  '`<<~` instead of `<<-`.'
         include_examples 'check message', 'some library', [message]
-        warning = 'Auto-correction does not work for Layout/IndentHeredoc. ' \
-                  'Please configure EnforcedStyle.'
-        include_examples 'warning', warning
 
-        context 'Ruby 2.3', :ruby23 do
-          width_message = 'Use 2 spaces for indentation in a heredoc.'
-          include_examples 'check message', 'squiggly heredoc, with ~',
-                           [width_message], <<-RUBY
-            <<~#{quote}RUBY2#{quote}
+        width_message = 'Use 2 spaces for indentation in a heredoc.'
+        include_examples 'check message', 'squiggly heredoc, with ~',
+                         [width_message], <<-RUBY
+          <<~#{quote}RUBY2#{quote}
+          \#{foo}
+          bar
+          RUBY2
+        RUBY
+
+        type_message = 'Use 2 spaces for indentation in a heredoc by using ' \
+                       '`<<~` instead of `<<-`.'
+        include_examples 'check message', 'squiggly heredoc, without ~',
+                         [type_message]
+        include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
+          <<#{quote}RUBY2#{quote}
+          \#{foo}
+          bar
+          RUBY2
+        RUBY
+          <<~#{quote}RUBY2#{quote}
             \#{foo}
             bar
-            RUBY2
-          RUBY
-
-          type_message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                         '`<<~` instead of `<<-`.'
-          include_examples 'check message', 'squiggly heredoc, without ~',
-                           [type_message]
-          include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
-            <<#{quote}RUBY2#{quote}
-            \#{foo}
-            bar
-            RUBY2
-          RUBY
-            <<~#{quote}RUBY2#{quote}
-              \#{foo}
-              bar
-            RUBY2
-          CORRECTION
-        end
+          RUBY2
+        CORRECTION
 
         context 'Rails', :enabled_rails do
           message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                    '`String#strip_heredoc`.'
+                    '`<<~` instead of `<<-`.'
           include_examples 'check message', 'suggestion ActiveSupport',
                            [message]
           include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
@@ -235,7 +230,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
             bar
             RUBY2
           RUBY
-            <<#{quote}RUBY2#{quote}.strip_heredoc
+            <<~#{quote}RUBY2#{quote}
               \#{foo}
               bar
             RUBY2
@@ -243,7 +238,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         end
       end
 
-      context 'EnforcedStyle is `squiggly`', :ruby23 do
+      context 'EnforcedStyle is `squiggly`' do
         let(:cop_config) do
           { 'EnforcedStyle' => :squiggly }
         end
@@ -348,12 +343,6 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
           RUBY2
           RUBY
-        end
-
-        context 'Ruby 2.2', :ruby22 do
-          warning = '`squiggly` style is selectable only on Ruby 2.3 or ' \
-                    'higher for Layout/IndentHeredoc.'
-          include_examples 'warning', warning
         end
       end
     end

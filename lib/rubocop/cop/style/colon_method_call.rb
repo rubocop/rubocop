@@ -18,7 +18,7 @@ module RuboCop
       #   Marshal.dump(obj)
       #
       class ColonMethodCall < Cop
-        MSG = 'Do not use `::` for method calls.'.freeze
+        MSG = 'Do not use `::` for method calls.'
 
         def_node_matcher :java_type_node?, <<-PATTERN
           (send

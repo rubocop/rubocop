@@ -17,7 +17,7 @@ module RuboCop
       #   some_string =~ /something/
       #
       class CaseEquality < Cop
-        MSG = 'Avoid the use of the case equality operator `===`.'.freeze
+        MSG = 'Avoid the use of the case equality operator `===`.'
 
         def_node_matcher :case_equality?, '(send _ :=== _)'
 

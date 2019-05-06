@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
     expect(corrected).to eq("'something'.to_sym")
   end
 
-  context 'when using safe navigation operator', :ruby23 do
+  context 'when using safe navigation operator' do
     it 'registers an offense' do
       expect_offense(<<-RUBY.strip_indent)
       something&.intern

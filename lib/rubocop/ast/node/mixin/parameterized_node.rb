@@ -10,7 +10,7 @@ module RuboCop
       # @return [Boolean] whether this node's arguments are
       #                   wrapped in parentheses
       def parenthesized?
-        loc.end && loc.end.is?(')')
+        loc.end&.is?(')')
       end
 
       # A shorthand for getting the first argument of the node.

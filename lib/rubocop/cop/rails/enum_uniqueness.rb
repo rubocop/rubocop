@@ -21,7 +21,7 @@ module RuboCop
         include Duplication
 
         MSG = 'Duplicate value `%<value>s` found in `%<enum>s` ' \
-              'enum declaration.'.freeze
+              'enum declaration.'
 
         def_node_matcher :enum_declaration, <<-PATTERN
           (send nil? :enum (hash (pair (_ $_) ${array hash})))

@@ -18,7 +18,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     content = h2(cop.cop_name)
     content << properties(config, cop)
     content << "#{description}\n"
-    content << examples(examples_objects) if examples_objects.count > 0
+    content << examples(examples_objects) if examples_objects.count.positive?
     content << configurations(pars)
     content << references(config, cop)
     content
@@ -56,27 +56,27 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   # rubocop:enable Metrics/MethodLength
 
   def h2(title)
-    content = "\n".dup
+    content = +"\n"
     content << "## #{title}\n"
     content << "\n"
     content
   end
 
   def h3(title)
-    content = "\n".dup
+    content = +"\n"
     content << "### #{title}\n"
     content << "\n"
     content
   end
 
   def h4(title)
-    content = "#### #{title}\n".dup
+    content = +"#### #{title}\n"
     content << "\n"
     content
   end
 
   def code_example(ruby_code)
-    content = "```ruby\n".dup
+    content = +"```ruby\n"
     content << ruby_code.text.gsub('@good', '# good')
                         .gsub('@bad', '# bad').strip
     content << "\n```\n"
@@ -163,7 +163,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
 
   def print_cops_of_department(cops, department, config)
     selected_cops = cops_of_department(cops, department)
-    content = "# #{department}\n".dup
+    content = +"# #{department}\n"
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
@@ -195,7 +195,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def table_of_content_for_department(cops, department)
     type_title = department[0].upcase + department[1..-1]
     filename = "cops_#{department.downcase}.md"
-    content = "#### Department [#{type_title}](#{filename})\n\n".dup
+    content = +"#### Department [#{type_title}](#{filename})\n\n"
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
       content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
@@ -207,7 +207,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def print_table_of_contents(cops)
     path = "#{Dir.pwd}/manual/cops.md"
     original = File.read(path)
-    content = "<!-- START_COP_LIST -->\n".dup
+    content = +"<!-- START_COP_LIST -->\n"
 
     content << table_contents(cops)
 

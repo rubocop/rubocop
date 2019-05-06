@@ -42,8 +42,8 @@ module RuboCop
       #   # good
       #   something.to_time
       class DateTime < Cop
-        CLASS_MSG = 'Prefer Time over DateTime.'.freeze
-        COERCION_MSG = 'Do not use #to_datetime.'.freeze
+        CLASS_MSG = 'Prefer Time over DateTime.'
+        COERCION_MSG = 'Do not use #to_datetime.'
 
         def_node_matcher :date_time?, <<-PATTERN
           (send (const {nil? (cbase)} :DateTime) ...)

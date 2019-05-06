@@ -23,7 +23,7 @@ module RuboCop
       class EmptyLineAfterMagicComment < Cop
         include RangeHelp
 
-        MSG = 'Add an empty line after magic comments.'.freeze
+        MSG = 'Add an empty line after magic comments.'
 
         def investigate(source)
           return unless source.ast &&

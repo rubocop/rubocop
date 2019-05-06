@@ -16,7 +16,7 @@ module RuboCop
       #   if x.even?
       #   end
       class EvenOdd < Cop
-        MSG = 'Replace with `Integer#%<method>s?`.'.freeze
+        MSG = 'Replace with `Integer#%<method>s?`.'
 
         def_node_matcher :even_odd_candidate?, <<-PATTERN
           (send

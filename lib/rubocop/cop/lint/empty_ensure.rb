@@ -43,7 +43,7 @@ module RuboCop
       #     do_something_else
       #   end
       class EmptyEnsure < Cop
-        MSG = 'Empty `ensure` block detected.'.freeze
+        MSG = 'Empty `ensure` block detected.'
 
         def on_ensure(node)
           add_offense(node, location: :keyword) unless node.body

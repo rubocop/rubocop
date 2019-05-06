@@ -38,7 +38,7 @@ module RuboCop
       #   # good
       #   a.presence || b
       class Presence < Cop
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
         def_node_matcher :redundant_receiver_and_other, <<-PATTERN
           {

@@ -22,7 +22,7 @@ module RuboCop
       class RedundantMessageArgument < Cop
         include RangeHelp
 
-        MSG = 'Redundant message argument to `#add_offense`.'.freeze
+        MSG = 'Redundant message argument to `#add_offense`.'
 
         def_node_matcher :node_type_check, <<-PATTERN
           (send nil? :add_offense $_node $hash)

@@ -19,7 +19,7 @@ module RuboCop
       #   end
       #
       class MultilineMethodSignature < Cop
-        MSG = 'Avoid multi-line method signatures.'.freeze
+        MSG = 'Avoid multi-line method signatures.'
 
         def on_def(node)
           return unless node.arguments?

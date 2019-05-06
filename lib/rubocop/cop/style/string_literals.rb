@@ -30,7 +30,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
 
-        MSG_INCONSISTENT = 'Inconsistent quote style.'.freeze
+        MSG_INCONSISTENT = 'Inconsistent quote style.'
 
         def on_dstr(node)
           # Strings which are continued across multiple lines using \

@@ -15,7 +15,7 @@ module RuboCop
       #   quuz.public_send(:fred)
       class Send < Cop
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
-              '`send`.'.freeze
+              '`send`.'
 
         def_node_matcher :sending?, '({send csend} _ :send ...)'
 

@@ -2145,7 +2145,7 @@ comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 ```ruby
 # The `when_needed` style will add the frozen string literal comment
-# to files only when the `TargetRubyVersion` is set to 2.3+.
+# to files.
 # bad
 module Foo
   # ...

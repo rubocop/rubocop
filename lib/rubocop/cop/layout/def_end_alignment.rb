@@ -37,7 +37,7 @@ module RuboCop
         include EndKeywordAlignment
         include RangeHelp
 
-        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
+        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'
 
         def on_def(node)
           check_end_kw_in_node(node)

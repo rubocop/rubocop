@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   x += 1
       class SelfAssignment < Cop
-        MSG = 'Use self-assignment shorthand `%<method>s=`.'.freeze
+        MSG = 'Use self-assignment shorthand `%<method>s=`.'
         OPS = %i[+ - * ** / | &].freeze
 
         def self.autocorrect_incompatible_with

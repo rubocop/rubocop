@@ -26,7 +26,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Put one space between the method name and ' \
-              'the first argument.'.freeze
+              'the first argument.'
 
         def on_send(node)
           return unless regular_method_call_with_arguments?(node)

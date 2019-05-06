@@ -20,7 +20,7 @@ module RuboCop
       #   foo = 2
       #   $stdin.read
       class GlobalVars < Cop
-        MSG = 'Do not introduce global variables.'.freeze
+        MSG = 'Do not introduce global variables.'
 
         # built-in global variables and their English aliases
         # https://www.zenspider.com/ruby/quickref.html

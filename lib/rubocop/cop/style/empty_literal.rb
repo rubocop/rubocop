@@ -20,10 +20,10 @@ module RuboCop
         include FrozenStringLiteral
         include RangeHelp
 
-        ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'.freeze
-        HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'.freeze
+        ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
+        HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
         STR_MSG = 'Use string literal `%<prefer>s` instead of ' \
-                  '`String.new`.'.freeze
+                  '`String.new`.'
 
         def_node_matcher :array_node, '(send (const nil? :Array) :new)'
         def_node_matcher :hash_node, '(send (const nil? :Hash) :new)'

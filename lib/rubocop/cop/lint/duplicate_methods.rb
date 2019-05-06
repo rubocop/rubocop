@@ -51,7 +51,7 @@ module RuboCop
       #   alias bar foo
       class DuplicateMethods < Cop
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
-              '%<current>s.'.freeze
+              '%<current>s.'
 
         def initialize(config = nil, options = nil)
           super

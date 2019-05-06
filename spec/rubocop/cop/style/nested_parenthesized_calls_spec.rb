@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
         RUBY
       end
 
-      context 'when using safe navigation operator', :ruby23 do
+      context 'when using safe navigation operator' do
         let(:source) { 'puts(receiver&.compute something)' }
 
         it 'registers an offense' do

@@ -34,7 +34,7 @@ module RuboCop
         include Alignment
         include CheckAssignment
 
-        MSG = 'Align `%<else_range>s` with `%<base_range>s`.'.freeze
+        MSG = 'Align `%<else_range>s` with `%<base_range>s`.'
 
         def on_if(node, base = nil)
           return if ignored_node?(node)
@@ -92,7 +92,7 @@ module RuboCop
 
         def base_for_method_definition(node)
           parent = node.parent
-          if parent && parent.send_type?
+          if parent&.send_type?
             parent.loc.selector # For example "private def ..."
           else
             node.loc.keyword

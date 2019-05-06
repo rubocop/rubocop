@@ -39,7 +39,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `when` node has a `then` keyword
       def then?
-        loc.begin && loc.begin.is?('then')
+        loc.begin&.is?('then')
       end
 
       # Returns the body of the `when` node.

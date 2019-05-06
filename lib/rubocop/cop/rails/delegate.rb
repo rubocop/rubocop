@@ -53,7 +53,7 @@ module RuboCop
       #   # good
       #   delegate :bar, to: :foo, prefix: true
       class Delegate < Cop
-        MSG = 'Use `delegate` to define delegations.'.freeze
+        MSG = 'Use `delegate` to define delegations.'
 
         def_node_matcher :delegate?, <<-PATTERN
           (def _method_name _args

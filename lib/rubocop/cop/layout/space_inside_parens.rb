@@ -36,8 +36,8 @@ module RuboCop
         include RangeHelp
         include ConfigurableEnforcedStyle
 
-        MSG       = 'Space inside parentheses detected.'.freeze
-        MSG_SPACE = 'No space inside parentheses detected.'.freeze
+        MSG       = 'Space inside parentheses detected.'
+        MSG_SPACE = 'No space inside parentheses detected.'
 
         def investigate(processed_source)
           @processed_source = processed_source

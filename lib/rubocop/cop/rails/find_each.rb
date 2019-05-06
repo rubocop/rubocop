@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   User.all.find_each
       class FindEach < Cop
-        MSG = 'Use `find_each` instead of `each`.'.freeze
+        MSG = 'Use `find_each` instead of `each`.'
 
         SCOPE_METHODS = %i[
           all eager_load includes joins left_joins left_outer_joins not preload
@@ -22,8 +22,7 @@ module RuboCop
         IGNORED_METHODS = %i[order limit select].freeze
 
         def on_send(node)
-          return unless node.receiver &&
-                        node.receiver.send_type? &&
+          return unless node.receiver&.send_type? &&
                         node.method?(:each)
 
           return unless SCOPE_METHODS.include?(node.receiver.method_name)

@@ -22,9 +22,9 @@ module RuboCop
       class StabbyLambdaParentheses < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_REQUIRE = 'Wrap stabby lambda arguments with parentheses.'.freeze
+        MSG_REQUIRE = 'Wrap stabby lambda arguments with parentheses.'
         MSG_NO_REQUIRE = 'Do not wrap stabby lambda arguments ' \
-                         'with parentheses.'.freeze
+                         'with parentheses.'
         def on_send(node)
           return unless stabby_lambda_with_args?(node)
           return unless redundant_parentheses?(node) ||

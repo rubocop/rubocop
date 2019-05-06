@@ -47,10 +47,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Do not use `Date.%<method_called>s` without zone. Use ' \
-              '`Time.zone.%<day>s` instead.'.freeze
+              '`Time.zone.%<day>s` instead.'
 
         MSG_SEND = 'Do not use `%<method>s` on Date objects, because they ' \
-                   'know nothing about the time zone in use.'.freeze
+                   'know nothing about the time zone in use.'
 
         BAD_DAYS = %i[today current yesterday tomorrow].freeze
 
@@ -59,7 +59,7 @@ module RuboCop
         ].freeze
 
         DEPRECATED_MSG = '`%<deprecated>s` is deprecated. ' \
-                         'Use `%<relevant>s` instead.'.freeze
+                         'Use `%<relevant>s` instead.'
 
         def on_const(node)
           mod, klass = *node.children
@@ -117,7 +117,7 @@ module RuboCop
         # checks that parent node of send_type
         # and receiver is the given node
         def method_send?(node)
-          return false unless node.parent && node.parent.send_type?
+          return false unless node.parent&.send_type?
 
           node.parent.receiver == node
         end

@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::PreferredHashMethods, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for has_value? with one arg' do
         expect_offense(<<-RUBY.strip_indent)
           o&.has_value?(o)

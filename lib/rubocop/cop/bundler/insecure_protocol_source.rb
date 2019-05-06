@@ -31,7 +31,7 @@ module RuboCop
         MSG = 'The source `:%<source>s` is deprecated because HTTP requests ' \
               'are insecure. ' \
               "Please change your source to 'https://rubygems.org' " \
-              "if possible, or 'http://rubygems.org' if not.".freeze
+              "if possible, or 'http://rubygems.org' if not."
 
         def_node_matcher :insecure_protocol_source?, <<-PATTERN
           (send nil? :source

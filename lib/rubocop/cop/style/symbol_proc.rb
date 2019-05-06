@@ -16,7 +16,7 @@ module RuboCop
         include IgnoredMethods
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
-              'instead of a block.'.freeze
+              'instead of a block.'
         SUPER_TYPES = %i[super zsuper].freeze
 
         def_node_matcher :proc_node?, '(send (const nil? :Proc) :new)'

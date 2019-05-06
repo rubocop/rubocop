@@ -102,7 +102,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `hash` literal is enclosed in braces
       def braces?
-        loc.end && loc.end.is?('}')
+        loc.end&.is?('}')
       end
     end
   end

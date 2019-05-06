@@ -107,9 +107,9 @@ module RuboCop
       class SignalException < Cop
         include ConfigurableEnforcedStyle
 
-        FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'.freeze
+        FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
         RAISE_MSG = 'Use `raise` instead of `fail` to ' \
-                    'rethrow exceptions.'.freeze
+                    'rethrow exceptions.'
 
         def_node_matcher :kernel_call?, '(send (const nil? :Kernel) %1 ...)'
         def_node_search :custom_fail_methods,

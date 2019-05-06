@@ -20,7 +20,7 @@ module RuboCop
       class InitialIndentation < Cop
         include RangeHelp
 
-        MSG = 'Indentation of first line in file detected.'.freeze
+        MSG = 'Indentation of first line in file detected.'
 
         def investigate(_processed_source)
           space_before(first_token) do |space|

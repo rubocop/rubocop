@@ -11,10 +11,10 @@ module RuboCop
         include RangeHelp
 
         MSG_EXTRA = 'Extra empty line detected at %<kind>s body ' \
-                    '%<location>s.'.freeze
-        MSG_MISSING = 'Empty line missing at %<kind>s body %<location>s.'.freeze
+                    '%<location>s.'
+        MSG_MISSING = 'Empty line missing at %<kind>s body %<location>s.'
         MSG_DEFERRED = 'Empty line missing before first %<type>s ' \
-                       'definition'.freeze
+                       'definition'
 
         private
 

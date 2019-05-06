@@ -26,7 +26,7 @@ module RuboCop
       class BarePercentLiterals < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `%%%<good>s` instead of `%%%<bad>s`.'.freeze
+        MSG = 'Use `%%%<good>s` instead of `%%%<bad>s`.'
 
         def on_dstr(node)
           check(node)

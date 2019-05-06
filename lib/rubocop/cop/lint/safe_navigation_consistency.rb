@@ -31,10 +31,10 @@ module RuboCop
         include NilMethods
 
         MSG = 'Ensure that safe navigation is used consistently ' \
-          'inside of `&&` and `||`.'.freeze
+          'inside of `&&` and `||`.'
 
         def on_csend(node)
-          return unless node.parent && node.parent.operator_keyword?
+          return unless node.parent&.operator_keyword?
 
           check(node)
         end

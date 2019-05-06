@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   it_behaves_like 'accept before', '!', '!yield.method'
   it_behaves_like 'accept before', '!', '!super.method'
 
-  context '&.', :ruby23 do
+  context '&.' do
     it_behaves_like 'accept after', '&.', 'super&.foo'
     it_behaves_like 'accept after', '&.', 'yield&.foo'
   end

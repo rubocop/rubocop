@@ -16,7 +16,7 @@ module RuboCop
       #   YAML.dump("foo")
       #
       class YAMLLoad < Cop
-        MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'.freeze
+        MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'
 
         def_node_matcher :yaml_load, <<-PATTERN
           (send (const {nil? cbase} :YAML) :load ...)

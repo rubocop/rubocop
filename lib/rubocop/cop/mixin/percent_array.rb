@@ -14,8 +14,8 @@ module RuboCop
       def invalid_percent_array_context?(node)
         parent = node.parent
 
-        parent && parent.send_type? && parent.arguments.include?(node) &&
-          !parent.parenthesized? && parent.block_literal?
+        parent&.send_type? && parent.arguments.include?(node) &&
+          !parent.parenthesized? && parent&.block_literal?
       end
 
       def allowed_bracket_array?(node)

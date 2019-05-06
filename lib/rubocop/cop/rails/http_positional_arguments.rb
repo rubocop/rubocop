@@ -20,7 +20,7 @@ module RuboCop
         extend TargetRailsVersion
 
         MSG = 'Use keyword arguments instead of ' \
-              'positional arguments for http call: `%<verb>s`.'.freeze
+              'positional arguments for http call: `%<verb>s`.'
         KEYWORD_ARGS = %i[
           method params session body flash xhr as headers env
         ].freeze

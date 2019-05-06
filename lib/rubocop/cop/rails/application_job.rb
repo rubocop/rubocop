@@ -21,9 +21,9 @@ module RuboCop
 
         minimum_target_rails_version 5.0
 
-        MSG = 'Jobs should subclass `ApplicationJob`.'.freeze
-        SUPERCLASS = 'ApplicationJob'.freeze
-        BASE_PATTERN = '(const (const nil? :ActiveJob) :Base)'.freeze
+        MSG = 'Jobs should subclass `ApplicationJob`.'
+        SUPERCLASS = 'ApplicationJob'
+        BASE_PATTERN = '(const (const nil? :ActiveJob) :Base)'
 
         # rubocop:disable Layout/ClassStructure
         include RuboCop::Cop::EnforceSuperclass

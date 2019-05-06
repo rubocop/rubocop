@@ -54,7 +54,7 @@ module RuboCop
       #   end
       #
       class RescuedExceptionsVariableName < Cop
-        MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'.freeze
+        MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'
 
         def on_resbody(node)
           exception_type, @exception_name = *node

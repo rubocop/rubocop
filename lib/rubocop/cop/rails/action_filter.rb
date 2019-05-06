@@ -36,7 +36,7 @@ module RuboCop
         extend TargetRailsVersion
         include ConfigurableEnforcedStyle
 
-        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 
         FILTER_METHODS = %i[
           after_filter

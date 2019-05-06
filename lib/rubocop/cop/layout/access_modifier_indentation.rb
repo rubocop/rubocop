@@ -37,10 +37,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = '%<style>s access modifiers like `%<node>s`.'.freeze
+        MSG = '%<style>s access modifiers like `%<node>s`.'
 
         def on_class(node)
-          return unless node.body && node.body.begin_type?
+          return unless node.body&.begin_type?
 
           check_body(node.body, node)
         end

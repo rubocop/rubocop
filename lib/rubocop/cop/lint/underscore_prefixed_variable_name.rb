@@ -41,7 +41,7 @@ module RuboCop
       #   end
       #
       class UnderscorePrefixedVariableName < Cop
-        MSG = 'Do not use prefix `_` for a variable that is used.'.freeze
+        MSG = 'Do not use prefix `_` for a variable that is used.'
 
         def join_force?(force_class)
           force_class == VariableForce

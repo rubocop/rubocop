@@ -51,7 +51,7 @@ module RuboCop
         include DocumentationComment
         include DefNode
 
-        MSG = 'Missing method documentation comment.'.freeze
+        MSG = 'Missing method documentation comment.'
 
         def_node_matcher :module_function_node?, <<-PATTERN
           (send nil? :module_function ...)

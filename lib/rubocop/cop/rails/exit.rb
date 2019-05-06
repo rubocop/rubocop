@@ -26,7 +26,7 @@ module RuboCop
       class Exit < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Do not use `exit` in Rails applications.'.freeze
+        MSG = 'Do not use `exit` in Rails applications.'
         TARGET_METHODS = %i[exit exit!].freeze
         EXPLICIT_RECEIVERS = %i[Kernel Process].freeze
 

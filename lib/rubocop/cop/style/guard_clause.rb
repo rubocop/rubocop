@@ -39,7 +39,7 @@ module RuboCop
         include MinBodyLength
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
-              'conditional expression.'.freeze
+              'conditional expression.'
 
         def on_def(node)
           body = node.body
@@ -83,8 +83,8 @@ module RuboCop
         end
 
         def contains_guard_clause?(node)
-          node.if_branch && node.if_branch.guard_clause? ||
-            node.else_branch && node.else_branch.guard_clause?
+          node.if_branch&.guard_clause? ||
+            node.else_branch&.guard_clause?
         end
       end
     end

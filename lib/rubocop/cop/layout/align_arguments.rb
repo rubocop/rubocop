@@ -41,10 +41,10 @@ module RuboCop
         include Alignment
 
         ALIGN_PARAMS_MSG = 'Align the arguments of a method call if ' \
-          'they span more than one line.'.freeze
+          'they span more than one line.'
 
         FIXED_INDENT_MSG = 'Use one level of indentation for arguments ' \
-          'following the first line of a multi-line method call.'.freeze
+          'following the first line of a multi-line method call.'
 
         def on_send(node)
           return if node.arguments.size < 2 ||

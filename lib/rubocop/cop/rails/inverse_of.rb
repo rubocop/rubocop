@@ -133,9 +133,9 @@ module RuboCop
 
         minimum_target_rails_version 4.1
 
-        SPECIFY_MSG = 'Specify an `:inverse_of` option.'.freeze
+        SPECIFY_MSG = 'Specify an `:inverse_of` option.'
         NIL_MSG = 'You specified `inverse_of: nil`, you probably meant to ' \
-          'use `inverse_of: false`.'.freeze
+          'use `inverse_of: false`.'
 
         def_node_matcher :association_recv_arguments, <<-PATTERN
           (send $_ {:has_many :has_one :belongs_to} _ $...)

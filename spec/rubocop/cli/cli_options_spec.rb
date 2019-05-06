@@ -348,9 +348,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             1  Layout/Tab
             1  Layout/TrailingWhitespace
             1  Metrics/LineLength
+            1  Style/FrozenStringLiteralComment
             1  Style/NumericLiterals
             --
-            6  Total
+            7  Total
 
           RESULT
       end
@@ -412,9 +413,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             1  Layout/SpaceAroundOperators
             1  Layout/Tab
             1  Layout/TrailingWhitespace
+            1  Style/FrozenStringLiteralComment
             1  Style/NumericPredicate
             --
-            5  Total
+            6  Total
 
           RESULT
       end
@@ -436,7 +438,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         without_option = $stdout.string
 
         expect(without_option.split($RS) - with_option.split($RS))
-          .to eq(['1  Style/IfUnlessModifier', '6  Total'])
+          .to eq(['1  Style/IfUnlessModifier', '7  Total'])
       end
     end
 
@@ -458,9 +460,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               1  Layout/IndentationWidth
               1  Layout/TrailingWhitespace
+              1  Style/FrozenStringLiteralComment
               1  Style/NumericLiterals
               --
-              3  Total
+              4  Total
 
             RESULT
         end
@@ -523,6 +526,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--display-cop-names',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<-RESULT.strip_indent)
+        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
         #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
@@ -533,6 +537,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--no-display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
+          #{file}:1:1: C: Missing magic comment `# frozen_string_literal: true`.
           #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:41: C: Trailing whitespace detected.
         RESULT
@@ -551,6 +556,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<-RESULT.strip_indent)
+          #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
           #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
@@ -560,6 +566,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it 'does not show cop names' do
           expect(cli.run(['--format', 'emacs', 'example1.rb'])).to eq(1)
           expect($stdout.string).to eq(<<-RESULT.strip_indent)
+            #{file}:1:1: C: Missing magic comment `# frozen_string_literal: true`.
             #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
             #{file}:1:41: C: Trailing whitespace detected.
           RESULT
@@ -580,6 +587,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--extra-details',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<-RESULT.strip_indent)
+        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
         #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
@@ -791,7 +799,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to include(<<-RESULT.strip_indent)
               == #{target_file} ==
+              C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
               C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
+
+              1 file inspected, 2 offenses detected
             RESULT
         end
       end
@@ -801,8 +812,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           context 'and offenses come from the cache' do
             context 'and a message has binary encoding' do
               let(:message_from_cache) do
-                'Cyclomatic complexity for 文 is too high. [8/6]'
-                  .dup
+                (+'Cyclomatic complexity for 文 is too high. [8/6]')
                   .force_encoding('ASCII-8BIT')
               end
               let(:data_from_cache) do
@@ -873,6 +883,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                           'example2.rb', 'example3.rb']))
             .to eq(1)
           expect($stdout.string).to eq([
+            'example1.rb:1:1: C: Style/FrozenStringLiteralComment: ' \
+            'Missing magic comment # frozen_string_literal: true.',
+            'x= 0 ',
+            '^',
             'example1.rb:1:2: C: Layout/SpaceAroundOperators: ' \
             'Surrounding space missing for operator =.',
             'x= 0 ',
@@ -910,6 +924,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             'Use 2 (not 3) spaces for indentation.',
             '   puts',
             '^^^',
+            'example3.rb:1:1: C: Style/FrozenStringLiteralComment: ' \
+            'Missing magic comment # frozen_string_literal: true.',
+            'def badName',
+            '^',
             'example3.rb:1:5: C: Naming/MethodName: ' \
             'Use snake_case for method names.',
             'def badName',
@@ -929,7 +947,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             '    end',
             '    ^^^',
             '',
-            '3 files inspected, 13 offenses detected',
+            '3 files inspected, 15 offenses detected',
             ''
           ].join("\n"))
         end
@@ -1029,7 +1047,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
       expect($stdout.string).to include(<<-RESULT.strip_indent)
         == #{target_file} ==
+        C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
         C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
+        #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
         #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
       RESULT
     end
@@ -1054,13 +1074,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect($stdout.string).to eq(<<-RESULT.strip_indent)
         == #{target_file} ==
+        C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
         C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
 
-        1 file inspected, 1 offense detected
+        1 file inspected, 2 offenses detected
       RESULT
 
       expect(File.read('emacs_output.txt'))
         .to eq(<<-RESULT.strip_indent)
+          #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
           #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
       RESULT
     end
@@ -1080,7 +1102,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     def expect_offense_detected
       expect($stderr.string).to eq('')
       expect($stdout.string)
-        .to include('1 file inspected, 1 offense detected')
+        .to include('1 file inspected, 2 offenses detected')
       expect($stdout.string).to include 'Layout/IndentationWidth'
     end
 
@@ -1169,8 +1191,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       def expect_auto_corrected
         expect_offense_detected
         expect($stdout.string.lines.to_a.last)
-          .to eq('1 file inspected, 1 offense detected, ' \
-                 "1 offense corrected\n")
+          .to eq('1 file inspected, 2 offenses detected, ' \
+                 "2 offenses corrected\n")
       end
 
       it 'fails when option is autocorrect and all offenses are ' \
@@ -1207,6 +1229,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   describe 'with --auto-correct and disabled offense' do
     let(:target_file) { 'example.rb' }
+
+    before do
+      create_file('.rubocop.yml', <<-YAML.strip_indent)
+        Style/FrozenStringLiteralComment:
+          Enabled: false
+      YAML
+    end
 
     it 'succeeds when there is only a disabled offense' do
       create_file(target_file, <<-RUBY.strip_indent)

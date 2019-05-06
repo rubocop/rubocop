@@ -15,7 +15,7 @@ module RuboCop
       #   Rails.logger.debug 'A debug message'
       class Output < Cop
         MSG = 'Do not write to stdout. ' \
-              "Use Rails's logger if you want to log.".freeze
+              "Use Rails's logger if you want to log."
 
         def_node_matcher :output?, <<-PATTERN
           (send nil? {:ap :p :pp :pretty_print :print :puts} ...)

@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for trailing comma in a method call' do
         expect_offense(<<-RUBY.strip_indent)
         receiver&.some_method(a, b, c, )
@@ -426,7 +426,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'does not break when a safe method call is chained on the ' \
-         'offending one', :ruby23 do
+         'offending one' do
         expect_no_offenses(<<-RUBY.strip_indent)
           foo
             &.do_something(:bar, :baz)
@@ -434,7 +434,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'does not break when a safe method call is chained on the ' \
-         'offending one', :ruby23 do
+         'offending one' do
         expect_no_offenses(<<-RUBY.strip_indent)
           foo.bar(
             baz: 1,

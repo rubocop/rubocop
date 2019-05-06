@@ -8,10 +8,10 @@ module RuboCop
       module ConditionalAssignmentHelper
         extend NodePattern::Macros
 
-        EQUAL = '='.freeze
-        END_ALIGNMENT = 'Layout/EndAlignment'.freeze
-        ALIGN_WITH = 'EnforcedStyleAlignWith'.freeze
-        KEYWORD = 'keyword'.freeze
+        EQUAL = '='
+        END_ALIGNMENT = 'Layout/EndAlignment'
+        ALIGN_WITH = 'EnforcedStyleAlignWith'
+        KEYWORD = 'keyword'
 
         # `elsif` branches show up in the `node` as an `else`. We need
         # to recursively iterate over all `else` branches and consider all
@@ -72,7 +72,7 @@ module RuboCop
 
           elsif_branches << node.if_branch
 
-          if node.else_branch && node.else_branch.if_type?
+          if node.else_branch&.if_type?
             expand_elsif(node.else_branch, elsif_branches)
           else
             elsif_branches << node.else_branch
@@ -205,19 +205,19 @@ module RuboCop
         include IgnoredNode
 
         MSG = 'Use the return of the conditional for variable assignment ' \
-              'and comparison.'.freeze
+              'and comparison.'
         ASSIGN_TO_CONDITION_MSG =
-          'Assign variables inside of conditionals'.freeze
+          'Assign variables inside of conditionals'
         VARIABLE_ASSIGNMENT_TYPES =
           %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
                            %i[and_asgn or_asgn op_asgn masgn].freeze
-        LINE_LENGTH = 'Metrics/LineLength'.freeze
-        INDENTATION_WIDTH = 'Layout/IndentationWidth'.freeze
-        ENABLED = 'Enabled'.freeze
-        MAX = 'Max'.freeze
-        SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'.freeze
-        WIDTH = 'Width'.freeze
+        LINE_LENGTH = 'Metrics/LineLength'
+        INDENTATION_WIDTH = 'Layout/IndentationWidth'
+        ENABLED = 'Enabled'
+        MAX = 'Max'
+        SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'
+        WIDTH = 'Width'
 
         def_node_matcher :condition?, '{if case}'
 
@@ -312,7 +312,7 @@ module RuboCop
           *_variable, assignment = *node
 
           # ignore pseudo-assignments without rhs in for nodes
-          return if node.parent && node.parent.for_type?
+          return if node.parent&.for_type?
 
           if assignment.begin_type? && assignment.children.one?
             assignment, = *assignment

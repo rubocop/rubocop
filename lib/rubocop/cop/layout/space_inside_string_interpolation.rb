@@ -22,8 +22,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        NO_SPACE_MSG = 'Space inside string interpolation detected.'.freeze
-        SPACE_MSG = 'Missing space around string interpolation detected.'.freeze
+        NO_SPACE_MSG = 'Space inside string interpolation detected.'
+        SPACE_MSG = 'Missing space around string interpolation detected.'
 
         def on_dstr(node)
           each_style_violation(node) do |final_node|

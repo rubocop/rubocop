@@ -512,7 +512,7 @@ RSpec.describe RuboCop::NodePattern do
         end
 
         context 'on a node which meets all requirements of the second []' do
-          let(:ruby) { '2.2' }
+          let(:ruby) { '2.3' }
 
           it_behaves_like 'matching'
         end

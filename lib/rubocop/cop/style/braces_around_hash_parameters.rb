@@ -43,7 +43,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = '%<type>s curly braces around a hash parameter.'.freeze
+        MSG = '%<type>s curly braces around a hash parameter.'
 
         def on_send(node)
           return if node.assignment_method? || node.operator_method?

@@ -28,7 +28,7 @@ module RuboCop
         include StatementModifier
 
         MSG = 'Favor modifier `%<keyword>s` usage when ' \
-              'having a single-line body.'.freeze
+              'having a single-line body.'
 
         def on_while(node)
           check(node)

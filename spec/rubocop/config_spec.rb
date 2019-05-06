@@ -839,7 +839,7 @@ RSpec.describe RuboCop::Config do
 
   describe '#target_ruby_version', :isolated_environment do
     context 'when TargetRubyVersion is set' do
-      let(:ruby_version) { 2.2 }
+      let(:ruby_version) { 2.3 }
 
       let(:hash) do
         {
@@ -877,8 +877,8 @@ RSpec.describe RuboCop::Config do
         end
 
         context 'when .ruby-version contains an MRI version' do
-          let(:ruby_version) { '2.2.4' }
-          let(:ruby_version_to_f) { 2.2 }
+          let(:ruby_version) { '2.3.8' }
+          let(:ruby_version_to_f) { 2.3 }
 
           it 'reads it to determine the target ruby version' do
             expect(configuration.target_ruby_version).to eq ruby_version_to_f

@@ -20,7 +20,7 @@ module RuboCop
         include RangeHelp
         include PercentLiteral
 
-        MSG = 'Literal interpolation detected.'.freeze
+        MSG = 'Literal interpolation detected.'
         COMPOSITE = %i[array hash pair irange erange].freeze
 
         def on_dstr(node)

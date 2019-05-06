@@ -61,10 +61,10 @@ module RuboCop
 
         MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
         'module (don\'t forget to require it) or `%<regular>s` over ' \
-        '`%<global>s`.'.freeze
+        '`%<global>s`.'
         MSG_ENGLISH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
-        'module (don\'t forget to require it) over `%<global>s`.'.freeze
-        MSG_REGULAR = 'Prefer `%<prefer>s` over `%<global>s`.'.freeze
+        'module (don\'t forget to require it) over `%<global>s`.'
+        MSG_REGULAR = 'Prefer `%<prefer>s` over `%<global>s`.'
 
         ENGLISH_VARS = { # rubocop:disable Style/MutableConstant
           :$: => [:$LOAD_PATH],
@@ -140,7 +140,7 @@ module RuboCop
           lambda do |corrector|
             global_var, = *node
 
-            while node.parent && node.parent.begin_type? &&
+            while node.parent&.begin_type? &&
                   node.parent.children.one?
               node = node.parent
             end
@@ -180,7 +180,7 @@ module RuboCop
         end
 
         def replacement(node, global_var)
-          parent_type = node.parent && node.parent.type
+          parent_type = node.parent&.type
           preferred_name = preferred_names(global_var).first
 
           unless %i[dstr xstr regexp].include?(parent_type)

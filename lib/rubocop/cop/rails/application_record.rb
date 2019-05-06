@@ -21,9 +21,9 @@ module RuboCop
 
         minimum_target_rails_version 5.0
 
-        MSG = 'Models should subclass `ApplicationRecord`.'.freeze
-        SUPERCLASS = 'ApplicationRecord'.freeze
-        BASE_PATTERN = '(const (const nil? :ActiveRecord) :Base)'.freeze
+        MSG = 'Models should subclass `ApplicationRecord`.'
+        SUPERCLASS = 'ApplicationRecord'
+        BASE_PATTERN = '(const (const nil? :ActiveRecord) :Base)'
 
         # rubocop:disable Layout/ClassStructure
         include RuboCop::Cop::EnforceSuperclass

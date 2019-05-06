@@ -18,7 +18,7 @@ module RuboCop
       #   path = __dir__
       class Dir < Cop
         MSG = 'Use `__dir__` to get an absolute path to the current ' \
-              "file's directory.".freeze
+              "file's directory."
 
         def_node_matcher :dir_replacement?, <<-PATTERN
           {(send (const nil? :File) :expand_path (send (const nil? :File) :dirname  #file_keyword?))

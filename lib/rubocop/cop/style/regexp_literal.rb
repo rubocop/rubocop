@@ -85,8 +85,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_USE_SLASHES = 'Use `//` around regular expression.'.freeze
-        MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'.freeze
+        MSG_USE_SLASHES = 'Use `//` around regular expression.'
+        MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'
 
         def on_regexp(node)
           if slash_literal?(node)

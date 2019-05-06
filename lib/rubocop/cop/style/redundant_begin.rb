@@ -55,7 +55,7 @@ module RuboCop
       #     end
       #   end
       class RedundantBegin < Cop
-        MSG = 'Redundant `begin` block detected.'.freeze
+        MSG = 'Redundant `begin` block detected.'
 
         def on_def(node)
           check(node)
@@ -81,7 +81,7 @@ module RuboCop
         private
 
         def check(node)
-          return unless node.body && node.body.kwbegin_type?
+          return unless node.body&.kwbegin_type?
 
           add_offense(node.body, location: :begin)
         end

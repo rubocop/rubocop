@@ -19,7 +19,7 @@ module RuboCop
         include Alignment
         include RescueNode
 
-        MSG = 'Avoid using `rescue` in its modifier form.'.freeze
+        MSG = 'Avoid using `rescue` in its modifier form.'
 
         def on_resbody(node)
           return unless rescue_modifier?(node)

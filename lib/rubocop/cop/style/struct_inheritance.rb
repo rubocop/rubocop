@@ -21,7 +21,7 @@ module RuboCop
       #   end
       class StructInheritance < Cop
         MSG = "Don't extend an instance initialized by `Struct.new`. " \
-              'Use a block to customize the struct.'.freeze
+              'Use a block to customize the struct.'
 
         def on_class(node)
           return unless struct_constructor?(node.parent_class)

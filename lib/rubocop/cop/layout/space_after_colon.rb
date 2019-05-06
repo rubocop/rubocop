@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   def f(a:, b: 2); {a: 3}; end
       class SpaceAfterColon < Cop
-        MSG = 'Space missing after colon.'.freeze
+        MSG = 'Space missing after colon.'
 
         def on_pair(node)
           return unless node.colon?

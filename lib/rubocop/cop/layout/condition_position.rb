@@ -23,7 +23,7 @@ module RuboCop
       #     do_something
       #   end
       class ConditionPosition < Cop
-        MSG = 'Place the condition on the same line as `%<keyword>s`.'.freeze
+        MSG = 'Place the condition on the same line as `%<keyword>s`.'
 
         def on_if(node)
           return if node.ternary?

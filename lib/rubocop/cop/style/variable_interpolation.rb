@@ -17,7 +17,7 @@ module RuboCop
       #   "Let's go to the #{@store}"
       class VariableInterpolation < Cop
         MSG = 'Replace interpolated variable `%<variable>s` ' \
-              'with expression `#{%<variable>s}`.'.freeze
+              'with expression `#{%<variable>s}`.'
 
         def on_dstr(node)
           check_for_interpolation(node)

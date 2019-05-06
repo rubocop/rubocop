@@ -18,7 +18,7 @@ module RuboCop
       class AsciiComments < Cop
         include RangeHelp
 
-        MSG = 'Use only ascii symbols in comments.'.freeze
+        MSG = 'Use only ascii symbols in comments.'
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|

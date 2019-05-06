@@ -70,15 +70,13 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
-    context 'target_ruby_version >= 2.3', :ruby23 do
-      it 'treats safe navigation method calls like regular method calls' do
-        expect_offense(<<-RUBY.strip_indent) # sqrt(0 + 2*2 + 0) => 2
-          def method_name
-          ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2/0]
-            object&.do_something
-          end
-        RUBY
-      end
+    it 'treats safe navigation method calls like regular method calls' do
+      expect_offense(<<-RUBY.strip_indent) # sqrt(0 + 2*2 + 0) => 2
+        def method_name
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2/0]
+          object&.do_something
+        end
+      RUBY
     end
   end
 

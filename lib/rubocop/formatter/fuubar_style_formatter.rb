@@ -9,7 +9,7 @@ module RuboCop
     # This is inspired by the Fuubar formatter for RSpec by Jeff Kreeftmeijer.
     # https://github.com/jeffkreeftmeijer/fuubar
     class FuubarStyleFormatter < ClangStyleFormatter
-      RESET_SEQUENCE = "\e[0m".freeze
+      RESET_SEQUENCE = "\e[0m"
 
       def initialize(*output)
         @severest_offense = nil

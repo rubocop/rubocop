@@ -10,7 +10,7 @@ module RuboCop
   module Formatter
     # This formatter saves the output as an html file.
     class HTMLFormatter < BaseFormatter
-      ELLIPSES = '<span class="extra-code">...</span>'.freeze
+      ELLIPSES = '<span class="extra-code">...</span>'
       TEMPLATE_PATH =
         File.expand_path('../../../assets/output.html.erb', __dir__)
 

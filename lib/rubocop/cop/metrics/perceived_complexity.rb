@@ -30,7 +30,7 @@ module RuboCop
         include MethodComplexity
 
         MSG = 'Perceived complexity for %<method>s is too high. ' \
-              '[%<complexity>d/%<max>d]'.freeze
+              '[%<complexity>d/%<max>d]'
         COUNTED_NODES = %i[if case while until
                            for rescue and or].freeze
 

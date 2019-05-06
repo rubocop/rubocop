@@ -47,7 +47,7 @@ module RuboCop
       class EmptyLinesAroundModuleBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'module'.freeze
+        KIND = 'module'
 
         def on_module(node)
           check(node, node.body)

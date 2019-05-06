@@ -94,7 +94,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Redundant `else`-clause.'.freeze
+        MSG = 'Redundant `else`-clause.'
 
         def on_normal_if_unless(node)
           check(node)
@@ -136,7 +136,7 @@ module RuboCop
         end
 
         def nil_check(node)
-          return unless node.else_branch && node.else_branch.nil_type?
+          return unless node.else_branch&.nil_type?
 
           add_offense(node, location: :else)
         end

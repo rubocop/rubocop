@@ -39,9 +39,9 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Block body expression is on the same line as ' \
-              'the block start.'.freeze
+              'the block start.'
         ARG_MSG = 'Block argument expression is not on the same line as the ' \
-                  'block start.'.freeze
+                  'block start.'
 
         def on_block(node)
           return if node.single_line?

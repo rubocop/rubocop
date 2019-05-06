@@ -13,7 +13,7 @@ module RuboCop
       #   #good
       #   Book.update!(author: 'Alice')
       class ActiveRecordAliases < Cop
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
         ALIASES = {
           update_attributes: :update,

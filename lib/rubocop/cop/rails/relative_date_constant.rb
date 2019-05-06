@@ -22,7 +22,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Do not assign %<method_name>s to constants as it ' \
-              'will be evaluated only once.'.freeze
+              'will be evaluated only once.'
 
         def on_casgn(node)
           relative_date_assignment?(node) do |method_name|
@@ -33,7 +33,7 @@ module RuboCop
         def on_masgn(node)
           lhs, rhs = *node
 
-          return unless rhs && rhs.array_type?
+          return unless rhs&.array_type?
 
           lhs.children.zip(rhs.children).each do |(name, value)|
             next unless name.casgn_type?

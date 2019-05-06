@@ -32,6 +32,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             create_file('.rubocop_todo.yml', [''])
           end
           create_file('example.rb', <<-RUBY.strip_indent)
+            # frozen_string_literal: true
+
             def f
             #{'  #' * 33}
               if #{'a' * 80}
@@ -172,6 +174,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # URISchemes: http, https
               Metrics/LineLength:
                 Max: 99
+
+              # Offense count: 1
+              # Cop supports --auto-correct.
+              # Configuration parameters: EnforcedStyle.
+              # SupportedStyles: when_needed, always, never
+              Style/FrozenStringLiteralComment:
+                Exclude:
+                  - 'example.rb'
             YAML
           expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
             inherit_from: .rubocop_todo.yml
@@ -212,6 +222,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect(IO.readlines('.rubocop_todo.yml')
                   .drop_while { |line| line.start_with?('#') }.join)
             .to eq(<<-YAML.strip_indent)
+
+              # Offense count: 1
+              # Cop supports --auto-correct.
+              # Configuration parameters: EnforcedStyle.
+              # SupportedStyles: when_needed, always, never
+              Style/FrozenStringLiteralComment:
+                Exclude:
+                  - 'example.rb'
 
               # Offense count: 1
               # Cop supports --auto-correct.
@@ -257,6 +275,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               # Offense count: 1
               # Cop supports --auto-correct.
+              # Configuration parameters: EnforcedStyle.
+              # SupportedStyles: when_needed, always, never
+              Style/FrozenStringLiteralComment:
+                Exclude:
+                  - 'example.rb'
+
+              # Offense count: 1
+              # Cop supports --auto-correct.
               Style/IfUnlessModifier:
                 Exclude:
                   - 'example.rb'
@@ -280,7 +306,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'overwrites an existing todo file' do
-      create_file('example1.rb', ['x= 0 ',
+      create_file('example1.rb', ['# frozen_string_literal: true',
+                                  '',
+                                  'x= 0 ',
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
@@ -340,6 +368,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
+                '# Configuration parameters: EnforcedStyle.',
+                '# SupportedStyles: when_needed, always, never',
+                'Style/FrozenStringLiteralComment:',
+                '  Exclude:',
+                "    - 'example1.rb'",
+                '',
+                '# Offense count: 1',
+                '# Cop supports --auto-correct.',
                 '# Configuration parameters: Strict.',
                 'Style/NumericLiterals:',
                 '  MinDigits: 7',
@@ -372,6 +408,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(Dir['.*']).to include('.rubocop_todo.yml')
         todo_contents = IO.read('.rubocop_todo.yml').lines[8..-1].join
         expect(todo_contents).to eq(<<-YAML.strip_indent)
+          # Offense count: 1
+          # Cop supports --auto-correct.
+          # Configuration parameters: EnforcedStyle.
+          # SupportedStyles: when_needed, always, never
+          Style/FrozenStringLiteralComment:
+            Exclude:
+              - 'example1.rb'
+
           # Offense count: 1
           # Configuration parameters: AllowedVariables.
           Style/GlobalVars:
@@ -413,6 +457,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         todo_contents = IO.read('dir/.rubocop_todo.yml').lines[8..-1].join
         expect(todo_contents).to eq(<<-YAML.strip_indent)
           # Offense count: 1
+          # Cop supports --auto-correct.
+          # Configuration parameters: EnforcedStyle.
+          # SupportedStyles: when_needed, always, never
+          Style/FrozenStringLiteralComment:
+            Exclude:
+              - 'example1.rb'
+
+          # Offense count: 1
           # Configuration parameters: AllowedVariables.
           Style/GlobalVars:
             Exclude:
@@ -427,7 +479,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can generate a todo list' do
-      create_file('example1.rb', ['$x= 0 ',
+      create_file('example1.rb', ['# frozen_string_literal: true',
+                                  '',
+                                  '$x= 0 ',
                                   '#' * 90,
                                   '#' * 85,
                                   'y ',
@@ -533,7 +587,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'can generate Exclude properties with a given limit' do
-      create_file('example1.rb', ['$x= 0 ',
+      create_file('example1.rb', ['# frozen_string_literal: true',
+                                  '',
+                                  '$x= 0 ',
                                   '#' * 90,
                                   '#' * 85,
                                   'y ',
@@ -683,10 +739,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'generates a todo list that removes the reports' do
-      create_file('example.rb', 'y.gsub!(/abc\/xyz/, x)')
+      create_file('example.rb', [
+                    '# frozen_string_literal: true',
+                    '',
+                    'y.gsub!(/abc\/xyz/, x)'
+                  ])
       expect(cli.run(%w[--format emacs])).to eq(1)
       expect($stdout.string).to eq(
-        "#{abs('example.rb')}:1:9: C: Style/RegexpLiteral: Use `%r` " \
+        "#{abs('example.rb')}:3:9: C: Style/RegexpLiteral: Use `%r` " \
         "around regular expression.\n"
       )
       expect(cli.run(['--auto-gen-config'])).to eq(0)
@@ -723,7 +783,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'does not include offense counts when --no-offense-counts is used' do
-      create_file('example1.rb', ['$x= 0 ',
+      create_file('example1.rb', ['# frozen_string_literal: true',
+                                  '',
+                                  '$x= 0 ',
                                   '#' * 90,
                                   '#' * 85,
                                   'y ',
@@ -849,6 +911,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         Metrics/ParameterLists:
           Exclude:
             - 'example2.rb'
+        Style/FrozenStringLiteralComment:
+          Enabled: false
         Style/NumericLiterals:
           MinDigits: 7
         Metrics/LineLength:
@@ -885,6 +949,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(0)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
           .to eq(<<-YAML.strip_indent)
+            # Offense count: 3
+            # Cop supports --auto-correct.
+            # Configuration parameters: EnforcedStyle.
+            # SupportedStyles: when_needed, always, never
+            Style/FrozenStringLiteralComment:
+              Enabled: false
+
             # Offense count: 2
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
@@ -899,6 +970,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(0)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
           .to eq(<<-YAML.strip_indent)
+            # Offense count: 4
+            # Cop supports --auto-correct.
+            # Configuration parameters: EnforcedStyle.
+            # SupportedStyles: when_needed, always, never
+            Style/FrozenStringLiteralComment:
+              Exclude:
+                - 'example1.rb'
+                - 'example2.rb'
+                - 'example3.rb'
+                - 'example4.rb'
+
             # Offense count: 3
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
@@ -914,7 +996,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     describe 'console output' do
       before do
-        create_file('example1.rb', ['$!'])
+        create_file('example1.rb', ['# frozen_string_literal: true', '', '$!'])
       end
 
       it 'displays report summary but no offenses' do

@@ -34,6 +34,8 @@ RSpec.describe RuboCop::Cop::Team do
         end
       RUBY
       corrected = <<-'RUBY'.strip_indent
+        # frozen_string_literal: true
+
         foo.map(&:nil?)
 
         'foo' \
@@ -133,11 +135,15 @@ RSpec.describe RuboCop::Cop::Team do
         source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
         team.inspect_file(source)
         corrected_source = File.read(file_path)
-        expect(corrected_source).to eq("puts 'string'\n")
+        expect(corrected_source).to eq(<<-RUBY.strip_indent)
+          # frozen_string_literal: true
+
+          puts 'string'
+        RUBY
       end
 
       it 'still returns offenses' do
-        expect(offenses.first.cop_name).to eq('Style/StringLiterals')
+        expect(offenses[1].cop_name).to eq('Style/StringLiterals')
       end
     end
   end

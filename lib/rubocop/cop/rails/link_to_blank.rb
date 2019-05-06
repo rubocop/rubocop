@@ -15,7 +15,7 @@ module RuboCop
       #   # good
       #   link_to 'Click here', url, target: '_blank', rel: 'noopener'
       class LinkToBlank < Cop
-        MSG = 'Specify a `:rel` option containing noopener.'.freeze
+        MSG = 'Specify a `:rel` option containing noopener.'
 
         def_node_matcher :blank_target?, <<-PATTERN
           (pair {(sym :target) (str "target")} {(str "_blank") (sym :_blank)})

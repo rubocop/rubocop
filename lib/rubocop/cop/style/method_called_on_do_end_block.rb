@@ -15,7 +15,7 @@ module RuboCop
       class MethodCalledOnDoEndBlock < Cop
         include RangeHelp
 
-        MSG = 'Avoid chaining a method call on a do...end block.'.freeze
+        MSG = 'Avoid chaining a method call on a do...end block.'
 
         def on_block(node)
           # If the method that is chained on the do...end block is itself a
@@ -31,7 +31,7 @@ module RuboCop
 
           receiver = node.receiver
 
-          return unless receiver && receiver.block_type? &&
+          return unless receiver&.block_type? &&
                         receiver.loc.end.is?('end')
 
           range = range_between(receiver.loc.end.begin_pos,

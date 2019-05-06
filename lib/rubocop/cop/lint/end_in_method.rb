@@ -28,7 +28,7 @@ module RuboCop
       #   # outside defs
       #   END { do_something }
       class EndInMethod < Cop
-        MSG = '`END` found in method definition. Use `at_exit` instead.'.freeze
+        MSG = '`END` found in method definition. Use `at_exit` instead.'
 
         def on_postexe(node)
           inside_of_method = node.each_ancestor(:def, :defs).count.nonzero?

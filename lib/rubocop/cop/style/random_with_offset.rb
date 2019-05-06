@@ -25,7 +25,7 @@ module RuboCop
       #   rand(1...7)
       class RandomWithOffset < Cop
         MSG = 'Prefer ranges when generating random numbers instead of ' \
-          'integers with offsets.'.freeze
+          'integers with offsets.'
 
         def_node_matcher :integer_op_rand?, <<-PATTERN
           (send

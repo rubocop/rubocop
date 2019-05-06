@@ -11,7 +11,7 @@ module RuboCop
       #   BEGIN { test }
       #
       class BeginBlock < Cop
-        MSG = 'Avoid the use of `BEGIN` blocks.'.freeze
+        MSG = 'Avoid the use of `BEGIN` blocks.'
 
         def on_preexe(node)
           add_offense(node, location: :keyword)

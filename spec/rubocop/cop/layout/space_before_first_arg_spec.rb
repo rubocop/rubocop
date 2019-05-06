@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for method call with two spaces before the ' \
          'first arg' do
         expect_offense(<<-RUBY.strip_indent)

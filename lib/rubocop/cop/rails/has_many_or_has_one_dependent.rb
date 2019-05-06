@@ -21,7 +21,7 @@ module RuboCop
       #     has_many :patients, through: :appointments
       #   end
       class HasManyOrHasOneDependent < Cop
-        MSG = 'Specify a `:dependent` option.'.freeze
+        MSG = 'Specify a `:dependent` option.'
 
         def_node_search :active_resource_class?, <<-PATTERN
           (const (const nil? :ActiveResource) :Base)

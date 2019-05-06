@@ -21,14 +21,14 @@ module RuboCop
       class FormatParameterMismatch < Cop
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
-              'match the number of fields (%<field_num>i).'.freeze
+              'match the number of fields (%<field_num>i).'
         FIELD_REGEX =
           /(%(([\s#+-0\*]*)(\d*)?(\.\d+)?[bBdiouxXeEfgGaAcps]|%))/.freeze
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze
-        KERNEL = 'Kernel'.freeze
-        SHOVEL = '<<'.freeze
-        PERCENT = '%'.freeze
-        PERCENT_PERCENT = '%%'.freeze
+        KERNEL = 'Kernel'
+        SHOVEL = '<<'
+        PERCENT = '%'
+        PERCENT_PERCENT = '%%'
         DIGIT_DOLLAR_FLAG = /%(\d+)\$/.freeze
         STRING_TYPES = %i[str dstr].freeze
         NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/.freeze
@@ -54,7 +54,7 @@ module RuboCop
         end
 
         def matched_arguments_count?(expected, passed)
-          if passed < 0
+          if passed.negative?
             expected < passed.abs
           else
             expected != passed
@@ -130,8 +130,7 @@ module RuboCop
           return 1 if node.source =~ NAMED_INTERPOLATION
 
           max_digit_dollar_num = max_digit_dollar_num(node)
-          return max_digit_dollar_num if max_digit_dollar_num &&
-                                         max_digit_dollar_num.nonzero?
+          return max_digit_dollar_num if max_digit_dollar_num&.nonzero?
 
           node
             .source

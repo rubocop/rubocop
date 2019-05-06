@@ -15,9 +15,9 @@ module RuboCop
       class UnknownEnv < Cop
         include NameSimilarity
 
-        MSG = 'Unknown environment `%<name>s`.'.freeze
+        MSG = 'Unknown environment `%<name>s`.'
         MSG_SIMILAR = 'Unknown environment `%<name>s`. ' \
-                      'Did you mean `%<similar>s`?'.freeze
+                      'Did you mean `%<similar>s`?'
 
         def_node_matcher :unknown_environment?, <<-PATTERN
           (send

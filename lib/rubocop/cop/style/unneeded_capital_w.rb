@@ -18,7 +18,7 @@ module RuboCop
         include PercentLiteral
 
         MSG = 'Do not use `%W` unless interpolation is needed. ' \
-              'If not, use `%w`.'.freeze
+              'If not, use `%w`.'
 
         def on_array(node)
           process(node, '%W')

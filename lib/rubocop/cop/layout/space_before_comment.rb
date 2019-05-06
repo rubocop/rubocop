@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   1 + 1 # this operation does ...
       class SpaceBeforeComment < Cop
-        MSG = 'Put a space before an end-of-line comment.'.freeze
+        MSG = 'Put a space before an end-of-line comment.'
 
         def investigate(processed_source)
           processed_source.tokens.each_cons(2) do |token1, token2|

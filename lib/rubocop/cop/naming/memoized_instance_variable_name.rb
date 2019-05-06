@@ -88,9 +88,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Memoized variable `%<var>s` does not match ' \
-          'method name `%<method>s`. Use `@%<suggested_var>s` instead.'.freeze
+          'method name `%<method>s`. Use `@%<suggested_var>s` instead.'
         UNDERSCORE_REQUIRED = 'Memoized variable `%<var>s` does not start ' \
-          'with `_`. Use `@%<suggested_var>s` instead.'.freeze
+          'with `_`. Use `@%<suggested_var>s` instead.'
 
         def self.node_pattern
           memo_assign = '(or_asgn $(ivasgn _) _)'

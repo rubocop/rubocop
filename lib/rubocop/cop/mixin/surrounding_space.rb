@@ -6,8 +6,8 @@ module RuboCop
     module SurroundingSpace
       include RangeHelp
 
-      NO_SPACE_COMMAND = 'Do not use'.freeze
-      SPACE_COMMAND = 'Use'.freeze
+      NO_SPACE_COMMAND = 'Do not use'
+      SPACE_COMMAND = 'Use'
 
       private
 
@@ -94,7 +94,7 @@ module RuboCop
       def reposition(src, pos, step)
         offset = step == -1 ? -1 : 0
         pos += step while src[pos + offset] =~ /[ \t]/
-        pos < 0 ? 0 : pos
+        pos.negative? ? 0 : pos
       end
 
       def space_offense(node, token, side, message, command)

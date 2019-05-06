@@ -19,7 +19,7 @@ module RuboCop
       class EachWithObject < Cop
         include RangeHelp
 
-        MSG = 'Use `each_with_object` instead of `%<method>s`.'.freeze
+        MSG = 'Use `each_with_object` instead of `%<method>s`.'
         METHODS = %i[inject reduce].freeze
 
         def_node_matcher :each_with_object_candidate?, <<-PATTERN
@@ -65,7 +65,7 @@ module RuboCop
         private
 
         def simple_method_arg?(method_arg)
-          method_arg && method_arg.basic_literal?
+          method_arg&.basic_literal?
         end
 
         # if the accumulator parameter is assigned to in the block,
@@ -86,7 +86,7 @@ module RuboCop
           return unless body
 
           return_value = body.begin_type? ? body.children.last : body
-          return_value if return_value && return_value.lvar_type?
+          return_value if return_value&.lvar_type?
         end
 
         def first_argument_returned?(args, return_value)

@@ -185,7 +185,7 @@ module RuboCop
         end
 
         def pipe?(args_delimiter)
-          args_delimiter && args_delimiter.is?('|')
+          args_delimiter&.is?('|')
         end
 
         def space_inside_right_brace(right_brace)

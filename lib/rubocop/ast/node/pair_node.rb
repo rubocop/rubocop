@@ -8,10 +8,10 @@ module RuboCop
     class PairNode < Node
       include HashElementNode
 
-      HASH_ROCKET = '=>'.freeze
-      SPACED_HASH_ROCKET = ' => '.freeze
-      COLON = ':'.freeze
-      SPACED_COLON = ': '.freeze
+      HASH_ROCKET = '=>'
+      SPACED_HASH_ROCKET = ' => '
+      COLON = ':'
+      SPACED_COLON = ': '
 
       # Checks whether the `pair` uses a hash rocket delimiter.
       #

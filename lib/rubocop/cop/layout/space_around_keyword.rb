@@ -25,11 +25,11 @@ module RuboCop
       #
       #   something = 123 if test
       class SpaceAroundKeyword < Cop
-        MSG_BEFORE = 'Space before keyword `%<range>s` is missing.'.freeze
-        MSG_AFTER = 'Space after keyword `%<range>s` is missing.'.freeze
+        MSG_BEFORE = 'Space before keyword `%<range>s` is missing.'
+        MSG_AFTER = 'Space after keyword `%<range>s` is missing.'
 
-        DO = 'do'.freeze
-        SAFE_NAVIGATION = '&.'.freeze
+        DO = 'do'
+        SAFE_NAVIGATION = '&.'
         ACCEPT_LEFT_PAREN =
           %w[break defined? next not rescue return super yield].freeze
         ACCEPT_LEFT_SQUARE_BRACKET =
@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def on_if(node)
-          check(node, %i[keyword else begin end].freeze, 'then'.freeze)
+          check(node, %i[keyword else begin end].freeze, 'then')
         end
 
         def on_kwbegin(node)
@@ -129,9 +129,9 @@ module RuboCop
 
         def autocorrect(range)
           if space_before_missing?(range)
-            ->(corrector) { corrector.insert_before(range, ' '.freeze) }
+            ->(corrector) { corrector.insert_before(range, ' ') }
           else
-            ->(corrector) { corrector.insert_after(range, ' '.freeze) }
+            ->(corrector) { corrector.insert_after(range, ' ') }
           end
         end
 
@@ -165,7 +165,7 @@ module RuboCop
         end
 
         def do?(node)
-          node.loc.begin && node.loc.begin.is?(DO)
+          node.loc.begin&.is?(DO)
         end
 
         def check_keyword(node, range)
@@ -182,7 +182,7 @@ module RuboCop
 
         def space_before_missing?(range)
           pos = range.begin_pos - 1
-          return false if pos < 0
+          return false if pos.negative?
 
           range.source_buffer.source[pos] !~ /[\s\(\|\{\[;,\*\=]/
         end

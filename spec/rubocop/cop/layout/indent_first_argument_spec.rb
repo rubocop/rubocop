@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArgument, :config do
         RUBY
       end
 
-      context 'when using safe navigation operator', :ruby23 do
+      context 'when using safe navigation operator' do
         it 'registers an offense for an under-indented first argument' do
           expect_offense(<<-RUBY.strip_indent)
             receiver&.run(

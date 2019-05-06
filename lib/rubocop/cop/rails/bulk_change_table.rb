@@ -73,8 +73,8 @@ module RuboCop
           You can use `change_table :%<table>s, bulk: true` to combine alter queries.
         MSG
 
-        MYSQL = 'mysql'.freeze
-        POSTGRESQL = 'postgresql'.freeze
+        MYSQL = 'mysql'
+        POSTGRESQL = 'postgresql'
 
         MIGRATION_METHODS = %i[change up down].freeze
 

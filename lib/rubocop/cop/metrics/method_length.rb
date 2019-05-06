@@ -9,7 +9,7 @@ module RuboCop
       class MethodLength < Cop
         include TooManyLines
 
-        LABEL = 'Method'.freeze
+        LABEL = 'Method'
 
         def on_def(node)
           excluded_methods = cop_config['ExcludedMethods']

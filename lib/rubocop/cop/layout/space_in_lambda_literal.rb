@@ -24,9 +24,9 @@ module RuboCop
         include RangeHelp
 
         MSG_REQUIRE_SPACE = 'Use a space between `->` and ' \
-                            '`(` in lambda literals.'.freeze
+                            '`(` in lambda literals.'
         MSG_REQUIRE_NO_SPACE = 'Do not use spaces between `->` and ' \
-                               '`(` in lambda literals.'.freeze
+                               '`(` in lambda literals.'
 
         def on_send(node)
           return unless arrow_lambda_with_args?(node)
@@ -64,7 +64,8 @@ module RuboCop
         def space_after_arrow?(lambda_node)
           arrow = lambda_node.parent.children[0]
           parentheses = lambda_node.parent.children[1]
-          parentheses.source_range.begin_pos - arrow.source_range.end_pos > 0
+          (parentheses.source_range.begin_pos - arrow.source_range.end_pos)
+            .positive?
         end
 
         def range_of_offense(node)

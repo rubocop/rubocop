@@ -41,7 +41,7 @@ module RuboCop
       #     t.datetime :updated_at, default: -> { 'CURRENT_TIMESTAMP' }
       #   end
       class CreateTableWithTimestamps < Cop
-        MSG = 'Add timestamps when creating a new table.'.freeze
+        MSG = 'Add timestamps when creating a new table.'
 
         def_node_matcher :create_table_with_block?, <<-PATTERN
           (block

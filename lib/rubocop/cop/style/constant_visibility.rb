@@ -28,7 +28,7 @@ module RuboCop
       #
       class ConstantVisibility < Cop
         MSG = 'Explicitly make `%<constant_name>s` public or private using ' \
-              'either `#public_constant` or `#private_constant`.'.freeze
+              'either `#public_constant` or `#private_constant`.'
 
         def on_casgn(node)
           return unless class_or_module_scope?(node)

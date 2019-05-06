@@ -121,7 +121,7 @@ module RuboCop
         end
 
         cop_class = Cop::Cop.registry.find_by_cop_name(cop_name)
-        if cop_class && cop_class.new.support_autocorrect?
+        if cop_class&.new&.support_autocorrect?
           output_buffer.puts '# Cop supports --auto-correct.'
         end
 

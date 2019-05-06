@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   delegate :foo, to: :bar, allow_nil: true
       class DelegateAllowBlank < Cop
-        MSG = '`allow_blank` is not a valid option, use `allow_nil`.'.freeze
+        MSG = '`allow_blank` is not a valid option, use `allow_nil`.'
 
         def_node_matcher :allow_blank_option, <<-PATTERN
           (send nil? :delegate _ (hash <$(pair (sym :allow_blank) true) ...>))

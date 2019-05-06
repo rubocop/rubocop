@@ -88,9 +88,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_PRESENT = 'Use def without parentheses.'.freeze
+        MSG_PRESENT = 'Use def without parentheses.'
         MSG_MISSING = 'Use def with parentheses when there are ' \
-                      'parameters.'.freeze
+                      'parameters.'
 
         def on_def(node)
           args = node.arguments

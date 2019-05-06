@@ -42,7 +42,7 @@ module RuboCop
       #   end
       class MixinUsage < Cop
         MSG = '`%<statement>s` is used at the top level. Use inside `class` ' \
-              'or `module`.'.freeze
+              'or `module`.'
 
         def_node_matcher :include_statement, <<-PATTERN
           (send nil? ${:include :extend :prepend}

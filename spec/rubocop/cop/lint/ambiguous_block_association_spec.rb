@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
         RUBY
       end
 
-      context 'when using safe navigation operator', :ruby23 do
+      context 'when using safe navigation operator' do
         it 'registers an offense' do
           expect_offense(<<-RUBY.strip_indent)
             Foo&.some_method a { |el| puts el }

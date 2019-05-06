@@ -28,7 +28,7 @@ module RuboCop
       #   [1, 2, 3].shuffle[foo, bar]
       #   [1, 2, 3].shuffle(random: Random.new)
       class Sample < Cop
-        MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'.freeze
+        MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
 
         def_node_matcher :sample_candidate?, <<-PATTERN
           (send $(send _ :shuffle $...) ${:first :last :[] :at :slice} $...)

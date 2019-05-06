@@ -15,7 +15,7 @@ module RuboCop
         include IgnoredMethods
 
         MSG = 'Do not use parentheses for method calls with ' \
-              'no arguments.'.freeze
+              'no arguments.'
 
         def on_send(node)
           return if ineligible_node?(node)

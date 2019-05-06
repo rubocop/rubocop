@@ -33,7 +33,7 @@ module RuboCop
       #     do_something
       #   end
       class Debugger < Cop
-        MSG = 'Remove debugger entry point `%<source>s`.'.freeze
+        MSG = 'Remove debugger entry point `%<source>s`.'
 
         def_node_matcher :kernel?, <<-PATTERN
           {

@@ -8,7 +8,7 @@ module RuboCop
     class KeywordSplatNode < Node
       include HashElementNode
 
-      DOUBLE_SPLAT = '**'.freeze
+      DOUBLE_SPLAT = '**'
 
       # This is used for duck typing with `pair` nodes which also appear as
       # `hash` elements.

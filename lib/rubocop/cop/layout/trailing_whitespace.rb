@@ -17,7 +17,7 @@ module RuboCop
       class TrailingWhitespace < Cop
         include RangeHelp
 
-        MSG = 'Trailing whitespace detected.'.freeze
+        MSG = 'Trailing whitespace detected.'
 
         def investigate(processed_source)
           heredoc_ranges = extract_heredoc_ranges(processed_source.ast)

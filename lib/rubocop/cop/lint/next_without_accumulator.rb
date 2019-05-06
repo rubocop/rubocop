@@ -23,7 +23,7 @@ module RuboCop
       #     acc + i
       #   end
       class NextWithoutAccumulator < Cop
-        MSG = 'Use `next` with an accumulator argument in a `reduce`.'.freeze
+        MSG = 'Use `next` with an accumulator argument in a `reduce`.'
 
         def_node_matcher :on_body_of_reduce, <<-PATTERN
           (block (send _recv {:reduce :inject} !sym) _blockargs $(begin ...))

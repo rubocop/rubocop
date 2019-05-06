@@ -7,8 +7,8 @@ module RuboCop
       extend NodePattern::Macros
 
       CORRECTION_WITH_ARGUMENTS =
-        'for %<variables>s in %<collection>s do'.freeze
-      CORRECTION_WITHOUT_ARGUMENTS = 'for _ in %<enumerable>s do'.freeze
+        'for %<variables>s in %<collection>s do'
+      CORRECTION_WITHOUT_ARGUMENTS = 'for _ in %<enumerable>s do'
 
       def initialize(block_node)
         @block_node = block_node

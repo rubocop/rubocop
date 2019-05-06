@@ -19,7 +19,7 @@ module RuboCop
       #   end
       class OptionalArguments < Cop
         MSG = 'Optional arguments should appear at the end ' \
-              'of the argument list.'.freeze
+              'of the argument list.'
 
         def on_def(node)
           each_misplaced_optional_arg(node.arguments) do |argument|

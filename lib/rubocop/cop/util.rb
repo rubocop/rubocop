@@ -23,7 +23,7 @@ module RuboCop
 
       def parentheses?(node)
         node.loc.respond_to?(:end) && node.loc.end &&
-          node.loc.end.is?(')'.freeze)
+          node.loc.end.is?(')')
       end
 
       def on_node(syms, sexp, excludes = [], &block)

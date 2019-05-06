@@ -67,7 +67,7 @@ module RuboCop
       class EmptyLinesAroundClassBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'class'.freeze
+        KIND = 'class'
 
         def on_class(node)
           first_line = node.parent_class.first_line if node.parent_class

@@ -25,7 +25,7 @@ module RuboCop
       #     x
       #   end
       class UselessSetterCall < Cop
-        MSG = 'Useless setter call to local variable `%<variable>s`.'.freeze
+        MSG = 'Useless setter call to local variable `%<variable>s`.'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
         def on_def(node)

@@ -19,14 +19,14 @@ module RuboCop
       #
       class UnneededPercentQ < Cop
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
-              'single quotes and double quotes%<extra>s.'.freeze
+              'single quotes and double quotes%<extra>s.'
         DYNAMIC_MSG = ', or for dynamic strings that contain ' \
-                      'double quotes'.freeze
-        SINGLE_QUOTE = "'".freeze
-        QUOTE = '"'.freeze
-        EMPTY = ''.freeze
-        PERCENT_Q = '%q'.freeze
-        PERCENT_CAPITAL_Q = '%Q'.freeze
+                      'double quotes'
+        SINGLE_QUOTE = "'"
+        QUOTE = '"'
+        EMPTY = ''
+        PERCENT_Q = '%q'
+        PERCENT_CAPITAL_Q = '%Q'
         STRING_INTERPOLATION_REGEXP = /#\{.+}/.freeze
         ESCAPED_NON_BACKSLASH = /\\[^\\]/.freeze
 

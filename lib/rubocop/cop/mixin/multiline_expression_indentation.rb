@@ -8,10 +8,10 @@ module RuboCop
       KEYWORD_ANCESTOR_TYPES  = %i[for if while until return].freeze
       UNALIGNED_RHS_TYPES     = %i[if while until for return
                                    array kwbegin].freeze
-      DEFAULT_MESSAGE_TAIL    = 'an expression'.freeze
-      ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'.freeze
+      DEFAULT_MESSAGE_TAIL    = 'an expression'
+      ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'
       KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` ' \
-                                'statement'.freeze
+                                'statement'
 
       def on_send(node)
         return if !node.receiver || node.method?(:[])
@@ -31,7 +31,7 @@ module RuboCop
       #   b c { block }.            <-- b is indented relative to a
       #   d                         <-- d is indented relative to a
       def left_hand_side(lhs)
-        lhs = lhs.parent while lhs.parent && lhs.parent.send_type?
+        lhs = lhs.parent while lhs.parent&.send_type?
         lhs
       end
 

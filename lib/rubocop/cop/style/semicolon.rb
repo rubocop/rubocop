@@ -18,7 +18,7 @@ module RuboCop
       class Semicolon < Cop
         include RangeHelp
 
-        MSG = 'Do not use semicolons to terminate expressions.'.freeze
+        MSG = 'Do not use semicolons to terminate expressions.'
 
         def investigate(processed_source)
           return if processed_source.blank?
