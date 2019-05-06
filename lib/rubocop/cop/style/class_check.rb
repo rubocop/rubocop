@@ -26,7 +26,7 @@ module RuboCop
       class ClassCheck < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Prefer `Object#%<prefer>s` over `Object#%<current>s`.'.freeze
+        MSG = 'Prefer `Object#%<prefer>s` over `Object#%<current>s`.'
 
         def_node_matcher :class_check?, '(send _ ${:is_a? :kind_of?} _)'
 

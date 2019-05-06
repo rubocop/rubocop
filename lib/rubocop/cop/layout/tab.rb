@@ -24,7 +24,7 @@ module RuboCop
         include Alignment
         include RangeHelp
 
-        MSG = 'Tab detected.'.freeze
+        MSG = 'Tab detected.'
 
         def investigate(processed_source)
           str_ranges = string_literal_ranges(processed_source.ast)

@@ -17,7 +17,7 @@ module RuboCop
       #
       #   "result is #{some_result}"
       class EmptyInterpolation < Cop
-        MSG = 'Empty interpolation detected.'.freeze
+        MSG = 'Empty interpolation detected.'
 
         def on_dstr(node)
           node.each_child_node(:begin) do |begin_node|

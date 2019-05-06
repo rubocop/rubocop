@@ -12,9 +12,9 @@ module RuboCop
       class Encoding < Cop
         include RangeHelp
 
-        MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'.freeze
+        MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
         ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
-        SHEBANG = '#!'.freeze
+        SHEBANG = '#!'
 
         def investigate(processed_source)
           return if processed_source.buffer.source.empty?

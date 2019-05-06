@@ -121,7 +121,7 @@ module RuboCop
         include Alignment
         include ConfigurableEnforcedStyle
 
-        MSG = 'Inconsistent indentation detected.'.freeze
+        MSG = 'Inconsistent indentation detected.'
 
         def on_begin(node)
           check(node)

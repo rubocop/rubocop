@@ -18,7 +18,7 @@ module RuboCop
         include StringHelp
 
         MSG = 'Do not use the character literal - ' \
-              'use string literal instead.'.freeze
+              'use string literal instead.'
 
         def offense?(node)
           # we don't register an offense for things like ?\C-\M-d

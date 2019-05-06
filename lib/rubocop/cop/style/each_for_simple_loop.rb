@@ -24,7 +24,7 @@ module RuboCop
       #   10.times {}
       class EachForSimpleLoop < Cop
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed ' \
-              'number of times.'.freeze
+              'number of times.'
 
         def on_block(node)
           return unless offending_each_range(node)

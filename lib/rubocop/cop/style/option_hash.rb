@@ -20,7 +20,7 @@ module RuboCop
       #     # ...
       #   end
       class OptionHash < Cop
-        MSG = 'Prefer keyword arguments to options hashes.'.freeze
+        MSG = 'Prefer keyword arguments to options hashes.'
 
         def_node_matcher :option_hash, <<-PATTERN
           (args ... $(optarg [#suspicious_name? _] (hash)))

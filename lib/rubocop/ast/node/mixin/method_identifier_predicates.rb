@@ -79,14 +79,14 @@ module RuboCop
       #
       # @return [Boolean] whether the receiver of this node is `self`
       def self_receiver?
-        receiver && receiver.self_type?
+        receiver&.self_type?
       end
 
       # Checks whether the *explicit* receiver of node is a `const` node.
       #
       # @return [Boolean] whether the receiver of this node is a `const` node
       def const_receiver?
-        receiver && receiver.const_type?
+        receiver&.const_type?
       end
 
       # Checks whether this is a negation method, i.e. `!` or keyword `not`.

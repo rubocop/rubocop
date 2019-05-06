@@ -24,7 +24,7 @@ module RuboCop
       class UnneededRequireStatement < Cop
         include RangeHelp
 
-        MSG = 'Remove unnecessary `require` statement.'.freeze
+        MSG = 'Remove unnecessary `require` statement.'
 
         def_node_matcher :unnecessary_require_statement?, <<-PATTERN
           (send nil? :require

@@ -14,7 +14,7 @@ module RuboCop
         end
 
         def invoke_hook(hook_name, *args)
-          @hook_receiver.send(hook_name, *args) if @hook_receiver
+          @hook_receiver&.send(hook_name, *args)
         end
 
         def scope_stack

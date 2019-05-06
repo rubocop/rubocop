@@ -12,7 +12,7 @@ module RuboCop
       #   # good
       #   # has_many :ingredients, through: :recipe_ingredients
       class HasAndBelongsToMany < Cop
-        MSG = 'Prefer `has_many :through` to `has_and_belongs_to_many`.'.freeze
+        MSG = 'Prefer `has_many :through` to `has_and_belongs_to_many`.'
 
         def on_send(node)
           return unless node.command?(:has_and_belongs_to_many)

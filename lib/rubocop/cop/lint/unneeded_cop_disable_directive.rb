@@ -29,7 +29,7 @@ module RuboCop
         include NameSimilarity
         include RangeHelp
 
-        COP_NAME = 'Lint/UnneededCopDisableDirective'.freeze
+        COP_NAME = 'Lint/UnneededCopDisableDirective'
 
         def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = Hash.new { |h, k| h[k] = Set.new }

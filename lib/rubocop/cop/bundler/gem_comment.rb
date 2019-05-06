@@ -18,7 +18,7 @@ module RuboCop
       class GemComment < Cop
         include DefNode
 
-        MSG = 'Missing gem description comment.'.freeze
+        MSG = 'Missing gem description comment.'
 
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 

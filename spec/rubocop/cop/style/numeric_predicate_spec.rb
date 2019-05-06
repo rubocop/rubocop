@@ -112,62 +112,42 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
 
     context 'when checking if a number is positive' do
-      context 'when target ruby version is 2.3 or higher', :ruby23 do
+      it_behaves_like 'code with offense',
+                      'number > 0',
+                      expected: 'number.positive?'
+
+      it_behaves_like 'code with offense',
+                      '0 < number',
+                      expected: 'number.positive?'
+
+      context 'with a complex expression' do
         it_behaves_like 'code with offense',
-                        'number > 0',
-                        expected: 'number.positive?'
+                        'foo - 1 > 0',
+                        expected: '(foo - 1).positive?'
 
         it_behaves_like 'code with offense',
-                        '0 < number',
-                        expected: 'number.positive?'
-
-        context 'with a complex expression' do
-          it_behaves_like 'code with offense',
-                          'foo - 1 > 0',
-                          expected: '(foo - 1).positive?'
-
-          it_behaves_like 'code with offense',
-                          '0 < foo - 1',
-                          expected: '(foo - 1).positive?'
-        end
-      end
-
-      context 'when target ruby version is 2.2 or lower', :ruby22 do
-        it_behaves_like 'code without offense',
-                        'number > 0'
-
-        it_behaves_like 'code without offense',
-                        '0 < number'
+                        '0 < foo - 1',
+                        expected: '(foo - 1).positive?'
       end
     end
 
     context 'when checking if a number is negative' do
-      context 'when target ruby version is 2.3 or higher', :ruby23 do
+      it_behaves_like 'code with offense',
+                      'number < 0',
+                      expected: 'number.negative?'
+
+      it_behaves_like 'code with offense',
+                      '0 > number',
+                      expected: 'number.negative?'
+
+      context 'with a complex expression' do
         it_behaves_like 'code with offense',
-                        'number < 0',
-                        expected: 'number.negative?'
+                        'foo - 1 < 0',
+                        expected: '(foo - 1).negative?'
 
         it_behaves_like 'code with offense',
-                        '0 > number',
-                        expected: 'number.negative?'
-
-        context 'with a complex expression' do
-          it_behaves_like 'code with offense',
-                          'foo - 1 < 0',
-                          expected: '(foo - 1).negative?'
-
-          it_behaves_like 'code with offense',
-                          '0 > foo - 1',
-                          expected: '(foo - 1).negative?'
-        end
-      end
-
-      context 'when target ruby version is 2.2 or lower', :ruby22 do
-        it_behaves_like 'code without offense',
-                        'number < 0'
-
-        it_behaves_like 'code without offense',
-                        '0 > number'
+                        '0 > foo - 1',
+                        expected: '(foo - 1).negative?'
       end
     end
   end
@@ -213,49 +193,29 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
     context 'in argument' do
       context 'ignored method' do
         context 'when checking if a number is positive' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code without offense',
-                            'where(Sequel[:number] > 0)'
-          end
+          it_behaves_like 'code without offense', 'where(Sequel[:number] > 0)'
         end
 
         context 'when checking if a number is negative' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code without offense',
-                            'where(Sequel[:number] < 0)'
-          end
+          it_behaves_like 'code without offense', 'where(Sequel[:number] < 0)'
         end
       end
 
       context 'not ignored method' do
         context 'when checking if a number is positive' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code with offense',
-                            'exclude(number > 0)',
-                            expected: 'exclude(number.positive?)',
-                            use: 'number.positive?',
-                            instead_of: 'number > 0'
-          end
-
-          context 'when target ruby version is 2.2 or lower', :ruby22 do
-            it_behaves_like 'code without offense',
-                            'exclude(number > 0)'
-          end
+          it_behaves_like 'code with offense',
+                          'exclude(number > 0)',
+                          expected: 'exclude(number.positive?)',
+                          use: 'number.positive?',
+                          instead_of: 'number > 0'
         end
 
         context 'when checking if a number is negative' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code with offense',
-                            'exclude(number < 0)',
-                            expected: 'exclude(number.negative?)',
-                            use: 'number.negative?',
-                            instead_of: 'number < 0'
-          end
-
-          context 'when target ruby version is 2.2 or lower', :ruby22 do
-            it_behaves_like 'code without offense',
-                            'exclude(number < 0)'
-          end
+          it_behaves_like 'code with offense',
+                          'exclude(number < 0)',
+                          expected: 'exclude(number.negative?)',
+                          use: 'number.negative?',
+                          instead_of: 'number < 0'
         end
       end
     end
@@ -263,49 +223,29 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
     context 'in block' do
       context 'ignored method' do
         context 'when checking if a number is positive' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code without offense',
-                            'where { table[number] > 0 }'
-          end
+          it_behaves_like 'code without offense', 'where { table[number] > 0 }'
         end
 
         context 'when checking if a number is negative' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code without offense',
-                            'where { table[number] < 0 }'
-          end
+          it_behaves_like 'code without offense', 'where { table[number] < 0 }'
         end
       end
 
       context 'not ignored method' do
         context 'when checking if a number is positive' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code with offense',
-                            'exclude { number > 0 }',
-                            expected: 'exclude { number.positive? }',
-                            use: 'number.positive?',
-                            instead_of: 'number > 0'
-          end
-
-          context 'when target ruby version is 2.2 or lower', :ruby22 do
-            it_behaves_like 'code without offense',
-                            'exclude { number > 0 }'
-          end
+          it_behaves_like 'code with offense',
+                          'exclude { number > 0 }',
+                          expected: 'exclude { number.positive? }',
+                          use: 'number.positive?',
+                          instead_of: 'number > 0'
         end
 
         context 'when checking if a number is negative' do
-          context 'when target ruby version is 2.3 or higher', :ruby23 do
-            it_behaves_like 'code with offense',
-                            'exclude { number < 0 }',
-                            expected: 'exclude { number.negative? }',
-                            use: 'number.negative?',
-                            instead_of: 'number < 0'
-          end
-
-          context 'when target ruby version is 2.2 or lower', :ruby22 do
-            it_behaves_like 'code without offense',
-                            'exclude { number < 0 }'
-          end
+          it_behaves_like 'code with offense',
+                          'exclude { number < 0 }',
+                          expected: 'exclude { number.negative? }',
+                          use: 'number.negative?',
+                          instead_of: 'number < 0'
         end
       end
     end

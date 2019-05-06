@@ -43,7 +43,7 @@ module RuboCop
         include MultilineElementIndentation
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
-             'in method args, relative to %<base_description>s.'.freeze
+             'in method args, relative to %<base_description>s.'
 
         def on_def(node)
           return if node.arguments.empty?

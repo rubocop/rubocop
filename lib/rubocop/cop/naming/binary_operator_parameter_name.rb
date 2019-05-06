@@ -15,7 +15,7 @@ module RuboCop
       #   def +(other); end
       class BinaryOperatorParameterName < Cop
         MSG = 'When defining the `%<opr>s` operator, ' \
-              'name its argument `other`.'.freeze
+              'name its argument `other`.'
 
         OP_LIKE_METHODS = %i[eql? equal?].freeze
         BLACKLISTED = %i[+@ -@ [] []= << === `].freeze

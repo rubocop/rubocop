@@ -28,7 +28,7 @@ module RuboCop
       #     do_that
       #   end
       class ElseLayout < Cop
-        MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'.freeze
+        MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'
 
         def on_if(node)
           return if node.ternary? || node.elsif?

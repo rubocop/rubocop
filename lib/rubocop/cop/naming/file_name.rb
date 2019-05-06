@@ -28,10 +28,10 @@ module RuboCop
         include RangeHelp
 
         MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) ' \
-                         'should use snake_case.'.freeze
+                         'should use snake_case.'
         MSG_NO_DEFINITION = '%<basename>s should define a class or module ' \
-                            'called `%<namespace>s`.'.freeze
-        MSG_REGEX = '`%<basename>s` should match `%<regex>s`.'.freeze
+                            'called `%<namespace>s`.'
+        MSG_REGEX = '`%<basename>s` should match `%<regex>s`.'
 
         SNAKE_CASE = /^[\da-z_.?!]+$/.freeze
 

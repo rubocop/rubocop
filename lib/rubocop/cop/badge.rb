@@ -13,7 +13,7 @@ module RuboCop
       # Error raised when a badge parse fails.
       class InvalidBadge < Error
         MSG = 'Invalid badge %<badge>p. ' \
-              'Expected `Department/CopName` or `CopName`.'.freeze
+              'Expected `Department/CopName` or `CopName`.'
 
         def initialize(token)
           super(format(MSG, badge: token))

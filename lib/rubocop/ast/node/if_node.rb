@@ -103,7 +103,7 @@ module RuboCop
       #
       # @return [Boolean] whether the `if` node has at least one `elsif` branch
       def elsif_conditional?
-        else_branch && else_branch.if_type? && else_branch.elsif?
+        else_branch&.if_type? && else_branch&.elsif?
       end
 
       # Returns the branch of the `if` node that gets evaluated when its

@@ -33,9 +33,9 @@ module RuboCop
       #   RUBY
       class EvalWithLocation < Cop
         MSG = 'Pass `__FILE__` and `__LINE__` to `eval` method, ' \
-              'as they are used by backtraces.'.freeze
+              'as they are used by backtraces.'
         MSG_INCORRECT_LINE = 'Use `%<expected>s` instead of `%<actual>s`, ' \
-                             'as they are used by backtraces.'.freeze
+                             'as they are used by backtraces.'
 
         def_node_matcher :eval_without_location?, <<-PATTERN
           {
@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def add_offense_for_different_line(node, line_node, line_diff)
-          sign = line_diff > 0 ? :+ : :-
+          sign = line_diff.positive? ? :+ : :-
           return if line_with_offset?(line_node, sign, line_diff.abs)
 
           add_offense(

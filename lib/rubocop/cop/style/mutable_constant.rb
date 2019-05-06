@@ -54,7 +54,7 @@ module RuboCop
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
 
-        MSG = 'Freeze mutable objects assigned to constants.'.freeze
+        MSG = 'Freeze mutable objects assigned to constants.'
 
         def on_casgn(node)
           _scope, _const_name, value = *node
@@ -64,7 +64,7 @@ module RuboCop
         def on_or_asgn(node)
           lhs, value = *node
 
-          return unless lhs && lhs.casgn_type?
+          return unless lhs&.casgn_type?
 
           on_assignment(value)
         end
@@ -118,7 +118,7 @@ module RuboCop
         end
 
         def mutable_literal?(value)
-          value && value.mutable_literal?
+          value&.mutable_literal?
         end
 
         def immutable_literal?(node)

@@ -26,7 +26,7 @@ module RuboCop
       class HeredocDelimiterNaming < Cop
         include Heredoc
 
-        MSG = 'Use meaningful heredoc delimiters.'.freeze
+        MSG = 'Use meaningful heredoc delimiters.'
 
         def on_heredoc(node)
           return if meaningful_delimiters?(node)

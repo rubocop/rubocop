@@ -62,14 +62,12 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
                 'if the return value is not checked.'])
     end
 
-    context 'when using safe navigation operator', :ruby23 do
-      it "when using #{method} without arguments" do
-        inspect_source("object&.#{method}")
+    it "when using #{method} without arguments" do
+      inspect_source("object&.#{method}")
 
-        expect(cop.messages)
-          .to eq(["Use `#{method}!` instead of `#{method}` " \
-        'if the return value is not checked.'])
-      end
+      expect(cop.messages)
+        .to eq(["Use `#{method}!` instead of `#{method}` " \
+      'if the return value is not checked.'])
     end
 
     it "when using #{method}!" do
@@ -90,12 +88,10 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
       expect(new_source).to eq("object.#{method}!()")
     end
 
-    context 'when using safe navigation operator', :ruby23 do
-      it 'autocorrects' do
-        new_source = autocorrect_source("object&.#{method}()")
+    it 'autocorrects' do
+      new_source = autocorrect_source("object&.#{method}()")
 
-        expect(new_source).to eq("object&.#{method}!()")
-      end
+      expect(new_source).to eq("object&.#{method}!()")
     end
   end
 

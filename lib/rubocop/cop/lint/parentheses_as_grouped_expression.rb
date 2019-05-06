@@ -20,7 +20,7 @@ module RuboCop
       class ParenthesesAsGroupedExpression < Cop
         include RangeHelp
 
-        MSG = '`(...)` interpreted as grouped expression.'.freeze
+        MSG = '`(...)` interpreted as grouped expression.'
 
         def on_send(node)
           return unless node.arguments.one?
@@ -29,7 +29,7 @@ module RuboCop
           return unless node.first_argument.source.start_with?('(')
 
           space_length = spaces_before_left_parenthesis(node)
-          return unless space_length > 0
+          return unless space_length.positive?
 
           range = space_range(node.first_argument.source_range, space_length)
 

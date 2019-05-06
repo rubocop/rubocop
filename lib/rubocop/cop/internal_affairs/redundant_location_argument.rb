@@ -19,7 +19,7 @@ module RuboCop
       class RedundantLocationArgument < Cop
         include RangeHelp
 
-        MSG = 'Redundant location argument to `#add_offense`.'.freeze
+        MSG = 'Redundant location argument to `#add_offense`.'
 
         def_node_matcher :redundant_location_argument, <<-PATTERN
           (send nil? :add_offense _

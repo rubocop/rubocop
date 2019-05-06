@@ -124,9 +124,10 @@ RSpec.describe RuboCop::RakeTask do
       expect($stdout.string).to eq(<<-RESULT.strip_indent)
         Running RuboCop...
 
+        1  Style/FrozenStringLiteralComment
         1  Style/SpecialGlobalVars
         --
-        1  Total
+        2  Total
 
       RESULT
       expect($stderr.string.strip).to eq 'RuboCop failed!'

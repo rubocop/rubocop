@@ -54,7 +54,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Reverse the order of the operands `%<source>s`.'.freeze
+        MSG = 'Reverse the order of the operands `%<source>s`.'
 
         REVERSE_COMPARISON = {
           '<' => '>',

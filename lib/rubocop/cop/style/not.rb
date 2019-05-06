@@ -16,7 +16,7 @@ module RuboCop
       class Not < Cop
         include RangeHelp
 
-        MSG = 'Use `!` instead of `not`.'.freeze
+        MSG = 'Use `!` instead of `not`.'
 
         OPPOSITE_METHODS = {
           :== => :!=,

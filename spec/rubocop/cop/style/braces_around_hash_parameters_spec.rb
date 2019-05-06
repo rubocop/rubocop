@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for one non-hash parameter followed by a hash ' \
          'parameter with braces' do
         expect_offense(<<-RUBY.strip_indent)
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     it 'registers an offense for one hash parameter with braces and ' \
        'whitespace' do
       expect_offense(<<-RUBY.strip_indent)
-        where(  
+        where(
           { x: 1 }   )
           ^^^^^^^^ Redundant curly braces around a hash parameter.
       RUBY

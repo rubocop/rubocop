@@ -32,7 +32,7 @@ module RuboCop
       attr_reader :node, :processed_source
 
       def correct_same_line_brace(corrector)
-        corrector.insert_before(node.loc.end, "\n".freeze)
+        corrector.insert_before(node.loc.end, "\n")
       end
 
       def correct_next_line_brace(corrector)

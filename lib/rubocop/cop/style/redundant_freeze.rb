@@ -15,7 +15,7 @@ module RuboCop
         include FrozenStringLiteral
 
         MSG = 'Do not freeze immutable objects, as freezing them has no ' \
-              'effect.'.freeze
+              'effect.'
 
         def on_send(node)
           return unless node.receiver && node.method?(:freeze) &&

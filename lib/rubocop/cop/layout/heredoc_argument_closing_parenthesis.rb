@@ -54,7 +54,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
-        'HEREDOC parameter on the same line as the HEREDOC opening.'.freeze
+        'HEREDOC parameter on the same line as the HEREDOC opening.'
 
         def on_send(node)
           heredoc_arg = extract_heredoc_argument(node)
@@ -122,8 +122,7 @@ module RuboCop
         end
 
         def send_missing_closing_parens?(parent, child, heredoc)
-          parent &&
-            parent.call_type? &&
+          parent&.call_type? &&
             parent.arguments.include?(child) &&
             parent.loc.begin &&
             parent.loc.end.line != heredoc.last_line

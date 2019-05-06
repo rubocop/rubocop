@@ -20,7 +20,7 @@ module RuboCop
         include MatchRange
         include PercentLiteral
 
-        MSG = 'Do not use spaces inside percent literal delimiters.'.freeze
+        MSG = 'Do not use spaces inside percent literal delimiters.'
         BEGIN_REGEX = /\A( +)/.freeze
         END_REGEX = /(?<!\\)( +)\z/.freeze
 

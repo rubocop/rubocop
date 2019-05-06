@@ -91,7 +91,7 @@ module RuboCop
       #     delegate :method_a, to: :method_b
       #   end
       class UselessAccessModifier < Cop
-        MSG = 'Useless `%<current>s` access modifier.'.freeze
+        MSG = 'Useless `%<current>s` access modifier.'
 
         def on_class(node)
           check_node(node.children[2]) # class body

@@ -123,7 +123,7 @@ module RuboCop
 
     def file_offense_cache(file)
       cache = ResultCache.new(file, @options, @config_store) if cached_run?
-      if cache && cache.valid?
+      if cache&.valid?
         offenses = cache.load
         # If we're running --auto-correct and the cache says there are
         # offenses, we need to actually inspect the file. If the cache shows no

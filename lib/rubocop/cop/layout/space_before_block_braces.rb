@@ -31,8 +31,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MISSING_MSG = 'Space missing to the left of {.'.freeze
-        DETECTED_MSG = 'Space detected to the left of {.'.freeze
+        MISSING_MSG = 'Space missing to the left of {.'
+        DETECTED_MSG = 'Space detected to the left of {.'
 
         def self.autocorrect_incompatible_with
           [Style::SymbolProc]

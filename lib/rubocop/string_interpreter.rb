@@ -29,8 +29,8 @@ module RuboCop
 
       def interpret_string_escape(escape)
         case escape[1]
-        when 'u'.freeze then interpret_unicode(escape)
-        when 'x'.freeze then interpret_hex(escape)
+        when 'u' then interpret_unicode(escape)
+        when 'x' then interpret_hex(escape)
         when /\d/       then interpret_octal(escape)
         else
           escape[1] # literal escaped char, like \\
@@ -38,19 +38,19 @@ module RuboCop
       end
 
       def interpret_unicode(escape)
-        if escape[2] == '{'.freeze
-          escape[3..-1].split(/\s+/).map(&:hex).pack('U*'.freeze)
+        if escape[2] == '{'
+          escape[3..-1].split(/\s+/).map(&:hex).pack('U*')
         else
-          [escape[2..-1].hex].pack('U'.freeze)
+          [escape[2..-1].hex].pack('U')
         end
       end
 
       def interpret_hex(escape)
-        [escape[2..-1].hex].pack('C'.freeze)
+        [escape[2..-1].hex].pack('C')
       end
 
       def interpret_octal(escape)
-        [escape[1..-1].to_i(8)].pack('C'.freeze)
+        [escape[1..-1].to_i(8)].pack('C')
       end
     end
   end

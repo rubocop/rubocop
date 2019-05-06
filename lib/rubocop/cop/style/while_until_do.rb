@@ -29,7 +29,7 @@ module RuboCop
       #     do_something(x.pop)
       #   end
       class WhileUntilDo < Cop
-        MSG = 'Do not use `do` with multi-line `%<keyword>s`.'.freeze
+        MSG = 'Do not use `do` with multi-line `%<keyword>s`.'
 
         def on_while(node)
           handle(node)

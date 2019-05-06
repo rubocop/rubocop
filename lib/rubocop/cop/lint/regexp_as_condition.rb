@@ -18,7 +18,7 @@ module RuboCop
       #   end
       class RegexpAsCondition < Cop
         MSG = 'Do not use regexp literal as a condition.' \
-              ' The regexp literal matches `$_` implicitly.'.freeze
+              ' The regexp literal matches `$_` implicitly.'
 
         def on_match_current_line(node)
           add_offense(node)

@@ -54,10 +54,10 @@ module RuboCop
       #     !present?
       #   end
       class Blank < Cop
-        MSG_NIL_OR_EMPTY = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
-        MSG_NOT_PRESENT = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG_NIL_OR_EMPTY = 'Use `%<prefer>s` instead of `%<current>s`.'
+        MSG_NOT_PRESENT = 'Use `%<prefer>s` instead of `%<current>s`.'
         MSG_UNLESS_PRESENT = 'Use `if %<prefer>s` instead of ' \
-                             '`%<current>s`.'.freeze
+                             '`%<current>s`.'
 
         # `(send nil $_)` is not actually a valid match for an offense. Nodes
         # that have a single method call on the left hand side

@@ -39,7 +39,7 @@ module RuboCop
       class AsciiIdentifiers < Cop
         include RangeHelp
 
-        MSG = 'Use only ascii symbols in identifiers.'.freeze
+        MSG = 'Use only ascii symbols in identifiers.'
 
         def investigate(processed_source)
           processed_source.each_token do |token|

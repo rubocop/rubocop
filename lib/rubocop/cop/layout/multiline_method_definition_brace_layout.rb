@@ -105,17 +105,17 @@ module RuboCop
 
         SAME_LINE_MESSAGE = 'Closing method definition brace must be on the ' \
           'same line as the last parameter when opening brace is on the same ' \
-          'line as the first parameter.'.freeze
+          'line as the first parameter.'
 
         NEW_LINE_MESSAGE = 'Closing method definition brace must be on the ' \
           'line after the last parameter when opening brace is on a separate ' \
-          'line from the first parameter.'.freeze
+          'line from the first parameter.'
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing method definition brace must be ' \
-          'on the line after the last parameter.'.freeze
+          'on the line after the last parameter.'
 
         ALWAYS_SAME_LINE_MESSAGE = 'Closing method definition brace must be ' \
-          'on the same line as the last parameter.'.freeze
+          'on the same line as the last parameter.'
 
         def on_def(node)
           check_brace_layout(node.arguments)

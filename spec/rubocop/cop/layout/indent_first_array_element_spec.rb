@@ -203,7 +203,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArrayElement do
           RUBY
         end
 
-        context 'when using safe navigation operator', :ruby23 do
+        context 'when using safe navigation operator' do
           it "registers an offense for 'consistent' indentation" do
             expect_offense(<<-RUBY.strip_indent)
               receiver&.func([

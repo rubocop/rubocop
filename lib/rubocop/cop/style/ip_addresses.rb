@@ -22,7 +22,7 @@ module RuboCop
         include StringHelp
 
         IPV6_MAX_SIZE = 45 # IPv4-mapped IPv6 is the longest
-        MSG = 'Do not hardcode IP addresses.'.freeze
+        MSG = 'Do not hardcode IP addresses.'
 
         def offense?(node)
           contents = node.source[1...-1]

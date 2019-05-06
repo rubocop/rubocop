@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
       end
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for correct + opposite' do
         expect_offense(<<-RUBY.strip_indent)
           something
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for correct + opposite' do
         expect_offense(<<-RUBY.strip_indent)
         something

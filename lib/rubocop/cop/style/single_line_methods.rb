@@ -20,7 +20,7 @@ module RuboCop
       class SingleLineMethods < Cop
         include Alignment
 
-        MSG = 'Avoid single-line method definitions.'.freeze
+        MSG = 'Avoid single-line method definitions.'
 
         def on_def(node)
           return unless node.single_line?

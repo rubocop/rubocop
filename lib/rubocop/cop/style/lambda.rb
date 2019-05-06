@@ -50,9 +50,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for ' \
-                          '%<modifier>s lambdas.'.freeze
+                          '%<modifier>s lambdas.'
         METHOD_MESSAGE = 'Use the `lambda` method for %<modifier>s ' \
-                         'lambdas.'.freeze
+                         'lambdas.'
 
         OFFENDING_SELECTORS = {
           style: {

@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArguments do
         RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for arguments with single indent' do
         expect_offense(<<-RUBY.strip_indent)
           receiver&.function(a,

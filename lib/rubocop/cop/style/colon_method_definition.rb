@@ -20,7 +20,7 @@ module RuboCop
       #   end
       #
       class ColonMethodDefinition < Cop
-        MSG = 'Do not use `::` for defining class methods.'.freeze
+        MSG = 'Do not use `::` for defining class methods.'
 
         def on_defs(node)
           return unless node.loc.operator.source == '::'

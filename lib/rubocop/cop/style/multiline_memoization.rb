@@ -33,7 +33,7 @@ module RuboCop
       class MultilineMemoization < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'.freeze
+        MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'
 
         def on_or_asgn(node)
           _lhs, rhs = *node

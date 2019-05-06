@@ -48,7 +48,7 @@ module RuboCop
           end
         end
 
-        MSG = '`%<current>s` is deprecated in favor of `%<prefer>s`.'.freeze
+        MSG = '`%<current>s` is deprecated in favor of `%<prefer>s`.'
         DEPRECATED_METHODS_OBJECT = [
           DeprecatedClassMethod.new(deprecated: :exists?,
                                     replacement: :exist?,

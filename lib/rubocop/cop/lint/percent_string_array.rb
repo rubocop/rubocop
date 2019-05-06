@@ -28,7 +28,7 @@ module RuboCop
         TRAILING_QUOTE = /['"]?,?$/.freeze
 
         MSG = "Within `%w`/`%W`, quotes and ',' are unnecessary and may be " \
-          'unwanted in the resulting strings.'.freeze
+          'unwanted in the resulting strings.'
 
         def on_array(node)
           process(node, '%w', '%W')

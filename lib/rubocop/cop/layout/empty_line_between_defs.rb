@@ -32,7 +32,7 @@ module RuboCop
       class EmptyLineBetweenDefs < Cop
         include RangeHelp
 
-        MSG = 'Use empty lines between method definitions.'.freeze
+        MSG = 'Use empty lines between method definitions.'
 
         def self.autocorrect_incompatible_with
           [Layout::EmptyLines]
@@ -111,7 +111,7 @@ module RuboCop
         end
 
         def prev_node(node)
-          return nil unless node.sibling_index > 0
+          return nil unless node.sibling_index.positive?
 
           node.parent.children[node.sibling_index - 1]
         end

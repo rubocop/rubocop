@@ -12,7 +12,7 @@ module RuboCop
       #   eval(something)
       #   binding.eval(something)
       class Eval < Cop
-        MSG = 'The use of `eval` is a serious security risk.'.freeze
+        MSG = 'The use of `eval` is a serious security risk.'
 
         def_node_matcher :eval?, <<-PATTERN
           (send {nil? (send nil? :binding)} :eval $!str ...)

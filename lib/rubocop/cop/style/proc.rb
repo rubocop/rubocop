@@ -14,7 +14,7 @@ module RuboCop
       #   p = proc { |n| puts n }
       #
       class Proc < Cop
-        MSG = 'Use `proc` instead of `Proc.new`.'.freeze
+        MSG = 'Use `proc` instead of `Proc.new`.'
 
         def_node_matcher :proc_new?,
                          '(block $(send (const nil? :Proc) :new) ...)'

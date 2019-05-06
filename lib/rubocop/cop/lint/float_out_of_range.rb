@@ -19,7 +19,7 @@ module RuboCop
       #
       #   float = 42.9
       class FloatOutOfRange < Cop
-        MSG = 'Float out of range.'.freeze
+        MSG = 'Float out of range.'
 
         def on_float(node)
           value, = *node

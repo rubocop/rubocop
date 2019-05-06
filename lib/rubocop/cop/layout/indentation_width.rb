@@ -50,7 +50,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
-              'spaces for%<name>s indentation.'.freeze
+              'spaces for%<name>s indentation.'
 
         SPECIAL_MODIFIERS = %w[private protected].freeze
 
@@ -342,7 +342,7 @@ module RuboCop
         end
 
         def leftmost_modifier_of(node)
-          return node unless node.parent && node.parent.send_type?
+          return node unless node.parent&.send_type?
 
           leftmost_modifier_of(node.parent)
         end

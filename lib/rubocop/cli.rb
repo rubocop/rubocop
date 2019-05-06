@@ -7,13 +7,13 @@ module RuboCop
   class CLI
     include Formatter::TextUtil
 
-    PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop'.freeze
-    PHASE_2 = 'Phase 2 of 2: run all cops'.freeze
+    PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop'
+    PHASE_2 = 'Phase 2 of 2: run all cops'
 
     PHASE_1_OVERRIDDEN = '(skipped because the default Metrics/LineLength:Max' \
-                         ' is overridden)'.freeze
+                         ' is overridden)'
     PHASE_1_DISABLED   = '(skipped because Metrics/LineLength is ' \
-                         'disabled)'.freeze
+                         'disabled)'
 
     STATUS_SUCCESS     = 0
     STATUS_OFFENSES    = 1

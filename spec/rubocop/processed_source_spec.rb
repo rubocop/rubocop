@@ -98,7 +98,7 @@ RSpec.describe RuboCop::ProcessedSource do
         # lacking an encoding comment will default to the external encoding,
         # which could for example be US-ASCII if the LC_ALL environment
         # variable is set to "C".
-        '号码 = 3'.dup.force_encoding('US-ASCII')
+        (+'号码 = 3').force_encoding('US-ASCII')
       end
 
       it 'is nil' do

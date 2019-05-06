@@ -27,7 +27,7 @@ module RuboCop
       class AmbiguousBlockAssociation < Cop
         MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
               'block will be associated with the `%<method>s` method ' \
-              'call.'.freeze
+              'call.'
 
         def on_send(node)
           return if !node.arguments? || node.parenthesized? ||

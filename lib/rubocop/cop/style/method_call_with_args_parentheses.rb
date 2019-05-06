@@ -163,9 +163,9 @@ module RuboCop
         def message(_node = nil)
           case style
           when :require_parentheses
-            'Use parentheses for method calls with arguments.'.freeze
+            'Use parentheses for method calls with arguments.'
           when :omit_parentheses
-            'Omit parentheses for method calls with arguments.'.freeze
+            'Omit parentheses for method calls with arguments.'
           end
         end
 
@@ -327,7 +327,7 @@ module RuboCop
           return false unless cop_config['AllowParenthesesInChaining']
 
           previous = node.descendants.first
-          return false unless previous && previous.send_type?
+          return false unless previous&.send_type?
 
           previous.parenthesized? ||
             allowed_chained_call_with_parentheses?(previous)

@@ -11,7 +11,7 @@ module RuboCop
       #
       #   x.top >= x.top
       class UselessComparison < Cop
-        MSG = 'Comparison of something with itself detected.'.freeze
+        MSG = 'Comparison of something with itself detected.'
         OPS = %w[== === != < > <= >= <=>].freeze
 
         def_node_matcher :useless_comparison?,

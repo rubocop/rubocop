@@ -16,7 +16,7 @@ module RuboCop
       class UriRegexp < Cop
         MSG = '`%<top_level>sURI.regexp%<arg>s` is obsolete and should not ' \
               'be used. Instead, use `%<top_level>sURI::DEFAULT_PARSER.' \
-              'make_regexp%<arg>s`.'.freeze
+              'make_regexp%<arg>s`.'
 
         def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
           (send

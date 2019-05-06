@@ -59,16 +59,13 @@ module RuboCop
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
       class SafeNavigation < Cop
-        extend TargetRubyVersion
         include NilMethods
         include RangeHelp
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
-              'exists before calling the method.'.freeze
+              'exists before calling the method.'
         LOGIC_JUMP_KEYWORDS = %i[break fail next raise
                                  return throw yield].freeze
-
-        minimum_target_ruby_version 2.3
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)
@@ -99,8 +96,6 @@ module RuboCop
         end
 
         def check_node(node)
-          return if target_ruby_version < 2.3
-
           checked_variable, receiver, method_chain, method = extract_parts(node)
           return unless receiver == checked_variable
           return if use_var_only_in_unless_modifier?(node, checked_variable)
@@ -229,7 +224,7 @@ module RuboCop
         end
 
         def method_called?(send_node)
-          send_node.parent && send_node.parent.send_type?
+          send_node.parent&.send_type?
         end
 
         def begin_range(node, method_call)

@@ -23,7 +23,7 @@ module RuboCop
       #   when baz then 2
       #   end
       class EmptyWhen < Cop
-        MSG = 'Avoid `when` branches without a body.'.freeze
+        MSG = 'Avoid `when` branches without a body.'
 
         def on_case(node)
           node.each_when do |when_node|

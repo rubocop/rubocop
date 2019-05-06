@@ -45,7 +45,7 @@ module RuboCop
       #     handle_exception
       #   end
       class HandleExceptions < Cop
-        MSG = 'Do not suppress exceptions.'.freeze
+        MSG = 'Do not suppress exceptions.'
 
         def on_resbody(node)
           add_offense(node) unless node.body

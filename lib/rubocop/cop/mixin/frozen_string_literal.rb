@@ -6,8 +6,8 @@ module RuboCop
     module FrozenStringLiteral
       module_function
 
-      FROZEN_STRING_LITERAL = '# frozen_string_literal:'.freeze
-      FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'.freeze
+      FROZEN_STRING_LITERAL = '# frozen_string_literal:'
+      FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'
       FROZEN_STRING_LITERAL_TYPES = %i[str dstr].freeze
 
       def frozen_string_literal_comment_exists?
@@ -21,6 +21,7 @@ module RuboCop
       def frozen_string_literals_enabled?
         ruby_version = processed_source.ruby_version
         return false unless ruby_version
+
         # TODO: Ruby officially abandon making frozen string literals default
         # for Ruby 3.0.
         # https://bugs.ruby-lang.org/issues/11473#note-53
@@ -33,8 +34,6 @@ module RuboCop
         # And the above `ruby_version >= 3.1` is undecided whether it will be
         # Ruby 3.1, 3.2, 4.0 or others.
         # See https://bugs.ruby-lang.org/issues/8976#note-41 for details.
-        return false unless ruby_version >= 2.3
-
         leading_comment_lines.any? do |line|
           MagicComment.parse(line).frozen_string_literal?
         end

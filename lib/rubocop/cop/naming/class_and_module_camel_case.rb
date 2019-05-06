@@ -19,7 +19,7 @@ module RuboCop
       #   module MyModule
       #   end
       class ClassAndModuleCamelCase < Cop
-        MSG = 'Use CamelCase for classes and modules.'.freeze
+        MSG = 'Use CamelCase for classes and modules.'
 
         def on_class(node)
           return unless node.loc.name.source =~ /_/

@@ -28,7 +28,6 @@ module RuboCop
         include Alignment
 
         MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
-              .freeze
 
         def on_block(node)
           return if node.single_line?

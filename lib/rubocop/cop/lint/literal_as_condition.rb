@@ -31,7 +31,7 @@ module RuboCop
       #     do_something
       #   end
       class LiteralAsCondition < Cop
-        MSG = 'Literal `%<literal>s` appeared as a condition.'.freeze
+        MSG = 'Literal `%<literal>s` appeared as a condition.'
 
         def on_if(node)
           check_for_literal(node)

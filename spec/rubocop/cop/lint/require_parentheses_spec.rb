@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses do
     RUBY
   end
 
-  context 'when using safe navigation operator', :ruby23 do
+  context 'when using safe navigation operator' do
     it 'registers an offense for missing parentheses around expression with ' \
        '&& operator' do
       expect_offense(<<-RUBY.strip_indent)

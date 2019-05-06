@@ -27,10 +27,10 @@ module RuboCop
         MSG_WITH_SAFE_ASSIGNMENT_ALLOWED =
           'Use `==` if you meant to do a comparison or wrap the expression ' \
           'in parentheses to indicate you meant to assign in a ' \
-          'condition.'.freeze
+          'condition.'
         MSG_WITHOUT_SAFE_ASSIGNMENT_ALLOWED =
           'Use `==` if you meant to do a comparison or move the assignment ' \
-          'up out of the condition.'.freeze
+          'up out of the condition.'
         ASGN_TYPES = [:begin, *AST::Node::EQUALS_ASSIGNMENTS, :send].freeze
 
         def on_if(node)

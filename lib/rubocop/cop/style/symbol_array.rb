@@ -33,8 +33,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include PercentArray
 
-        PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'.freeze
-        ARRAY_MSG = 'Use `[]` for an array of symbols.'.freeze
+        PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
+        ARRAY_MSG = 'Use `[]` for an array of symbols.'
 
         class << self
           attr_accessor :largest_brackets

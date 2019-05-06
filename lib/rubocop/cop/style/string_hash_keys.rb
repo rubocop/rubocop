@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   { one: 1, two: 2, three: 3 }
       class StringHashKeys < Cop
-        MSG = 'Prefer symbols instead of strings as hash keys.'.freeze
+        MSG = 'Prefer symbols instead of strings as hash keys.'
 
         def_node_matcher :string_hash_key?, <<-PATTERN
           (pair (str _) _)

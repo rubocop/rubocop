@@ -38,8 +38,8 @@ module RuboCop
       class RedundantReturn < Cop
         include RangeHelp
 
-        MSG = 'Redundant `return` detected.'.freeze
-        MULTI_RETURN_MSG = 'To return multiple values, use an array.'.freeze
+        MSG = 'Redundant `return` detected.'
+        MULTI_RETURN_MSG = 'To return multiple values, use an array.'
 
         def on_def(node)
           return unless node.body
@@ -139,7 +139,7 @@ module RuboCop
           expressions = *node
           last_expr = expressions.last
 
-          return unless last_expr && last_expr.return_type?
+          return unless last_expr&.return_type?
 
           check_return_node(last_expr)
         end

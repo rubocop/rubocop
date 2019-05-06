@@ -178,7 +178,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Align the elements of a hash literal if they span more than ' \
-              'one line.'.freeze
+              'one line.'
 
         def on_send(node)
           return if double_splat?(node)
@@ -298,9 +298,9 @@ module RuboCop
         end
 
         def adjust(corrector, delta, range)
-          if delta > 0
+          if delta.positive?
             corrector.insert_before(range, ' ' * delta)
-          elsif delta < 0
+          elsif delta.negative?
             range = range_between(range.begin_pos - delta.abs, range.begin_pos)
             corrector.remove(range)
           end

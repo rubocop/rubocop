@@ -33,8 +33,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include PercentArray
 
-        PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'.freeze
-        ARRAY_MSG = 'Use `[]` for an array of words.'.freeze
+        PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
+        ARRAY_MSG = 'Use `[]` for an array of words.'
 
         class << self
           attr_accessor :largest_brackets

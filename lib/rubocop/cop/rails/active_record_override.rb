@@ -27,7 +27,7 @@ module RuboCop
       class ActiveRecordOverride < Cop
         MSG =
           'Use %<prefer>s callbacks instead of overriding the Active Record ' \
-          'method `%<bad>s`.'.freeze
+          'method `%<bad>s`.'
         BAD_METHODS = %i[create destroy save update].freeze
         ACTIVE_RECORD_CLASSES = %w[ApplicationRecord ActiveModel::Base
                                    ActiveRecord::Base].freeze

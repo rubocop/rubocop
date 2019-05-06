@@ -14,7 +14,7 @@ module RuboCop
       #
       class EndBlock < Cop
         MSG = 'Avoid the use of `END` blocks. ' \
-              'Use `Kernel#at_exit` instead.'.freeze
+              'Use `Kernel#at_exit` instead.'
 
         def on_postexe(node)
           add_offense(node, location: :keyword)

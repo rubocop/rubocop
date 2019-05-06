@@ -5,10 +5,10 @@ module RuboCop
     # Common functionality for nodes that are predicates:
     # `or`, `and` ...
     module PredicateOperatorNode
-      LOGICAL_AND  = '&&'.freeze
-      SEMANTIC_AND = 'and'.freeze
-      LOGICAL_OR   = '||'.freeze
-      SEMANTIC_OR  = 'or'.freeze
+      LOGICAL_AND  = '&&'
+      SEMANTIC_AND = 'and'
+      LOGICAL_OR   = '||'
+      SEMANTIC_OR  = 'or'
 
       # Returns the operator as a string.
       #

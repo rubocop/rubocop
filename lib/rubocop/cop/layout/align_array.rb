@@ -24,7 +24,7 @@ module RuboCop
         include Alignment
 
         MSG = 'Align the elements of an array literal if they span more ' \
-              'than one line.'.freeze
+              'than one line.'
 
         def on_array(node)
           check_alignment(node.children)

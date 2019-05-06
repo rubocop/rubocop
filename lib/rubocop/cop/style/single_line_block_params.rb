@@ -29,7 +29,7 @@ module RuboCop
       #     c + d
       #   end
       class SingleLineBlockParams < Cop
-        MSG = 'Name `%<method>s` block params `|%<params>s|`.'.freeze
+        MSG = 'Name `%<method>s` block params `|%<params>s|`.'
 
         def on_block(node)
           return unless node.single_line?

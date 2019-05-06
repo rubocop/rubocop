@@ -42,11 +42,11 @@ module RuboCop
         BINARY_REGEX = /^0B[01]+$/.freeze
         DECIMAL_REGEX = /^0[dD][0-9]+$/.freeze
 
-        OCTAL_ZERO_ONLY_MSG = 'Use 0 for octal literals.'.freeze
-        OCTAL_MSG = 'Use 0o for octal literals.'.freeze
-        HEX_MSG = 'Use 0x for hexadecimal literals.'.freeze
-        BINARY_MSG = 'Use 0b for binary literals.'.freeze
-        DECIMAL_MSG = 'Do not use prefixes for decimal literals.'.freeze
+        OCTAL_ZERO_ONLY_MSG = 'Use 0 for octal literals.'
+        OCTAL_MSG = 'Use 0o for octal literals.'
+        HEX_MSG = 'Use 0x for hexadecimal literals.'
+        BINARY_MSG = 'Use 0b for binary literals.'
+        DECIMAL_MSG = 'Do not use prefixes for decimal literals.'
 
         def on_int(node)
           type = literal_type(node)

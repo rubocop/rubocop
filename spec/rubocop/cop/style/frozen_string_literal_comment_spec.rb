@@ -287,104 +287,48 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       expect_no_offenses('')
     end
 
-    if RUBY_VERSION >= '2.3.0'
-      context 'ruby >= 2.3' do
-        context 'no frozen string literal comment' do
-          it 'accepts not modifing a string' do
-            expect_no_offenses('puts "x"')
-          end
-
-          it 'accepts calling + on a string' do
-            expect_no_offenses('"x" + "y"')
-          end
-
-          it 'accepts calling freeze on a variable' do
-            expect_no_offenses(<<-RUBY.strip_indent)
-              foo = "x"
-                foo.freeze
-            RUBY
-          end
-
-          it 'accepts calling shovel on a variable' do
-            expect_no_offenses(<<-RUBY.strip_indent)
-              foo = "x"
-                foo << "y"
-            RUBY
-          end
-
-          it 'accepts freezing a string' do
-            expect_no_offenses('"x".freeze')
-          end
-
-          it 'accepts when << is called on a string literal' do
-            expect_no_offenses('"x" << "y"')
-          end
-        end
-
-        it 'accepts freezing a string when there is a frozen string literal ' \
-           'comment' do
-          expect_no_offenses(<<-RUBY.strip_indent)
-            # frozen_string_literal: true
-            "x".freeze
-          RUBY
-        end
-
-        it 'accepts shoveling into a string when there is a frozen string ' \
-           'literal comment' do
-          expect_no_offenses(<<-RUBY.strip_indent)
-            # frozen_string_literal: true
-            "x" << "y"
-          RUBY
-        end
-      end
+    it 'accepts freezing a string when there is a frozen string literal ' \
+      'comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+        "x".freeze
+      RUBY
     end
 
-    context 'target_ruby_version < 2.3', :ruby22 do
-      it 'accepts freezing a string' do
-        expect_no_offenses('"x".freeze')
-      end
-
-      it 'accepts calling << on a string' do
-        expect_no_offenses('"x" << "y"')
-      end
-
-      it 'accepts freezing a string with interpolation' do
-        expect_no_offenses('"#{foo}bar".freeze')
-      end
-
-      it 'accepts calling << on a string with interpolation' do
-        expect_no_offenses('"#{foo}bar" << "baz"')
-      end
+    it 'accepts shoveling into a string when there is a frozen string ' \
+       'literal comment' do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        # frozen_string_literal: true
+        "x" << "y"
+      RUBY
     end
 
-    context 'target_ruby_version 2.3+', :ruby23 do
-      it 'accepts freezing a string' do
-        expect_offense(<<-RUBY.strip_indent)
-          "x".freeze
-          ^ Missing magic comment `# frozen_string_literal: true`.
-        RUBY
-      end
+    it 'accepts freezing a string' do
+      expect_offense(<<-RUBY.strip_indent)
+        "x".freeze
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+    end
 
-      it 'accepts calling << on a string' do
-        expect_offense(<<-RUBY.strip_indent)
-          "x" << "y"
-          ^ Missing magic comment `# frozen_string_literal: true`.
-        RUBY
-      end
+    it 'accepts calling << on a string' do
+      expect_offense(<<-RUBY.strip_indent)
+        "x" << "y"
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+    end
 
-      it 'accepts freezing a string with interpolation' do
-        expect_offense(<<-'RUBY'.strip_indent)
-          "#{foo}bar".freeze
-          ^ Missing magic comment `# frozen_string_literal: true`.
-        RUBY
-      end
+    it 'accepts freezing a string with interpolation' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{foo}bar".freeze
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+    end
 
-      it 'accepts calling << on a string with interpolation' do
-        expect_offense(<<-'RUBY'.strip_indent)
-          "#{foo}bar" << "baz"
-          ^ Missing magic comment `# frozen_string_literal: true`.
-        RUBY
-      end
+    it 'accepts calling << on a string with interpolation' do
+      expect_offense(<<-'RUBY'.strip_indent)
+        "#{foo}bar" << "baz"
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
     end
   end
 

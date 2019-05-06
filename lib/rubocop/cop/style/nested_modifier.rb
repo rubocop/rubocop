@@ -16,7 +16,7 @@ module RuboCop
       class NestedModifier < Cop
         include RangeHelp
 
-        MSG = 'Avoid using nested modifiers.'.freeze
+        MSG = 'Avoid using nested modifiers.'
 
         def on_while(node)
           check(node)
@@ -39,7 +39,7 @@ module RuboCop
         end
 
         def modifier?(node)
-          node && node.basic_conditional? && node.modifier_form?
+          node&.basic_conditional? && node&.modifier_form?
         end
 
         def autocorrect(node)
@@ -62,13 +62,13 @@ module RuboCop
         end
 
         def replacement_operator(keyword)
-          keyword == 'if'.freeze ? '&&'.freeze : '||'.freeze
+          keyword == 'if' ? '&&' : '||'
         end
 
         def left_hand_operand(node, operator)
           expr = node.condition.source
           expr = "(#{expr})" if node.condition.or_type? &&
-                                operator == '&&'.freeze
+                                operator == '&&'
           expr
         end
 

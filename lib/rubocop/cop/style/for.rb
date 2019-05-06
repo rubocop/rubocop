@@ -43,8 +43,8 @@ module RuboCop
         include RangeHelp
 
         EACH_LENGTH = 'each'.length
-        PREFER_EACH = 'Prefer `each` over `for`.'.freeze
-        PREFER_FOR = 'Prefer `for` over `each`.'.freeze
+        PREFER_EACH = 'Prefer `each` over `for`.'
+        PREFER_FOR = 'Prefer `for` over `each`.'
 
         def on_for(node)
           if style == :each

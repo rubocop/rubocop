@@ -23,7 +23,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Use `request.%<prefer>s` instead of ' \
-              '`request.%<current>s`.'.freeze
+              '`request.%<current>s`.'
 
         def_node_matcher :referer?, <<-PATTERN
           (send (send nil? :request) {:referer :referrer})

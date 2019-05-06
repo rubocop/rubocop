@@ -52,16 +52,16 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MODULE_FUNCTION_MSG =
-          'Use `module_function` instead of `extend self`.'.freeze
+          'Use `module_function` instead of `extend self`.'
         EXTEND_SELF_MSG =
-          'Use `extend self` instead of `module_function`.'.freeze
+          'Use `extend self` instead of `module_function`.'
 
         def_node_matcher :module_function_node?, '(send nil? :module_function)'
         def_node_matcher :extend_self_node?, '(send nil? :extend self)'
         def_node_matcher :private_directive?, '(send nil? :private ...)'
 
         def on_module(node)
-          return unless node.body && node.body.begin_type?
+          return unless node.body&.begin_type?
 
           each_wrong_style(node.body.children) do |child_node|
             add_offense(child_node)

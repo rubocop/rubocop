@@ -19,9 +19,9 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Include a copyright notice matching /%<notice>s/ before ' \
-              'any code.'.freeze
+              'any code.'
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in ' \
-                                    'your RuboCop config'.freeze
+                                    'your RuboCop config'
 
         def investigate(processed_source)
           return if notice.empty?

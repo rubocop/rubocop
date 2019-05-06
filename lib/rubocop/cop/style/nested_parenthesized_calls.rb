@@ -15,7 +15,7 @@ module RuboCop
       class NestedParenthesizedCalls < Cop
         include RangeHelp
 
-        MSG = 'Add parentheses to nested method call `%<source>s`.'.freeze
+        MSG = 'Add parentheses to nested method call `%<source>s`.'
 
         def on_send(node)
           return unless node.parenthesized?

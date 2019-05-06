@@ -18,7 +18,7 @@ module RuboCop
       #     f.bar # Trailing inline comment
       #   end
       class InlineComment < Cop
-        MSG = 'Avoid trailing inline comments.'.freeze
+        MSG = 'Avoid trailing inline comments.'
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|

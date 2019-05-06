@@ -31,8 +31,8 @@ module RuboCop
       #   puts 'hello, world'
       #
       class ScriptPermission < Cop
-        MSG = "Script file %<file>s doesn't have execute permission.".freeze
-        SHEBANG = '#!'.freeze
+        MSG = "Script file %<file>s doesn't have execute permission."
+        SHEBANG = '#!'
 
         def investigate(processed_source)
           return if @options.key?(:stdin)

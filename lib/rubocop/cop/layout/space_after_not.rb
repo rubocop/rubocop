@@ -14,7 +14,7 @@ module RuboCop
       class SpaceAfterNot < Cop
         include RangeHelp
 
-        MSG = 'Do not leave space between `!` and its argument.'.freeze
+        MSG = 'Do not leave space between `!` and its argument.'
 
         def on_send(node)
           return unless node.prefix_bang? && whitespace_after_operator?(node)

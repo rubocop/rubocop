@@ -50,12 +50,12 @@ module RuboCop
       #     baz
       #   end
       class UnneededSplatExpansion < Cop
-        MSG = 'Replace splat expansion with comma separated values.'.freeze
-        ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'.freeze
-        PERCENT_W = '%w'.freeze
-        PERCENT_CAPITAL_W = '%W'.freeze
-        PERCENT_I = '%i'.freeze
-        PERCENT_CAPITAL_I = '%I'.freeze
+        MSG = 'Replace splat expansion with comma separated values.'
+        ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'
+        PERCENT_W = '%w'
+        PERCENT_CAPITAL_W = '%W'
+        PERCENT_I = '%i'
+        PERCENT_CAPITAL_I = '%I'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
         def_node_matcher :array_new?, '$(send (const nil? :Array) :new ...)'
@@ -141,7 +141,7 @@ module RuboCop
           grandparent = node.parent.parent
 
           parent.when_type? || parent.send_type? || part_of_an_array?(node) ||
-            (grandparent && grandparent.resbody_type?)
+            (grandparent&.resbody_type?)
         end
 
         def remove_brackets(array)

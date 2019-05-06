@@ -22,7 +22,7 @@ module RuboCop
       class MethodName < Cop
         include ConfigurableNaming
 
-        MSG = 'Use %<style>s for method names.'.freeze
+        MSG = 'Use %<style>s for method names.'
 
         def on_def(node)
           return if node.operator_method?

@@ -83,7 +83,7 @@ module RuboCop
       #     end
       #   end
       class LexicallyScopedActionFilter < Cop
-        MSG = '%<action>s not explicitly defined on the %<type>s.'.freeze
+        MSG = '%<action>s not explicitly defined on the %<type>s.'
 
         FILTERS = %w[
           :after_action

@@ -10,7 +10,7 @@ module RuboCop
       class BlockLength < Cop
         include TooManyLines
 
-        LABEL = 'Block'.freeze
+        LABEL = 'Block'
 
         def on_block(node)
           return if excluded_method?(node)
@@ -22,7 +22,7 @@ module RuboCop
         private
 
         def excluded_method?(node)
-          node_receiver = node.receiver && node.receiver.source.gsub(/\s+/, '')
+          node_receiver = node.receiver&.source&.gsub(/\s+/, '')
           node_method = String(node.method_name)
 
           excluded_methods.any? do |config|

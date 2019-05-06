@@ -48,9 +48,9 @@ module RuboCop
         VARIABLE_TYPES = AST::Node::VARIABLES
         NON_COMPLEX_TYPES = [*VARIABLE_TYPES, :const, :defined?, :yield].freeze
 
-        MSG = '%<command>s parentheses for ternary conditions.'.freeze
+        MSG = '%<command>s parentheses for ternary conditions.'
         MSG_COMPLEX = '%<command>s parentheses for ternary expressions with' \
-          ' complex conditions.'.freeze
+          ' complex conditions.'
 
         def on_if(node)
           return unless node.ternary? && !infinite_loop? && offense?(node)

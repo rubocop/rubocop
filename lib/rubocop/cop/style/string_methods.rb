@@ -17,7 +17,7 @@ module RuboCop
       class StringMethods < Cop
         include MethodPreference
 
-        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'.freeze
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 
         def on_send(node)
           return unless preferred_method(node.method_name)

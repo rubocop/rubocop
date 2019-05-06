@@ -36,7 +36,7 @@ module RuboCop
         include Alignment
 
         MSG = 'Incorrect indentation detected (column %<column>d ' \
-          'instead of %<correct_comment_indentation>d).'.freeze
+          'instead of %<correct_comment_indentation>d).'
 
         def investigate(processed_source)
           processed_source.each_comment { |comment| check(comment) }

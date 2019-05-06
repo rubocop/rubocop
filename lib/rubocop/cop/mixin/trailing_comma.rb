@@ -8,7 +8,7 @@ module RuboCop
       include ConfigurableEnforcedStyle
       include RangeHelp
 
-      MSG = '%<command>s comma after the last %<unit>s.'.freeze
+      MSG = '%<command>s comma after the last %<unit>s.'
 
       private
 

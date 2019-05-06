@@ -24,7 +24,7 @@ module RuboCop
         include MultilineElementLineBreaks
 
         MSG = 'Each item in a multi-line array must start ' \
-          'on a separate line.'.freeze
+          'on a separate line.'
 
         def on_array(node)
           check_line_breaks(node, node.children)

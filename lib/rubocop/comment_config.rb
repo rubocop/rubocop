@@ -4,11 +4,11 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
-    UNNEEDED_DISABLE = 'Lint/UnneededCopDisableDirective'.freeze
+    UNNEEDED_DISABLE = 'Lint/UnneededCopDisableDirective'
 
-    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'.freeze
-    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}".freeze
-    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})".freeze
+    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
+    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
+    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
       ('# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
@@ -175,7 +175,7 @@ module RuboCop
     def handle_enable_all(names, extras, comment)
       enabled_cops = 0
       names.each do |name, counter|
-        next unless counter > 0
+        next unless counter.positive?
 
         names[name] -= 1
         enabled_cops += 1
@@ -189,7 +189,7 @@ module RuboCop
         names[name] ||= 0
         if disabled
           names[name] += 1
-        elsif names[name] > 0
+        elsif (names[name]).positive?
           names[name] -= 1
         else
           extras << [comment, name]

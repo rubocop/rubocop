@@ -130,8 +130,8 @@ module RuboCop
     # @see https://git.io/vMCXh Emacs handling in Ruby's parse.y
     class EmacsComment < EditorComment
       FORMAT    = /\-\*\-(.+)\-\*\-/.freeze
-      SEPARATOR = ';'.freeze
-      OPERATOR  = ':'.freeze
+      SEPARATOR = ';'
+      OPERATOR  = ':'
 
       def encoding
         match('(?:en)?coding')
@@ -154,8 +154,8 @@ module RuboCop
     #   comment.encoding # => 'ascii-8bit'
     class VimComment < EditorComment
       FORMAT    = /#\s*vim:\s*(.+)/.freeze
-      SEPARATOR = ', '.freeze
-      OPERATOR  = '='.freeze
+      SEPARATOR = ', '
+      OPERATOR  = '='
 
       # For some reason the fileencoding keyword only works if there
       # is at least one other token included in the string. For example

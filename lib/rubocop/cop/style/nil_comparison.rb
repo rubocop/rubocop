@@ -31,8 +31,8 @@ module RuboCop
       class NilComparison < Cop
         include ConfigurableEnforcedStyle
 
-        PREDICATE_MSG = 'Prefer the use of the `nil?` predicate.'.freeze
-        EXPLICIT_MSG = 'Prefer the use of the `==` comparison.'.freeze
+        PREDICATE_MSG = 'Prefer the use of the `nil?` predicate.'
+        EXPLICIT_MSG = 'Prefer the use of the `==` comparison.'
 
         def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
         def_node_matcher :nil_check?, '(send _ :nil?)'

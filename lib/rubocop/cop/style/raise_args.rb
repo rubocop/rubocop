@@ -36,9 +36,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         EXPLODED_MSG = 'Provide an exception class and message ' \
-          'as arguments to `%<method>s`.'.freeze
+          'as arguments to `%<method>s`.'
         COMPACT_MSG = 'Provide an exception object ' \
-          'as an argument to `%<method>s`.'.freeze
+          'as an argument to `%<method>s`.'
 
         def on_send(node)
           return unless node.command?(:raise) || node.command?(:fail)

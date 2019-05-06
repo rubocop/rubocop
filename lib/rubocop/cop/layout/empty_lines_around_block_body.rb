@@ -24,7 +24,7 @@ module RuboCop
       class EmptyLinesAroundBlockBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'block'.freeze
+        KIND = 'block'
 
         def on_block(node)
           check(node, node.body)

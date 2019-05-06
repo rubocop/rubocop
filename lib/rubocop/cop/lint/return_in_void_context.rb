@@ -32,14 +32,14 @@ module RuboCop
       #     return
       #   end
       class ReturnInVoidContext < Cop
-        MSG = 'Do not return a value in `%<method>s`.'.freeze
+        MSG = 'Do not return a value in `%<method>s`.'
 
         def on_return(return_node)
           return unless return_node.descendants.any?
 
           context_node = non_void_context(return_node)
 
-          return unless context_node && context_node.def_type?
+          return unless context_node&.def_type?
 
           method_name = method_name(context_node)
 

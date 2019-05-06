@@ -63,7 +63,7 @@ module RuboCop
       class EmptyComment < Cop
         include RangeHelp
 
-        MSG = 'Source code comment is empty.'.freeze
+        MSG = 'Source code comment is empty.'
 
         def investigate(processed_source)
           if allow_margin_comment?

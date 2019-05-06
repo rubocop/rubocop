@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'register an offense for method call without parens' do
         expect_offense(<<-RUBY.strip_indent)
           top&.test a, b
@@ -541,7 +541,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects multi-line calls' do
+    it 'auto-corrects multi-line calls with trailing whitespace' do
       original = <<-RUBY.strip_indent
         foo(
           bar: 3
@@ -550,20 +550,6 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
       expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
         foo \\
-          bar: 3
-
-      RUBY
-    end
-
-    it 'auto-corrects multi-line calls with trailing whitespace' do
-      original = <<-RUBY.strip_indent
-        foo( 
-          bar: 3
-        )
-      RUBY
-
-      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
-        foo \\ 
           bar: 3
 
       RUBY
@@ -603,10 +589,8 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    context 'TargetRubyVersion >= 2.3', :ruby23 do
-      it 'accepts parens in chaining with safe operators' do
-        expect_no_offenses('Something.find(criteria: given)&.field')
-      end
+    it 'accepts parens in chaining with safe operators' do
+      expect_no_offenses('Something.find(criteria: given)&.field')
     end
 
     context 'allowing parenthesis in chaining' do

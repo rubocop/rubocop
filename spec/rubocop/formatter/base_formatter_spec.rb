@@ -10,9 +10,9 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
     let(:output) { $stdout.string }
 
     before do
-      create_file('1_offense.rb', '#' * 90)
+      create_file('2_offense.rb', '#' * 90)
 
-      create_file('4_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
+      create_file('5_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
 
       create_file('no_offense.rb', '# frozen_string_literal: true')
 
@@ -59,8 +59,8 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
       it 'receives all file paths' do
         expected_paths = [
-          '1_offense.rb',
-          '4_offenses.rb',
+          '2_offense.rb',
+          '5_offenses.rb',
           'no_offense.rb'
         ].map { |path| File.expand_path(path) }.sort
 
@@ -121,10 +121,10 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
       it 'receives a file path' do
         expect(formatter).to have_received(method_name)
-          .with(File.expand_path('1_offense.rb'), anything)
+          .with(File.expand_path('2_offense.rb'), anything)
 
         expect(formatter).to have_received(method_name)
-          .with(File.expand_path('4_offenses.rb'), anything)
+          .with(File.expand_path('5_offenses.rb'), anything)
 
         expect(formatter).to have_received(method_name)
           .with(File.expand_path('no_offense.rb'), anything)
@@ -156,10 +156,10 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
         expect(formatter).to have_received(:file_finished)
           .exactly(3).times do |file, offenses|
           case File.basename(file)
-          when '1_offense.rb'
-            expect(offenses.size).to eq(1)
-          when '4_offenses.rb'
-            expect(offenses.size).to eq(4)
+          when '2_offense.rb'
+            expect(offenses.size).to eq(2)
+          when '5_offenses.rb'
+            expect(offenses.size).to eq(5)
           when 'no_offense.rb'
             expect(offenses.empty?).to be(true)
           else

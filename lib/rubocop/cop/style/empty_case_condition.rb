@@ -39,7 +39,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Do not use empty `case` condition, instead use an `if` '\
-              'expression.'.freeze
+              'expression.'
 
         def on_case(case_node)
           return if case_node.condition

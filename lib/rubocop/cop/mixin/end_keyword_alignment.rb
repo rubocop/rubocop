@@ -8,7 +8,7 @@ module RuboCop
       include RangeHelp
 
       MSG = '`end` at %<end_line>d, %<end_col>d is not aligned with ' \
-            '`%<source>s` at %<align_line>d, %<align_col>d.'.freeze
+            '`%<source>s` at %<align_line>d, %<align_col>d.'
 
       private
 

@@ -6,7 +6,7 @@ require 'tempfile'
 module CopHelper
   extend RSpec::SharedContext
 
-  let(:ruby_version) { 2.2 }
+  let(:ruby_version) { 2.3 }
   let(:enabled_rails) { false }
   let(:rails_version) { false }
 
@@ -24,7 +24,7 @@ module CopHelper
   end
 
   def parse_source(source, file = nil)
-    if file && file.respond_to?(:write)
+    if file&.respond_to?(:write)
       file.write(source)
       file.rewind
       file = file.path

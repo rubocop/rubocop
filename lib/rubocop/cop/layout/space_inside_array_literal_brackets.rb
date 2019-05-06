@@ -71,8 +71,8 @@ module RuboCop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
 
-        MSG = '%<command>s space inside array brackets.'.freeze
-        EMPTY_MSG = '%<command>s space inside empty array brackets.'.freeze
+        MSG = '%<command>s space inside array brackets.'
+        EMPTY_MSG = '%<command>s space inside empty array brackets.'
 
         def on_array(node)
           return unless node.square_brackets?

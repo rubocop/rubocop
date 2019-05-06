@@ -23,7 +23,7 @@ module RuboCop
       #     bar
       #   end
       class EmptyExpression < Cop
-        MSG = 'Avoid empty expressions.'.freeze
+        MSG = 'Avoid empty expressions.'
 
         def on_begin(node)
           return unless empty_expression?(node)

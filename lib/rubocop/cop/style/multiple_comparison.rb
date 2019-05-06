@@ -16,7 +16,7 @@ module RuboCop
       #   foo if ['a', 'b', 'c'].include?(a)
       class MultipleComparison < Cop
         MSG = 'Avoid comparing a variable with multiple items ' \
-          'in a conditional, use `Array#include?` instead.'.freeze
+          'in a conditional, use `Array#include?` instead.'
 
         def on_or(node)
           root_of_or_node = root_of_or_node(node)

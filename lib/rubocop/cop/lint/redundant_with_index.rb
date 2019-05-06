@@ -29,8 +29,8 @@ module RuboCop
       class RedundantWithIndex < Cop
         include RangeHelp
 
-        MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'.freeze
-        MSG_WITH_INDEX = 'Remove redundant `with_index`.'.freeze
+        MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'
+        MSG_WITH_INDEX = 'Remove redundant `with_index`.'
 
         def_node_matcher :redundant_with_index?, <<-PATTERN
           (block

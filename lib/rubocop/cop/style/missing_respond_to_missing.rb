@@ -23,7 +23,7 @@ module RuboCop
       #
       class MissingRespondToMissing < Cop
         MSG =
-          'When using `method_missing`, define `respond_to_missing?`.'.freeze
+          'When using `method_missing`, define `respond_to_missing?`.'
 
         def on_def(node)
           return unless node.method?(:method_missing)

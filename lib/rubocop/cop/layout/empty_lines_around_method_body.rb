@@ -23,7 +23,7 @@ module RuboCop
       class EmptyLinesAroundMethodBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'method'.freeze
+        KIND = 'method'
 
         def on_def(node)
           check(node, node.body)

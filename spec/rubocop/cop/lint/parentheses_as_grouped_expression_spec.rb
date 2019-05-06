@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
 
-  context 'when using safe navigation operator', :ruby23 do
+  context 'when using safe navigation operator' do
     it 'registers an offense for method call with space before the ' \
        'parenthesis' do
       expect_offense(<<-RUBY.strip_indent)

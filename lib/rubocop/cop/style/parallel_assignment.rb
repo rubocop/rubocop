@@ -25,7 +25,7 @@ module RuboCop
       class ParallelAssignment < Cop
         include RescueNode
 
-        MSG = 'Do not use parallel assignment.'.freeze
+        MSG = 'Do not use parallel assignment.'
 
         def on_masgn(node)
           lhs, rhs = *node
@@ -229,7 +229,7 @@ module RuboCop
             # If the parallel assignment uses a rescue modifier and it is the
             # only contents of a method, then we want to make use of the
             # implicit begin
-            if node.parent.parent && node.parent.parent.def_type?
+            if node.parent.parent&.def_type?
               super + def_correction(rescue_result)
             else
               begin_correction(rescue_result)

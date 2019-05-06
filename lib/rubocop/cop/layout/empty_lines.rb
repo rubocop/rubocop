@@ -23,7 +23,7 @@ module RuboCop
       class EmptyLines < Cop
         include RangeHelp
 
-        MSG = 'Extra blank line detected.'.freeze
+        MSG = 'Extra blank line detected.'
         LINE_OFFSET = 2
 
         def investigate(processed_source)

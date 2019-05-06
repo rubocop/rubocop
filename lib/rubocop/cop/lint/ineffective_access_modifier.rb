@@ -47,11 +47,11 @@ module RuboCop
       #   end
       class IneffectiveAccessModifier < Cop
         MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
-              'methods %<modifier>s. Use %<alternative>s instead.'.freeze
+              'methods %<modifier>s. Use %<alternative>s instead.'
         ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a ' \
-                              '`class << self` block'.freeze
+                              '`class << self` block'
         ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
-                                'block'.freeze
+                                'block'
 
         def_node_search :private_class_methods, <<-PATTERN
           (send nil? :private_class_method $...)
@@ -68,7 +68,7 @@ module RuboCop
         private
 
         def check_node(node)
-          return unless node && node.begin_type?
+          return unless node&.begin_type?
 
           ignored_methods = private_class_method_names(node)
 

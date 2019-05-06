@@ -28,7 +28,7 @@ module RuboCop
       #     attr_reader :baz
       #   end
       class TrivialAccessors < Cop
-        MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'.freeze
+        MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'
 
         def on_def(node)
           return if top_level_node?(node)
@@ -41,7 +41,7 @@ module RuboCop
 
         def autocorrect(node)
           parent = node.parent
-          return if parent && parent.send_type?
+          return if parent&.send_type?
 
           if node.def_type?
             autocorrect_instance(node)

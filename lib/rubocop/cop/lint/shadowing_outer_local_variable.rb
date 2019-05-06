@@ -32,7 +32,7 @@ module RuboCop
       #     end
       #   end
       class ShadowingOuterLocalVariable < Cop
-        MSG = 'Shadowing outer local variable - `%<variable>s`.'.freeze
+        MSG = 'Shadowing outer local variable - `%<variable>s`.'
 
         def join_force?(force_class)
           force_class == VariableForce

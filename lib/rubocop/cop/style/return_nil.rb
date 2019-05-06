@@ -31,8 +31,8 @@ module RuboCop
       class ReturnNil < Cop
         include ConfigurableEnforcedStyle
 
-        RETURN_MSG = 'Use `return` instead of `return nil`.'.freeze
-        RETURN_NIL_MSG = 'Use `return nil` instead of `return`.'.freeze
+        RETURN_MSG = 'Use `return` instead of `return nil`.'
+        RETURN_NIL_MSG = 'Use `return nil` instead of `return`.'
 
         def_node_matcher :return_node?, '(return)'
         def_node_matcher :return_nil_node?, '(return nil)'

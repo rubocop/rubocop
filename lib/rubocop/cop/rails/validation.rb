@@ -34,7 +34,7 @@ module RuboCop
       #
       class Validation < Cop
         MSG = 'Prefer the new style validations `%<prefer>s` over ' \
-              '`%<current>s`.'.freeze
+              '`%<current>s`.'
 
         TYPES = %w[
           acceptance

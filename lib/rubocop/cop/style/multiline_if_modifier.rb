@@ -19,7 +19,7 @@ module RuboCop
         include Alignment
 
         MSG = 'Favor a normal %<keyword>s-statement over a modifier' \
-              ' clause in a multiline statement.'.freeze
+              ' clause in a multiline statement.'
 
         def on_if(node)
           return unless node.modifier_form? && node.body.multiline?

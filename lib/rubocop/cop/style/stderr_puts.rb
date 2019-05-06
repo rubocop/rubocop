@@ -19,7 +19,6 @@ module RuboCop
 
         MSG =
           'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
-          .freeze
 
         def_node_matcher :stderr_puts?, <<-PATTERN
           (send

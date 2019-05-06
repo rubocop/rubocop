@@ -83,7 +83,7 @@ module RuboCop
         include MultilineElementIndentation
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
-              'in a hash, relative to %<base_description>s.'.freeze
+              'in a hash, relative to %<base_description>s.'
 
         def on_hash(node)
           check(node, nil) if node.loc.begin

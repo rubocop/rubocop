@@ -35,7 +35,7 @@ module RuboCop
       #   end
       class DefWithParentheses < Cop
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
-              'any arguments.'.freeze
+              'any arguments.'
 
         def on_def(node)
           return if node.single_line?

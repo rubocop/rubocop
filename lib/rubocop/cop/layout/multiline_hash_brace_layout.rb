@@ -93,17 +93,17 @@ module RuboCop
 
         SAME_LINE_MESSAGE = 'Closing hash brace must be on the same line as ' \
           'the last hash element when opening brace is on the same line as ' \
-          'the first hash element.'.freeze
+          'the first hash element.'
 
         NEW_LINE_MESSAGE = 'Closing hash brace must be on the line after ' \
           'the last hash element when opening brace is on a separate line ' \
-          'from the first hash element.'.freeze
+          'from the first hash element.'
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing hash brace must be on the line ' \
-          'after the last hash element.'.freeze
+          'after the last hash element.'
 
         ALWAYS_SAME_LINE_MESSAGE = 'Closing hash brace must be on the same ' \
-          'line as the last hash element.'.freeze
+          'line as the last hash element.'
 
         def self.autocorrect_incompatible_with
           [Style::BracesAroundHashParameters]

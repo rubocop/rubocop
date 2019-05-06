@@ -25,7 +25,7 @@ module RuboCop
       #     end
       class MultilineTernaryOperator < Cop
         MSG = 'Avoid multi-line ternary operators, ' \
-              'use `if` or `unless` instead.'.freeze
+              'use `if` or `unless` instead.'
 
         def on_if(node)
           return unless node.ternary? && node.multiline?

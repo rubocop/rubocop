@@ -36,7 +36,7 @@ module RuboCop
         include RangeHelp
         include SurroundingSpace
 
-        MSG = 'Unnecessary enabling of %<cop>s.'.freeze
+        MSG = 'Unnecessary enabling of %<cop>s.'
 
         def investigate(processed_source)
           return if processed_source.blank?

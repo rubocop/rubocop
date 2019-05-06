@@ -464,11 +464,11 @@ module RuboCop
       end
 
       def chained?
-        parent && parent.call_type? && eql?(parent.receiver)
+        parent&.call_type? && eql?(parent.receiver)
       end
 
       def argument?
-        parent && parent.send_type? && parent.arguments.include?(self)
+        parent&.send_type? && parent.arguments.include?(self)
       end
 
       def numeric_type?

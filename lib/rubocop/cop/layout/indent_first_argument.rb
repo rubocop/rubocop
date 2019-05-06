@@ -144,7 +144,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Indent the first argument one step more than %<base>s.'.freeze
+        MSG = 'Indent the first argument one step more than %<base>s.'
 
         def on_send(node)
           return if !node.arguments? || node.operator_method?

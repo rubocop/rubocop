@@ -17,9 +17,9 @@ module RuboCop
       #   # Good
       #   raise 'message'
       class RedundantException < Cop
-        MSG_1 = 'Redundant `RuntimeError` argument can be removed.'.freeze
+        MSG_1 = 'Redundant `RuntimeError` argument can be removed.'
         MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with ' \
-                'just the message.'.freeze
+                'just the message.'
 
         def on_send(node)
           exploded?(node) { return add_offense(node, message: MSG_1) }

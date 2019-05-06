@@ -26,7 +26,7 @@ module RuboCop
 
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `%<beginning>s` at ' \
-              '%<begin_loc_line>d, %<begin_loc_column>d.'.freeze
+              '%<begin_loc_line>d, %<begin_loc_column>d.'
         ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
         RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
@@ -140,7 +140,7 @@ module RuboCop
         def assignment_node(node)
           assignment_node = node.ancestors.first
           return nil unless
-            assignment_node && assignment_node.assignment?
+            assignment_node&.assignment?
 
           assignment_node
         end

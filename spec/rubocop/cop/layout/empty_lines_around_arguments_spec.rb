@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
         .to eq(['Empty line detected around arguments.'])
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers offense for empty line before arg' do
         inspect_source(<<-RUBY.strip_indent)
           receiver&.foo(

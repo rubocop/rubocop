@@ -100,12 +100,12 @@ module RuboCop
         include NegativeConditional
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s` if the return ' \
-              'value is not checked.'.freeze
+              'value is not checked.'
         CREATE_MSG = (MSG +
                       ' Or check `persisted?` on model returned from ' \
                       '`%<current>s`.').freeze
         CREATE_CONDITIONAL_MSG = '`%<current>s` returns a model which is ' \
-                                 'always truthy.'.freeze
+                                 'always truthy.'
 
         CREATE_PERSIST_METHODS = %i[create
                                     first_or_create find_or_create_by].freeze
@@ -129,7 +129,7 @@ module RuboCop
         def check_assignment(assignment)
           node = right_assignment_node(assignment)
 
-          return unless node && node.send_type?
+          return unless node&.send_type?
           return unless persist_method?(node, CREATE_PERSIST_METHODS)
           return if persisted_referenced?(assignment)
 
@@ -167,7 +167,7 @@ module RuboCop
         def right_assignment_node(assignment)
           node = assignment.node.child_nodes.first
 
-          return node unless node && node.block_type?
+          return node unless node&.block_type?
 
           node.send_node
         end
@@ -195,17 +195,17 @@ module RuboCop
 
         def hash_parent(node)
           pair = node.parent
-          return unless pair && pair.pair_type?
+          return unless pair&.pair_type?
 
           hash = pair.parent
-          return unless hash && hash.hash_type?
+          return unless hash&.hash_type?
 
           hash
         end
 
         def array_parent(node)
           array = node.parent
-          return unless array && array.array_type?
+          return unless array&.array_type?
 
           array
         end
@@ -293,7 +293,7 @@ module RuboCop
 
         def return_value_assigned?(node)
           assignment = assignable_node(node).parent
-          assignment && assignment.lvasgn_type?
+          assignment&.lvasgn_type?
         end
 
         def persist_method?(node, methods = PERSIST_METHODS)

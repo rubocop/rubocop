@@ -17,7 +17,7 @@ module RuboCop
       #     puts x if (x >= 5) && (x <= 10)
       #   end
       class FlipFlop < Cop
-        MSG = 'Avoid the use of flip-flop operators.'.freeze
+        MSG = 'Avoid the use of flip-flop operators.'
 
         def on_iflipflop(node)
           add_offense(node)

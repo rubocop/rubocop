@@ -34,7 +34,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Put a method call with a HEREDOC receiver on the ' \
-        'same line as the HEREDOC opening.'.freeze
+        'same line as the HEREDOC opening.'
 
         def on_send(node)
           heredoc = heredoc_node_descendent_receiver(node)

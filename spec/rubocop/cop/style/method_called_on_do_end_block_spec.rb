@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for a chained call' do
         expect_offense(<<-RUBY.strip_indent)
         a do

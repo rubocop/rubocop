@@ -41,8 +41,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_DETECTED = 'Carriage return character detected.'.freeze
-        MSG_MISSING = 'Carriage return character missing.'.freeze
+        MSG_DETECTED = 'Carriage return character detected.'
+        MSG_MISSING = 'Carriage return character missing.'
 
         def investigate(processed_source)
           last_token = processed_source.tokens.last

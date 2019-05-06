@@ -19,7 +19,7 @@ module RuboCop
       #
       class ToJSON < Cop
         MSG = ' `#to_json` requires an optional argument to be parsable ' \
-          'via JSON.generate(obj).'.freeze
+          'via JSON.generate(obj).'
 
         def on_def(node)
           return unless node.method?(:to_json) && node.arguments.empty?

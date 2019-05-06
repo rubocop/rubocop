@@ -60,13 +60,13 @@ module RuboCop
       #     do_something(some_array)
       #   end
       class Void < Cop
-        OP_MSG = 'Operator `%<op>s` used in void context.'.freeze
-        VAR_MSG = 'Variable `%<var>s` used in void context.'.freeze
-        LIT_MSG = 'Literal `%<lit>s` used in void context.'.freeze
-        SELF_MSG = '`self` used in void context.'.freeze
-        DEFINED_MSG = '`%<defined>s` used in void context.'.freeze
+        OP_MSG = 'Operator `%<op>s` used in void context.'
+        VAR_MSG = 'Variable `%<var>s` used in void context.'
+        LIT_MSG = 'Literal `%<lit>s` used in void context.'
+        SELF_MSG = '`self` used in void context.'
+        DEFINED_MSG = '`%<defined>s` used in void context.'
         NONMUTATING_MSG = 'Method `#%<method>s` used in void context. ' \
-          'Did you mean `#%<method>s!`?'.freeze
+          'Did you mean `#%<method>s!`?'
 
         BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze

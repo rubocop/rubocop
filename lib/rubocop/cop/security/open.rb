@@ -20,7 +20,7 @@ module RuboCop
       #   IO.popen(something)
       #   URI.parse(something).open
       class Open < Cop
-        MSG = 'The use of `Kernel#open` is a serious security risk.'.freeze
+        MSG = 'The use of `Kernel#open` is a serious security risk.'
 
         def_node_matcher :open?, <<-PATTERN
           (send nil? :open $!str ...)

@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for `update_attribute`' do
         expect_offense(<<-RUBY.strip_indent)
         user&.update_attribute(:website, 'example.com')
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for method not in whitelist' do
         expect_offense(<<-RUBY.strip_indent)
         user&.toggle!(:active)

@@ -126,7 +126,7 @@ module RuboCop
       #
       # @see https://api.rubyonrails.org/classes/ActiveRecord/Migration/CommandRecorder.html
       class ReversibleMigration < Cop
-        MSG = '%<action>s is not reversible.'.freeze
+        MSG = '%<action>s is not reversible.'
         IRREVERSIBLE_CHANGE_TABLE_CALLS = %i[
           change change_default remove
         ].freeze
@@ -272,7 +272,7 @@ module RuboCop
         end
 
         def all_hash_key?(args, *keys)
-          return false unless args && args.hash_type?
+          return false unless args&.hash_type?
 
           hash_keys = args.keys.map do |key|
             key.children.first.to_sym

@@ -31,9 +31,9 @@ module RuboCop
 
         MSG_SAME =
           '`allow_nil` is redundant when `allow_blank` has the same value.'
-          .freeze
+
         MSG_ALLOW_NIL_FALSE =
-          '`allow_nil: false` is redundant when `allow_blank` is true.'.freeze
+          '`allow_nil: false` is redundant when `allow_blank` is true.'
 
         def on_send(node)
           return unless node.method_name == :validates

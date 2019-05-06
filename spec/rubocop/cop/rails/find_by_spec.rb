@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Rails::FindBy do
     expect(new_source).to eq('User.where(id: x).first')
   end
 
-  context 'when using safe navigation operator', :ruby23 do
+  context 'when using safe navigation operator' do
     it 'registers an offense when using `#first`' do
       expect_offense(<<-RUBY.strip_indent)
         User&.where(id: x).first

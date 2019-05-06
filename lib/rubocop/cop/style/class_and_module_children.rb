@@ -26,9 +26,9 @@ module RuboCop
         include RangeHelp
 
         NESTED_MSG = 'Use nested module/class definitions instead of ' \
-                     'compact style.'.freeze
+                     'compact style.'
         COMPACT_MSG = 'Use compact module/class definition instead of ' \
-                      'nested style.'.freeze
+                      'nested style.'
 
         def on_class(node)
           return if node.parent_class && style != :nested
@@ -68,20 +68,20 @@ module RuboCop
         end
 
         def replace_keyword_with_module(corrector, node)
-          corrector.replace(node.loc.keyword, 'module'.freeze)
+          corrector.replace(node.loc.keyword, 'module')
         end
 
         def split_on_double_colon(corrector, node, padding)
           children_definition = node.children.first
           range = range_between(children_definition.loc.double_colon.begin_pos,
                                 children_definition.loc.double_colon.end_pos)
-          replacement = "\n#{padding}#{node.loc.keyword.source} ".freeze
+          replacement = "\n#{padding}#{node.loc.keyword.source} "
 
           corrector.replace(range, replacement)
         end
 
         def add_trailing_end(corrector, node, padding)
-          replacement = "#{padding}end\n#{leading_spaces(node)}end".freeze
+          replacement = "#{padding}end\n#{leading_spaces(node)}end"
           corrector.replace(node.loc.end, replacement)
         end
 

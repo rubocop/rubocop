@@ -27,8 +27,8 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Do not use trailing `_`s in parallel assignment. ' \
-              'Prefer `%<code>s`.'.freeze
-        UNDERSCORE = '_'.freeze
+              'Prefer `%<code>s`.'
+        UNDERSCORE = '_'
 
         def on_masgn(node)
           ranges = unneeded_ranges(node)

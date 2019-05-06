@@ -7,7 +7,7 @@ module RuboCop
   # and other information such as disabled lines for cops.
   # It also provides a convenient way to access source lines.
   class ProcessedSource
-    STRING_SOURCE_NAME = '(string)'.freeze
+    STRING_SOURCE_NAME = '(string)'
 
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
                 :parser_error, :raw_source, :ruby_version
@@ -157,7 +157,8 @@ module RuboCop
     def tokenize(parser)
       begin
         ast, comments, tokens = parser.tokenize(@buffer)
-        ast.complete! if ast
+
+        ast.respond_to?(:complete!) && ast.complete!
       rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
         # All errors are in diagnostics. No need to handle exception.
       end
@@ -170,9 +171,6 @@ module RuboCop
     # rubocop:disable Metrics/MethodLength
     def parser_class(ruby_version)
       case ruby_version
-      when 2.2
-        require 'parser/ruby22'
-        Parser::Ruby22
       when 2.3
         require 'parser/ruby23'
         Parser::Ruby23

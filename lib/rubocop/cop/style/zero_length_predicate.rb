@@ -26,9 +26,9 @@ module RuboCop
       #   !string.empty?
       #   !hash.empty?
       class ZeroLengthPredicate < Cop
-        ZERO_MSG = 'Use `empty?` instead of `%<lhs>s %<opr>s %<rhs>s`.'.freeze
+        ZERO_MSG = 'Use `empty?` instead of `%<lhs>s %<opr>s %<rhs>s`.'
         NONZERO_MSG = 'Use `!empty?` instead of ' \
-                      '`%<lhs>s %<opr>s %<rhs>s`.'.freeze
+                      '`%<lhs>s %<opr>s %<rhs>s`.'
 
         def on_send(node)
           check_zero_length_predicate(node)

@@ -17,7 +17,7 @@ module RuboCop
       #   method_name = send_node.method_name
       class NodeDestructuring < Cop
         MSG = 'Use the methods provided with the node extensions instead ' \
-              'of manually destructuring nodes.'.freeze
+              'of manually destructuring nodes.'
 
         def_node_matcher :node_variable?, <<-PATTERN
           {(lvar [#node_suffix? _]) (send nil? [#node_suffix? _])}

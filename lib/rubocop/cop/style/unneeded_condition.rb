@@ -33,8 +33,8 @@ module RuboCop
       class UnneededCondition < Cop
         include RangeHelp
 
-        MSG = 'Use double pipes `||` instead.'.freeze
-        UNNEEDED_CONDITION = 'This condition is not needed.'.freeze
+        MSG = 'Use double pipes `||` instead.'
+        UNNEEDED_CONDITION = 'This condition is not needed.'
 
         def on_if(node)
           return if node.elsif_conditional?
@@ -86,7 +86,7 @@ module RuboCop
         end
 
         def use_if_branch?(else_branch)
-          else_branch && else_branch.if_type?
+          else_branch&.if_type?
         end
 
         def else_source(else_branch)
@@ -100,7 +100,7 @@ module RuboCop
           ternary_form = [if_branch.source,
                           else_source(else_branch)].join(' || ')
 
-          if node.parent && node.parent.send_type?
+          if node.parent&.send_type?
             "(#{ternary_form})"
           else
             ternary_form

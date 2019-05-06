@@ -57,13 +57,13 @@ module RuboCop
 
         SUPERFLOUS_REQUIRE_FALSE_MSG =
           'You specified `required: false`, in Rails > 5.0 the required ' \
-          'option is deprecated and you want to use `optional: true`.'.freeze
+          'option is deprecated and you want to use `optional: true`.'
 
         SUPERFLOUS_REQUIRE_TRUE_MSG =
           'You specified `required: true`, in Rails > 5.0 the required ' \
           'option is deprecated and you want to use `optional: false`. ' \
           'In most configurations, this is the default and you can omit ' \
-          'this option altogether'.freeze
+          'this option altogether'
 
         def_node_matcher :match_belongs_to_with_options, <<-PATTERN
           (send _ :belongs_to _

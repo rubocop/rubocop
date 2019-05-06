@@ -20,7 +20,7 @@ module RuboCop
         include EmptyParameter
         include RangeHelp
 
-        MSG = 'Omit parentheses for the empty lambda parameters.'.freeze
+        MSG = 'Omit parentheses for the empty lambda parameters.'
 
         def on_block(node)
           send_node = node.send_node

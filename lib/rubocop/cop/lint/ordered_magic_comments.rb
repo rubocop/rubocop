@@ -31,7 +31,7 @@ module RuboCop
         include FrozenStringLiteral
 
         MSG = 'The encoding magic comment should precede all other ' \
-              'magic comments.'.freeze
+              'magic comments.'
 
         def investigate(processed_source)
           return if processed_source.buffer.source.empty?

@@ -18,9 +18,9 @@ module RuboCop
       #
       #   "result is #{something}"
       class StringConversionInInterpolation < Cop
-        MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'.freeze
+        MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'
         MSG_SELF = 'Use `self` instead of `Object#to_s` in ' \
-                   'interpolation.'.freeze
+                   'interpolation.'
 
         def_node_matcher :to_s_without_args?, '(send _ :to_s)'
 

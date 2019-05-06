@@ -22,7 +22,7 @@ module RuboCop
       class VariableName < Cop
         include ConfigurableNaming
 
-        MSG = 'Use %<style>s for variable names.'.freeze
+        MSG = 'Use %<style>s for variable names.'
 
         def on_lvasgn(node)
           name, = *node

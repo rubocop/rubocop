@@ -15,7 +15,7 @@ module RuboCop
       #   bar = foo.minmax
       #   return foo.minmax
       class MinMax < Cop
-        MSG = 'Use `%<receiver>s.minmax` instead of `%<offender>s`.'.freeze
+        MSG = 'Use `%<receiver>s.minmax` instead of `%<offender>s`.'
 
         def on_array(node)
           min_max_candidate(node) do |receiver|

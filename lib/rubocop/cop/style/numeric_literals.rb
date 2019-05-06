@@ -31,7 +31,7 @@ module RuboCop
         include IntegerNode
 
         MSG = 'Use underscores(_) as thousands separator and ' \
-              'separate every 3 digits with them.'.freeze
+              'separate every 3 digits with them.'
         DELIMITER_REGEXP = /[eE.]/.freeze
 
         def on_int(node)
@@ -97,7 +97,7 @@ module RuboCop
                           .reverse
                           .gsub(/...(?=.)/, '\&_')
                           .reverse
-          formatted_int.insert(0, '-') if int_part < 0
+          formatted_int.insert(0, '-') if int_part.negative?
           formatted_int
         end
 

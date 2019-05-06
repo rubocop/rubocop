@@ -19,11 +19,13 @@ module RuboCop
     INTERNAL_PARAMS = %w[Description StyleGuide VersionAdded
                          VersionChanged Reference Safe SafeAutoCorrect].freeze
 
-    # 2.2 is the oldest officially supported Ruby version.
-    DEFAULT_RUBY_VERSION = 2.2
-    KNOWN_RUBIES = [2.2, 2.3, 2.4, 2.5, 2.6].freeze
-    OBSOLETE_RUBIES = { 1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58' }.freeze
-    RUBY_VERSION_FILENAME = '.ruby-version'.freeze
+    # 2.3 is the oldest officially supported Ruby version.
+    DEFAULT_RUBY_VERSION = 2.3
+    KNOWN_RUBIES = [2.3, 2.4, 2.5, 2.6].freeze
+    OBSOLETE_RUBIES = {
+      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69'
+    }.freeze
+    RUBY_VERSION_FILENAME = '.ruby-version'
     DEFAULT_RAILS_VERSION = 5.0
     OBSOLETE_COPS = {
       'Style/FlipFlop' =>
@@ -570,7 +572,7 @@ module RuboCop
     end
 
     def obsolete_parameter_message(cop, parameter, alternative)
-      return unless self[cop] && self[cop].key?(parameter)
+      return unless self[cop]&.key?(parameter)
 
       "obsolete parameter #{parameter} (for #{cop}) " \
         "found in #{smart_loaded_path}" \

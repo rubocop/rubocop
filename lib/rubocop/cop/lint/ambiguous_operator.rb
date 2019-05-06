@@ -36,7 +36,7 @@ module RuboCop
         MSG_FORMAT = 'Ambiguous %<actual>s operator. Parenthesize the method ' \
                      "arguments if it's surely a %<actual>s operator, or add " \
                      'a whitespace to the right of the `%<operator>s` if it ' \
-                     'should be a %<possible>s.'.freeze
+                     'should be a %<possible>s.'
 
         private
 

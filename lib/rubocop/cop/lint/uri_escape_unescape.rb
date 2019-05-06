@@ -43,7 +43,7 @@ module RuboCop
 
         MSG = '`%<uri_method>s` method is obsolete and should not be used. ' \
               'Instead, use %<replacements>s depending on your specific use ' \
-              'case.'.freeze
+              'case.'
 
         def_node_matcher :uri_escape_unescape?, <<-PATTERN
           (send

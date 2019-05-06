@@ -36,7 +36,7 @@ module RuboCop
       #   user.touch
       #
       class SkipsModelValidations < Cop
-        MSG = 'Avoid using `%<method>s` because it skips validations.'.freeze
+        MSG = 'Avoid using `%<method>s` because it skips validations.'
 
         METHODS_WITH_ARGUMENTS = %w[decrement!
                                     decrement_counter

@@ -44,11 +44,11 @@ module RuboCop
       #   # good
       #   something if foo.present?
       class Present < Cop
-        MSG_NOT_BLANK = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG_NOT_BLANK = 'Use `%<prefer>s` instead of `%<current>s`.'
         MSG_EXISTS_AND_NOT_EMPTY = 'Use `%<prefer>s` instead of ' \
-                                   '`%<current>s`.'.freeze
+                                   '`%<current>s`.'
         MSG_UNLESS_BLANK = 'Use `if %<prefer>s` instead of ' \
-                           '`%<current>s`.'.freeze
+                           '`%<current>s`.'
 
         def_node_matcher :exists_and_not_empty?, <<-PATTERN
           (and

@@ -25,7 +25,7 @@ module RuboCop
         include EmptyParameter
         include RangeHelp
 
-        MSG = 'Omit pipes for the empty block parameters.'.freeze
+        MSG = 'Omit pipes for the empty block parameters.'
 
         def on_block(node)
           send_node = node.send_node

@@ -41,7 +41,7 @@ module RuboCop
       class EmptyLinesAroundArguments < Cop
         include RangeHelp
 
-        MSG = 'Empty line detected around arguments.'.freeze
+        MSG = 'Empty line detected around arguments.'
 
         def on_send(node)
           return if node.single_line? || node.arguments.empty?

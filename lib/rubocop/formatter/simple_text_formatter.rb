@@ -92,7 +92,7 @@ module RuboCop
         end
 
         def summary
-          if @correction_count > 0
+          if @correction_count.positive?
             "#{files} inspected, #{offenses} detected, #{corrections} corrected"
           else
             "#{files} inspected, #{offenses} detected"

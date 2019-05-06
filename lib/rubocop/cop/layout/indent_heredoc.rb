@@ -75,11 +75,11 @@ module RuboCop
 
         RUBY23_TYPE_MSG = 'Use %<indentation_width>d spaces for indentation ' \
                           'in a heredoc by using `<<~` instead of ' \
-                          '`%<current_indent_type>s`.'.freeze
+                          '`%<current_indent_type>s`.'
         RUBY23_WIDTH_MSG = 'Use %<indentation_width>d spaces for '\
-                           'indentation in a heredoc.'.freeze
+                           'indentation in a heredoc.'
         LIBRARY_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
-                      'heredoc by using %<method>s.'.freeze
+                      'heredoc by using %<method>s.'
         STRIP_METHODS = {
           unindent: 'unindent',
           active_support: 'strip_heredoc',

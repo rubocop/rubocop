@@ -45,7 +45,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
 
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
         REPLACEMENTS = {
           'zero?' => '==',

@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   puts Regexp.last_match(1)
       class PerlBackrefs < Cop
-        MSG = 'Avoid the use of Perl-style backrefs.'.freeze
+        MSG = 'Avoid the use of Perl-style backrefs.'
 
         def on_nth_ref(node)
           add_offense(node)

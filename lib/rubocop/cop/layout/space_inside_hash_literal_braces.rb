@@ -68,7 +68,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Space inside %<problem>s.'.freeze
+        MSG = 'Space inside %<problem>s.'
 
         def on_hash(node)
           tokens = processed_source.tokens

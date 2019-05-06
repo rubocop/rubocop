@@ -46,10 +46,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Use `%<method>s` before `pluck`.'.freeze
-        NEWLINE = "\n".freeze
+        MSG = 'Use `%<method>s` before `pluck`.'
+        NEWLINE = "\n"
         PATTERN = '[!^block (send (send %<type>s :pluck ...) ' \
-                  '${:uniq :distinct} ...)]'.freeze
+                  '${:uniq :distinct} ...)]'
 
         def_node_matcher :conservative_node_match,
                          format(PATTERN, type: 'const')

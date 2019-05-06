@@ -12,6 +12,10 @@
 * [#7007](https://github.com/rubocop-hq/rubocop/pull/7007): Fix `Style/BlockDelimiters` with `braces_for_chaining` style false positive, when chaining using safe navigation. ([@Darhazer][])
 * [#6880](https://github.com/rubocop-hq/rubocop/issues/6880): Fix `.rubocop` file parsing. ([@hoshinotsuyoshi][])
 
+### Changes
+
+* [#6945](https://github.com/rubocop-hq/rubocop/issues/6945): Drop support for Ruby 2.2. ([@koic][])
+
 ## 0.68.1 (2019-04-30)
 
 ### Bug fixes

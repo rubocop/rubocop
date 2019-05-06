@@ -18,7 +18,7 @@ module RuboCop
       class UnneededInterpolation < Cop
         include PercentLiteral
 
-        MSG = 'Prefer `to_s` over string interpolation.'.freeze
+        MSG = 'Prefer `to_s` over string interpolation.'
 
         def self.autocorrect_incompatible_with
           [Style::LineEndConcatenation]
@@ -62,11 +62,11 @@ module RuboCop
         end
 
         def implicit_concatenation?(node)
-          node.parent && node.parent.dstr_type?
+          node.parent&.dstr_type?
         end
 
         def embedded_in_percent_array?(node)
-          node.parent && node.parent.array_type? &&
+          node.parent&.array_type? &&
             percent_literal?(node.parent)
         end
 

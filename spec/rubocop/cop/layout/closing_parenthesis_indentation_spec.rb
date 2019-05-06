@@ -363,7 +363,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'registers an offense for misaligned )' do
         expect_offense(<<-RUBY.strip_indent)
           receiver&.some_method(

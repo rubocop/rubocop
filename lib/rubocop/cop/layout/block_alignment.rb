@@ -65,7 +65,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = '%<current>s is not aligned with %<prefer>s%<alt_prefer>s.'.freeze
+        MSG = '%<current>s is not aligned with %<prefer>s%<alt_prefer>s.'
 
         def_node_matcher :block_end_align_target?, <<-PATTERN
           {assignment?
@@ -90,9 +90,9 @@ module RuboCop
           loc_end = node.loc.end
           delta = start_col - loc_end.column
 
-          if delta > 0
+          if delta.positive?
             add_space_before(loc_end, delta)
-          elsif delta < 0
+          elsif delta.negative?
             remove_space_before(loc_end.begin_pos, -delta)
           end
         end
@@ -125,7 +125,7 @@ module RuboCop
         end
 
         def disqualified_parent?(parent, node)
-          parent && parent.loc && parent.first_line != node.first_line &&
+          parent&.loc && parent.first_line != node.first_line &&
             !parent.masgn_type?
         end
 

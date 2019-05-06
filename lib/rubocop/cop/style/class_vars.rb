@@ -32,7 +32,7 @@ module RuboCop
       #
       class ClassVars < Cop
         MSG = 'Replace class var %<class_var>s with a class ' \
-              'instance var.'.freeze
+              'instance var.'
 
         def on_cvasgn(node)
           add_offense(node, location: :name)

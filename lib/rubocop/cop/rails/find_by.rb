@@ -16,7 +16,7 @@ module RuboCop
       class FindBy < Cop
         include RangeHelp
 
-        MSG = 'Use `find_by` instead of `where.%<method>s`.'.freeze
+        MSG = 'Use `find_by` instead of `where.%<method>s`.'
         TARGET_SELECTORS = %i[first take].freeze
 
         def_node_matcher :where_first?, <<-PATTERN

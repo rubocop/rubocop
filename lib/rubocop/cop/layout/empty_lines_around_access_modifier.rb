@@ -25,9 +25,9 @@ module RuboCop
       class EmptyLinesAroundAccessModifier < Cop
         include RangeHelp
 
-        MSG_AFTER = 'Keep a blank line after `%<modifier>s`.'.freeze
+        MSG_AFTER = 'Keep a blank line after `%<modifier>s`.'
         MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after ' \
-                               '`%<modifier>s`.'.freeze
+                               '`%<modifier>s`.'
 
         def initialize(config = nil, options = nil)
           super

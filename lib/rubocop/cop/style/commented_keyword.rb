@@ -36,7 +36,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Do not place comments on the same line as the ' \
-              '`%<keyword>s` keyword.'.freeze
+              '`%<keyword>s` keyword.'
 
         def investigate(processed_source)
           heredoc_lines = extract_heredoc_lines(processed_source.ast)

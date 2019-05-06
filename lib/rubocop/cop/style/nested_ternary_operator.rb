@@ -17,7 +17,7 @@ module RuboCop
       #   end
       class NestedTernaryOperator < Cop
         MSG = 'Ternary operators must not be nested. Prefer `if` or `else` ' \
-              'constructs instead.'.freeze
+              'constructs instead.'
 
         def on_if(node)
           return unless node.ternary?

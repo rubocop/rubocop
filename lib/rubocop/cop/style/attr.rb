@@ -17,7 +17,7 @@ module RuboCop
       class Attr < Cop
         include RangeHelp
 
-        MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'.freeze
+        MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?

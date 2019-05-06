@@ -40,7 +40,7 @@ module RuboCop
       class VariableNumber < Cop
         include ConfigurableNumbering
 
-        MSG = 'Use %<style>s for variable numbers.'.freeze
+        MSG = 'Use %<style>s for variable numbers.'
 
         def on_arg(node)
           name, = *node

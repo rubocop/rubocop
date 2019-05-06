@@ -25,10 +25,9 @@ module RuboCop
       #   x&.foo || bar
       class SafeNavigationChain < Cop
         include NilMethods
-        extend TargetRubyVersion
 
         MSG = 'Do not chain ordinary method call' \
-              ' after safe navigation operator.'.freeze
+              ' after safe navigation operator.'
 
         def_node_matcher :bad_method?, <<-PATTERN
         {
@@ -36,8 +35,6 @@ module RuboCop
           (send $(block (csend ...) ...) $_ ...)
         }
         PATTERN
-
-        minimum_target_ruby_version 2.3
 
         def on_send(node)
           bad_method?(node) do |safe_nav, method|

@@ -14,11 +14,11 @@ module RuboCop
   # during a run of the rubocop program, if files in several
   # directories are inspected.
   class ConfigLoader
-    DOTFILE = '.rubocop.yml'.freeze
-    XDG_CONFIG = 'config.yml'.freeze
+    DOTFILE = '.rubocop.yml'
+    XDG_CONFIG = 'config.yml'
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
-    AUTO_GENERATED_FILE = '.rubocop_todo.yml'.freeze
+    AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
       include FileFinder

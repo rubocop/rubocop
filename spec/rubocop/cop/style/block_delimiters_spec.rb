@@ -543,7 +543,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
     end
 
-    context 'with safe navigation', :ruby23 do
+    context 'with safe navigation' do
       it 'registers an offense for multi-line chained do-end blocks' do
         expect_offense(<<-RUBY.strip_indent)
           arr&.each do |x|

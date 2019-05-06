@@ -20,7 +20,7 @@ module RuboCop
         include FirstElementLineBreak
 
         MSG = 'Add a line break before the first element of a ' \
-              'multi-line hash.'.freeze
+              'multi-line hash.'
 
         def on_hash(node)
           # node.loc.begin tells us whether the hash opens with a {

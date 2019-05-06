@@ -16,13 +16,13 @@ module RuboCop
       class MultilineBlockChain < Cop
         include RangeHelp
 
-        MSG = 'Avoid multi-line chains of blocks.'.freeze
+        MSG = 'Avoid multi-line chains of blocks.'
 
         def on_block(node)
           node.send_node.each_node(:send) do |send_node|
             receiver = send_node.receiver
 
-            next unless receiver && receiver.block_type? && receiver.multiline?
+            next unless receiver&.block_type? && receiver&.multiline?
 
             range = range_between(receiver.loc.end.begin_pos,
                                   node.send_node.source_range.end_pos)

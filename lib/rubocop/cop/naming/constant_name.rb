@@ -18,7 +18,7 @@ module RuboCop
       #   # good
       #   INCH_IN_CM = 2.54
       class ConstantName < Cop
-        MSG = 'Use SCREAMING_SNAKE_CASE for constants.'.freeze
+        MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
         # Use POSIX character classes, so we allow accented characters rather
         # than just standard ASCII characters
         SNAKE_CASE = /^[[:digit:][:upper:]_]+$/.freeze
@@ -30,7 +30,7 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          if node.parent && node.parent.or_asgn_type?
+          if node.parent&.or_asgn_type?
             lhs, value = *node.parent
             _scope, const_name = *lhs
           else
@@ -59,7 +59,7 @@ module RuboCop
         end
 
         def allowed_method_call_on_rhs?(node)
-          node && node.send_type? &&
+          node&.send_type? &&
             (node.receiver.nil? || !literal_receiver?(node))
         end
 
@@ -69,7 +69,7 @@ module RuboCop
         PATTERN
 
         def allowed_conditional_expression_on_rhs?(node)
-          node && node.if_type? && contains_contant?(node)
+          node&.if_type? && contains_contant?(node)
         end
 
         def contains_contant?(node)

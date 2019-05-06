@@ -20,7 +20,7 @@ module RuboCop
       #   [1, 2, 'a'].prepend('b')
       #
       class ActiveSupportAliases < Cop
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'.freeze
+        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
         ALIASES = {
           starts_with?: {

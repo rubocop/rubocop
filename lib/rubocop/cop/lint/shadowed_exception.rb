@@ -47,7 +47,7 @@ module RuboCop
         include RescueNode
         include RangeHelp
 
-        MSG = 'Do not shadow rescued Exceptions.'.freeze
+        MSG = 'Do not shadow rescued Exceptions.'
 
         def on_rescue(node)
           return if rescue_modifier?(node)

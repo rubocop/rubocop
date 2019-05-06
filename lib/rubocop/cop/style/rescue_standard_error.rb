@@ -76,9 +76,9 @@ module RuboCop
         include RangeHelp
 
         MSG_IMPLICIT = 'Omit the error class when rescuing ' \
-          '`StandardError` by itself.'.freeze
+          '`StandardError` by itself.'
         MSG_EXPLICIT = 'Avoid rescuing without specifying ' \
-          'an error class.'.freeze
+          'an error class.'
 
         def_node_matcher :rescue_without_error_class?, <<-PATTERN
           (resbody nil? _ _)

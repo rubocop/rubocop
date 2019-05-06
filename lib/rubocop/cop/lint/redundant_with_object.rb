@@ -30,8 +30,8 @@ module RuboCop
         include RangeHelp
 
         MSG_EACH_WITH_OBJECT = 'Use `each` instead of `each_with_object`.'
-                               .freeze
-        MSG_WITH_OBJECT = 'Remove redundant `with_object`.'.freeze
+
+        MSG_WITH_OBJECT = 'Remove redundant `with_object`.'
 
         def_node_matcher :redundant_with_object?, <<-PATTERN
           (block

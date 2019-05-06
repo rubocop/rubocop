@@ -31,7 +31,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use parentheses in the method call to avoid confusion about ' \
-              'precedence.'.freeze
+              'precedence.'
 
         def on_send(node)
           return if !node.arguments? || node.parenthesized?

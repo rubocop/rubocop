@@ -16,7 +16,7 @@ module RuboCop
         include MatchRange
         include PercentLiteral
 
-        MSG = 'Use only a single space inside array percent literal.'.freeze
+        MSG = 'Use only a single space inside array percent literal.'
         MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX =
           /(?:[\S&&[^\\]](?:\\ )*)( {2,})(?=\S)/.freeze
 

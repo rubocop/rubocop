@@ -23,7 +23,7 @@ module RuboCop
       #     @x = 1
       #   end
       class DisjunctiveAssignmentInConstructor < Cop
-        MSG = 'Unnecessary disjunctive assignment. Use plain assignment.'.freeze
+        MSG = 'Unnecessary disjunctive assignment. Use plain assignment.'
 
         def on_def(node)
           check(node)
