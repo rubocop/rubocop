@@ -33,6 +33,8 @@ module RuboCop
         end
 
         def autocorrect(node)
+          return false if target_ruby_version <= 2.3
+
           lambda do |corrector|
             corrector.replace(node.loc.name, 'Integer')
           end
