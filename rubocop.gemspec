@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('parser', '>= 2.6')
   s.add_runtime_dependency('rainbow', '>= 2.2.2', '< 4.0')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.7')
-  s.add_runtime_dependency('unicode-display_width', '>= 1.4.0', '< 1.6')
+  s.add_runtime_dependency('unicode-display_width', '>= 1.4.0', '< 1.7')
 
   s.add_development_dependency('bundler', '>= 1.15.0', '< 3.0')
   s.add_development_dependency('rack', '>= 2.0')
