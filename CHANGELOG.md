@@ -15,6 +15,7 @@
 ### Changes
 
 * [#6945](https://github.com/rubocop-hq/rubocop/issues/6945): Drop support for Ruby 2.2. ([@koic][])
+* [#6945](https://github.com/rubocop-hq/rubocop/issues/6945): Set default `EnforcedStyle` to `squiggly` option for `Layout/IndentHeredoc` and `auto_detection` option is removed. ([@koic][])
 
 ## 0.68.1 (2019-04-30)
 

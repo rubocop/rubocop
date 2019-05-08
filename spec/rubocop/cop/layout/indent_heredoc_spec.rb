@@ -185,59 +185,6 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
                          '`String#strip_indent`.'
                        ]
 
-      context 'EnforcedStyle is `auto_detection`' do
-        let(:cop_config) do
-          { 'EnforcedStyle' => :auto_detection }
-        end
-
-        message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                  '`<<~` instead of `<<-`.'
-        include_examples 'check message', 'some library', [message]
-
-        width_message = 'Use 2 spaces for indentation in a heredoc.'
-        include_examples 'check message', 'squiggly heredoc, with ~',
-                         [width_message], <<-RUBY
-          <<~#{quote}RUBY2#{quote}
-          \#{foo}
-          bar
-          RUBY2
-        RUBY
-
-        type_message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                       '`<<~` instead of `<<-`.'
-        include_examples 'check message', 'squiggly heredoc, without ~',
-                         [type_message]
-        include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
-          <<#{quote}RUBY2#{quote}
-          \#{foo}
-          bar
-          RUBY2
-        RUBY
-          <<~#{quote}RUBY2#{quote}
-            \#{foo}
-            bar
-          RUBY2
-        CORRECTION
-
-        context 'Rails', :enabled_rails do
-          message = 'Use 2 spaces for indentation in a heredoc by using ' \
-                    '`<<~` instead of `<<-`.'
-          include_examples 'check message', 'suggestion ActiveSupport',
-                           [message]
-          include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
-            <<#{quote}RUBY2#{quote}
-            \#{foo}
-            bar
-            RUBY2
-          RUBY
-            <<~#{quote}RUBY2#{quote}
-              \#{foo}
-              bar
-            RUBY2
-          CORRECTION
-        end
-      end
-
       context 'EnforcedStyle is `squiggly`' do
         let(:cop_config) do
           { 'EnforcedStyle' => :squiggly }

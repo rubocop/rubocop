@@ -757,9 +757,9 @@ Layout/IndentHeredoc:
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: '0.49'
-  EnforcedStyle: auto_detection
+  VersionChanged: '0.69'
+  EnforcedStyle: squiggly
   SupportedStyles:
-    - auto_detection
     - squiggly
     - active_support
     - powerpack

@@ -2540,7 +2540,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.69
 
 This cop checks the indentation of the here document bodies. The bodies
 are indented one step.
@@ -2553,7 +2553,7 @@ Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
 
 ### Examples
 
-#### EnforcedStyle: auto_detection (default)
+#### EnforcedStyle: squiggly (default)
 
 ```ruby
 # bad
@@ -2561,27 +2561,6 @@ Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
 something
 RUBY
 
-# good
-# When using Ruby 2.3 or higher.
-<<~RUBY
-  something
-RUBY
-
-# good
-# When using Ruby 2.2 or lower and enabled Rails department.
-# The following is possible to enable Rails department by
-# adding for example:
-#
-# Rails:
-#   Enabled: true
-#
-<<-RUBY.strip_heredoc
-  something
-RUBY
-```
-#### EnforcedStyle: squiggly
-
-```ruby
 # good
 # When EnforcedStyle is squiggly, bad code is auto-corrected to the
 # following code.
@@ -2624,7 +2603,7 @@ RUBY
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `auto_detection` | `auto_detection`, `squiggly`, `active_support`, `powerpack`, `unindent`
+EnforcedStyle | `squiggly` | `squiggly`, `active_support`, `powerpack`, `unindent`
 
 ### References
 
