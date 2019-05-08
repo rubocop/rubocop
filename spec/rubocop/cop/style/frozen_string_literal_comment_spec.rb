@@ -277,61 +277,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
   end
 
-  context 'when_needed' do
-    let(:cop_config) do
-      { 'Enabled' => true,
-        'EnforcedStyle' => 'when_needed' }
-    end
-
-    it 'accepts an empty source' do
-      expect_no_offenses('')
-    end
-
-    it 'accepts freezing a string when there is a frozen string literal ' \
-      'comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        # frozen_string_literal: true
-        "x".freeze
-      RUBY
-    end
-
-    it 'accepts shoveling into a string when there is a frozen string ' \
-       'literal comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        # frozen_string_literal: true
-        "x" << "y"
-      RUBY
-    end
-
-    it 'accepts freezing a string' do
-      expect_offense(<<-RUBY.strip_indent)
-        "x".freeze
-        ^ Missing magic comment `# frozen_string_literal: true`.
-      RUBY
-    end
-
-    it 'accepts calling << on a string' do
-      expect_offense(<<-RUBY.strip_indent)
-        "x" << "y"
-        ^ Missing magic comment `# frozen_string_literal: true`.
-      RUBY
-    end
-
-    it 'accepts freezing a string with interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
-        "#{foo}bar".freeze
-        ^ Missing magic comment `# frozen_string_literal: true`.
-      RUBY
-    end
-
-    it 'accepts calling << on a string with interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
-        "#{foo}bar" << "baz"
-        ^ Missing magic comment `# frozen_string_literal: true`.
-      RUBY
-    end
-  end
-
   context 'never' do
     let(:cop_config) do
       { 'Enabled' => true,

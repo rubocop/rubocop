@@ -2131,7 +2131,7 @@ EnforcedStyle | `annotated` | `annotated`, `template`, `unannotated`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 0.47
+Enabled | Yes | Yes  | 0.36 | 0.69
 
 This cop is designed to help upgrade to after Ruby 3.0. It will add the
 comment `# frozen_string_literal: true` to the top of files to
@@ -2141,24 +2141,7 @@ comment. The frozen string literal comment is only valid in Ruby 2.3+.
 
 ### Examples
 
-#### EnforcedStyle: when_needed (default)
-
-```ruby
-# The `when_needed` style will add the frozen string literal comment
-# to files.
-# bad
-module Foo
-  # ...
-end
-
-# good
-# frozen_string_literal: true
-
-module Foo
-  # ...
-end
-```
-#### EnforcedStyle: always
+#### EnforcedStyle: always (default)
 
 ```ruby
 # The `always` style will always add the frozen string literal comment
@@ -2198,7 +2181,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `when_needed` | `when_needed`, `always`, `never`
+EnforcedStyle | `always` | `always`, `never`
 
 ## Style/GlobalVars
 

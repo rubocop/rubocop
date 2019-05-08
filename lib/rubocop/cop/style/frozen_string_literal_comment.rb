@@ -9,22 +9,7 @@ module RuboCop
       # after Ruby 3.0. The comment will be added below a shebang and encoding
       # comment. The frozen string literal comment is only valid in Ruby 2.3+.
       #
-      # @example EnforcedStyle: when_needed (default)
-      #   # The `when_needed` style will add the frozen string literal comment
-      #   # to files.
-      #   # bad
-      #   module Foo
-      #     # ...
-      #   end
-      #
-      #   # good
-      #   # frozen_string_literal: true
-      #
-      #   module Foo
-      #     # ...
-      #   end
-      #
-      # @example EnforcedStyle: always
+      # @example EnforcedStyle: always (default)
       #   # The `always` style will always add the frozen string literal comment
       #   # to a file, regardless of the Ruby version or if `freeze` or `<<` are
       #   # called on a string literal.
