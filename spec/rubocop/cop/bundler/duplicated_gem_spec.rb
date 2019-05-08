@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
 
   context 'when investigating Ruby files' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # cop will not read these contents
         gem('rubocop')
         gem('rubocop')
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
 
     context 'and no duplicate gems are present' do
       it 'does not register any offenses' do
-        expect_no_offenses(<<-RUBY.strip_indent, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           gem 'rubocop'
           gem 'flog'
         RUBY

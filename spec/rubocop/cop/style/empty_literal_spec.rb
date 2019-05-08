@@ -5,14 +5,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Array' do
     it 'registers an offense for Array.new()' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test = Array.new()
                ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
     end
 
     it 'registers an offense for Array.new' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test = Array.new
                ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
@@ -44,14 +44,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty Hash' do
     it 'registers an offense for Hash.new()' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test = Hash.new()
                ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
     end
 
     it 'registers an offense for Hash.new' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test = Hash.new
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
@@ -78,13 +78,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'auto-corrects Hash.new to {} in various contexts' do
       new_source =
-        autocorrect_source(<<-RUBY.strip_indent)
+        autocorrect_source(<<~RUBY)
           test = Hash.new
           Hash.new.merge("a" => 3)
           yadayada.map { a }.reduce(Hash.new, :merge)
         RUBY
       expect(new_source)
-        .to eq(<<-RUBY.strip_indent)
+        .to eq(<<~RUBY)
           test = {}
           {}.merge("a" => 3)
           yadayada.map { a }.reduce({}, :merge)
@@ -105,13 +105,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'auto-correct changes Hash.new to {} and wraps it in parentheses ' \
       'when it is the only argument to super' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           super Hash.new
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           super({})
         end
@@ -120,13 +120,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'auto-correct changes Hash.new to {} and wraps all arguments in ' \
       'parentheses when it is the first argument to super' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           super Hash.new, something
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           super({}, something)
         end
@@ -136,14 +136,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
   describe 'Empty String' do
     it 'registers an offense for String.new()' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test = String.new()
                ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
     end
 
     it 'registers an offense for String.new' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test = String.new
                ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       end
 
       it 'registers an offense for String.new' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           test = String.new
                  ^^^^^^^^^^ Use string literal `""` instead of `String.new`.
         RUBY
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       let(:ruby_version) { 2.3 }
 
       it 'does not register an offense for String.new' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           # frozen_string_literal: true
           test = String.new
         RUBY

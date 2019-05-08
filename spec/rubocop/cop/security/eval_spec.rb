@@ -4,28 +4,28 @@ RSpec.describe RuboCop::Cop::Security::Eval do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for eval as function' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       eval(something)
       ^^^^ The use of `eval` is a serious security risk.
     RUBY
   end
 
   it 'registers an offense for eval as command' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       eval something
       ^^^^ The use of `eval` is a serious security risk.
     RUBY
   end
 
   it 'registers an offense `Binding#eval`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       binding.eval something
               ^^^^ The use of `eval` is a serious security risk.
     RUBY
   end
 
   it 'registers an offense for eval with string that has an interpolation' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       eval "something#{foo}"
       ^^^^ The use of `eval` is a serious security risk.
     RUBY
@@ -57,14 +57,14 @@ RSpec.describe RuboCop::Cop::Security::Eval do
 
   context 'with an explicit binding, filename, and line number' do
     it 'registers an offense for eval as function' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         eval(something, binding, "test.rb", 1)
         ^^^^ The use of `eval` is a serious security risk.
       RUBY
     end
 
     it 'registers an offense for eval as command' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         eval something, binding, "test.rb", 1
         ^^^^ The use of `eval` is a serious security risk.
       RUBY

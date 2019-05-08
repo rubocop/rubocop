@@ -4,28 +4,28 @@ RSpec.describe RuboCop::Cop::Security::Open do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for open' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       open(something)
       ^^^^ The use of `Kernel#open` is a serious security risk.
     RUBY
   end
 
   it 'registers an offense for open with mode argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       open(something, "r")
       ^^^^ The use of `Kernel#open` is a serious security risk.
     RUBY
   end
 
   it 'registers an offense for open with dynamic string that is not prefixed' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       open("#{foo}.txt")
       ^^^^ The use of `Kernel#open` is a serious security risk.
     RUBY
   end
 
   it 'registers an offense for open with string that starts with a pipe' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       open("| #{foo}")
       ^^^^ The use of `Kernel#open` is a serious security risk.
     RUBY

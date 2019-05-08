@@ -4,21 +4,21 @@ RSpec.describe RuboCop::Cop::Style::ImplicitRuntimeError do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for `raise` without error class' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       raise 'message'
       ^^^^^^^^^^^^^^^ Use `raise` with an explicit exception class and message, rather than just a message.
     RUBY
   end
 
   it 'registers an offense for `fail` without error class' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       fail 'message'
       ^^^^^^^^^^^^^^ Use `fail` with an explicit exception class and message, rather than just a message.
     RUBY
   end
 
   it 'registers an offense for `raise` with a multiline string' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       raise 'message' \\
       ^^^^^^^^^^^^^^^^^ Use `raise` with an explicit exception class and message, rather than just a message.
             '2nd line'
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::ImplicitRuntimeError do
   end
 
   it 'registers an offense for `fail` with a multiline string' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       fail 'message' \\
       ^^^^^^^^^^^^^^^^ Use `fail` with an explicit exception class and message, rather than just a message.
             '2nd line'
@@ -34,13 +34,13 @@ RSpec.describe RuboCop::Cop::Style::ImplicitRuntimeError do
   end
 
   it 'does not register an offense for `raise` with an error class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       raise StandardError, 'message'
     RUBY
   end
 
   it 'does not register an offense for `fail` with an error class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       fail StandardError, 'message'
     RUBY
   end

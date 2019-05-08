@@ -11,14 +11,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for left brace without outer space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each{ puts }
             ^ Space missing to the left of {.
       RUBY
     end
 
     it 'registers an offense for opposite + correct style' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each{ puts }
             ^ Space missing to the left of {.
         each { puts }
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
 
     it 'registers an offense for multiline block where left brace has no ' \
        'outer space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo.map{ |a|
                ^ Space missing to the left of {.
           a.bar.to_s
@@ -45,14 +45,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'registers an offense for braces surrounded by spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each { puts }
             ^ Space detected to the left of {.
       RUBY
     end
 
     it 'registers an offense for correct + opposite style' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each{ puts }
         each { puts }
             ^ Space detected to the left of {.
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         -> {}
           ^ Space detected to the left of {.
       RUBY
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->{}
           ^ Space missing to the left of {.
       RUBY

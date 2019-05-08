@@ -4,28 +4,28 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for instance method call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       test::method_name
           ^^ Do not use `::` for method calls.
     RUBY
   end
 
   it 'registers an offense for instance method call with arg' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       test::method_name(arg)
           ^^ Do not use `::` for method calls.
     RUBY
   end
 
   it 'registers an offense for class method call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Class::method_name
            ^^ Do not use `::` for method calls.
     RUBY
   end
 
   it 'registers an offense for class method call with arg' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Class::method_name(arg, arg2)
            ^^ Do not use `::` for method calls.
     RUBY

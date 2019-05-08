@@ -5,14 +5,14 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods do
 
   context 'prefer `File.exist?` over `File.exists?`' do
     it 'registers an offense for File.exists?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         File.exists?(o)
              ^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
       RUBY
     end
 
     it 'registers an offense for ::File.exists?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ::File.exists?(o)
                ^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
       RUBY
@@ -30,14 +30,14 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods do
 
   context 'prefer `Dir.exist?` over `Dir.exists?`' do
     it 'registers an offense for Dir.exists?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Dir.exists?(o)
             ^^^^^^^ `Dir.exists?` is deprecated in favor of `Dir.exist?`.
       RUBY
     end
 
     it 'registers an offense for ::Dir.exists?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ::Dir.exists?(o)
               ^^^^^^^ `Dir.exists?` is deprecated in favor of `Dir.exist?`.
       RUBY
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods do
 
   context 'prefer `block_given?` over `iterator?`' do
     it 'registers an offense for iterator?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         iterator?
         ^^^^^^^^^ `iterator?` is deprecated in favor of `block_given?`.
       RUBY

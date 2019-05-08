@@ -5,23 +5,23 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
   context 'correct cases' do
     it 'accepts simple correct case' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        <<-SQL.strip_indent
+      expect_no_offenses(<<~RUBY)
+        <<~SQL
           foo
         SQL
       RUBY
     end
 
     it 'accepts chained correct case' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        <<-SQL.strip_indent.bar
+      expect_no_offenses(<<~RUBY)
+        <<~SQL.bar
           foo
         SQL
       RUBY
     end
 
     it 'ignores if no call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         <<-SQL
           foo
         SQL
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
   context 'incorrect cases' do
     context 'simple incorrect case' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
           ^ Put a method call with a HEREDOC receiver on the same line as the HEREDOC opening.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           <<-SQL.strip_indent
             foo
           SQL
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
     context 'simple incorrect case with paren' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
           ^ Put a method call with a HEREDOC receiver on the same line as the HEREDOC opening.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           <<-SQL.foo(bar_baz)
             foo
           SQL
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
     context 'chained case no parens' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
           ^ Put a method call with a HEREDOC receiver on the same line as the HEREDOC opening.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           <<-SQL.strip_indent.foo
             foo
           SQL
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
     context 'chained case with parens' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
           ^ Put a method call with a HEREDOC receiver on the same line as the HEREDOC opening.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           <<-SQL.abc(1, 2, 3).foo
             foo
           SQL
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
     context 'with trailing comma in method call' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           bar(<<-SQL
             foo
           SQL
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
           )
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           bar(<<-SQL.abc,
             foo
           SQL
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
     context 'chained case with multiple line args' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
         RUBY
 
         # Should not autocorrect -- cannot always be done safely.
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
 
     context 'chained case with multiple line args' do
       it 'detects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
         RUBY
 
         # Should not autocorrect -- cannot always be done safely.
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           <<-SQL
             foo
           SQL

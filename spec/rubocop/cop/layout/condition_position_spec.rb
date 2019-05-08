@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
 
   %w[if unless while until].each do |keyword|
     it 'registers an offense for condition on the next line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #{keyword}
         x == 10
         ^^^^^^^ Place the condition on the same line as `#{keyword}`.
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
     end
 
     it 'accepts condition on the same line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{keyword} x == 10
          bala
         end
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
     end
 
     it 'accepts condition on a different line for modifiers' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         do_something #{keyword}
           something && something_else
       RUBY
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
   end
 
   it 'registers an offense for elsif condition on the next line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if something
         test
       elsif

@@ -2,14 +2,14 @@
 
 module StatementModifierHelper
   def check_empty(keyword)
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       #{keyword} cond
       end
     RUBY
   end
 
   def check_really_short(keyword)
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       #{keyword} a
         b
       end
@@ -21,7 +21,7 @@ module StatementModifierHelper
   end
 
   def autocorrect_really_short(keyword)
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       #{keyword} a
         b
       end
@@ -43,7 +43,7 @@ module StatementModifierHelper
   end
 
   def check_short_multiline(keyword)
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       #{keyword} ENV['COVERAGE']
         require 'simplecov'
         SimpleCov.start

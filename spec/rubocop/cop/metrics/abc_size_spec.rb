@@ -7,21 +7,21 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 0 } }
 
     it 'accepts an empty method' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method_name
         end
       RUBY
     end
 
     it 'accepts an empty `define_method`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         define_method :method_name do
         end
       RUBY
     end
 
     it 'registers an offense for an if modifier' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2.24/0]
           call_foo if some_condition # 0 + 2*2 + 1*1
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of a local variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1/0]
           x = 1
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of an element' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1.41/0]
           x[0] = 1
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
 
     it 'registers an offense for complex content including A, B, and C ' \
        'scores' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [5.74/0]
           my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 1, 4
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for a `define_method`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         define_method :method_name do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1/0]
           x = 1
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'treats safe navigation method calls like regular method calls' do
-      expect_offense(<<-RUBY.strip_indent) # sqrt(0 + 2*2 + 0) => 2
+      expect_offense(<<~RUBY) # sqrt(0 + 2*2 + 0) => 2
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2/0]
           object&.do_something
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 2 } }
 
     it 'accepts two assignments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method_name
           x = 1
           y = 2
@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     let(:cop_config) { { 'Max' => 2.3 } }
 
     it 'accepts a total score of 2.24' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method_name
           y = 1 if y == 1
         end

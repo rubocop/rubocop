@@ -7,21 +7,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'registers an offense for spaces inside parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         f( 3)
           ^ Space inside parentheses detected.
         g = (a + 3 )
                   ^ Space inside parentheses detected.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         f(3)
         g = (a + 3)
       RUBY
     end
 
     it 'accepts parentheses in block parameter list' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         list.inject(Tms.new) { |sum, (label, item)|
         }
       RUBY
@@ -32,14 +32,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
     end
 
     it 'accepts parentheses with line break' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         f(
           1)
       RUBY
     end
 
     it 'accepts parentheses with comment and line break' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         f( # Comment
           1)
       RUBY
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
     it 'registers an offense for no spaces inside parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         f( 3)
             ^ No space inside parentheses detected.
         g = (a + 3 )
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
                   ^ No space inside parentheses detected.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         f( 3 )
         g = ( a + 3 )
         split( "\\n" )
@@ -68,21 +68,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
     end
 
     it 'registers an offense in block parameter list with no spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         list.inject( Tms.new ) { |sum, (label, item)|
                                         ^ No space inside parentheses detected.
                                                    ^ No space inside parentheses detected.
         }
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         list.inject( Tms.new ) { |sum, ( label, item )|
         }
       RUBY
     end
 
     it 'accepts parentheses with spaces' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         f( 3 )
         g = ( a + 3 )
         split( "\\n" )
@@ -90,14 +90,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
     end
 
     it 'accepts parentheses with line break' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         f(
           1 )
       RUBY
     end
 
     it 'accepts parentheses with comment and line break' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         f( # Comment
           1 )
       RUBY

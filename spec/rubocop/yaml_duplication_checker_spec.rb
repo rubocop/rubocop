@@ -16,7 +16,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
   end
 
   context 'when yaml has duplicated keys in the top level' do
-    let(:yaml) { <<-YAML.strip_indent }
+    let(:yaml) { <<~YAML }
       Layout/Tab:
         Enabled: true
 
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
   end
 
   context 'when yaml has duplicated keys in the second level' do
-    let(:yaml) { <<-YAML.strip_indent }
+    let(:yaml) { <<~YAML }
       Layout/Tab:
         Enabled: true
         Enabled: false
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
   end
 
   context 'when yaml does not have any duplication' do
-    let(:yaml) { <<-YAML.strip_indent }
+    let(:yaml) { <<~YAML }
       Style/TrailingCommaInHashLiteral:
         Enabled: true
         EnforcedStyleForMultiline: no_comma

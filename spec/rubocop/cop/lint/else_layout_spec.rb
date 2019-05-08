@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for expr on same line as else' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if something
         test
       else ala
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'accepts proper else' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if something
         test
       else
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'accepts single-expr else regardless of layout' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if something
         test
       else bala
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'can handle elsifs' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if something
         test
       elsif something
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   end
 
   it 'handles empty braces' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if something
         ()
       else

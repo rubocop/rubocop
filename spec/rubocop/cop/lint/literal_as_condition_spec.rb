@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
 
   %w(1 2.0 [1] {} :sym :"#{a}").each do |lit|
     it "registers an offense for literal #{lit} in if" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if #{lit}
           top
         end
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in while" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         while #{lit}
           top
         end
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in post-loop while" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         begin
           top
         end while(#{lit})
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in until" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         until #{lit}
           top
         end
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in post-loop until" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         begin
           top
         end until #{lit}
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in case" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         case #{lit}
         when x then top
         end
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
 
     it "registers an offense for literal #{lit} in a when " \
        'of a case without anything after case keyword' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         case
         when #{lit} then top
         end
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
 
     it "accepts literal #{lit} in a when of a case with " \
        'something after case keyword' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case x
         when #{lit} then top
         end
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in &&" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if x && #{lit}
           top
         end
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in complex cond" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if x && !(a && #{lit}) && y && z
           top
         end
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in !" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if !#{lit}
           top
         end
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in complex !" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if !(x && (y && #{lit}))
           top
         end
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "accepts literal #{lit} if it's not an and/or operand" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if test(#{lit})
           top
         end
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "accepts literal #{lit} in non-toplevel and/or" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if (a || #{lit}).something
           top
         end
@@ -130,14 +130,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for `!#{lit}`" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         !#{lit}
       RUBY
       expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for `not #{lit}`" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         not(#{lit})
       RUBY
       expect(cop.offenses.size).to eq(1)
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
   end
 
   it 'accepts array literal in case, if it has non-literal elements' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case [1, 2, x]
       when [1, 2, 5] then top
       end
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
   end
 
   it 'accepts array literal in case, if it has nested non-literal element' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case [1, 2, [x, 1]]
       when [1, 2, 5] then top
       end
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
   end
 
   it 'registers an offense for case with a primitive array condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       case [1, 2, [3, 4]]
            ^^^^^^^^^^^^^^ Literal `[1, 2, [3, 4]]` appeared as a condition.
       when [1, 2, 5] then top
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
   end
 
   it 'accepts dstr literal in case' do
-    expect_no_offenses(<<-'RUBY'.strip_indent)
+    expect_no_offenses(<<~'RUBY')
       case "#{x}"
       when [1, 2, 5] then top
       end

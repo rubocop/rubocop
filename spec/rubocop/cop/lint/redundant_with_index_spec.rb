@@ -6,21 +6,21 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `ary.each_with_index { |v| v }`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ary.each_with_index { |v| v }
           ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
     RUBY
   end
 
   it 'registers an offense when using `ary.each.with_index { |v| v }`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ary.each.with_index { |v| v }
                ^^^^^^^^^^ Remove redundant `with_index`.
     RUBY
   end
 
   it 'registers an offense when using `ary.each.with_index(1) { |v| v }`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ary.each.with_index(1) { |v| v }
                ^^^^^^^^^^^^^ Remove redundant `with_index`.
     RUBY
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex do
 
   it 'registers an offense when using `ary.each_with_object([]).with_index ' \
      '{ |v| v }`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ary.each_with_object([]).with_index { |v| v }
                                ^^^^^^^^^^ Remove redundant `with_index`.
     RUBY

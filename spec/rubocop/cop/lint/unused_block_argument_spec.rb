@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                       'necessary, use `_` or `_value` as an argument ' \
                       "name to indicate that it won't be used."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             hash.each do |key, value|
                                ^^^^^ #{message}
               puts key
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
       context 'and arguments are swap-assigned' do
         it 'accepts' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             hash.each do |key, value|
               key, value = value, key
             end
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                     "If it's necessary, use `_` or `_key` as an argument " \
                     "name to indicate that it won't be used."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             hash.each do |key, value|
                           ^^^ #{message}
               key, value = value, 42
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
              "arguments if you don't care about them."
           end
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             hash = { foo: 'FOO', bar: 'BAR' }
             hash.each do |key, value|
                                ^^^^^ #{value_message}
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           message = 'Unused block argument - `index`. ' \
                       "You can omit the argument if you don't care about it."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             1.times do |index|
                         ^^^^^ #{message}
               puts :something
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                       "If it's necessary, use `_` or `_bar` as an argument " \
                       "name to indicate that it won't be used."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             define_method(:foo) do |bar|
                                     ^^^ #{message}
               puts 'baz'
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     context 'when a block have a block local variable' do
       context 'and the variable is unused' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             1.times do |index; block_local_variable|
                                ^^^^^^^^^^^^^^^^^^^^ Unused block local variable - `block_local_variable`.
               puts index
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
             'about them.'
           end
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             -> (foo, bar) { do_something }
                      ^^^ #{bar_message}
                 ^^^ #{foo_message}
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                       "If it's necessary, use `_` or `_foo` as an argument " \
                       "name to indicate that it won't be used."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             -> (foo, bar) { puts bar }
                 ^^^ #{message}
           RUBY
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when an underscore-prefixed block argument is not used' do
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           1.times do |_index|
             puts 'foo'
           end
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
             "If it's necessary, use `_` or `_bar` as an argument name " \
             "to indicate that it won't be used."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             define_method(:foo) do |bar: 'default'|
                                     ^^^ #{message}
               puts 'bar'
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
 
           it 'does not care' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               define_method(:foo) do |bar: 'default'|
                 puts 'bar'
               end
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           message = 'Unused block argument - `bar`. ' \
                       "You can omit the argument if you don't care about it."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             foo(:foo) do |bar: 'default'|
                           ^^^ #{message}
               puts 'bar'
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
 
           it 'does not care' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               foo(:foo) do |bar: 'default'|
                 puts 'bar'
               end
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a method argument is not used' do
       it 'does not care' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def some_method(foo)
           end
         RUBY
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'when a variable is not used' do
       it 'does not care' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           1.times do
             foo = 1
           end
@@ -239,7 +239,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
     context 'in a method calling `binding` without arguments' do
       it 'accepts all arguments' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           test do |key, value|
             puts something(binding)
           end
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               "arguments if you don't care about them."
           end
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             test do |key, value|
                           ^^^^^ #{value_message}
                      ^^^ #{key_message}
@@ -274,7 +274,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               "arguments if you don't care about them."
           end
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             test do |key, value|
                           ^^^^^ #{value_message}
                      ^^^ #{key_message}
@@ -293,7 +293,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           message = 'Unused block argument - `bar`. You can omit the ' \
                     "argument if you don't care about it."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             super { |bar| }
                      ^^^ #{message}
           RUBY
@@ -373,7 +373,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                 'instead of a lambda if you want it to accept any arguments ' \
                 "but don't care about them."
 
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->(arg) { 1 }
            ^^^ #{message}
       RUBY
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         "if you want it to accept any arguments but don't care about them."
       end
 
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->(arg1, arg2, *others) { 1 }
                         ^^^^^^ #{others_message}
                  ^^^^ #{arg2_message}

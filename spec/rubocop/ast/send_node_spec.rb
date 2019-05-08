@@ -99,7 +99,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `module_function`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             module_function
           end
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `module_function`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             module_function :foo
           end
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `private`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             private
           end
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `private`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             private :foo
           end
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `protected`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             protected
           end
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `protected`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             protected :foo
           end
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `public`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             public
           end
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `public`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             public :foo
           end
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is not an access modifier' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             some_command
           end
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `module_function`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             module_function
           end
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `private`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             private
           end
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `protected`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             protected
           end
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a bare `public`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             public
           end
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node has an argument' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             private :foo
           end
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is not an access modifier' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             some_command
           end
@@ -287,7 +287,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `module_function`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             module_function :foo
           end
@@ -299,7 +299,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `private`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             private :foo
           end
@@ -311,7 +311,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `protected`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             protected :foo
           end
@@ -323,7 +323,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is a non-bare `public`' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             public :foo
           end
@@ -335,7 +335,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node does not have an argument' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             private
           end
@@ -347,7 +347,7 @@ RSpec.describe RuboCop::AST::SendNode do
 
     context 'when node is not an access modifier' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           module Foo
             some_command
           end

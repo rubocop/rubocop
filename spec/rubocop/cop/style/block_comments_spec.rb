@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for block comments' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       =begin
       ^^^^^^ Do not use block comments.
       comment
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'auto-corrects a block comment into a regular comment' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       =begin
       comment line 1
 
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       def foo
       end
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       # comment line 1
       #
       # comment line 2
@@ -36,13 +36,13 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'auto-corrects an empty block comment by removing it' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       =begin
       =end
       def foo
       end
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       def foo
       end
     RUBY
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
 
   it 'auto-corrects a block comment into a regular comment (without trailing' \
     'newline)' do
-    source = <<-RUBY.strip_indent
+    source = <<~RUBY
       =begin
       comment line 1
 
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
 
     new_source = autocorrect_source(source.chomp)
 
-    expected_source = <<-RUBY.strip_indent
+    expected_source = <<~RUBY
       # comment line 1
       #
       # comment line 2

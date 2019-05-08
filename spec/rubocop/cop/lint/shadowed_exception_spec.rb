@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
   context 'single rescue' do
     it 'accepts an empty rescue' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a single exception' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue Exception
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'rescue a exception without causing constant name deprecation warning' do
       expect do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           def foo
             something
           rescue TimeoutError
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a single custom exception' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue NonStandardException
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a custom exception and a standard exception' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue Error, NonStandardException
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing multiple custom exceptions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue CustomError, NonStandardException
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
       stub_const('Errno::EWOULDBLOCK::Errno', 35)
       stub_const('Errno::ECONNABORTED::Errno', 53)
 
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue Errno::EAGAIN, Errno::EWOULDBLOCK, Errno::ECONNABORTED
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'registers an offense rescuing exceptions that are ' \
       'ancestors of each other ' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def
           something
         rescue StandardError, RuntimeError
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'registers an offense rescuing Exception with any other error or ' \
        'exception' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue NonStandardError, Exception
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a single exception that is assigned to a variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue Exception => e
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a single exception that has an ensure' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue Exception
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a single exception that has an else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue Exception
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'accepts rescuing a multiple exceptions that are not ancestors that ' \
        'have an else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue NoMethodError, ZeroDivisionError
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     context 'when there are multiple levels of exceptions in the same rescue' do
       it 'registers an offense for two exceptions' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           begin
             something
           rescue StandardError, NameError
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
       end
 
       it 'registers an offense for more than two exceptions' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           begin
             something
           rescue StandardError, NameError, NoMethodError
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'registers an offense for the same exception multiple times' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue NameError, NameError
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts splat arguments passed to rescue' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           a
         rescue *FOO
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
   context 'multiple rescues' do
     it 'registers an offense when a higher level exception is rescued before' \
        ' a lower level exception' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue NoMethodError
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     it 'registers an offense when a higher level exception is rescued before ' \
        'a lower level exception when there are multiple exceptions ' \
        'rescued in a group' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue Exception
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'registers an offense for two exceptions when there are ' \
        'multiple levels of exceptions in the same rescue' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue ZeroDivisionError
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'registers an offense rescuing out of order exceptions when there ' \
        'is an ensure' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue Exception
@@ -267,7 +267,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing exceptions in order of level' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue StandardError
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts many (>= 7) rescue groups' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue StandardError
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'accepts rescuing exceptions in order of level with multiple ' \
        'exceptions in a group' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue NoMethodError, ZeroDivisionError
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'accepts rescuing exceptions in order of level with multiple ' \
        'exceptions in a group with custom exceptions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue NonStandardError, NoMethodError
@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing custom exceptions in multiple rescue groups' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue NonStandardError, OtherError
@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     context 'splat arguments' do
       it 'accepts splat arguments passed to multiple rescues' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             a
           rescue *FOO
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
       it 'registers an offense for splat arguments rescued after ' \
          'rescuing a known exception' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             a
           rescue StandardError
@@ -366,7 +366,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
       it 'registers an offense for splat arguments rescued after ' \
          'rescuing Exception' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           begin
             a
           rescue Exception
@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     context 'exceptions from different ancestry chains' do
       it 'accepts rescuing exceptions in one order' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             a
           rescue ArgumentError
@@ -393,7 +393,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
       end
 
       it 'accepts rescuing exceptions in another order' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             a
           rescue Interrupt
@@ -406,7 +406,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a known exception after an unknown exceptions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           a
         rescue UnknownException
@@ -418,7 +418,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a known exception before an unknown exceptions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           a
         rescue StandardError
@@ -430,7 +430,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'accepts rescuing a known exception between unknown exceptions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           a
         rescue UnknownException
@@ -444,7 +444,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'registers an offense rescuing Exception before an unknown exceptions' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           a
         rescue Exception
@@ -457,7 +457,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
     end
 
     it 'ignores expressions of non-const' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           a
         rescue foo
@@ -470,7 +470,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     context 'last rescue does not specify exception class' do
       it 'highlights range ending at rescue keyword' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
           rescue A, B
             do_something

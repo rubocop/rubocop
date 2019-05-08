@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
   it 'registers an offense for a single-line method' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def some_method; body end
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
       def link_to(name, url); {:name => name}; end
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 
     it 'registers an offense for an empty method' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def no_op; end
         ^^^^^^^^^^^^^^ Avoid single-line method definitions.
         def self.resource_class=(klass); end
@@ -35,10 +35,10 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
     end
 
     it 'auto-corrects an empty method' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         def x; end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         def x; 
         end
       RUBY
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
     it 'accepts a single-line empty method' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def no_op; end
         def self.resource_class=(klass); end
         def @table.columns; end
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
   end
 
   it 'accepts a multi-line method' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def some_method
         body
       end
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
   end
 
   it 'does not crash on an method with a capitalized name' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def NoSnakeCase
       end
     RUBY

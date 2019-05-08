@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w(1 2.0 [1] {}).each do |lit|
     it "registers an offense for a while loop with #{lit} as condition" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         while #{lit}
         ^^^^^ Use `Kernel#loop` for infinite loops.
           top
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   %w[false nil].each do |lit|
     it "registers an offense for a until loop with #{lit} as condition" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         until #{lit}
         ^^^^^ Use `Kernel#loop` for infinite loops.
           top
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
   end
 
   it 'accepts while true if loop {} would change semantics' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def f1
         a = nil # This `a` is local to `f1` and should not affect `f2`.
         puts a
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
   end
 
   it 'accepts modifier while true if loop {} would change semantics' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = next_value or break while true
       p a
     RUBY
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   it 'registers an offense for modifier until false if loop {} would not ' \
      'change semantics' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = nil
       a = next_value or break until false
                               ^^^^^ Use `Kernel#loop` for infinite loops.
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   it 'registers an offense for until false if loop {} would work because of ' \
      'previous assignment in a while loop' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       while true
         a = 42
         break
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   it 'registers an offense for until false if loop {} would work because the ' \
      'assigned variable is not used afterwards' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       until false
       ^^^^^ Use `Kernel#loop` for infinite loops.
         a = 43
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   it 'registers an offense for while true or until false if loop {} would ' \
      'work because of an earlier assignment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = 0
       while true
       ^^^^^ Use `Kernel#loop` for infinite loops.
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
 
   it 'registers an offense for while true if loop {} would work because it ' \
      'is an instance variable being assigned' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       while true
       ^^^^^ Use `Kernel#loop` for infinite loops.
         @a = 42
@@ -142,13 +142,13 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
 
       it "auto-corrects multi-line modifier #{keyword} and indents correctly" do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # comment
           something 1, # comment 1
               # comment 2
               2 #{keyword} #{lit}
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # comment
           loop do
               something 1, # comment 1
@@ -160,12 +160,12 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with one statement" do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         begin # comment 1
           something += 1 # comment 2
         end #{keyword} #{lit} # comment 3
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         loop do # comment 1
           something += 1 # comment 2
         end # comment 3
@@ -173,13 +173,13 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with two statements" do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         begin
           something += 1
           something_else += 1
         end #{keyword} #{lit}
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         loop do
           something += 1
           something_else += 1
@@ -194,22 +194,22 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects the usage of #{keyword} with do" do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         #{keyword} #{lit} do
         end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         loop do
         end
       RUBY
     end
 
     it "auto-corrects the usage of #{keyword} without do" do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         #{keyword} #{lit}
         end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         loop do
         end
       RUBY

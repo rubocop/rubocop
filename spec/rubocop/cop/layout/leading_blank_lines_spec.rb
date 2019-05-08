@@ -12,26 +12,26 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
   end
 
   it 'accepts not having a blank line before a class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
       end
     RUBY
   end
 
   it 'accepts not having a blank line before code' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       puts 1
     RUBY
   end
 
   it 'accepts not having a blank line before a comment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # something
     RUBY
   end
 
   it 'registers an offense when there is a new line before a class' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
 
       class Foo
       ^^^^^ Unnecessary blank line at the beginning of the source.
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
   end
 
   it 'registers an offense when there is a new line before code' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
 
       puts 1
       ^^^^ Unnecessary blank line at the beginning of the source.
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
   end
 
   it 'registers an offense when there is a new line before a comment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
 
       # something
       ^^^^^^^^^^^ Unnecessary blank line at the beginning of the source.
@@ -57,49 +57,49 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
 
   context 'auto-correct' do
     it 'removes new lines before a class' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
 
         class Foo
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class Foo
         end
       RUBY
     end
 
     it 'removes new lines before code' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
 
         puts 1
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         puts 1
       RUBY
     end
 
     it 'removes new lines before a comment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
 
-      # something
+        # something
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
-      # something
+      expect(new_source).to eq(<<~RUBY)
+        # something
       RUBY
     end
 
     it 'removes multiple new lines' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
 
 
         class Foo
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class Foo
         end
       RUBY
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
       end
 
       it 'does not invoke conflicts with other cops' do
-        source_with_offenses = <<-RUBY.strip_indent
+        source_with_offenses = <<~RUBY
 
           def bar(arg =1); end
         RUBY
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
         team.inspect_file(parse_source(source_with_offenses, nil))
         new_source = options[:stdin]
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def bar(arg = 1); end
         RUBY
       end

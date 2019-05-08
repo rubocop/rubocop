@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Rails::DynamicFindBy, :config do
 
   context 'with dynamic find_by_*_and_*_and_* with newline' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         User.find_by_name_and_email_and_token(
           name,
           email,
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Rails::DynamicFindBy, :config do
     include_examples(
       'register an offense and auto correct',
       'Use `find_by` instead of dynamic `find_by_name_and_email_and_token`.',
-      <<-RUBY.strip_indent
+      <<~RUBY
         User.find_by(
           name: name,
           email: email,
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Rails::DynamicFindBy, :config do
   end
 
   it 'accepts method in whitelist' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       User.find_by_sql(["select * from users where name = ?", name])
     RUBY
   end

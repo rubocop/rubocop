@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for comment without leading space' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       #missing space
       ^^^^^^^^^^^^^^ Missing space after `#`.
     RUBY
@@ -27,14 +27,14 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'does not register an offense for #! on first line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       #!/usr/bin/ruby
       test
     RUBY
   end
 
   it 'registers an offense for #! after the first line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       test
       #!/usr/bin/ruby
       ^^^^^^^^^^^^^^^ Missing space after `#`.
@@ -43,14 +43,14 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
 
   context 'file named config.ru' do
     it 'does not register an offense for #\ on first line' do
-      expect_no_offenses(<<-'RUBY'.strip_indent, 'config.ru')
+      expect_no_offenses(<<~'RUBY', 'config.ru')
         #\ -w -p 8765
         test
       RUBY
     end
 
     it 'registers an offense for #\ after the first line' do
-      expect_offense(<<-'RUBY'.strip_indent, 'config.ru')
+      expect_offense(<<~'RUBY', 'config.ru')
         test
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
 
   context 'file not named config.ru' do
     it 'registers an offense for #\ on first line' do
-      expect_offense(<<-'RUBY'.strip_indent, 'test/test_case.rb')
+      expect_offense(<<~'RUBY', 'test/test_case.rb')
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
         test
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
     end
 
     it 'registers an offense for #\ after the first line' do
-      expect_offense(<<-'RUBY'.strip_indent, 'test/test_case.rb')
+      expect_offense(<<~'RUBY', 'test/test_case.rb')
         test
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'accepts rdoc syntax' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       #++
       #--
       #:nodoc:
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
   end
 
   it 'accepts =begin/=end comments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       =begin
       #blahblah
       =end

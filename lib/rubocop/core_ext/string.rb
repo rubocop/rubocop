@@ -27,7 +27,7 @@ class String
     #
     # @example
     #
-    #   code = <<-END.strip_indent
+    #   code = <<~END
     #     def test
     #       some_method
     #       other_method

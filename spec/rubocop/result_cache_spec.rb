@@ -28,7 +28,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   end
 
   before do
-    create_file('example.rb', <<-RUBY.strip_indent)
+    create_file('example.rb', <<~RUBY)
       # Hello
       x = 1
     RUBY

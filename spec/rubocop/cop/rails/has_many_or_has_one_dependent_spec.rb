@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
   context 'has_one' do
     it 'registers an offense when not specifying any options' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person < ApplicationRecord
           has_one :foo
           ^^^^^^^ Specify a `:dependent` option.
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
     end
 
     it 'registers an offense when missing an explicit `:dependent` strategy' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person < ApplicationRecord
           has_one :foo, class_name: 'bar'
           ^^^^^^^ Specify a `:dependent` option.
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
     end
 
     it 'does not register an offense when specifying `:dependent` strategy' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Person < ApplicationRecord
           has_one :foo, dependent: :destroy
         end
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
     context 'with :through option' do
       it 'does not register an offense for non-nil value' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Person < ApplicationRecord
             has_one :foo, through: :bar
           end
@@ -40,18 +40,18 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       end
 
       it 'registers an offense for nil value' do
-        expect_offense(<<-RUBY.strip_indent)
-        class Person < ApplicationRecord
-          has_one :foo, through: nil
-          ^^^^^^^ Specify a `:dependent` option.
-        end
+        expect_offense(<<~RUBY)
+          class Person < ApplicationRecord
+            has_one :foo, through: nil
+            ^^^^^^^ Specify a `:dependent` option.
+          end
         RUBY
       end
     end
 
     context 'with_options dependent: :destroy' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Person < ApplicationRecord
             with_options dependent: :destroy do
               has_one :foo
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       end
 
       it 'does not register an offense for using `class_name` option' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Person < ApplicationRecord
             with_options dependent: :destroy do
               has_one :foo, class_name: 'Foo'
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
   context 'has_many' do
     it 'registers an offense when not specifying any options' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person < ApplicationRecord
           has_many :foo
           ^^^^^^^^ Specify a `:dependent` option.
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
     end
 
     it 'registers an offense when missing an explicit `:dependent` strategy' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person < ApplicationRecord
           has_many :foo, class_name: 'bar'
           ^^^^^^^^ Specify a `:dependent` option.
@@ -101,18 +101,18 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       end
 
       it 'registers an offense for nil value' do
-        expect_offense(<<-RUBY.strip_indent)
-        class Person < ApplicationRecord
-          has_many :foo, through: nil
-          ^^^^^^^^ Specify a `:dependent` option.
-        end
+        expect_offense(<<~RUBY)
+          class Person < ApplicationRecord
+            has_many :foo, through: nil
+            ^^^^^^^^ Specify a `:dependent` option.
+          end
         RUBY
       end
     end
 
     context 'Surrounded `with_options` block' do
       it 'registers an offense when `dependent: :destroy` is not present' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class Person < ApplicationRecord
             with_options through: nil do
               has_many :foo
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       end
 
       it "doesn't register an offense for `with_options dependent: :destroy`" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Person < ApplicationRecord
             with_options dependent: :destroy do
               has_many :foo
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
       context 'Multiple associations' do
         it "doesn't register an offense for " \
            '`with_options dependent: :destroy`' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             class Person < ApplicationRecord
               with_options dependent: :destroy do
                 has_many :foo
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
     context 'Nested `with_options` block' do
       it 'does not register an offense when `dependent: :destroy` is present' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Article < ApplicationRecord
             with_options dependent: :destroy do
               has_many :tags
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
   context 'base-class check' do
     it 'registers an offense for `ActiveRecord::Base` class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person < ActiveRecord::Base
           has_one :foo
           ^^^^^^^ Specify a `:dependent` option.
@@ -175,7 +175,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
     it 'registers an offense when using mix-in module that has ' \
        'an association of Active Record' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Foo
           extend ActiveSupport::Concern
 
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
     it 'does not register an offense when using associations of ' \
        'Active Resource' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class User < ActiveResource::Base
           has_many :projects, class_name: 'API::Project'
         end
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Rails::HasManyOrHasOneDependent do
 
   context 'when an Active Record model does not have any associations' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Person < ApplicationRecord
         end
       RUBY

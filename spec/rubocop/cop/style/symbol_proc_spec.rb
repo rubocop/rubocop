@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
 
   it 'registers an offense for a block with parameterless method call on ' \
      'param' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       coll.map { |e| e.upcase }
                ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
     RUBY
   end
 
   it 'registers an offense for a block when method in body is unary -/=' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       something.map { |x| -x }
                     ^^^^^^^^^^ Pass `&:-@` as an argument to `map` instead of a block.
     RUBY
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     let(:source) { 'method(one, 2) { |x| x.test }' }
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         method(one, 2) { |x| x.test }
                        ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `method` instead of a block.
       RUBY
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     let(:source) { 'super(one, two) { |x| x.test }' }
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         super(one, two) { |x| x.test }
                         ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
       RUBY
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     let(:source) { 'super { |x| x.test }' }
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         super { |x| x.test }
               ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
       RUBY
@@ -138,13 +138,13 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   it 'auto-corrects correctly when args have a trailing comma' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       mail(
         to: 'foo',
         subject: 'bar',
       ) { |format| format.text }
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       mail(
         to: 'foo',
         subject: 'bar', &:text

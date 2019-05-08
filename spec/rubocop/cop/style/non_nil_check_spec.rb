@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'registers an offense for != nil' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x != nil
           ^^ Prefer `!expression.nil?` over `expression != nil`.
       RUBY
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense if only expression in predicate' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def signed_in?
           !current_user.nil?
         end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense if only expression in class predicate' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def Test.signed_in?
           current_user != nil
         end
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense if last expression in predicate' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def signed_in?
           something
           current_user != nil
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not register an offense if last expression in class predicate' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def Test.signed_in?
           something
           current_user != nil
@@ -97,14 +97,14 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'registers an offense for `!x.nil?`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         !x.nil?
         ^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
     end
 
     it 'registers an offense for unless x.nil?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts b unless x.nil?
                       ^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'registers an offense for `not x.nil?`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         not x.nil?
         ^^^^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY

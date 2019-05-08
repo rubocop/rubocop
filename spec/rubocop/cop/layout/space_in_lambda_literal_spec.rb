@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'require_space' } }
 
     it 'registers an offense for no space between -> and (' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = ->(b, c) { b + c }
             ^^^^^^^^ Use a space between `->` and `(` in lambda literals.
       RUBY
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for multi-line lambdas' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         l = lambda do |a, b|
           tmp = a * 7
           tmp * b / 50
@@ -31,21 +31,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'registers an offense for no space in the inner nested lambda' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = -> (b = ->(c) {}, d) { b + d }
                     ^^^^^ Use a space between `->` and `(` in lambda literals.
       RUBY
     end
 
     it 'registers an offense for no space in the outer nested lambda' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = ->(b = -> (c) {}, d) { b + d }
             ^^^^^^^^^^^^^^^^^^^^ Use a space between `->` and `(` in lambda literals.
       RUBY
     end
 
     it 'registers an offense for no space in both lambdas when nested' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = ->(b = ->(c) {}, d) { b + d }
                    ^^^^^ Use a space between `->` and `(` in lambda literals.
             ^^^^^^^^^^^^^^^^^^^ Use a space between `->` and `(` in lambda literals.
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'require_no_space' } }
 
     it 'registers an offense for a space between -> and (' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = -> (b, c) { b + c }
             ^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'does not register an offense for multi-line lambdas' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         l = lambda do |a, b|
           tmp = a * 7
           tmp * b / 50
@@ -105,28 +105,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     end
 
     it 'registers an offense for spaces between -> and (' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = ->   (b, c) { b + c }
             ^^^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
     end
 
     it 'registers an offense for a space in the inner nested lambda' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = ->(b = -> (c) {}, d) { b + d }
                    ^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
     end
 
     it 'registers an offense for a space in the outer nested lambda' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = -> (b = ->(c) {}, d) { b + d }
             ^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
     end
 
     it 'registers two offenses for a space in both lambdas when nested' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = -> (b = -> (c) {}, d) { b + d }
                     ^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
             ^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.

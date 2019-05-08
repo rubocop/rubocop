@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
 
   context 'elements listed on the first line' do
     it 'detects the offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = { a: 1,
               ^^^^ Add a line break before the first element of a multi-line hash.
               b: 2 }
@@ -13,12 +13,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a = { a: 1,
               b: 2 }
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = { 
         a: 1,
               b: 2 }
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
 
   context 'hash nested in a method call' do
     it 'detects the offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         method({ foo: 1,
                  ^^^^^^ Add a line break before the first element of a multi-line hash.
                  bar: 2 })
@@ -36,12 +36,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         method({ foo: 1,
                  bar: 2 })
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         method({ 
         foo: 1,
                  bar: 2 })
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
   end
 
   it 'ignores implicit hashes in method calls with parens' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       method(
         foo: 1,
         bar: 2)
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
   end
 
   it 'ignores implicit hashes in method calls without parens' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       method foo: 1,
        bar: 2
     RUBY
@@ -66,14 +66,14 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
 
   it 'ignores implicit hashes in method calls that are improperly formatted' do
     # These are covered by Style/FirstMethodArgumentLineBreak
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       method(foo: 1,
         bar: 2)
     RUBY
   end
 
   it 'ignores elements listed on a single line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       b = {
         a: 1,
         b: 2 }

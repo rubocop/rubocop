@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for methods using a class name' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Test
         def Test.some_method
             ^^^^ Use `self.some_method` instead of `Test.some_method`.
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'registers an offense for methods using a module name' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Test
         def Test.some_method
             ^^^^ Use `self.some_method` instead of `Test.some_method`.
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'does not register an offense for methods using self' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       module Test
         def self.some_method
           do_something
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'does not register an offense for other top-level singleton methods' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Test
         X = Something.new
 
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'does not register an offense outside class/module bodies' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def Test.some_method
         do_something
       end
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
   end
 
   it 'autocorrects class name to self' do
-    src = <<-RUBY.strip_indent
+    src = <<~RUBY
       class Test
         def Test.some_method
           do_something
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
       end
     RUBY
 
-    correct_source = <<-RUBY.strip_indent
+    correct_source = <<~RUBY
       class Test
         def self.some_method
           do_something

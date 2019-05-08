@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:irregular_source) do
-    <<-'RUBY'.strip_indent.chomp
+    <<~'RUBY'.chomp
       "#{ var}"
       "#{var }"
       "#{   var   }"
@@ -52,14 +52,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for well-formatted string interpolations' do
       let(:source) do
-        <<-'RUBY'.strip_indent.chomp
+        <<~'RUBY'.chomp
           "Variable is    #{var}      "
           "  Variable is  #{var}"
         RUBY
       end
 
       it 'does not register an offense for excess literal spacing' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           "Variable is    #{var}      "
           "  Variable is  #{var}"
         RUBY
@@ -98,14 +98,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for well-formatted string interpolations' do
       let(:source) do
-        <<-'RUBY'.strip_indent.chomp
+        <<~'RUBY'.chomp
           "Variable is    #{ var }      "
           "  Variable is  #{ var }"
         RUBY
       end
 
       it 'does not register an offense for excess literal spacing' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           "Variable is    #{ var }      "
           "  Variable is  #{ var }"
         RUBY

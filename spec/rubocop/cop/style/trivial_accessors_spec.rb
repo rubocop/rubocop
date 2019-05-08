@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   let(:cop_config) { {} }
 
   it 'registers an offense on instance reader' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo
         ^^^ Use `attr_reader` to define trivial reader methods.
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class Foo
         attr_reader :foo
       end
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on instance writer' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo=(val)
         ^^^ Use `attr_writer` to define trivial writer methods.
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class Foo
         attr_writer :foo
       end
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on class reader' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def self.foo
         ^^^ Use `attr_reader` to define trivial reader methods.
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class Foo
         class << self
           attr_reader :foo
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on class writer' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def self.foo(val)
         ^^^ Use `attr_writer` to define trivial writer methods.
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on reader with braces' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo()
         ^^^ Use `attr_reader` to define trivial reader methods.
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class Foo
         attr_reader :foo
       end
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on writer without braces' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo= val
         ^^^ Use `attr_writer` to define trivial writer methods.
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class Foo
         attr_writer :foo
       end
@@ -106,14 +106,14 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on one-liner reader' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo; @foo; end
         ^^^ Use `attr_reader` to define trivial reader methods.
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class Foo
         attr_reader :foo
       end
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on one-liner writer' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo(val); @foo=val; end
         ^^^ Use `attr_writer` to define trivial writer methods.
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on DSL-style trivial writer' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         def foo(val)
         ^^^ Use `attr_writer` to define trivial writer methods.
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'registers an offense on reader with `private`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo
         private def foo
                 ^^^ Use `attr_reader` to define trivial reader methods.
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts non-trivial reader' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def test
           some_function_call
@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts non-trivial writer' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def test(val)
           some_function_call(val)
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts splats' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def splatomatic(*values)
           @splatomatic = values
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts blocks' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def something(&block)
           @b = block
@@ -201,7 +201,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts expressions within reader' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def bar
           @bar + foo
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts expressions within writer' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def bar(val)
           @bar = val + foo
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts an initialize method looking like a writer' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
          def initialize(value)
            @top = value
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts reader with different ivar name' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def foo
           @fo
@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts writer with different ivar name' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def foo(val)
           @fo = val
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts writer in a module' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       module Foo
         def bar=(bar)
           @bar = bar
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts writer nested within a module' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       module Foo
         begin
           def bar=(bar)
@@ -273,7 +273,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts reader nested within a module' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       module Foo
         begin
           def bar
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts reader using top level' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def bar
         @bar
       end
@@ -293,7 +293,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts writer using top level' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def bar=(bar)
         @bar = bar
       end
@@ -301,7 +301,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts writer nested within an instance_eval call' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       something.instance_eval do
         begin
           def bar=(bar)
@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'accepts reader nested within an instance_eval calll' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       something.instance_eval do
         begin
           def bar
@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   it 'flags a reader inside a class, inside an instance_eval call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       something.instance_eval do
         class << @blah
           begin
@@ -338,7 +338,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       something.instance_eval do
         class << @blah
           begin
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'ExactNameMatch' => false } }
 
     it 'registers an offense when names mismatch in writer' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Foo
           def foo(val)
           ^^^ Use `attr_writer` to define trivial writer methods.
@@ -366,7 +366,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
 
     it 'registers an offense when names mismatch in reader' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Foo
           def foo
           ^^^ Use `attr_reader` to define trivial reader methods.
@@ -383,7 +383,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowPredicates' => false } }
 
     it 'does not accept predicate-like reader' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Foo
           def foo?
           ^^^ Use `attr_reader` to define trivial reader methods.
@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowPredicates' => true } }
 
     it 'accepts predicate-like reader' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
           def foo?
             @foo
@@ -414,7 +414,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar='] } }
 
     it 'accepts whitelisted reader' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
           def to_foo
             @foo
@@ -424,7 +424,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
 
     it 'accepts whitelisted writer' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
           def bar=(bar)
             @bar = bar
@@ -440,7 +440,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'accepts whitelisted predicate' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Foo
             def foo?
               @foo
@@ -455,7 +455,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'AllowDSLWriters' => true } }
 
     it 'accepts DSL-style writer' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
           def foo(val)
             @foo = val
@@ -469,7 +469,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     let(:cop_config) { { 'IgnoreClassMethods' => true } }
 
     it 'accepts class reader' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
           def self.foo
             @foo
@@ -479,7 +479,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
 
     it 'accepts class writer' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
           def self.foo(val)
             @foo = val

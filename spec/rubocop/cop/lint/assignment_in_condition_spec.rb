@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for lvar assignment in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if test = 10
               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for lvar assignment in while condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       while test = 10
                  ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for lvar assignment in until condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       until test = 10
                  ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for ivar assignment in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if @test = 10
                ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for clvar assignment in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if @@test = 10
                 ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for gvar assignment in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if $test = 10
                ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for constant assignment in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if TEST = 10
               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for collection element assignment in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if a[3] = 10
               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -70,14 +70,14 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'accepts == in condition' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if test == 10
       end
     RUBY
   end
 
   it 'registers an offense for assignment after == in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if test == 10 || foobar = 1
                               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -97,14 +97,14 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'registers an offense for assignment after ||= in condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       raise StandardError unless (foo ||= bar) || a = b
                                                     ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
     RUBY
   end
 
   it 'registers an offense for assignment methods' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if test.method = 10
                      ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
@@ -112,14 +112,14 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   end
 
   it 'does not blow up for empty if condition' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if ()
       end
     RUBY
   end
 
   it 'does not blow up for empty unless condition' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       unless ()
       end
     RUBY
@@ -127,14 +127,14 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
 
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with braces' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if (test = 10)
         end
       RUBY
     end
 
     it 'accepts []= in condition surrounded with braces' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if (test[0] = 10)
         end
       RUBY
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
     it 'does not accept = in condition surrounded with braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if (test = 10)
                  ^ Use `==` if you meant to do a comparison or move the assignment up out of the condition.
         end
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     end
 
     it 'does not accept []= in condition surrounded with braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if (test[0] = 10)
                     ^ Use `==` if you meant to do a comparison or move the assignment up out of the condition.
         end

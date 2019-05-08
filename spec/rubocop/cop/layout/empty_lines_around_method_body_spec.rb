@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method body starting with a blank' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       def some_method
 
         do_something
@@ -26,13 +26,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'autocorrects method body starting with a blank' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       def some_method
 
         do_something
       end
     RUBY
-    expect(corrected).to eq <<-RUBY.strip_indent
+    expect(corrected).to eq <<~RUBY
       def some_method
         do_something
       end
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for class method body starting with a blank' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       def Test.some_method
 
         do_something
@@ -51,13 +51,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'autocorrects class method body starting with a blank' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       def Test.some_method
 
         do_something
       end
     RUBY
-    expect(corrected).to eq <<-RUBY.strip_indent
+    expect(corrected).to eq <<~RUBY
       def Test.some_method
         do_something
       end
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for method body ending with a blank' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       def some_method
         do_something
 
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for class method body ending with a blank' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       def Test.some_method
         do_something
 
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'is not fooled by single line methods' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def some_method; do_something; end
 
       something_else

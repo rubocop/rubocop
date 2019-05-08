@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for misaligned array elements' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       array = [
         a,
          b,
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts aligned array keys' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       array = [
         a,
         b,
@@ -32,21 +32,21 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'accepts several elements per line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       array = [ a, b,
                 c, d ]
     RUBY
   end
 
   it 'accepts aligned array with fullwidth characters' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       puts 'Ｒｕｂｙ', [ a,
                          b ]
     RUBY
   end
 
   it 'auto-corrects alignment' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       array = [
         a,
          b,
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
        d
       ]
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       array = [
         a,
         b,
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'does not auto-correct array within array with too much indentation' do
-    original_source = <<-RUBY.strip_indent
+    original_source = <<~RUBY
       [:l1,
         [:l2,
 
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
            [:l4]]]]
     RUBY
     new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       [:l1,
        [:l2,
 
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'does not auto-correct array within array with too little indentation' do
-    original_source = <<-RUBY.strip_indent
+    original_source = <<~RUBY
       [:l1,
       [:l2,
 
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
          [:l4]]]]
     RUBY
     new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       [:l1,
        [:l2,
 
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'auto-corrects only elements that begin a line' do
-    original_source = <<-RUBY.strip_indent
+    original_source = <<~RUBY
       array = [:bar, {
                whiz: 2, bang: 3 }, option: 3]
     RUBY
@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
   end
 
   it 'does not indent heredoc strings in autocorrect' do
-    original_source = <<-RUBY.strip_indent
+    original_source = <<~RUBY
       var = [
              { :type => 'something',
                :sql => <<EOF
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArray do
       ]
     RUBY
     new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       var = [
              { :type => 'something',
                :sql => <<EOF

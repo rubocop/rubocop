@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
 
       it 'reports all detected offenses for all failed files' do
         formatter.finished(files)
-        expect(output.string).to include(<<-OUTPUT.strip_indent)
+        expect(output.string).to include(<<~OUTPUT)
           1..3
           not ok 1 - lib/rubocop.rb
           # lib/rubocop.rb:2:3: C: foo

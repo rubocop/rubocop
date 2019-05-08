@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
     end
 
     it 'registers an offense for `update_attribute`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         user.update_attribute(:website, 'example.com')
              ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
       RUBY
@@ -80,9 +80,9 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
 
     context 'when using safe navigation operator' do
       it 'registers an offense for `update_attribute`' do
-        expect_offense(<<-RUBY.strip_indent)
-        user&.update_attribute(:website, 'example.com')
-              ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
+        expect_offense(<<~RUBY)
+          user&.update_attribute(:website, 'example.com')
+                ^^^^^^^^^^^^^^^^ Avoid using `update_attribute` because it skips validations.
         RUBY
       end
     end
@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
     end
 
     it 'registers an offense for method not in whitelist' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         user.toggle!(:active)
              ^^^^^^^ Avoid using `toggle!` because it skips validations.
       RUBY
@@ -105,9 +105,9 @@ RSpec.describe RuboCop::Cop::Rails::SkipsModelValidations, :config do
 
     context 'when using safe navigation operator' do
       it 'registers an offense for method not in whitelist' do
-        expect_offense(<<-RUBY.strip_indent)
-        user&.toggle!(:active)
-              ^^^^^^^ Avoid using `toggle!` because it skips validations.
+        expect_offense(<<~RUBY)
+          user&.toggle!(:active)
+                ^^^^^^^ Avoid using `toggle!` because it skips validations.
         RUBY
       end
     end

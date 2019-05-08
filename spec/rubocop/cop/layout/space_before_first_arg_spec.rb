@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   context 'for method calls without parentheses' do
     it 'registers an offense for method call with two spaces before the ' \
        'first arg' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         something  x
                  ^^ Put one space between the method name and the first argument.
         a.something  y, z
@@ -17,11 +17,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'auto-corrects extra space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         something  x
         a.something   y, z
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         something x
         a.something y, z
       RUBY
@@ -30,17 +30,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     context 'when using safe navigation operator' do
       it 'registers an offense for method call with two spaces before the ' \
          'first arg' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           a&.something  y, z
                       ^^ Put one space between the method name and the first argument.
         RUBY
       end
 
       it 'auto-corrects extra space' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           a&.something  y, z
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           a&.something y, z
         RUBY
       end
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
     it 'registers an offense for method call with no spaces before the '\
        'first arg' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         something'hello'
         a.something'hello world'
       RUBY
@@ -58,39 +58,39 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         something'hello'
         a.something'hello world'
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         something 'hello'
         a.something 'hello world'
       RUBY
     end
 
     it 'accepts a method call with one space before the first arg' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something x
         a.something y, z
       RUBY
     end
 
     it 'accepts + operator' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something +
           x
       RUBY
     end
 
     it 'accepts setter call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something.x =
           y
       RUBY
     end
 
     it 'accepts multiple space containing line break' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something \\
           x
       RUBY
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
     context 'when AllowForAlignment is true' do
       it 'accepts method calls with aligned first arguments' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           form.inline_input   :full_name,     as: :string
           form.disabled_input :password,      as: :passwd
           form.masked_input   :zip_code,      as: :string
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
       let(:cop_config) { { 'AllowForAlignment' => false } }
 
       it 'does not accept method calls with aligned first arguments' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           form.inline_input   :full_name,     as: :string
                            ^^^ Put one space between the method name and the first argument.
           form.disabled_input :password,      as: :passwd
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
   context 'for method calls with parentheses' do
     it 'accepts a method call without space' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something(x)
         a.something(y, z)
       RUBY

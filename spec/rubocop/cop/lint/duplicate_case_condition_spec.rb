@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for repeated case conditionals' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       case x
       when false
         first_method
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'registers an offense for subsequent repeated case conditionals' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       case x
       when false
         first_method
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'registers multiple offenses for multiple repeated case conditionals' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       case x
       when false
         first_method
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'registers multiple offenses for repeated multi-value condtionals' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       case x
       when a, b
         first_method
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'registers an offense for repeated logical operator when expressions' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       case x
       when a && b
         first_method
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'accepts trivial case expressions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case x
       when false
         first_method
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'accepts non-redundant case expressions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case x
       when false
         first_method
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'accepts non-redundant case expressions with an else expression' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case x
       when false
         method_name
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition do
   end
 
   it 'accepts similar but not equivalent && expressions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case x
       when something && another && other
         first_method

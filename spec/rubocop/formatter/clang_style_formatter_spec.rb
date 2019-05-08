@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
       )
 
       formatter.report_file('test', cop.offenses)
-      expect(output.string).to eq <<-OUTPUT.strip_indent
+      expect(output.string).to eq <<~OUTPUT
         test:1:1: C: message 1
         aa
         ^^
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
         )
 
         formatter.report_file('test', cop.offenses)
-        expect(output.string).to eq <<-OUTPUT.strip_indent
+        expect(output.string).to eq <<~OUTPUT
           test:1:1: C: message 1
           test:2:1: C: message 2
           yaba
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
 
     context 'when the offending source spans multiple lines' do
       it 'displays the first line with ellipses' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           do_something([this,
                         is,
                         target])
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
 
         formatter.report_file('test', cop.offenses)
         expect(output.string)
-          .to eq <<-OUTPUT.strip_indent
+          .to eq <<~OUTPUT
             test:1:14: C: message 1
             do_something([this, #{described_class::ELLIPSES}
                          ^^^^^^

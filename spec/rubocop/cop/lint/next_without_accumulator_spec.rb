@@ -56,20 +56,20 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
 
   context 'given an unrelated block' do
     it 'accepts a bare next' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-              (1..4).foo(0) do |acc, i|
-                next if i.odd?
-                acc + i
-              end
+      expect_no_offenses(<<~RUBY)
+        (1..4).foo(0) do |acc, i|
+          next if i.odd?
+          acc + i
+        end
       RUBY
     end
 
     it 'accepts next with a value' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-              (1..4).foo(0) do |acc, i|
-                next acc if i.odd?
-                acc + i
-              end
+      expect_no_offenses(<<~RUBY)
+        (1..4).foo(0) do |acc, i|
+          next acc if i.odd?
+          acc + i
+        end
       RUBY
     end
   end

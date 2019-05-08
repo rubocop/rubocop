@@ -11,13 +11,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assigning any variable type inside ternary' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         foo? ? #{variable} = 1 : #{variable} = 2
       RUBY
     end
 
     it 'registers an offense assigning any variable type to if else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = if foo
                         1
                       else
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense assigning any variable type to if elsif else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = if foo
                         1
                       elsif baz
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'registers an offense assigning any variable type to if else' \
       'with multiple assignment' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable}, #{variable} = if foo
                         something
                       else
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'allows assigning any variable type inside if else' \
       'with multiple assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if foo
           #{variable}, #{variable} = something
         else
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assigning any variable type inside if else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if foo
           #{variable} = 1
         else
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assignment to if without else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{variable} = if foo
                         1
                       end
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense assigning any variable type to unless else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = unless foo
                         1
                       else
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assigning any variable type inside unless else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         unless foo
           #{variable} = 1
         else
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense for assigning any variable type to case when' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = case foo
                       when "a"
                         1
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows assigning any variable type inside case when' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case foo
         when "a"
           #{variable} = 1
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'does not crash for rescue assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           foo
         rescue => #{variable}
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects assigning any variable type to if elsif else' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           #{variable} = if foo
                           1
                         elsif baz
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if foo
             #{variable} = 1
           elsif baz
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects assigning any variable type to unless else' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           #{variable} = unless foo
                           1
                         else
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           unless foo
             #{variable} = 1
           else
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects assigning any variable type to case when' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           #{variable} = case foo
                         when "a"
                           1
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           case foo
           when "a"
             #{variable} = 1
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense any assignment to if else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar #{assignment} if foo
                         1
                       else
@@ -242,7 +242,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'allows any assignment to if without else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         bar #{assignment} if foo
                         1
                       end
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense for any assignment to unless else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar #{assignment} unless foo
                         1
                       else
@@ -263,7 +263,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense any assignment to case when' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar #{assignment} case foo
                       when "a"
                         1
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects any assignment to if else' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           bar #{assignment} if foo
                           1
                         else
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if foo
             bar #{assignment} 1
           else
@@ -304,7 +304,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects any assignment to unless else' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           bar #{assignment} unless foo
                           1
                         else
@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           unless foo
             bar #{assignment} 1
           else
@@ -323,7 +323,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects any assignment to case when' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           bar #{assignment} case foo
                         when "a"
                           1
@@ -333,7 +333,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           case foo
           when "a"
             bar #{assignment} 1
@@ -347,7 +347,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'multiline all variable types' do |variable, expected|
     it 'assigning any variable type to a multiline if else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = if foo
                         something
                         1
@@ -363,7 +363,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'assigning any variable type to an if else with multiline ' \
        'in one branch' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = if foo
                         1
                       else
@@ -377,7 +377,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'assigning any variable type to a multiline if elsif else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = if foo
                         something
                         1
@@ -398,7 +398,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'assigning any variable type to a multiline unless else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = unless foo
                         something
                         1
@@ -413,7 +413,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'assigning any variable type to a multiline case when' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         #{variable} = case foo
                       when "a"
                         something
@@ -431,7 +431,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'multiline all assignment types' do |assignment, expected|
     it 'any assignment to a multiline if else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar #{assignment} if foo
                         something
                         1
@@ -446,7 +446,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'any assignment to a multiline unless else' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar #{assignment} unless foo
                         something
                         1
@@ -461,7 +461,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'any assignment to a multiline case when' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar #{assignment} case foo
                       when "a"
                         something
@@ -479,7 +479,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'single line condition auto-correct' do
     it 'corrects assignment to an if else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = if foo
                 1
               else
@@ -488,7 +488,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           bar = 1
         else
@@ -498,7 +498,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an if elsif else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = if foo
                 1
               elsif foobar
@@ -509,7 +509,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           bar = 1
         elsif foobar
@@ -521,7 +521,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an if elsif else with multiple elsifs' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = if foo
                 1
               elsif foobar
@@ -534,7 +534,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           bar = 1
         elsif foobar
@@ -548,7 +548,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an unless else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = unless foo
                 1
               else
@@ -557,7 +557,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         unless foo
           bar = 1
         else
@@ -567,7 +567,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = case foo
               when foobar
                 1
@@ -577,7 +577,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         case foo
         when foobar
           bar = 1
@@ -588,7 +588,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else with multiple whens' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = case foo
               when foobar
                 1
@@ -600,7 +600,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         case foo
         when foobar
           bar = 1
@@ -705,14 +705,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     it 'registers an offense for assignment using a method that ends with ' \
        'an equal sign' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         self.attributes = foo? ? 1 : 2
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
       RUBY
     end
 
     it 'registers an offense for assignment using []=' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo[:a] = if bar?
         ^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
                     1
@@ -723,7 +723,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense for assignment to an if then else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         bar = if foo then 1
         ^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
               else 2
@@ -732,7 +732,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense for assignment to case when then else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         baz = case foo
         ^^^^^^^^^^^^^^ Assign variables inside of conditionals
               when bar then 1
@@ -751,7 +751,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       it_behaves_like('single line condition auto-correct')
 
       it 'corrects assignment to an if then else' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           bar = if foo then 1
                 else 2
                 end
@@ -759,7 +759,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if foo then bar = 1
           else bar = 2
           end
@@ -767,7 +767,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects assignment to case when then else' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           baz = case foo
                 when bar then 1
                 else 2
@@ -776,7 +776,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           case foo
           when bar then baz = 1
           else baz = 2
@@ -792,7 +792,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects assignment using []=' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           foo[:a] = if bar?
                       1
                     else
@@ -801,7 +801,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if bar?
             foo[:a] = 1
           else
@@ -811,7 +811,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects assignment to a namespaced constant' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           FOO::BAR = if baz?
                        1
                      else
@@ -820,7 +820,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
         new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if baz?
             FOO::BAR = 1
           else
@@ -942,7 +942,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('single line condition auto-correct')
 
     it 'corrects assignment to a multiline if else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = if foo
                 something
                 1
@@ -953,7 +953,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           something
           bar = 1
@@ -965,7 +965,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a multiline if elsif else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = if foo
                 something
                 1
@@ -979,7 +979,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           something
           bar = 1
@@ -994,7 +994,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an if elsif else with multiple elsifs' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = if foo
                 something
                 1
@@ -1011,7 +1011,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           something
           bar = 1
@@ -1029,7 +1029,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an unless else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = unless foo
                 something
                 1
@@ -1040,7 +1040,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         unless foo
           something
           bar = 1
@@ -1052,7 +1052,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else condition' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = case foo
               when foobar
                 something
@@ -1064,7 +1064,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         case foo
         when foobar
           something
@@ -1077,7 +1077,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else with multiple whens' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         bar = case foo
               when foobar
                 something
@@ -1092,7 +1092,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         case foo
         when foobar
           something

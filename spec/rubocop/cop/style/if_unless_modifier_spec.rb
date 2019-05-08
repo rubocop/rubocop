@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   context 'multiline if that fits on one line' do
     let(:source) do
       # Empty lines should make no difference.
-      <<-RUBY.strip_indent
+      <<~RUBY
         if #{condition}
           #{body}
 
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
     context 'and has two statements separated by semicolon' do
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           if condition
             do_this; do_that
           end
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline if that fits on one line with comment on first line' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         if a # comment
           b
         end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a # comment
         ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
           b
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline if that fits on one line with comment near end' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a
           b
         end # comment
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'short multiline if near an else etc' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         if x
           y
         elsif x1
@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if x
           y
         elsif x1
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(source)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         if x
           y
         elsif x1
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'multiline unless that fits on one line' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         unless a
           b
         end
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         unless a
         ^^^^^^ Favor modifier `unless` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
           b
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts code with EOL comment since user might want to keep it' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       unless a
         b # A comment
       end
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-else-end' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if args.last.is_a? Hash then args.pop else Hash.new end
     RUBY
   end
@@ -198,7 +198,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if/elsif' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if test
         something
       elsif test2
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-end followed by a chained call using `.`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if test
         something
       end.inspect
@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-end followed by a chained call using `&.`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if test
         something
       end&.inspect
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of local var assignment" do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       a = if b
         1
       end
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of instance var assignment" do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       @a = if b
         1
       end
@@ -280,7 +280,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of class var assignment" do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       @@a = if b
         1
       end
@@ -289,7 +289,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of constant assignment" do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       A = if b
         1
       end
@@ -298,7 +298,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it "doesn't break if-end when used as RHS of binary arithmetic" do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       a + if b
         1
       end
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   it 'accepts if-end when used as LHS of binary arithmetic' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if test
         1
       end + 2
@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'if-end is argument to a parenthesized method call' do
     it "doesn't add redundant parentheses" do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         puts("string", if a
           1
         end)
@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'if-end is argument to a non-parenthesized method call' do
     it 'adds parentheses so as not to change meaning' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         puts "string", if a
           1
         end
@@ -338,7 +338,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'if-end with conditional as body' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if condition
           foo ? "bar" : "baz"
         end
@@ -348,7 +348,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'unless-end with conditional as body' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         unless condition
           foo ? "bar" : "baz"
         end
@@ -358,7 +358,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
 
   context 'with a named regexp capture on the LHS' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if /(?<foo>\d)/ =~ "bar"
           foo
         end
@@ -467,7 +467,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     it 'registers an offense even for a long modifier statement' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if foo
         ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
           "This string would make the line longer than eighty characters if combined with the statement."

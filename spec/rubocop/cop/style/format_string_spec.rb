@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'sprintf' } }
 
     it 'registers an offense for a string followed by something' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts "%d" % 10
                   ^ Favor `sprintf` over `String#%`.
       RUBY
     end
 
     it 'registers an offense for something followed by an array' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts x % [10, 11]
                ^ Favor `sprintf` over `String#%`.
       RUBY
@@ -36,14 +36,14 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'registers an offense for format' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         format(something, a, b)
         ^^^^^^ Favor `sprintf` over `format`.
       RUBY
     end
 
     it 'registers an offense for format with 2 arguments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         format("%X", 123)
         ^^^^^^ Favor `sprintf` over `format`.
       RUBY
@@ -74,21 +74,21 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'format' } }
 
     it 'registers an offense for a string followed by something' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts "%d" % 10
                   ^ Favor `format` over `String#%`.
       RUBY
     end
 
     it 'registers an offense for something followed by an array' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts x % [10, 11]
                ^ Favor `format` over `String#%`.
       RUBY
     end
 
     it 'registers an offense for something followed by a hash' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts x % { a: 10, b: 11 }
                ^ Favor `format` over `String#%`.
       RUBY
@@ -110,14 +110,14 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'registers an offense for sprintf' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         sprintf(something, a, b)
         ^^^^^^^ Favor `format` over `sprintf`.
       RUBY
     end
 
     it 'registers an offense for sprintf with 2 arguments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         sprintf('%020d', 123)
         ^^^^^^^ Favor `format` over `sprintf`.
       RUBY
@@ -148,21 +148,21 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent' } }
 
     it 'registers an offense for format' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         format(something, a, b)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY
     end
 
     it 'registers an offense for sprintf' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         sprintf(something, a, b)
         ^^^^^^^ Favor `String#%` over `sprintf`.
       RUBY
     end
 
     it 'registers an offense for sprintf with 3 arguments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         format("%d %04x", 123, 123)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY

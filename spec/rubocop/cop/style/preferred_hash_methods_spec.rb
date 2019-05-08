@@ -7,12 +7,12 @@ RSpec.describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'short' } }
 
     it 'registers an offense for has_key? with one arg' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         o.has_key?(o)
           ^^^^^^^^ Use `Hash#key?` instead of `Hash#has_key?`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         o.key?(o)
       RUBY
     end
@@ -22,24 +22,24 @@ RSpec.describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'registers an offense for has_value? with one arg' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         o.has_value?(o)
           ^^^^^^^^^^ Use `Hash#value?` instead of `Hash#has_value?`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         o.value?(o)
       RUBY
     end
 
     context 'when using safe navigation operator' do
       it 'registers an offense for has_value? with one arg' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           o&.has_value?(o)
              ^^^^^^^^^^ Use `Hash#value?` instead of `Hash#has_value?`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           o&.value?(o)
         RUBY
       end
@@ -54,12 +54,12 @@ RSpec.describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'verbose' } }
 
     it 'registers an offense for key? with one arg' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         o.key?(o)
           ^^^^ Use `Hash#has_key?` instead of `Hash#key?`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         o.has_key?(o)
       RUBY
     end
@@ -69,12 +69,12 @@ RSpec.describe RuboCop::Cop::Style::PreferredHashMethods, :config do
     end
 
     it 'registers an offense for value? with one arg' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         o.value?(o)
           ^^^^^^ Use `Hash#has_value?` instead of `Hash#value?`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         o.has_value?(o)
       RUBY
     end

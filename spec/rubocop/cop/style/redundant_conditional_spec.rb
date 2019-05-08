@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                   'x == y ? 1 : 10'
 
   it_behaves_like 'code with offense',
-                  <<-RUBY.strip_indent,
+                  <<~RUBY,
                     if x == y
                       true
                     else
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                   'x == y'
 
   it_behaves_like 'code with offense',
-                  <<-RUBY.strip_indent,
+                  <<~RUBY,
                     if x == y
                       false
                     else
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                   '!(x == y)'
 
   it_behaves_like 'code with offense',
-                  <<-RUBY.strip_indent,
+                  <<~RUBY,
                     if cond
                       false
                     elsif x == y
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                       false
                     end
                   RUBY
-                  <<-RUBY.strip_indent,
+                  <<~RUBY,
                     if cond
                       false
                     else
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                   "\nelse\n  x == y"
 
   it_behaves_like 'code with offense',
-                  <<-RUBY.strip_indent,
+                  <<~RUBY,
                     if cond
                       false
                     elsif x == y
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                       true
                     end
                   RUBY
-                  <<-RUBY.strip_indent,
+                  <<~RUBY,
                     if cond
                       false
                     else
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                   "\nelse\n  !(x == y)"
 
   it_behaves_like 'code without offense',
-                  <<-RUBY.strip_indent
+                  <<~RUBY
                     if x == y
                       1
                     else
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
                   RUBY
 
   it_behaves_like 'code without offense',
-                  <<-RUBY.strip_indent
+                  <<~RUBY
                     if cond
                       1
                     elseif x == y

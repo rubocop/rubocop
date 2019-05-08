@@ -4,21 +4,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for block argument with space before comma' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       each { |s , t| }
                ^ Space found before comma.
     RUBY
   end
 
   it 'registers an offense for array index with space before comma' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       formats[0 , 1]
                ^ Space found before comma.
     RUBY
   end
 
   it 'registers an offense for method call arg with space before comma' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a(1 , 2)
          ^ Space found before comma.
     RUBY

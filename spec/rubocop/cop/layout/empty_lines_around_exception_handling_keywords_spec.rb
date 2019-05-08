@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
   RUBY
 
   context 'with complex begin-end' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       begin
 
         do_something1
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
       end
     RUBY
 
-    let(:correction) { <<-RUBY.strip_indent }
+    let(:correction) { <<~RUBY }
       begin
 
         do_something1
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
   end
 
   context 'with complex method definition' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       def foo
 
         do_something1
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
       end
     RUBY
 
-    let(:correction) { <<-RUBY.strip_indent }
+    let(:correction) { <<~RUBY }
       def foo
 
         do_something1

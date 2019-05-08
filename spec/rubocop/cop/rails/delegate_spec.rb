@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'finds trivial delegate' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def foo
       ^^^ Use `delegate` to define delegations.
         bar.foo
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'finds trivial delegate with arguments' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def foo(baz)
       ^^^ Use `delegate` to define delegations.
         bar.foo(baz)
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'finds trivial delegate with prefix' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def bar_foo
       ^^^ Use `delegate` to define delegations.
         bar.foo
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores class methods' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def self.fox
         new.fox
       end
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores non trivial delegate' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox
         bar.foo.fox
       end
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores trivial delegate with mismatched arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox(baz)
         bar.fox(foo)
       end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores trivial delegate with optional argument with a default value' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox(foo = nil)
         bar.fox(foo || 5)
       end
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores trivial delegate with mismatched number of arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox(a, baz)
         bar.fox(a)
       end
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores trivial delegate with mismatched keyword arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox(foo:)
         bar.fox(foo)
       end
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores trivial delegate with other prefix' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox_foo
         bar.foo
       end
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores methods with arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox(bar)
         bar.fox
       end
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores the method in the body with arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def fox
         bar(42).fox
       end
@@ -110,35 +110,35 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores private delegations' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-        private def fox # leading spaces are on purpose
-          bar.fox
-        end
+    expect_no_offenses(<<~RUBY)
+      private def fox # leading spaces are on purpose
+        bar.fox
+      end
 
-          private
+        private
 
-        def fox
-          bar.fox
-        end
+      def fox
+        bar.fox
+      end
     RUBY
   end
 
   it 'ignores protected delegations' do
-    expect_no_offenses(<<-RUBY.strip_indent)
-        protected def fox # leading spaces are on purpose
-          bar.fox
-        end
+    expect_no_offenses(<<~RUBY)
+      protected def fox # leading spaces are on purpose
+        bar.fox
+      end
 
-        protected
+      protected
 
-        def fox
-          bar.fox
-        end
+      def fox
+        bar.fox
+      end
     RUBY
   end
 
   it 'ignores delegation with assignment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def new
         @bar = Foo.new
       end
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores delegation to constant' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       FOO = []
       def size
         FOO.size
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores code with no receiver' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def change
         add_column :images, :size, :integer
       end
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
     end
 
     it 'ignores trivial delegate with prefix' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def bar_foo
           bar.foo
         end
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   end
 
   it 'ignores trivial delegate with safe navigation' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def foo
         bar&.foo
       end
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
   describe '#autocorrect' do
     context 'trivial delegation' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           def bar
             foo.bar
           end
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
       end
 
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           delegate :bar, to: :foo
         RUBY
       end
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
 
     context 'trivial delegation with prefix' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           def foo_bar
             foo.bar
           end
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Rails::Delegate do
       end
 
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           delegate :bar, to: :foo, prefix: true
         RUBY
       end

@@ -7,21 +7,21 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
                 'which iterates a fixed number of times.'
 
   it 'registers offense for inclusive end range' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (0..10).each {}
       ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
     RUBY
   end
 
   it 'registers offense for exclusive end range' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (0...10).each {}
       ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
     RUBY
   end
 
   it 'registers offense for exclusive end range with do ... end syntax' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (0...10).each do
       ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
       end
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'registers an offense for range not starting with zero' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (3..7).each do
       ^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
       end
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
   end
 
   it 'does not register offense for multiline block with parameters' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       (0..10).each do |n|
       end
     RUBY
@@ -66,31 +66,31 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         (0..10).each do
         end
       RUBY
 
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         11.times do
         end
       RUBY
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         (3..7).each do
         end
       RUBY
 
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         5.times do
         end
       RUBY
     end
 
     it 'does not autocorrect range not starting with zero and using param' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         (3..7).each do |n|
         end
       RUBY
@@ -106,31 +106,31 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         (0...10).each do
         end
       RUBY
 
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         10.times do
         end
       RUBY
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         (3...7).each do
         end
       RUBY
 
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         4.times do
         end
       RUBY
     end
 
     it 'does not autocorrect range not starting with zero and using param' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         (3...7).each do |n|
         end
       RUBY

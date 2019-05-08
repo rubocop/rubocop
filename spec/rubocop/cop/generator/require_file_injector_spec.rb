@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
     let(:source_path) { 'lib/rubocop/cop/style/fake_cop.rb' }
 
     before do
-      File.write(root_file_path, <<-RUBY.strip_indent)
+      File.write(root_file_path, <<~RUBY)
         # frozen_string_literal: true
 
         require 'parser'
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
     it 'injects a `require_relative` statement ' \
        'on the right line in the root file' do
-      generated_source = <<-RUBY.strip_indent
+      generated_source = <<~RUBY
         # frozen_string_literal: true
 
         require 'parser'
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       injector.inject
 
       expect(File.read(root_file_path)).to eq generated_source
-      expect(stdout.string).to eq(<<-MESSAGE.strip_indent)
+      expect(stdout.string).to eq(<<~MESSAGE)
         [modify] lib/root.rb - `require_relative 'rubocop/cop/style/fake_cop'` was injected.
       MESSAGE
     end
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
     let(:source_path) { 'lib/rubocop/cop/style/the_end_of_style.rb' }
 
     before do
-      File.write(root_file_path, <<-RUBY.strip_indent)
+      File.write(root_file_path, <<~RUBY)
         # frozen_string_literal: true
 
         require 'parser'
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
     it 'injects a `require_relative` statement ' \
        'on the end of style department' do
-      generated_source = <<-RUBY.strip_indent
+      generated_source = <<~RUBY
         # frozen_string_literal: true
 
         require 'parser'
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       injector.inject
 
       expect(File.read(root_file_path)).to eq generated_source
-      expect(stdout.string).to eq(<<-MESSAGE.strip_indent)
+      expect(stdout.string).to eq(<<~MESSAGE)
         [modify] lib/root.rb - `require_relative 'rubocop/cop/style/the_end_of_style'` was injected.
       MESSAGE
     end
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
 
   context 'when a `require` entry already exists' do
     let(:source_path) { 'lib/rubocop/cop/style/fake_cop.rb' }
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       # frozen_string_literal: true
 
       require 'parser'

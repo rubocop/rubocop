@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts multi-line literals' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             %#{type}(
               a
               b
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts multi-line literals within a method' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def foo
               %#{type}(
                 a
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
         end
 
         it 'accepts newlines and additional following alignment spaces' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             %#{type}(a b
                c)
           RUBY

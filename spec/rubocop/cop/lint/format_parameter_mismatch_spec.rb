@@ -5,21 +5,21 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   shared_examples 'variables' do |variable|
     it 'does not register an offense for % called on a variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{variable} = '%s'
         #{variable} % [foo]
       RUBY
     end
 
     it 'does not register an offense for format called on a variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{variable} = '%s'
         format(#{variable}, foo)
       RUBY
     end
 
     it 'does not register an offense for format called on a variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{variable} = '%s'
         sprintf(#{variable}, foo)
       RUBY
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'registers an offense when calling Kernel.format ' \
      'and the fields do not match' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Kernel.format("%s %s", 1)
              ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
     RUBY
@@ -42,21 +42,21 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'registers an offense when calling Kernel.sprintf ' \
      'and the fields do not match' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Kernel.sprintf("%s %s", 1)
              ^^^^^^^ Number of arguments (1) to `sprintf` doesn't match the number of fields (2).
     RUBY
   end
 
   it 'registers an offense when there are less arguments than expected' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       format("%s %s", 1)
       ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
     RUBY
   end
 
   it 'registers an offense when there are more arguments than expected' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       format("%s %s", 1, 2, 3)
       ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (2).
     RUBY
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers offense with sprintf' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       sprintf("%s %s", 1, 2, 3)
       ^^^^^^^ Number of arguments (3) to `sprintf` doesn't match the number of fields (2).
     RUBY
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense for String#%' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       "%s %s" % [1, 2, 3]
               ^ Number of arguments (3) to `String#%` doesn't match the number of fields (2).
     RUBY
@@ -111,20 +111,20 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
     context 'when args count is more than expected' do
       it 'registers an offense for `#%`' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           puts "%s, %s, %s" % [1, 2, 3, 4, *arr]
                             ^ Number of arguments (5) to `String#%` doesn't match the number of fields (3).
         RUBY
       end
 
       it 'registers an offense for `#format`' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           puts format("%s, %s, %s", 1, 2, 3, 4, *arr)
         RUBY
       end
 
       it 'registers an offense for `#sprintf`' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           puts sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)
         RUBY
       end
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
     it 'registers an offense when mismatch between the maximum value ' \
        'specified by (digit)$ flag and the number of arguments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         format('%1$s %2$s', 'foo', 'bar', 'baz')
         ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (2).
       RUBY
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers an offense if extra argument for dynamic width not given' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       format("%*d", id)
       ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
     RUBY
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'finds faults even when the string looks like a HEREDOC' do
     # heredocs are ignored at the moment
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       format("<< %s bleh", 1, 2)
       ^^^^^^ Number of arguments (2) to `format` doesn't match the number of fields (1).
     RUBY
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   context 'on format with %{} interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%{y}-%{m}-%{d}', params)
         RUBY
@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
     context 'and multiple arguments' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%{y}-%{m}-%{d}', 2015, 1, 1)
                ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (1).
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   context 'on format with %<> interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%<y>d-%<m>d-%<d>d', params)
         RUBY
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
     context 'and multiple arguments' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           params = { y: '2015', m: '01', d: '01' }
           puts format('%<y>d-%<m>d-%<d>d', 2015, 1, 1)
                ^^^^^^ Number of arguments (3) to `format` doesn't match the number of fields (1).

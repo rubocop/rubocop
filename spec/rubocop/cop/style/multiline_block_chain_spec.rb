@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
 
   context 'with multi-line block chaining' do
     it 'registers an offense for a simple case' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a do
           b
         end.c do
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
     end
 
     it 'registers an offense for a slightly more complicated case' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a do
           b
         end.c1.c2 do
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
     end
 
     it 'registers two offenses for a chain of three blocks' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a do
           b
         end.c do
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
 
     it 'registers an offense for a chain where the second block is ' \
        'single-line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Thread.list.find_all { |t|
           t.alive?
         }.map { |thread| thread.object_id }
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
     end
 
     it 'accepts a chain where the first block is single-line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Thread.list.find_all { |t| t.alive? }.map { |t|
           t.object_id
         }
@@ -60,14 +60,14 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
   end
 
   it 'accepts a chain of blocks spanning one line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a { b }.c { d }
       w do x end.y do z end
     RUBY
   end
 
   it 'accepts a multi-line block chained with calls on one line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a do
         b
       end.c.d
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain do
   end
 
   it 'accepts a chain of calls followed by a multi-line block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a1.a2.a3 do
         b
       end

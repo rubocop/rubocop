@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
   subject(:cop) { described_class.new }
 
   it 'reports an offense a self receiver on an rvalue' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = self.b
           ^^^^^^ Redundant `self` detected.
     RUBY
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'accepts a self receiver for methods named like ruby keywords' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = self.class
       self.for(deps, [], true)
       self.and(other)
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'accepts a self receiver used to distinguish from argument of block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       %w[draft preview moderation approved rejected].each do |state|
         self.state == state
         define_method "\#{state}?" do
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
 
   describe 'instance methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def requested_specs(&groups)
           some_method(self.groups)
         end
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def requested_specs(groups)
           some_method(self.groups)
         end
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from optional argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def requested_specs(final = true)
           something if self.final != final
         end
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from local variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def requested_specs
           @requested_specs ||= begin
             groups = self.groups - Bundler.settings.without
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from an argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def foo(bar)
           puts bar, self.bar
         end
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
 
     it 'accepts a self receiver used to distinguish from an argument' \
       ' when an inner method is defined' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def foo(bar)
           def inner_method(); end
           puts bar, self.bar
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
 
   describe 'class methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.requested_specs(&groups)
           some_method(self.groups)
         end
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.requested_specs(groups)
           some_method(self.groups)
         end
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from optional argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.requested_specs(final = true)
           something if self.final != final
         end
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     end
 
     it 'accepts a self receiver used to distinguish from local variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.requested_specs
           @requested_specs ||= begin
             groups = self.groups - Bundler.settings.without
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'reports an offense a self receiver of .call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       self.call
       ^^^^^^^^^ Redundant `self` detected.
     RUBY

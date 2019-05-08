@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'rescue with begin' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
             rescue
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         begin
           something
         rescue
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'as RHS of assignment' do
       it 'accepts multi-line, aligned' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           x ||= begin
                   1
                 rescue
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
 
       it 'accepts multi-line, indented' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           x ||=
             begin
               1
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
 
       it 'registers offense for incorrect alignment' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x ||= begin
             1
           rescue
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'rescue with def' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def test
           something
             rescue
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         def test
           something
         rescue
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'rescue with defs' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def Test.test
           something
             rescue
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         def Test.test
           something
         rescue
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'rescue with class' do
     it 'registers an offense when rescue used with class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
           something
             rescue
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class C
           something
         rescue
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'rescue with module' do
     it 'registers an offense when rescue used with module' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module M
           something
             rescue
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         module M
           something
         rescue
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'ensure with begin' do
     it 'registers an offense when ensure used with begin' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
             ensure
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         begin
           something
         ensure
@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'ensure with def' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def test
           something
             ensure
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         def test
           something
         ensure
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'ensure with defs' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def Test.test
           something
             ensure
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         def Test.test
           something
         ensure
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'ensure with class' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
           something
             ensure
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class C
           something
         ensure
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context 'ensure with module' do
     it 'registers an offense when ensure used with module' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module M
           something
             ensure
@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         module M
           something
         ensure
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
   end
 
   it 'accepts end being misaligned' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def method1
         'foo'
       end
@@ -269,7 +269,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
   end
 
   it 'accepts correctly aligned rescue' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
       rescue
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
   end
 
   it 'accepts correctly aligned ensure' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
       ensure
@@ -300,7 +300,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
   context '>= Ruby 2.5', :ruby25 do
     it 'accepts aligned rescue in do-end block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         [1, 2, 3].each do |el|
           el.to_s
         rescue StandardError => _exception
@@ -310,7 +310,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue do-end block assigned to local variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         result = [1, 2, 3].map do |el|
           el.to_s
         rescue StandardError => _exception
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block assigned to instance variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         @instance = [].map do |_|
         rescue StandardError => _
         end
@@ -328,7 +328,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block assigned to class variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         @@class = [].map do |_|
         rescue StandardError => _
         end
@@ -336,7 +336,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block assigned to global variable' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         $global = [].map do |_|
         rescue StandardError => _
         end
@@ -344,7 +344,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block assigned to class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         CLASS = [].map do |_|
         rescue StandardError => _
         end
@@ -352,7 +352,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block on multi-assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a, b = [].map do |_|
         rescue StandardError => _
         end
@@ -360,7 +360,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block on operation assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a += [].map do |_|
         rescue StandardError => _
         end
@@ -368,7 +368,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block on and-assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a &&= [].map do |_|
         rescue StandardError => _
         end
@@ -376,7 +376,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block on or-assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a ||= [].map do |_|
         rescue StandardError => _
         end
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in assigned do-end block starting on newline' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         valid =
           proc do |bar|
             baz
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'accepts aligned rescue in do-end block in a method' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def foo
           [1, 2, 3].each do |el|
             el.to_s
@@ -408,7 +408,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'rescue with do-end block' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def foo
             [1, 2, 3].each do |el|
               el.to_s
@@ -419,7 +419,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           def foo
             [1, 2, 3].each do |el|
               el.to_s
@@ -442,7 +442,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'processes excluded files with issue' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           foo
         rescue
@@ -462,7 +462,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'rescue with def' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           private def test
             'foo'
             rescue
@@ -471,7 +471,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           private def test
             'foo'
           rescue
@@ -481,7 +481,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
 
       it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           private def test
             'foo'
           rescue
@@ -493,7 +493,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'rescue with defs' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           private def Test.test
             'foo'
             rescue
@@ -502,7 +502,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           private def Test.test
             'foo'
           rescue
@@ -512,7 +512,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
 
       it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           private def Test.test
             'foo'
           rescue
@@ -524,7 +524,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'ensure with def' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           private def test
             'foo'
             ensure
@@ -533,7 +533,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           private def test
             'foo'
           ensure
@@ -543,7 +543,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
 
       it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           private def test
             'foo'
           ensure
@@ -555,7 +555,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'ensure with defs' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           private def Test.test
             'foo'
             ensure
@@ -564,7 +564,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           private def Test.test
             'foo'
           ensure
@@ -574,7 +574,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       end
 
       it 'correct alignment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           private def Test.test
             'foo'
           ensure
@@ -588,7 +588,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
   context 'allows inline expression before' do
     context 'rescue' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def test
             'foo'; rescue; 'baz'
                    ^^^^^^ `rescue` at 2, 9 is not aligned with `def test` at 1, 0.
@@ -608,7 +608,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
     context 'ensure' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def test
             'foo'; ensure; 'baz'
                    ^^^^^^ `ensure` at 2, 9 is not aligned with `def test` at 1, 0.

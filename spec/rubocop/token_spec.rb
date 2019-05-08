@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Token do
   let(:processed_source) { RuboCop::ProcessedSource.new(source, ruby_version) }
   let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
-  let(:source) { <<-RUBY.strip_indent }
+  let(:source) { <<~RUBY }
     # comment
     def some_method
       [ 1, 2 ];
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Token do
     end
 
     describe '#rescue_modifier?' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         def foo
           bar rescue qux
         end
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Token do
     end
 
     context 'with braces & parens' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         { a: 1 }
         foo { |f| bar(f) }
       RUBY

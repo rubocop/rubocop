@@ -6,77 +6,77 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using rand(int) + offset' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(6) + 1
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using offset + rand(int)' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       1 + rand(6)
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using rand(int).succ' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(6).succ
       ^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using rand(int) - offset' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(6) - 1
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using offset - rand(int)' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       1 - rand(6)
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using rand(int).pred' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(6).pred
       ^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using rand(int).next' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(6).next
       ^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using Kernel.rand' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Kernel.rand(6) + 1
       ^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using Random.rand' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Random.rand(6) + 1
       ^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using rand(irange) + offset' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(0..6) + 1
       ^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
   it 'registers an offense when using rand(erange) + offset' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       rand(0...6) + 1
       ^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY

@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
     end
 
     it 'accepts heredoc' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         func <<HEREDOC
         hi
         HEREDOC
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are static' do
       it 'registers an offense for %()' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %(hi)
           ^^ Use `%Q` instead of `%`.
         RUBY
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are dynamic' do
       it 'registers an offense for %()' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           %(#{x})
           ^^ Use `%Q` instead of `%`.
         RUBY
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are static' do
       it 'registers an offense for %Q()' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %Q(hi)
           ^^^ Use `%` instead of `%Q`.
         RUBY
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
 
     context 'and strings are dynamic' do
       it 'registers an offense for %Q()' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           %Q(#{x})
           ^^^ Use `%` instead of `%Q`.
         RUBY

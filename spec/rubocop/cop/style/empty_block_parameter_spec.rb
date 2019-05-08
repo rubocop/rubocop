@@ -6,38 +6,38 @@ RSpec.describe RuboCop::Cop::Style::EmptyBlockParameter do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense for an empty block parameter with do-end wtyle' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a do ||
            ^^ Omit pipes for the empty block parameters.
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       a do
       end
     RUBY
   end
 
   it 'registers an offense for an empty block parameter with {} style' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a { || do_something }
           ^^ Omit pipes for the empty block parameters.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       a { do_something }
     RUBY
   end
 
   it 'registers an offense for an empty block parameter with super' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def foo
         super { || do_something }
                 ^^ Omit pipes for the empty block parameters.
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       def foo
         super { do_something }
       end
@@ -45,44 +45,44 @@ RSpec.describe RuboCop::Cop::Style::EmptyBlockParameter do
   end
 
   it 'registers an offense for an empty block parameter with lambda' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       lambda { || do_something }
                ^^ Omit pipes for the empty block parameters.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       lambda { do_something }
     RUBY
   end
 
   it 'accepts a block that is do-end style without parameter' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a do
       end
     RUBY
   end
 
   it 'accepts a block that is {} style without parameter' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a { }
     RUBY
   end
 
   it 'accepts a non-empty block parameter with do-end style' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a do |x|
       end
     RUBY
   end
 
   it 'accepts a non-empty block parameter with {} style' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a { |x| }
     RUBY
   end
 
   it 'accepts an empty block parameter with a lambda' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       -> () { do_something }
     RUBY
   end

@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
   context 'when investigating Ruby files' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem('rubocop')
       RUBY
     end
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
     context 'and the gem is commented' do
       it 'does not register any offenses' do
-        expect_no_offenses(<<-RUBY.strip_indent, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           # Style-guide enforcer.
           gem 'rubocop'
         RUBY
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
     context 'and the gem is whitelisted' do
       it 'does not register any offenses' do
-        expect_no_offenses(<<-RUBY.strip_indent, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           gem 'rake'
         RUBY
       end
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
     context 'and the file contains source and group' do
       it 'does not register any offenses' do
-        expect_no_offenses(<<-RUBY.strip_indent, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           source 'http://rubygems.org'
 
           # Style-guide enforcer.

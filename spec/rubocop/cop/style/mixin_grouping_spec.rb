@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with single mixins in separate calls' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             include Bar
             include Qux
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with single mixins in separate calls' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             extend Bar
             extend Qux
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with single mixins in separate calls' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             prepend Bar
             prepend Qux
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with all calls having one mixin' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             include Bar
             prepend Baz
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with several mixins in one call' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             include Bar, Qux
           end
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'when include has an explicit receiver' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           config.include Foo
           config.include Bar
         RUBY
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with several mixins in one call' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             extend Bar, Qux
           end
@@ -286,7 +286,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with several mixins in one call' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             prepend Bar, Qux
           end
@@ -312,7 +312,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
 
       context 'with all different mixin methods' do
-        it_behaves_like 'code without offense', <<-RUBY.strip_indent
+        it_behaves_like 'code without offense', <<~RUBY
           class Foo
             include Bar
             prepend Baz

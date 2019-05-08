@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for class body starting with a blank' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class SomeClass
 
           do_something
@@ -25,19 +25,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects class body containing only a blank' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         class SomeClass
 
         end
       RUBY
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         class SomeClass
         end
       RUBY
     end
 
     it 'registers an offense for class body ending with a blank' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class SomeClass
           do_something
 
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'registers an offense for singleton class body starting with a blank' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class << self
 
           do_something
@@ -59,19 +59,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects singleton class body containing only a blank' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         class << self
 
         end
       RUBY
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         class << self
         end
       RUBY
     end
 
     it 'registers an offense for singleton class body ending with a blank' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class << self
           do_something
 
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
 
     it 'does not register offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo
 
           def do_something
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'does not register offenses when specifying a superclass ' \
        'that breaks the line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo <
               Bar
 
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'registers an offense for class body not starting or ending with a ' \
        'blank' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class SomeClass
           do_something
         end
@@ -126,12 +126,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         class SomeClass
           do_something
         end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class SomeClass
 
           do_something
@@ -142,7 +142,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     it 'registers an offense for singleton class body not starting or ending ' \
        'with a blank' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class << self
           do_something
         end
@@ -157,12 +157,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects beginning and end for `class << self`' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         class << self
           do_something
         end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class << self
 
           do_something
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     context 'when only child is class' do
       it 'requires no empty lines for namespace' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Parent < Base
             class Child
 
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offense for namespace body starting with a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
 
             class Child
@@ -203,7 +203,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offense for namespace body ending with a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
             class Child
 
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offenses for namespaced class body not starting '\
           'with a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
             class Child
               do_something
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offenses for namespaced class body not ending '\
           'with a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
             class Child
 
@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'autocorrects beginning and end' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           class Parent < Base
 
             class Child
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           class Parent < Base
             class Child
 
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     context 'when only child is module' do
       it 'requires no empty lines for namespace' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Parent
             module Child
               do_something
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offense for namespace body starting with a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
 
             module Child
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       end
 
       it 'registers offense for namespace body ending with a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
             module Child
               do_something
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
     context 'when has multiple child classes' do
       it 'requires empty lines for namespace' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Parent
 
             class Mom
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
 
       it 'registers offenses for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Parent
             class Mom
 
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'beginning_only' } }
 
     it 'ignores empty lines at the beginning of a class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class SomeClass
 
           do_something
@@ -350,7 +350,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'registers an offense for an empty line at the end of a class' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class SomeClass
 
           do_something
@@ -362,7 +362,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects end' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         class SomeClass
 
           do_something
@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class SomeClass
 
           do_something
@@ -383,7 +383,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'ending_only' } }
 
     it 'ignores empty lines at the beginning of a class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class SomeClass
           do_something
 
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'registers an offense for an empty line at the end of a class' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class SomeClass
 
           do_something
@@ -404,7 +404,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
     end
 
     it 'autocorrects end' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         class SomeClass
 
           do_something
@@ -412,7 +412,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class SomeClass
           do_something
 

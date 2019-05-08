@@ -2584,7 +2584,7 @@ RUBY
 # good
 # When EnforcedStyle is powerpack, bad code is auto-corrected to
 # the following code.
-<<-RUBY.strip_indent
+<<~RUBY
   something
 RUBY
 ```

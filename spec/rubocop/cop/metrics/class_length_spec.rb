@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   it 'rejects a class with more than 5 lines' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Test
       ^^^^^^^^^^ Class has too many lines. [6/5]
         a = 1
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       class Test
         a = 1
         a = 2
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'accepts a class with 5 lines' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Test
         a = 1
         a = 2
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'accepts a class with less than 5 lines' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Test
         a = 1
         a = 2
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'does not count blank lines' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Test
         a = 1
         a = 2
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'accepts empty classes' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Test
       end
     RUBY
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
 
   context 'when a class has inner classes' do
     it 'does not count lines of inner classes' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class NamespaceClass
           class TestOne
             a = 1
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     end
 
     it 'rejects a class with 6 lines that belong to the class directly' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class NamespaceClass
         ^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
           class TestOne
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     before { cop_config['CountComments'] = true }
 
     it 'also counts commented lines' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Test
         ^^^^^^^^^^ Class has too many lines. [6/5]
           a = 1
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
 
   context 'when inspecting a class defined with Class.new' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Foo = Class.new do
         ^^^ Class has too many lines. [6/5]
           a = 1

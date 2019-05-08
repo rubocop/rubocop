@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'module_function' } }
 
     it 'registers an offense for `extend self` in a module' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           extend self
           ^^^^^^^^^^^ Use `module_function` instead of `extend self`.
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         module Test
           module_function
           def test; end
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts for `extend self` in a module with private methods' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Test
           extend self
           def test; end
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts for `extend self` in a module with declarative private' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Test
           extend self
           def test; end
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts `extend self` in a class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           extend self
         end
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'extend_self' } }
 
     it 'registers an offense for `module_function` without an argument' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Test
           module_function
           ^^^^^^^^^^^^^^^ Use `extend self` instead of `module_function`.
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         module Test
           extend self
           def test; end
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
     end
 
     it 'accepts module_function with an argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Test
           def test; end
           module_function :test

@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   context 'correct + opposite' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         x = if a
               a1
             end
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
     it 'does auto-correction' do
       corrected = autocorrect_source(source)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         x = if a
               a1
             end
@@ -289,7 +289,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   context 'when end is preceded by something else than whitespace' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         module A
         puts a end
       RUBY

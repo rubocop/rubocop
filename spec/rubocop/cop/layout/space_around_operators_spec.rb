@@ -36,14 +36,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts exclamation point negation' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x = !a&&!b
             ^^ Surrounding space missing for operator `&&`.
     RUBY
   end
 
   it 'accepts exclamation point definition' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def !
         !__getobj__
       end
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts a unary' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def bm(label_width = 0, *labels, &blk)
         benchmark(CAPTION, label_width, FORMAT,
                   *labels, &blk)
@@ -74,14 +74,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts def of operator' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def +(other); end
       def self.===(other); end
     RUBY
   end
 
   it 'accepts an operator at the end of a line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       ['Favor unless over if for negative ' +
        'conditions.'] * 2
     RUBY
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts an assignment by `for` statement' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       for a in [] do; end
       for A in [] do; end
       for @a in [] do; end
@@ -105,14 +105,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts operators with spaces' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       x += a + b - c * d / e % f ^ g | h & i || j
       y -= k && l
     RUBY
   end
 
   it "accepts some operators that are exceptions & don't need spaces" do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       (1..3)
       ActionController::Base
       each { |s, t| }
@@ -120,32 +120,32 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts an assignment followed by newline' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       x =
       0
     RUBY
   end
 
   it 'accepts an operator at the beginning of a line' do
-    expect_no_offenses(<<-'RUBY'.strip_indent)
+    expect_no_offenses(<<~'RUBY')
       a = b \
           && c
     RUBY
   end
 
   it 'registers an offenses for exponent operator with spaces' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x = a * b ** 2
                 ^^ Space around operator `**` detected.
     RUBY
   end
 
   it 'auto-corrects unwanted space around **' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       x = a * b ** 2
       y = a * b** 2
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       x = a * b**2
       y = a * b**2
     RUBY
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts unary operators without space' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       [].map(&:size)
       a.(b)
       -3
@@ -180,14 +180,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   it 'accepts argument default values without space' do
     # These are handled by SpaceAroundEqualsInParameterDefault,
     # so SpaceAroundOperators leaves them alone.
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def init(name=nil)
       end
     RUBY
   end
 
   it 'accepts the construct class <<self with no space after <<' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class <<self
       end
     RUBY
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   describe 'missing space around operators' do
     shared_examples 'modifier with missing space' do |keyword|
       it "registers an offense in presence of modifier #{keyword} statement" do
-        src = <<-RUBY.strip_indent
+        src = <<~RUBY
           a=1 #{keyword} condition
           c=2
         RUBY
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         )
 
         new_source = autocorrect_source(src)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           a = 1 #{keyword} condition
           c = 2
         RUBY
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for assignment without space on both sides' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x=0
          ^ Surrounding space missing for operator `=`.
         y+= 0
@@ -226,13 +226,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects assignment without space on both sides' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x=0
         y= 0
         z =0
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 0
         y = 0
         z = 0
@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     context 'ternary operators' do
       it 'registers an offense for operators with no spaces' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x == 0?1:2
                   ^ Surrounding space missing for operator `:`.
                 ^ Surrounding space missing for operator `?`.
@@ -249,7 +249,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
       end
 
       it 'registers an offense for operators with just a trailing space' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x == 0? 1: 2
                    ^ Surrounding space missing for operator `:`.
                 ^ Surrounding space missing for operator `?`.
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
       end
 
       it 'registers an offense for operators with just a leading space' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x == 0 ?1 :2
                     ^ Surrounding space missing for operator `:`.
                  ^ Surrounding space missing for operator `?`.
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     it_behaves_like 'modifier with missing space', 'until'
 
     it 'registers an offense for binary operators that could be unary' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a-3
          ^ Surrounding space missing for operator `-`.
         x&0xff
@@ -287,13 +287,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a-3
         x&0xff
         z+0
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a - 3
         x & 0xff
         z + 0
@@ -301,7 +301,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for arguments to a method' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts 1+2
               ^ Surrounding space missing for operator `+`.
       RUBY
@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for operators without spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x+= a+b-c*d/e%f^g|h&i||j
          ^^ Surrounding space missing for operator `+=`.
              ^ Surrounding space missing for operator `+`.
@@ -332,18 +332,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x+= a+b-c*d/e%f^g|h&i||j
         y -=k&&l
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x += a + b - c * d / e % f ^ g | h & i || j
         y -= k && l
       RUBY
     end
 
     it 'registers an offense for a setter call without spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.y=2
            ^ Surrounding space missing for operator `=`.
       RUBY
@@ -354,7 +354,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             { 1=>2, a: b }
                ^^ Surrounding space missing for operator `=>`.
           RUBY
@@ -365,7 +365,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         let(:hash_style) { 'table' }
 
         it 'registers an offense for a hash rocket without spaces' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             { 1=>2, a: b }
                ^^ Surrounding space missing for operator `=>`.
           RUBY
@@ -378,7 +378,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {
               1=>2,
                ^^ Surrounding space missing for operator `=>`.
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         let(:hash_style) { 'table' }
 
         it "doesn't register an offense for a hash rocket without spaces" do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             {
               1=>2,
               a: b
@@ -403,7 +403,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for match operators without space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x=~/abc/
          ^^ Surrounding space missing for operator `=~`.
         y !~/abc/
@@ -412,7 +412,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for various assignments without space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x||=0
          ^^^ Surrounding space missing for operator `||=`.
         y&&=0
@@ -437,7 +437,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for equality operators without space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x==0
          ^^ Surrounding space missing for operator `==`.
         y!=0
@@ -448,14 +448,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for - without space with negative lhs operand' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         -1-arg
           ^ Surrounding space missing for operator `-`.
       RUBY
     end
 
     it 'registers an offense for inheritance < without space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class ShowSourceTestClass<ShowSourceTestSuperClass
                                  ^ Surrounding space missing for operator `<`.
         end
@@ -463,7 +463,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for hash rocket without space at rescue' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
         rescue Exception=>e
                         ^^ Surrounding space missing for operator `=>`.
@@ -472,12 +472,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it "doesn't eat a newline when auto-correcting" do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         'Here is a'+
         'joined string'+
         'across three lines'
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         'Here is a' +
         'joined string' +
         'across three lines'
@@ -485,7 +485,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it "doesn't register an offense for operators with newline on right" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         'Here is a' +
         'joined string' +
         'across three lines'
@@ -496,7 +496,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   describe 'extra space around operators' do
     shared_examples 'modifier with extra space' do |keyword|
       it "registers an offense in presence of modifier #{keyword} statement" do
-        src = <<-RUBY.strip_indent
+        src = <<~RUBY
           a =  1 #{keyword} condition
           c =   2
         RUBY
@@ -507,7 +507,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         )
 
         new_source = autocorrect_source(src)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           a = 1 #{keyword} condition
           c = 2
         RUBY
@@ -515,7 +515,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for assignment with many spaces on either side' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x   = 0
             ^ Operator `=` should be surrounded by a single space.
         y +=   0
@@ -526,12 +526,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects assignment with too many spaces on either side' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x  = 0
         y =   0
         z  =   0
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 0
         y = 0
         z = 0
@@ -539,7 +539,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for ternary operator with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x == 0  ? 1 :  2
                     ^ Operator `:` should be surrounded by a single space.
                 ^ Operator `?` should be surrounded by a single space.
@@ -557,7 +557,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     it_behaves_like 'modifier with extra space', 'until'
 
     it 'registers an offense for binary operators that could be unary' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a -  3
           ^ Operator `-` should be surrounded by a single space.
         x &   0xff
@@ -568,12 +568,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a -  3
         x &   0xff
         z +  0
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a - 3
         x & 0xff
         z + 0
@@ -581,7 +581,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for arguments to a method' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts 1 +  2
                ^ Operator `+` should be surrounded by a single space.
       RUBY
@@ -593,7 +593,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for operators with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x +=  a
           ^^ Operator `+=` should be surrounded by a single space.
         a  + b
@@ -622,26 +622,26 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'auto-corrects missing space' do
       new_source = autocorrect_source(
-        <<-RUBY.strip_indent
+        <<~RUBY
           x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j
           y  -=  k   &&        l
         RUBY
       )
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x += a + b - c * d / e % f ^ g | h & i || j
         y -= k && l
       RUBY
     end
 
     it 'registers an offense for a setter call with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.y  =  2
              ^ Operator `=` should be surrounded by a single space.
       RUBY
     end
 
     it 'registers an offense for a hash rocket with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         { 1  =>   2, a: b }
              ^^ Operator `=>` should be surrounded by a single space.
       RUBY
@@ -649,7 +649,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'registers an offense for a hash rocket with an extra space' \
       'on multiple line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {
           1 =>  2
             ^^ Operator `=>` should be surrounded by a single space.
@@ -659,7 +659,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'accepts for a hash rocket with an extra space for alignment' \
       'on multiple line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {
           1 =>  2,
           11 => 3
@@ -671,7 +671,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
       let(:allow_for_alignment) { false }
 
       it 'accepts an extra space' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           {
             1 =>  2,
               ^^ Operator `=>` should be surrounded by a single space.
@@ -682,7 +682,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for match operators with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x  =~ /abc/
            ^^ Operator `=~` should be surrounded by a single space.
         y !~   /abc/
@@ -691,7 +691,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for various assignments with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x ||=  0
           ^^^ Operator `||=` should be surrounded by a single space.
         y  &&=  0
@@ -718,7 +718,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for equality operators with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x  ==  0
            ^^ Operator `==` should be surrounded by a single space.
         y   != 0
@@ -730,14 +730,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
     it 'registers an offense for - with too many spaces with ' \
        'negative lhs operand' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         -1  - arg
             ^ Operator `-` should be surrounded by a single space.
       RUBY
     end
 
     it 'registers an offense for inheritance < with too many spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Foo  <  Bar
                    ^ Operator `<` should be surrounded by a single space.
         end
@@ -745,7 +745,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     it 'registers an offense for hash rocket with too many spaces at rescue' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
         rescue Exception   =>      e
                            ^^ Operator `=>` should be surrounded by a single space.

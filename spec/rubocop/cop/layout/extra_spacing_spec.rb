@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     it 'registers an offense for alignment with token not preceded by space' do
       # The = and the ( are on the same column, but this is not for alignment,
       # it's just a mistake.
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         website("example.org")
         name   = "Jill"
             ^^ Unnecessary spacing detected.
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'accepts aligned values of an implicit hash literal' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         register(street1:    '1 Market',
                  street2:    '#200',
                  :city =>    'Some Town',
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'accepts space between key and value in a hash with hash rockets' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         ospf_h = {
           'ospfTest'    => {
             'foo'      => {
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
 
     context 'when spaces are present in a single-line hash literal' do
       it 'registers an offense for hashes with symbol keys' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           hash = {a:   1,  b:    2}
                     ^^ Unnecessary spacing detected.
                          ^ Unnecessary spacing detected.
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       end
 
       it 'registers an offense for hashes with hash rockets' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           let(:single_line_hash) {
             {"a"   => "1", "b" => "2"}
                 ^^ Unnecessary spacing detected.
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'can handle extra space before a float' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {:a => "a",
          :b => [nil,  2.5]}
                     ^ Unnecessary spacing detected.
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'can handle unary plus in an argument list' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         assert_difference(MyModel.count, +2,
                           3,  +3, # Extra spacing only here.
                             ^ Unnecessary spacing detected.
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'gives the correct line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class A   < String
                ^^ Unnecessary spacing detected.
         end
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'registers an offense for double extra spacing on variable assignment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         m    = "hello"
          ^^^ Unnecessary spacing detected.
       RUBY
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'registers an offense on class inheritance' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class A   < String
                ^^ Unnecessary spacing detected.
         end
@@ -121,22 +121,22 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'auto-corrects a line indented with mixed whitespace' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         website("example.org")
         name    = "Jill"
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         website("example.org")
         name = "Jill"
       RUBY
     end
 
     it 'auto-corrects the class inheritance' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         class A   < String
         end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         class A < String
         end
       RUBY
@@ -144,13 +144,13 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   end
 
   sources = {
-    'lining up assignments' => <<-RUBY.strip_indent,
+    'lining up assignments' => <<~RUBY,
       website = "example.org"
       name    = "Jill"
     RUBY
 
     'lining up assignments with empty lines and comments in between' =>
-    <<-RUBY.strip_indent,
+    <<~RUBY,
       a   += 1
 
       # Comment
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       |      m,   = (m + 1)                    .divmod(1)
     RUBY
 
-    'lining up different kinds of assignments' => <<-RUBY.strip_indent,
+    'lining up different kinds of assignments' => <<~RUBY,
       type_name ||= value.class.name if value
       type_name   = type_name.to_s   if type_name
 
@@ -176,14 +176,14 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       aa -= 2
     RUBY
 
-    'aligning comments on non-adjacent lines' => <<-RUBY.strip_indent,
+    'aligning comments on non-adjacent lines' => <<~RUBY,
       include_examples 'aligned',   'var = until',  'test'
 
       include_examples 'unaligned', "var = if",     'test'
     RUBY
 
     'aligning = on lines where there are trailing comments' =>
-    <<-RUBY.strip_indent,
+    <<~RUBY,
       a_long_var_name = 100 # this is 100
       short_name1     = 2
 
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
 
     # WARNING: see mention in tests for AllowBeforeTrailingComments
     # before modifying this test case, or its name
-    'aligning tokens with empty line between' => <<-RUBY.strip_indent,
+    'aligning tokens with empty line between' => <<~RUBY,
       unless nochdir
         Dir.chdir "/"    # Release old working directory.
       end
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     RUBY
 
     'aligning long assignment expressions that include line breaks' =>
-    <<-RUBY.strip_indent
+    <<~RUBY
       size_attribute_name    = FactoryGirl.create(:attribute,
                                                   name:   'Size',
                                                   values: %w{small large})
@@ -324,7 +324,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'registers an offense if consecutive assignments are not aligned' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = 1
           ^ `=` is not aligned with the following assignment.
         bb = 2
@@ -335,7 +335,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'does not register an offense if assignments are separated by blanks' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = 1
 
         bb = 2
@@ -345,7 +345,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'does not register an offense if assignments are aligned' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a   = 1
         bb  = 2
         ccc = 3
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'aligns the first assignment with the following assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # comment
         a   = 1
         bb  = 2
@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive assignments which are not aligned' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a = 1
         bb = 2
         ccc = 3
@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         a                 = 2
         abc = 3
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a   = 1
         bb  = 2
         ccc = 3
@@ -382,7 +382,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive operator assignments which are not aligned' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a += 1
         bb = 2
         ccc <<= 3
@@ -391,7 +391,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         a                 *= 2
         abc ||= 3
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a    += 1
         bb    = 2
         ccc <<= 3
@@ -403,7 +403,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive aref assignments which are not aligned' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a[1] = 1
         bb[2,3] = 2
         ccc[:key] = 3
@@ -412,7 +412,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         a                 = 2
         abc += 3
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a[1]      = 1
         bb[2,3]   = 2
         ccc[:key] = 3
@@ -424,7 +424,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects consecutive attribute assignments which are not aligned' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a.attr = 1
         bb &&= 2
         ccc.s = 3
@@ -433,7 +433,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         a.attribute_name              = 2
         abc[1] = 3
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a.attr = 1
         bb   &&= 2
         ccc.s  = 3
@@ -446,7 +446,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
 
     it 'does not register an offense when optarg equals is not aligned with ' \
        'assignment equals sign' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method(arg = 1)
           var = arg
         end

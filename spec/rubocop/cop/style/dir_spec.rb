@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
   end
 
   it 'registers an offense when using `#expand_path` and `#dirname`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       File.expand_path(File.dirname(__FILE__))
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
     RUBY
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
                   '__dir__'
 
   it 'registers an offense when using `#dirname` and `#realpath`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       File.dirname(File.realpath(__FILE__))
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
     RUBY

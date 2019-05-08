@@ -39,14 +39,14 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
   let(:message) { 'Avoid `when` branches without a body.' }
 
   context 'when a `when` body is missing' do
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz # nothing
       end
     RUBY
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz # nothing
@@ -54,14 +54,14 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz then # nothing
       end
     RUBY
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz then # nothing
@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar
         1
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar
         1
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
 
-    it_behaves_like 'code with offense', <<-RUBY.strip_indent
+    it_behaves_like 'code with offense', <<~RUBY
       case
       when :bar
         1
@@ -102,14 +102,14 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
   end
 
   context 'when a `when` body is present' do
-    it_behaves_like 'code without offense', <<-RUBY.strip_indent
+    it_behaves_like 'code without offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz then 2
       end
     RUBY
 
-    it_behaves_like 'code without offense', <<-RUBY.strip_indent
+    it_behaves_like 'code without offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz then 2
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
 
-    it_behaves_like 'code without offense', <<-RUBY.strip_indent
+    it_behaves_like 'code without offense', <<~RUBY
       case foo
       when :bar
         1
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
 
-    it_behaves_like 'code without offense', <<-RUBY.strip_indent
+    it_behaves_like 'code without offense', <<~RUBY
       case foo
       when :bar
         1
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         3
       end
     RUBY
-    it_behaves_like 'code without offense', <<-RUBY.strip_indent
+    it_behaves_like 'code without offense', <<~RUBY
       case
       when :bar
         1

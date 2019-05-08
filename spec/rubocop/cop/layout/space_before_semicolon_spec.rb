@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
   let(:brace_config) { {} }
 
   it 'registers an offense for space before semicolon' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x = 1 ; y = 2
            ^ Space found before semicolon.
     RUBY
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
 
       it 'registers an offense for a space between an opening brace and a ' \
          'semicolon' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           test { ; }
                 ^ Space found before semicolon.
         RUBY

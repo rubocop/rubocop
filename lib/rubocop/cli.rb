@@ -145,7 +145,7 @@ module RuboCop
 
         STATUS_ERROR
       else
-        description = <<-DESC.strip_indent
+        description = <<~DESC
           # The behavior of RuboCop can be controlled via the .rubocop.yml
           # configuration file. It makes it possible to enable/disable
           # certain cops (checks) and to alter their behavior if they accept
@@ -317,7 +317,7 @@ module RuboCop
 
       errors.each { |error| warn error }
 
-      warn <<-WARNING.strip_indent
+      warn <<~WARNING
         Errors are usually caused by RuboCop bugs.
         Please, report your problems to RuboCop's issue tracker.
         #{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}

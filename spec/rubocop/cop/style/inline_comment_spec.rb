@@ -4,14 +4,14 @@ RSpec.describe RuboCop::Cop::Style::InlineComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a trailing inline comment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       two = 1 + 1 # A trailing inline comment
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid trailing inline comments.
     RUBY
   end
 
   it 'does not register an offense for special rubocop inline comments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       two = 1 + 1 # rubocop:disable Layout/ExtraSpacing
     RUBY
   end

@@ -45,23 +45,23 @@ RSpec.describe RuboCop::Cop::Rails::FindEach do
   end
 
   it 'auto-corrects each to find_each' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       User.all.each { |u| u.x }
                ^^^^ Use `find_each` instead of `each`.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       User.all.find_each { |u| u.x }
     RUBY
   end
 
   it 'registers an offense with non-send ancestors' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class C; User.all.each { |u| u.x }; end
                         ^^^^ Use `find_each` instead of `each`.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       class C; User.all.find_each { |u| u.x }; end
     RUBY
   end

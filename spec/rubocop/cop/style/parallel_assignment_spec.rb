@@ -33,11 +33,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('offenses', 'a, b = a, b')
   it_behaves_like('offenses',
                   'a, b = foo.map { |e| e.id }, bar.map { |e| e.id }')
-  it_behaves_like('offenses', <<-RUBY.strip_indent)
+  it_behaves_like('offenses', <<~RUBY)
     array = [1, 2, 3]
     a, b, c, = 8, 9, array
   RUBY
-  it_behaves_like('offenses', <<-RUBY.strip_indent)
+  it_behaves_like('offenses', <<~RUBY)
     if true
       a, b = 1, 2
     end
@@ -75,15 +75,15 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('allowed', 'a, b, c = *node, 1, 2')
   it_behaves_like('allowed', 'begin_token, end_token = CONSTANT')
   it_behaves_like('allowed', 'CONSTANT, = 1, 2')
-  it_behaves_like('allowed', <<-RUBY.strip_indent)
+  it_behaves_like('allowed', <<~RUBY)
     a = 1
     b = 2
   RUBY
-  it_behaves_like('allowed', <<-RUBY.strip_indent)
+  it_behaves_like('allowed', <<~RUBY)
     foo = [1, 2, 3]
     a, b, c = foo
   RUBY
-  it_behaves_like('allowed', <<-RUBY.strip_indent)
+  it_behaves_like('allowed', <<~RUBY)
     array = [1, 2, 3]
     a, = array
   RUBY
@@ -96,14 +96,14 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('allowed', 'self.a, self.b = b, a')
 
   it 'highlights the entire expression' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a, b = 1, 2
       ^^^^^^^^^^^ Do not use parallel assignment.
     RUBY
   end
 
   it 'does not highlight the modifier statement' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a, b = 1, 2 if true
       ^^^^^^^^^^^ Do not use parallel assignment.
     RUBY
@@ -112,11 +112,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   describe 'autocorrect' do
     it 'corrects when the number of left hand variables matches ' \
       'the number of right hand variables' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           a, b, c = 1, 2, 3
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           a = 1
           b = 2
           c = 3
@@ -124,11 +124,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
     it 'corrects when the right variable is an array' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b, c = ["1", "2", :c]
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = "1"
         b = "2"
         c = :c
@@ -136,11 +136,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the right variable is a word array' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b, c = %w(1 2 3)
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = '1'
         b = '2'
         c = '3'
@@ -148,11 +148,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the right variable is a symbol array' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b, c = %i(a b c)
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = :a
         b = :b
         c = :c
@@ -160,44 +160,44 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when assigning to method returns' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = foo(), bar()
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = foo()
         b = bar()
       RUBY
     end
 
     it 'corrects when assigning from multiple methods with blocks' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = foo() { |c| puts c }, bar() { |d| puts d }
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = foo() { |c| puts c }
         b = bar() { |d| puts d }
       RUBY
     end
 
     it 'corrects when using constants' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         CONSTANT1, CONSTANT2 = CONSTANT3, CONSTANT4
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         CONSTANT1 = CONSTANT3
         CONSTANT2 = CONSTANT4
       RUBY
     end
 
     it 'corrects when the expression is missing spaces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a,b,c=1,2,3
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a = 1
         b = 2
         c = 3
@@ -205,13 +205,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when using single indentation' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           a, b, c = 1, 2, 3
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           a = 1
           b = 2
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when using nested indentation' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           if true
             a, b, c = 1, 2, 3
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           if true
             a = 1
@@ -241,11 +241,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier if statement' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = 1, 2 if foo
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           a = 1
           b = 2
@@ -255,13 +255,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when the expression uses a modifier if statement ' \
        'inside a method' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           a, b = 1, 2 if foo
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           if foo
             a = 1
@@ -272,13 +272,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in if statements' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         if foo
           a, b = 1, 2
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         if foo
           a = 1
           b = 2
@@ -287,11 +287,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier unless statement' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = 1, 2 unless foo
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         unless foo
           a = 1
           b = 2
@@ -300,13 +300,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in unless statements' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         unless foo
           a, b = 1, 2
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         unless foo
           a = 1
           b = 2
@@ -315,11 +315,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier while statement' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = 1, 2 while foo
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         while foo
           a = 1
           b = 2
@@ -328,13 +328,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in while statements' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         while foo
           a, b = 1, 2
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         while foo
           a = 1
           b = 2
@@ -343,11 +343,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier until statement' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = 1, 2 until foo
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         until foo
           a = 1
           b = 2
@@ -356,13 +356,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects parallel assignment in until statements' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         until foo
           a, b = 1, 2
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         until foo
           a = 1
           b = 2
@@ -371,11 +371,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     end
 
     it 'corrects when the expression uses a modifier rescue statement' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b = 1, 2 rescue foo
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         begin
           a = 1
           b = 2
@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects parallel assignment inside rescue statements '\
        'within method definitions' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def bar
           a, b = 1, 2
         rescue
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def bar
           a = 1
           b = 2
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects parallel assignment in rescue statements '\
        'within begin ... rescue' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         begin
           a, b = 1, 2
         rescue
@@ -415,7 +415,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         begin
           a = 1
           b = 2
@@ -427,13 +427,13 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when the expression uses a modifier rescue statement ' \
        'as the only thing inside of a method' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           a, b = 1, 2 rescue foo
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           a = 1
           b = 2
@@ -445,14 +445,14 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when the expression uses a modifier rescue statement ' \
        'inside of a method' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           a, b = %w(1 2) rescue foo
           something_else
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           begin
             a = '1'
@@ -467,11 +467,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
     it 'corrects when assignments must be reordered to avoid changing ' \
        'meaning' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a, b, c, d = 1, a + 1, b + 1, a + b + c
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         d = a + b + c
         c = b + 1
         b = a + 1
@@ -496,8 +496,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
                     'when there are more right variables than left variables',
                     'a, b = 1, 2, 3'
 
-    it_behaves_like 'no correction',
-                    'when expanding an assigned variable', <<-RUBY.strip_indent
+    it_behaves_like 'no correction', 'when expanding an assigned var', <<~RUBY
       foo = [1, 2, 3]
       a, b, c = foo
     RUBY
@@ -514,11 +513,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with standard correction' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           a, b, c = 1, 2, 3
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           a = 1
           b = 2
           c = 3
@@ -526,11 +525,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with guard clauses' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           a, b = 1, 2 if foo
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if foo
              a = 1
              b = 2
@@ -539,11 +538,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with rescue' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           a, b = 1, 2 rescue foo
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           begin
              a = 1
              b = 2
@@ -554,7 +553,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'works with nesting' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def foo
              if true
                 a, b, c = 1, 2, 3
@@ -562,7 +561,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def foo
              if true
                 a = 1

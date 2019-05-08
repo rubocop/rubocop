@@ -14,21 +14,21 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray do
       end
 
       it 'adds an offense if symbols contain colons and are comma separated' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}(:foo, :bar, :baz)
           ^^^^^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
         RUBY
       end
 
       it 'adds an offense if one symbol has a colon but there are no commas' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}(:foo bar baz)
           ^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
         RUBY
       end
 
       it 'adds an offense if there are no colons but one comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}(foo, bar baz)
           ^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
         RUBY
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray do
     end
     context 'with binary encoded source' do
       it 'adds an offense if tokens contain quotes' do
-        expect_offense(<<-RUBY.b.strip_indent)
+        expect_offense(<<~RUBY.b)
           # encoding: BINARY
 
           %i[\xC0 :foo]
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray do
       end
 
       it 'accepts if tokens contain no quotes' do
-        expect_no_offenses(<<-RUBY.b.strip_indent)
+        expect_no_offenses(<<~RUBY.b)
           # encoding: BINARY
 
           %i[\xC0 \xC1]

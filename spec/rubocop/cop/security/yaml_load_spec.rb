@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Security::YAMLLoad, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'does not register an offense for YAML.dump' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       YAML.dump("foo")
       ::YAML.dump("foo")
       Module::YAML.dump("foo")
@@ -16,14 +16,14 @@ RSpec.describe RuboCop::Cop::Security::YAMLLoad, :config do
   end
 
   it 'registers an offense for load with a literal string' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       YAML.load("--- foo")
            ^^^^ Prefer using `YAML.safe_load` over `YAML.load`.
     RUBY
   end
 
   it 'registers an offense for a fully qualified ::YAML.load' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::YAML.load("--- foo")
              ^^^^ Prefer using `YAML.safe_load` over `YAML.load`.
     RUBY

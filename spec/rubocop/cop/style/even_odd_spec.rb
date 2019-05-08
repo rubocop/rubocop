@@ -4,70 +4,70 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for x % 2 == 0' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x % 2 == 0
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
   end
 
   it 'registers an offense for x % 2 != 0' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x % 2 != 0
       ^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
   end
 
   it 'registers an offense for (x % 2) == 0' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (x % 2) == 0
       ^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
   end
 
   it 'registers an offense for (x % 2) != 0' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (x % 2) != 0
       ^^^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
   end
 
   it 'registers an offense for x % 2 == 1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x % 2 == 1
       ^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
   end
 
   it 'registers an offense for x % 2 != 1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x % 2 != 1
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
   end
 
   it 'registers an offense for (x % 2) == 1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (x % 2) == 1
       ^^^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
   end
 
   it 'registers an offense for (x % 2) != 1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (x % 2) != 1
       ^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
   end
 
   it 'registers an offense for (x.y % 2) != 1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (x.y % 2) != 1
       ^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
   end
 
   it 'registers an offense for (x(y) % 2) != 1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       (x(y) % 2) != 1
       ^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
@@ -152,14 +152,14 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
   end
 
   it 'converts complex examples' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       if (y % 2) != 1
         method == :== ? :even : :odd
       elsif x % 2 == 1
         method == :== ? :odd : :even
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       if y.even?
         method == :== ? :even : :odd
       elsif x.odd?

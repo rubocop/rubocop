@@ -25,14 +25,14 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
   end
 
   it 'registers an offense for calling !.none? with a symbol proc' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       !foo.none?(&:even?)
       ^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
     RUBY
   end
 
   it 'registers an offense for calling !.none? with a block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       !foo.none? { |f| f.even? }
       ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
     RUBY
@@ -151,21 +151,21 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
   end
 
   it 'allows comparing camel case constants on the right' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       klass = self.class
       !(klass < BaseClass)
     RUBY
   end
 
   it 'allows comparing camel case constants on the left' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       klass = self.class
       !(BaseClass < klass)
     RUBY
   end
 
   it 'registers an offense for comparing snake case constants on the right' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       klass = self.class
       !(klass < FOO_BAR)
       ^^^^^^^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
   end
 
   it 'registers an offense for comparing snake case constants on the left' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       klass = self.class
       !(FOO_BAR < klass)
       ^^^^^^^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
 
       it 'registers an offense for a multiline method call where the last ' \
         'method is inverted' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           foo.#{method} do |e|
             something
             !e.bar
@@ -206,14 +206,14 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'registers an offense for an inverted equality block' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo.select { |e| e != 2 }
           ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `reject` instead of inverting `select`.
         RUBY
       end
 
       it 'registers an offense for a multiline inverted equality block' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           foo.#{method} do |e|
             something
             something_else
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'registers a single offense for nested inverse method calls' do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           y.#{method} { |key, _value| !(key =~ /c\d/) }
         RUBY
 
@@ -274,13 +274,13 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an inverted do end method call' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           foo.#{method} do |e|
             !e.bar
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           foo.#{inverse} do |e|
             e.bar
           end
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects a multiline method call where the last method is inverted' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           foo.#{method} do |e|
             something
             something_else
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           foo.#{inverse} do |e|
             something
             something_else
@@ -312,7 +312,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       end
 
       it 'corrects an offense for a multiline inverted equality block' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           foo.#{method} do |e|
             something
             something_else
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           foo.#{inverse} do |e|
             something
             something_else

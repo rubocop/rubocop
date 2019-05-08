@@ -25,14 +25,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'accepts multiline braces with content' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         each { %(
         ) }
       RUBY
     end
 
     it 'accepts empty braces with comment and line break inside' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         each { # Comment
         }
       RUBY
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces with space inside' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each { }
               ^ Space inside empty braces detected.
       RUBY
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'registers an offense for empty braces with no space inside' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each {}
              ^^ Space missing inside empty braces.
       RUBY
@@ -108,21 +108,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
   end
 
   it 'registers an offense for left brace without inner space' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       each {puts }
             ^ Space missing inside {.
     RUBY
   end
 
   it 'registers an offense for right brace without inner space' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       each { puts}
                  ^ Space missing inside }.
     RUBY
   end
 
   it 'registers offenses for both braces without inner space' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a {}
       b { }
          ^ Space inside empty braces detected.
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'registers an offense for left brace without inner space' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           each {|x| puts }
                ^^ Space between { and | missing.
         RUBY
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
 
     context 'for multi-line blocks' do
       it 'accepts left brace with inner space' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           each { |x|
             puts
           }
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'registers an offense for left brace without inner space' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           each {|x|
                ^^ Space between { and | missing.
             puts
@@ -205,13 +205,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'does auto-correction for multi-line blocks' do
-        old_source = <<-RUBY.strip_indent
+        old_source = <<~RUBY
           each {|x|
             puts
           }
         RUBY
         new_source = autocorrect_source(old_source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           each { |x|
             puts
           }
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       end
 
       it 'registers an offense for left brace with inner space' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           each { |x| puts }
                 ^ Space between { and | detected.
         RUBY
@@ -264,14 +264,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
 
     it 'registers an offense for left brace with inner space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each { puts}
               ^ Space inside { detected.
       RUBY
     end
 
     it 'registers an offense for right brace with inner space' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         each {puts }
                   ^ Space inside } detected.
       RUBY
@@ -293,7 +293,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'registers an offense for left brace without inner space' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             each {|x| puts}
                  ^^ Space between { and | missing.
           RUBY
@@ -319,7 +319,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         end
 
         it 'registers an offense for left brace with inner space' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             each { |x| puts}
                   ^ Space between { and | detected.
           RUBY

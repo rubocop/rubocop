@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'each' } }
 
     it 'registers an offense for for' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           for n in [1, 2, 3] do
           ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for opposite + correct style' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           for n in [1, 2, 3] do
           ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
 
     context 'auto-correct' do
       it 'changes for to each' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def func
             for n in [1, 2, 3] do
               puts n
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             [1, 2, 3].each do |n|
               puts n
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
 
       context 'with range' do
         let(:expected_each_with_range) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             def func
               (1...value).each do |n|
                 puts n
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
         end
 
         it 'changes for to each' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             def func
               for n in (1...value) do
                 puts n
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
         end
 
         it 'changes for that does not have do or semicolon to each' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             def func
               for n in (1...value)
                 puts n
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
 
         context 'without parentheses' do
           it 'changes for to each' do
-            new_source = autocorrect_source(<<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<~RUBY)
               def func
                 for n in 1...value do
                   puts n
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
 
           it 'changes for that does not have do or semicolon to each' do
-            new_source = autocorrect_source(<<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<~RUBY)
               def func
                 for n in 1...value
                   puts n
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       end
 
       it 'corrects a tuple of items' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def func
             for (a, b) in {a: 1, b: 2, c: 3} do
               puts a, b
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             {a: 1, b: 2, c: 3}.each do |(a, b)|
               puts a, b
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       end
 
       it 'changes for that does not have do or semicolon to each' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def func
             for n in [1, 2, 3]
               puts n
@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             [1, 2, 3].each do |n|
               puts n
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'accepts multiline each' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           [1, 2, 3].each do |n|
             puts n
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'for' } }
 
     it 'accepts for' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           for n in [1, 2, 3] do
             puts n
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for multiline each' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           [1, 2, 3].each do |n|
           ^^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for each without an item' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           [1, 2, 3].each do
           ^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
@@ -204,7 +204,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'registers an offense for correct + opposite style' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           for n in [1, 2, 3] do
             puts n
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
 
     context 'auto-correct' do
       it 'changes each to for' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def func
             [1, 2, 3].each do |n|
               puts n
@@ -227,7 +227,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             for n in [1, 2, 3] do
               puts n
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       end
 
       it 'corrects each to for and uses _ as the item' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def func
             [1, 2, 3].each do
               something
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             for _ in [1, 2, 3] do
               something
@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       end
 
       it 'corrects a tuple of items' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def func
             {a: 1, b: 2, c: 3}.each do |(a, b)|
               puts a, b
@@ -263,7 +263,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             for (a, b) in {a: 1, b: 2, c: 3} do
               puts a, b
@@ -274,7 +274,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'accepts single line each' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           [1, 2, 3].each { |n| puts n }
         end
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       let(:ruby_version) { 2.3 }
 
       it 'does not break' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def func
             [1, 2, 3]&.each { |n| puts n }
           end

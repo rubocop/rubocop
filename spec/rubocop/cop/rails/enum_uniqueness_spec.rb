@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   context 'when array syntax is used' do
     context 'with a single duplicated enum value' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           enum status: [:active, :archived, :active]
                                             ^^^^^^^ Duplicate value `:active` found in `status` enum declaration.
         RUBY
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
     context 'with several duplicated enum values' do
       it 'registers two offenses' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           enum status: [:active, :archived, :active, :active]
                                                      ^^^^^^^ Duplicate value `:active` found in `status` enum declaration.
                                             ^^^^^^^ Duplicate value `:active` found in `status` enum declaration.
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Rails::EnumUniqueness, :config do
   context 'when hash syntax is used' do
     context 'with a single duplicated enum value' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           enum status: { active: 0, archived: 0 }
                                               ^ Duplicate value `0` found in `status` enum declaration.
         RUBY
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
     context 'with several duplicated enum values' do
       it 'registers two offenses' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           enum status: { active: 0, pending: 0, archived: 0 }
                                                           ^ Duplicate value `0` found in `status` enum declaration.
                                              ^ Duplicate value `0` found in `status` enum declaration.
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Rails::EnumUniqueness, :config do
 
   context 'when receiving a variable' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         var = { status: { active: 0, archived: 1 } }
         enum var
       RUBY

@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   let(:brace_config) { {} }
 
   it 'registers an offense for semicolon without space after it' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x = 1;y = 2
            ^ Space missing after semicolon.
     RUBY
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
 
       it 'registers an offense for no space between a semicolon and a ' \
          'closing brace' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           test { ;}
                  ^ Space missing after semicolon.
         RUBY

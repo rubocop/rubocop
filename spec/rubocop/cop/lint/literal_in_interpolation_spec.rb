@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
   shared_examples 'special keywords' do |keyword|
     it "accepts strings like #{keyword}" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         %("this is \#{#{keyword}} silly")
       RUBY
     end

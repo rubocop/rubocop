@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
   shared_examples 'never accepted' do |enforced_style|
     it 'registers an offense for mixed snake case and camel case' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def visit_Arel_Nodes_SelectStatement
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
         end
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'registers an offense for capitalized camel case' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class MyClass
           def MyMethod
               ^^^^^^^^ Use #{enforced_style} for method names.
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
     it 'registers an offense for singleton upper case method without ' \
        'corresponding class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Sequel
           def self.Model(source)
                    ^^^^^ Use #{enforced_style} for method names.
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'accepts operator definitions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def +(other)
           # ...
         end
@@ -48,18 +48,18 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'accepts unary operator definitions' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def ~@; end
       RUBY
 
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def !@; end
       RUBY
     end
 
     %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{kind} Sequel
             def self.Model(source)
             end
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
       it "accepts class emitter method in a #{kind}, even when it is " \
          'defined inside another method' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           module DPN
             module Flow
               module BaseFlow
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
     it 'registers an offense for camel case in instance method name' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def myMethod
             ^^^^^^^^ Use snake_case for method names.
           # ...
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'registers an offense for opposite + correct' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def my_method
         end
         def myMethod
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'registers an offense for camel case in singleton method name' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def self.myMethod
                  ^^^^^^^^ Use snake_case for method names.
           # ...
@@ -122,14 +122,14 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'accepts snake case in names' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def my_method
         end
       RUBY
     end
 
     it 'registers an offense for singleton camelCase method within class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Sequel
           def self.fooBar
                    ^^^^^^ Use snake_case for method names.
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
 
     it 'accepts camel case in instance method name' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def myMethod
           # ...
         end
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'accepts camel case in singleton method name' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.myMethod
           # ...
         end
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'registers an offense for snake case in names' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def my_method
             ^^^^^^^^^ Use camelCase for method names.
         end
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'registers an offense for correct + opposite' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def myMethod
         end
         def my_method
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
 
     it 'registers an offense for singleton snake_case method within class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Sequel
           def self.foo_bar
                    ^^^^^^^ Use camelCase for method names.

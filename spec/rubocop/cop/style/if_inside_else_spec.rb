@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   subject(:cop) { described_class.new }
 
   it 'catches an if node nested inside an else' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if a
         blah
       else
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'catches an if..else nested inside an else' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if a
         blah
       else
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'catches a modifier if nested inside an else' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if a
         blah
       else
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it "isn't offended if there is a statement following the if node" do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
         blah
       else
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it "isn't offended if there is a statement preceding the if node" do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
         blah
       else
@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it "isn't offended by if..elsif..else" do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
         blah
       elsif b
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'ignores unless inside else' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
         blah
       else
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'ignores if inside unless' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       unless a
         if b
           foo
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
   end
 
   it 'ignores ternary inside if..else' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
         blah
       else

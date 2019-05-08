@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
 
   context 'when there is a duplicated key in the hash literal' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = { 'otherkey' => 'value', 'key' => 'value', 'key' => 'hi' }
                                                           ^^^^^ Duplicated key in hash literal.
       RUBY
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
 
   context 'when there are two duplicated keys in a hash' do
     it 'registers two offenses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = { fruit: 'apple', veg: 'kale', veg: 'cuke', fruit: 'orange' }
                                               ^^^ Duplicated key in hash literal.
                                                            ^^^^^ Duplicated key in hash literal.
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
 
   context 'When a key is duplicated three times in a hash literal' do
     it 'registers two offenses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = { 1 => 2, 1 => 3, 1 => 4 }
                          ^ Duplicated key in hash literal.
                                  ^ Duplicated key in hash literal.
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
 
   context 'When there is no duplicated key in the hash' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = { ['one', 'two'] => ['hello, bye'], ['two'] => ['yes, no'] }
       RUBY
     end
@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicatedKey do
 
   shared_examples 'duplicated non literal key' do |key|
     it "does not register an offense for duplicated `#{key}` hash keys" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = { #{key} => 1, #{key} => 4}
       RUBY
     end

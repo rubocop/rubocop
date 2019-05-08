@@ -6,12 +6,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyLambdaParameter do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense for an empty block parameter with a lambda' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       -> () { do_something }
          ^^ Omit parentheses for the empty lambda parameters.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       -> { do_something }
     RUBY
   end

@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'when using Rails.root.join with some path strings' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Rails.root.join('app', 'models', 'user.rb')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path/to')` instead.
         RUBY
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'when using File.join with Rails.root' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           File.join(Rails.root, 'app', 'models')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path/to')` instead.
         RUBY
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'Rails.root is used as a method argument' do
       it 'registers an offense once' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo(bar(File.join(Rails.root, "app", "models")))
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path/to')` instead.
         RUBY
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'Rails.root.join used as an argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo(Rails.root.join('app/models'))
         RUBY
       end
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'Rails.root.join with a non-string argument including "/"' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           Rails.root.join("tmp", "data", index/3, "data.csv")
         RUBY
       end
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'when string contains an interpolation followed by a period' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           puts "test #\{123\}. Hey!"
         RUBY
       end
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'when using File.join with Rails.root' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           File.join(Rails.root, 'app', 'models')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
         RUBY
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'when using Rails.root.join with slash separated path string' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Rails.root.join('app/models/goober')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
         RUBY
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'Rails.root is used as a method argument' do
       it 'registers an offense once' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo(bar(File.join(Rails.root, "app", "models")))
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
         RUBY
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'Rails.root.join used as an argument' do
       it 'registers an offense once' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo(Rails.root.join('app/models'))
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please use `Rails.root.join('path', 'to')` instead.
         RUBY
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'Rails.root.join with a non-string argument including "/"' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           Rails.root.join("tmp", "data", index/3, "data.csv")
         RUBY
       end
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Rails::FilePath, :config do
 
     context 'when string contains an interpolation followed by a period' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           puts "test #\{123\}. Hey!"
         RUBY
       end

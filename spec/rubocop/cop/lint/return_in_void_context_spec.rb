@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'with an initialize method containing a return with a value' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class A
           def initialize
             return :qux if bar?
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'with an initialize method containing a return without a value' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class A
           def initialize
             return if bar?
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'with a setter method containing a return with a value' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class A
           def foo=(bar)
             return 42
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'with a setter method containing a return without a value' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class A
           def foo=(bar)
             return
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'with a non initialize method containing a return' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class A
           def bar
             foo
@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'with a class method called initialize containing a return' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class A
           def self.initialize
             foo
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
 
   context 'when return is in top scope' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         return if true
       RUBY
     end

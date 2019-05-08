@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for string concat at line end' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       top = "test" +
                    ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'registers an offense for string concat with << at line end' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       top = "test" <<
                    ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'registers an offense for string concat with << and \ at line ends' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       top = "test " \\
       "foo" <<
             ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'accepts string concat with a return value of method on a string' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       content_and_three_spaces = "content" +
         " " * 3
       a_thing = 'a ' +
@@ -94,21 +94,21 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'accepts string concat with a return value of method on an interpolated ' \
      'string' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       x3a = 'x' +
         "\#{'a' + "\#{3}"}".reverse
     RUBY
   end
 
   it 'accepts string concat at line end when followed by comment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       top = "test" + # something
       "top"
     RUBY
   end
 
   it 'accepts string concat at line end when followed by a comment line' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       top = "test" +
       # something
       "top"
@@ -116,14 +116,14 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'accepts string concat at line end when % literals are involved' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       top = %(test) +
       "top"
     RUBY
   end
 
   it 'accepts string concat at line end for special strings like __FILE__' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       top = __FILE__ +
       "top"
     RUBY
@@ -142,11 +142,11 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'autocorrects in the simple case by replacing + with \\' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       top = "test" + 
       "top"
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       top = "test" \\
       "top"
     RUBY
@@ -156,22 +156,22 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   # the code has syntax errors, so it's important to fix the trailing
   # whitespace in this cop.
   it 'autocorrects a + with trailing whitespace to \\' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       top = "test" +
       "top"
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       top = "test" \\
       "top"
     RUBY
   end
 
   it 'autocorrects a + with \\ to just \\' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       top = "test" + \\
       "top"
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       top = "test" \\
       "top"
     RUBY

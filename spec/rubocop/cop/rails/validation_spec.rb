@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Rails::Validation do
 
     context 'with trailing local variable' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           b = { minimum: 1 }
           validates_numericality_of :a, b
         RUBY

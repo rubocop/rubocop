@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         rescue SystemExit # rubocop:disable Lint/HandleExceptions
         end
 
-        expected_help = <<-OUTPUT.strip_indent
+        expected_help = <<~OUTPUT
           Usage: rubocop [options] [file1, file2, ...]
               -L, --list-target-files          List all files RuboCop will inspect.
                   --except [COP1,COP2,...]     Disable the given cop(s).

@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:source) do
-    <<-RUBY.strip_indent
+    <<~RUBY
       foo def a
         a1
       end
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
 
       it 'does auto-correction' do
         corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect(corrected).to eq(<<~RUBY)
           foo def a
             a1
           end
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
 
         it 'does auto-correction' do
           corrected = autocorrect_source(source)
-          expect(corrected).to eq(<<-RUBY.strip_indent)
+          expect(corrected).to eq(<<~RUBY)
             foo def a
               a1
                 end

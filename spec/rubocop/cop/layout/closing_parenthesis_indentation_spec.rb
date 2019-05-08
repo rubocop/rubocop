@@ -6,14 +6,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for method calls' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           some_method(
             a
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           some_method(
             a
           )
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           some_method(
             a
           )
@@ -31,27 +31,27 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           some_method(a
           )
           ^ Align `)` with `(`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           some_method(a
                      )
         RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           some_method(a
                      )
         RUBY
       end
 
       it 'accepts a correctly indented )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           some_method(a,
             x: 1,
             y: 2
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly indented ) inside a block' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           block_adds_extra_indentation do
             some_method(a,
               x: 1,
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misindented )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           some_method(a,
             x: 1,
             y: 2
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             some_method(a,
                         )
         RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect(corrected).to eq <<~RUBY
           some_method(a,
             x: 1,
             y: 2
@@ -104,14 +104,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'can handle indentation up against the left edge' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           some_method(
           )
         RUBY
       end
 
       it 'accepts a correctly aligned ) against (' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           some_method(
                      )
         RUBY
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with first multiline arg on new line' do
       it 'accepts ) on the same level as ( with args on same line' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           where(
             "multiline
              condition", second_arg
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts ) on the same level as ( with second arg on new line' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           where(
             "multiline
              condition",
@@ -143,14 +143,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for method assignments with indented parameters' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo = some_method(
                              a
             )
             ^ Align `)` with `(`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           foo = some_method(
                              a
                            )
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = some_method(
                              a
                            )
@@ -168,20 +168,20 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo = some_method(a
           )
           ^ Align `)` with `(`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           foo = some_method(a
                            )
         RUBY
       end
 
       it 'can handle inner method calls' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           expect(response).to contain_exactly(
                                 { a: 1, b: 'x' },
                                 { a: 2, b: 'y' }
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'can handle individual arguments that are broken over lines' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           corrector.insert_before(
             range,
             "\n" + ' ' * (node.loc.keyword.column +
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'can handle indentation up against the left edge' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo(
           a: b
           )
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'can handle hash arguments that are not broken over lines' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           corrector.insert_before(
                                    range,
                                    arg_1: 'foo', arg_2: 'bar'
@@ -217,14 +217,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = some_method(a
                            )
         RUBY
       end
 
       it 'accepts a correctly indented )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = some_method(a,
                             x: 1,
                             y: 2
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'autocorrects misindented )' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           some_method(a,
                       x: 1,
                       y: 2
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
             some_method(a,
                         )
         RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect(corrected).to eq <<~RUBY
           some_method(a,
                       x: 1,
                       y: 2
@@ -263,34 +263,34 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned ) against (' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = some_method(
                            )
         RUBY
       end
 
       it 'can handle indentation up against the left edge' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = some_method(
           )
         RUBY
       end
 
       it 'can handle indentation up against the method' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = some_method(
                 )
         RUBY
       end
 
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo = some_method(
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           foo = some_method(
           )
         RUBY
@@ -300,7 +300,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
   context 'for method chains' do
     it 'can handle multiple chains with differing breaks' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         good = foo.methA(:arg1, :arg2, options: :hash)
                  .methB(
                    :arg1,
@@ -322,7 +322,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
     end
 
     it 'can autocorrect method chains' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         good = foo.methA(:arg1, :arg2, options: :hash)
                  .methB(
                    :arg1,
@@ -342,7 +342,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                  .methC
       RUBY
 
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         good = foo.methA(:arg1, :arg2, options: :hash)
                  .methB(
                    :arg1,
@@ -365,7 +365,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'when using safe navigation operator' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           receiver&.some_method(
             a
             )
@@ -378,7 +378,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for method definitions' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def some_method(
             a
             )
@@ -386,7 +386,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           def some_method(
             a
           )
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def some_method(
             a
           )
@@ -406,14 +406,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st parameter' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def some_method(a
           )
           ^ Align `)` with `(`.
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           def some_method(a
                          )
           end
@@ -421,7 +421,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def some_method(a
                          )
           end
@@ -429,7 +429,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts empty ()' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def some_method()
           end
         RUBY
@@ -440,14 +440,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   context 'for grouped expressions' do
     context 'with line break before 1st operand' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           w = x * (
             y + z
             )
             ^ Indent `)` to column 0 (not 2)
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           w = x * (
             y + z
           )
@@ -455,7 +455,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           w = x * (
             y + z
           )
@@ -465,27 +465,27 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
 
     context 'with no line break before 1st operand' do
       it 'registers an offense for misaligned )' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           w = x * (y + z
           )
           ^ Align `)` with `(`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           w = x * (y + z
                   )
         RUBY
       end
 
       it 'accepts a correctly aligned )' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           w = x * (y + z
                   )
         RUBY
       end
 
       it 'accepts ) that does not begin its line' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           w = x * (y + z +
                   a)
         RUBY
@@ -494,7 +494,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
   end
 
   it 'accepts begin nodes that are not grouped expressions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def a
         x
         y

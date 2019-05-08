@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'accepts parens in method call with do-end blocks' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         foo(:arg) do
           bar
         end
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for method call without parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         top.test a, b
         ^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
       RUBY
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     context 'when using safe navigation operator' do
       it 'register an offense for method call without parens' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           top&.test a, b
           ^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
         RUBY
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for non-receiver method call without parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           test a, b
           ^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for methods starting with capital without parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           Test a, b
           ^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for superclass call without parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           super a
           ^^^^^^^ Use parentheses for method calls with arguments.
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for yield without parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           yield a
           ^^^^^^^ Use parentheses for method calls with arguments.
@@ -106,13 +106,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects superclass call by adding needed braces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           super a
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           super(a)
         end
@@ -120,13 +120,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects yield by adding needed braces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           yield a
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           yield(a)
         end
@@ -134,23 +134,23 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects fully parenthesized args by removing space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         top.eq (1 + 2)
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         top.eq(1 + 2)
       RUBY
     end
 
     it 'auto-corrects parenthesized args for local methods by removing space' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           eq (1 + 2)
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           eq(1 + 2)
         end
@@ -158,14 +158,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects call with multiple args by adding braces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def foo
           eq 1, (2 + 3)
           eq 1, 2, 3
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           eq(1, (2 + 3))
           eq(1, 2, 3)
@@ -174,33 +174,33 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects partially parenthesized args by adding needed braces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         top.eq (1 + 2) + 3
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         top.eq((1 + 2) + 3)
       RUBY
     end
 
     it 'auto-corrects calls with multiple args by adding needed braces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         top.eq (1 + 2), 3
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         top.eq((1 + 2), 3)
       RUBY
     end
 
     it 'auto-corrects calls where arg is method call' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def my_method
           foo bar.baz(abc, xyz)
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def my_method
           foo(bar.baz(abc, xyz))
         end
@@ -208,13 +208,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects calls where multiple args are method calls' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def my_method
           foo bar.baz(abc, xyz), foo(baz)
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def my_method
           foo(bar.baz(abc, xyz), foo(baz))
         end
@@ -222,13 +222,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects calls where the argument node is a constant' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def my_method
           raise NotImplementedError
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def my_method
           raise(NotImplementedError)
         end
@@ -236,13 +236,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects calls where the argument node is a number' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def my_method
           sleep 1
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def my_method
           sleep(1)
         end
@@ -260,7 +260,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
       context 'in a class body' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             class Foo
               bar :baz
             end
@@ -270,7 +270,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
       context 'in a module body' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             module Foo
               bar :baz
             end
@@ -286,14 +286,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for parens in method call without args' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         top.test()
                 ^^ Omit parentheses for method calls with arguments.
       RUBY
     end
 
     it 'register an offense for multi-line method calls' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test(
             ^ Omit parentheses for method calls with arguments.
           foo: bar
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for superclass call with parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           super(a)
                ^^^ Omit parentheses for method calls with arguments.
@@ -311,7 +311,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for yield call with parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           yield(a)
                ^^^ Omit parentheses for method calls with arguments.
@@ -320,14 +320,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for parens in the last chain' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo().bar(3).wait(4)
                          ^^^ Omit parentheses for method calls with arguments.
       RUBY
     end
 
     it 'register an offense for parens in do-end blocks' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo(:arg) do
            ^^^^^^ Omit parentheses for method calls with arguments.
           bar
@@ -336,21 +336,21 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for hashes in keyword values' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         method_call(hash: {foo: :bar})
                    ^^^^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
       RUBY
     end
 
     it 'register an offense for %r regex literal as arguments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         method_call(%r{foo})
                    ^^^^^^^^^ Omit parentheses for method calls with arguments.
       RUBY
     end
 
     it 'register an offense in complex conditionals' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           if cond.present? && verify?(:something)
             h.do_with(kw: value)
@@ -367,7 +367,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense in assignments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo = A::B.new(c)
                       ^^^ Omit parentheses for method calls with arguments.
         bar.foo = A::B.new(c)
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for camel-case methods with arguments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Array(:arg)
              ^^^^^^ Omit parentheses for method calls with arguments.
       RUBY
@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'accepts parens in default argument value calls' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def regular(arg = default(42))
           nil
         end
@@ -411,7 +411,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'accepts parens in default keyword argument value calls' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def regular(arg: default(42))
           nil
         end
@@ -532,23 +532,23 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects single-line calls' do
-      original = <<-RUBY.strip_indent
+      original = <<~RUBY
         top.test(1, 2, foo: bar(3))
       RUBY
 
-      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(original)).to eq(<<~RUBY)
         top.test 1, 2, foo: bar(3)
       RUBY
     end
 
     it 'auto-corrects multi-line calls with trailing whitespace' do
-      original = <<-RUBY.strip_indent
+      original = <<~RUBY
         foo(
           bar: 3
         )
       RUBY
 
-      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(original)).to eq(<<~RUBY)
         foo \\
           bar: 3
 
@@ -556,13 +556,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects complex multi-line calls' do
-      original = <<-RUBY.strip_indent
+      original = <<~RUBY
         foo(arg,
           option: true
         )
       RUBY
 
-      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(original)).to eq(<<~RUBY)
         foo arg,
           option: true
 
@@ -570,21 +570,21 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects chained calls' do
-      original = <<-RUBY.strip_indent
+      original = <<~RUBY
         foo().bar(3).wait(4)
       RUBY
 
-      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(original)).to eq(<<~RUBY)
         foo().bar(3).wait 4
       RUBY
     end
 
     it 'auto-corrects camel-case methods with arguments' do
-      original = <<-RUBY.strip_indent
+      original = <<~RUBY
         Array(:arg)
       RUBY
 
-      expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(original)).to eq(<<~RUBY)
         Array :arg
       RUBY
     end
@@ -602,14 +602,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'register offense for single-line chaining without previous parens' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Rails.convoluted.example.logger.error("something")
                                                ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
         RUBY
       end
 
       it 'register offense for multi-line chaining without previous parens' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Rails
             .convoluted
             .example
@@ -624,7 +624,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'does not auto-correct if any previous call have parentheses' do
-        original = <<-RUBY.strip_indent
+        original = <<~RUBY
           foo().bar(3).quux.wait(4)
         RUBY
 
@@ -632,11 +632,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'auto-correct if previous does calls have parentheses' do
-        original = <<-RUBY.strip_indent
+        original = <<~RUBY
           foo.bar.wait(4)
         RUBY
 
-        expect(autocorrect_source(original)).to eq(<<-RUBY.strip_indent)
+        expect(autocorrect_source(original)).to eq(<<~RUBY)
           foo.bar.wait 4
         RUBY
       end
@@ -651,7 +651,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'accepts parens for multi-line calls ' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           test(
             foo: bar
           )
@@ -659,7 +659,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'does not auto-correct' do
-        original = <<-RUBY.strip_indent
+        original = <<~RUBY
           foo(
             bar: 3
           )
@@ -693,7 +693,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     context 'in a class body' do
       it 'finds offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class Foo
             bar :abc
             ^^^^^^^^ Use parentheses for method calls with arguments.
@@ -702,13 +702,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'does autocorrect' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           class Foo
             bar :abc
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           class Foo
             bar(:abc)
           end
@@ -718,7 +718,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     context 'in a module body' do
       it 'finds offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           module Foo
             bar :abc
             ^^^^^^^^ Use parentheses for method calls with arguments.
@@ -727,13 +727,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'does autocorrect' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           module Foo
             bar :abc
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           module Foo
             bar(:abc)
           end
@@ -743,7 +743,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     context 'for a macro not on the included list' do
       it 'finds offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           module Foo
             baz :abc
           end
@@ -761,7 +761,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
 
       it 'finds offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           module Foo
             bar :abc
           end

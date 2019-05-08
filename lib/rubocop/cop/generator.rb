@@ -7,7 +7,7 @@ module RuboCop
     # This generator will take a cop name and generate a source file
     # and spec file when given a valid qualified cop name.
     class Generator
-      SOURCE_TEMPLATE = <<-RUBY.strip_indent
+      SOURCE_TEMPLATE = <<~RUBY
         # frozen_string_literal: true
 
         # TODO: when finished, run `rake generate_cops_documentation` to update the docs
@@ -72,7 +72,7 @@ module RuboCop
         end
       RUBY
 
-      SPEC_TEMPLATE = <<-SPEC.strip_indent
+      SPEC_TEMPLATE = <<~SPEC
         # frozen_string_literal: true
 
         RSpec.describe RuboCop::Cop::%<department>s::%<cop_name>s do
@@ -84,21 +84,21 @@ module RuboCop
           #
           # For example
           it 'registers an offense when using `#bad_method`' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               bad_method
               ^^^^^^^^^^ Use `#good_method` instead of `#bad_method`.
             RUBY
           end
 
           it 'does not register an offense when using `#good_method`' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               good_method
             RUBY
           end
         end
       SPEC
 
-      CONFIGURATION_ADDED_MESSAGE = <<-MESSAGE.strip_indent
+      CONFIGURATION_ADDED_MESSAGE = <<~MESSAGE
         [modify] A configuration for the cop is added into %<configuration_file_path>s.
                  If you want to disable the cop by default, set `Enabled` option to false.
       MESSAGE
@@ -140,7 +140,7 @@ module RuboCop
       end
 
       def todo
-        <<-TODO.strip_indent
+        <<~TODO
           Do 3 steps:
             1. Add an entry to the "New features" section in CHANGELOG.md,
                e.g. "Add new `#{badge}` cop. ([@#{github_user}][])"

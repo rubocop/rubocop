@@ -14,7 +14,7 @@ module RuboCop
     #
     # @example Usage
     #
-    #     expect_offense(<<-RUBY.strip_indent)
+    #     expect_offense(<<~RUBY)
     #       a do
     #         b
     #       end.c
@@ -23,7 +23,7 @@ module RuboCop
     #
     # @example Equivalent assertion without `expect_offense`
     #
-    #     inspect_source(<<-RUBY.strip_indent)
+    #     inspect_source(<<~RUBY)
     #       a do
     #         b
     #       end.c
@@ -43,12 +43,12 @@ module RuboCop
     #
     # @example `expect_offense` and `expect_correction`
     #
-    #   expect_offense(<<-RUBY.strip_indent)
+    #   expect_offense(<<~RUBY)
     #     x % 2 == 0
     #     ^^^^^^^^^^ Replace with `Integer#even?`.
     #   RUBY
     #
-    #   expect_correction(<<-RUBY.strip_indent)
+    #   expect_correction(<<~RUBY)
     #     x.even?
     #   RUBY
     #
@@ -63,7 +63,7 @@ module RuboCop
     #
     # @example `expect_offense` and `expect_no_corrections`
     #
-    #   expect_offense(<<-RUBY.strip_indent)
+    #   expect_offense(<<~RUBY)
     #     a do
     #       b
     #     end.c

@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with if statement' do
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if cond
           func1
          else
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         if cond
           func1
         else
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
     it 'accepts indentation after else when if is on new line after ' \
        'assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Rails.application.config.ideal_postcodes_key =
           if Rails.env.production? || Rails.env.staging?
             "AAAA-AAAA-AAAA-AAAA"
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a correctly aligned if/elsif/else/end' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a1
           b1
         elsif a2
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       let(:bom) { "\xef\xbb\xbf" }
 
       it 'accepts a correctly aligned if/elsif/else/end' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{bom}if a1
             b1
           elsif a2
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       context 'when alignment style is variable' do
         context 'and end is aligned with variable' do
           it 'accepts an if-else with end aligned with setter' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               foo.bar = if baz
                 derp1
               else
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if-elsif-else with end aligned with setter' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               foo.bar = if baz
                 derp1
               elsif meh
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if with end aligned with element assignment' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               foo[bar] = if baz
                 derp
               end
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if/else' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = if a
                 0
               else
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if/else with chaining after the end' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = if a
                 0
               else
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if/else with chaining with a block after the end' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = if a
                 0
               else
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
         context 'and end is aligned with keyword' do
           it 'registers offenses for an if with setter' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               foo.bar = if baz
                           derp1
                         elsif meh
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'registers an offense for an if with element assignment' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               foo[bar] = if baz
                            derp1
                          else
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'registers an offense for an if' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               var = if a
                       0
                     else
@@ -203,7 +203,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       shared_examples 'assignment and if with keyword alignment' do
         context 'and end is aligned with variable' do
           it 'registers an offense for an if' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               var = if a
                 0
               elsif b
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
               end
             RUBY
 
-            expect_correction(<<-RUBY.strip_indent)
+            expect_correction(<<~RUBY)
               var = if a
                 0
                     elsif b
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
         context 'and end is aligned with keyword' do
           it 'accepts an if in assignment' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = if a
                       0
                     end
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if/else in assignment' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = if a
                       0
                     else
@@ -242,7 +242,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an if/else in assignment on next line' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var =
                 if a
                   0
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts a while in assignment' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = while a
                       b
                     end
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
           end
 
           it 'accepts an until in assignment' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               var = until a
                       b
                     end
@@ -282,7 +282,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     it 'accepts an if/else branches with rescue clauses' do
       # Because of how the rescue clauses come out of Parser, these are
       # special and need to be tested.
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a
           a rescue nil
         else
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with unless' do
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         unless cond
            func1
          else
@@ -305,7 +305,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a correctly aligned else in an otherwise empty unless' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         unless a
         else
         end
@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts an empty unless' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         unless a
         end
       RUBY
@@ -322,7 +322,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with case' do
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         case a
         when b
           c
@@ -336,7 +336,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts correctly aligned case/when/else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case a
         when b
           c
@@ -349,7 +349,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts case without else' do
-      expect_no_offenses(<<-'RUBY'.strip_indent)
+      expect_no_offenses(<<~'RUBY')
         case superclass
         when /\A(#{NAMESPACEMATCH})(?:\s|\Z)/
           $1
@@ -362,7 +362,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     it 'accepts else aligned with when but not with case' do
       # "Indent when as deep as case" is the job of another cop, and this is
       # one of the possible styles supported by configuration.
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case code_type
           when 'ruby', 'sql', 'plain'
             code_type
@@ -379,14 +379,14 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with def/defs' do
     it 'accepts an empty def body' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def test
         end
       RUBY
     end
 
     it 'accepts an empty defs body' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.test
         end
       RUBY
@@ -394,7 +394,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
     context 'when modifier and def are on the same line' do
       it 'accepts a correctly aligned body' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           private def test
             something
           rescue
@@ -406,7 +406,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       end
 
       it 'registers an offense for else not aligned with private' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           private def test
                     something
                   rescue
@@ -422,7 +422,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with begin/rescue/else/ensure/end' do
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def my_func
           puts 'do something outside block'
           begin
@@ -442,7 +442,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'accepts a correctly aligned else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           raise StandardError.new('Fail') if rand(2).odd?
         rescue StandardError => error
@@ -456,7 +456,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with def/rescue/else/ensure/end' do
     it 'accepts a correctly aligned else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def my_func(string)
           puts string
         rescue => e
@@ -470,7 +470,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def my_func(string)
           puts string
         rescue => e
@@ -487,7 +487,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context 'with def/rescue/else/end' do
     it 'accepts a correctly aligned else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def my_func
           puts 'do something error prone'
         rescue SomeException
@@ -501,7 +501,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def my_func
           puts 'do something error prone'
         rescue SomeException
@@ -518,7 +518,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
 
   context '>= Ruby 2.5 ensure/rescue/else in Block Argument', :ruby25 do
     it 'accepts a correctly aligned else' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         array_like.each do |n|
           puts 'do something error prone'
         rescue SomeException
@@ -532,7 +532,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     end
 
     it 'registers an offense for misaligned else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         array_like.each do |n|
           puts 'do something error prone'
         rescue SomeException

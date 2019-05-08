@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
 
       it 'reports all detected offenses for all failed files' do
         formatter.finished(files)
-        expect(output.string).to include(<<-OUTPUT.strip_indent)
+        expect(output.string).to include(<<~OUTPUT)
           Offenses:
 
           lib/rubocop.rb:2:3: C: foo

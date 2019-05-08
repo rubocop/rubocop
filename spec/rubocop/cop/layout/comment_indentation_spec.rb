@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'accepts a documentation comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         =begin
         Doc comment
         =end
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'registers an offense for each incorrectly indented comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         # a
         ^^^ Incorrect indentation detected (column 0 instead of 2).
           # b
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
   end
 
   it 'registers offenses before __RUBY__ but not after' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
        #
        ^ Incorrect indentation detected (column 1 instead of 0).
       __END__
@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
 
   context 'around program structure keywords' do
     it 'accepts correctly indented comments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #
         def m
           #
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
 
     context 'with a blank line following the comment' do
       it 'accepts a correctly indented comment' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def m
             # comment
 
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
 
   context 'near various kinds of brackets' do
     it 'accepts correctly indented comments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #
         a = {
           #
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
     end
 
     it 'is unaffected by closing bracket that does not begin a line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #
         result = []
       RUBY
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
   end
 
   it 'auto-corrects' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
        # comment
        # comment
        # comment
@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
           b
         end
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       # comment
       # comment
       # comment

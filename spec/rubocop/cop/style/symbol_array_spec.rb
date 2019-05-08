@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'registers an offense for arrays of symbols' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         [:one, :two, :three]
         ^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
       RUBY
@@ -75,14 +75,14 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'registers an offense in a non-ambiguous block context' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo([:bar, :baz]) { qux }
             ^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
       RUBY
     end
 
     it 'detects right value for MinSize to use for --auto-gen-config' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         [:one, :two, :three]
         %i(a b c d)
       RUBY
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         [:one, :two, :three]
         %i(a b)
       RUBY
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'registers an offense for array starting with %i' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %i(one two three)
         ^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
       RUBY

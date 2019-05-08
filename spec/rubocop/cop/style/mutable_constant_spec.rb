@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     context 'splat expansion' do
       context 'expansion of a range' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
         context 'with parentheses' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     it_behaves_like 'immutable objects', 'Namespace::OTHER_CONST'
     it_behaves_like 'immutable objects', 'Struct.new'
     it_behaves_like 'immutable objects', 'Struct.new(:a, :b)'
-    it_behaves_like 'immutable objects', <<-RUBY.strip_indent
+    it_behaves_like 'immutable objects', <<~RUBY
       Struct.new(:node) do
         def assignment?
           true
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     RUBY
 
     it 'allows calls to freeze' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         CONST = [1].freeze
       RUBY
     end
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     context 'splat expansion' do
       context 'expansion of a range' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
         context 'with parentheses' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
@@ -255,11 +255,11 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         end
 
         it 'corrects by wrapping in parentheses and calling freeze' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             CONST = FOO #{o} BAR
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             CONST = (FOO #{o} BAR).freeze
           RUBY
         end
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'when assigning with multiple operator calls' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
           BAZ = [3].freeze
@@ -285,14 +285,14 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       it 'corrects by wrapping in parens and calling freeze' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
           BAZ = [3].freeze
           CONST = FOO + BAR + BAZ
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
           BAZ = [3].freeze
@@ -303,43 +303,43 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'methods and operators that produce frozen objects' do
       it 'accepts assigning to an environment variable with a fallback' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = ENV['foo'] || 'foo'
         RUBY
       end
 
       it 'accepts operating on a constant and an interger' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = FOO + 2
         RUBY
       end
 
       it 'accepts operating on multiple integers' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = 1 + 2
         RUBY
       end
 
       it 'accepts operating on a constant and a float' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = FOO + 2.1
         RUBY
       end
 
       it 'accepts operating on multiple floats' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = 1.2 + 2.1
         RUBY
       end
 
       it 'accepts comparison operators' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = FOO == BAR
         RUBY
       end
 
       it 'accepts checking fixed size' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           CONST = 'foo'.count
           CONST = 'foo'.count('f')
           CONST = [1, 2, 3].count { |n| n > 2 }
@@ -352,14 +352,14 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'operators that produce unfrozen objects' do
       it 'registers an offense when operating on a constant and a string' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           CONST = FOO + 'bar'
                   ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
       end
 
       it 'registers an offense when operating on multiple strings' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           CONST = 'foo' + 'bar' + 'baz'
                   ^^^^^^^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
@@ -379,13 +379,13 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     it 'freezes a heredoc' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         FOO = <<-HERE
           SOMETHING
         HERE
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         FOO = <<-HERE.freeze
           SOMETHING
         HERE

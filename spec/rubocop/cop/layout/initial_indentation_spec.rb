@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts unindented method definition' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def f
       end
     RUBY
@@ -24,14 +24,14 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
     end
 
     it 'registers an offense for indented method call' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ﻿  puts 1
            ^^^^ Indentation of first line in file detected.
       RUBY
     end
 
     it 'registers an offense for indented method call after comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ﻿# comment
           puts 1
           ^^^^ Indentation of first line in file detected.
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
   end
 
   it 'accepts unindented comment + assignment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # comment
       x = 1
     RUBY
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
       def f
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       def f
             end
     RUBY
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
       # comment
       x = 1
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
             # comment
       x = 1
     RUBY

@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
 
   context 'with non-snake-case file names with a shebang' do
     let(:filename) { '/some/dir/test-case' }
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       #!/usr/bin/env ruby
       print 1
     RUBY
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     end
 
     context 'on a file which defines a nested module' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         module A
           module B
           end
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     end
 
     context 'on a file which defines a nested class' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         module A
           class B
           end
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     end
 
     context 'on a file which uses Name::Spaced::Module syntax' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         begin
           module A::B
           end
@@ -258,7 +258,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     end
 
     context 'on a file which defines multiple classes' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         class X
         end
         module M
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
 
     let(:filename) { '/lib/my/cli/admin_user.rb' }
 
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       module My
         module CLI
           class AdminUser
@@ -332,7 +332,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
 
     let(:filename) { '/lib/my/cli.rb' }
 
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       module My
         class CLI
         end
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
 
     let(:filename) { '/lib/my/http_server.rb' }
 
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       module My
         class HTTPServer
         end

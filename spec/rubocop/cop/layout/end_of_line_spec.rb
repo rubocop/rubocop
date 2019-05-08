@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     end
 
     it 'does not register offenses after __END__' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         x=0\r
         __END__
         x=0
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and there are many lines ending with LF' do
       it 'registers only one offense' do
-        inspect_source_file(<<-RUBY.strip_indent)
+        inspect_source_file(<<~RUBY)
           x=0
 
           y=1
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     end
 
     it 'does not register offenses after __END__' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         x=0
         __END__
         x=0\r
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and source is a string' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x=0\r
           ^^^ Carriage return character detected.
         RUBY

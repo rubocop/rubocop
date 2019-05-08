@@ -6,13 +6,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense for code that immediately follows comment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       # frozen_string_literal: true
       class Foo; end
       ^ Add an empty line after magic comments.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       # frozen_string_literal: true
 
       class Foo; end
@@ -20,14 +20,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'registers an offense for documentation immediately following comment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # Documentation for Foo
       ^ Add an empty line after magic comments.
       class Foo; end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       # frozen_string_literal: true
 
       # Documentation for Foo
@@ -36,14 +36,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'registers an offense when multiple magic comments without empty line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       # encoding: utf-8
       # frozen_string_literal: true
       class Foo; end
       ^ Add an empty line after magic comments.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       # encoding: utf-8
       # frozen_string_literal: true
 
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
   end
 
   it 'accepts code that separates the comment from the code with a newline' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # frozen_string_literal: true
 
       class Foo; end

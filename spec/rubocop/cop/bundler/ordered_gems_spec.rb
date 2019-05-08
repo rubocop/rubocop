@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When gems are alphabetically sorted' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem 'rspec'
         gem 'rubocop'
       RUBY
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'when a gem is referenced from a variable' do
     it 'ignores the line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem 'rspec'
         gem ENV['env_key_undefined'] if ENV.key?('env_key_undefined')
         gem 'rubocop'
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
 
     it 'resets the sorting to a new block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem 'rubocop'
         gem ENV['env_key_undefined'] if ENV.key?('env_key_undefined')
         gem 'ast'
@@ -40,13 +40,13 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When gems are not alphabetically sorted' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         gem 'rubocop'
         gem 'rspec'
         ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         gem 'rspec'
         gem 'rubocop'
       RUBY
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When each individual group of line is sorted' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem 'rspec'
         gem 'rubocop'
 
@@ -67,14 +67,14 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When a gem declaration takes several lines' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         gem 'rubocop',
             '0.1.1'
         gem 'rspec'
         ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         gem 'rspec'
         gem 'rubocop',
             '0.1.1'
@@ -89,22 +89,22 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When each individual group of line is not sorted' do
-    let(:source) { <<-RUBY.strip_indent }
-        gem "d"
-        gem "b"
-        gem "e"
-        gem "a"
-        gem "c"
+    let(:source) { <<~RUBY }
+      gem "d"
+      gem "b"
+      gem "e"
+      gem "a"
+      gem "c"
 
-        gem "h"
-        gem "g"
-        gem "j"
-        gem "f"
-        gem "i"
+      gem "h"
+      gem "g"
+      gem "j"
+      gem "f"
+      gem "i"
     RUBY
 
     it 'registers some offenses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         gem "d"
         gem "b"
         ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `b` should appear before `d`.
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         gem "a"
         gem "b"
         gem "c"
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
       let(:treat_comments_as_group_separators) { true }
 
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           # For code quality
           gem 'rubocop'
           # For
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     context 'with TreatCommentsAsGroupSeparators: false' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           # For code quality
           gem 'rubocop'
           # For
@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           # For
           # test
           gem 'rspec'
@@ -179,14 +179,14 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems have an inline comment, and not sorted' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       gem 'rubocop' # For code quality
       gem 'pry'
       gem 'rspec'   # For test
     RUBY
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         gem 'rubocop' # For code quality
         gem 'pry'
         ^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `pry` should appear before `rubocop`.
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
     it 'autocorrects' do
       new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         gem 'pry'
         gem 'rspec'   # For test
         gem 'rubocop' # For code quality
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When gems are asciibetically sorted' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem 'paper_trail'
         gem 'paperclip'
       RUBY
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When a gem that starts with a capital letter is sorted' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gem 'a'
         gem 'Z'
       RUBY
@@ -224,13 +224,13 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When a gem that starts with a capital letter is not sorted' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         gem 'Z'
         gem 'a'
         ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `a` should appear before `Z`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         gem 'a'
         gem 'Z'
       RUBY
@@ -239,7 +239,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
 
   context 'When there are duplicated gems in group' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         gem 'a'
 
         group :development do
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         gem 'a'
 
         group :development do

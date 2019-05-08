@@ -141,7 +141,7 @@ module RuboCop
       SEQ_HEAD_GUARD = '@@@seq guard head@@@'
 
       line = __LINE__
-      ANY_ORDER_TEMPLATE = ERB.new <<-RUBY.strip_indent.gsub("-%>\n", '%>')
+      ANY_ORDER_TEMPLATE = ERB.new <<~RUBY.gsub("-%>\n", '%>')
         <% if capture_rest %>(<%= capture_rest %> = []) && <% end -%>
         <% if capture_all %>(<%= capture_all %> = <% end -%>
         <%= CUR_NODE %>.children[<%= range %>]<% if capture_all %>)<% end -%>

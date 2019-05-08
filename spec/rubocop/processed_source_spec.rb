@@ -7,7 +7,7 @@ RSpec.describe RuboCop::ProcessedSource do
 
   let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
-  let(:source) { <<-RUBY.strip_indent }
+  let(:source) { <<~RUBY }
     # an awesome method
     def some_method
       puts 'foo'
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::ProcessedSource do
   end
 
   context 'with heavily commented source' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       def foo # comment one
         bar # comment two
       end # comment three
@@ -255,7 +255,7 @@ RSpec.describe RuboCop::ProcessedSource do
     end
 
     describe '#commented?' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         # comment
         [ 1, 2 ]
       RUBY
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::ProcessedSource do
     end
 
     describe '#comments_before_line' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         # comment one
         # comment two
         [ 1, 2 ]
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::ProcessedSource do
   end
 
   context 'token enumerables' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       foo(1, 2)
     RUBY
 
@@ -337,7 +337,7 @@ RSpec.describe RuboCop::ProcessedSource do
 
   describe '#blank?' do
     context 'with source of no content' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
       RUBY
 
       it 'returns true' do
@@ -346,7 +346,7 @@ RSpec.describe RuboCop::ProcessedSource do
     end
 
     context 'with source with content' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         foo
       RUBY
 
@@ -358,7 +358,7 @@ RSpec.describe RuboCop::ProcessedSource do
 
   describe '#start_with?' do
     context 'with blank source' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
       RUBY
 
       it 'returns false' do
@@ -369,7 +369,7 @@ RSpec.describe RuboCop::ProcessedSource do
     end
 
     context 'with present source' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         foo
       RUBY
 
@@ -388,7 +388,7 @@ RSpec.describe RuboCop::ProcessedSource do
   end
 
   describe '#preceding_line' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       [ line, 1 ]
       { line: 2 }
       # line 3
@@ -404,7 +404,7 @@ RSpec.describe RuboCop::ProcessedSource do
   end
 
   describe '#following_line' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       [ line, 1 ]
       { line: 2 }
       # line 3

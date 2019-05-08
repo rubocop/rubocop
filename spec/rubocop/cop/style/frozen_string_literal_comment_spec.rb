@@ -18,14 +18,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a frozen string literal on the top line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # frozen_string_literal: true
         puts 1
       RUBY
     end
 
     it 'accepts a disabled frozen string literal on the top line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # frozen_string_literal: false
         puts 1
       RUBY
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'on the top line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts 1
         ^ Missing magic comment `# frozen_string_literal: true`.
       RUBY
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         ^ Missing magic comment `# frozen_string_literal: true`.
         puts 1
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a frozen string literal below a shebang comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         puts 1
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a disabled frozen string literal below a shebang comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         puts 1
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under an encoding comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         # encoding: utf-8
         ^ Missing magic comment `# frozen_string_literal: true`.
         puts 1
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a frozen string literal below an encoding comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: true
         puts 1
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts a dsabled frozen string literal below an encoding comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: false
         puts 1
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang and an encoding comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         ^ Missing magic comment `# frozen_string_literal: true`.
         # encoding: utf-8
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a frozen string literal comment below shebang and encoding ' \
        'comments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: true
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a disabled frozen string literal comment below shebang and ' \
        'encoding comments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: false
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a frozen string literal comment below shebang above an ' \
        'encoding comments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         # encoding: utf-8
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts a disabled frozen string literal comment below shebang above ' \
        'an encoding comments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         # encoding: utf-8
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'accepts an emacs style combined magic comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # -*- encoding: UTF-8; frozen_string_literal: true -*-
         # encoding: utf-8
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offence for not having a frozen string literal comment ' \
        'when there is only a shebang' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         ^ Missing magic comment `# frozen_string_literal: true`.
       RUBY
@@ -159,11 +159,11 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     context 'auto-correct' do
       it 'adds a frozen string literal comment to the first line if one is ' \
          'missing' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           puts 1
@@ -172,12 +172,12 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'adds a frozen string literal comment to the first line if one is ' \
          'missing and handles extra spacing' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
 
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           puts 1
@@ -185,12 +185,12 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       end
 
       it 'adds a frozen string literal comment after a shebang' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: true
 
@@ -199,12 +199,12 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       end
 
       it 'adds a frozen string literal comment after an encoding comment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # encoding: utf-8
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # encoding: utf-8
           # frozen_string_literal: true
 
@@ -214,13 +214,13 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'adds a frozen string literal comment after a shebang and encoding ' \
          'comment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           # frozen_string_literal: true
@@ -231,14 +231,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'adds a frozen string literal comment after a shebang and encoding ' \
          'comment when there is an empty line before the code' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
 
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           # frozen_string_literal: true
@@ -249,13 +249,13 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'adds a frozen string literal comment after an encoding comment ' \
          'when there is an empty line before the code' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # encoding: utf-8
 
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # encoding: utf-8
           # frozen_string_literal: true
 
@@ -265,11 +265,11 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'adds a frozen string literal comment after a shebang when there is ' \
          'only a shebang' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: true
         RUBY
@@ -293,7 +293,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'on the top line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         # frozen_string_literal: true
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'on the top line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
         puts 1
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'accepts not having not having a frozen string literal comment ' \
       'under a shebang' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         puts 1
       RUBY
@@ -323,7 +323,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'below a shebang comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -333,7 +333,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal ' \
       'below a shebang comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -343,7 +343,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'allows not having a frozen string literal comment ' \
       'under an encoding comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         # encoding: utf-8
         puts 1
       RUBY
@@ -351,7 +351,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment below ' \
       'an encoding comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: true
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a dsabled frozen string literal below ' \
       'an encoding comment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -371,7 +371,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'allows not having a frozen string literal comment ' \
       'under a shebang and an encoding comment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         puts 1
@@ -380,7 +380,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'below shebang and encoding comments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: true
@@ -391,7 +391,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'below shebang and encoding comments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # frozen_string_literal: false
@@ -402,7 +402,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a frozen string literal comment ' \
       'below shebang above an encoding comments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -413,7 +413,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for a disabled frozen string literal comment ' \
       'below shebang above an encoding comments' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -424,74 +424,74 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     context 'auto-correct' do
       it 'removes the frozen string literal comment from the top line' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # frozen_string_literal: true
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           puts 1
         RUBY
       end
 
       it 'removes a disabled frozen string literal comment on the top line' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # frozen_string_literal: false
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           puts 1
         RUBY
       end
 
       it 'removes a frozen string literal comment below a shebang comment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: true
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           puts 1
         RUBY
       end
 
       it 'removes a disabled frozen string literal below a shebang comment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: false
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           puts 1
         RUBY
       end
 
       it 'removes a frozen string literal comment below an encoding comment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # encoding: utf-8
           # frozen_string_literal: true
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # encoding: utf-8
           puts 1
         RUBY
       end
 
       it 'removes a dsabled frozen string literal below an encoding comment' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           # encoding: utf-8
           # frozen_string_literal: false
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           # encoding: utf-8
           puts 1
         RUBY
@@ -499,14 +499,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'removes a frozen string literal comment ' \
         'below shebang and encoding comments' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           # frozen_string_literal: true
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           puts 1
@@ -515,14 +515,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'removes a disabled frozen string literal comment from ' \
         'below shebang and encoding comments' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           # frozen_string_literal: false
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           puts 1
@@ -531,14 +531,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'removes a frozen string literal comment ' \
         'below shebang above an encoding comments' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: true
           # encoding: utf-8
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           puts 1
@@ -547,14 +547,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
       it 'removes a disabled frozen string literal comment ' \
         'below shebang above an encoding comments' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: false
           # encoding: utf-8
           puts 1
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # encoding: utf-8
           puts 1

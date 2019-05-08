@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::AutoResourceCleanup do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for File.open without block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       File.open("filename")
       ^^^^^^^^^^^^^^^^^^^^^ Use the block version of `File.open`.
     RUBY

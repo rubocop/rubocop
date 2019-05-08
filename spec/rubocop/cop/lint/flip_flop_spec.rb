@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::FlipFlop do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for inclusive flip-flops' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       DATA.each_line do |line|
       print line if (line =~ /begin/)..(line =~ /end/)
                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid the use of flip-flop operators.
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Lint::FlipFlop do
   end
 
   it 'registers an offense for exclusive flip-flops' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       DATA.each_line do |line|
       print line if (line =~ /begin/)...(line =~ /end/)
                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid the use of flip-flop operators.

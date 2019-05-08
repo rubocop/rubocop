@@ -16,14 +16,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts several pairs per line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         func(a: 1, bb: 2,
              ccc: 3, dddd: 4)
       RUBY
     end
 
     it "does not auto-correct pairs that don't start a line" do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         render :json => {:a => messages,
                          :b => :json}, :status => 404
         def example
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in implicit hash' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         func(a: 0,
           b: 1)
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in explicit hash' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         func({a: 0,
           b: 1})
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in implicit hash for super' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         super(a: 0,
           b: 1)
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in explicit hash for super' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         super({a: 0,
           b: 1})
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in implicit hash for yield' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         yield(a: 0,
           b: 1)
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in explicit hash for yield' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         yield({a: 0,
           b: 1})
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -103,42 +103,42 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         func(a: 0,
           b: 1)
       RUBY
     end
 
     it 'accepts misaligned keys in explicit hash' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         func({a: 0,
           b: 1})
       RUBY
     end
 
     it 'accepts misaligned keys in implicit hash for super' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         super(a: 0,
           b: 1)
       RUBY
     end
 
     it 'accepts misaligned keys in explicit hash for super' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         super({a: 0,
           b: 1})
       RUBY
     end
 
     it 'accepts misaligned keys in implicit hash for yield' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         yield(a: 0,
           b: 1)
       RUBY
     end
 
     it 'accepts misaligned keys in explicit hash for yield' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         yield({a: 0,
           b: 1})
       RUBY
@@ -153,14 +153,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         func(a: 0,
           b: 1)
       RUBY
     end
 
     it 'registers offense for misaligned keys in explicit hash' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         func({a: 0,
           b: 1})
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -168,14 +168,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash for super' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         super(a: 0,
           b: 1)
       RUBY
     end
 
     it 'registers offense for misaligned keys in explicit hash for super' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         super({a: 0,
           b: 1})
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -183,14 +183,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in implicit hash for yield' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         yield(a: 0,
           b: 1)
       RUBY
     end
 
     it 'registers offense for misaligned keys in explicit hash for yield' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         yield({a: 0,
           b: 1})
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offense for misaligned keys in implicit hash' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         func(a: 0,
           b: 1)
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -214,14 +214,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in explicit hash' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         func({a: 0,
           b: 1})
       RUBY
     end
 
     it 'registers offense for misaligned keys in implicit hash for super' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         super(a: 0,
           b: 1)
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -229,14 +229,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in explicit hash for super' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         super({a: 0,
           b: 1})
       RUBY
     end
 
     it 'registers offense for misaligned keys in implicit hash for yield' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         yield(a: 0,
           b: 1)
           ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -244,7 +244,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts misaligned keys in explicit hash for yield' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         yield({a: 0,
           b: 1})
       RUBY
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
   context 'with default configuration' do
     it 'registers an offense for misaligned hash keys' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash1 = {
           a: 0,
            bb: 1
@@ -268,7 +268,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned mixed multiline hash keys' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = { a: 1, b: 2,
                 c: 3 }
                 ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts left-aligned hash keys with single spaces' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
           aa: 0,
           b: 1,
@@ -293,7 +293,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for zero or multiple spaces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash1 = {
           a:   0,
           ^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -310,7 +310,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for separator alignment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = {
             'a' => 0,
           'bbb' => 1
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for table alignment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = {
           'a'   => 0,
           ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -330,7 +330,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense when multiline value starts in wrong place' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = {
           'a' =>  (
           ^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'does not register an offense when value starts on next line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = {
           'a' =>
             0,
@@ -352,7 +352,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
     context 'with implicit hash as last argument' do
       it 'registers an offense for misaligned hash keys' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(a: 0,
             b: 1)
             ^^^^ Align the elements of a hash literal if they span more than one line.
@@ -360,7 +360,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'registers an offense for right alignment of keys' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(a: 0,
              bbb: 1)
              ^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -368,7 +368,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'accepts aligned hash keys' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           func(a: 0,
                b: 1)
         RUBY
@@ -380,7 +380,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         hash1 = { a: 0,
              bb: 1,
                    ccc: 2 }
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
             'ccc'  =>2 }
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         hash1 = { a: 0,
                   bb: 1,
                   ccc: 2 }
@@ -406,11 +406,11 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment for mixed multiline hash keys' do
-      new_sources = autocorrect_source(<<-RUBY.strip_indent)
+      new_sources = autocorrect_source(<<~RUBY)
         hash = { a: 1, b: 2,
                 c:   3 }
       RUBY
-      expect(new_sources).to eq(<<-RUBY.strip_indent)
+      expect(new_sources).to eq(<<~RUBY)
         hash = { a: 1, b: 2,
                  c: 3 }
       RUBY
@@ -418,13 +418,13 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
     it 'auto-corrects alignment when using double splat ' \
        'in an explicit hash' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         Hash(foo: 'bar',
                **extra_params
         )
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         Hash(foo: 'bar',
              **extra_params
         )
@@ -432,13 +432,13 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment when using double splat in braces' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         {foo: 'bar',
                **extra_params
         }
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         {foo: 'bar',
          **extra_params
         }
@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     include_examples 'not on separate lines'
 
     it 'accepts aligned hash keys and values' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
           'a'   => 0,
           'bbb' => 1
@@ -476,7 +476,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts a multiline array of single line hashes' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.scenarios_order
             [
               { before:   %w( l k ) },
@@ -489,7 +489,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts hashes that use different separators' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = {
           a: 1,
           'bbb' => 2
@@ -498,7 +498,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts hashes that use different separators and double splats' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = {
           a: 1,
           'bbb' => 2,
@@ -508,7 +508,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts a symbol only hash followed by a keyword splat' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = {
           a: 1,
           **kw
@@ -517,7 +517,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts a keyword splat only hash' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash = {
           **kw
         }
@@ -525,7 +525,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash values' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash1 = {
           'a'   =>  0,
           ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -540,7 +540,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash keys' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash1 = {
           'a'   =>  0,
           ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -557,7 +557,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash rockets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = {
           'a'   => 0,
           'bbb'  => 1
@@ -567,7 +567,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         hash1 = { a: 0,
              bb:   1,
                    ccc: 2 }
@@ -575,7 +575,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
              'bb' =>   1,
                    'ccc'  =>2 }
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         hash1 = { a:   0,
                   bb:  1,
                   ccc: 2 }
@@ -608,7 +608,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'fails' do
-      src = <<-RUBY.strip_indent
+      src = <<~RUBY
         hash = {
           a: 0,
           bb: 1
@@ -627,7 +627,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
             a: 0,
           bbb: 1
@@ -644,7 +644,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash values' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = {
             'a' =>  0,
           'bbb' => 1
@@ -654,7 +654,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers an offense for misaligned hash rockets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash = {
             'a'  => 0,
           'bbb' =>  1
@@ -664,7 +664,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts hashes with different separators' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {a: 1,
           'b' => 2,
            **params}
@@ -674,7 +674,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     include_examples 'not on separate lines'
 
     it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         hash1 = { a: 0,
              bb:    1,
                    ccc: 2 }
@@ -682,7 +682,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
              bb =>    1,
                    ccc  =>2 }
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         hash1 = { a: 0,
                  bb: 1,
                 ccc: 2 }
@@ -694,13 +694,13 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
     it "doesn't break code by moving long keys too far left" do
       # regression test; see GH issue 2582
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         {
           sjtjo: sjtjo,
           too_ono_ilitjion_tofotono_o: too_ono_ilitjion_tofotono_o,
         }
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         {
           sjtjo: sjtjo,
         too_ono_ilitjion_tofotono_o: too_ono_ilitjion_tofotono_o,
@@ -718,7 +718,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'registers offenses for misaligned entries' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         hash1 = {
           a:   0,
           bbb: 1
@@ -733,7 +733,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned entries' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
             a: 0,
           bbb: 1

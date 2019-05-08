@@ -4,11 +4,11 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
   subject(:cop) { described_class.new }
 
   def wrap(str)
-    head = <<-RUBY.strip_indent
+    head = <<~RUBY
       def something
         array.each do |item|
     RUBY
-    tail = <<-RUBY.strip_indent
+    tail = <<~RUBY
         end
       end
     RUBY

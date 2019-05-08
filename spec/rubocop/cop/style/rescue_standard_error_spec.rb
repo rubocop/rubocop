@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
     context 'when rescuing in a begin block' do
       it 'accpets rescuing no error class' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing no error class, assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue => e
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing a single error class other than StandardError' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue BarError
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing a single error class other than StandardError, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue BarError => e
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       context 'when rescuing StandardError by itself' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               foo
             rescue StandardError
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               foo
             rescue
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
         context 'when the error is assigned to a variable' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               begin
                 foo
               rescue StandardError => e
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               end
             RUBY
 
-            expect_correction(<<-RUBY.strip_indent)
+            expect_correction(<<~RUBY)
               begin
                 foo
               rescue => e
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError with other errors' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue StandardError, BarError
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing StandardError with other errors, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue StandardError, BarError => e
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
     context 'when rescuing in a method definition' do
       it 'accepts rescuing no error class' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def baz
             foo
           rescue
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing no error class, assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def baz
             foo
           rescue => e
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing a single error other than StandardError' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def baz
             foo
           rescue BarError
@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing a single error other than StandardError, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def baz
             foo
           rescue BarError => e
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       context 'when rescuing StandardError by itself' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def foobar
               foo
             rescue StandardError
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             def foobar
               foo
             rescue
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
         context 'when the error is assigned to a variable' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def foobar
                 foo
               rescue StandardError => e
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               end
             RUBY
 
-            expect_correction(<<-RUBY.strip_indent)
+            expect_correction(<<~RUBY)
               def foobar
                 foo
               rescue => e
@@ -204,7 +204,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError with other errors' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foobar
             foo
           rescue StandardError, BarError
@@ -217,7 +217,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing StandardError with other errors, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foobar
             foo
           rescue StandardError, BarError => e
@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
     end
 
     it 'accepts rescue modifier' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         foo rescue 42
       RUBY
     end
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
     context 'when rescuing in a begin block' do
       context 'when calling rescue without an error class' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               foo
             rescue
@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               foo
             rescue StandardError
@@ -265,7 +265,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
         context 'when the error is assigned to a variable' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               begin
                 foo
               rescue => e
@@ -274,7 +274,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               end
             RUBY
 
-            expect_correction(<<-RUBY.strip_indent)
+            expect_correction(<<~RUBY)
               begin
                 foo
               rescue StandardError => e
@@ -286,7 +286,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing a single error other than StandardError' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue BarError
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing a single error other than StandardError' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue BarError => e
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError by itself' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue StandardError
@@ -317,7 +317,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError by itself, assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue StandardError => e
@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError with other errors' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue StandardError, BarError
@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing StandardError with other errors, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           begin
             foo
           rescue StandardError, BarError => e
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
     context 'when rescuing in a method definition' do
       context 'when rescue is called without an error class' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def baz
               foo
             rescue
@@ -364,7 +364,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             def baz
               foo
             rescue StandardError
@@ -376,7 +376,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       context 'when the error is assigned to a variable' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def baz
               foo
             rescue => e
@@ -385,7 +385,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             def baz
               foo
             rescue StandardError => e
@@ -396,7 +396,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescueing a single error other than StandardError' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def baz
             foo
           rescue BarError
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescueing a single error other than StandardError, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def baz
             foo
           rescue BarError => e
@@ -417,7 +417,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError by itself' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foobar
             foo
           rescue StandardError
@@ -427,7 +427,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError by itself, assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foobar
             foo
           rescue StandardError => e
@@ -437,7 +437,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
       end
 
       it 'accepts rescuing StandardError with other errors' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foobar
             foo
           rescue StandardError, BarError
@@ -450,7 +450,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
 
       it 'accepts rescuing StandardError with other errors, ' \
         'assigned to a variable' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foobar
             foo
           rescue StandardError, BarError => e
@@ -463,7 +463,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
     end
 
     it 'accepts rescue modifier' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         foo rescue 42
       RUBY
     end

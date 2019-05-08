@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::EndInMethod do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for def with an END inside' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def test
         END { something }
         ^^^ `END` found in method definition. Use `at_exit` instead.
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Lint::EndInMethod do
   end
 
   it 'registers an offense for defs with an END inside' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def self.test
         END { something }
         ^^^ `END` found in method definition. Use `at_exit` instead.

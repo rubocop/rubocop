@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
 
   context 'with a multi-line do..end block' do
     it 'registers an offense for a chained call' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a do
           b
         end.c
@@ -15,17 +15,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
 
     context 'when using safe navigation operator' do
       it 'registers an offense for a chained call' do
-        expect_offense(<<-RUBY.strip_indent)
-        a do
-          b
-        end&.c
-        ^^^^^^ Avoid chaining a method call on a do...end block.
+        expect_offense(<<~RUBY)
+          a do
+            b
+          end&.c
+          ^^^^^^ Avoid chaining a method call on a do...end block.
         RUBY
       end
     end
 
     it 'accepts it if there is no chained call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a do
           b
         end
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
     end
 
     it 'accepts a chained block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a do
           b
         end.c do
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
 
   context 'with a single-line do..end block' do
     it 'registers an offense for a chained call' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a do b end.c
                ^^^^^ Avoid chaining a method call on a do...end block.
       RUBY
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
 
   context 'with a {} block' do
     it 'accepts a multi-line block with a chained call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a {
           b
         }.c

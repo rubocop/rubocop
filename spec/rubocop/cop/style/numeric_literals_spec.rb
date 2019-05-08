@@ -6,28 +6,28 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   let(:cop_config) { { 'MinDigits' => 5 } }
 
   it 'registers an offense for a long undelimited integer' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = 12345
           ^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = 123456.789
           ^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
   end
 
   it 'accepts integers with less than three places at the end' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = 123_456_789_00
       b = 819_2
     RUBY
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       a = 123_456_78_90_00
       b = 1_8192
     RUBY
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'accepts long numbers with underscore' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = 123_456
       b = 123_456.55
     RUBY
@@ -51,14 +51,14 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'accepts short numbers without underscore' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = 123
       b = 123.456
     RUBY
   end
 
   it 'ignores non-decimal literals' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = 0b1010101010101
       b = 01717171717171
       c = 0xab11111111bb
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'handles numeric literal with exponent' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = 10e10
       b = 3e12345
       c = 12.345e3
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     end
 
     it 'registers an offense for an integer with misplaced underscore' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = 123_456_78_90_00
             ^^^^^^^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
       RUBY

@@ -7,11 +7,11 @@ module RuboCop
       # It looks for other directives that require files in the same (cop)
       # namespace and injects the provided one in alpha
       class ConfigurationInjector
-        TEMPLATE = <<-YAML.strip_indent
-                     %<badge>s:
-                       Description: 'TODO: Write a description of the cop.'
-                       Enabled: true
-                       VersionAdded: '%<version_added>s'
+        TEMPLATE = <<~YAML
+          %<badge>s:
+            Description: 'TODO: Write a description of the cop.'
+            Enabled: true
+            VersionAdded: '%<version_added>s'
 
         YAML
 

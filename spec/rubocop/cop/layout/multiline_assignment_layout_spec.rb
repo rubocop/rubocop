@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'new_line' }
 
     it 'registers an offense when the rhs is on the same line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         blarg = if true
         ^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
         end
@@ -24,12 +24,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         blarg = if true
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         blarg =
          if true
         end
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'ignores arrays' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a, b = 4,
         5
       RUBY
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           a, b = 4,
           ^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
           5
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on separate lines' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         blarg=
         if true
         end
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a,
         ^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
         b = if foo
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
 
       it 'registers an offense when multi-line assignments ' \
          'using block definition is on the same line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           lambda = -> {
           ^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
             puts 'hello'
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
 
       it 'allows multi-line assignments when using block definition ' \
          'on separate lines' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           lambda =
             -> {
               puts 'hello'
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       end
 
       it 'allows multi-line block defines on separate lines' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           default_scope -> {
             where(foo: "bar")
           }
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       end
 
       it 'allows multi-line assignments when using shovel operator' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           foo << items.map do |item|
             "#{item}!"
           end
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     let(:enforced_style) { 'same_line' }
 
     it 'registers an offense when the rhs is a different line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         blarg =
         ^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
         if true
@@ -126,20 +126,20 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'auto-corrects offenses' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         blarg =
         if true
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         blarg = if true
         end
       RUBY
     end
 
     it 'ignores arrays' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a, b =
         4,
         5
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       let(:supported_types) { %w[array] }
 
       it 'allows supported types to be configured' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           a, b =
           ^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
           4,
@@ -160,14 +160,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     end
 
     it 'allows multi-line assignments on the same line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         blarg= if true
         end
       RUBY
     end
 
     it 'registers an offense for masgn with multi-line lhs' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a,
         ^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
         b =
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
 
       it 'allows when multi-line assignments using block definition ' \
          'is on the same line' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           lambda = -> {
             puts 'hello'
           }
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
 
       it 'registers an offense when multi-line assignments ' \
          'using block definition on separate lines' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           lambda =
           ^^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
             -> {
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       end
 
       it 'allows multi-line block defines on separate lines' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           default_scope -> {
             where(foo: "bar")
           }
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
       end
 
       it 'allows multi-line assignments when using shovel operator' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           foo << items.map do |item|
             "#{item}!"
           end

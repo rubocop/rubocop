@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     context 'with a non-empty instance method definition' do
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def foo
                           bar
                         end
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
                       'def foo; bar; end'
 
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def foo
                           # bar
                         end
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     context 'with a non-empty class method definition' do
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def self.foo
                           bar
                         end
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
                       'def self.foo; bar; end'
 
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def self.foo
                           # bar
                         end
@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     context 'with a non-empty instance method definition' do
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def foo
                           bar
                         end
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
                       'def foo; bar; end'
 
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def foo
                           # bar
                         end
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     context 'with a non-empty class method definition' do
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def self.foo
                           bar
                         end
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
                       'def self.foo; bar; end'
 
       it_behaves_like 'code without offense',
-                      <<-RUBY.strip_indent
+                      <<~RUBY
                         def self.foo
                           # bar
                         end

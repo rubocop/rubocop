@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit hashes' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       foo(a: 1,
       b: 2)
     RUBY
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     let(:b) { 'b: 2' }
     let(:multi_prefix) { 'b: ' }
     let(:multi) do
-      <<-RUBY.strip_indent.chomp
+      <<~RUBY.chomp
         [
         1
         ]

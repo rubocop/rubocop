@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Formatter::WorstOffendersFormatter do
 
       it 'sorts by offense count first and then by cop name' do
         formatter.finished(files)
-        expect(output.string).to eq(<<-OUTPUT.strip_indent)
+        expect(output.string).to eq(<<~OUTPUT)
 
           4  exe/rubocop
           3  spec/spec_helper.rb

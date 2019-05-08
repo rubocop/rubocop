@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'prefer_alias_method' } }
 
     it 'registers an offense for alias with symbol args' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         alias :ala :bala
         ^^^^^ Use `alias_method` instead of `alias`.
       RUBY
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias with bareword args' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         alias ala bala
         ^^^^^ Use `alias_method` instead of `alias`.
       RUBY
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module M
           def foo
             instance_eval {
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'prefer_alias' } }
 
     it 'registers an offense for alias with symbol args' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         alias :ala :bala
               ^^^^^^^^^^ Use `alias ala bala` instead of `alias :ala :bala`.
       RUBY
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method at the top level' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         alias_method :ala, :bala
         ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
       RUBY
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method in a class block' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
           alias_method :ala, :bala
           ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
@@ -92,12 +92,12 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method in a class block' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         class C
           alias_method :ala, :bala
         end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         class C
           alias ala bala
         end
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'registers an offense for alias_method in a module block' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module M
           alias_method :ala, :bala
           ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a module body.
@@ -114,12 +114,12 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'autocorrects alias_method in a module block' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         module M
           alias_method :ala, :bala
         end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         module M
           alias ala bala
         end
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method with explicit receiver' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class C
           receiver.alias_method :ala, :bala
         end
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method in a method def' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method
           alias_method :ala, :bala
         end
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method in self.method def' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.method
           alias_method :ala, :bala
         end
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method in a block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         dsl_method do
           alias_method :ala, :bala
         end
@@ -160,20 +160,20 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
 
     it 'does not register an offense for alias_method with non-literal '\
        'argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         alias_method :bar, FOO
       RUBY
     end
 
     it 'does not register an offense for alias_method with non-literal ' \
        'argument' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         alias_method :baz, foo.bar
       RUBY
     end
 
     it 'does not register an offense for alias in an instance_eval block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module M
           def foo
             instance_eval {

@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
   let(:suspicious_names) { ['options'] }
 
   it 'registers an offense' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def some_method(options = {})
                       ^^^^^^^^^^^^ Prefer keyword arguments to options hashes.
         puts some_arg
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
 
   context 'when the last argument is an options hash named something else' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def steep(flavor, duration, config={})
           mug = config.fetch(:mug)
           prep(flavor, duration, mug)
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
       let(:suspicious_names) { %w[options config] }
 
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def steep(flavor, duration, config={})
                                       ^^^^^^^^^ Prefer keyword arguments to options hashes.
             mug = config.fetch(:mug)
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
 
   context 'when there are no arguments' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def meditate
           puts true
           puts true
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
 
   context 'when the last argument is a non-options-hash optional hash' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def cook(instructions, ingredients = { hot: [], cold: [] })
           prep(ingredients)
         end
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
 
   context 'when passing options hash to super' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def allowed(foo, options = {})
           super
         end
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
     end
 
     it 'does not register an offense when code exists before call to super' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def allowed(foo, options = {})
           bar
 
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
     end
 
     it 'does not register an offense when call to super is in a nested block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def allowed(foo, options = {})
           5.times do
             super
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
     let(:cop_config) { { 'Whitelist' => %w[to_json] } }
 
     it 'ignores if the method is whitelisted' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def to_json(options = {})
         end
       RUBY

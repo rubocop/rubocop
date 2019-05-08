@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
     context 'with an interpolated heredoc' do
       it 'registers an offense with a lowercase delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-sql
             foo
           sql
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with a camel case delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-Sql
             foo
           Sql
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'does not register an offense with an uppercase delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
     context 'with a non-interpolated heredoc' do
       context 'when using single quoted delimiters' do
         it 'registers an offense with a lowercase delimiter' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             <<-'sql'
               foo
             sql
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
 
         it 'registers an offense with a camel case delimiter' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             <<-'Sql'
               foo
             Sql
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
 
         it 'does not register an offense with an uppercase delimiter' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             <<-'SQL'
               foo
             SQL
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
       context 'when using double quoted delimiters' do
         it 'registers an offense with a lowercase delimiter' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             <<-"sql"
               foo
             sql
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
 
         it 'registers an offense with a camel case delimiter' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             <<-"Sql"
               foo
             Sql
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
 
         it 'does not register an offense with an uppercase delimiter' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             <<-"SQL"
               foo
             SQL
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
       context 'when using back tick delimiters' do
         it 'registers an offense with a lowercase delimiter' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             <<-`sql`
               foo
             sql
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
 
         it 'registers an offense with a camel case delimiter' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             <<-`Sql`
               foo
             Sql
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
 
         it 'does not register an offense with an uppercase delimiter' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             <<-`SQL`
               foo
             SQL
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
       context 'when using non-word delimiters' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             <<-'+'
               foo
             +
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
     context 'with a squiggly heredoc' do
       it 'registers an offense with a lowercase delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<~sql
             foo
           sql
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with a camel case delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<~Sql
             foo
           Sql
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'does not register an offense with an uppercase delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<~SQL
             foo
           SQL
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
     context 'with an interpolated heredoc' do
       it 'does not register an offense with a lowercase delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<-sql
             foo
           sql
@@ -186,7 +186,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with a camel case delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-Sql
             foo
           Sql
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with an uppercase delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
     context 'with a non-interpolated heredoc' do
       it 'does not register an offense with a lowercase delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<-'sql'
             foo
           sql
@@ -214,7 +214,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with a camel case delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-'Sql'
             foo
           Sql
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with an uppercase delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-'SQL'
             foo
           SQL
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
     context 'with a squiggly heredoc' do
       it 'does not register an offense with a lowercase delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<~sql
             foo
           sql
@@ -242,7 +242,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with a camel case delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<~Sql
             foo
           Sql
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       it 'registers an offense with an uppercase delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<~SQL
             foo
           SQL

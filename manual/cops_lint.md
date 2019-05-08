@@ -883,11 +883,11 @@ the receiver of the call is a HEREDOC.
 
 # good
 
-   <<-SQL.strip_indent
+   <<~SQL
      bar
    SQL
 
-   <<-SQL.strip_indent.trim
+   <<~SQL.trim
      bar
    SQL
 ```

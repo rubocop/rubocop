@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for not' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       not test
       ^^^ Use `!` instead of `not`.
     RUBY

@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::Strip do
   end
 
   it 'formats the error message correctly for str.lstrip.rstrip' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       str.lstrip.rstrip
           ^^^^^^^^^^^^^ Use `strip` instead of `lstrip.rstrip`.
     RUBY

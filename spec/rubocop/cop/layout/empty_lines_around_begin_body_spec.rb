@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
   CORRECTION
 
   context 'with complex begin-end' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       begin
 
         do_something1
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
       end
     RUBY
-    let(:correction) { <<-RUBY.strip_indent }
+    let(:correction) { <<~RUBY }
       begin
         do_something1
       rescue RuntimeError

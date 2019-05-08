@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with a raise with 2 args' do
       it 'reports an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           raise RuntimeError, msg
           ^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
@@ -22,12 +22,12 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'when used in a ternary expression' do
       it 'registers an offense and auto-corrects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo ? raise(Ex, 'error') : bar
                 ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           foo ? raise(Ex.new('error')) : bar
         RUBY
       end
@@ -35,12 +35,12 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'when used in a logical and expression' do
       it 'registers an offense and auto-corrects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           bar && raise(Ex, 'error')
                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           bar && raise(Ex.new('error'))
         RUBY
       end
@@ -48,12 +48,12 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'when used in a logical or expression' do
       it 'registers an offense and auto-corrects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           bar || raise(Ex, 'error')
                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           bar || raise(Ex.new('error'))
         RUBY
       end
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with correct + opposite' do
       it 'reports an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           if a
             raise RuntimeError, msg
             ^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -72,14 +72,14 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if a
             raise RuntimeError, msg
           else
             raise Ex.new(msg)
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if a
             raise RuntimeError.new(msg)
           else
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with a raise with 3 args' do
       it 'reports an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           raise RuntimeError, msg, caller
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     context 'with a raise with exception object' do
       context 'with one argument' do
         it 'reports an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             raise Ex.new(msg)
             ^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
       context 'with no arguments' do
         it 'reports an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             raise Ex.new
             ^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
@@ -152,12 +152,12 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
       context 'when used in a ternary expression' do
         it 'registers an offense and auto-corrects' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             foo ? raise(Ex.new('error')) : bar
                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             foo ? raise(Ex, 'error') : bar
           RUBY
         end
@@ -165,12 +165,12 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
       context 'when used in a logical and expression' do
         it 'registers an offense and auto-corrects' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             bar && raise(Ex.new('error'))
                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             bar && raise(Ex, 'error')
           RUBY
         end
@@ -178,12 +178,12 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
       context 'when used in a logical or expression' do
         it 'registers an offense and auto-corrects' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             bar || raise(Ex.new('error'))
                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             bar || raise(Ex, 'error')
           RUBY
         end
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'with opposite + correct' do
       it 'reports an offense for opposite + correct' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           if a
             raise RuntimeError, msg
           else
@@ -204,14 +204,14 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if a
             raise RuntimeError, msg
           else
             raise Ex.new(msg)
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           if a
             raise RuntimeError, msg
           else
@@ -223,14 +223,14 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'when an exception object is assigned to a local variable' do
       it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def do_something
             klass = RuntimeError
             raise klass.new('hi')
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def do_something
             klass = RuntimeError
             raise klass, 'hi'

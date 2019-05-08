@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
   %w[private protected public module_function].each do |access_modifier|
     it "requires blank line before #{access_modifier}" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class Test
           something
           #{access_modifier}
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "requires blank line after #{access_modifier}" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class Test
           something
 
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores comment line before #{access_modifier}" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           something
 
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores #{access_modifier} inside a method call" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           def #{access_modifier}?
             #{access_modifier}
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores #{access_modifier} deep inside a method call" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           def #{access_modifier}?
             if true
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "ignores #{access_modifier} with a right-hand-side condition" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           def #{access_modifier}?
             #{access_modifier} if true
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it "autocorrects blank line before #{access_modifier}" do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         class Test
           something
           #{access_modifier}
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
           def test; end
         end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         class Test
           something
 
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'autocorrects blank line after #{access_modifier}' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         class Test
           something
 
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
           def test; end
         end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         class Test
           something
 
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'autocorrects blank line after #{access_modifier} with comment' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         class Test
           something
 
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
           def test; end
         end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         class Test
           something
 
@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'accepts missing blank line when at the beginning of class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           #{access_modifier}
 
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'accepts missing blank line when at the beginning of module' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Test
           #{access_modifier}
 
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'accepts missing blank line when at the beginning of sclass' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class << self
           #{access_modifier}
 
@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it 'accepts missing blank line when specifying a superclass ' \
        'that breaks the line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Foo <
               Bar
           #{access_modifier}
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it 'accepts missing blank line when specifying `self` ' \
        'that breaks the line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class <<
               self
           #{access_modifier}
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it 'accepts missing blank line when at the beginning of file' \
        'when specifying a superclass that breaks the line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{access_modifier}
 
         def do_something
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it "requires blank line after, but not before, #{access_modifier} " \
        'when at the beginning of class/module' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class Test
           #{access_modifier}
           def test
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     context 'at the beginning of block' do
       context 'for blocks defined with do' do
         it 'accepts missing blank line' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             included do
               #{access_modifier}
 
@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
         end
 
         it 'accepts missing blank line with arguments' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             included do |foo|
               #{access_modifier}
 
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
         end
 
         it "requires blank line after, but not before, #{access_modifier}" do
-          inspect_source(<<-RUBY.strip_indent)
+          inspect_source(<<~RUBY)
             included do
               #{access_modifier}
               def test
@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
       context 'for blocks defined with {}' do
         it 'accepts missing blank line' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             included {
               #{access_modifier}
 
@@ -265,7 +265,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
         end
 
         it 'accepts missing blank line with arguments' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             included { |foo|
               #{access_modifier}
 
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'accepts missing blank line when at the end of block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test
           def test; end
 
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it 'accepts missing blank line when at the end of specifying ' \
        'a superclass' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test < Base
           def test; end
 
@@ -299,7 +299,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
 
     it 'accepts missing blank line when at the end of specifying ' \
        '`self`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class << self
           def test; end
 
@@ -309,7 +309,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'requires blank line when next line started with end' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         class Test
           #{access_modifier}
           end_this!
@@ -322,7 +322,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier do
     end
 
     it 'recognizes blank lines with DOS style line endings' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Test\r
         \r
           #{access_modifier}\r

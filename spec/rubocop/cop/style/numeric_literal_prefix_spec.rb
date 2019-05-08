@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefixes `0` and `0O`' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           a = 01234
               ^^^^^ Use 0o for octal literals.
           b(0O1234)
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'does not register offense for lowercase prefix' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           a = 0o101
           b = 0o567
         RUBY
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'registers an offense for prefix `0O` and `0o`' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           a = 0O1234
               ^^^^^^ Use 0 for octal literals.
           b(0o1234)
@@ -59,12 +59,12 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
       end
 
       it 'autocorrects an octal literal starting with 0O or 0o' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           a = 0O1234
           b(0o1234)
         RUBY
 
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect(corrected).to eq <<~RUBY
           a = 01234
           b(01234)
         RUBY
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'hex literals' do
     it 'registers an offense for uppercase prefix' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = 0X1AC
             ^^^^^ Use 0x for hexadecimal literals.
         b(0XABC)
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'binary literals' do
     it 'registers an offense for uppercase prefix' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = 0B10101
             ^^^^^^^ Use 0b for binary literals.
         b(0B111)
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
 
   context 'decimal literals' do
     it 'registers an offense for prefixes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = 0d1234
             ^^^^^^ Do not use prefixes for decimal literals.
         b(0D1234)
@@ -132,18 +132,18 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     it 'autocorrects literals with prefix' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
         a = 0d1234
         b(0D1990)
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
         a = 1234
         b(1990)
       RUBY
     end
 
     it 'does not autocorrect literals with no prefix' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         a = 1234
         b(1990)
       RUBY

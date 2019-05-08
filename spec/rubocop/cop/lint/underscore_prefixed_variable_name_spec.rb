@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed variable is used' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def some_method
           _foo = 1
           ^^^^ Do not use prefix `_` for a variable that is used.
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when non-underscore-prefixed variable is used' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def some_method
           foo = 1
           puts foo
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed variable is reassigned' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def some_method
           _foo = 1
           _foo = 2
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed method argument is used' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def some_method(_foo)
                         ^^^^ Do not use prefix `_` for a variable that is used.
           puts _foo
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
       let(:cop_config) { { 'AllowKeywordBlockArguments' => config } }
 
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           1.times do |_foo|
                       ^^^^ Do not use prefix `_` for a variable that is used.
             puts _foo
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed keyword block argument is used' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         define_method(:foo) do |_foo: 'default'|
                                 ^^^^ Do not use prefix `_` for a variable that is used.
           puts _foo
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
       let(:cop_config) { { 'AllowKeywordBlockArguments' => true } }
 
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           define_method(:foo) do |_foo: 'default'|
             puts _foo
           end
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed variable in top-level scope is used' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         _foo = 1
         ^^^^ Do not use prefix `_` for a variable that is used.
         puts _foo
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed variable is captured by a block' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         _foo = 1
         1.times do
           _foo = 2
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
   context 'when an underscore-prefixed named capture variable is used' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         /(?<_foo>\\w+)/ =~ 'FOO'
         ^^^^^^^^^^^^^^ Do not use prefix `_` for a variable that is used.
         puts _foo
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
     context "in a method calling `#{keyword}` without arguments" do
       context 'when an underscore-prefixed argument is not used explicitly' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def some_method(*_)
               #{keyword}
             end
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
       context 'when an underscore-prefixed argument is used explicitly' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(*_)
                              ^ Do not use prefix `_` for a variable that is used.
               #{keyword}
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
     context "in a method calling `#{keyword}` with arguments" do
       context 'when an underscore-prefixed argument is not used' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def some_method(*_)
               #{keyword}(:something)
             end
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName, :config do
 
       context 'when an underscore-prefixed argument is used explicitly' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(*_)
                              ^ Do not use prefix `_` for a variable that is used.
               #{keyword}(*_)

@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       puts 'example'
       puts 'another example'
 

@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
   context 'with an interpolated heredoc' do
     it 'registers an offense with a non-meaningful delimiter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         <<-END
           foo
         END
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
 
     it 'does not register an offense with a meaningful delimiter' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         <<-SQL
           foo
         SQL
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
   context 'with a non-interpolated heredoc' do
     context 'when using single quoted delimiters' do
       it 'registers an offense with a non-meaningful delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-'END'
             foo
           END
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
       end
 
       it 'does not register an offense with a meaningful delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<-'SQL'
             foo
           SQL
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
     context 'when using double quoted delimiters' do
       it 'registers an offense with a non-meaningful delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-"END"
             foo
           END
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
       end
 
       it 'does not register an offense with a meaningful delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<-'SQL'
             foo
           SQL
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
     context 'when using back tick delimiters' do
       it 'registers an offense with a non-meaningful delimiter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-`END`
             foo
           END
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
       end
 
       it 'does not register an offense with a meaningful delimiter' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           <<-`SQL`
             foo
           SQL
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
     context 'when using non-word delimiters' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           <<-'+'
             foo
           +
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
   context 'with a squiggly heredoc' do
     it 'registers an offense with a non-meaningful delimiter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         <<~END
           foo
         END
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
 
     it 'does not register an offense with a meaningful delimiter' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         <<~SQL
           foo
         SQL
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
   context 'with a naked heredoc' do
     it 'registers an offense with a non-meaningful delimiter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         <<END
           foo
         END
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
 
     it 'does not register an offense with a meaningful delimiter' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         <<SQL
           foo
         SQL
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
   context 'when the delimiter contains non-letter characters' do
     it 'does not register an offense when delimiter contains an underscore' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         <<-SQL_CODE
           foo
         SQL_CODE
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
 
     it 'does not register an offense when delimiter contains a number' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         <<-BASE64
           foo
         BASE64
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
   context 'with multiple heredocs starting on the same line' do
     it 'registers an offense with a leading non-meaningful delimiter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo(<<-END, <<-SQL)
           foo
         END
@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
 
     it 'registers an offense with a trailing non-meaningful delimiter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo(<<-SQL, <<-END)
           foo
         SQL
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
     end
 
     it 'does not register an offense with meaningful delimiters' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         foo(<<-SQL, <<-JS)
           foo
         SQL

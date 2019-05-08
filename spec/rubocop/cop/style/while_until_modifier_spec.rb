@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it 'accepts oneline while when condition has local variable assignment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       lines = %w{first second third}
       while (line = lines.shift)
         puts line
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
 
   context 'oneline while when assignment is in body' do
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         while true
           x = 0
         end
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         while true
         ^^^^^ Favor modifier `while` usage when having a single-line body.
           x = 0
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
   # Regression: https://github.com/rubocop-hq/rubocop/issues/4006
   context 'when the modifier condition is multiline' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo while bar ||
             ^^^^^ Favor modifier `while` usage when having a single-line body.
           baz
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
     end
 
     it 'registers an offense even for a long modifier statement' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         while foo
         ^^^^^ Favor modifier `while` usage when having a single-line body.
           "This string would make the line longer than eighty characters if combined with the statement." 

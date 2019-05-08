@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %(string)
         ^^^^^^^^^ `%`-literals should be delimited by `[` and `]`.
       RUBY
@@ -48,14 +48,14 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         %([string])
       RUBY
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %(#{[1].first})
         ^^^^^^^^^^^^^^^ `%`-literals should be delimited by `[` and `]`.
       RUBY
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %q(string)
         ^^^^^^^^^^ `%q`-literals should be delimited by `[` and `]`.
       RUBY
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         %q([string])
       RUBY
     end
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %Q(string)
         ^^^^^^^^^^ `%Q`-literals should be delimited by `[` and `]`.
       RUBY
@@ -96,14 +96,14 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'does not register an offense for other delimiters ' \
        'when containing preferred delimiter characters' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         %Q([string])
       RUBY
     end
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %Q(#{[1].first})
         ^^^^^^^^^^^^^^^^ `%Q`-literals should be delimited by `[` and `]`.
       RUBY
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %w(some words)
         ^^^^^^^^^^^^^^ `%w`-literals should be delimited by `[` and `]`.
       RUBY
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %W(some words)
         ^^^^^^^^^^^^^^ `%W`-literals should be delimited by `[` and `]`.
       RUBY
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %W(#{[1].first})
         ^^^^^^^^^^^^^^^^ `%W`-literals should be delimited by `[` and `]`.
       RUBY
@@ -175,7 +175,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %r(regexp)
         ^^^^^^^^^^ `%r`-literals should be delimited by `[` and `]`.
       RUBY
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %r(#{[1].first})
         ^^^^^^^^^^^^^^^^ `%r`-literals should be delimited by `[` and `]`.
       RUBY
@@ -201,7 +201,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %i(some symbols)
         ^^^^^^^^^^^^^^^^ `%i`-literals should be delimited by `[` and `]`.
       RUBY
@@ -214,7 +214,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %I(some words)
         ^^^^^^^^^^^^^^ `%I`-literals should be delimited by `[` and `]`.
       RUBY
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %I(#{[1].first})
         ^^^^^^^^^^^^^^^^ `%I`-literals should be delimited by `[` and `]`.
       RUBY
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %s(symbol)
         ^^^^^^^^^^ `%s`-literals should be delimited by `[` and `]`.
       RUBY
@@ -248,7 +248,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'registers an offense for other delimiters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %x(command)
         ^^^^^^^^^^^ `%x`-literals should be delimited by `[` and `]`.
       RUBY
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'registers an offense for other delimiters ' \
        'when containing preferred delimiter characters in interpolation' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %x(#{[1].first})
         ^^^^^^^^^^^^^^^^ `%x`-literals should be delimited by `[` and `]`.
       RUBY
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'fixes a string array in a scope' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         module Foo
            class Bar
              def baz
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
            end
          end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         module Foo
            class Bar
              def baz
@@ -330,13 +330,13 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'preserves line breaks when fixing a multiline array' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         %w(
         some
         words
         )
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         %w[
         some
         words
@@ -362,13 +362,13 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'preserves irregular indentation when correcting a multiline array' do
-      original_source = <<-RUBY.strip_indent
+      original_source = <<~RUBY
           array = %w(
             first
           second
         )
       RUBY
-      corrected_source = <<-RUBY.strip_indent
+      corrected_source = <<~RUBY
           array = %w[
             first
           second

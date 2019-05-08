@@ -4,26 +4,26 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilDo do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for do in multiline while' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       while cond do
                  ^^ Do not use `do` with multi-line `while`.
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       while cond
       end
     RUBY
   end
 
   it 'registers an offense for do in multiline until' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       until cond do
                  ^^ Do not use `do` with multi-line `until`.
       end
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       until cond
       end
     RUBY
@@ -38,14 +38,14 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilDo do
   end
 
   it 'accepts multi-line while without do' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       while cond
       end
     RUBY
   end
 
   it 'accepts multi-line until without do' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       until cond
       end
     RUBY

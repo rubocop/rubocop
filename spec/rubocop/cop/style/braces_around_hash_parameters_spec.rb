@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   shared_examples 'no_braces and context_dependent offenses' do
     it 'registers an offense for one non-hash parameter followed by a hash ' \
        'parameter with braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         where(1, { y: 2 })
                  ^^^^^^^^ Redundant curly braces around a hash parameter.
       RUBY
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     context 'when using safe navigation operator' do
       it 'registers an offense for one non-hash parameter followed by a hash ' \
          'parameter with braces' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           a&.where(1, { y: 2 })
                       ^^^^^^^^ Redundant curly braces around a hash parameter.
         RUBY
@@ -65,14 +65,14 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'registers an offense for one object method hash parameter with ' \
        'braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.func({ y: "z" })
                ^^^^^^^^^^ Redundant curly braces around a hash parameter.
       RUBY
     end
 
     it 'registers an offense for one hash parameter with braces' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         where({ x: 1 })
               ^^^^^^^^ Redundant curly braces around a hash parameter.
       RUBY
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'registers an offense for one hash parameter with braces and ' \
        'whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         where(
           { x: 1 }   )
           ^^^^^^^^ Redundant curly braces around a hash parameter.
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'registers an offense for one hash parameter with braces and multiple ' \
        'keys' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         where({ x: 1, foo: "bar" })
               ^^^^^^^^^^^^^^^^^^^^ Redundant curly braces around a hash parameter.
       RUBY
@@ -154,112 +154,112 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'does not break indent' do
       src = <<-RUBY
-      foo({
-        a: 1,
-        b: 2
-      })
+        foo({
+          a: 1,
+          b: 2
+        })
       RUBY
       corrected = autocorrect_source(src)
       expect(corrected).to eq(<<-RUBY)
-      foo(
-        a: 1,
-        b: 2
-      )
+        foo(
+          a: 1,
+          b: 2
+        )
       RUBY
     end
 
     it 'does not remove trailing comma nor realign args' do
-      src = <<-RUBY.strip_indent
-      foo({
-        a: 1,
-        b: 2,
-      })
+      src = <<~RUBY
+        foo({
+          a: 1,
+          b: 2,
+        })
       RUBY
       corrected = autocorrect_source(src)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
-      foo(
-        a: 1,
-        b: 2,
-      )
+      expect(corrected).to eq(<<~RUBY)
+        foo(
+          a: 1,
+          b: 2,
+        )
       RUBY
     end
 
     it 'corrects brace removal with 2 extra lines' do
-      src = <<-RUBY.strip_indent
-      foo(
-        {
-          baz: 10
-        }
-      )
+      src = <<~RUBY
+        foo(
+          {
+            baz: 10
+          }
+        )
       RUBY
       corrected = autocorrect_source(src)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
-      foo(
-          baz: 10
-      )
+      expect(corrected).to eq(<<~RUBY)
+        foo(
+            baz: 10
+        )
       RUBY
     end
 
     it 'corrects brace removal with extra lines & multiple pairs' do
-      src = <<-RUBY.strip_indent
-      foo(
-        {
-          qux: "bar",
-          baz: "bar",
-          thud: "bar"
-        }
-      )
+      src = <<~RUBY
+        foo(
+          {
+            qux: "bar",
+            baz: "bar",
+            thud: "bar"
+          }
+        )
       RUBY
       corrected = autocorrect_source(src)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
-      foo(
-          qux: "bar",
-          baz: "bar",
-          thud: "bar"
-      )
+      expect(corrected).to eq(<<~RUBY)
+        foo(
+            qux: "bar",
+            baz: "bar",
+            thud: "bar"
+        )
       RUBY
     end
 
     it 'corrects brace removal with lower extra line' do
-      src = <<-RUBY.strip_indent
-      foo({
-        baz: 7
-        }
-      )
+      src = <<~RUBY
+        foo({
+          baz: 7
+          }
+        )
       RUBY
       corrected = autocorrect_source(src)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
-      foo(
-        baz: 7
-      )
+      expect(corrected).to eq(<<~RUBY)
+        foo(
+          baz: 7
+        )
       RUBY
     end
 
     it 'corrects brace removal with top extra line' do
-      src = <<-RUBY.strip_indent
-      foo(
-        {
-          baz: 5
-      })
+      src = <<~RUBY
+        foo(
+          {
+            baz: 5
+        })
       RUBY
       corrected = autocorrect_source(src)
-      expect(corrected).to eq(<<-RUBY.strip_indent)
-      foo(
-          baz: 5
-      )
+      expect(corrected).to eq(<<~RUBY)
+        foo(
+            baz: 5
+        )
       RUBY
     end
 
     context 'with a comment following the last key-value pair' do
       it 'corrects and leaves line breaks' do
-        src = <<-RUBY.strip_indent
+        src = <<~RUBY
           r = opts.merge({
             p1: opts[:a],
             p2: (opts[:b] || opts[:c]) # a comment
           })
         RUBY
         corrected = autocorrect_source(src)
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect(corrected).to eq(<<~RUBY)
           r = opts.merge(
             p1: opts[:a],
             p2: (opts[:b] || opts[:c]) # a comment
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       include_examples 'no_braces and context_dependent offenses'
 
       it 'registers an offense for two hash parameters with braces' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           where({ x: 1 }, { y: 2 })
                           ^^^^^^^^ Redundant curly braces around a hash parameter.
         RUBY
@@ -318,24 +318,24 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'corrects two hash parameters with braces & extra lines' do
-        src = <<-RUBY.strip_indent
-        foo(
-          {
-            qux: 9
-          },
-          {
-            bar: 0
-          }
-        )
+        src = <<~RUBY
+          foo(
+            {
+              qux: 9
+            },
+            {
+              bar: 0
+            }
+          )
         RUBY
         corrected = autocorrect_source(src)
-        expect(corrected).to eq(<<-RUBY.strip_indent)
-        foo(
-          {
-            qux: 9
-          },
-            bar: 0
-        )
+        expect(corrected).to eq(<<~RUBY)
+          foo(
+            {
+              qux: 9
+            },
+              bar: 0
+          )
         RUBY
       end
 
@@ -345,26 +345,26 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'corrects hash multiline parameters with braces & trailing comma' do
-        src = <<-RUBY.strip_indent
-        foo(
-          {
-            foo: 1,
-            bar: 2,
-          } ,
-        )
+        src = <<~RUBY
+          foo(
+            {
+              foo: 1,
+              bar: 2,
+            } ,
+          )
         RUBY
         corrected = autocorrect_source(src)
-        expect(corrected).to eq(<<-RUBY.strip_indent)
-        foo(
-            foo: 1,
-            bar: 2,
-        )
+        expect(corrected).to eq(<<~RUBY)
+          foo(
+              foo: 1,
+              bar: 2,
+          )
         RUBY
       end
 
       it 'corrects when the opening brace is before the first hash element' \
          'at same line' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           foo = Foo.new(
             { foo: 'foo',
               bar: 'bar',
@@ -372,7 +372,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
           )
         RUBY
 
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect(corrected).to eq(<<~RUBY)
           foo = Foo.new(
              foo: 'foo',
               bar: 'bar',
@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter with braces and one ' \
          'without' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           where({ x: 1 }, y: 2)
                           ^^^^ Missing curly braces around a hash parameter.
         RUBY
@@ -437,7 +437,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'accepts one hash parameter with braces and whitespace' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           where( 	    {  x: 1
             }   )
         RUBY
@@ -446,7 +446,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     context 'for incorrect code' do
       it 'registers an offense for one hash parameter without braces' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           where(x: "y")
                 ^^^^^^ Missing curly braces around a hash parameter.
         RUBY
@@ -454,7 +454,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter with multiple keys and ' \
          'without braces' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           where(x: "y", foo: "bar")
                 ^^^^^^^^^^^^^^^^^^ Missing curly braces around a hash parameter.
         RUBY
@@ -462,7 +462,7 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
       it 'registers an offense for one hash parameter without braces with ' \
          'one hash value' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           where(x: { "y" => "z" })
                 ^^^^^^^^^^^^^^^^^ Missing curly braces around a hash parameter.
         RUBY

@@ -8,28 +8,28 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
   end
 
   it 'registers an offense for a line indented with tab' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       	x = 0
       ^ Tab detected.
     RUBY
   end
 
   it 'registers an offense for a line indented with multiple tabs' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       			x = 0
       ^^^ Tab detected.
     RUBY
   end
 
   it 'registers an offense for a line indented with mixed whitespace' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<-'RUBY'.strip_indent)
        	x = 0
        ^ Tab detected.
     RUBY
   end
 
   it 'registers offenses before __RUBY__ but not after' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       \tx = 0
       ^ Tab detected.
       __END__
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
   end
 
   it 'registers an offense for a tab other than indentation' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       foo \t bar
           ^ Tab detected.
     RUBY

@@ -11,27 +11,27 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense for empty brackets with one space inside' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo[ ]
            ^^^ Do not use space inside empty reference brackets.
       RUBY
     end
 
     it 'registers an offense for empty brackets with lots of space inside' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[     ]
          ^^^^^^^ Do not use space inside empty reference brackets.
       RUBY
     end
 
     it 'auto-corrects whitespaces in empty brackets' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a[ ]
         a[    ]
         a[ ] = foo
         a[   ] = bar
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a[]
         a[]
         a[] = foo
@@ -48,27 +48,27 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers offense for empty brackets with no space inside' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo[]
            ^^ Use one space inside empty reference brackets.
       RUBY
     end
 
     it 'registers offense for empty brackets with more than one space inside' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[      ]
          ^^^^^^^^ Use one space inside empty reference brackets.
       RUBY
     end
 
     it 'auto-corrects multiple offenses for empty brackets' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         a[]
         a[    ]
         a[] = foo
         a[   ] = bar
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         a[ ]
         a[ ]
         a[ ] = foo
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'does not register offense for array literals' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = [1, 2 ]
         b = [ 3, 4]
         c = [5, 6]
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'does not register offense for reference brackets with no spaces' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a[1]
         b[index, 2]
         c["foo"]
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'does not register offense for ref bcts with no spaces that assign' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a[1] = 2
         b[345] = [ 678, var, "", nil]
         c["foo"] = "qux"
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense when a reference bracket with a leading whitespace
         is assigned by another reference bracket' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ "foo"] = b["something"]
           ^ Do not use space inside reference brackets.
       RUBY
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense when a reference bracket with a trailing whitespace
         is assigned by another reference bracket' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a["foo" ] = b["something"]
                ^ Do not use space inside reference brackets.
       RUBY
@@ -127,14 +127,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense when a reference bracket is assigned by another
         reference bracket with trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a["foo"] = b["something" ]
                                 ^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'accepts square brackets as method name' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def Vector.[](*array)
         end
       RUBY
@@ -149,49 +149,49 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers offense in ref brackets with leading whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[  :key]
           ^^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in ref brackets with trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         b[:key ]
               ^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in second ref brackets with leading whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[:key][ "key"]
                 ^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in second ref brackets with trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[1][:key   ]
                  ^^^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in third ref brackets with leading whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[:key][3][ :key]
                    ^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in third ref brackets with trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[var]["key", 3][:key ]
                              ^ Do not use space inside reference brackets.
       RUBY
     end
 
     it 'registers multiple offenses in one set of ref brackets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         b[ 89  ]
           ^ Do not use space inside reference brackets.
              ^^ Do not use space inside reference brackets.
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers multiple offenses for multiple sets of ref brackets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ :key]["foo"  ][   0 ]
           ^ Do not use space inside reference brackets.
                       ^^ Do not use space inside reference brackets.
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers offense in outer ref brackets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         record[ options[:attribute] ]
                ^ Do not use space inside reference brackets.
                                    ^ Do not use space inside reference brackets.
@@ -218,28 +218,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     context 'auto-correct' do
       it 'fixes multiple offenses in one set of ref brackets' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           bar[ 89  ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           bar[89]
         RUBY
       end
 
       it 'fixes multiple offenses for multiple sets of ref brackets' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           b[ :key]["foo"  ][   0 ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b[:key]["foo"][0]
         RUBY
       end
 
       it 'avoids altering array brackets' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           j[ "pop"] = [89, nil, ""    ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           j["pop"] = [89, nil, ""    ]
         RUBY
       end
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'does not register offense for array literals' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = [1, 2 ]
         b = [ 3, 4]
         c = [5, 6]
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'does not register offense for reference brackets with spaces' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a[ 1 ]
         b[ index, 3 ]
         c[ "foo" ]
@@ -272,7 +272,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'does not register offense for ref bcts with spaces that assign' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a[ 1 ] = 2
         b[ 345 ] = [ 678, var, "", nil]
         c[ "foo" ] = "qux"
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense when a reference bracket with no leading whitespace
         is assigned by another reference bracket' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a["foo" ] = b[ "something" ]
          ^ Use space inside reference brackets.
       RUBY
@@ -291,7 +291,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense when a reference bracket with no trailing
         whitespace is assigned by another reference bracket' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ "foo"] = b[ "something" ]
                 ^ Use space inside reference brackets.
       RUBY
@@ -299,14 +299,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     it 'registers an offense when a reference bracket is assigned by another
         reference bracket with no trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ "foo" ] = b[ "something"]
                                    ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'accepts square brackets as method name' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def Vector.[](*array)
         end
       RUBY
@@ -321,49 +321,49 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers offense in ref brackets with no leading whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[:key ]
          ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in ref brackets with no trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         b[ :key]
                ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in second ref brackets with no leading whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ :key ]["key" ]
                  ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in second ref brackets with no trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ 5, 1 ][ :key]
                        ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in third ref brackets with no leading whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ :key ][ 3 ][:key ]
                       ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'registers offense in third ref brackets with no trailing whitespace' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[ var ][ "key" ][ :key]
                                ^ Use space inside reference brackets.
       RUBY
     end
 
     it 'registers multiple offenses in one set of ref brackets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         b[89]
          ^ Use space inside reference brackets.
             ^ Use space inside reference brackets.
@@ -371,7 +371,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers multiple offenses for multiple sets of ref brackets' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a[:key]["foo" ][0]
          ^ Use space inside reference brackets.
               ^ Use space inside reference brackets.
@@ -383,28 +383,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
 
     context 'auto-correct' do
       it 'fixes multiple offenses in one set of ref brackets' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           bar[89]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           bar[ 89 ]
         RUBY
       end
 
       it 'fixes multiple offenses for multiple sets of ref brackets' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           b[:key][ "foo"][0 ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b[ :key ][ "foo" ][ 0 ]
         RUBY
       end
 
       it 'avoids altering array brackets' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           j[ "pop"] = [89, nil, ""    ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           j[ "pop" ] = [89, nil, ""    ]
         RUBY
       end

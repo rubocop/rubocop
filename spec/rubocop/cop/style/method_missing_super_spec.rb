@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::MethodMissingSuper do
 
   describe 'method_missing defined as an instance method' do
     it 'registers an offense when super is not called.' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Test
           def method_missing
           ^^^^^^^^^^^^^^^^^^ When using `method_missing`, fall back on `super`.
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::MethodMissingSuper do
 
   describe 'method_missing defined as a class method' do
     it 'registers an offense when super is not called.' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Test
           def self.method_missing
           ^^^^^^^^^^^^^^^^^^^^^^^ When using `method_missing`, fall back on `super`.

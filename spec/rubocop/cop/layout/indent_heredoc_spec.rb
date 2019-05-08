@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
       if code
         inspect_source(code.strip_indent)
       else
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           <<-RUBY2
           foo
           RUBY2
@@ -275,20 +275,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY
 
         it 'displays message to use `<<~` instead of `<<`' do
-          expect_offense(<<-RUBY.strip_indent)
-          <<RUBY2
-          foo
-          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
-          RUBY2
+          expect_offense(<<~RUBY)
+            <<RUBY2
+            foo
+            ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
+            RUBY2
           RUBY
         end
 
         it 'displays message to use `<<~` instead of `<<-`' do
-          expect_offense(<<-RUBY.strip_indent)
-          <<-RUBY2
-          foo
-          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-          RUBY2
+          expect_offense(<<~RUBY)
+            <<-RUBY2
+            foo
+            ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
+            RUBY2
           RUBY
         end
       end

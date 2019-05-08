@@ -31,7 +31,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             create_file('.rubocop.yml', initial_dotfile)
             create_file('.rubocop_todo.yml', [''])
           end
-          create_file('example.rb', <<-RUBY.strip_indent)
+          create_file('example.rb', <<~RUBY)
             # frozen_string_literal: true
 
             def f
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(['--auto-gen-config'])).to eq(0)
           expect(IO.readlines('.rubocop_todo.yml')
                    .drop_while { |line| line.start_with?('#') }.join)
-            .to eq(<<-YAML.strip_indent)
+            .to eq(<<~YAML)
 
               # Offense count: 1
               # Cop supports --auto-correct.
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                      "  Max: #{line_length_max}",
                                      "  Enabled: #{line_length_enabled}"])
         create_file('.rubocop_todo.yml', [''])
-        create_file('example.rb', <<-RUBY.strip_indent)
+        create_file('example.rb', <<~RUBY)
           def f
           #{'  #' * 33}
             if #{'a' * 80}
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         it "bases other cops' configuration on the overridden LineLength:Max" do
           expect(cli.run(['--auto-gen-config'])).to eq(0)
-          expect($stdout.string).to include(<<-YAML.strip_indent)
+          expect($stdout.string).to include(<<~YAML)
             Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
             Phase 1 of 2: run Metrics/LineLength cop (skipped because the default Metrics/LineLength:Max is overridden)
             Phase 2 of 2: run all cops
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # to the Max:90 setting.
           expect(IO.readlines('.rubocop_todo.yml')
                   .drop_while { |line| line.start_with?('#') }.join)
-            .to eq(<<-YAML.strip_indent)
+            .to eq(<<~YAML)
 
               # Offense count: 1
               # Cop supports --auto-correct.
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 Exclude:
                   - 'example.rb'
             YAML
-          expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
+          expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
             inherit_from: .rubocop_todo.yml
 
             Metrics/LineLength:
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to include('.rubocop.yml: Metrics/LineLength:Max overrides the ' \
                         "same parameter in .rubocop_todo.yml\n")
-          expect($stdout.string).to include(<<-OUTPUT.strip_indent)
+          expect($stdout.string).to include(<<~OUTPUT)
             == example.rb ==
             C:  2: 91: Metrics/LineLength: Line is too long. [99/90]
 
@@ -210,7 +210,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         it 'skips the cop from both phases of the run' do
           expect(cli.run(['--auto-gen-config'])).to eq(0)
-          expect($stdout.string).to include(<<-YAML.strip_indent)
+          expect($stdout.string).to include(<<~YAML)
             Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
             Phase 1 of 2: run Metrics/LineLength cop (skipped because Metrics/LineLength is disabled)
             Phase 2 of 2: run all cops
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # .rubocop_todo.yml.
           expect(IO.readlines('.rubocop_todo.yml')
                   .drop_while { |line| line.start_with?('#') }.join)
-            .to eq(<<-YAML.strip_indent)
+            .to eq(<<~YAML)
 
               # Offense count: 1
               # Cop supports --auto-correct.
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 Exclude:
                   - 'example.rb'
             YAML
-          expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
+          expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
             inherit_from: .rubocop_todo.yml
 
             Metrics/LineLength:
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           $stdout = StringIO.new
           expect(described_class.new.run(%w[--format simple])).to eq(0)
           expect($stderr.string).to eq('')
-          expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+          expect($stdout.string).to eq(<<~OUTPUT)
 
             1 file inspected, no offenses detected
           OUTPUT
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         it "bases other cops' configuration on the overridden LineLength:Max" do
           expect(cli.run(['--auto-gen-config'])).to eq(0)
-          expect($stdout.string).to include(<<-YAML.strip_indent)
+          expect($stdout.string).to include(<<~YAML)
             Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
             Phase 1 of 2: run Metrics/LineLength cop (skipped because the default Metrics/LineLength:Max is overridden)
             Phase 2 of 2: run all cops
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # .rubocop_todo.yml.
           expect(IO.readlines('.rubocop_todo.yml')
                   .drop_while { |line| line.start_with?('#') }.join)
-            .to eq(<<-YAML.strip_indent)
+            .to eq(<<~YAML)
 
               # Offense count: 1
               # Cop supports --auto-correct.
@@ -287,7 +287,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 Exclude:
                   - 'example.rb'
             YAML
-          expect(IO.read('.rubocop.yml')).to eq(<<-YAML.strip_indent)
+          expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
             inherit_from: .rubocop_todo.yml
 
             Metrics/LineLength:
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           $stdout = StringIO.new
           expect(described_class.new.run(%w[--format simple])).to eq(0)
           expect($stderr.string).to eq('')
-          expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+          expect($stdout.string).to eq(<<~OUTPUT)
 
             1 file inspected, no offenses detected
           OUTPUT
@@ -312,7 +312,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('.rubocop_todo.yml', <<-YAML.strip_indent)
+      create_file('.rubocop_todo.yml', <<~YAML)
         Metrics/LineLength:
           Enabled: false
       YAML
@@ -397,7 +397,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                     '#' * 90,
                                     'y ',
                                     'puts x'])
-        create_file('dir/cop_config.yml', <<-YAML.strip_indent)
+        create_file('dir/cop_config.yml', <<~YAML)
           Layout/TrailingWhitespace:
             Enabled: false
           Metrics/LineLength:
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           .to eq(0)
         expect(Dir['.*']).to include('.rubocop_todo.yml')
         todo_contents = IO.read('.rubocop_todo.yml').lines[8..-1].join
-        expect(todo_contents).to eq(<<-YAML.strip_indent)
+        expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # Cop supports --auto-correct.
           # Configuration parameters: EnforcedStyle.
@@ -422,7 +422,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Exclude:
               - 'example1.rb'
         YAML
-        expect(IO.read('dir/cop_config.yml')).to eq(<<-YAML.strip_indent)
+        expect(IO.read('dir/cop_config.yml')).to eq(<<~YAML)
           inherit_from: .rubocop_todo.yml
 
           Layout/TrailingWhitespace:
@@ -439,10 +439,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                         '#' * 90,
                                         'y ',
                                         'puts x'])
-        create_file('dir/.rubocop.yml', <<-YAML.strip_indent)
+        create_file('dir/.rubocop.yml', <<~YAML)
           inherit_from: ../.rubocop.yml
         YAML
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           Layout/TrailingWhitespace:
             Enabled: false
           Metrics/LineLength:
@@ -455,7 +455,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
         todo_contents = IO.read('dir/.rubocop_todo.yml').lines[8..-1].join
-        expect(todo_contents).to eq(<<-YAML.strip_indent)
+        expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # Cop supports --auto-correct.
           # Configuration parameters: EnforcedStyle.
@@ -470,7 +470,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Exclude:
               - 'example1.rb'
         YAML
-        expect(IO.read('dir/.rubocop.yml')).to eq(<<-YAML.strip_indent)
+        expect(IO.read('dir/.rubocop.yml')).to eq(<<~YAML)
           inherit_from:
             - .rubocop_todo.yml
             - ../.rubocop.yml
@@ -486,7 +486,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', <<-RUBY.strip_indent)
+      create_file('example2.rb', <<~RUBY)
         # frozen_string_literal: true
 
         \tx = 0
@@ -676,13 +676,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'does not generate configuration for the Syntax cop' do
-      create_file('example1.rb', <<-RUBY.strip_indent)
+      create_file('example1.rb', <<~RUBY)
         # frozen_string_literal: true
 
         x = <  # Syntax error
         puts x
       RUBY
-      create_file('example2.rb', <<-RUBY.strip_indent)
+      create_file('example2.rb', <<~RUBY)
         # frozen_string_literal: true
 
         \tx = 0
@@ -790,7 +790,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                   '#' * 85,
                                   'y ',
                                   'puts x'])
-      create_file('example2.rb', <<-RUBY.strip_indent)
+      create_file('example2.rb', <<~RUBY)
         # frozen_string_literal: true
 
         \tx = 0
@@ -886,7 +886,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['#' * 90,
                                   '#' * 90,
                                   'puts 123456'])
-      create_file('example2.rb', <<-RUBY.strip_indent)
+      create_file('example2.rb', <<~RUBY)
         def function(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
           puts 123456
         end
@@ -904,7 +904,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # in just one file, even though there may be more than one offense for
       # the same cop in a single file. Exclude properties are generated for
       # them.
-      expect(actual.grep(/^[^#]/).join($RS)).to eq(<<-YAML.strip_indent.chomp)
+      expect(actual.grep(/^[^#]/).join($RS)).to eq(<<~YAML.chomp)
         Lint/UnusedMethodArgument:
           Exclude:
             - 'example2.rb'
@@ -948,7 +948,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'disables cop if --exclude-limit is exceeded' do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(0)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-          .to eq(<<-YAML.strip_indent)
+          .to eq(<<~YAML)
             # Offense count: 3
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
@@ -969,7 +969,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('example4.rb', ['$!'])
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(0)
         expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-          .to eq(<<-YAML.strip_indent)
+          .to eq(<<~YAML)
             # Offense count: 4
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
@@ -1002,7 +1002,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'displays report summary but no offenses' do
         expect(cli.run(['--auto-gen-config'])).to eq(0)
 
-        expect($stdout.string).to include(<<-OUTPUT.strip_indent)
+        expect($stdout.string).to include(<<~OUTPUT)
           Inspecting 1 file
           C
 

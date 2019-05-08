@@ -26,28 +26,28 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for arrays of single quoted strings' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ['one', 'two', 'three']
         ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
     end
 
     it 'registers an offense for arrays of double quoted strings' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ["one", "two", "three"]
         ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
     end
 
     it 'registers an offense for arrays of unicode word characters' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ["ВУЗ", "вуз", "中文网"]
         ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
     end
 
     it 'registers an offense for arrays with character constants' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         ["one", ?\n]
         ^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for strings with newline and tab escapes' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         ["one\n", "hi\tthere"]
         ^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense in a non-ambiguous block context' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         foo(['bar', 'baz']) { qux }
             ^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'does not register an offense for an array with comments in it' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         [
         "foo", # comment here
         "bar", # this thing was done because of a bug
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for an array with comments outside of it' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         [
         ^ Use `%w` or `%W` for an array of words.
         "foo",
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ] # test
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         %w(
         foo
         bar
@@ -148,11 +148,11 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'keeps the line breaks in place after auto-correct' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         ['one',
         'two', 'three']
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         %w(one
         two three)
       RUBY
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         ['one', 'two', 'three']
         %w(a b c d)
       RUBY
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         ['one', 'two', 'three']
         %w(a b)
       RUBY
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for a %w() array' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %w(one two three)
         ^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
       RUBY
@@ -267,7 +267,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     it "doesn't fail on strings which are not valid UTF-8" do
       # Regression test, see GH issue 2671
-      expect_no_offenses(<<-'RUBY'.strip_indent)
+      expect_no_offenses(<<~'RUBY')
         ["\xC0",
          "\xC2\x4a",
          "\xC2\xC2",
@@ -280,7 +280,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     it "doesn't fail on strings which are not valid UTF-8" \
        'and encoding: binary is specified' do
-      expect_no_offenses(<<-'RUBY'.strip_indent)
+      expect_no_offenses(<<~'RUBY')
         # -*- encoding: binary -*-
         ["\xC0",
          "\xC2\x4a",
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\A[\w@.]+\z/ } }
 
     it 'registers an offense for arrays of email addresses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ['a@example.com', 'b@example.com']
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY

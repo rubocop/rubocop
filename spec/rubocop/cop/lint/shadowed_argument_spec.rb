@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
   describe 'method argument shadowing' do
     context 'when a single argument is shadowed' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def do_something(foo)
             foo = 42
             ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when zsuper is used' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def do_something(foo)
               foo = 42
               ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'when argument was shadowed by zsuper' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def select_fields(query, current_time)
                 query = super
                 ^^^^^^^^^^^^^ Argument `query` was shadowed by a local variable before it was used.
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
           let(:cop_config) { { 'IgnoreImplicitReferences' => true } }
 
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def do_something(foo)
                 foo = 42
                 super
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'when argument was shadowed by zsuper' do
             it 'does not register an offense' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 def select_fields(query, current_time)
                   query = super
                   query.select('*')
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when argument was used in shorthand assignment' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def do_something(bar)
               bar = 'baz' if foo
               bar ||= {}
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when a splat argument is shadowed' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def do_something(*items)
               *items, last = [42, 42]
                ^^^^^ Argument `items` was shadowed by a local variable before it was used.
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when reassigning to splat variable' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def do_something(*items)
               *items, last = items
               puts items
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when binding is used' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def do_something(foo)
               foo = 42
               ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
           let(:cop_config) { { 'IgnoreImplicitReferences' => true } }
 
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def do_something(foo)
                 foo = 42
                 binding
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'and the argument is not used' do
         it 'accepts' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def do_something(foo)
               puts 'done something'
             end
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       context 'and shadowed within a conditional' do
         it 'registers an offense without specifying where '\
            'the reassignment took place' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def do_something(foo)
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
               if bar
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and was used before shadowing' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def do_something(foo)
                 if bar
                   puts foo
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the argument was not shadowed outside the conditional' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def do_something(foo)
                 if bar
                   foo = 42
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the conditional occurs after the reassignment' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def do_something(foo)
                 foo = 43
                 ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the conditional is nested within a conditional' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 if bar
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 def do_something(foo)
                   if bar
                     puts foo
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the conditional is nested within a lambda' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 lambda do
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 def do_something(foo)
                   lambda do
                     puts foo
@@ -267,7 +267,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       context 'and shadowed within a block' do
         it 'registers an offense without specifying where '\
            'the reassignment took place' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def do_something(foo)
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
               something { foo = 43 }
@@ -280,7 +280,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and was used before shadowing' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def do_something(foo)
                 lambda do
                   puts foo
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the argument was not shadowed outside the block' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def do_something(foo)
                 something { foo = 43 }
 
@@ -308,7 +308,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the block occurs after the reassignment' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def do_something(foo)
                 foo = 43
                 ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -322,7 +322,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the block is nested within a block' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 something do
@@ -339,7 +339,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 def do_something(foo)
                   lambda do
                     puts foo
@@ -360,7 +360,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the block is nested within a conditional' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 if baz
@@ -377,7 +377,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 def do_something(foo)
                   if baz
                     puts foo
@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       context 'and one of them shadowed within a lambda while another is ' \
         'shadowed outside' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def do_something(foo, bar)
               lambda do
                 bar = 42
@@ -419,7 +419,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
     context 'when a block local variable is assigned but no argument is' \
             ' shadowed' do
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           numbers = [1, 2, 3]
           numbers.each do |i; j|
             j = i * 2
@@ -431,7 +431,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
     context 'when a single argument is shadowed' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           do_something do |foo|
             foo = 42
             ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -442,7 +442,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when zsuper is used' do
         it 'accepts' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             do_something do |foo|
               foo = 42
               super
@@ -453,7 +453,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'when binding is used' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             do_something do |foo|
               foo = 42
               ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -466,7 +466,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
           let(:cop_config) { { 'IgnoreImplicitReferences' => true } }
 
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               do_something do |foo|
                 foo = 42
                 binding
@@ -478,7 +478,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
       context 'and the argument is not used' do
         it 'accepts' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             do_something do |foo|
               puts 'done something'
             end
@@ -489,7 +489,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       context 'and shadowed within a conditional' do
         it 'registers an offense without specifying where '\
            'the reassignment took place' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             do_something do |foo|
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
               if bar
@@ -503,7 +503,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and was used before shadowing' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               do_something do |foo|
                 if bar
                   puts foo
@@ -518,7 +518,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the argument was not shadowed outside the conditional' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               do_something do |foo|
                 if bar
                   foo = 42
@@ -532,7 +532,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the conditional occurs after the reassignment' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               do_something do |foo|
                 foo = 43
                 ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -548,7 +548,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the conditional is nested within a conditional' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 if bar
@@ -564,7 +564,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 do_something do |foo|
                   if bar
                     puts foo
@@ -583,7 +583,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the conditional is nested within a lambda' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 lambda do
@@ -599,7 +599,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 do_something do |foo|
                   lambda do
                     puts foo
@@ -619,7 +619,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       context 'and shadowed within a block' do
         it 'registers an offense without specifying where '\
            'the reassignment took place' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             do_something do |foo|
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
               something { foo = 43 }
@@ -632,7 +632,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and was used before shadowing' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               do_something do |foo|
                 lambda do
                   puts foo
@@ -648,7 +648,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the argument was not shadowed outside the block' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               do_something do |foo|
                 something { foo = 43 }
 
@@ -660,7 +660,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
         context 'and the block occurs after the reassignment' do
           it 'registers an offense' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               do_something do |foo|
                 foo = 43
                 ^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -674,7 +674,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the block is nested within a block' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 something do
@@ -691,7 +691,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 do_something do |foo|
                   lambda do
                     puts foo
@@ -712,7 +712,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         context 'and the block is nested within a conditional' do
           it 'registers an offense without specifying where '\
              'the reassignment took place' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
                 if baz
@@ -729,7 +729,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
 
           context 'and the argument was used before shadowing' do
             it 'accepts' do
-              expect_no_offenses(<<-RUBY.strip_indent)
+              expect_no_offenses(<<~RUBY)
                 do_something do |foo|
                   if baz
                     puts foo
@@ -751,7 +751,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       context 'and one of them shadowed within a lambda while another is ' \
         'shadowed outside' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             do_something do |foo, bar|
               lambda do
                 bar = 42

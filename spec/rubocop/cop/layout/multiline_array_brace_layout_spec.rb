@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit arrays' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       foo = a,
       b
     RUBY

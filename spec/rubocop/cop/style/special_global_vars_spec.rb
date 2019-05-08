@@ -7,35 +7,35 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'use_english_names' } }
 
     it 'registers an offense for $:' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $:
              ^^ Prefer `$LOAD_PATH` over `$:`.
       RUBY
     end
 
     it 'registers an offense for $"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $"
              ^^ Prefer `$LOADED_FEATURES` over `$"`.
       RUBY
     end
 
     it 'registers an offense for $0' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $0
              ^^ Prefer `$PROGRAM_NAME` over `$0`.
       RUBY
     end
 
     it 'registers an offense for $$' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $$
              ^^ Prefer `$PROCESS_ID` or `$PID` from the stdlib 'English' module (don't forget to require it) over `$$`.
       RUBY
     end
 
     it 'is clear about variables from the English library vs those not' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $*
              ^^ Prefer `$ARGV` from the stdlib 'English' module (don't forget to require it) or `ARGV` over `$*`.
       RUBY
@@ -82,35 +82,35 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'use_perl_names' } }
 
     it 'registers an offense for $LOAD_PATH' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $LOAD_PATH
              ^^^^^^^^^^ Prefer `$:` over `$LOAD_PATH`.
       RUBY
     end
 
     it 'registers an offense for $LOADED_FEATURES' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $LOADED_FEATURES
              ^^^^^^^^^^^^^^^^ Prefer `$"` over `$LOADED_FEATURES`.
       RUBY
     end
 
     it 'registers an offense for $PROGRAM_NAME' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $PROGRAM_NAME
              ^^^^^^^^^^^^^ Prefer `$0` over `$PROGRAM_NAME`.
       RUBY
     end
 
     it 'registers an offense for $PID' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $PID
              ^^^^ Prefer `$$` over `$PID`.
       RUBY
     end
 
     it 'registers an offense for $PROCESS_ID' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         puts $PROCESS_ID
              ^^^^^^^^^^^ Prefer `$$` over `$PROCESS_ID`.
       RUBY

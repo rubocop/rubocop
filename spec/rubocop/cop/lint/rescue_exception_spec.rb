@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for rescue from Exception' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       begin
         something
       rescue Exception
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'registers an offense for rescue with ::Exception' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       begin
         something
       rescue ::Exception
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'registers an offense for rescue with StandardError, Exception' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       begin
         something
       rescue StandardError, Exception
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'registers an offense for rescue with Exception => e' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       begin
         something
       rescue Exception => e
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with no class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
         return
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with no class and => e' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
         return
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with other class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
         return
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with other classes' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
         return
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not register an offense for rescue with a module prefix' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
         return
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
   end
 
   it 'does not crash when the splat operator is used in a rescue' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       ERRORS = [Exception]
       begin
         a = 3 / 0
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
 
   it 'does not crash when the namespace of a rescued class is in a local ' \
      'variable' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       adapter = current_adapter
       begin
       rescue adapter::ParseError

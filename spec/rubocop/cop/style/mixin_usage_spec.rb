@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
   context 'include' do
     it 'registers an offense when using outside class (used above)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         include M
         ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
         class C
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it 'registers an offense when using outside class (used below)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
         end
         include M
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it 'registers an offense when using only `include` statement' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         include M
         ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
       RUBY
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
     it 'registers an offense when using `include` in method definition ' \
        'outside class or module' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def foo
           include M
           ^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
@@ -40,14 +40,14 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it 'does not register an offense when using outside class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Foo.include M
         class C; end
       RUBY
     end
 
     it 'does not register an offense when using inside class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class C
           include M
         end
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it 'does not register an offense when using inside block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Class.new do
           include M
         end
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
     it 'does not register an offense when using inside block ' \
        'and `if` condition is after `include`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         klass.class_eval do
           include M if defined?(M)
         end
@@ -72,14 +72,14 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it "doesn't register an offense when `include` call is a method argument" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         do_something(include(M))
       RUBY
     end
 
     it 'does not register an offense when using `include` in method ' \
        'definition inside class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class X
           def foo
             include M
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
     it 'does not register an offense when using `include` in method ' \
        'definition inside module' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module X
           def foo
             include M
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
     context 'Multiple definition classes in one' do
       it 'does not register an offense when using inside class' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class C1
             include M
           end
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
     context 'Nested module' do
       it 'registers an offense when using outside class' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           include M1::M2::M3
           ^^^^^^^^^^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
           class C
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
   context 'extend' do
     it 'registers an offense when using outside class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         extend M
         ^^^^^^^^ `extend` is used at the top level. Use inside `class` or `module`.
         class C
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it 'does not register an offense when using inside class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class C
           extend M
         end
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
 
   context 'prepend' do
     it 'registers an offense when using outside class' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         prepend M
         ^^^^^^^^^ `prepend` is used at the top level. Use inside `class` or `module`.
         class C
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
     end
 
     it 'does not register an offense when using inside class' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class C
           prepend M
         end
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
   end
 
   it 'does not register an offense when using inside nested module' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       module M1
         include M2
 

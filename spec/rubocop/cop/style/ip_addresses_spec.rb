@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
 
   context 'IPv4' do
     it 'registers an offense for a valid address' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         '255.255.255.255'
         ^^^^^^^^^^^^^^^^^ Do not hardcode IP addresses.
       RUBY
@@ -28,35 +28,35 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
 
   context 'IPv6' do
     it 'registers an offense for a valid address' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not hardcode IP addresses.
       RUBY
     end
 
     it 'registers an offense for an address with 0s collapsed' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         '2001:db8:85a3::8a2e:370:7334'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not hardcode IP addresses.
       RUBY
     end
 
     it 'registers an offense for a shortened address' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         '2001:db8::1'
         ^^^^^^^^^^^^^ Do not hardcode IP addresses.
       RUBY
     end
 
     it 'registers an offense for a very short address' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         '1::'
         ^^^^^ Do not hardcode IP addresses.
       RUBY
     end
 
     it 'registers an offense for the loopback address' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         '::1'
         ^^^^^ Do not hardcode IP addresses.
       RUBY
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
         let(:cop_config) { { 'Whitelist' => [] } }
 
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             '::'
             ^^^^ Do not hardcode IP addresses.
           RUBY

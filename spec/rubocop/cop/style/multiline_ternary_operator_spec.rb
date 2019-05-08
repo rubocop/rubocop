@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator do
 
   it 'registers offense when the if branch and the else branch are ' \
      'on a separate line from the condition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = cond ?
           ^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
         b : c
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator do
   end
 
   it 'registers an offense when the false branch is on a separate line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = cond ? b :
           ^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
           c
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator do
   end
 
   it 'registers an offense when everything is on a separate line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a = cond ?
           ^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
           b :

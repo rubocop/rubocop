@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
         context 'not using semicolons' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               if a
                 foo
               else
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
             RUBY
           end
           let(:corrected_source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               if a
                 foo
               end
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'in an if-statement' do
-        let(:source) { <<-RUBY.strip_indent }
+        let(:source) { <<~RUBY }
           if cond
             if cond2
               something
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
             end
           end
         RUBY
-        let(:corrected_source) { <<-RUBY.strip_indent }
+        let(:corrected_source) { <<~RUBY }
           if cond
             if cond2
               something
@@ -126,14 +126,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an empty comment' do
-        let(:source) { <<-RUBY.strip_indent }
+        let(:source) { <<~RUBY }
           if cond
             something
           else
             # TODO
           end
         RUBY
-        let(:corrected_source) { <<-RUBY.strip_indent }
+        let(:corrected_source) { <<~RUBY }
           if cond
             something
           else
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
       context 'with an else-clause containing only the literal nil' do
         context 'when standalone' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               if a
                 foo
               elsif b
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
           end
 
           let(:corrected_source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               if a
                 foo
               elsif b
@@ -507,7 +507,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
     end
 
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         def foo
           if @params
             case @params[:x]
@@ -524,7 +524,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
     end
 
     let(:corrected_source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         def foo
           if @params
             case @params[:x]

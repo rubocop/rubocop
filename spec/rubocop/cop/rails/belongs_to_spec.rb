@@ -6,23 +6,23 @@ RSpec.describe RuboCop::Cop::Rails::BelongsTo do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense and corrects when specifying `required: false`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       belongs_to :foo, required: false
       ^^^^^^^^^^ You specified `required: false`, in Rails > 5.0 the required option is deprecated and you want to use `optional: true`.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       belongs_to :foo, optional: true
     RUBY
   end
 
   it 'registers an offense and corrects when specifying `required: true`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       belongs_to :foo, required: true
       ^^^^^^^^^^ You specified `required: true`, in Rails > 5.0 the required option is deprecated and you want to use `optional: false`. In most configurations, this is the default and you can omit this option altogether
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       belongs_to :foo, optional: false
     RUBY
   end
