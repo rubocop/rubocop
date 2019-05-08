@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                       "If it's necessary, use `_` or `_foo` " \
                       "as an argument name to indicate that it won't be used."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(foo, bar)
                             ^^^ #{message}
               puts bar
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
         context 'and arguments are swap-assigned' do
           it 'accepts' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               def foo(a, b)
                 a, b = b, a
               end
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                         '`_` or `_a` as an argument name to indicate that ' \
                         "it won't be used."
 
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               def foo(a, b)
                       ^ #{message}
                 a, b = b, 42
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             "to accept any arguments but don't care about them."
           end
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(foo, bar)
                                  ^^^ #{bar_message}
                             ^^^ #{foo_message}
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     context 'when a required keyword argument is unused' do
       it 'registers an offense but does not suggest underscore-prefix' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def self.some_method(foo, bar:)
                                     ^^^ Unused method argument - `bar`.
             puts foo
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     context 'when an optional keyword argument is unused' do
       it 'registers an offense but does not suggest underscore-prefix' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def self.some_method(foo, bar: 1)
                                     ^^^ Unused method argument - `bar`.
             puts foo
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
 
         it 'does not care' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def self.some_method(foo, bar: 1)
               puts foo
             end
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                     'if you want the method to accept any arguments but ' \
                     "don't care about them."
 
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def self.some_method(foo)
                                ^^^ #{message}
           end
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when an underscore-prefixed method argument is unused' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         def some_method(_foo)
         end
       RUBY
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a method argument is used' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         def some_method(foo)
           puts foo
         end
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a variable is unused' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         def some_method
           foo = 1
         end
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'when a block argument is unused' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         1.times do |foo|
         end
       RUBY
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       context 'when a method argument is not used explicitly' do
         it 'accepts since the arguments are guaranteed to be the same as ' \
            "superclass' ones and the user has no control on them" do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def some_method(foo)
               super
             end
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                       '`some_method(*)` if you want the method to accept any ' \
                       "arguments but don't care about them."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(foo)
                             ^^^ #{message}
               super(:something)
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     context 'in a method calling `binding` without arguments' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         def some_method(foo, bar)
           do_something binding
         end
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         end
 
         it 'registers offenses' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(foo, bar)
                                  ^^^ #{bar_message}
                             ^^^ #{foo_message}
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                       'if you want the method to accept any arguments but ' \
                       "don't care about them."
 
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def some_method(foo)
                             ^^^ #{message}
               binding(:something)
@@ -379,14 +379,14 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     let(:cop_config) { { 'IgnoreEmptyMethods' => true } }
 
     it 'accepts an empty method with a single unused parameter' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method(arg)
         end
       RUBY
     end
 
     it 'accepts an empty singleton method with a single unused parameter' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.method(unused)
         end
       RUBY
@@ -401,7 +401,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                   "want the method to accept any arguments but don't care " \
                   'about them.'
 
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def method(arg)
                    ^^^ #{message}
           1
@@ -410,7 +410,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     end
 
     it 'accepts an empty method with multiple unused parameters' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def method(a, b, *others)
         end
       RUBY
@@ -425,7 +425,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         "to accept any arguments but don't care about them."
       end
 
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def method(a, b, *others)
                           ^^^^^^ #{others_message}
                       ^ #{b_message}

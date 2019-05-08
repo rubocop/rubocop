@@ -10,28 +10,28 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'registers an offense for modifier rescue' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       method rescue handle
       ^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
   end
 
   it 'registers an offense for modifier rescue around parallel assignment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a, b = 1, 2 rescue nil
       ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
   end
 
   it 'handles more complex expression with modifier rescue' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       method1 or method2 rescue handle
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
   end
 
   it 'handles modifier rescue in normal rescue' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       begin
         test rescue modifier_handle
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'handles modifier rescue in a method' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def a_method
         test rescue nil
         ^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'does not register an offense for normal rescue' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         test
       rescue
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'does not register an offense for normal rescue with ensure' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         test
       rescue
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   it 'does not register an offense for nested normal rescue' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         begin
           test
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
 
   context 'when an instance method has implicit begin' do
     it 'accepts normal rescue' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def some_method
           test
         rescue
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'handles modifier rescue in body of implicit begin' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def some_method
           test rescue modifier_handle
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
 
   context 'when a singleton method has implicit begin' do
     it 'accepts normal rescue' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.some_method
           test
         rescue
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'handles modifier rescue in body of implicit begin' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def self.some_method
           test rescue modifier_handle
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
@@ -134,11 +134,11 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
 
   context 'autocorrect' do
     it 'corrects basic rescue modifier' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         foo rescue bar
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         begin
           foo
         rescue
@@ -148,11 +148,11 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects complex rescue modifier' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         foo || bar rescue bar
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         begin
           foo || bar
         rescue
@@ -162,14 +162,14 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects rescue modifier nested inside of def' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         def foo
           test rescue modifier_handle
         end
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def foo
           begin
             test
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects nested rescue modifier' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         begin
           test rescue modifier_handle
         rescue
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
       RUBY
       new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         begin
           begin
             test
@@ -204,11 +204,11 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects doubled rescue modifiers' do
-      new_source = autocorrect_source_with_loop(<<-RUBY.strip_indent)
+      new_source = autocorrect_source_with_loop(<<~RUBY)
         blah rescue 1 rescue 2
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         begin
           begin
             blah

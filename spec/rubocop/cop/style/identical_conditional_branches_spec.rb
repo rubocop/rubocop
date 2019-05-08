@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with identical bodies' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if something
           do_x
           ^^^^ Move `do_x` out of the conditional.
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with identical trailing lines' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if something
           method_call_here(1, 2, 3)
           do_x
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with identical leading lines' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if something
           do_x
           ^^^^ Move `do_x` out of the conditional.
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..elsif with no else' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if something
           do_x
         elsif something_else
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on if..else with slightly different trailing lines' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if something
           do_x(1)
         else
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with identical bodies' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         case something
         when :a
           do_x
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
   # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
   context 'when one of the case branches is empty' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case value
         when cond1
         else
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with identical trailing lines' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         case something
         when :a
           x1
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with identical leading lines' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         case something
         when :a
           do_x
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case without else' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case something
         when :a
           do_x
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'on case with empty when' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         case something
         when :a
           do_x
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
 
   context 'with empty brace' do
     it 'does not raise any error' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if condition
           ()
         else

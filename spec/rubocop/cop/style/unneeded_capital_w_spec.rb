@@ -12,23 +12,23 @@ RSpec.describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers an offense for misused %W' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       %W(cat dog)
       ^^^^^^^^^^^ Do not use `%W` unless interpolation is needed. If not, use `%w`.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       %w(cat dog)
     RUBY
   end
 
   it 'registers an offense for misused %W with different bracket' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       %W[cat dog]
       ^^^^^^^^^^^ Do not use `%W` unless interpolation is needed. If not, use `%w`.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       %w[cat dog]
     RUBY
   end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers no offense for %W with special characters' do
-    expect_no_offenses(<<-'RUBY'.strip_indent)
+    expect_no_offenses(<<~'RUBY')
       def dangerous_characters
         %W(\000) +
         %W(\001) +

@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for return in ensure' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       begin
         something
       ensure
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
   end
 
   it 'does not register an offense for return outside ensure' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
         return
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
   end
 
   it 'does not check when ensure block has no body' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         something
       ensure

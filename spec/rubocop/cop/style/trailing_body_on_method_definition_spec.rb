@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'registers an offense when body trails after method definition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def some_method; body
                        ^^^^ Place the first line of a multi-line method definition's body on its own line.
       end
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'registers when body starts on def line & continues one more line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def some_method; foo = {}
                        ^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
         more_body(foo)
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'registers when body starts on def line & continues many more lines' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def do_stuff(thing) process(thing)
                           ^^^^^^^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
         8.times { thing + 9 }
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'accepts a method with one line of body' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def some_method
         body
       end
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'accepts a method with multiple lines of body' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def stuff_method
         stuff
         9.times { process(stuff) }
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
   end
 
   it 'does not register offense with trailing body on method end' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def some_method
         body
       foo; end

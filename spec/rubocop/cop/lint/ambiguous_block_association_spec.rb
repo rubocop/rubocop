@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
   context 'without parentheses' do
     context 'without receiver' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           some_method a { |el| puts el }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
         RUBY
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
 
     context 'with receiver' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Foo.some_method a { |el| puts el }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
         RUBY
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
 
       context 'when using safe navigation operator' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             Foo&.some_method a { |el| puts el }
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
           RUBY
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
 
     context 'rspec expect {}.to change {}' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           expect { order.expire }.to change { order.events }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `change { order.events }` to make sure that the block will be associated with the `change` method call.
         RUBY
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
 
     context 'as a hash key' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Hash[some_method a { |el| el }]
                ^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| el }` to make sure that the block will be associated with the `a` method call.
         RUBY
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation do
 
     context 'with assignment' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           foo = some_method a { |el| puts el }
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
         RUBY

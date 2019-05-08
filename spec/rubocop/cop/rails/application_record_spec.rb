@@ -5,13 +5,13 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
     subject(:cop) { described_class.new(config) }
 
     it 'allows ApplicationRecord to be defined' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class ApplicationRecord < ActiveRecord::Base; end
       RUBY
     end
 
     it 'allows models that subclass ActiveRecord::Base' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class MyModel < ActiveRecord::Base; end
       RUBY
     end
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
     end
 
     it 'allows namespaced models that subclass ActiveRecord::Base' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         module Nested
           class MyModel < ActiveRecord::Base; end
         end
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
     end
 
     it 'allows models defined using nested constants' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Nested::MyModel < ActiveRecord::Base; end
       RUBY
     end
@@ -55,38 +55,38 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
     subject(:cop) { described_class.new }
 
     it 'allows ApplicationRecord to be defined' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class ApplicationRecord < ActiveRecord::Base
         end
       RUBY
     end
 
     it 'corrects models that subclass ActiveRecord::Base' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class MyModel < ActiveRecord::Base
                         ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class MyModel < ApplicationRecord
         end
       RUBY
     end
 
     it 'corrects single-line class definitions' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class MyModel < ActiveRecord::Base; end
                         ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class MyModel < ApplicationRecord; end
       RUBY
     end
 
     it 'corrects namespaced models that subclass ActiveRecord::Base' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module Nested
           class MyModel < ActiveRecord::Base
                           ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         module Nested
           class MyModel < ApplicationRecord
           end
@@ -103,47 +103,47 @@ RSpec.describe RuboCop::Cop::Rails::ApplicationRecord do
     end
 
     it 'corrects models defined using nested constants' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Nested::MyModel < ActiveRecord::Base
                                 ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class Nested::MyModel < ApplicationRecord
         end
       RUBY
     end
 
     it 'corrects models defined using Class.new' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         MyModel = Class.new(ActiveRecord::Base)
                             ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         MyModel = Class.new(ApplicationRecord)
       RUBY
     end
 
     it 'corrects nested models defined using Class.new' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Nested::MyModel = Class.new(ActiveRecord::Base)
                                     ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Nested::MyModel = Class.new(ApplicationRecord)
       RUBY
     end
 
     it 'corrects anonymous models' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Class.new(ActiveRecord::Base) {}
                   ^^^^^^^^^^^^^^^^^^ Models should subclass `ApplicationRecord`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Class.new(ApplicationRecord) {}
       RUBY
     end

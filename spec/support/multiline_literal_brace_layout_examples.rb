@@ -12,7 +12,7 @@ shared_examples_for 'multiline literal brace layout' do
   let(:b_comment) { '' } # Comment after the second element.
   let(:multi_prefix) { '' } # Prefix multi and heredoc with this.
   let(:multi) do # A viable multi-line element.
-    <<-RUBY.strip_indent.chomp
+    <<~RUBY.chomp
       {
       foo: bar
       }
@@ -21,7 +21,7 @@ shared_examples_for 'multiline literal brace layout' do
   # This heredoc is unsafe to edit around because it ends on the same line as
   # the node itself.
   let(:heredoc) do
-    <<-RUBY.strip_indent.chomp
+    <<~RUBY.chomp
       <<-EOM
       baz
       EOM
@@ -30,7 +30,7 @@ shared_examples_for 'multiline literal brace layout' do
   # This heredoc is safe to edit around because it ends on a line before the
   # last line of the node.
   let(:safe_heredoc) do
-    <<-RUBY.strip_indent.chomp
+    <<~RUBY.chomp
       {
       a: <<-EOM
       baz
@@ -90,7 +90,7 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on different line from last element' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent.chomp)
+        new_source = autocorrect_source(<<~RUBY.chomp)
           #{prefix}#{open}#{a}, # a
           #{b} # b
           #{close}
@@ -194,7 +194,7 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on same line as last element' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent.chomp)
+        new_source = autocorrect_source(<<~RUBY.chomp)
           #{prefix}#{open}#{a}, # a
           #{b}#{close} # b
           #{suffix}
@@ -262,7 +262,7 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'autocorrects closing brace on different line as last element' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent.chomp)
+        new_source = autocorrect_source(<<~RUBY.chomp)
           #{prefix}#{open}#{a}, # a
           #{b} # b
           #{close}

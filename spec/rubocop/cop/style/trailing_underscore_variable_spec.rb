@@ -6,71 +6,71 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
   shared_examples 'common functionality' do
     it 'registers an offense when the last variable of parallel assignment ' \
        'is an underscore' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, b, _ = foo()
               ^^ Do not use trailing `_`s in parallel assignment. Prefer `a, b, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, b, = foo()
       RUBY
     end
 
     it 'registers an offense when multiple underscores are used '\
        'as the last variables of parallel assignment ' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, _, _ = foo()
            ^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end
 
     it 'registers an offense for splat underscore as the last variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, *_ = foo()
            ^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end
 
     it 'registers an offense when underscore is the second to last variable ' \
        'and blank is the last variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, _, = foo()
            ^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end
 
     it 'registers an offense when underscore is the only variable ' \
        'in parallel assignment' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         _, = foo()
         ^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         foo()
       RUBY
     end
 
     it 'registers an offense for an underscore as the last param ' \
        'when there is also an underscore as the first param' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         _, b, _ = foo()
               ^^ Do not use trailing `_`s in parallel assignment. Prefer `_, b, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         _, b, = foo()
       RUBY
     end
@@ -110,37 +110,37 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
     it 'registers an offense for multiple underscore variables preceded by ' \
        'a splat underscore variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, *_, _, _ = foo()
            ^^^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end
 
     it 'registers an offense for nested assignments with trailing ' \
       'underscores' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, (b, _) = foo()
               ^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (b,) = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, (b,) = foo()
       RUBY
     end
 
     it 'registers an offense for complex nested assignments with trailing ' \
       'underscores' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, (_, (b, _), *_) = foo()
                   ^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (_, (b,), *_) = foo()`.
                       ^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (_, (b, _),) = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, (_, (b,),) = foo()
       RUBY
     end
@@ -241,24 +241,24 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
     it 'registers an offense for named variables ' \
        'that start with an underscore' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, b, _c = foo()
               ^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, b, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, b, = foo()
       RUBY
     end
 
     it 'registers an offense for a named splat underscore ' \
        'as the last variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, *_b = foo()
            ^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end
@@ -270,36 +270,36 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
     it 'registers an offense for an underscore variable preceded ' \
        'by a named splat underscore variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, *_b, _ = foo()
            ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end
 
     it 'registers an offense for an underscore preceded by ' \
        'a named splat underscore' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, b, *_c, _ = foo()
               ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, b, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, b, = foo()
       RUBY
     end
 
     it 'registers an offense for multiple underscore variables ' \
        'preceded by a named splat underscore variable' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a, *_b, _, _ = foo()
            ^^^^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a, = foo()
       RUBY
     end

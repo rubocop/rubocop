@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Rails::Output do
   subject(:cop) { described_class.new }
 
   it 'records an offense for methods without a receiver' do
-    source = <<-RUBY.strip_indent
+    source = <<~RUBY
       p "edmond dantes"
       puts "sinbad"
       print "abbe busoni"
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Rails::Output do
   end
 
   it 'does not record an offense for methods with a receiver' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       obj.print
       something.p
       nothing.pp
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Rails::Output do
   end
 
   it 'does not record an offense for methods without arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       print
       pp
       puts
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Rails::Output do
   end
 
   it 'does not record an offense for comments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # print "test"
       # p
       # $stdout.write

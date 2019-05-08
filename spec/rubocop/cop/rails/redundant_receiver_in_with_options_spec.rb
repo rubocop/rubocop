@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
 
     it 'registers an offense and corrects using explicit receiver ' \
       'in `with_options`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Account < ApplicationRecord
           with_options dependent: :destroy do |assoc|
             assoc.has_many :customers
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class Account < ApplicationRecord
           with_options dependent: :destroy do
             has_many :customers
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
 
     it 'does not register an offense when using inplicit receiver ' \
        'in `with_options`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Account < ApplicationRecord
           with_options dependent: :destroy do
             has_many :customers
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
 
     it 'registers an offense and corrects when including multiple ' \
       'redendant receivers in single line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         with_options options: false do |merger|
           merger.invoke(merger.something)
           ^^^^^^ Redundant receiver in `with_options`.
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         with_options options: false do
           invoke(something)
         end
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
 
     it 'does not register an offense when including method invocations ' \
        'to different receivers' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         client = ApplicationClient.new
         with_options options: false do |merger|
           client.invoke(merger.something, something)
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
 
     it 'does not register an offense when including block node' \
        'in `with_options`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         with_options options: false do |merger|
           merger.invoke
           with_another_method do |another_receiver|
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
     end
 
     it 'does not register an offense when empty' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         with_options options: false do |merger|
         end
       RUBY
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Rails::RedundantReceiverInWithOptions, :config do
 
     it 'does not register an offense when using explicit receiver in ' \
        '`with_options`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Account < ApplicationRecord
           with_options dependent: :destroy do |assoc|
             assoc.has_many :customers

@@ -5,21 +5,21 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordAliases do
 
   describe '#update_attributes' do
     it 'registers an offense and corrects' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         book.update_attributes(author: "Alice")
              ^^^^^^^^^^^^^^^^^ Use `update` instead of `update_attributes`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         book.update(author: "Alice")
       RUBY
     end
 
     context 'when using safe navigation operator' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
-        book&.update_attributes(author: "Alice")
-              ^^^^^^^^^^^^^^^^^ Use `update` instead of `update_attributes`.
+        expect_offense(<<~RUBY)
+          book&.update_attributes(author: "Alice")
+                ^^^^^^^^^^^^^^^^^ Use `update` instead of `update_attributes`.
         RUBY
       end
 
@@ -34,12 +34,12 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordAliases do
 
   describe '#update_attributes!' do
     it 'registers an offense and corrects' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         book.update_attributes!(author: "Bob")
              ^^^^^^^^^^^^^^^^^^ Use `update!` instead of `update_attributes!`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         book.update!(author: "Bob")
       RUBY
     end
@@ -59,12 +59,12 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordAliases do
 
   describe 'other use of the `update_attributes` string' do
     it 'does not autocorrect the other usage' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         update_attributes_book.update_attributes(author: "Alice")
                                ^^^^^^^^^^^^^^^^^ Use `update` instead of `update_attributes`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         update_attributes_book.update(author: "Alice")
       RUBY
     end

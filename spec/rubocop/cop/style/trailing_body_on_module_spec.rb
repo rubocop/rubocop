@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'registers an offense when body trails after module definition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Foo body
                  ^^^^ Place the first line of module body on its own line.
       end
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'registers offense with multi-line module' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Foo body
                  ^^^^ Place the first line of module body on its own line.
         def bar
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'registers offense when module definition uses semicolon' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Foo; do_stuff
                   ^^^^^^^^ Place the first line of module body on its own line.
       end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'accepts regular module' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       module Foo
         def no_op; end
       end
@@ -46,11 +46,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'auto-corrects body after module definition' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       module Foo extend self 
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       module Foo 
         extend self 
       end
@@ -58,11 +58,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'auto-corrects with comment after body' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       module BarQux; foo # comment
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       # comment
       module BarQux 
         foo 
@@ -71,11 +71,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   end
 
   it 'auto-corrects when there are multiple semicolons' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       module Bar; def bar; end
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       module Bar 
         def bar; end
       end
@@ -84,12 +84,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
 
   context 'when module is not on first line of processed_source' do
     it 'auto-correct offense' do
-      corrected = autocorrect_source(<<-RUBY.strip_indent)
+      corrected = autocorrect_source(<<~RUBY)
 
         module Foo; body 
         end
       RUBY
-      expect(corrected).to eq(<<-RUBY.strip_indent)
+      expect(corrected).to eq(<<~RUBY)
 
         module Foo 
           body 

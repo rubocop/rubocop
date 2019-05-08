@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for colon without space after it' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       {a:3}
         ^ Space missing after colon.
     RUBY
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
   end
 
   it 'accepts if' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       x = if w
             a
           end
@@ -39,21 +39,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
   end
 
   it 'accepts required keyword arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def f(x:, y:)
       end
     RUBY
   end
 
   it 'accepts colons denoting required keyword argument' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def initialize(table:, nodes:)
       end
     RUBY
   end
 
   it 'registers an offense if an keyword optional argument has no space' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def m(var:1, other_var: 2)
                ^ Space missing after colon.
       end

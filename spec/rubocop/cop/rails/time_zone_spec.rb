@@ -33,13 +33,13 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
 
       it "does not register an offense when a .new method is called
         independently of the #{klass} class" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           Range.new(1, #{klass}.class.to_s)
         RUBY
       end
 
       it "does not register an offense for #{klass}.new with zone argument" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')
         RUBY
       end
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
       end
 
       it "accepts Some::#{klass}.now" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           Some::#{klass}.now(0).strftime('%H:%M')
         RUBY
       end
@@ -77,11 +77,11 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
         # :current is a special case and is treated separately below
         (described_class::DANGEROUS_METHODS - [:current]).each do |a_method|
           it 'corrects the error' do
-            source = <<-RUBY.strip_indent
+            source = <<~RUBY
               #{klass}.#{a_method}
             RUBY
             new_source = autocorrect_source(source)
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               Time.zone.#{a_method}
             RUBY
           end
@@ -97,42 +97,42 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
     end
 
     it 'registers an offense for Time.parse' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Time.parse("2012-03-02 16:05:37")
              ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
       RUBY
     end
 
     it 'registers an offense for Time.at' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Time.at(ts)
              ^^ Do not use `Time.at` without zone. Use `Time.zone.at` instead.
       RUBY
     end
 
     it 'registers an offense for Time.at.in_time_zone' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Time.at(ts).in_time_zone
              ^^ Do not use `Time.at` without zone. Use `Time.zone.at` instead.
       RUBY
     end
 
     it 'registers an offense for Time.parse.localtime(offset)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Time.parse('12:00').localtime('+03:00')
              ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
       RUBY
     end
 
     it 'registers an offense for Time.parse.localtime' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Time.parse('12:00').localtime
              ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
       RUBY
     end
 
     it 'registers an offense for Time.parse in return' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         return Foo, Time.parse("2012-03-02 16:05:37")
                          ^^^^^ Do not use `Time.parse` without zone. Use `Time.zone.parse` instead.
       RUBY
@@ -204,7 +204,7 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
 
     described_class::DANGEROUS_METHODS.each do |a_method|
       it "accepts Some::Time.#{a_method}" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           Some::Time.#{a_method}
         RUBY
       end
@@ -230,46 +230,46 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
       end
 
       it "accepts #{klass}.current" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{klass}.current
         RUBY
       end
 
       described_class::ACCEPTED_METHODS.each do |a_method|
         it "accepts #{klass}.now.#{a_method}" do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             #{klass}.now.#{a_method}
           RUBY
         end
       end
 
       it "accepts #{klass}.zone.now" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{klass}.zone.now
         RUBY
       end
 
       it "accepts #{klass}.zone_default.now" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{klass}.zone_default.now
         RUBY
       end
 
       it "accepts #{klass}.find_zone(time_zone).now" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{klass}.find_zone('EST').now
         RUBY
       end
 
       it "accepts #{klass}.find_zone!(time_zone).now" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{klass}.find_zone!('EST').now
         RUBY
       end
 
       described_class::DANGEROUS_METHODS.each do |a_method|
         it "accepts #{klass}.current.#{a_method}" do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             #{klass}.current.#{a_method}
           RUBY
         end
@@ -280,12 +280,12 @@ RSpec.describe RuboCop::Cop::Rails::TimeZone, :config do
           end
 
           it 'corrects the error' do
-            source = <<-RUBY.strip_indent
+            source = <<~RUBY
               #{klass}.#{a_method}
             RUBY
             new_source = autocorrect_source(source)
             unless a_method == :current
-              expect(new_source).to eq(<<-RUBY.strip_indent)
+              expect(new_source).to eq(<<~RUBY)
                 #{klass}.zone.#{a_method}
               RUBY
             end

@@ -22,11 +22,11 @@ module RuboCop
       #
       #   # good
       #
-      #      <<-SQL.strip_indent
+      #      <<~SQL
       #        bar
       #      SQL
       #
-      #      <<-SQL.strip_indent.trim
+      #      <<~SQL.trim
       #        bar
       #      SQL
       #

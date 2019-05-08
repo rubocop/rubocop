@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for camel case in const name' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       TopCase = 5
       ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
 
   it 'registers an offense for camel case in const name' \
      'when using frozen range assignment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       TopCase = (1..5).freeze
       ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
@@ -20,21 +20,21 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
 
   it 'registers an offense for camel case in const name' \
      'when using frozen object assignment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       TopCase = 5.freeze
       ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
   end
 
   it 'registers an offense for non-POSIX upper case in const name' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Nö = 'no'
       ^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
   end
 
   it 'registers offenses for camel case in multiple const assignment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       TopCase, Test2, TEST_3 = 5, 6, 7
       ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
                ^^^^^ Use SCREAMING_SNAKE_CASE for constants.
@@ -42,14 +42,14 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
   end
 
   it 'registers an offense for snake case in const name' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       TOP_test = 5
       ^^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
   end
 
   it 'registers 1 offense if rhs is offending const assignment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Bar = Foo = 4
             ^^^ Use SCREAMING_SNAKE_CASE for constants.
     RUBY
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
   end
 
   it 'does not check names if rhs is a method call with block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       AnythingGoes = test do
         do_something
       end
@@ -104,13 +104,13 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
   end
 
   it 'does not check if rhs is a non-offensive const assignment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Bar = Foo = Qux
     RUBY
   end
 
   it 'checks qualified const names' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::AnythingGoes = 30
         ^^^^^^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
       a::Bar_foo = 10
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName do
 
     context 'when conditional branches contain only string values' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           TopCase = if true then 'foo' else 'bar' end
           ^^^^^^^ Use SCREAMING_SNAKE_CASE for constants.
         RUBY

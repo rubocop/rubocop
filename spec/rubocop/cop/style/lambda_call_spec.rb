@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'call' } }
 
     it 'registers an offense for x.()' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.(a, b)
         ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
       RUBY
     end
 
     it 'registers an offense for correct + opposite' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.call(a, b)
         x.(a, b)
         ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
@@ -35,14 +35,14 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
 
     it 'registers an offense for x.call()' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.call(a, b)
         ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
       RUBY
     end
 
     it 'registers an offense for opposite + correct' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.call(a, b)
         ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
         x.(a, b)

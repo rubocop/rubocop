@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       it 'registers offense for %Q' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %Q(hi)
           ^^^ Do not use `%Q` unless interpolation is needed. Use `%q`.
         RUBY
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
 
     context 'without interpolation' do
       it 'registers offense for %q' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %q(hi)
           ^^^ Use `%Q` instead of `%q`.
         RUBY

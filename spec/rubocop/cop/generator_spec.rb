@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Generator do
     include_context 'cli spec behavior'
 
     it 'generates a helpful source file with the name filled in' do
-      generated_source = <<-RUBY.strip_indent
+      generated_source = <<~RUBY
         # frozen_string_literal: true
 
         # TODO: when finished, run `rake generate_cops_documentation` to update the docs
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Generator do
     include_context 'cli spec behavior'
 
     it 'generates a helpful starting spec file with the class filled in' do
-      generated_source = <<-SPEC.strip_indent
+      generated_source = <<~SPEC
         # frozen_string_literal: true
 
         RSpec.describe RuboCop::Cop::Style::FakeCop do
@@ -117,14 +117,14 @@ RSpec.describe RuboCop::Cop::Generator do
           #
           # For example
           it 'registers an offense when using `#bad_method`' do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               bad_method
               ^^^^^^^^^^ Use `#good_method` instead of `#bad_method`.
             RUBY
           end
 
           it 'does not register an offense when using `#good_method`' do
-            expect_no_offenses(<<-RUBY.strip_indent)
+            expect_no_offenses(<<~RUBY)
               good_method
             RUBY
           end
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Generator do
 
   describe '#todo' do
     it 'provides a checklist for implementing the cop' do
-      expect(generator.todo).to eql(<<-TODO.strip_indent)
+      expect(generator.todo).to eql(<<~TODO)
         Do 3 steps:
           1. Add an entry to the "New features" section in CHANGELOG.md,
              e.g. "Add new `Style/FakeCop` cop. ([@your_id][])"
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     before do
-      IO.write(path, <<-YAML.strip_indent)
+      IO.write(path, <<~YAML)
         Style/Alias:
           Enabled: true
 
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Generator do
 
       generator.inject_config(config_file_path: path)
 
-      expect(File).to have_received(:write).with(path, <<-YAML.strip_indent)
+      expect(File).to have_received(:write).with(path, <<~YAML)
         Style/Alias:
           Enabled: true
 
@@ -214,7 +214,7 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/SpecialGlobalVars:
           Enabled: true
       YAML
-      expect(stdout.string).to eq(<<-MESSAGE.strip_indent)
+      expect(stdout.string).to eq(<<~MESSAGE)
         [modify] A configuration for the cop is added into #{path}.
                  If you want to disable the cop by default, set `Enabled` option to false.
       MESSAGE

@@ -220,14 +220,14 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     context 'when some paths are specified in the configuration Exclude ' \
             'and they are explicitly passed as arguments' do
       before do
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           AllCops:
             Exclude:
               - dir1/ruby1.rb
               - 'dir2/*'
         YAML
 
-        create_file('dir1/.rubocop.yml', <<-YAML.strip_indent)
+        create_file('dir1/.rubocop.yml', <<~YAML)
           AllCops:
             Exclude:
               - executable
@@ -258,7 +258,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
             'configuration Include and they are explicitly passed ' \
             'as arguments' do
       before do
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           AllCops:
             Include:
               - dir1/file
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
             'configuration Include and they are not explicitly passed ' \
             'as arguments' do
       before do
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           AllCops:
             Include:
               - '**/*.rb'

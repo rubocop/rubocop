@@ -109,7 +109,7 @@ RSpec.describe RuboCop::RakeTask do
 
     it 'uses the default formatter from .rubocop.yml if no formatter ' \
        'option is given', :isolated_environment do
-      create_file('.rubocop.yml', <<-YAML.strip_indent)
+      create_file('.rubocop.yml', <<~YAML)
         AllCops:
           DefaultFormatter: offenses
       YAML
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::RakeTask do
 
       expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
 
-      expect($stdout.string).to eq(<<-RESULT.strip_indent)
+      expect($stdout.string).to eq(<<~RESULT)
         Running RuboCop...
 
         1  Style/FrozenStringLiteralComment

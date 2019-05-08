@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter do
       )
 
       formatter.file_finished('test', cop.offenses)
-      expect(output.string).to eq <<-OUTPUT.strip_indent
+      expect(output.string).to eq <<~OUTPUT
         test:1:1: C: message 1
         test:3:6: C: message 2
       OUTPUT

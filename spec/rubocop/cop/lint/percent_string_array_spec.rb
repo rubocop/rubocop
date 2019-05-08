@@ -21,28 +21,28 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
       end
 
       it 'adds an offense if tokens contain quotes and are comma separated' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}('foo', 'bar', 'baz')
           ^^^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
       end
 
       it 'adds an offense if tokens contain both types of quotes' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}('foo' "bar" 'baz')
           ^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
       end
 
       it 'adds an offense if one token is quoted but there are no commas' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}('foo' bar baz)
           ^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
       end
 
       it 'adds an offense if there are no quotes but one comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           %#{char}(foo, bar baz)
           ^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
 
   context 'with binary encoded source' do
     it 'adds an offense if tokens contain quotes' do
-      expect_offense(<<-RUBY.b.strip_indent)
+      expect_offense(<<~RUBY.b)
         # encoding: BINARY
 
         %W[\xC0 "foo"]
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
     end
 
     it 'accepts if tokens contain no quotes' do
-      expect_no_offenses(<<-RUBY.b.strip_indent)
+      expect_no_offenses(<<~RUBY.b)
         # encoding: BINARY
 
         %W[\xC0 \xC1]

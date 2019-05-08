@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
   context 'when regular condition (if)' do
     it 'registers no offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a
           b
         else
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
     end
 
     it 'registers no offense for elsif' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a
           b
         elsif d
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
     context 'when condition and if_branch are same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           if b
           ^^^^ Use double pipes `||` instead.
             b
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
       context 'when else_branch is complex' do
         it 'registers no offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             if b
               b
             else
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
       context 'when using elsif branch' do
         it 'registers no offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             if a
               a
             elsif cond
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
       context 'when using modifier if' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             bar if bar
             ^^^^^^^^^^ This condition is not needed.
           RUBY
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
       context 'when `if` condition and `then` branch are the same ' \
               'and it has no `else` branch' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             if do_something
             ^^^^^^^^^^^^^^^ This condition is not needed.
               do_something
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
       context 'when using ternary if in `else` branch' do
         it 'registers no offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             if a
               a
             else
@@ -100,20 +100,20 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
     describe '#autocorrection' do
       it 'auto-corrects offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if b
             b
           else
             c
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b || c
         RUBY
       end
 
       it 'auto-corrects multiline sendNode offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if b
             b
           else
@@ -121,34 +121,34 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
               z)
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b || y(x,
               z)
         RUBY
       end
 
       it 'auto-corrects one-line node offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if b
             b
           else
             (c || d)
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b || (c || d)
         RUBY
       end
 
       it 'auto-corrects modifier nodes offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if b
             b
           else
             c while d
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b || (c while d)
         RUBY
       end
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
       it 'auto-corrects when using `<<` method higher precedence ' \
          'than `||` operator' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           ary << if foo
                    foo
                  else
@@ -169,20 +169,20 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
                  end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           ary << (foo || bar)
         RUBY
       end
 
       it 'when `if` condition and `then` branch are the same ' \
          'and it has no `else` branch' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           if do_something
             do_something
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           do_something
         RUBY
       end
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
     context 'when condition and if_branch are same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           b ? b : c
             ^^^^^ Use double pipes `||` instead.
         RUBY
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
   context 'when inverted condition (unless)' do
     it 'registers no offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         unless a
           b
         else
@@ -239,7 +239,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
     context 'when condition and else branch are same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           unless b
           ^^^^^^^^ Use double pipes `||` instead.
             y(x, z)
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
       context 'when unless branch is complex' do
         it 'registers no offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             unless b
               c
               d
@@ -265,14 +265,14 @@ RSpec.describe RuboCop::Cop::Style::UnneededCondition do
 
     describe '#autocorrection' do
       it 'auto-corrects offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           unless b
             c
           else
             b
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           b || c
         RUBY
       end

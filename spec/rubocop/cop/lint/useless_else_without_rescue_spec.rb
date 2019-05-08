@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
 
   context 'with `else` without `rescue`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           do_something
         else
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
 
   context 'with `else` with `rescue`' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           do_something
         rescue ArgumentError

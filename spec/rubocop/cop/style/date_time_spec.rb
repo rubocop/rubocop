@@ -6,21 +6,21 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
   let(:cop_config) { { 'AllowCoercion' => false } }
 
   it 'registers an offense when using DateTime for current time' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       DateTime.now
       ^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
   end
 
   it 'registers an offense when using ::DateTime for current time' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::DateTime.now
       ^^^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
   end
 
   it 'registers an offense when using DateTime for modern date' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       DateTime.iso8601('2016-06-29')
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
     before { cop_config['AllowCoercion'] = false }
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         thing.to_datetime
         ^^^^^^^^^^^^^^^^^ Do not use #to_datetime.
       RUBY

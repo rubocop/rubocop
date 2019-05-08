@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   let(:cop_config) { { 'Notice' => 'Copyright (\(c\) )?2015 Acme Inc' } }
 
   it 'does not register an offense when the notice is present' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # Copyright 2015 Acme Inc.
       # test2
       names = Array.new
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   end
 
   it 'does not register an offense when the notice is not the first comment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # test2
       # Copyright 2015 Acme Inc.
       names = Array.new
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   end
 
   it 'does not register an offense when the notice is in a block comment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       =begin
       blah, blah, blah
       Copyright 2015 Acme Inc.
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   end
 
   context 'when the copyright notice is missing' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       # test
       # test2
       names = Array.new
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(source)).to eq(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
         # test
         # test2
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   end
 
   context 'when the copyright notice comes after any code' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       # test2
       names = Array.new
       # Copyright (c) 2015 Acme Inc.
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(source)).to eq(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
         # test2
         names = Array.new
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
 
   context 'when the copyright notice is missing and ' \
           'the source code file starts with a shebang' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       #!/usr/bin/env ruby
       names = Array.new
       names << 'James'
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(source)).to eq(<<~RUBY)
         #!/usr/bin/env ruby
         # Copyright (c) 2015 Acme Inc.
         names = Array.new
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
 
   context 'when the copyright notice is missing and ' \
           'the source code file starts with an encoding comment' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       # encoding: utf-8
       names = Array.new
       names << 'James'
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(source)).to eq(<<~RUBY)
         # encoding: utf-8
         # Copyright (c) 2015 Acme Inc.
         names = Array.new
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   context 'when the copyright notice is missing and ' \
           'the source code file starts with shebang and ' \
           'an encoding comment' do
-    let(:source) { <<-RUBY.strip_indent }
+    let(:source) { <<~RUBY }
       #!/usr/bin/env ruby
       # encoding: utf-8
       names = Array.new
@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<-RUBY.strip_indent)
+      expect(autocorrect_source(source)).to eq(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # Copyright (c) 2015 Acme Inc.

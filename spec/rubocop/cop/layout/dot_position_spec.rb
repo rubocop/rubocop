@@ -7,20 +7,20 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'leading' } }
 
     it 'registers an offense for trailing dot in multi-line call' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         something.
                  ^ Place the . on the next line, together with the method name.
           method_name
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         something
           .method_name
       RUBY
     end
 
     it 'registers an offense for correct + opposite' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         something
           .method_name
         something.
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
           method_name
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         something
           .method_name
         something
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'accepts leading do in multi-line method call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something
           .method_name
       RUBY
@@ -48,13 +48,13 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call without a method name' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         l.
          ^ Place the . on the next line, together with the method name.
         (1)
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         l
         .(1)
       RUBY
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
 
     context 'when there is an intervening line comment' do
       it 'does not register offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           something.
           # a comment here
             method_name
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
 
     context 'when there is an intervening blank line' do
       it 'does not register offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           something.
 
             method_name
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
 
     context 'when using safe navigation operator' do
       it 'registers an offense for correct + opposite' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           something
             &.method_name
           something&.
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
             method_name
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           something
             &.method_name
           something
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
       end
 
       it 'accepts leading do in multi-line method call' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           something
             &.method_name
         RUBY
@@ -115,20 +115,20 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'trailing' } }
 
     it 'registers an offense for leading dot in multi-line call' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         something
           .method_name
           ^ Place the . on the previous line, together with the method call receiver.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         something.
           method_name
       RUBY
     end
 
     it 'accepts trailing dot in multi-line method call' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         something.
           method_name
       RUBY
@@ -139,13 +139,13 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not err on method call without a method name' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         l
         .(1)
         ^ Place the . on the previous line, together with the method call receiver.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         l.
         (1)
       RUBY
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     it 'does not get confused by several lines of chained methods' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         File.new(something).
         readlines.map.
         compact.join("\n")
@@ -165,20 +165,20 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
 
     context 'when using safe navigation operator' do
       it 'registers an offense for correct + opposite' do
-        expect_offense(<<-RUBY.strip_indent)
-        something
-          &.method_name
-          ^^ Place the &. on the previous line, together with the method call receiver.
+        expect_offense(<<~RUBY)
+          something
+            &.method_name
+            ^^ Place the &. on the previous line, together with the method call receiver.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
-        something&.
-          method_name
+        expect_correction(<<~RUBY)
+          something&.
+            method_name
         RUBY
       end
 
       it 'accepts trailing dot in multi-line method call' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           something&.
             method_name
         RUBY

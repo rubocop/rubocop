@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
                   'a(:bar).map(&:baz).presence',
                   1, 1
 
-  it_behaves_like 'offense', <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
+  it_behaves_like 'offense', <<~RUBY.chomp, 'a.presence', 1, 5
     if a.present?
       a
     else
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
     end
   RUBY
 
-  it_behaves_like 'offense', <<-RUBY.strip_indent.chomp, 'a.presence', 1, 5
+  it_behaves_like 'offense', <<~RUBY.chomp, 'a.presence', 1, 5
     unless a.present?
       nil
     else
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
 
   it_behaves_like 'offense', 'a if a.present?', 'a.presence', 1, 1
   it_behaves_like 'offense', 'a unless a.blank?', 'a.presence', 1, 1
-  it_behaves_like 'offense', <<-RUBY.strip_indent.chomp, <<-FIXED.strip_indent.chomp, 1, 7 # rubocop:disable Metrics/LineLength
+  it_behaves_like 'offense', <<~RUBY.chomp, <<~FIXED.chomp, 1, 7 # rubocop:disable Metrics/LineLength
     if [1, 2, 3].map { |num| num + 1 }
                 .map { |num| num + 2 }
                 .present?
@@ -74,18 +74,18 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   FIXED
 
   it 'does not register an offense when using `#presence`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a.presence
     RUBY
   end
 
   it 'does not register an offense when the expression does not ' \
      'return the receiver of `#present?`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a.present? ? b : nil
     RUBY
 
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       puts foo if present?
       puts foo if !present?
     RUBY
@@ -93,11 +93,11 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
 
   it 'does not register an offense when the expression does not ' \
      'return the receiver of `#blank?`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a.blank? ? nil : b
     RUBY
 
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       puts foo if blank?
       puts foo if !blank?
     RUBY
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   end
 
   it 'does not register an offense when the else block is multiline' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a.present?
         a
       else
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
 
   it 'does not register an offense when the else block has multiple ' \
      'statements' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a.present?
         a
       else
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   end
 
   it 'does not register an offense when including the elsif block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a.present?
         a
       elsif b
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   end
 
   it 'does not register an offense when the else block has `if` node' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a.present?
         a
       else
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   end
 
   it 'does not register an offense when the else block has `rescue` node' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if something_method.present?
         something_method
       else
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   end
 
   it 'does not register an offense when the else block has `while` node' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a.present?
         a
       else
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Rails::Presence do
   end
 
   it 'does not register an offense when using #present? with elsif block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if something?
         a
       elsif b.present?

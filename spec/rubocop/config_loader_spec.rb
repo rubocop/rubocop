@@ -119,7 +119,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           Style/Encoding:
             Enabled: false
         YAML
@@ -137,13 +137,13 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/.rubocop.yml' }
 
       before do
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           AllCops:
             Exclude:
               - vendor/**
         YAML
 
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           AllCops:
             Exclude: []
         YAML
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file('disable.yml', <<-YAML.strip_indent)
+        create_file('disable.yml', <<~YAML)
           AllCops:
             DisabledByDefault: true
         YAML
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/.rubocop.yml' }
 
       before do
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           AllCops:
             Exclude:
               - vendor/**
@@ -194,10 +194,10 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
         sub_file_path = 'vendor/.rubocop.yml'
-        create_file(sub_file_path, <<-YAML.strip_indent)
-        AllCops:
-          Exclude:
-            - 'foo'
+        create_file(sub_file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - 'foo'
         YAML
         # dup the class so that setting ignore_parent_exclusion doesn't
         # interfere with other specs
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { 'dir/.rubocop.yml' }
 
       before do
-        create_file('src/.rubocop.yml', <<-YAML.strip_indent)
+        create_file('src/.rubocop.yml', <<~YAML)
           AllCops:
             Exclude:
               - vendor/**
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       before do
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from: .rubocop_todo.yml
 
           Style/For:
@@ -260,7 +260,7 @@ RSpec.describe RuboCop::ConfigLoader do
               - spec/requests/group_invite_spec.rb
         YAML
 
-        create_file('.rubocop_todo.yml', <<-YAML.strip_indent)
+        create_file('.rubocop_todo.yml', <<~YAML)
           Style/For:
             Exclude:
               - 'spec/models/expense_spec.rb'
@@ -281,7 +281,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+        create_file('.rubocop_parent.yml', <<~YAML)
           Style/InverseMethods:
             InverseMethods:
               :any?: :none?
@@ -292,7 +292,7 @@ RSpec.describe RuboCop::ConfigLoader do
               :>: :<=
         YAML
 
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           inherit_from: .rubocop_parent.yml
 
           Style/InverseMethods:
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from: .rubocop_parent.yml
           inherit_mode:
             merge:
@@ -338,7 +338,7 @@ RSpec.describe RuboCop::ConfigLoader do
               - junk/*.rb
         YAML
 
-        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+        create_file('.rubocop_parent.yml', <<~YAML)
           Style/For:
             Exclude:
               - 'spec/models/expense_spec.rb'
@@ -386,7 +386,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from: .rubocop_parent.yml
           inherit_mode:
             merge:
@@ -405,7 +405,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
         YAML
 
-        create_file('.rubocop_parent.yml', <<-YAML.strip_indent)
+        create_file('.rubocop_parent.yml', <<~YAML)
           Style/For:
             Exclude:
               - 'spec/models/expense_spec.rb'
@@ -447,7 +447,7 @@ RSpec.describe RuboCop::ConfigLoader do
             RuboCop::Cop::Registry.new(RuboCop::Cop::Cop.registry.cops)
           )
 
-        create_file('third_party/gem.rb', <<-RUBY.strip_indent)
+        create_file('third_party/gem.rb', <<~RUBY)
           module RuboCop
             module Cop
               module Custom
@@ -458,12 +458,12 @@ RSpec.describe RuboCop::ConfigLoader do
           end
         RUBY
 
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           Custom/FilePath:
             Enabled: false
         YAML
 
-        create_file('.rubocop_with_require.yml', <<-YAML.strip_indent)
+        create_file('.rubocop_with_require.yml', <<~YAML)
           require: ./third_party/gem
           Custom/FilePath:
             Enabled: false
@@ -493,13 +493,13 @@ RSpec.describe RuboCop::ConfigLoader do
       before do
         create_empty_file('dir/subdir/example.rb')
 
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           Metrics/LineLength:
             Enabled: false
             Max: 77
         YAML
 
-        create_file('dir/.rubocop.yml', <<-YAML.strip_indent)
+        create_file('dir/.rubocop.yml', <<~YAML)
           inherit_from: ../.rubocop.yml
 
           Metrics/MethodLength:
@@ -508,7 +508,7 @@ RSpec.describe RuboCop::ConfigLoader do
             Max: 10
         YAML
 
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from: ../.rubocop.yml
 
           Metrics/LineLength:
@@ -565,20 +565,20 @@ RSpec.describe RuboCop::ConfigLoader do
       before do
         create_empty_file('example.rb')
 
-        create_file('normal.yml', <<-YAML.strip_indent)
+        create_file('normal.yml', <<~YAML)
           Metrics/MethodLength:
             Enabled: false
             CountComments: true
             Max: 80
         YAML
 
-        create_file('special.yml', <<-YAML.strip_indent)
+        create_file('special.yml', <<~YAML)
           Metrics/MethodLength:
             Enabled: false
             Max: 200
         YAML
 
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from:
             - normal.yml
             - special.yml
@@ -595,7 +595,7 @@ RSpec.describe RuboCop::ConfigLoader do
         expect do
           expect(configuration_from_file['Metrics/MethodLength']
                    .to_set.superset?(expected.to_set)).to be(true)
-        end.to output(/#{<<-OUTPUT.strip_indent}/).to_stdout
+        end.to output(/#{<<~OUTPUT}/).to_stdout
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in normal.yml
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in special.yml
           .rubocop.yml: Metrics/MethodLength:Max overrides the same parameter in special.yml
@@ -609,12 +609,12 @@ RSpec.describe RuboCop::ConfigLoader do
       before do
         create_empty_file('example.rb')
 
-        create_file('line_length.yml', <<-YAML.strip_indent)
+        create_file('line_length.yml', <<~YAML)
           LineLength:
             Max: 120
         YAML
 
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from:
             - line_length.yml
 
@@ -666,7 +666,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_gem:
             not_a_real_gem: config/rubocop.yml
         YAML
@@ -681,7 +681,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_gem:
             rubocop: config/default.yml
         YAML
@@ -715,11 +715,11 @@ RSpec.describe RuboCop::ConfigLoader do
             Max: 72
             AllowHeredoc: false
         YAML
-        create_file('local.yml', <<-YAML.strip_indent)
+        create_file('local.yml', <<~YAML)
           Metrics/MethodLength:
             CountComments: true
         YAML
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_gem:
             gemone: config/rubocop.yml
             gemtwo:
@@ -770,13 +770,13 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before do
         stub_request(:get, /example.com/)
-          .to_return(status: 200, body: <<-YAML.strip_indent)
+          .to_return(status: 200, body: <<~YAML)
             Style/Encoding:
               Enabled: true
             Style/StringLiterals:
               EnforcedStyle: double_quotes
           YAML
-        create_file(file_path, <<-YAML.strip_indent)
+        create_file(file_path, <<~YAML)
           inherit_from: http://example.com/rubocop.yml
 
           Style/StringLiterals:
@@ -835,7 +835,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
       context 'when DisabledByDefault is true' do
         let(:config) do
-          <<-YAML.strip_indent
+          <<~YAML
             AllCops:
               DisabledByDefault: true
             Style/Copyright:
@@ -857,7 +857,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
         context 'and a department is enabled' do
           let(:config) do
-            <<-YAML.strip_indent
+            <<~YAML
               AllCops:
                 DisabledByDefault: true
               Style:
@@ -883,7 +883,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
         context 'and the Rails department is enabled' do
           let(:config) do
-            <<-YAML.strip_indent
+            <<~YAML
               AllCops:
                 DisabledByDefault: true
               Rails:
@@ -906,7 +906,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
         context 'and the Rails department is disabled' do
           let(:config) do
-            <<-YAML.strip_indent
+            <<~YAML
               AllCops:
                 DisabledByDefault: true
               Rails:
@@ -930,7 +930,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
       context 'when EnabledByDefault is true' do
         let(:config) do
-          <<-YAML.strip_indent
+          <<~YAML
             AllCops:
               EnabledByDefault: true
             Layout/TrailingWhitespace:
@@ -959,7 +959,7 @@ RSpec.describe RuboCop::ConfigLoader do
     let(:configuration_path) { '.rubocop.yml' }
 
     it 'returns a configuration loaded from the passed path' do
-      create_file(configuration_path, <<-YAML.strip_indent)
+      create_file(configuration_path, <<~YAML)
         Style/Encoding:
           Enabled: true
       YAML
@@ -977,7 +977,7 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     it 'loads configuration properly when it includes non-ascii characters ' do
-      create_file(configuration_path, <<-YAML.strip_indent)
+      create_file(configuration_path, <<~YAML)
         # All these cops of mine are ❤
         Style/Encoding:
           Enabled: false
@@ -994,7 +994,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when SafeYAML is required' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Style/WordArray:
             WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'
         YAML
@@ -1052,7 +1052,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context '< Ruby 2.5', if: RUBY_VERSION < '2.5' do
       context 'when the file has duplicated keys' do
         it 'outputs a warning' do
-          create_file(configuration_path, <<-YAML.strip_indent)
+          create_file(configuration_path, <<~YAML)
             Style/Encoding:
               Enabled: true
 
@@ -1070,7 +1070,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context '>= Ruby 2.5', if: RUBY_VERSION >= '2.5' do
       context 'when the file has duplicated keys' do
         it 'outputs a warning' do
-          create_file(configuration_path, <<-YAML.strip_indent)
+          create_file(configuration_path, <<~YAML)
             Style/Encoding:
               Enabled: true
 
@@ -1120,7 +1120,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'when .rubocop.yml inherits from a file with a name starting ' \
             'with .rubocop' do
       before do
-        create_file('test/.rubocop_rules.yml', <<-YAML.strip_indent)
+        create_file('test/.rubocop_rules.yml', <<~YAML)
           Style/CharacterLiteral:
             Exclude:
               - blargh/blah.rb

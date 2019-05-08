@@ -18,7 +18,7 @@ RSpec.describe RuboCop::AST::StrNode do
 
     context 'with a heredoc' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           <<-CODE
             foo
             bar
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::AST::StrNode do
 
     context 'with a heredoc' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           <<-CODE
             foo
             bar

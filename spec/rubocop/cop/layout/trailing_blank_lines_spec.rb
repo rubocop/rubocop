@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'accepts final blank lines if they come after __END__' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         x = 0
 
         __END__
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'accepts final blank lines if they come after __END__ in empty file' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         __END__
 
 
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         x = 0
 
 
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
 
 
 
@@ -67,20 +67,20 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x = 0
 
 
 
 
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 0
       RUBY
     end
 
     it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
 
 
 
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'final_blank_line' } }
 
     it 'registers an offense for final newline' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         x = 0
       RUBY
 
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         x = 0
 
 
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
 
 
 
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x = 0
 
 
@@ -149,14 +149,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
 
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 0
 
       RUBY
     end
 
     it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
 
 
 
@@ -169,10 +169,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
     end
 
     it 'auto-corrects missing blank line' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x = 0
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 0
 
       RUBY
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingBlankLines, :config do
 
     it 'auto-corrects missing newline' do
       new_source = autocorrect_source('x = 0')
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 0
 
       RUBY

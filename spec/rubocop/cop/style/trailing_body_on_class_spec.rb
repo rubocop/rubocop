@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
   end
 
   it 'registers an offense when body trails after class definition' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo; body
                  ^^^^ Place the first line of class body on its own line.
       end
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
   end
 
   it 'registers offense with multi-line class' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class Foo; body
                  ^^^^ Place the first line of class body on its own line.
         def bar
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
   end
 
   it 'accepts regular class' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def no_op; end
       end
@@ -38,18 +38,18 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
   end
 
   it 'accepts class inheritance' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo < Bar
       end
     RUBY
   end
 
   it 'auto-corrects body after class definition' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       class Foo; body 
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       class Foo 
         body 
       end
@@ -57,11 +57,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
   end
 
   it 'auto-corrects with comment after body' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       class BarQux; foo # comment
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       # comment
       class BarQux 
         foo 
@@ -70,11 +70,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
   end
 
   it 'auto-corrects when there are multiple semicolons' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       class Bar; def bar; end
       end
     RUBY
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       class Bar 
         def bar; end
       end

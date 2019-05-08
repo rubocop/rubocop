@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     let(:source) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         class ExampleTest < TestCase
           test 'some really long test description which exceeds length' do
           end
@@ -419,7 +419,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'hash' do
       context 'when under limit' do
         it 'does not add any offenses' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             {foo: 1, bar: "2"}
           RUBY
         end
@@ -427,7 +427,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit because of a comment' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             { # supersupersupersupersupersupersupersupersupersupersupersuperlongcomment
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [75/40]
               baz: "10000",
@@ -436,13 +436,13 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'does not autocorrect the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             { # supersupersupersupersupersupersupersupersupersupersupersuperlongcomment
               baz: "10000",
               bar: "10000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             { # supersupersupersupersupersupersupersupersupersupersupersuperlongcomment
               baz: "10000",
               bar: "10000"}
@@ -452,7 +452,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit and already on multiple lines long key' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {supersupersupersupersupersupersupersupersupersupersupersuperfirstarg: 10,
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [74/40]
               baz: "10000",
@@ -461,13 +461,13 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'does not autocorrect the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {supersupersupersupersupersupersupersupersupersupersupersuperfirstarg: 10,
               baz: "10000",
               bar: "10000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {supersupersupersupersupersupersupersupersupersupersupersuperfirstarg: 10,
               baz: "10000",
               bar: "10000"}
@@ -477,7 +477,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit and keys already on multiple lines' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {
               baz0: "10000",
               baz1: "10000",
@@ -488,7 +488,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'does not autocorrect the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {
               baz0: "10000",
               baz1: "10000",
@@ -496,7 +496,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
               bar: "10000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {
               baz0: "10000",
               baz1: "10000",
@@ -508,18 +508,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit' do
         it 'adds an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {abc: "100000", def: "100000", ghi: "100000", jkl: "100000", mno: "100000"}
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [75/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {abc: "100000", def: "100000", ghi: "100000", jkl: "100000", mno: "100000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {abc: "100000", def: "100000",\s
             ghi: "100000", jkl: "100000", mno: "100000"}
           RUBY
@@ -528,18 +528,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit rocket' do
         it 'adds an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {"abc" => "100000", "def" => "100000", "casd" => "100000", "asdf" => "100000"}
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [78/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {"abc" => "100000", "def" => "100000", "casd" => "100000", "asdf" => "100000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {"abc" => "100000", "def" => "100000",\s
             "casd" => "100000", "asdf" => "100000"}
           RUBY
@@ -548,18 +548,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit rocket symbol' do
         it 'adds an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {:abc => "100000", :asd => "100000", :asd => "100000", :fds => "100000"}
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [72/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {:abc => "100000", :asd => "100000", :asd => "100000", :fds => "100000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {:abc => "100000", :asd => "100000",\s
             :asd => "100000", :fds => "100000"}
           RUBY
@@ -568,18 +568,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when nested hashes on same line' do
         it 'adds an offense only to outer' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {abc: "100000", def: "100000", ghi: {abc: "100000"}, jkl: "100000", mno: "100000"}
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [82/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {abc: "100000", def: "100000", ghi: {abc: "100000"}, jkl: "100000", mno: "100000"}
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {abc: "100000", def: "100000",\s
             ghi: {abc: "100000"}, jkl: "100000", mno: "100000"}
           RUBY
@@ -588,7 +588,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when hash in method call' do
         it 'adds an offense only to outer' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             get(
               :index,
               params: {driver_id: driver.id, from_date: "2017-08-18T15:09:04.000Z", to_date: "2017-09-19T15:09:04.000Z"},
@@ -598,14 +598,14 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             get(
               :index,
               params: {driver_id: driver.id, from_date: "2017-08-18T15:09:04.000Z", to_date: "2017-09-19T15:09:04.000Z"},
               xhr: true)
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             get(
               :index,
               params: {driver_id: driver.id,\s
@@ -619,7 +619,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'method call' do
       context 'when under limit' do
         it 'does not add any offenses' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             foo(foo: 1, bar: "2")
           RUBY
         end
@@ -627,7 +627,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when two together' do
         it 'does not add any offenses' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             def baz(bar)
               foo(shipment, actionable_delivery) &&
                 bar(shipment, actionable_delivery)
@@ -638,18 +638,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit' do
         it 'adds an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             foo(abc: "100000", def: "100000", ghi: "100000", jkl: "100000", mno: "100000")
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [78/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             foo(abc: "100000", def: "100000", ghi: "100000", jkl: "100000", mno: "100000")
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             foo(abc: "100000", def: "100000",\s
             ghi: "100000", jkl: "100000", mno: "100000")
           RUBY
@@ -658,18 +658,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when call with hash on same line' do
         it 'adds an offense only to outer' do
-          expect_offense(<<-RUBY.strip_indent)
-              foo(abc: "100000", def: "100000", ghi: {abc: "100000"}, jkl: "100000", mno: "100000")
-                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [85/40]
+          expect_offense(<<~RUBY)
+            foo(abc: "100000", def: "100000", ghi: {abc: "100000"}, jkl: "100000", mno: "100000")
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [85/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             foo(abc: "100000", def: "100000", ghi: {abc: "100000"}, jkl: "100000", mno: "100000")
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             foo(abc: "100000", def: "100000",\s
             ghi: {abc: "100000"}, jkl: "100000", mno: "100000")
           RUBY
@@ -678,18 +678,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when two method calls' do
         it 'adds an offense only to outer' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             get(1000000, 30000, foo(44440000, 30000, 39999, 19929120312093))
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [64/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             get(1000000, 30000, foo(44440000, 30000, 39999, 19929120312093))
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             get(1000000, 30000,\s
             foo(44440000, 30000, 39999, 19929120312093))
           RUBY
@@ -698,7 +698,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when nested method calls allows outer to get broken up first' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             get(1000000,
             foo(44440000, 30000, 39999, 1992), foo(44440000, 30000, 39999, 12093))
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
@@ -706,12 +706,12 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'does not autocorrect the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             get(1000000,
             foo(44440000, 30000, 39999, 1992), foo(44440000, 30000, 39999, 12093))
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             get(1000000,
             foo(44440000, 30000, 39999, 1992), foo(44440000, 30000, 39999, 12093))
           RUBY
@@ -722,7 +722,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'array' do
       context 'when under limit' do
         it 'does not add any offenses' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             [1, "2"]
           RUBY
         end
@@ -730,7 +730,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when already on two lines' do
         it 'does not add any offenses' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             [1, "2",
              "3"]
           RUBY
@@ -739,18 +739,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit' do
         it 'adds an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             ["1111", "100000", "100000", "100000", "100000", "100000"]
                                                     ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             ["1111", "100000", "100000", "100000", "100000", "100000"]
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             ["1111", "100000", "100000", "100000",\s
             "100000", "100000"]
           RUBY
@@ -759,18 +759,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when has inside array' do
         it 'adds an offense only to outer' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             ["1111", "100000", "100000", "100000", {abc: "100000", b: "2"}, "100000", "100000"]
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [83/40]
           RUBY
         end
 
         it 'autocorrects the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             ["1111", "100000", "100000", "100000", {abc: "100000", b: "2"}, "100000", "100000"]
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             ["1111", "100000", "100000", "100000",\s
             {abc: "100000", b: "2"}, "100000", "100000"]
           RUBY
@@ -779,7 +779,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when two arrays on two lines allows outer to get broken first' do
         it 'adds an offense only to inner' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             [1000000, 3912312312999,
               [44440000, 3912312312999, 3912312312999, 1992912031231232131312093],
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
@@ -788,13 +788,13 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'does not autocorrect the offense' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             [1000000, 3912312312999,
               [44440000, 3912312312999, 3912312312999, 1992912031231232131312093],
             100, 100]
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             [1000000, 3912312312999,
               [44440000, 3912312312999, 3912312312999, 1992912031231232131312093],
             100, 100]
@@ -805,7 +805,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'no breakable collections' do
       it 'adds an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           10000003912312312999
             # 444400003912312312999391231231299919929120312312321313120933333333
                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
@@ -814,13 +814,13 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       end
 
       it 'does not autocorrect the offense' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           10000003912312312999
             # 444400003912312312999391231231299919929120312312321313120933333333
           456
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           10000003912312312999
             # 444400003912312312999391231231299919929120312312321313120933333333
           456
@@ -831,7 +831,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'semicolon' do
       context 'when under limit' do
         it 'does not add any offenses' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             {foo: 1, bar: "2"}; a = 4 + 5
           RUBY
         end
@@ -839,18 +839,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             {foo: 1, bar: "2"}; a = 400000000000 + 500000000000000
                                                     ^^^^^^^^^^^^^^ Line is too long. [54/40]
           RUBY
         end
 
         it 'breaks the semicolon before breaking the hash' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             {foo: 1, bar: "2"}; a = 400000000000 + 500000000000000
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             {foo: 1, bar: "2"};
              a = 400000000000 + 500000000000000
           RUBY
@@ -865,7 +865,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'when over limit with semi-colon' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             foo = <<-SQL
               SELECT a b c d a b FROM c d a b c d ; COUNT(*) a b
                                        ^^^^^^^^^^^^ Line is too long. [52/40]
@@ -874,13 +874,13 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         end
 
         it 'does not autocorrect' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             foo = <<-SQL
               SELECT a b c d a b FROM c d a b c d ; COUNT(*) a b c
             SQL
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             foo = <<-SQL
               SELECT a b c d a b FROM c d a b c d ; COUNT(*) a b c
             SQL
@@ -892,18 +892,18 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'comments' do
       context 'when over limit with semi-colon' do
         it 'adds offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             # a b c d a b c d a b c d ; a b c d a b c d a b c d a
                                                     ^^^^^^^^^^^^^ Line is too long. [53/40]
           RUBY
         end
 
         it 'does not autocorrect' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             # a b c d a b c d a b c d ; a b c d a b c d a b c d a
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             # a b c d a b c d a b c d ; a b c d a b c d a b c d a
           RUBY
         end

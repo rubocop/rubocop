@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil do
     end
 
     it 'registers an offense for return nil' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         return nil
         ^^^^^^^^^^ Use `return` instead of `return nil`.
       RUBY
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil do
     end
 
     it 'registers an offense for return' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         return
         ^^^^^^ Use `return nil` instead of `return`.
       RUBY

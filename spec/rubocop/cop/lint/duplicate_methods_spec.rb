@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
   shared_examples 'in scope' do |type, opening_line|
     it "registers an offense for duplicate method in #{type}" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #{opening_line}
           def some_method
             implement 1
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "doesn't register an offense for non-duplicate method in #{type}" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def some_method
             implement 1
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate class methods in #{type}" do
-      expect_offense(<<-RUBY.strip_indent, 'dups.rb')
+      expect_offense(<<~RUBY, 'dups.rb')
         #{opening_line}
           def self.some_method
             implement 1
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "doesn't register offense for non-duplicate class methods in #{type}" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def self.some_method
             implement 1
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "recognizes difference between instance and class methods in #{type}" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def some_method
             implement 1
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate private methods in #{type}" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #{opening_line}
           private def some_method
             implement 1
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate private self methods in #{type}" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #{opening_line}
           private def self.some_method
             implement 1
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "doesn't register an offense for different private methods in #{type}" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           private def some_method
             implement 1
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers an offense for duplicate protected methods in #{type}" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         #{opening_line}
           protected def some_method
             implement 1
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it "registers 2 offenses for pair of duplicate methods in #{type}" do
-      expect_offense(<<-RUBY.strip_indent, 'dups.rb')
+      expect_offense(<<~RUBY, 'dups.rb')
         #{opening_line}
           def some_method
             implement 1
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense for a duplicate instance method in separate ' \
        "#{type} blocks" do
-      expect_offense(<<-RUBY.strip_indent, 'dups.rb')
+      expect_offense(<<~RUBY, 'dups.rb')
         #{opening_line}
           def some_method
             implement 1
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense for a duplicate class method in separate ' \
        "#{type} blocks" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         #{opening_line}
           def self.some_method
             implement 1
@@ -184,14 +184,14 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'registers offense for a duplicate instance method in separate files' do
-      inspect_source(<<-RUBY.strip_indent, 'first.rb')
+      inspect_source(<<~RUBY, 'first.rb')
         #{opening_line}
           def some_method
             implement 1
           end
         end
       RUBY
-      expect_offense(<<-RUBY.strip_indent, 'second.rb')
+      expect_offense(<<~RUBY, 'second.rb')
         #{opening_line}
           def some_method
           ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both first.rb:2 and second.rb:2.
@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'understands class << self' do
-      expect_offense(<<-RUBY.strip_indent, 'test.rb')
+      expect_offense(<<~RUBY, 'test.rb')
         #{opening_line}
           class << self
             def some_method
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'understands nested modules' do
-      expect_offense(<<-RUBY.strip_indent, 'test.rb')
+      expect_offense(<<~RUBY, 'test.rb')
         module B
           #{opening_line}
             def some_method
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense when class << exp is used' do
       pending
-      inspect_source(<<-RUBY.strip_indent, 'test.rb')
+      inspect_source(<<~RUBY, 'test.rb')
         #{opening_line}
           class << blah
             def some_method
@@ -402,7 +402,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   %w[class module].each do |type|
     it 'registers an offense for duplicate class methods with named receiver ' \
        "in #{type}" do
-      expect_offense(<<-RUBY.strip_indent, 'src.rb')
+      expect_offense(<<~RUBY, 'src.rb')
         #{type} A
           def A.some_method
             implement 1
@@ -417,7 +417,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense for duplicate class methods with `self` and ' \
        "named receiver in #{type}" do
-      expect_offense(<<-RUBY.strip_indent, 'src.rb')
+      expect_offense(<<~RUBY, 'src.rb')
         #{type} A
           def self.some_method
             implement 1
@@ -432,7 +432,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense for duplicate class methods with `<<` and named ' \
        "receiver in #{type}" do
-      expect_offense(<<-RUBY.strip_indent, 'test.rb')
+      expect_offense(<<~RUBY, 'test.rb')
         #{type} A
           class << self
             def some_method
@@ -449,7 +449,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'registers an offense for duplicate methods at top level' do
-    expect_offense(<<-RUBY.strip_indent, 'toplevel.rb')
+    expect_offense(<<~RUBY, 'toplevel.rb')
       def some_method
         implement 1
       end
@@ -461,7 +461,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'understands class << A' do
-    expect_offense(<<-RUBY.strip_indent, 'test.rb')
+    expect_offense(<<~RUBY, 'test.rb')
       class << A
         def some_method
           implement 1
@@ -475,7 +475,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'handles class_eval with implicit receiver' do
-    expect_offense(<<-RUBY.strip_indent, 'test.rb')
+    expect_offense(<<~RUBY, 'test.rb')
       module A
         class_eval do
           def some_method
@@ -491,7 +491,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'ignores method definitions in RSpec `describe` blocks' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       describe "something" do
         def some_method
           implement 1
@@ -504,7 +504,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
   end
 
   it 'ignores Class.new blocks which are assigned to local variables' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = Class.new do
         def foo
         end
@@ -524,7 +524,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'adds a message with relative path' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def something
         end
         def something
@@ -542,7 +542,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
     end
 
     it 'adds a message with absolute path' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def something
         end
         def something

@@ -6,14 +6,14 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using strings as keys' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       { 'one' => 1 }
         ^^^^^ Prefer symbols instead of strings as hash keys.
     RUBY
   end
 
   it 'registers an offense when using strings as keys mixed with other keys' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       { 'one' => 1, two: 2, 3 => 3 }
         ^^^^^ Prefer symbols instead of strings as hash keys.
     RUBY
@@ -35,25 +35,25 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys do
   end
 
   it 'does not register an offense when not using strings as keys' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       { one: 1 }
     RUBY
   end
 
   it 'does not register an offense when string key is used in IO.popen' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       IO.popen({"RUBYOPT" => '-w'}, 'ruby', 'foo.rb')
     RUBY
   end
 
   it 'does not register an offense when string key is used in Open3.capture3' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Open3.capture3({"RUBYOPT" => '-w'}, 'ruby', 'foo.rb')
     RUBY
   end
 
   it 'does not register an offense when string key is used in Open3.pipeline' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Open3.pipeline([{"RUBYOPT" => '-w'}, 'ruby', 'foo.rb'], ['wc', '-l'])
     RUBY
   end

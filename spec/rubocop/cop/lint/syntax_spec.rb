@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
 
       it 'returns an offense' do
         expect(offenses.size).to eq(1)
-        message = <<-MESSAGE.chomp.strip_indent
+        message = <<~MESSAGE.chomp
           unexpected token $end
           (Using Ruby 2.4 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
         MESSAGE
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
 
         it 'returns an offense with cop name' do
           expect(offenses.size).to eq(1)
-          message = <<-MESSAGE.chomp.strip_indent
+          message = <<~MESSAGE.chomp
             Lint/Syntax: unexpected token $end
             (Using Ruby 2.4 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
           MESSAGE
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
 
         it 'returns an offense with cop name' do
           expect(offenses.size).to eq(1)
-          message = <<-MESSAGE.chomp.strip_indent
+          message = <<~MESSAGE.chomp
             Lint/Syntax: Invalid byte sequence in utf-8.
           MESSAGE
           offense = offenses.first

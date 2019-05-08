@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
   shared_examples 'right brace' do
     it 'registers an offense for incorrectly indented }' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a << {
           }
           ^ Indent the right brace the same as the start of the line where the left brace is.
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts correctly indented first pair' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a << {
             a: 1,
           aaa: 222
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'registers an offense for incorrectly indented first pair with :' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a << {
                a: 1,
                ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts correctly indented first pair' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a << {
             'a' => 1,
           'aaa' => 222
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'registers an offense for incorrectly indented first pair with =>' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a << {
            'a' => 1,
            ^^^^^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
   context 'when hash is operand' do
     it 'accepts correctly indented first pair' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a << {
           a: 1
         }
@@ -107,14 +107,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'registers an offense for incorrectly indented first pair' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a << {
          a: 1
          ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
         }
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a << {
           a: 1
         }
@@ -126,17 +126,17 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
   context 'when hash is argument to setter' do
     it 'accepts correctly indented first pair' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-           config.rack_cache = {
-             :metastore => "rails:/",
-             :entitystore => "rails:/",
-             :verbose => false
-           }
+      expect_no_offenses(<<~RUBY)
+        config.rack_cache = {
+          :metastore => "rails:/",
+          :entitystore => "rails:/",
+           :verbose => false
+        }
       RUBY
     end
 
     it 'registers an offense for incorrectly indented first pair' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         config.rack_cache = {
         :metastore => "rails:/",
         ^^^^^^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
   context 'when hash is right hand side in assignment' do
     it 'registers an offense for incorrectly indented first pair' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a = {
             a: 1,
             ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         }
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a = {
           a: 1,
           b: 2,
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts correctly indented first pair' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = {
           a: 1
         }
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts several pairs per line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = {
           a: 1, b: 2
         }
@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts a first pair on the same line as the left brace' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = { "a" => 1,
               "b" => 2 }
       RUBY
@@ -202,14 +202,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
       let(:cop_indent) { 3 }
 
       it 'auto-corrects incorrectly indented first pair' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           a = {
               a: 1,
             b: 2,
            c: 3
           }
         RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect(corrected).to eq <<~RUBY
           a = {
              a: 1,
             b: 2,
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
       end
 
       it 'accepts correctly indented first pair' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           a = {
              a: 1
           }
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     context 'and arguments are surrounded by parentheses' do
       context 'and EnforcedStyle is special_inside_parentheses' do
         it 'accepts special indentation for first argument' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             h = {
               a: 1
             }
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it "registers an offense for 'consistent' indentation" do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             func({
               a: 1
               ^^^^ Use 2 spaces for indentation in a hash, relative to the first position after the preceding left parenthesis.
@@ -263,7 +263,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
         context 'when using safe navigation operator' do
           it "registers an offense for 'consistent' indentation" do
-            expect_offense(<<-RUBY.strip_indent)
+            expect_offense(<<~RUBY)
               receiver&.func({
                 a: 1
                 ^^^^ Use 2 spaces for indentation in a hash, relative to the first position after the preceding left parenthesis.
@@ -274,7 +274,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it "registers an offense for 'align_braces' indentation" do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             var = {
                     a: 1
                     ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -284,12 +284,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it 'auto-corrects incorrectly indented first pair' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             func({
               a: 1
             })
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             func({
                    a: 1
                  })
@@ -304,7 +304,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it 'accepts normal indentation for hash within hash' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             scope = scope.where(
               klass.table_name => {
                 reflection.type => model.base_class.sti_name
@@ -318,7 +318,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
 
         it 'accepts normal indentation for first argument' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             h = {
               a: 1
             }
@@ -338,7 +338,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it 'registers an offense for incorrect indentation' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             func({
                    a: 1
                    ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -366,7 +366,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
       end
 
       it 'accepts a correctly indented multi-line hash with braces' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           func x, {
             a: 1, b: 2 }
         RUBY
@@ -374,7 +374,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
       it 'registers an offense for incorrectly indented multi-line hash ' \
          'with braces' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func x, {
                  a: 1, b: 2 }
                  ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     let(:cop_config) { { 'EnforcedStyle' => 'align_braces' } }
 
     it 'accepts correctly indented first pair' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = {
               a: 1
             }
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts several pairs per line' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = {
               a: 1, b: 2
             }
@@ -403,7 +403,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'accepts a first pair on the same line as the left brace' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a = { "a" => 1,
               "b" => 2 }
       RUBY
@@ -419,7 +419,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
     context "when 'consistent' style is used" do
       it 'registers an offense for incorrect indentation' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func({
             a: 1
             ^^^^ Use 2 spaces for indentation in a hash, relative to the position of the opening brace.
@@ -429,12 +429,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
       end
 
       it 'auto-corrects incorrectly indented first pair' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           var = {
             a: 1
           }
         RUBY
-        expect(corrected).to eq <<-RUBY.strip_indent
+        expect(corrected).to eq <<~RUBY
           var = {
                   a: 1
                 }
@@ -444,7 +444,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
 
     context "when 'special_inside_parentheses' style is used" do
       it 'registers an offense for incorrect indentation' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           var = {
             a: 1
             ^^^^ Use 2 spaces for indentation in a hash, relative to the position of the opening brace.
@@ -458,7 +458,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
 
     it 'registers an offense for incorrectly indented }' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a << {
           }
           ^ Indent the right brace the same as the left brace.

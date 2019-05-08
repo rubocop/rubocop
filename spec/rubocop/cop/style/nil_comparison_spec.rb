@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'predicate' } }
 
     it 'registers an offense for == nil' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x == nil
           ^^ Prefer the use of the `nil?` predicate.
       RUBY
     end
 
     it 'registers an offense for === nil' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x === nil
           ^^^ Prefer the use of the `nil?` predicate.
       RUBY
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'comparison' } }
 
     it 'registers an offense for nil?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.nil?
           ^^^^ Prefer the use of the `==` comparison.
       RUBY

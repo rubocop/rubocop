@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     context 'with explicit rescue' do
       context 'with `Exception` variable' do
         it 'registers an offense when using `exc`' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               something
             rescue MyException => exc
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               something
             rescue MyException => e
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
 
         it 'registers an offense when using `_exc`' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               something
             rescue MyException => _exc
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               something
             rescue MyException => _e
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
 
         it 'registers offenses when using `foo` and `bar` ' \
            'in multiple rescues' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               something
             rescue FooException => foo
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               something
             rescue FooException => e
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
 
         it 'does not register an offense when using `e`' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue MyException => e
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
 
         it 'does not register an offense when using `_e`' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue MyException => _e
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
 
       context 'without `Exception` variable' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue MyException
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     context 'with implicit rescue' do
       context 'with `Exception` variable' do
         it 'registers an offense when using `exc`' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               something
             rescue exc
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               something
             rescue e
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
 
         it 'registers an offense when using `_exc`' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             begin
               something
             rescue _exc
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
             end
           RUBY
 
-          expect_correction(<<-RUBY.strip_indent)
+          expect_correction(<<~RUBY)
             begin
               something
             rescue _e
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
 
         it 'does not register an offense when using `e`' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue e
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
 
         it 'does not register an offense when using `_e`' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue _e
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
 
       context 'without `Exception` variable' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
 
     context 'with variable being referenced' do
       it 'renames the variable references when auto-correcting' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           begin
             get something
           rescue ActiveResource::Redirection => redirection
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           end
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           begin
             get something
           rescue ActiveResource::Redirection => e
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     it 'registers an offense when using `e`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue MyException => e
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         begin
           something
         rescue MyException => exception
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     it 'registers an offense when using `_e`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue MyException => _e
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         begin
           something
         rescue MyException => _exception
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     it 'registers offenses when using `foo` and `bar` in multiple rescues' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           something
         rescue FooException => foo
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         begin
           something
         rescue FooException => exception
@@ -269,7 +269,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     it 'does not register an offense when using `exception`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue MyException => exception
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     it 'does not register an offense when using `_exception`' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           something
         rescue MyException => _exception

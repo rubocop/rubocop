@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   context "when there's .rubocop.yml" do
     before do
-      create_file('.rubocop.yml', <<-YAML.strip_indent)
+      create_file('.rubocop.yml', <<~YAML)
         Cop1:
           Exclude:
             - Gemfile

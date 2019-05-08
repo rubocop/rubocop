@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::ClassCheck, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'is_a?' } }
 
     it 'registers an offense for kind_of?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.kind_of? y
           ^^^^^^^^ Prefer `Object#is_a?` over `Object#kind_of?`.
       RUBY
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::ClassCheck, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'kind_of?' } }
 
     it 'registers an offense for is_a?' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x.is_a? y
           ^^^^^ Prefer `Object#kind_of?` over `Object#is_a?`.
       RUBY

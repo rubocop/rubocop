@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
 
   context 'with scope' do
     it 'registers an offense when not specifying `:inverse_of`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           has_one :foo, -> () { where(bar: true) }
           ^^^^^^^ Specify an `:inverse_of` option.
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'registers an offense when specifying `inverse_of: nil`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           has_many :foo, -> () { where(bar: true) }, inverse_of: nil
           ^^^^^^^^ You specified `inverse_of: nil`, you probably meant to use `inverse_of: false`.
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
 
   context 'with option preventing automatic inverse' do
     it 'registers an offense when not specifying `:inverse_of`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           belongs_to :foo, foreign_key: 'foo_id'
           ^^^^^^^^^^ Specify an `:inverse_of` option.
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'registers an offense with other option and `:inverse_of` unset' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           has_many :foo, dependent: :destroy, foreign_key: 'foo_id'
           ^^^^^^^^ Specify an `:inverse_of` option.
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'registers an offense when including `conditions` option' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           has_many :foo, conditions: -> { where(bar: true) }
           ^^^^^^^^ Specify an `:inverse_of` option.
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
 
   context 'with scope and options' do
     it 'registers an offense when not specifying `:inverse_of`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           has_many :foo, -> { group 'x' }, dependent: :destroy
           ^^^^^^^^ Specify an `:inverse_of` option.
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
   context '`:as` option' do
     context 'Rails < 5.2', :rails5 do
       it 'registers an offense when not specifying `:inverse_of`' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class Person
             has_many :pictures, as: :imageable
             ^^^^^^^^ Specify an `:inverse_of` option.
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
 
   context 'with option ignoring `:inverse_of`' do
     it 'does not register an offense when including `through` option' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Physician < ApplicationRecord
           has_many :appointments
           has_many :patients, -> () { where(bar: true) }, through: :appointments
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'does not register an offense when including `polymorphic` option' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Picture < ApplicationRecord
           belongs_to :imageable, -> () { where(bar: true) }, polymorphic: true
         end
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
 
   context 'with valid options in `with_options`' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Person
           with_options inverse_of: false do
             has_one :foo, -> () { where(bar: true) }
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'does not register an offense when using the explicit receiver' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Person
           with_options inverse_of: :bar do |assoc|
             assoc.belongs_to :foo, foreign_key: 'foo_id'
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'registers an offense when using the invalid explicit receiver' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           with_options inverse_of: :bar do |_assoc|
             belongs_to :foo, -> () { where(baz: true) }
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'does not register an offense when using multiple blocks' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Book < ApplicationRecord
           with_options inverse_of: :book do
             with_helper do |helper|
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
 
   context 'with invalid options in `with_options`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           with_options foreign_key: 'foo_id' do
             has_one :foo
@@ -204,7 +204,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'registers an offense when using the explicit receiver' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Person
           with_options foreign_key: 'foo_id' do |assoc|
             assoc.belongs_to :foo, -> () { where(baz: true) }
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Rails::InverseOf do
     end
 
     it 'registers an offense when using multiple blocks' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Book < ApplicationRecord
           with_options conditions: -> () { where(famous: true) } do
             with_helper do |helper|

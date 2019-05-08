@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Team do
         source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
         team.inspect_file(source)
         corrected_source = File.read(file_path)
-        expect(corrected_source).to eq(<<-RUBY.strip_indent)
+        expect(corrected_source).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           puts 'string'

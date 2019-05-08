@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
   end
 
   it 'registers one offense for more than two modifiers' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       something until a while b unless c if d
                                 ^^^^^^ Avoid using nested modifiers.
     RUBY

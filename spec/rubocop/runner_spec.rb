@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     let(:options) { { formatters: [['progress', formatter_output_path]] } }
 
     context 'if there are no offenses in inspected files' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         # frozen_string_literal: true
 
         def valid_code; end
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if there is an offense in an inspected file' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         # frozen_string_literal: true
 
         def INVALID_CODE; end
@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
       it 'sends the offense to a formatter' do
         runner.run([])
-        expect(formatter_output).to eq <<-RESULT.strip_indent
+        expect(formatter_output).to eq <<~RESULT
           Inspecting 1 file
           C
 
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     context 'if -s/--stdin is used with an offense' do
       before do
         # Make Style/EndOfLine give same output regardless of platform.
-        create_file('.rubocop.yml', <<-YAML.strip_indent)
+        create_file('.rubocop.yml', <<~YAML)
           Layout/EndOfLine:
             EnforcedStyle: lf
         YAML
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       let(:options) do
         {
           formatters: [['progress', formatter_output_path]],
-          stdin: <<-RUBY.strip_indent
+          stdin: <<~RUBY
             # frozen_string_literal: true
 
             def INVALID_CODE; end
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
       it 'sends the offense to a formatter' do
         runner.run([])
-        expect(formatter_output).to eq <<-RESULT.strip_indent
+        expect(formatter_output).to eq <<~RESULT
           Inspecting 1 file
           C
 
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if there is an offense in an inspected file' do
-      let(:source) { <<-RUBY.strip_indent }
+      let(:source) { <<~RUBY }
         # frozen_string_literal: true
         class Klass
         end

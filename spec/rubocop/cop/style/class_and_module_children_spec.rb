@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
 
     it 'registers an offense for not nested classes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class FooClass::BarClass
               ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'registers an offense for not nested classes with explicit superclass' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class FooClass::BarClass < Super
               ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'registers an offense for not nested modules' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module FooModule::BarModule
                ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts nested children' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class FooClass
           class BarClass
           end
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts :: in parent class on inheritance' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class FooClass
           class BarClass
           end
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
     it 'registers a offense for classes with nested children' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class FooClass
               ^^^^^^^^ Use compact module/class definition instead of nested style.
           class BarClass
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'registers a offense for modules with nested children' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module FooModule
                ^^^^^^^^^ Use compact module/class definition instead of nested style.
           module BarModule
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts compact style for classes/modules' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class FooClass::BarClass
         end
 
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts nesting for classes/modules with more than one child' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class FooClass
           class BarClass
           end
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts class/module with single method' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class FooClass
           def bar_method
           end
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
     end
 
     it 'accepts nesting for classes with an explicit superclass' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class FooClass < Super
           class BarClass
           end
@@ -136,12 +136,12 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       let(:enforced_style) { 'nested' }
 
       it 'corrects a not nested class' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass::BarClass
           end
         RUBY
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           module FooClass
             class BarClass
             end
@@ -150,12 +150,12 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'corrects a not nested class with explicit superclass' do
-        source = <<-RUBY.strip_indent
-        class FooClass::BarClass < Super
-        end
+        source = <<~RUBY
+          class FooClass::BarClass < Super
+          end
         RUBY
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           module FooClass
             class BarClass < Super
             end
@@ -164,12 +164,12 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'corrects a not nested module' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           module FooClass::BarClass
           end
         RUBY
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           module FooClass
             module BarClass
             end
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'does not correct nested children' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass
             class BarClass
             end
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'does not correct :: in parent class on inheritance' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass
             class BarClass
             end
@@ -212,35 +212,35 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       let(:enforced_style) { 'compact' }
 
       it 'corrects nested children' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass
             class BarClass
             end
           end
         RUBY
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           class FooClass::BarClass
           end
         RUBY
       end
 
       it 'corrects modules with nested children' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           module FooModule
             module BarModule
             end
           end
         RUBY
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           module FooModule::BarModule
           end
         RUBY
       end
 
       it 'does not correct compact style for classes/modules' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass::BarClass
           end
 
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'does not correct nested classes/modules with more than one child' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass
             class BarClass
             end
@@ -272,7 +272,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'does not correct class/module with single method' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass
             def bar_method
             end
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       it 'does not correct nesting for classes with an explicit superclass' do
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           class FooClass < Super
             class BarClass
             end

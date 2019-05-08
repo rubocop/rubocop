@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Formatter::DisabledLinesFormatter do
       it 'lists disabled cops by file' do
         formatter.finished(files)
         expect(output.string)
-          .to eq(<<-OUTPUT.strip_indent)
+          .to eq(<<~OUTPUT)
 
             Cops disabled line ranges:
 

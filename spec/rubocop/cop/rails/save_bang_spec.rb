@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} with if with method chain" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if object.tap(&:prepare_for_save).#{method}
           something
         end
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} with if with block" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if object.#{method} { |o| o.name = 'Tom' }
           something
         end
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} with multiple conditional" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         if true && object.active? && object.#{method}
           something
         end
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} with a bunch of hashes & arrays" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         return [{ success: object.#{method} }, true]
       RUBY
 
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} with case statement" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         case object.#{method}
         when true
           puts "true"
@@ -310,7 +310,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it 'when using an explicit early return' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def foo
           return foo.#{method} if do_the_save
           do_something_else
@@ -319,7 +319,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it 'when using an explicit final return' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def foo
           return foo.#{method}
         end
@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it 'when using an explicit early return from a block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         objects.each do |object|
           next object.#{method} if do_the_save
           do_something_else
@@ -336,7 +336,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it 'when using an explicit final return from a block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         objects.each do |object|
           next foo.#{method}
         end
@@ -345,7 +345,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using an allowed variable receiver' do
       cop_config['AllowedReceivers'] = ['gateway']
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         gateway = true
         gateway.#{method}
         gateway.#{method} { |t| t.name = 'Tom' }
@@ -358,7 +358,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using an allowed method receiver' do
       cop_config['AllowedReceivers'] = ['customer']
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         customer.#{method}
         merchant.customer.#{method}
         customer(true).#{method}
@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using an allowed const receiver' do
       cop_config['AllowedReceivers'] = ['NonActiveRecord']
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         NonActiveRecord.#{method}
         NameSpace::NonActiveRecord.#{method}
         ::NonActiveRecord.#{method}
@@ -380,7 +380,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using an allowed namespaced const receiver' do
       cop_config['AllowedReceivers'] = ['NameSpace::NonActiveRecord']
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         NameSpace::NonActiveRecord.#{method}
         ::NameSpace::NonActiveRecord.#{method}
         NameSpace::NonActiveRecord::#{method}
@@ -389,7 +389,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using only part of an allowed namespaced const receiver' do
       cop_config['AllowedReceivers'] = ['NameSpace::NonActiveRecord']
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         NonActiveRecord.#{method}
       RUBY
 
@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using a namespaced const with an allowed absolute const' do
       cop_config['AllowedReceivers'] = ['::NonActiveRecord']
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         NameSpace::NonActiveRecord.#{method}
       RUBY
 
@@ -411,14 +411,14 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using an allowed method chain receiver' do
       cop_config['AllowedReceivers'] = ['merchant.gateway']
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         merchant.gateway.#{method}
       RUBY
     end
 
     it 'when using only part of an allowed method chain receiver' do
       cop_config['AllowedReceivers'] = ['merchant.gateway']
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         gateway.#{method}
       RUBY
 
@@ -429,7 +429,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using an allowed class and method receiver' do
       cop_config['AllowedReceivers'] = ['A::B.merchant.gateway']
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         A::B.merchant.gateway.#{method}
         A::B::merchant::gateway::#{method}
       RUBY
@@ -437,7 +437,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     it 'when using only part of an allowed class and method receiver' do
       cop_config['AllowedReceivers'] = ['A::B.merchant.gateway']
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         B.merchant.#{method}
       RUBY
 
@@ -448,7 +448,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
     # Bug: https://github.com/rubocop-hq/rubocop/issues/4264
     it 'when using the assigned variable as value in a hash' do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         def foo
           foo = Foo.#{method}
           render json: foo
@@ -464,7 +464,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
 
   shared_examples 'check_implicit_return' do |method, allow_implicit_return|
     it "when using #{method} as last method call" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         def foo
           object.#{method}
         end
@@ -480,7 +480,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} as last method call of a block" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         objects.each do |object|
           object.#{method}
         end
@@ -496,7 +496,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using #{method} as part of the last line" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         def whatever
           [{ success: object.#{method} }, true]
         end
@@ -541,7 +541,7 @@ RSpec.describe RuboCop::Cop::Rails::SaveBang, :config do
     end
 
     it "when using persisted? after #{method} called on a chain" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         x = User.unverified.with_initial_values.#{method}
         if x.persisted?; something; end
       RUBY

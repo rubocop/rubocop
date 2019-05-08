@@ -6,7 +6,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
     context 'when first child is method' do
       it "requires blank line at the beginning and ending of #{type} body" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{type} SomeObject
 
             def do_something; end
@@ -17,7 +17,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       context 'source without blank lines' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             #{type} SomeObject
               def do_something; end
             end
@@ -32,7 +32,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         it 'autocorrects the offenses' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             #{type} SomeObject
 
               def do_something; end
@@ -45,7 +45,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       context "when #{type} has a namespace" do
         it 'requires no empty lines for namespace but '\
           "requires blank line at the beginning and ending of #{type} body" do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             #{type} Parent
               #{type} SomeObject
 
@@ -59,7 +59,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         context 'source without blank lines' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               #{type} Parent
                 #{type} SomeObject
                   def do_something
@@ -71,7 +71,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
           it 'autocorrects the offenses' do
             new_source = autocorrect_source(source)
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               #{type} Parent
                 #{type} SomeObject
 
@@ -86,7 +86,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         context 'source with blank lines' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               #{type} Parent
 
                 #{type} SomeObject
@@ -102,7 +102,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
           it 'autocorrects the offenses' do
             new_source = autocorrect_source(source)
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               #{type} Parent
                 #{type} SomeObject
 
@@ -121,7 +121,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       it "does not require blank line at the beginning of #{type} body "\
         'but requires blank line before first def definition '\
         "and requires blank line at the end of #{type} body" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{type} SomeObject
             include Something
 
@@ -133,7 +133,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       context 'source without blank lines' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             #{type} SomeObject
               include Something
               def do_something; end
@@ -148,7 +148,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         it 'autocorrects the offenses' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             #{type} SomeObject
               include Something
 
@@ -161,7 +161,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       context 'source with blank lines' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             #{type} SomeObject
 
               include Something
@@ -178,7 +178,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         it 'autocorrects the offenses' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             #{type} SomeObject
               include Something
 
@@ -191,7 +191,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       context 'source with comment before method definition' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             #{type} SomeObject
 
               include Something
@@ -209,7 +209,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         it 'autocorrects the offenses' do
           new_source = autocorrect_source(source)
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             #{type} SomeObject
               include Something
 
@@ -225,7 +225,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
         it 'requires no empty lines for namespace '\
           "and does not require blank line at the beginning of #{type} body "\
           "but requires blank line at the end of #{type} body" do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             #{type} Parent
               #{type} SomeObject
                 include Something
@@ -240,7 +240,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         context 'source without blank lines' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               #{type} Parent
                 #{type} SomeObject
                   include Something
@@ -253,7 +253,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
           it 'autocorrects the offenses' do
             new_source = autocorrect_source(source)
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               #{type} Parent
                 #{type} SomeObject
                   include Something
@@ -269,7 +269,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         context 'source with blank lines' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               #{type} Parent
 
                 #{type} SomeObject
@@ -287,7 +287,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
           it 'autocorrects the offenses' do
             new_source = autocorrect_source(source)
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               #{type} Parent
                 #{type} SomeObject
                   include Something
@@ -303,7 +303,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
         context 'source with constants' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               #{type} Parent
                 #{type} SomeObject
                   URL = %q(http://example.com)
@@ -316,7 +316,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
           it 'autocorrects the offenses' do
             new_source = autocorrect_source(source)
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               #{type} Parent
                 #{type} SomeObject
                   URL = %q(http://example.com)
@@ -334,7 +334,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
     context 'when namespace has multiple children' do
       it 'requires empty lines for namespace' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           #{type} Parent
 
             #{type} Mom
@@ -354,7 +354,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
     context "#{type} with only constants" do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           #{type} Parent
             #{type} SomeObject
               URL = %q(http://example.com)
@@ -366,7 +366,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       it 'autocorrects the offenses' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #{type} Parent
             #{type} SomeObject
               URL = %q(http://example.com)
@@ -380,7 +380,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
     context "#{type} with constant and child #{type}" do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           #{type} Parent
             URL = %q(http://example.com)
             #{type} SomeObject
@@ -400,7 +400,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       it 'autocorrects the offenses' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           #{type} Parent
             URL = %q(http://example.com)
 
@@ -418,7 +418,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
     context "#{type} with empty body" do
       context 'with empty line' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             #{type} SomeObject
 
             end
@@ -432,7 +432,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
 
       context 'without empty line' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             #{type} SomeObject
             end
           RUBY

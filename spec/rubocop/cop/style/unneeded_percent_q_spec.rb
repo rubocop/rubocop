@@ -5,21 +5,21 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
 
   context 'with %q strings' do
     it 'registers an offense for only single quotes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %q('hi')
         ^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
       RUBY
     end
 
     it 'registers an offense for only double quotes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %q("hi")
         ^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
       RUBY
     end
 
     it 'registers an offense for no quotes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %q(hi)
         ^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
       RUBY
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'registers an offfense for a string containing escaped backslashes' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %q(\\\\foo\\\\)
         ^^^^^^^^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
       RUBY
@@ -68,11 +68,11 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
       end
 
       it 'auto-corrects for strings that is concated with backslash' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           %q(foo bar baz) \
             'boogers'
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           'foo bar baz' \
             'boogers'
         RUBY
@@ -82,21 +82,21 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
 
   context 'with %Q strings' do
     it 'registers an offense for static string without quotes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %Q(hi)
         ^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
       RUBY
     end
 
     it 'registers an offense for static string with only double quotes' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         %Q("hi")
         ^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
       RUBY
     end
 
     it 'registers an offense for dynamic string without quotes' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         %Q(hi#{4})
         ^^^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
       RUBY
@@ -142,11 +142,11 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
       end
 
       it 'auto-corrects for strings that is concated with backslash' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           %Q(foo bar baz) \
             'boogers'
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           "foo bar baz" \
             'boogers'
         RUBY
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Style::UnneededPercentQ do
   end
 
   it 'accepts a heredoc string that contains %q' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
         s = <<CODE
       %q('hi') # line 1
       %q("hi")

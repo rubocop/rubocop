@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing space before an EOL comment' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a += 1# increment
             ^^^^^^^^^^^ Put a space before an end-of-line comment.
     RUBY
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComment do
   end
 
   it 'accepts a doc comment' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       =begin
       Doc comment
       =end

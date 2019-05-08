@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for consecutive empty lines' do
-    inspect_source(<<-RUBY.strip_indent)
+    inspect_source(<<~RUBY)
       test = 5
 
 
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'auto-corrects consecutive empty lines' do
-    corrected = autocorrect_source(<<-RUBY.strip_indent)
+    corrected = autocorrect_source(<<~RUBY)
       test = 5
 
 
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
       top
     RUBY
 
-    expect(corrected).to eq(<<-RUBY.strip_indent)
+    expect(corrected).to eq(<<~RUBY)
       test = 5
 
       top
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'handles comments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       test
 
       #comment
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'does not register an offense for empty lines in a string' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       result = "test
 
 
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   end
 
   it 'does not register an offense for heredocs with empty lines inside' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       str = <<-TEXT
       line 1
 

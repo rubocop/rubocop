@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
 
   context 'when on same line' do
     it 'does not add any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {foo: 1, bar: "2"}
       RUBY
     end
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
 
   context 'when on different lines than brackets but keys on one' do
     it 'does not add any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {
           foo: 1, bar: "2"
         }
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
 
   context 'when on all keys on one line different than brackets' do
     it 'does not add any offenses' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {
           foo => 1, bar => "2"
         }
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
 
   context 'when key starts on same line as another' do
     it 'adds an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {
           foo: 1,
           baz: 3, bar: "2"}
@@ -42,13 +42,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         {
           foo: 1,
           baz: 3, bar: "2"}
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         {
           foo: 1,
           baz: 3,\s
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
 
   context 'when key starts on same line as another with rockets' do
     it 'adds an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {
           foo => 1,
           baz => 3, bar: "2"}
@@ -68,13 +68,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         {
           foo => 1,
           baz => 3, bar => "2"}
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         {
           foo => 1,
           baz => 3,\s
@@ -95,12 +95,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         {foo: 1,
           baz: 3, bar: "2"}
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         {foo: 1,
           baz: 3,\s
         bar: "2"}
@@ -122,14 +122,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         {foo: 1,
           baz: {
             as: 12,
           }, bar: "2"}
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         {foo: 1,
           baz: {
             as: 12,

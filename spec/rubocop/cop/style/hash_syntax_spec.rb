@@ -27,21 +27,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       let(:cop_config_overrides) { {} }
 
       it 'registers offense for hash rocket syntax when new is possible' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
       end
 
       it 'registers an offense for hash rockets in method calls' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when symbol keys have strings in them' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :"string" => 0 }
                 ^^^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -69,14 +69,14 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       context 'if PreferHashRocketsForNonAlnumEndingSymbols is false' do
         it 'registers an offense for hash rockets when symbols end with ?' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             x = { :a? => 0 }
                   ^^^^^^ Use the new Ruby 1.9 hash syntax.
           RUBY
         end
 
         it 'registers an offense for hash rockets when symbols end with !' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             x = { :a! => 0 }
                   ^^^^^^ Use the new Ruby 1.9 hash syntax.
           RUBY
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers offense when keys start with an uppercase letter' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :A => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when any element uses a symbol for the value' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { a: 1, b: :c }
                 ^^ Use hash rockets syntax.
                       ^^ Use hash rockets syntax.
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers an offense when any element has a symbol value ' \
         'in method calls' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
         RUBY
@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers an offense when using hash rockets ' \
         'and no elements have a symbol value' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 1, :b => 2 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
                          ^^^^^ Use the new Ruby 1.9 hash syntax.
@@ -210,7 +210,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hashes with elements on multiple lines' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { a: :b,
                 ^^ Use hash rockets syntax.
            c: :d }
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'accepts both hash rockets and ruby19 syntax in the same code' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           rocket_required = { :a => :b }
           ruby19_required = { c: 3 }
         RUBY
@@ -260,21 +260,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers offense for Ruby 1.9 style' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = { a: 0 }
               ^^ Use hash rockets syntax.
       RUBY
     end
 
     it 'registers an offense for mixed syntax' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = { a => 0, b: 1 }
                       ^^ Use hash rockets syntax.
       RUBY
     end
 
     it 'registers an offense for 1.9 style in method calls' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         func(3, a: 0)
                 ^^ Use hash rockets syntax.
       RUBY
@@ -326,14 +326,14 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers offense for hash rocket syntax when new is possible' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -344,7 +344,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hash rockets in method calls' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -359,7 +359,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have different types and styles' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { a: 0, "b" => 1 }
                 ^^ Don't mix styles in the same hash.
         RUBY
@@ -367,7 +367,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have whitespaces in them' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :"t o" => 0 }
                 ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys start with a digit' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -412,7 +412,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when any element uses a symbol for the value' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { a: 1, b: :c }
                 ^^ Use hash rockets syntax.
                       ^^ Use hash rockets syntax.
@@ -421,7 +421,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers an offense when any element has a symbol value ' \
         'in method calls' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
         RUBY
@@ -444,7 +444,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers offense for hash rocket syntax when new is possible' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -453,7 +453,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -465,7 +465,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense for hash rockets in method calls' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -480,7 +480,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have different types and styles' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { a: 0, "b" => 1 }
                 ^^ Don't mix styles in the same hash.
         RUBY
@@ -488,7 +488,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have whitespaces in them' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :"t o" => 0 }
                 ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -502,7 +502,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys start with a digit' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -541,7 +541,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense for mixed syntax when new is possible' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = { :a => 0, b: 1 }
                        ^^ Don't mix styles in the same hash.
       RUBY
@@ -565,7 +565,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense when keys have different types and styles' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = { a: 0, "b" => 1 }
               ^^ Don't mix styles in the same hash.
       RUBY
@@ -577,7 +577,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense when keys have whitespaces and mix styles' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = { :"t o" => 0, b: 1 }
                            ^^ Don't mix styles in the same hash.
       RUBY
@@ -600,7 +600,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     it 'registers an offense when keys start with a digit and mix styles' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = { :"1" => 1, b: 1 }
                          ^^ Don't mix styles in the same hash.
       RUBY

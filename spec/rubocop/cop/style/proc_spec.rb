@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::Proc do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a Proc.new call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       f = Proc.new { |x| puts x }
           ^^^^^^^^ Use `proc` instead of `Proc.new`.
     RUBY

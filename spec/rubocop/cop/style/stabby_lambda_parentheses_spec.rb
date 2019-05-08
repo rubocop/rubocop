@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     it_behaves_like 'common'
 
     it 'registers an offense for a stabby lambda without parentheses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->a,b,c { a + b + c }
           ^^^^^ Wrap stabby lambda arguments with parentheses.
       RUBY
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
     it_behaves_like 'common'
 
     it 'registers an offense for a stabby lambda with parentheses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->(a,b,c) { a + b + c }
           ^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
       RUBY

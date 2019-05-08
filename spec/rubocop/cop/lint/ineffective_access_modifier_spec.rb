@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when `private` is applied to a class method' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
           private
 
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when `protected` is applied to a class method' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
           protected
 
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
   context 'when `private_class_method` is used' do
     context 'when `private_class_method` contains all private method names' do
       it "doesn't register an offense" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class C
             private
 
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
     context 'when `private_class_method` does not contain the method' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class C
             private
 
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when no access modifier is used' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class C
           def self.method
             puts "hi"
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when a `class << self` block is used' do
     it "doesn't register an offense" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class C
           private
 
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
 
   context 'when there is an intervening instance method' do
     it 'still registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class C
 
           private

@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit calls' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       foo 1,
       2
     RUBY
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
   end
 
   it 'ignores calls with a multiline empty brace ' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       puts(
       )
     RUBY
@@ -49,14 +49,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     end
 
     it 'ignores single-line calls with multi-line receiver' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         [
         ].join(" ")
       RUBY
     end
 
     it 'ignores single-line calls with multi-line receiver with leading dot' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         [
         ]
         .join(" ")

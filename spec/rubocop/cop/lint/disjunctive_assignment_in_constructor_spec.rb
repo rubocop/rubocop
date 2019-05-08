@@ -8,7 +8,7 @@ RSpec.describe(
 
   context 'empty constructor' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Banana
           def initialize
           end
@@ -19,7 +19,7 @@ RSpec.describe(
 
   context 'constructor does not have disjunctive assignment' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class Banana
           def initialize
             @delicious = true
@@ -32,7 +32,7 @@ RSpec.describe(
   context 'constructor has disjunctive assignment' do
     context 'LHS is lvar' do
       it 'accepts' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Banana
             def initialize
               delicious ||= true
@@ -44,7 +44,7 @@ RSpec.describe(
 
     context 'LHS is ivar' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class Banana
             def initialize
               @delicious ||= true
@@ -56,7 +56,7 @@ RSpec.describe(
 
       context 'constructor calls super after assignment' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             class Banana
               def initialize
                 @delicious ||= true
@@ -70,7 +70,7 @@ RSpec.describe(
 
       context 'constructor calls super before disjunctive assignment' do
         it 'accepts' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             class Banana
               def initialize
                 super
@@ -83,7 +83,7 @@ RSpec.describe(
 
       context 'constructor calls any method before disjunctive assignment' do
         it 'accepts' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             class Banana
               def initialize
                 # With the limitations of static analysis, it's very difficult

@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when overriding create' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class X < ApplicationRecord
         def create
         ^^^^^^^^^^ Use `before_create`, `around_create`, or `after_create` callbacks instead of overriding the Active Record method `create`.
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
   end
 
   it 'registers an offense when overriding destroy' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class X < ApplicationRecord
         def destroy
         ^^^^^^^^^^^ Use `before_destroy`, `around_destroy`, or `after_destroy` callbacks instead of overriding the Active Record method `destroy`.
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
   end
 
   it 'registers an offense when overriding save' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class X < ApplicationRecord
         def save
         ^^^^^^^^ Use `before_save`, `around_save`, or `after_save` callbacks instead of overriding the Active Record method `save`.
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
   end
 
   it 'registers an offense when overriding update' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       class X < ActiveModel::Base
         module_function
 
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
 
   context 'when overriding without a super call' do
     it 'registers no offense when overriding save' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class X < ApplicationRecord
           def save
             @a = 5
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
 
   context 'when class is not an ActiveRecord model' do
     it 'registers no offense when overriding save' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class X
           def save
             super
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
 
   context 'when class is not an ActiveRecord model' do
     it 'registers no offense when overriding save' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class X < Y
           def save
             super
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Rails::ActiveRecordOverride do
 
   context 'when class has no parent specified' do
     it 'registers no offense when overriding save' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         class X
           def initialize; end
 

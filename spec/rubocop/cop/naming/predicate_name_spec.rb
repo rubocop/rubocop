@@ -10,33 +10,33 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'registers an offense when method name starts with "is"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def is_attr; end
             ^^^^^^^ Rename `is_attr` to `attr?`.
       RUBY
     end
 
     it 'registers an offense when method name starts with "has"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def has_attr; end
             ^^^^^^^^ Rename `has_attr` to `attr?`.
       RUBY
     end
 
     it 'accepts method name that starts with unknown prefix' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def have_attr; end
       RUBY
     end
 
     it 'accepts method name that is an assignment' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def is_hello=; end
       RUBY
     end
 
     it 'accepts method name when corrected name is invalid identifier' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def is_2d?; end
       RUBY
     end
@@ -48,27 +48,27 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'registers an offense when method name starts with "is"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def is_attr; end
             ^^^^^^^ Rename `is_attr` to `is_attr?`.
       RUBY
     end
 
     it 'registers an offense when method name starts with "has"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def has_attr; end
             ^^^^^^^^ Rename `has_attr` to `has_attr?`.
       RUBY
     end
 
     it 'accepts method name that starts with unknown prefix' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def have_attr; end
       RUBY
     end
 
     it 'accepts method name when corrected name is invalid identifier' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def is_2d?; end
       RUBY
     end
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'accepts method name which is in whitelist' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def is_a?; end
       RUBY
     end
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'registers an offense when using `define_method`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         define_method(:is_hello) do |method_name|
                       ^^^^^^^^^ Rename `is_hello` to `hello?`.
           method_name == 'hello'
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'registers an offense when using an internal affair macro' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def_node_matcher :is_hello, <<-PATTERN
                          ^^^^^^^^^ Rename `is_hello` to `hello?`.
           (send
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'accepts method name when corrected name is invalid identifier' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         define_method(:is_2d?) do |method_name|
           method_name == 'hello'
         end
@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'registers an offense when using `define_method`' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         define_method(:is_hello) do |method_name|
                       ^^^^^^^^^ Rename `is_hello` to `hello?`.
           method_name == 'hello'
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'does not register any offenses when using an internal affair macro' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def_node_matcher :is_hello, <<-PATTERN
                          ^^^^^^^^^ Rename `is_hello` to `hello?`.
           (send
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
 
     it 'accepts method name when corrected name is invalid identifier' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         define_method(:is_2d?) do |method_name|
           method_name == 'hello'
         end

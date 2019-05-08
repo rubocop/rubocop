@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :conf
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit defs' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def foo a: 1,
       b: 2
       end
@@ -14,14 +14,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :conf
   end
 
   it 'ignores single-line defs' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def foo(a,b)
       end
     RUBY
   end
 
   it 'ignores defs without params' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def foo
       end
     RUBY

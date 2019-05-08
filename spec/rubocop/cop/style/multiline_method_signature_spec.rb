@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
   context 'when arguments span multiple lines' do
     context 'when defining an instance method' do
       it 'registers an offense when `end` is on the following line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def foo(bar,
           ^^^^^^^^^^^^ Avoid multi-line method signatures.
                   baz)
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
 
       it 'registers an offense when `end` is on the same line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def foo(bar,
           ^^^^^^^^^^^^ Avoid multi-line method signatures.
                   baz); end
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
 
     context 'when arguments span a single line' do
       it 'registers an offense when closing paren is on the following line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def foo(bar
           ^^^^^^^^^^^ Avoid multi-line method signatures.
               )
@@ -36,14 +36,14 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
 
     context 'when method signature is on a single line' do
       it 'does not register an offense for parameterized method' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foo(bar, baz)
           end
         RUBY
       end
 
       it 'does not register an offense for unparameterized method' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foo
           end
         RUBY
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
   context 'when arguments span multiple lines' do
     context 'when defining an class method' do
       it 'registers an offense when `end` is on the following line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def self.foo(bar,
           ^^^^^^^^^^^^^^^^^ Avoid multi-line method signatures.
                   baz)
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
 
       it 'registers an offense when `end` is on the same line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def self.foo(bar,
           ^^^^^^^^^^^^^^^^^ Avoid multi-line method signatures.
                   baz); end
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
 
     context 'when arguments span a single line' do
       it 'registers an offense when closing paren is on the following line' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def self.foo(bar
           ^^^^^^^^^^^^^^^^ Avoid multi-line method signatures.
               )
@@ -84,14 +84,14 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
 
     context 'when method signature is on a single line' do
       it 'does not register an offense for parameterized method' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def self.foo(bar, baz)
           end
         RUBY
       end
 
       it 'does not register an offense for unparameterized method' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def self.foo
           end
         RUBY
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
 
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def foo(bar,
                   baz)
           end
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
 
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           def foo(bar,
           ^^^^^^^^^^^^ Avoid multi-line method signatures.
                   baz)

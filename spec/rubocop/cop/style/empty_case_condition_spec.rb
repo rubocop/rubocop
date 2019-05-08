@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
   context 'given a case statement with an empty case' do
     context 'with multiple when branches and an else' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when 1 == 2
             foo
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if 1 == 2
             foo
           elsif 1 == 1
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with multiple when branches and an `else` with code comments' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           # condition a
           # This is a multi-line comment
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       end
 
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           # condition a
           # This is a multi-line comment
           if 1 == 2
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with multiple when branches and no else' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when 1 == 2
             foo
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if 1 == 2
             foo
           elsif 1 == 1
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with a single when branch and an else' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when 1 == 2
             foo
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if 1 == 2
             foo
           else
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with a single when branch and no else' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when 1 == 2
             foo
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if 1 == 2
             foo
           end
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with a when branch including comma-delimited alternatives' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when false
             foo
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if false
             foo
           elsif nil || false || 1
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with when branches using then' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when false then foo
           when nil, false, 1 then bar
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if false then foo
           elsif nil || false || 1 then bar
           elsif false || 1 then baz
@@ -210,7 +210,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'with first when branch including comma-delimited alternatives' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           case
           when my.foo?, my.bar?
             something
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           if my.foo? || my.bar?
             something
           elsif my.baz?
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'when used as an argument of a method without comment' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           do_some_work case
                        when object.nil?
                          Object.new
@@ -244,7 +244,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           do_some_work if object.nil?
                          Object.new
                        else
@@ -258,7 +258,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
 
     context 'when used as an argument of a method with comment' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           # example.rb
           do_some_work case
                        when object.nil?
@@ -269,7 +269,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         RUBY
       end
       let(:corrected_source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           # example.rb
           do_some_work if object.nil?
                          Object.new
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
     context 'when using `return` in `when` clause and ' \
             'assigning the return value of `case`' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           v = case
               when x.a
                 1
@@ -299,7 +299,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
     context 'when using `return ... if` in `when` clause and ' \
             'assigning the return value of `case`' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           v = case
               when x.a
                 1
@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
     context 'when using `return` in `else` clause and ' \
             'assigning the return value of `case`' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           v = case
               when x.a
                 1
@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
     context 'when using `return ... if` in `else` clause and ' \
             'assigning the return value of `case`' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           v = case
               when x.a
                 1

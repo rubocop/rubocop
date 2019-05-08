@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         VALUES = [1001, 2020, 3333, ]
                                   ^ Avoid comma after the last item of an array#{extra_info}.
       RUBY
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
     it 'accepts rescue clause' do
       # The list of rescued classes is an array.
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         begin
           do_something
         rescue RuntimeError
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
 
       it 'registers an offense for trailing comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           VALUES = [
                      1001,
                      2020,
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts a literal with no trailing comma' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           VALUES = [ 1001,
                      2020,
                      3333 ]
@@ -85,14 +85,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           VALUES = [
                      1001,
                      2020,
                      3333,
                    ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           VALUES = [
                      1001,
                      2020,
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts HEREDOC with commas' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           [
             <<-TEXT, 123
               Something with a , in it
@@ -112,14 +112,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma where HEREDOC has commas' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           [
             <<-TEXT, 123,
               Something with a , in it
             TEXT
           ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           [
             <<-TEXT, 123
               Something with a , in it
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'accepts literal with no trailing comma' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             VALUES = [
                        1001,
                        2020,
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts literal with two of the values on the same line' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'registers an offense for a literal with two of the values ' \
          'on the same line and a trailing comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333,
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts trailing comma' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           VALUES = [1001,
                     2020,
                     3333,
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts a multiline word array' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           ingredients = %w(
             sausage
             anchovies
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts an empty array being passed as a method argument' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           Foo.new([
                    ])
         RUBY
@@ -191,13 +191,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'auto-corrects literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = [
             1,
           ]
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       context 'when closing bracket is on same line as last value' do
         it 'registers an offense for no trailing comma' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             VALUES = [
                        1001,
                        2020,
@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts two values on the same line' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333,
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'registers an offense for literal with two of the values ' \
          'on the same line and no trailing comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts trailing comma' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           VALUES = [1001,
                     2020,
                     3333,
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts a multiline word array' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           ingredients = %w(
             sausage
             anchovies
@@ -270,13 +270,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'auto-corrects a literal with two of the values on the same' \
          ' line and a trailing comma' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333
                    ]
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           VALUES = [
                      1001, 2020,
                      3333,
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'accepts a multiline array with a single item and trailing comma' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = [
             1,
           ]
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
 
       it 'accepts a multiline array with items on a single line and' \
          'trailing comma' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           foo = [
             1, 2,
           ]

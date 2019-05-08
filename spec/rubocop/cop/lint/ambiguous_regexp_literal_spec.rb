@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
   context 'with a regexp literal in the first argument' do
     context 'without parentheses' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           p /pattern/
             ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
         RUBY

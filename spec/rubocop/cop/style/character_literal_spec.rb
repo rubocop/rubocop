@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for character literals' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x = ?x
           ^^ Do not use the character literal - use string literal instead.
     RUBY

@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
   subject(:cop) { described_class.new }
 
   it 'provides a good error message' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       condition ? then_part : else_part unless external_condition
                                         ^^^^^^ Avoid modifier `unless` after another conditional.
     RUBY
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'ternary with modifier' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         condition ? then_part : else_part unless external_condition
                                           ^^^^^^ Avoid modifier `unless` after another conditional.
       RUBY
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'conditional with modifier' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         unless condition
           then_part
         end if external_condition
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'conditional with modifier in body' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if condition
           then_part if maybe?
         end
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
 
   context 'nested conditionals' do
     it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if external_condition
           if condition
             then_part

@@ -6,28 +6,28 @@ RSpec.describe RuboCop::Cop::Lint::UriRegexp do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `URI.regexp` with argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       URI.regexp('http://example.com')
           ^^^^^^ `URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
     RUBY
   end
 
   it 'registers an offense when using `::URI.regexp` with argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::URI.regexp('http://example.com')
             ^^^^^^ `::URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
     RUBY
   end
 
   it 'registers an offense when using `URI.regexp` without argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       URI.regexp
           ^^^^^^ `URI.regexp` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
     RUBY
   end
 
   it 'registers an offense when using `::URI.regexp` without argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::URI.regexp
             ^^^^^^ `::URI.regexp` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp`.
     RUBY

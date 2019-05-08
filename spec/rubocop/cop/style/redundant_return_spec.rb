@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   let(:cop_config) { { 'AllowMultipleReturnValues' => false } }
 
   it 'reports an offense for def with only a return' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func
         return something
         ^^^^^^ Redundant `return` detected.
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'reports an offense for defs with only a return' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def Test.func
         return something
         ^^^^^^ Redundant `return` detected.
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'reports an offense for def ending with return' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func
         one
         two
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'reports an offense for defs ending with return' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def self.func
         one
         two
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'accepts return in a non-final position' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         return something if something_else
       end
@@ -56,14 +56,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'does not blow up on empty method body' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
       end
     RUBY
   end
 
   it 'does not blow up on empty if body' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         if x
         elsif y
@@ -74,14 +74,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   end
 
   it 'auto-corrects by removing redundant returns' do
-    src = <<-RUBY.strip_indent
+    src = <<~RUBY
       def func
         one
         two
         return something
       end
     RUBY
-    result_src = <<-RUBY.strip_indent
+    result_src = <<~RUBY
       def func
         one
         two
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   context 'when return has no arguments' do
     shared_examples 'common behavior' do |ret|
       let(:src) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           def func
             one
             two
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
       it "auto-corrects by replacing #{ret} with nil" do
         new_source = autocorrect_source(src)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def func
             one
             two
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
   context 'when multi-value returns are not allowed' do
     it 'reports an offense for def with only a return' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           return something, test
           ^^^^^^ Redundant `return` detected. To return multiple values, use an array.
@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'reports an offense for defs with only a return' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def Test.func
           return something, test
           ^^^^^^ Redundant `return` detected. To return multiple values, use an array.
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'reports an offense for def ending with return' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           one
           two
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'reports an offense for defs ending with return' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def self.func
           one
           two
@@ -169,13 +169,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'auto-corrects by making implicit arrays explicit' do
-      src = <<-RUBY.strip_indent
+      src = <<~RUBY
         def func
           return  1, 2
         end
       RUBY
       # Just 1, 2 is not valid Ruby.
-      result_src = <<-RUBY.strip_indent
+      result_src = <<~RUBY
         def func
           [1, 2]
         end
@@ -185,13 +185,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'auto-corrects removes return when using an explicit hash' do
-      src = <<-RUBY.strip_indent
+      src = <<~RUBY
         def func
           return {:a => 1, :b => 2}
         end
       RUBY
       # :a => 1, :b => 2 is not valid Ruby
-      result_src = <<-RUBY.strip_indent
+      result_src = <<~RUBY
         def func
           {:a => 1, :b => 2}
         end
@@ -201,13 +201,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'auto-corrects by making an implicit hash explicit' do
-      src = <<-RUBY.strip_indent
+      src = <<~RUBY
         def func
           return :a => 1, :b => 2
         end
       RUBY
       # :a => 1, :b => 2 is not valid Ruby
-      result_src = <<-RUBY.strip_indent
+      result_src = <<~RUBY
         def func
           {:a => 1, :b => 2}
         end
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     let(:cop_config) { { 'AllowMultipleReturnValues' => true } }
 
     it 'accepts def with only a return' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           return something, test
         end
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'accepts defs with only a return' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def Test.func
           return something, test
         end
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'accepts def ending with return' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           one
           two
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'accepts defs ending with return' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def self.func
           one
           two
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'does not auto-correct' do
-      src = <<-RUBY.strip_indent
+      src = <<~RUBY
         def func
           return  1, 2
         end
@@ -269,7 +269,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
   context 'when return is inside begin-end body' do
     let(:src) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         def func
           begin
             return 1
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           begin
             return 1
@@ -291,7 +291,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(src)
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         def func
           begin
             1
@@ -303,7 +303,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
   context 'when rescue and return blocks present' do
     let(:src) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         def func
           1
           2
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'does register an offense when inside function or rescue block' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           1
           2
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(src)
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         def func
           1
           2
@@ -360,7 +360,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
   context 'when return is inside an if-branch' do
     let(:src) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         def func
           if x
             return 1
@@ -374,7 +374,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           if x
             return 1
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(src)
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         def func
           if x
             1
@@ -408,7 +408,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
   context 'when return is inside a when-branch' do
     let(:src) do
-      <<-RUBY.strip_indent
+      <<~RUBY
         def func
           case x
           when y then return 1
@@ -422,7 +422,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
 
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           case x
           when y then return 1
@@ -440,7 +440,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
     it 'auto-corrects' do
       corrected = autocorrect_source(src)
-      expect(corrected).to eq <<-RUBY.strip_indent
+      expect(corrected).to eq <<~RUBY
         def func
           case x
           when y then 1
@@ -456,7 +456,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
 
   context 'when case nodes are empty' do
     it 'accepts empty when nodes' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           case x
           when y then 1

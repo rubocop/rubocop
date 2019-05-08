@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Formatter::BaseFormatter do
 
       it 'is called in the proper sequence' do
         run
-        expect(output).to eq(<<-OUTPUT.strip_indent)
+        expect(output).to eq(<<~OUTPUT)
           started
           file_started
           file_finished

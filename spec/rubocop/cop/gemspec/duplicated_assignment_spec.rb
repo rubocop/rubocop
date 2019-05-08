@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `name=` twice' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       Gem::Specification.new do |spec|
         spec.name = 'rubocop'
         spec.name = 'rubocop2'
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment do
   end
 
   it 'registers an offense when using `version=` twice' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       require 'rubocop/version'
 
       Gem::Specification.new do |spec|
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment do
   end
 
   it 'registers an offense when using `name=` twice with `cbase`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::Gem::Specification.new do |spec|
         spec.name = 'rubocop'
         spec.name = 'rubocop2'
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment do
   end
 
   it 'registers an offense when using `<<` twice' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
         spec.requirements << 'libmagick, v6.0'
         spec.requirements << 'A good graphics card'
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment do
   end
 
   it 'registers an offense when using `spec.add_dependency` twice' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
         spec.add_runtime_dependency('parallel', '~> 1.10')
         spec.add_runtime_dependency('parser', '>= 2.3.3.1', '< 3.0')
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment do
   end
 
   it 'registers an offense when `name=` method call is not block value' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
         foo = Foo.new
         foo.name = :foo

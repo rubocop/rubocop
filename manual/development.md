@@ -213,14 +213,14 @@ describe RuboCop::Cop::Style::SimplifyNotEmptyWithAny do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense when using `!a.empty?`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       !array.empty?
       ^^^^^^^^^^^^^ Use `.any?` and remove the negation part.
     RUBY
   end
 
   it 'does not register an offense when using `.any?` or `.empty?`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       array.any?
       array.empty?
     RUBY

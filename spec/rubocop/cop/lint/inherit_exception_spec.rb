@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
       let(:cop_config) { { 'EnforcedStyle' => 'runtime_error' } }
 
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class C < Exception; end
                     ^^^^^^^^^ Inherit from `RuntimeError` instead of `Exception`.
         RUBY
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
 
       context 'when creating a subclass using Class.new' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             Class.new(Exception)
                       ^^^^^^^^^ Inherit from `RuntimeError` instead of `Exception`.
           RUBY
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
       let(:cop_config) { { 'EnforcedStyle' => 'standard_error' } }
 
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           class C < Exception; end
                     ^^^^^^^^^ Inherit from `StandardError` instead of `Exception`.
         RUBY
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
 
       context 'when creating a subclass using Class.new' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             Class.new(Exception)
                       ^^^^^^^^^ Inherit from `StandardError` instead of `Exception`.
           RUBY

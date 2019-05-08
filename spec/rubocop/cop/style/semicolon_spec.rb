@@ -6,21 +6,21 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
   let(:cop_config) { { 'AllowAsExpressionSeparator' => false } }
 
   it 'registers an offense for a single expression' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       puts "this is a test";
                            ^ Do not use semicolons to terminate expressions.
     RUBY
   end
 
   it 'registers an offense for several expressions' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       puts "this is a test"; puts "So is this"
                            ^ Do not use semicolons to terminate expressions.
     RUBY
   end
 
   it 'registers an offense for one line method with two statements' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def foo(a) x(1); y(2); z(3); end
                      ^ Do not use semicolons to terminate expressions.
     RUBY
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line method definitions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def foo1; x(3) end
       def initialize(*_); end
       def foo2() x(3); end
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line empty class definitions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # Prefer a single-line format for class ...
       class Foo < Exception; end
 
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'accepts one line empty method definitions' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       # One exception to the rule are empty-body methods
       def no_op; end
 
@@ -66,21 +66,21 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
   end
 
   it 'registers an offense for semicolon at the end no matter what' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       module Foo; end;
                      ^ Do not use semicolons to terminate expressions.
     RUBY
   end
 
   it 'accept semicolons inside strings' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       string = ";
       multi-line string"
     RUBY
   end
 
   it 'registers an offense for a semicolon at the beginning of a line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ; puts 1
       ^ Do not use semicolons to terminate expressions.
     RUBY
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
 
   it 'auto-corrects semicolons when syntactically possible' do
     corrected =
-      autocorrect_source(<<-RUBY.strip_indent)
+      autocorrect_source(<<~RUBY)
         module Foo; end;
         puts "this is a test";
         puts "this is a test"; puts "So is this"
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
         ;puts 1
       RUBY
     expect(corrected)
-      .to eq(<<-RUBY.strip_indent)
+      .to eq(<<~RUBY)
         module Foo; end
         puts "this is a test"
         puts "this is a test"; puts "So is this"
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
 
   context 'with a multi-expression line without a semicolon' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def foo
           bar = baz if qux else quux
         end

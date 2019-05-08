@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
     if RuboCop::Platform.windows?
       context 'Windows' do
         it 'allows any file permissions' do
-          expect_no_offenses(<<-RUBY.strip_indent, file)
+          expect_no_offenses(<<~RUBY, file)
             #!/usr/bin/ruby
 
           RUBY
@@ -34,9 +34,9 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
       end
     else
       it 'registers an offense for script permission' do
-        expect_offense(<<-RUBY.strip_indent, file)
-        #!/usr/bin/ruby
-        ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
+        expect_offense(<<~RUBY, file)
+          #!/usr/bin/ruby
+          ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
 
         RUBY
       end

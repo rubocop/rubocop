@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
 
   context 'when inspecting a File::Stat object' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         File.stat(foo).size == 0
       RUBY
     end
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
   context 'when inspecting a StringIO object' do
     context 'when initialized with a string' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           StringIO.new('foo').size == 0
         RUBY
       end
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
 
     context 'when initialized without arguments' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           StringIO.new.size == 0
         RUBY
       end
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
 
   context 'when inspecting a Tempfile object' do
     it 'does not register an offense' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Tempfile.new('foo').size == 0
       RUBY
     end

@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
 
   it 'registers an offense for method call with space before the ' \
      'parenthesis' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a.func (x)
             ^ `(...)` interpreted as grouped expression.
     RUBY
@@ -13,14 +13,14 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
 
   it 'registers an offense for predicate method call with space ' \
      'before the parenthesis' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       is? (x)
          ^ `(...)` interpreted as grouped expression.
     RUBY
   end
 
   it 'registers an offense for math expression' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       puts (2 + 3) * 4
           ^ `(...)` interpreted as grouped expression.
     RUBY
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts a chain of method calls' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a.b
       a.b 1
       a.b(1)
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   it 'accepts an operator call with argument in parentheses' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a % (b + c)
       a.b = (c == d)
     RUBY
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   context 'when using safe navigation operator' do
     it 'registers an offense for method call with space before the ' \
        'parenthesis' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a&.func (x)
                ^ `(...)` interpreted as grouped expression.
       RUBY

@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'no paren method defs' do
       it 'ignores' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc foo, bar, baz
             foo
           end
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'ignores with hash args' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc foo: 1, bar: 3, baz: 3
             foo
           end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'single line method defs' do
       it 'ignores' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(foo, bar, baz)
             foo
           end
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'ignores with hash args' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(foo: 1, bar: 3, baz: 3)
             foo
           end
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'valid indentation on multi-line defs' do
       it 'accepts correctly indented first element' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(
             foo,
             bar,
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'accepts correctly indented first element hash' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(
             foo: 1,
             bar: 3,
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'valid indentation on static multi-line defs' do
       it 'accepts correctly indented first element' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def self.abc(
             foo,
             bar,
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'accepts correctly indented first element hash' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def self.abc(
             foo: 1,
             bar: 3,
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
     context 'invalid indentation on multi-line defs' do
       context 'normal arguments' do
         it 'detects incorrectly indented first element' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def abc(
                         foo,
                         ^^^ Use 2 spaces for indentation in method args, relative to the start of the line where the left parenthesis is.
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
         end
 
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             def abc(
                         foo,
                         bar,
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
               foo
             end
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             def abc(
               foo,
                         bar,
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
       context 'hash arguments' do
         it 'detects incorrectly indented first element' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def abc(
                       foo: 1,
                       ^^^^^^ Use 2 spaces for indentation in method args, relative to the start of the line where the left parenthesis is.
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
           RUBY
         end
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             def abc(
                         foo: 1,
                         bar: 3,
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
               foo
             end
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             def abc(
               foo: 1,
                         bar: 3,
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
       context 'hash arguments static method def' do
         it 'detects incorrectly indented first element' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def self.abc(
                       foo: 1,
                       ^^^^^^ Use 2 spaces for indentation in method args, relative to the start of the line where the left parenthesis is.
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
           RUBY
         end
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             def self.abc(
                         foo: 1,
                         bar: 3,
@@ -201,7 +201,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
               foo
             end
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             def self.abc(
               foo: 1,
                         bar: 3,
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'no paren method defs' do
       it 'ignores' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc foo, bar, baz
             foo
           end
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'ignores with hash args' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc foo: 1, bar: 3, baz: 3
             foo
           end
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'single line method defs' do
       it 'ignores' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(foo, bar, baz)
             foo
           end
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'ignores with hash args' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(foo: 1, bar: 3, baz: 3)
             foo
           end
@@ -256,7 +256,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
     context 'valid indentation on multi-line defs' do
       it 'accepts correctly indented first element' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(
                    foo,
                    bar,
@@ -268,7 +268,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
       end
 
       it 'accepts correctly indented first element hash' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           def abc(
                    foo: 1,
                    bar: 3,
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
     context 'invalid indentation on multi-line defs' do
       context 'normal arguments' do
         it 'detects incorrectly indented first element' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def abc(
                         foo,
                         ^^^ Use 2 spaces for indentation in method args, relative to the position of the opening parenthesis.
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
         end
 
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             def abc(
                         foo,
                         bar,
@@ -305,7 +305,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
               foo
             end
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             def abc(
                      foo,
                         bar,
@@ -319,7 +319,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
       context 'hash arguments' do
         it 'detects incorrectly indented first element' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def abc(
                       foo: 1,
                       ^^^^^^ Use 2 spaces for indentation in method args, relative to the position of the opening parenthesis.
@@ -331,7 +331,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
           RUBY
         end
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             def abc(
                         foo: 1,
                         bar: 3,
@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
               foo
             end
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             def abc(
                      foo: 1,
                         bar: 3,
@@ -354,7 +354,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
 
       context 'hash arguments static def' do
         it 'detects incorrectly indented first element' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             def self.abc(
                       foo: 1,
                       ^^^^^^ Use 2 spaces for indentation in method args, relative to the position of the opening parenthesis.
@@ -366,7 +366,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
           RUBY
         end
         it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<-RUBY.strip_indent)
+          corrected = autocorrect_source(<<~RUBY)
             def self.abc(
                         foo: 1,
                         bar: 3,
@@ -375,7 +375,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstParameter, :config do
               foo
             end
           RUBY
-          expect(corrected).to eq <<-RUBY.strip_indent
+          expect(corrected).to eq <<~RUBY
             def self.abc(
                           foo: 1,
                         bar: 3,

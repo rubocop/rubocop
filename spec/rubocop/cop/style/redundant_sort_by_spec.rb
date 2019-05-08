@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSortBy do
   end
 
   it 'autocorrects array.sort_by do |x| x end' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       array.sort_by do |x|
         x
       end
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSortBy do
   end
 
   it 'formats the error message correctly for array.sort_by { |x| x }' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       array.sort_by { |x| x }
             ^^^^^^^^^^^^^^^^^ Use `sort` instead of `sort_by { |x| x }`.
     RUBY

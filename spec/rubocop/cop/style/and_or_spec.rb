@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
 
     %w[and or].each do |operator|
       it "accepts \"#{operator}\" outside of conditional" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           x = a + b #{operator} return x
         RUBY
       end
@@ -49,13 +49,13 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
 
     %w[&& ||].each do |operator|
       it "accepts #{operator} inside of conditional" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           test if a #{operator} b
         RUBY
       end
 
       it "accepts #{operator} outside of conditional" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           x = a #{operator} b
         RUBY
       end
@@ -72,14 +72,14 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     let(:cop_config) { cop_config }
 
     it 'registers an offense for "or"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test if a or b
                   ^^ Use `||` instead of `or`.
       RUBY
     end
 
     it 'registers an offense for "and"' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         test if a and b
                   ^^^ Use `&&` instead of `and`.
       RUBY
@@ -99,23 +99,23 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'auto-corrects "or" with ||' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         x = 12345
         true or false
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         x = 12345
         true || false
       RUBY
     end
 
     it 'auto-corrects "or" with || inside def' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def z(a, b)
           return true if a or b
         end
       RUBY
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def z(a, b)
           return true if a || b
         end
@@ -147,56 +147,56 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'warns on short-circuit (and)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b and return x
                   ^^^ Use `&&` instead of `and`.
       RUBY
     end
 
     it 'also warns on non short-circuit (and)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b if a and b
                        ^^^ Use `&&` instead of `and`.
       RUBY
     end
 
     it 'also warns on non short-circuit (and) (unless)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b unless a and b
                            ^^^ Use `&&` instead of `and`.
       RUBY
     end
 
     it 'warns on short-circuit (or)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b or return x
                   ^^ Use `||` instead of `or`.
       RUBY
     end
 
     it 'also warns on non short-circuit (or)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b if a or b
                        ^^ Use `||` instead of `or`.
       RUBY
     end
 
     it 'also warns on non short-circuit (or) (unless)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b unless a or b
                            ^^ Use `||` instead of `or`.
       RUBY
     end
 
     it 'also warns on while (or)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b while a or b
                           ^^ Use `||` instead of `or`.
       RUBY
     end
 
     it 'also warns on until (or)' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x = a + b until a or b
                           ^^ Use `||` instead of `or`.
       RUBY
@@ -348,7 +348,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     context 'with !variable on left' do
       it "doesn't crash and burn" do
         # regression test; see GH issue 2482
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           !var or var.empty?
                ^^ Use `||` instead of `or`.
         RUBY
@@ -358,7 +358,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     context 'within a nested begin node' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           def x
           end
 
@@ -366,7 +366,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
             a = b and a.c
           end
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           def x
           end
 
@@ -380,10 +380,10 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     context 'when left hand side is a comparison method' do
       # Regression: https://github.com/rubocop-hq/rubocop/issues/4451
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           foo == bar and baz
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           (foo == bar) && baz
         RUBY
       end
@@ -392,12 +392,12 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     context 'within a nested begin node with one child only' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           (def y
             a = b and a.c
           end)
         RUBY
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           (def y
             (a = b) && a.c
           end)
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
 
     context 'with a file which contains __FILE__' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
           system('bundle check') or system!('bundle install')
         RUBY
@@ -417,7 +417,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       it 'autocorrects "or" with ||' do
         new_source = autocorrect_source(source)
         expect(new_source).to eq(
-          <<-RUBY.strip_indent
+          <<~RUBY
             APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
             system('bundle check') || system!('bundle install')
           RUBY

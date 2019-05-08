@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::ArrayJoin do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array followed by string' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       %w(one two three) * ", "
                         ^ Favor `Array#join` over `Array#*`.
     RUBY

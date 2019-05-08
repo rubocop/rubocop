@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
 
     context 'when a string literal without timezone' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           "2016-07-12 14:36:31".to_time(:utc)
                                 ^^^^^^^ Do not use `to_time` on Date objects, because they know nothing about the time zone in use.
         RUBY
@@ -110,9 +110,9 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
     end
 
     it 'registers an offense for #to_time_in_current_zone' do
-      expect_offense(<<-RUBY.strip_indent)
-          "2016-07-12 14:36:31".to_time_in_current_zone
-                                ^^^^^^^^^^^^^^^^^^^^^^^ `to_time_in_current_zone` is deprecated. Use `in_time_zone` instead.
+      expect_offense(<<~RUBY)
+        "2016-07-12 14:36:31".to_time_in_current_zone
+                              ^^^^^^^^^^^^^^^^^^^^^^^ `to_time_in_current_zone` is deprecated. Use `in_time_zone` instead.
       RUBY
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
     end
 
     it 'registers an offense for Date.today' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         Date.today
              ^^^^^ Do not use `Date.today` without zone. Use `Time.zone.today` instead.
       RUBY
@@ -140,9 +140,9 @@ RSpec.describe RuboCop::Cop::Rails::Date, :config do
     end
 
     it 'registers an offense for #to_time_in_current_zone' do
-      expect_offense(<<-RUBY.strip_indent)
-          "2016-07-12 14:36:31".to_time_in_current_zone
-                                ^^^^^^^^^^^^^^^^^^^^^^^ `to_time_in_current_zone` is deprecated. Use `in_time_zone` instead.
+      expect_offense(<<~RUBY)
+        "2016-07-12 14:36:31".to_time_in_current_zone
+                              ^^^^^^^^^^^^^^^^^^^^^^^ `to_time_in_current_zone` is deprecated. Use `in_time_zone` instead.
       RUBY
     end
   end

@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
   describe '#calculate' do
     context '0 assignments, 3 branches, 0 conditions' do
       it 'returns 3' do
-        node = parse_source(<<-RUBY.strip_indent).ast
+        node = parse_source(<<~RUBY).ast
           def method_name
             return x, y, z
           end
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
 
     context '2 assignments, 6 branches, 2 conditions' do
       it 'returns 6.63' do
-        node = parse_source(<<-RUBY.strip_indent).ast
+        node = parse_source(<<~RUBY).ast
           def method_name
             a = b ? c : d
             e = f ? g : h
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
 
     context '2 assignments, 8 branches, 4 conditions' do
       it 'returns 8.77' do
-        node = parse_source(<<-RUBY.strip_indent).ast
+        node = parse_source(<<~RUBY).ast
           def method_name
             a = b ? c : d
             if a
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
 
     context '2 assignments, 9 branches, 5 conditions' do
       it 'returns 10.49' do
-        node = parse_source(<<-RUBY.strip_indent).ast
+        node = parse_source(<<~RUBY).ast
           def method_name
             a = b ? c : d
             if a < b
@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
 
     context 'elsif vs else if' do
       it 'counts elsif as 1 condition' do
-        node = parse_source(<<-RUBY.strip_indent).ast
+        node = parse_source(<<~RUBY).ast
           def method_name
             if foo        # 0, 1, 1
               bar         # 0, 2, 1
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
       end
 
       it 'counts else if as 2 conditions' do
-        node = parse_source(<<-RUBY.strip_indent).ast
+        node = parse_source(<<~RUBY).ast
           def method_name
             if foo        # 0, 1, 1
               bar         # 0, 2, 1

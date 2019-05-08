@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for def with empty parens' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func()
               ^ Omit the parentheses in defs when the method doesn't accept any arguments.
       end
@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'reports an offense for class def with empty parens' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def Test.func()
                    ^ Omit the parentheses in defs when the method doesn't accept any arguments.
       end
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'accepts def with arg and parens' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func(a)
       end
     RUBY
@@ -31,12 +31,12 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'auto-removes unneeded parens' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       def test();
       something
       end
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       def test;
       something
       end

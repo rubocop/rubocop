@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'can handle a built-in constant parsed as string' do
       # Parser will produce str nodes for constants such as __FILE__.
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if __FILE__ == $PROGRAM_NAME
         end
       RUBY

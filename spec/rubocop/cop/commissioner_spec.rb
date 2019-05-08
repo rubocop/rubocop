@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
       allow(cop).to receive(:on_def)
 
       commissioner = described_class.new([cop], [])
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         def method
         1
         end
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
       allow(cop).to receive(:on_int) { raise RuntimeError }
 
       commissioner = described_class.new([cop], [])
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         def method
         1
         end
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
         allow(cop).to receive(:on_int) { raise RuntimeError }
 
         commissioner = described_class.new([cop], [], raise_error: true)
-        source = <<-RUBY.strip_indent
+        source = <<~RUBY
           def method
           1
           end

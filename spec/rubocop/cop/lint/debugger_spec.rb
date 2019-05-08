@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   it 'reports an offense for a Pry.rescue call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def method
         Pry.rescue { puts 1 }
         ^^^^^^^^^^ Remove debugger entry point `Pry.rescue`.

@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
   end
 
   it 'accepts multiline blocks with newlines before the end' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       test do
         foo
       end
@@ -16,13 +16,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
   end
 
   it 'registers an offense when multiline block end is not on its own line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       test do
         foo end
             ^^^ Expression at 2, 7 should be on its own line.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       test do
         foo
       end
@@ -30,13 +30,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
   end
 
   it 'registers an offense when multiline block } is not on its own line' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       test {
         foo }
             ^ Expression at 2, 7 should be on its own line.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       test {
         foo
       }
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
 
   it 'autocorrects a {} block where the } is top level code ' \
     'outside of a class' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       # frozen_string_literal: true
 
       test {[
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
       ]}
     RUBY
 
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       test {[

@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'reports offense' do |body|
     it 'reports an offense if method body is if / unless without else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           if something
           ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           test
           if something
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   it_behaves_like('reports offense', '# TODO')
 
   it 'does not report an offense if body is if..elsif..end' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         if something
           a
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   it "doesn't report an offense if condition has multiple lines" do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         if something &&
              something_else
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   it 'accepts a method which body is if / unless with else' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         if something
           work
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   it 'accepts a method which body does not end with if / unless' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         if something
           work
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   it 'accepts a method whose body is a modifier if / unless' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         work if something
       end
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'reports an offense for if whose body has 1 line' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def func
           if something
           ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'accepts a method whose body has 3 lines' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def func
           if something
             work
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'fails with an error' do
-      source = <<-RUBY.strip_indent
+      source = <<~RUBY
         def func
           if something
             work
@@ -198,7 +198,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
   shared_examples 'on if nodes which exit current scope' do |kw|
     it "registers an error with #{kw} in the if branch" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
           #{kw}
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "registers an error with #{kw} in the else branch" do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
          puts "hello"
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "doesn't register an error if condition has multiple lines" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if something &&
              something_else
           #{kw}
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "does not report an offense if #{kw} is inside elsif" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if something
           a
         elsif something_else
@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if something
           a
         elsif something_else
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it "doesn't register an error if control flow expr has multiple lines" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if something
           #{kw} 'blah blah blah' \\
                 'blah blah blah'
@@ -264,7 +264,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'registers an error if non-control-flow branch has multiple lines' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause instead of wrapping the code inside a conditional expression.
           #{kw}
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
   context 'method in module' do
     it 'registers an offense for instance method' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module CopTest
           def test
             if something
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
 
     it 'registers an offense for singleton methods' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         module CopTest
           def self.test
             if something

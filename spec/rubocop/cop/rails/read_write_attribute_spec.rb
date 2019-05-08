@@ -5,51 +5,51 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
 
   context 'read_attribute' do
     it 'registers an offense and corrects a symbol' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         res = read_attribute(:test)
               ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         res = self[:test]
       RUBY
     end
 
     it 'register an offense and corrects a string' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         res = read_attribute('test')
               ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         res = self['test']
       RUBY
     end
 
     it 'autocorrects without parentheses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         res = read_attribute 'test'
               ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         res = self['test']
       RUBY
     end
 
     it 'corrects an expression' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         res = read_attribute('test_' + postfix)
               ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         res = self['test_' + postfix]
       RUBY
     end
 
     it 'corrects multiline' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         res = read_attribute(
               ^^^^^^^^^^^^^^ Prefer `self[:attr]` over `read_attribute(:attr)`.
         (
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
         )
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         res = self[(
         'test_' + postfix
         ).to_sym]
@@ -73,12 +73,12 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
   context 'write_attribute' do
     context 'when using a symbol for the attribute' do
       it 'registers an offense and corrects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           write_attribute(:test, val)
           ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           self[:test] = val
         RUBY
       end
@@ -86,41 +86,41 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
 
     context 'when using a string for the attribute' do
       it 'registers an offense and corrects' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           write_attribute('attr', 'test')
           ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
         RUBY
 
-        expect_correction(<<-RUBY.strip_indent)
+        expect_correction(<<~RUBY)
           self['attr'] = 'test'
         RUBY
       end
     end
 
     it 'registers an offense and corrects without parentheses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         write_attribute 'attr', 'test'
         ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         self['attr'] = 'test'
       RUBY
     end
 
     it 'corrects assignment with chained methods' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         write_attribute(:attr, 'test_' + postfix)
         ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         self[:attr] = 'test_' + postfix
       RUBY
     end
 
     it 'autocorrects multiline' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         write_attribute(
         ^^^^^^^^^^^^^^^ Prefer `self[:attr] = val` over `write_attribute(:attr, val)`.
         :attr,
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Rails::ReadWriteAttribute do
         )
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         self[:attr] = (
         'test_' + postfix
         ).to_sym

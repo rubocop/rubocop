@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for space after !' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ! something
       ^^^^^^^^^^^ Do not leave space between `!` and its argument.
     RUBY
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot do
 
   it 'reports an offense for space after ! with the negated receiver ' \
      'wrapped in parentheses' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ! (model)
       ^^^^^^^^^ Do not leave space between `!` and its argument.
     RUBY

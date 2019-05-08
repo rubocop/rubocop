@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       let(:enforced_style) { name }
 
       it "registers offenses for #{bad_style1}" do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           <<-HEREDOC
           foo #{good} + bar #{bad_style1}
           HEREDOC
@@ -95,21 +95,21 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
 
   %i[strptime strftime].each do |method_name|
     it "ignores time format (when used as argument to #{method_name})" do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Time.#{method_name}('2017-12-13', '%Y-%m-%d')
       RUBY
     end
   end
 
   it 'ignores time format when it is stored in a variable' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       time_format = '%Y-%m-%d'
       Time.strftime('2017-12-13', time_format)
     RUBY
   end
 
   it 'ignores time format and unrelated `format` method using' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       Time.now.strftime('%Y-%m-%d-%H-%M-%S')
       format
     RUBY
@@ -121,14 +121,14 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   end
 
   it 'ignores http links' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       'https://ru.wikipedia.org/wiki/%D0%90_'\
         '(%D0%BA%D0%B8%D1%80%D0%B8%D0%BB%D0%BB%D0%B8%D1%86%D0%B0)'
     RUBY
   end
 
   it 'ignores placeholder argumetns' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       format(
         '%<day>s %<start>s-%<end>s',
         day: open_house.starts_at.strftime('%a'),

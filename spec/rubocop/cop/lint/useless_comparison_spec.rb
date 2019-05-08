@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessComparison do
 
   described_class::OPS.each do |op|
     it "registers an offense for a simple comparison with #{op}" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         5 #{op} 5
         a #{op} a
       RUBY
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessComparison do
     end
 
     it "registers an offense for a complex comparison with #{op}" do
-      inspect_source(<<-RUBY.strip_indent)
+      inspect_source(<<~RUBY)
         5 + 10 * 30 #{op} 5 + 10 * 30
         a.top(x) #{op} a.top(x)
       RUBY
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessComparison do
   end
 
   it 'works with lambda.()' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a.(x) > a.(x)
             ^ Comparison of something with itself detected.
     RUBY

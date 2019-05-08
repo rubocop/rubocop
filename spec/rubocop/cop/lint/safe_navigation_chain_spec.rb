@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   it 'registers an offense for ordinary method call exists after ' \
      'safe navigation method call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo.bar
             ^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   it 'registers an offense for ordinary method call exists after ' \
      'safe navigation method call with an argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo(x).bar(y)
                ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   it 'registers an offense for ordinary method chain exists after ' \
      'safe navigation method call' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       something
       x&.foo.bar.baz
             ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   it 'registers an offense for ordinary method chain exists after ' \
      'safe navigation method call with an argument' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo(x).bar(y).baz(z)
                ^^^^^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   it 'registers an offense for ordinary method chain exists after ' \
      'safe navigation method call with a block-pass' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       something
       x&.select(&:foo).bar
                       ^^^^ Do not chain ordinary method call after safe navigation operator.
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   it 'registers an offense for ordinary method chain exists after ' \
      'safe navigation method call with a block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       something
       x&.select { |x| foo(x) }.bar
                               ^^^^ Do not chain ordinary method call after safe navigation operator.
@@ -90,49 +90,49 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
   end
 
   it 'registers an offense for safe navigation with < operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo < bar
             ^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
   end
 
   it 'registers an offense for safe navigation with > operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo > bar
             ^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
   end
 
   it 'registers an offense for safe navigation with <= operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo <= bar
             ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
   end
 
   it 'registers an offense for safe navigation with >= operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo >= bar
             ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
   end
 
   it 'registers an offense for safe navigation with + operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo + bar
             ^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
   end
 
   it 'registers an offense for safe navigation with [] operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo[bar]
             ^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
   end
 
   it 'registers an offense for safe navigation with []= operator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x&.foo[bar] = baz
             ^^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
@@ -140,15 +140,15 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
   context 'proper highlighting' do
     it 'when there are methods before' do
-      expect_offense(<<-RUBY.strip_indent)
-      something
-      x&.foo.bar.baz
-            ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      expect_offense(<<~RUBY)
+        something
+        x&.foo.bar.baz
+              ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
       RUBY
     end
 
     it 'when there are methods after' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x&.foo.bar.baz
               ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
         something
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
 
     it 'when in a method' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         def something
           x&.foo.bar.baz
                 ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
 
     it 'when in a begin' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         begin
           x&.foo.bar.baz
                 ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
 
     it 'when used with a modifier if' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x&.foo.bar.baz if something
               ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
       RUBY

@@ -6,21 +6,21 @@ RSpec.describe RuboCop::Cop::Lint::BigDecimalNew do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense when using `BigDecimal.new()`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       BigDecimal.new(123.456, 3)
                  ^^^ `BigDecimal.new()` is deprecated. Use `BigDecimal()` instead.
     RUBY
   end
 
   it 'registers an offense when using `::BigDecimal.new()`' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       ::BigDecimal.new(123.456, 3)
                    ^^^ `::BigDecimal.new()` is deprecated. Use `::BigDecimal()` instead.
     RUBY
   end
 
   it 'does not register an offense when using `BigDecimal()`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       BigDecimal(123.456, 3)
     RUBY
   end

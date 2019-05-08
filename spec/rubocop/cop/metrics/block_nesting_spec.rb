@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
   let(:cop_config) { { 'Max' => 2 } }
 
   it 'accepts `Max` levels of nesting' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
         if b
           puts b
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context '`Max + 1` levels of `if` nesting' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             if cinspect_source
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context '`Max + 2` levels of `if` nesting' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             if c
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'Multiple nested `ifs` at same level' do
     it 'registers 2 offenses' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             if c
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested `case`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             case c
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested `while`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             while c
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested modifier `while`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             begin
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested `until`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             until c
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested modifier `until`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             begin
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested `for`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             for c in [1,2] do
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
   context 'nested `rescue`' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         if a
           if b
             begin
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
   end
 
   it 'accepts if/elsif' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       if a
       elsif b
       elsif c
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
     let(:cop_config) { { 'Max' => 2, 'CountBlocks' => false } }
 
     it 'accepts nested multiline blocks' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a
           if b
             [1, 2].each do |c|
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
     end
 
     it 'accepts nested inline blocks' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         if a
           if b
             [1, 2].each { |c| puts c }
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
     context 'nested multiline block' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           if a
             if b
               [1, 2].each do |c|
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
 
     context 'nested inline block' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           if a
             if b
               [1, 2].each { |c| puts c }

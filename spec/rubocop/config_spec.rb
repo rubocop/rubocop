@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes any unrecognized cop name' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           LyneLenth:
             Enabled: true
             Max: 100
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration is in the base RuboCop config folder' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           InvalidProperty:
             Enabled: true
         YAML
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes any unrecognized parameter' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Metrics/LineLength:
             Enabled: true
             Min: 10
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Config do
       # Common parameters are parameters that are not in the default
       # configuration, but are nonetheless allowed for any cop.
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Metrics/ModuleLength:
             Exclude:
               - lib/file.rb
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes a valid EnforcedStyle' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Style/AndOr:
             EnforcedStyle: conditionals
         YAML
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes an invalid EnforcedStyle' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Style/AndOr:
             EnforcedStyle: itisinvalid
         YAML
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes a valid EnforcedStyle' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
             EnforcedStyleInsidePipes: space
         YAML
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes an invalid EnforcedStyle' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
             EnforcedStyleInsidePipes: itisinvalid
         YAML
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes an obsolete cop' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Style/MethodCallParentheses:
             Enabled: true
         YAML
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes an obsolete parameter' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Rails/UniqBeforePluck:
             EnforcedMode: conservative
         YAML
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Config do
       context "when the configuration includes the obsolete #{cop_name}: " \
               'MaxLineLength parameter' do
         before do
-          create_file(configuration_path, <<-YAML.strip_indent)
+          create_file(configuration_path, <<~YAML)
             #{cop_name}:
               MaxLineLength: 100
           YAML
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes obsolete parameters and cops' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Rails/UniqBeforePluck:
             EnforcedMode: conservative
           Style/MethodCallParentheses:
@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when all cops are both Enabled and Disabled by default' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           AllCops:
             EnabledByDefault: true
             DisabledByDefault: true
@@ -278,7 +278,7 @@ RSpec.describe RuboCop::Config do
 
       context 'when the configuration matches the default' do
         before do
-          create_file(configuration_path, <<-YAML.strip_indent)
+          create_file(configuration_path, <<~YAML)
             Lint/Syntax:
               Enabled: true
           YAML
@@ -291,7 +291,7 @@ RSpec.describe RuboCop::Config do
 
       context 'when the configuration does not match the default' do
         before do
-          create_file(configuration_path, <<-YAML.strip_indent)
+          create_file(configuration_path, <<~YAML)
             Lint/Syntax:
               Enabled: false
           YAML

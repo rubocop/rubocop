@@ -40,42 +40,42 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for space before first parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { | x| puts x }
                    ^ Space before first block parameter detected.
       RUBY
     end
 
     it 'registers an offense for space after last parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |x, y  | puts x }
                        ^^ Space after last block parameter detected.
       RUBY
     end
 
     it 'registers an offense for no space after closing pipe' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |x, y|puts x }
                        ^ Space after closing `|` missing.
       RUBY
     end
 
     it 'registers an offense to a lambda for space before first parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->( x, y) { puts x }
            ^ Space before first block parameter detected.
       RUBY
     end
 
     it 'registers an offense to a lambda for space after last parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->(x, y  ) { puts x }
                ^^ Space after last block parameter detected.
       RUBY
     end
 
     it 'accepts line break after closing pipe' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {}.each do |x, y|
           puts x
         end
@@ -83,14 +83,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for multiple spaces before parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |x,   y| puts x }
                      ^^ Extra space before block parameter detected.
       RUBY
     end
 
     it 'registers an offense for space with parens' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |a,  (x,  y),  z| puts x }
                      ^ Extra space before block parameter detected.
                           ^ Extra space before block parameter detected.
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
 
     context 'trailing comma' do
       it 'registers an offense for space after the last comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           {}.each { |x, | puts x }
                        ^ Space after last block parameter detected.
         RUBY
@@ -145,49 +145,49 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for no space before first parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |x | puts x }
                    ^ Space before first block parameter missing.
       RUBY
     end
 
     it 'registers an offense for no space after last parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { | x, y| puts x }
                        ^ Space after last block parameter missing.
       RUBY
     end
 
     it 'registers an offense for extra space before first parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |  x | puts x }
                    ^ Extra space before first block parameter detected.
       RUBY
     end
 
     it 'registers an offense for multiple spaces after last parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { | x, y   | puts x }
                          ^^ Extra space after last block parameter detected.
       RUBY
     end
 
     it 'registers an offense for no space after closing pipe' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { | x, y |puts x }
                          ^ Space after closing `|` missing.
       RUBY
     end
 
     it 'registers an offense to a lambda for no space before first parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->(x ) { puts x }
            ^ Space before first block parameter missing.
       RUBY
     end
 
     it 'registers an offense to a lambda for no space after last parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->( x, y) { puts x }
                ^ Space after last block parameter missing.
       RUBY
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
 
     it 'registers an offense to a lambda for extra space' \
        'before first parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->(  x ) { puts x }
            ^ Extra space before first block parameter detected.
       RUBY
@@ -203,14 +203,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
 
     it 'registers an offense to a lambda for multiple spaces' \
        'after last parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         ->( x, y   ) { puts x }
                  ^^ Extra space after last block parameter detected.
       RUBY
     end
 
     it 'accepts line break after closing pipe' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         {}.each do | x, y |
           puts x
         end
@@ -218,14 +218,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense for multiple spaces before parameter' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { | x,   y | puts x }
                       ^^ Extra space before block parameter detected.
       RUBY
     end
 
     it 'registers an offense for space with parens at middle' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         {}.each { |(x,  y),  z| puts x }
                    ^^^^^^^ Space before first block parameter missing.
                       ^ Extra space before block parameter detected.
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       end
 
       it 'registers an offense for no space after the last comma' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           {}.each { | x,| puts x }
                       ^ Space after last block parameter missing.
         RUBY

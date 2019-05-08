@@ -37,12 +37,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         [1,
           2, 4]
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         [1,
           2,\s
         4]
@@ -62,12 +62,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         [1,
           [2, 3], 4]
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         [1,
           [2, 3],\s
         4]

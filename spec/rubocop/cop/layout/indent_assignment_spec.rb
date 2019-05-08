@@ -12,20 +12,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
   let(:cop_indent) { nil } # use indentation with from Layout/IndentationWidth
 
   it 'registers an offense for incorrectly indented rhs' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a =
       if b ; end
       ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       a =
         if b ; end
     RUBY
   end
 
   it 'allows assignments that do not start on a newline' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a = if b
             foo
           end
@@ -33,28 +33,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'allows a properly indented rhs' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a =
         if b ; end
     RUBY
   end
 
   it 'allows a properly indented rhs with fullwidth characters' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       f 'Ｒｕｂｙ', a =
                       b
     RUBY
   end
 
   it 'registers an offense for multi-lhs' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       a,
       b =
       if b ; end
       ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       a,
       b =
         if b ; end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
   end
 
   it 'ignores comparison operators' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       a ===
       if b ; end
     RUBY
@@ -72,20 +72,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
     let(:cop_indent) { 7 }
 
     it 'allows a properly indented rhs' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         a =
                if b ; end
       RUBY
     end
 
     it 'auto-corrects indentation' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         a =
           if b ; end
           ^^^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         a =
                if b ; end
       RUBY

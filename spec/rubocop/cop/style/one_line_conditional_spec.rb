@@ -110,23 +110,23 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
   end
 
   it 'does not break when one of the branches contains a retry keyword' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if true then retry else 7 end
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over `if/then/else/end` constructs.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       true ? retry : 7
     RUBY
   end
 
   it 'does not break when one of the branches contains a break keyword' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if true then break else 7 end
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over `if/then/else/end` constructs.
     RUBY
 
-    expect_correction(<<-RUBY.strip_indent)
+    expect_correction(<<~RUBY)
       true ? break : 7
     RUBY
   end

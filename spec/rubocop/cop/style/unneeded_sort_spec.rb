@@ -4,70 +4,70 @@ RSpec.describe RuboCop::Cop::Style::UnneededSort do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when first is called with sort' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort.first
                 ^^^^^^^^^^ Use `min` instead of `sort...first`.
     RUBY
   end
 
   it 'registers an offense when last is called on sort with comparator' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       foo.sort { |a, b| b <=> a }.last
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `max` instead of `sort...last`.
     RUBY
   end
 
   it 'registers an offense when first is called on sort_by' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort_by { |x| x.length }.first
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
     RUBY
   end
 
   it 'registers an offense when last is called on sort_by no block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort_by(&:length).last
                 ^^^^^^^^^^^^^^^^^^^^^^ Use `max_by` instead of `sort_by...last`.
     RUBY
   end
 
   it 'registers an offense when slice(0) is called on sort' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort.slice(0)
                 ^^^^^^^^^^^^^ Use `min` instead of `sort...slice(0)`.
     RUBY
   end
 
   it 'registers an offense when [0] is called on sort' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort[0]
                 ^^^^^^^ Use `min` instead of `sort...[0]`.
     RUBY
   end
 
   it 'registers an offense when [](0) is called on sort' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort.[](0)
                 ^^^^^^^^^^ Use `min` instead of `sort...[](0)`.
     RUBY
   end
 
   it 'registers an offense when at(0) is called on sort_by' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort_by(&:foo).at(0)
                 ^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...at(0)`.
     RUBY
   end
 
   it 'registers an offense when slice(-1) is called on sort_by' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort_by(&:foo).slice(-1)
                 ^^^^^^^^^^^^^^^^^^^^^^^^ Use `max_by` instead of `sort_by...slice(-1)`.
     RUBY
   end
 
   it 'registers an offense when [-1] is called on sort' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       [1, 2, 3].sort[-1]
                 ^^^^^^^^ Use `max` instead of `sort...[-1]`.
     RUBY

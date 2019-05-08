@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
     context 'with a multiline lambda literal' do
       context 'with arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             f = ->(x) do
               x
             end
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for all lambdas.'
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           f = lambda do |x|
             x
           end
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       context 'without arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             f = -> do
               x
             end
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for all lambdas.'
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           f = lambda do
             x
           end
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
     context 'with a multiline lambda method call' do
       context 'with arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             f = lambda do |x|
               x
             end
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
         it_behaves_like 'registers an offense',
                         'Use the `-> { ... }` lambda literal syntax for ' \
                         'all lambdas.'
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           f = ->(x) do
             x
           end
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       context 'without arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             f = lambda do
               x
             end
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
         it_behaves_like 'registers an offense',
                         'Use the `-> { ... }` lambda literal syntax for ' \
                         'all lambdas.'
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           f = -> do
             x
           end
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline lambda method call' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           l = lambda do |x|
             x
           end
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a single line lambda literal' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           lambda = ->(x) { x }
           lambda.(1)
         RUBY
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
     context 'with a multiline lambda literal' do
       context 'with arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             f = ->(x) do
               x
             end
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for multiline lambdas.'
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           f = lambda do |x|
             x
           end
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       context 'without arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             f = -> do
               x
             end
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         it_behaves_like 'registers an offense',
                         'Use the `lambda` method for multiline lambdas.'
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           f = lambda do
             x
           end
@@ -240,14 +240,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
       # Tests correction of an issue resulting in `lambdado` syntax errors.
       context 'without any spacing' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             ->(x)do
               x
             end
           RUBY
         end
 
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           lambda do |x|
             x
           end
@@ -256,14 +256,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       context 'without spacing after arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             -> (x)do
               x
             end
           RUBY
         end
 
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           lambda do |x|
             x
           end
@@ -272,14 +272,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       context 'without spacing before arguments' do
         let(:source) do
-          <<-RUBY.strip_indent
+          <<~RUBY
             ->(x) do
               x
             end
           RUBY
         end
 
-        it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+        it_behaves_like 'auto-correct', <<~RUBY
           lambda do |x|
             x
           end
@@ -289,14 +289,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
       context 'with a multiline lambda literal' do
         context 'with empty arguments' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               ->()do
                 x
               end
             RUBY
           end
 
-          it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+          it_behaves_like 'auto-correct', <<~RUBY
             lambda do
               x
             end
@@ -305,14 +305,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         context 'with no arguments and bad spacing' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               -> ()do
                 x
               end
             RUBY
           end
 
-          it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+          it_behaves_like 'auto-correct', <<~RUBY
             lambda do
               x
             end
@@ -321,14 +321,14 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         context 'with no arguments and no spacing' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               ->do
                 x
               end
             RUBY
           end
 
-          it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+          it_behaves_like 'auto-correct', <<~RUBY
             lambda do
               x
             end
@@ -337,7 +337,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         context 'without parentheses' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               -> hello do
                 puts hello
               end
@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
           it_behaves_like 'registers an offense',
                           'Use the `lambda` method for multiline lambdas.'
-          it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+          it_behaves_like 'auto-correct', <<~RUBY
             lambda do |hello|
               puts hello
             end
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         context 'with no parentheses and bad spacing' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               ->   hello  do
                 puts hello
               end
@@ -364,7 +364,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
           it_behaves_like 'registers an offense',
                           'Use the `lambda` method for multiline lambdas.'
-          it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+          it_behaves_like 'auto-correct', <<~RUBY
             lambda do |hello|
               puts hello
             end
@@ -373,7 +373,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
         context 'with no parentheses and many args' do
           let(:source) do
-            <<-RUBY.strip_indent
+            <<~RUBY
               ->   hello, user  do
                 puts hello
               end
@@ -382,7 +382,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
           it_behaves_like 'registers an offense',
                           'Use the `lambda` method for multiline lambdas.'
-          it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+          it_behaves_like 'auto-correct', <<~RUBY
             lambda do |hello, user|
               puts hello
             end
@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline lambda literal as an argument' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           has_many :kittens, -> do
             where(cats: Cat.young.where_values_hash)
           end, source: cats
@@ -408,7 +408,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       it_behaves_like 'registers an offense',
                       'Use the `lambda` method for multiline lambdas.'
-      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+      it_behaves_like 'auto-correct', <<~RUBY
         has_many :kittens, lambda {
           where(cats: Cat.young.where_values_hash)
         }, source: cats
@@ -417,7 +417,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline braces lambda literal as a keyword argument' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           has_many opt: -> do
             where(cats: Cat.young.where_values_hash)
           end
@@ -426,7 +426,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       it_behaves_like 'registers an offense',
                       'Use the `lambda` method for multiline lambdas.'
-      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+      it_behaves_like 'auto-correct', <<~RUBY
         has_many opt: lambda {
           where(cats: Cat.young.where_values_hash)
         }
@@ -435,7 +435,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline do-end lambda literal as a keyword argument' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           has_many opt: -> {
             where(cats: Cat.young.where_values_hash)
           }
@@ -444,7 +444,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       it_behaves_like 'registers an offense',
                       'Use the `lambda` method for multiline lambdas.'
-      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+      it_behaves_like 'auto-correct', <<~RUBY
         has_many opt: lambda {
           where(cats: Cat.young.where_values_hash)
         }
@@ -453,7 +453,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
     context 'with a multiline do-end lambda as a parenthesized kwarg' do
       let(:source) do
-        <<-RUBY.strip_indent
+        <<~RUBY
           has_many(
             opt: -> do
               where(cats: Cat.young.where_values_hash)
@@ -464,7 +464,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
       it_behaves_like 'registers an offense',
                       'Use the `lambda` method for multiline lambdas.'
-      it_behaves_like 'auto-correct', <<-RUBY.strip_indent
+      it_behaves_like 'auto-correct', <<~RUBY
         has_many(
           opt: lambda do
             where(cats: Cat.young.where_values_hash)
@@ -478,7 +478,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
     let(:ruby_version) { 2.3 }
 
     it 'does not break' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         foo&.bar do |_|
           baz
         end

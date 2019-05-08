@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = <<-RUBY.strip_indent
+      source_buffer.source = <<~RUBY
         def foo
           something
           something_else
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
     let(:location) do
       source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = <<-RUBY.strip_indent
+      source_buffer.source = <<~RUBY
         def Foo
           something
           something_else

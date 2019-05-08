@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for $1' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       puts $1
            ^^ Avoid the use of Perl-style backrefs.
     RUBY

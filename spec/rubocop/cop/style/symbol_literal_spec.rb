@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for word-line symbols using string syntax' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       x = { :"test" => 0 }
             ^^^^^^^ Do not use strings for word-like symbol literals.
     RUBY

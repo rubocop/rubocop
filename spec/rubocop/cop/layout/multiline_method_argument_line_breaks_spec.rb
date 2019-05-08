@@ -39,14 +39,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         taz("abc",
         "foo", "bar",
         "baz"
         )
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         taz("abc",
         "foo",\s
         "bar",
@@ -71,14 +71,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         taz("abc",
         "foo", "bar", "barz",
         "baz"
         )
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         taz("abc",
         "foo",\s
         "bar",\s
@@ -104,14 +104,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         taz("abc",
         "foo", "bar", z: "barz",
         x: "baz"
         )
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         taz("abc",
         "foo",\s
         "bar",\s
@@ -135,13 +135,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         taz("abc", {
           foo: "edf",
         })
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         taz("abc",\s
         {
           foo: "edf",
@@ -163,13 +163,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
 
     it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         taz({
           foo: "edf",
         }, "abc")
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         taz({
           foo: "edf",
         },\s

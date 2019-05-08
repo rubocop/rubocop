@@ -4,14 +4,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'reports an offense for single line def with redundant begin block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func; begin; x; y; rescue; z end; end
                 ^^^^^ Redundant `begin` block detected.
     RUBY
   end
 
   it 'reports an offense for def with redundant begin block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func
         begin
         ^^^^^ Redundant `begin` block detected.
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   end
 
   it 'reports an offense for defs with redundant begin block' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def Test.func
         begin
         ^^^^^ Redundant `begin` block detected.
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   end
 
   it 'accepts a def with required begin block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         begin
           ala
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   end
 
   it 'accepts a defs with required begin block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def Test.func
         begin
           ala
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   end
 
   it 'accepts a def with a begin block after a statement' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def Test.func
         something
         begin
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
   it 'auto-corrects source separated by newlines ' \
      'by removing redundant begin blocks' do
-    src = <<-RUBY.strip_indent
+    src = <<~RUBY
       def func
         begin
           foo
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       end
     RUBY
 
-    result_src = <<-RUBY.strip_indent
+    result_src = <<~RUBY
       def func
         
           foo
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   end
 
   it "doesn't modify spacing when auto-correcting" do
-    src = <<-RUBY.strip_indent
+    src = <<~RUBY
       def method
         begin
           BlockA do |strategy|
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       end
     RUBY
 
-    result_src = <<-RUBY.strip_indent
+    result_src = <<~RUBY
       def method
         
           BlockA do |strategy|
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
   end
 
   it 'auto-corrects when there are trailing comments' do
-    src = <<-RUBY.strip_indent
+    src = <<~RUBY
       def method
         begin # comment 1
           do_some_stuff
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end # comment 3
       end
     RUBY
-    result_src = <<-RUBY.strip_indent
+    result_src = <<~RUBY
       def method
          # comment 1
           do_some_stuff
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
   context '< Ruby 2.5', :ruby24 do
     it 'accepts a do-end block with a begin-end' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         do_something do
           begin
             foo
@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
   context '>= ruby 2.5', :ruby25 do
     it 'registers an offense for a do-end block with redundant begin-end' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         do_something do
           begin
           ^^^^^ Redundant `begin` block detected.
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     end
 
     it 'accepts a {} block with a begin-end' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         do_something {
           begin
             foo
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     end
 
     it 'accepts a block with a begin block after a statement' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         do_something do
           something
           begin
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     end
 
     it 'accepts a stabby lambda with a begin-end' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         -> do
           begin
             foo
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     end
 
     it 'accepts super with block' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def a_method
           super do |arg|
             foo

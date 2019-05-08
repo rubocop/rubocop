@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Corrector do
   describe '#rewrite' do
     let(:source) do
-      <<-RUBY.strip_indent.strip
+      <<~RUBY.strip
         true and false
       RUBY
     end

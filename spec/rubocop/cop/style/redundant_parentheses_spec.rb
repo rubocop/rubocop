@@ -191,14 +191,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'registers an offense when there is space around the parentheses' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       if x; y else (1) end
                    ^^^ Don't use parentheses around a literal.
     RUBY
   end
 
   it 'accepts parentheses when enclosed in parentheses at `while-post`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         do_something
       end while(bar)
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses when enclosed in parentheses at `until-post`' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         do_something
       end until(bar)
@@ -227,7 +227,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
     end
 
     it 'registers an offense if the argument list is parenthesized ' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x(({ y: 1 }), z)
           ^^^^^^^^^^ Don't use parentheses around a literal.
       RUBY
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
 
   context 'when a hash literal is the second argument in a method call' do
     it 'registers an offense' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         x ({ y: 1 }), ({ y: 1 })
                       ^^^^^^^^^^ Don't use parentheses around a literal.
       RUBY
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses around the error passed to rescue' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       begin
         some_method
       rescue(StandardError)
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses around a constant passed to when' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       case foo
       when(Const)
         bar
@@ -268,7 +268,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   end
 
   it 'accepts parentheses in super call with hash' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       super ({
         foo: bar,
       })

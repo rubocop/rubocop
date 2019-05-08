@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::Send do
   context 'with send' do
     context 'and with a receiver' do
       it 'registers an offense for an invocation with args' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           Object.send(:inspect)
                  ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
         RUBY
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::Send do
 
       context 'when using safe navigation operator' do
         it 'registers an offense for an invocation with args' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             Object&.send(:inspect)
                     ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
           RUBY
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Style::Send do
 
     context 'and without a receiver' do
       it 'registers an offense for an invocation with args' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           send(:inspect)
           ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
         RUBY

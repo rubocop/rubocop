@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for def with space before the parenthesis' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func (x)
               ^ Do not put a space between a method name and the opening parenthesis.
         a
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'registers offense for class def with space before parenthesis' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def self.func (x)
                    ^ Do not put a space between a method name and the opening parenthesis.
         a
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'registers offense for assignment def with space before parenthesis' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       def func= (x)
                ^ Do not put a space between a method name and the opening parenthesis.
         a
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts a def without arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func
         a
       end
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts a defs without arguments' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def self.func
         a
       end
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts a def with arguments but no parentheses' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func x
         a
       end
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts class method def with arguments but no parentheses' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def self.func x
         a
       end
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'accepts an assignment def with arguments but no parentheses' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def func= x
         a
       end
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(<<-RUBY.strip_indent)
+    new_source = autocorrect_source(<<~RUBY)
       def func (x)
         a
       end
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
         a
       end
     RUBY
-    expect(new_source).to eq(<<-RUBY.strip_indent)
+    expect(new_source).to eq(<<~RUBY)
       def func(x)
         a
       end

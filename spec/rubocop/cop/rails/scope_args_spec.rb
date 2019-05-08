@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Rails::ScopeArgs do
   subject(:cop) { described_class.new }
 
   it 'registers an offense a scope with a method arg' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       scope :active, where(active: true)
                      ^^^^^^^^^^^^^^^^^^^ Use `lambda`/`proc` instead of a plain method call.
     RUBY
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Rails::ScopeArgs do
   end
 
   it 'accepts a lambda with a multiline block' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       scope :active, (lambda do |active|
                        where(active: active)
                      end)

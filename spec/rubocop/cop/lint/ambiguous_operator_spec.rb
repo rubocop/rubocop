@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             array = [1, 2, 3]
             puts *array
                  ^ Ambiguous splat operator. Parenthesize the method arguments if it's surely a splat operator, or add a whitespace to the right of the `*` if it should be a multiplication.
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
 
       context 'with a whitespace on the right of the operator' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             array = [1, 2, 3]
             puts * array
           RUBY
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
 
     context 'with parentheses around the splatted argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           array = [1, 2, 3]
           puts(*array)
         RUBY
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
         it 'registers an offense' do
-          expect_offense(<<-RUBY.strip_indent)
+          expect_offense(<<~RUBY)
             process = proc { do_something }
             2.times &process
                     ^ Ambiguous block operator. Parenthesize the method arguments if it's surely a block operator, or add a whitespace to the right of the `&` if it should be a binary AND.
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
 
       context 'with a whitespace on the right of the operator' do
         it 'does not register an offense' do
-          expect_no_offenses(<<-RUBY.strip_indent)
+          expect_no_offenses(<<~RUBY)
             process = proc { do_something }
             2.times & process
           RUBY
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
 
     context 'with parentheses around the block argument' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           process = proc { do_something }
           2.times(&process)
         RUBY

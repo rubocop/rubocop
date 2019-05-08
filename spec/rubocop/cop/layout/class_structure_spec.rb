@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
   context 'simple example' do
     specify do
-      expect_offense <<-RUBY.strip_indent
+      expect_offense <<~RUBY
         class Person
           CONST = 'wrong place'
           include AnotherModule
@@ -111,19 +111,19 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     end
 
     specify do
-      expect(autocorrect_source_with_loop(<<-RUBY.strip_indent))
+      expect(autocorrect_source_with_loop(<<~RUBY))
         class Example
           CONST = 1
           include AnotherModule
           extend SomeModule
         end
       RUBY
-        .to eq(<<-RUBY.strip_indent)
-        class Example
-          include AnotherModule
-          extend SomeModule
-          CONST = 1
-        end
+        .to eq(<<~RUBY)
+          class Example
+            include AnotherModule
+            extend SomeModule
+            CONST = 1
+          end
       RUBY
     end
   end
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   describe '#autocorrect' do
     context 'when there is a comment in the macro method' do
       it 'autocorrects the offenses' do
-        new_source = autocorrect_source(<<-RUBY.strip_indent)
+        new_source = autocorrect_source(<<~RUBY)
           class Foo
             # This is a comment for macro method.
             validates :attr
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           end
         RUBY
 
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           class Foo
             attr_reader :foo
             # This is a comment for macro method.

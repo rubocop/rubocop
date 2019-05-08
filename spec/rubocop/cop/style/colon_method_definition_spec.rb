@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
   subject(:cop) { described_class.new }
 
   it 'accepts a class method defined using .' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def self.bar
           something
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
 
   context 'using self' do
     it 'registers an offense for a class method defined using ::' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Foo
           def self::bar
                   ^^ Do not use `::` for defining class methods.
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class Foo
           def self.bar
             something
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
 
   context 'using the class name' do
     it 'registers an offense for a class method defined using ::' do
-      expect_offense(<<-RUBY.strip_indent)
+      expect_offense(<<~RUBY)
         class Foo
           def Foo::bar
                  ^^ Do not use `::` for defining class methods.
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodDefinition do
         end
       RUBY
 
-      expect_correction(<<-RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         class Foo
           def Foo.bar
             something

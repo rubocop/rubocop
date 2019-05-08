@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for !!' do
-    expect_offense(<<-RUBY.strip_indent)
+    expect_offense(<<~RUBY)
       !!test.something
       ^ Avoid the use of double negation (`!!`).
     RUBY
