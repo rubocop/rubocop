@@ -13,6 +13,7 @@
 * [#6880](https://github.com/rubocop-hq/rubocop/issues/6880): Fix `.rubocop` file parsing. ([@hoshinotsuyoshi][])
 * [#5782](https://github.com/rubocop-hq/rubocop/issues/5782): Do not autocorrect `Lint/UnifiedInteger` if `TargetRubyVersion < 2.4`. ([@lavoiesl][])
 * [#6387](https://github.com/rubocop-hq/rubocop/issues/6387): Prevent `Lint/NumberConversion` from reporting error with `Time`/`DateTime`. ([@tejasbubane][])
+* [#6980](https://github.com/rubocop-hq/rubocop/issues/6980): Fix `Style/StringHashKeys` to allow string as keys for hash arguments to gsub methods. ([@tejasbubane][])
 
 ### Changes
 
