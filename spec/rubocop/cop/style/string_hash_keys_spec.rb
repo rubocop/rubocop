@@ -57,4 +57,16 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys do
       Open3.pipeline([{"RUBYOPT" => '-w'}, 'ruby', 'foo.rb'], ['wc', '-l'])
     RUBY
   end
+
+  it 'does not register an offense when string key is used in gsub' do
+    expect_no_offenses(<<~RUBY)
+      "The sky is green.".gsub(/green/, "green" => "blue")
+    RUBY
+  end
+
+  it 'does not register an offense when string key is used in gsub!' do
+    expect_no_offenses(<<~RUBY)
+      "The sky is green.".gsub!(/green/, "green" => "blue")
+    RUBY
+  end
 end

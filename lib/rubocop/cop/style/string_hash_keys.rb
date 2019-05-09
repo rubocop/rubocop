@@ -27,6 +27,7 @@ module RuboCop
             ^^^(send (const {nil? cbase} :Open3)
                 {:pipeline :pipeline_r :pipeline_rw :pipeline_start :pipeline_w} ...)
             ^^(send {nil? (const {nil? cbase} :Kernel)} {:spawn :system} ...)
+            ^^(send _ {:gsub :gsub!} ...)
           }
         PATTERN
 
