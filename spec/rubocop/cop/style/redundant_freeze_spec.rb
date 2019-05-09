@@ -76,24 +76,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
       end
     end
 
-    context 'when the target ruby version >= 2.3' do
-      let(:ruby_version) { 2.3 }
+    context 'when the frozen string literal comment is missing' do
+      it_behaves_like 'mutable objects', '"#{a}"'
+    end
 
-      context 'when the frozen string literal comment is missing' do
-        it_behaves_like 'mutable objects', '"#{a}"'
-      end
+    context 'when the frozen string literal comment is true' do
+      let(:prefix) { '# frozen_string_literal: true' }
 
-      context 'when the frozen string literal comment is true' do
-        let(:prefix) { '# frozen_string_literal: true' }
+      it_behaves_like 'immutable objects', '"#{a}"'
+    end
 
-        it_behaves_like 'immutable objects', '"#{a}"'
-      end
+    context 'when the frozen string literal comment is false' do
+      let(:prefix) { '# frozen_string_literal: false' }
 
-      context 'when the frozen string literal comment is false' do
-        let(:prefix) { '# frozen_string_literal: false' }
-
-        it_behaves_like 'mutable objects', '"#{a}"'
-      end
+      it_behaves_like 'mutable objects', '"#{a}"'
     end
   end
 end

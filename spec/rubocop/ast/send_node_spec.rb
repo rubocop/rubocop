@@ -11,7 +11,6 @@ RSpec.describe RuboCop::AST::SendNode do
     end
 
     context 'with a safe navigation method send' do
-      let(:ruby_version) { 2.3 }
       let(:source) { 'foo&.bar(:baz)' }
 
       it { expect(send_node.is_a?(described_class)).to be(true) }

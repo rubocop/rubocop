@@ -5,9 +5,6 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
 
   let(:error_message) { 'Reverse the order of the operands `%s`.' }
 
-  # needed because of usage of safe navigation operator
-  let(:ruby_version) { 2.3 }
-
   shared_examples 'accepts' do |code|
     let(:source) { code }
 

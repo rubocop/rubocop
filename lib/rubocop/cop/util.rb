@@ -119,7 +119,7 @@ module RuboCop
       private
 
       def compatible_external_encoding_for?(src)
-        src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
+        src = src.dup if RUBY_ENGINE == 'jruby'
         src.force_encoding(Encoding.default_external).valid_encoding?
       end
     end

@@ -34,16 +34,14 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
     include_examples 'aligned', 'def',       'test',       'end'
     include_examples 'aligned', 'def',       'Test.test',  'end', 'defs'
 
-    context 'in ruby 2.2 or later' do
-      include_examples 'aligned', 'foo def', 'test', 'end'
-      include_examples 'aligned', 'foo bar def', 'test', 'end'
+    include_examples 'aligned', 'foo def', 'test', 'end'
+    include_examples 'aligned', 'foo bar def', 'test', 'end'
 
-      include_examples 'misaligned', <<-RUBY, :def
-        foo def test
-            end
-            ^^^ `end` at 2, 4 is not aligned with `foo def` at 1, 0.
-      RUBY
-    end
+    include_examples 'misaligned', <<-RUBY, :def
+      foo def test
+          end
+          ^^^ `end` at 2, 4 is not aligned with `foo def` at 1, 0.
+    RUBY
 
     context 'correct + opposite' do
       it 'registers an offense' do
@@ -88,39 +86,37 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
     include_examples 'aligned', 'def', 'test',      'end'
     include_examples 'aligned', 'def', 'Test.test', 'end', 'defs'
 
-    context 'in ruby 2.2 or later' do
-      include_examples('aligned',
-                       'foo def', 'test',
-                       '    end')
+    include_examples('aligned',
+                     'foo def', 'test',
+                     '    end')
 
-      include_examples 'misaligned', <<-RUBY, :start_of_line
-        foo def test
-        end
-        ^^^ `end` at 2, 0 is not aligned with `def` at 1, 4.
-      RUBY
+    include_examples 'misaligned', <<-RUBY, :start_of_line
+      foo def test
+      end
+      ^^^ `end` at 2, 0 is not aligned with `def` at 1, 4.
+    RUBY
 
-      context 'correct + opposite' do
-        it 'registers an offense' do
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages.first)
-            .to eq('`end` at 3, 0 is not aligned with `def` at 1, 4.')
-          expect(cop.highlights.first).to eq('end')
-          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-        end
+    context 'correct + opposite' do
+      it 'registers an offense' do
+        inspect_source(source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages.first)
+          .to eq('`end` at 3, 0 is not aligned with `def` at 1, 4.')
+        expect(cop.highlights.first).to eq('end')
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
 
-        it 'does auto-correction' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq(<<~RUBY)
-            foo def a
-              a1
-                end
+      it 'does auto-correction' do
+        corrected = autocorrect_source(source)
+        expect(corrected).to eq(<<~RUBY)
+          foo def a
+            a1
+              end
 
-            foo def b
-                  b1
-                end
-          RUBY
-        end
+          foo def b
+                b1
+              end
+        RUBY
       end
     end
   end
