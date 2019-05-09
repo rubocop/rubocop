@@ -35,8 +35,14 @@ module RuboCop
           (send $_ ${:to_i :to_f :to_c})
         PATTERN
 
+        def_node_matcher :datetime?, <<-PATTERN
+          (send (const {nil? (cbase)} {:Time :DateTime}) ...)
+        PATTERN
+
         def on_send(node)
           to_method(node) do |receiver, to_method|
+            next if date_time_object?(receiver)
+
             message = format(
               MSG,
               number_object: receiver.source,
@@ -48,6 +54,15 @@ module RuboCop
         end
 
         private
+
+        def date_time_object?(node)
+          child = node
+          while child.send_type?
+            return true if datetime? child
+
+            child = child.children[0]
+          end
+        end
 
         def correct_method(node, receiver)
           format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name],
