@@ -98,13 +98,6 @@ module RuboCop
 
         private
 
-        def style
-          style = super
-          return style unless style == :auto_detection
-
-          :squiggly
-        end
-
         def message(node)
           case style
           when :squiggly
@@ -175,8 +168,6 @@ module RuboCop
         end
 
         def correct_by_squiggly(node)
-          return if target_ruby_version < 2.3
-
           lambda do |corrector|
             if heredoc_indent_type(node) == '~'
               adjust_squiggly(corrector, node)

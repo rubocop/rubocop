@@ -192,14 +192,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
   describe 'requiring all of `lib` with verbose warnings enabled' do
     it 'emits no warnings' do
-      allowed = lambda do |line|
-        line =~ /warning: private attribute\?$/ && RUBY_VERSION < '2.3'
-      end
-
       warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
-                 .reject(&allowed)
 
       expect(warnings.empty?).to be(true)
     end
