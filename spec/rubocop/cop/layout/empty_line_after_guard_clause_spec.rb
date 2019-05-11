@@ -274,6 +274,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'registers an offense when guard clause is a ternary operator' do
+    expect_offense(<<~RUBY)
+      def foo
+        puts 'some action happens here'
+      rescue => e
+        a_check ? raise(e) : other_thing
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        true
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        puts 'some action happens here'
+      rescue => e
+        a_check ? raise(e) : other_thing
+
+        true
+      end
+    RUBY
+  end
+
   it 'registers an offense for methods starting with end_' do
     expect_offense(<<~RUBY)
       def foo
