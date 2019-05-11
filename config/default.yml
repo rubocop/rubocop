@@ -3507,6 +3507,20 @@ Style/NegatedIf:
     - prefix
     - postfix
 
+Style/NegatedUnless:
+  Description: 'Favor if over unless for negative conditions.'
+  StyleGuide: '#if-for-negatives'
+  Enabled: true
+  VersionAdded: '0.69'
+  EnforcedStyle: both
+  SupportedStyles:
+    # both: prefix and postfix negated `unless` should both use `if`
+    # prefix: only use `if` for negated `unless` statements positioned before the body of the statement
+    # postfix: only use `if` for negated `unless` statements positioned after the body of the statement
+    - both
+    - prefix
+    - postfix
+
 Style/NegatedWhile:
   Description: 'Favor until over while for negative conditions.'
   StyleGuide: '#until-for-negatives'

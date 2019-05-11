@@ -3846,6 +3846,87 @@ EnforcedStyle | `both` | `both`, `prefix`, `postfix`
 
 * [https://github.com/rubocop-hq/ruby-style-guide#unless-for-negatives](https://github.com/rubocop-hq/ruby-style-guide#unless-for-negatives)
 
+## Style/NegatedUnless
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.69 | -
+
+Checks for uses of unless with a negated condition. Only unless
+without else are considered. There are three different styles:
+
+  - both
+  - prefix
+  - postfix
+
+### Examples
+
+#### EnforcedStyle: both (default)
+
+```ruby
+# enforces `if` for `prefix` and `postfix` conditionals
+
+# bad
+unless !foo
+  bar
+end
+
+# good
+if foo
+  bar
+end
+
+# bad
+bar unless !foo
+
+# good
+bar if foo
+```
+#### EnforcedStyle: prefix
+
+```ruby
+# enforces `if` for just `prefix` conditionals
+
+# bad
+unless !foo
+  bar
+end
+
+# good
+if foo
+  bar
+end
+
+# good
+bar unless !foo
+```
+#### EnforcedStyle: postfix
+
+```ruby
+# enforces `if` for just `postfix` conditionals
+
+# bad
+bar unless !foo
+
+# good
+bar if foo
+
+# good
+unless !foo
+  bar
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `both` | `both`, `prefix`, `postfix`
+
+### References
+
+* [https://github.com/rubocop-hq/ruby-style-guide#if-for-negatives](https://github.com/rubocop-hq/ruby-style-guide#if-for-negatives)
+
 ## Style/NegatedWhile
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
