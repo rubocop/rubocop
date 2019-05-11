@@ -130,7 +130,7 @@ module RuboCop
         end
 
         def offense_location(node)
-          if node.loc&.end
+          if node.loc.respond_to?(:end) && node.loc.end
             :end
           else
             :expression

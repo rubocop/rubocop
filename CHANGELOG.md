@@ -16,6 +16,7 @@
 * [#6980](https://github.com/rubocop-hq/rubocop/issues/6980): Fix `Style/StringHashKeys` to allow string as keys for hash arguments to gsub methods. ([@tejasbubane][])
 * [#6969](https://github.com/rubocop-hq/rubocop/issues/6969): Fix a false positive with block methods in `Style/InverseMethods`. ([@dduugg][])
 * [#6729](https://github.com/rubocop-hq/rubocop/pull/6729): Handle array spread for `change_column_default` in `Rails/ReversibleMigration` cop. ([@tejasbubane][])
+* [#7033](https://github.com/rubocop-hq/rubocop/issues/7033): Fix an error for `Layout/EmptyLineAfterGuardClause` when guard clause is a ternary operator. ([@koic][])
 
 ### Changes
 
