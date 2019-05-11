@@ -3,7 +3,9 @@
 ## master (unreleased)
 
 ### New features
+
 * Add support for subclassing using `Class.new` to `Lint/InheritException`. ([@houli][])
+* [#6779](https://github.com/rubocop-hq/rubocop/issues/6779): Add new cop `Style/NegativeUnless` that checks for unless with negative condition. ([@tejasbubane][])
 
 ### Bug fixes
 

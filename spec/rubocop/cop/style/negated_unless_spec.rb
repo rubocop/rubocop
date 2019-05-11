@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NegatedIf do
+RSpec.describe RuboCop::Cop::Style::NegatedUnless do
   subject(:cop) do
     config = RuboCop::Config.new(
-      'Style/NegatedIf' => {
+      'Style/NegatedUnless' => {
         'SupportedStyles' => %w[both prefix postfix],
         'EnforcedStyle' => 'both'
       }
@@ -12,100 +12,83 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
   end
 
   describe 'with “both” style' do
-    it 'registers an offense for if with exclamation point condition' do
+    it 'registers an offense for unless with exclamation point condition' do
       expect_offense(<<~RUBY)
-        if !a_condition
-        ^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+        unless !a_condition
+        ^^^^^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
           some_method
         end
-        some_method if !a_condition
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+        some_method unless !a_condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
       RUBY
     end
 
-    it 'registers an offense for if with "not" condition' do
+    it 'registers an offense for unless with "not" condition' do
       expect_offense(<<~RUBY)
-        if not a_condition
-        ^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+        unless not a_condition
+        ^^^^^^^^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
           some_method
         end
-        some_method if not a_condition
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+        some_method unless not a_condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
       RUBY
     end
 
-    it 'accepts an if/else with negative condition' do
+    it 'accepts an unless/else with negative condition' do
       expect_no_offenses(<<~RUBY)
-        if !a_condition
+        unless !a_condition
           some_method
         else
           something_else
         end
-        if not a_condition
-          some_method
-        elsif other_condition
-          something_else
-        end
       RUBY
     end
 
-    it 'accepts an if where only part of the condition is negated' do
+    it 'accepts an unless where only part of the condition is negated' do
       expect_no_offenses(<<~RUBY)
-        if !condition && another_condition
+        unless !condition && another_condition
           some_method
         end
-        if not condition or another_condition
+        unless not condition or another_condition
           some_method
         end
-        some_method if not condition or another_condition
+        some_method unless not condition or another_condition
       RUBY
     end
 
-    it 'accepts an if where the condition is doubly negated' do
+    it 'accepts an unless where the condition is doubly negated' do
       expect_no_offenses(<<~RUBY)
-        if !!condition
+        unless !!condition
           some_method
         end
-        some_method if !!condition
-      RUBY
-    end
-
-    it 'is not confused by negated elsif' do
-      expect_no_offenses(<<~RUBY)
-        if test.is_a?(String)
-          3
-        elsif test.is_a?(Array)
-          2
-        elsif !test.nil?
-          1
-        end
+        some_method unless !!condition
       RUBY
     end
 
     it 'autocorrects for postfix' do
-      corrected = autocorrect_source('bar if !foo')
+      corrected = autocorrect_source('bar unless !foo')
 
-      expect(corrected).to eq 'bar unless foo'
+      expect(corrected).to eq 'bar if foo'
     end
 
-    it 'autocorrects by replacing if not with unless' do
-      corrected = autocorrect_source('something if !x.even?')
-      expect(corrected).to eq 'something unless x.even?'
+    it 'autocorrects by replacing unless not with if' do
+      corrected = autocorrect_source('something unless !x.even?')
+      expect(corrected).to eq 'something if x.even?'
     end
 
-    it 'autocorrects by replacing parenthesized if not with unless' do
-      corrected = autocorrect_source('something if (!x.even?)')
-      expect(corrected).to eq 'something unless (x.even?)'
+    it 'autocorrects by replacing parenthesized unless not with if' do
+      corrected = autocorrect_source('something unless (!x.even?)')
+      expect(corrected).to eq 'something if (x.even?)'
     end
 
     it 'autocorrects for prefix' do
       corrected = autocorrect_source(<<~RUBY)
-        if !foo
+        unless !foo
         end
       RUBY
 
       expect(corrected).to eq <<~RUBY
-        unless foo
+        if foo
         end
       RUBY
     end
@@ -114,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
   describe 'with “prefix” style' do
     subject(:cop) do
       config = RuboCop::Config.new(
-        'Style/NegatedIf' => {
+        'Style/NegatedUnless' => {
           'SupportedStyles' => %w[both prefix postfix],
           'EnforcedStyle' => 'prefix'
         }
@@ -125,24 +108,24 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
 
     it 'registers an offense for prefix' do
       expect_offense(<<~RUBY)
-        if !foo
-        ^^^^^^^ Favor `unless` over `if` for negative conditions.
+        unless !foo
+        ^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
         end
       RUBY
     end
 
     it 'does not register an offense for postfix' do
-      expect_no_offenses('foo if !bar')
+      expect_no_offenses('foo unless !bar')
     end
 
     it 'autocorrects for prefix' do
       corrected = autocorrect_source(<<~RUBY)
-        if !foo
+        unless !foo
         end
       RUBY
 
       expect(corrected).to eq <<~RUBY
-        unless foo
+        if foo
         end
       RUBY
     end
@@ -151,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
   describe 'with “postfix” style' do
     subject(:cop) do
       config = RuboCop::Config.new(
-        'Style/NegatedIf' => {
+        'Style/NegatedUnless' => {
           'SupportedStyles' => %w[both prefix postfix],
           'EnforcedStyle' => 'postfix'
         }
@@ -162,22 +145,22 @@ RSpec.describe RuboCop::Cop::Style::NegatedIf do
 
     it 'registers an offense for postfix' do
       expect_offense(<<~RUBY)
-        foo if !bar
-        ^^^^^^^^^^^ Favor `unless` over `if` for negative conditions.
+        foo unless !bar
+        ^^^^^^^^^^^^^^^ Favor `if` over `unless` for negative conditions.
       RUBY
     end
 
     it 'does not register an offense for prefix' do
       expect_no_offenses(<<~RUBY)
-        if !foo
+        unless !foo
         end
       RUBY
     end
 
     it 'autocorrects for postfix' do
-      corrected = autocorrect_source('bar if !foo')
+      corrected = autocorrect_source('bar unless !foo')
 
-      expect(corrected).to eq 'bar unless foo'
+      expect(corrected).to eq 'bar if foo'
     end
   end
 

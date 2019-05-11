@@ -453,6 +453,7 @@ In the following section you find all available cops:
 * [Style/MultipleComparison](cops_style.md#stylemultiplecomparison)
 * [Style/MutableConstant](cops_style.md#stylemutableconstant)
 * [Style/NegatedIf](cops_style.md#stylenegatedif)
+* [Style/NegatedUnless](cops_style.md#stylenegatedunless)
 * [Style/NegatedWhile](cops_style.md#stylenegatedwhile)
 * [Style/NestedModifier](cops_style.md#stylenestedmodifier)
 * [Style/NestedParenthesizedCalls](cops_style.md#stylenestedparenthesizedcalls)

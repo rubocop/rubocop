@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for uses of if with a negated condition. Only ifs
+      # Checks for uses of unless with a negated condition. Only unless
       # without else are considered. There are three different styles:
       #
       #   - both
@@ -11,69 +11,59 @@ module RuboCop
       #   - postfix
       #
       # @example EnforcedStyle: both (default)
-      #   # enforces `unless` for `prefix` and `postfix` conditionals
+      #   # enforces `if` for `prefix` and `postfix` conditionals
       #
       #   # bad
-      #
-      #   if !foo
+      #   unless !foo
       #     bar
       #   end
       #
       #   # good
-      #
-      #   unless foo
+      #   if foo
       #     bar
       #   end
       #
       #   # bad
-      #
-      #   bar if !foo
+      #   bar unless !foo
       #
       #   # good
-      #
-      #   bar unless foo
+      #   bar if foo
       #
       # @example EnforcedStyle: prefix
-      #   # enforces `unless` for just `prefix` conditionals
+      #   # enforces `if` for just `prefix` conditionals
       #
       #   # bad
-      #
-      #   if !foo
+      #   unless !foo
       #     bar
       #   end
       #
       #   # good
-      #
-      #   unless foo
+      #   if foo
       #     bar
       #   end
       #
       #   # good
-      #
-      #   bar if !foo
+      #   bar unless !foo
       #
       # @example EnforcedStyle: postfix
-      #   # enforces `unless` for just `postfix` conditionals
+      #   # enforces `if` for just `postfix` conditionals
       #
       #   # bad
-      #
-      #   bar if !foo
-      #
-      #   # good
-      #
-      #   bar unless foo
+      #   bar unless !foo
       #
       #   # good
+      #   bar if foo
       #
-      #   if !foo
+      #   # good
+      #   unless !foo
       #     bar
       #   end
-      class NegatedIf < Cop
+      class NegatedUnless < Cop
         include ConfigurableEnforcedStyle
         include NegativeConditional
 
         def on_if(node)
-          return if node.unless? || node.elsif? || node.ternary?
+          return if node.if? || node.elsif? || node.ternary?
           return if correct_style?(node)
 
           check_negative_conditional(node)
