@@ -1,4 +1,4 @@
-Performance Cops will be removed from RuboCop 0.68. Use rubocop-performance gem instead.
+Performance Cops has been removed from RuboCop 0.68. Use rubocop-performance gem instead.
 
 Put this in your Gemfile.
 
