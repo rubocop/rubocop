@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArgument, :config do
     context 'when indentation width is overridden for this cop only' do
       let(:cop_config) do
         {
-          'EnforcedStyle' => style,
+          'EnforcedStyle'    => style,
           'IndentationWidth' => 4
         }
       end
@@ -639,7 +639,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArgument, :config do
       let(:indentation_width) { nil }
       let(:cop_config) do
         {
-          'EnforcedStyle' => style,
+          'EnforcedStyle'    => style,
           'IndentationWidth' => 4
         }
       end

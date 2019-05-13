@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
   context 'always' do
     let(:cop_config) do
-      { 'Enabled' => true,
+      { 'Enabled'       => true,
         'EnforcedStyle' => 'always' }
     end
 
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
   context 'never' do
     let(:cop_config) do
-      { 'Enabled' => true,
+      { 'Enabled'       => true,
         'EnforcedStyle' => 'never' }
     end
 

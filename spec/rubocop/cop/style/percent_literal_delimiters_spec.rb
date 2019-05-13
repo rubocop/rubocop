@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       {
         'PreferredDelimiters' => {
           'default' => '[]',
-          '%' => '()'
+          '%'       => '()'
         }
       }
     end
