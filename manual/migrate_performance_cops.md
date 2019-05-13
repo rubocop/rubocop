@@ -1,6 +1,6 @@
-Performance Cops has been removed from RuboCop 0.68. Use rubocop-performance gem instead.
+Performance cops have been removed from RuboCop 0.68. Use the `rubocop-performance` gem instead.
 
-Put this in your Gemfile.
+Put this in your `Gemfile`.
 
 ```rb
 gem 'rubocop-performance'
@@ -12,7 +12,7 @@ And then execute:
 $ bundle install
 ```
 
-Put this into your .rubocop.yml.
+Put this into your `.rubocop.yml`.
 
 ```yaml
 require: rubocop-performance
