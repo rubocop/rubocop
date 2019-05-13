@@ -8,10 +8,19 @@ module RuboCop
       # method calls containing parameters.
       #
       # In the default style (require_parentheses), macro methods are ignored.
-      # Additional methods can be added to the `IgnoredMethods` list. This
-      # option is valid only in the default style. Macros can be included by
+      # Additional methods can be added to the `IgnoredMethods`
+      # or `IgnoredMethodPatterns` list. These options are
+      # valid only in the default style. Macros can be included by
       # either setting `IgnoreMacros` to false or adding specific macros to
-      # the `IncludedMacros` list. If a method is listed in both
+      # the `IncludedMacros` list.
+      #
+      # Precedence of options is all follows:
+      #
+      # 1. `IgnoredMethods`
+      # 2. `IgnoredMethodPatterns`
+      # 3. `IncludedMacros`
+      #
+      # eg. If a method is listed in both
       # `IncludedMacros` and `IgnoredMethods`, then the latter takes
       # precedence (that is, the method is ignored).
       #
@@ -51,6 +60,9 @@ module RuboCop
       #
       #   # okay with `puts` listed in `IgnoredMethods`
       #   puts 'test'
+      #
+      #   # okay with `^assert` listed in `IgnoredMethodPatterns`
+      #   assert_equal 'test', x
       #
       #   # IgnoreMacros: true (default)
       #
@@ -136,6 +148,7 @@ module RuboCop
       class MethodCallWithArgsParentheses < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
+        include IgnoredMethodPatterns
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
 
@@ -173,6 +186,7 @@ module RuboCop
 
         def add_offense_for_require_parentheses(node)
           return if ignored_method?(node.method_name)
+          return if ignored_method_pattern?(node.method_name)
           return if eligible_for_parentheses_omission?(node)
           return unless node.arguments? && !node.parenthesized?
 
