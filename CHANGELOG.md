@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.69.0 (2019-05-13)
+
 ### New features
 
 * Add support for subclassing using `Class.new` to `Lint/InheritException`. ([@houli][])
