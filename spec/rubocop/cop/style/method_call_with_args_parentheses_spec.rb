@@ -278,6 +278,22 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         end
       end
     end
+
+    context 'IgnoredMethodPatterns' do
+      let(:cop_config) do
+        { 'IgnoredMethodPatterns' => %w[^assert ^refute] }
+      end
+
+      it 'ignored methods listed in IgnoredMethodPatterns' do
+        expect_no_offenses('assert 2 == 2')
+        expect_no_offenses('assert_equal 2, 2')
+        expect_no_offenses('assert_match /^yes/i, result')
+
+        expect_no_offenses('refute 2 == 3')
+        expect_no_offenses('refute_equal 2, 3')
+        expect_no_offenses('refute_match /^no/i, result')
+      end
+    end
   end
 
   context 'when EnforcedStyle is omit_parentheses' do
