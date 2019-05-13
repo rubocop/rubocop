@@ -8,11 +8,11 @@ module RuboCop
       # A scope instance holds a scope node and variable entries.
       class Scope
         OUTER_SCOPE_CHILD_INDICES = {
-          defs: 0..0,
+          defs:   0..0,
           module: 0..0,
-          class: 0..1,
+          class:  0..1,
           sclass: 0..0,
-          block: 0..0
+          block:  0..0
         }.freeze
 
         attr_reader :node, :variables, :naked_top_level

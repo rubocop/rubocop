@@ -13,11 +13,11 @@ module RuboCop
       include PathUtil
 
       COLOR_FOR_SEVERITY = {
-        refactor: :yellow,
+        refactor:   :yellow,
         convention: :yellow,
-        warning: :magenta,
-        error: :red,
-        fatal: :red
+        warning:    :magenta,
+        error:      :red,
+        fatal:      :red
       }.freeze
 
       def started(_target_files)

@@ -123,9 +123,10 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.to_h).to eql(
       'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
       'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/IndentFirstArrayElement' => [
-        RuboCop::Cop::Layout::IndentFirstArrayElement
-      ],
+      'Layout/IndentFirstArrayElement' =>
+                                 [
+                                   RuboCop::Cop::Layout::IndentFirstArrayElement
+                                 ],
       'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
       'Test/IndentFirstArrayElement' => [
         RuboCop::Cop::Test::IndentFirstArrayElement

@@ -59,6 +59,14 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 
+Layout/AlignHash:
+  EnforcedHashRocketStyle:
+    - key
+    - table
+  EnforcedColonStyle:
+    - key
+    - table
+
 Lint/InterpolationCheck:
   Exclude:
     - 'spec/**/*.rb'
