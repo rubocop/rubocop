@@ -5,6 +5,7 @@
 ### New features
 
 * [#6649](https://github.com/rubocop-hq/rubocop/pull/6649): Layout/AlignHash supports list of options. ([@stoivo][])
+* Add `IgnoreMethodPatterns` config option to `Style/MethodCallWithArgsParentheses`. ([@tejasbubane][])
 
 ## 0.69.0 (2019-05-13)
 
@@ -12,7 +13,6 @@
 
 * Add support for subclassing using `Class.new` to `Lint/InheritException`. ([@houli][])
 * [#6779](https://github.com/rubocop-hq/rubocop/issues/6779): Add new cop `Style/NegativeUnless` that checks for unless with negative condition. ([@tejasbubane][])
-* Add `IgnoreMethodPatterns` config option to `Style/MethodCallWithArgsParentheses`. ([@tejasbubane][])
 
 ### Bug fixes
 
