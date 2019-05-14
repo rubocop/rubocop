@@ -120,8 +120,8 @@ module RuboCop
       # If AllCops::EnabledByDefault is true, it changes the Enabled params
       # so that only cops explicitly disabled in user configuration are
       # disabled.
-      def merge_with_default(config, config_file)
-        resolver.merge_with_default(config, config_file)
+      def merge_with_default(config, config_file, unset_nil: true)
+        resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
       def add_inheritance_from_auto_generated_file
