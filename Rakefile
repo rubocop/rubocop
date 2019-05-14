@@ -90,6 +90,7 @@ end
 desc 'Syntax check for the documentation comments'
 task documentation_syntax_check: :yard_for_generate_documentation do
   require 'parser/ruby25'
+  require 'parser/ruby26'
 
   ok = true
   YARD::Registry.load!
@@ -107,7 +108,14 @@ task documentation_syntax_check: :yard_for_generate_documentation do
       begin
         buffer = Parser::Source::Buffer.new('<code>', 1)
         buffer.source = example.text
-        parser = Parser::Ruby25.new(RuboCop::AST::Builder.new)
+
+        # Ruby 2.6 or higher does not support a syntax used in
+        # `Lint/UselessElseWithoutRescue` cop's example.
+        parser = if cop == RuboCop::Cop::Lint::UselessElseWithoutRescue
+                   Parser::Ruby25.new(RuboCop::AST::Builder.new)
+                 else
+                   Parser::Ruby26.new(RuboCop::AST::Builder.new)
+                 end
         parser.diagnostics.all_errors_are_fatal = true
         parser.parse(buffer)
       rescue Parser::SyntaxError => e
