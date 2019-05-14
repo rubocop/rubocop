@@ -35,8 +35,8 @@ dotfile or a config file inside the [XDG Base Directory
 specification][xdg-basedir-spec].
 
 * `~/.rubocop.yml`
-* `$XDG_HOME/rubocop/config.yml` (expands to `~/.config/rubocop/config.yml` if
-  `$XDG_CONFIG_HOME` is not set)
+* `$XDG_CONFIG_HOME/rubocop/config.yml` (expands to `~/.config/rubocop/config.yml`
+  if `$XDG_CONFIG_HOME` is not set)
 
 If both files exist, the dotfile will be selected.
 
