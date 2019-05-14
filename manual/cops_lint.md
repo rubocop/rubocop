@@ -2686,6 +2686,9 @@ Enabled | Yes | No | 0.17 | -
 
 This cop checks for useless `else` in `begin..end` without `rescue`.
 
+Note: This syntax is no longer valid on Ruby 2.6 or higher and
+this cop is going to be removed at some point the future.
+
 ### Examples
 
 ```ruby
