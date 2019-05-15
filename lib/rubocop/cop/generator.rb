@@ -7,7 +7,13 @@ module RuboCop
     # This generator will take a cop name and generate a source file
     # and spec file when given a valid qualified cop name.
     class Generator
-      SOURCE_TEMPLATE = <<~RUBY
+      # Note: RDoc 5.1.0 or lower has the following issue.
+      # https://github.com/rubocop-hq/rubocop/issues/7043
+      #
+      # The following `String#strip_indent` can be replaced with
+      # squiggly heredoc when RuboCop supports Ruby 2.5 or higher
+      # (RDoc 6.0 or higher).
+      SOURCE_TEMPLATE = <<-RUBY.strip_indent
         # frozen_string_literal: true
 
         # TODO: when finished, run `rake generate_cops_documentation` to update the docs
