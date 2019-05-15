@@ -10,13 +10,14 @@
 ### Bug fixes
 
 * [#7013](https://github.com/rubocop-hq/rubocop/pull/7013): Respect DisabledByDefault for custom cops. ([@XrXr][])
+* [#7043](https://github.com/rubocop-hq/rubocop/issues/7043): Prevent RDoc error when installing RuboCop 0.69.0 on Ubuntu. ([@koic][])
 
 ## 0.69.0 (2019-05-13)
 
 ### New features
 
 * Add support for subclassing using `Class.new` to `Lint/InheritException`. ([@houli][])
-* [#6779](https://github.com/rubocop-hq/rubocop/issues/6779): Add new cop `Style/NegativeUnless` that checks for unless with negative condition. ([@tejasbubane][])
+* [#6779](https://github.com/rubocop-hq/rubocop/issues/6779): Add new cop `Style/NegatedUnless` that checks for unless with negative condition. ([@tejasbubane][])
 
 ### Bug fixes
 
