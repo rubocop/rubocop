@@ -7,6 +7,10 @@
 * [#6649](https://github.com/rubocop-hq/rubocop/pull/6649): `Layout/AlignHash` supports list of options. ([@stoivo][])
 * Add `IgnoreMethodPatterns` config option to `Style/MethodCallWithArgsParentheses`. ([@tejasbubane][])
 
+### Bug fixes
+
+* [#7043](https://github.com/rubocop-hq/rubocop/issues/7043): Prevent RDoc error when installing RuboCop 0.69.0 on Ubuntu. ([@koic][])
+
 ## 0.69.0 (2019-05-13)
 
 ### New features
