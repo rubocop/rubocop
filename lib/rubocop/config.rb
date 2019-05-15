@@ -720,7 +720,7 @@ module RuboCop
         end
       end
 
-      cop_options.fetch('Enabled', true)
+      cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
     end
 
     def smart_loaded_path
