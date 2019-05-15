@@ -4711,7 +4711,7 @@ puts Regexp.last_match(1)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | 0.44
+Enabled | No | Yes  | 0.41 | 0.70
 
 This cop (by default) checks for uses of methods Hash#has_key? and
 Hash#has_value? where it enforces Hash#key? and Hash#value?

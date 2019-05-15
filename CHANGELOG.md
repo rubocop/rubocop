@@ -12,6 +12,10 @@
 * [#7013](https://github.com/rubocop-hq/rubocop/pull/7013): Respect DisabledByDefault for custom cops. ([@XrXr][])
 * [#7043](https://github.com/rubocop-hq/rubocop/issues/7043): Prevent RDoc error when installing RuboCop 0.69.0 on Ubuntu. ([@koic][])
 
+### Changes
+
+* [#6359](https://github.com/rubocop-hq/rubocop/issues/6359): Mark `Style/PreferredHashMethods` as unsafe. ([@tejasbubane][])
+
 ## 0.69.0 (2019-05-13)
 
 ### New features
