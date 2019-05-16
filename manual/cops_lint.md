@@ -1380,7 +1380,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.53 | -
+Disabled | Yes | Yes (Unsafe) | 0.53 | 0.70
 
 This cop warns the usage of unsafe number conversions. Unsafe
 number conversion can cause unexpected error if auto type conversion
