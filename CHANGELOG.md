@@ -13,6 +13,10 @@
 * [#7043](https://github.com/rubocop-hq/rubocop/issues/7043): Prevent RDoc error when installing RuboCop 0.69.0 on Ubuntu. ([@koic][])
 * [#7023](https://github.com/rubocop-hq/rubocop/issues/7023): Autocorrection for `Lint/NumberConversion`. ([@Bhacaz][])
 
+### Changes
+
+* [#6359](https://github.com/rubocop-hq/rubocop/issues/6359): Mark `Style/PreferredHashMethods` as unsafe. ([@tejasbubane][])
+
 ## 0.69.0 (2019-05-13)
 
 ### New features
