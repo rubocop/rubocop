@@ -53,6 +53,13 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.expression,
+                              correct_method(node, node.receiver))
+          end
+        end
+
         private
 
         def date_time_object?(node)
