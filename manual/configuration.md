@@ -271,6 +271,31 @@ AllCops:
 # ...
 ```
 
+**Note**: When inspecting a certain directory(or file)
+given as RuboCop's command line arguments,
+patterns listed under `AllCops` / `Exclude` are also inspected.
+If you want to apply `AllCops` / `Exclude` rules in this circumstance,
+add `--force-exclusion` to the command line argument.
+
+Here is an example:
+
+```yaml
+# .rubocop.yml
+AllCops:
+  Exclude:
+    - foo.rb
+```
+
+If `foo.rb` specified as a RuboCop's command line argument, the result is:
+
+```sh
+# RuboCop inspects foo.rb.
+$ bundle exec rubocop foo.rb
+
+# RuboCop does not inspect foo.rb.
+$ bundle exec rubocop --force-exclusion foo.rb
+```
+
 #### Path relativity
 
 In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
