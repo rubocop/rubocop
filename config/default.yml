@@ -1360,7 +1360,9 @@ Lint/HandleExceptions:
   Description: "Don't suppress exception."
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
+  AllowComments: false
   VersionAdded: '0.9'
+  VersionChanged: '0.70'
 
 Lint/HeredocMethodCallPosition:
   Description: >-

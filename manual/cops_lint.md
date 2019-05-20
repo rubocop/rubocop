@@ -809,48 +809,90 @@ format('A value: %s and another: %i', a_value, another)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
+Enabled | Yes | No | 0.9 | 0.70
 
 This cop checks for *rescue* blocks with no body.
 
 ### Examples
 
+#### AllowComments: false (default)
+
 ```ruby
 # bad
+def some_method
+  do_something
+rescue
+end
 
+# bad
 def some_method
   do_something
 rescue
   # do nothing
 end
-```
-```ruby
-# bad
 
+# bad
+begin
+  do_something
+rescue
+end
+
+# bad
 begin
   do_something
 rescue
   # do nothing
 end
-```
-```ruby
-# good
 
+# good
 def some_method
   do_something
 rescue
   handle_exception
 end
-```
-```ruby
-# good
 
+# good
 begin
   do_something
 rescue
   handle_exception
 end
 ```
+#### AllowComments: true
+
+```ruby
+# bad
+def some_method
+  do_something
+rescue
+end
+
+# bad
+begin
+  do_something
+rescue
+end
+
+# good
+def some_method
+  do_something
+rescue
+  # do nothing but comment
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing but comment
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowComments | `false` | Boolean
 
 ### References
 
