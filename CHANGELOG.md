@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for Rails Cops. ([@koic][])
+
 ## 0.70.0 (2019-05-21)
 
 ### New features
