@@ -765,6 +765,15 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       RUBY
     end
 
+    it 'accepts aligned hash keys with mixed hash style' do
+      expect_no_offenses(<<~RUBY)
+        headers = {
+          "Content-Type" => 0,
+          Authorization: 1
+        }
+      RUBY
+    end
+
     it 'accepts an empty hash' do
       expect_no_offenses('h = {}')
     end
@@ -807,6 +816,16 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
             'b' => 1,
                   'c' => 1
                   ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          }
+        RUBY
+      end
+
+      it 'for misaligned hash keys with mixed hash style' do
+        expect_offense(<<~RUBY)
+          headers = {
+            "Content-Type" => 0,
+             Authorization: 1
+             ^^^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
           }
         RUBY
       end

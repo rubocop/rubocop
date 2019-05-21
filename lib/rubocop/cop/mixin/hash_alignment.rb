@@ -83,6 +83,10 @@ module RuboCop
       class TableAlignment
         include ValueAlignment
 
+        def initialize
+          self.max_key_width = 0
+        end
+
         def deltas_for_first_pair(first_pair, node)
           self.max_key_width = node.keys.map { |key| key.source.length }.max
 

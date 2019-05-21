@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7066](https://github.com/rubocop-hq/rubocop/issues/7066): Fix `Layout/AlignHash` when mixed Hash styles are used. ([@rmm5t][])
+
 ### Changes
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for Rails Cops. ([@koic][])
