@@ -7,11 +7,17 @@
 * [#6649](https://github.com/rubocop-hq/rubocop/pull/6649): `Layout/AlignHash` supports list of options. ([@stoivo][])
 * Add `IgnoreMethodPatterns` config option to `Style/MethodCallWithArgsParentheses`. ([@tejasbubane][])
 * [#7059](https://github.com/rubocop-hq/rubocop/pull/7059): Add `EnforcedStyle` to `Layout/EmptyLinesAroundAccessModifier`. ([@koic][])
+* [#7052](https://github.com/rubocop-hq/rubocop/issues/7052): Add `AllowComments` option to ` Lint/HandleExceptions`. ([@tejasbubane][]) 
 
 ### Bug fixes
 
 * [#7013](https://github.com/rubocop-hq/rubocop/pull/7013): Respect DisabledByDefault for custom cops. ([@XrXr][])
 * [#7043](https://github.com/rubocop-hq/rubocop/issues/7043): Prevent RDoc error when installing RuboCop 0.69.0 on Ubuntu. ([@koic][])
+* [#7023](https://github.com/rubocop-hq/rubocop/issues/7023): Autocorrection for `Lint/NumberConversion`. ([@Bhacaz][])
+
+### Changes
+
+* [#6359](https://github.com/rubocop-hq/rubocop/issues/6359): Mark `Style/PreferredHashMethods` as unsafe. ([@tejasbubane][])
 
 ## 0.69.0 (2019-05-13)
 

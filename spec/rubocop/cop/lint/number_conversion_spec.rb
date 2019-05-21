@@ -11,12 +11,20 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         "10".to_i
         ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_i, use stricter Integer("10", 10).
       RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        Integer("10", 10)
+      RUBY
     end
 
     it 'when using `#to_i` for integer' do
       expect_offense(<<~RUBY)
         10.to_i
         ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.to_i, use stricter Integer(10, 10).
+      RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        Integer(10, 10)
       RUBY
     end
 
@@ -25,12 +33,20 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         "10.2".to_f
         ^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10.2".to_f, use stricter Float("10.2").
       RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        Float("10.2")
+      RUBY
     end
 
     it 'when using `#to_c`' do
       expect_offense(<<~RUBY)
         "10".to_c
         ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_c, use stricter Complex("10").
+      RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        Complex("10")
       RUBY
     end
 
@@ -40,6 +56,11 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         string_value.to_i
         ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using string_value.to_i, use stricter Integer(string_value, 10).
       RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        string_value = '10'
+        Integer(string_value, 10)
+      RUBY
     end
 
     it 'when `#to_i` called on a hash value' do
@@ -48,6 +69,11 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         params[:id].to_i
         ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:id].to_i, use stricter Integer(params[:id], 10).
       RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        params = { id: 10 }
+        Integer(params[:id], 10)
+      RUBY
     end
 
     it 'when `#to_i` called on a variable on a array' do
@@ -55,6 +81,11 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         args = [1,2,3]
         args[0].to_i
         ^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using args[0].to_i, use stricter Integer(args[0], 10).
+      RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        args = [1,2,3]
+        Integer(args[0], 10)
       RUBY
     end
   end
