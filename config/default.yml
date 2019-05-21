@@ -509,6 +509,13 @@ Layout/EmptyLinesAroundAccessModifier:
   StyleGuide: '#empty-lines-around-access-modifier'
   Enabled: true
   VersionAdded: '0.49'
+  EnforcedStyle: around
+  SupportedStyles:
+    - around
+    - only_before
+  Reference:
+    # A reference to `EnforcedStyle: only_before`.
+    - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
 
 Layout/EmptyLinesAroundArguments:
   Description: "Keeps track of empty lines around method arguments."
@@ -781,6 +788,9 @@ Layout/IndentationConsistency:
   SupportedStyles:
     - normal
     - rails
+  Reference:
+    # A reference to `EnforcedStyle: rails`.
+    - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
 
 Layout/IndentationWidth:
   Description: 'Use 2 spaces for indentation.'

@@ -52,8 +52,6 @@ module RuboCop
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
               'spaces for%<name>s indentation.'
 
-        SPECIAL_MODIFIERS = %w[private protected].freeze
-
         def_node_matcher :access_modifier?, <<-PATTERN
           [(send ...) access_modifier?]
         PATTERN
@@ -188,17 +186,13 @@ module RuboCop
         def each_member(members)
           previous_modifier = nil
           members.first.children.each do |member|
-            if member.send_type? && special_modifier?(member)
+            if member.send_type? && member.special_modifier?
               previous_modifier = member
             elsif previous_modifier
               yield member, previous_modifier.source_range
               previous_modifier = nil
             end
           end
-        end
-
-        def special_modifier?(node)
-          node.bare_access_modifier? && SPECIAL_MODIFIERS.include?(node.source)
         end
 
         def indentation_consistency_style

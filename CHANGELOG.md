@@ -6,7 +6,8 @@
 
 * [#6649](https://github.com/rubocop-hq/rubocop/pull/6649): `Layout/AlignHash` supports list of options. ([@stoivo][])
 * Add `IgnoreMethodPatterns` config option to `Style/MethodCallWithArgsParentheses`. ([@tejasbubane][])
-* [#7052](https://github.com/rubocop-hq/rubocop/issues/7052): Add `AllowComments` option to ` Lint/HandleExceptions`. ([@tejasbubane][])
+* [#7059](https://github.com/rubocop-hq/rubocop/pull/7059): Add `EnforcedStyle` to `Layout/EmptyLinesAroundAccessModifier`. ([@koic][])
+* [#7052](https://github.com/rubocop-hq/rubocop/issues/7052): Add `AllowComments` option to ` Lint/HandleExceptions`. ([@tejasbubane][]) 
 
 ### Bug fixes
 

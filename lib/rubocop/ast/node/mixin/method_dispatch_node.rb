@@ -9,6 +9,7 @@ module RuboCop
       include MethodIdentifierPredicates
 
       ARITHMETIC_OPERATORS = %i[+ - * / % **].freeze
+      SPECIAL_MODIFIERS = %w[private protected].freeze
 
       # The receiving node of the method dispatch.
       #
@@ -73,6 +74,15 @@ module RuboCop
       #                   access modifier
       def non_bare_access_modifier?
         macro? && non_bare_access_modifier_declaration?
+      end
+
+      # Checks whether the dispatched method is a bare `private` or `protected`
+      # access modifier that affects all methods defined after the macro.
+      #
+      # @return [Boolean] whether the dispatched method is a bare
+      #                    `private` or `protected` access modifier
+      def special_modifier?
+        bare_access_modifier? && SPECIAL_MODIFIERS.include?(source)
       end
 
       # Checks whether the name of the dispatched method matches the argument
