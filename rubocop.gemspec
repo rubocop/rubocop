@@ -42,4 +42,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('bundler', '>= 1.15.0', '< 3.0')
   s.add_development_dependency('rack', '>= 2.0')
+
+  s.post_install_message = File.read('manual/migrate_rails_cops.md')
 end
