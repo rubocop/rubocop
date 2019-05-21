@@ -947,23 +947,19 @@ RSpec.describe RuboCop::Config do
         }
       end
 
-      before do
-        allow(File).to receive(:file?).and_call_original
-      end
-
       it 'uses TargetRubyVersion' do
         expect(configuration.target_ruby_version).to eq ruby_version
       end
 
       it 'does not read .ruby-version' do
+        expect(File).not_to receive(:file?).with('.ruby-version')
         configuration.target_ruby_version
-        expect(File).not_to have_received(:file?).with('.ruby-version')
       end
 
       it 'does not read Gemfile.lock or gems.locked' do
+        expect(File).not_to receive(:file?).with('Gemfile')
+        expect(File).not_to receive(:file?).with('gems.locked')
         configuration.target_ruby_version
-        expect(File).not_to have_received(:file?).with('Gemfile')
-        expect(File).not_to have_received(:file?).with('gems.locked')
       end
     end
 
@@ -1029,10 +1025,9 @@ RSpec.describe RuboCop::Config do
         end
 
         it 'does not read Gemfile.lock or gems.locked' do
-          allow(File).to receive(:file?).and_call_original
+          expect(File).not_to receive(:file?).with('Gemfile')
+          expect(File).not_to receive(:file?).with('gems.locked')
           configuration.target_ruby_version
-          expect(File).not_to have_received(:file?).with('Gemfile')
-          expect(File).not_to have_received(:file?).with('gems.locked')
         end
       end
 

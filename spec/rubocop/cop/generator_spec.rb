@@ -81,11 +81,12 @@ RSpec.describe RuboCop::Cop::Generator do
         end
       RUBY
 
+      expect(File)
+        .to receive(:write)
+        .with('lib/rubocop/cop/style/fake_cop.rb', generated_source)
+
       generator.write_source
 
-      expect(File)
-        .to have_received(:write)
-        .with('lib/rubocop/cop/style/fake_cop.rb', generated_source)
       expect(stdout.string)
         .to eq("[create] lib/rubocop/cop/style/fake_cop.rb\n")
     end
@@ -131,11 +132,11 @@ RSpec.describe RuboCop::Cop::Generator do
         end
       SPEC
 
-      generator.write_spec
-
       expect(File)
-        .to have_received(:write)
+        .to receive(:write)
         .with('spec/rubocop/cop/style/fake_cop_spec.rb', generated_source)
+
+      generator.write_spec
     end
 
     it 'refuses to overwrite existing files' do
@@ -195,11 +196,7 @@ RSpec.describe RuboCop::Cop::Generator do
     it 'inserts the cop in alphabetical order' do
       stub_const('RuboCop::Version::STRING', '0.58.2')
 
-      allow(File).to receive(:write)
-
-      generator.inject_config(config_file_path: path)
-
-      expect(File).to have_received(:write).with(path, <<~YAML)
+      expect(File).to receive(:write).with(path, <<~YAML)
         Style/Alias:
           Enabled: true
 
@@ -214,6 +211,9 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/SpecialGlobalVars:
           Enabled: true
       YAML
+
+      generator.inject_config(config_file_path: path)
+
       expect(stdout.string).to eq(<<~MESSAGE)
         [modify] A configuration for the cop is added into #{path}.
                  If you want to disable the cop by default, set `Enabled` option to false.
@@ -245,8 +245,6 @@ RSpec.describe RuboCop::Cop::Generator do
       example.run
       RuboCop::Cop::Cop.instance_variable_set(:@registry, orig_registry)
     end
-
-    before { allow(File).to receive(:write).and_call_original }
 
     let(:config) do
       config = RuboCop::ConfigStore.new
