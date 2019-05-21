@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.70.0 (2019-05-21)
+
 ### New features
 
 * [#6649](https://github.com/rubocop-hq/rubocop/pull/6649): `Layout/AlignHash` supports list of options. ([@stoivo][])
