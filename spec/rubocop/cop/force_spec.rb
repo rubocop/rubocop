@@ -5,8 +5,8 @@ RSpec.describe RuboCop::Cop::Force do
 
   let(:cops) do
     [
-      instance_spy(RuboCop::Cop::Cop),
-      instance_spy(RuboCop::Cop::Cop)
+      instance_double(RuboCop::Cop::Cop),
+      instance_double(RuboCop::Cop::Cop)
     ]
   end
 
@@ -18,9 +18,9 @@ RSpec.describe RuboCop::Cop::Force do
 
   describe '#run_hook' do
     it 'invokes a hook in all cops' do
-      force.run_hook(:message, :foo)
+      expect(cops).to all receive(:message).with(:foo)
 
-      expect(cops).to all(have_received(:message).with(:foo))
+      force.run_hook(:message, :foo)
     end
   end
 end

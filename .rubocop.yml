@@ -93,5 +93,8 @@ Metrics/ModuleLength:
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit
 
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
 RSpec/NestedGroups:
   Max: 7
