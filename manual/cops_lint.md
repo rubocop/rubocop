@@ -1506,7 +1506,7 @@ puts(x + y)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.41 | -
+Enabled | No | Yes  | 0.41 | -
 
 This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 

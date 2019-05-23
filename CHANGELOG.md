@@ -9,6 +9,7 @@
 ### Changes
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for Rails Cops. ([@koic][])
+* [#7078](https://github.com/rubocop-hq/rubocop/issues/7078): Mark `Lint/PercentStringArray` as unsafe. ([@mikegee][])
 
 ## 0.70.0 (2019-05-21)
 
