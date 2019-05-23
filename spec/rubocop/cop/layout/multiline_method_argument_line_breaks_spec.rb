@@ -13,6 +13,33 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
   end
 
+  context 'when bracket hash assignment on multiple lines' do
+    it 'does not add any offenses' do
+      expect_no_offenses(
+        <<-RUBY
+          class Thing
+            def call
+              bar['foo'] = ::Time.zone.at(
+                             huh['foo'],
+                           )
+            end
+          end
+        RUBY
+      )
+    end
+  end
+
+  context 'when bracket hash assignment key on multiple lines' do
+    it 'does not add any offenses' do
+      expect_no_offenses(
+        <<-RUBY
+          a['b',
+              'c', 'd'] = e
+        RUBY
+      )
+    end
+  end
+
   context 'when two arguments are on next line' do
     it 'does not add any offenses' do
       expect_no_offenses(

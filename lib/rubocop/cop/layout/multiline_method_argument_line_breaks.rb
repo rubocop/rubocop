@@ -26,6 +26,8 @@ module RuboCop
           'on a separate line.'
 
         def on_send(node)
+          return if node.method_name == :[]=
+
           args = node.arguments
 
           # If there is a trailing hash arg without explicit braces, like this:
