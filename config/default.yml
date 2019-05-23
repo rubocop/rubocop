@@ -2167,6 +2167,16 @@ Rails/BulkChangeTable:
   Include:
     - db/migrate/*.rb
 
+Rails/BusinessLogicNotAllowed:
+  Description: 'Prevent the use of business logic in parts of the rails application.'
+  StyleGuide: 'https://github.com/rubocop-hq/rails-style-guide#business_logic_not_allowed'
+  Enabled: false
+  VersionAdded: '0.71'
+  Include:
+    - app/controllers/**/*.rb
+    - app/models/**/*.rb
+    - app/views/**/*.erb
+
 Rails/CreateTableWithTimestamps:
   Description: >-
                   Checks the migration for which timestamps are not included

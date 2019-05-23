@@ -5,6 +5,7 @@
 ### Changes
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for Rails Cops. ([@koic][])
+* Add Rails/BusinessLogicNotAllowed cop. ([@tleish][])
 
 ## 0.70.0 (2019-05-21)
 
@@ -4053,3 +4054,4 @@
 [@lavoiesl]: https://github.com/lavoiesl
 [@fwininger]: https://github.com/fwininger
 [@stoivo]: https://github.com/stoivo
+[@tleish]: https://github.com/tleish

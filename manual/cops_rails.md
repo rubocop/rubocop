@@ -402,6 +402,154 @@ Name | Default value | Configurable values
 Database | `<none>` | `mysql`, `postgresql`
 Include | `db/migrate/*.rb` | Array
 
+## Rails/BusinessLogicNotAllowed
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.71 | -
+
+This cop checks to see if any business logic is in a file where it is
+not allowed. It helps to promote the pattern of Skinny Controllers,
+Skinny Models by isolating business logic into business_models, lib
+and other areas identified makes testing and reuse easier.
+To resolve isolation, replace business logic with callbacks.
+
+Items considered business logic are:
+  if, else, while, until, case, rescue, &&, ||, or regexp
+
+Note: In order to use with erb views, an additional gem like erb-lint
+is required
+
+### Examples
+
+#### Controller Callback
+
+```ruby
+# bad
+  class UserController < ApplicationController
+    def show
+      @user = UserLocator.find(params)
+      if @user.valid?
+        redirect_to users_home_path(@user.id)
+      end
+    end
+  end
+
+  class UserLocator
+    #...
+    def valid?
+      user
+    end
+  end
+
+# good
+  class UserController < ApplicationController
+    def show
+      @user = UserLocator.find(params)
+      @user.valid do
+        redirect_to users_home_path(@user.id)
+      end
+    end
+  end
+
+  class UserLocator
+    #...
+    def valid
+      yield if user
+    end
+  end
+```
+#### Controller Rescue
+
+```ruby
+# bad
+  class MyController < ApplicationController
+    def destroy
+      @article = ArticleDestroyer.new
+      begin
+        @article.delete
+        flash[:alert] = "Deleted Records"
+        redirect_to action: 'index'
+      rescue DestroyException => e
+        flash[:error] = e.message
+        redirect_to home_path(params[:id])
+      end
+    end
+  end
+
+# good
+  class MyController < ApplicationController
+    def destroy
+      @article = ArticleDestroyer.new
+      @article.delete
+      @article.success do
+        flash[:alert] = "Records Deleted"
+        redirect_to action: 'index'
+      end
+      @article.failure do |error|
+        flash[:error] = error
+        redirect_to home_path(params[:id])
+      end
+    end
+  end
+
+  class ArticleDestroyer
+    def delete
+      # (delete logic...)
+    end
+
+    def success
+      yield unless error
+    end
+
+    def failure
+      yield(error) if error
+    end
+  end
+
+# good alternative with `yield self` in the delete method
+  class MyController < ApplicationController
+    def destroy
+      @article = ArticleDestroyer.new
+      @article.delete do |on|
+        on.success do
+          flash[:alert] = "Records Deleted"
+          redirect_to action: 'index'
+        end
+
+        on.failure do |error|
+          flash[:error] = error
+          redirect_to home_path(params[:id])
+        end
+      end
+    end
+  end
+  class ArticleDestroyer
+    def delete
+      # (delete logic...)
+      yield self
+    end
+
+    def success
+      yield unless error
+    end
+
+    def failure
+      yield(error) if error
+    end
+  end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Include | `app/controllers/**/*.rb`, `app/models/**/*.rb`, `app/views/**/*.erb` | Array
+
+### References
+
+* [https://github.com/rubocop-hq/rails-style-guide#business_logic_not_allowed](https://github.com/rubocop-hq/rails-style-guide#business_logic_not_allowed)
+
 ## Rails/CreateTableWithTimestamps
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

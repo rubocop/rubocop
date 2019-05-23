@@ -315,6 +315,7 @@ In the following section you find all available cops:
 * [Rails/BelongsTo](cops_rails.md#railsbelongsto)
 * [Rails/Blank](cops_rails.md#railsblank)
 * [Rails/BulkChangeTable](cops_rails.md#railsbulkchangetable)
+* [Rails/BusinessLogicNotAllowed](cops_rails.md#railsbusinesslogicnotallowed)
 * [Rails/CreateTableWithTimestamps](cops_rails.md#railscreatetablewithtimestamps)
 * [Rails/Date](cops_rails.md#railsdate)
 * [Rails/Delegate](cops_rails.md#railsdelegate)
