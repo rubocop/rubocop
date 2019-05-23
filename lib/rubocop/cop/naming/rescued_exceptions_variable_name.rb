@@ -90,11 +90,8 @@ module RuboCop
         end
 
         def preferred_name
-          @preferred_name ||= begin
-            name = cop_config.fetch('PreferredName', 'e')
-            name = "_#{name}" if variable_name.to_s.start_with?('_')
-            name
-          end
+          name = cop_config.fetch('PreferredName', 'e')
+          variable_name.to_s.start_with?('_') ? "_#{name}" : name
         end
 
         def variable_name
