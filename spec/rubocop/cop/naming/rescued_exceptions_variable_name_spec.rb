@@ -88,6 +88,18 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
             end
           RUBY
         end
+
+        it 'does not register an offense when using _e followed by e' do
+          expect_no_offenses(<<~RUBY)
+            begin
+              something
+            rescue MyException => _e
+              # do something
+            rescue AnotherException => e
+              # do something
+            end
+          RUBY
+        end
       end
 
       context 'without `Exception` variable' do

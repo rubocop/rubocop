@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7073](https://github.com/rubocop-hq/rubocop/issues/7073): Fix false positive in `Naming/RescuedExceptionsVariableName` cop. ([@tejasbubane][])
+
 ### Changes
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for Rails Cops. ([@koic][])
