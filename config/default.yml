@@ -2940,6 +2940,13 @@ Style/ConditionalAssignment:
   SingleLineConditionsOnly: true
   IncludeTernaryExpressions: true
 
+Style/ConstantVisibility:
+  Description: >-
+                 Check that class- and module constants have
+                 visibility declarations.
+  Enabled: false
+  VersionAdded: '0.66'
+
 # Checks that you have put a copyright in a comment before any code.
 #
 # You can override the default Notice in your .rubocop.yml file.
@@ -2958,13 +2965,6 @@ Style/ConditionalAssignment:
 #   Notice: 'Copyright (\(c\) )?2015 Yahoo! Inc'
 #   AutocorrectNotice: '# Copyright (c) 2015 Yahoo! Inc.'
 #
-Style/ConstantVisibility:
-  Description: >-
-                 Check that class- and module constants have
-                 visibility declarations.
-  Enabled: false
-  VersionAdded: '0.66'
-
 Style/Copyright:
   Description: 'Include a copyright notice in each file before any code.'
   Enabled: false
