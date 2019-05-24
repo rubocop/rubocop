@@ -276,6 +276,10 @@ module RuboCop
           last_terms_range { |r| @arities[r].inject(0, :+) } || 0
         end
 
+        def variadic_term_min_arity
+          @variadic_index ? @arities[@variadic_index].begin : 0
+        end
+
         def first_terms_range
           yield 1..(@variadic_index || @terms.size) - 1 if seq_head?
         end
@@ -289,7 +293,7 @@ module RuboCop
         end
 
         def compile_child_nb_guard
-          min = first_terms_arity + last_terms_arity
+          min = first_terms_arity + variadic_term_min_arity + last_terms_arity
           "#{CUR_NODE}.children.size #{@variadic_index ? '>' : '='}= #{min}"
         end
 
