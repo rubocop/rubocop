@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
     'bug_tracker_uri' => 'https://github.com/rubocop-hq/rubocop/issues'
   }
 
+  s.add_runtime_dependency('bootsnap')
   s.add_runtime_dependency('jaro_winkler', '~> 1.5.1')
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 2.6')

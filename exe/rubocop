@@ -3,6 +3,24 @@
 
 $LOAD_PATH.unshift("#{__dir__}/../lib")
 
+require 'bootsnap'
+cache_dir = if ENV.key?('XDG_CACHE_HOME')
+              # Include user ID in the path to make sure the user has write
+              # access.
+              File.join(
+                ENV['XDG_CACHE_HOME'],
+                Process.uid.to_s,
+                'rubocop_bootsnap_cache'
+              )
+            else
+              File.join(ENV['HOME'], '.cache', 'rubocop_bootsnap_cache')
+            end
+Bootsnap.setup(
+  cache_dir: cache_dir,
+  load_path_cache: false,
+  autoload_paths_cache: false
+)
+
 require 'rubocop'
 require 'benchmark'
 
