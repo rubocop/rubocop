@@ -475,7 +475,7 @@ Metrics/LineLength:
     compromise.
 ```
 
-These details will only be seen when rubocop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global rubocop configuration.
+These details will only be seen when RuboCop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global RuboCop configuration.
 
 #### AutoCorrect
 
