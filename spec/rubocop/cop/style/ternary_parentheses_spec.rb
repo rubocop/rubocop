@@ -110,6 +110,14 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = bar && (baz || bar) ? a : b',
                       'foo = (bar && (baz || bar)) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar or baz ? a : b',
+                      'foo = bar or (baz) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'not bar ? a : b',
+                      'not (bar) ? a : b'
     end
 
     context 'with an assignment condition' do
@@ -168,6 +176,12 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
       it_behaves_like 'code without offense',
                       'foo = bar && (baz || bar) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (foo or bar) ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (not bar) ? a : b'
     end
 
     context 'with an assignment condition' do
@@ -248,12 +262,19 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (bar[:baz]) ? a : b',
                       'foo = bar[:baz] ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = bar or (baz) ? a : b',
+                      'foo = bar or baz ? a : b'
     end
 
     context 'with a complex condition' do
       it_behaves_like 'code with offense',
                       'foo = (bar.baz?) ? a : b',
                       'foo = bar.baz? ? a : b'
+
+      it_behaves_like 'code without offense',
+                      'foo = (baz or bar) ? a : b'
 
       it_behaves_like 'code without offense',
                       'foo = (bar && (baz || bar)) ? a : b'

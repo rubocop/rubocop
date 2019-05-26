@@ -149,12 +149,22 @@ module RuboCop
 
         def unsafe_autocorrect?(condition)
           condition.children.any? do |child|
-            unparenthesized_method_call?(child)
+            unparenthesized_method_call?(child) ||
+              below_ternary_precedence?(child)
           end
         end
 
         def unparenthesized_method_call?(child)
           method_name(child) =~ /^[a-z]/i && !child.parenthesized?
+        end
+
+        def below_ternary_precedence?(child)
+          # Handle English "or", e.g. 'foo or bar ? a : b'
+          (child.or_type? && child.semantic_operator?) ||
+            # Handle English "and", e.g. 'foo and bar ? a : b'
+            (child.and_type? && child.semantic_operator?) ||
+            # Handle English "not", e.g. 'not foo ? a : b'
+            (child.send_type? && child.prefix_not?)
         end
 
         def_node_matcher :method_name, <<-PATTERN
