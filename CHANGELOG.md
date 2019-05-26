@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7084](https://github.com/rubocop-hq/rubocop/pull/7084): Permit to specify TargetRubyVersion 2.7. ([@koic][])
+
 ### Bug fixes
 
 * [#7066](https://github.com/rubocop-hq/rubocop/issues/7066): Fix `Layout/AlignHash` when mixed Hash styles are used. ([@rmm5t][])
