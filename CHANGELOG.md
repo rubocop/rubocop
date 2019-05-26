@@ -5,6 +5,7 @@
 ### New features
 
 * [#7084](https://github.com/rubocop-hq/rubocop/pull/7084): Permit to specify TargetRubyVersion 2.7. ([@koic][])
+* [#7092](https://github.com/rubocop-hq/rubocop/pull/7092): Node patterns can now use `*`, `+` and `?` for repetitions.  ([@marcandre][])
 
 ### Bug fixes
 

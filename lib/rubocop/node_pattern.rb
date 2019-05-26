@@ -47,6 +47,11 @@ module RuboCop
   #                         # a `sym` node, but can have more.
   #     '(array <$str $_>)' # captures are in the order of the pattern,
   #                         # irrespective of the actual order of the children
+  #     '(array int*)'      # will match an array of 0 or more integers
+  #     '(array int ?)'     # will match 0 or 1 integer.
+  #                         # Note: Space needed to distinguish from int?
+  #     '(array int+)'      # will match an array of 1 or more integers
+  #     '(array (int $_)+)' # as above and will capture the numbers in an array
   #     '(send $...)'       # capture all the children as an array
   #     '(send $... int)'   # capture all children but the last as an array
   #     '(send _x :+ _x)'   # unification is performed on named wildcards
@@ -106,7 +111,9 @@ module RuboCop
     class Compiler
       SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
       IDENTIFIER   = /[a-zA-Z_][a-zA-Z0-9_-]*/.freeze
-      META         = Regexp.union(%w"( ) { } [ ] $< < > $... $ ! ^ ...").freeze
+      META         = Regexp.union(
+        %w"( ) { } [ ] $< < > $... $ ! ^ ... + * ?"
+      ).freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
       METHOD_NAME  = /\#?#{IDENTIFIER}[\!\?]?\(?/.freeze
@@ -159,6 +166,21 @@ module RuboCop
         }.size == <%= patterns.size -%>
       RUBY
       ANY_ORDER_TEMPLATE.location = [__FILE__, line + 1]
+
+      line = __LINE__
+      REPEATED_TEMPLATE = ERB.new <<~RUBY.gsub("-%>\n", '%>')
+        <% if captured %>(<%= accumulate %> = Array.new) && <% end %>
+        <%= CUR_NODE %>.children[<%= range %>].all? do |<%= child %>|
+          <%= with_context(expr, child, use_temp_node: false) %><% if captured %>&&
+          <%= accumulate %>.push(<%= captured %>)<% end %>
+        end <% if captured %>&&
+        (<%= captured %> = if <%= accumulate %>.empty?
+          <%= captured %>.map{[]} # Transpose hack won't work for empty case
+        else
+          <%= accumulate %>.transpose
+        end) <% end -%>
+      RUBY
+      REPEATED_TEMPLATE.location = [__FILE__, line + 1]
 
       def initialize(str, node_var = 'node0')
         @string   = str
@@ -238,8 +260,46 @@ module RuboCop
         when REST          then compile_ellipsis
         when '$<'          then compile_any_order(next_capture)
         when '<'           then compile_any_order
-        else                    [1, compile_expr(token)]
+        else                    compile_repeated_expr(token)
         end
+      end
+
+      def compile_repeated_expr(token)
+        before = @captures
+        expr = compile_expr(token)
+        min, max = parse_repetition_token
+        return [1, expr] if min.nil?
+
+        if @captures != before
+          captured = "captures[#{before}...#{@captures}]"
+          accumulate = next_temp_variable(:accumulate)
+        end
+        arity = min..max || Float::INFINITY
+
+        [arity, repeated_generator(expr, captured, accumulate)]
+      end
+
+      def repeated_generator(expr, captured, accumulate)
+        with_temp_variables do |child|
+          lambda do |range|
+            if range.begin == SEQ_HEAD_INDEX
+              fail_due_to 'repeated pattern at beginning of sequence'
+            end
+            REPEATED_TEMPLATE.result(binding)
+          end
+        end
+      end
+
+      def parse_repetition_token
+        case tokens.first
+        when '*' then min = 0
+        when '+' then min = 1
+        when '?' then min = 0
+                      max = 1
+        else          return
+        end
+        tokens.shift
+        [min, max]
       end
 
       # @private
@@ -293,8 +353,19 @@ module RuboCop
         end
 
         def compile_child_nb_guard
-          min = first_terms_arity + variadic_term_min_arity + last_terms_arity
-          "#{CUR_NODE}.children.size #{@variadic_index ? '>' : '='}= #{min}"
+          fixed = first_terms_arity + last_terms_arity
+          min = fixed + variadic_term_min_arity
+          op = if @variadic_index
+                 max_variadic = @arities[@variadic_index].end
+                 if max_variadic != Float::INFINITY
+                   range = min..fixed + max_variadic
+                   return "(#{range}).cover?(#{CUR_NODE}.children.size)"
+                 end
+                 '>='
+               else
+                 '=='
+               end
+          "#{CUR_NODE}.children.size #{op} #{min}"
         end
 
         def term(index, range)
@@ -559,8 +630,12 @@ module RuboCop
       end
 
       def with_temp_variables(&block)
-        names = block.parameters.map { |_, name| "#{name}#{next_temp_value}" }
+        names = block.parameters.map { |_, name| next_temp_variable(name) }
         yield(*names)
+      end
+
+      def next_temp_variable(name)
+        "#{name}#{next_temp_value}"
       end
 
       def next_temp_value

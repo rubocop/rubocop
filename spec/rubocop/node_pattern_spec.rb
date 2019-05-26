@@ -1415,6 +1415,125 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
+  describe 'repeated' do
+    let(:ruby) { '[:hello, 1, 2, 3]' }
+
+    shared_examples 'repeated pattern' do
+      context 'with one match' do
+        let(:pattern) { "(array sym int $int #{symbol} int)" }
+
+        let(:captured_val) { [s(:int, 2)] }
+
+        it_behaves_like 'single capture'
+      end
+
+      context 'at beginning of sequence' do
+        let(:pattern) { "(int #{symbol} int)" }
+
+        it_behaves_like 'invalid'
+      end
+
+      context 'with an ellipsis in the same sequence' do
+        let(:pattern) { "(array int #{symbol} ...)" }
+
+        it_behaves_like 'invalid'
+      end
+    end
+
+    context 'using *' do
+      let(:symbol) { :* }
+
+      it_behaves_like 'repeated pattern'
+
+      context 'without capture' do
+        let(:pattern) { '(array sym int* int)' }
+
+        it_behaves_like 'matching'
+      end
+
+      context 'with matching children' do
+        let(:pattern) { '(array sym $int* int)' }
+
+        let(:captured_val) { [s(:int, 1), s(:int, 2)] }
+
+        it_behaves_like 'single capture'
+      end
+
+      context 'with zero match' do
+        let(:pattern) { '(array sym int int $sym* int)' }
+
+        let(:captured_val) { [] }
+
+        it_behaves_like 'single capture'
+      end
+
+      context 'with no match' do
+        let(:pattern) { '(array sym int $sym* int)' }
+
+        it_behaves_like 'nonmatching'
+      end
+
+      context 'with multiple subcaptures' do
+        let(:pattern) { '(array ($_ $_)* int int)' }
+
+        let(:captured_vals) { [%i[sym int], [:hello, 1]] }
+
+        it_behaves_like 'multiple capture'
+      end
+
+      context 'nested with multiple subcaptures' do
+        let(:ruby) { '[[:hello, 1, 2, 3], [:world, 3, 4]]' }
+        let(:pattern) { '(array (array (sym $_) (int $_)*)*)' }
+
+        let(:captured_vals) { [%i[hello world], [[1, 2, 3], [3, 4]]] }
+
+        it_behaves_like 'multiple capture'
+      end
+    end
+
+    context 'using +' do
+      let(:symbol) { :+ }
+
+      it_behaves_like 'repeated pattern'
+
+      context 'with matching children' do
+        let(:pattern) { '(array sym $int+ int)' }
+
+        let(:captured_val) { [s(:int, 1), s(:int, 2)] }
+
+        it_behaves_like 'single capture'
+      end
+
+      context 'with zero match' do
+        let(:pattern) { '(array sym int int $sym+ int)' }
+
+        it_behaves_like 'nonmatching'
+      end
+    end
+
+    context 'using ?' do
+      let(:symbol) { '?' }
+
+      it_behaves_like 'repeated pattern'
+
+      context 'with too many matching children' do
+        let(:pattern) { '(array sym $int ? int)' }
+
+        let(:captured_val) { [s(:int, 1), s(:int, 2)] }
+
+        it_behaves_like 'nonmatching'
+      end
+
+      context 'with zero match' do
+        let(:pattern) { '(array sym int int $(sym _)? int)' }
+
+        let(:captured_val) { [] }
+
+        it_behaves_like 'single capture'
+      end
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }
