@@ -27,7 +27,9 @@ module RuboCop
         KIND = 'block'
 
         def on_block(node)
-          check(node, node.body)
+          first_line = node.send_node.last_line
+
+          check(node, node.body, adjusted_first_line: first_line)
         end
 
         def autocorrect(node)
