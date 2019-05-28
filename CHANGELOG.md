@@ -19,6 +19,7 @@
 ### Bug fixes
 
 * [#6936](https://github.com/rubocop-hq/rubocop/issues/6936): Fix `Layout/MultilineMethodArgumentLineBreaks` when bracket hash assignment on multiple lines. ([@maxh][])
+* Mark `Layout/HeredocArgumentClosingParenthesis` incompatible with `Style/TrailingCommaInArguments`. ([@maxh][])
 
 ## 0.70.0 (2019-05-21)
 
