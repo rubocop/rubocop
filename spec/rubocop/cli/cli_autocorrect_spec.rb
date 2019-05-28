@@ -1563,4 +1563,35 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     RUBY
   end
+
+  it 'corrects HeredocArgumentClosingParenthesis offenses and ' \
+     'ignores TrailingCommaInArguments offense' do
+    create_file('example.rb', <<~RUBY)
+      result = foo(
+        # comment
+        <<~SQL.squish
+          SELECT * FROM bar
+        SQL
+      )
+    RUBY
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/HeredocArgumentClosingParenthesis:
+        Enabled: true
+      Style/TrailingCommaInArguments:
+        Enabled: true
+        EnforcedStyleForMultiline: comma
+    YAML
+
+    expect(cli.run(%w[--auto-correct])).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      result = foo(
+        # comment
+        <<~SQL.squish)
+          SELECT * FROM bar
+        SQL
+    RUBY
+  end
 end

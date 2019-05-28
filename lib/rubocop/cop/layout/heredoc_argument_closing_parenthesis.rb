@@ -108,6 +108,10 @@ module RuboCop
           end
         end
 
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
+
         private
 
         def outermost_send_on_same_line(heredoc)

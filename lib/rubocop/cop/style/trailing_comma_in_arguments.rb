@@ -65,6 +65,10 @@ module RuboCop
           PunctuationCorrector.swap_comma(range)
         end
 
+        def self.autocorrect_incompatible_with
+          [Layout::HeredocArgumentClosingParenthesis]
+        end
+
         private
 
         def avoid_autocorrect?(args)
