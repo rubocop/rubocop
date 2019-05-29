@@ -7,7 +7,6 @@
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
-[![Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/bbatsov/donate)
 [![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 
@@ -138,7 +137,7 @@ to become a RuboCop sponsor.
 You can support the development of RuboCop via
 [Salt](https://salt.bountysource.com/teams/rubocop),
 [Patreon](https://www.patreon.com/bbatsov),
-[Liberapay](https://liberapay.com/bbatsov/donate),
+[PayPal](https://paypal.me/bbatsov)
 and [Open Collective](https://opencollective.com/rubocop).
 
 ### Open Collective Backers
