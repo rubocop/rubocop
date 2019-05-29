@@ -54,6 +54,20 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
         RUBY
       end
 
+      it 'registers an offense for block body starting with a blank passed to '\
+         'a multi-line method call' do
+        inspect_source(<<~RUBY)
+          some_method arg,
+            another_arg #{open}
+
+            do_something
+          #{close}
+        RUBY
+
+        expect(cop.messages)
+          .to eq(['Extra empty line detected at block body beginning.'])
+      end
+
       it 'is not fooled by single line blocks' do
         expect_no_offenses(<<~RUBY)
           some_method #{open} do_something #{close}

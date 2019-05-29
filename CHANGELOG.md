@@ -10,6 +10,7 @@
 
 * [#7066](https://github.com/rubocop-hq/rubocop/issues/7066): Fix `Layout/AlignHash` when mixed Hash styles are used. ([@rmm5t][])
 * [#7073](https://github.com/rubocop-hq/rubocop/issues/7073): Fix false positive in `Naming/RescuedExceptionsVariableName` cop. ([@tejasbubane][])
+* [#7090](https://github.com/rubocop-hq/rubocop/pull/7090): Fix `Layout/EmptyLinesAroundBlockBody` for multi-line method calls. ([@eugeneius][])
 
 ### Changes
 
@@ -4068,3 +4069,4 @@
 [@lavoiesl]: https://github.com/lavoiesl
 [@fwininger]: https://github.com/fwininger
 [@stoivo]: https://github.com/stoivo
+[@eugeneius]: https://github.com/eugeneius

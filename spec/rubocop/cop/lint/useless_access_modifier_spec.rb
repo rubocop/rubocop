@@ -55,7 +55,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier is followed by a ' \
     'class method defined on constant' do
-
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         class SomeClass

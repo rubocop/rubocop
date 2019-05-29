@@ -326,7 +326,6 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
 
   context "when a variable is reassigned in loop body but won't " \
           'be referenced either next iteration or loop condition' do
-
     it 'registers an offense' do
       pending 'Requires an advanced logic that checks whether the return ' \
               'value of an operator assignment is used or not.'

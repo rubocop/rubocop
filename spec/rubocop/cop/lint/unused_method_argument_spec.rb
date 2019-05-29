@@ -394,7 +394,6 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     it 'registers an offense for a non-empty method with a single unused ' \
         'parameter' do
-
       message = "Unused method argument - `arg`. If it's necessary, use " \
                   '`_` or `_arg` as an argument name to indicate that it ' \
                   "won't be used. You can also write as `method(*)` if you " \
