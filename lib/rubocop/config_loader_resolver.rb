@@ -6,9 +6,17 @@ require 'pathname'
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.
   class ConfigLoaderResolver
+    attr_reader :required_features
+
+    def initialize
+      @required_features = []
+    end
+
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)
       Array(hash.delete('require')).each do |r|
+        @required_features << r
+
         if r.start_with?('.')
           require(File.join(config_dir, r))
         else
