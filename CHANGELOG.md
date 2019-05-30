@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.71.0 (2019-05-30)
+
 ### New features
 
 * [#7084](https://github.com/rubocop-hq/rubocop/pull/7084): Permit to specify TargetRubyVersion 2.7. ([@koic][])
