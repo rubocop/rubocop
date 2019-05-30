@@ -144,6 +144,10 @@ module RuboCop
         puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
       end
 
+      def required_features
+        resolver.required_features
+      end
+
       private
 
       def find_project_dotfile(target_dir)
