@@ -12,17 +12,14 @@
 * [#7066](https://github.com/rubocop-hq/rubocop/issues/7066): Fix `Layout/AlignHash` when mixed Hash styles are used. ([@rmm5t][])
 * [#7073](https://github.com/rubocop-hq/rubocop/issues/7073): Fix false positive in `Naming/RescuedExceptionsVariableName` cop. ([@tejasbubane][])
 * [#7090](https://github.com/rubocop-hq/rubocop/pull/7090): Fix `Layout/EmptyLinesAroundBlockBody` for multi-line method calls. ([@eugeneius][])
+* [#6936](https://github.com/rubocop-hq/rubocop/issues/6936): Fix `Layout/MultilineMethodArgumentLineBreaks` when bracket hash assignment on multiple lines. ([@maxh][])
+* Mark `Layout/HeredocArgumentClosingParenthesis` incompatible with `Style/TrailingCommaInArguments`. ([@maxh][])
 
 ### Changes
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for Rails Cops. ([@koic][])
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Warn for `rubocop -R/--rails` option. ([@koic][])
 * [#7078](https://github.com/rubocop-hq/rubocop/issues/7078): Mark `Lint/PercentStringArray` as unsafe. ([@mikegee][])
-
-### Bug fixes
-
-* [#6936](https://github.com/rubocop-hq/rubocop/issues/6936): Fix `Layout/MultilineMethodArgumentLineBreaks` when bracket hash assignment on multiple lines. ([@maxh][])
-* Mark `Layout/HeredocArgumentClosingParenthesis` incompatible with `Style/TrailingCommaInArguments`. ([@maxh][])
 
 ## 0.70.0 (2019-05-21)
 
