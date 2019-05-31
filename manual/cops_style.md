@@ -1016,7 +1016,7 @@ Enabled | Yes | No | 0.51 | -
 This cop checks for comments put on the same line as some keywords.
 These keywords are: `begin`, `class`, `def`, `end`, `module`.
 
-Note that some comments (`:nodoc:`, `:yields:, and `rubocop:disable`)
+Note that some comments (`:nodoc:`, `:yields:`, and `rubocop:disable`)
 are allowed.
 
 ### Examples
