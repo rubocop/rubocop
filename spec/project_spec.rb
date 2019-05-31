@@ -16,7 +16,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     let(:configuration_keys) { config.keys }
 
     it 'has configuration for all cops' do
-      expect(configuration_keys).to match_array(%w[AllCops Rails] + cop_names)
+      expect(configuration_keys).to match_array(%w[AllCops] + cop_names)
     end
 
     it 'has a nicely formatted description for all cops' do

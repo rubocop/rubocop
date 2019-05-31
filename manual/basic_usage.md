@@ -126,7 +126,6 @@ Command flag                    | Description
 `-o/--out`                      | Write output to a file instead of STDOUT.
 `   --parallel`                 | Use available CPUs to execute inspection in parallel.
 `-r/--require`                  | Require Ruby file (see [Loading Extensions](extensions.md#loading-extensions)).
-`-R/--rails`                    | Run extra Rails cops.
 `   --safe-auto-correct`        | Omit cops annotated as "not safe". See [Auto-correct](auto_correct.md).
 `   --show-cops`                | Shows available cops and their configuration.
 `-s/--stdin`                    | Pipe source from STDIN. This is useful for editor integration. Takes one argument, a path, relative to the root of the project. RuboCop will use this path to determine which cops are enabled (via eg. Include/Exclude), and so that certain cops like Naming/FileName can be checked.

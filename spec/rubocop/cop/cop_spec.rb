@@ -43,7 +43,9 @@ RSpec.describe RuboCop::Cop::Cop do
         .to eq('Metrics/LineLength')
     end
 
-    it 'raises an error if the cop name is in more than one namespace' do
+    # `Rails/SafeNavigation` was extracted to rubocop-rails gem,
+    # there were no cop whose names overlapped.
+    xit 'raises an error if the cop name is in more than one namespace' do
       expect { described_class.qualified_cop_name('SafeNavigation', '--only') }
         .to raise_error(RuboCop::Cop::AmbiguousCopName)
     end
@@ -189,20 +191,12 @@ RSpec.describe RuboCop::Cop::Cop do
     it('has right department') { expect(cop.department).to eq(:Lint) }
   end
 
-  context 'with rails cops' do
-    subject(:cop) { RuboCop::Cop::Rails::Validation }
-
-    it('has right name') { expect(cop.cop_name).to eq('Rails/Validation') }
-    it('has right department') { expect(cop.department).to eq(:Rails) }
-  end
-
   describe 'Registry' do
     context '#departments' do
       subject(:departments) { described_class.registry.departments }
 
       it('has departments') { expect(departments.length).not_to eq(0) }
       it { is_expected.to include(:Lint) }
-      it { is_expected.to include(:Rails) }
       it { is_expected.to include(:Style) }
 
       it 'contains every value only once' do

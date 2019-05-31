@@ -104,7 +104,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                Default is true.
               -E, --extra-details              Display extra details in offense messages.
               -S, --display-style-guide        Display style guide URLs in offense messages.
-              -R, --rails                      Run extra Rails cops.
               -a, --auto-correct               Auto-correct offenses.
                   --ignore-disable-comments    Run cops even when they are disabled locally
                                                with a comment.
@@ -304,7 +303,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--auto-gen-config' do
       it 'accepts other options' do
-        expect { options.parse %w[--auto-gen-config --rails] }
+        expect { options.parse %w[--auto-gen-config --lint] }
           .not_to raise_error
       end
     end

@@ -6,17 +6,9 @@ require 'pathname'
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.
   class ConfigLoaderResolver
-    attr_reader :required_features
-
-    def initialize
-      @required_features = []
-    end
-
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)
       Array(hash.delete('require')).each do |r|
-        @required_features << r
-
         if r.start_with?('.')
           require(File.join(config_dir, r))
         else
@@ -172,12 +164,6 @@ module RuboCop
     def handle_disabled_by_default(config, new_default_configuration)
       department_config = config.to_hash.reject { |cop| cop.include?('/') }
       department_config.each do |dept, dept_params|
-        # Rails is always disabled by default and the department's Enabled flag
-        # works like the --rails command line option, which is that when
-        # AllCops:DisabledByDefault is true, each Rails cop must still be
-        # explicitly mentioned in user configuration in order to be enabled.
-        next if dept == 'Rails'
-
         next unless dept_params['Enabled']
 
         new_default_configuration.each do |cop, params|

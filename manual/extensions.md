@@ -34,6 +34,7 @@ See [development](development.md).
 
 * [rubocop-performance](https://github.com/rubocop-hq/rubocop-performance) -
   Performance optimization analysis
+* [rubocop-rails](https://github.com/rubocop-hq/rubocop-rails) - Rails-specific analysis
 * [rubocop-rspec](https://github.com/rubocop-hq/rubocop-rspec) -
   RSpec-specific analysis
 * [rubocop-thread_safety](https://github.com/covermymeds/rubocop-thread_safety) -

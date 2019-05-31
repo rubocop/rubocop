@@ -159,7 +159,6 @@ module RuboCop
       option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
-      option(opts, '-R', '--rails')
       option(opts, '-a', '--auto-correct')
       option(opts, '--ignore-disable-comments')
 
@@ -429,7 +428,6 @@ module RuboCop
                                          'Default is true.'],
       display_style_guide:              'Display style guide URLs in offense messages.',
       extra_details:                    'Display extra details in offense messages.',
-      rails:                            'Run extra Rails cops.',
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',
       list_target_files:                'List all files RuboCop will inspect.',
