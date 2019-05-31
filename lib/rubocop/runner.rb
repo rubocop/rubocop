@@ -24,14 +24,6 @@ module RuboCop
 
     def initialize(options, config_store)
       @options = options
-
-      if @options.key?(:rails)
-        warn <<~MESSAGE
-          `-R/--rails` option and Rails cops will be removed from RuboCop 0.72. Use the `rubocop-rails` gem instead.
-          https://github.com/rubocop-hq/rubocop/blob/master/manual/migrate_rails_cops.md
-        MESSAGE
-      end
-
       @config_store = config_store
       @errors = []
       @warnings = []
@@ -281,20 +273,11 @@ module RuboCop
 
     def inspect_file(processed_source)
       config = @config_store.for(processed_source.path)
-      if @options[:rails] ||
-         ConfigLoader.required_features.include?('rubocop-rails')
-        enable_rails_cops(config)
-      end
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
       [offenses, team.updated_source_file?]
-    end
-
-    def enable_rails_cops(config)
-      config['Rails'] ||= {}
-      config['Rails']['Enabled'] = true
     end
 
     def mobilized_cop_classes(config)

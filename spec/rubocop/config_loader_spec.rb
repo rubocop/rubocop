@@ -331,7 +331,7 @@ RSpec.describe RuboCop::ConfigLoader do
           Style/For:
             Exclude:
               - spec/requests/group_invite_spec.rb
-          Rails/Exit:
+          Style/Documentation:
             Include:
               - extra/*.rb
             Exclude:
@@ -343,7 +343,7 @@ RSpec.describe RuboCop::ConfigLoader do
             Exclude:
               - 'spec/models/expense_spec.rb'
               - 'spec/models/group_spec.rb'
-          Rails/Exit:
+          Style/Documentation:
             inherit_mode:
               merge:
                 - Exclude
@@ -369,15 +369,16 @@ RSpec.describe RuboCop::ConfigLoader do
                   default_config['AllCops']['Exclude']).sort)
       end
 
-      it 'merges Rails/Exit:Exclude with parent and default configuration' do
-        expect(configuration_from_file['Rails/Exit']['Exclude'].sort)
+      it 'merges Style/Documentation:Exclude with parent and ' \
+         'default configuration' do
+        expect(configuration_from_file['Style/Documentation']['Exclude'].sort)
           .to eq(([File.expand_path('funk/*.rb'),
                    File.expand_path('junk/*.rb')] +
-                  default_config['Rails/Exit']['Exclude']).sort)
+                  default_config['Style/Documentation']['Exclude']).sort)
       end
 
-      it 'overrides Rails/Exit:Include' do
-        expect(configuration_from_file['Rails/Exit']['Include'].sort)
+      it 'overrides Style/Documentation:Include' do
+        expect(configuration_from_file['Style/Documentation']['Include'].sort)
           .to eq(['extra/*.rb'].sort)
       end
     end
@@ -451,7 +452,7 @@ RSpec.describe RuboCop::ConfigLoader do
           module RuboCop
             module Cop
               module Custom
-                class FilePath < Cop
+                class Loop < Cop
                 end
               end
             end
@@ -459,13 +460,13 @@ RSpec.describe RuboCop::ConfigLoader do
         RUBY
 
         create_file('.rubocop.yml', <<~YAML)
-          Custom/FilePath:
+          Custom/Loop:
             Enabled: false
         YAML
 
         create_file('.rubocop_with_require.yml', <<~YAML)
           require: ./third_party/gem
-          Custom/FilePath:
+          Custom/Loop:
             Enabled: false
         YAML
       end
@@ -475,8 +476,8 @@ RSpec.describe RuboCop::ConfigLoader do
           expect { described_class.configuration_from_file('.rubocop.yml') }
             .to output(
               a_string_including(
-                '.rubocop.yml: Custom/FilePath has the ' \
-                "wrong namespace - should be Rails\n"
+                '.rubocop.yml: Custom/Loop has the ' \
+                "wrong namespace - should be Lint\n"
               )
             ).to_stderr
 
@@ -877,52 +878,6 @@ RSpec.describe RuboCop::ConfigLoader do
 
           it 'keeps cops that are disabled in default configuration disabled' do
             cop_class = RuboCop::Cop::Style::AutoResourceCleanup
-            expect(cop_enabled?(cop_class)).to be false
-          end
-        end
-
-        context 'and the Rails department is enabled' do
-          let(:config) do
-            <<~YAML
-              AllCops:
-                DisabledByDefault: true
-              Rails:
-                Enabled: true
-              Rails/ActionFilter:
-                EnforcedStyle: filter
-            YAML
-          end
-
-          it 'enables explicitly mentioned cops in that department' do
-            cop_class = RuboCop::Cop::Rails::ActionFilter
-            expect(cop_enabled?(cop_class)).to be true
-          end
-
-          it 'disables unmentioned cops in that department' do
-            cop_class = RuboCop::Cop::Rails::Date
-            expect(cop_enabled?(cop_class)).to be false
-          end
-        end
-
-        context 'and the Rails department is disabled' do
-          let(:config) do
-            <<~YAML
-              AllCops:
-                DisabledByDefault: true
-              Rails:
-                Enabled: false
-              Rails/ActionFilter:
-                Enabled: true
-            YAML
-          end
-
-          it 'disables explicitly mentioned cops in that department' do
-            cop_class = RuboCop::Cop::Rails::ActionFilter
-            expect(cop_enabled?(cop_class)).to be false
-          end
-
-          it 'disables unmentioned cops in that department' do
-            cop_class = RuboCop::Cop::Rails::Date
             expect(cop_enabled?(cop_class)).to be false
           end
         end

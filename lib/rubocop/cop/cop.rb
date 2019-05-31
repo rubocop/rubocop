@@ -48,10 +48,6 @@ module RuboCop
         registry.qualified_cop_name(name, origin)
       end
 
-      def self.non_rails
-        registry.without_department(:Rails)
-      end
-
       def self.inherited(subclass)
         registry.enlist(subclass)
       end

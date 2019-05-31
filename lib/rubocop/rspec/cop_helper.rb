@@ -7,7 +7,6 @@ module CopHelper
   extend RSpec::SharedContext
 
   let(:ruby_version) { 2.3 }
-  let(:enabled_rails) { false }
   let(:rails_version) { false }
 
   def inspect_source_file(source)

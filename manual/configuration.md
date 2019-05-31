@@ -426,17 +426,6 @@ Style:
   Enabled: true
 ```
 
-The exception to the rule is the `Rails` department, which can not be enabled
-in its entirety this way. Setting `Rails: Enabled: true` will have the same
-effect as running with the `--rails` command line option, which in the context
-of `DisabledByDefault: true` means to make it possible to enable Rails cops
-individually.
-
-```yaml
-AllCops:
-  EnabledByDefault: true
-```
-
 All cops are then enabled by default. Only cops explicitly disabled
 using `Enabled: false` in user configuration files are disabled.
 

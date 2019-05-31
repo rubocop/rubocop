@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Remove Rails cops. ([@koic][])
+* [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Remove `rubocop -R/--rails` option. ([@koic][])
+
 ## 0.71.0 (2019-05-30)
 
 ### New features

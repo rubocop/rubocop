@@ -75,10 +75,6 @@ RuboCop supports the following Ruby implementations:
 * MRI 2.3+
 * JRuby 9.1+
 
-The Rails cops support the following versions:
-
-* Rails 4.0+
-
 ## Team
 
 Here's a list of RuboCop's core developers:
