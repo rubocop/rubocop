@@ -151,9 +151,8 @@ module RuboCop
       end
 
       def correct(node)
-        return :unsupported unless correctable?
-        return :uncorrected unless autocorrect?
-        return :already_corrected if @corrected_nodes.key?(node)
+        reason = reason_to_not_correct(node)
+        return reason if reason
 
         @corrected_nodes[node] = true
         if support_autocorrect?
@@ -165,6 +164,14 @@ module RuboCop
           @corrections << Correction.new(disable_offense(node), node, self)
         end
         :corrected
+      end
+
+      def reason_to_not_correct(node)
+        return :unsupported unless correctable?
+        return :uncorrected unless autocorrect?
+        return :already_corrected if @corrected_nodes.key?(node)
+
+        nil
       end
 
       def config_to_allow_offenses

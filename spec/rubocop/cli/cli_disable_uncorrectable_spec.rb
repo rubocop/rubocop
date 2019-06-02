@@ -6,26 +6,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   subject(:cli) { described_class.new }
 
   describe '--disable-uncorrectable' do
-    subject do
+    let(:exit_code) do
       cli
         .run(%w[--auto-correct --format emacs --disable-uncorrectable --except Style/FrozenStringLiteralComment --no-display-cop-names])
     end
 
     it 'does not disable anything for cops that support autocorrect' do
       create_file('example.rb', 'puts 1==2')
-      expect(subject).to eq(0)
+      expect(exit_code).to eq(0)
       expect($stderr.string).to eq('')
-      expect($stdout.string)
-        .to eq("#{abs('example.rb')}:1:7: C: [Corrected] Surrounding " \
-               "space missing for operator `==`.\n")
-      expect(IO.read('example.rb')).to eq("puts 1 == 2\n")
+      expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
+        #{abs('example.rb')}:1:7: C: [Corrected] Surrounding space missing for operator `==`.
+      OUTPUT
+      expect(IO.readlines('example.rb').map(&:chomp)).to eq(['puts 1 == 2'])
     end
 
     it 'adds one-line disable statement for one-line offenses' do
       create_file('example.rb', ['def is_example',
                                  '  true',
                                  'end'])
-      expect(subject).to eq(0)
+      expect(exit_code).to eq(0)
       expect($stderr.string).to eq('')
       expect($stdout.string)
         .to eq("#{abs('example.rb')}:1:5: C: [Corrected] Rename `is_example` " \
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                  "  puts 'line 1'",
                                  "  puts 'line 2'",
                                  'end'])
-      expect(subject).to eq(0)
+      expect(exit_code).to eq(0)
       expect($stderr.string).to eq('')
       expect($stdout.string)
         .to eq("#{abs('example.rb')}:1:1: C: [Corrected] Method " \

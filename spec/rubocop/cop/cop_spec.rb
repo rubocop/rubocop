@@ -144,7 +144,12 @@ RSpec.describe RuboCop::Cop::Cop do
             allow(cop).to receive(:disable_uncorrectable?).and_return(true)
           end
 
-          let(:node) { double(location: double(expression: location)) }
+          let(:node) do
+            instance_double(RuboCop::AST::Node,
+                            location: instance_double(Parser::Source::Map,
+                                                      expression: location,
+                                                      line: 1))
+          end
 
           it 'is set to true' do
             cop.add_offense(node, location: location, message: 'message')
