@@ -159,9 +159,9 @@ module RuboCop
           correction = autocorrect(node)
           return :uncorrected unless correction
 
-          @corrections << correction
+          @corrections << Correction.new(correction, node, self)
         elsif disable_uncorrectable?
-          @corrections << Correction.new(disable_offense(node), node, self)
+          disable_uncorrectable(node)
         end
         :corrected
       end
@@ -172,6 +172,15 @@ module RuboCop
         return :already_corrected if @corrected_nodes.key?(node)
 
         nil
+      end
+
+      def disable_uncorrectable(node)
+        @disabled_lines ||= {}
+        line = node.location.line
+        return if @disabled_lines.key?(line)
+
+        @disabled_lines[line] = true
+        @corrections << Correction.new(disable_offense(node), node, self)
       end
 
       def config_to_allow_offenses
