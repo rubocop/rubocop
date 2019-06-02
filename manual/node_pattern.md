@@ -70,19 +70,14 @@ value:
 
 ## `...` for several subsequent nodes
 
-Where `_` matches a single node, `...` eagerly matches zero or more subsequent nodes.
+Where `_` matches any single node, `...` matches any number of nodes.
 
-`...` can only be used to match the last children, and can't be used to match
-children in the middle or the beginning.
-
-It's useful when you want to check some internal nodes but with a
-final with the same results. For example, let's use `sum(1,2)`.
-
-We can also have `sum(1,2,3,n)` and the arguments can vary. The objective is
-match all. So, let's check how it looks like in the AST:
+Say for example you want to find instances of calls to the method `sum` with any
+number of arguments, be it `sum(1, 2)` or `sum(1, 2, 3, n)`.
+First, let's check how it looks like in the AST:
 
 ```sh
-$ ruby-parse -e 'sum(1,2)'
+$ ruby-parse -e 'sum(1, 2)'
 (send nil :sum
   (int 1)
   (int 2))
@@ -91,7 +86,7 @@ $ ruby-parse -e 'sum(1,2)'
 Or with more children:
 
 ```sh
-$ ruby-parse -e 'sum(1,2,3,n)'
+$ ruby-parse -e 'sum(1, 2, 3, n)'
 (send nil :sum
   (int 1)
   (int 2)
@@ -99,11 +94,79 @@ $ ruby-parse -e 'sum(1,2,3,n)'
   (send nil :n))
 ```
 
-The first case can be addressed with an expression like:
+The following expression would only match a call with 2 arguments:
+
+```
+(send nil? :sum _ _)
+```
+
+Instead, the following expression will any number of arguments (and thus both examples above):
 
 ```
 (send nil? :sum ...)
 ```
+
+Note that `...` can be appear anywhere in a sequence, for example `(send nil? :sum ... int)`
+would no longer match the second example, as the last argument is not an integer.
+
+Nesting `...` is also supported; the only limitation is that `...` and
+other "variable length" patterns can only appear once within a sequence.
+For example `(send ... :sum ...)` is not supported.
+
+## `*`, `+`, `?` for repetitions
+
+Another way to handle a variable number of nodes is by using `*`, `+`, `?` to signify
+a particular pattern should match any number of times, at least once and at most once respectively.
+
+Following on the previous example, to find sums of integer literals, we could use:
+
+```
+(send nil? :sum int*)
+```
+
+This would match our first example `sum(1, 2)` but not the other `sum(1, 2, 3, n)`
+
+This pattern would also match a call to `sum` without any argument, which might not be desireable.
+
+Using `+` would insure that only sums with at least one argument would be matched.
+
+```
+(send nil? :sum int+)
+```
+
+The `?` can limit the match only 0 or 1 nodes.
+The following example would match any sum of three integer literals
+optionally followed by a method call:
+
+```
+(send nil? :sum int int int send ?)
+```
+
+Note that we have to put a space between `send` and `?`,
+since `send?` would be considered as a predicate (described below).
+
+## `<>` for match in any order
+
+You may not care about the exact order of the nodes you want to match.
+In this case you can put the nodes without brackets:
+
+```
+(send nil? :sum <(int 2) int>)
+```
+
+This will match our first example (`sum(1, 2)`).
+
+It won't match our second example though, as it specifies that there must be
+exactly two arguments to the method call `sum`.
+
+You can add `...` before the closing bracket to allow for additional parameters:
+
+```
+(send nil? :sum <(int 2) int ...>)
+```
+
+This will match both our examples, but not `sum(1.0, 2)` or `sum(2)`,
+since the first node in the brackets is found, but not the second (`int`).
 
 ## `{}` for "OR"
 
@@ -139,6 +202,14 @@ Or remove the parens and match directly from node head:
 
 ```
 ${int float}
+```
+
+All variable length patterns (`...`, `*`, `+`, `?`, `<>`) are captured as arrays.
+
+The following pattern will have two captures, both arrays:
+
+```
+(send nil? $int+ (send $...))
 ```
 
 ## Predicate methods
