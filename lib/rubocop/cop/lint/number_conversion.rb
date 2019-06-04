@@ -64,7 +64,7 @@ module RuboCop
 
         def date_time_object?(node)
           child = node
-          while child.send_type?
+          while child&.send_type?
             return true if datetime? child
 
             child = child.children[0]

@@ -88,6 +88,17 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         Integer(args[0], 10)
       RUBY
     end
+
+    it 'when `#to_i` called on a variable on a hash' do
+      expect_offense(<<~RUBY)
+        params[:field].to_i
+        ^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:field].to_i, use stricter Integer(params[:field], 10).
+      RUBY
+
+      expect_correction(<<~RUBY.strip_indent)
+        Integer(params[:field], 10)
+      RUBY
+    end
   end
 
   context 'does not register an offense' do
