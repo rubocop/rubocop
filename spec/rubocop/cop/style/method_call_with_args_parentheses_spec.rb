@@ -479,6 +479,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo a, b(1) || c(2, d(3))')
     end
 
+    it 'accepts parens in literals with unary operators as first argument' do
+      expect_no_offenses('foo(-1)')
+      expect_no_offenses('foo(+1)')
+    end
+
     it 'accepts parens in args splat' do
       expect_no_offenses('foo(*args)')
       expect_no_offenses('foo *args')
