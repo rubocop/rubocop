@@ -52,6 +52,7 @@ RSpec.shared_context 'config', :config do
       cop_name = described_class.cop_name
       hash[cop_name] = RuboCop::ConfigLoader
                        .default_configuration[cop_name]
+                       .merge('Enabled' => true) # in case it is set to 'none'
                        .merge(cop_config)
     end
 

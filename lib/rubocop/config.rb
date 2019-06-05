@@ -14,6 +14,11 @@ module RuboCop
     include PathUtil
     include FileFinder
 
+    class << self
+      attr_accessor :test
+      alias testing? test
+    end
+
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
     INTERNAL_PARAMS = %w[Description StyleGuide VersionAdded
@@ -262,6 +267,7 @@ module RuboCop
       end
       validate
       make_excludes_absolute
+      warn_on_new_cops unless self.class.testing?
       self
     end
 
@@ -507,6 +513,20 @@ module RuboCop
         warn Rainbow("Warning: unrecognized cop #{name} found in " \
                      "#{smart_loaded_path}").yellow
       end
+    end
+
+    def warn_on_new_cops
+      new_cops = keys.select do |key|
+        @hash[key]['Enabled'].to_s.casecmp('none').zero?
+      end
+
+      return if new_cops.none?
+
+      warn Rainbow('The following cops were added to RuboCop, but are not ' \
+      ' configured. Please set Enabled to either `true` or `false` in your ' \
+      '`.rubocop.yml` file.').yellow
+
+      warn Rainbow(new_cops.join("\n")).yellow
     end
 
     def validate_syntax_cop

@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Registry do
       .to eq(described_class.new(cops.drop(2)))
   end
 
-  context '#contains_cop_matching?' do
+  describe '#contains_cop_matching?' do
     it 'can find cops matching a given name' do
       result = registry.contains_cop_matching?(['Test/IndentFirstArrayElement'])
       expect(result).to be(true)
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
   end
 
-  context '#qualified_cop_name' do
+  describe '#qualified_cop_name' do
     let(:origin) { '/app/.rubocop.yml' }
 
     it 'gives back already properly qualified names' do
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Registry do
     )
   end
 
-  context '#cops' do
+  describe '#cops' do
     it 'exposes a list of cops' do
       expect(registry.cops).to eql(cops)
     end
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.length).to be(6)
   end
 
-  context '#enabled' do
+  describe '#enabled' do
     let(:config) do
       RuboCop::Config.new(
         'Test/IndentFirstArrayElement' => { 'Enabled' => false },
@@ -165,6 +165,24 @@ RSpec.describe RuboCop::Cop::Registry do
     it 'selects only safe cops if :safe passed' do
       enabled_cops = registry.enabled(config, [], true)
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
+    end
+
+    context 'when new cops are introduced' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Test/IndentFirstArrayElement' => { 'Enabled' => 'none' }
+        )
+      end
+
+      it 'does not include them' do
+        expect(registry.enabled(config, []))
+          .not_to include(RuboCop::Cop::Test::IndentFirstArrayElement)
+      end
+
+      it 'overrides config if :only includes the cop' do
+        result = registry.enabled(config, ['Test/IndentFirstArrayElement'])
+        expect(result).to eql(cops)
+      end
     end
   end
 

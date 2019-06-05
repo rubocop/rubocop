@@ -208,13 +208,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         output =
           `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
         expect($CHILD_STATUS.success?).to be_truthy
-        expect(output)
-          .to eq(<<~RESULT)
-            Inspecting 2 files
-            ..
+        expect(output).to include(<<~RESULT)
+          Inspecting 2 files
+          ..
 
-            2 files inspected, no offenses detected
-          RESULT
+          2 files inspected, no offenses detected
+        RESULT
       end
 
       context 'without using namespace' do

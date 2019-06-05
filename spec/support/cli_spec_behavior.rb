@@ -16,6 +16,8 @@ RSpec.shared_context 'cli spec behavior' do
     # OPTIMIZE: Makes these specs faster. Work directory (the parent of
     # .rubocop_cache) is removed afterwards anyway.
     RuboCop::ResultCache.inhibit_cleanup = true
+
+    RuboCop::Config.test = true
   end
 
   # Wrap all cli specs in `aggregate_failures` so that the expected and

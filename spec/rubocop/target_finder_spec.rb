@@ -2,6 +2,7 @@
 
 RSpec.describe RuboCop::TargetFinder, :isolated_environment do
   include FileHelper
+  include_context 'cli spec behavior'
 
   RUBY_EXTENSIONS = %w[.rb
                        .arb
