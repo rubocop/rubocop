@@ -5925,7 +5925,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.51 | -
 
 This cop identifies places where `$stderr.puts` can be replaced by
-`warn`. The latter has the advantage of easily being disabled by,
+`Kernel.warn`. The latter has the advantage of easily being disabled by,
 the `-W0` interpreter flag or setting `$VERBOSE` to `nil`.
 
 ### Examples
@@ -5935,7 +5935,7 @@ the `-W0` interpreter flag or setting `$VERBOSE` to `nil`.
 $stderr.puts('hello')
 
 # good
-warn('hello')
+Kernel.warn('hello')
 ```
 
 ### References

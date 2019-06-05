@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop identifies places where `$stderr.puts` can be replaced by
-      # `warn`. The latter has the advantage of easily being disabled by,
+      # `Kernel.warn`. The latter has the advantage of easily being disabled by,
       # the `-W0` interpreter flag or setting `$VERBOSE` to `nil`.
       #
       # @example
@@ -12,13 +12,13 @@ module RuboCop
       #   $stderr.puts('hello')
       #
       #   # good
-      #   warn('hello')
+      #   Kernel.warn('hello')
       #
       class StderrPuts < Cop
         include RangeHelp
 
-        MSG =
-          'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
+        MSG = 'Use `Kernel.warn` instead of `%<bad>s` ' \
+          'to allow such output to be disabled.'
 
         def_node_matcher :stderr_puts?, <<-PATTERN
           (send
@@ -35,7 +35,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(stderr_puts_range(node), 'warn')
+            corrector.replace(stderr_puts_range(node), 'Kernel.warn')
           end
         end
 

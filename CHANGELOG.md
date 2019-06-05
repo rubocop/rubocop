@@ -10,6 +10,7 @@
 ### Bug fixes
 
 * [#7106](https://github.com/rubocop-hq/rubocop/issues/7106): Fix an error for `Lint/NumberConversion` when `#to_i` called on a variable on a hash. ([@koic][])
+* [#7108](https://github.com/rubocop-hq/rubocop/issues/7108): Modify the autocorrection of `Style/StderrPuts` to use `Kernel.warn` instead of `warn`. ([@rrosenblum][])
 
 ## 0.71.0 (2019-05-30)
 
