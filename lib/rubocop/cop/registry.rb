@@ -146,10 +146,15 @@ module RuboCop
 
       def enabled?(cop, config, only_safe)
         cfg = config.for_cop(cop)
+
+        # cfg['Enabled'] might be a string `pending`, which is considered
+        # disabled
+        cop_enabled = cfg.fetch('Enabled') == true
+
         if only_safe
-          cfg.fetch('Enabled') && cfg.fetch('Safe', true)
+          cop_enabled && cfg.fetch('Safe', true)
         else
-          cfg.fetch('Enabled')
+          cop_enabled
         end
       end
 

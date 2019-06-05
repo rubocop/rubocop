@@ -91,7 +91,9 @@ module RuboCop
         else
           add_excludes_from_files(config, config_file)
         end
-        merge_with_default(config, config_file)
+        merge_with_default(config, config_file).tap do |merged_config|
+          warn_on_pending_cops(merged_config)
+        end
       end
 
       def add_excludes_from_files(config, config_file)
@@ -112,6 +114,22 @@ module RuboCop
                                      print 'Default ' if debug?
                                      load_file(DEFAULT_FILE)
                                    end
+      end
+
+      def warn_on_pending_cops(config)
+        pending_cops = config.keys.select do |key|
+          config[key]['Enabled'] == 'pending'
+        end
+
+        return if pending_cops.none?
+
+        warn Rainbow('The following cops were added to RuboCop, but are not ' \
+        'configured. Please set Enabled to either `true` or `false` in your ' \
+        '`.rubocop.yml` file:').yellow
+
+        pending_cops.each do |cop|
+          warn Rainbow(" - #{cop}").yellow
+        end
       end
 
       # Merges the given configuration with the default one. If
@@ -230,6 +248,8 @@ module RuboCop
                          Safe
                          SafeAutoCorrect
                          AutoCorrect].include?(key) && value.is_a?(String)
+
+          next if key == 'Enabled' && value == 'pending'
 
           abort(
             "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \

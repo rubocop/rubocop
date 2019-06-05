@@ -8,6 +8,7 @@
 
 * [#7528](https://github.com/rubocop-hq/rubocop/pull/7528): Add new `Lint/NonDeterministicRequireOrder` cop. ([@mangara][])
 * [#7559](https://github.com/rubocop-hq/rubocop/pull/7559): Add `EnforcedStyleForExponentOperator` parameter to `Layout/SpaceAroundOperators` cop. ([@khiav223577][])
+* [#7184](https://github.com/rubocop-hq/rubocop/pull/7184): Introduce new `pending` status for new cops. ([@Darhazer][])
 
 ### Bug fixes
 
