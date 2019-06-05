@@ -118,9 +118,9 @@ module RuboCop
 
         def alternative_style
           case style
-          when :hash_rockets then
+          when :hash_rockets
             :ruby19
-          when :ruby19, :ruby19_no_mixed_keys then
+          when :ruby19, :ruby19_no_mixed_keys
             :hash_rockets
           end
         end
