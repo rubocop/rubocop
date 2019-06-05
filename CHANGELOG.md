@@ -5,6 +5,7 @@
 ### New features
 
 * Add `AllowDoxygenCommentStyle` configuration on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
+* [#7114](https://github.com/rubocop-hq/rubocop/pull/7114): Add `MultilineWhenThen` cop. ([@okuramasafumi][])
 
 ### Bug fixes
 
@@ -4116,3 +4117,4 @@
 [@eugeneius]: https://github.com/eugeneius
 [@malyshkosergey]: https://github.com/malyshkosergey
 [@fwitzke]: https://github.com/fwitzke
+[@okuramasafumi]: https://github.com/okuramasafumi

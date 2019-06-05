@@ -3785,6 +3785,38 @@ a =
 
 * [https://rubystyle.guide#no-multiline-ternary](https://rubystyle.guide#no-multiline-ternary)
 
+## Style/MultilineWhenThen
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.72 | -
+
+This cop checks uses of the `then` keyword
+in multi-line when statements.
+
+### Examples
+
+```ruby
+# bad
+case foo
+when bar then
+end
+
+# good
+case foo
+when bar
+end
+
+# good
+case foo
+when bar then do_something
+end
+```
+
+### References
+
+* [https://rubystyle.guide#no-then](https://rubystyle.guide#no-then)
+
 ## Style/MultipleComparison
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

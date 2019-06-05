@@ -3043,6 +3043,12 @@ Style/MultilineTernaryOperator:
   Enabled: true
   VersionAdded: '0.9'
 
+Style/MultilineWhenThen:
+  Description: 'Do not use then for multi-line when statement.'
+  StyleGuide: '#no-then'
+  Enabled: true
+  VersionAdded: '0.72'
+
 Style/MultipleComparison:
   Description: >-
                  Avoid comparing a variable with multiple items in a conditional,
