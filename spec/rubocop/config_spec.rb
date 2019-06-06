@@ -267,6 +267,22 @@ RSpec.describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration includes an obsolete EnforcedStyle ' \
+            'parameter' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Layout/IndentationConsistency:
+            EnforcedStyle: rails
+        YAML
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError,
+                          /EnforcedStyle: rails` has been renamed/)
+      end
+    end
+
     shared_examples 'obsolete MaxLineLength parameter' do |cop_name|
       context "when the configuration includes the obsolete #{cop_name}: " \
               'MaxLineLength parameter' do
