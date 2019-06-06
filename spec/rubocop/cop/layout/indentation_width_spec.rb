@@ -16,6 +16,9 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
   let(:def_end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
+  let(:outdented_access_modifiers_offense_message) do
+    'Use 2 (not 0) spaces for outdented_access_modifiers indentation.'
+  end
 
   context 'with Width set to 4' do
     let(:cop_config) { { 'Width' => 4 } }
@@ -1128,7 +1131,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
           RUBY
         end
 
-        it 'registers offenses for rails indentation' do
+        it 'registers offenses for outdented_access_modifiers indentation' do
           expect_offense(<<~RUBY)
             class Test
               def e
@@ -1150,10 +1153,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         end
       end
 
-      context 'when consistency style is rails' do
-        let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
+      context 'when consistency style is outdented_access_modifiers' do
+        let(:consistency_config) do
+          { 'EnforcedStyle' => 'outdented_access_modifiers' }
+        end
 
-        it 'registers an offense for normal non-rails indentation' do
+        it 'registers an offense for normal non-outdented access modifiers ' \
+           'indentation' do
           inspect_source(<<~RUBY)
             class Test
               public
@@ -1173,12 +1179,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
             end
           RUBY
           expect(cop.messages)
-            .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
+            .to eq([outdented_access_modifiers_offense_message] * 2)
           expect(cop.offenses.map(&:line)).to eq([9, 14])
         end
 
-        it 'registers an offense for normal non-rails indentation ' \
-           'when defined in a singleton class' do
+        it 'registers an offense for normal non-outdented access modifiers ' \
+           'indentation when defined in a singleton class' do
           inspect_source(<<~RUBY)
             class << self
               public
@@ -1199,7 +1205,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
           RUBY
 
           expect(cop.messages)
-            .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
+            .to eq([outdented_access_modifiers_offense_message] * 2)
           expect(cop.offenses.map(&:line)).to eq([9, 14])
         end
       end
@@ -1225,8 +1231,10 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         end
       end
 
-      context 'when consistency style is rails' do
-        let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
+      context 'when consistency style is outdented_access_modifiers' do
+        let(:consistency_config) do
+          { 'EnforcedStyle' => 'outdented_access_modifiers' }
+        end
 
         it 'registers an offense for bad indentation of a module body' do
           expect_offense(<<~RUBY)
@@ -1236,13 +1244,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
                end
               private
              def func2
-             ^ Use 2 (not -1) spaces for rails indentation.
+             ^ Use 2 (not -1) spaces for outdented_access_modifiers indentation.
              end
             end
           RUBY
         end
 
-        it 'accepts normal non-rails indentation of module functions' do
+        it 'accepts normal non-outdented access modifiers indentation of ' \
+           'module functions' do
           expect_no_offenses(<<~RUBY)
             module Test
               module_function
@@ -1311,8 +1320,10 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
     end
 
     context 'with block' do
-      context 'when consistency style is rails' do
-        let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
+      context 'when consistency style is outdented_access_modifiers' do
+        let(:consistency_config) do
+          { 'EnforcedStyle' => 'outdented_access_modifiers' }
+        end
 
         it 'registers an offense for bad indentation in a do/end body' do
           inspect_source(<<~RUBY)
@@ -1329,7 +1340,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
             end
           RUBY
           expect(cop.messages)
-            .to eq(['Use 2 (not 0) spaces for rails indentation.'])
+            .to eq([outdented_access_modifiers_offense_message])
         end
       end
 

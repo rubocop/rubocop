@@ -2646,12 +2646,13 @@ Enabled | Yes | Yes  | 0.49 | -
 
 This cop checks for inconsistent indentation.
 
-The difference between `rails` and `normal` is that the `rails` style
-prescribes that in classes and modules the `protected` and `private`
-modifier keywords shall be indented the same as public methods and that
-protected and private members shall be indented one step more than the
-modifiers. Other than that, both styles mean that entities on the same
-logical depth shall have the same indentation.
+The difference between `outdented_access_modifiers` and `normal` is
+that the `outdented_access_modifiers` style prescribes that in
+classes and modules the `protected` and `private` modifier keywords
+shall be indented the same as public methods and that protected and
+private members shall be indented one step more than the modifiers.
+Other than that, both styles mean that entities on the same logical
+depth shall have the same indentation.
 
 ### Examples
 
@@ -2710,7 +2711,7 @@ class A
   end
 end
 ```
-#### EnforcedStyle: rails
+#### EnforcedStyle: outdented_access_modifiers
 
 ```ruby
 # bad
@@ -2770,7 +2771,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `normal` | `normal`, `rails`
+EnforcedStyle | `normal` | `normal`, `outdented_access_modifiers`
 
 ### References
 
