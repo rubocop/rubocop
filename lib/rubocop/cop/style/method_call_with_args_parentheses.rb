@@ -151,7 +151,6 @@ module RuboCop
         include IgnoredMethodPatterns
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
-        UNARY_NUMERIC_PREFIX_REGEX = /\A[+-]/.freeze
 
         def on_send(node)
           case style
@@ -350,7 +349,7 @@ module RuboCop
 
         def ambigious_literal?(node)
           splat?(node) || ternary_if?(node) || regexp_slash_literal?(node) ||
-            numeric_with_operator?(node)
+            unary_literal?(node)
         end
 
         def splat?(node)
@@ -373,8 +372,9 @@ module RuboCop
           node.regexp_type? && node.loc.begin.source == '/'
         end
 
-        def numeric_with_operator?(node)
-          node.numeric_type? && node.source.match(UNARY_NUMERIC_PREFIX_REGEX)
+        def unary_literal?(node)
+          node.numeric_type? && node.sign? ||
+            node.parent&.send_type? && node.parent&.unary_operation?
         end
 
         def assigned_before?(node, target)
