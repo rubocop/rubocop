@@ -631,11 +631,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    context 'when configured for rails style indentation' do
-      it 'accepts rails style indentation' do
+    context 'when configured for outdented_access_modifiers style ' \
+            'indentation' do
+      it 'accepts outdented_access_modifiers style indentation' do
         create_file('.rubocop.yml', <<~YAML)
           Layout/IndentationConsistency:
-            EnforcedStyle: rails
+            EnforcedStyle: outdented_access_modifiers
           Style/FrozenStringLiteralComment:
             Enabled: false
         YAML
@@ -671,7 +672,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it "registers offense for normal indentation in #{parent}" do
           create_file('.rubocop.yml', <<~YAML)
             Layout/IndentationConsistency:
-              EnforcedStyle: rails
+              EnforcedStyle: outdented_access_modifiers
             Style/FrozenStringLiteralComment:
               Enabled: false
           YAML
@@ -705,8 +706,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to eq(<<~RESULT)
               == example.rb ==
-              C:  9:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
-              C: 15:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for rails indentation.
+              C:  9:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for outdented_access_modifiers indentation.
+              C: 15:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for outdented_access_modifiers indentation.
 
               1 file inspected, 2 offenses detected
           RESULT
