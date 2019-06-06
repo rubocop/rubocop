@@ -229,6 +229,16 @@ module RuboCop
       }
     ].freeze
 
+    OBSOLETE_ENFORCED_STYLES = [
+      {
+        cop: 'Layout/IndentationConsistency',
+        parameter: 'EnforcedStyle',
+        enforced_style: 'rails',
+        alternative: '`EnforcedStyle: rails` has been renamed to ' \
+                     '`EnforcedStyle: outdented_access_modifiers`'
+      }
+    ].freeze
+
     attr_reader :loaded_path
 
     def initialize(hash = {}, loaded_path = nil)
@@ -565,7 +575,8 @@ module RuboCop
     def reject_obsolete_cops_and_parameters
       messages = [
         obsolete_cops,
-        obsolete_parameters
+        obsolete_parameters,
+        obsolete_enforced_style
       ].flatten.compact
       return if messages.empty?
 
@@ -594,6 +605,24 @@ module RuboCop
         message + "\n(obsolete configuration found in #{smart_loaded_path}," \
                    ' please update it)'
       end
+    end
+
+    def obsolete_enforced_style
+      OBSOLETE_ENFORCED_STYLES.map do |params|
+        obsolete_enforced_style_message(params[:cop], params[:parameter],
+                                        params[:enforced_style],
+                                        params[:alternative])
+      end
+    end
+
+    def obsolete_enforced_style_message(cop, param, enforced_style, alternative)
+      style = self[cop]&.detect { |key, _| key.start_with?(param) }
+
+      return unless style && style[1] == enforced_style
+
+      "obsolete `#{param}: #{enforced_style}` (for #{cop}) " \
+        "found in #{smart_loaded_path}" \
+        "\n#{alternative}"
     end
 
     def check_target_ruby
