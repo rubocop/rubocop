@@ -5,10 +5,10 @@ RSpec.describe RuboCop::Cop::Style::NoArrayOfRange do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when creating a single range in an array without parens' do
+  it 'registers an offense for a single range in an array without parens' do
     expect_offense(<<~RUBY)
-          [1..10]
-          ^^^^^^^ Use `[(1..10)]` instead of `[1..10]` to create an array of a single range. Or you want just a range: `(1..10)`.
+      [1..10]
+      ^^^^^^^ Use `[(1..10)]` instead of `[1..10]` to create an array of a single range. Or you want just a range: `(1..10)`.
     RUBY
   end
 

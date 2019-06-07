@@ -4166,7 +4166,8 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | No | 0.72 | -
 
-`[(1..10)]` is semantically the same as `[1..10]` (i.e. an array with 1 range in it.
+`[(1..10)]` is semantically the same as `[1..10]`
+(i.e. an array with 1 range in it.)
 This can lead to some nasty bugs
 
 ### Examples

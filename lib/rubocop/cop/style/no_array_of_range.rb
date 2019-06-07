@@ -4,7 +4,8 @@
 module RuboCop
   module Cop
     module Style
-      # `[(1..10)]` is semantically the same as `[1..10]` (i.e. an array with 1 range in it.
+      # `[(1..10)]` is semantically the same as `[1..10]`
+      # (i.e. an array with 1 range in it.)
       # This can lead to some nasty bugs
       #
       # @example
@@ -21,11 +22,13 @@ module RuboCop
       #   [(1..(a.length))]
       #
       class NoArrayOfRange < Cop
-        MSG = "Use `[(%<range_exp>s)]` instead of `[%<range_exp>s]` to create an array of a single range. Or you want just a range: `(%<range_exp>s)`.".freeze
+        MSG = "Use `[(%<range_exp>s)]` instead of `[%<range_exp>s]` \
+to create an array of a single range. \
+Or you want just a range: `(%<range_exp>s)`."
 
         def on_array(node)
-          array_of_range(node) do |offender|
-            add_offense(node, message: message(node))
+          array_of_range(node) do
+            add_offense(node)
           end
         end
 
