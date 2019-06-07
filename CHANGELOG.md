@@ -2,7 +2,7 @@
 
 ## master (unreleased)
 
-* New cop `NoArrayOfRange` which checks for `[1..10]` which is symantically an array with one range while being very similar to `(1..10)` which is a single range.
+* New cop `NoArrayOfRange` which checks for `[1..10]` which is symantically an array with one range while being very similar to `(1..10)` which is a single range. ([@apz-stripe][])
 
 ### Bug fixes
 
@@ -4086,3 +4086,4 @@
 [@fwininger]: https://github.com/fwininger
 [@stoivo]: https://github.com/stoivo
 [@eugeneius]: https://github.com/eugeneius
+[@apz-stripe]: https://github.com/apz-stripe

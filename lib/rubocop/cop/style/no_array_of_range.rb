@@ -21,7 +21,7 @@ module RuboCop
       #   [(1..(a.length))]
       #
       class NoArrayOfRange < Cop
-        MSG = "Use `[(%<range_exp>s)]` instead of `[%<range_exp>s]` to create an array of a single range. Or you want just a range: `(%<range_exp>s)`".freeze
+        MSG = "Use `[(%<range_exp>s)]` instead of `[%<range_exp>s]` to create an array of a single range. Or you want just a range: `(%<range_exp>s)`.".freeze
 
         def on_array(node)
           array_of_range(node) do |offender|
