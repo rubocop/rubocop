@@ -4160,6 +4160,31 @@ EnforcedStyle | `predicate` | `predicate`, `comparison`
 
 * [https://github.com/rubocop-hq/ruby-style-guide#predicate-methods](https://github.com/rubocop-hq/ruby-style-guide#predicate-methods)
 
+## Style/NoArrayOfRange
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.72 | -
+
+`[(1..10)]` is semantically the same as `[1..10]` (i.e. an array with 1 range in it.
+This can lead to some nasty bugs
+
+### Examples
+
+```ruby
+# bad
+[1..10]
+
+# bad
+[1..(a.length)]
+
+# good
+[(1..10)]
+
+# good
+[(1..(a.length))]
+```
+
 ## Style/NonNilCheck
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -5416,7 +5441,7 @@ EnforcedStyle | `return` | `return`, `return_nil`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | 0.56
+Enabled | Yes | Yes  | 0.43 | -
 
 This cop transforms usages of a method call safeguarded by a non `nil`
 check for the variable whose method is being called to
@@ -5481,8 +5506,7 @@ foo.bar > 2 if foo
 
 Name | Default value | Configurable values
 --- | --- | ---
-ConvertCodeThatCanStartToReturnNil | `false` | Boolean
-Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+ConvertTry | `false` | Boolean
 
 ## Style/Sample
 
