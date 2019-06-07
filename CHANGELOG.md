@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* New cop `NoArrayOfRange` which checks for `[1..10]` which is symantically an array with one range while being very similar to `(1..10)` which is a single range.
+
 ### Bug fixes
 
 * [#7063](https://github.com/rubocop-hq/rubocop/issues/7063): Fix autocorrect in `Style/TernaryParentheses` cop. ([@parkerfinch][])
