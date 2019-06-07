@@ -5441,7 +5441,7 @@ EnforcedStyle | `return` | `return`, `return_nil`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | -
+Enabled | Yes | Yes  | 0.43 | 0.56
 
 This cop transforms usages of a method call safeguarded by a non `nil`
 check for the variable whose method is being called to
@@ -5506,7 +5506,8 @@ foo.bar > 2 if foo
 
 Name | Default value | Configurable values
 --- | --- | ---
-ConvertTry | `false` | Boolean
+ConvertCodeThatCanStartToReturnNil | `false` | Boolean
+Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Style/Sample
 
