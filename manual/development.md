@@ -147,7 +147,7 @@ NodePattern.new('(send (send (...) :empty?) :!)').match(node) # => true
 
 In other words, it says: "Match code calling `!<expression>.empty?`".
 
-Great! Now, lets implement our cop to simplifly such statements:
+Great! Now, lets implement our cop to simplify such statements:
 
 ```sh
 $ rake new_cop[Style/SimplifyNotEmptyWithAny]
