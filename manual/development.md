@@ -162,6 +162,11 @@ def_node_matcher :not_empty_call?, <<-PATTERN
 PATTERN
 ```
 
+Get yourself familiar with the hooks
+[`parser`](https://www.rubydoc.info/github/whitequark/parser/Parser/AST/Processor)
+and [`rubocop`](https://www.rubydoc.info/github/rubocop-hq/rubocop/RuboCop/AST/Traversal)
+provide.
+
 As it starts with a `send` type, it's needed to implement the `on_send` method, as the
 cop scaffold already suggested:
 
