@@ -3,6 +3,24 @@
 RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   subject(:cop) { described_class.new(config) }
 
+  shared_examples_for 'debugger' do |name, src|
+    it "reports an offense for a #{name} call" do
+      inspect_source(src)
+      src = [src] if src.is_a? String
+      expect(cop.offenses.size).to eq(src.size)
+      expect(cop.messages)
+        .to eq(src.map { |s| "Remove debugger entry point `#{s}`." })
+      expect(cop.highlights).to eq(src)
+    end
+  end
+
+  shared_examples_for 'non-debugger' do |name, src|
+    it "does not report an offense for #{name}" do
+      inspect_source(src)
+      expect(cop.offenses.empty?).to be(true)
+    end
+  end
+
   include_examples 'debugger', 'debugger', 'debugger'
   include_examples 'debugger', 'byebug', 'byebug'
   include_examples 'debugger', 'pry binding',
