@@ -4776,6 +4776,63 @@ p = proc { |n| puts n }
 
 * [https://github.com/rubocop-hq/ruby-style-guide#proc](https://github.com/rubocop-hq/ruby-style-guide#proc)
 
+## Style/ProceduralConditionStatement
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.72 | -
+
+This cop enforces the object-oriented paradigm by banning conditional
+statement.
+
+By default, this cop is strict. Some configuration options allow for
+less restriction.
+
+### Examples
+
+```ruby
+# bad
+case statement
+when condition
+  something
+else
+  # do something
+end
+
+if condition
+  something
+end
+```
+#### AllowGuardClause: true
+
+```ruby
+# allow
+def stuff
+  return if condition
+  something
+end
+```
+#### AllowModifierForm: true
+
+```ruby
+# allow
+variable = something if condition
+```
+#### AllowTernaryOperator: true
+
+```ruby
+# allow
+condition ? stuff : something
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowGuardClause | `false` | Boolean
+AllowModifierForm | `false` | Boolean
+AllowTernaryOperator | `false` | Boolean
+
 ## Style/RaiseArgs
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

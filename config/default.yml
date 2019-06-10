@@ -3320,6 +3320,14 @@ Style/Proc:
   VersionAdded: '0.9'
   VersionChanged: '0.18'
 
+Style/ProceduralConditionStatement:
+  Description: Respects the object-oriented paradigm. Restricts conditional statement.
+  Enabled: false
+  VersionAdded: '0.72'
+  AllowGuardClause: false
+  AllowModifierForm: false
+  AllowTernaryOperator: false
+
 Style/RaiseArgs:
   Description: 'Checks the arguments passed to raise/fail.'
   StyleGuide: '#exception-class-messages'

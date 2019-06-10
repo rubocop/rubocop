@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add new `Style/ProceduralConditionStatement` cop. ([@AdrienSldy][])
+
 ### Bug fixes
 
 * [#7063](https://github.com/rubocop-hq/rubocop/issues/7063): Fix autocorrect in `Style/TernaryParentheses` cop. ([@parkerfinch][])

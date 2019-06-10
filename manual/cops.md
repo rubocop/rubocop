@@ -406,6 +406,7 @@ In the following section you find all available cops:
 * [Style/PerlBackrefs](cops_style.md#styleperlbackrefs)
 * [Style/PreferredHashMethods](cops_style.md#stylepreferredhashmethods)
 * [Style/Proc](cops_style.md#styleproc)
+* [Style/ProceduralConditionStatement](cops_style.md#styleproceduralconditionstatement)
 * [Style/RaiseArgs](cops_style.md#styleraiseargs)
 * [Style/RandomWithOffset](cops_style.md#stylerandomwithoffset)
 * [Style/RedundantBegin](cops_style.md#styleredundantbegin)
