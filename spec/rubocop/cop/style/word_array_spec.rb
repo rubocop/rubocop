@@ -278,17 +278,12 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
-    it "doesn't fail on strings which are not valid UTF-8" \
-       'and encoding: binary is specified' do
+    it "doesn't fail with `encoding: binary" do
       expect_no_offenses(<<~'RUBY')
         # -*- encoding: binary -*-
-        ["\xC0",
-         "\xC2\x4a",
-         "\xC2\xC2",
-         "\x4a\x82",
-         "\x82\x82",
-         "\xe1\x82\x4a",
-        ]
+        ["\xC0"] # Invalid as UTF-8
+        ['a']    # Valid as UTF-8 and ASCII
+        ["あ"]   # Valid as UTF-8
       RUBY
     end
   end
