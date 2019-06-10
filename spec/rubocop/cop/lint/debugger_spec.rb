@@ -6,11 +6,10 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   shared_examples_for 'debugger' do |name, src|
     it "reports an offense for a #{name} call" do
       inspect_source(src)
-      src = [src] if src.is_a? String
-      expect(cop.offenses.size).to eq(src.size)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(src.map { |s| "Remove debugger entry point `#{s}`." })
-      expect(cop.highlights).to eq(src)
+        .to eq(["Remove debugger entry point `#{src}`."])
+      expect(cop.highlights).to eq([src])
     end
   end
 
