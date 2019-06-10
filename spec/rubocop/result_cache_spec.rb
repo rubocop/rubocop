@@ -213,8 +213,13 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   describe '#save' do
     context 'when the default internal encoding is UTF-8' do
       let(:offenses) do
-        [RuboCop::Cop::Offense.new(:warning, location, "unused var \xF0",
-                                   'Lint/UselessAssignment')]
+        [
+          "unused var \xF0",
+          (+'unused var あ').force_encoding(::Encoding::ASCII_8BIT)
+        ].map do |message|
+          RuboCop::Cop::Offense.new(:warning, location, message,
+                                    'Lint/UselessAssignment')
+        end
       end
 
       before { Encoding.default_internal = Encoding::UTF_8 }
