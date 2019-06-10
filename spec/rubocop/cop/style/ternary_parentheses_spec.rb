@@ -266,6 +266,10 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = bar or (baz) ? a : b',
                       'foo = bar or baz ? a : b'
+
+      it_behaves_like 'code with offense',
+                      'foo = (bar&.baz) ? a : b',
+                      'foo = bar&.baz ? a : b'
     end
 
     context 'with a complex condition' do

@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#7121](https://github.com/rubocop-hq/rubocop/pull/7121): Fix `Style/TernaryParentheses` cop to allow safe navigation operator without parentheses. ([@timon][])
 * [#7063](https://github.com/rubocop-hq/rubocop/issues/7063): Fix autocorrect in `Style/TernaryParentheses` cop. ([@parkerfinch][])
 * [#7107](https://github.com/rubocop-hq/rubocop/issues/7107): Fix parentheses offence for numeric arguments with an operator in `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
 
