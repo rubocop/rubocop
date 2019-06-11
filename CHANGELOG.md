@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#7063](https://github.com/rubocop-hq/rubocop/issues/7063): Fix autocorrect in `Style/TernaryParentheses` cop. ([@parkerfinch][])
+* [#7106](https://github.com/rubocop-hq/rubocop/issues/7106): Fix an error for `Lint/NumberConversion` when `#to_i` called on a variable on a hash. ([@koic][])
 * [#7107](https://github.com/rubocop-hq/rubocop/issues/7107): Fix parentheses offence for numeric arguments with an operator in `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
 * [#7119](https://github.com/rubocop-hq/rubocop/pull/7119): Fix cache with non UTF-8 offense message. ([@pocke][])
 * [#7118](https://github.com/rubocop-hq/rubocop/pull/7118): Fix `Style/WordArray` with `encoding: binary` magic comment and non-ASCII string. ([@pocke][])
@@ -13,10 +14,6 @@
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Remove Rails cops. ([@koic][])
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Remove `rubocop -R/--rails` option. ([@koic][])
-
-### Bug fixes
-
-* [#7106](https://github.com/rubocop-hq/rubocop/issues/7106): Fix an error for `Lint/NumberConversion` when `#to_i` called on a variable on a hash. ([@koic][])
 
 ## 0.71.0 (2019-05-30)
 
