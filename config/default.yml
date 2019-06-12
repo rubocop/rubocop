@@ -2126,7 +2126,7 @@ Style/AccessModifierDeclarations:
 
 Style/Alias:
   Description: 'Use alias instead of alias_method.'
-  StyleGuide: '#alias-method'
+  StyleGuide: '#alias-method-lexically'
   Enabled: true
   VersionAdded: '0.9'
   VersionChanged: '0.36'
