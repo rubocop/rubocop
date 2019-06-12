@@ -105,7 +105,7 @@ EnforcedStyle | `prefer_alias` | `prefer_alias`, `prefer_alias_method`
 
 ### References
 
-* [https://rubystyle.guide#alias-method](https://rubystyle.guide#alias-method)
+* [https://rubystyle.guide#alias-method-lexically](https://rubystyle.guide#alias-method-lexically)
 
 ## Style/AndOr
 
