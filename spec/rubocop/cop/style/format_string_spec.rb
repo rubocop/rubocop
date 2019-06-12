@@ -20,6 +20,13 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
+    it 'registers an offense for variable argument' do
+      expect_offense(<<~RUBY)
+        puts "%f" % a
+                  ^ Favor `sprintf` over `String#%`.
+      RUBY
+    end
+
     it 'does not register an offense for numbers' do
       expect_no_offenses('puts 10 % 4')
     end
@@ -68,6 +75,21 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       corrected = autocorrect_source('puts x % { a: 10, b: 11 }')
       expect(corrected).to eq 'puts sprintf(x, a: 10, b: 11)'
     end
+
+    it 'does not auto-correct String#% with variable argument' do
+      source = <<~RUBY
+        puts "%d" % a
+      RUBY
+      expect(autocorrect_source(source)).to eq(source)
+    end
+
+    it 'does not auto-correct String#% with variable argument and assignment' do
+      source = <<~RUBY
+        a = something()
+        puts "%d" % a
+      RUBY
+      expect(autocorrect_source(source)).to eq(source)
+    end
   end
 
   context 'when enforced style is format' do
@@ -91,6 +113,13 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       expect_offense(<<~RUBY)
         puts x % { a: 10, b: 11 }
                ^ Favor `format` over `String#%`.
+      RUBY
+    end
+
+    it 'registers an offense for variable argument' do
+      expect_offense(<<~RUBY)
+        puts "%f" % a
+                  ^ Favor `format` over `String#%`.
       RUBY
     end
 
@@ -141,6 +170,21 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     it 'auto-corrects String#% with a hash argument' do
       corrected = autocorrect_source('puts x % { a: 10, b: 11 }')
       expect(corrected).to eq 'puts format(x, a: 10, b: 11)'
+    end
+
+    it 'does not auto-correct String#% with variable argument' do
+      source = <<~RUBY
+        puts "%d" % a
+      RUBY
+      expect(autocorrect_source(source)).to eq(source)
+    end
+
+    it 'does not auto-correct String#% with variable argument and assignment' do
+      source = <<~RUBY
+        a = something()
+        puts "%d" % a
+      RUBY
+      expect(autocorrect_source(source)).to eq(source)
     end
   end
 
