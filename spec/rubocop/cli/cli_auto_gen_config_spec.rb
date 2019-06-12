@@ -478,6 +478,60 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when inheriting from a URL' do
+      let(:remote_config_url) { 'https://example.com/foo/bar' }
+
+      before do
+        stub_request(:get, remote_config_url)
+          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+      end
+
+      context 'when there is a single entry' do
+        it 'can generate a todo list' do
+          create_file('dir/example1.rb', ['$x = 0 ',
+                                          '#' * 90,
+                                          'y ',
+                                          'puts x'])
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: #{remote_config_url}
+          YAML
+          expect(cli.run(%w[--auto-gen-config])).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to include(<<~YAML)
+            Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
+          YAML
+          expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
+            inherit_from:
+              - .rubocop_todo.yml
+              - #{remote_config_url}
+          YAML
+        end
+      end
+
+      context 'when there are multiple entries' do
+        it 'can generate a todo list' do
+          create_file('dir/example1.rb', ['$x = 0 ',
+                                          '#' * 90,
+                                          'y ',
+                                          'puts x'])
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from:
+              - #{remote_config_url}
+          YAML
+          expect(cli.run(%w[--auto-gen-config])).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to include(<<~YAML)
+            Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
+          YAML
+          expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
+            inherit_from:
+              - .rubocop_todo.yml
+              - #{remote_config_url}
+          YAML
+        end
+      end
+    end
+
     it 'can generate a todo list' do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
