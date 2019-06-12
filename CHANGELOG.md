@@ -20,6 +20,8 @@
 * [#7151](https://github.com/rubocop-hq/rubocop/issues/7151): Fix `Style/WordArray` to also consider words containing hyphens. ([@fwitzke][])
 * [#6893](https://github.com/rubocop-hq/rubocop/issues/6893): Handle implicit rescue correctly in `Naming/RescuedExceptionsVariableName`. ([@pocke][], [@anthony-robin][])
 * [#7165](https://github.com/rubocop-hq/rubocop/issues/7165): Fix an auto-correct error for `Style/ConditionalAssignment` when without `else` branch'. ([@koic][])
+* [#7113](https://github.com/rubocop-hq/rubocop/pull/7113): This PR renames `EnforcedStyle: rails` to `EnabledStyle: outdented_access_modifiers` for `Layout/IndentationConsistency`. ([@koic][])
+* [#7130](https://github.com/rubocop-hq/rubocop/pull/7130): Skip autocorrect in `Style/FormatString` if second argument to `String#%` is a variable. ([@tejasbubane][])
 
 ### Changes
 
