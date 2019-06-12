@@ -173,8 +173,8 @@ module RuboCop
 
       def existing_configuration(config_file)
         IO.read(config_file, encoding: Encoding::UTF_8)
-          .sub(%r{^inherit_from: *[.\/\w]+}, '')
-          .sub(%r{^inherit_from: *(\n *- *[.\/\w]+)+}, '')
+          .sub(/^inherit_from: *[^\n]+/, '')
+          .sub(/^inherit_from: *(\n *- *[^\n]+)+/, '')
       end
 
       def write_config_file(file_name, file_string, rubocop_yml_contents)
