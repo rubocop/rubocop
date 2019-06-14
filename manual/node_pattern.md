@@ -126,7 +126,7 @@ Following on the previous example, to find sums of integer literals, we could us
 
 This would match our first example `sum(1, 2)` but not the other `sum(1, 2, 3, n)`
 
-This pattern would also match a call to `sum` without any argument, which might not be desireable.
+This pattern would also match a call to `sum` without any argument, which might not be desirable.
 
 Using `+` would insure that only sums with at least one argument would be matched.
 
