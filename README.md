@@ -64,9 +64,9 @@ $ cd my/cool/ruby/project
 $ rubocop
 ```
 
-## Official manual
+## Documentation
 
-You can read a ton more about RuboCop in its [official manual](https://docs.rubocop.org).
+You can read a lot more about RuboCop in its [official docs](https://docs.rubocop.org).
 
 ## Compatibility
 
