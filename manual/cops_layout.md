@@ -52,7 +52,7 @@ IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#indent-public-private-protected](https://github.com/rubocop-hq/ruby-style-guide#indent-public-private-protected)
+* [https://rubystyle.guide#indent-public-private-protected](https://rubystyle.guide#indent-public-private-protected)
 
 ## Layout/AlignArguments
 
@@ -111,7 +111,7 @@ IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-double-indent](https://github.com/rubocop-hq/ruby-style-guide#no-double-indent)
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
 ## Layout/AlignArray
 
@@ -142,7 +142,7 @@ a = ['run',
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#align-multiline-arrays](https://github.com/rubocop-hq/ruby-style-guide#align-multiline-arrays)
+* [https://rubystyle.guide#align-multiline-arrays](https://rubystyle.guide#align-multiline-arrays)
 
 ## Layout/AlignHash
 
@@ -441,7 +441,7 @@ IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-double-indent](https://github.com/rubocop-hq/ruby-style-guide#no-double-indent)
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
 ## Layout/BlockAlignment
 
@@ -642,7 +642,7 @@ IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#indent-when-to-case](https://github.com/rubocop-hq/ruby-style-guide#indent-when-to-case)
+* [https://rubystyle.guide#indent-when-to-case](https://rubystyle.guide#indent-when-to-case)
 
 ## Layout/ClassStructure
 
@@ -788,7 +788,7 @@ ExpectedOrder | `module_inclusion`, `constants`, `public_class_methods`, `initia
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#consistent-classes](https://github.com/rubocop-hq/ruby-style-guide#consistent-classes)
+* [https://rubystyle.guide#consistent-classes](https://rubystyle.guide#consistent-classes)
 
 ## Layout/ClosingHeredocIndentation
 
@@ -979,7 +979,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#same-line-condition](https://github.com/rubocop-hq/ruby-style-guide#same-line-condition)
+* [https://rubystyle.guide#same-line-condition](https://rubystyle.guide#same-line-condition)
 
 ## Layout/DefEndAlignment
 
@@ -1074,7 +1074,7 @@ EnforcedStyle | `leading` | `leading`, `trailing`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#consistent-multi-line-chains](https://github.com/rubocop-hq/ruby-style-guide#consistent-multi-line-chains)
+* [https://rubystyle.guide#consistent-multi-line-chains](https://rubystyle.guide#consistent-multi-line-chains)
 
 ## Layout/ElseAlignment
 
@@ -1263,7 +1263,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#separate-magic-comments-from-code](https://github.com/rubocop-hq/ruby-style-guide#separate-magic-comments-from-code)
+* [https://rubystyle.guide#separate-magic-comments-from-code](https://rubystyle.guide#separate-magic-comments-from-code)
 
 ## Layout/EmptyLineBetweenDefs
 
@@ -1308,7 +1308,7 @@ NumberOfEmptyLines | `1` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-between-methods](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-between-methods)
+* [https://rubystyle.guide#empty-lines-between-methods](https://rubystyle.guide#empty-lines-between-methods)
 
 ## Layout/EmptyLines
 
@@ -1335,7 +1335,7 @@ some_method
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#two-or-more-empty-lines](https://github.com/rubocop-hq/ruby-style-guide#two-or-more-empty-lines)
+* [https://rubystyle.guide#two-or-more-empty-lines](https://rubystyle.guide#two-or-more-empty-lines)
 
 ## Layout/EmptyLinesAroundAccessModifier
 
@@ -1393,7 +1393,7 @@ EnforcedStyle | `around` | `around`, `only_before`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-access-modifier](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-access-modifier)
+* [https://rubystyle.guide#empty-lines-around-access-modifier](https://rubystyle.guide#empty-lines-around-access-modifier)
 * [https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions)
 
 ## Layout/EmptyLinesAroundArguments
@@ -1469,7 +1469,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies)
+* [https://rubystyle.guide#empty-lines-around-bodies](https://rubystyle.guide#empty-lines-around-bodies)
 
 ## Layout/EmptyLinesAroundBlockBody
 
@@ -1511,7 +1511,7 @@ EnforcedStyle | `no_empty_lines` | `empty_lines`, `no_empty_lines`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies)
+* [https://rubystyle.guide#empty-lines-around-bodies](https://rubystyle.guide#empty-lines-around-bodies)
 
 ## Layout/EmptyLinesAroundClassBody
 
@@ -1604,7 +1604,7 @@ EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies)
+* [https://rubystyle.guide#empty-lines-around-bodies](https://rubystyle.guide#empty-lines-around-bodies)
 
 ## Layout/EmptyLinesAroundExceptionHandlingKeywords
 
@@ -1672,7 +1672,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies)
+* [https://rubystyle.guide#empty-lines-around-bodies](https://rubystyle.guide#empty-lines-around-bodies)
 
 ## Layout/EmptyLinesAroundMethodBody
 
@@ -1702,7 +1702,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies)
+* [https://rubystyle.guide#empty-lines-around-bodies](https://rubystyle.guide#empty-lines-around-bodies)
 
 ## Layout/EmptyLinesAroundModuleBody
 
@@ -1771,7 +1771,7 @@ EnforcedStyle | `no_empty_lines` | `empty_lines`, `empty_lines_except_namespace`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies](https://github.com/rubocop-hq/ruby-style-guide#empty-lines-around-bodies)
+* [https://rubystyle.guide#empty-lines-around-bodies](https://rubystyle.guide#empty-lines-around-bodies)
 
 ## Layout/EndAlignment
 
@@ -1918,7 +1918,7 @@ EnforcedStyle | `native` | `native`, `lf`, `crlf`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#crlf](https://github.com/rubocop-hq/ruby-style-guide#crlf)
+* [https://rubystyle.guide#crlf](https://rubystyle.guide#crlf)
 
 ## Layout/ExtraSpacing
 
@@ -2122,7 +2122,7 @@ opening HEREDOC tag.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#heredoc-argument-closing-parentheses](https://github.com/rubocop-hq/ruby-style-guide#heredoc-argument-closing-parentheses)
+* [https://rubystyle.guide#heredoc-argument-closing-parentheses](https://rubystyle.guide#heredoc-argument-closing-parentheses)
 
 ## Layout/IndentAssignment
 
@@ -2636,7 +2636,7 @@ EnforcedStyle | `squiggly` | `squiggly`, `active_support`, `powerpack`, `uninden
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#squiggly-heredocs](https://github.com/rubocop-hq/ruby-style-guide#squiggly-heredocs)
+* [https://rubystyle.guide#squiggly-heredocs](https://rubystyle.guide#squiggly-heredocs)
 
 ## Layout/IndentationConsistency
 
@@ -2775,7 +2775,7 @@ EnforcedStyle | `normal` | `normal`, `outdented_access_modifiers`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation](https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation)
+* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 * [https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions)
 
 ## Layout/IndentationWidth
@@ -2838,7 +2838,7 @@ IgnoredPatterns | `[]` | Array
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation](https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation)
+* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 
 ## Layout/InitialIndentation
 
@@ -2920,7 +2920,7 @@ or rackup options.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#hash-space](https://github.com/rubocop-hq/ruby-style-guide#hash-space)
+* [https://rubystyle.guide#hash-space](https://rubystyle.guide#hash-space)
 
 ## Layout/MultilineArrayBraceLayout
 
@@ -3105,7 +3105,7 @@ EnforcedStyle | `new_line` | `same_line`, `new_line`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#indent-conditional-assignment](https://github.com/rubocop-hq/ruby-style-guide#indent-conditional-assignment)
+* [https://rubystyle.guide#indent-conditional-assignment](https://rubystyle.guide#indent-conditional-assignment)
 
 ## Layout/MultilineBlockLayout
 
@@ -3696,7 +3696,7 @@ def f(a:, b: 2); {a: 3}; end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-operators](https://github.com/rubocop-hq/ruby-style-guide#spaces-operators)
+* [https://rubystyle.guide#spaces-operators](https://rubystyle.guide#spaces-operators)
 
 ## Layout/SpaceAfterComma
 
@@ -3720,7 +3720,7 @@ Checks for comma (,) not followed by some kind of space.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-operators](https://github.com/rubocop-hq/ruby-style-guide#spaces-operators)
+* [https://rubystyle.guide#spaces-operators](https://rubystyle.guide#spaces-operators)
 
 ## Layout/SpaceAfterMethodName
 
@@ -3744,7 +3744,7 @@ def method=(y) end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#parens-no-spaces](https://github.com/rubocop-hq/ruby-style-guide#parens-no-spaces)
+* [https://rubystyle.guide#parens-no-spaces](https://rubystyle.guide#parens-no-spaces)
 
 ## Layout/SpaceAfterNot
 
@@ -3766,7 +3766,7 @@ This cop checks for space after `!`.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-space-bang](https://github.com/rubocop-hq/ruby-style-guide#no-space-bang)
+* [https://rubystyle.guide#no-space-bang](https://rubystyle.guide#no-space-bang)
 
 ## Layout/SpaceAfterSemicolon
 
@@ -3788,7 +3788,7 @@ x = 1; y = 2
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-operators](https://github.com/rubocop-hq/ruby-style-guide#spaces-operators)
+* [https://rubystyle.guide#spaces-operators](https://rubystyle.guide#spaces-operators)
 
 ## Layout/SpaceAroundBlockParameters
 
@@ -3875,7 +3875,7 @@ EnforcedStyle | `space` | `space`, `no_space`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-around-equals](https://github.com/rubocop-hq/ruby-style-guide#spaces-around-equals)
+* [https://rubystyle.guide#spaces-around-equals](https://rubystyle.guide#spaces-around-equals)
 
 ## Layout/SpaceAroundKeyword
 
@@ -3940,7 +3940,7 @@ AllowForAlignment | `true` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-operators](https://github.com/rubocop-hq/ruby-style-guide#spaces-operators)
+* [https://rubystyle.guide#spaces-operators](https://rubystyle.guide#spaces-operators)
 
 ## Layout/SpaceBeforeBlockBraces
 
@@ -4411,7 +4411,7 @@ EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-operators](https://github.com/rubocop-hq/ruby-style-guide#spaces-operators)
+* [https://rubystyle.guide#spaces-operators](https://rubystyle.guide#spaces-operators)
 
 ## Layout/SpaceInsideParens
 
@@ -4462,7 +4462,7 @@ EnforcedStyle | `no_space` | `space`, `no_space`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-braces](https://github.com/rubocop-hq/ruby-style-guide#spaces-braces)
+* [https://rubystyle.guide#spaces-braces](https://rubystyle.guide#spaces-braces)
 
 ## Layout/SpaceInsidePercentLiteralDelimiters
 
@@ -4512,7 +4512,7 @@ Checks for spaces inside range literals.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-space-inside-range-literals](https://github.com/rubocop-hq/ruby-style-guide#no-space-inside-range-literals)
+* [https://rubystyle.guide#no-space-inside-range-literals](https://rubystyle.guide#no-space-inside-range-literals)
 
 ## Layout/SpaceInsideReferenceBrackets
 
@@ -4624,7 +4624,7 @@ EnforcedStyle | `no_space` | `space`, `no_space`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#string-interpolation](https://github.com/rubocop-hq/ruby-style-guide#string-interpolation)
+* [https://rubystyle.guide#string-interpolation](https://rubystyle.guide#string-interpolation)
 
 ## Layout/Tab
 
@@ -4658,7 +4658,7 @@ IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation](https://github.com/rubocop-hq/ruby-style-guide#spaces-indentation)
+* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 
 ## Layout/TrailingBlankLines
 
@@ -4715,7 +4715,7 @@ EnforcedStyle | `final_newline` | `final_newline`, `final_blank_line`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#newline-eof](https://github.com/rubocop-hq/ruby-style-guide#newline-eof)
+* [https://rubystyle.guide#newline-eof](https://rubystyle.guide#newline-eof)
 
 ## Layout/TrailingWhitespace
 
@@ -4745,4 +4745,4 @@ AllowInHeredoc | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-trailing-whitespace](https://github.com/rubocop-hq/ruby-style-guide#no-trailing-whitespace)
+* [https://rubystyle.guide#no-trailing-whitespace](https://rubystyle.guide#no-trailing-whitespace)

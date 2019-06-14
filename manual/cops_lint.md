@@ -31,7 +31,7 @@ foo = ->(bar) { bar.baz }
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#syntax](https://github.com/rubocop-hq/ruby-style-guide#syntax)
+* [https://rubystyle.guide#syntax](https://rubystyle.guide#syntax)
 
 ## Lint/AmbiguousOperator
 
@@ -60,7 +60,7 @@ do_something(*some_array)
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens](https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens)
+* [https://rubystyle.guide#method-invocation-parens](https://rubystyle.guide#method-invocation-parens)
 
 ## Lint/AmbiguousRegexpLiteral
 
@@ -122,7 +122,7 @@ AllowSafeAssignment | `true` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#safe-assignment-in-condition](https://github.com/rubocop-hq/ruby-style-guide#safe-assignment-in-condition)
+* [https://rubystyle.guide#safe-assignment-in-condition](https://rubystyle.guide#safe-assignment-in-condition)
 
 ## Lint/BigDecimalNew
 
@@ -666,7 +666,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-return-ensure](https://github.com/rubocop-hq/ruby-style-guide#no-return-ensure)
+* [https://rubystyle.guide#no-return-ensure](https://rubystyle.guide#no-return-ensure)
 
 ## Lint/ErbNewArguments
 
@@ -757,7 +757,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops](https://github.com/rubocop-hq/ruby-style-guide#no-flip-flops)
+* [https://rubystyle.guide#no-flip-flops](https://rubystyle.guide#no-flip-flops)
 
 ## Lint/FloatOutOfRange
 
@@ -896,7 +896,7 @@ AllowComments | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#dont-hide-exceptions](https://github.com/rubocop-hq/ruby-style-guide#dont-hide-exceptions)
+* [https://rubystyle.guide#dont-hide-exceptions](https://rubystyle.guide#dont-hide-exceptions)
 
 ## Lint/HeredocMethodCallPosition
 
@@ -936,7 +936,7 @@ the receiver of the call is a HEREDOC.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#heredoc-method-calls](https://github.com/rubocop-hq/ruby-style-guide#heredoc-method-calls)
+* [https://rubystyle.guide#heredoc-method-calls](https://rubystyle.guide#heredoc-method-calls)
 
 ## Lint/ImplicitStringConcatenation
 
@@ -1185,7 +1185,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#loop-with-break](https://github.com/rubocop-hq/ruby-style-guide#loop-with-break)
+* [https://rubystyle.guide#loop-with-break](https://rubystyle.guide#loop-with-break)
 
 ## Lint/MissingCopEnableDirective
 
@@ -1325,7 +1325,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-nested-methods](https://github.com/rubocop-hq/ruby-style-guide#no-nested-methods)
+* [https://rubystyle.guide#no-nested-methods](https://rubystyle.guide#no-nested-methods)
 
 ## Lint/NestedPercentLiteral
 
@@ -1500,7 +1500,7 @@ puts(x + y)
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#parens-no-spaces](https://github.com/rubocop-hq/ruby-style-guide#parens-no-spaces)
+* [https://rubystyle.guide#parens-no-spaces](https://rubystyle.guide#parens-no-spaces)
 
 ## Lint/PercentStringArray
 
@@ -1727,7 +1727,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-blind-rescues](https://github.com/rubocop-hq/ruby-style-guide#no-blind-rescues)
+* [https://rubystyle.guide#no-blind-rescues](https://rubystyle.guide#no-blind-rescues)
 
 ## Lint/RescueType
 
@@ -2123,7 +2123,7 @@ which is redundant.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-to-s](https://github.com/rubocop-hq/ruby-style-guide#no-to-s)
+* [https://rubystyle.guide#no-to-s](https://rubystyle.guide#no-to-s)
 
 ## Lint/Syntax
 
@@ -2470,7 +2470,7 @@ AllowUnusedKeywordArguments | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#underscore-unused-vars](https://github.com/rubocop-hq/ruby-style-guide#underscore-unused-vars)
+* [https://rubystyle.guide#underscore-unused-vars](https://rubystyle.guide#underscore-unused-vars)
 
 ## Lint/UnusedMethodArgument
 
@@ -2506,7 +2506,7 @@ IgnoreEmptyMethods | `true` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#underscore-unused-vars](https://github.com/rubocop-hq/ruby-style-guide#underscore-unused-vars)
+* [https://rubystyle.guide#underscore-unused-vars](https://rubystyle.guide#underscore-unused-vars)
 
 ## Lint/UriEscapeUnescape
 
@@ -2702,7 +2702,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#underscore-unused-vars](https://github.com/rubocop-hq/ruby-style-guide#underscore-unused-vars)
+* [https://rubystyle.guide#underscore-unused-vars](https://rubystyle.guide#underscore-unused-vars)
 
 ## Lint/UselessComparison
 

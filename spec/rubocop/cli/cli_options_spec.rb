@@ -601,7 +601,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', 'puts 0 ')
       file = abs('example1.rb')
       url =
-        'https://github.com/rubocop-hq/ruby-style-guide#no-trailing-whitespace'
+        'https://rubystyle.guide#no-trailing-whitespace'
 
       expect(cli.run(['--format',
                       'emacs',
@@ -632,7 +632,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'shows style guide and reference entries' do
       create_file('example1.rb', '$foo = 1')
       file = abs('example1.rb')
-      style_guide_link = 'https://github.com/rubocop-hq/ruby-style-guide' \
+      style_guide_link = 'https://rubystyle.guide' \
                          '#instance-vars'
       reference_link = 'https://www.zenspider.com/ruby/quickref.html'
 
