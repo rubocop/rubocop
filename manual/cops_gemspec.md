@@ -158,3 +158,31 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/*.gemspec` | Array
+
+## Gemspec/RubyVersionGlobalsUsage
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.72 | -
+
+Checks that `RUBY_VERSION` constant is not used in gemspec
+
+### Examples
+
+```ruby
+# When `RUBY_VERSION` is used in gemspec
+
+# bad
+Gem::Specification.new do |spec|
+  if RUBY_VERSION >= '2.5'
+    spec.add_runtime_dependency 'gem_a'
+  else
+    spec.add_runtime_dependency 'gem_b'
+  end
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_runtime_dependency 'gem_a'
+end
+```

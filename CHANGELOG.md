@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* [#7137](https://github.com/rubocop-hq/rubocop/issues/7137): Add new `Gemspec/RubyVersionGlobalsUsage` cop. ([@malyshkosergey][])
+
 ### Bug fixes
 
 * [#7063](https://github.com/rubocop-hq/rubocop/issues/7063): Fix autocorrect in `Style/TernaryParentheses` cop. ([@parkerfinch][])
@@ -4085,3 +4088,4 @@
 [@fwininger]: https://github.com/fwininger
 [@stoivo]: https://github.com/stoivo
 [@eugeneius]: https://github.com/eugeneius
+[@malyshkosergey]: https://github.com/malyshkosergey

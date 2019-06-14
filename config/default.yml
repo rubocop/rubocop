@@ -198,6 +198,11 @@ Gemspec/RequiredRubyVersion:
 
 #################### Layout ###########################
 
+Gemspec/RubyVersionGlobalsUsage:
+  Description: Checks usage of RUBY_VERSION in gemspec
+  Enabled: true
+  VersionAdded: '0.72'
+
 Layout/AccessModifierIndentation:
   Description: Check indentation of private/protected visibility modifiers.
   StyleGuide: '#indent-public-private-protected'
