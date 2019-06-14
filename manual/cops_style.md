@@ -105,7 +105,7 @@ EnforcedStyle | `prefer_alias` | `prefer_alias`, `prefer_alias_method`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#alias-method](https://github.com/rubocop-hq/ruby-style-guide#alias-method)
+* [https://rubystyle.guide#alias-method](https://rubystyle.guide#alias-method)
 
 ## Style/AndOr
 
@@ -162,7 +162,7 @@ EnforcedStyle | `always` | `always`, `conditionals`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-and-or-or](https://github.com/rubocop-hq/ruby-style-guide#no-and-or-or)
+* [https://rubystyle.guide#no-and-or-or](https://rubystyle.guide#no-and-or-or)
 
 ## Style/ArrayJoin
 
@@ -188,7 +188,7 @@ array literal or the second is a string literal.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#array-join](https://github.com/rubocop-hq/ruby-style-guide#array-join)
+* [https://rubystyle.guide#array-join](https://rubystyle.guide#array-join)
 
 ## Style/AsciiComments
 
@@ -218,7 +218,7 @@ AllowedChars | `[]` | Array
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#english-comments](https://github.com/rubocop-hq/ruby-style-guide#english-comments)
+* [https://rubystyle.guide#english-comments](https://rubystyle.guide#english-comments)
 
 ## Style/Attr
 
@@ -242,7 +242,7 @@ attr_reader :one, :two, :three
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#attr](https://github.com/rubocop-hq/ruby-style-guide#attr)
+* [https://rubystyle.guide#attr](https://rubystyle.guide#attr)
 
 ## Style/AutoResourceCleanup
 
@@ -307,7 +307,7 @@ EnforcedStyle | `bare_percent` | `percent_q`, `bare_percent`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-q-shorthand](https://github.com/rubocop-hq/ruby-style-guide#percent-q-shorthand)
+* [https://rubystyle.guide#percent-q-shorthand](https://rubystyle.guide#percent-q-shorthand)
 
 ## Style/BeginBlock
 
@@ -326,7 +326,7 @@ BEGIN { test }
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-BEGIN-blocks](https://github.com/rubocop-hq/ruby-style-guide#no-BEGIN-blocks)
+* [https://rubystyle.guide#no-BEGIN-blocks](https://rubystyle.guide#no-BEGIN-blocks)
 
 ## Style/BlockComments
 
@@ -352,7 +352,7 @@ of comments...
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-block-comments](https://github.com/rubocop-hq/ruby-style-guide#no-block-comments)
+* [https://rubystyle.guide#no-block-comments](https://rubystyle.guide#no-block-comments)
 
 ## Style/BlockDelimiters
 
@@ -486,7 +486,7 @@ AllowBracesOnProceduralOneLiners | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#single-line-blocks](https://github.com/rubocop-hq/ruby-style-guide#single-line-blocks)
+* [https://rubystyle.guide#single-line-blocks](https://rubystyle.guide#single-line-blocks)
 
 ## Style/BracesAroundHashParameters
 
@@ -570,7 +570,7 @@ some_string =~ /something/
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-case-equality](https://github.com/rubocop-hq/ruby-style-guide#no-case-equality)
+* [https://rubystyle.guide#no-case-equality](https://rubystyle.guide#no-case-equality)
 
 ## Style/CharacterLiteral
 
@@ -595,7 +595,7 @@ Checks for uses of the character literal ?x.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-character-literals](https://github.com/rubocop-hq/ruby-style-guide#no-character-literals)
+* [https://rubystyle.guide#no-character-literals](https://rubystyle.guide#no-character-literals)
 
 ## Style/ClassAndModuleChildren
 
@@ -638,7 +638,7 @@ EnforcedStyle | `nested` | `nested`, `compact`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#namespace-definition](https://github.com/rubocop-hq/ruby-style-guide#namespace-definition)
+* [https://rubystyle.guide#namespace-definition](https://rubystyle.guide#namespace-definition)
 
 ## Style/ClassCheck
 
@@ -708,7 +708,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#def-self-class-methods](https://github.com/rubocop-hq/ruby-style-guide#def-self-class-methods)
+* [https://rubystyle.guide#def-self-class-methods](https://rubystyle.guide#def-self-class-methods)
 
 ## Style/ClassVars
 
@@ -748,7 +748,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-class-vars](https://github.com/rubocop-hq/ruby-style-guide#no-class-vars)
+* [https://rubystyle.guide#no-class-vars](https://rubystyle.guide#no-class-vars)
 
 ## Style/CollectionMethods
 
@@ -799,7 +799,7 @@ PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#map-find-select-reduce-size](https://github.com/rubocop-hq/ruby-style-guide#map-find-select-reduce-size)
+* [https://rubystyle.guide#map-find-select-reduce-size](https://rubystyle.guide#map-find-select-reduce-size)
 
 ## Style/ColonMethodCall
 
@@ -826,7 +826,7 @@ Marshal.dump(obj)
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#double-colons](https://github.com/rubocop-hq/ruby-style-guide#double-colons)
+* [https://rubystyle.guide#double-colons](https://rubystyle.guide#double-colons)
 
 ## Style/ColonMethodDefinition
 
@@ -855,7 +855,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#colon-method-definition](https://github.com/rubocop-hq/ruby-style-guide#colon-method-definition)
+* [https://rubystyle.guide#colon-method-definition](https://rubystyle.guide#colon-method-definition)
 
 ## Style/CommandLiteral
 
@@ -958,7 +958,7 @@ AllowInnerBackticks | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-x](https://github.com/rubocop-hq/ruby-style-guide#percent-x)
+* [https://rubystyle.guide#percent-x](https://rubystyle.guide#percent-x)
 
 ## Style/CommentAnnotation
 
@@ -1005,7 +1005,7 @@ Keywords | `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW` | Array
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#annotate-keywords](https://github.com/rubocop-hq/ruby-style-guide#annotate-keywords)
+* [https://rubystyle.guide#annotate-keywords](https://rubystyle.guide#annotate-keywords)
 
 ## Style/CommentedKeyword
 
@@ -1274,7 +1274,7 @@ AllowCoercion | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#date--time](https://github.com/rubocop-hq/ruby-style-guide#date--time)
+* [https://rubystyle.guide#date--time](https://rubystyle.guide#date--time)
 
 ## Style/DefWithParentheses
 
@@ -1316,7 +1316,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#method-parens](https://github.com/rubocop-hq/ruby-style-guide#method-parens)
+* [https://rubystyle.guide#method-parens](https://rubystyle.guide#method-parens)
 
 ## Style/Dir
 
@@ -1464,7 +1464,7 @@ this is rarely a problem in practice.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-bang-bang](https://github.com/rubocop-hq/ruby-style-guide#no-bang-bang)
+* [https://rubystyle.guide#no-bang-bang](https://rubystyle.guide#no-bang-bang)
 
 ## Style/EachForSimpleLoop
 
@@ -1743,7 +1743,7 @@ s = ''
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#literal-array-hash](https://github.com/rubocop-hq/ruby-style-guide#literal-array-hash)
+* [https://rubystyle.guide#literal-array-hash](https://rubystyle.guide#literal-array-hash)
 
 ## Style/EmptyMethod
 
@@ -1804,7 +1804,7 @@ EnforcedStyle | `compact` | `compact`, `expanded`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-single-line-methods](https://github.com/rubocop-hq/ruby-style-guide#no-single-line-methods)
+* [https://rubystyle.guide#no-single-line-methods](https://rubystyle.guide#no-single-line-methods)
 
 ## Style/Encoding
 
@@ -1825,7 +1825,7 @@ This cop checks ensures source files have no utf-8 encoding comments.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#utf-8](https://github.com/rubocop-hq/ruby-style-guide#utf-8)
+* [https://rubystyle.guide#utf-8](https://rubystyle.guide#utf-8)
 
 ## Style/EndBlock
 
@@ -1847,7 +1847,7 @@ at_exit { puts 'Goodbye!' }
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-END-blocks](https://github.com/rubocop-hq/ruby-style-guide#no-END-blocks)
+* [https://rubystyle.guide#no-END-blocks](https://rubystyle.guide#no-END-blocks)
 
 ## Style/EvalWithLocation
 
@@ -1910,7 +1910,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#predicate-methods](https://github.com/rubocop-hq/ruby-style-guide#predicate-methods)
+* [https://rubystyle.guide#predicate-methods](https://rubystyle.guide#predicate-methods)
 
 ## Style/ExpandPathArguments
 
@@ -2014,7 +2014,7 @@ EnforcedStyle | `each` | `each`, `for`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-for-loops](https://github.com/rubocop-hq/ruby-style-guide#no-for-loops)
+* [https://rubystyle.guide#no-for-loops](https://rubystyle.guide#no-for-loops)
 
 ## Style/FormatString
 
@@ -2071,7 +2071,7 @@ EnforcedStyle | `format` | `format`, `sprintf`, `percent`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#sprintf](https://github.com/rubocop-hq/ruby-style-guide#sprintf)
+* [https://rubystyle.guide#sprintf](https://rubystyle.guide#sprintf)
 
 ## Style/FormatStringToken
 
@@ -2217,7 +2217,7 @@ AllowedVariables | `[]` | Array
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#instance-vars](https://github.com/rubocop-hq/ruby-style-guide#instance-vars)
+* [https://rubystyle.guide#instance-vars](https://rubystyle.guide#instance-vars)
 * [https://www.zenspider.com/ruby/quickref.html](https://www.zenspider.com/ruby/quickref.html)
 
 ## Style/GuardClause
@@ -2270,7 +2270,7 @@ MinBodyLength | `1` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-nested-conditionals](https://github.com/rubocop-hq/ruby-style-guide#no-nested-conditionals)
+* [https://rubystyle.guide#no-nested-conditionals](https://rubystyle.guide#no-nested-conditionals)
 
 ## Style/HashSyntax
 
@@ -2351,7 +2351,7 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#hash-literals](https://github.com/rubocop-hq/ruby-style-guide#hash-literals)
+* [https://rubystyle.guide#hash-literals](https://rubystyle.guide#hash-literals)
 
 ## Style/IdenticalConditionalBranches
 
@@ -2486,7 +2486,7 @@ Foo.do_something unless qux.empty?
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#if-as-a-modifier](https://github.com/rubocop-hq/ruby-style-guide#if-as-a-modifier)
+* [https://rubystyle.guide#if-as-a-modifier](https://rubystyle.guide#if-as-a-modifier)
 
 ## Style/IfUnlessModifierOfIfUnless
 
@@ -2536,7 +2536,7 @@ result = some_condition ? something : another_thing
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-semicolon-ifs](https://github.com/rubocop-hq/ruby-style-guide#no-semicolon-ifs)
+* [https://rubystyle.guide#no-semicolon-ifs](https://rubystyle.guide#no-semicolon-ifs)
 
 ## Style/ImplicitRuntimeError
 
@@ -2583,7 +2583,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#infinite-loop](https://github.com/rubocop-hq/ruby-style-guide#infinite-loop)
+* [https://rubystyle.guide#infinite-loop](https://rubystyle.guide#infinite-loop)
 
 ## Style/InlineComment
 
@@ -2750,7 +2750,7 @@ EnforcedStyle | `line_count_dependent` | `line_count_dependent`, `lambda`, `lite
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#lambda-multi-line](https://github.com/rubocop-hq/ruby-style-guide#lambda-multi-line)
+* [https://rubystyle.guide#lambda-multi-line](https://rubystyle.guide#lambda-multi-line)
 
 ## Style/LambdaCall
 
@@ -2789,7 +2789,7 @@ EnforcedStyle | `call` | `call`, `braces`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#proc-call](https://github.com/rubocop-hq/ruby-style-guide#proc-call)
+* [https://rubystyle.guide#proc-call](https://rubystyle.guide#proc-call)
 
 ## Style/LineEndConcatenation
 
@@ -2981,7 +2981,7 @@ EnforcedStyle | `require_parentheses` | `require_parentheses`, `omit_parentheses
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens](https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens)
+* [https://rubystyle.guide#method-invocation-parens](https://rubystyle.guide#method-invocation-parens)
 
 ## Style/MethodCallWithoutArgsParentheses
 
@@ -3009,7 +3009,7 @@ IgnoredMethods | `[]` | Array
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens](https://github.com/rubocop-hq/ruby-style-guide#method-invocation-parens)
+* [https://rubystyle.guide#method-invocation-parens](https://rubystyle.guide#method-invocation-parens)
 
 ## Style/MethodCalledOnDoEndBlock
 
@@ -3031,7 +3031,7 @@ end.c
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#single-line-blocks](https://github.com/rubocop-hq/ruby-style-guide#single-line-blocks)
+* [https://rubystyle.guide#single-line-blocks](https://rubystyle.guide#single-line-blocks)
 
 ## Style/MethodDefParentheses
 
@@ -3138,7 +3138,7 @@ EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_paren
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#method-parens](https://github.com/rubocop-hq/ruby-style-guide#method-parens)
+* [https://rubystyle.guide#method-parens](https://rubystyle.guide#method-parens)
 
 ## Style/MethodMissingSuper
 
@@ -3167,7 +3167,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-method-missing](https://github.com/rubocop-hq/ruby-style-guide#no-method-missing)
+* [https://rubystyle.guide#no-method-missing](https://rubystyle.guide#no-method-missing)
 
 ## Style/MinMax
 
@@ -3330,7 +3330,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-method-missing](https://github.com/rubocop-hq/ruby-style-guide#no-method-missing)
+* [https://rubystyle.guide#no-method-missing](https://rubystyle.guide#no-method-missing)
 
 ## Style/MixinGrouping
 
@@ -3381,7 +3381,7 @@ EnforcedStyle | `separated` | `separated`, `grouped`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#mixin-grouping](https://github.com/rubocop-hq/ruby-style-guide#mixin-grouping)
+* [https://rubystyle.guide#mixin-grouping](https://rubystyle.guide#mixin-grouping)
 
 ## Style/MixinUsage
 
@@ -3500,7 +3500,7 @@ Autocorrect | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#module-function](https://github.com/rubocop-hq/ruby-style-guide#module-function)
+* [https://rubystyle.guide#module-function](https://rubystyle.guide#module-function)
 
 ## Style/MultilineBlockChain
 
@@ -3523,7 +3523,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#single-line-blocks](https://github.com/rubocop-hq/ruby-style-guide#single-line-blocks)
+* [https://rubystyle.guide#single-line-blocks](https://rubystyle.guide#single-line-blocks)
 
 ## Style/MultilineIfModifier
 
@@ -3547,7 +3547,7 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-multiline-if-modifiers](https://github.com/rubocop-hq/ruby-style-guide#no-multiline-if-modifiers)
+* [https://rubystyle.guide#no-multiline-if-modifiers](https://rubystyle.guide#no-multiline-if-modifiers)
 
 ## Style/MultilineIfThen
 
@@ -3574,7 +3574,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-then](https://github.com/rubocop-hq/ruby-style-guide#no-then)
+* [https://rubystyle.guide#no-then](https://rubystyle.guide#no-then)
 
 ## Style/MultilineMemoization
 
@@ -3678,7 +3678,7 @@ a =
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-multiline-ternary](https://github.com/rubocop-hq/ruby-style-guide#no-multiline-ternary)
+* [https://rubystyle.guide#no-multiline-ternary](https://rubystyle.guide#no-multiline-ternary)
 
 ## Style/MultipleComparison
 
@@ -3856,7 +3856,7 @@ EnforcedStyle | `both` | `both`, `prefix`, `postfix`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#unless-for-negatives](https://github.com/rubocop-hq/ruby-style-guide#unless-for-negatives)
+* [https://rubystyle.guide#unless-for-negatives](https://rubystyle.guide#unless-for-negatives)
 
 ## Style/NegatedUnless
 
@@ -3937,7 +3937,7 @@ EnforcedStyle | `both` | `both`, `prefix`, `postfix`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#if-for-negatives](https://github.com/rubocop-hq/ruby-style-guide#if-for-negatives)
+* [https://rubystyle.guide#if-for-negatives](https://rubystyle.guide#if-for-negatives)
 
 ## Style/NegatedWhile
 
@@ -3970,7 +3970,7 @@ bar while !foo && baz
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#until-for-negatives](https://github.com/rubocop-hq/ruby-style-guide#until-for-negatives)
+* [https://rubystyle.guide#until-for-negatives](https://rubystyle.guide#until-for-negatives)
 
 ## Style/NestedModifier
 
@@ -3993,7 +3993,7 @@ something if b && a
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-nested-modifiers](https://github.com/rubocop-hq/ruby-style-guide#no-nested-modifiers)
+* [https://rubystyle.guide#no-nested-modifiers](https://rubystyle.guide#no-nested-modifiers)
 
 ## Style/NestedParenthesizedCalls
 
@@ -4044,7 +4044,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-nested-ternary](https://github.com/rubocop-hq/ruby-style-guide#no-nested-ternary)
+* [https://rubystyle.guide#no-nested-ternary](https://rubystyle.guide#no-nested-ternary)
 
 ## Style/Next
 
@@ -4112,7 +4112,7 @@ MinBodyLength | `3` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-nested-conditionals](https://github.com/rubocop-hq/ruby-style-guide#no-nested-conditionals)
+* [https://rubystyle.guide#no-nested-conditionals](https://rubystyle.guide#no-nested-conditionals)
 
 ## Style/NilComparison
 
@@ -4158,7 +4158,7 @@ EnforcedStyle | `predicate` | `predicate`, `comparison`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#predicate-methods](https://github.com/rubocop-hq/ruby-style-guide#predicate-methods)
+* [https://rubystyle.guide#predicate-methods](https://rubystyle.guide#predicate-methods)
 
 ## Style/NonNilCheck
 
@@ -4200,7 +4200,7 @@ IncludeSemanticChanges | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-non-nil-checks](https://github.com/rubocop-hq/ruby-style-guide#no-non-nil-checks)
+* [https://rubystyle.guide#no-non-nil-checks](https://rubystyle.guide#no-non-nil-checks)
 
 ## Style/Not
 
@@ -4222,7 +4222,7 @@ x = !something
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#bang-not-not](https://github.com/rubocop-hq/ruby-style-guide#bang-not-not)
+* [https://rubystyle.guide#bang-not-not](https://rubystyle.guide#bang-not-not)
 
 ## Style/NumericLiteralPrefix
 
@@ -4276,7 +4276,7 @@ EnforcedOctalStyle | `zero_with_o` | `zero_with_o`, `zero_only`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#numeric-literal-prefixes](https://github.com/rubocop-hq/ruby-style-guide#numeric-literal-prefixes)
+* [https://rubystyle.guide#numeric-literal-prefixes](https://rubystyle.guide#numeric-literal-prefixes)
 
 ## Style/NumericLiterals
 
@@ -4315,7 +4315,7 @@ Strict | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#underscores-in-numerics](https://github.com/rubocop-hq/ruby-style-guide#underscores-in-numerics)
+* [https://rubystyle.guide#underscores-in-numerics](https://rubystyle.guide#underscores-in-numerics)
 
 ## Style/NumericPredicate
 
@@ -4380,7 +4380,7 @@ Exclude | `spec/**/*` | Array
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#predicate-methods](https://github.com/rubocop-hq/ruby-style-guide#predicate-methods)
+* [https://rubystyle.guide#predicate-methods](https://rubystyle.guide#predicate-methods)
 
 ## Style/OneLineConditional
 
@@ -4413,7 +4413,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#ternary-operator](https://github.com/rubocop-hq/ruby-style-guide#ternary-operator)
+* [https://rubystyle.guide#ternary-operator](https://rubystyle.guide#ternary-operator)
 
 ## Style/OptionHash
 
@@ -4471,7 +4471,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#optional-arguments](https://github.com/rubocop-hq/ruby-style-guide#optional-arguments)
+* [https://rubystyle.guide#optional-arguments](https://rubystyle.guide#optional-arguments)
 
 ## Style/OrAssignment
 
@@ -4508,7 +4508,7 @@ name ||= 'Bozhidar'
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#double-pipe-for-uninit](https://github.com/rubocop-hq/ruby-style-guide#double-pipe-for-uninit)
+* [https://rubystyle.guide#double-pipe-for-uninit](https://rubystyle.guide#double-pipe-for-uninit)
 
 ## Style/ParallelAssignment
 
@@ -4539,7 +4539,7 @@ c = 3
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#parallel-assignment](https://github.com/rubocop-hq/ruby-style-guide#parallel-assignment)
+* [https://rubystyle.guide#parallel-assignment](https://rubystyle.guide#parallel-assignment)
 
 ## Style/ParenthesesAroundCondition
 
@@ -4600,7 +4600,7 @@ AllowInMultilineConditions | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-parens-around-condition](https://github.com/rubocop-hq/ruby-style-guide#no-parens-around-condition)
+* [https://rubystyle.guide#no-parens-around-condition](https://rubystyle.guide#no-parens-around-condition)
 
 ## Style/PercentLiteralDelimiters
 
@@ -4640,7 +4640,7 @@ PreferredDelimiters | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-literal-braces](https://github.com/rubocop-hq/ruby-style-guide#percent-literal-braces)
+* [https://rubystyle.guide#percent-literal-braces](https://rubystyle.guide#percent-literal-braces)
 
 ## Style/PercentQLiterals
 
@@ -4705,7 +4705,7 @@ puts Regexp.last_match(1)
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-perl-regexp-last-matchers](https://github.com/rubocop-hq/ruby-style-guide#no-perl-regexp-last-matchers)
+* [https://rubystyle.guide#no-perl-regexp-last-matchers](https://rubystyle.guide#no-perl-regexp-last-matchers)
 
 ## Style/PreferredHashMethods
 
@@ -4751,7 +4751,7 @@ EnforcedStyle | `short` | `short`, `verbose`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#hash-key](https://github.com/rubocop-hq/ruby-style-guide#hash-key)
+* [https://rubystyle.guide#hash-key](https://rubystyle.guide#hash-key)
 
 ## Style/Proc
 
@@ -4774,7 +4774,7 @@ p = proc { |n| puts n }
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#proc](https://github.com/rubocop-hq/ruby-style-guide#proc)
+* [https://rubystyle.guide#proc](https://rubystyle.guide#proc)
 
 ## Style/RaiseArgs
 
@@ -4827,7 +4827,7 @@ EnforcedStyle | `exploded` | `compact`, `exploded`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#exception-class-messages](https://github.com/rubocop-hq/ruby-style-guide#exception-class-messages)
+* [https://rubystyle.guide#exception-class-messages](https://rubystyle.guide#exception-class-messages)
 
 ## Style/RandomWithOffset
 
@@ -4861,7 +4861,7 @@ rand(1...7)
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#random-numbers](https://github.com/rubocop-hq/ruby-style-guide#random-numbers)
+* [https://rubystyle.guide#random-numbers](https://rubystyle.guide#random-numbers)
 
 ## Style/RedundantBegin
 
@@ -4925,7 +4925,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#begin-implicit](https://github.com/rubocop-hq/ruby-style-guide#begin-implicit)
+* [https://rubystyle.guide#begin-implicit](https://rubystyle.guide#begin-implicit)
 
 ## Style/RedundantConditional
 
@@ -4983,7 +4983,7 @@ raise 'message'
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-explicit-runtimeerror](https://github.com/rubocop-hq/ruby-style-guide#no-explicit-runtimeerror)
+* [https://rubystyle.guide#no-explicit-runtimeerror](https://rubystyle.guide#no-explicit-runtimeerror)
 
 ## Style/RedundantFreeze
 
@@ -5070,7 +5070,7 @@ AllowMultipleReturnValues | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-explicit-return](https://github.com/rubocop-hq/ruby-style-guide#no-explicit-return)
+* [https://rubystyle.guide#no-explicit-return](https://rubystyle.guide#no-explicit-return)
 
 ## Style/RedundantSelf
 
@@ -5121,7 +5121,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-self-unless-required](https://github.com/rubocop-hq/ruby-style-guide#no-self-unless-required)
+* [https://rubystyle.guide#no-self-unless-required](https://rubystyle.guide#no-self-unless-required)
 
 ## Style/RedundantSortBy
 
@@ -5252,7 +5252,7 @@ AllowInnerSlashes | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-r](https://github.com/rubocop-hq/ruby-style-guide#percent-r)
+* [https://rubystyle.guide#percent-r](https://rubystyle.guide#percent-r)
 
 ## Style/RescueModifier
 
@@ -5278,7 +5278,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-rescue-modifiers](https://github.com/rubocop-hq/ruby-style-guide#no-rescue-modifiers)
+* [https://rubystyle.guide#no-rescue-modifiers](https://rubystyle.guide#no-rescue-modifiers)
 
 ## Style/RescueStandardError
 
@@ -5542,7 +5542,7 @@ x += 1
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#self-assignment](https://github.com/rubocop-hq/ruby-style-guide#self-assignment)
+* [https://rubystyle.guide#self-assignment](https://rubystyle.guide#self-assignment)
 
 ## Style/Semicolon
 
@@ -5574,7 +5574,7 @@ AllowAsExpressionSeparator | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-semicolon](https://github.com/rubocop-hq/ruby-style-guide#no-semicolon)
+* [https://rubystyle.guide#no-semicolon](https://rubystyle.guide#no-semicolon)
 
 ## Style/Send
 
@@ -5598,7 +5598,7 @@ quuz.public_send(:fred)
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#prefer-public-send](https://github.com/rubocop-hq/ruby-style-guide#prefer-public-send)
+* [https://rubystyle.guide#prefer-public-send](https://rubystyle.guide#prefer-public-send)
 
 ## Style/SignalException
 
@@ -5725,7 +5725,7 @@ EnforcedStyle | `only_raise` | `only_raise`, `only_fail`, `semantic`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#prefer-raise-over-fail](https://github.com/rubocop-hq/ruby-style-guide#prefer-raise-over-fail)
+* [https://rubystyle.guide#prefer-raise-over-fail](https://rubystyle.guide#prefer-raise-over-fail)
 
 ## Style/SingleLineBlockParams
 
@@ -5801,7 +5801,7 @@ AllowIfMethodIsEmpty | `true` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-single-line-methods](https://github.com/rubocop-hq/ruby-style-guide#no-single-line-methods)
+* [https://rubystyle.guide#no-single-line-methods](https://rubystyle.guide#no-single-line-methods)
 
 ## Style/SpecialGlobalVars
 
@@ -5876,7 +5876,7 @@ EnforcedStyle | `use_english_names` | `use_perl_names`, `use_english_names`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-cryptic-perlisms](https://github.com/rubocop-hq/ruby-style-guide#no-cryptic-perlisms)
+* [https://rubystyle.guide#no-cryptic-perlisms](https://rubystyle.guide#no-cryptic-perlisms)
 
 ## Style/StabbyLambdaParentheses
 
@@ -5916,7 +5916,7 @@ EnforcedStyle | `require_parentheses` | `require_parentheses`, `require_no_paren
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#stabby-lambda-with-args](https://github.com/rubocop-hq/ruby-style-guide#stabby-lambda-with-args)
+* [https://rubystyle.guide#stabby-lambda-with-args](https://rubystyle.guide#stabby-lambda-with-args)
 
 ## Style/StderrPuts
 
@@ -5940,7 +5940,7 @@ warn('hello')
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#warn](https://github.com/rubocop-hq/ruby-style-guide#warn)
+* [https://rubystyle.guide#warn](https://rubystyle.guide#warn)
 
 ## Style/StringHashKeys
 
@@ -5963,7 +5963,7 @@ symbols is preferred instead.
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#symbols-as-keys](https://github.com/rubocop-hq/ruby-style-guide#symbols-as-keys)
+* [https://rubystyle.guide#symbols-as-keys](https://rubystyle.guide#symbols-as-keys)
 
 ## Style/StringLiterals
 
@@ -6011,7 +6011,7 @@ ConsistentQuotesInMultiline | `false` | Boolean
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#consistent-string-literals](https://github.com/rubocop-hq/ruby-style-guide#consistent-string-literals)
+* [https://rubystyle.guide#consistent-string-literals](https://rubystyle.guide#consistent-string-literals)
 
 ## Style/StringLiteralsInInterpolation
 
@@ -6124,7 +6124,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-extend-struct-new](https://github.com/rubocop-hq/ruby-style-guide#no-extend-struct-new)
+* [https://rubystyle.guide#no-extend-struct-new](https://rubystyle.guide#no-extend-struct-new)
 
 ## Style/SymbolArray
 
@@ -6173,7 +6173,7 @@ MinSize | `2` | Integer
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-i](https://github.com/rubocop-hq/ruby-style-guide#percent-i)
+* [https://rubystyle.guide#percent-i](https://rubystyle.guide#percent-i)
 
 ## Style/SymbolLiteral
 
@@ -6419,7 +6419,7 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-trailing-params-comma](https://github.com/rubocop-hq/ruby-style-guide#no-trailing-params-comma)
+* [https://rubystyle.guide#no-trailing-params-comma](https://rubystyle.guide#no-trailing-params-comma)
 
 ## Style/TrailingCommaInArrayLiteral
 
@@ -6482,7 +6482,7 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-trailing-array-commas](https://github.com/rubocop-hq/ruby-style-guide#no-trailing-array-commas)
+* [https://rubystyle.guide#no-trailing-array-commas](https://rubystyle.guide#no-trailing-array-commas)
 
 ## Style/TrailingCommaInHashLiteral
 
@@ -6663,7 +6663,7 @@ Whitelist | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#attr_family](https://github.com/rubocop-hq/ruby-style-guide#attr_family)
+* [https://rubystyle.guide#attr_family](https://rubystyle.guide#attr_family)
 
 ## Style/UnlessElse
 
@@ -6693,7 +6693,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-else-with-unless](https://github.com/rubocop-hq/ruby-style-guide#no-else-with-unless)
+* [https://rubystyle.guide#no-else-with-unless](https://rubystyle.guide#no-else-with-unless)
 
 ## Style/UnneededCapitalW
 
@@ -6797,7 +6797,7 @@ question = '"What did you say?"'
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-q](https://github.com/rubocop-hq/ruby-style-guide#percent-q)
+* [https://rubystyle.guide#percent-q](https://rubystyle.guide#percent-q)
 
 ## Style/UnneededSort
 
@@ -6900,7 +6900,7 @@ This cop checks for variable interpolation (like "#@ivar").
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#curlies-interpolate](https://github.com/rubocop-hq/ruby-style-guide#curlies-interpolate)
+* [https://rubystyle.guide#curlies-interpolate](https://rubystyle.guide#curlies-interpolate)
 
 ## Style/WhenThen
 
@@ -6928,7 +6928,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#one-line-cases](https://github.com/rubocop-hq/ruby-style-guide#one-line-cases)
+* [https://rubystyle.guide#one-line-cases](https://rubystyle.guide#one-line-cases)
 
 ## Style/WhileUntilDo
 
@@ -6965,7 +6965,7 @@ end
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#no-multiline-while-do](https://github.com/rubocop-hq/ruby-style-guide#no-multiline-while-do)
+* [https://rubystyle.guide#no-multiline-while-do](https://rubystyle.guide#no-multiline-while-do)
 
 ## Style/WhileUntilModifier
 
@@ -7000,7 +7000,7 @@ x += 1 until x > 10
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#while-as-a-modifier](https://github.com/rubocop-hq/ruby-style-guide#while-as-a-modifier)
+* [https://rubystyle.guide#while-as-a-modifier](https://rubystyle.guide#while-as-a-modifier)
 
 ## Style/WordArray
 
@@ -7050,7 +7050,7 @@ WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` |
 
 ### References
 
-* [https://github.com/rubocop-hq/ruby-style-guide#percent-w](https://github.com/rubocop-hq/ruby-style-guide#percent-w)
+* [https://rubystyle.guide#percent-w](https://rubystyle.guide#percent-w)
 
 ## Style/YodaCondition
 

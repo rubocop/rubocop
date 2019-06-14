@@ -855,7 +855,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           DisplayStyleGuide: true
       YAML
 
-      url = 'https://github.com/rubocop-hq/ruby-style-guide#no-trailing-whitespace'
+      url = 'https://rubystyle.guide#no-trailing-whitespace'
 
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)

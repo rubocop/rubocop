@@ -20,7 +20,7 @@
 **RuboCop** is a Ruby static code analyzer and code formatter. Out of
 the box it will enforce many of the guidelines outlined in the
 community [Ruby Style
-Guide](https://github.com/rubocop-hq/ruby-style-guide).
+Guide](https://rubystyle.guide).
 
 RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various
 [configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).
