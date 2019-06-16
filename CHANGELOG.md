@@ -11,6 +11,7 @@
 
 ### Bug fixes
 
+* [#7144](https://github.com/rubocop-hq/rubocop/issues/7144): Fix `Style/Documentation` constant visibility declaration in namespace. ([@AdrienSldy][])
 * [#7256](https://github.com/rubocop-hq/rubocop/issues/7256): Fix an error of `Style/RedundantParentheses` on method calls where the first argument begins with a hash literal. ([@halfwhole][])
 * [#7263](https://github.com/rubocop-hq/rubocop/issues/7263): Make `Layout/SpaceInsideArrayLiteralBrackets` properly handle tab-indented arrays. ([@buehmann][])
 * [#7252](https://github.com/rubocop-hq/rubocop/issues/7252): Prevent infinite loops by making `Layout/SpaceInsideStringInterpolation` skip over interpolations that start or end with a line break. ([@buehmann][])
@@ -100,6 +101,7 @@
 * [#7171](https://github.com/rubocop-hq/rubocop/issues/7171): Fix an error for `Style/SafeNavigation` when using `unless nil?` as a safeguarded'. ([@koic][])
 * [#7130](https://github.com/rubocop-hq/rubocop/pull/7130): Skip autocorrect in `Style/FormatString` if second argument to `String#%` is a variable. ([@tejasbubane][])
 * [#7171](https://github.com/rubocop-hq/rubocop/issues/7171): Fix an error for `Style/SafeNavigation` when using `unless nil?` as a safeguarded'. ([@koic][])
+* [#7113](https://github.com/rubocop-hq/rubocop/pull/7113): This PR renames `EnforcedStyle: rails` to `EnabledStyle: outdented_access_modifiers` for `Layout/IndentationConsistency`. ([@koic][])
 
 ### Changes
 
