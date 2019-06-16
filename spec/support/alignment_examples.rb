@@ -2,7 +2,7 @@
 
 # `cop` and `source` must be declared with #let.
 
-RSpec.shared_examples_for 'misaligned' do |annotated_source, used_style|
+shared_examples_for 'misaligned' do |annotated_source, used_style|
   config_to_allow_offenses = if used_style
                                { 'EnforcedStyleAlignWith' => used_style.to_s }
                              else
@@ -31,11 +31,11 @@ RSpec.shared_examples_for 'misaligned' do |annotated_source, used_style|
   end
 end
 
-RSpec.shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
+shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
   name = name.gsub(/\n/, ' <newline>')
   it "accepts matching #{name} ... end" do
     inspect_source("#{alignment_base} #{arg}\n#{end_kw}")
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.empty?).to be(true)
   end
 end
