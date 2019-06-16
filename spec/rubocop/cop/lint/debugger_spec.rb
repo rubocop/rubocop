@@ -13,13 +13,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     end
   end
 
-  shared_examples_for 'non-debugger' do |name, src|
-    it "does not report an offense for #{name}" do
-      inspect_source(src)
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
   include_examples 'debugger', 'debugger', 'debugger'
   include_examples 'debugger', 'byebug', 'byebug'
   include_examples 'debugger', 'pry binding',
@@ -57,21 +50,31 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   include_examples 'debugger',
                    'capybara debug method with an argument',
                    'save_screenshot foo'
-  include_examples 'non-debugger', 'a non-pry binding', 'binding.pirate'
+
+  it 'does not report an offense for a non-pry binding' do
+    expect_no_offenses('binding.pirate')
+  end
 
   include_examples 'debugger', 'debugger with Kernel', 'Kernel.debugger'
   include_examples 'debugger', 'debugger with ::Kernel', '::Kernel.debugger'
   include_examples 'debugger', 'binding.pry with Kernel', 'Kernel.binding.pry'
-  include_examples 'non-debugger', 'save_and_open_page with Kernel',
-                   'Kernel.save_and_open_page'
+
+  it 'does not report an offense for save_and_open_page with Kernel' do
+    expect_no_offenses('Kernel.save_and_open_page')
+  end
 
   ALL_COMMANDS = %w[debugger byebug pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
                     save_screenshot].freeze
 
   ALL_COMMANDS.each do |src|
-    include_examples 'non-debugger', "a #{src} in comments", "# #{src}"
-    include_examples 'non-debugger', "a #{src} method", "code.#{src}"
+    it "does not report an offense for a #{src} in comments" do
+      expect_no_offenses("# #{src}")
+    end
+
+    it "does not report an offense for a #{src} method" do
+      expect_no_offenses("code.#{src}")
+    end
   end
 
   it 'reports an offense for a Pry.rescue call' do
