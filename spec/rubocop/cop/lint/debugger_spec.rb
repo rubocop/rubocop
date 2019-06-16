@@ -89,10 +89,5 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   context 'target_ruby_version >= 2.4', :ruby24 do
     include_examples 'debugger', 'irb binding', 'binding.irb'
     include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
-
-    ALL_COMMANDS.each do |src|
-      include_examples 'non-debugger', "a #{src} in comments", "# #{src}"
-      include_examples 'non-debugger', "a #{src} method", "code.#{src}"
-    end
   end
 end
