@@ -2751,6 +2751,7 @@ Style/IdenticalConditionalBranches:
 Style/IfInsideElse:
   Description: 'Finds if nodes inside else, which can be converted to elsif.'
   Enabled: true
+  AllowIfModifier: false
   VersionAdded: '0.36'
 
 Style/IfUnlessModifier:

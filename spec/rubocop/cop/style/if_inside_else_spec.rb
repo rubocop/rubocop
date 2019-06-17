@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::IfInsideElse do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) do
+    { 'AllowIfModifier' => false }
+  end
 
   it 'catches an if node nested inside an else' do
     expect_offense(<<~RUBY)
@@ -31,15 +35,33 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse do
     RUBY
   end
 
-  it 'catches a modifier if nested inside an else' do
-    expect_offense(<<~RUBY)
-      if a
-        blah
-      else
-        foo if b
-            ^^ Convert `if` nested inside `else` to `elsif`.
-      end
-    RUBY
+  context 'when AllowIfModifier is false' do
+    it 'catches a modifier if nested inside an else' do
+      expect_offense(<<~RUBY)
+        if a
+          blah
+        else
+          foo if b
+              ^^ Convert `if` nested inside `else` to `elsif`.
+        end
+      RUBY
+    end
+  end
+
+  context 'when AllowIfModifier is true' do
+    let(:cop_config) do
+      { 'AllowIfModifier' => true }
+    end
+
+    it 'accepts a modifier if nested inside an else' do
+      expect_no_offenses(<<~RUBY)
+        if a
+          blah
+        else
+          foo if b
+        end
+      RUBY
+    end
   end
 
   it "isn't offended if there is a statement following the if node" do
