@@ -1341,7 +1341,7 @@ Lint/ErbNewArguments:
   VersionAdded: '0.56'
 
 Lint/FlipFlop:
-  Description: 'Checks for flip-flops'
+  Description: 'Checks for flip-flops.'
   StyleGuide: '#no-flip-flops'
   Enabled: true
   VersionAdded: '0.16'
@@ -1399,7 +1399,7 @@ Lint/InheritException:
     - standard_error
 
 Lint/InterpolationCheck:
-  Description: 'Raise warning for interpolation in single q strs'
+  Description: 'Raise warning for interpolation in single q strs.'
   Enabled: true
   VersionAdded: '0.50'
 
@@ -1423,7 +1423,7 @@ Lint/Loop:
   VersionAdded: '0.9'
 
 Lint/MissingCopEnableDirective:
-  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`'
+  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
   # Maximum number of consecutive lines the cop can be disabled for.
@@ -1611,7 +1611,7 @@ Lint/StringConversionInInterpolation:
   VersionChanged: '0.20'
 
 Lint/Syntax:
-  Description: 'Checks syntax error'
+  Description: 'Checks syntax error.'
   Enabled: true
   VersionAdded: '0.9'
 
@@ -1627,7 +1627,7 @@ Lint/UnderscorePrefixedVariableName:
   AllowKeywordBlockArguments: false
 
 Lint/UnifiedInteger:
-  Description: 'Use Integer instead of Fixnum or Bignum'
+  Description: 'Use Integer instead of Fixnum or Bignum.'
   Enabled: true
   VersionAdded: '0.43'
 
@@ -1650,7 +1650,7 @@ Lint/UnneededRequireStatement:
   VersionAdded: '0.51'
 
 Lint/UnneededSplatExpansion:
-  Description: 'Checks for splat unnecessarily being called on literals'
+  Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
   VersionAdded: '0.43'
 
@@ -1759,7 +1759,7 @@ Metrics/BlockLength:
     - '**/*.gemspec'
 
 Metrics/BlockNesting:
-  Description: 'Avoid excessive block nesting'
+  Description: 'Avoid excessive block nesting.'
   StyleGuide: '#three-is-the-number-thou-shalt-count'
   Enabled: true
   VersionAdded: '0.25'
@@ -2632,7 +2632,7 @@ Style/EvalWithLocation:
   VersionAdded: '0.52'
 
 Style/EvenOdd:
-  Description: 'Favor the use of Integer#even? && Integer#odd?'
+  Description: 'Favor the use of `Integer#even?` && `Integer#odd?`.'
   StyleGuide: '#predicate-methods'
   Enabled: true
   VersionAdded: '0.12'
@@ -2708,7 +2708,7 @@ Style/GlobalVars:
   AllowedVariables: []
 
 Style/GuardClause:
-  Description: 'Check for conditionals that can be replaced with guard clauses'
+  Description: 'Check for conditionals that can be replaced with guard clauses.'
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
   VersionAdded: '0.20'
@@ -2916,7 +2916,7 @@ Style/MethodMissingSuper:
 Style/MinMax:
   Description: >-
                  Use `Enumerable#minmax` instead of `Enumerable#min`
-                 and `Enumerable#max` in conjunction.'
+                 and `Enumerable#max` in conjunction.
   Enabled: true
   VersionAdded: '0.50'
 
@@ -2926,7 +2926,7 @@ Style/MissingElse:
                 If enabled, it is recommended that
                 Style/UnlessElse and Style/EmptyElse be enabled.
                 This will conflict with Style/EmptyElse if
-                Style/EmptyElse is configured to style "both"
+                Style/EmptyElse is configured to style "both".
   Enabled: false
   VersionAdded: '0.30'
   VersionChanged: '0.38'
@@ -3238,7 +3238,7 @@ Style/OptionHash:
 Style/OptionalArguments:
   Description: >-
                  Checks for optional arguments that do not appear at the end
-                 of the argument list
+                 of the argument list.
   StyleGuide: '#optional-arguments'
   Enabled: true
   VersionAdded: '0.33'
@@ -3270,7 +3270,7 @@ Style/ParenthesesAroundCondition:
   AllowInMultilineConditions: false
 
 Style/PercentLiteralDelimiters:
-  Description: 'Use `%`-literal delimiters consistently'
+  Description: 'Use `%`-literal delimiters consistently.'
   StyleGuide: '#percent-literal-braces'
   Enabled: true
   VersionAdded: '0.19'
@@ -3802,7 +3802,7 @@ Style/UnneededSort:
 Style/UnpackFirst:
   Description: >-
                  Checks for accessing the first element of `String#unpack`
-                 instead of using `unpack1`
+                 instead of using `unpack1`.
   Enabled: true
   VersionAdded: '0.54'
 

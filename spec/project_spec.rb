@@ -27,6 +27,14 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
+    it 'have a period at EOL of description' do
+      cop_names.each do |name|
+        description = config[name]['Description']
+
+        expect(description).to match(/\.\z/)
+      end
+    end
+
     it 'sorts configuration keys alphabetically' do
       expected = configuration_keys.sort
       configuration_keys.each_with_index do |key, idx|
