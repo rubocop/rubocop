@@ -1958,6 +1958,71 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ```
 
+## Style/FloatDivision
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.72 | -
+
+This cop checks for division with integers coerced to floats.
+It is recommended to either always use `fdiv` or coerce one side only.
+This cop also provides other options for code consistency.
+
+### Examples
+
+#### EnforcedStyle: single_coerce (default)
+
+```ruby
+# bad
+a.to_f / b.to_f
+
+# good
+a.to_f / b
+a / b.to_f
+```
+#### EnforcedStyle: left_coerce
+
+```ruby
+# bad
+a / b.to_f
+a.to_f / b.to_f
+
+# good
+a.to_f / b
+```
+#### EnforcedStyle: right_coerce
+
+```ruby
+# bad
+a.to_f / b
+a.to_f / b.to_f
+
+# good
+a / b.to_f
+```
+#### EnforcedStyle: fdiv
+
+```ruby
+# bad
+a / b.to_f
+a.to_f / b
+a.to_f / b.to_f
+
+# good
+a.fdiv(b)
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `single_coerce` | `left_coerce`, `right_coerce`, `single_coerce`, `fdiv`
+
+### References
+
+* [https://rubystyle.guide#float-division](https://rubystyle.guide#float-division)
+* [https://github.com/rubocop-hq/ruby-style-guide/issues/628](https://github.com/rubocop-hq/ruby-style-guide/issues/628)
+
 ## Style/For
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

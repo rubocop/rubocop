@@ -2643,6 +2643,19 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
+Style/FloatDivision:
+  Description: 'For performing float division, coerce one side only.'
+  StyleGuide: '#float-division'
+  Reference: 'https://github.com/rubocop-hq/ruby-style-guide/issues/628'
+  Enabled: true
+  VersionAdded: '0.72'
+  EnforcedStyle: single_coerce
+  SupportedStyles:
+    - left_coerce
+    - right_coerce
+    - single_coerce
+    - fdiv
+
 Style/For:
   Description: 'Checks use of for or each in multiline loops.'
   StyleGuide: '#no-for-loops'
