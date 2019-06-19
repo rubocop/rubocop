@@ -2164,8 +2164,12 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.68 | -
 
-This cop checks the indentation of the first argument in a method call
-or definition.
+This cop checks the indentation of the first argument in a method call.
+Arguments after the first one are checked by Layout/AlignArguments,
+not by this cop.
+
+For indenting the first parameter of method *definitions*, check out
+Layout/IndentFirstParameter.
 
 ### Examples
 
@@ -2517,9 +2521,13 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 0.68
 
-This cop checks the indentation of the first parameter in a method call.
-Parameters after the first one are checked by Layout/AlignParameters,
-not by this cop.
+This cop checks the indentation of the first parameter in a method
+definition. Parameters after the first one are checked by
+Layout/AlignParameters, not by this cop.
+
+For indenting the first argument of method *calls*, check out
+Layout/IndentFirstArgument, which supports options related to
+nesting that are irrelevant for method *definitions*.
 
 ### Examples
 
