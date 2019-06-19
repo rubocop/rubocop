@@ -34,14 +34,20 @@ See [development](development.md).
 
 * [rubocop-performance](https://github.com/rubocop-hq/rubocop-performance) -
   Performance optimization analysis
-* [rubocop-rails](https://github.com/rubocop-hq/rubocop-rails) - Rails-specific analysis
+* [rubocop-rails](https://github.com/rubocop-hq/rubocop-rails) -
+  Rails-specific analysis
 * [rubocop-rspec](https://github.com/rubocop-hq/rubocop-rspec) -
   RSpec-specific analysis
 * [rubocop-thread_safety](https://github.com/covermymeds/rubocop-thread_safety) -
   Thread-safety analysis
 * [rubocop-require_tools](https://github.com/milch/rubocop-require_tools) -
   Dynamic analysis for missing require statements
-* [rubocop-i18n](https://github.com/puppetlabs/rubocop-i18n) - i18n wrapper function analysis (gettext and rails-i18n)
+* [rubocop-i18n](https://github.com/puppetlabs/rubocop-i18n) -
+  i18n wrapper function analysis (gettext and rails-i18n)
+* [rubocop-sequel](https://github.com/rubocop-hq/rubocop-sequel) -
+  Code style checking for Sequel gem
+
+Any extensions missing? Send us a Pull Request!
 
 ### Custom Formatters
 
