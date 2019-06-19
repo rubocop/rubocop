@@ -1615,8 +1615,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             TargetRubyVersion: 2.8
         YAML
         expect(cli.run([])).to eq(2)
-        expect($stderr.string.strip).to match(
-          /\AError: Unknown Ruby version 2.8 found in `TargetRubyVersion`/
+        expect($stderr.string.strip).to start_with(
+          'Error: RuboCop found unknown Ruby version 2.8 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
           /Supported versions: 2.3, 2.4, 2.5, 2.6, 2.7/
@@ -1632,8 +1632,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
 
         expect(cli.run([])).to eq(2)
-        expect($stderr.string.strip).to match(
-          /\AError: Unsupported Ruby version 2.0 found in `TargetRubyVersion`/
+        expect($stderr.string.strip).to start_with(
+          'Error: RuboCop found unsupported Ruby version 2.0 in '\
+          '`TargetRubyVersion`'
         )
 
         expect($stderr.string.strip).to match(
