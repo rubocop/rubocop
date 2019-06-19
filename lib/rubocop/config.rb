@@ -629,13 +629,13 @@ module RuboCop
       return if KNOWN_RUBIES.include?(target_ruby_version)
 
       msg = if OBSOLETE_RUBIES.include?(target_ruby_version)
-              "Unsupported Ruby version #{target_ruby_version} found in " \
-              "#{target_ruby_source}. #{target_ruby_version}-compatible " \
+              "RuboCop found unsupported Ruby version #{target_ruby_version} " \
+              "in #{target_ruby_source}. #{target_ruby_version}-compatible " \
               'analysis was dropped after version ' \
               "#{OBSOLETE_RUBIES[target_ruby_version]}."
             else
-              "Unknown Ruby version #{target_ruby_version.inspect} found in " \
-              "#{target_ruby_source}."
+              'RuboCop found unknown Ruby version ' \
+              "#{target_ruby_version.inspect} in #{target_ruby_source}."
             end
 
       msg += "\nSupported versions: #{KNOWN_RUBIES.join(', ')}"

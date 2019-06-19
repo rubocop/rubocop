@@ -187,7 +187,8 @@ module RuboCop
         require 'parser/ruby27'
         Parser::Ruby27
       else
-        raise ArgumentError, "Unknown Ruby version: #{ruby_version.inspect}"
+        raise ArgumentError,
+              "RuboCop found unknown Ruby version: #{ruby_version.inspect}"
       end
     end
     # rubocop:enable Metrics/MethodLength
