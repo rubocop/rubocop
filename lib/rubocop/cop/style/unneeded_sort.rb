@@ -55,7 +55,7 @@ module RuboCop
         MSG = 'Use `%<suggestion>s` instead of '\
               '`%<sorter>s...%<accessor_source>s`.'
 
-        def_node_matcher :unneeded_sort?, <<-MATCHER
+        def_node_matcher :unneeded_sort?, <<~MATCHER
           {
             (send $(send _ $:sort ...) ${:last :first})
             (send $(send _ $:sort ...) ${:[] :at :slice} {(int 0) (int -1)})

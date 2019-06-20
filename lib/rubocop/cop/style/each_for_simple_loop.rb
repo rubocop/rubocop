@@ -49,7 +49,7 @@ module RuboCop
 
         private
 
-        def_node_matcher :offending_each_range, <<-PATTERN
+        def_node_matcher :offending_each_range, <<~PATTERN
           (block (send (begin (${irange erange} (int $_) (int $_))) :each) (args) ...)
         PATTERN
       end

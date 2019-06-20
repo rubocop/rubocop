@@ -38,7 +38,7 @@ module RuboCop
 
         private
 
-        def_node_matcher :min_max_candidate, <<-PATTERN
+        def_node_matcher :min_max_candidate, <<~PATTERN
           ({array return} (send [$_receiver !nil?] :min) (send [$_receiver !nil?] :max))
         PATTERN
 

@@ -61,7 +61,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :called_on_string?, <<-PATTERN
+        def_node_matcher :called_on_string?, <<~PATTERN
           {(send {nil? const_type?} _ (str _) ...)
            (send (str ...) ...)}
         PATTERN

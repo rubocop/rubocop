@@ -120,15 +120,15 @@ module RuboCop
           end
         end
 
-        def_node_matcher :predicate, <<-PATTERN
+        def_node_matcher :predicate, <<~PATTERN
           (send $(...) ${:zero? :positive? :negative?})
         PATTERN
 
-        def_node_matcher :comparison, <<-PATTERN
+        def_node_matcher :comparison, <<~PATTERN
           (send [$(...) !gvar_type?] ${:== :> :<} (int 0))
         PATTERN
 
-        def_node_matcher :inverted_comparison, <<-PATTERN
+        def_node_matcher :inverted_comparison, <<~PATTERN
           (send (int 0) ${:== :> :<} [$(...) !gvar_type?])
         PATTERN
       end

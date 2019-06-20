@@ -20,7 +20,7 @@ module RuboCop
       class UnifiedInteger < Cop
         MSG = 'Use `Integer` instead of `%<klass>s`.'
 
-        def_node_matcher :fixnum_or_bignum_const, <<-PATTERN
+        def_node_matcher :fixnum_or_bignum_const, <<~PATTERN
           (:const {nil? (:cbase)} ${:Fixnum :Bignum})
         PATTERN
 

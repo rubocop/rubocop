@@ -57,7 +57,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :visibility_declaration_for?, <<-PATTERN
+        def_node_matcher :visibility_declaration_for?, <<~PATTERN
           (send nil? {:public_constant :private_constant} ({sym str} %1))
         PATTERN
       end

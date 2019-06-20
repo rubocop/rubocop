@@ -53,7 +53,7 @@ module RuboCop
         ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
                                 'block'
 
-        def_node_search :private_class_methods, <<-PATTERN
+        def_node_search :private_class_methods, <<~PATTERN
           (send nil? :private_class_method $...)
         PATTERN
 

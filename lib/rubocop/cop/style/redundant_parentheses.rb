@@ -203,11 +203,11 @@ module RuboCop
           first_send_argument?(node) || first_super_argument?(node)
         end
 
-        def_node_matcher :first_send_argument?, <<-PATTERN
+        def_node_matcher :first_send_argument?, <<~PATTERN
           ^(send _ _ equal?(%0) ...)
         PATTERN
 
-        def_node_matcher :first_super_argument?, <<-PATTERN
+        def_node_matcher :first_super_argument?, <<~PATTERN
           ^(super equal?(%0) ...)
         PATTERN
 

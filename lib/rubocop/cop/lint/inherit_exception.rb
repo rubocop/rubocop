@@ -55,7 +55,7 @@ module RuboCop
           SystemExit
         ].freeze
 
-        def_node_matcher :class_new_call?, <<-PATTERN
+        def_node_matcher :class_new_call?, <<~PATTERN
           (send
             (const {cbase nil?} :Class) :new
             $(const {cbase nil?} _))

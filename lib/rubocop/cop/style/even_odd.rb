@@ -18,7 +18,7 @@ module RuboCop
       class EvenOdd < Cop
         MSG = 'Replace with `Integer#%<method>s?`.'
 
-        def_node_matcher :even_odd_candidate?, <<-PATTERN
+        def_node_matcher :even_odd_candidate?, <<~PATTERN
           (send
             {(send $_ :% (int 2))
              (begin (send $_ :% (int 2)))}

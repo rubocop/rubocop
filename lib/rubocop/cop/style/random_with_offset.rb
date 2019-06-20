@@ -27,7 +27,7 @@ module RuboCop
         MSG = 'Prefer ranges when generating random numbers instead of ' \
           'integers with offsets.'
 
-        def_node_matcher :integer_op_rand?, <<-PATTERN
+        def_node_matcher :integer_op_rand?, <<~PATTERN
           (send
             int {:+ :-}
             (send
@@ -36,7 +36,7 @@ module RuboCop
               {int irange erange}))
         PATTERN
 
-        def_node_matcher :rand_op_integer?, <<-PATTERN
+        def_node_matcher :rand_op_integer?, <<~PATTERN
           (send
             (send
               {nil? (const nil? :Random) (const nil? :Kernel)}
@@ -46,7 +46,7 @@ module RuboCop
             int)
         PATTERN
 
-        def_node_matcher :rand_modified?, <<-PATTERN
+        def_node_matcher :rand_modified?, <<~PATTERN
           (send
             (send
               {nil? (const nil? :Random) (const nil? :Kernel)}
@@ -80,7 +80,7 @@ module RuboCop
 
         private
 
-        def_node_matcher :random_call, <<-PATTERN
+        def_node_matcher :random_call, <<~PATTERN
           {(send (send $_ _ $_) ...)
            (send _ _ (send $_ _ $_))}
         PATTERN
@@ -128,7 +128,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :namespace, <<-PATTERN
+        def_node_matcher :namespace, <<~PATTERN
           {$nil? (const nil? $_)}
         PATTERN
 
@@ -149,7 +149,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :to_int, <<-PATTERN
+        def_node_matcher :to_int, <<~PATTERN
           (int $_)
         PATTERN
       end

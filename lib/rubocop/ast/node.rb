@@ -302,7 +302,7 @@ module RuboCop
 
       ## Destructuring
 
-      def_node_matcher :receiver, <<-PATTERN
+      def_node_matcher :receiver, <<~PATTERN
         {(send $_ ...) (block (send $_ ...) ...)}
       PATTERN
 
@@ -321,7 +321,7 @@ module RuboCop
         end
       end
 
-      def_node_matcher :defined_module0, <<-PATTERN
+      def_node_matcher :defined_module0, <<~PATTERN
         {(class (const $_ $_) ...)
          (module (const $_ $_) ...)
          (casgn $_ $_        (send (const nil? {:Class :Module}) :new ...))
@@ -367,7 +367,7 @@ module RuboCop
       end
 
       # Some cops treat the shovel operator as a kind of assignment.
-      def_node_matcher :assignment_or_similar?, <<-PATTERN
+      def_node_matcher :assignment_or_similar?, <<~PATTERN
         {assignment? (send _recv :<< ...)}
       PATTERN
 
@@ -479,11 +479,11 @@ module RuboCop
         irange_type? || erange_type?
       end
 
-      def_node_matcher :guard_clause?, <<-PATTERN
+      def_node_matcher :guard_clause?, <<~PATTERN
         [{(send nil? {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
-      def_node_matcher :proc?, <<-PATTERN
+      def_node_matcher :proc?, <<~PATTERN
         {(block (send nil? :proc) ...)
          (block (send (const nil? :Proc) :new) ...)
          (send (const nil? :Proc) :new)}
@@ -492,12 +492,12 @@ module RuboCop
       def_node_matcher :lambda?, '(block (send nil? :lambda) ...)'
       def_node_matcher :lambda_or_proc?, '{lambda? proc?}'
 
-      def_node_matcher :class_constructor?, <<-PATTERN
+      def_node_matcher :class_constructor?, <<~PATTERN
         {       (send (const nil? {:Class :Module}) :new ...)
          (block (send (const nil? {:Class :Module}) :new ...) ...)}
       PATTERN
 
-      def_node_matcher :module_definition?, <<-PATTERN
+      def_node_matcher :module_definition?, <<~PATTERN
         {class module (casgn _ _ class_constructor?)}
       PATTERN
 
@@ -638,7 +638,7 @@ module RuboCop
         end
       end
 
-      def_node_matcher :new_class_or_module_block?, <<-PATTERN
+      def_node_matcher :new_class_or_module_block?, <<~PATTERN
         ^(casgn _ _ (block (send (const _ {:Class :Module}) :new) ...))
       PATTERN
     end

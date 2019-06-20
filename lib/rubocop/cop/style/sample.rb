@@ -30,7 +30,7 @@ module RuboCop
       class Sample < Cop
         MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
 
-        def_node_matcher :sample_candidate?, <<-PATTERN
+        def_node_matcher :sample_candidate?, <<~PATTERN
           (send $(send _ :shuffle $...) ${:first :last :[] :at :slice} $...)
         PATTERN
 

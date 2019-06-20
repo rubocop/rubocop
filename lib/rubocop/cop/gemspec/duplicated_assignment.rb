@@ -40,7 +40,7 @@ module RuboCop
         MSG = '`%<assignment>s` method calls already given on line '\
               '%<line_of_first_occurrence>d of the gemspec.'
 
-        def_node_search :gem_specification, <<-PATTERN
+        def_node_search :gem_specification, <<~PATTERN
           (block
             (send
               (const
@@ -49,7 +49,7 @@ module RuboCop
               (arg $_)) ...)
         PATTERN
 
-        def_node_search :assignment_method_declarations, <<-PATTERN
+        def_node_search :assignment_method_declarations, <<~PATTERN
           (send
             (lvar #match_block_variable_name?) #assignment_method? ...)
         PATTERN

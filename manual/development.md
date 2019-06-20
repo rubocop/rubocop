@@ -157,7 +157,7 @@ After the cop scaffold is generated, change the node matcher to match with
 the expression achieved previously:
 
 ```ruby
-def_node_matcher :not_empty_call?, <<-PATTERN
+def_node_matcher :not_empty_call?, <<~PATTERN
   (send (send (...) :empty?) :!)
 PATTERN
 ```
@@ -195,7 +195,7 @@ module RuboCop
       class SimplifyNotEmptyWithAny < Cop
         MSG = 'Use `.any?` and remove the negation part.'.freeze
 
-        def_node_matcher :not_empty_call?, <<-PATTERN
+        def_node_matcher :not_empty_call?, <<~PATTERN
           (send (send (...) :empty?) :!)
         PATTERN
 

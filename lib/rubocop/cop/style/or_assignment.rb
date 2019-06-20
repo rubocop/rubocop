@@ -29,7 +29,7 @@ module RuboCop
       class OrAssignment < Cop
         MSG = 'Use the double pipe equals operator `||=` instead.'
 
-        def_node_matcher :ternary_assignment?, <<-PATTERN
+        def_node_matcher :ternary_assignment?, <<~PATTERN
           ({lvasgn ivasgn cvasgn gvasgn} _var
             (if
               ({lvar ivar cvar gvar} _var)
@@ -37,7 +37,7 @@ module RuboCop
               _))
         PATTERN
 
-        def_node_matcher :unless_assignment?, <<-PATTERN
+        def_node_matcher :unless_assignment?, <<~PATTERN
           (if
             ({lvar ivar cvar gvar} _var) nil?
             ({lvasgn ivasgn cvasgn gvasgn} _var

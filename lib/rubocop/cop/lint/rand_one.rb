@@ -24,7 +24,7 @@ module RuboCop
         MSG = '`%<method>s` always returns `0`. ' \
               'Perhaps you meant `rand(2)` or `rand`?'
 
-        def_node_matcher :rand_one?, <<-PATTERN
+        def_node_matcher :rand_one?, <<~PATTERN
           (send {(const nil? :Kernel) nil?} :rand {(int {-1 1}) (float {-1.0 1.0})})
         PATTERN
 

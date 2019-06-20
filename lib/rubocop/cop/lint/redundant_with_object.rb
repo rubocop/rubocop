@@ -33,7 +33,7 @@ module RuboCop
 
         MSG_WITH_OBJECT = 'Remove redundant `with_object`.'
 
-        def_node_matcher :redundant_with_object?, <<-PATTERN
+        def_node_matcher :redundant_with_object?, <<~PATTERN
           (block
             $(send _ {:each_with_object :with_object}
               _)

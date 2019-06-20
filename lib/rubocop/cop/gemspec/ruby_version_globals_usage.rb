@@ -30,7 +30,7 @@ module RuboCop
 
         def_node_matcher :ruby_version?, '(const nil? :RUBY_VERSION)'
 
-        def_node_search :gem_specification?, <<-PATTERN
+        def_node_search :gem_specification?, <<~PATTERN
           (block
             (send
               (const

@@ -24,7 +24,7 @@ module RuboCop
       class MultipleCompare < Cop
         MSG = 'Use the `&&` operator to compare multiple values.'
 
-        def_node_matcher :multiple_compare?, <<-PATTERN
+        def_node_matcher :multiple_compare?, <<~PATTERN
           (send (send _ {:< :> :<= :>=} $_) {:< :> :<= :>=} _)
         PATTERN
 

@@ -21,7 +21,7 @@ module RuboCop
 
         private
 
-        def_node_matcher :module_definition?, <<-PATTERN
+        def_node_matcher :module_definition?, <<~PATTERN
           (casgn nil? _ (block (send (const nil? :Module) :new) ...))
         PATTERN
 

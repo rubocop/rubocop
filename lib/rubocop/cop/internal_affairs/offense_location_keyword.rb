@@ -33,11 +33,11 @@ module RuboCop
 
         private
 
-        def_node_matcher :node_type_check, <<-PATTERN
+        def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)
         PATTERN
 
-        def_node_matcher :offending_location_argument, <<-PATTERN
+        def_node_matcher :offending_location_argument, <<~PATTERN
           (pair (sym :location) $(send (send $_node :loc) $_keyword))
         PATTERN
 

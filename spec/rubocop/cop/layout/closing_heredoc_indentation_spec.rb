@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
   it 'accepts correctly indented closing heredoc when ' \
      'heredoc contents with blank line' do
     expect_no_offenses(<<~RUBY)
-      def_node_matcher :eval_without_location?, <<-PATTERN
+      def_node_matcher :eval_without_location?, <<~PATTERN
         {
           (send $(send _ $:sort ...) ${:[] :at :slice} {(int 0) (int -1)})
 

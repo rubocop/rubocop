@@ -26,7 +26,7 @@ module RuboCop
 
         MSG = 'Remove unnecessary `require` statement.'
 
-        def_node_matcher :unnecessary_require_statement?, <<-PATTERN
+        def_node_matcher :unnecessary_require_statement?, <<~PATTERN
           (send nil? :require
             (str {"enumerator" "rational" "complex" "thread"}))
         PATTERN

@@ -80,11 +80,11 @@ module RuboCop
         MSG_EXPLICIT = 'Avoid rescuing without specifying ' \
           'an error class.'
 
-        def_node_matcher :rescue_without_error_class?, <<-PATTERN
+        def_node_matcher :rescue_without_error_class?, <<~PATTERN
           (resbody nil? _ _)
         PATTERN
 
-        def_node_matcher :rescue_standard_error?, <<-PATTERN
+        def_node_matcher :rescue_standard_error?, <<~PATTERN
           (resbody $(array (const nil? :StandardError)) _ _)
         PATTERN
 

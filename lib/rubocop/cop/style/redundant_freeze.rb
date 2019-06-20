@@ -51,7 +51,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :operation_produces_immutable_object?, <<-PATTERN
+        def_node_matcher :operation_produces_immutable_object?, <<~PATTERN
           {
             (begin (send {float int} {:+ :- :* :** :/ :% :<<} _))
             (begin (send !(str _) {:+ :- :* :** :/ :%} {float int}))

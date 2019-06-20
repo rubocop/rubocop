@@ -220,7 +220,7 @@ module RuboCop
 
       private
 
-      def_node_matcher :macro_scope?, <<-PATTERN
+      def_node_matcher :macro_scope?, <<~PATTERN
         {^{({sclass class module block} ...) class_constructor?}
          ^^{({sclass class module block} ... ({begin if} ...)) class_constructor?}
          ^#macro_kwbegin_wrapper?
@@ -245,15 +245,15 @@ module RuboCop
         node.parent.nil?
       end
 
-      def_node_matcher :adjacent_def_modifier?, <<-PATTERN
+      def_node_matcher :adjacent_def_modifier?, <<~PATTERN
         (send nil? _ ({def defs} ...))
       PATTERN
 
-      def_node_matcher :bare_access_modifier_declaration?, <<-PATTERN
+      def_node_matcher :bare_access_modifier_declaration?, <<~PATTERN
         (send nil? {:public :protected :private :module_function})
       PATTERN
 
-      def_node_matcher :non_bare_access_modifier_declaration?, <<-PATTERN
+      def_node_matcher :non_bare_access_modifier_declaration?, <<~PATTERN
         (send nil? {:public :protected :private :module_function} _)
       PATTERN
     end

@@ -64,7 +64,7 @@ module RuboCop
           declarations.to_a[node_index - 1]
         end
 
-        def_node_search :gem_declarations, <<-PATTERN
+        def_node_search :gem_declarations, <<~PATTERN
           (:send nil? :gem str ...)
         PATTERN
       end

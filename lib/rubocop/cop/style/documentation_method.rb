@@ -53,7 +53,7 @@ module RuboCop
 
         MSG = 'Missing method documentation comment.'
 
-        def_node_matcher :module_function_node?, <<-PATTERN
+        def_node_matcher :module_function_node?, <<~PATTERN
           (send nil? :module_function ...)
         PATTERN
 

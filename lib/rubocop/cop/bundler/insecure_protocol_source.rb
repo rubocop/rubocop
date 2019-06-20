@@ -33,7 +33,7 @@ module RuboCop
               "Please change your source to 'https://rubygems.org' " \
               "if possible, or 'http://rubygems.org' if not."
 
-        def_node_matcher :insecure_protocol_source?, <<-PATTERN
+        def_node_matcher :insecure_protocol_source?, <<~PATTERN
           (send nil? :source
             (sym ${:gemcutter :rubygems :rubyforge}))
         PATTERN

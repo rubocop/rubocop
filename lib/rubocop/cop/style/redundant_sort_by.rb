@@ -20,7 +20,7 @@ module RuboCop
 
         MSG = 'Use `sort` instead of `sort_by { |%<var>s| %<var>s }`.'
 
-        def_node_matcher :redundant_sort_by, <<-PATTERN
+        def_node_matcher :redundant_sort_by, <<~PATTERN
           (block $(send _ :sort_by) (args (arg $_x)) (lvar _x))
         PATTERN
 

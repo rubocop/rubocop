@@ -18,7 +18,7 @@ module RuboCop
         MSG = '`%<double_colon>sBigDecimal.new()` is deprecated. ' \
               'Use `%<double_colon>sBigDecimal()` instead.'
 
-        def_node_matcher :big_decimal_new, <<-PATTERN
+        def_node_matcher :big_decimal_new, <<~PATTERN
           (send
             (const ${nil? cbase} :BigDecimal) :new ...)
         PATTERN

@@ -204,7 +204,7 @@ module RuboCop
           node.source_range.begin_pos > parent.source_range.begin_pos
         end
 
-        def_node_matcher :eligible_method_call?, <<-PATTERN
+        def_node_matcher :eligible_method_call?, <<~PATTERN
           (send _ !:[]= ...)
         PATTERN
 

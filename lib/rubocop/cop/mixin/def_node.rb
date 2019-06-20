@@ -25,7 +25,7 @@ module RuboCop
         processed_source[0..index].map(&:strip)
       end
 
-      def_node_matcher :non_public_modifier?, <<-PATTERN
+      def_node_matcher :non_public_modifier?, <<~PATTERN
         (send nil? {:private :protected} ({def defs} ...))
       PATTERN
     end

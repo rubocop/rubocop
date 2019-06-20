@@ -25,7 +25,7 @@ module RuboCop
 
         private
 
-        def_node_matcher :argument_to_lambda_or_proc?, <<-PATTERN
+        def_node_matcher :argument_to_lambda_or_proc?, <<~PATTERN
           ^lambda_or_proc?
         PATTERN
 

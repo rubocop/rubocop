@@ -23,7 +23,7 @@ module RuboCop
         # than just standard ASCII characters
         SNAKE_CASE = /^[[:digit:][:upper:]_]+$/.freeze
 
-        def_node_matcher :class_or_struct_return_method?, <<-PATTERN
+        def_node_matcher :class_or_struct_return_method?, <<~PATTERN
           (send
             (const _ {:Class :Struct}) :new
             ...)
@@ -63,7 +63,7 @@ module RuboCop
             (node.receiver.nil? || !literal_receiver?(node))
         end
 
-        def_node_matcher :literal_receiver?, <<-PATTERN
+        def_node_matcher :literal_receiver?, <<~PATTERN
           {(send literal? ...)
            (send (begin literal?) ...)}
         PATTERN

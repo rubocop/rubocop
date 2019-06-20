@@ -113,19 +113,19 @@ module RuboCop
 
         private
 
-        def_node_matcher :static_method_definition?, <<-PATTERN
+        def_node_matcher :static_method_definition?, <<~PATTERN
           {def (send nil? {:attr :attr_reader :attr_writer :attr_accessor} ...)}
         PATTERN
 
-        def_node_matcher :dynamic_method_definition?, <<-PATTERN
+        def_node_matcher :dynamic_method_definition?, <<~PATTERN
           {(send nil? :define_method ...) (block (send nil? :define_method ...) ...)}
         PATTERN
 
-        def_node_matcher :class_or_instance_eval?, <<-PATTERN
+        def_node_matcher :class_or_instance_eval?, <<~PATTERN
           (block (send _ {:class_eval :instance_eval}) ...)
         PATTERN
 
-        def_node_matcher :class_or_module_or_struct_new_call?, <<-PATTERN
+        def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
           (block (send (const nil? {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
@@ -202,7 +202,7 @@ module RuboCop
           cop_config.fetch('MethodCreatingMethods', []).any? do |m|
             matcher_name = "#{m}_method?".to_sym
             unless respond_to?(matcher_name)
-              self.class.def_node_matcher matcher_name, <<-PATTERN
+              self.class.def_node_matcher matcher_name, <<~PATTERN
                 {def (send nil? :#{m} ...)}
               PATTERN
             end
@@ -226,7 +226,7 @@ module RuboCop
           cop_config.fetch('ContextCreatingMethods', []).any? do |m|
             matcher_name = "#{m}_block?".to_sym
             unless respond_to?(matcher_name)
-              self.class.def_node_matcher matcher_name, <<-PATTERN
+              self.class.def_node_matcher matcher_name, <<~PATTERN
                 (block (send {nil? const} {:#{m}} ...) ...)
               PATTERN
             end

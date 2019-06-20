@@ -45,7 +45,7 @@ module RuboCop
               'Instead, use %<replacements>s depending on your specific use ' \
               'case.'
 
-        def_node_matcher :uri_escape_unescape?, <<-PATTERN
+        def_node_matcher :uri_escape_unescape?, <<~PATTERN
           (send
             (const ${nil? cbase} :URI) ${:escape :encode :unescape :decode}
             ...)

@@ -612,7 +612,7 @@ module RuboCop
       end
 
       def emit_method_code
-        <<-RUBY
+        <<~RUBY
           return unless #{@match_code}
           block_given? ? #{emit_yield_capture} : (return #{emit_retval})
         RUBY
@@ -746,7 +746,7 @@ module RuboCop
 
       def node_search_body(method_name, trailing_params, prelude, match_code,
                            on_match)
-        <<-RUBY
+        <<~RUBY
           def #{method_name}(node0#{trailing_params})
             #{prelude}
             node0.each_node do |node|

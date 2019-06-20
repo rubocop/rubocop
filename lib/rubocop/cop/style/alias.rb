@@ -138,7 +138,7 @@ module RuboCop
           end
         end
 
-        def_node_matcher :identifier, <<-PATTERN
+        def_node_matcher :identifier, <<~PATTERN
           (sym $_)
         PATTERN
       end

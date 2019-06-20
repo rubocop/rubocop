@@ -35,7 +35,7 @@ module RuboCop
       end
 
       ONE_CHILD_NODE.each do |type|
-        module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
+        module_eval(<<~RUBY, __FILE__, __LINE__ + 1)
           def on_#{type}(node)
             if (child = node.children[0])
               send(:"on_\#{child.type}", child)
@@ -45,7 +45,7 @@ module RuboCop
       end
 
       MANY_CHILD_NODES.each do |type|
-        module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
+        module_eval(<<~RUBY, __FILE__, __LINE__ + 1)
           def on_#{type}(node)
             node.children.each { |child| send(:"on_\#{child.type}", child) }
             nil
@@ -55,7 +55,7 @@ module RuboCop
 
       SECOND_CHILD_ONLY.each do |type|
         # Guard clause is for nodes nested within mlhs
-        module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
+        module_eval(<<~RUBY, __FILE__, __LINE__ + 1)
           def on_#{type}(node)
             if (child = node.children[1])
               send(:"on_\#{child.type}", child)
