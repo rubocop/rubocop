@@ -51,21 +51,21 @@ module RuboCop
                            'instead of ' \
                            '`Pathname.new(__FILE__).parent.expand_path`.'
 
-        def_node_matcher :file_expand_path, <<-PATTERN
+        def_node_matcher :file_expand_path, <<~PATTERN
           (send
             (const nil? :File) :expand_path
             $_
             $_)
         PATTERN
 
-        def_node_matcher :pathname_parent_expand_path, <<-PATTERN
+        def_node_matcher :pathname_parent_expand_path, <<~PATTERN
           (send
             (send
               (send nil? :Pathname
                 $_) :parent) :expand_path)
         PATTERN
 
-        def_node_matcher :pathname_new_parent_expand_path, <<-PATTERN
+        def_node_matcher :pathname_new_parent_expand_path, <<~PATTERN
           (send
             (send
               (send

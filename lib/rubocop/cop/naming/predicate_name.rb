@@ -28,7 +28,7 @@ module RuboCop
       #   def value?
       #   end
       class PredicateName < Cop
-        def_node_matcher :dynamic_method_define, <<-PATTERN
+        def_node_matcher :dynamic_method_define, <<~PATTERN
           (send nil? #method_definition_macros
             (sym $_)
             ...)

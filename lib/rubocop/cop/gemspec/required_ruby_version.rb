@@ -41,7 +41,7 @@ module RuboCop
               '(%<target_ruby_version>s, which may be specified in ' \
               '.rubocop.yml) should be equal.'
 
-        def_node_search :required_ruby_version, <<-PATTERN
+        def_node_search :required_ruby_version, <<~PATTERN
           (send _ :required_ruby_version= ${(str _) (array (str _))})
         PATTERN
 

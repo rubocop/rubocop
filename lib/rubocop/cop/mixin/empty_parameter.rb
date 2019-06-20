@@ -8,7 +8,7 @@ module RuboCop
 
       private
 
-      def_node_matcher :empty_arguments?, <<-PATTERN
+      def_node_matcher :empty_arguments?, <<~PATTERN
         (block _ $(args) _)
       PATTERN
 

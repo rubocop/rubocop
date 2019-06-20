@@ -20,7 +20,7 @@ module RuboCop
 
       private
 
-      def_node_matcher :define_method?, <<-PATTERN
+      def_node_matcher :define_method?, <<~PATTERN
         (block
          (send nil? :define_method ({sym str} $_))
          args

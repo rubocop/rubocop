@@ -14,7 +14,7 @@ module RuboCop
       class Eval < Cop
         MSG = 'The use of `eval` is a serious security risk.'
 
-        def_node_matcher :eval?, <<-PATTERN
+        def_node_matcher :eval?, <<~PATTERN
           (send {nil? (send nil? :binding)} :eval $!str ...)
         PATTERN
 

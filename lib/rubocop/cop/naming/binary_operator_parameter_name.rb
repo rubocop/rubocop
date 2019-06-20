@@ -20,7 +20,7 @@ module RuboCop
         OP_LIKE_METHODS = %i[eql? equal?].freeze
         BLACKLISTED = %i[+@ -@ [] []= << === `].freeze
 
-        def_node_matcher :op_method_candidate?, <<-PATTERN
+        def_node_matcher :op_method_candidate?, <<~PATTERN
           (def [#op_method? $_] (args $(arg [!:other !:_other])) _)
         PATTERN
 

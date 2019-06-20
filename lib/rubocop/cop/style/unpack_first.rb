@@ -25,7 +25,7 @@ module RuboCop
         MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of '\
           '`%<receiver>s.unpack(%<format>s)%<method>s`.'
 
-        def_node_matcher :unpack_and_first_element?, <<-PATTERN
+        def_node_matcher :unpack_and_first_element?, <<~PATTERN
           {
             (send $(send (...) :unpack $(...)) :first)
             (send $(send (...) :unpack $(...)) {:[] :slice :at} (int 0))

@@ -40,15 +40,15 @@ module RuboCop
 
         MSG = 'Favor `%<prefer>s` over `%<current>s`.'
 
-        def_node_matcher :formatter, <<-PATTERN
-        {
-          (send nil? ${:sprintf :format} _ _ ...)
-          (send {str dstr} $:% ... )
-          (send !nil? $:% {array hash})
-        }
+        def_node_matcher :formatter, <<~PATTERN
+          {
+            (send nil? ${:sprintf :format} _ _ ...)
+            (send {str dstr} $:% ... )
+            (send !nil? $:% {array hash})
+          }
         PATTERN
 
-        def_node_matcher :variable_argument?, <<-PATTERN
+        def_node_matcher :variable_argument?, <<~PATTERN
           (send {str dstr} :% {send_type? lvar_type?})
         PATTERN
 

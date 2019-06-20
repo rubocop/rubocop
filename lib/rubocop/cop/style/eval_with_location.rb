@@ -37,7 +37,7 @@ module RuboCop
         MSG_INCORRECT_LINE = 'Use `%<expected>s` instead of `%<actual>s`, ' \
                              'as they are used by backtraces.'
 
-        def_node_matcher :eval_without_location?, <<-PATTERN
+        def_node_matcher :eval_without_location?, <<~PATTERN
           {
             (send nil? :eval ${str dstr})
             (send nil? :eval ${str dstr} _)
@@ -53,7 +53,7 @@ module RuboCop
           }
         PATTERN
 
-        def_node_matcher :line_with_offset?, <<-PATTERN
+        def_node_matcher :line_with_offset?, <<~PATTERN
           {
             (send #special_line_keyword? %1 (int %2))
             (send (int %2) %1 #special_line_keyword?)

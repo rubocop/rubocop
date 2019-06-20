@@ -97,7 +97,7 @@ module RuboCop
           node.method_name
         end
 
-        def_node_search :dependency_declarations, <<-PATTERN
+        def_node_search :dependency_declarations, <<~PATTERN
           (send (lvar _) {:add_dependency :add_runtime_dependency :add_development_dependency} ...)
         PATTERN
       end

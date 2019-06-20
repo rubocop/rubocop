@@ -30,7 +30,7 @@ module RuboCop
         private
 
         def_node_matcher :simple_double_comparison?, '(send $lvar :== $lvar)'
-        def_node_matcher :simple_comparison?, <<-PATTERN
+        def_node_matcher :simple_comparison?, <<~PATTERN
           {(send $lvar :== _)
            (send _ :== $lvar)}
         PATTERN

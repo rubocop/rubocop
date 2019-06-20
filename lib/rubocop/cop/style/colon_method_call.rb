@@ -20,7 +20,7 @@ module RuboCop
       class ColonMethodCall < Cop
         MSG = 'Do not use `::` for method calls.'
 
-        def_node_matcher :java_type_node?, <<-PATTERN
+        def_node_matcher :java_type_node?, <<~PATTERN
           (send
             (const nil? :Java) _)
         PATTERN

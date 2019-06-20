@@ -44,7 +44,7 @@ module RuboCop
         MSG = '`%<statement>s` is used at the top level. Use inside `class` ' \
               'or `module`.'
 
-        def_node_matcher :include_statement, <<-PATTERN
+        def_node_matcher :include_statement, <<~PATTERN
           (send nil? ${:include :extend :prepend}
             const)
         PATTERN

@@ -31,11 +31,11 @@ module RuboCop
               '%<number_object>s.%<to_method>s, use stricter '\
               '%<corrected_method>s.'
 
-        def_node_matcher :to_method, <<-PATTERN
+        def_node_matcher :to_method, <<~PATTERN
           (send $_ ${:to_i :to_f :to_c})
         PATTERN
 
-        def_node_matcher :datetime?, <<-PATTERN
+        def_node_matcher :datetime?, <<~PATTERN
           (send (const {nil? (cbase)} {:Time :DateTime}) ...)
         PATTERN
 

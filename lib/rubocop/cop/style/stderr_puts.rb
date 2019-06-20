@@ -20,7 +20,7 @@ module RuboCop
         MSG =
           'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
 
-        def_node_matcher :stderr_puts?, <<-PATTERN
+        def_node_matcher :stderr_puts?, <<~PATTERN
           (send
             {(gvar #stderr_gvar?) (const nil? :STDERR)}
             :puts $_

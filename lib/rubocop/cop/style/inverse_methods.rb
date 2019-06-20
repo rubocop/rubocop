@@ -47,7 +47,7 @@ module RuboCop
           [Style::Not]
         end
 
-        def_node_matcher :inverse_candidate?, <<-PATTERN
+        def_node_matcher :inverse_candidate?, <<~PATTERN
           {
             (send $(send $(...) $_ $...) :!)
             (send (block $(send $(...) $_) $...) :!)
@@ -55,7 +55,7 @@ module RuboCop
           }
         PATTERN
 
-        def_node_matcher :inverse_block?, <<-PATTERN
+        def_node_matcher :inverse_block?, <<~PATTERN
           (block $(send (...) $_) ... { $(send ... :!)
                                         $(send (...) {:!= :!~} ...)
                                         (begin ... $(send ... :!))

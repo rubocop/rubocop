@@ -118,7 +118,7 @@ module RuboCop
             !allowed_method?(node) && !allowed_writer?(node.method_name)
         end
 
-        def_node_matcher :looks_like_trivial_writer?, <<-PATTERN
+        def_node_matcher :looks_like_trivial_writer?, <<~PATTERN
           {(def    _ (args (arg ...)) (ivasgn _ (lvar _)))
            (defs _ _ (args (arg ...)) (ivasgn _ (lvar _)))}
         PATTERN

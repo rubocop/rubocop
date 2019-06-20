@@ -24,11 +24,11 @@ module RuboCop
 
         MSG = 'Redundant message argument to `#add_offense`.'
 
-        def_node_matcher :node_type_check, <<-PATTERN
+        def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)
         PATTERN
 
-        def_node_matcher :redundant_message_argument, <<-PATTERN
+        def_node_matcher :redundant_message_argument, <<~PATTERN
           (pair
             (sym :message)
             ${(const nil? :MSG) (send nil? :message) (send nil? :message _)})

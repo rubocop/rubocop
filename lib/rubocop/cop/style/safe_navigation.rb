@@ -69,7 +69,7 @@ module RuboCop
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)
-        def_node_matcher :modifier_if_safe_navigation_candidate, <<-PATTERN
+        def_node_matcher :modifier_if_safe_navigation_candidate, <<~PATTERN
           {
             (if {
                   (send $_ {:nil? :!})

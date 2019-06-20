@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Generator do
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'.freeze
 
-                def_node_matcher :bad_method?, <<-PATTERN
+                def_node_matcher :bad_method?, <<~PATTERN
                   (send nil? :bad_method ...)
                 PATTERN
 

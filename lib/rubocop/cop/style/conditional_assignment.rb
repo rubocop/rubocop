@@ -223,7 +223,7 @@ module RuboCop
 
         # The shovel operator `<<` does not have its own type. It is a `send`
         # type.
-        def_node_matcher :assignment_type?, <<-PATTERN
+        def_node_matcher :assignment_type?, <<~PATTERN
           {
             #{ASSIGNMENT_TYPES.join(' ')}
             (send _recv {:[]= :<< :=~ :!~ :<=> #end_with_eq?} ...)

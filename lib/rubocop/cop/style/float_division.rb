@@ -42,16 +42,16 @@ module RuboCop
       class FloatDivision < Cop
         include ConfigurableEnforcedStyle
 
-        def_node_matcher :right_coerce?, <<-PATTERN
+        def_node_matcher :right_coerce?, <<~PATTERN
           (send _ :/ (send _ :to_f))
         PATTERN
-        def_node_matcher :left_coerce?, <<-PATTERN
+        def_node_matcher :left_coerce?, <<~PATTERN
           (send (send _ :to_f) :/ _)
         PATTERN
-        def_node_matcher :both_coerce?, <<-PATTERN
+        def_node_matcher :both_coerce?, <<~PATTERN
           (send (send _ :to_f) :/ (send _ :to_f))
         PATTERN
-        def_node_matcher :any_coerce?, <<-PATTERN
+        def_node_matcher :any_coerce?, <<~PATTERN
           {(send _ :/ (send _ :to_f)) (send (send _ :to_f) :/ _)}
         PATTERN
 

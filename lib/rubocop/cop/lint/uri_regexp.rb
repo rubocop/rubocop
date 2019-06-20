@@ -18,13 +18,13 @@ module RuboCop
               'be used. Instead, use `%<top_level>sURI::DEFAULT_PARSER.' \
               'make_regexp%<arg>s`.'
 
-        def_node_matcher :uri_regexp_with_argument?, <<-PATTERN
+        def_node_matcher :uri_regexp_with_argument?, <<~PATTERN
           (send
             (const ${nil? cbase} :URI) :regexp
             (str $_))
         PATTERN
 
-        def_node_matcher :uri_regexp_without_argument?, <<-PATTERN
+        def_node_matcher :uri_regexp_without_argument?, <<~PATTERN
           (send
             (const ${nil? cbase} :URI) :regexp)
         PATTERN

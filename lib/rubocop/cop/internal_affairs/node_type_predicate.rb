@@ -16,7 +16,7 @@ module RuboCop
       class NodeTypePredicate < Cop
         MSG = 'Use `#%<type>s_type?` to check node type.'
 
-        def_node_matcher :node_type_check, <<-PATTERN
+        def_node_matcher :node_type_check, <<~PATTERN
           (send (send $_ :type) :== (sym $_))
         PATTERN
 

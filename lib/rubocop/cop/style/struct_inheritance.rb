@@ -29,9 +29,9 @@ module RuboCop
           add_offense(node, location: node.parent_class.source_range)
         end
 
-        def_node_matcher :struct_constructor?, <<-PATTERN
-           {(send (const nil? :Struct) :new ...)
-            (block (send (const nil? :Struct) :new ...) ...)}
+        def_node_matcher :struct_constructor?, <<~PATTERN
+          {(send (const nil? :Struct) :new ...)
+           (block (send (const nil? :Struct) :new ...) ...)}
         PATTERN
       end
     end

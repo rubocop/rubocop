@@ -167,7 +167,7 @@ module RuboCop
             (child.send_type? && child.prefix_not?)
         end
 
-        def_node_matcher :method_name, <<-PATTERN
+        def_node_matcher :method_name, <<~PATTERN
           {($:defined? (send nil? _) ...)
            (send {_ nil?} $_ _ ...)}
         PATTERN

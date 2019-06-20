@@ -22,7 +22,7 @@ module RuboCop
       class Open < Cop
         MSG = 'The use of `Kernel#open` is a serious security risk.'
 
-        def_node_matcher :open?, <<-PATTERN
+        def_node_matcher :open?, <<~PATTERN
           (send nil? :open $!str ...)
         PATTERN
 

@@ -76,7 +76,7 @@ module RuboCop
           '`ERB.new(str, eoutvar: %<arg_value>s)` instead.'
         ].freeze
 
-        def_node_matcher :erb_new_with_non_keyword_arguments, <<-PATTERN
+        def_node_matcher :erb_new_with_non_keyword_arguments, <<~PATTERN
           (send
             (const {nil? cbase} :ERB) :new $...)
         PATTERN

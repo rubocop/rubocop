@@ -21,7 +21,7 @@ module RuboCop
 
         MSG = 'Redundant location argument to `#add_offense`.'
 
-        def_node_matcher :redundant_location_argument, <<-PATTERN
+        def_node_matcher :redundant_location_argument, <<~PATTERN
           (send nil? :add_offense _
             (hash <$(pair (sym :location) (sym :expression)) ...>)
           )

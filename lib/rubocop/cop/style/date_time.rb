@@ -45,15 +45,15 @@ module RuboCop
         CLASS_MSG = 'Prefer Time over DateTime.'
         COERCION_MSG = 'Do not use #to_datetime.'
 
-        def_node_matcher :date_time?, <<-PATTERN
+        def_node_matcher :date_time?, <<~PATTERN
           (send (const {nil? (cbase)} :DateTime) ...)
         PATTERN
 
-        def_node_matcher :historic_date?, <<-PATTERN
+        def_node_matcher :historic_date?, <<~PATTERN
           (send _ _ _ (const (const nil? :Date) _))
         PATTERN
 
-        def_node_matcher :to_datetime?, <<-PATTERN
+        def_node_matcher :to_datetime?, <<~PATTERN
           (send _ :to_datetime)
         PATTERN
 
