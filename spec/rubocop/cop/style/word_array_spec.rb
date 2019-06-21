@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   context 'when EnforcedStyle is percent' do
     let(:cop_config) do
       { 'MinSize' => 0,
-        'WordRegex' => /\A[\p{Word}\n\t]+\z/,
+        'WordRegex' => /\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/,
         'EnforcedStyle' => 'percent' }
     end
 
@@ -36,6 +36,13 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_offense(<<~RUBY)
         ["one", "two", "three"]
         ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+    end
+
+    it 'registers an offense for arrays of strings containing hyphens' do
+      expect_offense(<<~RUBY)
+        ['foo', 'bar', 'foo-bar']
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
     end
 
@@ -84,6 +91,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'does not register an offense for array with empty strings' do
       expect_no_offenses('["", "two", "three"]')
+    end
+
+    it 'does not register an offense on non-word strings' do
+      expect_no_offenses("['-', '----']")
     end
 
     # Bug: https://github.com/rubocop-hq/rubocop/issues/4481
@@ -225,7 +236,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   context 'when EnforcedStyle is array' do
     let(:cop_config) do
       { 'MinSize' => 0,
-        'WordRegex' => /\A[\p{Word}]+\z/,
+        'WordRegex' => /\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/,
         'EnforcedStyle' => 'brackets' }
     end
 
@@ -235,6 +246,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'does not register an offense for arrays of double quoted strings' do
       expect_no_offenses('["one", "two", "three"]')
+    end
+
+    it 'does not register an offense for arrays of strings with hyphens' do
+      expect_no_offenses("['foo', 'bar', 'foo-bar']")
     end
 
     it 'registers an offense for a %w() array' do
@@ -257,6 +272,16 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     it 'autocorrects a %W() array which uses escapes' do
       new_source = autocorrect_source('%W(\\n \\t \\b \\v \\f)')
       expect(new_source).to eq('["\n", "\t", "\b", "\v", "\f"]')
+    end
+
+    it 'autocorrects a %w() array which uses string with hyphen' do
+      new_source = autocorrect_source('%w(foo bar foo-bar)')
+      expect(new_source).to eq("['foo', 'bar', 'foo-bar']")
+    end
+
+    it 'autocorrects a %W() array which uses string with hyphen' do
+      new_source = autocorrect_source('%W(foo bar #{foo}-bar)')
+      expect(new_source).to eq("['foo', 'bar', \"#\{foo}-bar\"]")
     end
 
     it 'autocorrects a %W() array which uses string interpolation' do
@@ -360,7 +385,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   context 'with non-default MinSize' do
     let(:cop_config) do
       { 'MinSize' => 2,
-        'WordRegex' => /\A[\p{Word}\n\t]+\z/,
+        'WordRegex' => /\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/,
         'EnforcedStyle' => 'percent' }
     end
 

@@ -7086,7 +7086,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `percent` | `percent`, `brackets`
 MinSize | `2` | Integer
-WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` | 
+WordRegex | `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)` | 
 
 ### References
 
