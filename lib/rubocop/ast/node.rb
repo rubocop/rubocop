@@ -405,7 +405,7 @@ module RuboCop
               receiver.send(recursive_kind) &&
               arguments.all?(&recursive_kind)
           when :begin, :pair, *OPERATOR_KEYWORDS, *COMPOSITE_LITERALS
-            children.all?(&recursive_kind)
+            children.compact.all?(&recursive_kind)
           else
             send(kind_filter)
           end
