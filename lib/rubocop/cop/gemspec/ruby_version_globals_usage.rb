@@ -3,10 +3,11 @@
 module RuboCop
   module Cop
     module Gemspec
-      # Checks that `RUBY_VERSION` constant is not used in gemspec
+      # Checks that `RUBY_VERSION` constant is not used in gemspec.
+      # Using `RUBY_VERSION` is dangerous because value of the constant is determined by `rake release`.
+      # It's possible to have dependency based on ruby version used to execute `rake release` and not user's ruby version.
       #
       # @example
-      #   # When `RUBY_VERSION` is used in gemspec
       #
       #   # bad
       #   Gem::Specification.new do |spec|
