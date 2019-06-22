@@ -416,8 +416,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with class' do
-    context 'with outdented_access_modifiers style configured' do
-      let(:cop_config) { { 'EnforcedStyle' => 'outdented_access_modifiers' } }
+    context 'with indented_internal_methods style configured' do
+      let(:cop_config) { { 'EnforcedStyle' => 'indented_internal_methods' } }
 
       it 'accepts different indentation in different visibility sections' do
         expect_no_offenses(<<~RUBY)
@@ -439,7 +439,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
             private
 
                         # Here we go back an indentation level again. This is a
-                        # violation of the outdented_access_modifiers style,
+                        # violation of the indented_internal_methods style,
                         # but it's not for this cop to report.
                         # Layout/IndentationWidth will handle it.
             def meow_at_3am?

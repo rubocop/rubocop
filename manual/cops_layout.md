@@ -2654,8 +2654,8 @@ Enabled | Yes | Yes  | 0.49 | -
 
 This cop checks for inconsistent indentation.
 
-The difference between `outdented_access_modifiers` and `normal` is
-that the `outdented_access_modifiers` style prescribes that in
+The difference between `indented_internal_methods` and `normal` is
+that the `indented_internal_methods` style prescribes that in
 classes and modules the `protected` and `private` modifier keywords
 shall be indented the same as public methods and that protected and
 private members shall be indented one step more than the modifiers.
@@ -2719,7 +2719,7 @@ class A
   end
 end
 ```
-#### EnforcedStyle: outdented_access_modifiers
+#### EnforcedStyle: indented_internal_methods
 
 ```ruby
 # bad
@@ -2779,7 +2779,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `normal` | `normal`, `outdented_access_modifiers`
+EnforcedStyle | `normal` | `normal`, `indented_internal_methods`
 
 ### References
 
