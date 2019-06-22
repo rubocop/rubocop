@@ -105,7 +105,7 @@ EnforcedStyle | `prefer_alias` | `prefer_alias`, `prefer_alias_method`
 
 ### References
 
-* [https://rubystyle.guide#alias-method](https://rubystyle.guide#alias-method)
+* [https://rubystyle.guide#alias-method-lexically](https://rubystyle.guide#alias-method-lexically)
 
 ## Style/AndOr
 
@@ -2455,6 +2455,46 @@ else
   action_c
 end
 ```
+#### AllowIfModifier: false (default)
+
+```ruby
+# bad
+if condition_a
+  action_a
+else
+  action_b if condition_b
+end
+
+# good
+if condition_a
+  action_a
+elsif condition_b
+  action_b
+end
+```
+#### AllowIfModifier: true
+
+```ruby
+# good
+if condition_a
+  action_a
+else
+  action_b if condition_b
+end
+
+# good
+if condition_a
+  action_a
+elsif condition_b
+  action_b
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowIfModifier | `false` | Boolean
 
 ## Style/IfUnlessModifier
 
@@ -7046,7 +7086,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `percent` | `percent`, `brackets`
 MinSize | `2` | Integer
-WordRegex | `(?-mix:\A[\p{Word}\n\t]+\z)` | 
+WordRegex | `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)` | 
 
 ### References
 
