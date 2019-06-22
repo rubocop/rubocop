@@ -235,7 +235,7 @@ module RuboCop
         parameter: 'EnforcedStyle',
         enforced_style: 'rails',
         alternative: '`EnforcedStyle: rails` has been renamed to ' \
-                     '`EnforcedStyle: outdented_access_modifiers`'
+                     '`EnforcedStyle: indented_internal_methods`'
       }
     ].freeze
 
