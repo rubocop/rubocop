@@ -21,7 +21,7 @@
 
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Remove Rails cops. ([@koic][])
 * [#5976](https://github.com/rubocop-hq/rubocop/issues/5976): Remove `rubocop -R/--rails` option. ([@koic][])
-* [#7113](https://github.com/rubocop-hq/rubocop/pull/7113): Rename `EnforcedStyle: rails` to `EnabledStyle: outdented_access_modifiers` for `Layout/IndentationConsistency`. ([@koic][])
+* [#7113](https://github.com/rubocop-hq/rubocop/pull/7113): Rename `EnforcedStyle: rails` to `EnabledStyle: indented_internal_methods` for `Layout/IndentationConsistency`. ([@koic][])
 
 ## 0.71.0 (2019-05-30)
 

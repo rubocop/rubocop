@@ -777,7 +777,7 @@ Layout/IndentationConsistency:
   StyleGuide: '#spaces-indentation'
   Enabled: true
   VersionAdded: '0.49'
-  # The difference between `indented` and `normal` is that the `outdented_access_modifiers`
+  # The difference between `indented` and `normal` is that the `indented_internal_methods`
   # style prescribes that in classes and modules the `protected` and `private`
   # modifier keywords shall be indented the same as public methods and that
   # protected and private members shall be indented one step more than the
@@ -786,9 +786,9 @@ Layout/IndentationConsistency:
   EnforcedStyle: normal
   SupportedStyles:
     - normal
-    - outdented_access_modifiers
+    - indented_internal_methods
   Reference:
-    # A reference to `EnforcedStyle: outdented_access_modifiers`.
+    # A reference to `EnforcedStyle: indented_internal_methods`.
     - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
 
 Layout/IndentationWidth:

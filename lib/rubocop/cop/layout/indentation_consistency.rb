@@ -5,8 +5,8 @@ module RuboCop
     module Layout
       # This cop checks for inconsistent indentation.
       #
-      # The difference between `outdented_access_modifiers` and `normal` is
-      # that the `outdented_access_modifiers` style prescribes that in
+      # The difference between `indented_internal_methods` and `normal` is
+      # that the `indented_internal_methods` style prescribes that in
       # classes and modules the `protected` and `private` modifier keywords
       # shall be indented the same as public methods and that protected and
       # private members shall be indented one step more than the modifiers.
@@ -66,7 +66,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @example EnforcedStyle: outdented_access_modifiers
+      # @example EnforcedStyle: indented_internal_methods
       #   # bad
       #   class A
       #     def test
@@ -167,8 +167,8 @@ module RuboCop
         end
 
         def check(node)
-          if style == :outdented_access_modifiers
-            check_outdented_access_modifiers_style(node)
+          if style == :indented_internal_methods
+            check_indented_internal_methods_style(node)
           else
             check_normal_style(node)
           end
@@ -181,12 +181,12 @@ module RuboCop
           )
         end
 
-        def check_outdented_access_modifiers_style(node)
+        def check_indented_internal_methods_style(node)
           children_to_check = [[]]
           node.children.each do |child|
             # Modifier nodes have special indentation and will be checked by
             # the AccessModifierIndentation cop. This cop uses them as dividers
-            # in outdented_access_modifiers mode. Then consistency is checked
+            # in indented_internal_methods mode. Then consistency is checked
             # only within each section delimited by a modifier node.
             if bare_access_modifier?(child)
               children_to_check << []
