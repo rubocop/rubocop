@@ -52,7 +52,6 @@ module RuboCop
       class IndentHeredoc < Cop
         include Heredoc
         include ConfigurableEnforcedStyle
-        include SafeMode
 
         RUBY23_TYPE_MSG = 'Use %<indentation_width>d spaces for indentation ' \
                           'in a heredoc by using `<<~` instead of ' \
