@@ -22,7 +22,7 @@ module RuboCop
       def aligned_with_preceding_assignment(token)
         preceding_line_range = token.line.downto(1)
 
-        aligned_with_assignment(token, :preceding, preceding_line_range)
+        aligned_with_assignment(token, preceding_line_range)
       end
 
       def aligned_with_adjacent_line?(range, predicate)
