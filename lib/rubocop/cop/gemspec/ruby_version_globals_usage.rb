@@ -26,7 +26,7 @@ module RuboCop
       #   end
       #
       class RubyVersionGlobalsUsage < Cop
-        MSG = '`RUBY_VERSION` used in gemspec file.'
+        MSG = 'Do not use `RUBY_VERSION` in gemspec file.'
 
         def_node_matcher :ruby_version?, '(const nil? :RUBY_VERSION)'
 

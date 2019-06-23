@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RubyVersionGlobalsUsage, :config do
     expect_offense(<<~RUBY, '/path/to/foo.gemspec')
       Gem::Specification.new do |spec|
         RUBY_VERSION
-        ^^^^^^^^^^^^ `RUBY_VERSION` used in gemspec file.
+        ^^^^^^^^^^^^ Do not use `RUBY_VERSION` in gemspec file.
       end
     RUBY
   end
