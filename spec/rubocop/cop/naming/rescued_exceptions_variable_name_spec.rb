@@ -187,6 +187,31 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
       end
+
+      context 'without exception variable after with exception variable' do
+        it 'registers an offense when using `ex`' do
+          expect_offense(<<~RUBY)
+            def foo
+            rescue => ex
+                      ^^ Use `e` instead of `ex`.
+            end
+
+            def bar
+            rescue
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo
+            rescue => e
+            end
+
+            def bar
+            rescue
+            end
+          RUBY
+        end
+      end
     end
 
     context 'with variable being referenced' do

@@ -95,7 +95,7 @@ module RuboCop
         end
 
         def variable_name
-          location.source
+          @exception_name ? location.source : ''
         end
 
         def location
