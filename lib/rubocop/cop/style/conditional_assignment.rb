@@ -596,7 +596,8 @@ module RuboCop
 
             remove_whitespace_in_branches(corrector, branch, condition, column)
 
-            branch_else = branch.parent.loc.else
+            return unless (branch_else = branch.parent.loc.else)
+
             corrector.remove_preceding(branch_else, branch_else.column - column)
           end
         end

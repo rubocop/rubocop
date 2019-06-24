@@ -829,6 +829,25 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
       end
     end
+
+    it 'corrects assignment when without `else` branch' do
+      expect_offense(<<~RUBY)
+        var = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
+          bar
+        elsif baz
+          qux
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          var = bar
+        elsif baz
+          var = qux
+        end
+      RUBY
+    end
   end
 
   context 'SingleLineConditionsOnly false' do
