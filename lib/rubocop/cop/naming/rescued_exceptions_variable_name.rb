@@ -57,12 +57,10 @@ module RuboCop
         MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'
 
         def on_resbody(node)
-          exception_type, @exception_name = *node
-          return unless exception_type || @exception_name
+          @exception_variable = node.exception_variable
+          return unless @exception_variable
 
-          @exception_name ||= exception_type.children.first
-          return if @exception_name.const_type? ||
-                    variable_name == preferred_name
+          return if variable_name == preferred_name
 
           add_offense(node, location: offense_range(node))
         end
@@ -99,7 +97,7 @@ module RuboCop
         end
 
         def location
-          @exception_name.loc.expression
+          @exception_variable.loc.expression
         end
 
         def message(_node = nil)

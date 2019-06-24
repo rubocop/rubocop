@@ -117,59 +117,11 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
 
     context 'with implicit rescue' do
       context 'with `Exception` variable' do
-        it 'registers an offense when using `exc`' do
-          expect_offense(<<~RUBY)
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
             begin
               something
             rescue exc
-                   ^^^ Use `e` instead of `exc`.
-              # do something
-            end
-          RUBY
-
-          expect_correction(<<~RUBY)
-            begin
-              something
-            rescue e
-              # do something
-            end
-          RUBY
-        end
-
-        it 'registers an offense when using `_exc`' do
-          expect_offense(<<~RUBY)
-            begin
-              something
-            rescue _exc
-                   ^^^^ Use `_e` instead of `_exc`.
-              # do something
-            end
-          RUBY
-
-          expect_correction(<<~RUBY)
-            begin
-              something
-            rescue _e
-              # do something
-            end
-          RUBY
-        end
-
-        it 'does not register an offense when using `e`' do
-          expect_no_offenses(<<~RUBY)
-            begin
-              something
-            rescue e
-              # do something
-            end
-          RUBY
-        end
-
-        it 'does not register an offense when using `_e`' do
-          expect_no_offenses(<<~RUBY)
-            begin
-              something
-            rescue _e
               # do something
             end
           RUBY
