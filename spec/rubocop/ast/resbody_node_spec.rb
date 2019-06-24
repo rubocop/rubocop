@@ -23,7 +23,7 @@ RSpec.describe RuboCop::AST::ResbodyNode do
     context 'for an implicit rescue' do
       let(:source) { 'begin; beginbody; rescue ex; rescuebody; end' }
 
-      it { expect(resbody_node.exception_variable.source).to eq('ex') }
+      it { expect(resbody_node.exception_variable).to be(nil) }
     end
 
     context 'when an exception variable is not given' do
