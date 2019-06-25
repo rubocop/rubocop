@@ -57,24 +57,20 @@ module RuboCop
         MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'
 
         def on_resbody(node)
-          exception_type, @exception_name = *node
-          return unless exception_type || @exception_name
-
-          @exception_name ||= exception_type.children.first
-          return if @exception_name.const_type? ||
-                    variable_name == preferred_name
+          name = variable_name(node)
+          return unless name
+          return if preferred_name(name).to_sym == name
 
           add_offense(node, location: offense_range(node))
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            offending_name = node.exception_variable.children.first
+            offending_name = variable_name(node)
+            preferred_name = preferred_name(offending_name)
             corrector.replace(offense_range(node), preferred_name)
 
-            return unless node.body
-
-            node.body.each_descendant(:lvar) do |var|
+            node.body&.each_descendant(:lvar) do |var|
               next unless var.children.first == offending_name
 
               corrector.replace(var.loc.expression, preferred_name)
@@ -89,21 +85,26 @@ module RuboCop
           variable.loc.expression
         end
 
-        def preferred_name
-          name = cop_config.fetch('PreferredName', 'e')
-          variable_name.to_s.start_with?('_') ? "_#{name}" : name
+        def preferred_name(variable_name)
+          preferred_name = cop_config.fetch('PreferredName', 'e')
+          if variable_name.to_s.start_with?('_')
+            "_#{preferred_name}"
+          else
+            preferred_name
+          end
         end
 
-        def variable_name
-          location.source
+        def variable_name(node)
+          asgn_node = node.exception_variable
+          return unless asgn_node
+
+          asgn_node.children.last
         end
 
-        def location
-          @exception_name.loc.expression
-        end
-
-        def message(_node = nil)
-          format(MSG, preferred: preferred_name, bad: variable_name)
+        def message(node)
+          offending_name = variable_name(node)
+          preferred_name = preferred_name(offending_name)
+          format(MSG, preferred: preferred_name, bad: offending_name)
         end
       end
     end

@@ -21,7 +21,7 @@ RSpec.describe RuboCop::AST::ResbodyNode do
     end
 
     context 'for an implicit rescue' do
-      let(:source) { 'begin; beginbody; rescue ex; rescuebody; end' }
+      let(:source) { 'begin; beginbody; rescue => ex; rescuebody; end' }
 
       it { expect(resbody_node.exception_variable.source).to eq('ex') }
     end

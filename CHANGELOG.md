@@ -18,6 +18,7 @@
 * [#7118](https://github.com/rubocop-hq/rubocop/pull/7118): Fix `Style/WordArray` with `encoding: binary` magic comment and non-ASCII string. ([@pocke][])
 * [#7159](https://github.com/rubocop-hq/rubocop/issues/7159): Fix an error for `Lint/DuplicatedKey` when using endless range. ([@koic][])
 * [#7151](https://github.com/rubocop-hq/rubocop/issues/7151): Fix `Style/WordArray` to also consider words containing hyphens. ([@fwitzke][])
+* [#6893](https://github.com/rubocop-hq/rubocop/issues/6893): Handle implicit rescue correctly in `Naming/RescuedExceptionsVariableName`. ([@pocke][], [@anthony-robin][])
 * [#7165](https://github.com/rubocop-hq/rubocop/issues/7165): Fix an auto-correct error for `Style/ConditionalAssignment` when without `else` branch'. ([@koic][])
 
 ### Changes
