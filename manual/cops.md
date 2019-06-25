@@ -81,6 +81,7 @@ In the following section you find all available cops:
 * [Gemspec/DuplicatedAssignment](cops_gemspec.md#gemspecduplicatedassignment)
 * [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 * [Gemspec/RequiredRubyVersion](cops_gemspec.md#gemspecrequiredrubyversion)
+* [Gemspec/RubyVersionGlobalsUsage](cops_gemspec.md#gemspecrubyversionglobalsusage)
 
 #### Department [Layout](cops_layout.md)
 
@@ -343,6 +344,7 @@ In the following section you find all available cops:
 * [Style/EvalWithLocation](cops_style.md#styleevalwithlocation)
 * [Style/EvenOdd](cops_style.md#styleevenodd)
 * [Style/ExpandPathArguments](cops_style.md#styleexpandpatharguments)
+* [Style/FloatDivision](cops_style.md#stylefloatdivision)
 * [Style/For](cops_style.md#stylefor)
 * [Style/FormatString](cops_style.md#styleformatstring)
 * [Style/FormatStringToken](cops_style.md#styleformatstringtoken)

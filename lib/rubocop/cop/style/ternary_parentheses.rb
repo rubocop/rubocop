@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def non_complex_send?(node)
-          return false unless node.send_type?
+          return false unless node.call_type?
 
           !node.operator_method? || node.method?(:[])
         end

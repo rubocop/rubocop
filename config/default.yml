@@ -195,6 +195,13 @@ Gemspec/RequiredRubyVersion:
   VersionAdded: '0.52'
   Include:
     - '**/*.gemspec'
+    -
+Gemspec/RubyVersionGlobalsUsage:
+  Description: Checks usage of RUBY_VERSION in gemspec.
+  Enabled: true
+  VersionAdded: '0.72'
+  Include:
+    - '**/*.gemspec'
 
 #################### Layout ###########################
 
@@ -2642,6 +2649,19 @@ Style/ExpandPathArguments:
   Description: "Use `expand_path(__dir__)` instead of `expand_path('..', __FILE__)`."
   Enabled: true
   VersionAdded: '0.53'
+
+Style/FloatDivision:
+  Description: 'For performing float division, coerce one side only.'
+  StyleGuide: '#float-division'
+  Reference: 'https://github.com/rubocop-hq/ruby-style-guide/issues/628'
+  Enabled: true
+  VersionAdded: '0.72'
+  EnforcedStyle: single_coerce
+  SupportedStyles:
+    - left_coerce
+    - right_coerce
+    - single_coerce
+    - fdiv
 
 Style/For:
   Description: 'Checks use of for or each in multiline loops.'
