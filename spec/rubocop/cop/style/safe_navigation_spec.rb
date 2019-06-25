@@ -157,6 +157,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo(bar.baz) if bar')
   end
 
+  it 'allows a method call safeguarded when using `unless nil?`' do
+    expect_no_offenses(<<~RUBY)
+      foo unless nil?
+    RUBY
+  end
+
   shared_examples 'all variable types' do |variable|
     context 'modifier if' do
       shared_examples 'safe guarding logical break keywords' do |keyword|

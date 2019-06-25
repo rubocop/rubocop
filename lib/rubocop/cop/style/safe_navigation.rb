@@ -224,7 +224,7 @@ module RuboCop
         end
 
         def method_called?(send_node)
-          send_node.parent&.send_type?
+          send_node&.parent&.send_type?
         end
 
         def begin_range(node, method_call)
