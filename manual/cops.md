@@ -81,6 +81,7 @@ In the following section you find all available cops:
 * [Gemspec/DuplicatedAssignment](cops_gemspec.md#gemspecduplicatedassignment)
 * [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 * [Gemspec/RequiredRubyVersion](cops_gemspec.md#gemspecrequiredrubyversion)
+* [Gemspec/RubyVersionGlobalsUsage](cops_gemspec.md#gemspecrubyversionglobalsusage)
 
 #### Department [Layout](cops_layout.md)
 

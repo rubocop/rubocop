@@ -3,6 +3,7 @@
 ## master (unreleased)
 
 ### New features
+* [#7137](https://github.com/rubocop-hq/rubocop/issues/7137): Add new `Gemspec/RubyVersionGlobalsUsage` cop. ([@malyshkosergey][])
 
 * [#7150](https://github.com/rubocop-hq/rubocop/pull/7150): Add `AllowIfModifier` option to `Style/IfInsideElse` cop. ([@koic][])
 
@@ -4091,4 +4092,5 @@
 [@fwininger]: https://github.com/fwininger
 [@stoivo]: https://github.com/stoivo
 [@eugeneius]: https://github.com/eugeneius
+[@malyshkosergey]: https://github.com/malyshkosergey
 [@fwitzke]: https://github.com/fwitzke
