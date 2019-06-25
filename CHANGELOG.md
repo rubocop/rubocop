@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.72.0 (2019-06-25)
+
 ### New features
 
 * [#7137](https://github.com/rubocop-hq/rubocop/issues/7137): Add new `Gemspec/RubyVersionGlobalsUsage` cop. ([@malyshkosergey][])
