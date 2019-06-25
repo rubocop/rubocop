@@ -3,8 +3,8 @@
 ## master (unreleased)
 
 ### New features
-* [#7137](https://github.com/rubocop-hq/rubocop/issues/7137): Add new `Gemspec/RubyVersionGlobalsUsage` cop. ([@malyshkosergey][])
 
+* [#7137](https://github.com/rubocop-hq/rubocop/issues/7137): Add new `Gemspec/RubyVersionGlobalsUsage` cop. ([@malyshkosergey][])
 * [#7150](https://github.com/rubocop-hq/rubocop/pull/7150): Add `AllowIfModifier` option to `Style/IfInsideElse` cop. ([@koic][])
 * [#7153](https://github.com/rubocop-hq/rubocop/pull/7153): Add new cop `Style/FloatDivision` that checks coercion. ([@tejasbubane][])
 
@@ -20,6 +20,7 @@
 * [#7151](https://github.com/rubocop-hq/rubocop/issues/7151): Fix `Style/WordArray` to also consider words containing hyphens. ([@fwitzke][])
 * [#6893](https://github.com/rubocop-hq/rubocop/issues/6893): Handle implicit rescue correctly in `Naming/RescuedExceptionsVariableName`. ([@pocke][], [@anthony-robin][])
 * [#7165](https://github.com/rubocop-hq/rubocop/issues/7165): Fix an auto-correct error for `Style/ConditionalAssignment` when without `else` branch'. ([@koic][])
+* [#7171](https://github.com/rubocop-hq/rubocop/issues/7171): Fix an error for `Style/SafeNavigation` when using `unless nil?` as a safeguarded'. ([@koic][])
 
 ### Changes
 
