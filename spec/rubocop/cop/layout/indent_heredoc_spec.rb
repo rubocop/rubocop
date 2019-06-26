@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
   shared_examples 'warning' do |message|
     it 'warns' do
       correct = lambda do
-        autocorrect_source(<<-RUBY.strip_indent)
+        autocorrect_source(<<~RUBY)
           <<-RUBY2
           foo
           RUBY2

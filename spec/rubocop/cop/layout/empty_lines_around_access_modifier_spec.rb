@@ -342,7 +342,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
     %w[private protected].each do |access_modifier|
       it "accepts missing blank line after #{access_modifier}" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           class Test
             something
 
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
       end
 
       it "registers an offense for blank line after #{access_modifier}" do
-        inspect_source(<<-RUBY.strip_indent)
+        inspect_source(<<~RUBY)
           class Test
             something
 
@@ -369,7 +369,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
       end
 
       it "autocorrects remove blank line after #{access_modifier}" do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           class Test
             something
 
@@ -379,7 +379,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end
         RUBY
 
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect(corrected).to eq(<<~RUBY)
           class Test
             something
 
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
     %w[public module_function].each do |access_modifier|
       it "accepts missing blank line after #{access_modifier}" do
-        expect_no_offenses(<<-RUBY.strip_indent)
+        expect_no_offenses(<<~RUBY)
           module Kernel
             #{access_modifier}
 
@@ -418,7 +418,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
       end
 
       it 'autocorrects blank line before #{access_modifier}' do
-        corrected = autocorrect_source(<<-RUBY.strip_indent)
+        corrected = autocorrect_source(<<~RUBY)
           class Test
             something
             #{access_modifier}
@@ -426,7 +426,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end
         RUBY
 
-        expect(corrected).to eq(<<-RUBY.strip_indent)
+        expect(corrected).to eq(<<~RUBY)
           class Test
             something
 

@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_i, use stricter Integer("10", 10).
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Integer("10", 10)
       RUBY
     end
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.to_i, use stricter Integer(10, 10).
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Integer(10, 10)
       RUBY
     end
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10.2".to_f, use stricter Float("10.2").
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Float("10.2")
       RUBY
     end
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_c, use stricter Complex("10").
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Complex("10")
       RUBY
     end
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using string_value.to_i, use stricter Integer(string_value, 10).
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         string_value = '10'
         Integer(string_value, 10)
       RUBY
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:id].to_i, use stricter Integer(params[:id], 10).
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         params = { id: 10 }
         Integer(params[:id], 10)
       RUBY
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using args[0].to_i, use stricter Integer(args[0], 10).
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         args = [1,2,3]
         Integer(args[0], 10)
       RUBY
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         ^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:field].to_i, use stricter Integer(params[:field], 10).
       RUBY
 
-      expect_correction(<<~RUBY.strip_indent)
+      expect_correction(<<~RUBY)
         Integer(params[:field], 10)
       RUBY
     end
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
     end
 
     it 'when using Time' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Time.now.to_i
         Time.now.to_f
         Time.strptime("2000-10-31", "%Y-%m-%d").to_i
@@ -131,14 +131,14 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
     end
 
     it 'when using DateTime' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         DateTime.new(2012, 8, 29, 22, 35, 0).to_i
         DateTime.new(2012, 8, 29, 22, 35, 0).to_f
       RUBY
     end
 
     it 'when using Time/DateTime with multiple method calls' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         Time.now.to_datetime.to_i
         DateTime.civil(2005, 2, 21, 10, 11, 12, Rational(-6, 24)).utc.to_f
         Time.zone.now.to_datetime.to_f

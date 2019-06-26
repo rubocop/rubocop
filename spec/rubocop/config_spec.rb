@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes multiple valid EnforcedStyle' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Layout/AlignHash:
             EnforcedHashRocketStyle:
               - key
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes multiple valid EnforcedStyle '\
             'and one invalid style' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Layout/AlignHash:
             EnforcedHashRocketStyle:
               - key
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes multiple '\
             'but config does not allow' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
             EnforcedStyleInsidePipes:
               - space
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes multiple invalid EnforcedStyle' do
       before do
-        create_file(configuration_path, <<-YAML.strip_indent)
+        create_file(configuration_path, <<~YAML)
           Layout/AlignHash:
             EnforcedHashRocketStyle:
               - table

@@ -699,23 +699,23 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before do
         create_file("#{gem_root}/gemone/config/rubocop.yml",
-                    <<-YAML.strip_indent)
-          Metrics/MethodLength:
-            Enabled: false
-            Max: 200
-            CountComments: false
-        YAML
+                    <<~YAML)
+                      Metrics/MethodLength:
+                        Enabled: false
+                        Max: 200
+                        CountComments: false
+                    YAML
         create_file("#{gem_root}/gemtwo/config/default.yml",
-                    <<-YAML.strip_indent)
-          Metrics/LineLength:
-            Enabled: true
-        YAML
+                    <<~YAML)
+                      Metrics/LineLength:
+                        Enabled: true
+                    YAML
         create_file("#{gem_root}/gemtwo/config/strict.yml",
-                    <<-YAML.strip_indent)
-          Metrics/LineLength:
-            Max: 72
-            AllowHeredoc: false
-        YAML
+                    <<~YAML)
+                      Metrics/LineLength:
+                        Max: 72
+                        AllowHeredoc: false
+                    YAML
         create_file('local.yml', <<~YAML)
           Metrics/MethodLength:
             CountComments: true

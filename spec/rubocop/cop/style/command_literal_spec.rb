@@ -451,7 +451,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-RUBY.strip_indent)
+        expect(new_source).to eq(<<~RUBY)
           foo = %x(
             ls
             ls -l
