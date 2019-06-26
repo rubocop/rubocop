@@ -718,7 +718,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys, by keys' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
           a: 0,
           bbb: 1
@@ -731,7 +731,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys, by table' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
           a:   0,
           bbb: 1
@@ -744,7 +744,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
     end
 
     it 'accepts aligned hash keys, by both' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         hash1 = {
           a:   0,
           bbb: 1
@@ -780,7 +780,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
     describe 'registers an offense' do
       it 'for misaligned hash values' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           hash = {
               'a' =>  0,
               ^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
@@ -791,7 +791,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'for misaligned hash values, prefer table when least offenses' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           hash = {
             'abcdefg' => 0,
             'abcdef'  => 0,
@@ -806,7 +806,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'for misaligned hash values, prefer key when least offenses' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           hash = {
             'abcdefg' => 0,
             'abcdef'  => 0,
@@ -831,7 +831,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
       end
 
       it 'for misaligned hash values, works separate for each hash' do
-        expect_offense(<<-RUBY.strip_indent)
+        expect_offense(<<~RUBY)
           hash = {
             'abcdefg' => 0,
             'abcdef'  => 0,
@@ -850,14 +850,14 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
       describe 'auto-corrects an offense' do
         it 'for misaligned hash values' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             hash = {
                 'a' =>  0,
               'bbb' => 1
             }
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             hash = {
                 'a' => 0,
                 'bbb' => 1
@@ -875,7 +875,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
           it 'for misaligned hash values, '\
              'prefer table because it is specified first' do
-            new_source = autocorrect_source(<<-RUBY.strip_indent)
+            new_source = autocorrect_source(<<~RUBY)
               hash = {
                 'abcdefg' => 0,
                 'abcdef'  => 0,
@@ -886,7 +886,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
               }
             RUBY
 
-            expect(new_source).to eq(<<-RUBY.strip_indent)
+            expect(new_source).to eq(<<~RUBY)
               hash = {
                 'abcdefg' => 0,
                 'abcdef'  => 0,
@@ -901,7 +901,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
 
         it 'for misaligned hash values, '\
            'prefer key because it is specified first' do
-          new_source = autocorrect_source(<<-RUBY.strip_indent)
+          new_source = autocorrect_source(<<~RUBY)
             hash = {
               'abcdefg' => 0,
               'abcdef'  => 0,
@@ -912,7 +912,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignHash, :config do
             }
           RUBY
 
-          expect(new_source).to eq(<<-RUBY.strip_indent)
+          expect(new_source).to eq(<<~RUBY)
             hash = {
               'abcdefg' => 0,
               'abcdef' => 0,

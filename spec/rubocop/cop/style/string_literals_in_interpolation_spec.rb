@@ -28,14 +28,14 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     end
 
     it 'accepts double quotes on a broken static string' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         "A" \
           "B"
       RUBY
     end
 
     it 'accepts double quotes on static strings within a method' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def m
           puts "A"
           puts "B"

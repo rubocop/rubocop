@@ -399,21 +399,21 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       include_examples 'UnneededCopDisableDirective not run',
-                       'individually disabled', <<-YAML.strip_indent
-        Lint/UnneededCopDisableDirective:
-          Enabled: false
-      YAML
+                       'individually disabled', <<~YAML
+                         Lint/UnneededCopDisableDirective:
+                           Enabled: false
+                       YAML
       include_examples 'UnneededCopDisableDirective not run',
-                       'individually excluded', <<-YAML.strip_indent
-        Lint/UnneededCopDisableDirective:
-          Exclude:
-            - example.rb
-      YAML
+                       'individually excluded', <<~YAML
+                         Lint/UnneededCopDisableDirective:
+                           Exclude:
+                             - example.rb
+                       YAML
       include_examples 'UnneededCopDisableDirective not run',
-                       'disabled through department', <<-YAML.strip_indent
-        Lint:
-          Enabled: false
-      YAML
+                       'disabled through department', <<~YAML
+                         Lint:
+                           Enabled: false
+                       YAML
     end
   end
 
