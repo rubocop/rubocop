@@ -933,6 +933,23 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
         end
 
+        it 'does not lose comments within if expression' do
+          new_source = autocorrect_source(<<~RUBY)
+            if #{variable}
+              # this is a comment
+              # another comment
+              #{variable}.bar
+            end
+          RUBY
+
+          expected_source = <<~RUBY
+            # this is a comment
+            # another comment
+            #{variable}&.bar
+          RUBY
+          expect(new_source).to eq(expected_source)
+        end
+
         it 'corrects a single method call inside of an unless nil check ' \
            'for the object' do
           new_source = autocorrect_source(<<~RUBY)
