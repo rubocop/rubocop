@@ -84,6 +84,12 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace do
     RUBY
   end
 
+  it 'accepts Doxygen syntax' do
+    expect_no_offenses(<<~RUBY)
+      #**
+    RUBY
+  end
+
   it 'accepts sprockets directives' do
     expect_no_offenses('#= require_tree .')
   end

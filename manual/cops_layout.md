@@ -2908,7 +2908,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.73
 
 This cop checks whether comments have a leading space after the
 `#` denoting the start of the comment. The leading space is not
