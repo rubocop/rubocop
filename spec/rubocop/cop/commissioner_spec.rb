@@ -78,12 +78,12 @@ RSpec.describe RuboCop::Cop::Commissioner do
 
       commissioner.investigate(processed_source)
 
-      expect(commissioner.errors[cop].size).to eq(1)
+      expect(commissioner.errors.size).to eq(1)
       expect(
-        commissioner.errors[cop][0].error.instance_of?(RuntimeError)
+        commissioner.errors[0].cause.instance_of?(RuntimeError)
       ).to be(true)
-      expect(commissioner.errors[cop][0].line).to eq 2
-      expect(commissioner.errors[cop][0].column).to eq 0
+      expect(commissioner.errors[0].line).to eq 2
+      expect(commissioner.errors[0].column).to eq 0
     end
 
     context 'when passed :raise_error option' do

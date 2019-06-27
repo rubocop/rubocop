@@ -31,6 +31,16 @@ module RuboCop
       include IgnoredNode
       include AutocorrectLogic
 
+      Correction = Struct.new(:lambda, :node, :cop) do
+        def call(corrector)
+          lambda.call(corrector)
+        rescue StandardError => e
+          raise ErrorWithAnalyzedFileLocation.new(
+            cause: e, node: node, cop: cop
+          )
+        end
+      end
+
       attr_reader :config, :offenses, :corrections
       attr_accessor :processed_source # TODO: Bad design.
 
@@ -149,7 +159,7 @@ module RuboCop
         correction = autocorrect(node)
         return :uncorrected unless correction
 
-        @corrections << correction
+        @corrections << Correction.new(correction, node, self)
         :corrected
       end
 

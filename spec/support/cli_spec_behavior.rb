@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'cli spec behavior' do
+  include_context 'mock console output'
+
   include FileHelper
 
   def abs(path)
@@ -8,9 +10,6 @@ RSpec.shared_context 'cli spec behavior' do
   end
 
   before do
-    $stdout = StringIO.new
-    $stderr = StringIO.new
-
     RuboCop::ConfigLoader.debug = false
 
     # OPTIMIZE: Makes these specs faster. Work directory (the parent of
@@ -28,8 +27,6 @@ RSpec.shared_context 'cli spec behavior' do
   end
 
   after do
-    $stdout = STDOUT
-    $stderr = STDERR
     RuboCop::ResultCache.inhibit_cleanup = false
   end
 end

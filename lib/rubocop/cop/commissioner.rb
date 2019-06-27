@@ -7,8 +7,6 @@ module RuboCop
     class Commissioner
       include RuboCop::AST::Traversal
 
-      CopError = Struct.new(:error, :line, :column)
-
       attr_reader :errors
 
       def initialize(cops, forces = [], options = {})
@@ -62,7 +60,7 @@ module RuboCop
       end
 
       def reset_errors
-        @errors = Hash.new { |hash, k| hash[k] = [] }
+        @errors = []
       end
 
       def remove_irrelevant_cops(filename)
@@ -131,12 +129,8 @@ module RuboCop
       rescue StandardError => e
         raise e if @options[:raise_error]
 
-        if node
-          line = node.first_line
-          column = node.loc.column
-        end
-        error = CopError.new(e, line, column)
-        @errors[cop] << error
+        err = ErrorWithAnalyzedFileLocation.new(cause: e, node: node, cop: cop)
+        @errors << err
       end
     end
   end

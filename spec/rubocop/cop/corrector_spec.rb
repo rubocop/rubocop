@@ -12,10 +12,10 @@ RSpec.describe RuboCop::Cop::Corrector do
     let(:operator) { node.loc.operator }
 
     def do_rewrite(corrections = nil, &block)
-      corrections ||= block
-      corrections = [corrections] unless corrections.is_a? Array
-      unless corrections.all? { |c| c.is_a?(Proc) }
-        raise 'Corrections should be a proc, block or an array of procs'
+      corrections = Array(corrections || block).map do |c|
+        node = instance_double(RuboCop::AST::Node)
+        cop = instance_double(RuboCop::Cop::Cop)
+        RuboCop::Cop::Cop::Correction.new(c, node, cop)
       end
 
       described_class.new(processed_source.buffer, corrections).rewrite
@@ -91,15 +91,23 @@ RSpec.describe RuboCop::Cop::Corrector do
         remove_trailing: [2]
       }.each_pair do |method, params|
         it "raises exception from #{method}" do
+          # rubocop:disable Style/MultilineBlockChain
           expect do
             do_rewrite { |corr| corr.public_send(method, op_string, *params) }
-          end.to raise_exception 'Corrector expected range source buffer to be'\
-                                 ' a Parser::Source::Buffer, but got String'
+          end.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation) do |e|
+            expect(e.cause.message).to eq(
+              'Corrector expected range source buffer to be'\
+              ' a Parser::Source::Buffer, but got String'
+            )
+          end
           expect do
             do_rewrite { |corr| corr.public_send(method, op_other, *params) }
-          end.to raise_exception(
-            /^Correction target buffer \d+ name:"\(string\)" is not current/
-          )
+          end.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation) do |e|
+            expect(e.cause.message).to match(
+              /^Correction target buffer \d+ name:"\(string\)" is not current/
+            )
+          end
+          # rubocop:enable Style/MultilineBlockChain
         end
       end
     end
