@@ -61,6 +61,18 @@ RSpec.shared_context 'config', :config do
   end
 end
 
+RSpec.shared_context 'mock console output' do
+  before do
+    $stdout = StringIO.new
+    $stderr = StringIO.new
+  end
+
+  after do
+    $stdout = STDOUT
+    $stderr = STDERR
+  end
+end
+
 RSpec.shared_context 'ruby 2.3', :ruby23 do
   let(:ruby_version) { 2.3 }
 end

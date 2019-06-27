@@ -8,4 +8,27 @@ module RuboCop
   class Error < StandardError; end
 
   class ValidationError < Error; end
+
+  # A wrapper to display errored location of analyzed file.
+  class ErrorWithAnalyzedFileLocation < Error
+    def initialize(cause:, node:, cop:)
+      @cause = cause
+      @cop = cop
+      @location = node.is_a?(RuboCop::AST::Node) ? node.loc : node
+    end
+
+    attr_reader :cause, :cop
+
+    def line
+      @location&.line
+    end
+
+    def column
+      @location&.column
+    end
+
+    def message
+      "casue: #{cause.inspect}"
+    end
+  end
 end

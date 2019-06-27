@@ -81,6 +81,9 @@ module RuboCop
           File.open(filename, 'w') { |f| f.write(new_source) }
         end
         @updated_source_file = true
+      rescue RuboCop::ErrorWithAnalyzedFileLocation => e
+        process_errors(buffer.name, [e])
+        raise e.cause
       end
 
       private
@@ -103,8 +106,8 @@ module RuboCop
 
         other = investigate(other_cops, processed_source)
 
-        errors = autocorrect.errors.merge(other.errors)
-        process_commissioner_errors(processed_source.path, errors)
+        errors = [*autocorrect.errors, *other.errors]
+        process_errors(processed_source.path, errors)
 
         autocorrect.offenses.concat(other.offenses)
       end
@@ -149,19 +152,17 @@ module RuboCop
         end
       end
 
-      def process_commissioner_errors(file, file_errors)
-        file_errors.each do |cop, errors|
-          errors.each do |cop_error|
-            e = cop_error.error
-            line = ":#{cop_error.line}" if cop_error.line
-            column = ":#{cop_error.column}" if cop_error.column
-            location = "#{file}#{line}#{column}"
+      def process_errors(file, errors)
+        errors.each do |error|
+          line = ":#{error.line}" if error.line
+          column = ":#{error.column}" if error.column
+          location = "#{file}#{line}#{column}"
+          cause = error.cause
 
-            if e.is_a?(Warning)
-              handle_warning(e, location)
-            else
-              handle_error(e, location, cop)
-            end
+          if cause.is_a?(Warning)
+            handle_warning(cause, location)
+          else
+            handle_error(cause, location, error.cop)
           end
         end
       end

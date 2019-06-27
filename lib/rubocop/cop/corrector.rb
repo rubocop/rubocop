@@ -57,16 +57,15 @@ module RuboCop
       #
       # @return [String]
       def rewrite
-        # rubocop:disable Lint/HandleExceptions
         @corrections.each do |correction|
           begin
             @source_rewriter.transaction do
               correction.call(self)
             end
-          rescue ::Parser::ClobberingError
+          rescue ErrorWithAnalyzedFileLocation => e
+            raise e unless e.cause.is_a?(::Parser::ClobberingError)
           end
         end
-        # rubocop:enable Lint/HandleExceptions
 
         @source_rewriter.process
       end
