@@ -65,10 +65,12 @@ module RuboCop
         to_inspect?(file, hidden_files, base_dir_config)
       end
 
-      # Most recently modified file first.
-      target_files.sort_by! { |path| -Integer(File.mtime(path)) } if fail_fast?
-
-      target_files
+      if fail_fast?
+        # Most recently modified file first.
+        target_files.sort_by! { |path| -Integer(File.mtime(path)) }
+      else
+        target_files.sort!
+      end
     end
 
     def to_inspect?(file, hidden_files, base_dir_config)
