@@ -23,7 +23,7 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|
-            next unless comment.text =~ /\A#+[^#\s=:+-]/
+            next unless comment.text =~ /\A#+[^#*\s=:+-]/
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
 
             add_offense(comment)

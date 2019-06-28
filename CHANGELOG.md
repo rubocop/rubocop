@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* Allow `#**` Doxygen comment style on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
+
 ## 0.72.0 (2019-06-25)
 
 ### New features
