@@ -16,6 +16,25 @@ module RuboCop
       #
       #   # good
       #   # Some comment
+      #
+      # @example AllowDoxygenCommentStyle: false (default)
+      #
+      #   # bad
+      #
+      #   #**
+      #   # Some comment
+      #   # Another line of comment
+      #   #*
+      #
+      # @example AllowDoxygenCommentStyle: true
+      #
+      #   # good
+      #
+      #   #**
+      #   # Some comment
+      #   # Another line of comment
+      #   #*
+      #
       class LeadingCommentSpace < Cop
         include RangeHelp
 
@@ -23,8 +42,9 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|
-            next unless comment.text =~ /\A#+[^#*\s=:+-]/
+            next unless comment.text =~ /\A#+[^#\s=:+-]/
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
+            next if allow_doxygen_comment? && doxygen_comment_style?(comment)
 
             add_offense(comment)
           end
@@ -53,6 +73,14 @@ module RuboCop
 
         def rackup_config_file?
           File.basename(processed_source.file_path).eql?('config.ru')
+        end
+
+        def allow_doxygen_comment?
+          cop_config['AllowDoxygenCommentStyle']
+        end
+
+        def doxygen_comment_style?(comment)
+          comment.text.start_with?('#*')
         end
       end
     end
