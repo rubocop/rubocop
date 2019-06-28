@@ -5,6 +5,7 @@
 ### Changes
 
 * Allow `#**` Doxygen comment style on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
+* [#7181](https://github.com/rubocop-hq/rubocop/pull/7181): Sort analyzed file alphabetically. ([@pocke][])
 
 ## 0.72.0 (2019-06-25)
 

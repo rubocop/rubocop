@@ -833,10 +833,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
-        == example1.rb ==
-        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
         == dir/example2.rb ==
         C:  3:  6: Trailing whitespace detected.
+        == example1.rb ==
+        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
         2 files inspected, 2 offenses detected
       RESULT
@@ -859,10 +859,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
-        == example1.rb ==
-        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
         == dir/example2.rb ==
         C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected. (#{url})
+        == example1.rb ==
+        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
         2 files inspected, 2 offenses detected
       RESULT
