@@ -323,7 +323,7 @@ module RuboCop
         auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
                          'while --auto-gen-config needs a non-cached run, ' \
                          'so they cannot be combined.',
-        fail_fast: '-P/--parallel can not be combined with -F/--fail-fast.',
+        fail_fast: '-P/--parallel can not be combined with -F/--fail-fast.'
       }
 
       combos.each do |key, msg|

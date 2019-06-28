@@ -32,7 +32,7 @@ module RuboCop
     class ProcessResult
       class << self
         def build_error_result(filepath, error)
-          ProcessResult.new(filepath, nil, false ,error)
+          ProcessResult.new(filepath, nil, false, error)
         end
 
         def build_succeed_result(filepath, inspect_result, passed)
@@ -98,19 +98,11 @@ module RuboCop
     def inspect_files(files)
       formatter_set.started(files)
 
-      conductor = InspectConductor.conductor_class(@options[:parallel]).new(files, formatter_set, @options[:fail_fast])
-      conductor.run_inspect(&method(:process_file))
+      inspected_files, all_passed, error = run_inspect(files)
 
-      inspected_files = conductor.inspected_files
-      @errors = conductor.errors
-      @warnings = conductor.warnings
+      raise error if error
 
-      unless conductor.error_results.empty?
-        # TODO: show first only...
-        raise conductor.error_results.first.error
-      end
-
-      conductor.all_passed
+      all_passed
     ensure
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
@@ -120,6 +112,20 @@ module RuboCop
       end
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
+    end
+
+    def run_inspect(files)
+      klass = InspectConductor.conductor_class(@options[:parallel])
+      conductor = klass.new(files, formatter_set, @options[:fail_fast])
+      conductor.run_inspect(&method(:process_file))
+
+      @errors = conductor.errors
+      @warnings = conductor.warnings
+
+      # TODO: show first only...
+      error = conductor.first_error_object
+
+      [conductor.inspected_files, conductor.all_passed, error]
     end
 
     def list_files(paths)
@@ -147,7 +153,10 @@ module RuboCop
       file_offense_cache(file) do
         source = get_processed_source(file)
         source, result = do_inspection_loop(file, source)
-        result.offenses = add_unneeded_disables(file, result.offenses.compact.sort, source)
+
+        offenses = result.offenses.compact.sort
+        result.offenses = add_unneeded_disables(file, offenses, source)
+
         result
       end
     end
@@ -155,23 +164,23 @@ module RuboCop
     def file_offense_cache(file)
       cache = ResultCache.new(file, @options, @config_store) if cached_run?
       if cache&.valid?
-        inspect_result = InspectResult.new
-        inspect_result.offenses = cache.load
+        result = InspectResult.new
+        result.offenses = cache.load
 
         # If we're running --auto-correct and the cache says there are
         # offenses, we need to actually inspect the file. If the cache shows no
         # offenses, we're good.
-        real_run_needed = @options[:auto_correct] && inspect_result.offenses.any?
+        real_run_needed = @options[:auto_correct] && result.offenses.any?
       else
         real_run_needed = true
       end
 
       if real_run_needed
-        inspect_result = yield
-        save_in_cache(cache, inspect_result)
+        result = yield
+        save_in_cache(cache, result)
       end
 
-      inspect_result
+      result
     end
 
     def add_unneeded_disables(file, offenses, source)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class process files and collect results
 class InspectConductor
   class << self
@@ -10,7 +12,7 @@ class InspectConductor
 
   def initialize(files, formatter_set, fail_fast)
     @files = files
-    @fail_fast= fail_fast
+    @fail_fast = fail_fast
     @formatter_set = formatter_set
 
     @errors = []
@@ -29,18 +31,22 @@ class InspectConductor
     results.each do |process_result|
       if process_result.error_file?
         @error_results << process_result
+        @all_passed = false
         next
       end
 
-      @all_passed = @all_passed && process_result.passed
+      @all_passed &&= process_result.passed
 
-      filepath = process_result.filepath
+      @inspected_files << process_result.filepath
+
       inspect_result = process_result.inspect_result
-
-      @inspected_files << filepath
       @errors.concat(inspect_result.errors)
       @warnings.concat(inspect_result.warnings)
     end
+  end
+
+  def first_error_object
+    @error_results.first ? @error_results.first.error : nil
   end
 
   private
@@ -57,11 +63,13 @@ class InspectConductor
   end
 
   def file_inspect_finished(process_result)
-    if process_result.error_file?
-      formatter_set.file_finished(process_result.filepath, process_result.error.offenses.compact.sort.freeze)
-    else
-      formatter_set.file_finished(process_result.filepath, process_result.inspect_result.offenses)
-    end
+    offenses = if process_result.error_file?
+                 process_result.error.offenses.compact.sort.freeze
+               else
+                 process_result.inspect_result.offenses
+               end
+
+    formatter_set.file_finished(process_result.filepath, offenses)
   end
 end
 
@@ -75,11 +83,12 @@ class ParallelConductor < InspectConductor
   # when @stop is true, abort all files
   def next_file
     return Parallel::Stop if @stop || @files.empty?
+
     @files.pop
   end
 
-  # when the block finished, parallel gem call this method on main process with result
-  def inspect_finished(_item, _i, process_result)
+  # parallel gem call this method on main process with result
+  def inspect_finished(_item, _index, process_result)
     file_inspect_finished(process_result)
     check_inspect_stop(process_result)
   end
@@ -93,8 +102,8 @@ class ParallelConductor < InspectConductor
   end
 end
 
+# When parallel option doesn't set, we use normal loop
 class SingleConductor < InspectConductor
-
   private
 
   def inspect_files
