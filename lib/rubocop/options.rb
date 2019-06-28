@@ -324,7 +324,6 @@ module RuboCop
                          'while --auto-gen-config needs a non-cached run, ' \
                          'so they cannot be combined.',
         fail_fast: '-P/--parallel can not be combined with -F/--fail-fast.',
-        auto_correct: '-P/--parallel can not be combined with --auto-correct.'
       }
 
       combos.each do |key, msg|
