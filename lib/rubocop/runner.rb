@@ -143,7 +143,7 @@ module RuboCop
         result.offenses = result.offenses.select { |o| considered_failure?(o) }
       end
 
-      passed = result.offenses.any?(&method(:considered_failure?))
+      passed = result.offenses.none?(&method(:considered_failure?))
       ProcessResult.build_succeed_result(file, result, passed)
     rescue InfiniteCorrectionLoop => e
       ProcessResult.build_error_result(file, e)
