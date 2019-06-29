@@ -112,8 +112,15 @@ module RuboCop
 
     # when error raised or Interrupt, save data
     def inspect_finished(conductor, files)
-      @errors = conductor.errors
-      @warnings = conductor.warnings
+      if conductor
+        @errors = conductor.errors
+        @warnings = conductor.warnings
+        inspected_files = conductor.inspected_files
+      else
+        @errors = []
+        @warnings = []
+        inspected_files = []
+      end
 
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
@@ -121,7 +128,7 @@ module RuboCop
       if files.size > 1 && cached_run?
         ResultCache.cleanup(@config_store, @options[:debug])
       end
-      formatter_set.finished(conductor.inspected_files.freeze)
+      formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
 
