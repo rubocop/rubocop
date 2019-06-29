@@ -21,28 +21,14 @@ class InspectConductor
     @inspected_files = []
     @all_passed = false
 
+    @process_results = []
     @stop = false
   end
 
   def run_inspect
-    results = inspect_files { |f| yield f }
-
-    @all_passed = true
-    results.each do |process_result|
-      if process_result.error_file?
-        @error_results << process_result
-        @all_passed = false
-        next
-      end
-
-      @all_passed &&= process_result.passed
-
-      @inspected_files << process_result.filepath
-
-      inspect_result = process_result.inspect_result
-      @errors.concat(inspect_result.errors)
-      @warnings.concat(inspect_result.warnings)
-    end
+    inspect_files { |f| yield f }
+  ensure
+    save_results
   end
 
   def first_error_object
@@ -70,6 +56,26 @@ class InspectConductor
                end
 
     formatter_set.file_finished(process_result.filepath, offenses)
+    @process_results << process_result
+  end
+
+  def save_results
+    @all_passed = true
+    @process_results.each do |process_result|
+      if process_result.error_file?
+        @error_results << process_result
+        @all_passed = false
+        next
+      end
+
+      @all_passed &&= process_result.passed
+
+      @inspected_files << process_result.filepath
+
+      inspect_result = process_result.inspect_result
+      @errors.concat(inspect_result.errors)
+      @warnings.concat(inspect_result.warnings)
+    end
   end
 end
 
@@ -96,7 +102,7 @@ class ParallelConductor < InspectConductor
   private
 
   def inspect_files
-    Parallel.map(method(:next_file), finish: method(:inspect_finished)) do |f|
+    Parallel.each(method(:next_file), finish: method(:inspect_finished)) do |f|
       yield f
     end
   end
@@ -107,14 +113,12 @@ class SingleConductor < InspectConductor
   private
 
   def inspect_files
-    @files.map do |f|
-      next if @stop
-
+    @files.each do |f|
       process_result = yield f
       file_inspect_finished(process_result)
       check_inspect_stop(process_result)
 
-      process_result
-    end.compact
+      break if @stop
+    end
   end
 end

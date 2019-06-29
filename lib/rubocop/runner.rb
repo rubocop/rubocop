@@ -98,34 +98,36 @@ module RuboCop
     def inspect_files(files)
       formatter_set.started(files)
 
-      inspected_files, all_passed, error = run_inspect(files)
+      conductor = build_conductor(files)
+      conductor.run_inspect(&method(:process_file))
 
+      # TODO: show first only...
+      error = conductor.first_error_object
       raise error if error
 
-      all_passed
+      conductor.all_passed
     ensure
+      inspect_finished(conductor, files)
+    end
+
+    # when error raised or Interrupt, save data
+    def inspect_finished(conductor, files)
+      @errors = conductor.errors
+      @warnings = conductor.warnings
+
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
       if files.size > 1 && cached_run?
         ResultCache.cleanup(@config_store, @options[:debug])
       end
-      formatter_set.finished(inspected_files.freeze)
+      formatter_set.finished(conductor.inspected_files.freeze)
       formatter_set.close_output_files
     end
 
-    def run_inspect(files)
+    def build_conductor(files)
       klass = InspectConductor.conductor_class(@options[:parallel])
-      conductor = klass.new(files, formatter_set, @options[:fail_fast])
-      conductor.run_inspect(&method(:process_file))
-
-      @errors = conductor.errors
-      @warnings = conductor.warnings
-
-      # TODO: show first only...
-      error = conductor.first_error_object
-
-      [conductor.inspected_files, conductor.all_passed, error]
+      klass.new(files, formatter_set, @options[:fail_fast])
     end
 
     def list_files(paths)
