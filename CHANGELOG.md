@@ -54,6 +54,8 @@
 
 * [#7181](https://github.com/rubocop-hq/rubocop/pull/7181): Sort analyzed file alphabetically. ([@pocke][])
 * [#7188](https://github.com/rubocop-hq/rubocop/pull/7188): Include inspected file location in auto-correction error. ([@pocke][])
+* Allow `#**` Doxygen comment style on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
+* [#7187](https://github.com/rubocop-hq/rubocop/pull/7187): Support parallel option with --auto-correct. ([@ota42y][])
 
 ## 0.72.0 (2019-06-25)
 
