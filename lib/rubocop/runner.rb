@@ -134,8 +134,11 @@ module RuboCop
 
     def build_conductor(files)
       puts 'Running parallel inspection' if @options[:debug]
-      klass = InspectConductor.conductor_class(@options[:parallel])
-      klass.new(files, formatter_set, @options[:fail_fast])
+
+      parallel_conductor = @options.include?(:parallel)
+      process_num = @options[:parallel]
+      klass = InspectConductor.conductor_class(parallel_conductor)
+      klass.new(files, formatter_set, @options[:fail_fast], process_num)
     end
 
     def list_files(paths)

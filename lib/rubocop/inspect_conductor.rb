@@ -10,10 +10,11 @@ class InspectConductor
 
   attr_reader :errors, :warnings, :error_results, :inspected_files, :all_passed
 
-  def initialize(files, formatter_set, fail_fast)
+  def initialize(files, formatter_set, fail_fast, process_num)
     @files = files
     @fail_fast = fail_fast
     @formatter_set = formatter_set
+    @process_num = process_num
 
     @errors = []
     @warnings = []
@@ -102,7 +103,9 @@ class ParallelConductor < InspectConductor
   private
 
   def inspect_files
-    Parallel.each(method(:next_file), finish: method(:inspect_finished)) do |f|
+    Parallel.each(method(:next_file),
+                  finish: method(:inspect_finished),
+                  in_process: @process_num) do |f|
       yield f
     end
   end

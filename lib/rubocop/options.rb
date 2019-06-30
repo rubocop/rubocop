@@ -170,7 +170,7 @@ module RuboCop
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
-      option(opts, '-P', '--parallel')
+      option(opts, '-P', '--parallel [PROCESS_NUM]', Integer)
     end
 
     def add_aliases(opts)

@@ -176,7 +176,7 @@ module RuboCop
     end
 
     def validate_options_vs_config
-      if @options[:parallel] &&
+      if @options.include?(:parallel) &&
          !@config_store.for(Dir.pwd).for_all_cops['UseCache']
         raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
                                    'execution, so combining with AllCops: ' \

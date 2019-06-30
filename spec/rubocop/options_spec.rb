@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
-              -P, --parallel                   Use available CPUs to execute inspection in
+              -P, --parallel [PROCESS_NUM]     Use available CPUs to execute inspection in
                                                parallel.
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
