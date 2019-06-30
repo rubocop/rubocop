@@ -817,6 +817,7 @@ Layout/LeadingCommentSpace:
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '0.73'
+  AllowDoxygenCommentStyle: false
 
 Layout/MultilineArrayBraceLayout:
   Description: >-

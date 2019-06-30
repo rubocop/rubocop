@@ -2925,6 +2925,32 @@ or rackup options.
 # good
 # Some comment
 ```
+#### AllowDoxygenCommentStyle: false (default)
+
+```ruby
+# bad
+
+#**
+# Some comment
+# Another line of comment
+#*
+```
+#### AllowDoxygenCommentStyle: true
+
+```ruby
+# good
+
+#**
+# Some comment
+# Another line of comment
+#*
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowDoxygenCommentStyle | `false` | Boolean
 
 ### References
 
