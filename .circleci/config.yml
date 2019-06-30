@@ -20,7 +20,7 @@ spec_steps: &spec_steps
       name: Run specs
       command: |
         ./tmp/cc-test-reporter before-build
-        COVERAGE=true bundle exec rake spec
+        COVERAGE=true TEST_QUEUE_WORKERS=2 bundle exec rake spec
         ./tmp/cc-test-reporter format-coverage --output tmp/codeclimate.$CIRCLE_JOB.json
   - persist_to_workspace:
       root: tmp
