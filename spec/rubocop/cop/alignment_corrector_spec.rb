@@ -59,6 +59,10 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector do
       context 'with plain heredoc (<<)' do
         it_behaves_like 'heredoc indenter', '<<DOC', 20
       end
+
+      context 'with heredoc in backticks (<<``)' do
+        it_behaves_like 'heredoc indenter', '<<`DOC`', 20
+      end
     end
   end
 end
