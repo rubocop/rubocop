@@ -45,9 +45,8 @@ module RuboCop
           return if heredoc_ranges.any? { |h| within?(range, h) }
 
           if column_delta.positive?
-            unless range.source == "\n"
-              # TODO: Fix ranges instead of using `begin`
-              corrector.insert_before(range.begin, ' ' * column_delta)
+            unless range.resize(1).source == "\n"
+              corrector.insert_before(range, ' ' * column_delta)
             end
           elsif range.source =~ /\A[ \t]+\z/
             remove(range, corrector)
@@ -69,6 +68,10 @@ module RuboCop
         end
 
         def calculate_range(expr, line_begin_pos, column_delta)
+          if column_delta.positive?
+            return range_between(line_begin_pos, line_begin_pos)
+          end
+
           starts_with_space =
             expr.source_buffer.source[line_begin_pos].start_with?(' ')
           pos_to_remove = if column_delta.positive? || starts_with_space

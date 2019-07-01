@@ -29,5 +29,36 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector do
         end
       end
     end
+
+    shared_examples 'heredoc indenter' do |start_heredoc, column_delta|
+      let(:indentation) { ' ' * column_delta }
+      let(:end_heredoc) { /\w+/.match(start_heredoc)[0] }
+
+      it 'does not change indentation of here doc bodies and end markers' do
+        expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+          # >> #{column_delta}
+          begin
+            #{start_heredoc}
+          a
+          b
+          #{end_heredoc}
+          end
+        INPUT
+          # >> #{column_delta}
+          #{indentation}begin
+          #{indentation}  #{start_heredoc}
+          a
+          b
+          #{end_heredoc}
+          #{indentation}end
+        OUTPUT
+      end
+    end
+
+    context 'with large column deltas' do
+      context 'with plain heredoc (<<)' do
+        it_behaves_like 'heredoc indenter', '<<DOC', 20
+      end
+    end
   end
 end
