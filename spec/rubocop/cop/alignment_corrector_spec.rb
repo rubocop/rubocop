@@ -64,5 +64,26 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector do
         it_behaves_like 'heredoc indenter', '<<`DOC`', 20
       end
     end
+
+    context 'with single-line here docs' do
+      it 'does not indent body and end marker' do
+        indentation = '  '
+        expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+          # >> 2
+          begin
+            <<DOC
+          single line
+          DOC
+          end
+        INPUT
+          # >> 2
+          #{indentation}begin
+          #{indentation}  <<DOC
+          single line
+          DOC
+          #{indentation}end
+        OUTPUT
+      end
+    end
   end
 end

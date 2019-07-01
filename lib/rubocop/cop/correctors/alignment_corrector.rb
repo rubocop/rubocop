@@ -56,7 +56,7 @@ module RuboCop
         def heredoc_ranges(node)
           return [] unless node.is_a?(Parser::AST::Node)
 
-          node.each_node(:dstr, :xstr)
+          node.each_node(:str, :dstr, :xstr)
               .select(&:heredoc?)
               .map { |n| n.loc.heredoc_body.join(n.loc.heredoc_end) }
         end
