@@ -19,10 +19,12 @@ module RuboCop
           expr = node.respond_to?(:loc) ? node.loc.expression : node
           return if block_comment_within?(expr)
 
+          heredoc_ranges = heredoc_ranges(node)
+
           lambda do |corrector|
             each_line(expr) do |line_begin_pos|
               autocorrect_line(corrector, line_begin_pos, expr, column_delta,
-                               heredoc_ranges(node))
+                               heredoc_ranges)
             end
           end
         end
@@ -74,13 +76,12 @@ module RuboCop
 
           starts_with_space =
             expr.source_buffer.source[line_begin_pos].start_with?(' ')
-          pos_to_remove = if column_delta.positive? || starts_with_space
-                            line_begin_pos
-                          else
-                            line_begin_pos - column_delta.abs
-                          end
 
-          range_between(pos_to_remove, pos_to_remove + column_delta.abs)
+          if starts_with_space
+            range_between(line_begin_pos, line_begin_pos + column_delta.abs)
+          else
+            range_between(line_begin_pos - column_delta.abs, line_begin_pos)
+          end
         end
 
         def remove(range, corrector)
