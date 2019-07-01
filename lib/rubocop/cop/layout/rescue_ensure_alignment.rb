@@ -101,8 +101,12 @@ module RuboCop
             case node.type
             when :block, :kwbegin
               node.loc.begin
-            when :def, :defs, :class, :module
+            when :def, :defs, :class, :module,
+                 :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn
               node.loc.name
+            when :masgn
+              mlhs_node, = *node
+              mlhs_node.loc.expression
             else
               # It is a wrapper with access modifier.
               node.child_nodes.first.loc.name
