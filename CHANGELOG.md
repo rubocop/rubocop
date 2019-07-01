@@ -6,6 +6,10 @@
 
 * Add `AllowDoxygenCommentStyle` configuration on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
 
+### Bug fixes
+
+* [#7170](https://github.com/rubocop-hq/rubocop/issues/7170): Fix a false positive for `Layout/RescueEnsureAlignment` when def line is preceded with `private_class_method`. ([@tatsuyafw][])
+
 ### Changes
 
 * [#7181](https://github.com/rubocop-hq/rubocop/pull/7181): Sort analyzed file alphabetically. ([@pocke][])

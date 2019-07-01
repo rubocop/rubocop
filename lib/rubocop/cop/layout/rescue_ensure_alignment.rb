@@ -30,6 +30,8 @@ module RuboCop
         ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
         RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
+        ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method
+                                          private_class_method].freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
@@ -150,9 +152,7 @@ module RuboCop
             ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS.include?(node.type)
 
           access_modifier_node = node.ancestors.first
-          return nil unless
-            access_modifier_node.respond_to?(:access_modifier?) &&
-            access_modifier_node.access_modifier?
+          return nil unless access_modifier?(access_modifier_node)
 
           access_modifier_node
         end
@@ -168,6 +168,16 @@ module RuboCop
           current_column = node.loc.keyword.column
 
           range_between(begin_pos - current_column, begin_pos)
+        end
+
+        def access_modifier?(node)
+          return true if node.respond_to?(:access_modifier?) &&
+                         node.access_modifier?
+
+          return true if node.respond_to?(:method_name) &&
+                         ALTERNATIVE_ACCESS_MODIFIERS.include?(node.method_name)
+
+          false
         end
       end
     end

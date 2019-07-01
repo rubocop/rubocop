@@ -460,128 +460,142 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       }
     end
 
-    context 'rescue with def' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          private def test
-            'foo'
+    shared_examples 'access modifier' do |modifier|
+      context 'rescue with def' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            #{modifier} def test
+              'foo'
+              rescue
+              ^^^^^^ `rescue` at 3, 2 is not aligned with `#{modifier} def test` at 1, 0.
+              'baz'
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{modifier} def test
+              'foo'
             rescue
-            ^^^^^^ `rescue` at 3, 2 is not aligned with `private def test` at 1, 0.
-            'baz'
-          end
-        RUBY
+              'baz'
+            end
+          RUBY
+        end
 
-        expect_correction(<<~RUBY)
-          private def test
-            'foo'
-          rescue
-            'baz'
-          end
-        RUBY
-      end
-
-      it 'correct alignment' do
-        expect_no_offenses(<<~RUBY)
-          private def test
-            'foo'
-          rescue
-            'baz'
-          end
-        RUBY
-      end
-    end
-
-    context 'rescue with defs' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          private def Test.test
-            'foo'
+        it 'correct alignment' do
+          expect_no_offenses(<<~RUBY)
+            #{modifier} def test
+              'foo'
             rescue
-            ^^^^^^ `rescue` at 3, 2 is not aligned with `private def Test.test` at 1, 0.
-            'baz'
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          private def Test.test
-            'foo'
-          rescue
-            'baz'
-          end
-        RUBY
+              'baz'
+            end
+          RUBY
+        end
       end
 
-      it 'correct alignment' do
-        expect_no_offenses(<<~RUBY)
-          private def Test.test
-            'foo'
-          rescue
-            'baz'
-          end
-        RUBY
+      context 'rescue with defs' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            #{modifier} def Test.test
+              'foo'
+              rescue
+              ^^^^^^ `rescue` at 3, 2 is not aligned with `#{modifier} def Test.test` at 1, 0.
+              'baz'
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{modifier} def Test.test
+              'foo'
+            rescue
+              'baz'
+            end
+          RUBY
+        end
+
+        it 'correct alignment' do
+          expect_no_offenses(<<~RUBY)
+            #{modifier} def Test.test
+              'foo'
+            rescue
+              'baz'
+            end
+          RUBY
+        end
+      end
+
+      context 'ensure with def' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            #{modifier} def test
+              'foo'
+              ensure
+              ^^^^^^ `ensure` at 3, 2 is not aligned with `#{modifier} def test` at 1, 0.
+              'baz'
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{modifier} def test
+              'foo'
+            ensure
+              'baz'
+            end
+          RUBY
+        end
+
+        it 'correct alignment' do
+          expect_no_offenses(<<~RUBY)
+            #{modifier} def test
+              'foo'
+            ensure
+              'baz'
+            end
+          RUBY
+        end
+      end
+
+      context 'ensure with defs' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            #{modifier} def Test.test
+              'foo'
+              ensure
+              ^^^^^^ `ensure` at 3, 2 is not aligned with `#{modifier} def Test.test` at 1, 0.
+              'baz'
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{modifier} def Test.test
+              'foo'
+            ensure
+              'baz'
+            end
+          RUBY
+        end
+
+        it 'correct alignment' do
+          expect_no_offenses(<<~RUBY)
+            #{modifier} def Test.test
+              'foo'
+            ensure
+              'baz'
+            end
+          RUBY
+        end
       end
     end
 
-    context 'ensure with def' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          private def test
-            'foo'
-            ensure
-            ^^^^^^ `ensure` at 3, 2 is not aligned with `private def test` at 1, 0.
-            'baz'
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          private def test
-            'foo'
-          ensure
-            'baz'
-          end
-        RUBY
-      end
-
-      it 'correct alignment' do
-        expect_no_offenses(<<~RUBY)
-          private def test
-            'foo'
-          ensure
-            'baz'
-          end
-        RUBY
-      end
+    context 'with private modifier' do
+      include_examples 'access modifier', 'private'
     end
 
-    context 'ensure with defs' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          private def Test.test
-            'foo'
-            ensure
-            ^^^^^^ `ensure` at 3, 2 is not aligned with `private def Test.test` at 1, 0.
-            'baz'
-          end
-        RUBY
+    context 'with private_class_method modifier' do
+      include_examples 'access modifier', 'private_class_method'
+    end
 
-        expect_correction(<<~RUBY)
-          private def Test.test
-            'foo'
-          ensure
-            'baz'
-          end
-        RUBY
-      end
-
-      it 'correct alignment' do
-        expect_no_offenses(<<~RUBY)
-          private def Test.test
-            'foo'
-          ensure
-            'baz'
-          end
-        RUBY
-      end
+    context 'with public_class_method modifier' do
+      include_examples 'access modifier', 'public_class_method'
     end
   end
 
