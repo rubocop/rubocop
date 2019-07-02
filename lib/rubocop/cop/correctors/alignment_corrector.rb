@@ -19,12 +19,12 @@ module RuboCop
           expr = node.respond_to?(:loc) ? node.loc.expression : node
           return if block_comment_within?(expr)
 
-          heredoc_ranges = heredoc_ranges(node)
+          taboo_ranges = inside_string_ranges(node)
 
           lambda do |corrector|
             each_line(expr) do |line_begin_pos|
               autocorrect_line(corrector, line_begin_pos, expr, column_delta,
-                               heredoc_ranges)
+                               taboo_ranges)
             end
           end
         end
@@ -41,10 +41,11 @@ module RuboCop
         private
 
         def autocorrect_line(corrector, line_begin_pos, expr, column_delta,
-                             heredoc_ranges)
+                             taboo_ranges)
           range = calculate_range(expr, line_begin_pos, column_delta)
-          # We must not change indentation of heredoc strings.
-          return if heredoc_ranges.any? { |h| within?(range, h) }
+          # We must not change indentation of heredoc strings or inside other
+          # string literals
+          return if taboo_ranges.any? { |t| within?(range, t) }
 
           if column_delta.positive?
             unless range.resize(1).source == "\n"
@@ -55,12 +56,33 @@ module RuboCop
           end
         end
 
-        def heredoc_ranges(node)
+        def inside_string_ranges(node)
           return [] unless node.is_a?(Parser::AST::Node)
 
-          node.each_node(:str, :dstr, :xstr)
-              .select(&:heredoc?)
-              .map { |n| n.loc.heredoc_body.join(n.loc.heredoc_end) }
+          node.each_node(:str, :dstr, :xstr).map { |n| inside_string_range(n) }
+              .compact
+        end
+
+        def inside_string_range(node)
+          loc = node.location
+
+          if node.heredoc?
+            loc.heredoc_body.join(loc.heredoc_end)
+          elsif delimited_string_literal?(node)
+            loc.begin.end.join(loc.end.begin)
+          end
+        end
+
+        # Some special kinds of string literals are not composed of literal
+        # characters between two delimiters:
+        # - The source map of `?a` responds to :begin and :end but its end is
+        #   nil.
+        # - The source map of `__FILE__` responds to neither :begin nor :end.
+        def delimited_string_literal?(node)
+          loc = node.location
+
+          loc.respond_to?(:begin) && loc.begin &&
+            loc.respond_to?(:end) && loc.end
         end
 
         def block_comment_within?(expr)

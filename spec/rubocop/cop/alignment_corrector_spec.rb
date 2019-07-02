@@ -85,5 +85,35 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector do
         OUTPUT
       end
     end
+
+    context 'within string literals' do
+      it 'does not insert whitespace' do
+        expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+          # >> 2
+          begin
+            dstr =
+          'a
+          b
+          c'
+            xstr =
+          `a
+          b
+          c`
+          end
+        INPUT
+          # >> 2
+            begin
+              dstr =
+            'a
+          b
+          c'
+              xstr =
+            `a
+          b
+          c`
+            end
+        OUTPUT
+      end
+    end
   end
 end
