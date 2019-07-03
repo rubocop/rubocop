@@ -28,7 +28,7 @@ module RuboCop
     end
 
     def message
-      "casue: #{cause.inspect}"
+      "cause: #{cause.inspect}"
     end
   end
 end
