@@ -10,6 +10,7 @@
 ### Bug fixes
 
 * [#7170](https://github.com/rubocop-hq/rubocop/issues/7170): Fix a false positive for `Layout/RescueEnsureAlignment` when def line is preceded with `private_class_method`. ([@tatsuyafw][])
+* [#7186](https://github.com/rubocop-hq/rubocop/issues/7186): Fix a false positive for `Style/MixinUsage` when using inside multiline block and `if` condition is after `include`. ([@koic][])
 
 ### Changes
 
