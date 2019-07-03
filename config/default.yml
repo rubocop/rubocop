@@ -1848,6 +1848,12 @@ Metrics/PerceivedComplexity:
   VersionAdded: '0.25'
   Max: 7
 
+Metrics/PerceivedMethodLength:
+  Description: 'Avoid methods with more than 14 statements.'
+  Enabled: true
+  Max: 14
+  VersionAdded: '0.72'
+
 #################### Naming ##############################
 
 Naming/AccessorMethodName:

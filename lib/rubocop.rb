@@ -353,6 +353,7 @@ require_relative 'rubocop/cop/lint/useless_setter_call'
 require_relative 'rubocop/cop/lint/void'
 
 require_relative 'rubocop/cop/metrics/cyclomatic_complexity'
+require_relative 'rubocop/cop/metrics/perceived_method_length'
 # relies on cyclomatic_complexity
 require_relative 'rubocop/cop/metrics/utils/abc_size_calculator'
 require_relative 'rubocop/cop/metrics/abc_size'

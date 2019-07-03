@@ -276,3 +276,19 @@ end                             # 7 complexity points
 Name | Default value | Configurable values
 --- | --- | ---
 Max | `7` | Integer
+
+## Metrics/PerceivedMethodLength
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.72 | -
+
+This cop checks if the number of statements of the method
+exceeds some maximum value.
+The maximum allowed length is configurable.
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Max | `14` | Integer

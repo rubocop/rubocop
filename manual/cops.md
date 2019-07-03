@@ -268,6 +268,7 @@ In the following section you find all available cops:
 * [Metrics/ModuleLength](cops_metrics.md#metricsmodulelength)
 * [Metrics/ParameterLists](cops_metrics.md#metricsparameterlists)
 * [Metrics/PerceivedComplexity](cops_metrics.md#metricsperceivedcomplexity)
+* [Metrics/PerceivedMethodLength](cops_metrics.md#metricsperceivedmethodlength)
 
 #### Department [Naming](cops_naming.md)
 
