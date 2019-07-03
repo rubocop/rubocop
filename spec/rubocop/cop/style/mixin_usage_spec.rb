@@ -66,7 +66,8 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage do
        'and `if` condition is after `include`' do
       expect_no_offenses(<<~RUBY)
         klass.class_eval do
-          include M if defined?(M)
+          include M1
+          include M2 if defined?(M)
         end
       RUBY
     end
