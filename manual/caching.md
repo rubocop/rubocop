@@ -11,6 +11,7 @@ Later runs will be able to retrieve this information and present the
 stored information instead of inspecting the file again. This will be
 done if the cache for the file is still valid, which it is if there
 are no changes in:
+
 * the contents of the inspected file
 * RuboCop configuration for the file
 * the options given to `rubocop`, with some exceptions that have no
