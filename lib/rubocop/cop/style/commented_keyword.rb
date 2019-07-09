@@ -33,26 +33,12 @@ module RuboCop
       #     y
       #   end
       class CommentedKeyword < Cop
-        include RangeHelp
-
         MSG = 'Do not place comments on the same line as the ' \
               '`%<keyword>s` keyword.'
 
         def investigate(processed_source)
-          heredoc_lines = extract_heredoc_lines(processed_source.ast)
-
           processed_source.each_comment do |comment|
-            location = comment.location
-            line_position = location.line
-            line = processed_source.lines[line_position - 1]
-            next if heredoc_lines.any? { |r| r.include?(line_position) }
-            next unless offensive?(line)
-
-            range = source_range(processed_source.buffer,
-                                 line_position,
-                                 (location.column)...(location.last_column))
-
-            add_offense(range, location: range)
+            add_offense(comment) if offensive?(comment)
           end
         end
 
@@ -61,25 +47,19 @@ module RuboCop
         KEYWORDS = %w[begin class def end module].freeze
         ALLOWED_COMMENTS = %w[:nodoc: :yields: rubocop:disable].freeze
 
-        def offensive?(line)
-          line = line.lstrip
-          KEYWORDS.any? { |word| line =~ /^#{word}\s/ } &&
+        def offensive?(comment)
+          line = line(comment)
+          KEYWORDS.any? { |word| line =~ /^\s*#{word}\s/ } &&
             ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
         end
 
-        def message(node)
-          line = node.source_line
-          keyword = /^\s*(\S+).*#/.match(line)[1]
+        def message(comment)
+          keyword = line(comment).match(/(\S+).*#/)[1]
           format(MSG, keyword: keyword)
         end
 
-        def extract_heredoc_lines(ast)
-          return [] unless ast
-
-          ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
-            body = node.location.heredoc_body
-            (body.first_line...body.last_line)
-          end
+        def line(comment)
+          comment.location.expression.source_line
         end
       end
     end
