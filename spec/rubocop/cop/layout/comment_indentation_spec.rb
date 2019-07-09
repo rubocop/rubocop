@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
     end
   end
 
-  it 'registers offenses before __RUBY__ but not after' do
+  it 'registers offenses before __END__ but not after' do
     expect_offense(<<~RUBY)
        #
        ^ Incorrect indentation detected (column 1 instead of 0).
