@@ -199,17 +199,19 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
         RUBY
       end
 
-      it 'accepts method being aligned with method that is an argument' do
+      it 'accepts methods being aligned with method that is an argument' do
         expect_no_offenses(<<~RUBY)
           authorize scope.includes(:user)
+                         .where(name: 'Bob')
                          .order(:name)
         RUBY
       end
 
-      it 'accepts method being aligned with method that is an argument in ' \
+      it 'accepts methods being aligned with method that is an argument in ' \
          'assignment' do
         expect_no_offenses(<<~RUBY)
           user = authorize scope.includes(:user)
+                                .where(name: 'Bob')
                                 .order(:name)
         RUBY
       end

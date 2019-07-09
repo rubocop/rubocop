@@ -12,6 +12,7 @@
 * [#7170](https://github.com/rubocop-hq/rubocop/issues/7170): Fix a false positive for `Layout/RescueEnsureAlignment` when def line is preceded with `private_class_method`. ([@tatsuyafw][])
 * [#7186](https://github.com/rubocop-hq/rubocop/issues/7186): Fix a false positive for `Style/MixinUsage` when using inside multiline block and `if` condition is after `include`. ([@koic][])
 * [#7099](https://github.com/rubocop-hq/rubocop/issues/7099): Fix an error of `Layout/RescueEnsureAlignment` on assigned blocks. ([@tatsuyafw][])
+* [#5088](https://github.com/rubocop-hq/rubocop/issues/5088): Fix an error of `Layout/MultilineMethodCallIndentation` on method chains inside an argument. ([@buehmann][])
 
 ### Changes
 
@@ -4120,3 +4121,4 @@
 [@malyshkosergey]: https://github.com/malyshkosergey
 [@fwitzke]: https://github.com/fwitzke
 [@okuramasafumi]: https://github.com/okuramasafumi
+[@buehmann]: https://github.com/buehmann
