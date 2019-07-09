@@ -159,11 +159,11 @@ module RuboCop
           break false if a.block_type?
 
           next if a.setter_method?
+          next unless kind == :with_or_without_parentheses ||
+                      kind == :with_parentheses && parentheses?(a)
 
           a.arguments.any? do |arg|
-            within_node?(node, arg) && (kind == :with_or_without_parentheses ||
-                                        kind == :with_parentheses &&
-                                        parentheses?(node.parent))
+            within_node?(node, arg)
           end
         end
       end
