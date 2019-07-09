@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     RUBY
   end
 
-  it 'registers offenses before __RUBY__ but not after' do
+  it 'registers offenses before __END__ but not after' do
     expect_offense(<<~RUBY)
       \tx = 0
       ^ Tab detected.
