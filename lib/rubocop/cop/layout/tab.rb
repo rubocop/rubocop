@@ -30,16 +30,13 @@ module RuboCop
           str_ranges = string_literal_ranges(processed_source.ast)
 
           processed_source.lines.each.with_index(1) do |line, lineno|
-            match = line.match(/^([^\t]*)\t+/)
+            match = line.match(/\t+/)
             next unless match
-
-            prefix = match.captures[0]
-            col = prefix.length
-            next if in_string_literal?(str_ranges, lineno, col)
 
             range = source_range(processed_source.buffer,
                                  lineno,
-                                 col...match.end(0))
+                                 match.begin(0)...match.end(0))
+            next if in_string_literal?(str_ranges, range)
 
             add_offense(range, location: range)
           end
@@ -54,16 +51,9 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/CyclomaticComplexity
-        def in_string_literal?(ranges, line, col)
-          ranges.any? do |range|
-            (range.line == line && range.column <= col) ||
-              (range.line < line && line < range.last_line) ||
-              (range.line != line && range.last_line == line &&
-               range.last_column >= col)
-          end
+        def in_string_literal?(ranges, tabs_range)
+          ranges.any? { |range| range.contains?(tabs_range) }
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def string_literal_ranges(ast)
           # which lines start inside a string literal?
@@ -72,13 +62,11 @@ module RuboCop
           ast.each_node(:str, :dstr).each_with_object(Set.new) do |str, ranges|
             loc = str.location
 
-            range = if str.heredoc?
-                      loc.heredoc_body
-                    else
-                      loc.expression
-                    end
-
-            ranges << range
+            if str.heredoc?
+              ranges << loc.heredoc_body
+            elsif loc.respond_to?(:begin) && loc.begin
+              ranges << loc.expression
+            end
           end
         end
       end
