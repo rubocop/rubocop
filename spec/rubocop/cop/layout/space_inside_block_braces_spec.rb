@@ -329,6 +329,27 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           expect_no_offenses('->(x) {x}')
         end
 
+        it 'does not register an offense when braces are aligned in ' \
+           'multiline block' do
+          expect_no_offenses(<<~RUBY)
+            items.map {|item|
+              item.do_something
+            }
+          RUBY
+        end
+
+        it 'registers an offense when braces are not aligned in ' \
+           'multiline block' do
+          inspect_source(<<~RUBY)
+            items.map {|item|
+              item.do_something
+              }
+          RUBY
+
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages).to eq(['Space inside } detected.'])
+        end
+
         it 'auto-corrects unwanted space' do
           new_source = autocorrect_source('each { |x| puts}')
           expect(new_source).to eq('each {|x| puts}')

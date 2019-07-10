@@ -14,6 +14,7 @@
 * [#7099](https://github.com/rubocop-hq/rubocop/issues/7099): Fix an error of `Layout/RescueEnsureAlignment` on assigned blocks. ([@tatsuyafw][])
 * [#5088](https://github.com/rubocop-hq/rubocop/issues/5088): Fix an error of `Layout/MultilineMethodCallIndentation` on method chains inside an argument. ([@buehmann][])
 * [#4719](https://github.com/rubocop-hq/rubocop/issues/4719): Make `Layout/Tab` detect tabs between string literals. ([@buehmann][])
+* [#7203](https://github.com/rubocop-hq/rubocop/pull/7203): Fix an infinite loop error for `Layout/SpaceInsideBlockBraces` when `EnforcedStyle: no_space` with `SpaceBeforeBlockParameters: false` are set in multiline block. ([@koic][])
 
 ### Changes
 
