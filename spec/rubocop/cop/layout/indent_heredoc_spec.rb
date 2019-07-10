@@ -274,6 +274,25 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           MSG
         RUBY
 
+        include_examples 'offense', 'not indented enough with empty lines',
+                         <<-RUBY, <<-CORRECTION
+          def baz
+            <<~#{quote}MSG#{quote}
+            foo
+
+              bar
+            MSG
+          end
+        RUBY
+          def baz
+            <<~#{quote}MSG#{quote}
+              foo
+
+                bar
+            MSG
+          end
+        CORRECTION
+
         it 'displays message to use `<<~` instead of `<<`' do
           expect_offense(<<~RUBY)
             <<RUBY2
