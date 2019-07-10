@@ -130,7 +130,8 @@ module RuboCop
           args_delimiter = node.arguments.loc.begin # Can be ( | or nil.
 
           check_left_brace(inner, node.loc.begin, args_delimiter)
-          check_right_brace(inner, node.loc.end, node.single_line?)
+          check_right_brace(inner, node.loc.begin, node.loc.end,
+                            node.single_line?)
         end
 
         def check_left_brace(inner, left_brace, args_delimiter)
@@ -141,13 +142,24 @@ module RuboCop
           end
         end
 
-        def check_right_brace(inner, right_brace, single_line)
+        def check_right_brace(inner, left_brace, right_brace, single_line)
           if single_line && inner =~ /\S$/
             no_space(right_brace.begin_pos, right_brace.end_pos,
                      'Space missing inside }.')
           else
+            return if multiline_block?(left_brace, right_brace) &&
+                      aligned_braces?(left_brace, right_brace)
+
             space_inside_right_brace(right_brace)
           end
+        end
+
+        def multiline_block?(left_brace, right_brace)
+          left_brace.first_line != right_brace.first_line
+        end
+
+        def aligned_braces?(left_brace, right_brace)
+          left_brace.first_line == right_brace.last_column
         end
 
         def no_space_inside_left_brace(left_brace, args_delimiter)
