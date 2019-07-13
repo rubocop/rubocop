@@ -44,6 +44,13 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     RUBY
   end
 
+  it 'registers an offense for tabs between string literals' do
+    expect_offense(<<~RUBY)
+      'foo'\t'bar'
+           ^ Tab detected.
+    RUBY
+  end
+
   it 'accepts a line with tab in a string' do
     expect_no_offenses("(x = \"\t\")")
   end
