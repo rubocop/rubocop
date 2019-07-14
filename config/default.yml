@@ -2557,6 +2557,11 @@ Style/DocumentationMethod:
     - 'test/**/*'
   RequireForNonPublicMethods: false
 
+Style/DoubleCopDisableDirective:
+  Description: 'Checks for double rubocop:disable comments on a single line.'
+  Enabled: true
+  VersionAdded: '0.73'
+
 Style/DoubleNegation:
   Description: 'Checks for uses of double negation (!!).'
   StyleGuide: '#no-bang-bang'
