@@ -25,6 +25,12 @@ module RuboCop
         aligned_with_assignment(token, preceding_line_range)
       end
 
+      def aligned_with_subsequent_assignment(token)
+        subsequent_line_range = token.line.upto(processed_source.lines.length)
+
+        aligned_with_assignment(token, subsequent_line_range)
+      end
+
       def aligned_with_adjacent_line?(range, predicate)
         # minus 2 because node.loc.line is zero-based
         pre  = (range.line - 2).downto(0)
