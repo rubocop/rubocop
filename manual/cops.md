@@ -330,6 +330,7 @@ In the following section you find all available cops:
 * [Style/Dir](cops_style.md#styledir)
 * [Style/Documentation](cops_style.md#styledocumentation)
 * [Style/DocumentationMethod](cops_style.md#styledocumentationmethod)
+* [Style/DoubleCopDisableDirective](cops_style.md#styledoublecopdisabledirective)
 * [Style/DoubleNegation](cops_style.md#styledoublenegation)
 * [Style/EachForSimpleLoop](cops_style.md#styleeachforsimpleloop)
 * [Style/EachWithObject](cops_style.md#styleeachwithobject)

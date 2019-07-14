@@ -1437,6 +1437,33 @@ Name | Default value | Configurable values
 Exclude | `spec/**/*`, `test/**/*` | Array
 RequireForNonPublicMethods | `false` | Boolean
 
+## Style/DoubleCopDisableDirective
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.73 | -
+
+Detects double disable comments on one line. This is mostly to catch
+automatically generated comments that need to be regenerated.
+
+### Examples
+
+```ruby
+# bad
+def f # rubocop:disable Style/For # rubocop:disable Metrics/AbcSize
+end
+
+# good
+# rubocop:disable Metrics/AbcSize
+def f # rubocop:disable Style/For
+end
+# rubocop:enable Metrics/AbcSize
+
+# if both fit on one line
+def f # rubocop:disable Style/For, Metrics/AbcSize
+end
+```
+
 ## Style/DoubleNegation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
