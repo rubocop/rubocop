@@ -255,6 +255,7 @@ module RuboCop
       @options = options
     end
 
+    # rubocop:disable Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?
         raise OptionArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
@@ -272,6 +273,7 @@ module RuboCop
           '--display-only-fail-level-offenses'
       end
       validate_auto_gen_config
+      validate_auto_correct
       validate_parallel
 
       return if incompatible_options.size <= 1
@@ -279,6 +281,7 @@ module RuboCop
       raise OptionArgumentError, 'Incompatible cli options: ' \
                                  "#{incompatible_options.inspect}"
     end
+    # rubocop:enable Metrics/AbcSize
 
     def validate_auto_gen_config
       return if @options.key?(:auto_gen_config)
@@ -292,6 +295,15 @@ module RuboCop
                 format(message, flag: option.to_s.tr('_', '-'))
         end
       end
+    end
+
+    def validate_auto_correct
+      return if @options.key?(:auto_correct)
+      return unless @options.key?(:disable_uncorrectable)
+
+      raise OptionArgumentError,
+            format('--%<flag>s can only be used together with --auto-correct.',
+                   flag: '--disable-uncorrectable')
     end
 
     def validate_parallel

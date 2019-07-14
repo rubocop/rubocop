@@ -275,6 +275,18 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
+    describe '--disable-uncorrectable' do
+      it 'accepts together with --auto-correct' do
+        expect { options.parse %w[--auto-correct --disable-uncorrectable] }
+          .not_to raise_error
+      end
+
+      it 'fails if given alone without --auto-correct/-a' do
+        expect { options.parse %w[--disable-uncorrectable] }
+          .to raise_error(RuboCop::OptionArgumentError)
+      end
+    end
+
     describe '--exclude-limit' do
       it 'fails if given last without argument' do
         expect { options.parse %w[--auto-gen-config --exclude-limit] }
