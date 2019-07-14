@@ -149,9 +149,18 @@ module RuboCop
           end
         end
 
-        def excess_leading_space?(operator, with_space)
-          with_space.source.start_with?(EXCESSIVE_SPACE) &&
-            (!allow_for_alignment? || !aligned_with_operator?(operator))
+        def excess_leading_space?(type, operator, with_space)
+          return false unless allow_for_alignment?
+          return false unless with_space.source.start_with?(EXCESSIVE_SPACE)
+
+          return !aligned_with_operator?(operator) unless type == :assignment
+
+          token            = Token.new(operator, nil, operator.source)
+          align_preceding  = aligned_with_preceding_assignment(token)
+
+          return align_preceding == :no unless align_preceding == :none
+
+          aligned_with_subsequent_assignment(token) != :yes
         end
 
         def excess_trailing_space?(right_operand, with_space)
