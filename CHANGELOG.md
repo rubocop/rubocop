@@ -6,6 +6,7 @@
 
 * Add `AllowDoxygenCommentStyle` configuration on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
 * [#7114](https://github.com/rubocop-hq/rubocop/pull/7114): Add `MultilineWhenThen` cop. ([@okuramasafumi][])
+* [#4127](https://github.com/rubocop-hq/rubocop/pull/4127): Add `--disable-uncorrectable` flag to generate `rubocop:disable` comments. ([@vergenzt][], [@jonas054][])
 
 ### Bug fixes
 
