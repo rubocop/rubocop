@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.73.0 (2019-07-16)
+
 ### New features
 
 * Add `AllowDoxygenCommentStyle` configuration on `Layout/LeadingCommentSpace`. ([@anthony-robin][])
