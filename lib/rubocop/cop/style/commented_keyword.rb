@@ -6,7 +6,8 @@ module RuboCop
       # This cop checks for comments put on the same line as some keywords.
       # These keywords are: `begin`, `class`, `def`, `end`, `module`.
       #
-      # Note that some comments (`:nodoc:`, `:yields:`, and `rubocop:disable`)
+      # Note that some comments
+      # (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
       # are allowed.
       #
       # @example
@@ -45,7 +46,12 @@ module RuboCop
         private
 
         KEYWORDS = %w[begin class def end module].freeze
-        ALLOWED_COMMENTS = %w[:nodoc: :yields: rubocop:disable].freeze
+        ALLOWED_COMMENTS = %w[
+          :nodoc:
+          :yields:
+          rubocop:disable
+          rubocop:todo
+        ].freeze
 
         def offensive?(comment)
           line = line(comment)

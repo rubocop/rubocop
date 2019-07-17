@@ -75,7 +75,15 @@ module RuboCop
       end
 
       def message(offense)
-        message = offense.corrected? ? green('[Corrected] ') : ''
+        message =
+          if offense.corrected_with_todo?
+            green('[Todo] ')
+          elsif offense.corrected?
+            green('[Corrected] ')
+          else
+            ''
+          end
+
         "#{message}#{annotate_message(offense.message)}"
       end
 

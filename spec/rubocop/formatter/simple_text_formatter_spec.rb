@@ -71,6 +71,15 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
           .to include(': [Corrected] This is a message with colored text.')
       end
     end
+
+    context 'when the offense is marked as todo' do
+      let(:status) { :corrected_with_todo }
+
+      it 'prints [Todo] along with message' do
+        expect(output.string)
+          .to include(': [Todo] This is a message with colored text.')
+      end
+    end
   end
 
   describe '#report_summary' do
