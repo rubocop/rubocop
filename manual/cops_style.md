@@ -3816,7 +3816,7 @@ a =
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.72 | -
+Enabled | Yes | Yes  | 0.73 | -
 
 This cop checks uses of the `then` keyword
 in multi-line when statements.

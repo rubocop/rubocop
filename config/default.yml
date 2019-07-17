@@ -3052,7 +3052,7 @@ Style/MultilineWhenThen:
   Description: 'Do not use then for multi-line when statement.'
   StyleGuide: '#no-then'
   Enabled: true
-  VersionAdded: '0.72'
+  VersionAdded: '0.73'
 
 Style/MultipleComparison:
   Description: >-
