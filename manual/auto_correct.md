@@ -65,5 +65,5 @@ $ rubocop --safe-auto-correct --disable-uncorrectable
 ```
 
 You can add the flag `--disable-uncorrectable`, which will generate
-`# rubocop:disable` comments in the code to stop the reporting of offenses that
+`# rubocop:todo` comments in the code to stop the reporting of offenses that
 could not be corrected automatically.

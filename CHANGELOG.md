@@ -11,6 +11,7 @@
 * [#7321](https://github.com/rubocop-hq/rubocop/issues/7321): Allow YAML aliases in `.rubocop.yml`. ([@raymondfallon][])
 * [#7317](https://github.com/rubocop-hq/rubocop/pull/7317): Add new formatter `pacman`. ([@crojasaragonez][])
 * [#6075](https://github.com/rubocop-hq/rubocop/issues/6075): Support `IgnoredPatterns` option for `Naming/MethodName` cop. ([@koic][])
+* [#7335](https://github.com/rubocop-hq/rubocop/pull/7335): Add todo as an alias to disable. `--disable-uncorrectable` will now disable cops using `rubocop:todo` instead of `rubocop:disable`. ([@desheikh][])
 
 ### Bug fixes
 
@@ -4194,3 +4195,4 @@
 [@prathamesh-sonpatki]: https://github.com/prathamesh-sonpatki
 [@raymondfallon]: https://github.com/raymondfallon
 [@crojasaragonez]: https://github.com/crojasaragonez
+[@desheikh]: https://github.com/desheikh

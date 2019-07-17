@@ -394,7 +394,7 @@ module RuboCop
                                          "properties to generate. Default is #{MAX_EXCL}."],
       disable_uncorrectable:            ['Used with --auto-correct to annotate any',
                                          'offenses that do not support autocorrect',
-                                         'with `rubocop:disable` comments.'],
+                                         'with `rubocop:todo` comments.'],
       force_exclusion:                  ['Force excluding files specified in the',
                                          'configuration `Exclude` even if they are',
                                          'explicitly passed as arguments.'],

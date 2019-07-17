@@ -31,16 +31,22 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            next unless comment.text.scan('# rubocop:disable').size > 1
+            next unless comment.text.scan(/# rubocop:(?:disable|todo)/).size > 1
 
             add_offense(comment)
           end
         end
 
         def autocorrect(comment)
+          prefix = if comment.text.start_with?('# rubocop:disable')
+                     '# rubocop:disable'
+                   else
+                     '# rubocop:todo'
+                   end
+
           lambda do |corrector|
             corrector.replace(comment.loc.expression,
-                              comment.text[/# rubocop:disable \S+/])
+                              comment.text[/#{prefix} \S+/])
           end
         end
       end

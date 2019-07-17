@@ -106,7 +106,7 @@ Command flag                    | Description
 `-c/--config`                   | Run with specified config file.
 `-C/--cache`                    | Store and reuse results for faster operation.
 `-d/--debug`                    | Displays some extra debug output.
-`   --disable-uncorrectable`    | Used with --auto-correct to annotate any offenses that do not support autocorrect with `rubocop:disable` comments.
+`   --disable-uncorrectable`    | Used with --auto-correct to annotate any offenses that do not support autocorrect with `rubocop:todo` comments.
 `-D/--[no-]display-cop-names`   | Displays cop names in offense messages. Default is true.
 `   --display-only-fail-level-offenses` | Only output offense messages at the specified `--fail-level` or above
 `   --except`                   | Run all cops enabled by configuration except the specified cop(s) and/or departments.

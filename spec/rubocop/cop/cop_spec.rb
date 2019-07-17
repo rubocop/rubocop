@@ -154,6 +154,7 @@ RSpec.describe RuboCop::Cop::Cop do
           it 'is set to true' do
             cop.add_offense(node, location: location, message: 'message')
             expect(cop.offenses.first.corrected?).to be(true)
+            expect(cop.offenses.first.status).to be(:corrected_with_todo)
           end
         end
       end

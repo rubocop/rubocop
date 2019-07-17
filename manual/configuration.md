@@ -565,6 +565,15 @@ You can also disable *all* cops with
 # rubocop:enable all
 ```
 
+In cases where you want to differentiate intentional disabled vs disables that
+you'd like to revisit later, you can use disable:todo as an alias of rubocop:disable.
+
+```ruby
+# rubocop:todo Metrics/LineLength, Style/StringLiterals
+[...]
+# rubocop:enable Metrics/LineLength, Style/StringLiterals
+```
+
 One or more cops can be disabled on a single line with an end-of-line
 comment.
 
