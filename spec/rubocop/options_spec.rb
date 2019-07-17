@@ -281,6 +281,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           .not_to raise_error
       end
 
+      it 'accepts together with --safe-auto-correct' do
+        expect { options.parse %w[--safe-auto-correct --disable-uncorrectable] }
+          .not_to raise_error
+      end
+
       it 'fails if given alone without --auto-correct/-a' do
         expect { options.parse %w[--disable-uncorrectable] }
           .to raise_error(RuboCop::OptionArgumentError)
