@@ -8,11 +8,14 @@ module RuboCop
     class EmacsStyleFormatter < BaseFormatter
       def file_finished(file, offenses)
         offenses.each do |o|
-          message = if o.corrected?
-                      "[Corrected] #{o.message}"
-                    else
-                      o.message
-                    end
+          message =
+            if o.corrected_with_todo?
+              "[Todo] #{o.message}"
+            elsif o.corrected?
+              "[Corrected] #{o.message}"
+            else
+              o.message
+            end
 
           output.printf("%s:%d:%d: %s: %s\n",
                         file, o.line, o.real_column, o.severity.code,

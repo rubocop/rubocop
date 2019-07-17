@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#7218](https://github.com/rubocop-hq/rubocop/pull/7218): Add todo as an alias to disable. `--disable-uncorrectable` sets cops as `rubocop:todo` by default. ([@vergenzt][], [@desheikh][])
+
 ## 0.73.0 (2019-07-16)
 
 ### New features
@@ -4128,3 +4130,4 @@
 [@fwitzke]: https://github.com/fwitzke
 [@okuramasafumi]: https://github.com/okuramasafumi
 [@buehmann]: https://github.com/buehmann
+[@desheikh]: https://github.com/desheikh

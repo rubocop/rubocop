@@ -72,9 +72,14 @@ module RuboCop
       # @return [Boolean]
       #   whether this offense is automatically corrected.
       def corrected
-        @status == :corrected
+        @status == :corrected || @status == :corrected_with_todo
       end
       alias corrected? corrected
+
+      def corrected_with_todo
+        @status == :corrected_with_todo
+      end
+      alias corrected_with_todo? corrected_with_todo
 
       # @api public
       #

@@ -90,7 +90,7 @@ module RuboCop
 
           corrector.insert_before(
             range_with_newline,
-            "#{leading_whitespace}# rubocop:disable #{cop_name}\n"
+            "#{leading_whitespace}# rubocop:todo #{cop_name}\n"
           )
           corrector.insert_after(
             range_with_newline,

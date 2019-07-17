@@ -160,10 +160,11 @@ module RuboCop
           return :uncorrected unless correction
 
           @corrections << Correction.new(correction, node, self)
+          :corrected
         elsif disable_uncorrectable?
           disable_uncorrectable(node)
+          :corrected_with_todo
         end
-        :corrected
       end
 
       def reason_to_not_correct(node)

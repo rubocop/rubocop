@@ -11,7 +11,8 @@ module RuboCop
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
+      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+        .gsub(' ', '\s*')
     )
 
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
@@ -141,7 +142,7 @@ module RuboCop
       cop_names =
         cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
 
-      disabled = (switch == 'disable')
+      disabled = %w[disable todo].include?(switch)
 
       [cop_names, disabled]
     end

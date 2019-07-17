@@ -40,7 +40,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
           == example.rb ==
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-          C:  1:  5: [Corrected] Naming/PredicateName: Rename is_example to example?.
+          C:  1:  5: [Todo] Naming/PredicateName: Rename is_example to example?.
 
           1 file inspected, 2 offenses detected, 2 offenses corrected
         OUTPUT
@@ -67,8 +67,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
             == example.rb ==
             C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-            C:  1:  4: [Corrected] Style/IpAddresses: Do not hardcode IP addresses.
-            C:  1: 15: [Corrected] Style/IpAddresses: Do not hardcode IP addresses.
+            C:  1:  4: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
+            C:  1: 15: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
 
             1 file inspected, 3 offenses detected, 3 offenses corrected
           OUTPUT
@@ -109,11 +109,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
             == example.rb ==
             C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-            C:  3:  3: [Corrected] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
-            C:  3:  3: [Corrected] Metrics/CyclomaticComplexity: Cyclomatic complexity for choose_move is too high. [7/6]
-            C:  3:  3: [Corrected] Metrics/MethodLength: Method has too many lines. [11/10]
-            C:  5:  3: [Corrected] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
-            C:  5:  3: [Corrected] Metrics/MethodLength: Method has too many lines. [11/10]
+            C:  3:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
+            C:  3:  3: [Todo] Metrics/CyclomaticComplexity: Cyclomatic complexity for choose_move is too high. [7/6]
+            C:  3:  3: [Todo] Metrics/MethodLength: Method has too many lines. [11/10]
+            C:  5:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
+            C:  5:  3: [Todo] Metrics/MethodLength: Method has too many lines. [11/10]
             C:  5: 32: [Corrected] Style/DoubleCopDisableDirective: More than one disable comment on one line.
 
             1 file inspected, 7 offenses detected, 7 offenses corrected
@@ -123,8 +123,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             # Chess engine.
             class Chess
-              # rubocop:disable Metrics/MethodLength
-              # rubocop:disable Metrics/AbcSize
+              # rubocop:todo Metrics/MethodLength
+              # rubocop:todo Metrics/AbcSize
               def choose_move(who_to_move) # rubocop:disable Metrics/CyclomaticComplexity
                 legal_moves = all_legal_moves_that_dont_put_me_in_check(who_to_move)
 
@@ -165,13 +165,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<-OUTPUT.strip_indent)
           == example.rb ==
-          C:  1:  1: [Corrected] Metrics/MethodLength: Method has too many lines. [2/1]
+          C:  1:  1: [Todo] Metrics/MethodLength: Method has too many lines. [2/1]
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
 
           1 file inspected, 2 offenses detected, 2 offenses corrected
         OUTPUT
         expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
-          # rubocop:disable Metrics/MethodLength
+          # rubocop:todo Metrics/MethodLength
           # frozen_string_literal: true
 
           def long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
