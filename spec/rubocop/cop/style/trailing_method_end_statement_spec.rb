@@ -121,17 +121,22 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     RUBY
   end
 
-  it 'auto-corrects trailing end for larger example' do
+  it 'auto-corrects all trailing ends for larger example' do
     corrected = autocorrect_source(<<~RUBY)
       class Foo
         def some_method
           []; end
+        def another_method
+          {}; end
       end
     RUBY
     expect(corrected).to eq(<<~RUBY)
       class Foo
         def some_method
           [] 
+        end
+        def another_method
+          {} 
         end
       end
     RUBY

@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7217](https://github.com/rubocop-hq/rubocop/pull/7217): Make `Style/TrailingMethodEndStatement` work on more than the first `def`. ([@buehmann][])
+
 ## 0.73.0 (2019-07-16)
 
 ### New features
