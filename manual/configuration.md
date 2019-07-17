@@ -495,10 +495,11 @@ AllCops:
 ### Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offenses, it can
-be a good idea to use `rubocop --auto-gen-config` and add an
-`inherit_from: .rubocop_todo.yml` in your `.rubocop.yml`. The generated
-file `.rubocop_todo.yml` contains configuration to disable cops that
-currently detect an offense in the code by excluding the offending
+be a good idea to use `rubocop --auto-gen-config`, which creates
+`.rubocop_todo.yml` and adds `inherit_from: .rubocop_todo.yml` in your
+`.rubocop.yml`. The generated file `.rubocop_todo.yml` contains
+configuration to disable cops that currently detect an offense in the
+code by changing the configuration for the cop, excluding the offending
 files, or disabling the cop altogether once a file count limit has been
 reached.
 
@@ -506,9 +507,20 @@ By adding the option `--exclude-limit COUNT`, e.g., `rubocop
 --auto-gen-config --exclude-limit 5`, you can change how many files are
 excluded before the cop is entirely disabled. The default COUNT is 15.
 
+The next step is to cut and paste configuration from `.rubocop_todo.yml`
+into `.rubocop.yml` for everything that you think is in line with your
+(organization's) code style and not a good fit for a todo list. Pay
+attention to the comments above each entry. They can reveal configuration
+parameters such as `EnforcedStyle`, which can be used to modify the
+behavior of a cop instead of disabling it completely.
+
 Then you can start removing the entries in the generated
 `.rubocop_todo.yml` file one by one as you work through all the offenses
 in the code.
+
+Another way of silencing offense reports, aside from configuration, is
+through source code comments. These can be added manually or
+automatically. See "Disabling Cops within Source Code" below.
 
 The cops in the `Metrics` department will by default get `Max` parameters
 generated in `.rubocop_todo.yml`. The value of these will be just high enough
@@ -559,6 +571,10 @@ comment.
 ```ruby
 for x in (0..19) # rubocop:disable Style/For
 ```
+
+Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
+create comments to disable all offenses that can't be automatically
+corrected.
 
 [1]: https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml
 [xdg-basedir-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html

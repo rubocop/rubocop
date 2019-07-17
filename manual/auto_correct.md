@@ -51,3 +51,19 @@ Therefore, in this (unusual) scenario, `Style/LineEndConcatenation` is unsafe.
 
 (This is a contrived example. Real code would use `%w` for an array of string
 literals.)
+
+### Generating comments
+
+```sh
+$ rubocop --auto-correct --disable-uncorrectable
+```
+
+or
+
+```sh
+$ rubocop --safe-auto-correct --disable-uncorrectable
+```
+
+You can add the flag `--disable-uncorrectable`, which will generate
+`# rubocop:disable` comments in the code to stop the reporting of offenses that
+could not be corrected automatically.
