@@ -42,7 +42,7 @@ module RuboCop
         def on_def(node)
           return unless trailing_end?(node)
 
-          add_offense(node.to_a.last, location: end_token(node).pos)
+          add_offense(node, location: end_token(node).pos)
         end
 
         def autocorrect(node)
@@ -61,7 +61,7 @@ module RuboCop
         end
 
         def end_token(node)
-          @end_token ||= tokens(node).reverse.find(&:end?)
+          tokens(node).reverse.find(&:end?)
         end
 
         def body_and_end_on_same_line?(node)
@@ -69,10 +69,8 @@ module RuboCop
         end
 
         def token_before_end(node)
-          @token_before_end ||= begin
-            i = tokens(node).index(end_token(node))
-            tokens(node)[i - 1]
-          end
+          i = tokens(node).index(end_token(node))
+          tokens(node)[i - 1]
         end
 
         def break_line_before_end(node, corrector)
