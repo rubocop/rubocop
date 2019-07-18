@@ -41,12 +41,7 @@ module RuboCop
         def investigate(processed_source)
           return if processed_source.blank?
 
-          if force_equal_sign_alignment?
-            @asgn_tokens = assignment_tokens
-            @asgn_lines  = @asgn_tokens.map(&:line)
-            # Don't attempt to correct the same = more than once
-            @corrected   = Set.new
-          end
+          @corrected = Set.new if force_equal_sign_alignment?
 
           processed_source.tokens.each_cons(2) do |token1, token2|
             check_tokens(processed_source.ast, token1, token2)
@@ -65,24 +60,10 @@ module RuboCop
 
         private
 
-        def assignment_tokens
-          tokens = processed_source.tokens.select(&:equal_sign?)
-          # we don't want to operate on equals signs which are part of an
-          #   optarg in a method definition
-          # e.g.: def method(optarg = default_val); end
-          tokens = remove_optarg_equals(tokens, processed_source)
-
-          # Only attempt to align the first = on each line
-          Set.new(tokens.uniq(&:line))
-        end
-
         def check_tokens(ast, token1, token2)
           return if token2.type == :tNL
 
-          if force_equal_sign_alignment? &&
-             @asgn_tokens.include?(token2) &&
-             (@asgn_lines.include?(token2.line - 1) ||
-              @asgn_lines.include?(token2.line + 1))
+          if force_equal_sign_alignment? && assignment_tokens.include?(token2)
             check_assignment(token2)
           else
             check_other(token1, token2, ast)
@@ -90,22 +71,10 @@ module RuboCop
         end
 
         def check_assignment(token)
-          assignment_line = ''
-          message = ''
-          if should_aligned_with_preceding_line?(token)
-            assignment_line = processed_source.preceding_line(token)
-            message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
-          else
-            assignment_line = processed_source.following_line(token)
-            message = format(MSG_UNALIGNED_ASGN, location: 'following')
-          end
-          return if aligned_assignment?(token.pos, assignment_line)
+          return unless aligned_with_preceding_assignment(token) == :no
 
+          message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
           add_offense(token.pos, location: token.pos, message: message)
-        end
-
-        def should_aligned_with_preceding_line?(token)
-          @asgn_lines.include?(token.line - 1)
         end
 
         def check_other(token1, token2, ast)
@@ -188,8 +157,8 @@ module RuboCop
         end
 
         def align_equal_signs(range, corrector)
-          lines  = contiguous_assignment_lines(range)
-          tokens = @asgn_tokens.select { |t| lines.include?(t.line) }
+          lines  = all_relevant_assignment_lines(range.line)
+          tokens = assignment_tokens.select { |t| lines.include?(t.line) }
 
           columns  = tokens.map { |t| align_column(t) }
           align_to = columns.max
@@ -209,17 +178,15 @@ module RuboCop
           end
         end
 
-        def contiguous_assignment_lines(range)
-          result = [range.line]
+        def all_relevant_assignment_lines(line_number)
+          last_line_number = processed_source.lines.size
 
-          range.line.downto(1) do |lineno|
-            @asgn_lines.include?(lineno) ? result << lineno : break
-          end
-          range.line.upto(processed_source.lines.size) do |lineno|
-            @asgn_lines.include?(lineno) ? result << lineno : break
-          end
-
-          result.sort!
+          (
+            relevant_assignment_lines(line_number.downto(1)) +
+            relevant_assignment_lines(line_number.upto(last_line_number))
+          )
+            .uniq
+            .sort
         end
 
         def align_column(asgn_token)
@@ -229,12 +196,6 @@ module RuboCop
           leading = line[0...asgn_token.column]
           spaces  = leading.size - (leading =~ / *\Z/)
           asgn_token.pos.last_column - spaces + 1
-        end
-
-        def remove_optarg_equals(asgn_tokens, processed_source)
-          optargs    = processed_source.ast.each_node(:optarg)
-          optarg_eql = optargs.map { |o| o.loc.operator.begin_pos }.to_set
-          asgn_tokens.reject { |t| optarg_eql.include?(t.begin_pos) }
         end
 
         def allow_for_trailing_comments?

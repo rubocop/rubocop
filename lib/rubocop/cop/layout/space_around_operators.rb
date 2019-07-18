@@ -34,14 +34,14 @@ module RuboCop
 
           return if hash_table_style? && !node.parent.pairs_on_same_line?
 
-          check_operator(node.loc.operator, node.source_range)
+          check_operator(:pair, node.loc.operator, node.source_range)
         end
 
         def on_if(node)
           return unless node.ternary?
 
-          check_operator(node.loc.question, node.if_branch.source_range)
-          check_operator(node.loc.colon, node.else_branch.source_range)
+          check_operator(:if, node.loc.question, node.if_branch.source_range)
+          check_operator(:if, node.loc.colon, node.else_branch.source_range)
         end
 
         def on_resbody(node)
@@ -49,15 +49,25 @@ module RuboCop
 
           _, variable, = *node
 
-          check_operator(node.loc.assoc, variable.source_range)
+          check_operator(:resbody, node.loc.assoc, variable.source_range)
         end
 
         def on_send(node)
           if node.setter_method?
             on_special_asgn(node)
           elsif regular_operator?(node)
-            check_operator(node.loc.selector, node.first_argument.source_range)
+            check_operator(:send,
+                           node.loc.selector,
+                           node.first_argument.source_range)
           end
+        end
+
+        def on_assignment(node)
+          _, rhs, = *node
+
+          return unless rhs
+
+          check_operator(:assignment, node.loc.operator, rhs.source_range)
         end
 
         def on_binary(node)
@@ -65,7 +75,7 @@ module RuboCop
 
           return unless rhs
 
-          check_operator(node.loc.operator, rhs.source_range)
+          check_operator(:binary, node.loc.operator, rhs.source_range)
         end
 
         def on_special_asgn(node)
@@ -73,20 +83,20 @@ module RuboCop
 
           return unless right
 
-          check_operator(node.loc.operator, right.source_range)
+          check_operator(:special_asgn, node.loc.operator, right.source_range)
         end
 
         alias on_or       on_binary
         alias on_and      on_binary
-        alias on_lvasgn   on_binary
-        alias on_masgn    on_binary
+        alias on_lvasgn   on_assignment
+        alias on_masgn    on_assignment
         alias on_casgn    on_special_asgn
-        alias on_ivasgn   on_binary
-        alias on_cvasgn   on_binary
-        alias on_gvasgn   on_binary
+        alias on_ivasgn   on_assignment
+        alias on_cvasgn   on_assignment
+        alias on_gvasgn   on_assignment
         alias on_class    on_binary
-        alias on_or_asgn  on_binary
-        alias on_and_asgn on_binary
+        alias on_or_asgn  on_assignment
+        alias on_and_asgn on_assignment
         alias on_op_asgn  on_special_asgn
 
         def autocorrect(range)
@@ -113,35 +123,44 @@ module RuboCop
             !IRREGULAR_METHODS.include?(send_node.method_name)
         end
 
-        def check_operator(operator, right_operand)
+        def check_operator(type, operator, right_operand)
           with_space = range_with_surrounding_space(range: operator)
           return if with_space.source.start_with?("\n")
 
-          offense(operator, with_space, right_operand) do |msg|
+          offense(type, operator, with_space, right_operand) do |msg|
             add_offense(with_space, location: operator, message: msg)
           end
         end
 
-        def offense(operator, with_space, right_operand)
-          msg = offense_message(operator, with_space, right_operand)
+        def offense(type, operator, with_space, right_operand)
+          msg = offense_message(type, operator, with_space, right_operand)
           yield msg if msg
         end
 
-        def offense_message(operator, with_space, right_operand)
+        def offense_message(type, operator, with_space, right_operand)
           if operator.is?('**')
             'Space around operator `**` detected.' unless with_space.is?('**')
           elsif with_space.source !~ /^\s.*\s$/
             "Surrounding space missing for operator `#{operator.source}`."
-          elsif excess_leading_space?(operator, with_space) ||
+          elsif excess_leading_space?(type, operator, with_space) ||
                 excess_trailing_space?(right_operand, with_space)
             "Operator `#{operator.source}` should be surrounded " \
             'by a single space.'
           end
         end
 
-        def excess_leading_space?(operator, with_space)
-          with_space.source.start_with?(EXCESSIVE_SPACE) &&
-            (!allow_for_alignment? || !aligned_with_operator?(operator))
+        def excess_leading_space?(type, operator, with_space)
+          return false unless allow_for_alignment?
+          return false unless with_space.source.start_with?(EXCESSIVE_SPACE)
+
+          return !aligned_with_operator?(operator) unless type == :assignment
+
+          token            = Token.new(operator, nil, operator.source)
+          align_preceding  = aligned_with_preceding_assignment(token)
+
+          return align_preceding == :no unless align_preceding == :none
+
+          aligned_with_subsequent_assignment(token) != :yes
         end
 
         def excess_trailing_space?(right_operand, with_space)

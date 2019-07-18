@@ -123,6 +123,10 @@ module RuboCop
       lines[token.line - 2]
     end
 
+    def current_line(token)
+      lines[token.line - 1]
+    end
+
     def following_line(token)
       lines[token.line]
     end

@@ -6,6 +6,10 @@
 
 * [#7217](https://github.com/rubocop-hq/rubocop/pull/7217): Make `Style/TrailingMethodEndStatement` work on more than the first `def`. ([@buehmann][])
 
+### Changes
+
+* [#5265](https://github.com/rubocop-hq/rubocop/issues/5265): Improved `Layout/ExtraSpacing` cop to handle nested consecutive assignments. ([@jfelchner][])
+
 ## 0.73.0 (2019-07-16)
 
 ### New features
