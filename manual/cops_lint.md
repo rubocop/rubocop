@@ -672,7 +672,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.56 | -
+Enabled | Yes | Yes  | 0.56 | -
 
 This cop emulates the following Ruby warnings in Ruby 2.6.
 

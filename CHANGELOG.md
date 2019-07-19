@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7219](https://github.com/rubocop-hq/rubocop/issues/7219): Support auto-correct for `Lint/ErbNewArguments`. ([@koic][])
+
 ### Bug fixes
 
 * [#7217](https://github.com/rubocop-hq/rubocop/pull/7217): Make `Style/TrailingMethodEndStatement` work on more than the first `def`. ([@buehmann][])
