@@ -61,6 +61,7 @@ module RuboCop
       #
       class ErbNewArguments < Cop
         extend TargetRubyVersion
+        include RangeHelp
 
         minimum_target_ruby_version 2.6
 
@@ -97,9 +98,64 @@ module RuboCop
           end
         end
 
+        def autocorrect(node)
+          str_arg = node.arguments[0].source
+
+          kwargs = build_kwargs(node)
+          overridden_kwargs = override_by_legacy_args(kwargs, node)
+
+          good_arguments = [
+            str_arg, overridden_kwargs
+          ].flatten.compact.join(', ')
+
+          lambda do |corrector|
+            corrector.replace(arguments_range(node), good_arguments)
+          end
+        end
+
+        private
+
         def correct_arguments?(arguments)
           arguments.size == 1 ||
             arguments.size == 2 && arguments[1].hash_type?
+        end
+
+        def build_kwargs(node)
+          return [nil, nil] unless node.arguments.last.hash_type?
+
+          trim_mode_arg, eoutvar_arg = nil
+
+          node.arguments.last.pairs.each do |pair|
+            case pair.key.source
+            when 'trim_mode'
+              trim_mode_arg = "trim_mode: #{pair.value.source}"
+            when 'eoutvar'
+              eoutvar_arg = "eoutvar: #{pair.value.source}"
+            end
+          end
+
+          [trim_mode_arg, eoutvar_arg]
+        end
+
+        def override_by_legacy_args(kwargs, node)
+          overridden_kwargs = kwargs.dup
+
+          if node.arguments[2]
+            overridden_kwargs[0] = "trim_mode: #{node.arguments[2].source}"
+          end
+
+          if node.arguments[3] && !node.arguments[3].hash_type?
+            overridden_kwargs[1] = "eoutvar: #{node.arguments[3].source}"
+          end
+
+          overridden_kwargs
+        end
+
+        def arguments_range(node)
+          arguments = node.arguments
+
+          range_between(arguments.first.source_range.begin_pos,
+                        arguments.last.source_range.end_pos)
         end
       end
     end
