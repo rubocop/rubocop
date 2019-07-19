@@ -10,6 +10,7 @@
 
 * [#7217](https://github.com/rubocop-hq/rubocop/pull/7217): Make `Style/TrailingMethodEndStatement` work on more than the first `def`. ([@buehmann][])
 * [#7190](https://github.com/rubocop-hq/rubocop/issues/7190): Support lower case drive letters on Windows. ([@jonas054][])
+* Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion of `Array.new` with a block is assigned to a variable. ([@rrosenblum][])
 
 ### Changes
 

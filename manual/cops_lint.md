@@ -2331,7 +2331,7 @@ require 'unloaded_feature'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | -
+Enabled | Yes | Yes  | 0.43 | 0.74
 
 This cop checks for unneeded usages of splat expansion
 
