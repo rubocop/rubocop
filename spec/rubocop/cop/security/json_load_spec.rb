@@ -3,21 +3,31 @@
 RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
   subject(:cop) { described_class.new(config) }
 
-  it 'registers an offense for JSON.load' do
+  it 'registers an offense and corrects JSON.load' do
     expect_offense(<<~RUBY)
       JSON.load(arg)
            ^^^^ Prefer `JSON.parse` over `JSON.load`.
       ::JSON.load(arg)
              ^^^^ Prefer `JSON.parse` over `JSON.load`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      JSON.parse(arg)
+      ::JSON.parse(arg)
+    RUBY
   end
 
-  it 'registers an offense for JSON.restore' do
+  it 'registers an offense and corrects JSON.restore' do
     expect_offense(<<~RUBY)
       JSON.restore(arg)
            ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
       ::JSON.restore(arg)
              ^^^^^^^ Prefer `JSON.parse` over `JSON.restore`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      JSON.parse(arg)
+      ::JSON.parse(arg)
     RUBY
   end
 
@@ -40,9 +50,5 @@ RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
       JSON.dump(arg)
       ::JSON.dump(arg)
     RUBY
-  end
-
-  it 'autocorrects .load to .parse' do
-    expect(autocorrect_source('JSON.load(arg)')).to eq 'JSON.parse(arg)'
   end
 end

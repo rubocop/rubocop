@@ -15,23 +15,25 @@ RSpec.describe RuboCop::Cop::Security::YAMLLoad, :config do
     expect_no_offenses('Module::YAML.load("foo")')
   end
 
-  it 'registers an offense for load with a literal string' do
+  it 'registers an offense and corrects load with a literal string' do
     expect_offense(<<~RUBY)
       YAML.load("--- foo")
            ^^^^ Prefer using `YAML.safe_load` over `YAML.load`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      YAML.safe_load("--- foo")
+    RUBY
   end
 
-  it 'registers an offense for a fully qualified ::YAML.load' do
+  it 'registers an offense and corrects a fully qualified ::YAML.load' do
     expect_offense(<<~RUBY)
       ::YAML.load("--- foo")
              ^^^^ Prefer using `YAML.safe_load` over `YAML.load`.
     RUBY
-  end
 
-  it 'autocorrects load to safe_load' do
-    expect(autocorrect_source('::YAML.load("-- foo")')).to eq(
-      '::YAML.safe_load("-- foo")'
-    )
+    expect_correction(<<~RUBY)
+      ::YAML.safe_load("--- foo")
+    RUBY
   end
 end
