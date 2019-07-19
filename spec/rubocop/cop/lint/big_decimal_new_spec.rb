@@ -5,17 +5,25 @@ RSpec.describe RuboCop::Cop::Lint::BigDecimalNew do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `BigDecimal.new()`' do
+  it 'registers an offense and corrects using `BigDecimal.new()`' do
     expect_offense(<<~RUBY)
       BigDecimal.new(123.456, 3)
                  ^^^ `BigDecimal.new()` is deprecated. Use `BigDecimal()` instead.
     RUBY
+
+    expect_correction(<<~RUBY)
+      BigDecimal(123.456, 3)
+    RUBY
   end
 
-  it 'registers an offense when using `::BigDecimal.new()`' do
+  it 'registers an offense and corrects using `::BigDecimal.new()`' do
     expect_offense(<<~RUBY)
       ::BigDecimal.new(123.456, 3)
                    ^^^ `::BigDecimal.new()` is deprecated. Use `::BigDecimal()` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::BigDecimal(123.456, 3)
     RUBY
   end
 
@@ -23,11 +31,5 @@ RSpec.describe RuboCop::Cop::Lint::BigDecimalNew do
     expect_no_offenses(<<~RUBY)
       BigDecimal(123.456, 3)
     RUBY
-  end
-
-  it 'autocorrects `BigDecimal()`' do
-    new_source = autocorrect_source('BigDecimal.new(123.456, 3)')
-
-    expect(new_source).to eq 'BigDecimal(123.456, 3)'
   end
 end

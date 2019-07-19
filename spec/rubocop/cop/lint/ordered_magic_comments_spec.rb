@@ -3,40 +3,61 @@
 RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
   subject(:cop) { described_class.new(config) }
 
-  it 'registers an offense when `encoding` magic comment does not ' \
-     'precede all other magic comments' do
+  it 'registers an offense and corrects when an `encoding` magic comment ' \
+    'does not precede all other magic comments' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # encoding: ascii
       ^^^^^^^^^^^^^^^^^ The encoding magic comment should precede all other magic comments.
     RUBY
+
+    expect_correction(<<~RUBY)
+      # encoding: ascii
+      # frozen_string_literal: true
+    RUBY
   end
 
-  it 'registers an offense when `coding` magic comment ' \
+  it 'registers an offense and corrects when `coding` magic comment ' \
      'does not precede all other magic comments' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # coding: ascii
       ^^^^^^^^^^^^^^^ The encoding magic comment should precede all other magic comments.
     RUBY
+
+    expect_correction(<<~RUBY)
+      # coding: ascii
+      # frozen_string_literal: true
+    RUBY
   end
 
-  it 'registers an offense when `-*- encoding : ascii-8bit -*-` ' \
+  it 'registers an offense and corrects when `-*- encoding : ascii-8bit -*-` ' \
      'magic comment does not precede all other magic comments' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # -*- encoding : ascii-8bit -*-
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The encoding magic comment should precede all other magic comments.
     RUBY
+
+    expect_correction(<<~RUBY)
+      # -*- encoding : ascii-8bit -*-
+      # frozen_string_literal: true
+    RUBY
   end
 
-  it 'registers an offense when using `frozen_string_literal` magic comment ' \
-     'is next of shebang' do
+  it 'registers an offense and corrects when using `frozen_string_literal` ' \
+    'magic comment is next of shebang' do
     expect_offense(<<~RUBY)
       #!/usr/bin/env ruby
       # frozen_string_literal: true
       # encoding: ascii
       ^^^^^^^^^^^^^^^^^ The encoding magic comment should precede all other magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #!/usr/bin/env ruby
+      # encoding: ascii
+      # frozen_string_literal: true
     RUBY
   end
 
@@ -78,32 +99,6 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
 
       x = { encoding: Encoding::SJIS }
       puts x
-    RUBY
-  end
-
-  it 'autocorrects ordered magic comments' do
-    new_source = autocorrect_source(<<~RUBY)
-      # frozen_string_literal: true
-      # encoding: ascii
-    RUBY
-
-    expect(new_source).to eq <<~RUBY
-      # encoding: ascii
-      # frozen_string_literal: true
-    RUBY
-  end
-
-  it 'autocorrects ordered magic comments with shebang' do
-    new_source = autocorrect_source(<<~RUBY)
-      #!/usr/bin/env ruby
-      # frozen_string_literal: true
-      # encoding: ascii
-    RUBY
-
-    expect(new_source).to eq <<~RUBY
-      #!/usr/bin/env ruby
-      # encoding: ascii
-      # frozen_string_literal: true
     RUBY
   end
 end
