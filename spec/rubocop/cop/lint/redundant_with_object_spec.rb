@@ -5,70 +5,60 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `ary.each_with_object { |v| v }`' do
+  it 'registers an offense and corrects when using ' \
+    '`ary.each_with_object { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each_with_object([]) { |v| v }
           ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { |v| v }
+    RUBY
   end
 
-  it 'registers an offense when using `ary.each.with_object([]) { |v| v }`' do
+  it 'registers an offense and corrects when using ' \
+    '`ary.each.with_object([]) { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each.with_object([]) { |v| v }
                ^^^^^^^^^^^^^^^ Remove redundant `with_object`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { |v| v }
+    RUBY
   end
 
-  it 'autocorrects to ary.each from ary.each_with_object([])' do
-    new_source = autocorrect_source('ary.each_with_object([]) { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
-  end
-
-  it 'autocorrects to ary.each from ary.each_with_object []' do
-    new_source = autocorrect_source('ary.each_with_object [] { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
-  end
-
-  it 'autocorrects to ary.each from ary.each_with_object([]) do-end block' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'registers an offense and corrects when using ' \
+    'ary.each_with_object([]) do-end block' do
+    expect_offense(<<~RUBY)
       ary.each_with_object([]) do |v|
+          ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
         v
       end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       ary.each do |v|
         v
       end
     RUBY
   end
 
-  it 'autocorrects to ary.each from ary.each_with_object do-end block' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'registers an offense and corrects when using ' \
+    'ary.each_with_object do-end block without parentheses' do
+    expect_offense(<<~RUBY)
       ary.each_with_object [] do |v|
+          ^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
         v
       end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       ary.each do |v|
         v
       end
     RUBY
-  end
-
-  it 'autocorrects to ary.each from ary.each.with_object([]) { |v| v }' do
-    new_source = autocorrect_source('ary.each.with_object([]) { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
-  end
-
-  it 'autocorrects to ary.each from ary.each.with_object [] { |v| v }' do
-    new_source = autocorrect_source('ary.each.with_object [] { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
   end
 
   it 'an object is used as a block argument' do

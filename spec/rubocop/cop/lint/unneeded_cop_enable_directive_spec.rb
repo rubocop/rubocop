@@ -3,20 +3,31 @@
 RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
   subject(:cop) { described_class.new }
 
-  it 'registers offense for unnecessary enable' do
+  it 'registers offense and corrects unnecessary enable' do
     expect_offense(<<~RUBY)
       foo
       # rubocop:enable Metrics/LineLength
                        ^^^^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/LineLength.
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo
+
+    RUBY
   end
 
-  it 'registers multiple offenses for same comment' do
+  it 'registers multiple offenses and corrects the same comment' do
     expect_offense(<<~RUBY)
       foo
       # rubocop:enable Metrics/ModuleLength, Metrics/AbcSize
                                              ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
                        ^^^^^^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/ModuleLength.
+      bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo
+      # rubocop:enable
       bar
     RUBY
   end
@@ -29,9 +40,16 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
                        ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
       bar
     RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Metrics/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable Metrics/LineLength
+      bar
+    RUBY
   end
 
-  it 'registers offense for redundant enabling of same cop' do
+  it 'registers offense and corrects redundant enabling of same cop' do
     expect_offense(<<~RUBY)
       # rubocop:disable Metrics/LineLength
       fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
@@ -43,14 +61,30 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
                        ^^^^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/LineLength.
       bar
     RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Metrics/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable Metrics/LineLength
+
+      bar
+
+
+      bar
+    RUBY
   end
 
   context 'all switch' do
-    it 'registers offense for unnecessary enable all' do
+    it 'registers offense and corrects unnecessary enable all' do
       expect_offense(<<~RUBY)
         foo
         # rubocop:enable all
                          ^^^ Unnecessary enabling of all cops.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+
       RUBY
     end
 
@@ -66,23 +100,6 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopEnableDirective do
   end
 
   context 'autocorrection' do
-    context 'when entire comment unnecessarily enables' do
-      let(:source) do
-        <<~RUBY
-          foo
-          # rubocop:enable Metrics/LineLength
-        RUBY
-      end
-
-      it 'removes unnecessary enables' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
-          foo
-
-        RUBY
-      end
-    end
-
     context 'when first cop unnecessarily enables' do
       let(:source) do
         <<~RUBY

@@ -5,60 +5,56 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `ary.each_with_index { |v| v }`' do
+  it 'registers an offense for `ary.each_with_index { |v| v }` ' \
+    'and corrects to `ary.each`' do
     expect_offense(<<~RUBY)
       ary.each_with_index { |v| v }
           ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { |v| v }
+    RUBY
   end
 
-  it 'registers an offense when using `ary.each.with_index { |v| v }`' do
+  it 'registers an offense when using `ary.each.with_index { |v| v }` ' \
+    'and corrects to `ary.each`' do
     expect_offense(<<~RUBY)
       ary.each.with_index { |v| v }
                ^^^^^^^^^^ Remove redundant `with_index`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { |v| v }
+    RUBY
   end
 
-  it 'registers an offense when using `ary.each.with_index(1) { |v| v }`' do
+  it 'registers an offense when using `ary.each.with_index(1) { |v| v }` ' \
+    'and correct to `ary.each { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each.with_index(1) { |v| v }
                ^^^^^^^^^^^^^ Remove redundant `with_index`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { |v| v }
+    RUBY
   end
 
-  it 'registers an offense when using `ary.each_with_object([]).with_index ' \
-     '{ |v| v }`' do
+  it 'registers an offense when using ' \
+    '`ary.each_with_object([]).with_index { |v| v }` ' \
+    'and corrects to `ary.each_with_object([]) { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each_with_object([]).with_index { |v| v }
                                ^^^^^^^^^^ Remove redundant `with_index`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each_with_object([]) { |v| v }
+    RUBY
   end
 
-  it 'autocorrects to ary.each from ary.each_with_index' do
-    new_source = autocorrect_source('ary.each_with_index { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
-  end
-
-  it 'autocorrects to ary.each from ary.each.with_index' do
-    new_source = autocorrect_source('ary.each.with_index { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
-  end
-
-  it 'autocorrects to ary.each from ary.each.with_index(1)' do
-    new_source = autocorrect_source('ary.each.with_index(1) { |v| v }')
-
-    expect(new_source).to eq 'ary.each { |v| v }'
-  end
-
-  it 'autocorrects to ary.each from ary.each_with_object([]).with_index' do
-    new_source = autocorrect_source('ary.each_with_object([]) { |v| v }')
-
-    expect(new_source).to eq 'ary.each_with_object([]) { |v| v }'
-  end
-
-  it 'an index is used as a block argument' do
+  it 'accepts an index is used as a block argument' do
     expect_no_offenses('ary.each_with_index { |v, i| v; i }')
   end
 end

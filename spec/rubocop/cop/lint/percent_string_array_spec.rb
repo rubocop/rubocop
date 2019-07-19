@@ -20,60 +20,65 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
         end
       end
 
-      it 'adds an offense if tokens contain quotes and are comma separated' do
+      it 'adds an offense and corrects when tokens contain quotes ' \
+        'and are comma separated' do
         expect_offense(<<~RUBY)
           %#{char}('foo', 'bar', 'baz')
           ^^^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
+        RUBY
       end
 
-      it 'adds an offense if tokens contain both types of quotes' do
+      it 'adds an offense and corrects when tokens contain ' \
+        'both types of quotes' do
         expect_offense(<<~RUBY)
           %#{char}('foo' "bar" 'baz')
           ^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
+        RUBY
       end
 
-      it 'adds an offense if one token is quoted but there are no commas' do
+      it 'adds an offense and corrects when one token is quoted ' \
+        'but there are no commas' do
         expect_offense(<<~RUBY)
           %#{char}('foo' bar baz)
           ^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
+        RUBY
       end
 
-      it 'adds an offense if there are no quotes but one comma' do
+      it 'adds an offense and corrects when there are no quotes ' \
+        'but one comma' do
         expect_offense(<<~RUBY)
           %#{char}(foo, bar baz)
           ^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
         RUBY
       end
     end
   end
 
-  context 'autocorrection' do
-    let(:source) do
-      <<-SOURCE
-      %w('a', "b", c', "d, e f)
-      %W('a', "b", c', "d, e f)
-      SOURCE
-    end
-    let(:expected_corrected_source) do
-      <<-CORRECTED_SOURCE
-      %w(a b c d e f)
-      %W(a b c d e f)
-      CORRECTED_SOURCE
-    end
-
-    it 'removes undesirable characters' do
-      expect(autocorrect_source(source)).to eq(expected_corrected_source)
-    end
-  end
-
   context 'with invalid byte sequence in UTF-8' do
-    it 'add an offense if tokens contain quotes' do
+    it 'add an offense and corrects when tokens contain quotes' do
       expect_offense(<<-RUBY)
         %W("a\\255\\255")
         ^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        %W(a\\255\\255)
       RUBY
     end
 
@@ -83,12 +88,18 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray do
   end
 
   context 'with binary encoded source' do
-    it 'adds an offense if tokens contain quotes' do
+    it 'adds an offense and corrects when tokens contain quotes' do
       expect_offense(<<~RUBY.b)
         # encoding: BINARY
 
         %W[\xC0 "foo"]
         ^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+      RUBY
+
+      expect_correction(<<~RUBY.b)
+        # encoding: BINARY
+
+        %W[\xC0 foo]
       RUBY
     end
 

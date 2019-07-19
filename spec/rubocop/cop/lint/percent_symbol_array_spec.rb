@@ -13,34 +13,56 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray do
         expect_no_offenses("%#{char}{$,}")
       end
 
-      it 'adds an offense if symbols contain colons and are comma separated' do
+      it 'registers an offense and corrects when symbols contain colons ' \
+        'and are comma separated' do
         expect_offense(<<~RUBY)
           %#{char}(:foo, :bar, :baz)
           ^^^^^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
+        RUBY
       end
 
-      it 'adds an offense if one symbol has a colon but there are no commas' do
+      it 'registers an offense and corrects when one symbol has a colon ' \
+        'but there are no commas' do
         expect_offense(<<~RUBY)
           %#{char}(:foo bar baz)
           ^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
+        RUBY
       end
 
-      it 'adds an offense if there are no colons but one comma' do
+      it 'registers an offense and corrects when there are no colons ' \
+        'but one comma' do
         expect_offense(<<~RUBY)
           %#{char}(foo, bar baz)
           ^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %#{char}(foo bar baz)
+        RUBY
       end
     end
+
     context 'with binary encoded source' do
-      it 'adds an offense if tokens contain quotes' do
+      it 'registers an offense and corrects when tokens contain quotes' do
         expect_offense(<<~RUBY.b)
           # encoding: BINARY
 
           %i[\xC0 :foo]
           ^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
+        RUBY
+
+        expect_correction(<<~RUBY.b)
+          # encoding: BINARY
+
+          %i[\xC0 foo]
         RUBY
       end
 
@@ -51,25 +73,6 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray do
           %i[\xC0 \xC1]
         RUBY
       end
-    end
-  end
-
-  context 'autocorrection' do
-    let(:source) do
-      <<-SOURCE
-      %i(:a, :b, c, d e :f)
-      %I(:a, :b, c, d e :f)
-      SOURCE
-    end
-    let(:expected_corrected_source) do
-      <<-CORRECTED_SOURCE
-      %i(a b c d e f)
-      %I(a b c d e f)
-      CORRECTED_SOURCE
-    end
-
-    it 'removes undesirable characters' do
-      expect(autocorrect_source(source)).to eq(expected_corrected_source)
     end
   end
 end

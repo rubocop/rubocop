@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Lint::EmptyEnsure do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for empty ensure' do
+  it 'registers an offense and corrects empty ensure' do
     expect_offense(<<~RUBY)
       begin
         something
@@ -11,16 +11,8 @@ RSpec.describe RuboCop::Cop::Lint::EmptyEnsure do
       ^^^^^^ Empty `ensure` block detected.
       end
     RUBY
-  end
 
-  it 'autocorrects for empty ensure' do
-    corrected = autocorrect_source(<<~RUBY)
-      begin
-        something
-      ensure
-      end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       begin
         something
 
