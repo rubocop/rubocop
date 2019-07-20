@@ -3,7 +3,8 @@
 require 'pathname'
 
 module RuboCop
-  # ...
+  # Handles validation of configuration, for example cop names, parameter
+  # names, and Ruby versions.
   class ConfigValidator
     extend Forwardable
 
