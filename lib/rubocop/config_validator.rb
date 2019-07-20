@@ -26,7 +26,7 @@ module RuboCop
 
     def initialize(config)
       @config = config
-      @obsolete_config = ObsoleteConfig.new(config)
+      @config_obsoletion = ConfigObsoletion.new(config)
     end
 
     def validate
@@ -40,7 +40,7 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      @obsolete_config.reject_obsolete_cops_and_parameters
+      @config_obsoletion.reject_obsolete_cops_and_parameters
 
       warn_about_unrecognized_cops(invalid_cop_names)
       check_target_ruby

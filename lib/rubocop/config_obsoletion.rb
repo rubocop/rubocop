@@ -2,7 +2,7 @@
 
 module RuboCop
   # This class handles obsolete configuration.
-  class ObsoleteConfig
+  class ConfigObsoletion
     RENAMED_COPS = {
       'Style/SingleSpaceBeforeFirstArg' => 'Layout/SpaceBeforeFirstArg',
       'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::ObsoleteConfig do
+RSpec.describe RuboCop::ConfigObsoletion do
   include FileHelper
 
-  subject(:obsolete_configuration) { described_class.new(configuration) }
+  subject(:config_obsoletion) { described_class.new(configuration) }
 
   let(:configuration) { RuboCop::Config.new(hash, loaded_path) }
   let(:loaded_path) { 'example/.rubocop.yml' }
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::ObsoleteConfig do
 
       it 'prints a warning message' do
         begin
-          obsolete_configuration.reject_obsolete_cops_and_parameters
+          config_obsoletion.reject_obsolete_cops_and_parameters
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
           expect(expected_message).to eq(e.message)
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::ObsoleteConfig do
 
       it 'prints a warning message' do
         begin
-          obsolete_configuration.reject_obsolete_cops_and_parameters
+          config_obsoletion.reject_obsolete_cops_and_parameters
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
           expect(expected_message).to eq(e.message)
