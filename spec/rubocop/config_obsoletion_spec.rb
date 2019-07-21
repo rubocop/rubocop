@@ -54,7 +54,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       let(:expected_message) do
-        <<-OUTPUT.strip_indent.chomp
+        <<~OUTPUT.chomp
           The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodCallParentheses` cop has been renamed to `Style/MethodCallWithoutArgsParentheses`.
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       let(:expected_message) do
-        <<-OUTPUT.strip_indent.chomp
+        <<~OUTPUT.chomp
           The `Lint/BlockAlignment` cop has been moved to `Layout/BlockAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
