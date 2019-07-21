@@ -51,7 +51,7 @@ module RuboCop
 
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
-      path =~ %r{\A([A-Z]:)?/}
+      path =~ %r{\A([A-Z]:)?/}i
     end
 
     def self.pwd
