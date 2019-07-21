@@ -219,8 +219,6 @@ module RuboCop
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'
         WIDTH = 'Width'
 
-        def_node_matcher :condition?, '{if case}'
-
         # The shovel operator `<<` does not have its own type. It is a `send`
         # type.
         def_node_matcher :assignment_type?, <<~PATTERN

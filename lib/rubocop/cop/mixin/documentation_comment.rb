@@ -9,8 +9,6 @@ module RuboCop
 
       private
 
-      def_node_matcher :constant_definition?, '{class module casgn}'
-
       def documentation_comment?(node)
         preceding_lines = preceding_lines(node)
 

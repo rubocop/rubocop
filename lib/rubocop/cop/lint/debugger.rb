@@ -56,8 +56,6 @@ module RuboCop
           (send (send {#kernel? nil?} :binding) :irb ...)
         PATTERN
 
-        def_node_matcher :pry_rescue?, '(send (const nil? :Pry) :rescue ...)'
-
         def on_send(node)
           return unless debugger_call?(node) || binding_irb?(node)
 
