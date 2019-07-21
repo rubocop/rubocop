@@ -15,6 +15,7 @@
 * [#7128](https://github.com/rubocop-hq/rubocop/issues/7128): Make `Metrics/LineLength` aware of shebang. ([@koic][])
 * [#6861](https://github.com/rubocop-hq/rubocop/issues/6861): Fix a false positive for `Layout/IndentationWidth` when using `EnforcedStyle: outdent` of `Layout/AccessModifierIndentation`. ([@koic][])
 * [#7235](https://github.com/rubocop-hq/rubocop/issues/7235): Fix an error where `Style/ConditionalAssignment` would swallow a nested `if` condition. ([@buehmann][])
+* [#7242](https://github.com/rubocop-hq/rubocop/issues/7242): Make `Style/ConstantVisibility` work on non-trivial class and module bodies. ([@buehmann][])
 
 ### Changes
 
