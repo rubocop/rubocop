@@ -6,22 +6,48 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility do
   let(:config) { RuboCop::Config.new }
 
   context 'when defining a constant in a class' do
-    it 'registers an offense when not using a visibility declaration' do
-      expect_offense(<<~RUBY)
-        class Foo
-          BAR = 42
-          ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
-        end
-      RUBY
+    context 'with a single-statement body' do
+      it 'registers an offense when not using a visibility declaration' do
+        expect_offense(<<~RUBY)
+          class Foo
+            BAR = 42
+            ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
+          end
+        RUBY
+      end
     end
 
-    it 'does not register an offense when using a visibility declaration' do
-      expect_no_offenses(<<~RUBY)
-        class Foo
-          BAR = 42
-          private_constant :BAR
-        end
-      RUBY
+    context 'with a multi-statement body' do
+      it 'registers an offense when not using a visibility declaration' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include Bar
+            BAR = 42
+            ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
+          end
+        RUBY
+      end
+
+      it 'registers an offense when there is ' \
+         'no matching visibility declaration' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include Bar
+            BAR = 42
+            ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
+            private_constant :FOO
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using a visibility declaration' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            BAR = 42
+            private_constant :BAR
+          end
+        RUBY
+      end
     end
   end
 

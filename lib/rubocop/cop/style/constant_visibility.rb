@@ -46,7 +46,14 @@ module RuboCop
         end
 
         def class_or_module_scope?(node)
-          node.parent && %i[class module].include?(node.parent.type)
+          return false unless node.parent
+
+          case node.parent.type
+          when :begin
+            class_or_module_scope?(node.parent)
+          when :class, :module
+            true
+          end
         end
 
         def visibility_declaration?(node)
@@ -58,8 +65,12 @@ module RuboCop
         end
 
         def_node_matcher :visibility_declaration_for?, <<~PATTERN
-          (send nil? {:public_constant :private_constant} ({sym str} %1))
+          (send nil? {:public_constant :private_constant} ({sym str} #match_name?(%1)))
         PATTERN
+
+        def match_name?(name, constant_name)
+          name.to_sym == constant_name.to_sym
+        end
       end
     end
   end
