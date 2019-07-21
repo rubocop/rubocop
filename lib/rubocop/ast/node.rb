@@ -306,8 +306,6 @@ module RuboCop
         {(send $_ ...) (block (send $_ ...) ...)}
       PATTERN
 
-      # Note: for masgn, #asgn_rhs will be an array node
-      def_node_matcher :asgn_rhs, '[assignment? (... $_)]'
       def_node_matcher :str_content, '(str $_)'
 
       def const_name
@@ -495,10 +493,6 @@ module RuboCop
       def_node_matcher :class_constructor?, <<~PATTERN
         {       (send (const nil? {:Class :Module}) :new ...)
          (block (send (const nil? {:Class :Module}) :new ...) ...)}
-      PATTERN
-
-      def_node_matcher :module_definition?, <<~PATTERN
-        {class module (casgn _ _ class_constructor?)}
       PATTERN
 
       # Some expressions are evaluated for their value, some for their side
