@@ -20,11 +20,11 @@ module RuboCop
         begin_pos = range.begin_pos
         end_pos = range.end_pos
         if side == :left
+          end_pos = begin_pos
           begin_pos = reposition(src, begin_pos, -1)
-          end_pos -= 1
         end
         if side == :right
-          begin_pos += 1
+          begin_pos = end_pos
           end_pos = reposition(src, end_pos, 1)
         end
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
