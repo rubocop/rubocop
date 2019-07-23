@@ -23,6 +23,28 @@ RSpec.describe RuboCop::PathUtil do
     end
   end
 
+  describe '#absolute?' do
+    it 'returns a truthy value for a path beginning with slash' do
+      expect(described_class.absolute?('/Users/foo')).to be_truthy
+    end
+
+    it 'returns a falsey value for a path beginning with a directory name' do
+      expect(described_class.absolute?('Users/foo')).to be_falsey
+    end
+
+    if RuboCop::Platform.windows?
+      it 'returns a truthy value for a path beginning with an upper case ' \
+         'drive letter' do
+        expect(described_class.absolute?('C:/Users/foo')).to be_truthy
+      end
+
+      it 'returns a truthy value for a path beginning with a lower case ' \
+         'drive letter' do
+        expect(described_class.absolute?('d:/Users/foo')).to be_truthy
+      end
+    end
+  end
+
   describe '#match_path?', :isolated_environment do
     include FileHelper
 
