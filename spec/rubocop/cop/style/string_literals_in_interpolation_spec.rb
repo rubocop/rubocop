@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
     it 'registers an offense for double quotes within embedded expression' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         "#{"A"}"
            ^^^ Prefer single-quoted strings inside interpolations.
       RUBY
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for double quotes within embedded expression in ' \
        'a heredoc string' do
-      expect_offense(<<-'SOURCE'.strip_indent)
+      expect_offense(<<~'SOURCE')
         <<RUBY
         #{"A"}
           ^^^ Prefer single-quoted strings inside interpolations.
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'double_quotes' } }
 
     it 'registers an offense for single quotes within embedded expression' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         "#{'A'}"
            ^^^ Prefer double-quoted strings inside interpolations.
       RUBY
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for single quotes within embedded expression in ' \
        'a heredoc string' do
-      expect_offense(<<-'SOURCE'.strip_indent)
+      expect_offense(<<~'SOURCE')
         <<RUBY
         #{'A'}
           ^^^ Prefer double-quoted strings inside interpolations.

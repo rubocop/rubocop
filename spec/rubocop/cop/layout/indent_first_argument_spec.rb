@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArgument, :config do
       end
 
       it 'does not view chained call as an outer method call' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           A = Regexp.union(
             /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
             *AST::Types::OPERATOR_METHODS.map(&:to_s)
@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArgument, :config do
         end
 
         it 'accepts a correctly indented first argument in interpolation' do
-          expect_no_offenses(<<-'RUBY'.strip_indent)
+          expect_no_offenses(<<~'RUBY')
             puts %(
               <p>
                 #{Array(
@@ -592,7 +592,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArgument, :config do
       end
 
       it 'does not view chained call as an outer method call' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           A = Regexp.union(
                 /[A-Za-z_][A-Za-z\d_]*[!?=]?/,
                 *AST::Types::OPERATOR_METHODS.map(&:to_s)

@@ -589,7 +589,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('regexp.rb', 'x = 0')
       create_file('exclude_glob.rb', ['#!/usr/bin/env ruby', 'x = 0'])
       create_file('dir/thing.rb', 'x = 0')
-      create_file('.rubocop.yml', <<-'YAML'.strip_indent)
+      create_file('.rubocop.yml', <<~'YAML')
         Lint/UselessAssignment:
           Exclude:
             - example.rb
@@ -1466,7 +1466,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
        'with regexp' do
       create_file('example/example1.rb', '#' * 90)
 
-      create_file('rubocop.yml', <<-'YAML'.strip_indent)
+      create_file('rubocop.yml', <<~YAML)
         AllCops:
           Exclude:
             - !ruby/regexp /example1\.rb$/

@@ -158,23 +158,23 @@ RSpec.describe RuboCop::Cop::Style::UnneededInterpolation do
   end
 
   it 'registers an offense for "#{var}"' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       var = 1; "#{var}"
                ^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       var = 1; var.to_s
     RUBY
   end
 
   it 'registers an offense for ["#{@var}"]' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       ["#{@var}", 'foo']
        ^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<-'RUBY'.strip_indent)
+    expect_correction(<<~RUBY)
       [@var.to_s, 'foo']
     RUBY
   end

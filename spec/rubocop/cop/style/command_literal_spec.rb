@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
         RUBY
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
             echo \`ls\`
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
         before { cop_config['AllowInnerBackticks'] = true }
 
         it 'is accepted' do
-          expect_no_offenses(<<-'RUBY'.strip_indent)
+          expect_no_offenses(<<~'RUBY')
             foo = `
               echo \`ls\`
               echo \`ls -l\`
@@ -292,7 +292,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
         RUBY
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
             ls
@@ -337,7 +337,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string with backticks' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           foo = `
             echo \`ls\`
             echo \`ls -l\`
@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
             echo \`ls\`
@@ -409,7 +409,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
         RUBY
@@ -431,7 +431,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string without backticks' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           foo = `
             ls
             ls -l
@@ -462,7 +462,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string with backticks' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           foo = `
             echo \`ls\`
             echo \`ls -l\`
@@ -471,7 +471,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       end
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
             echo \`ls\`

@@ -334,7 +334,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'does not register offenses for multiple complex nested assignments' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         def batch
           @areas   = params[:param].map {
                        var_1      = 123_456
@@ -386,7 +386,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'does not register alignment errors on outdented lines' do
-      expect_no_offenses(<<-RUBY.strip_indent)
+      expect_no_offenses(<<~RUBY)
         @areas = params[:param].map do |ca_params|
                    ca_params = ActionController::Parameters.new(stuff)
                  end
@@ -478,7 +478,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'autocorrects complex nested assignments' do
-      new_source = autocorrect_source(<<-RUBY.strip_indent)
+      new_source = autocorrect_source(<<~RUBY)
         def batch
           @areas = params[:param].map {
                        var_1 = 123_456
@@ -502,7 +502,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<-RUBY.strip_indent)
+      expect(new_source).to eq(<<~RUBY)
         def batch
           @areas   = params[:param].map {
                        var_1      = 123_456

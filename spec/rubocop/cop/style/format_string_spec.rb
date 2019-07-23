@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'works if the first operand contains embedded expressions' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         puts "#{x * 5} %d #{@test}" % 10
                                     ^ Favor `sprintf` over `String#%`.
       RUBY
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
     end
 
     it 'works if the first operand contains embedded expressions' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         puts "#{x * 5} %d #{@test}" % 10
                                     ^ Favor `format` over `String#%`.
       RUBY

@@ -4,14 +4,14 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #{} in interpolation' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "this is the #{}"
                    ^^^ Empty interpolation detected.
     RUBY
   end
 
   it 'registers an offense for #{ } in interpolation' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "this is the #{ }"
                    ^^^^ Empty interpolation detected.
     RUBY

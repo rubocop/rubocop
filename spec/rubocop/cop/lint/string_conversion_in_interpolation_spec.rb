@@ -4,14 +4,14 @@ RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #to_s in interpolation' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "this is the #{result.to_s}"
                             ^^^^ Redundant use of `Object#to_s` in interpolation.
     RUBY
   end
 
   it 'detects #to_s in an interpolation with several expressions' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "this is the #{top; result.to_s}"
                                  ^^^^ Redundant use of `Object#to_s` in interpolation.
     RUBY
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   end
 
   it 'does not explode on implicit receiver' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "#{to_s}"
          ^^^^ Use `self` instead of `Object#to_s` in interpolation.
     RUBY

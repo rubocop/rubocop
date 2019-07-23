@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
     it 'registers offense for double quotes when single quotes suffice' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         s = "abc"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
         x = "a\\b"
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'registers offense for opposite + correct' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         s = "abc"
         x = 'abc'
             ^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
@@ -191,14 +191,14 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'registers offense for escaped single quote in single quotes' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         '\''
         ^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
     end
 
     it 'does not accept multiple escaped single quotes in single quotes' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         'This \'string\' has \'multiple\' escaped quotes'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
