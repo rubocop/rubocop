@@ -849,7 +849,7 @@ RSpec.describe RuboCop::Config do
 
           it 'uses the default target ruby version' do
             expect(configuration.target_ruby_version)
-              .to eq described_class::DEFAULT_RUBY_VERSION
+              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
           end
         end
 
@@ -858,7 +858,7 @@ RSpec.describe RuboCop::Config do
 
           it 'uses the default target ruby version' do
             expect(configuration.target_ruby_version)
-              .to eq described_class::DEFAULT_RUBY_VERSION
+              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
           end
         end
 
@@ -867,7 +867,7 @@ RSpec.describe RuboCop::Config do
 
           it 'uses the default target ruby version' do
             expect(configuration.target_ruby_version)
-              .to eq described_class::DEFAULT_RUBY_VERSION
+              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
           end
         end
 
@@ -963,7 +963,7 @@ RSpec.describe RuboCop::Config do
                     1.16.1
                 HEREDOC
               create_file(lock_file_path, content)
-              default = RuboCop::Config::DEFAULT_RUBY_VERSION
+              default = RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
               expect(configuration.target_ruby_version).to eq default
             end
 
@@ -993,7 +993,7 @@ RSpec.describe RuboCop::Config do
                     1.16.1
                 HEREDOC
               create_file(lock_file_path, content)
-              default = RuboCop::Config::DEFAULT_RUBY_VERSION
+              default = RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
               expect(configuration.target_ruby_version).to eq default
             end
 
@@ -1023,7 +1023,7 @@ RSpec.describe RuboCop::Config do
                     1.16.1
                 HEREDOC
               create_file(lock_file_path, content)
-              default = RuboCop::Config::DEFAULT_RUBY_VERSION
+              default = RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
               expect(configuration.target_ruby_version).to eq default
             end
           end
@@ -1032,7 +1032,7 @@ RSpec.describe RuboCop::Config do
         context 'when bundler lock files are not present' do
           it 'uses the default target ruby version' do
             expect(configuration.target_ruby_version)
-              .to eq described_class::DEFAULT_RUBY_VERSION
+              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
           end
         end
       end

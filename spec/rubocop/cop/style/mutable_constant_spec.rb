@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'when the constant is a frozen string literal' do
-      if RuboCop::Config::KNOWN_RUBIES.include?(3.0)
+      if RuboCop::ConfigValidator::KNOWN_RUBIES.include?(3.0)
         context 'when the target ruby version >= 3.0' do
           let(:ruby_version) { 3.0 }
 
