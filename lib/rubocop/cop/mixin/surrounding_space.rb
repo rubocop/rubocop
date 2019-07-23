@@ -9,6 +9,8 @@ module RuboCop
       NO_SPACE_COMMAND = 'Do not use'
       SPACE_COMMAND = 'Use'
 
+      SINGLE_SPACE_REGEXP = /[ \t]/.freeze
+
       private
 
       def side_space_range(range:, side:)
@@ -85,15 +87,15 @@ module RuboCop
         return false unless token
 
         if side == :left
-          String(token.space_after?) == ' '
+          String(token.space_after?) =~ SINGLE_SPACE_REGEXP
         else
-          String(token.space_before?) == ' '
+          String(token.space_before?) =~ SINGLE_SPACE_REGEXP
         end
       end
 
       def reposition(src, pos, step)
         offset = step == -1 ? -1 : 0
-        pos += step while src[pos + offset] =~ /[ \t]/
+        pos += step while src[pos + offset] =~ SINGLE_SPACE_REGEXP
         pos.negative? ? 0 : pos
       end
 
