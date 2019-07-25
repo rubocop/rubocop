@@ -21,6 +21,14 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     expect_no_offenses('#' * 80)
   end
 
+  it 'accepts the first line if it is a shebang line' do
+    expect_no_offenses(<<~RUBY)
+      #!/System/Library/Frameworks/Ruby.framework/Versions/2.3/usr/bin/ruby --disable-gems
+
+      do_something
+    RUBY
+  end
+
   it 'registers an offense for long line before __END__ but not after' do
     inspect_source(['#' * 150,
                     '__END__',
