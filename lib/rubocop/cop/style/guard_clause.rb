@@ -38,8 +38,8 @@ module RuboCop
       class GuardClause < Cop
         include MinBodyLength
 
-        MSG = 'Use a guard clause instead of wrapping the code inside a ' \
-              'conditional expression.'
+        MSG = 'Use a guard clause (`%<example>s`) instead of wrapping the ' \
+              'code inside a conditional expression.'
 
         def on_def(node)
           body = node.body
@@ -55,9 +55,19 @@ module RuboCop
         alias on_defs on_def
 
         def on_if(node)
-          return if accepted_form?(node) || !contains_guard_clause?(node)
+          return if accepted_form?(node)
 
-          add_offense(node, location: :keyword)
+          guard_clause_in_if = node.if_branch&.guard_clause?
+          guard_clause_in_else = node.else_branch&.guard_clause?
+          guard_clause = guard_clause_in_if || guard_clause_in_else
+          return unless guard_clause
+
+          kw = if guard_clause_in_if
+                 node.loc.keyword.source
+               else
+                 opposite_keyword(node)
+               end
+          register_offense(node, "#{guard_clause.source} #{kw}")
         end
 
         private
@@ -65,7 +75,19 @@ module RuboCop
         def check_ending_if(node)
           return if accepted_form?(node, true) || !min_body_length?(node)
 
-          add_offense(node, location: :keyword)
+          register_offense(node, "return #{opposite_keyword(node)}")
+        end
+
+        def opposite_keyword(node)
+          node.if? ? 'unless' : 'if'
+        end
+
+        def register_offense(node, example)
+          condition, = node.node_parts
+          example += " #{condition.source}"
+          add_offense(node,
+                      location: :keyword,
+                      message: format(MSG, example: example))
         end
 
         def accepted_form?(node, ending = false)
@@ -80,11 +102,6 @@ module RuboCop
           else
             !node.else? || node.elsif?
           end
-        end
-
-        def contains_guard_clause?(node)
-          node.if_branch&.guard_clause? ||
-            node.else_branch&.guard_clause?
         end
       end
     end

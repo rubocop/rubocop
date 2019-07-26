@@ -933,8 +933,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             'def badName',
             '    ^^^^^^^',
             'example3.rb:2:3: C: Style/GuardClause: ' \
-            'Use a guard clause instead of wrapping the code inside a ' \
-            'conditional expression.',
+            'Use a guard clause (return unless something) instead of ' \
+            'wrapping the code inside a conditional expression.',
             '  if something',
             '  ^^',
             'example3.rb:2:3: C: Style/IfUnlessModifier: ' \

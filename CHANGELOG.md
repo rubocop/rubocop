@@ -16,6 +16,7 @@
 ### Changes
 
 * [#5265](https://github.com/rubocop-hq/rubocop/issues/5265): Improved `Layout/ExtraSpacing` cop to handle nested consecutive assignments. ([@jfelchner][])
+* [#7215](https://github.com/rubocop-hq/rubocop/issues/7215): Make it clear what's wrong in the message from `Style/GuardClause`. ([@jonas054][])
 
 ## 0.73.0 (2019-07-16)
 
