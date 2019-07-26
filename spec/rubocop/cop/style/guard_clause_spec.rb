@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
+RSpec.describe RuboCop::Cop::Style::GuardClause do
   let(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config.new(
+      'Metrics/LineLength' => {
+        'Enabled' => line_length_enabled,
+        'Max' => 80
+      },
+      'Style/GuardClause' => cop_config
+    )
+  end
+  let(:line_length_enabled) { true }
   let(:cop_config) { {} }
 
   shared_examples 'reports offense' do |body|
@@ -271,6 +281,35 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         else
           puts "hello" \\
                "blah blah blah"
+        end
+      RUBY
+    end
+  end
+
+  context 'with Metrics/MaxLineLength enabled' do
+    it 'registers an offense with non-modifier example code if too long for ' \
+       'single line' do
+      expect_offense(<<~RUBY)
+        def test
+          if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+          ^^ Use a guard clause (`unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; return; end`) instead of wrapping the code inside a conditional expression.
+            work
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'with Metrics/MaxLineLength disabled' do
+    let(:line_length_enabled) { false }
+
+    it 'registers an offense with modifier example code regardless of length' do
+      expect_offense(<<~RUBY)
+        def test
+          if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+          ^^ Use a guard clause (`return unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line`) instead of wrapping the code inside a conditional expression.
+            work
+          end
         end
       RUBY
     end

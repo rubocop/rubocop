@@ -37,6 +37,7 @@ module RuboCop
       #   ok
       class GuardClause < Cop
         include MinBodyLength
+        include StatementModifier
 
         MSG = 'Use a guard clause (`%<example>s`) instead of wrapping the ' \
               'code inside a conditional expression.'
@@ -67,7 +68,7 @@ module RuboCop
                else
                  opposite_keyword(node)
                end
-          register_offense(node, "#{guard_clause.source} #{kw}")
+          register_offense(node, guard_clause.source, kw)
         end
 
         private
@@ -75,19 +76,30 @@ module RuboCop
         def check_ending_if(node)
           return if accepted_form?(node, true) || !min_body_length?(node)
 
-          register_offense(node, "return #{opposite_keyword(node)}")
+          register_offense(node, 'return', opposite_keyword(node))
         end
 
         def opposite_keyword(node)
           node.if? ? 'unless' : 'if'
         end
 
-        def register_offense(node, example)
+        def register_offense(node, scope_exiting_keyword, conditional_keyword)
           condition, = node.node_parts
-          example += " #{condition.source}"
+          example = [scope_exiting_keyword,
+                     conditional_keyword,
+                     condition.source].join(' ')
+          if too_long_for_single_line?(node, example)
+            example = "#{conditional_keyword} #{condition.source}; " \
+                      "#{scope_exiting_keyword}; end"
+          end
           add_offense(node,
                       location: :keyword,
                       message: format(MSG, example: example))
+        end
+
+        def too_long_for_single_line?(node, example)
+          max = max_line_length
+          max && node.source_range.column + example.length > max
         end
 
         def accepted_form?(node, ending = false)
