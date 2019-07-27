@@ -10,6 +10,7 @@
 
 * [#7217](https://github.com/rubocop-hq/rubocop/pull/7217): Make `Style/TrailingMethodEndStatement` work on more than the first `def`. ([@buehmann][])
 * [#7190](https://github.com/rubocop-hq/rubocop/issues/7190): Support lower case drive letters on Windows. ([@jonas054][])
+* Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion of `Array.new` with a block is assigned to a variable. ([@rrosenblum][])
 * [#5628](https://github.com/rubocop-hq/rubocop/issues/5628): Fix an error of `Layout/SpaceInsideStringInterpolation` on interpolations with multiple statements. ([@buehmann][])
 * [#7128](https://github.com/rubocop-hq/rubocop/issues/7128): Make `Metrics/LineLength` aware of shebang. ([@koic][])
 * [#6861](https://github.com/rubocop-hq/rubocop/issues/6861): Fix a false positive for `Layout/IndentationWidth` when using `EnforcedStyle: outdent` of `Layout/AccessModifierIndentation`. ([@koic][])

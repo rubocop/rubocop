@@ -1662,6 +1662,7 @@ Lint/UnneededSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
   VersionAdded: '0.43'
+  VersionChanged: '0.74'
 
 Lint/UnreachableCode:
   Description: 'Unreachable code.'
