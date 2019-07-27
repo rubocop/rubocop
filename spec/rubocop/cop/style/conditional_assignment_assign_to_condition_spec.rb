@@ -2246,4 +2246,56 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       expect_no_offenses('foo? ? bar = "a" : bar = "b"')
     end
   end
+
+  context 'with nested conditionals' do
+    let(:source) { <<~RUBY }
+      if outer
+        bar = 1
+      else
+        if inner
+          bar = 2
+        else
+          bar = 3
+        end
+      end
+    RUBY
+
+    it 'does not consider branches of nested ifs' do
+      inspect_source(source)
+
+      # No offense for `if outer`
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.line).to eq(4)
+
+      corrected = autocorrect_source(source)
+
+      expect(corrected).to eq(<<~RUBY)
+        if outer
+          bar = 1
+        else
+          bar = if inner
+            2
+          else
+            3
+          end
+        end
+      RUBY
+    end
+
+    it 'eventually autocorrects all branches' do
+      corrected = autocorrect_source_with_loop(source)
+
+      expect(corrected).to eq(<<~RUBY)
+        bar = if outer
+          1
+        else
+          if inner
+            2
+          else
+            3
+          end
+        end
+      RUBY
+    end
+  end
 end

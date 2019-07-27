@@ -4,11 +4,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Layout/IndentationWidth' => cop_config,
-                        'Layout/IndentationConsistency' => consistency_config,
-                        'Layout/EndAlignment' => end_alignment_config,
-                        'Layout/DefEndAlignment' => def_end_alignment_config)
+    RuboCop::Config.new(
+      'Layout/IndentationWidth' => cop_config,
+      'Layout/AccessModifierIndentation' => access_modifier_config,
+      'Layout/IndentationConsistency' => consistency_config,
+      'Layout/EndAlignment' => end_alignment_config,
+      'Layout/DefEndAlignment' => def_end_alignment_config
+    )
   end
+  let(:access_modifier_config) { { 'EnforcedStyle' => 'indent' } }
   let(:consistency_config) { { 'EnforcedStyle' => 'normal' } }
   let(:end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
@@ -1148,6 +1152,21 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
                 def g
             ^^^^ Use 2 (not 4) spaces for indentation.
                 end
+            end
+          RUBY
+        end
+      end
+
+      context 'when consistency style is outdent' do
+        let(:access_modifier_config) { { 'EnforcedStyle' => 'outdent' } }
+
+        it 'accepts access modifier is outdent' do
+          expect_no_offenses(<<~RUBY)
+            class Test
+            private
+
+              def foo
+              end
             end
           RUBY
         end

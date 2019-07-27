@@ -158,11 +158,7 @@ module RuboCop
           if indentation_consistency_style == 'indented_internal_methods'
             check_members_for_indented_internal_methods_style(members)
           else
-            members.first.children.each do |member|
-              next if member.send_type? && member.access_modifier?
-
-              check_indentation(base, member)
-            end
+            check_members_for_normal_style(base, members)
           end
         end
 
@@ -170,6 +166,8 @@ module RuboCop
           return unless member
 
           if access_modifier?(member.children.first)
+            return if access_modifier_indentation_style == 'outdent'
+
             member.children.first
           else
             member
@@ -180,6 +178,14 @@ module RuboCop
           each_member(members) do |member, previous_modifier|
             check_indentation(previous_modifier, member,
                               indentation_consistency_style)
+          end
+        end
+
+        def check_members_for_normal_style(base, members)
+          members.first.children.each do |member|
+            next if member.send_type? && member.access_modifier?
+
+            check_indentation(base, member)
           end
         end
 
@@ -197,6 +203,14 @@ module RuboCop
 
         def indented_internal_methods_style?
           indentation_consistency_style == 'indented_internal_methods'
+        end
+
+        def special_modifier?(node)
+          node.bare_access_modifier? && SPECIAL_MODIFIERS.include?(node.source)
+        end
+
+        def access_modifier_indentation_style
+          config.for_cop('Layout/AccessModifierIndentation')['EnforcedStyle']
         end
 
         def indentation_consistency_style

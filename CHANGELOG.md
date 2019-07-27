@@ -11,10 +11,15 @@
 * [#7217](https://github.com/rubocop-hq/rubocop/pull/7217): Make `Style/TrailingMethodEndStatement` work on more than the first `def`. ([@buehmann][])
 * [#7190](https://github.com/rubocop-hq/rubocop/issues/7190): Support lower case drive letters on Windows. ([@jonas054][])
 * Fix the auto-correction of `Lint/UnneededSplatExpansion` when the splat expansion of `Array.new` with a block is assigned to a variable. ([@rrosenblum][])
+* [#5628](https://github.com/rubocop-hq/rubocop/issues/5628): Fix an error of `Layout/SpaceInsideStringInterpolation` on interpolations with multiple statements. ([@buehmann][])
+* [#7128](https://github.com/rubocop-hq/rubocop/issues/7128): Make `Metrics/LineLength` aware of shebang. ([@koic][])
+* [#6861](https://github.com/rubocop-hq/rubocop/issues/6861): Fix a false positive for `Layout/IndentationWidth` when using `EnforcedStyle: outdent` of `Layout/AccessModifierIndentation`. ([@koic][])
+* [#7235](https://github.com/rubocop-hq/rubocop/issues/7235): Fix an error where `Style/ConditionalAssignment` would swallow a nested `if` condition. ([@buehmann][])
 
 ### Changes
 
 * [#5265](https://github.com/rubocop-hq/rubocop/issues/5265): Improved `Layout/ExtraSpacing` cop to handle nested consecutive assignments. ([@jfelchner][])
+* [#7215](https://github.com/rubocop-hq/rubocop/issues/7215): Make it clear what's wrong in the message from `Style/GuardClause`. ([@jonas054][])
 
 ## 0.73.0 (2019-07-16)
 

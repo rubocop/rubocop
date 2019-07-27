@@ -19,61 +19,48 @@ module RuboCop
       #   # good
       #      var = "This is the #{ space } example"
       class SpaceInsideStringInterpolation < Cop
+        include SurroundingSpace
         include ConfigurableEnforcedStyle
         include RangeHelp
 
         NO_SPACE_MSG = 'Space inside string interpolation detected.'
-        SPACE_MSG = 'Missing space around string interpolation detected.'
+        SPACE_MSG = 'Missing space inside string interpolation detected.'
 
         def on_dstr(node)
-          each_style_violation(node) do |final_node|
-            add_offense(final_node)
+          node.each_child_node(:begin) do |begin_node|
+            on_interpolation(begin_node)
           end
         end
 
-        def autocorrect(node)
-          new_source = style == :no_space ? node.source : " #{node.source} "
+        def on_interpolation(begin_node)
+          delims = delimiters(begin_node)
+          return if empty_brackets?(*delims)
+
+          if style == :no_space
+            no_space_offenses(begin_node, *delims, NO_SPACE_MSG)
+          else
+            space_offenses(begin_node, *delims, SPACE_MSG)
+          end
+        end
+
+        def autocorrect(begin_node)
           lambda do |corrector|
-            corrector.replace(
-              range_with_surrounding_space(range: node.source_range),
-              new_source
-            )
+            delims = delimiters(begin_node)
+
+            if style == :no_space
+              SpaceCorrector.remove_space(processed_source, corrector, *delims)
+            else
+              SpaceCorrector.add_space(processed_source, corrector, *delims)
+            end
           end
         end
 
         private
 
-        def each_style_violation(node)
-          node.each_child_node(:begin) do |begin_node|
-            final_node = begin_node.children.last
-            next unless final_node
-
-            if style == :no_space && space_on_any_side?(final_node)
-              yield final_node
-            elsif style == :space && !space_on_each_side?(final_node)
-              yield final_node
-            end
-          end
-        end
-
-        def message(_node)
-          style == :no_space ? NO_SPACE_MSG : SPACE_MSG
-        end
-
-        def space_on_any_side?(node)
-          interp = node.source_range
-          interp_with_surrounding_space =
-            range_with_surrounding_space(range: interp)
-
-          interp_with_surrounding_space != interp
-        end
-
-        def space_on_each_side?(node)
-          interp = node.source_range
-          interp_with_surrounding_space =
-            range_with_surrounding_space(range: interp)
-
-          interp_with_surrounding_space.source == " #{interp.source} "
+        def delimiters(begin_node)
+          left = processed_source.tokens[index_of_first_token(begin_node)]
+          right = processed_source.tokens[index_of_last_token(begin_node)]
+          [left, right]
         end
       end
     end

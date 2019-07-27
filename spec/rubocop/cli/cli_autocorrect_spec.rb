@@ -926,6 +926,49 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects IndentationWidth and IndentationConsistency offenses' \
+     'when using `EnforcedStyle: outdent` and ' \
+     '`EnforcedStyle: indented_internal_methods`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/AccessModifierIndentation:
+        EnforcedStyle: outdent
+      Layout/IndentationConsistency:
+        EnforcedStyle: indented_internal_methods
+    YAML
+
+    source = <<-'RUBY'.strip_indent
+      class Foo
+                         private
+
+          def do_something
+            # something
+          end
+      end
+    RUBY
+    create_file('example.rb', source)
+
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only',
+                     [
+                       'Layout/AccessModifierIndentation',
+                       'Layout/IndentationConsistency',
+                       'Layout/IndentationWidth'
+                     ].join(',')
+                   ])).to eq(0)
+
+    corrected = <<-'RUBY'.strip_indent
+      class Foo
+      private
+
+        def do_something
+          # something
+        end
+      end
+    RUBY
+    expect(IO.read('example.rb')).to eq(corrected)
+  end
+
   it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
     source = ['foo.map{ |a| a.nil? }']
     create_file('example.rb', source)
