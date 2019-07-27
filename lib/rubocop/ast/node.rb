@@ -480,7 +480,7 @@ module RuboCop
       end
 
       def_node_matcher :guard_clause?, <<~PATTERN
-        [{(send nil? {:raise :fail} ...) return break next} single_line?]
+        [${(send nil? {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
       def_node_matcher :proc?, <<~PATTERN
