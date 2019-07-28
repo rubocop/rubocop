@@ -24,6 +24,13 @@ RSpec.describe RuboCop::Cop::Style::VariableInterpolation do
     RUBY
   end
 
+  it 'registers an offense for interpolated global variables in symbol' do
+    expect_offense(<<-'RUBY'.strip_indent)
+      puts :"this is a #$test"
+                        ^^^^^ Replace interpolated variable `$test` with expression `#{$test}`.
+    RUBY
+  end
+
   it 'registers an offense for interpolated regexp nth back references' do
     expect_offense(<<-'RUBY'.strip_indent)
       puts "this is a #$1"

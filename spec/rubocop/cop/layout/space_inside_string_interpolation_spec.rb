@@ -38,6 +38,23 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
           "#{var}"
         RUBY
       end
+
+      it 'finds interpolations in string-like contexts' do
+        expect_offense(<<-'RUBY'.strip_indent)
+          /regexp #{ var}/
+                    ^ Space inside string interpolation detected.
+          `backticks #{ var}`
+                       ^ Space inside string interpolation detected.
+          :"symbol #{ var}"
+                     ^ Space inside string interpolation detected.
+        RUBY
+
+        expect_correction(<<-'RUBY'.strip_indent)
+          /regexp #{var}/
+          `backticks #{var}`
+          :"symbol #{var}"
+        RUBY
+      end
     end
 
     context 'for "space" style formatted string interpolations' do

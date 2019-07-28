@@ -17,12 +17,12 @@ module RuboCop
       #
       #   "result is #{some_result}"
       class EmptyInterpolation < Cop
+        include Interpolation
+
         MSG = 'Empty interpolation detected.'
 
-        def on_dstr(node)
-          node.each_child_node(:begin) do |begin_node|
-            add_offense(begin_node) if begin_node.children.empty?
-          end
+        def on_interpolation(begin_node)
+          add_offense(begin_node) if begin_node.children.empty?
         end
 
         def autocorrect(node)

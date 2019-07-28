@@ -19,18 +19,13 @@ module RuboCop
       #   # good
       #      var = "This is the #{ space } example"
       class SpaceInsideStringInterpolation < Cop
+        include Interpolation
         include SurroundingSpace
         include ConfigurableEnforcedStyle
         include RangeHelp
 
         NO_SPACE_MSG = 'Space inside string interpolation detected.'
         SPACE_MSG = 'Missing space inside string interpolation detected.'
-
-        def on_dstr(node)
-          node.each_child_node(:begin) do |begin_node|
-            on_interpolation(begin_node)
-          end
-        end
 
         def on_interpolation(begin_node)
           delims = delimiters(begin_node)
