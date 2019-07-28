@@ -21,6 +21,7 @@
 
 * [#5265](https://github.com/rubocop-hq/rubocop/issues/5265): Improved `Layout/ExtraSpacing` cop to handle nested consecutive assignments. ([@jfelchner][])
 * [#7215](https://github.com/rubocop-hq/rubocop/issues/7215): Make it clear what's wrong in the message from `Style/GuardClause`. ([@jonas054][])
+* [#7245](https://github.com/rubocop-hq/rubocop/pull/7245): Make cops detect string interpolations in more contexts: inside of backticks, regular expressions, and symbols. ([@buehmann][])
 
 ## 0.73.0 (2019-07-16)
 

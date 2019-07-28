@@ -17,6 +17,17 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation do
     RUBY
   end
 
+  it 'finds interpolations in string-like contexts' do
+    expect_offense(<<-'RUBY'.strip_indent)
+      /regexp #{}/
+              ^^^ Empty interpolation detected.
+      `backticks #{}`
+                 ^^^ Empty interpolation detected.
+      :"symbol #{}"
+               ^^^ Empty interpolation detected.
+    RUBY
+  end
+
   it 'accepts non-empty interpolation' do
     expect_no_offenses('"this is #{top} silly"')
   end

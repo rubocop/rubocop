@@ -190,4 +190,24 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
        silly"
     RUBY
   end
+
+  context 'in string-like contexts' do
+    let(:literal) { '42' }
+    let(:expected) { '42' }
+
+    it 'removes interpolation in symbols' do
+      corrected = autocorrect_source(%(:"this is the \#{#{literal}}"))
+      expect(corrected).to eq(%(:"this is the #{expected}"))
+    end
+
+    it 'removes interpolation in backticks' do
+      corrected = autocorrect_source(%(\`this is the \#{#{literal}}\`))
+      expect(corrected).to eq(%(\`this is the #{expected}\`))
+    end
+
+    it 'removes interpolation in regular expressions' do
+      corrected = autocorrect_source(%(/this is the \#{#{literal}}/))
+      expect(corrected).to eq(%(/this is the #{expected}/))
+    end
+  end
 end

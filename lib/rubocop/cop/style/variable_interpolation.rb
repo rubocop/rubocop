@@ -16,19 +16,15 @@ module RuboCop
       #   /check #{$pattern}/
       #   "Let's go to the #{@store}"
       class VariableInterpolation < Cop
+        include Interpolation
+
         MSG = 'Replace interpolated variable `%<variable>s` ' \
               'with expression `#{%<variable>s}`.'
 
-        def on_dstr(node)
-          check_for_interpolation(node)
-        end
-
-        def on_regexp(node)
-          check_for_interpolation(node)
-        end
-
-        def on_xstr(node)
-          check_for_interpolation(node)
+        def on_node_with_interpolations(node)
+          var_nodes(node.children).each do |var_node|
+            add_offense(var_node)
+          end
         end
 
         def autocorrect(node)
@@ -38,12 +34,6 @@ module RuboCop
         end
 
         private
-
-        def check_for_interpolation(node)
-          var_nodes(node.children).each do |var_node|
-            add_offense(var_node)
-          end
-        end
 
         def message(node)
           format(MSG, variable: node.source)

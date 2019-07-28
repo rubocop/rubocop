@@ -18,20 +18,20 @@ module RuboCop
       #
       #   "result is #{something}"
       class StringConversionInInterpolation < Cop
+        include Interpolation
+
         MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'
         MSG_SELF = 'Use `self` instead of `Object#to_s` in ' \
                    'interpolation.'
 
         def_node_matcher :to_s_without_args?, '(send _ :to_s)'
 
-        def on_dstr(node)
-          node.each_child_node(:begin) do |begin_node|
-            final_node = begin_node.children.last
+        def on_interpolation(begin_node)
+          final_node = begin_node.children.last
 
-            next unless to_s_without_args?(final_node)
+          return unless to_s_without_args?(final_node)
 
-            add_offense(final_node, location: :selector)
-          end
+          add_offense(final_node, location: :selector)
         end
 
         def autocorrect(node)
