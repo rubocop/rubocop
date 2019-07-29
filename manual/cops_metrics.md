@@ -118,6 +118,7 @@ This cop checks the length of lines in the source code.
 The maximum length is configurable.
 The tab size is configured in the `IndentationWidth`
 of the `Layout/Tab` cop.
+It also ignores a shebang line by default.
 
 This cop has some autocorrection capabilities.
 It can programmatically shorten certain long lines by
