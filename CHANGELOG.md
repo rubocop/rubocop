@@ -52,6 +52,7 @@
 * [#6861](https://github.com/rubocop-hq/rubocop/issues/6861): Fix a false positive for `Layout/IndentationWidth` when using `EnforcedStyle: outdent` of `Layout/AccessModifierIndentation`. ([@koic][])
 * [#7235](https://github.com/rubocop-hq/rubocop/issues/7235): Fix an error where `Style/ConditionalAssignment` would swallow a nested `if` condition. ([@buehmann][])
 * [#7242](https://github.com/rubocop-hq/rubocop/issues/7242): Make `Style/ConstantVisibility` work on non-trivial class and module bodies. ([@buehmann][])
+* [#7236](https://github.com/rubocop-hq/rubocop/pull/7236): Mark `Style/InverseMethods` auto-correct as incompatible with `Style/SymbolProc`. ([@drenmi][])
 
 ### Changes
 

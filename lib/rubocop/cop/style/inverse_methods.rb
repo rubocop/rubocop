@@ -44,7 +44,7 @@ module RuboCop
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
 
         def self.autocorrect_incompatible_with
-          [Style::Not]
+          [Style::Not, Style::SymbolProc]
         end
 
         def_node_matcher :inverse_candidate?, <<~PATTERN
