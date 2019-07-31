@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.74.0 (2019-07-31)
+
 ### New features
 
 * [#7219](https://github.com/rubocop-hq/rubocop/issues/7219): Support auto-correct for `Lint/ErbNewArguments`. ([@koic][])
