@@ -20,7 +20,7 @@ Max | `15` | Integer
 ### References
 
 * [http://c2.com/cgi/wiki?AbcMetric](http://c2.com/cgi/wiki?AbcMetric)
-* [https://en.wikipedia.org/wiki/ABC_Software_Metric'](https://en.wikipedia.org/wiki/ABC_Software_Metric')
+* [https://en.wikipedia.org/wiki/ABC_Software_Metric](https://en.wikipedia.org/wiki/ABC_Software_Metric)
 
 ## Metrics/BlockLength
 
