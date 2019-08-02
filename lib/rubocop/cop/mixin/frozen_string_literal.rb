@@ -12,7 +12,7 @@ module RuboCop
 
       def frozen_string_literal_comment_exists?
         leading_comment_lines.any? do |line|
-          MagicComment.parse(line).frozen_string_literal_specified?
+          MagicComment.parse(line).valid_literal_value?
         end
       end
 
