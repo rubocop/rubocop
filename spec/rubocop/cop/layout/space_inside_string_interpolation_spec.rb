@@ -104,6 +104,26 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     it 'accepts empty interpolation' do
       expect_no_offenses("\"\#{}\"")
     end
+
+    context 'when interpolation starts or ends with a line break' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          "#{
+            code
+          }"
+        RUBY
+      end
+
+      it 'ignores comments and whitespace when looking for line breaks' do
+        expect_no_offenses(<<-'RUBY'.strip_indent)
+          def foo
+            "#{ # comment
+              code
+            }"
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is space' do

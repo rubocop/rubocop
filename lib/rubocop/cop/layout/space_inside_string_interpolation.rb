@@ -28,6 +28,8 @@ module RuboCop
         SPACE_MSG = 'Missing space inside string interpolation detected.'
 
         def on_interpolation(begin_node)
+          return if begin_node.multiline?
+
           delims = delimiters(begin_node)
           return if empty_brackets?(*delims)
 
