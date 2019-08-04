@@ -84,7 +84,6 @@ module RuboCop
           extra_space_range(token1, token2) do |range|
             # Unary + doesn't appear as a token and needs special handling.
             next if ignored_range?(ast, range.begin_pos)
-            next if unary_plus_non_offense?(range)
 
             add_offense(range, location: range, message: MSG_UNNECESSARY)
           end
@@ -112,10 +111,6 @@ module RuboCop
 
         def ignored_range?(ast, start_pos)
           ignored_ranges(ast).any? { |r| r.include?(start_pos) }
-        end
-
-        def unary_plus_non_offense?(range)
-          range.resize(range.size + 1).source =~ /^ ?\+$/
         end
 
         # Returns an array of ranges that should not be reported. It's the
