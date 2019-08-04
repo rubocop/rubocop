@@ -40,7 +40,7 @@ module RuboCop
 
         def parens_allowed?(node)
           empty_parentheses?(node) ||
-            hash_literal_as_first_arg?(node) ||
+            first_arg_begins_with_hash_literal?(node) ||
             rescue?(node) ||
             allowed_expression?(node)
         end
@@ -76,10 +76,19 @@ module RuboCop
           node.children.empty?
         end
 
-        def hash_literal_as_first_arg?(node)
-          # Don't flag `method ({key: value})`
-          node.children.first.hash_type? && first_argument?(node) &&
+        def first_arg_begins_with_hash_literal?(node)
+          # Don't flag `method ({key: value})` or `method ({key: value}.method)`
+          method_chain_begins_with_hash_literal?(node.children.first) &&
+            first_argument?(node) &&
             !parentheses?(node.parent)
+        end
+
+        def method_chain_begins_with_hash_literal?(node)
+          return false if node.nil?
+          return true if node.hash_type?
+          return false unless node.send_type?
+
+          method_chain_begins_with_hash_literal?(node.children.first)
         end
 
         def check(begin_node)

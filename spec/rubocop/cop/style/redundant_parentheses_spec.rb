@@ -221,9 +221,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
     expect_no_offenses('if x; y else (1)end')
   end
 
-  context 'when a hash literal is the first argument in a method call' do
+  context 'when the first argument in a method call begins with a hash '\
+          'literal' do
     it 'accepts parentheses if the argument list is not parenthesized ' do
       expect_no_offenses('x ({ y: 1 }), z')
+      expect_no_offenses('x ({ y: 1 }.merge({ y: 2 })), z')
+      expect_no_offenses('x ({ y: 1 }.merge({ y: 2 }).merge({ y: 3 })), z')
     end
 
     it 'registers an offense if the argument list is parenthesized ' do
