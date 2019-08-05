@@ -82,7 +82,6 @@ module RuboCop
                           token2.text.start_with?('#')
 
           extra_space_range(token1, token2) do |range|
-            # Unary + doesn't appear as a token and needs special handling.
             next if ignored_range?(ast, range.begin_pos)
 
             add_offense(range, location: range, message: MSG_UNNECESSARY)
