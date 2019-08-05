@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7256](https://github.com/rubocop-hq/rubocop/issues/7256): Fix an error of `Style/RedundantParentheses` on method calls where the first argument begins with a hash literal. ([@halfwhole][])
+
 ## 0.74.0 (2019-07-31)
 
 ### New features
@@ -4151,3 +4155,4 @@
 [@fwitzke]: https://github.com/fwitzke
 [@okuramasafumi]: https://github.com/okuramasafumi
 [@buehmann]: https://github.com/buehmann
+[@halfwhole]: https://github.com/halfwhole
