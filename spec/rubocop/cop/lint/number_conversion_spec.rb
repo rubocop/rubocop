@@ -149,5 +149,11 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
                 .to_i
       RUBY
     end
+
+    it 'when `#to_i` called without a receiver' do
+      expect_no_offenses(<<~RUBY)
+        to_i
+      RUBY
+    end
   end
 end

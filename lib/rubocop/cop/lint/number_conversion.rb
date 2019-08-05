@@ -41,7 +41,7 @@ module RuboCop
 
         def on_send(node)
           to_method(node) do |receiver, to_method|
-            next if date_time_object?(receiver)
+            next if receiver.nil? || date_time_object?(receiver)
 
             message = format(
               MSG,
