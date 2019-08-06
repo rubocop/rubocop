@@ -134,6 +134,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
+    it 'does not register offense when bottom bracket gets its ' \
+       'own line indented with tabs' do
+      expect_no_offenses(<<~RUBY)
+        a =
+        \t[
+        \t1, 2, nil
+        \t].compact
+      RUBY
+    end
+
     it 'does not register offense for valid multiline array' do
       expect_no_offenses(<<~RUBY)
         ['Encoding:',
