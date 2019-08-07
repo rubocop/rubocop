@@ -26,6 +26,7 @@
 
 * [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
 * [#3534](https://github.com/rubocop-hq/rubocop/issues/3534): Make `Style/IfUnlessModifier` report and auto-correct modifier lines that are too long. ([@jonas054][])
+* [#7261](https://github.com/rubocop-hq/rubocop/issues/7261): `Style/FrozenStringLiteralComment` no longer inserts an empty line after the comment. This is left to `Layout/EmptyLineAfterMagicComment`. ([@buehmann][])
 
 ## 0.74.0 (2019-07-31)
 

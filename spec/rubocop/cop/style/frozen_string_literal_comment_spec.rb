@@ -173,7 +173,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
         expect(new_source).to eq(<<~RUBY)
           # frozen_string_literal: true
-
           puts 1
         RUBY
       end
@@ -201,7 +200,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         expect(new_source).to eq(<<~RUBY)
           #!/usr/bin/env ruby
           # frozen_string_literal: true
-
           puts 1
         RUBY
       end
@@ -215,7 +213,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         expect(new_source).to eq(<<~RUBY)
           # encoding: utf-8
           # frozen_string_literal: true
-
           puts 1
         RUBY
       end
@@ -232,7 +229,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
           #!/usr/bin/env ruby
           # encoding: utf-8
           # frozen_string_literal: true
-
           puts 1
         RUBY
       end
