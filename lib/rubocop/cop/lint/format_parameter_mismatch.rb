@@ -41,7 +41,6 @@ module RuboCop
         # @see https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-format
         FIELD_REGEX =
           /(%(?:(#{FLAG}*)#{WIDTH}?#{PRECISION}?#{TYPE}|%))/.freeze
-        NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze
 
         NAME = /(?:<\w+>|\{\w+\})/.freeze
 
@@ -51,7 +50,6 @@ module RuboCop
 
         KERNEL = 'Kernel'
         SHOVEL = '<<'
-        PERCENT = '%'
         PERCENT_PERCENT = '%%'
         DIGIT_DOLLAR_FLAG = /%(\d+)\$/.freeze
         STRING_TYPES = %i[str dstr].freeze
@@ -67,7 +65,7 @@ module RuboCop
         def offending_node?(node)
           return false unless called_on_string?(node)
           return false unless method_with_format_args?(node)
-          return false if named_mode?(node) || splat_args?(node)
+          return false if splat_args?(node)
 
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
@@ -91,16 +89,6 @@ module RuboCop
 
         def method_with_format_args?(node)
           sprintf?(node) || format?(node) || percent?(node)
-        end
-
-        def named_mode?(node)
-          relevant_node = if sprintf?(node) || format?(node)
-                            node.first_argument
-                          elsif percent?(node)
-                            node.receiver
-                          end
-
-          !relevant_node.source.scan(NAMED_FIELD_REGEX).empty?
         end
 
         def splat_args?(node)
