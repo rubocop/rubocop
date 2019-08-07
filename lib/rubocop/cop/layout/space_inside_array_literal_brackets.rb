@@ -132,7 +132,7 @@ module RuboCop
           line, col = line_and_column_for(token)
           return true if col == -1
 
-          processed_source.lines[line][0..col].delete(' ').empty?
+          processed_source.lines[line][0..col] !~ /\S/
         end
 
         def index_for(node, token)
