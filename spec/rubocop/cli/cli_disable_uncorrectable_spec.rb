@@ -18,8 +18,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example.rb ==
         C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
         C:  1:  7: [Corrected] Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
+        C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
-        1 file inspected, 2 offenses detected, 2 offenses corrected
+        1 file inspected, 3 offenses detected, 3 offenses corrected
       OUTPUT
       expect(IO.read('example.rb')).to eq(<<~RUBY)
         # frozen_string_literal: true
@@ -41,8 +42,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example.rb ==
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
           C:  1:  5: [Corrected] Naming/PredicateName: Rename is_example to example?.
+          C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
-          1 file inspected, 2 offenses detected, 2 offenses corrected
+          1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
         expect(IO.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
@@ -69,8 +71,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
             C:  1:  4: [Corrected] Style/IpAddresses: Do not hardcode IP addresses.
             C:  1: 15: [Corrected] Style/IpAddresses: Do not hardcode IP addresses.
+            C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
-            1 file inspected, 3 offenses detected, 3 offenses corrected
+            1 file inspected, 4 offenses detected, 4 offenses corrected
           OUTPUT
           expect(IO.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
@@ -109,14 +112,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).to eq(<<~OUTPUT)
             == example.rb ==
             C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+            C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
             C:  3:  3: [Corrected] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
             C:  3:  3: [Corrected] Metrics/CyclomaticComplexity: Cyclomatic complexity for choose_move is too high. [7/6]
             C:  3:  3: [Corrected] Metrics/MethodLength: Method has too many lines. [11/10]
-            C:  5:  3: [Corrected] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
-            C:  5:  3: [Corrected] Metrics/MethodLength: Method has too many lines. [11/10]
-            C:  5: 32: [Corrected] Style/DoubleCopDisableDirective: More than one disable comment on one line.
+            C:  4:  3: [Corrected] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
+            C:  4:  3: [Corrected] Metrics/MethodLength: Method has too many lines. [11/10]
+            C:  4: 32: [Corrected] Style/DoubleCopDisableDirective: More than one disable comment on one line.
 
-            1 file inspected, 7 offenses detected, 7 offenses corrected
+            1 file inspected, 8 offenses detected, 8 offenses corrected
           OUTPUT
           expect(IO.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
@@ -167,8 +171,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example.rb ==
           C:  1:  1: [Corrected] Metrics/MethodLength: Method has too many lines. [2/1]
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+          C:  3:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
-          1 file inspected, 2 offenses detected, 2 offenses corrected
+          1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
         expect(IO.read('example.rb')).to eq(<<~RUBY)
           # rubocop:disable Metrics/MethodLength

@@ -264,6 +264,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Style/FrozenStringLiteralComment:
             Enabled: true
             EnforcedStyle: always
+          Layout/EmptyLineAfterMagicComment:
+            Enabled: false
         YAML
         expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(<<~RESULT)
@@ -276,7 +278,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb'))
           .to eq(<<~RUBY)
             # frozen_string_literal: true
-
             a = 1 # rubocop:disable Lint/UselessAssignment
         RUBY
       end
