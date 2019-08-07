@@ -22,16 +22,39 @@ module RuboCop
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
               'match the number of fields (%<field_num>i).'
+
+        FLAG = /[\s#+-0\*]/.freeze
+        WIDTH = /(?:\d+)/.freeze
+        PRECISION = /(?:\.\d+)/.freeze
+        TYPE = /[bBdiouxXeEfgGaAcps]/.freeze
+
+        # The syntax of a format sequence is as follows.
+        #
+        # ```
+        # %[flags][width][.precision]type
+        # ```
+        #
+        # A format sequence consists of a percent sign, followed by optional
+        # flags, width, and precision indicators, then terminated with a field
+        # type character.
+        #
+        # @see https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-format
         FIELD_REGEX =
-          /(%(([\s#+-0\*]*)(\d*)?(\.\d+)?[bBdiouxXeEfgGaAcps]|%))/.freeze
+          /(%(?:(#{FLAG}*)#{WIDTH}?#{PRECISION}?#{TYPE}|%))/.freeze
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze
+
+        NAME = /(?:<\w+>|\{\w+\})/.freeze
+
+        # For more complex formatting, Ruby supports a reference by name.
+        NAMED_INTERPOLATION =
+          /(?:\A|[^%])%#{FLAG}*#{WIDTH}?#{PRECISION}?#{NAME}/.freeze
+
         KERNEL = 'Kernel'
         SHOVEL = '<<'
         PERCENT = '%'
         PERCENT_PERCENT = '%%'
         DIGIT_DOLLAR_FLAG = /%(\d+)\$/.freeze
         STRING_TYPES = %i[str dstr].freeze
-        NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/.freeze
 
         def on_send(node)
           return unless offending_node?(node)
@@ -136,12 +159,12 @@ module RuboCop
             .source
             .scan(FIELD_REGEX)
             .reject { |x| x.first == PERCENT_PERCENT }
-            .reduce(0) { |acc, elem| acc + arguments_count(elem[2]) }
+            .reduce(0) { |acc, (_, flags)| acc + arguments_count(flags) }
         end
 
         def max_digit_dollar_num(node)
-          node.source.scan(DIGIT_DOLLAR_FLAG).map do |digit_dollar_num|
-            digit_dollar_num.first.to_i
+          node.source.scan(DIGIT_DOLLAR_FLAG).map do |(digit_dollar_num)|
+            digit_dollar_num.to_i
           end.max
         end
 

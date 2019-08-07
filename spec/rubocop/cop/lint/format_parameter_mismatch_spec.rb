@@ -341,4 +341,23 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect('%+-d'.scan(described_class::FIELD_REGEX).size) # multiple flags
       .to eq(1)
   end
+
+  shared_examples 'named format sequence' do |format_string|
+    it 'detects named format sequence' do
+      expect(described_class::NAMED_INTERPOLATION).to match(format_string)
+    end
+
+    it 'does not detect escaped named format sequence' do
+      escaped = format_string.gsub(/%/, '%%')
+      regexp = described_class::NAMED_INTERPOLATION
+
+      expect(regexp).not_to match(escaped)
+      expect(regexp).not_to match('prefix:' + escaped)
+    end
+  end
+
+  it_behaves_like 'named format sequence', '%<greeting>2s'
+  it_behaves_like 'named format sequence', '%2<greeting>s'
+  it_behaves_like 'named format sequence', '%+0<num>8.2f'
+  it_behaves_like 'named format sequence', '%+08<num>.2f'
 end
