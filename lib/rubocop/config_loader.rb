@@ -199,6 +199,8 @@ module RuboCop
           raise(TypeError, "Malformed configuration in #{absolute_path}")
         end
 
+        check_cop_config_value(hash)
+
         hash
       end
 
@@ -217,6 +219,22 @@ module RuboCop
                         "`#{value}` is concealed by duplicate"
                     end
           warn Rainbow(message).yellow
+        end
+      end
+
+      def check_cop_config_value(hash, parent = nil)
+        hash.each do |key, value|
+          check_cop_config_value(value, key) if value.is_a?(Hash)
+
+          next unless %w[Enabled
+                         Safe
+                         SafeAutoCorrect
+                         AutoCorrect].include?(key) && value.is_a?(String)
+
+          abort(
+            "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \
+            " is supposed to be a boolean and #{Rainbow(value).yellow} is not."
+          )
         end
       end
 
