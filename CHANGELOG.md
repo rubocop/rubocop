@@ -5,6 +5,7 @@
 ### New features
 
 * [#7274](https://github.com/rubocop-hq/rubocop/issues/7274): Add new `Lint/SendWithMixinArgument` cop. ([@koic][])
+* [#7272](https://github.com/rubocop-hq/rubocop/pull/7272): Show warning message if passed string to `Enabled`, `Safe`, `SafeAutocorrect`, and `AutoCorrect` keys in .rubocop.yml. ([@unasuke][])
 
 ### Bug fixes
 
