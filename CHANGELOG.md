@@ -6,6 +6,7 @@
 
 * [#7256](https://github.com/rubocop-hq/rubocop/issues/7256): Fix an error of `Style/RedundantParentheses` on method calls where the first argument begins with a hash literal. ([@halfwhole][])
 * [#7263](https://github.com/rubocop-hq/rubocop/issues/7263): Make `Layout/SpaceInsideArrayLiteralBrackets` properly handle tab-indented arrays. ([@buehmann][])
+* [#7252](https://github.com/rubocop-hq/rubocop/issues/7252): Prevent infinite loops by making `Layout/SpaceInsideStringInterpolation` skip over interpolations that start or end with a line break. ([@buehmann][])
 
 ## 0.74.0 (2019-07-31)
 
