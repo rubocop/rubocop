@@ -44,8 +44,8 @@ module RuboCop
       #
       #   foo.bar
       #     .each do
-      #        baz
-      #      end
+      #       baz
+      #     end
       #
       # @example EnforcedStyleAlignWith: start_of_line
       #   # bad

@@ -496,8 +496,8 @@ foo.bar
 
 foo.bar
   .each do
-     baz
-   end
+    baz
+  end
 ```
 #### EnforcedStyleAlignWith: start_of_line
 
