@@ -1591,6 +1591,11 @@ Lint/ScriptPermission:
   VersionAdded: '0.49'
   VersionChanged: '0.50'
 
+Lint/SendWithMixinArgument:
+  Description: 'Checks for `send` method when using mixin.'
+  Enabled: true
+  VersionAdded: '0.75'
+
 Lint/ShadowedArgument:
   Description: 'Avoid reassigning arguments before they were used.'
   Enabled: true
