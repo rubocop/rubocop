@@ -9,6 +9,10 @@
 * [#7252](https://github.com/rubocop-hq/rubocop/issues/7252): Prevent infinite loops by making `Layout/SpaceInsideStringInterpolation` skip over interpolations that start or end with a line break. ([@buehmann][])
 * [#7262](https://github.com/rubocop-hq/rubocop/issues/7262): `Lint/FormatParameterMismatch` did not recognize named format sequences like `%.2<name>f` where the name appears after some modifiers. ([@buehmann][])
 
+### Changes
+
+* [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
+
 ## 0.74.0 (2019-07-31)
 
 ### New features

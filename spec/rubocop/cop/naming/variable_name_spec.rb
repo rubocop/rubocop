@@ -102,6 +102,19 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       RUBY
     end
 
+    it 'registers an offense for camel case when invoking method args' do
+      expect_offense(<<~RUBY)
+        firstArg = 'foo'
+        ^^^^^^^^ Use snake_case for variable names.
+        secondArg = 'foo'
+        ^^^^^^^^^ Use snake_case for variable names.
+
+        do_something(firstArg, secondArg)
+                     ^^^^^^^^ Use snake_case for variable names.
+                               ^^^^^^^^^ Use snake_case for variable names.
+      RUBY
+    end
+
     include_examples 'always accepted'
   end
 
@@ -178,6 +191,19 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       expect_offense(<<~RUBY)
         def foo(&block_arg); end
                  ^^^^^^^^^ Use camelCase for variable names.
+      RUBY
+    end
+
+    it 'registers an offense for camel case when invoking method args' do
+      expect_offense(<<~RUBY)
+        first_arg = 'foo'
+        ^^^^^^^^^ Use camelCase for variable names.
+        second_arg = 'foo'
+        ^^^^^^^^^^ Use camelCase for variable names.
+
+        do_something(first_arg, second_arg)
+                     ^^^^^^^^^ Use camelCase for variable names.
+                                ^^^^^^^^^^ Use camelCase for variable names.
       RUBY
     end
 

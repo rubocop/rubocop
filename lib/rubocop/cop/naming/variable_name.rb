@@ -39,6 +39,7 @@ module RuboCop
         alias on_kwarg     on_lvasgn
         alias on_kwrestarg on_lvasgn
         alias on_blockarg  on_lvasgn
+        alias on_lvar      on_lvasgn
 
         private
 
