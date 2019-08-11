@@ -10,6 +10,10 @@
 * [#7262](https://github.com/rubocop-hq/rubocop/issues/7262): `Lint/FormatParameterMismatch` did not recognize named format sequences like `%.2<name>f` where the name appears after some modifiers. ([@buehmann][])
 * [#7253](https://github.com/rubocop-hq/rubocop/issues/7253): Fix an error for `Lint/NumberConversion` when `#to_i` called without a receiver. ([@koic][])
 
+### Changes
+
+* [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
+
 ## 0.74.0 (2019-07-31)
 
 ### New features
