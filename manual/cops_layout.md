@@ -3843,7 +3843,9 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | -
 
-Checks the spacing inside and after block parameters pipes.
+Checks the spacing inside and after block parameters pipes. Line breaks
+inside parameter pipes are checked by `Layout/MultilineBlockLayout` and
+not by this cop.
 
 ### Examples
 

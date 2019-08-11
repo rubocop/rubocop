@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks the spacing inside and after block parameters pipes.
+      # Checks the spacing inside and after block parameters pipes. Line breaks
+      # inside parameter pipes are checked by `Layout/MultilineBlockLayout` and
+      # not by this cop.
       #
       # @example EnforcedStyleInsidePipes: no_space (default)
       #   # bad
@@ -156,6 +158,8 @@ module RuboCop
           return if space_begin_pos >= space_end_pos
 
           range = range_between(space_begin_pos, space_end_pos)
+          return if range.source.include?("\n")
+
           add_offense(range, location: range,
                              message: "#{msg} block parameter detected.")
         end
