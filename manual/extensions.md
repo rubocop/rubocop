@@ -46,6 +46,8 @@ See [development](development.md).
   i18n wrapper function analysis (gettext and rails-i18n)
 * [rubocop-sequel](https://github.com/rubocop-hq/rubocop-sequel) -
   Code style checking for Sequel gem
+* [cookstyle](https://github.com/chef/cookstyle) - 
+  Custom cops and config defaults for Chef Infra Cookbooks
 
 Any extensions missing? Send us a Pull Request!
 
