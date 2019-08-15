@@ -1710,4 +1710,49 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         SQL
     RUBY
   end
+
+  it 'corrects TrailingCommaIn(Array|Hash)Literal and ' \
+     'Multiline(Array|Hash)BraceLayout offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TrailingCommaInArrayLiteral:
+        EnforcedStyleForMultiline: consistent_comma
+      Style/TrailingCommaInHashLiteral:
+        EnforcedStyleForMultiline: consistent_comma
+    YAML
+
+    source_file = Pathname('example.rb')
+    source = <<~RUBY
+      [ 1,
+        2
+      ].to_s
+
+      { foo: 1,
+        bar: 2
+      }.to_s
+    RUBY
+    create_file(source_file, source)
+
+    status = cli.run(
+      [
+        '--auto-correct',
+        '--only',
+        [
+          'Style/TrailingCommaInArrayLiteral',
+          'Style/TrailingCommaInHashLiteral',
+          'Layout/MultilineArrayBraceLayout',
+          'Layout/MultilineHashBraceLayout'
+        ].join(',')
+      ]
+    )
+    expect(status).to eq(0)
+
+    corrected = <<~RUBY
+      [ 1,
+        2,].to_s
+
+      { foo: 1,
+        bar: 2,}.to_s
+    RUBY
+    expect(source_file.read).to eq(corrected)
+  end
 end
