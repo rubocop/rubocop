@@ -581,7 +581,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
-  it 'registers an offense for assignment in if else when the assignment ' \
+  it 'autocorrects assignment in if else when the assignment ' \
     'spans multiple lines' do
     expect_offense(<<~RUBY)
       if foo
@@ -600,29 +600,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         foo = { }
       end
     RUBY
-  end
 
-  it 'autocorrects assignment in if else when the assignment ' \
-    'spans multiple lines' do
-    source = <<~RUBY
-      if foo
-        foo = {
-          a: 1,
-          b: 2,
-          c: 2,
-          d: 2,
-          e: 2,
-          f: 2,
-          g: 2,
-          h: 2
-        }
-      else
-        foo = { }
-      end
-    RUBY
-    new_source = autocorrect_source(source)
-
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       foo = if foo
         {
           a: 1,
@@ -1009,8 +988,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       let(:end_alignment_align_with) { 'keyword' }
 
       it 'corrects comparison methods in if elsif else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             a #{method} b
           elsif bar
             a #{method} c
@@ -1019,10 +999,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
         indent = ' ' * "a #{method} ".length
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a #{method} if foo
             b
           elsif bar
@@ -1034,18 +1012,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects comparison methods in unless else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           unless foo
+          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             a #{method} b
           else
             a #{method} d
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
         indent = ' ' * "a #{method} ".length
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a #{method} unless foo
             b
           else
@@ -1055,8 +1032,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects comparison methods in case when' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when bar
             a #{method} b
           else
@@ -1064,10 +1042,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
         indent = ' ' * "a #{method} ".length
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a #{method} case foo
           when bar
             b
@@ -1112,17 +1088,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment in if else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar = 1
         else
           bar = 2
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = if foo
           1
         else
@@ -1132,17 +1107,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to unbracketed array in if else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar = 1
         else
           bar = 2, 5, 6
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = if foo
           1
         else
@@ -1152,8 +1126,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment in if elsif else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar = 1
         elsif baz
           bar = 2
@@ -1162,9 +1137,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = if foo
           1
         elsif baz
@@ -1177,8 +1150,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     shared_examples '2 or 3 character assignment types' do |asgn|
       it "corrects assignment using #{asgn} in if elsif else" do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             bar #{asgn} 1
           elsif baz
             bar #{asgn} 2
@@ -1187,9 +1161,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar #{asgn} if foo
             1
           elsif baz
@@ -1201,8 +1173,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it "corrects assignment using #{asgn} in case when else" do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when bar
             baz #{asgn} 1
           else
@@ -1210,9 +1183,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           baz #{asgn} case foo
           when bar
             1
@@ -1223,17 +1194,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it "corrects assignment using #{asgn} in unless else" do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           unless foo
+          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             bar #{asgn} 1
           else
             bar #{asgn} 2
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar #{asgn} unless foo
             1
           else
@@ -1251,8 +1221,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('2 or 3 character assignment types', '||=')
 
     it 'corrects assignment in if elsif else with multiple elsifs' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar = 1
         elsif baz
           bar = 2
@@ -1263,9 +1234,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = if foo
           1
         elsif baz
@@ -1279,17 +1248,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment in unless else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         unless foo
+        ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar = 1
         else
           bar = 2
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = unless foo
           1
         else
@@ -1299,8 +1267,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment in case when else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         case foo
+        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         when bar
           baz = 1
         else
@@ -1308,9 +1277,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         baz = case foo
         when bar
           1
@@ -1321,8 +1288,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment in case when else with multiple whens' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         case foo
+        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         when bar
           baz = 1
         when foobar
@@ -1332,9 +1300,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         baz = case foo
         when bar
           1
@@ -1348,17 +1314,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'assignment from a method' do
       it 'corrects if else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo?(scope.node)
+          ^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             bar << foobar(var, all)
           else
             bar << baz(var, all)
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar << if foo?(scope.node)
             foobar(var, all)
           else
@@ -1368,17 +1333,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects unless else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           unless foo?(scope.node)
+          ^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             bar << foobar(var, all)
           else
             bar << baz(var, all)
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar << unless foo?(scope.node)
             foobar(var, all)
           else
@@ -1388,8 +1352,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects case when' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when foobar
             bar << foobar(var, all)
           else
@@ -1397,9 +1362,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar << case foo
           when foobar
             foobar(var, all)
@@ -1412,16 +1375,15 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'then' do
       it 'corrects if then elsif then else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if cond then bar = 1
+          ^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           elsif cond then bar = 2
           else bar = 3
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = if cond then 1
           elsif cond then 2
           else 3
@@ -1430,16 +1392,15 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects case when then else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when baz then bar = 1
           else bar = 2
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = case foo
           when baz then 1
           else 2
@@ -1449,8 +1410,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'preserves comments during correction in if else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           # comment in if
           bar = 1
         else
@@ -1459,9 +1421,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = if foo
           # comment in if
           1
@@ -1473,8 +1433,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'preserves comments during correction in case when else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         case foo
+        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         when foobar
           # comment in when
           bar = 1
@@ -1484,9 +1445,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
 
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar = case foo
         when foobar
           # comment in when
@@ -1500,14 +1459,15 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'aref assignment' do
       it 'corrects if..else' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           if something
+          ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             array[1] = 1
           else
             array[1] = 2
           end
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           array[1] = if something
             1
           else
@@ -1531,14 +1491,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'self.attribute= assignment' do
       it 'corrects if..else' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           if something
+          ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             self.attribute = 1
           else
             self.attribute = 2
           end
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           self.attribute = if something
             1
           else
@@ -1666,7 +1628,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
       end
 
-      it 'allows multiple assignment in if elsif elsif else' do
+      it 'registers offense for multiple assignment in if elsif elsif else' do
         expect_offense(<<~RUBY)
           if baz
           ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1687,7 +1649,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
       it_behaves_like 'allows out of order multiple assignment in if elsif else'
 
-      it 'allows multiple assignment in unless else' do
+      it 'registers offense for multiple assignment in unless else' do
         expect_offense(<<~RUBY)
           unless baz
           ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1700,7 +1662,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
       end
 
-      it 'allows multiple assignments in case when with only one when' do
+      it 'registers offense for multiple assignments in case when with only ' \
+         'one when' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1714,7 +1677,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
       end
 
-      it 'allows multiple assignments in case when with multiple whens' do
+      it 'registers offense for multiple assignments in case when with ' \
+         'multiple whens' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1859,8 +1823,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'auto-correct' do
       it 'corrects multiple assignment in if else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             baz = 1
             bar = 1
           else
@@ -1868,9 +1833,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = if foo
             baz = 1
             1
@@ -1882,8 +1846,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects multiple assignment in if elsif else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             baz = 1
             bar = 1
           elsif foobar
@@ -1894,9 +1859,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = if foo
             baz = 1
             1
@@ -1911,8 +1875,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects multiple assignment in if elsif else with multiple elsifs' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             baz = 1
             bar = 1
           elsif foobar
@@ -1926,9 +1891,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 4
           end
         RUBY
-        new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = if foo
             baz = 1
             1
@@ -1946,8 +1910,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects multiple assignment in case when' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when foobar
             baz = 1
             bar = 1
@@ -1956,9 +1921,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = case foo
           when foobar
             baz = 1
@@ -1971,8 +1935,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects multiple assignment in case when with multiple whens' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when foobar
             baz = 1
             bar = 1
@@ -1984,9 +1949,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
-        new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = case foo
           when foobar
             baz = 1
@@ -2002,8 +1966,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'corrects multiple assignment in unless else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           unless foo
+          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             baz = 1
             bar = 1
           else
@@ -2011,9 +1976,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
-        new_source = autocorrect_source(source)
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           bar = unless foo
             baz = 1
             1
@@ -2026,9 +1990,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
       it 'corrects assignment in an if statement that is nested ' \
         'in unless else' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           unless foo
             if foobar
+            ^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
               baz = 1
             elsif qux
               baz = 2
@@ -2040,9 +2005,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           unless foo
             baz = if foobar
               1
@@ -2064,8 +2027,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
     context 'auto-correct' do
       it 'uses proper end alignment in if' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           if foo
+          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
             a =  b
           elsif bar
             a = c
@@ -2074,9 +2038,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a = if foo
             b
           elsif bar
@@ -2088,17 +2050,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'uses proper end alignment in unless' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           unless foo
+          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             a = b
           else
             a = d
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a = unless foo
             b
           else
@@ -2108,8 +2069,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
 
       it 'uses proper end alignment in case' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           case foo
+          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           when bar
             a = b
           when baz
@@ -2119,9 +2081,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a = case foo
           when bar
             b
@@ -2192,7 +2152,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'eventually autocorrects all branches' do
-      source = annotated_source.lines.reject { |line| line =~ /^ *\^/}.join
+      source =
+        annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
       corrected = autocorrect_source_with_loop(source)
 
       expect(corrected).to eq(<<~RUBY)
