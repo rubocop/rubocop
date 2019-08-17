@@ -392,39 +392,35 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'all variable types' do |variable|
     it 'registers an offense assigning any variable type in ternary' do
-      inspect_source("foo? ? #{variable} = 1 : #{variable} = 2")
-
-      expect(cop.messages).to eq(['Use the return of the conditional for ' \
-        'variable assignment and comparison.'])
+      source = "foo? ? #{variable} = 1 : #{variable} = 2"
+      highlight = '^' * source.length
+      expect_offense(<<~RUBY)
+        #{source}
+        #{highlight} Use the return of the conditional for variable assignment and comparison.
+      RUBY
     end
 
     it 'registers an offense assigning any variable type in if else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         if foo
+        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
           #{variable} = 1
         else
           #{variable} = 2
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(['Use the return of the conditional for ' \
-        'variable assignment and comparison.'])
     end
 
     it 'registers an offense assigning any variable type in case when' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         case foo
+        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
         when "a"
           #{variable} = 1
         else
           #{variable} = 2
         end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(['Use the return of the conditional for ' \
-        'variable assignment and comparison.'])
     end
 
     it 'allows assignment to the return of if else' do
@@ -475,10 +471,11 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         it "registers an offense for assignment using #{assignment} " \
            'in ternary' do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
-          inspect_source(source)
-
-          expect(cop.messages).to eq(['Use the return of the conditional for ' \
-            'variable assignment and comparison.'])
+          highlight = '^' * source.length
+          expect_offense(<<~RUBY)
+            #{source}
+            #{highlight} Use the return of the conditional for variable assignment and comparison.
+          RUBY
         end
 
         it "allows assignment using #{assignment} to ternary" do
@@ -489,47 +486,40 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
         it "registers an offense for assignment using #{assignment} in " \
            'if else' do
-          source = <<~RUBY
+          expect_offense(<<~RUBY)
             if foo
+            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
               #{name} #{assignment} 1
             else
               #{name} #{assignment} 2
             end
           RUBY
-          inspect_source(source)
-
-          expect(cop.messages).to eq(['Use the return of the conditional for ' \
-            'variable assignment and comparison.'])
         end
 
         it "registers an offense for assignment using #{assignment} in "\
         ' case when' do
-          source = <<~RUBY
+          expect_offense(<<~RUBY)
             case foo
+            ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
             when "a"
               #{name} #{assignment} 1
             else
               #{name} #{assignment} 2
             end
           RUBY
-          inspect_source(source)
-
-          expect(cop.messages).to eq(['Use the return of the conditional for ' \
-            'variable assignment and comparison.'])
         end
 
         it "autocorrects for assignment using #{assignment} in if else" do
-          source = <<~RUBY
+          expect_offense(<<~RUBY)
             if foo
+            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
               #{name} #{assignment} 1
             else
               #{name} #{assignment} 2
             end
           RUBY
-          new_source = autocorrect_source(source)
-
           indent = ' ' * "#{name} #{assignment} ".length
-          expect(new_source).to eq <<~RUBY
+          expect_correction(<<~RUBY)
             #{name} #{assignment} if foo
               1
             else
@@ -2171,11 +2161,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'with nested conditionals' do
-    let(:source) { <<~RUBY }
+    # No offense for `if outer`
+    let(:annotated_source) { <<~RUBY }
       if outer
         bar = 1
       else
         if inner
+        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
           bar = 2
         else
           bar = 3
@@ -2184,15 +2176,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
 
     it 'does not consider branches of nested ifs' do
-      inspect_source(source)
+      expect_offense(annotated_source)
 
-      # No offense for `if outer`
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(4)
-
-      corrected = autocorrect_source(source)
-
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if outer
           bar = 1
         else
@@ -2206,6 +2192,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'eventually autocorrects all branches' do
+      source = annotated_source.lines.reject { |line| line =~ /^ *\^/}.join
       corrected = autocorrect_source_with_loop(source)
 
       expect(corrected).to eq(<<~RUBY)
