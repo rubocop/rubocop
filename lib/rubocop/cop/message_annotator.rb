@@ -9,11 +9,11 @@ module RuboCop
     #
     # @example
     #   RuboCop::Cop::MessageAnnotator.new(
-    #     config, cop_config, @options
-    #   ).annotate('message', 'Cop/CopName')
+    #     config, cop_name, cop_config, @options
+    #   ).annotate('message')
     #  #=> 'Cop/CopName: message (http://example.org/styleguide)'
     class MessageAnnotator
-      attr_reader :options, :config, :cop_config
+      attr_reader :options, :config, :cop_name, :cop_config
 
       @style_guide_urls = {}
 
@@ -29,6 +29,7 @@ module RuboCop
       #     :ExtraDetails [Boolean] Include cop details
       #     :DisplayCopNames [Boolean] Include cop name
       #
+      # @param [String] cop_name for specific cop name
       # @param [Hash] cop_config configs for specific cop, from config#for_cop
       # @option cop_config [String] :StyleGuide Extension of base styleguide URL
       # @option cop_config [String] :Reference Full reference URL
@@ -43,8 +44,9 @@ module RuboCop
       #   Include debug output
       # @option options [Boolean] :display_cop_names
       #   Include cop name
-      def initialize(config, cop_config, options)
+      def initialize(config, cop_name, cop_config, options)
         @config = config
+        @cop_name = cop_name
         @cop_config = cop_config || {}
         @options = options
       end
@@ -53,8 +55,8 @@ module RuboCop
       # based on params passed into initializer
       #
       # @return [String] annotated message
-      def annotate(message, name)
-        message = "#{name}: #{message}" if display_cop_names?
+      def annotate(message)
+        message = "#{cop_name}: #{message}" if display_cop_names?
         message += " #{details}" if extra_details? && details
         if display_style_guide?
           links = urls.join(', ')
@@ -74,13 +76,20 @@ module RuboCop
         return nil if url.nil? || url.empty?
 
         self.class.style_guide_urls[url] ||= begin
-          base_url = config.for_all_cops['StyleGuideBaseURL']
+          base_url = style_guide_base_url
           if base_url.nil? || base_url.empty?
             url
           else
             URI.join(base_url, url).to_s
           end
         end
+      end
+
+      def style_guide_base_url
+        department_name = cop_name.split('/').first
+
+        config.for_department(department_name)['StyleGuideBaseURL'] ||
+          config.for_all_cops['StyleGuideBaseURL']
       end
 
       def display_style_guide?

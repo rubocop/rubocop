@@ -224,8 +224,8 @@ module RuboCop
 
       def annotate(message)
         RuboCop::Cop::MessageAnnotator.new(
-          config, cop_config, @options
-        ).annotate(message, name)
+          config, cop_name, cop_config, @options
+        ).annotate(message)
       end
 
       def file_name_matches_any?(file, parameter, default_result)

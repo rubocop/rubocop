@@ -3,11 +3,14 @@
 RSpec.describe RuboCop::Cop::MessageAnnotator do
   let(:options) { {} }
   let(:config) { RuboCop::Config.new({}) }
-  let(:annotator) { described_class.new(config, config['Cop/Cop'], options) }
+  let(:cop_name) { 'Cop/Cop' }
+  let(:annotator) do
+    described_class.new(config, cop_name, config[cop_name], options)
+  end
 
   describe '#annotate' do
     subject(:annotate) do
-      annotator.annotate('message', 'Cop/Cop')
+      annotator.annotate('message')
     end
 
     context 'with default options' do
@@ -55,9 +58,10 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
 
   describe 'with style guide url' do
     subject(:annotate) do
-      annotator.annotate('', 'Cop/Cop')
+      annotator.annotate('')
     end
 
+    let(:cop_name) { 'Cop/Cop' }
     let(:options) do
       {
         display_style_guide: true
@@ -101,6 +105,28 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
       it 'combines correctly with a target-based setting' do
         config['Cop/Cop'] = { 'StyleGuide' => '#target_based_url' }
         expect(annotate).to include('http://example.org/styleguide#target_based_url')
+      end
+
+      context 'when a department other than AllCops is specified' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => {
+              'StyleGuideBaseURL' => 'http://example.org/styleguide'
+            },
+            'Foo' => {
+              'StyleGuideBaseURL' => 'http://foo.example.org'
+            }
+          )
+        end
+
+        let(:cop_name) { 'Foo/Cop' }
+        let(:urls) { annotator.urls }
+
+        it 'returns style guide url when it is specified' do
+          config['Foo/Cop'] = { 'StyleGuide' => '#target_style_guide' }
+
+          expect(urls).to eq(%w[http://foo.example.org#target_style_guide])
+        end
       end
 
       it 'can use a path-based setting' do

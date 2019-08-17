@@ -96,6 +96,10 @@ module RuboCop
       @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
     end
 
+    def for_department(department_name)
+      @for_cop[department_name]
+    end
+
     def for_all_cops
       @for_all_cops ||= self['AllCops'] || {}
     end

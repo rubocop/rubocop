@@ -6,6 +6,7 @@
 
 * [#7274](https://github.com/rubocop-hq/rubocop/issues/7274): Add new `Lint/SendWithMixinArgument` cop. ([@koic][])
 * [#7272](https://github.com/rubocop-hq/rubocop/pull/7272): Show warning message if passed string to `Enabled`, `Safe`, `SafeAutocorrect`, and `AutoCorrect` keys in .rubocop.yml. ([@unasuke][])
+* [#7295](https://github.com/rubocop-hq/rubocop/pull/7295): Make it possible to set `StyleGuideBaseURL` per department. ([@koic][])
 
 ### Bug fixes
 
