@@ -155,7 +155,9 @@ task generate_cops_documentation: :yard_for_generate_documentation do
 
   def references(config, cop)
     cop_config = config.for_cop(cop)
-    urls = RuboCop::Cop::MessageAnnotator.new(config, cop_config, {}).urls
+    urls = RuboCop::Cop::MessageAnnotator.new(
+      config, cop.name, cop_config, {}
+    ).urls
     return '' if urls.empty?
 
     content = h3('References')
