@@ -650,6 +650,23 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
+  shared_examples 'allows out of order multiple assignment in if elsif else' do
+    it 'allows out of order multiple assignment in if elsif else' do
+      expect_no_offenses(<<~RUBY)
+        if baz
+          bar = 1
+          foo = 1
+        elsif foobar
+          foo = 2
+          bar = 2
+        else
+          foo = 3
+          bar = 3
+        end
+      RUBY
+    end
+  end
+
   context 'assignment as the last statement' do
     it 'allows more than variable assignment in if else' do
       expect_no_offenses(<<~RUBY)
@@ -758,20 +775,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
     end
 
-    it 'allows out of order multiple assignment in if elsif else' do
-      expect_no_offenses(<<~RUBY)
-        if baz
-          bar = 1
-          foo = 1
-        elsif foobar
-          foo = 2
-          bar = 2
-        else
-          foo = 3
-          bar = 3
-        end
-      RUBY
-    end
+    it_behaves_like 'allows out of order multiple assignment in if elsif else'
 
     it 'allows multiple assignment in unless else' do
       expect_no_offenses(<<~RUBY)
@@ -1181,7 +1185,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       RUBY
     end
 
-    shared_examples '2 character assignment types' do |asgn|
+    shared_examples '2 or 3 character assignment types' do |asgn|
       it "corrects assignment using #{asgn} in if elsif else" do
         source = <<~RUBY
           if foo
@@ -1249,80 +1253,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
     end
 
-    it_behaves_like('2 character assignment types', '+=')
-    it_behaves_like('2 character assignment types', '-=')
-    it_behaves_like('2 character assignment types', '<<')
+    it_behaves_like('2 or 3 character assignment types', '+=')
+    it_behaves_like('2 or 3 character assignment types', '-=')
+    it_behaves_like('2 or 3 character assignment types', '<<')
 
-    shared_examples '3 character assignment types' do |asgn|
-      it "corrects assignment using #{asgn} in if elsif else" do
-        source = <<~RUBY
-          if foo
-            bar #{asgn} 1
-          elsif baz
-            bar #{asgn} 2
-          else
-            bar #{asgn} 3
-          end
-        RUBY
-
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          bar #{asgn} if foo
-            1
-          elsif baz
-            2
-          else
-            3
-          end
-        RUBY
-      end
-
-      it "corrects assignment using #{asgn} in case when else" do
-        source = <<~RUBY
-          case foo
-          when bar
-            baz #{asgn} 1
-          else
-            baz #{asgn} 2
-          end
-        RUBY
-
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          baz #{asgn} case foo
-          when bar
-            1
-          else
-            2
-          end
-        RUBY
-      end
-
-      it "corrects assignment using #{asgn} in unless else" do
-        source = <<~RUBY
-          unless foo
-            bar #{asgn} 1
-          else
-            bar #{asgn} 2
-          end
-        RUBY
-
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          bar #{asgn} unless foo
-            1
-          else
-            2
-          end
-        RUBY
-      end
-    end
-
-    it_behaves_like('3 character assignment types', '&&=')
-    it_behaves_like('3 character assignment types', '||=')
+    it_behaves_like('2 or 3 character assignment types', '&&=')
+    it_behaves_like('2 or 3 character assignment types', '||=')
 
     it 'corrects assignment in if elsif else with multiple elsifs' do
       source = <<~RUBY
@@ -1759,20 +1695,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
       end
 
-      it 'allows out of order multiple assignment in if elsif else' do
-        expect_no_offenses(<<~RUBY)
-          if baz
-            bar = 1
-            foo = 1
-          elsif foobar
-            foo = 2
-            bar = 2
-          else
-            foo = 3
-            bar = 3
-          end
-        RUBY
-      end
+      it_behaves_like 'allows out of order multiple assignment in if elsif else'
 
       it 'allows multiple assignment in unless else' do
         expect_offense(<<~RUBY)
