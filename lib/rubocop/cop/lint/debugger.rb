@@ -43,9 +43,9 @@ module RuboCop
         PATTERN
 
         def_node_matcher :debugger_call?, <<~PATTERN
-          {(send {nil? #kernel?} {:debugger :byebug :remote_byebug} ...)
+          {(send {nil? #kernel?} {:debugger :byebug :remote_byebug :console} ...)
            (send (send {#kernel? nil?} :binding)
-             {:pry :remote_pry :pry_remote} ...)
+             {:pry :remote_pry :pry_remote :console} ...)
            (send (const {nil? (cbase)} :Pry) :rescue ...)
            (send nil? {:save_and_open_page
                       :save_and_open_screenshot
