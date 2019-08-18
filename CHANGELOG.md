@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7296](https://github.com/rubocop-hq/rubocop/issues/7296): Recognize `console` and `binding.console` ([rails/web-console](https://github.com/rails/web-console)) calls in `Lint/Debuggers`. ([@gsamokovarov][])
 * [#7567](https://github.com/rubocop-hq/rubocop/pull/7567): Introduce new `pending` status for new cops. ([@Darhazer][], [@pirj][])
 
 ### Bug fixes
