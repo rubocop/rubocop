@@ -72,12 +72,12 @@ module RuboCop
 
           elsif_branches << node.if_branch
 
-          if node.else_branch&.if_type?
-            expand_elsif(node.else_branch, elsif_branches)
+          else_branch = node.else_branch
+          if else_branch&.if_type? && else_branch&.elsif?
+            expand_elsif(else_branch, elsif_branches)
           else
-            elsif_branches << node.else_branch
+            elsif_branches << else_branch
           end
-          elsif_branches
         end
 
         def lhs_for_send(node)
