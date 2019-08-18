@@ -17,6 +17,7 @@
 * [#7253](https://github.com/rubocop-hq/rubocop/issues/7253): Fix an error for `Lint/NumberConversion` when `#to_i` called without a receiver. ([@koic][])
 * [#7271](https://github.com/rubocop-hq/rubocop/issues/7271), [#6498](https://github.com/rubocop-hq/rubocop/issues/6498): Fix an interference between `Style/TrailingCommaIn*Literal` and `Layout/Multiline*BraceLayout` for arrays and hashes. ([@buehmann][])
 * [#7241](https://github.com/rubocop-hq/rubocop/issues/7241): Make `Style/FrozenStringLiteralComment` match only true & false. ([@tejasbubane][])
+* [#7290](https://github.com/rubocop-hq/rubocop/issues/7290): Handle inner conditional inside `else` in `Style/ConditionalAssignment`. ([@jonas054][])
 
 ### Changes
 

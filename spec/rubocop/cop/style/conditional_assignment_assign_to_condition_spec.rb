@@ -24,6 +24,82 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   let(:end_alignment_align_with) { 'start_of_line' }
 
+  shared_examples 'else followed by new conditional without else' do |keyword|
+    it "allows if elsif else #{keyword}" do
+      expect_no_offenses(<<~RUBY)
+        if var.any?(:prob_a_check)
+          @errors << 'Problem A'
+        elsif var.any?(:prob_a_check)
+          @errors << 'Problem B'
+        else
+          #{keyword} var.all?(:save)
+            @errors << 'Save failed'
+          end
+        end
+      RUBY
+    end
+  end
+
+  it_behaves_like 'else followed by new conditional without else', 'if'
+  it_behaves_like 'else followed by new conditional without else', 'unless'
+
+  context 'for if elsif else if else' do
+    let(:annotated_source) do
+      <<~RUBY
+        if var.any?(:prob_a_check)
+          @errors << 'Problem A'
+        elsif var.any?(:prob_a_check)
+          @errors << 'Problem B'
+        else
+          if var.all?(:save)
+          ^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+            @errors << 'Save failed'
+          else
+            @errors << 'Other'
+          end
+        end
+      RUBY
+    end
+
+    it 'autocorrects the inner offense first' do
+      expect_offense(annotated_source)
+
+      expect_correction(<<~RUBY)
+        if var.any?(:prob_a_check)
+          @errors << 'Problem A'
+        elsif var.any?(:prob_a_check)
+          @errors << 'Problem B'
+        else
+          @errors << if var.all?(:save)
+            'Save failed'
+          else
+            'Other'
+          end
+        end
+      RUBY
+    end
+
+    it 'autocorrects the outer offense later' do
+      source =
+        annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
+      corrected = autocorrect_source_with_loop(source)
+
+      expect(corrected).to eq(<<~RUBY)
+        @errors << if var.any?(:prob_a_check)
+          'Problem A'
+        elsif var.any?(:prob_a_check)
+          'Problem B'
+        else
+          if var.all?(:save)
+            'Save failed'
+          else
+            'Other'
+          end
+        end
+      RUBY
+    end
+  end
+
   it 'counts array assignment when determining multiple assignment' do
     expect_no_offenses(<<~RUBY)
       if foo
