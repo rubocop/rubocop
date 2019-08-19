@@ -42,6 +42,10 @@ module RuboCop
       frozen_string_literal == true
     end
 
+    def valid_literal_value?
+      [true, false].include?(frozen_string_literal)
+    end
+
     # Was a magic comment for the frozen string literal found?
     #
     # @return [Boolean]

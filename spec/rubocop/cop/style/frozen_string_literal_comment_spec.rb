@@ -31,6 +31,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
+    it 'registers an offense for arbitrary tokens' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: token
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+    end
+
     it 'registers an offense for not having a frozen string literal comment ' \
        'on the top line' do
       expect_offense(<<~RUBY)
