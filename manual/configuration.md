@@ -576,5 +576,39 @@ Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
 
+### Setting the style guide URL
+
+You can specify the base URL of the style guide using `StyleGuideBaseURL`.
+If specified under `AllCops`, all cops are targeted.
+
+```yaml
+AllCops:
+  StyleGuideBaseURL: https://rubystyle.guide
+```
+
+`StyleGuideBaseURL` is combined with `StyleGuide` specified to the cop.
+
+```yaml
+Lint/UselessAssignment:
+  StyleGuide: '#underscore-unused-vars'
+```
+
+The style guide URL is https://rubystyle.guide#underscore-unused-vars.
+
+If specified under a specific department, it takes precedence over `AllCops`.
+The following is an example of specifying `Rails` department.
+
+```yaml
+Rails:
+  StyleGuideBaseURL: https://rails.rubystyle.guide
+```
+
+```yaml
+Rails/TimeZone:
+  StyleGuide: '#time'
+```
+
+The style guide URL is https://rails.rubystyle.guide#time.
+
 [1]: https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml
 [xdg-basedir-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html
