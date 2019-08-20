@@ -78,7 +78,7 @@ module RuboCop
         MSG = 'Do not suppress exceptions.'
 
         def on_resbody(node)
-          return if node.body
+          return if node.body && !node.body.nil_type?
           return if cop_config['AllowComments'] && comment_lines?(node)
 
           add_offense(node)

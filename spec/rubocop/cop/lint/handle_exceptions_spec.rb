@@ -14,6 +14,24 @@ RSpec.describe RuboCop::Cop::Lint::HandleExceptions, :config do
     RUBY
   end
 
+  it 'registers an offense for rescue nil' do
+    expect_offense(<<~RUBY)
+      begin
+        something
+      rescue
+      ^^^^^^ Do not suppress exceptions.
+        nil
+      end
+    RUBY
+  end
+
+  it 'registers an offense for inline nil rescue' do
+    expect_offense(<<~RUBY)
+      something rescue nil
+                ^^^^^^^^^^ Do not suppress exceptions.
+    RUBY
+  end
+
   it 'does not register an offense for rescue with body' do
     expect_no_offenses(<<~RUBY)
       begin
