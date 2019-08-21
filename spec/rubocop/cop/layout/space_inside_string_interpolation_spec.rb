@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for ill-formatted string interpolations' do
       it 'registers offenses and autocorrects' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           "#{ var}"
              ^ Space inside string interpolation detected.
           "#{var }"
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
                    ^^^^ Space inside string interpolation detected.
         RUBY
 
-        expect_correction(<<-'RUBY'.strip_indent)
+        expect_correction(<<~'RUBY')
           "#{var}"
           "#{var}"
           "#{var}"
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       end
 
       it 'finds interpolations in string-like contexts' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           /regexp #{ var}/
                     ^ Space inside string interpolation detected.
           `backticks #{ var}`
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
                      ^ Space inside string interpolation detected.
         RUBY
 
-        expect_correction(<<-'RUBY'.strip_indent)
+        expect_correction(<<~'RUBY')
           /regexp #{var}/
           `backticks #{var}`
           :"symbol #{var}"
@@ -59,33 +59,33 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for "space" style formatted string interpolations' do
       it 'registers offenses and autocorrects' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           "#{ var }"
              ^ Space inside string interpolation detected.
                  ^ Space inside string interpolation detected.
         RUBY
 
-        expect_correction(<<-'RUBY'.strip_indent)
+        expect_correction(<<~'RUBY')
           "#{var}"
         RUBY
       end
     end
 
     it 'does not touch spaces inside the interpolated expression' do
-      expect_offense(<<-'RUBY'.strip_indent)
+      expect_offense(<<~'RUBY')
         "#{ a; b }"
            ^ Space inside string interpolation detected.
                 ^ Space inside string interpolation detected.
       RUBY
 
-      expect_correction(<<-'RUBY'.strip_indent)
+      expect_correction(<<~'RUBY')
         "#{a; b}"
       RUBY
     end
 
     context 'for well-formatted string interpolations' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           "Variable is    #{var}      "
           "  Variable is  #{var}"
         RUBY
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'when interpolation starts or ends with a line break' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           "#{
             code
           }"
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       end
 
       it 'ignores comments and whitespace when looking for line breaks' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           def foo
             "#{ # comment
               code
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for ill-formatted string interpolations' do
       it 'registers offenses and autocorrects' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           "#{ var}"
                  ^ Missing space inside string interpolation detected.
           "#{var }"
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
         RUBY
 
         # Extra space is handled by ExtraSpace cop.
-        expect_correction(<<-'RUBY'.strip_indent)
+        expect_correction(<<~'RUBY')
           "#{ var }"
           "#{ var }"
           "#{   var   }"
@@ -160,13 +160,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for "no_space" style formatted string interpolations' do
       it 'registers offenses and autocorrects' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           "#{var}"
            ^^ Missing space inside string interpolation detected.
                 ^ Missing space inside string interpolation detected.
         RUBY
 
-        expect_correction(<<-'RUBY'.strip_indent)
+        expect_correction(<<~'RUBY')
           "#{ var }"
         RUBY
       end
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
 
     context 'for well-formatted string interpolations' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           "Variable is    #{ var }      "
           "  Variable is  #{ var }"
         RUBY

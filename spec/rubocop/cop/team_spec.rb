@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Team do
     let(:file_path) { 'example.rb' }
 
     it 'auto corrects without SyntaxError', :isolated_environment do
-      source = <<-'RUBY'.strip_indent
+      source = <<~'RUBY'
         foo.map{ |a| a.nil? }
 
         'foo' +
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Team do
           self::b
         end
       RUBY
-      corrected = <<-'RUBY'.strip_indent
+      corrected = <<~'RUBY'
         # frozen_string_literal: true
 
         foo.map(&:nil?)

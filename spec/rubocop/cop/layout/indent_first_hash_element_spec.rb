@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it 'accepts special indentation for second argument' do
-          expect_no_offenses(<<-'RUBY'.strip_indent)
+          expect_no_offenses(<<~'RUBY')
             body.should have_tag("input", :attributes => {
                                    :name => /q\[(id_eq)\]/ })
           RUBY
@@ -348,7 +348,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
         end
 
         it 'accepts normal indentation for second argument' do
-          expect_no_offenses(<<-'RUBY'.strip_indent)
+          expect_no_offenses(<<~'RUBY')
             body.should have_tag("input", :attributes => {
               :name => /q\[(id_eq)\]/ })
           RUBY

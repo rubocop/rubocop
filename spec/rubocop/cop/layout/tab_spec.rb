@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
   end
 
   it 'registers an offense for a line indented with mixed whitespace' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<-'RUBY')
        	x = 0
        ^ Tab detected.
     RUBY

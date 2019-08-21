@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /home\//' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = /home\//
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /users\/#{user.id}\/forms/' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = /users\/#{user.id}\/forms/
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%r` around regular expression.
         RUBY
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line %r regex without slashes' do
       let(:source) do
-        <<-'RUBY'.strip_indent.chomp
+        <<~'RUBY'.chomp
           foo = %r{
             foo
             bar
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /home\//' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = /home\//
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
@@ -321,7 +321,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex without slashes' do
       let(:source) do
-        <<-'RUBY'.strip_indent.chomp
+        <<~'RUBY'.chomp
           foo = /
             foo
             bar
@@ -342,7 +342,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex with slashes' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           foo = /
             https?:\/\/
             example\.com
@@ -357,7 +357,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-'RUBY'.strip_indent)
+        expect(new_source).to eq(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -414,7 +414,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       let(:source) { 'foo = /home\//' }
 
       it 'registers an offense' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           foo = /home\//
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
@@ -436,7 +436,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex without slashes' do
       let(:source) do
-        <<-'RUBY'.strip_indent.chomp
+        <<~'RUBY'.chomp
           foo = /
             foo
             bar
@@ -457,7 +457,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex with slashes' do
       let(:source) do
-        <<-'RUBY'.strip_indent
+        <<~'RUBY'
           foo = /
             https?:\/\/
             example\.com
@@ -472,7 +472,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<-'RUBY'.strip_indent)
+        expect(new_source).to eq(<<~'RUBY')
           foo = %r{
             https?://
             example\.com

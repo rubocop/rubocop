@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArguments do
     end
 
     it 'can handle heredoc strings' do
-      expect_no_offenses(<<-'RUBY'.strip_indent)
+      expect_no_offenses(<<~'RUBY')
         class_eval(<<-EOS, __FILE__, __LINE__ + 1)
                     def run_#{name}_callbacks(*args)
                       a = 1
@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArguments do
     end
 
     it 'can handle a call with a block inside another call' do
-      expect_no_offenses(<<-'RUBY'.strip_indent)
+      expect_no_offenses(<<~'RUBY')
         new(table_name,
             exec_query("info('#{row['name']}')").map { |col|
               col['name']
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArguments do
     end
 
     it 'does not crash in autocorrect on dynamic string in parameter value' do
-      src = <<-'RUBY'.strip_indent
+      src = <<~'RUBY'
         class MyModel < ActiveRecord::Base
           has_many :other_models,
             class_name: "legacy_name",
@@ -306,7 +306,7 @@ RSpec.describe RuboCop::Cop::Layout::AlignArguments do
       RUBY
       new_source = autocorrect_source(src)
       expect(new_source)
-        .to eq <<-'RUBY'.strip_indent
+        .to eq <<~'RUBY'
           class MyModel < ActiveRecord::Base
             has_many :other_models,
                      class_name: "legacy_name",

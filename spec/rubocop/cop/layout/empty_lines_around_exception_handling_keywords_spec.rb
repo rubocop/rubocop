@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
 
   shared_examples 'offense' do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
-      inspect_source(code.strip_indent)
+      inspect_source(code)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(["Extra empty line detected #{message}."])
     end
 
     it "autocorrects for #{name} with a blank" do
-      corrected = autocorrect_source(code.strip_indent)
-      expect(corrected).to eq(correction.strip_indent)
+      corrected = autocorrect_source(code)
+      expect(corrected).to eq(correction)
     end
   end
 
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     end
   CORRECTION
 
-  include_examples 'accepts', 'no empty line', <<-RUBY
+  include_examples 'accepts', 'no empty line', <<~RUBY
     begin
       f1
     rescue
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     end
   RUBY
 
-  include_examples 'accepts', 'empty lines around begin body', <<-RUBY
+  include_examples 'accepts', 'empty lines around begin body', <<~RUBY
     begin
 
       f1
@@ -124,12 +124,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords d
     end
   RUBY
 
-  include_examples 'accepts', 'empty begin', <<-RUBY
+  include_examples 'accepts', 'empty begin', <<~RUBY
     begin
     end
   RUBY
 
-  include_examples 'accepts', 'empty method definition', <<-RUBY
+  include_examples 'accepts', 'empty method definition', <<~RUBY
     def foo
     end
   RUBY
