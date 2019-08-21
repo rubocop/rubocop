@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
   end
 
   it 'registers an offense for literals like \n' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       x = ?\n
           ^^^ Do not use the character literal - use string literal instead.
     RUBY

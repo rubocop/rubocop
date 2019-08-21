@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   end
 
   it 'accepts the result of the ExtraSpacing Cop' do
-    expect_no_offenses(<<-RUBY.strip_indent)
+    expect_no_offenses(<<~RUBY)
       def batch
         @areas   = params[:param].map do
                      var_1      = 123_456

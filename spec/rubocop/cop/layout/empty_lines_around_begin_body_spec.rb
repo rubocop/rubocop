@@ -7,14 +7,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
   shared_examples 'offense' do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
-      inspect_source(code.strip_indent)
+      inspect_source(code)
       message = "Extra empty line detected at `begin` body #{message}."
       expect(cop.messages).to eq([message])
     end
 
     it "autocorrects for #{name} with a blank" do
-      corrected = autocorrect_source(code.strip_indent)
-      expect(corrected).to eq(correction.strip_indent)
+      corrected = autocorrect_source(code)
+      expect(corrected).to eq(correction)
     end
   end
 

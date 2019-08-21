@@ -374,7 +374,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have special symbols in them' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           x = { :"\tab" => 1 }
                 ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
@@ -495,7 +495,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'registers an offense when keys have special symbols in them' do
-        expect_offense(<<-'RUBY'.strip_indent)
+        expect_offense(<<~'RUBY')
           x = { :"\tab" => 1 }
                 ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY

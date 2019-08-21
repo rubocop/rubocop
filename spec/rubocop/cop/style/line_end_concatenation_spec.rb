@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'registers an offense for dynamic string concat at line end' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       top = "test#{x}" +
                        ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top"
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'registers an offense for dynamic string concat with << at line end' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       top = "test#{x}" <<
                        ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top"
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'registers multiple offenses when there are chained << methods' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       top = "test#{x}" <<
                        ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top" <<
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'registers multiple offenses when there are chained concatenations' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       top = "test#{x}" +
                        ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top" +
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'registers multiple offenses when there are chained concatenations' \
      'combined with << calls' do
-    inspect_source(<<-'RUBY'.strip_indent)
+    inspect_source(<<~'RUBY')
       top = "test#{x}" <<
       "top" +
       "foo" <<
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
 
   it 'registers offenses only for the appropriate lines in chained concats' do
     # only the last concatenation is an offense
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       top = "test#{x}" + # comment
       "foo" +
       %(bar) +
@@ -178,14 +178,14 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'autocorrects for chained concatenations and << calls' do
-    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+    corrected = autocorrect_source(<<~'RUBY')
       top = "test#{x}" <<
       "top" +
       "ubertop" <<
       "foo"
     RUBY
 
-    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+    expect(corrected).to eq(<<~'RUBY')
       top = "test#{x}" \
       "top" \
       "ubertop" \
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   end
 
   it 'autocorrects only the lines that should be autocorrected' do
-    corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+    corrected = autocorrect_source(<<~'RUBY')
       top = "test#{x}" <<
       "top" + # comment
       "foo" +
@@ -203,7 +203,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
       "qux"
     RUBY
 
-    expect(corrected).to eq(<<-'RUBY'.strip_indent)
+    expect(corrected).to eq(<<~'RUBY')
       top = "test#{x}" \
       "top" + # comment
       "foo" \

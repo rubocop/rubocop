@@ -34,7 +34,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'plays nicely with default cops in complex ExtraSpacing scenarios' do
-    create_file('.rubocop.yml', <<-YAML.strip_indent)
+    create_file('.rubocop.yml', <<~YAML)
       # These cops change indentation and thus need disabling in order for the
       # ExtraSpacing rules to apply to this scenario.
 
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         Enabled: false
     YAML
 
-    source = <<-RUBY.strip_indent
+    source = <<~RUBY
       def batch
         @areas = params[:param].map do
                         var_1 = 123_456
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct'])).to eq(1)
 
-    expect(IO.read('example.rb')).to eq(<<-RUBY.strip_indent)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       def batch
@@ -531,7 +531,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
      'UnneededInterpolation offense unchanged' do
     # If we change string concatenation from plus to backslash, the string
     # literal that follows must remain a string literal.
-    source = <<-'RUBY'.strip_indent
+    source = <<~'RUBY'
       puts 'foo' +
            "#{bar}"
       puts 'a' +
@@ -554,7 +554,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'corrects Style/InverseMethods and Style/Not offenses' do
-    source = <<-'RUBY'.strip_indent
+    source = <<~'RUBY'
       x.select {|y| not y.z }
     RUBY
     create_file('example.rb', source)
@@ -562,7 +562,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      '--auto-correct',
                      '--only', 'Style/InverseMethods,Style/Not'
                    ])).to eq(0)
-    corrected = <<-'RUBY'.strip_indent
+    corrected = <<~'RUBY'
       x.reject {|y|  y.z }
     RUBY
     expect(IO.read('example.rb')).to eq(corrected)
@@ -573,7 +573,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       AllCops:
         TargetRubyVersion: 2.3
     YAML
-    source = <<-'RUBY'.strip_indent
+    source = <<~'RUBY'
       until x
         if foo
           foo.some_method do
@@ -587,7 +587,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      '--auto-correct',
                      '--only', 'Style/Next,Style/SafeNavigation'
                    ])).to eq(0)
-    corrected = <<-'RUBY'.strip_indent
+    corrected = <<~'RUBY'
       until x
         next unless foo
         foo.some_method do
@@ -599,7 +599,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'corrects `Lint/Lambda` and `Lint/UnusedBlockArgument` offenses' do
-    source = <<-'RUBY'.strip_indent
+    source = <<~'RUBY'
       c = -> event do
         puts 'Hello world'
       end
@@ -609,7 +609,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      '--auto-correct',
                      '--only', 'Lint/Lambda,Lint/UnusedBlockArgument'
                    ])).to eq(0)
-    corrected = <<-'RUBY'.strip_indent
+    corrected = <<~'RUBY'
       c = lambda do |_event|
         puts 'Hello world'
       end
@@ -936,7 +936,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         EnforcedStyle: indented_internal_methods
     YAML
 
-    source = <<-'RUBY'.strip_indent
+    source = <<~'RUBY'
       class Foo
                          private
 
@@ -957,7 +957,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      ].join(',')
                    ])).to eq(0)
 
-    corrected = <<-'RUBY'.strip_indent
+    corrected = <<~'RUBY'
       class Foo
       private
 

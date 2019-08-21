@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense and corrects `to_s` in interpolation' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "this is the #{result.to_s}"
                             ^^^^ Redundant use of `Object#to_s` in interpolation.
       /regexp #{result.to_s}/
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
                           ^^^^ Redundant use of `Object#to_s` in interpolation.
     RUBY
 
-    expect_correction(<<-'RUBY'.strip_indent)
+    expect_correction(<<~'RUBY')
       "this is the #{result}"
       /regexp #{result}/
       :"symbol #{result}"
@@ -25,12 +25,12 @@ RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
 
   it 'registers an offense and corrects `to_s` in an interpolation ' \
     'with several expressions' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "this is the #{top; result.to_s}"
                                  ^^^^ Redundant use of `Object#to_s` in interpolation.
     RUBY
 
-    expect_correction(<<-'RUBY'.strip_indent)
+    expect_correction(<<~'RUBY')
       "this is the #{top; result}"
     RUBY
   end
@@ -44,12 +44,12 @@ RSpec.describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   end
 
   it 'registers an offense and corrects an implicit receiver' do
-    expect_offense(<<-'RUBY'.strip_indent)
+    expect_offense(<<~'RUBY')
       "#{to_s}"
          ^^^^ Use `self` instead of `Object#to_s` in interpolation.
     RUBY
 
-    expect_correction(<<-'RUBY'.strip_indent)
+    expect_correction(<<~'RUBY')
       "#{self}"
     RUBY
   end

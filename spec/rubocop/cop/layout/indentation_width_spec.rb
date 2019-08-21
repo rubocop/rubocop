@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         end
 
         it 'does not indent heredoc strings' do
-          corrected = autocorrect_source(<<-'RUBY'.strip_indent)
+          corrected = autocorrect_source(<<~'RUBY')
             module Foo
             module Bar
               SOMETHING = <<GOO
@@ -290,7 +290,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
             end
             end
           RUBY
-          expect(corrected).to eq <<-'RUBY'.strip_indent
+          expect(corrected).to eq <<~'RUBY'
             module Foo
               module Bar
                 SOMETHING = <<GOO
@@ -774,7 +774,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
       end
 
       it 'accepts aligned values in when clause' do
-        expect_no_offenses(<<-'RUBY'.strip_indent)
+        expect_no_offenses(<<~'RUBY')
           case superclass
           when /\A(#{NAMESPACEMATCH})(?:\s|\Z)/,
                /\A(Struct|OStruct)\.new/,
