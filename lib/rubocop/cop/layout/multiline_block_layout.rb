@@ -5,7 +5,9 @@ module RuboCop
     module Layout
       # This cop checks whether the multiline do end blocks have a newline
       # after the start of the block. Additionally, it checks whether the block
-      # arguments, if any, are on the same line as the start of the block.
+      # arguments, if any, are on the same line as the start of the
+      # block. Putting block arguments on separate lines, because the whole
+      # line would otherwise be too long, is accepted.
       #
       # @example
       #   # bad
@@ -35,6 +37,17 @@ module RuboCop
       #     foo(i)
       #     bar(i)
       #   }
+      #
+      #   # good
+      #   blah { |
+      #     long_list,
+      #     of_parameters,
+      #     that_would_not,
+      #     fit_on_one_line
+      #   |
+      #     foo(i)
+      #     bar(i)
+      #   }
       class MultilineBlockLayout < Cop
         include RangeHelp
 
@@ -42,11 +55,13 @@ module RuboCop
               'the block start.'
         ARG_MSG = 'Block argument expression is not on the same line as the ' \
                   'block start.'
+        PIPE_SIZE = '|'.length
 
         def on_block(node)
           return if node.single_line?
 
-          unless args_on_beginning_line?(node)
+          unless args_on_beginning_line?(node) ||
+                 line_break_necessary_in_args?(node)
             add_offense_for_expression(node, node.arguments, ARG_MSG)
           end
 
@@ -77,6 +92,13 @@ module RuboCop
         def args_on_beginning_line?(node)
           !node.arguments? ||
             node.loc.begin.line == node.arguments.loc.last_line
+        end
+
+        def line_break_necessary_in_args?(node)
+          needed_length = node.source_range.column +
+                          node.source.lines.first.length +
+                          block_arg_string(node.arguments).length + PIPE_SIZE
+          needed_length > max_line_length
         end
 
         def add_offense_for_expression(node, expr, msg)

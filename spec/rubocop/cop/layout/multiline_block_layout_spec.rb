@@ -51,6 +51,20 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
+  it 'does not register offenses when there are too many parameters to fit ' \
+     'on one line' do
+    expect_no_offenses(<<~RUBY)
+      some_result = lambda do |
+        so_many,
+        parameters,
+        it_will,
+        be_too_long,
+        for_one_line|
+        do_something
+      end
+    RUBY
+  end
+
   it 'does not error out when the block is empty' do
     expect_no_offenses(<<~RUBY)
       test do |x|

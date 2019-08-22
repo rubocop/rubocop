@@ -35,6 +35,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       expect_no_offenses('{}.each { |x,y| puts x }')
     end
 
+    it 'accepts block parameters with surrounding space that includes line ' \
+       'breaks' do
+      # This is checked by Layout/MultilineBlockLayout.
+      expect_no_offenses(<<~RUBY)
+        some_result = lambda do |
+          so_many,
+          parameters,
+          it_will,
+          be_too_long,
+          for_one_line
+        |
+          do_something
+        end
+      RUBY
+    end
+
     it 'accepts a lambda with spaces in the right places' do
       expect_no_offenses('->(x, y) { puts x }')
     end
