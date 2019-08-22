@@ -50,6 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   include_examples 'debugger',
                    'capybara debug method with an argument',
                    'save_screenshot foo'
+  include_examples 'debugger', 'remote_byebug', 'remote_byebug'
 
   it 'does not report an offense for a non-pry binding' do
     expect_no_offenses('binding.pirate')
@@ -65,7 +66,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
 
   ALL_COMMANDS = %w[debugger byebug pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
-                    save_screenshot].freeze
+                    save_screenshot remote_byebug].freeze
 
   ALL_COMMANDS.each do |src|
     it "does not report an offense for a #{src} in comments" do
