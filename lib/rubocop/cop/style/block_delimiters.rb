@@ -114,7 +114,8 @@ module RuboCop
 
         def on_send(node)
           return unless node.arguments?
-          return if node.parenthesized? || node.operator_method?
+          return if node.parenthesized?
+          return if node.operator_method? || node.assignment_method?
 
           node.arguments.each do |arg|
             get_blocks(arg) do |block|

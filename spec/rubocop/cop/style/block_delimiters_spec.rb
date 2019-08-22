@@ -116,6 +116,16 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
+    it 'registers an offense for a multi-line block with do-end if the ' \
+       'return value is attribute-assigned' do
+      expect_offense(<<~RUBY)
+        foo.bar = map do |x|
+                      ^^ Prefer `{...}` over `do...end` for functional blocks.
+          x
+        end
+      RUBY
+    end
+
     it 'accepts a multi-line block with do-end if it is the return value ' \
        'of its scope' do
       expect_no_offenses(<<~RUBY)
@@ -351,6 +361,14 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'registers an offense when combined with attribute assignment' do
+        expect_offense(<<~RUBY)
+          foo.bar = baz.map { |x|
+                            ^ Avoid using `{...}` for multi-line blocks.
+          }
+        RUBY
+      end
+
       it 'accepts braces if do-end would change the meaning' do
         expect_no_offenses(<<~RUBY)
           scope :foo, lambda { |f|
@@ -535,9 +553,24 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'registers an offense when combined with attribute assignment' do
+        expect_offense(<<~RUBY)
+          foo.bar = baz.map { |x|
+                            ^ Prefer `do...end` for multi-line blocks without chaining.
+          }
+        RUBY
+      end
+
       it 'allows when the block is being chained' do
         expect_no_offenses(<<~RUBY)
           each { |x|
+          }.map(&:to_sym)
+        RUBY
+      end
+
+      it 'allows when the block is being chained with attribute assignment' do
+        expect_no_offenses(<<~RUBY)
+          foo.bar = baz.map { |x|
           }.map(&:to_sym)
         RUBY
       end
@@ -617,6 +650,15 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
+    it 'registers an offense for multi-lined do-end blocks when combined ' \
+       'with attribute assignment' do
+      expect_offense(<<~RUBY)
+        foo.bar = baz.map do |x|
+                          ^^ Prefer `{...}` over `do...end` for blocks.
+        end
+      RUBY
+    end
+
     it 'accepts a multi-line functional block with do-end if it is ' \
        'an ignored method' do
       expect_no_offenses(<<~RUBY)
@@ -627,11 +669,17 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     context 'when there are braces around a multi-line block' do
-      it 'registers an offense in the simple case' do
-        expect_offense(<<~RUBY)
-          each do |x|
-               ^^ Prefer `{...}` over `do...end` for blocks.
-          end
+      it 'allows in the simple case' do
+        expect_no_offenses(<<~RUBY)
+          each { |x|
+          }
+        RUBY
+      end
+
+      it 'allows when combined with attribute assignment' do
+        expect_no_offenses(<<~RUBY)
+          foo.bar = baz.map { |x|
+          }
         RUBY
       end
 
