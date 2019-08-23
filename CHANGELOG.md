@@ -16,6 +16,10 @@
 * [#7595](https://github.com/rubocop-hq/rubocop/issues/7595): Make `Style/NumericPredicate` aware of ignored methods when specifying ignored methods. ([@koic][])
 * [#7607](https://github.com/rubocop-hq/rubocop/issues/7607): Fix `Style/FrozenStringLiteralComment` infinite loop when magic comments are newline-separated. ([@pirj][])
 
+### Changes
+
+* [#7287](https://github.com/rubocop-hq/rubocop/issues/7287): `Style/FrozenStringLiteralComment` is now considered unsafe. ([@buehmann][])
+
 ## 0.78.0 (2019-12-18)
 
 ### New features

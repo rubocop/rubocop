@@ -2758,7 +2758,7 @@ Style/FrozenStringLiteralComment:
                  to help transition to frozen string literals by default.
   Enabled: true
   VersionAdded: '0.36'
-  VersionChanged: '0.69'
+  VersionChanged: '0.79'
   EnforcedStyle: always
   SupportedStyles:
     # `always` will always add the frozen string literal comment to a file
@@ -2769,6 +2769,7 @@ Style/FrozenStringLiteralComment:
     # `never` will enforce that the frozen string literal comment does not
     # exist in a file.
     - never
+  Safe: false
 
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
