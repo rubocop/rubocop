@@ -2271,7 +2271,7 @@ EnforcedStyle | `annotated` | `annotated`, `template`, `unannotated`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 0.69
+Enabled | No | Yes  | 0.36 | 0.79
 
 This cop is designed to help you transition from mutable string literals
 to frozen string literals.

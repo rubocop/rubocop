@@ -17,6 +17,10 @@
 * [#7607](https://github.com/rubocop-hq/rubocop/issues/7607): Fix `Style/FrozenStringLiteralComment` infinite loop when magic comments are newline-separated. ([@pirj][])
 * [#7602](https://github.com/rubocop-hq/rubocop/pull/7602): Ensure proper handling of Ruby 2.7 syntax. ([@drenmi][])
 
+### Changes
+
+* [#7287](https://github.com/rubocop-hq/rubocop/issues/7287): `Style/FrozenStringLiteralComment` is now considered unsafe. ([@buehmann][])
+
 ## 0.78.0 (2019-12-18)
 
 ### New features
