@@ -27,6 +27,7 @@ module RuboCop
       class UselessSetterCall < Cop
         MSG = 'Useless setter call to local variable `%<variable>s`.'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
+        NON_LOCAL_ASSIGNMENT_TYPES = (ASSIGNMENT_TYPES - %i[lvasgn]).freeze
 
         def on_def(node)
           return unless node.body
@@ -73,7 +74,13 @@ module RuboCop
 
             @local = {}
 
-            scan(@body_node) { |node| process_assignment_node(node) }
+            scan(@body_node) do |node|
+              if node.send_type?
+                process_setter(node) if node.setter_method?
+              else
+                process_assignment_node(node)
+              end
+            end
 
             @local[variable_name]
           end
@@ -83,7 +90,9 @@ module RuboCop
               yield node
 
               node.each_child_node do |child_node|
-                scan(child_node, &block)
+                # We can't draw any conclusions from nodes inside conditionals,
+                # since they may or may not be executed. So skip those.
+                scan(child_node, &block) unless child_node.if_type?
               end
             end
           end
@@ -102,6 +111,13 @@ module RuboCop
             end
           end
 
+          def process_setter(send_node)
+            rhs = send_node.arguments.first
+            return unless rhs.lvar_type? && !send_node.receiver.lvar_type?
+
+            @local[rhs.source.to_sym] = false
+          end
+
           def process_multiple_assignment(masgn_node)
             mlhs_node, mrhs_node = *masgn_node
 
@@ -112,7 +128,7 @@ module RuboCop
               rhs_node = mrhs_node.children[index]
 
               if mrhs_node.array_type? && rhs_node
-                process_assignment(lhs_variable_name, rhs_node)
+                process_assignment(lhs_node, rhs_node)
               else
                 @local[lhs_variable_name] = true
               end
@@ -141,14 +157,20 @@ module RuboCop
           end
 
           def process_assignment(asgn_node, rhs_node)
-            lhs_variable_name, = *asgn_node
+            if rhs_node.lvar_type? &&
+               NON_LOCAL_ASSIGNMENT_TYPES.include?(asgn_node.type)
+              rhs_variable_name, = *rhs_node
+              @local[rhs_variable_name] = false
+            else
+              lhs_variable_name, = *asgn_node
 
-            @local[lhs_variable_name] = if rhs_node.variable?
-                                          rhs_variable_name, = *rhs_node
-                                          @local[rhs_variable_name]
-                                        else
-                                          constructor?(rhs_node)
-                                        end
+              @local[lhs_variable_name] = if rhs_node.variable?
+                                            rhs_variable_name, = *rhs_node
+                                            @local[rhs_variable_name]
+                                          else
+                                            constructor?(rhs_node)
+                                          end
+            end
           end
 
           def constructor?(node)

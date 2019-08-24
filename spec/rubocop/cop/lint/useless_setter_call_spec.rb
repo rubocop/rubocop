@@ -187,16 +187,28 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar contains an object assgined to a non-local object' do
-    it 'accepts' do
-      expect_no_offenses(<<-RUBY.strip_indent)
-        def test
-          some_lvar = {}
-          Foo.shared_object = some_lvar
-          some_lvar[:attr] = 1
-        end
-      RUBY
+  context 'when a lvar contains an object assigned to a non-local object' do
+    shared_examples 'assignment to a non-local object' do |lhs|
+      it "accepts #{lhs} = ..." do
+        expect_no_offenses(<<-RUBY.strip_indent)
+          def test
+            some_lvar = {}
+            #{lhs} = some_lvar
+            some_lvar[:attr] = 1
+          end
+        RUBY
+      end
     end
+
+    it_behaves_like 'assignment to a non-local object', 'Foo.shared_object'
+    it_behaves_like 'assignment to a non-local object', 'foo.shared_object'
+    it_behaves_like 'assignment to a non-local object', 'self.shared_object'
+    it_behaves_like 'assignment to a non-local object', '$foo.shared_object'
+    it_behaves_like 'assignment to a non-local object', '@foo.shared_object'
+    it_behaves_like 'assignment to a non-local object', '@@foo.shared_object'
+    it_behaves_like 'assignment to a non-local object', '$shared_object'
+    it_behaves_like 'assignment to a non-local object', '@shared_object'
+    it_behaves_like 'assignment to a non-local object', '@@shared_object'
   end
 
   it 'is not confused by operators ending with =' do
