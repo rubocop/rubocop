@@ -6,7 +6,47 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Metrics/LineLength' => { 'Max' => 80 })
+    RuboCop::Config.new('Metrics/LineLength' => line_length_config)
+  end
+  let(:line_length_config) { { 'Enabled' => true, 'Max' => 80 } }
+
+  context 'modifier if that does not fit on one line' do
+    let(:spaces) { ' ' * 59 }
+    let(:source) { "puts '#{spaces}' if condition" }
+
+    context 'when Metrics/LineLength is enabled' do
+      it 'corrects it to normal form' do
+        expect(source.length).to be(79) # That's 81 including indentation.
+        expect_offense(<<~RUBY)
+          def f
+            # Comment 1
+            #{source} # Comment 2
+            #{spaces}        ^^ Modifier form of `if` makes the line too long.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def f
+            # Comment 1
+            if condition
+              puts '#{spaces}'
+            end # Comment 2
+          end
+        RUBY
+      end
+    end
+
+    context 'when Metrics/LineLength is disabled' do
+      let(:line_length_config) { { 'Enabled' => false, 'Max' => 80 } }
+
+      it 'accepts' do
+        expect_no_offenses(<<~RUBY)
+          def f
+            #{source}
+          end
+        RUBY
+      end
+    end
   end
 
   context 'multiline if that fits on one line' do
