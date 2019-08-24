@@ -24,6 +24,7 @@
 ### Changes
 
 * [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
+* [#3534](https://github.com/rubocop-hq/rubocop/issues/3534): Make `Style/IfUnlessModifier` report and auto-correct modifier lines that are too long. ([@jonas054][])
 
 ## 0.74.0 (2019-07-31)
 
