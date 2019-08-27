@@ -24,6 +24,7 @@
 
 ### Changes
 
+* [#7312](https://github.com/rubocop-hq/rubocop/pull/7312): Mark `Style/StringHashKeys` as unsafe. ([@prathamesh-sonpatki][])
 * [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
 
 ## 0.74.0 (2019-07-31)
@@ -4178,3 +4179,4 @@
 [@buehmann]: https://github.com/buehmann
 [@halfwhole]: https://github.com/halfwhole
 [@riley-klingler]: https://github.com/riley-klingler
+[@prathamesh-sonpatki]: https://github.com/prathamesh-sonpatki

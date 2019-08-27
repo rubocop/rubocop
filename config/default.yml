@@ -3591,6 +3591,8 @@ Style/StringHashKeys:
   StyleGuide: '#symbols-as-keys'
   Enabled: false
   VersionAdded: '0.52'
+  VersionChanged: '0.75'
+  Safe: false
 
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
