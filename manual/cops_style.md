@@ -6883,6 +6883,25 @@ end
 
 * [https://rubystyle.guide#no-else-with-unless](https://rubystyle.guide#no-else-with-unless)
 
+## Style/UnlessWithOperator
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | No | 0.75 | -
+
+This cop looks for *unless* with conditionals including operators.
+
+### Examples
+
+```ruby
+# bad
+return false unless foo && bar
+
+# good
+return false unless foo
+return false unless bar
+```
+
 ## Style/UnneededCapitalW
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

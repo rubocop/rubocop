@@ -3810,6 +3810,11 @@ Style/UnlessElse:
   Enabled: true
   VersionAdded: '0.9'
 
+Style/UnlessWithOperator:
+  Description: 'Do not use unless with conditionals including an operator.'
+  Enabled: false
+  VersionAdded: '0.75'
+
 Style/UnneededCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true

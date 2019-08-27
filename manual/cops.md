@@ -456,6 +456,7 @@ In the following section you find all available cops:
 * [Style/TrailingUnderscoreVariable](cops_style.md#styletrailingunderscorevariable)
 * [Style/TrivialAccessors](cops_style.md#styletrivialaccessors)
 * [Style/UnlessElse](cops_style.md#styleunlesselse)
+* [Style/UnlessWithOperator](cops_style.md#styleunlesswithoperator)
 * [Style/UnneededCapitalW](cops_style.md#styleunneededcapitalw)
 * [Style/UnneededCondition](cops_style.md#styleunneededcondition)
 * [Style/UnneededInterpolation](cops_style.md#styleunneededinterpolation)
