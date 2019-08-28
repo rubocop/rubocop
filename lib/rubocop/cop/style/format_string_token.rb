@@ -41,14 +41,7 @@ module RuboCop
       class FormatStringToken < Cop
         include ConfigurableEnforcedStyle
 
-        FIELD_CHARACTERS = Regexp.union(%w[A B E G X a b c d e f g i o p s u x])
         FORMAT_STRING_METHODS = %i[sprintf format %].freeze
-
-        STYLE_PATTERNS = {
-          annotated: /(?<token>%<[^>]+>#{FIELD_CHARACTERS})/,
-          template: /(?<token>%\{[^\}]+\})/,
-          unannotated: /(?<token>%#{FIELD_CHARACTERS})/
-        }.freeze
 
         def on_str(node)
           return if placeholder_argument?(node)
@@ -113,41 +106,18 @@ module RuboCop
         end
 
         def token_ranges(contents)
-          while (offending_match = match_token(contents))
-            detected_style, *range = *offending_match
-            token, contents = split_token(contents, *range)
+          format_string = RuboCop::Cop::Utils::FormatString.new(contents.source)
+
+          format_string.format_sequences.each do |seq|
+            detected_style = seq.style
+            token = slice_source(
+              contents,
+              contents.begin_pos + seq.begin_pos,
+              contents.begin_pos + seq.end_pos
+            )
+
             yield(detected_style, token)
           end
-        end
-
-        def match_token(source_range)
-          supported_styles.each do |style_name|
-            pattern = STYLE_PATTERNS.fetch(style_name)
-            match = source_range.source.match(pattern)
-            next unless match
-
-            return [style_name, match.begin(:token), match.end(:token)]
-          end
-
-          nil
-        end
-
-        def split_token(source_range, match_begin, match_end)
-          token =
-            slice_source(
-              source_range,
-              source_range.begin_pos + match_begin,
-              source_range.begin_pos + match_end
-            )
-
-          remainder =
-            slice_source(
-              source_range,
-              source_range.begin_pos + match_end,
-              source_range.end_pos
-            )
-
-          [token, remainder]
         end
 
         def slice_source(source_range, new_begin, new_end)

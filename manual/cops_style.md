@@ -2169,7 +2169,7 @@ EnforcedStyle | `format` | `format`, `sprintf`, `percent`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.49 | 0.52
+Enabled | Yes | No | 0.49 | 0.75
 
 Use a consistent style for named format string tokens.
 

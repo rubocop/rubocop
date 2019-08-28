@@ -138,6 +138,14 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     RUBY
   end
 
+  it 'supports flags and modifiers' do
+    expect_offense(<<~RUBY)
+      format('%-20s %-30s', 'foo', 'bar')
+              ^^^^^ Prefer annotated tokens (like `%<foo>s`) over unannotated tokens (like `%s`).
+                    ^^^^^ Prefer annotated tokens (like `%<foo>s`) over unannotated tokens (like `%s`).
+    RUBY
+  end
+
   it 'handles __FILE__' do
     expect_no_offenses('__FILE__')
   end
