@@ -412,6 +412,7 @@ module RuboCop
                                          '  [c]lang',
                                          '  [d]isabled cops via inline comments',
                                          '  [fu]ubar',
+                                         '  [pa]cman',
                                          '  [e]macs',
                                          '  [j]son',
                                          '  [h]tml',

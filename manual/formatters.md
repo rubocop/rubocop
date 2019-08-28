@@ -64,7 +64,7 @@ lib/foo.rb:6:5: C: Style/Documentation: Missing top-level class documentation co
 26 files inspected, 46 offenses detected
 ```
 
-### Auto Gen Formatter 
+### Auto Gen Formatter
 
 Behaves like Progress Formatter except that it will not show any offenses.
 
@@ -118,6 +118,22 @@ lib/bar.rb:13:14: W: Lint/DeprecatedClassMethods: File.exists? is deprecated in 
         File.exists?(path)
              ^^^^^^^
  22/53 files |======== 43 ========>                           |  ETA: 00:00:02
+```
+
+### Pacman Style Formatter
+
+The `pacman` style formatter prints a PACDOT per every file to be analized. Pacman will "eat" one PACDOT per file when no offense is detected. Otherwise it will print a Ghost.
+This is inspired by the [Pacman](https://github.com/go-labs/rspec_pacman_formatter) formatter for RSpec.
+
+```sh
+$ rubocop --format pacman
+Eating 31 files
+src/foo.rb:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+src/bar.rb:14:15: C: Style/MutableConstant: Freeze mutable objects assigned to constants.
+      GHOST = 'ᗣ'
+              ^^^
+....ᗣ...ᗣ...ᗧ••••••••••••••••••
+31 examples, 2 failures
 ```
 
 ### Emacs Style Formatter
