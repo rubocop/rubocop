@@ -27,6 +27,7 @@
 * [#7312](https://github.com/rubocop-hq/rubocop/pull/7312): Mark `Style/StringHashKeys` as unsafe. ([@prathamesh-sonpatki][])
 * [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
 * [#3534](https://github.com/rubocop-hq/rubocop/issues/3534): Make `Style/IfUnlessModifier` report and auto-correct modifier lines that are too long. ([@jonas054][])
+* [#7261](https://github.com/rubocop-hq/rubocop/issues/7261): `Style/FrozenStringLiteralComment` no longer inserts an empty line after the comment. This is left to `Layout/EmptyLineAfterMagicComment`. ([@buehmann][])
 * [#7091](https://github.com/rubocop-hq/rubocop/issues/7091): `Style/FormatStringToken` now detects format sequences with flags and modifiers. ([@buehmann][])
 
 ## 0.74.0 (2019-07-31)

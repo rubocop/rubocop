@@ -137,7 +137,6 @@ RSpec.describe RuboCop::Cop::Team do
         corrected_source = File.read(file_path)
         expect(corrected_source).to eq(<<~RUBY)
           # frozen_string_literal: true
-
           puts 'string'
         RUBY
       end

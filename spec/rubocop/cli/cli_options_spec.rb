@@ -1102,23 +1102,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     def expect_offense_detected
       expect($stderr.string).to eq('')
       expect($stdout.string)
-        .to include('1 file inspected, 2 offenses detected')
+        .to include('1 file inspected, 1 offense detected')
       expect($stdout.string).to include 'Layout/IndentationWidth'
     end
 
     it 'fails when option is less than the severity level' do
-      expect(cli.run(['--fail-level', 'refactor', target_file])).to eq(1)
+      expect(cli.run(['--fail-level', 'refactor',
+                      '--only', 'Layout/IndentationWidth',
+                      target_file])).to eq(1)
       expect(cli.run(['--fail-level', 'autocorrect', target_file])).to eq(1)
       expect_offense_detected
     end
 
     it 'fails when option is equal to the severity level' do
-      expect(cli.run(['--fail-level', 'convention', target_file])).to eq(1)
+      expect(cli.run(['--fail-level', 'convention',
+                      '--only', 'Layout/IndentationWidth',
+                      target_file])).to eq(1)
       expect_offense_detected
     end
 
     it 'succeeds when option is greater than the severity level' do
-      expect(cli.run(['--fail-level', 'warning', target_file])).to eq(0)
+      expect(cli.run(['--fail-level', 'warning',
+                      '--only', 'Layout/IndentationWidth',
+                      target_file])).to eq(0)
       expect_offense_detected
     end
 
@@ -1126,6 +1132,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'outputs offense message when fail-level is less than the severity' do
         expect(cli.run(['--fail-level', 'refactor',
                         '--display-only-fail-level-offenses',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
         expect(cli.run(['--fail-level', 'autocorrect',
                         '--display-only-fail-level-offenses',
@@ -1136,6 +1143,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'outputs offense message when fail-level is equal to the severity' do
         expect(cli.run(['--fail-level', 'convention',
                         '--display-only-fail-level-offenses',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
         expect_offense_detected
       end
@@ -1143,6 +1151,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it "doesn't output offense message when less than the fail-level" do
         expect(cli.run(['--fail-level', 'warning',
                         '--display-only-fail-level-offenses',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq 0
         expect($stderr.string).to eq('')
         expect($stdout.string)
@@ -1191,14 +1200,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       def expect_auto_corrected
         expect_offense_detected
         expect($stdout.string.lines.to_a.last)
-          .to eq('1 file inspected, 2 offenses detected, ' \
-                 "2 offenses corrected\n")
+          .to eq('1 file inspected, 1 offense detected, ' \
+                 "1 offense corrected\n")
       end
 
       it 'fails when option is autocorrect and all offenses are ' \
          'autocorrected' do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         '--fail-level', 'autocorrect',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
         expect_auto_corrected
       end
@@ -1206,6 +1216,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'fails when option is A and all offenses are autocorrected' do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         '--fail-level', 'A',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
         expect_auto_corrected
       end
@@ -1213,6 +1224,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'succeeds when option is not given and all offenses are ' \
          'autocorrected' do
         expect(cli.run(['--auto-correct', '--format', 'simple',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(0)
         expect_auto_corrected
       end
@@ -1221,6 +1233,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'autocorrected' do
         expect(cli.run(['--auto-correct', '--format', 'simple',
                         '--fail-level', 'refactor',
+                        '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(0)
         expect_auto_corrected
       end

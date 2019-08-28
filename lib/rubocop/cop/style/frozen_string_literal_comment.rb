@@ -121,42 +121,25 @@ module RuboCop
         end
 
         def insert_comment(corrector)
-          last_special_comment = last_special_comment(processed_source)
-          if last_special_comment.nil?
-            corrector.insert_before(correction_range, preceding_comment)
+          comment = last_special_comment(processed_source)
+
+          if comment
+            corrector.insert_after(line_range(comment.line), following_comment)
           else
-            corrector.insert_after(correction_range, proceeding_comment)
+            corrector.insert_before(line_range(1), preceding_comment)
           end
+        end
+
+        def line_range(line)
+          processed_source.buffer.line_range(line)
         end
 
         def preceding_comment
-          if processed_source.tokens[0].space_before?
-            "#{FROZEN_STRING_LITERAL_ENABLED}\n"
-          else
-            "#{FROZEN_STRING_LITERAL_ENABLED}\n\n"
-          end
+          "#{FROZEN_STRING_LITERAL_ENABLED}\n"
         end
 
-        def proceeding_comment
-          last_special_comment = last_special_comment(processed_source)
-          following_line = processed_source.following_line(last_special_comment)
-
-          if following_line&.empty?
-            "\n#{FROZEN_STRING_LITERAL_ENABLED}"
-          else
-            "\n#{FROZEN_STRING_LITERAL_ENABLED}\n"
-          end
-        end
-
-        def correction_range
-          last_special_comment = last_special_comment(processed_source)
-
-          if last_special_comment.nil?
-            range_with_surrounding_space(range: processed_source.tokens[0],
-                                         side: :left)
-          else
-            last_special_comment.pos
-          end
+        def following_comment
+          "\n#{FROZEN_STRING_LITERAL_ENABLED}"
         end
       end
     end

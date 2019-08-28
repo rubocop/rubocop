@@ -765,12 +765,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
       C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
       C:  3:  1: Style/Documentation: Missing top-level class documentation comment.
       W:  4:  3: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
       W:  6: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
       W:  8:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
-      1 file inspected, 5 offenses detected, 4 offenses corrected
+      1 file inspected, 6 offenses detected, 5 offenses corrected
     RESULT
     corrected = <<~RUBY
       # frozen_string_literal: true
@@ -1167,23 +1168,22 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   it 'can handle spaces when removing braces' do
     create_file('example.rb',
                 ["assert_post_status_code 400, 's', {:type => 'bad'}"])
-    expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
+    exit_status = cli.run(
+      %w[--auto-correct --format emacs
+         --only SpaceInsideHashLiteralBraces,BracesAroundHashParameters]
+    )
+    expect(exit_status).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
-        # frozen_string_literal: true
-
-        assert_post_status_code 400, 's', type: 'bad'
+        assert_post_status_code 400, 's', :type => 'bad'
       RUBY
     e = abs('example.rb')
     # TODO: Don't report that a problem is corrected when it
     # actually went away due to another correction.
     expect($stdout.string).to eq(<<~RESULT)
-      #{e}:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
       #{e}:1:35: C: [Corrected] Layout/SpaceInsideHashLiteralBraces: Space inside { missing.
       #{e}:1:35: C: [Corrected] Style/BracesAroundHashParameters: Redundant curly braces around a hash parameter.
-      #{e}:1:36: C: [Corrected] Style/HashSyntax: Use the new Ruby 1.9 hash syntax.
       #{e}:1:50: C: [Corrected] Layout/SpaceInsideHashLiteralBraces: Space inside } missing.
-      #{e}:3:35: C: [Corrected] Style/BracesAroundHashParameters: Redundant curly braces around a hash parameter.
     RESULT
   end
 
@@ -1218,35 +1218,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         A = ["git", "path",]
       end
     RUBY
-    expect(cli.run(%w[--auto-correct --format emacs])).to eq(1)
+    exit_status = cli.run(
+      %w[--auto-correct --format emacs --only] << %w[
+        WordArray AccessModifierIndentation
+        Documentation TrailingCommaInArrayLiteral
+      ].join(',')
+    )
+    expect(exit_status).to eq(1)
     expect(IO.read('example.rb')).to eq(<<~RUBY)
-      # frozen_string_literal: true
-
       class Dsl
         private
-
-        A = %w[git path].freeze
+        A = %w[git path]
       end
     RUBY
     e = abs('example.rb')
     expect($stdout.string).to eq(<<~RESULT)
-      #{e}:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
+      #{e}:1:1: C: Style/Documentation: Missing top-level class documentation comment.
       #{e}:2:1: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
-      #{e}:2:1: C: [Corrected] Layout/EmptyLinesAroundAccessModifier: Keep a blank line after `private`.
-      #{e}:2:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 0) spaces for indentation.
-      #{e}:3:1: C: Style/Documentation: Missing top-level class documentation comment.
-      #{e}:3:7: C: [Corrected] Style/MutableConstant: Freeze mutable objects assigned to constants.
       #{e}:3:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
-      #{e}:3:8: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
-      #{e}:3:15: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       #{e}:3:21: C: [Corrected] Style/TrailingCommaInArrayLiteral: Avoid comma after the last item of an array.
-      #{e}:4:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
-      #{e}:4:3: W: Lint/UselessAccessModifier: Useless `private` access modifier.
-      #{e}:4:5: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
-      #{e}:6:1: C: [Corrected] Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.
-      #{e}:6:3: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
-      #{e}:6:5: C: [Corrected] Layout/IndentationConsistency: Inconsistent indentation detected.
-      #{e}:6:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
     RESULT
   end
 
@@ -1277,11 +1267,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       def func1; do_something end # comment
       def func2() do_1; do_2; end
     RUBY
-    expect(cli.run(%w[--auto-correct --format offenses])).to eq(0)
+    exit_status = cli.run(
+      %w[--auto-correct --format offenses --only] << %w[
+        SingleLineMethods Semicolon EmptyLineBetweenDefs
+        DefWithParentheses TrailingWhitespace
+      ].join(',')
+    )
+    expect(exit_status).to eq(0)
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       # comment
-      # frozen_string_literal: true
-
       def func1
         do_something
       end
@@ -1298,9 +1292,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       2   Style/SingleLineMethods
       1   Layout/EmptyLineBetweenDefs
       1   Style/DefWithParentheses
-      1   Style/FrozenStringLiteralComment
       --
-      14  Total
+      13  Total
 
     RESULT
   end
@@ -1313,11 +1306,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       fail NotImplementedError,
            'Method should be overridden in child classes'
     RUBY
-    expect(cli.run(['--auto-correct'])).to eq(0)
+    expect(cli.run(['--auto-correct', '--only',
+                    'SignalException,AlignArguments'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
-        # frozen_string_literal: true
-
         raise NotImplementedError,
               'Method should be overridden in child classes'
       RUBY
@@ -1327,17 +1319,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       Offenses:
 
-      example.rb:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-      fail NotImplementedError,
-      ^
       example.rb:1:1: C: [Corrected] Style/SignalException: Always use raise to signal exceptions.
       fail NotImplementedError,
       ^^^^
-      example.rb:4:6: C: [Corrected] Layout/AlignArguments: Align the arguments of a method call if they span more than one line.
+      example.rb:2:6: C: [Corrected] Layout/AlignArguments: Align the arguments of a method call if they span more than one line.
            'Method should be overridden in child classes'
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-      1 file inspected, 3 offenses detected, 3 offenses corrected
+      1 file inspected, 2 offenses detected, 2 offenses corrected
     RESULT
   end
 
@@ -1350,11 +1339,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                  '  ',
                  '  def f; end',
                  'end'])
-    expect(cli.run(['--auto-correct'])).to eq(0)
+    expect(cli.run(%w[--auto-correct --only
+                      TrailingWhitespace,EmptyLinesAroundClassBody])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
-        # frozen_string_literal: true
-
         # Example class.
         class Klass
           def f; end
@@ -1367,13 +1355,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       Offenses:
 
-      example.rb:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-      # Example class.
-      ^
+      example.rb:3:1: C: [Corrected] Layout/EmptyLinesAroundClassBody: Extra empty line detected at class body beginning.
       example.rb:3:1: C: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
-      example.rb:5:1: C: [Corrected] Layout/EmptyLinesAroundClassBody: Extra empty line detected at class body beginning.
 
-      1 file inspected, 3 offenses detected, 3 offenses corrected
+      1 file inspected, 2 offenses detected, 2 offenses corrected
     RESULT
   end
 
@@ -1383,39 +1368,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         1.upto(limit).select { |i| i.even? }
       end
     RUBY
-    expect(cli.run(%w[-D --auto-correct])).to eq(0)
+    expect(cli.run(%w[-D --auto-correct
+                      --only MethodDefParentheses,SymbolProc])).to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<~RUBY)
-      # frozen_string_literal: true
-
       def primes(limit)
         1.upto(limit).select(&:even?)
       end
     RUBY
-    expect($stdout.string)
-      .to eq(['Inspecting 1 file',
-              'C',
-              '',
-              'Offenses:',
-              '',
-              'example.rb:1:1: C: [Corrected] ' \
-              'Style/FrozenStringLiteralComment: Missing magic comment ' \
-              '# frozen_string_literal: true.',
-              'def primes limit',
-              '^',
-              'example.rb:1:12: C: [Corrected] ' \
-              'Style/MethodDefParentheses: ' \
-              'Use def with parentheses when there are parameters.',
-              'def primes limit',
-              '           ^^^^^',
-              'example.rb:2:24: C: [Corrected] Style/SymbolProc: ' \
-              'Pass &:even? as an argument to select instead of a block.',
-              '  1.upto(limit).select { |i| i.even? }',
-              '                       ^^^^^^^^^^^^^^^',
-              '',
-              '1 file inspected, 3 offenses detected, 3 offenses ' \
-              'corrected',
-              ''].join("\n"))
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      C
+
+      Offenses:
+
+      example.rb:1:12: C: [Corrected] Style/MethodDefParentheses: Use def with parentheses when there are parameters.
+      def primes limit
+                 ^^^^^
+      example.rb:2:24: C: [Corrected] Style/SymbolProc: Pass &:even? as an argument to select instead of a block.
+        1.upto(limit).select { |i| i.even? }
+                             ^^^^^^^^^^^^^^^
+
+      1 file inspected, 2 offenses detected, 2 offenses corrected
+    RESULT
   end
 
   it 'can correct WordArray and SpaceAfterComma offenses' do
@@ -1423,21 +1398,19 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       f(type: ['offline','offline_payment'],
         bar_colors: ['958c12','953579','ff5800','0085cc'])
     RUBY
-    expect(cli.run(%w[-D --auto-correct --format o])).to eq(0)
+    expect(cli.run(%w[-D --auto-correct --format o
+                      --only WordArray,SpaceAfterComma])).to eq(0)
     expect($stdout.string)
       .to eq(<<~RESULT)
 
         4  Layout/SpaceAfterComma
-        4  Style/WordArray
-        1  Style/FrozenStringLiteralComment
+        2  Style/WordArray
         --
-        9  Total
+        6  Total
 
       RESULT
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
-        # frozen_string_literal: true
-
         f(type: %w[offline offline_payment],
           bar_colors: %w[958c12 953579 ff5800 0085cc])
       RUBY
@@ -1446,43 +1419,31 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   it 'can correct SpaceAfterComma and HashSyntax offenses' do
     create_file('example.rb',
                 "I18n.t('description',:property_name => property.name)")
-    expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
+    expect(cli.run(%w[-D --auto-correct --format emacs
+                      --only SpaceAfterComma,HashSyntax])).to eq(0)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:1:1: C: [Corrected] " \
-              'Style/FrozenStringLiteralComment: Missing magic comment ' \
-              '`# frozen_string_literal: true`.',
-              "#{abs('example.rb')}:1:21: C: [Corrected] " \
+      .to eq(["#{abs('example.rb')}:1:21: C: [Corrected] " \
               'Layout/SpaceAfterComma: Space missing after comma.',
               "#{abs('example.rb')}:1:22: C: [Corrected] " \
               'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               ''].join("\n"))
     expect(IO.read('example.rb')).to eq(<<~RUBY)
-      # frozen_string_literal: true
-
       I18n.t('description', property_name: property.name)
     RUBY
   end
 
   it 'can correct HashSyntax and SpaceAroundOperators offenses' do
     create_file('example.rb', '{ :b=>1 }')
-    expect(cli.run(%w[-D --auto-correct --format emacs])).to eq(0)
+    expect(cli.run(%w[-D --auto-correct --format emacs
+                      --only HashSyntax,SpaceAroundOperators])).to eq(0)
     expect(IO.read('example.rb')).to eq(<<~RUBY)
-      # frozen_string_literal: true
-
       { b: 1 }
     RUBY
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:1:1: C: [Corrected] " \
-              'Style/FrozenStringLiteralComment: Missing magic comment ' \
-              '`# frozen_string_literal: true`.',
-              "#{abs('example.rb')}:1:3: C: [Corrected] " \
-              'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
-              "#{abs('example.rb')}:1:5: C: [Corrected] " \
-              'Layout/SpaceAroundOperators: Surrounding space missing for ' \
-              'operator `=>`.',
-              "#{abs('example.rb')}:3:3: C: [Corrected] " \
-              'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
-              ''].join("\n"))
+      .to eq(<<~RESULT)
+        #{abs('example.rb')}:1:3: C: [Corrected] Style/HashSyntax: Use the new Ruby 1.9 hash syntax.
+        #{abs('example.rb')}:1:5: C: [Corrected] Layout/SpaceAroundOperators: Surrounding space missing for operator `=>`.
+      RESULT
   end
 
   it 'can correct HashSyntax when --only is used' do
@@ -1515,16 +1476,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   it 'can correct MethodCallWithoutArgsParentheses and EmptyLiteral offenses' do
     create_file('example.rb', 'Hash.new()')
-    expect(cli.run(%w[--auto-correct --format emacs])).to eq(0)
+    exit_status = cli.run(
+      %w[--auto-correct --format emacs
+         --only MethodCallWithoutArgsParentheses,EmptyLiteral]
+    )
+    expect(exit_status).to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<~RUBY)
-      # frozen_string_literal: true
-
       {}
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
       #{abs('example.rb')}:1:1: C: [Corrected] Style/EmptyLiteral: Use hash literal `{}` instead of `Hash.new`.
-      #{abs('example.rb')}:1:1: C: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
       #{abs('example.rb')}:1:9: C: [Corrected] Style/MethodCallWithoutArgsParentheses: Do not use parentheses for method calls with no arguments.
     RESULT
   end
@@ -1565,8 +1527,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     RUBY
     corrected = <<~RUBY
-      # frozen_string_literal: true
-
       func a do b end
       Signal.trap('TERM') { system(cmd); exit }
       def self.some_method(foo, bar: 1)
@@ -1578,17 +1538,19 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         TargetRubyVersion: 2.3
     YAML
     create_file('example.rb', src)
-    expect(cli.run(%w[-a -f simple])).to eq(1)
+    exit_status = cli.run(
+      %w[-a -f simple --only BlockDelimiters,Semicolon,UnusedMethodArgument]
+    )
+    expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
-      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-      C:  3:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
-      C:  4: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
-      W:  5: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
+      C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
+      C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
+      W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
-      1 file inspected, 4 offenses detected, 1 offense corrected
+      1 file inspected, 3 offenses detected
     RESULT
   end
 
