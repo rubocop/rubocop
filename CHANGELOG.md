@@ -24,6 +24,7 @@
 
 ### Changes
 
+* [#7312](https://github.com/rubocop-hq/rubocop/pull/7312): Mark `Style/StringHashKeys` as unsafe. ([@prathamesh-sonpatki][])
 * [#7275](https://github.com/rubocop-hq/rubocop/issues/7275): Make `Style/VariableName` aware argument names when invoking a method. ([@koic][])
 * [#3534](https://github.com/rubocop-hq/rubocop/issues/3534): Make `Style/IfUnlessModifier` report and auto-correct modifier lines that are too long. ([@jonas054][])
 
@@ -4179,3 +4180,4 @@
 [@buehmann]: https://github.com/buehmann
 [@halfwhole]: https://github.com/halfwhole
 [@riley-klingler]: https://github.com/riley-klingler
+[@prathamesh-sonpatki]: https://github.com/prathamesh-sonpatki
