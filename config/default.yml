@@ -1989,6 +1989,13 @@ Naming/MethodName:
   SupportedStyles:
     - snake_case
     - camelCase
+  # Method names matching patterns are always allowed.
+  #
+  #   IgnoredPatterns:
+  #     - '\A\s*onSelectionBulkChange\s*'
+  #     - '\A\s*onSelectionCleared\s*'
+  #
+  IgnoredPatterns: []
 
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
