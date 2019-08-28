@@ -23,35 +23,8 @@ module RuboCop
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
               'match the number of fields (%<field_num>i).'
 
-        FLAG = /[\s#+-0\*]/.freeze
-        WIDTH = /(?:\d+)/.freeze
-        PRECISION = /(?:\.\d+)/.freeze
-        TYPE = /[bBdiouxXeEfgGaAcps]/.freeze
-
-        # The syntax of a format sequence is as follows.
-        #
-        # ```
-        # %[flags][width][.precision]type
-        # ```
-        #
-        # A format sequence consists of a percent sign, followed by optional
-        # flags, width, and precision indicators, then terminated with a field
-        # type character.
-        #
-        # @see https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-format
-        FIELD_REGEX =
-          /(%(?:(#{FLAG}*)#{WIDTH}?#{PRECISION}?#{TYPE}|%))/.freeze
-
-        NAME = /(?:<\w+>|\{\w+\})/.freeze
-
-        # For more complex formatting, Ruby supports a reference by name.
-        NAMED_INTERPOLATION =
-          /(?:\A|[^%])%#{FLAG}*#{WIDTH}?#{PRECISION}?#{NAME}/.freeze
-
         KERNEL = 'Kernel'
         SHOVEL = '<<'
-        PERCENT_PERCENT = '%%'
-        DIGIT_DOLLAR_FLAG = /%(\d+)\$/.freeze
         STRING_TYPES = %i[str dstr].freeze
 
         def on_send(node)
@@ -138,27 +111,17 @@ module RuboCop
 
         def expected_fields_count(node)
           return :unknown unless node.str_type?
-          return 1 if node.source =~ NAMED_INTERPOLATION
 
-          max_digit_dollar_num = max_digit_dollar_num(node)
+          format_string = RuboCop::Cop::Utils::FormatString.new(node.source)
+          return 1 if format_string.named_interpolation?
+
+          max_digit_dollar_num = format_string.max_digit_dollar_num
           return max_digit_dollar_num if max_digit_dollar_num&.nonzero?
 
-          node
-            .source
-            .scan(FIELD_REGEX)
-            .reject { |x| x.first == PERCENT_PERCENT }
-            .reduce(0) { |acc, (_, flags)| acc + arguments_count(flags) }
-        end
-
-        def max_digit_dollar_num(node)
-          node.source.scan(DIGIT_DOLLAR_FLAG).map do |(digit_dollar_num)|
-            digit_dollar_num.to_i
-          end.max
-        end
-
-        # number of arguments required for the format sequence
-        def arguments_count(format)
-          format.scan('*').count + 1
+          format_string
+            .format_sequences
+            .reject(&:percent?)
+            .reduce(0) { |acc, seq| acc + seq.arity }
         end
 
         def format?(node)

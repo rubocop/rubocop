@@ -2711,7 +2711,7 @@ Style/FormatStringToken:
     - template
     - unannotated
   VersionAdded: '0.49'
-  VersionChanged: '0.52'
+  VersionChanged: '0.75'
 
 Style/FrozenStringLiteralComment:
   Description: >-
