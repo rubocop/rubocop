@@ -2711,7 +2711,7 @@ Style/FormatStringToken:
     - template
     - unannotated
   VersionAdded: '0.49'
-  VersionChanged: '0.52'
+  VersionChanged: '0.75'
 
 Style/FrozenStringLiteralComment:
   Description: >-
@@ -3591,6 +3591,8 @@ Style/StringHashKeys:
   StyleGuide: '#symbols-as-keys'
   Enabled: false
   VersionAdded: '0.52'
+  VersionChanged: '0.75'
+  Safe: false
 
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'

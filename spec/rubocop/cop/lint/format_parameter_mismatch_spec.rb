@@ -197,10 +197,6 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect_no_offenses('format("%0*x", max_width, id)')
   end
 
-  it 'accepts an extra arg for dynamic width with other following flags' do
-    expect_no_offenses('format("%*0x", max_width, id)')
-  end
-
   it 'does not register an offense argument is the result of a message send' do
     expect_no_offenses('format("%s", "a b c".gsub(" ", "_"))')
   end
@@ -288,76 +284,4 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
       expect_no_offenses('format("%*.*f %*.*f", 10, 2, 20.19, 5, 1, 11.22)')
     end
   end
-
-  it 'finds the correct number of fields' do
-    expect(''.scan(described_class::FIELD_REGEX).size)
-      .to eq(0)
-    expect('%s'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%s %s'.scan(described_class::FIELD_REGEX).size)
-      .to eq(2)
-    expect('%s %s %%'.scan(described_class::FIELD_REGEX).size)
-      .to eq(3)
-    expect('%s %s %%'.scan(described_class::FIELD_REGEX).size)
-      .to eq(3)
-    expect('% d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%+d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%+o'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%#o'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%.0e'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%#.0e'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('% 020d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%20d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%+20d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%020d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%+020d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('% 020d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%-20d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%-+20d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%- 20d'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%020x'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%#20.8x'.scan(described_class::FIELD_REGEX).size)
-      .to eq(1)
-    expect('%+g:% g:%-g'.scan(described_class::FIELD_REGEX).size)
-      .to eq(3)
-    expect('%+-d'.scan(described_class::FIELD_REGEX).size) # multiple flags
-      .to eq(1)
-  end
-
-  shared_examples 'named format sequence' do |format_string|
-    it 'detects named format sequence' do
-      expect(described_class::NAMED_INTERPOLATION).to match(format_string)
-    end
-
-    it 'does not detect escaped named format sequence' do
-      escaped = format_string.gsub(/%/, '%%')
-      regexp = described_class::NAMED_INTERPOLATION
-
-      expect(regexp).not_to match(escaped)
-      expect(regexp).not_to match('prefix:' + escaped)
-    end
-  end
-
-  it_behaves_like 'named format sequence', '%<greeting>2s'
-  it_behaves_like 'named format sequence', '%2<greeting>s'
-  it_behaves_like 'named format sequence', '%+0<num>8.2f'
-  it_behaves_like 'named format sequence', '%+08<num>.2f'
 end

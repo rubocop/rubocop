@@ -2169,7 +2169,7 @@ EnforcedStyle | `format` | `format`, `sprintf`, `percent`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.49 | 0.52
+Enabled | Yes | No | 0.49 | 0.75
 
 Use a consistent style for named format string tokens.
 
@@ -6143,7 +6143,7 @@ warn('hello')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.52 | -
+Disabled | No | Yes  | 0.52 | 0.75
 
 This cop checks for the use of strings as keys in hashes. The use of
 symbols is preferred instead.

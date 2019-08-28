@@ -5,7 +5,7 @@ module RuboCop
     # Common functionality for Rails safe mode.
     module SafeMode
       warn 'The `SafeMode` option will be removed in `RuboCop` 0.76. ' \
-        'Please update `rubocop-performance` to 1.15.0 or higher.'
+        'Please update `rubocop-performance` to 1.5.0 or higher.'
 
       private
 

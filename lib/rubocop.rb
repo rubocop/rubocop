@@ -158,6 +158,8 @@ require_relative 'rubocop/cop/mixin/trailing_comma'
 require_relative 'rubocop/cop/mixin/uncommunicative_name'
 require_relative 'rubocop/cop/mixin/unused_argument'
 
+require_relative 'rubocop/cop/utils/format_string'
+
 require_relative 'rubocop/cop/correctors/alignment_corrector'
 require_relative 'rubocop/cop/correctors/condition_corrector'
 require_relative 'rubocop/cop/correctors/each_to_for_corrector'
