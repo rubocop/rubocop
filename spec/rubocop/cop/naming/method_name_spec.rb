@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
   end
 
-  shared_examples 'always accepted' do
+  shared_examples 'always accepted' do |enforced_style|
     it 'accepts one line methods' do
       expect_no_offenses("def body; '' end")
     end
@@ -84,6 +84,34 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
                 end
               end
             end
+          end
+        RUBY
+      end
+    end
+
+    context 'when specifying `IgnoredPatterns`' do
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => enforced_style,
+          'IgnoredPatterns' => [
+            '\A\s*onSelectionBulkChange\s*',
+            '\A\s*on_selection_cleared\s*'
+          ]
+        }
+      end
+
+      it 'does not register an offense for camel case method name ' \
+         ' matching `IgnoredPatterns`' do
+        expect_no_offenses(<<~RUBY)
+          def onSelectionBulkChange(arg)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for snake case method name ' \
+         ' matching `IgnoredPatterns`' do
+        expect_no_offenses(<<~RUBY)
+          def on_selection_cleared(arg)
           end
         RUBY
       end
