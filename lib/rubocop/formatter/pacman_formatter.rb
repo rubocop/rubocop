@@ -25,7 +25,6 @@ module RuboCop
 
       def started(target_files)
         super
-        @offenses_for_files = {}
         @total_files = target_files.size
         output.puts "Eating #{pluralize(target_files.size, 'file')}"
         update_progress_line
@@ -36,10 +35,7 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
-        unless offenses.empty?
-          count_stats(offenses)
-          @offenses_for_files[file] = offenses
-        end
+        count_stats(offenses) unless offenses.empty?
         next_step(offenses)
         report_file(file, offenses)
       end
@@ -59,15 +55,14 @@ module RuboCop
       end
 
       def update_progress_line
-        if @total_files > cols
-          if (@total_files / cols).eql?(@repetitions)
-            @progress_line = PACDOT * (@total_files - (cols * @repetitions))
-            return
-          end
-          @progress_line = PACDOT * cols
-          return
-        end
-        @progress_line = PACDOT * @total_files
+        return pacdots(@total_files) unless @total_files > cols
+        return pacdots(cols) unless (@total_files / cols).eql?(@repetitions)
+
+        pacdots((@total_files - (cols * @repetitions)))
+      end
+
+      def pacdots(number)
+        @progress_line = PACDOT * number
       end
 
       def step(character)
