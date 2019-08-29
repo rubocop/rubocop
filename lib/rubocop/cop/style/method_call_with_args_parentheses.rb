@@ -9,7 +9,7 @@ module RuboCop
       #
       # In the default style (require_parentheses), macro methods are ignored.
       # Additional methods can be added to the `IgnoredMethods`
-      # or `IgnoredMethodPatterns` list. These options are
+      # or `IgnoredPatterns` list. These options are
       # valid only in the default style. Macros can be included by
       # either setting `IgnoreMacros` to false or adding specific macros to
       # the `IncludedMacros` list.
@@ -17,7 +17,7 @@ module RuboCop
       # Precedence of options is all follows:
       #
       # 1. `IgnoredMethods`
-      # 2. `IgnoredMethodPatterns`
+      # 2. `IgnoredPatterns`
       # 3. `IncludedMacros`
       #
       # eg. If a method is listed in both
@@ -61,7 +61,7 @@ module RuboCop
       #   # okay with `puts` listed in `IgnoredMethods`
       #   puts 'test'
       #
-      #   # okay with `^assert` listed in `IgnoredMethodPatterns`
+      #   # okay with `^assert` listed in `IgnoredPatterns`
       #   assert_equal 'test', x
       #
       #   # IgnoreMacros: true (default)
@@ -148,7 +148,7 @@ module RuboCop
       class MethodCallWithArgsParentheses < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
-        include IgnoredMethodPatterns
+        include IgnoredPattern
 
         TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
 
@@ -186,7 +186,7 @@ module RuboCop
 
         def add_offense_for_require_parentheses(node)
           return if ignored_method?(node.method_name)
-          return if ignored_method_pattern?(node.method_name)
+          return if matches_ignored_pattern?(node.method_name)
           return if eligible_for_parentheses_omission?(node)
           return unless node.arguments? && !node.parenthesized?
 
