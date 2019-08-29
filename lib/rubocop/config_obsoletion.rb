@@ -119,6 +119,12 @@ module RuboCop
         cops: 'Rails/UniqBeforePluck',
         parameters: 'EnforcedMode',
         alternative: '`EnforcedMode` has been renamed to `EnforcedStyle`'
+      },
+      {
+        cops: 'Style/MethodCallWithArgsParentheses',
+        parameters: 'IgnoredMethodPatterns',
+        alternative: '`IgnoredMethodPatterns` has been renamed to ' \
+                     '`IgnoredPatterns`'
       }
     ].freeze
 
