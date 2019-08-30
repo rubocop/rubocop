@@ -8,6 +8,7 @@
 * [#7272](https://github.com/rubocop-hq/rubocop/pull/7272): Show warning message if passed string to `Enabled`, `Safe`, `SafeAutocorrect`, and `AutoCorrect` keys in .rubocop.yml. ([@unasuke][])
 * [#7295](https://github.com/rubocop-hq/rubocop/pull/7295): Make it possible to set `StyleGuideBaseURL` per department. ([@koic][])
 * [#7301](https://github.com/rubocop-hq/rubocop/pull/7301): Add check for calls to `remote_byebug` to `Lint/Debugger` cop. ([@riley-klingler][])
+* [#7321](https://github.com/rubocop-hq/rubocop/issues/7321): Allow YAML aliases in `.rubocop.yml`. ([@raymondfallon][])
 
 ### Bug fixes
 
@@ -4183,3 +4184,4 @@
 [@halfwhole]: https://github.com/halfwhole
 [@riley-klingler]: https://github.com/riley-klingler
 [@prathamesh-sonpatki]: https://github.com/prathamesh-sonpatki
+[@raymondfallon]: https://github.com/raymondfallon
