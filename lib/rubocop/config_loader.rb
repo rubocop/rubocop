@@ -258,11 +258,11 @@ module RuboCop
             yaml_code,
             permitted_classes: [Regexp, Symbol],
             permitted_symbols: [],
-            aliases: false,
+            aliases: true,
             filename: filename
           )
         else
-          YAML.safe_load(yaml_code, [Regexp, Symbol], [], false, filename)
+          YAML.safe_load(yaml_code, [Regexp, Symbol], [], true, filename)
         end
       end
     end
