@@ -73,6 +73,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                  [c]lang
                                                  [d]isabled cops via inline comments
                                                  [fu]ubar
+                                                 [pa]cman
                                                  [e]macs
                                                  [j]son
                                                  [h]tml

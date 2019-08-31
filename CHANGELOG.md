@@ -9,6 +9,7 @@
 * [#7295](https://github.com/rubocop-hq/rubocop/pull/7295): Make it possible to set `StyleGuideBaseURL` per department. ([@koic][])
 * [#7301](https://github.com/rubocop-hq/rubocop/pull/7301): Add check for calls to `remote_byebug` to `Lint/Debugger` cop. ([@riley-klingler][])
 * [#7321](https://github.com/rubocop-hq/rubocop/issues/7321): Allow YAML aliases in `.rubocop.yml`. ([@raymondfallon][])
+* [#7317](https://github.com/rubocop-hq/rubocop/pull/7317): Add new formatter `pacman`. ([@crojasaragonez][])
 * [#6075](https://github.com/rubocop-hq/rubocop/issues/6075): Support `IgnoredPatterns` option for `Naming/MethodName` cop. ([@koic][])
 
 ### Bug fixes
@@ -4187,3 +4188,4 @@
 [@riley-klingler]: https://github.com/riley-klingler
 [@prathamesh-sonpatki]: https://github.com/prathamesh-sonpatki
 [@raymondfallon]: https://github.com/raymondfallon
+[@crojasaragonez]: https://github.com/crojasaragonez

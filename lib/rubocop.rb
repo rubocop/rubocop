@@ -580,6 +580,7 @@ require_relative 'rubocop/formatter/progress_formatter'
 require_relative 'rubocop/formatter/quiet_formatter'
 require_relative 'rubocop/formatter/tap_formatter'
 require_relative 'rubocop/formatter/worst_offenders_formatter'
+require_relative 'rubocop/formatter/pacman_formatter'
 # relies on progress formatter
 require_relative 'rubocop/formatter/auto_gen_config_formatter'
 
