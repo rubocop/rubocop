@@ -155,10 +155,10 @@ module RuboCop
           if cop.relevant_file?(file)
             cop.check(offenses, source.disabled_line_ranges, source.comments)
             offenses += cop.offenses
-            autocorrect_unneeded_disables(source, cop)
+            offenses += autocorrect_unneeded_disables(file, source, cop,
+                                                      offenses)
           end
         end
-        offenses
       end
 
       offenses.sort.reject(&:disabled?).freeze
@@ -172,14 +172,20 @@ module RuboCop
       @options[:except] || @options[:only]
     end
 
-    def autocorrect_unneeded_disables(source, cop)
+    def autocorrect_unneeded_disables(file, source, cop, offenses)
       cop.processed_source = source
 
-      Cop::Team.new(
-        RuboCop::Cop::Registry.new,
-        nil,
-        @options
-      ).autocorrect(source.buffer, [cop])
+      team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
+      team.autocorrect(source.buffer, [cop])
+
+      return [] unless team.updated_source_file?
+
+      # Do one extra inspection loop if any unneeded disables were
+      # removed. This is done in order to find rubocop:enable directives that
+      # have now become useless.
+      _source, new_offenses = do_inspection_loop(file,
+                                                 get_processed_source(file))
+      new_offenses - offenses
     end
 
     def file_started(file)
