@@ -1570,6 +1570,29 @@ rather than meant to be part of the resulting symbols.
 %i(foo bar)
 ```
 
+## Lint/RaiseException
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.75 | -
+
+This cop checks for `raise` or `fail` statements which are
+raising `Exception` class.
+
+### Examples
+
+```ruby
+# bad
+raise Exception, 'Error message here'
+
+# good
+raise StandardError, 'Error message here'
+```
+
+### References
+
+* [https://rubystyle.guide#raise-exception](https://rubystyle.guide#raise-exception)
+
 ## Lint/RandOne
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

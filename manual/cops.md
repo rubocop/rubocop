@@ -220,6 +220,7 @@ In the following section you find all available cops:
 * [Lint/ParenthesesAsGroupedExpression](cops_lint.md#lintparenthesesasgroupedexpression)
 * [Lint/PercentStringArray](cops_lint.md#lintpercentstringarray)
 * [Lint/PercentSymbolArray](cops_lint.md#lintpercentsymbolarray)
+* [Lint/RaiseException](cops_lint.md#lintraiseexception)
 * [Lint/RandOne](cops_lint.md#lintrandone)
 * [Lint/RedundantCopDisableDirective](cops_lint.md#lintredundantcopdisabledirective)
 * [Lint/RedundantCopEnableDirective](cops_lint.md#lintredundantcopenabledirective)

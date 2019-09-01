@@ -1505,6 +1505,12 @@ Lint/PercentSymbolArray:
   Enabled: true
   VersionAdded: '0.41'
 
+Lint/RaiseException:
+  Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
+  StyleGuide: '#raise-exception'
+  Enabled: true
+  VersionAdded: '0.75'
+
 Lint/RandOne:
   Description: >-
                  Checks for `rand(1)` calls. Such calls always return `0`
