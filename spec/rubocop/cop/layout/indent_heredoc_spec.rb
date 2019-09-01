@@ -32,21 +32,6 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     end
   end
 
-  shared_examples 'check message' do |name, message, code = nil|
-    it "displays a message with #{name}" do
-      if code
-        inspect_source(code.strip_indent)
-      else
-        inspect_source(<<~RUBY)
-          <<-RUBY2
-          foo
-          RUBY2
-        RUBY
-      end
-      expect(cop.messages).to eq(message)
-    end
-  end
-
   shared_examples 'warning' do |message|
     it 'warns' do
       correct = lambda do
@@ -179,11 +164,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY
       end
 
-      include_examples 'check message', 'suggestion powerpack',
-                       [
-                         'Use 2 spaces for indentation in a heredoc by using ' \
-                         '`String#strip_indent`.'
-                       ]
+      it 'displays a message with suggestion powerpack' do
+        expect_offense(<<~RUBY)
+          <<-RUBY2
+          foo
+          ^^^ Use 2 spaces for indentation in a heredoc by using `String#strip_indent`.
+          RUBY2
+        RUBY
+      end
 
       context 'EnforcedStyle is `squiggly`' do
         let(:cop_config) do
