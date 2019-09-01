@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
 
   shared_examples 'accept' do |name, code|
     it "accepts for #{name}" do
-      expect_no_offenses(code.strip_indent)
+      expect_no_offenses(code)
     end
   end
 
@@ -117,28 +117,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY
       end
 
-      include_examples 'accept', 'indented, but with `-`', <<-RUBY
+      include_examples 'accept', 'indented, but with `-`', <<~RUBY
         def foo
           <<-#{quote}RUBY2#{quote}
             something
           RUBY2
         end
       RUBY
-      include_examples 'accept', 'not indented but with whitespace', <<-RUBY
+      include_examples 'accept', 'not indented but with whitespace', <<~RUBY
         def foo
           <<#{quote}RUBY2#{quote}
           something
         RUBY2
         end
       RUBY
-      include_examples 'accept', 'indented, but without `~`', <<-RUBY
+      include_examples 'accept', 'indented, but without `~`', <<~RUBY
         def foo
           <<#{quote}RUBY2#{quote}
             something
         RUBY2
         end
       RUBY
-      include_examples 'accept', 'an empty line', <<-RUBY
+      include_examples 'accept', 'an empty line', <<~RUBY
         <<-#{quote}RUBY2#{quote}
 
         RUBY2
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
 
-        include_examples 'accept', 'long heredoc', <<-RUBY
+        include_examples 'accept', 'long heredoc', <<~RUBY
           <<#{quote}RUBY2#{quote}
           12345678
           RUBY2
@@ -247,12 +247,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         RUBY2
         CORRECTION
 
-        include_examples 'accept', 'indented, with `~`', <<-RUBY
+        include_examples 'accept', 'indented, with `~`', <<~RUBY
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
         RUBY
-        include_examples 'accept', 'include empty lines', <<-RUBY
+        include_examples 'accept', 'include empty lines', <<~RUBY
           <<~#{quote}MSG#{quote}
 
             foo
