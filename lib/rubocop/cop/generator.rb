@@ -10,10 +10,10 @@ module RuboCop
       # Note: RDoc 5.1.0 or lower has the following issue.
       # https://github.com/rubocop-hq/rubocop/issues/7043
       #
-      # The following `String#strip_indent` can be replaced with
+      # The following `String#gsub` can be replaced with
       # squiggly heredoc when RuboCop supports Ruby 2.5 or higher
       # (RDoc 6.0 or higher).
-      SOURCE_TEMPLATE = <<-RUBY.strip_indent
+      SOURCE_TEMPLATE = <<-RUBY.gsub(/^ {8}/, '')
         # frozen_string_literal: true
 
         # TODO: when finished, run `rake generate_cops_documentation` to update the docs
