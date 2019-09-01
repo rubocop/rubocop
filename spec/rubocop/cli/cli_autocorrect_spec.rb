@@ -753,6 +753,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       class A
         # rubocop:disable Metrics/MethodLength
         def func
+          # rubocop:enable Metrics/MethodLength
           x = foo # rubocop:disable Lint/UselessAssignment,Style/For
           # rubocop:disable all
           # rubocop:disable Style/ClassVars
@@ -768,10 +769,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
       C:  3:  1: Style/Documentation: Missing top-level class documentation comment.
       W:  4:  3: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
-      W:  6: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
-      W:  8:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
+      C:  5:  1: [Corrected] Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+      C:  5:  1: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
+      W:  5: 22: [Corrected] Lint/UnneededCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
+      W:  7: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
+      W:  9:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
-      1 file inspected, 6 offenses detected, 5 offenses corrected
+      1 file inspected, 9 offenses detected, 8 offenses corrected
     RESULT
     corrected = <<~RUBY
       # frozen_string_literal: true
