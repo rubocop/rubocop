@@ -10,19 +10,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
     }
   end
 
-  shared_examples 'offense' do |name, code, correction = nil, strip_fix = true|
+  shared_examples 'offense' do |name, code, correction = nil|
     it "registers an offense for #{name}" do
-      inspect_source(code.strip_indent)
+      inspect_source(code)
       expect(cop.offenses.size).to eq(1)
     end
 
     it "autocorrects for #{name}" do
-      corrected = autocorrect_source_with_loop(code.strip_indent)
-      if strip_fix
-        expect(corrected).to eq(correction.strip_indent)
-      else
-        expect(corrected).to eq(correction)
-      end
+      corrected = autocorrect_source_with_loop(code)
+      expect(corrected).to eq(correction)
     end
   end
 
@@ -51,7 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         { 'EnforcedStyle' => :powerpack }
       end
 
-      include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
+      include_examples 'offense', 'not indented', <<~RUBY, <<~CORRECTION
         <<#{quote}RUBY2#{quote}
         \#{foo}
         bar
@@ -62,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           bar
         RUBY2
       CORRECTION
-      include_examples 'offense', 'minus level indented', <<-RUBY, <<-CORRECTION
+      include_examples 'offense', 'minus level indented', <<~RUBY, <<~CORRECTION
         def foo
           <<#{quote}RUBY2#{quote}
         \#{foo}
@@ -78,33 +74,33 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
         end
       CORRECTION
       include_examples 'offense', 'not indented, with `-`',
-                       <<-RUBY, <<-CORRECTION
-        <<-#{quote}RUBY2#{quote}
-        \#{foo}
-        bar
-        RUBY2
-      RUBY
-        <<-#{quote}RUBY2#{quote}.strip_indent
-          \#{foo}
-          bar
-        RUBY2
-      CORRECTION
+                       <<~RUBY, <<~CORRECTION
+                         <<-#{quote}RUBY2#{quote}
+                         \#{foo}
+                         bar
+                         RUBY2
+                       RUBY
+                         <<-#{quote}RUBY2#{quote}.strip_indent
+                           \#{foo}
+                           bar
+                         RUBY2
+                       CORRECTION
       include_examples 'offense', 'minus level indented, with `-`',
-                       <<-RUBY, <<-CORRECTION
-        def foo
-          <<-#{quote}RUBY2#{quote}
-        \#{foo}
-        bar
-          RUBY2
-        end
-      RUBY
-        def foo
-          <<-#{quote}RUBY2#{quote}.strip_indent
-            \#{foo}
-            bar
-          RUBY2
-        end
-      CORRECTION
+                       <<~RUBY, <<~CORRECTION
+                         def foo
+                           <<-#{quote}RUBY2#{quote}
+                         \#{foo}
+                         bar
+                           RUBY2
+                         end
+                       RUBY
+                         def foo
+                           <<-#{quote}RUBY2#{quote}.strip_indent
+                             \#{foo}
+                             bar
+                           RUBY2
+                         end
+                       CORRECTION
 
       it 'does not register an offense when not indented but with ' \
          'whitespace, with `-`' do
@@ -147,7 +143,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
       context 'when Metrics/LineLength is configured' do
         let(:allow_heredoc) { false }
 
-        include_examples 'offense', 'short heredoc', <<-RUBY, <<-CORRECTION
+        include_examples 'offense', 'short heredoc', <<~RUBY, <<~CORRECTION
           <<#{quote}RUBY2#{quote}
           12
           RUBY2
@@ -178,7 +174,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           { 'EnforcedStyle' => :squiggly }
         end
 
-        include_examples 'offense', 'not indented', <<-RUBY, <<-CORRECTION
+        include_examples 'offense', 'not indented', <<~RUBY, <<~CORRECTION
           <<~#{quote}RUBY2#{quote}
           something
           RUBY2
@@ -188,20 +184,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
         include_examples 'offense', 'minus level indented',
-                         <<-RUBY, <<-CORRECTION
-          def foo
-            <<~#{quote}RUBY2#{quote}
-          something
-            RUBY2
-          end
-        RUBY
-          def foo
-            <<~#{quote}RUBY2#{quote}
-              something
-            RUBY2
-          end
-        CORRECTION
-        include_examples 'offense', 'too deep indented', <<-RUBY, <<-CORRECTION
+                         <<~RUBY, <<~CORRECTION
+                           def foo
+                             <<~#{quote}RUBY2#{quote}
+                           something
+                             RUBY2
+                           end
+                         RUBY
+                           def foo
+                             <<~#{quote}RUBY2#{quote}
+                               something
+                             RUBY2
+                           end
+                         CORRECTION
+        include_examples 'offense', 'too deep indented', <<~RUBY, <<~CORRECTION
           <<~#{quote}RUBY2#{quote}
               something
           RUBY2
@@ -211,35 +207,35 @@ RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
           RUBY2
         CORRECTION
         include_examples 'offense', 'not indented, without `~`',
-                         <<-RUBY, <<-CORRECTION
-          <<#{quote}RUBY2#{quote}
-          foo
-          RUBY2
-        RUBY
-          <<~#{quote}RUBY2#{quote}
-            foo
-          RUBY2
-        CORRECTION
+                         <<~RUBY, <<~CORRECTION
+                           <<#{quote}RUBY2#{quote}
+                           foo
+                           RUBY2
+                         RUBY
+                           <<~#{quote}RUBY2#{quote}
+                             foo
+                           RUBY2
+                         CORRECTION
 
         include_examples 'offense', 'not indented, with `~`',
-                         <<-RUBY, <<-CORRECTION
-          <<~#{quote}RUBY2#{quote}
-          foo
-          RUBY2
-        RUBY
-          <<~#{quote}RUBY2#{quote}
-            foo
-          RUBY2
-        CORRECTION
+                         <<~RUBY, <<~CORRECTION
+                           <<~#{quote}RUBY2#{quote}
+                           foo
+                           RUBY2
+                         RUBY
+                           <<~#{quote}RUBY2#{quote}
+                             foo
+                           RUBY2
+                         CORRECTION
 
         include_examples 'offense', 'first line minus-level indented, with `-`',
-                         <<-RUBY, <<-CORRECTION, false
-                  puts <<-#{quote}RUBY2#{quote}
-          def foo
-            bar
-          end
-          RUBY2
-        RUBY
+                         <<~RUBY, <<-CORRECTION
+                                   puts <<-#{quote}RUBY2#{quote}
+                           def foo
+                             bar
+                           end
+                           RUBY2
+                         RUBY
         puts <<~#{quote}RUBY2#{quote}
           def foo
             bar
