@@ -12,13 +12,13 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
         end
       end
     RUBY
-    body = str.strip_indent.each_line.map { |line| "    #{line}" }.join
+    body = str.each_line.map { |line| "    #{line}" }.join
     head + body + tail
   end
 
   %w[return next break retry redo throw raise fail exit exit! abort].each do |t|
     it "registers an offense for `#{t}` before other statements" do
-      expect_offense(wrap(<<-RUBY))
+      expect_offense(wrap(<<~RUBY))
         #{t}
         bar
         ^^^ Unreachable code detected.
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "registers an offense for `#{t}` in `begin`" do
-      expect_offense(wrap(<<-RUBY))
+      expect_offense(wrap(<<~RUBY))
         begin
           #{t}
           bar
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "registers an offense for `#{t}` in all `if` branches" do
-      expect_offense(wrap(<<-RUBY))
+      expect_offense(wrap(<<~RUBY))
         if cond
           #{t}
         else
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
 
     it "registers an offense for `#{t}` in all `if` branches" \
        'with other expressions' do
-      expect_offense(wrap(<<-RUBY))
+      expect_offense(wrap(<<~RUBY))
         if cond
           something
           #{t}
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "registers an offense for `#{t}` in all `if` and `elsif` branches" do
-      expect_offense(wrap(<<-RUBY))
+      expect_offense(wrap(<<~RUBY))
         if cond
           something
           #{t}
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "registers an offense for `#{t}` in all `case` branches" do
-      expect_offense(wrap(<<-RUBY))
+      expect_offense(wrap(<<~RUBY))
         case cond
         when 1
           something
@@ -98,20 +98,20 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts code with conditional `#{t}`" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         #{t} if cond
         bar
       RUBY
     end
 
     it "accepts `#{t}` as the final expression" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         #{t} if cond
       RUBY
     end
 
     it "accepts `#{t}` is in all `if` branchsi" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         if cond
           #{t}
         else
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts `#{t}` is in `if` branch only" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         if cond
           something
           #{t}
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts `#{t}` is in `if`, and without `else`" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         if cond
           something
           #{t}
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts `#{t}` is in `else` branch only" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         if cond
           something
         else
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts `#{t}` is not in `elsif` branch" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         if cond
           something
           #{t}
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
     end
 
     it "accepts `#{t}` is in `case` branch without else" do
-      expect_no_offenses(wrap(<<-RUBY))
+      expect_no_offenses(wrap(<<~RUBY))
         case cond
         when 1
           something
