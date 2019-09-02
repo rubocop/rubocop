@@ -37,7 +37,7 @@ module RuboCop
           !@references.empty?
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
@@ -50,6 +50,13 @@ module RuboCop
               assignment.reference!(node)
             end
 
+            # Modifier if/unless conditions are special. Assignments made in
+            # them do not put the assigned variable in scope to the left of the
+            # if/unless keyword. A preceding assignment is needed to put the
+            # variable in scope. For this reason we skip to the next assignment
+            # here.
+            next if in_modifier_if?(assignment)
+
             break if !assignment.branch || assignment.branch == reference.branch
 
             unless assignment.branch.may_run_incompletely?
@@ -57,7 +64,13 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+
+        def in_modifier_if?(assignment)
+          parent = assignment.node.parent
+          parent = parent.parent if parent&.begin_type?
+          parent&.if_type? && parent&.modifier_form?
+        end
 
         def capture_with_block!
           @captured_by_block = true
