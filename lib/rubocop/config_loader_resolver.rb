@@ -73,7 +73,7 @@ module RuboCop
 
       opts = { inherit_mode: config['inherit_mode'] || {},
                unset_nil: unset_nil }
-      Config.new(merge(default_configuration, config, opts), config_file)
+      Config.new(merge(default_configuration, config, **opts), config_file)
     end
 
     # Return a recursive merge of two hashes. That is, a normal hash merge,
@@ -92,7 +92,7 @@ module RuboCop
         elsif should_union?(base_hash, key, opts[:inherit_mode])
           result[key] = base_hash[key] | derived_hash[key]
         elsif opts[:debug]
-          warn_on_duplicate_setting(base_hash, derived_hash, key, opts)
+          warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
         end
       end
       result
