@@ -3,6 +3,17 @@
 RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
   subject(:cop) { described_class.new(config) }
 
+  shared_examples 'always accepted' do |access_modifier|
+    it 'accepts when #{access_modifier} is a hash literal value' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          foo
+          bar(key: #{access_modifier})
+        end
+      RUBY
+    end
+  end
+
   context 'when `group` is configured' do
     let(:cop_config) do
       {
@@ -47,6 +58,8 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           end
         RUBY
       end
+
+      include_examples 'always accepted', access_modifier
     end
   end
 
@@ -93,6 +106,8 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           end
         RUBY
       end
+
+      include_examples 'always accepted', access_modifier
     end
   end
 end
