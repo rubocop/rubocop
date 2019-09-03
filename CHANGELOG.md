@@ -25,6 +25,7 @@
 * [#5788](https://github.com/rubocop-hq/rubocop/issues/5788): Allow block arguments on separate lines if line would be too long in `Layout/MultilineBlockLayout`. ([@jonas054][])
 * [#7305](https://github.com/rubocop-hq/rubocop/issues/7305): Register `Style/BlockDelimiters` offense when block result is assigned to an attribute. ([@mvz][])
 * [#4802](https://github.com/rubocop-hq/rubocop/issues/4802): Don't leave any `Lint/UnneededCopEnableDirective` offenses undetected/uncorrected. ([@jonas054][])
+* [#7326](https://github.com/rubocop-hq/rubocop/issues/7326): Fix a false positive for `Style/AccessModifierDeclarations` when access modifier name is used for hash literal value. ([@koic][])
 
 ### Changes
 
