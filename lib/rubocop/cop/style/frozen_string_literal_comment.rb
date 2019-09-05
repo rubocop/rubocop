@@ -3,11 +3,13 @@
 module RuboCop
   module Cop
     module Style
-      # This cop is designed to help upgrade to after Ruby 3.0. It will add the
-      # comment `# frozen_string_literal: true` to the top of files to
-      # enable frozen string literals. Frozen string literals may be default
-      # after Ruby 3.0. The comment will be added below a shebang and encoding
-      # comment. The frozen string literal comment is only valid in Ruby 2.3+.
+      # This cop is designed to help you transition from mutable string literals
+      # to frozen string literals.
+      # It will add the comment `# frozen_string_literal: true` to the top of
+      # files to enable frozen string literals. Frozen string literals may be
+      # default in future Ruby. The comment will be added below a shebang and
+      # encoding comment. The frozen string literal comment is only valid in
+      # Ruby 2.3+.
       #
       # @example EnforcedStyle: always (default)
       #   # The `always` style will always add the frozen string literal comment
