@@ -51,7 +51,7 @@ module RuboCop
       reject_mutually_exclusive_defaults
     end
 
-    def target_ruby_version
+    def target_ruby_version # rubocop:disable Metrics/MethodLength
       @target_ruby_version ||=
         begin
           if for_all_cops['TargetRubyVersion']

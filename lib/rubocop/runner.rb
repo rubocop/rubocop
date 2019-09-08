@@ -286,7 +286,7 @@ module RuboCop
       [offenses, team.updated_source_file?]
     end
 
-    def mobilized_cop_classes(config)
+    def mobilized_cop_classes(config) # rubocop:disable Metrics/MethodLength
       @mobilized_cop_classes ||= {}
       @mobilized_cop_classes[config.object_id] ||=
         begin

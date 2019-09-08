@@ -39,7 +39,7 @@ module RuboCop
                                  injectable_require_directive).join
         end
 
-        def target_line
+        def target_line # rubocop:disable Metrics/MethodLength
           @target_line ||=
             begin
               in_the_same_department = false
