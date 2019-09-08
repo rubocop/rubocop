@@ -49,11 +49,11 @@ module RuboCop
 
       def name_type(node)
         @name_type ||= begin
-          case node.type
-          when :block then 'block parameter'
-          when :def, :defs then 'method parameter'
-          end
-        end
+                         case node.type
+                         when :block then 'block parameter'
+                         when :def, :defs then 'method parameter'
+                         end
+                       end
       end
 
       def num_offense(node, range)

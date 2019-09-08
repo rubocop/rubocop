@@ -62,13 +62,13 @@ module RuboCop
 
       def style
         @style ||= begin
-          s = cop_config[style_parameter_name].to_sym
-          unless supported_styles.include?(s)
-            raise "Unknown style #{s} selected!"
-          end
+                     s = cop_config[style_parameter_name].to_sym
+                     unless supported_styles.include?(s)
+                       raise "Unknown style #{s} selected!"
+                     end
 
-          s
-        end
+                     s
+                   end
       end
 
       def alternative_style
@@ -85,9 +85,9 @@ module RuboCop
 
       def supported_styles
         @supported_styles ||= begin
-          supported_styles = Util.to_supported_styles(style_parameter_name)
-          cop_config[supported_styles].map(&:to_sym)
-        end
+                                supported_styles = Util.to_supported_styles(style_parameter_name)
+                                cop_config[supported_styles].map(&:to_sym)
+                              end
       end
 
       def style_parameter_name

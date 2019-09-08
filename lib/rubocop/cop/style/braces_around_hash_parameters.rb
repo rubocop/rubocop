@@ -114,17 +114,17 @@ module RuboCop
 
         def extra_left_space?(hash_node)
           @extra_left_space ||= begin
-            top_line = hash_node.source_range.source_line
-            top_line.delete(' ') == '{'
-          end
+                                  top_line = hash_node.source_range.source_line
+                                  top_line.delete(' ') == '{'
+                                end
         end
 
         def extra_right_space?(hash_node)
           @extra_right_space ||= begin
-            bottom_line_number = hash_node.source_range.last_line
-            bottom_line = processed_source.lines[bottom_line_number - 1]
-            bottom_line.delete(' ') == '}'
-          end
+                                   bottom_line_number = hash_node.source_range.last_line
+                                   bottom_line = processed_source.lines[bottom_line_number - 1]
+                                   bottom_line.delete(' ') == '}'
+                                 end
         end
 
         def remove_braces_with_whitespace(corrector, node, space)

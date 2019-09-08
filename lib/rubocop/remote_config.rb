@@ -92,9 +92,9 @@ module RuboCop
       return true unless cache_path_exists?
 
       @cache_path_expired ||= begin
-        file_age = (Time.now - File.stat(cache_path).mtime).to_f
-        (file_age / CACHE_LIFETIME) > 1
-      end
+                                file_age = (Time.now - File.stat(cache_path).mtime).to_f
+                                (file_age / CACHE_LIFETIME) > 1
+                              end
     end
 
     def cache_name_from_uri

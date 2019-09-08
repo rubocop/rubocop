@@ -49,9 +49,9 @@ module RuboCop
 
       def cols
         @cols ||= begin
-          width = `tput cols`.chomp.to_i
-          width.nil? || width.zero? ? FALLBACK_TERMINAL_WIDTH : width
-        end
+                    width = `tput cols`.chomp.to_i
+                    width.nil? || width.zero? ? FALLBACK_TERMINAL_WIDTH : width
+                  end
       end
 
       def update_progress_line

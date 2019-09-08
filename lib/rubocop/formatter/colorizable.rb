@@ -8,14 +8,14 @@ module RuboCop
     module Colorizable
       def rainbow
         @rainbow ||= begin
-          rainbow = Rainbow.new
-          if options[:color]
-            rainbow.enabled = true
-          elsif options[:color] == false || !output.tty?
-            rainbow.enabled = false
-          end
-          rainbow
-        end
+                       rainbow = Rainbow.new
+                       if options[:color]
+                         rainbow.enabled = true
+                       elsif options[:color] == false || !output.tty?
+                         rainbow.enabled = false
+                       end
+                       rainbow
+                     end
       end
 
       def colorize(string, *args)

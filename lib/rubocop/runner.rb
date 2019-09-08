@@ -289,22 +289,22 @@ module RuboCop
     def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= {}
       @mobilized_cop_classes[config.object_id] ||= begin
-        cop_classes = Cop::Cop.all
+                                                     cop_classes = Cop::Cop.all
 
-        %i[only except].each do |opt|
-          OptionsValidator.validate_cop_list(@options[opt])
-        end
+                                                     %i[only except].each do |opt|
+                                                       OptionsValidator.validate_cop_list(@options[opt])
+                                                     end
 
-        if @options[:only]
-          cop_classes.select! { |c| c.match?(@options[:only]) }
-        else
-          filter_cop_classes(cop_classes, config)
-        end
+                                                     if @options[:only]
+                                                       cop_classes.select! { |c| c.match?(@options[:only]) }
+                                                     else
+                                                       filter_cop_classes(cop_classes, config)
+                                                     end
 
-        cop_classes.reject! { |c| c.match?(@options[:except]) }
+                                                     cop_classes.reject! { |c| c.match?(@options[:except]) }
 
-        Cop::Registry.new(cop_classes)
-      end
+                                                     Cop::Registry.new(cop_classes)
+                                                   end
     end
 
     def filter_cop_classes(cop_classes, config)
@@ -320,13 +320,13 @@ module RuboCop
 
     def formatter_set
       @formatter_set ||= begin
-        set = Formatter::FormatterSet.new(@options)
-        pairs = @options[:formatters] || [['progress']]
-        pairs.each do |formatter_key, output_path|
-          set.add_formatter(formatter_key, output_path)
-        end
-        set
-      end
+                           set = Formatter::FormatterSet.new(@options)
+                           pairs = @options[:formatters] || [['progress']]
+                           pairs.each do |formatter_key, output_path|
+                             set.add_formatter(formatter_key, output_path)
+                           end
+                           set
+                         end
     end
 
     def considered_failure?(offense)
@@ -340,9 +340,9 @@ module RuboCop
 
     def minimum_severity_to_fail
       @minimum_severity_to_fail ||= begin
-        name = @options[:fail_level] || :refactor
-        RuboCop::Cop::Severity.new(name)
-      end
+                                      name = @options[:fail_level] || :refactor
+                                      RuboCop::Cop::Severity.new(name)
+                                    end
     end
 
     def get_processed_source(file)
