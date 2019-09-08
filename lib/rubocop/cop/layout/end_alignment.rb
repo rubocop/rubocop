@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# `begin`-`end` blocks are mapped to `Parser::Source::Map::Collection`, which
+# does not respond to `#keyword`. This is used when checking the alignment of
+# a `begin`-`end` block on assignment.
+#
+# Also see https://github.com/whitequark/parser/issues/357
+Parser::Source::Map::Collection.send(:alias_method, :keyword, :begin)
+
 module RuboCop
   module Cop
     module Layout
@@ -80,6 +87,10 @@ module RuboCop
           check_other_alignment(node)
         end
 
+        def on_kwbegin(node)
+          check_other_alignment(node)
+        end
+
         def on_if(node)
           check_other_alignment(node) unless node.ternary?
         end
@@ -113,7 +124,7 @@ module RuboCop
           # assignment, we let rhs be the receiver of those method calls before
           # we check if it's an if/unless/while/until.
           return unless (rhs = first_part_of_call_chain(rhs))
-          return unless rhs.conditional?
+          return unless rhs.conditional? || rhs.kwbegin_type?
           return if rhs.if_type? && rhs.ternary?
 
           check_asgn_alignment(node, rhs)

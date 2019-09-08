@@ -11,6 +11,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   include_examples 'aligned', 'class',  'Test',      'end'
   include_examples 'aligned', 'module', 'Test',      'end'
+  include_examples 'aligned', 'begin',  '',          'end'
   include_examples 'aligned', 'if',     'test',      'end'
   include_examples 'aligned', 'unless', 'test',      'end'
   include_examples 'aligned', 'while',  'test',      'end'
@@ -26,6 +27,10 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       end
       ^^^ `end` at 2, 2 is not aligned with `module` at 1, 0.
 
+    begin
+      end
+      ^^^ `end` at 2, 2 is not aligned with `begin` at 1, 0.
+
     puts 1; class Test
       end
       ^^^ `end` at 2, 2 is not aligned with `class` at 1, 8.
@@ -33,6 +38,10 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     module Test
       end
       ^^^ `end` at 2, 2 is not aligned with `module` at 1, 0.
+
+    begin
+      end
+      ^^^ `end` at 2, 2 is not aligned with `begin` at 1, 0.
 
     puts 1; if test
       end
@@ -77,6 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   include_examples 'aligned', 'puts 1; class',  'Test',     '        end'
   include_examples 'aligned', 'puts 1; module', 'Test',     '        end'
+  include_examples 'aligned', 'puts 1; begin',  '',         '        end'
   include_examples 'aligned', 'puts 1; if',     'Test',     '        end'
   include_examples 'aligned', 'puts 1; unless', 'Test',     '        end'
   include_examples 'aligned', 'puts 1; while',  'Test',     '        end'
@@ -98,6 +108,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
     include_examples 'aligned', 'puts 1; class',  'Test',     'end'
     include_examples 'aligned', 'puts 1; module', 'Test',     'end'
+    include_examples 'aligned', 'puts 1; begin',  '',         'end'
     include_examples 'aligned', 'puts 1; if',     'test',     'end'
     include_examples 'aligned', 'puts 1; unless', 'test',     'end'
     include_examples 'aligned', 'puts 1; while',  'test',     'end'
@@ -120,6 +131,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       module Test
         end
         ^^^ `end` at 2, 2 is not aligned with `module Test` at 1, 0.
+
+      puts 1; begin
+        end
+        ^^^ `end` at 2, 2 is not aligned with `puts 1; begin` at 1, 0.
+
+      begin
+        end
+        ^^^ `end` at 2, 2 is not aligned with `begin` at 1, 0.
 
       puts 1; if test
         end
@@ -185,6 +204,10 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
              end
              ^^^ `end` at 2, 7 is not aligned with `module` at 1, 0.
 
+      begin
+             end
+             ^^^ `end` at 2, 7 is not aligned with `begin` at 1, 0.
+
       if test
         end
         ^^^ `end` at 2, 2 is not aligned with `if` at 1, 0.
@@ -208,6 +231,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
     include_examples 'aligned', 'class',  'Test',      'end'
     include_examples 'aligned', 'module', 'Test',      'end'
+    include_examples 'aligned', 'begin',  '',          'end'
     include_examples 'aligned', 'if',     'test',      'end'
     include_examples 'aligned', 'unless', 'test',      'end'
     include_examples 'aligned', 'while',  'test',      'end'
@@ -246,6 +270,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
     include_examples 'aligned', 'puts 1; class',  'Test',     '        end'
     include_examples 'aligned', 'puts 1; module', 'Test',     '        end'
+    include_examples 'aligned', 'puts 1; begin',  '',         '        end'
     include_examples 'aligned', 'puts 1; if',     'Test',     '        end'
     include_examples 'aligned', 'puts 1; unless', 'Test',     '        end'
     include_examples 'aligned', 'puts 1; while',  'Test',     '        end'
@@ -392,6 +417,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
       end
 
+      include_examples 'aligned', 'var = begin',  '',         'end'
       include_examples 'aligned', 'var << if',    'test',     'end'
       include_examples 'aligned', 'var = if',     'test',     'end'
       include_examples 'aligned', 'var = unless', 'test',     'end'
