@@ -75,14 +75,15 @@ module RuboCop
         url = cop_config['StyleGuide']
         return nil if url.nil? || url.empty?
 
-        self.class.style_guide_urls[url] ||= begin
-                                               base_url = style_guide_base_url
-                                               if base_url.nil? || base_url.empty?
-                                                 url
-                                               else
-                                                 URI.join(base_url, url).to_s
-                                               end
-                                             end
+        self.class.style_guide_urls[url] ||=
+          begin
+            base_url = style_guide_base_url
+            if base_url.nil? || base_url.empty?
+              url
+            else
+              URI.join(base_url, url).to_s
+            end
+          end
       end
 
       def style_guide_base_url

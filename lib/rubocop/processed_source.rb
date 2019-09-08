@@ -53,17 +53,18 @@ module RuboCop
     # Returns the source lines, line break characters removed, excluding a
     # possible __END__ and everything that comes after.
     def lines
-      @lines ||= begin
-                   all_lines = @buffer.source_lines
-                   last_token_line = tokens.any? ? tokens.last.line : all_lines.size
-                   result = []
-                   all_lines.each_with_index do |line, ix|
-                     break if ix >= last_token_line && line == '__END__'
+      @lines ||=
+        begin
+          all_lines = @buffer.source_lines
+          last_token_line = tokens.any? ? tokens.last.line : all_lines.size
+          result = []
+          all_lines.each_with_index do |line, ix|
+            break if ix >= last_token_line && line == '__END__'
 
-                     result << line
-                   end
-                   result
-                 end
+            result << line
+          end
+          result
+        end
     end
 
     def [](*args)

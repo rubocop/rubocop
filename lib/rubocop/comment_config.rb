@@ -161,10 +161,11 @@ module RuboCop
     end
 
     def non_comment_token_line_numbers
-      @non_comment_token_line_numbers ||= begin
-                                            non_comment_tokens = processed_source.tokens.reject(&:comment?)
-                                            non_comment_tokens.map(&:line).uniq
-                                          end
+      @non_comment_token_line_numbers ||=
+        begin
+          non_comment_tokens = processed_source.tokens.reject(&:comment?)
+          non_comment_tokens.map(&:line).uniq
+        end
     end
 
     def enable_all?(comment)

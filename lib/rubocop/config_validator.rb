@@ -52,23 +52,24 @@ module RuboCop
     end
 
     def target_ruby_version
-      @target_ruby_version ||= begin
-                                 if for_all_cops['TargetRubyVersion']
-                                   @target_ruby_version_source = :rubocop_yml
+      @target_ruby_version ||=
+        begin
+          if for_all_cops['TargetRubyVersion']
+            @target_ruby_version_source = :rubocop_yml
 
-                                   for_all_cops['TargetRubyVersion'].to_f
-                                 elsif target_ruby_version_from_version_file
-                                   @target_ruby_version_source = :ruby_version_file
+            for_all_cops['TargetRubyVersion'].to_f
+          elsif target_ruby_version_from_version_file
+            @target_ruby_version_source = :ruby_version_file
 
-                                   target_ruby_version_from_version_file
-                                 elsif target_ruby_version_from_bundler_lock_file
-                                   @target_ruby_version_source = :bundler_lock_file
+            target_ruby_version_from_version_file
+          elsif target_ruby_version_from_bundler_lock_file
+            @target_ruby_version_source = :bundler_lock_file
 
-                                   target_ruby_version_from_bundler_lock_file
-                                 else
-                                   DEFAULT_RUBY_VERSION
-                                 end
-                               end
+            target_ruby_version_from_bundler_lock_file
+          else
+            DEFAULT_RUBY_VERSION
+          end
+        end
     end
 
     def validate_section_presence(name)

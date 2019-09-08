@@ -288,23 +288,24 @@ module RuboCop
 
     def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= {}
-      @mobilized_cop_classes[config.object_id] ||= begin
-                                                     cop_classes = Cop::Cop.all
+      @mobilized_cop_classes[config.object_id] ||=
+        begin
+          cop_classes = Cop::Cop.all
 
-                                                     %i[only except].each do |opt|
-                                                       OptionsValidator.validate_cop_list(@options[opt])
-                                                     end
+          %i[only except].each do |opt|
+            OptionsValidator.validate_cop_list(@options[opt])
+          end
 
-                                                     if @options[:only]
-                                                       cop_classes.select! { |c| c.match?(@options[:only]) }
-                                                     else
-                                                       filter_cop_classes(cop_classes, config)
-                                                     end
+          if @options[:only]
+            cop_classes.select! { |c| c.match?(@options[:only]) }
+          else
+            filter_cop_classes(cop_classes, config)
+          end
 
-                                                     cop_classes.reject! { |c| c.match?(@options[:except]) }
+          cop_classes.reject! { |c| c.match?(@options[:except]) }
 
-                                                     Cop::Registry.new(cop_classes)
-                                                   end
+          Cop::Registry.new(cop_classes)
+        end
     end
 
     def filter_cop_classes(cop_classes, config)

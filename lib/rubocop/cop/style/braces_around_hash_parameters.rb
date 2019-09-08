@@ -120,11 +120,12 @@ module RuboCop
         end
 
         def extra_right_space?(hash_node)
-          @extra_right_space ||= begin
-                                   bottom_line_number = hash_node.source_range.last_line
-                                   bottom_line = processed_source.lines[bottom_line_number - 1]
-                                   bottom_line.delete(' ') == '}'
-                                 end
+          @extra_right_space ||=
+            begin
+              bottom_line_number = hash_node.source_range.last_line
+              bottom_line = processed_source.lines[bottom_line_number - 1]
+              bottom_line.delete(' ') == '}'
+            end
         end
 
         def remove_braces_with_whitespace(corrector, node, space)

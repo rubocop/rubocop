@@ -127,17 +127,18 @@ module RuboCop
       end
 
       def assignment_tokens
-        @assignment_tokens ||= begin
-                                 tokens = processed_source.tokens.select(&:equal_sign?)
+        @assignment_tokens ||=
+          begin
+            tokens = processed_source.tokens.select(&:equal_sign?)
 
-                                 # we don't want to operate on equals signs which are part of an
-                                 #   optarg in a method definition
-                                 # e.g.: def method(optarg = default_val); end
-                                 tokens = remove_optarg_equals(tokens, processed_source)
+            # we don't want to operate on equals signs which are part of an
+            #   optarg in a method definition
+            # e.g.: def method(optarg = default_val); end
+            tokens = remove_optarg_equals(tokens, processed_source)
 
-                                 # Only attempt to align the first = on each line
-                                 Set.new(tokens.uniq(&:line))
-                               end
+            # Only attempt to align the first = on each line
+            Set.new(tokens.uniq(&:line))
+          end
       end
 
       # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity

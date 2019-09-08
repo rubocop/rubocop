@@ -40,22 +40,24 @@ module RuboCop
         end
 
         def target_line
-          @target_line ||= begin
-                             in_the_same_department = false
-                             inject_parts = require_path_fragments(injectable_require_directive)
+          @target_line ||=
+            begin
+              in_the_same_department = false
+              inject_parts =
+                require_path_fragments(injectable_require_directive)
 
-                             require_entries.find.with_index do |entry, index|
-                               current_entry_parts = require_path_fragments(entry)
+              require_entries.find.with_index do |entry, index|
+                current_entry_parts = require_path_fragments(entry)
 
-                               if inject_parts[0..-2] == current_entry_parts[0..-2]
-                                 in_the_same_department = true
+                if inject_parts[0..-2] == current_entry_parts[0..-2]
+                  in_the_same_department = true
 
-                                 break index if inject_parts.last < current_entry_parts.last
-                               elsif in_the_same_department
-                                 break index
-                               end
-                             end
-                           end
+                  break index if inject_parts.last < current_entry_parts.last
+                elsif in_the_same_department
+                  break index
+                end
+              end
+            end
         end
 
         def require_path_fragments(require_directove)
