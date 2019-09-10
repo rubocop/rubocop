@@ -31,8 +31,26 @@ module RuboCop
       class MethodName < Cop
         include ConfigurableNaming
         include IgnoredPattern
+        include RangeHelp
 
         MSG = 'Use %<style>s for method names.'
+
+        def_node_matcher :attr?, <<~PATTERN
+          (send nil? ${:attr_reader :attr_writer :attr_accessor :attr} $...)
+        PATTERN
+
+        def_node_matcher :sym_name, '(sym $_name)'
+
+        def on_send(node)
+          return unless (attrs = attr?(node))
+
+          attrs.last.each do |name_item|
+            name = sym_name(name_item)
+            next if !name || matches_ignored_pattern?(name)
+
+            check_name(node, name, range_position(node))
+          end
+        end
 
         def on_def(node)
           return if node.operator_method? ||
@@ -43,6 +61,13 @@ module RuboCop
         alias on_defs on_def
 
         private
+
+        def range_position(node)
+          selector_end_pos = node.loc.selector.end_pos + 1
+          expr_end_pos = node.loc.expression.end_pos
+
+          range_between(selector_end_pos, expr_end_pos)
+        end
 
         def message(style)
           format(MSG, style: style)
