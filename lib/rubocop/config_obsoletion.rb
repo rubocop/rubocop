@@ -125,6 +125,12 @@ module RuboCop
         parameters: 'IgnoredMethodPatterns',
         alternative: '`IgnoredMethodPatterns` has been renamed to ' \
                      '`IgnoredPatterns`'
+      },
+      {
+        cops: %w[Performance/Count Performance/Detect],
+        parameters: 'SafeMode',
+        alternative: '`SafeMode` has been removed. ' \
+                     'Use `SafeAutoCorrect` instead.'
       }
     ].freeze
 

@@ -86,6 +86,10 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - '**/*.gemspec'
 
+Metrics/ClassLength:
+  Exclude:
+    - lib/rubocop/config_obsoletion.rb
+
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
