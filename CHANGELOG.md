@@ -27,6 +27,7 @@
 * [#4802](https://github.com/rubocop-hq/rubocop/issues/4802): Don't leave any `Lint/UnneededCopEnableDirective` offenses undetected/uncorrected. ([@jonas054][])
 * [#7326](https://github.com/rubocop-hq/rubocop/issues/7326): Fix a false positive for `Style/AccessModifierDeclarations` when access modifier name is used for hash literal value. ([@koic][])
 * [#3591](https://github.com/rubocop-hq/rubocop/issues/3591): Handle modifier `if`/`unless` correctly in `Lint/UselessAssignment`. ([@jonas054][])
+* [#7161](https://github.com/rubocop-hq/rubocop/issues/7161): Fix `Style/SafeNavigation` cop for preserve comments inside if expression. ([@tejasbubane][])
 
 ### Changes
 

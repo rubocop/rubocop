@@ -3,10 +3,9 @@
 module RuboCop
   module Cop
     # Common functionality for Rails safe mode.
+    #
+    # This module can be removed from RuboCop 0.76.
     module SafeMode
-      warn 'The `SafeMode` option will be removed in `RuboCop` 0.76. ' \
-        'Please update `rubocop-performance` to 1.5.0 or higher.'
-
       private
 
       def rails_safe_mode?
