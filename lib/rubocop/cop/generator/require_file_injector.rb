@@ -54,7 +54,7 @@ module RuboCop
               elsif in_the_same_department
                 break index
               end
-            end
+            end || require_entries.size
           end
         end
 
