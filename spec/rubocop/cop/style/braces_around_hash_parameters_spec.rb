@@ -20,6 +20,11 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       expect_no_offenses(['where(  {     ',
                           " }\t   )  "].join("\n"))
     end
+
+    it 'accepts braces that are needed to make a block bind to an inner ' \
+       'method call' do
+      expect_no_offenses('f 1, { k: proc do h end }')
+    end
   end
 
   shared_examples 'no_braces and context_dependent non-offenses' do

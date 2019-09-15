@@ -28,6 +28,7 @@
 * [#7326](https://github.com/rubocop-hq/rubocop/issues/7326): Fix a false positive for `Style/AccessModifierDeclarations` when access modifier name is used for hash literal value. ([@koic][])
 * [#3591](https://github.com/rubocop-hq/rubocop/issues/3591): Handle modifier `if`/`unless` correctly in `Lint/UselessAssignment`. ([@jonas054][])
 * [#7161](https://github.com/rubocop-hq/rubocop/issues/7161): Fix `Style/SafeNavigation` cop for preserve comments inside if expression. ([@tejasbubane][])
+* [#5212](https://github.com/rubocop-hq/rubocop/issues/5212): Avoid false positive for braces that are needed to preserve semantics in `Style/BracesAroundHashParameters`. ([@jonas054][])
 
 ### Changes
 
