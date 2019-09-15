@@ -55,10 +55,6 @@ module RuboCop
         end
         alias on_csend on_send
 
-        # We let AutocorrectUnlessChangingAST#autocorrect work with the send
-        # node, because that context is needed. When parsing the code to see if
-        # the AST has changed, a braceless hash would not be parsed as a hash
-        # otherwise.
         def autocorrect(send_node)
           hash_node = send_node.last_argument
 
@@ -76,25 +72,48 @@ module RuboCop
         private
 
         def check(arg, args)
-          if style == :braces && !arg.braces?
-            add_arg_offense(arg, :missing)
-          elsif style == :no_braces && arg.braces?
-            add_arg_offense(arg, :redundant)
-          elsif style == :context_dependent
+          case style
+          when :braces
+            check_braces(arg)
+          when :no_braces
+            check_no_braces(arg)
+          when :context_dependent
             check_context_dependent(arg, args)
           end
+        end
+
+        def check_braces(arg)
+          add_arg_offense(arg, :missing) unless arg.braces?
+        end
+
+        def check_no_braces(arg)
+          return unless arg.braces? && !braces_needed_for_semantics?(arg)
+
+          add_arg_offense(arg, :redundant)
         end
 
         def check_context_dependent(arg, args)
           braces_around_second_from_end = args.size > 1 && args[-2].hash_type?
 
           if arg.braces?
-            unless braces_around_second_from_end
+            unless braces_around_second_from_end ||
+                   braces_needed_for_semantics?(arg)
               add_arg_offense(arg, :redundant)
             end
           elsif braces_around_second_from_end
             add_arg_offense(arg, :missing)
           end
+        end
+
+        # Returns true if there's block inside the braces of the given hash arg
+        # and that block uses do..end. The reason for wanting to check this is
+        # that the do..end could bind to a different method invocation if the
+        # hash braces were removed.
+        def braces_needed_for_semantics?(arg)
+          arg.each_pair do |_key, value|
+            return true if value.block_type? && !value.braces?
+          end
+          false
         end
 
         def add_arg_offense(arg, type)
