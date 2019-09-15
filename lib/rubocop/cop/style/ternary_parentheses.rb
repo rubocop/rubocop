@@ -8,6 +8,11 @@ module RuboCop
       # parentheses using `EnforcedStyle`. Omission is only enforced when
       # removing the parentheses won't cause a different behavior.
       #
+      # `AllowSafeAssignment` option for safe assignment.
+      # By safe assignment we mean putting parentheses around
+      # an assignment to indicate "I know I'm using an assignment
+      # as a condition. It's not a mistake."
+      #
       # @example EnforcedStyle: require_no_parentheses (default)
       #   # bad
       #   foo = (bar?) ? a : b
@@ -40,6 +45,15 @@ module RuboCop
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = (bar && baz) ? a : b
+      #
+      # @example AllowSafeAssignment: true (default)
+      #   # good
+      #   foo = (bar = baz) ? a : b
+      #
+      # @example AllowSafeAssignment: false
+      #   # bad
+      #   foo = (bar = baz) ? a : b
+      #
       class TernaryParentheses < Cop
         include SafeAssignment
         include ConfigurableEnforcedStyle

@@ -6,21 +6,34 @@ module RuboCop
       # This cop checks for assignments in the conditions of
       # if/while/until.
       #
+      # `AllowSafeAssignment` option for safe assignment.
+      # By safe assignment we mean putting parentheses around
+      # an assignment to indicate "I know I'm using an assignment
+      # as a condition. It's not a mistake."
+      #
       # @example
-      #
       #   # bad
-      #
       #   if some_var = true
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   if some_var == true
       #     do_something
       #   end
+      #
+      # @example AllowSafeAssignment: true (default)
+      #   # good
+      #   if (some_var = true)
+      #     do_something
+      #   end
+      #
+      # @example AllowSafeAssignment: false
+      #   # bad
+      #   if (some_var = true)
+      #     do_something
+      #   end
+      #
       class AssignmentInCondition < Cop
         include SafeAssignment
 

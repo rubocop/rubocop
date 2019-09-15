@@ -4727,6 +4727,11 @@ Enabled | Yes | Yes  | 0.9 | 0.56
 This cop checks for the presence of superfluous parentheses around the
 condition of if/unless/while/until.
 
+`AllowSafeAssignment` option for safe assignment.
+By safe assignment we mean putting parentheses around
+an assignment to indicate "I know I'm using an assignment
+as a condition. It's not a mistake."
+
 ### Examples
 
 ```ruby
@@ -4745,6 +4750,18 @@ foo unless bar || baz
 if x > 10
 elsif x < 3
 end
+```
+#### AllowSafeAssignment: true (default)
+
+```ruby
+# good
+foo unless (bar = baz)
+```
+#### AllowSafeAssignment: false
+
+```ruby
+# bad
+foo unless (bar = baz)
 ```
 #### AllowInMultilineConditions: false (default)
 
@@ -6429,6 +6446,11 @@ conditions. It is configurable to enforce inclusion or omission of
 parentheses using `EnforcedStyle`. Omission is only enforced when
 removing the parentheses won't cause a different behavior.
 
+`AllowSafeAssignment` option for safe assignment.
+By safe assignment we mean putting parentheses around
+an assignment to indicate "I know I'm using an assignment
+as a condition. It's not a mistake."
+
 ### Examples
 
 #### EnforcedStyle: require_no_parentheses (default)
@@ -6469,6 +6491,18 @@ foo = bar && baz ? a : b
 foo = bar? ? a : b
 foo = bar.baz? ? a : b
 foo = (bar && baz) ? a : b
+```
+#### AllowSafeAssignment: true (default)
+
+```ruby
+# good
+foo = (bar = baz) ? a : b
+```
+#### AllowSafeAssignment: false
+
+```ruby
+# bad
+foo = (bar = baz) ? a : b
 ```
 
 ### Configurable attributes
