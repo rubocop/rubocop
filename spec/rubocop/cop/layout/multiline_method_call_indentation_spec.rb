@@ -772,6 +772,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
+    it 'accepts indentation of variable\'s methods after assignment' do
+      expect_no_offenses(<<~RUBY)
+        params[:key] =
+          foo
+            .bar
+            .baz
+      RUBY
+    end
+
     it 'registers an offense for correct + unrecognized style' do
       expect_offense(<<~RUBY)
         a.

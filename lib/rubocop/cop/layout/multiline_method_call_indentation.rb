@@ -79,7 +79,7 @@ module RuboCop
           correct_column = if @base
                              @base.column + extra_indentation(given_style)
                            else
-                             indentation(lhs) + correct_indentation(node)
+                             relative_intendation(lhs, node)
                            end
           @column_delta = correct_column - rhs.column
           rhs if @column_delta.nonzero?
@@ -213,6 +213,15 @@ module RuboCop
         def operator_rhs?(node, receiver)
           node.operator_method? && node.arguments? &&
             within_node?(receiver, node.first_argument)
+        end
+
+        def relative_intendation(lhs, node)
+          indentation = indentation(lhs) + correct_indentation(node)
+
+          if lhs.operator_method? && lhs.loc.operator&.line != node.first_line
+            indentation += indentation(node)
+          end
+          indentation
         end
       end
     end
