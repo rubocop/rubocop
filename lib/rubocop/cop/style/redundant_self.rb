@@ -83,6 +83,13 @@ module RuboCop
           on_argument(node)
         end
 
+        def on_masgn(node)
+          lhs, rhs = *node
+          lhs.children.each do |child|
+            @local_variables_scopes[rhs] << child.to_a.first
+          end
+        end
+
         def on_lvasgn(node)
           lhs, rhs = *node
           @local_variables_scopes[rhs] << lhs
