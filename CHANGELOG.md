@@ -31,6 +31,7 @@
 * [#7161](https://github.com/rubocop-hq/rubocop/issues/7161): Fix `Style/SafeNavigation` cop for preserve comments inside if expression. ([@tejasbubane][])
 * [#5212](https://github.com/rubocop-hq/rubocop/issues/5212): Avoid false positive for braces that are needed to preserve semantics in `Style/BracesAroundHashParameters`. ([@jonas054][])
 * [#7353](https://github.com/rubocop-hq/rubocop/issues/7353): Fix a false positive for `Style/RedundantSelf` when receiver and multiple assigned lvalue have the same name. ([@koic][])
+* [#7353](https://github.com/rubocop-hq/rubocop/issues/7353): Fix a false positive for `Style/RedundantSelf` when a self receiver is used as a method argument. ([@koic][])
 
 ### Changes
 
