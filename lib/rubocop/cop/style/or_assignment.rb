@@ -81,7 +81,12 @@ module RuboCop
         end
 
         def take_variable_and_default_from_unless(node)
-          variable, default = *node.if_branch
+          if node.if_branch
+            variable, default = *node.if_branch
+          else
+            variable, default = *node.else_branch
+          end
+
           [variable, default]
         end
       end
