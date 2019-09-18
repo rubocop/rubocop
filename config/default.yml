@@ -2744,6 +2744,13 @@ Style/EmptyCaseCondition:
   Enabled: true
   VersionAdded: '0.40'
 
+Style/EmptyClass:
+  Description: 'Prefer a single-line format for class definitions with no body.'
+  StyleGuide: '#single-line-classes'
+  Enabled: true
+  VersionAdded: '0.83'
+  ExceptionClassOnly: true
+
 Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'
   Enabled: true

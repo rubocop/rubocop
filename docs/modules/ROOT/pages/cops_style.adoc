@@ -2183,6 +2183,70 @@ else
 end
 ----
 
+== Style/EmptyClass
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| Yes
+| 0.83
+| -
+|===
+
+
+
+=== Examples
+
+==== ExceptionClassOnly: true (default)
+
+[source,ruby]
+----
+# bad
+class FooError < StandardError
+end
+
+# good
+class FooError < StandardError; end
+
+class Foo < Bar; end
+
+class Foo < Bar
+end
+----
+
+==== ExceptionClassOnly: false
+
+[source,ruby]
+----
+# bad
+class FooError < StandardError
+end
+
+class Foo < Bar
+end
+
+# good
+class FooError < StandardError; end
+
+class Foo < Bar; end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| ExceptionClassOnly
+| `true`
+| Boolean
+|===
+
+=== References
+
+* https://rubystyle.guide#single-line-classes
+
 == Style/EmptyElse
 
 |===

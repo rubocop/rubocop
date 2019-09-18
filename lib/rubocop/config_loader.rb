@@ -5,8 +5,7 @@ require 'pathname'
 
 module RuboCop
   # Raised when a RuboCop configuration file is not found.
-  class ConfigNotFoundError < Error
-  end
+  class ConfigNotFoundError < Error; end
 
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration

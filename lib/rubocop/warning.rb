@@ -6,6 +6,5 @@ module RuboCop
   # requested operation (such as inspecting or correcting a source file) due to
   # user error
   # For example, a configuration value in .rubocop.yml might be malformed
-  class Warning < StandardError
-  end
+  class Warning < StandardError; end
 end

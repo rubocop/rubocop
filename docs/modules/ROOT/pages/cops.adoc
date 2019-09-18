@@ -349,6 +349,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleeachwithobject[Style/EachWithObject]
 * xref:cops_style.adoc#styleemptyblockparameter[Style/EmptyBlockParameter]
 * xref:cops_style.adoc#styleemptycasecondition[Style/EmptyCaseCondition]
+* xref:cops_style.adoc#styleemptyclass[Style/EmptyClass]
 * xref:cops_style.adoc#styleemptyelse[Style/EmptyElse]
 * xref:cops_style.adoc#styleemptylambdaparameter[Style/EmptyLambdaParameter]
 * xref:cops_style.adoc#styleemptyliteral[Style/EmptyLiteral]
