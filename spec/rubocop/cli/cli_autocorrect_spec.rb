@@ -1629,6 +1629,30 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects Style/BlockDelimiters offenses when specifing' \
+     'Layout/SpaceInsideBlockBraces together' do
+    create_file('example.rb', <<~RUBY)
+      each {
+      }
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceInsideBlockBraces:
+        EnforcedStyle: space
+      Style/BlockDelimiters:
+        EnforcedStyle: line_count_based
+    YAML
+
+    expect(cli.run(%w[--auto-correct])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      each do
+      end
+    RUBY
+  end
+
   it 'corrects BracesAroundHashParameters offenses leaving the ' \
      'MultilineHashBraceLayout offense unchanged' do
     create_file('example.rb', <<~RUBY)

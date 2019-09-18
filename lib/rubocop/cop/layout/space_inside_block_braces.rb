@@ -84,6 +84,13 @@ module RuboCop
         def on_block(node)
           return if node.keywords?
 
+          # Do not register an offense for multi-line empty braces. That means
+          # preventing auto-correction to single-line empty braces. It will
+          # conflict with auto-correction by `Layout/SpaceInsideBlockBraces` cop
+          # if auto-corrected to a single-line empty braces.
+          # See: https://github.com/rubocop-hq/rubocop/issues/7363
+          return if node.body.nil? && node.multiline?
+
           left_brace = node.loc.begin
           right_brace = node.loc.end
 

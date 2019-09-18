@@ -38,13 +38,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       RUBY
     end
 
-    it 'registers an offense for empty braces with line break inside' do
-      inspect_source(<<-RUBY.strip_margin('|'))
+    it 'accepts empty braces with line break inside' do
+      expect_no_offenses(<<-RUBY.strip_margin('|'))
         |  each {
         |  }
       RUBY
-      expect(cop.messages).to eq(['Space inside empty braces detected.'])
-      expect(cop.highlights).to eq(["\n  "])
     end
 
     it 'registers an offense for empty braces with space inside' do
