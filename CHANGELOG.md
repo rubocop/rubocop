@@ -36,6 +36,7 @@
 * [#7361](https://github.com/rubocop-hq/rubocop/issues/7361): Fix a false positive for `Style/TernaryParentheses` when only the closing parenthesis is used in the last line of condition. ([@koic][])
 * [#7369](https://github.com/rubocop-hq/rubocop/issues/7369): Fix an infinite loop error for `Layout/IndentAssignment` with `Layout/IndentFirstArgument` when using multiple assignment. ([@koic][])
 * [#7177](https://github.com/rubocop-hq/rubocop/issues/7177), [#7370](https://github.com/rubocop-hq/rubocop/issues/7370): When correcting alignment, do not insert spaces into string literals. ([@buehmann][])
+* [#7367](https://github.com/rubocop-hq/rubocop/issues/7367): Fix an error for `Style/OrAssignment` cop when `then` branch body is empty. ([@koic][])
 
 ### Changes
 

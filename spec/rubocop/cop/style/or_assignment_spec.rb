@@ -303,4 +303,22 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
       RUBY
     end
   end
+
+  context 'when `then` branch body is empty' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        foo = nil
+        if foo
+        ^^^^^^ Use the double pipe equals operator `||=` instead.
+        else
+          foo = 2
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = nil
+        foo ||= 2
+      RUBY
+    end
+  end
 end
