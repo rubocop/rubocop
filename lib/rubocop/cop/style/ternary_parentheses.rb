@@ -67,9 +67,14 @@ module RuboCop
           ' complex conditions.'
 
         def on_if(node)
+          return if only_closing_parenthesis_is_last_line?(node.condition)
           return unless node.ternary? && !infinite_loop? && offense?(node)
 
           add_offense(node, location: node.source_range)
+        end
+
+        def only_closing_parenthesis_is_last_line?(condition)
+          condition.source.split("\n").last == ')'
         end
 
         def autocorrect(node)
