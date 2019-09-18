@@ -33,6 +33,7 @@
 * [#7353](https://github.com/rubocop-hq/rubocop/issues/7353): Fix a false positive for `Style/RedundantSelf` when receiver and multiple assigned lvalue have the same name. ([@koic][])
 * [#7353](https://github.com/rubocop-hq/rubocop/issues/7353): Fix a false positive for `Style/RedundantSelf` when a self receiver is used as a method argument. ([@koic][])
 * [#7358](https://github.com/rubocop-hq/rubocop/issues/7358): Fix an incorrect autocorrect for `Style/NestedModifier` when parentheses are required in method arguments. ([@koic][])
+* [#7361](https://github.com/rubocop-hq/rubocop/issues/7361): Fix a false positive for `Style/TernaryParentheses` when only the closing parenthesis is used in the last line of condition. ([@koic][])
 
 ### Changes
 

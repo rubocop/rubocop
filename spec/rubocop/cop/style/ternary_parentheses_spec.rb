@@ -155,6 +155,20 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (bar[:baz]) ? a : b',
                       'foo = bar[:baz] ? a : b'
+
+      it_behaves_like 'code with offense', <<~RUBY, <<~CORRECTION
+        (foo ||
+          bar) ? a : b
+      RUBY
+        foo ||
+          bar ? a : b
+      CORRECTION
+
+      it_behaves_like 'code without offense', <<~RUBY
+        (
+          foo || bar
+        ) ? a : b
+      RUBY
     end
 
     context 'with a complex condition' do
