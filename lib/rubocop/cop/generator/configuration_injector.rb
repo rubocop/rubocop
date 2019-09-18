@@ -12,7 +12,6 @@ module RuboCop
             Description: 'TODO: Write a description of the cop.'
             Enabled: true
             VersionAdded: '%<version_added>s'
-
         YAML
 
         def initialize(configuration_file_path:, badge:, version_added:)
@@ -23,8 +22,13 @@ module RuboCop
         end
 
         def inject
-          configuration_entries.insert(find_target_line,
-                                       new_configuration_entry)
+          target_line = find_target_line
+          if target_line
+            configuration_entries.insert(find_target_line,
+                                         new_configuration_entry + "\n")
+          else
+            configuration_entries.push("\n" + new_configuration_entry)
+          end
 
           File.write(configuration_file_path, configuration_entries.join)
 
@@ -49,7 +53,8 @@ module RuboCop
 
             return index if badge.to_s < line
           end
-          configuration_entries.size - 1
+
+          nil
         end
 
         def cop_name_line?(yaml)

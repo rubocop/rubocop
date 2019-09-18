@@ -191,33 +191,93 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/SpecialGlobalVars:
           Enabled: true
       YAML
+
+      stub_const('RuboCop::Version::STRING', '0.58.2')
     end
 
-    it 'inserts the cop in alphabetical order' do
-      stub_const('RuboCop::Version::STRING', '0.58.2')
+    context 'when it is the middle in alphabetical order' do
+      it 'inserts the cop' do
+        expect(File).to receive(:write).with(path, <<~YAML)
+          Style/Alias:
+            Enabled: true
 
-      expect(File).to receive(:write).with(path, <<~YAML)
-        Style/Alias:
-          Enabled: true
+          Style/FakeCop:
+            Description: 'TODO: Write a description of the cop.'
+            Enabled: true
+            VersionAdded: '0.59'
 
-        Style/FakeCop:
-          Description: 'TODO: Write a description of the cop.'
-          Enabled: true
-          VersionAdded: '0.59'
+          Style/Lambda:
+            Enabled: true
 
-        Style/Lambda:
-          Enabled: true
+          Style/SpecialGlobalVars:
+            Enabled: true
+        YAML
 
-        Style/SpecialGlobalVars:
-          Enabled: true
-      YAML
+        generator.inject_config(config_file_path: path)
 
-      generator.inject_config(config_file_path: path)
+        expect(stdout.string).to eq(<<~MESSAGE)
+          [modify] A configuration for the cop is added into #{path}.
+                   If you want to disable the cop by default, set `Enabled` option to false.
+        MESSAGE
+      end
+    end
 
-      expect(stdout.string).to eq(<<~MESSAGE)
-        [modify] A configuration for the cop is added into #{path}.
-                 If you want to disable the cop by default, set `Enabled` option to false.
-      MESSAGE
+    context 'when it is the first in alphabetical order' do
+      let(:cop_identifier) { 'Style/Aaa' }
+
+      it 'inserts the cop' do
+        expect(File).to receive(:write).with(path, <<~YAML)
+          Style/Aaa:
+            Description: 'TODO: Write a description of the cop.'
+            Enabled: true
+            VersionAdded: '0.59'
+
+          Style/Alias:
+            Enabled: true
+
+          Style/Lambda:
+            Enabled: true
+
+          Style/SpecialGlobalVars:
+            Enabled: true
+        YAML
+
+        generator.inject_config(config_file_path: path)
+
+        expect(stdout.string).to eq(<<~MESSAGE)
+          [modify] A configuration for the cop is added into #{path}.
+                   If you want to disable the cop by default, set `Enabled` option to false.
+        MESSAGE
+      end
+    end
+
+    context 'when it is the last in alphabetical order' do
+      let(:cop_identifier) { 'Style/Zzz' }
+
+      it 'inserts the cop' do
+        expect(File).to receive(:write).with(path, <<~YAML)
+          Style/Alias:
+            Enabled: true
+
+          Style/Lambda:
+            Enabled: true
+
+          Style/SpecialGlobalVars:
+            Enabled: true
+
+          Style/Zzz:
+            Description: 'TODO: Write a description of the cop.'
+            Enabled: true
+            VersionAdded: '0.59'
+        YAML
+
+        generator.inject_config(config_file_path: path)
+
+        expect(stdout.string).to eq(<<~MESSAGE)
+          [modify] A configuration for the cop is added into #{path}.
+                   If you want to disable the cop by default, set `Enabled` option to false.
+        MESSAGE
+      end
     end
   end
 
