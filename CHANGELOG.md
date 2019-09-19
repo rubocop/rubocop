@@ -34,6 +34,7 @@
 * [#7353](https://github.com/rubocop-hq/rubocop/issues/7353): Fix a false positive for `Style/RedundantSelf` when a self receiver is used as a method argument. ([@koic][])
 * [#7358](https://github.com/rubocop-hq/rubocop/issues/7358): Fix an incorrect autocorrect for `Style/NestedModifier` when parentheses are required in method arguments. ([@koic][])
 * [#7361](https://github.com/rubocop-hq/rubocop/issues/7361): Fix a false positive for `Style/TernaryParentheses` when only the closing parenthesis is used in the last line of condition. ([@koic][])
+* [#7369](https://github.com/rubocop-hq/rubocop/issues/7369): Fix an infinite loop error for `Layout/IndentAssignment` with `Layout/IndentFirstArgument` when using multiple assignment. ([@koic][])
 
 ### Changes
 
