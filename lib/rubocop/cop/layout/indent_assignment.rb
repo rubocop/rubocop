@@ -33,12 +33,20 @@ module RuboCop
           return unless node.loc.operator
           return if node.loc.operator.line == rhs.first_line
 
-          base = display_column(node.source_range)
+          base = display_column(leftmost_multiple_assignment(node).source_range)
           check_alignment([rhs], base + configured_indentation_width)
         end
 
         def autocorrect(node)
           AlignmentCorrector.correct(processed_source, node, column_delta)
+        end
+
+        def leftmost_multiple_assignment(node)
+          return node unless node.parent&.assignment?
+
+          leftmost_multiple_assignment(node.parent)
+
+          node.parent
         end
       end
     end

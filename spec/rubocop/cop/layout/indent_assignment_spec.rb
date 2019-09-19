@@ -91,4 +91,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentAssignment, :config do
       RUBY
     end
   end
+
+  it 'registers an offense for incorrectly indented rhs ' \
+     'when multiple assignment' do
+    expect_offense(<<~RUBY)
+      foo = bar =
+      baz = ''
+      ^^^^^^^^ Indent the first line of the right-hand-side of a multi-line assignment.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo = bar =
+        baz = ''
+    RUBY
+  end
 end
