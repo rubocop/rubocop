@@ -7291,7 +7291,7 @@ WordRegex | `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.63
+Enabled | No | Yes  | 0.49 | 0.75
 
 This cop can either enforce or forbid Yoda conditions,
 i.e. comparison operations where the order of expression is reversed.

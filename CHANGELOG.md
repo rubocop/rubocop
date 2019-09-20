@@ -44,6 +44,7 @@
 * [#7261](https://github.com/rubocop-hq/rubocop/issues/7261): `Style/FrozenStringLiteralComment` no longer inserts an empty line after the comment. This is left to `Layout/EmptyLineAfterMagicComment`. ([@buehmann][])
 * [#7091](https://github.com/rubocop-hq/rubocop/issues/7091): `Style/FormatStringToken` now detects format sequences with flags and modifiers. ([@buehmann][])
 * [#7319](https://github.com/rubocop-hq/rubocop/pull/7319): Rename `IgnoredMethodPatterns` option to `IgnoredPatterns` option for `Style/MethodCallWithArgsParentheses`. ([@koic][])
+* [#7345](https://github.com/rubocop-hq/rubocop/issues/7345): Mark unsafe for `Style/YodaCondition`. ([@koic][])
 
 ## 0.74.0 (2019-07-31)
 

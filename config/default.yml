@@ -3919,8 +3919,9 @@ Style/YodaCondition:
     - require_for_all_comparison_operators
     # enforce yoda only for equality operators: `!=` and `==`
     - require_for_equality_operators_only
+  Safe: false
   VersionAdded: '0.49'
-  VersionChanged: '0.63'
+  VersionChanged: '0.75'
 
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
