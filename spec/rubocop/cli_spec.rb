@@ -70,7 +70,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
       # Make Style/EndOfLine give same output regardless of platform.
       create_file('.rubocop.yml', <<~YAML)
-        Layout/EndOfLine:
+        EndOfLine:
           EnforcedStyle: lf
       YAML
       result = cli.run(['--format', 'simple', 'example.rb'])
@@ -82,6 +82,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
 
           1 file inspected, 2 offenses detected
+      RESULT
+      expect($stderr.string).to eq(<<~RESULT)
+        #{abs('.rubocop.yml')}: Warning: no department given for EndOfLine.
       RESULT
     end
   end
@@ -336,7 +339,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'without using namespace' do
-      it 'can disable selected cops on a single line' do
+      it 'can disable selected cops on a single line but prints a warning' do
         create_file('example.rb',
                     ['# frozen_string_literal: true',
                      '',
@@ -344,6 +347,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      '#' * 95,
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+        expect($stderr.string).to eq(<<~OUTPUT)
+          #{abs('example.rb')}: Warning: no department given for LineLength.
+          #{abs('example.rb')}: Warning: no department given for StringLiterals.
+        OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
             #{abs('example.rb')}:4:81: C: Metrics/LineLength: Line is too long. [95/80]
@@ -358,7 +365,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      '',
                      '#' * 95,
                      '# rubocop:disable all',
-                     'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
+                     'a' * 10 + ' ' \
+                     '# rubocop:disable Metrics/LineLength,Metrics/ClassLength',
                      'y(123) # rubocop:disable all',
                      '# rubocop:enable all'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
@@ -390,7 +398,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                          'y(123) # rubocop:disable all'])
             create_file('.rubocop.yml', config)
             expect(cli.run(['--format', 'emacs'])).to eq(1)
-            expect($stderr.string).to eq('')
+            expect($stderr.string).to eq(<<~OUTPUT)
+              #{abs('example.rb')}: Warning: no department given for LineLength.
+              #{abs('example.rb')}: Warning: no department given for ClassLength.
+            OUTPUT
             expect($stdout.string)
               .to eq(<<~RESULT)
                 #{abs('example.rb')}:3:81: C: Metrics/LineLength: Line is too long. [95/80]

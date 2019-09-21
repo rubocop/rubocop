@@ -5,6 +5,8 @@ RSpec.describe RuboCop::Cop::Generator do
     described_class.new(cop_identifier, 'your_id', output: stdout)
   end
 
+  HOME_DIR = Dir.pwd
+
   let(:stdout) { StringIO.new }
   let(:cop_identifier) { 'Style/FakeCop' }
 
@@ -318,12 +320,22 @@ RSpec.describe RuboCop::Cop::Generator do
 
     it 'generates a cop file that has no offense' do
       generator.write_source
-      expect(runner.run([])).to be true
+      result = nil
+      expect { result = runner.run([]) }.to output(<<~OUTPUT).to_stderr
+        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop_todo.yml
+        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop.yml
+      OUTPUT
+      expect(result).to be true
     end
 
     it 'generates a spec file that has no offense' do
       generator.write_spec
-      expect(runner.run([])).to be true
+      result = nil
+      expect { result = runner.run([]) }.to output(<<~OUTPUT).to_stderr
+        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop_todo.yml
+        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop.yml
+      OUTPUT
+      expect(result).to be true
     end
   end
 end

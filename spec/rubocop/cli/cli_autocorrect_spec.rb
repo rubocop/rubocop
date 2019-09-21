@@ -1343,8 +1343,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                  '  ',
                  '  def f; end',
                  'end'])
-    expect(cli.run(%w[--auto-correct --only
-                      TrailingWhitespace,EmptyLinesAroundClassBody])).to eq(0)
+    expect(cli.run(['--auto-correct', '--only',
+                    'Layout/TrailingWhitespace,' \
+                    'Layout/EmptyLinesAroundClassBody'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
         # Example class.
@@ -1373,7 +1374,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     RUBY
     expect(cli.run(%w[-D --auto-correct
-                      --only MethodDefParentheses,SymbolProc])).to eq(0)
+                      --only Style/MethodDefParentheses,Style/SymbolProc]))
+      .to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       def primes(limit)
@@ -1482,7 +1484,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', 'Hash.new()')
     exit_status = cli.run(
       %w[--auto-correct --format emacs
-         --only MethodCallWithoutArgsParentheses,EmptyLiteral]
+         --only Style/MethodCallWithoutArgsParentheses,Style/EmptyLiteral]
     )
     expect(exit_status).to eq(0)
     expect($stderr.string).to eq('')
@@ -1543,7 +1545,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     YAML
     create_file('example.rb', src)
     exit_status = cli.run(
-      %w[-a -f simple --only BlockDelimiters,Semicolon,UnusedMethodArgument]
+      %w[-a -f simple
+         --only Style/BlockDelimiters,Style/Semicolon,Lint/UnusedMethodArgument]
     )
     expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')

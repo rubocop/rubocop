@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'and the source contains non-directive #s as non-comment' do
         let(:source) { <<-RUBY }
-          LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable LineLength
+          LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable Metrics/LineLength
         RUBY
 
         it 'registers an offense for the line' do

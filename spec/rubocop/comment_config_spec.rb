@@ -50,9 +50,9 @@ RSpec.describe RuboCop::CommentConfig do
         '# rubocop:disable Layout/BlockAlignment some comment why',
         '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
         '# rubocop:enable Lint/RandOne foo bar!',            # 43
-        '# rubocop:disable EmptyInterpolation',
+        '# rubocop:disable Lint/EmptyInterpolation',
         '"result is #{}"',
-        '# rubocop:enable EmptyInterpolation',
+        '# rubocop:enable Lint/EmptyInterpolation',
         '# rubocop:disable RSpec/Example',
         '# rubocop:disable Custom2/Number9'                  # 48
       ].join("\n")

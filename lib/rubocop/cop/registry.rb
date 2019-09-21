@@ -93,6 +93,9 @@ module RuboCop
       # @return [String] Qualified cop name
       def qualified_cop_name(name, path)
         badge = Badge.parse(name)
+        if !badge.qualified? && unqualified_cop_names.include?(name)
+          warn "#{path}: Warning: no department given for #{name}."
+        end
         return name if registered?(badge)
 
         potential_badges = qualify_badge(badge)
@@ -102,6 +105,12 @@ module RuboCop
         when 1 then resolve_badge(badge, potential_badges.first, path)
         else raise AmbiguousCopName.new(badge, path, potential_badges)
         end
+      end
+
+      def unqualified_cop_names
+        @unqualified_cop_names ||=
+          Set.new(@cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
+          'UnneededCopDisableDirective'
       end
 
       # @return [Hash{String => Array<Class>}]
