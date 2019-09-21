@@ -429,7 +429,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                    'end'])
 
         cli.run(['--format', 'offenses',
-                 '--except', 'IfUnlessModifier',
+                 '--except', 'Style/IfUnlessModifier',
                  'example.rb'])
         with_option = $stdout.string
         $stdout = StringIO.new
@@ -437,6 +437,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                  'example.rb'])
         without_option = $stdout.string
 
+        expect($stderr.string).to eq('')
         expect(without_option.split($RS) - with_option.split($RS))
           .to eq(['1  Style/IfUnlessModifier', '7  Total'])
       end
@@ -454,7 +455,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                           'Style/IfUnlessModifier,Layout/Tab,' \
                           "Layout/SpaceAroundOperators,#{cop_name}",
                           'example.rb'])).to eq(1)
-          expect($stderr.string).to eq('')
+          if cop_name == 'UnneededCopDisableDirective'
+            expect($stderr.string.chomp)
+              .to eq('--except option: Warning: no department given for ' \
+                     'UnneededCopDisableDirective.')
+          end
           expect($stdout.string)
             .to eq(<<~RESULT)
 
@@ -577,9 +582,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   describe '-E/--extra-details' do
     it 'shows extra details' do
-      create_file('example1.rb', 'puts 0 # rubocop:disable NumericLiterals ')
+      create_file('example1.rb',
+                  'puts 0 # rubocop:disable Style/NumericLiterals ')
       create_file('.rubocop.yml', <<~YAML)
-        TrailingWhitespace:
+        Layout/TrailingWhitespace:
           Details: Trailing space is just sloppy.
       YAML
       file = abs('example1.rb')
@@ -589,7 +595,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
         #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
-        #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
+        #{file}:1:47: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
 
       expect($stderr.string).to eq('')

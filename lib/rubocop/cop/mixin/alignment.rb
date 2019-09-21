@@ -13,7 +13,7 @@ module RuboCop
 
       def configured_indentation_width
         cop_config['IndentationWidth'] ||
-          config.for_cop('IndentationWidth')['Width']
+          config.for_cop('Layout/IndentationWidth')['Width']
       end
 
       def indentation(node)

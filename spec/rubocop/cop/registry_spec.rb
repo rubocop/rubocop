@@ -85,12 +85,26 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'qualifies names without a namespace' do
-      expect(registry.qualified_cop_name('MethodLength', origin))
-        .to eql('Metrics/MethodLength')
+      warning =
+        "/app/.rubocop.yml: Warning: no department given for MethodLength.\n"
+      qualified = nil
+
+      expect do
+        qualified = registry.qualified_cop_name('MethodLength', origin)
+      end.to output(warning).to_stderr
+
+      expect(qualified).to eql('Metrics/MethodLength')
     end
 
     it 'qualifies names with the correct namespace' do
-      expect(registry.qualified_cop_name('Foo', origin)).to eql('RSpec/Foo')
+      warning = "/app/.rubocop.yml: Warning: no department given for Foo.\n"
+      qualified = nil
+
+      expect do
+        qualified = registry.qualified_cop_name('Foo', origin)
+      end.to output(warning).to_stderr
+
+      expect(qualified).to eql('RSpec/Foo')
     end
 
     it 'emits a warning when namespace is incorrect' do
@@ -107,11 +121,14 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'raises an error when a cop name is ambiguous' do
       expect { registry.qualified_cop_name('IndentFirstArrayElement', origin) }
-        .to raise_error(RuboCop::Cop::AmbiguousCopName).with_message(
+        .to raise_error(RuboCop::Cop::AmbiguousCopName)
+        .with_message(
           'Ambiguous cop name `IndentFirstArrayElement` used in ' \
           '/app/.rubocop.yml needs department qualifier. Did you mean ' \
           'Layout/IndentFirstArrayElement or Test/IndentFirstArrayElement?'
         )
+        .and output('/app/.rubocop.yml: Warning: no department given for ' \
+                    "IndentFirstArrayElement.\n").to_stderr
     end
 
     it 'returns the provided name if no namespace is found' do

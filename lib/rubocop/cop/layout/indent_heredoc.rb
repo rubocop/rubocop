@@ -240,7 +240,7 @@ module RuboCop
         end
 
         def indentation_width
-          @config.for_cop('IndentationWidth')['Width'] || 2
+          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def heredoc_body(node)

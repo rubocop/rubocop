@@ -19,6 +19,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
     end
 
     before do
+      $stderr = StringIO.new # rubocop:disable RSpec/ExpectOutput
       cop.check(offenses, cop_disabled_line_ranges, comments)
     end
 
@@ -239,11 +240,16 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
                 ]
               end
 
-              it 'returns an offense' do
+              it 'returns an offense and warns about missing departments' do
                 expect(cop.messages)
                   .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
                           'Unnecessary disabling of `Lint/Debugger`.'])
                 expect(cop.highlights).to eq(%w[ClassLength Debugger])
+                expect($stderr.string).to eq(<<~OUTPUT)
+                  (string): Warning: no department given for MethodLength.
+                  (string): Warning: no department given for ClassLength.
+                  (string): Warning: no department given for Debugger.
+                OUTPUT
               end
             end
           end
@@ -251,8 +257,10 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
           context 'comment is not at the beginning of the file' do
             context 'and not all cops have offenses' do
               let(:source) do
-                ['puts 1',
-                 '# rubocop:disable MethodLength, ClassLength'].join("\n")
+                <<~RUBY
+                  puts 1
+                  # rubocop:disable Metrics/MethodLength, Metrics/ClassLength
+                RUBY
               end
               let(:cop_disabled_line_ranges) do
                 { 'Metrics/ClassLength' => [2..Float::INFINITY],
@@ -271,7 +279,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
                 expect(cop.messages).to eq(
                   ['Unnecessary disabling of `Metrics/ClassLength`.']
                 )
-                expect(cop.highlights).to eq(['ClassLength'])
+                expect(cop.highlights).to eq(['Metrics/ClassLength'])
               end
             end
           end
