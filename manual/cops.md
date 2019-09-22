@@ -270,6 +270,10 @@ In the following section you find all available cops:
 * [Metrics/ParameterLists](cops_metrics.md#metricsparameterlists)
 * [Metrics/PerceivedComplexity](cops_metrics.md#metricsperceivedcomplexity)
 
+#### Department [Migration](cops_migration.md)
+
+* [Migration/DepartmentName](cops_migration.md#migrationdepartmentname)
+
 #### Department [Naming](cops_naming.md)
 
 * [Naming/AccessorMethodName](cops_naming.md#namingaccessormethodname)
