@@ -91,10 +91,10 @@ module RuboCop
       # @note Emits a warning if the provided name has an incorrect namespace
       #
       # @return [String] Qualified cop name
-      def qualified_cop_name(name, path)
+      def qualified_cop_name(name, path, shall_warn = true)
         badge = Badge.parse(name)
-        if !badge.qualified? && unqualified_cop_names.include?(name)
-          warn "#{path}: Warning: no department given for #{name}."
+        if shall_warn && department_missing?(badge, name)
+          print_warning(name, path)
         end
         return name if registered?(badge)
 
@@ -105,6 +105,18 @@ module RuboCop
         when 1 then resolve_badge(badge, potential_badges.first, path)
         else raise AmbiguousCopName.new(badge, path, potential_badges)
         end
+      end
+
+      def department_missing?(badge, name)
+        !badge.qualified? && unqualified_cop_names.include?(name)
+      end
+
+      def print_warning(name, path)
+        message = "#{path}: Warning: no department given for #{name}."
+        if path.end_with?('.rb')
+          message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.'
+        end
+        warn message
       end
 
       def unqualified_cop_names

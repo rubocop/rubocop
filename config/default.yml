@@ -1854,6 +1854,14 @@ Metrics/PerceivedComplexity:
   VersionAdded: '0.25'
   Max: 7
 
+################## Migration #############################
+
+Migration/DepartmentName:
+  Description: >-
+                 Check that cop names in rubocop:disable (etc) comments are
+                 given with department name.
+  Enabled: false
+
 #################### Naming ##############################
 
 Naming/AccessorMethodName:

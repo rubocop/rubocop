@@ -348,8 +348,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stderr.string).to eq(<<~OUTPUT)
-          #{abs('example.rb')}: Warning: no department given for LineLength.
-          #{abs('example.rb')}: Warning: no department given for StringLiterals.
+          #{abs('example.rb')}: Warning: no department given for LineLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
+          #{abs('example.rb')}: Warning: no department given for StringLiterals. Run `rubocop -a --only Migration/DepartmentName` to fix.
         OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
@@ -399,8 +399,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             create_file('.rubocop.yml', config)
             expect(cli.run(['--format', 'emacs'])).to eq(1)
             expect($stderr.string).to eq(<<~OUTPUT)
-              #{abs('example.rb')}: Warning: no department given for LineLength.
-              #{abs('example.rb')}: Warning: no department given for ClassLength.
+              #{abs('example.rb')}: Warning: no department given for LineLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
+              #{abs('example.rb')}: Warning: no department given for ClassLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
             OUTPUT
             expect($stdout.string)
               .to eq(<<~RESULT)
