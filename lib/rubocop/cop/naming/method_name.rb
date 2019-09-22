@@ -40,12 +40,13 @@ module RuboCop
         PATTERN
 
         def_node_matcher :sym_name, '(sym $_name)'
+        def_node_matcher :str_name, '(str $_name)'
 
         def on_send(node)
           return unless (attrs = attr?(node))
 
           attrs.last.each do |name_item|
-            name = sym_name(name_item)
+            name = attr_name(name_item)
             next if !name || matches_ignored_pattern?(name)
 
             check_name(node, name, range_position(node))
@@ -61,6 +62,10 @@ module RuboCop
         alias on_defs on_def
 
         private
+
+        def attr_name(name_item)
+          sym_name(name_item) || str_name(name_item)
+        end
 
         def range_position(node)
           selector_end_pos = node.loc.selector.end_pos + 1

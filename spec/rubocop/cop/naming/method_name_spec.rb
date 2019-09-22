@@ -17,6 +17,9 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
         attr_writer :visit_Arel_Nodes_SelectStatement
                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr 'visit_Arel_Nodes_SelectStatement'
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
       RUBY
     end
 
@@ -24,6 +27,9 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       expect_offense(<<~RUBY)
         attr_reader :visit_Arel_Nodes_SelectStatement
                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_reader 'visit_Arel_Nodes_SelectStatement'
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
       RUBY
     end
 
@@ -175,7 +181,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
   shared_examples 'multiple attr methods' do |enforced_style|
     it 'registers an offense for camel case methods names in attr.' do
-       expect_offense(<<~RUBY)
+      expect_offense(<<~RUBY)
         attr :my_method, :myMethod
              ^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
 
@@ -184,6 +190,9 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
         attr_accessor :myMethod, :my_method
                       ^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_accessor 'myMethod', 'my_method'
+                      ^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
       RUBY
     end
   end
@@ -299,6 +308,9 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
         attr_writer :my_method
                     ^^^^^^^^^^ Use camelCase for method names.
+
+        attr_writer 'my_method'
+                    ^^^^^^^^^^^ Use camelCase for method names.
       RUBY
     end
 
