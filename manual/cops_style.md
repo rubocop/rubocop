@@ -7038,7 +7038,7 @@ question = '"What did you say?"'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | -
+Enabled | No | Yes  | 0.55 | 0.75
 
 This cop is used to identify instances of sorting and then
 taking only the first or last element. The same behavior can

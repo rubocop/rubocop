@@ -3847,7 +3847,9 @@ Style/UnneededSort:
                   Use `min` instead of `sort.first`,
                   `max_by` instead of `sort_by...last`, etc.
   Enabled: true
+  Safe: false
   VersionAdded: '0.55'
+  VersionChanged: '0.75'
 
 Style/UnpackFirst:
   Description: >-
