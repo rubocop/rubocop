@@ -37,6 +37,7 @@
 * [#7369](https://github.com/rubocop-hq/rubocop/issues/7369): Fix an infinite loop error for `Layout/IndentAssignment` with `Layout/IndentFirstArgument` when using multiple assignment. ([@koic][])
 * [#7177](https://github.com/rubocop-hq/rubocop/issues/7177), [#7370](https://github.com/rubocop-hq/rubocop/issues/7370): When correcting alignment, do not insert spaces into string literals. ([@buehmann][])
 * [#7367](https://github.com/rubocop-hq/rubocop/issues/7367): Fix an error for `Style/OrAssignment` cop when `then` branch body is empty. ([@koic][])
+* [#7212](https://github.com/rubocop-hq/rubocop/issues/7212): Fix a false positive for `Layout/EmptyLinesAroundAccessModifier` and `UselessAccessModifier` when using method with the same name as access modifier around a method definition. ([@koic][])
 
 ### Changes
 
