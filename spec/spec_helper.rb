@@ -13,7 +13,7 @@ require_relative 'core_ext/string'
 require 'pry'
 
 # Require supporting files exposed for testing.
-require 'rubocop/rspec/support'
+require 'rubocop/dev/rspec/support'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
