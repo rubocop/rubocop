@@ -8,6 +8,7 @@ gem 'bump', require: false
 gem 'pry'
 gem 'rake', '~> 12.0'
 gem 'rspec', '~> 3.7'
+gem 'rubocop-dev', github: 'pirj/rubocop-dev'
 gem 'rubocop-performance', '~> 1.4.0'
 gem 'rubocop-rspec', '~> 1.33.0'
 gem 'simplecov', '~> 0.10'
