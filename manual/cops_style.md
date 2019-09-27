@@ -6006,9 +6006,20 @@ def link_to(url); {:name => url}; end
 def @table.columns; super; end
 
 # good
-def no_op; end
 def self.resource_class=(klass); end
 def @table.columns; end
+```
+#### AllowIfMethodIsEmpty: true (default)
+
+```ruby
+# good
+def no_op; end
+```
+#### AllowIfMethodIsEmpty: false
+
+```ruby
+# bad
+def no_op; end
 ```
 
 ### Configurable attributes
