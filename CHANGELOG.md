@@ -21,6 +21,7 @@
 * [#7823](https://github.com/rubocop-hq/rubocop/pull/7823): Add `IgnoredMethods` configuration in `Metrics/AbcSize`, `Metrics/CyclomaticComplexity`, and `Metrics/PerceivedComplexity` cops. ([@drenmi][])
 * [#7816](https://github.com/rubocop-hq/rubocop/pull/7816): Support Ruby 2.7's numbered parameter for `Style/Lambda`. ([@koic][])
 * [#7829](https://github.com/rubocop-hq/rubocop/issues/7829): Fix an error for `Style/OneLineConditional` when one of the branches contains `next` keyword. ([@koic][])
+* [#7384](https://github.com/rubocop-hq/rubocop/pull/7384): Add new `Style/DisableCopsWithinSourceCodeDirective` cop. ([@egze][])
 
 ### Bug fixes
 
@@ -4424,3 +4425,4 @@
 [@nikitasakov]: https://github.com/nikitasakov
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
+[@egze]: https://github.com/egze

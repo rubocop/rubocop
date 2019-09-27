@@ -334,6 +334,7 @@ In the following section you find all available cops:
 * [Style/DateTime](cops_style.md#styledatetime)
 * [Style/DefWithParentheses](cops_style.md#styledefwithparentheses)
 * [Style/Dir](cops_style.md#styledir)
+* [Style/DisableCopsWithinSourceCodeDirective](cops_style.md#styledisablecopswithinsourcecodedirective)
 * [Style/Documentation](cops_style.md#styledocumentation)
 * [Style/DocumentationMethod](cops_style.md#styledocumentationmethod)
 * [Style/DoubleCopDisableDirective](cops_style.md#styledoublecopdisabledirective)
