@@ -3,7 +3,7 @@
 Use a rake task to generate a cop template.
 
 ```sh
-$ bundle exec rake new_cop[Department/Name]
+$ bundle exec rake 'new_cop[Department/Name]'
 Files created:
   - lib/rubocop/cop/department/name.rb
   - spec/rubocop/cop/department/name_spec.rb
@@ -150,7 +150,7 @@ In other words, it says: "Match code calling `!<expression>.empty?`".
 Great! Now, lets implement our cop to simplify such statements:
 
 ```sh
-$ rake new_cop[Style/SimplifyNotEmptyWithAny]
+$ rake 'new_cop[Style/SimplifyNotEmptyWithAny]'
 ```
 
 After the cop scaffold is generated, change the node matcher to match with
