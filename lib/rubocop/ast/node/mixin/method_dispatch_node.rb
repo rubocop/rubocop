@@ -222,21 +222,10 @@ module RuboCop
 
       def_node_matcher :macro_scope?, <<~PATTERN
         {^{({sclass class module block} ...) class_constructor?}
-         ^^#ascend_macro_scope?
+         ^^{({sclass class module block} ... ({begin if} ...)) class_constructor?}
          ^#macro_kwbegin_wrapper?
          #root_node?}
       PATTERN
-
-      def_node_matcher :wrapped_macro_scope?, <<~PATTERN
-        {({sclass class module block} ... ({begin if} ...)) class_constructor?}
-      PATTERN
-
-      def ascend_macro_scope?(ancestor)
-        return true if wrapped_macro_scope?(ancestor)
-        return false if root_node?(ancestor)
-
-        ascend_macro_scope?(ancestor.parent)
-      end
 
       # Check if a node's parent is a kwbegin wrapper within a macro scope
       #
