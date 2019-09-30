@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.75.0 (2019-09-30)
+
 ### New features
 
 * [#7274](https://github.com/rubocop-hq/rubocop/issues/7274): Add new `Lint/SendWithMixinArgument` cop. ([@koic][])
