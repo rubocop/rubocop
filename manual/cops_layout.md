@@ -1560,7 +1560,7 @@ class Foo
 
 end
 ```
-#### Enforcedstyle: beginning_only
+#### EnforcedStyle: beginning_only
 
 ```ruby
 # good
@@ -1572,7 +1572,7 @@ class Foo
   end
 end
 ```
-#### Enforcedstyle: ending_only
+#### EnforcedStyle: ending_only
 
 ```ruby
 # good
