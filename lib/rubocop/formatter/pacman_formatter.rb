@@ -2,7 +2,7 @@
 
 module RuboCop
   module Formatter
-    # This formatter prints a PACDOT per every file to be analized.
+    # This formatter prints a PACDOT per every file to be analyzed.
     # Pacman will "eat" one PACDOT per file when no offense is detected.
     # Otherwise it will print a Ghost.
     # This is inspired by the Pacman formatter for RSpec by Carlos Rojas.
