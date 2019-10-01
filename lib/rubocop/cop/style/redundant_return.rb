@@ -35,6 +35,18 @@ module RuboCop
       #     end
       #   end
       #
+      # @example AllowMultipleReturnValues: false (default)
+      #   # bad
+      #   def test
+      #     return x, y
+      #   end
+      #
+      # @example AllowMultipleReturnValues: true
+      #   # good
+      #   def test
+      #     return x, y
+      #   end
+      #
       class RedundantReturn < Cop
         include RangeHelp
 

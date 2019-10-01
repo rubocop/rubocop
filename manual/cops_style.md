@@ -5255,6 +5255,22 @@ def test
   end
 end
 ```
+#### AllowMultipleReturnValues: false (default)
+
+```ruby
+# bad
+def test
+  return x, y
+end
+```
+#### AllowMultipleReturnValues: true
+
+```ruby
+# good
+def test
+  return x, y
+end
+```
 
 ### Configurable attributes
 
