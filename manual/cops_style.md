@@ -3026,20 +3026,6 @@ puts 'test'
 
 # okay with `^assert` listed in `IgnoredPatterns`
 assert_equal 'test', x
-
-# IgnoreMacros: true (default)
-
-# good
-class Foo
-  bar :baz
-end
-
-# IgnoreMacros: false
-
-# bad
-class Foo
-  bar :baz
-end
 ```
 #### EnforcedStyle: omit_parentheses
 
@@ -3055,9 +3041,26 @@ foo.enforce(strict: true)
 
 # good
 foo.enforce strict: true
+```
+#### IgnoreMacros: true (default)
 
-# AllowParenthesesInMultilineCall: false (default)
+```ruby
+# good
+class Foo
+  bar :baz
+end
+```
+#### IgnoreMacros: false
 
+```ruby
+# bad
+class Foo
+  bar :baz
+end
+```
+#### AllowParenthesesInMultilineCall: false (default)
+
+```ruby
 # bad
 foo.enforce(
   strict: true
@@ -3066,9 +3069,10 @@ foo.enforce(
 # good
 foo.enforce \
   strict: true
+```
+#### AllowParenthesesInMultilineCall: true
 
-# AllowParenthesesInMultilineCall: true
-
+```ruby
 # good
 foo.enforce(
   strict: true
@@ -3077,33 +3081,37 @@ foo.enforce(
 # good
 foo.enforce \
   strict: true
+```
+#### AllowParenthesesInChaining: false (default)
 
-# AllowParenthesesInChaining: false (default)
-
+```ruby
 # bad
 foo().bar(1)
 
 # good
 foo().bar 1
+```
+#### AllowParenthesesInChaining: true
 
-# AllowParenthesesInChaining: true
-
+```ruby
 # good
 foo().bar(1)
 
 # good
 foo().bar 1
+```
+#### AllowParenthesesInCamelCaseMethod: false (default)
 
-# AllowParenthesesInCamelCaseMethod: false (default)
-
+```ruby
 # bad
 Array(1)
 
 # good
 Array 1
+```
+#### AllowParenthesesInCamelCaseMethod: true
 
-# AllowParenthesesInCamelCaseMethod: true
-
+```ruby
 # good
 Array(1)
 
