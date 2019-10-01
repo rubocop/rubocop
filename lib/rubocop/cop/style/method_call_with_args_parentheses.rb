@@ -64,20 +64,6 @@ module RuboCop
       #   # okay with `^assert` listed in `IgnoredPatterns`
       #   assert_equal 'test', x
       #
-      #   # IgnoreMacros: true (default)
-      #
-      #   # good
-      #   class Foo
-      #     bar :baz
-      #   end
-      #
-      #   # IgnoreMacros: false
-      #
-      #   # bad
-      #   class Foo
-      #     bar :baz
-      #   end
-      #
       # @example EnforcedStyle: omit_parentheses
       #
       #   # bad
@@ -92,7 +78,21 @@ module RuboCop
       #   # good
       #   foo.enforce strict: true
       #
-      #   # AllowParenthesesInMultilineCall: false (default)
+      # @example IgnoreMacros: true (default)
+      #
+      #   # good
+      #   class Foo
+      #     bar :baz
+      #   end
+      #
+      # @example IgnoreMacros: false
+      #
+      #   # bad
+      #   class Foo
+      #     bar :baz
+      #   end
+      #
+      # @example AllowParenthesesInMultilineCall: false (default)
       #
       #   # bad
       #   foo.enforce(
@@ -103,7 +103,7 @@ module RuboCop
       #   foo.enforce \
       #     strict: true
       #
-      #   # AllowParenthesesInMultilineCall: true
+      # @example AllowParenthesesInMultilineCall: true
       #
       #   # good
       #   foo.enforce(
@@ -114,7 +114,7 @@ module RuboCop
       #   foo.enforce \
       #     strict: true
       #
-      #   # AllowParenthesesInChaining: false (default)
+      # @example AllowParenthesesInChaining: false (default)
       #
       #   # bad
       #   foo().bar(1)
@@ -122,7 +122,7 @@ module RuboCop
       #   # good
       #   foo().bar 1
       #
-      #   # AllowParenthesesInChaining: true
+      # @example AllowParenthesesInChaining: true
       #
       #   # good
       #   foo().bar(1)
@@ -130,7 +130,7 @@ module RuboCop
       #   # good
       #   foo().bar 1
       #
-      #   # AllowParenthesesInCamelCaseMethod: false (default)
+      # @example AllowParenthesesInCamelCaseMethod: false (default)
       #
       #   # bad
       #   Array(1)
@@ -138,7 +138,7 @@ module RuboCop
       #   # good
       #   Array 1
       #
-      #   # AllowParenthesesInCamelCaseMethod: true
+      # @example AllowParenthesesInCamelCaseMethod: true
       #
       #   # good
       #   Array(1)
