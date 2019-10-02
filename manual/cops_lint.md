@@ -2489,7 +2489,6 @@ This cop checks for unused block arguments.
 
 ```ruby
 # bad
-
 do_something do |used, unused|
   puts used
 end
@@ -2501,10 +2500,8 @@ end
 define_method(:foo) do |bar|
   puts :baz
 end
-```
-```ruby
-#good
 
+# good
 do_something do |used, _unused|
   puts used
 end
@@ -2515,6 +2512,34 @@ end
 
 define_method(:foo) do |_bar|
   puts :baz
+end
+```
+#### IgnoreEmptyBlocks: true (default)
+
+```ruby
+# good
+do_something { |unused| }
+```
+#### IgnoreEmptyBlocks: false
+
+```ruby
+# bad
+do_something { |unused| }
+```
+#### AllowUnusedKeywordArguments: false (default)
+
+```ruby
+# bad
+do_something do |unused: 42|
+  foo
+end
+```
+#### AllowUnusedKeywordArguments: true
+
+```ruby
+# good
+do_something do |unused: 42|
+  foo
 end
 ```
 
