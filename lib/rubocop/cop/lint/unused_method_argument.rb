@@ -6,20 +6,38 @@ module RuboCop
       # This cop checks for unused method arguments.
       #
       # @example
-      #
       #   # bad
-      #
       #   def some_method(used, unused, _unused_but_allowed)
       #     puts used
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method(used, _unused, _unused_but_allowed)
       #     puts used
       #   end
+      #
+      # @example AllowUnusedKeywordArguments: false (default)
+      #   # bad
+      #   def do_something(used, unused: 42)
+      #     used
+      #   end
+      #
+      # @example AllowUnusedKeywordArguments: true
+      #   # good
+      #   def do_something(used, unused: 42)
+      #     used
+      #   end
+      #
+      # @example IgnoreEmptyMethods: true (default)
+      #   # good
+      #   def do_something(unused)
+      #   end
+      #
+      # @example IgnoreEmptyMethods: false
+      #   # bad
+      #   def do_something(unused)
+      #   end
+      #
       class UnusedMethodArgument < Cop
         include UnusedArgument
 
