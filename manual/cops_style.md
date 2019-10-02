@@ -1430,6 +1430,53 @@ def foo.bar
   puts baz
 end
 ```
+#### RequireForNonPublicMethods: false (default)
+
+```ruby
+# good
+class Foo
+  protected
+  def do_something
+  end
+end
+
+class Foo
+  private
+  def do_something
+  end
+end
+```
+#### RequireForNonPublicMethods: true
+
+```ruby
+# bad
+class Foo
+  protected
+  def do_something
+  end
+end
+
+class Foo
+  private
+  def do_something
+  end
+end
+
+# good
+class Foo
+  protected
+  # Documentation
+  def do_something
+  end
+end
+
+class Foo
+  private
+  # Documentation
+  def do_something
+  end
+end
+```
 
 ### Configurable attributes
 
