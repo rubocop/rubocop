@@ -2541,16 +2541,43 @@ This cop checks for unused method arguments.
 
 ```ruby
 # bad
-
 def some_method(used, unused, _unused_but_allowed)
   puts used
 end
-```
-```ruby
-# good
 
+# good
 def some_method(used, _unused, _unused_but_allowed)
   puts used
+end
+```
+#### AllowUnusedKeywordArguments: false (default)
+
+```ruby
+# bad
+def do_something(used, unused: 42)
+  used
+end
+```
+#### AllowUnusedKeywordArguments: true
+
+```ruby
+# good
+def do_something(used, unused: 42)
+  used
+end
+```
+#### IgnoreEmptyMethods: true (default)
+
+```ruby
+# good
+def do_something(unused)
+end
+```
+#### IgnoreEmptyMethods: false
+
+```ruby
+# bad
+def do_something(unused)
 end
 ```
 
