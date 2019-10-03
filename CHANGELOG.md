@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6759](https://github.com/rubocop-hq/rubocop/issues/6759): Mention configuration in Basic Usage documentation. ([@scottmatthewman][])
+
 ## 0.75.0 (2019-09-30)
 
 ### New features
