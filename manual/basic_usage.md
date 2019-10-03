@@ -73,8 +73,8 @@ See [Auto-correct](auto_correct.md).
 
 #### Changing what RuboCop considers to be offenses
 
-RuboCop comes with a preconfigured set of rules for each of its cops. Depending on your project, you may wish to
-reconfigure a cop, tell to ignore certain files, or disable it altogether.
+RuboCop comes with a preconfigured set of rules for each of its cops, based on the [Ruby Style Guide](https://rubystyle.guide).
+Depending on your project, you may wish to reconfigure a cop, tell to ignore certain files, or disable it altogether.
 
 The most common way to change RuboCop's behaviour is to create a configuration file named `.rubocop.yml` in the
 project's root directory.
