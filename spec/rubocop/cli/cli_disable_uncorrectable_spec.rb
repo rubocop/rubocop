@@ -113,10 +113,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             == example.rb ==
             C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
             C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
-            C:  3:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
+            C:  3:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [<8, 12, 6> 15.62/15]
             C:  3:  3: [Todo] Metrics/CyclomaticComplexity: Cyclomatic complexity for choose_move is too high. [7/6]
             C:  3:  3: [Todo] Metrics/MethodLength: Method has too many lines. [11/10]
-            C:  4:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [15.62/15]
+            C:  4:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [<8, 12, 6> 15.62/15]
             C:  4:  3: [Todo] Metrics/MethodLength: Method has too many lines. [11/10]
             C:  4: 32: [Corrected] Style/DoubleCopDisableDirective: More than one disable comment on one line.
 

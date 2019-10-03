@@ -14,6 +14,7 @@
 
 * [#7446](https://github.com/rubocop-hq/rubocop/issues/7446): Add `merge` to list of non-mutating methods. ([@cstyles][])
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): Rename `Unneeded*` cops to `Redundant*` (e.g., `Style/UnneededPercentQ` becomes `Style/RedundantPercentQ`). ([@scottmatthewman][])
+* [#7396](https://github.com/rubocop-hq/rubocop/issues/7396): Display assignments, branches, and conditions values with the offense. ([@avmnu-sng][])
 
 ## 0.75.1 (2019-10-14)
 
@@ -4242,3 +4243,4 @@
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
 [@jdkaplan]: https://github.com/jdkaplan
 [@cstyles]: https://github.com/cstyles
+[@avmnu-sng]: https://github.com/avmnu-sng
