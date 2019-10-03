@@ -2851,48 +2851,39 @@ methods used in void context.
 
 ### Examples
 
+#### CheckForMethodsWithNoSideEffects: false (default)
+
 ```ruby
 # bad
-
 def some_method
   some_num * 10
   do_something
 end
-```
-```ruby
-# bad
 
 def some_method(some_var)
   some_var
   do_something
 end
 ```
-```ruby
-# bad, when CheckForMethodsWithNoSideEffects is set true
+#### CheckForMethodsWithNoSideEffects: true
 
+```ruby
+# bad
 def some_method(some_array)
   some_array.sort
   do_something(some_array)
 end
-```
-```ruby
-# good
 
+# good
 def some_method
   do_something
   some_num * 10
 end
-```
-```ruby
-# good
 
 def some_method(some_var)
   do_something
   some_var
 end
-```
-```ruby
-# good, when CheckForMethodsWithNoSideEffects is set true
 
 def some_method(some_array)
   some_array.sort!
