@@ -82,12 +82,14 @@ module RuboCop
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
-          key.start_with?(specified_key)
+          key =~ /^#{specified_key}.*/
         end
 
         raise %(No formatter for "#{specified_key}") if matching_keys.empty?
 
-        if matching_keys.size > 1
+        if matching_keys.size > 1 && matching_keys.first.start_with?('p')
+          matching_keys = ['progress']
+        elsif matching_keys.size > 1
           raise %(Cannot determine formatter for "#{specified_key}")
         end
 

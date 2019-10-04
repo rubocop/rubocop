@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#7389](https://github.com/rubocop-hq/rubocop/issues/7389): Fix error when using `-fp` so we now use `progress` when using `-fp`. ([@zmaupin][])
+
 ## 0.75.0 (2019-09-30)
 
 ### New features
@@ -4208,3 +4210,4 @@
 [@raymondfallon]: https://github.com/raymondfallon
 [@crojasaragonez]: https://github.com/crojasaragonez
 [@desheikh]: https://github.com/desheikh
+[@zmaupin]: https://github.com/zmaupin

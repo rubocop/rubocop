@@ -42,6 +42,22 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
         .to eq(RuboCop::Formatter::EmacsStyleFormatter)
     end
 
+    context 'when formatter p(rogress) is specified' do
+      it 'adds a formatter with specified type progress' do
+        formatter_set.add_formatter('p')
+        expect(formatter_set[0].class)
+          .to eq(RuboCop::Formatter::ProgressFormatter)
+      end
+    end
+
+    context 'when formatter pa(cman) is specified' do
+      it 'adds a formatter with specified type pacman' do
+        formatter_set.add_formatter('pa')
+        expect(formatter_set[0].class)
+          .to eq(RuboCop::Formatter::PacmanFormatter)
+      end
+    end
+
     context 'when output path is omitted' do
       it 'adds a formatter outputs to $stdout' do
         formatter_set.add_formatter('simple')
