@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Allow autocorrecting only selected offenses via allowlist or denylist. ([@d-ray][])
+
 ## 0.75.1 (2019-10-14)
 
 ### Bug fixes
@@ -4228,3 +4232,4 @@
 [@laurenball]: https://github.com/laurenball
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
 [@jdkaplan]: https://github.com/jdkaplan
+[@d-ray]: https://github.com/d-ray

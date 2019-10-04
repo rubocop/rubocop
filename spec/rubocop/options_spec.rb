@@ -118,6 +118,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -V, --verbose-version            Display verbose version.
               -P, --parallel                   Use available CPUs to execute inspection in
                                                parallel.
+                  --auto-correct-include [offense1,offense2,...]
+                                               Auto-correct only the given offense(s).
+                  --auto-correct-exclude [offense1,offense2,...]
+                                               Auto-correct offenses, but skip the given offense(s).
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
                   --safe-auto-correct          Run auto-correct only when it's safe.

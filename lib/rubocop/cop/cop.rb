@@ -134,7 +134,7 @@ module RuboCop
         message ||= message(node)
         message = annotate(message)
 
-        status = enabled_line?(loc.line) ? correct(node) : :disabled
+        status = enabled_line?(loc.line) ? correct(node, loc) : :disabled
 
         @offenses << Offense.new(severity, loc, message, name, status)
         yield if block_given? && status != :disabled
@@ -150,8 +150,8 @@ module RuboCop
         @offenses.any? { |o| o.location == location }
       end
 
-      def correct(node)
-        reason = reason_to_not_correct(node)
+      def correct(node, loc)
+        reason = reason_to_not_correct(node, loc)
         return reason if reason
 
         @corrected_nodes[node] = true
@@ -167,10 +167,11 @@ module RuboCop
         end
       end
 
-      def reason_to_not_correct(node)
+      def reason_to_not_correct(node, loc)
         return :unsupported unless correctable?
         return :uncorrected unless autocorrect?
         return :already_corrected if @corrected_nodes.key?(node)
+        return :excluded if skip_correction_for?(loc)
 
         nil
       end
