@@ -9,21 +9,21 @@ module RuboCop
     # which invoke same method of each formatters.
     class FormatterSet < Array
       BUILTIN_FORMATTERS_FOR_KEYS = {
-        'progress'    => ProgressFormatter,
-        'simple'      => SimpleTextFormatter,
-        'clang'       => ClangStyleFormatter,
-        'fuubar'      => FuubarStyleFormatter,
-        'emacs'       => EmacsStyleFormatter,
-        'json'        => JSONFormatter,
-        'html'        => HTMLFormatter,
-        'files'       => FileListFormatter,
-        'offenses'    => OffenseCountFormatter,
-        'disabled'    => DisabledLinesFormatter,
-        'worst'       => WorstOffendersFormatter,
-        'tap'         => TapFormatter,
-        'quiet'       => QuietFormatter,
-        'autogenconf' => AutoGenConfigFormatter,
-        'pacman'      => PacmanFormatter
+        '[p]rogress'    => ProgressFormatter,
+        '[s]imple'      => SimpleTextFormatter,
+        '[c]lang'       => ClangStyleFormatter,
+        '[fu]ubar'      => FuubarStyleFormatter,
+        '[e]macs'       => EmacsStyleFormatter,
+        '[j]son'        => JSONFormatter,
+        '[h]tml'        => HTMLFormatter,
+        '[fi]les'       => FileListFormatter,
+        '[o]ffenses'    => OffenseCountFormatter,
+        '[d]isabled'    => DisabledLinesFormatter,
+        '[w]orst'       => WorstOffendersFormatter,
+        '[t]ap'         => TapFormatter,
+        '[q]uiet'       => QuietFormatter,
+        '[a]utogenconf' => AutoGenConfigFormatter,
+        '[pa]cman'      => PacmanFormatter
       }.freeze
 
       FORMATTER_APIS = %i[started finished].freeze
@@ -82,7 +82,7 @@ module RuboCop
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
-          key.start_with?(specified_key)
+          key =~ /^\[#{specified_key}\]/ || specified_key == key.delete('[]')
         end
 
         raise %(No formatter for "#{specified_key}") if matching_keys.empty?

@@ -994,15 +994,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             .to include('No formatter for "unknown"')
         end
       end
-
-      context 'when ambiguous format name is specified' do
-        it 'aborts with error message' do
-          # Both 'files' and 'fuubar' start with an 'f'.
-          expect(cli.run(['--format', 'f', 'example.rb'])).to eq(2)
-          expect($stderr.string)
-            .to include('Cannot determine formatter for "f"')
-        end
-      end
     end
 
     describe 'custom formatter' do
