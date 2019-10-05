@@ -28,10 +28,6 @@ pages:
     - Style Cops: cops_style.md
     - Bundler Cops: cops_bundler.md
     - Gemspec Cops: cops_gemspec.md
-- Extensions Cops Documentation:
-    - Rails Cops: https://docs.rubocop.org/projects/rails/en/stable/
-    - Minitest Cops: https://docs.rubocop.org/projects/minitest/en/stable/
-    - Performance Cops: https://docs.rubocop.org/projects/performance/en/stable/
 extra_css:
   - css/extra.css
 markdown_extensions:

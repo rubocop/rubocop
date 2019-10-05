@@ -51,7 +51,7 @@
 * [#7091](https://github.com/rubocop-hq/rubocop/issues/7091): `Style/FormatStringToken` now detects format sequences with flags and modifiers. ([@buehmann][])
 * [#7319](https://github.com/rubocop-hq/rubocop/pull/7319): Rename `IgnoredMethodPatterns` option to `IgnoredPatterns` option for `Style/MethodCallWithArgsParentheses`. ([@koic][])
 * [#7345](https://github.com/rubocop-hq/rubocop/issues/7345): Mark unsafe for `Style/YodaCondition`. ([@koic][])
-* [#7400](https://github.com/rubocop-hq/rubocop/pull/7400): Add extensions cops documentations links in the official docs. ([@Bhacaz][])
+
 ## 0.74.0 (2019-07-31)
 
 ### New features
