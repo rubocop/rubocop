@@ -95,11 +95,7 @@ module RuboCop
           if source_map.is_a?(Parser::Source::Map::Heredoc)
             source_map.heredoc_body
           elsif source_map.begin
-            slice_source(
-              source_map.expression,
-              source_map.expression.begin_pos + 1,
-              source_map.expression.end_pos - 1
-            )
+            source_map.expression.adjust(begin_pos: +1, end_pos: -1)
           else
             source_map.expression
           end
@@ -110,22 +106,13 @@ module RuboCop
 
           format_string.format_sequences.each do |seq|
             detected_style = seq.style
-            token = slice_source(
-              contents,
-              contents.begin_pos + seq.begin_pos,
-              contents.begin_pos + seq.end_pos
+            token = contents.begin.adjust(
+              begin_pos: seq.begin_pos,
+              end_pos:   seq.end_pos
             )
 
             yield(detected_style, token)
           end
-        end
-
-        def slice_source(source_range, new_begin, new_end)
-          Parser::Source::Range.new(
-            source_range.source_buffer,
-            new_begin,
-            new_end
-          )
         end
 
         def placeholder_argument?(node)
