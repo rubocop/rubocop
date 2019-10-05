@@ -20,6 +20,7 @@
 * [#7812](https://github.com/rubocop-hq/rubocop/pull/7812): Add auto-correction for `Lint/BooleanSymbol` cop. ([@tejasbubane][])
 * [#7823](https://github.com/rubocop-hq/rubocop/pull/7823): Add `IgnoredMethods` configuration in `Metrics/AbcSize`, `Metrics/CyclomaticComplexity`, and `Metrics/PerceivedComplexity` cops. ([@drenmi][])
 * [#7816](https://github.com/rubocop-hq/rubocop/pull/7816): Support Ruby 2.7's numbered parameter for `Style/Lambda`. ([@koic][])
+* [#7406](https://github.com/rubocop-hq/rubocop/pull/7406): Add new `Style/NonLocalControlFlowInTernary` cop. ([@drenmi][])
 
 ### Bug fixes
 

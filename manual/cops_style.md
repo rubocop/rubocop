@@ -4563,6 +4563,34 @@ EnforcedStyle | `predicate` | `predicate`, `comparison`
 
 * [https://rubystyle.guide#predicate-methods](https://rubystyle.guide#predicate-methods)
 
+## Style/NonLocalControlFlowInTernary
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.76 | -
+
+This cop checks for non-local control flow (`raise`, `break`,
+`return`, `next`, etc.) used in ternary expressions.
+
+### Examples
+
+```ruby
+# bad
+foo? ? raise(BarError) : baz
+
+# bad
+foo? ? fail(BarError) : baz
+
+# bad
+foo? ? return : bar
+
+# bad
+foo? ? break : bar
+
+# bad
+foo? ? next : bar
+```
+
 ## Style/NonNilCheck
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

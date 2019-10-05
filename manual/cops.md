@@ -403,6 +403,7 @@ In the following section you find all available cops:
 * [Style/NestedTernaryOperator](cops_style.md#stylenestedternaryoperator)
 * [Style/Next](cops_style.md#stylenext)
 * [Style/NilComparison](cops_style.md#stylenilcomparison)
+* [Style/NonLocalControlFlowInTernary](cops_style.md#stylenonlocalcontrolflowinternary)
 * [Style/NonNilCheck](cops_style.md#stylenonnilcheck)
 * [Style/Not](cops_style.md#stylenot)
 * [Style/NumericLiteralPrefix](cops_style.md#stylenumericliteralprefix)

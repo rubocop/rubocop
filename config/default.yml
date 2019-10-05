@@ -3284,6 +3284,11 @@ Style/NilComparison:
     - predicate
     - comparison
 
+Style/NonLocalControlFlowInTernary:
+  Description: 'checks for non-local control flow in ternary expressions.'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
   StyleGuide: '#no-non-nil-checks'
