@@ -367,8 +367,9 @@ module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
-
     # rubocop:disable Metrics/LineLength
+    FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
+
     TEXT = {
       only:                             'Run only the given cop(s).',
       only_guide_cops:                  ['Run only cops for rules that link to a',
@@ -407,21 +408,8 @@ module RuboCop
       format:                           ['Choose an output formatter. This option',
                                          'can be specified multiple times to enable',
                                          'multiple formatters at the same time.',
-                                         '  [p]rogress (default)',
-                                         '  [s]imple',
-                                         '  [c]lang',
-                                         '  [d]isabled cops via inline comments',
-                                         '  [fu]ubar',
-                                         '  [pa]cman',
-                                         '  [e]macs',
-                                         '  [j]son',
-                                         '  [h]tml',
-                                         '  [fi]les',
-                                         '  [o]ffenses',
-                                         '  [w]orst',
-                                         '  [t]ap',
-                                         '  [q]uiet',
-                                         '  [a]utogenconf',
+                                         '[p]rogress is used by default',
+                                         *FORMATTER_OPTION_LIST.map { |item| "  #{item}" },
                                          '  custom formatter class name'],
       out:                              ['Write output to a file instead of STDOUT.',
                                          'This option applies to the previously',

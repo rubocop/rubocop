@@ -68,21 +68,22 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -f, --format FORMATTER           Choose an output formatter. This option
                                                can be specified multiple times to enable
                                                multiple formatters at the same time.
-                                                 [p]rogress (default)
-                                                 [s]imple
-                                                 [c]lang
-                                                 [d]isabled cops via inline comments
-                                                 [fu]ubar
-                                                 [pa]cman
-                                                 [e]macs
-                                                 [j]son
-                                                 [h]tml
-                                                 [fi]les
-                                                 [o]ffenses
-                                                 [w]orst
-                                                 [t]ap
-                                                 [q]uiet
+                                               [p]rogress is used by default
                                                  [a]utogenconf
+                                                 [c]lang
+                                                 [d]isabled
+                                                 [e]macs
+                                                 [fi]les
+                                                 [fu]ubar
+                                                 [h]tml
+                                                 [j]son
+                                                 [o]ffenses
+                                                 [pa]cman
+                                                 [p]rogress
+                                                 [q]uiet
+                                                 [s]imple
+                                                 [t]ap
+                                                 [w]orst
                                                  custom formatter class name
               -o, --out FILE                   Write output to a file instead of STDOUT.
                                                This option applies to the previously
