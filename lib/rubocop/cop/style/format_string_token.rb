@@ -41,10 +41,7 @@ module RuboCop
       class FormatStringToken < Cop
         include ConfigurableEnforcedStyle
 
-        FORMAT_STRING_METHODS = %i[sprintf format %].freeze
-
         def on_str(node)
-          return if placeholder_argument?(node)
           return if node.each_ancestor(:xstr, :regexp).any?
 
           tokens(node) do |detected_style, token_range|
@@ -61,14 +58,16 @@ module RuboCop
 
         private
 
-        def includes_format_methods?(node)
-          node.each_ancestor(:send).any? do |ancestor|
-            FORMAT_STRING_METHODS.include?(ancestor.method_name)
-          end
-        end
+        def_node_matcher :format_string_in_typical_context?, <<~PATTERN
+          {
+            ^(send _ {:format :sprintf} %0 ...)
+            ^(send %0 :% _)
+          }
+        PATTERN
 
         def unannotated_format?(node, detected_style)
-          detected_style == :unannotated && !includes_format_methods?(node)
+          detected_style == :unannotated &&
+            !format_string_in_typical_context?(node)
         end
 
         def message(detected_style)
@@ -113,13 +112,6 @@ module RuboCop
 
             yield(detected_style, token)
           end
-        end
-
-        def placeholder_argument?(node)
-          return false unless node.parent
-          return true if node.parent.pair_type?
-
-          placeholder_argument?(node.parent)
         end
       end
     end
