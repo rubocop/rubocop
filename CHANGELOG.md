@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7407](https://github.com/rubocop-hq/rubocop/issues/7407): Make `Style/FormatStringToken` work inside hashes. ([@buehmann][])
+
 ## 0.75.0 (2019-09-30)
 
 ### New features
