@@ -8,7 +8,7 @@ module RuboCop
       # **Note:**
       # `unannotated` style cop only works for strings
       # which are passed as arguments to those methods:
-      # `sprintf`, `format`, `%`.
+      # `printf`, `sprintf`, `format`, `%`.
       # The reason is that *unannotated* format is very similar
       # to encoded URLs or Date/Time formatting strings.
       #
@@ -60,7 +60,7 @@ module RuboCop
 
         def_node_matcher :format_string_in_typical_context?, <<~PATTERN
           {
-            ^(send _ {:format :sprintf} %0 ...)
+            ^(send _ {:format :sprintf :printf} %0 ...)
             ^(send %0 :% _)
           }
         PATTERN
