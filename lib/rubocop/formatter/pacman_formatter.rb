@@ -49,7 +49,7 @@ module RuboCop
 
       def cols
         @cols ||= begin
-          width = `tput cols`.chomp.to_i
+          _height, width = $stdout.winsize
           width.nil? || width.zero? ? FALLBACK_TERMINAL_WIDTH : width
         end
       end
