@@ -13,7 +13,7 @@ module RuboCop
       def file_finished(file, offenses)
         return if offenses.empty?
 
-        output.printf("%s\n", file)
+        output.printf("%<path>s\n", path: file)
       end
     end
   end

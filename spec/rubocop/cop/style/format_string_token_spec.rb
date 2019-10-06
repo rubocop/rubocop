@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     RUBY
   end
 
-  it 'ignores placeholder argumetns' do
+  it 'ignores placeholder arguments' do
     expect_no_offenses(<<~RUBY)
       format(
         '%<day>s %<start>s-%<end>s',
@@ -135,6 +135,13 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         start: open_house.starts_at.strftime('%l'),
         end: open_house.ends_at.strftime('%l %p').strip
       )
+    RUBY
+  end
+
+  it 'works inside hashes' do
+    expect_offense(<<~RUBY)
+      { bar: format('%{foo}', foo: 'foo') }
+                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
     RUBY
   end
 
