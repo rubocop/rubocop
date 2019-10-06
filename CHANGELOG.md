@@ -6,6 +6,10 @@
 
 * [#7407](https://github.com/rubocop-hq/rubocop/issues/7407): Make `Style/FormatStringToken` work inside hashes. ([@buehmann][])
 
+### Changes
+
+* [#7410](https://github.com/rubocop-hq/rubocop/issues/7410): `Style/FormatStringToken` now finds unannotated format sequences in `printf` arguments. ([@buehmann][])
+
 ## 0.75.0 (2019-09-30)
 
 ### New features
