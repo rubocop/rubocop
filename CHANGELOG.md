@@ -5,6 +5,12 @@
 ### Bug fixes
 
 * [#7391](https://github.com/rubocop-hq/rubocop/issues/7391): Support pacman formatter on Windows. ([@laurenball][])
+* [#7407](https://github.com/rubocop-hq/rubocop/issues/7407): Make `Style/FormatStringToken` work inside hashes. ([@buehmann][])
+* [#7389](https://github.com/rubocop-hq/rubocop/issues/7389): Fix an issue where passing a formatter might result in an error depending on what character it started with. ([@jfhinchcliffe][])
+
+### Changes
+
+* [#7410](https://github.com/rubocop-hq/rubocop/issues/7410): `Style/FormatStringToken` now finds unannotated format sequences in `printf` arguments. ([@buehmann][])
 
 ## 0.75.0 (2019-09-30)
 
@@ -4214,3 +4220,4 @@
 [@crojasaragonez]: https://github.com/crojasaragonez
 [@desheikh]: https://github.com/desheikh
 [@laurenball]: https://github.com/laurenball
+[@jfhinchcliffe]: https://github.com/jfhinchcliffe

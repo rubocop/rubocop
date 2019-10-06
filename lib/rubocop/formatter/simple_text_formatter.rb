@@ -42,9 +42,13 @@ module RuboCop
         output.puts yellow("== #{smart_path(file)} ==")
 
         offenses.each do |o|
-          output.printf("%s:%3d:%3d: %s\n",
-                        colored_severity_code(o),
-                        o.line, o.real_column, message(o))
+          output.printf(
+            "%<severity>s:%3<line>d:%3<column>d: %<message>s\n",
+            severity: colored_severity_code(o),
+            line: o.line,
+            column: o.real_column,
+            message: message(o)
+          )
         end
       end
 

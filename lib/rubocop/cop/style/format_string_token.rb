@@ -8,7 +8,7 @@ module RuboCop
       # **Note:**
       # `unannotated` style cop only works for strings
       # which are passed as arguments to those methods:
-      # `sprintf`, `format`, `%`.
+      # `printf`, `sprintf`, `format`, `%`.
       # The reason is that *unannotated* format is very similar
       # to encoded URLs or Date/Time formatting strings.
       #
@@ -41,10 +41,7 @@ module RuboCop
       class FormatStringToken < Cop
         include ConfigurableEnforcedStyle
 
-        FORMAT_STRING_METHODS = %i[sprintf format %].freeze
-
         def on_str(node)
-          return if placeholder_argument?(node)
           return if node.each_ancestor(:xstr, :regexp).any?
 
           tokens(node) do |detected_style, token_range|
@@ -61,14 +58,16 @@ module RuboCop
 
         private
 
-        def includes_format_methods?(node)
-          node.each_ancestor(:send).any? do |ancestor|
-            FORMAT_STRING_METHODS.include?(ancestor.method_name)
-          end
-        end
+        def_node_matcher :format_string_in_typical_context?, <<~PATTERN
+          {
+            ^(send _ {:format :sprintf :printf} %0 ...)
+            ^(send %0 :% _)
+          }
+        PATTERN
 
         def unannotated_format?(node, detected_style)
-          detected_style == :unannotated && !includes_format_methods?(node)
+          detected_style == :unannotated &&
+            !format_string_in_typical_context?(node)
         end
 
         def message(detected_style)
@@ -95,11 +94,7 @@ module RuboCop
           if source_map.is_a?(Parser::Source::Map::Heredoc)
             source_map.heredoc_body
           elsif source_map.begin
-            slice_source(
-              source_map.expression,
-              source_map.expression.begin_pos + 1,
-              source_map.expression.end_pos - 1
-            )
+            source_map.expression.adjust(begin_pos: +1, end_pos: -1)
           else
             source_map.expression
           end
@@ -110,29 +105,13 @@ module RuboCop
 
           format_string.format_sequences.each do |seq|
             detected_style = seq.style
-            token = slice_source(
-              contents,
-              contents.begin_pos + seq.begin_pos,
-              contents.begin_pos + seq.end_pos
+            token = contents.begin.adjust(
+              begin_pos: seq.begin_pos,
+              end_pos:   seq.end_pos
             )
 
             yield(detected_style, token)
           end
-        end
-
-        def slice_source(source_range, new_begin, new_end)
-          Parser::Source::Range.new(
-            source_range.source_buffer,
-            new_begin,
-            new_end
-          )
-        end
-
-        def placeholder_argument?(node)
-          return false unless node.parent
-          return true if node.parent.pair_type?
-
-          placeholder_argument?(node.parent)
         end
       end
     end
