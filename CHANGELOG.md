@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#7407](https://github.com/rubocop-hq/rubocop/issues/7407): Make `Style/FormatStringToken` work inside hashes. ([@buehmann][])
+* [#7389](https://github.com/rubocop-hq/rubocop/issues/7389): Fix an issue where passing a formatter might result in an error depending on what character it started with. ([@jfhinchcliffe][])
 
 ### Changes
 
@@ -4216,3 +4217,4 @@
 [@raymondfallon]: https://github.com/raymondfallon
 [@crojasaragonez]: https://github.com/crojasaragonez
 [@desheikh]: https://github.com/desheikh
+[@jfhinchcliffe]: https://github.com/jfhinchcliffe
