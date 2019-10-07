@@ -42,7 +42,8 @@ module RuboCop
         end
 
         def leftmost_multiple_assignment(node)
-          return node unless node.parent&.assignment?
+          return node unless same_line?(node, node.parent) &&
+                             node.parent.assignment?
 
           leftmost_multiple_assignment(node.parent)
 
