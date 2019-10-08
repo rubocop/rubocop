@@ -51,6 +51,10 @@ module RuboCop
 
     ## Type Predicates
 
+    def dot?
+      type == :tDOT
+    end
+
     def comment?
       type == :tCOMMENT
     end

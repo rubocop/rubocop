@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#7273](https://github.com/rubocop-hq/rubocop/issues/7273): Add new `Style/SpaceAroundMethodCall` cop. ([@timothyjosefik][])
+
 ### Bug fixes
 
 * [#7391](https://github.com/rubocop-hq/rubocop/issues/7391): Support pacman formatter on Windows. ([@laurenball][])
@@ -4221,3 +4223,4 @@
 [@desheikh]: https://github.com/desheikh
 [@laurenball]: https://github.com/laurenball
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
+[@timothyjosefik]: https://github.com/timothyjosefik

@@ -153,6 +153,7 @@ In the following section you find all available cops:
 * [Layout/SpaceAroundBlockParameters](cops_layout.md#layoutspacearoundblockparameters)
 * [Layout/SpaceAroundEqualsInParameterDefault](cops_layout.md#layoutspacearoundequalsinparameterdefault)
 * [Layout/SpaceAroundKeyword](cops_layout.md#layoutspacearoundkeyword)
+* [Layout/SpaceAroundMethodCall](cops_layout.md#layoutspacearoundmethodcall)
 * [Layout/SpaceAroundOperators](cops_layout.md#layoutspacearoundoperators)
 * [Layout/SpaceBeforeBlockBraces](cops_layout.md#layoutspacebeforeblockbraces)
 * [Layout/SpaceBeforeComma](cops_layout.md#layoutspacebeforecomma)

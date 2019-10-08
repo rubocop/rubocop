@@ -3956,6 +3956,30 @@ end
 something = 123 if test
 ```
 
+## Layout/SpaceAroundMethodCall
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.76 | -
+
+Checks that there are no spaces surrounding a dot method call.
+  # bad
+  object .some_method
+
+  # bad
+  object. some_method
+
+  # bad
+  object
+   .some_method .another_method
+
+  # good
+  object.some_method
+
+  # good
+  object
+   .some_method
+
 ## Layout/SpaceAroundOperators
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

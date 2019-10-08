@@ -1024,6 +1024,11 @@ Layout/SpaceAroundKeyword:
   Enabled: true
   VersionAdded: '0.49'
 
+Layout/SpaceAroundMethodCall:
+  Description: 'Checks for spaces around method calls.'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Layout/SpaceAroundOperators:
   Description: 'Use a single space around operators.'
   StyleGuide: '#spaces-operators'
