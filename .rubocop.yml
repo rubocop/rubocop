@@ -11,6 +11,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
+    - '.git/**/*'
   TargetRubyVersion: 2.3
 
 Naming/PredicateName:
