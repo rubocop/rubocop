@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def correct_visibility?(node, modifier, ignored_methods)
-          return true if modifier.nil? || modifier.method_name == :public
+          return true if modifier.nil? || modifier.method?(:public)
 
           ignored_methods.include?(node.method_name)
         end

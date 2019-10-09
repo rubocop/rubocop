@@ -85,7 +85,7 @@ module RuboCop
         # FIXME: It's a Style/ConditionalAssignment's false positive.
         # rubocop:disable Style/ConditionalAssignment
         def with_lineno?(node)
-          if node.method_name == :eval
+          if node.method?(:eval)
             node.arguments.size == 4
           else
             node.arguments.size == 3

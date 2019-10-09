@@ -175,7 +175,7 @@ module RuboCop
 
         def access_modifier?(node)
           node.bare_access_modifier? ||
-            node.method_name == :private_class_method
+            node.method?(:private_class_method)
         end
 
         def check_scope(node)
@@ -203,7 +203,7 @@ module RuboCop
         def check_send_node(node, cur_vis, unused)
           if node.bare_access_modifier?
             check_new_visibility(node, unused, node.method_name, cur_vis)
-          elsif node.method_name == :private_class_method && !node.arguments?
+          elsif node.method?(:private_class_method) && !node.arguments?
             add_offense(node, message: format(MSG, current: node.method_name))
             [cur_vis, unused]
           end
