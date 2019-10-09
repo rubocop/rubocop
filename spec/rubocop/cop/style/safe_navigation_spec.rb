@@ -950,6 +950,26 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           expect(new_source).to eq(expected_source)
         end
 
+        it 'only moves comments that fall within the expression' do
+          new_source = autocorrect_source(<<~RUBY)
+            # comment one
+            def foobar
+              if #{variable}
+                # comment 2
+                #{variable}.bar
+              end
+            end
+          RUBY
+
+          expect(new_source).to eq(<<~RUBY)
+            # comment one
+            def foobar
+              # comment 2
+            #{variable}&.bar
+            end
+          RUBY
+        end
+
         it 'corrects a single method call inside of an unless nil check ' \
            'for the object' do
           new_source = autocorrect_source(<<~RUBY)
