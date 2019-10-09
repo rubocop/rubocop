@@ -103,7 +103,7 @@ module RuboCop
                               .select(&:macro?)
 
           siblings.select do |sibling_node|
-            sibling_node.method_name == send_node.method_name
+            sibling_node.method?(send_node.method_name)
           end
         end
 

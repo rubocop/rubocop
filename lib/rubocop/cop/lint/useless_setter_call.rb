@@ -155,7 +155,7 @@ module RuboCop
             return true if node.literal?
             return false unless node.send_type?
 
-            node.method_name == :new
+            node.method?(:new)
           end
         end
       end

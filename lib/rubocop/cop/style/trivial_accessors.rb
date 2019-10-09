@@ -60,7 +60,7 @@ module RuboCop
             when :module
               return true
             else
-              return true if pnode.method_name == :instance_eval
+              return true if pnode.method?(:instance_eval)
             end
           end
           false
