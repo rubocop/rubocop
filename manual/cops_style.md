@@ -5842,6 +5842,9 @@ Enabled | Yes | Yes  | 0.9 | 0.19
 This cop checks for multiple expressions placed on the same line.
 It also checks for lines terminated with a semicolon.
 
+This cop has `AllowAsExpressionSeparator` configuration option.
+It allows `;` to separate several expressions on the same line.
+
 ### Examples
 
 ```ruby
@@ -5853,6 +5856,18 @@ baz = 3;
 foo = 1
 bar = 2
 baz = 3
+```
+#### AllowAsExpressionSeparator: false (default)
+
+```ruby
+# bad
+foo = 1; bar = 2
+```
+#### AllowAsExpressionSeparator: true
+
+```ruby
+# good
+foo = 1; bar = 2
 ```
 
 ### Configurable attributes
