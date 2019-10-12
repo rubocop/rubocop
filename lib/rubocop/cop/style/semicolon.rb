@@ -6,6 +6,9 @@ module RuboCop
       # This cop checks for multiple expressions placed on the same line.
       # It also checks for lines terminated with a semicolon.
       #
+      # This cop has `AllowAsExpressionSeparator` configuration option.
+      # It allows `;` to separate several expressions on the same line.
+      #
       # @example
       #   # bad
       #   foo = 1; bar = 2;
@@ -15,6 +18,14 @@ module RuboCop
       #   foo = 1
       #   bar = 2
       #   baz = 3
+      #
+      # @example AllowAsExpressionSeparator: false (default)
+      #   # bad
+      #   foo = 1; bar = 2
+      #
+      # @example AllowAsExpressionSeparator: true
+      #   # good
+      #   foo = 1; bar = 2
       class Semicolon < Cop
         include RangeHelp
 
