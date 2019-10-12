@@ -12,6 +12,7 @@
 ### Changes
 
 * [#7410](https://github.com/rubocop-hq/rubocop/issues/7410): `Style/FormatStringToken` now finds unannotated format sequences in `printf` arguments. ([@buehmann][])
+* [#6964](https://github.com/rubocop-hq/rubocop/issues/6964): Set default `IgnoreCopDirectives` to `true` for `Metrics/LineLength`. ([@jdkaplan][])
 
 ## 0.75.0 (2019-09-30)
 
@@ -4222,3 +4223,4 @@
 [@desheikh]: https://github.com/desheikh
 [@laurenball]: https://github.com/laurenball
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
+[@jdkaplan]: https://github.com/jdkaplan
