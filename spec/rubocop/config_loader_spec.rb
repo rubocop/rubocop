@@ -537,7 +537,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowHeredoc' => true,
               'AllowURI' => true,
               'URISchemes' => %w[http https],
-              'IgnoreCopDirectives' => false,
+              'IgnoreCopDirectives' => true,
               'IgnoredPatterns' => []
             },
             'Metrics/MethodLength' => {
@@ -641,7 +641,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,
               'URISchemes' => %w[http https],
-              'IgnoreCopDirectives' => false,
+              'IgnoreCopDirectives' => true,
               'IgnoredPatterns' => []
             }
           )

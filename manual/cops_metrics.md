@@ -173,7 +173,7 @@ Max | `80` | Integer
 AllowHeredoc | `true` | Boolean
 AllowURI | `true` | Boolean
 URISchemes | `http`, `https` | Array
-IgnoreCopDirectives | `false` | Boolean
+IgnoreCopDirectives | `true` | Boolean
 IgnoredPatterns | `[]` | Array
 
 ### References
