@@ -8,6 +8,7 @@
 * [#7407](https://github.com/rubocop-hq/rubocop/issues/7407): Make `Style/FormatStringToken` work inside hashes. ([@buehmann][])
 * [#7389](https://github.com/rubocop-hq/rubocop/issues/7389): Fix an issue where passing a formatter might result in an error depending on what character it started with. ([@jfhinchcliffe][])
 * [#7397](https://github.com/rubocop-hq/rubocop/issues/7397): Fix extra comments being added to the correction of `Style/SafeNavigation`. ([@rrosenblum][])
+* [#7378](https://github.com/rubocop-hq/rubocop/pull/7378): Fix heredoc edge cases in `Layout/EmptyLineAfterGuardClause`. ([@gsamokovarov][])
 
 ### Changes
 
@@ -53,7 +54,6 @@
 * [#7367](https://github.com/rubocop-hq/rubocop/issues/7367): Fix an error for `Style/OrAssignment` cop when `then` branch body is empty. ([@koic][])
 * [#7363](https://github.com/rubocop-hq/rubocop/issues/7363): Fix an incorrect autocorrect for `Layout/SpaceInsideBlockBraces` and `Style/BlockDelimiters` when using multiline empty braces. ([@koic][])
 * [#7212](https://github.com/rubocop-hq/rubocop/issues/7212): Fix a false positive for `Layout/EmptyLinesAroundAccessModifier` and `UselessAccessModifier` when using method with the same name as access modifier around a method definition. ([@koic][])
-* [#7378](https://github.com/rubocop-hq/rubocop/pull/7378): Fix heredoc edge cases in `Layout/EmptyLineAfterGuardClause`. ([@gsamokovarov][])
 
 ### Changes
 
