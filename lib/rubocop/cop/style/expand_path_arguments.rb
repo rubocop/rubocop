@@ -160,7 +160,7 @@ module RuboCop
         def depth(current_path)
           paths = current_path.split(File::SEPARATOR)
 
-          paths.reject { |path| path == '.' }.count
+          paths.count { |path| path != '.' }
         end
 
         def parent_path(current_path)
