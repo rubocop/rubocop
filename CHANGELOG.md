@@ -6,6 +6,7 @@
 
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Further standardisation of cop names. ([@scottmatthewman][])
 * [#7469](https://github.com/rubocop-hq/rubocop/pull/7469): **(Breaking)** Replace usages of the terms `Whitelist` and `Blacklist` with better alternatives. ([@koic][])
+* [#7502](https://github.com/rubocop-hq/rubocop/pull/7502): Remove `SafeMode` module. ([@koic][])
 
 ## 0.76.0 (2019-10-28)
 
