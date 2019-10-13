@@ -274,6 +274,34 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'does not register offense when guard clause is after multiline heredoc ' \
+     'with chained calls' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        raise ArgumentError, <<~END.squish.it.good unless guard
+          A multiline message
+          that will be squished.
+        END
+
+        return_value
+      end
+    RUBY
+  end
+
+  it 'does not register offense when guard clause is after multiline heredoc ' \
+     'nested argument call' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        raise ArgumentError, call(<<~END.squish) unless guard
+          A multiline message
+          that will be squished.
+        END
+
+        return_value
+      end
+    RUBY
+  end
+
   it 'registers an offense when guard clause is a ternary operator' do
     expect_offense(<<~RUBY)
       def foo
