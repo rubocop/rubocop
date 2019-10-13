@@ -7,6 +7,7 @@
 * [#7391](https://github.com/rubocop-hq/rubocop/issues/7391): Support pacman formatter on Windows. ([@laurenball][])
 * [#7407](https://github.com/rubocop-hq/rubocop/issues/7407): Make `Style/FormatStringToken` work inside hashes. ([@buehmann][])
 * [#7389](https://github.com/rubocop-hq/rubocop/issues/7389): Fix an issue where passing a formatter might result in an error depending on what character it started with. ([@jfhinchcliffe][])
+* [#7397](https://github.com/rubocop-hq/rubocop/issues/7397): Fix extra comments being added to the correction of `Style/SafeNavigation`. ([@rrosenblum][])
 
 ### Changes
 

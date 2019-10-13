@@ -120,7 +120,7 @@ module RuboCop
             corrector.remove(begin_range(node, body))
             corrector.remove(end_range(node, body))
             corrector.insert_before(method_call.loc.dot, '&')
-            handle_comments(corrector, method_call)
+            handle_comments(corrector, node, method_call)
 
             add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
           end
@@ -128,12 +128,20 @@ module RuboCop
 
         private
 
-        def handle_comments(corrector, method_call)
+        def handle_comments(corrector, node, method_call)
           return if processed_source.comments.empty?
 
-          comments = processed_source.comments.map(&:text).join("\n")
           corrector.insert_before(method_call.loc.expression,
-                                  comments + "\n")
+                                  "#{comments(node).join("\n")}\n")
+        end
+
+        def comments(node)
+          comments = processed_source.comments.select do |comment|
+            comment.loc.first_line >= node.loc.first_line &&
+              comment.loc.last_line <= node.loc.last_line
+          end
+
+          comments.map(&:text)
         end
 
         def allowed_if_condition?(node)
