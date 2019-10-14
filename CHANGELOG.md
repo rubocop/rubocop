@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.75.1 (2019-10-14)
+
 ### Bug fixes
 
 * [#7391](https://github.com/rubocop-hq/rubocop/issues/7391): Support pacman formatter on Windows. ([@laurenball][])
