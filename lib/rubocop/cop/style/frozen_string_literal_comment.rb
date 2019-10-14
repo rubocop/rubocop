@@ -11,6 +11,9 @@ module RuboCop
       # encoding comment. The frozen string literal comment is only valid in
       # Ruby 2.3+.
       #
+      # Note that the cop will ignore files where the comment exists but is set
+      # to `false` instead of `true`.
+      #
       # @example EnforcedStyle: always (default)
       #   # The `always` style will always add the frozen string literal comment
       #   # to a file, regardless of the Ruby version or if `freeze` or `<<` are
@@ -22,6 +25,13 @@ module RuboCop
       #
       #   # good
       #   # frozen_string_literal: true
+      #
+      #   module Bar
+      #     # ...
+      #   end
+      #
+      #   # good
+      #   # frozen_string_literal: false
       #
       #   module Bar
       #     # ...
