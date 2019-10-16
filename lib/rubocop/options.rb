@@ -69,6 +69,7 @@ module RuboCop
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
+        add_partial_autocorrect_options(opts)
         add_aliases(opts)
 
         option(opts, '-s', '--stdin FILE')
@@ -171,6 +172,25 @@ module RuboCop
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
       option(opts, '-P', '--parallel')
+    end
+
+    def add_partial_autocorrect_options(opts)
+      add_autocorrect_selection_option('include', opts)
+      add_autocorrect_selection_option('exclude', opts)
+    end
+
+    def add_autocorrect_selection_option(option, opts)
+      option(opts, "--auto-correct-#{option} [offense1,offense2,...]") do |list|
+        @options[:auto_correct] = true
+
+        if list.empty?
+          @options[:"auto_correct_#{option}"] = []
+        else
+          @options[:"auto_correct_#{option}"] = list.split(',').map do |offense|
+            OffenseIdentifier.parse(offense)
+          end
+        end
+      end
     end
 
     def add_aliases(opts)
@@ -438,6 +458,8 @@ module RuboCop
       safe:                             'Run only safe cops.',
       list_target_files:                'List all files RuboCop will inspect.',
       auto_correct:                     'Auto-correct offenses.',
+      auto_correct_include:             'Auto-correct only the given offense(s).',
+      auto_correct_exclude:             'Auto-correct offenses, but skip the given offense(s).',
       safe_auto_correct:                'Run auto-correct only when it\'s safe.',
       fix_layout:                       'Run only layout cops, with auto-correct on.',
       color:                            'Force color output on or off.',

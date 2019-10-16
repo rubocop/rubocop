@@ -197,6 +197,90 @@ RSpec.describe RuboCop::Cop::Cop do
           expect(cop.offenses.first.corrected?).to eq(false)
         end
       end
+
+      context 'when using an offense allowlist' do
+        before do
+          allow(cop).to receive(:autocorrect?).and_return(true)
+          allow(cop).to receive(:autocorrect).and_return(->(_corrector) {})
+        end
+
+        context 'when it is included in the allowlist' do
+          let(:options) do
+            {
+              auto_correct_include: [
+                RuboCop::OffenseIdentifier.new('test', 1, 1, 'Style/Alias')
+              ]
+            }
+          end
+
+          it 'is set to true' do
+            cop.instance_variable_set(:@options, options)
+            cop.add_offense(nil, location: location, message: 'message')
+            expect(cop.offenses.first.corrected?).to eq(true)
+          end
+        end
+
+        context 'when it is not included in the allowlist' do
+          let(:options) do
+            {
+              auto_correct_include: [
+                RuboCop::OffenseIdentifier.new('not_test', 1, 1, 'Style/Alias'),
+                RuboCop::OffenseIdentifier.new('test', 2, 1, 'Style/Alias'),
+                RuboCop::OffenseIdentifier.new('test', 1, 2, 'Style/Alias'),
+                RuboCop::OffenseIdentifier.new('test', 1, 1, 'Style/NotAlias')
+              ]
+            }
+          end
+
+          it 'is set to false' do
+            cop.instance_variable_set(:@options, options)
+            cop.add_offense(nil, location: location, message: 'message')
+            expect(cop.offenses.first.corrected?).to eq(false)
+          end
+        end
+      end
+
+      context 'when using an offense denylist' do
+        before do
+          allow(cop).to receive(:autocorrect?).and_return(true)
+          allow(cop).to receive(:autocorrect).and_return(->(_corrector) {})
+        end
+
+        context 'when it is included in the denylist' do
+          let(:options) do
+            {
+              auto_correct_exclude: [
+                RuboCop::OffenseIdentifier.new('test', 1, 1, 'Style/Alias')
+              ]
+            }
+          end
+
+          it 'is set to false' do
+            cop.instance_variable_set(:@options, options)
+            cop.add_offense(nil, location: location, message: 'message')
+            expect(cop.offenses.first.corrected?).to eq(false)
+          end
+        end
+
+        context 'when it is not included in the denylist' do
+          let(:options) do
+            {
+              auto_correct_exclude: [
+                RuboCop::OffenseIdentifier.new('not_test', 1, 1, 'Style/Alias'),
+                RuboCop::OffenseIdentifier.new('test', 2, 1, 'Style/Alias'),
+                RuboCop::OffenseIdentifier.new('test', 1, 2, 'Style/Alias'),
+                RuboCop::OffenseIdentifier.new('test', 1, 1, 'Style/NotAlias')
+              ]
+            }
+          end
+
+          it 'is set to true' do
+            cop.instance_variable_set(:@options, options)
+            cop.add_offense(nil, location: location, message: 'message')
+            expect(cop.offenses.first.corrected?).to eq(true)
+          end
+        end
+      end
     end
   end
 

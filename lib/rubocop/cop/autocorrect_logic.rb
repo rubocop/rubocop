@@ -4,6 +4,18 @@ module RuboCop
   module Cop
     # This module encapsulates the logic for autocorrect behavior for a cop.
     module AutocorrectLogic
+      # An offense location can be either a Parser::Source::Buffer or a
+      # Parser::Source::Buffer - this normalizes the interface in regards to
+      # getting the name of the source file.
+      module NormalizeLocationInterface
+        refine Parser::Source::Map do
+          def source_buffer
+            expression.source_buffer
+          end
+        end
+      end
+      using NormalizeLocationInterface
+
       def autocorrect?
         autocorrect_requested? && correctable? && autocorrect_enabled?
       end
@@ -22,6 +34,23 @@ module RuboCop
 
       def disable_uncorrectable?
         @options[:disable_uncorrectable] == true
+      end
+
+      def skip_correction_for?(loc)
+        # allow correcting (or not correcting) only selected offenses
+        include_list = @options[:auto_correct_include]
+        exclude_list = @options[:auto_correct_exclude]
+
+        return false if include_list.nil? && exclude_list.nil?
+
+        path = loc.source_buffer.name
+        id = OffenseIdentifier.new(path, loc.line, loc.column + 1, cop_name)
+
+        if include_list
+          !include_list.include?(id)
+        else
+          exclude_list.include?(id)
+        end
       end
 
       def autocorrect_enabled?
