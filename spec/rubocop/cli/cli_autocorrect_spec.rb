@@ -765,7 +765,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct --format simple])).to eq(1)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
-      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
       C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
       C:  3:  1: Style/Documentation: Missing top-level class documentation comment.
       W:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.

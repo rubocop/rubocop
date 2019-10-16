@@ -2328,12 +2328,37 @@ module Baz
   # ...
 end
 ```
+#### EnforcedStyle: always_true
+
+```ruby
+# The `always_true` style enforces that the frozen string literal
+# comment is set to `true`. This is a stricter option than `always`
+# and forces projects to use frozen string literals.
+# bad
+# frozen_string_literal: false
+
+module Baz
+  # ...
+end
+
+# bad
+module Baz
+  # ...
+end
+
+# good
+# frozen_string_literal: true
+
+module Bar
+  # ...
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `always` | `always`, `never`
+EnforcedStyle | `always` | `always`, `always_true`, `never`
 
 ## Style/GlobalVars
 
