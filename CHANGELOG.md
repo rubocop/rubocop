@@ -16,6 +16,7 @@
 
 * [#7296](https://github.com/rubocop-hq/rubocop/issues/7296): Recognize `console` and `binding.console` ([rails/web-console](https://github.com/rails/web-console)) calls in `Lint/Debuggers`. ([@gsamokovarov][])
 * [#7567](https://github.com/rubocop-hq/rubocop/pull/7567): Introduce new `pending` status for new cops. ([@Darhazer][], [@pirj][])
+* [#7426](https://github.com/rubocop-hq/rubocop/issues/7426): Add `always_true` style to Style/FrozenStringLiteralComment. ([@parkerfinch][], [@gfyoung][])
 
 ### Bug fixes
 
@@ -4328,3 +4329,4 @@
 [@mangara]: https://github.com/mangara
 [@pirj]: https://github.com/pirj
 [@pawptart]: https://github.com/pawptart
+[@gfyoung]: https://github.com/gfyoung

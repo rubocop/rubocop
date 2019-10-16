@@ -39,6 +39,12 @@ module RuboCop
         end
       end
 
+      def frozen_string_literal_specified?
+        leading_comment_lines.any? do |line|
+          MagicComment.parse(line).frozen_string_literal_specified?
+        end
+      end
+
       def leading_comment_lines
         processed_source.comments.first(3).map(&:text)
       end
