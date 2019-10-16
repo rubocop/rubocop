@@ -531,7 +531,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--display-cop-names',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
-        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
+        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
         #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
@@ -542,7 +542,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--no-display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
-          #{file}:1:1: C: Missing magic comment `# frozen_string_literal: true`.
+          #{file}:1:1: C: Missing magic "frozen_string_literal" comment.
           #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:41: C: Trailing whitespace detected.
         RESULT
@@ -561,7 +561,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
-          #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
+          #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
           #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
@@ -571,7 +571,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it 'does not show cop names' do
           expect(cli.run(['--format', 'emacs', 'example1.rb'])).to eq(1)
           expect($stdout.string).to eq(<<~RESULT)
-            #{file}:1:1: C: Missing magic comment `# frozen_string_literal: true`.
+            #{file}:1:1: C: Missing magic "frozen_string_literal" comment.
             #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
             #{file}:1:41: C: Trailing whitespace detected.
           RESULT
@@ -593,7 +593,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--extra-details',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
-        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
+        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
         #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:47: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
@@ -805,7 +805,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to include(<<~RESULT)
               == #{target_file} ==
-              C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+              C:  1:  1: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
               C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
 
               1 file inspected, 2 offenses detected
@@ -890,7 +890,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             .to eq(1)
           expect($stdout.string).to eq([
             'example1.rb:1:1: C: Style/FrozenStringLiteralComment: ' \
-            'Missing magic comment # frozen_string_literal: true.',
+            'Missing magic "frozen_string_literal" comment.',
             'x= 0 ',
             '^',
             'example1.rb:1:2: C: Layout/SpaceAroundOperators: ' \
@@ -931,7 +931,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             '   puts',
             '^^^',
             'example3.rb:1:1: C: Style/FrozenStringLiteralComment: ' \
-            'Missing magic comment # frozen_string_literal: true.',
+            'Missing magic "frozen_string_literal" comment.',
             'def badName',
             '^',
             'example3.rb:1:5: C: Naming/MethodName: ' \
@@ -1044,9 +1044,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
       expect($stdout.string).to include(<<~RESULT)
         == #{target_file} ==
-        C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+        C:  1:  1: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
         C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
-        #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
+        #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
         #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
       RESULT
     end
@@ -1071,7 +1071,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect($stdout.string).to eq(<<~RESULT)
         == #{target_file} ==
-        C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+        C:  1:  1: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
         C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
 
         1 file inspected, 2 offenses detected
@@ -1079,7 +1079,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect(File.read('emacs_output.txt'))
         .to eq(<<~RESULT)
-          #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
+          #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
           #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
       RESULT
     end

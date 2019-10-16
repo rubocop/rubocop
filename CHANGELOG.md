@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7426](https://github.com/rubocop-hq/rubocop/issues/7426): Add `always_true` style to Style/FrozenStringLiteralComment. ([@parkerfinch][])
+
 ### Bug fixes
 
 * [#7530](https://github.com/rubocop-hq/rubocop/issues/7530): Typo in `Style/TrivialAccessors`'s `AllowedMethods`. ([@movermeyer][])
