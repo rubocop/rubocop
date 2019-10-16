@@ -84,4 +84,21 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
       end
     RUBY
   end
+
+  it 'autocorrects when the body of `when` branch starts ' \
+     'with `then`' do
+    new_source = autocorrect_source(<<~RUBY)
+      case foo
+      when bar
+        then do_something
+      end
+    RUBY
+
+    expect(new_source).to eq(<<~RUBY)
+      case foo
+      when bar
+       do_something
+      end
+    RUBY
+  end
 end

@@ -44,7 +44,7 @@ module RuboCop
           lambda do |corrector|
             corrector.remove(
               range_with_surrounding_space(
-                range: node.loc.begin, side: :left
+                range: node.loc.begin, side: :left, newlines: false
               )
             )
           end
