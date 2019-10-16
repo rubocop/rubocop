@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#7439](https://github.com/rubocop-hq/rubocop/issues/7439): Make `Style/FormatStringToken` ignore percent escapes (`%%`). ([@buehmann][])
+* [#7438](https://github.com/rubocop-hq/rubocop/issues/7438): Fix assignment edge-cases in `Layout/MultilineAssignmentLayout`. ([@gsamokovarov][])
 
 ## 0.75.1 (2019-10-14)
 
