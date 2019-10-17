@@ -81,6 +81,10 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     end
   end
 
+  it 'ignores percent escapes' do
+    expect_no_offenses("format('%<hit_rate>6.2f%%', hit_rate: 12.34)")
+  end
+
   it 'ignores xstr' do
     expect_no_offenses('`echo "%s %<annotated>s %{template}"`')
   end

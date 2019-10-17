@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7439](https://github.com/rubocop-hq/rubocop/issues/7439): Make `Style/FormatStringToken` ignore percent escapes (`%%`). ([@buehmann][])
+
 ## 0.75.1 (2019-10-14)
 
 ### Bug fixes

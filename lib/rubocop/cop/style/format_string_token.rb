@@ -104,6 +104,8 @@ module RuboCop
           format_string = RuboCop::Cop::Utils::FormatString.new(contents.source)
 
           format_string.format_sequences.each do |seq|
+            next if seq.percent?
+
             detected_style = seq.style
             token = contents.begin.adjust(
               begin_pos: seq.begin_pos,
