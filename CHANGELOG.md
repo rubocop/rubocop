@@ -6,6 +6,7 @@
 
 * [#7439](https://github.com/rubocop-hq/rubocop/issues/7439): Make `Style/FormatStringToken` ignore percent escapes (`%%`). ([@buehmann][])
 * [#7438](https://github.com/rubocop-hq/rubocop/issues/7438): Fix assignment edge-cases in `Layout/MultilineAssignmentLayout`. ([@gsamokovarov][])
+* [#7443](https://github.com/rubocop-hq/rubocop/issues/7443): Accept braces for hashes with kwsplat in `Style/BracesAroundHashParamerers`. ([@gsamokovarov][])
 
 ## 0.75.1 (2019-10-14)
 

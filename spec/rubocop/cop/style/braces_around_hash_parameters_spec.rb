@@ -25,6 +25,10 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
        'method call' do
       expect_no_offenses('f 1, { k: proc do h end }')
     end
+
+    it 'accepts braces that are needed for inner keyword splat' do
+      expect_no_offenses('f 1, { foo: :bar, **extra }')
+    end
   end
 
   shared_examples 'no_braces and context_dependent non-offenses' do
@@ -36,8 +40,16 @@ RSpec.describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       expect_no_offenses('where(x: "y", foo: "bar")')
     end
 
+    it 'accepts braces that are needed for inner keyword splat' do
+    end
+
     it 'accepts one hash parameter without braces and with one hash value' do
       expect_no_offenses('where(x: { "y" => "z" })')
+    end
+
+    it 'accepts one hash parameter without braces and with one hash value' \
+       'with kwsplat' do
+      expect_no_offenses('where(x: { "y" => "z", **extra })')
     end
 
     it 'accepts property assignment with braces' do

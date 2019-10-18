@@ -109,11 +109,14 @@ module RuboCop
         # and that block uses do..end. The reason for wanting to check this is
         # that the do..end could bind to a different method invocation if the
         # hash braces were removed.
+        #
+        # Another case for true return value is when you splat extra keyword
+        # arguments into the last argument like: `f({val: 1, **extra})`.
         def braces_needed_for_semantics?(arg)
           arg.each_pair do |_key, value|
             return true if value.block_type? && !value.braces?
           end
-          false
+          arg.children.any?(&:kwsplat_type?)
         end
 
         def add_arg_offense(arg, type)
