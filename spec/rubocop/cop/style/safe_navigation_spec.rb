@@ -674,6 +674,15 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           expect(new_source).to eq("#{variable}&.bar(baz)")
         end
 
+        it 'corrects an object check followed by a method call ' \
+           'with a comment at EOL' do
+          source = "foo if #{variable} && #{variable}.bar # comment"
+
+          new_source = autocorrect_source(source)
+
+          expect(new_source).to eq("foo if #{variable}&.bar # comment")
+        end
+
         it 'corrects a method call with a block safeguarded with a check ' \
            'for the object' do
           source = "#{variable}.bar { |e| e.qux } if #{variable}"
