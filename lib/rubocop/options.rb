@@ -255,6 +255,12 @@ module RuboCop
       @options = options
     end
 
+    def validate_cop_options
+      %i[only except].each do |opt|
+        OptionsValidator.validate_cop_list(@options[opt])
+      end
+    end
+
     # rubocop:disable Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_unneeded_disable?

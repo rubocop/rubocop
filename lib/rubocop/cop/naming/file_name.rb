@@ -50,19 +50,26 @@ module RuboCop
         def for_bad_filename(file_path)
           basename = File.basename(file_path)
           msg = if filename_good?(basename)
-                  return unless expect_matching_definition?
-                  return if find_class_or_module(processed_source.ast,
-                                                 to_namespace(file_path))
+                  return if matching_definition?(file_path)
 
                   no_definition_message(basename, file_path)
                 else
-                  return if ignore_executable_scripts? &&
-                            processed_source.start_with?('#!')
+                  return if bad_filename_allowed?
 
                   other_message(basename)
                 end
 
           yield source_range(processed_source.buffer, 1, 0), msg
+        end
+
+        def matching_definition?(file_path)
+          return true unless expect_matching_definition?
+
+          find_class_or_module(processed_source.ast, to_namespace(file_path))
+        end
+
+        def bad_filename_allowed?
+          ignore_executable_scripts? && processed_source.start_with?('#!')
         end
 
         def no_definition_message(basename, file_path)

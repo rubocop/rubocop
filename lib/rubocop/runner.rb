@@ -104,18 +104,13 @@ module RuboCop
     end
 
     def process_file(file)
-      puts "Scanning #{file}" if @options[:debug]
       file_started(file)
-
       offenses = file_offenses(file)
-      if @options[:display_only_fail_level_offenses]
-        offenses = offenses.select { |o| considered_failure?(o) }
-      end
-      formatter_set.file_finished(file, offenses)
-      offenses
     rescue InfiniteCorrectionLoop => e
-      formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
+      offenses = e.offenses.compact.sort.freeze
       raise
+    ensure
+      file_finished(file, offenses || [])
     end
 
     def file_offenses(file)
@@ -189,9 +184,17 @@ module RuboCop
     end
 
     def file_started(file)
+      puts "Scanning #{file}" if @options[:debug]
       formatter_set.file_started(file,
                                  cli_options: @options,
                                  config_store: @config_store)
+    end
+
+    def file_finished(file, offenses)
+      if @options[:display_only_fail_level_offenses]
+        offenses = offenses.select { |o| considered_failure?(o) }
+      end
+      formatter_set.file_finished(file, offenses)
     end
 
     def cached_run?
@@ -291,9 +294,7 @@ module RuboCop
       @mobilized_cop_classes[config.object_id] ||= begin
         cop_classes = Cop::Cop.all
 
-        %i[only except].each do |opt|
-          OptionsValidator.validate_cop_list(@options[opt])
-        end
+        OptionsValidator.new(@options).validate_cop_options
 
         if @options[:only]
           cop_classes.select! { |c| c.match?(@options[:only]) }

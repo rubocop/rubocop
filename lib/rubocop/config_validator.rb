@@ -32,10 +32,7 @@ module RuboCop
 
     def validate
       # Don't validate RuboCop's own files. Avoids infinite recursion.
-      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
-                                                    'config'))
-      return if File.expand_path(@config.loaded_path)
-                    .start_with?(base_config_path)
+      return if @config.internal?
 
       valid_cop_names, invalid_cop_names = @config.keys.partition do |key|
         ConfigLoader.default_configuration.key?(key)
@@ -133,12 +130,14 @@ module RuboCop
         @config[name].each_key do |param|
           next if COMMON_PARAMS.include?(param) || default_config.key?(param)
 
-          message =
-            "Warning: #{name} does not support #{param} parameter.\n\n" \
-            "Supported parameters are:\n\n" \
-            "  - #{(default_config.keys - INTERNAL_PARAMS).join("\n  - ")}\n"
+          supported_params = default_config.keys - INTERNAL_PARAMS
+          warn Rainbow(<<~MESSAGE).yellow
+            Warning: #{name} does not support #{param} parameter.
 
-          warn Rainbow(message).yellow.to_s
+            Supported parameters are:
+
+              - #{supported_params.join("\n  - ")}
+          MESSAGE
         end
       end
     end

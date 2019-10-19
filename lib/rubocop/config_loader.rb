@@ -46,7 +46,7 @@ module RuboCop
 
         add_missing_namespaces(path, hash)
 
-        resolver.resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
+        resolver.resolve_inheritance_from_gems(hash)
         resolver.resolve_inheritance(path, hash, file, debug?)
 
         hash.delete('inherit_from')

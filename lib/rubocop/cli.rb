@@ -83,16 +83,19 @@ module RuboCop
 
     def maybe_run_line_length_cop(paths)
       if !line_length_enabled?(@config_store.for(Dir.pwd))
-        puts Rainbow("#{PHASE_1} #{PHASE_1_DISABLED}").yellow
-        ''
+        skip_line_length_cop(PHASE_1_DISABLED)
       elsif !same_max_line_length?(
         @config_store.for(Dir.pwd), ConfigLoader.default_configuration
       )
-        puts Rainbow("#{PHASE_1} #{PHASE_1_OVERRIDDEN}").yellow
-        ''
+        skip_line_length_cop(PHASE_1_OVERRIDDEN)
       else
         run_line_length_cop_auto_gen_config(paths)
       end
+    end
+
+    def skip_line_length_cop(reason)
+      puts Rainbow("#{PHASE_1} #{reason}").yellow
+      ''
     end
 
     def line_length_enabled?(config)

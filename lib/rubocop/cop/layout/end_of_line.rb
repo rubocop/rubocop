@@ -45,9 +45,7 @@ module RuboCop
         MSG_MISSING = 'Carriage return character missing.'
 
         def investigate(processed_source)
-          last_token = processed_source.tokens.last
-          last_line =
-            last_token ? last_token.line : processed_source.lines.length
+          last_line = last_line(processed_source)
 
           processed_source.raw_source.each_line.with_index do |line, index|
             break if index >= last_line
@@ -80,6 +78,13 @@ module RuboCop
           when :lf then MSG_DETECTED if line =~ /\r$/
           else MSG_MISSING if line !~ /\r$/
           end
+        end
+
+        private
+
+        def last_line(processed_source)
+          last_token = processed_source.tokens.last
+          last_token ? last_token.line : processed_source.lines.length
         end
       end
     end

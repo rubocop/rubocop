@@ -53,6 +53,13 @@ module RuboCop
       @signature ||= Digest::SHA1.hexdigest(to_s)
     end
 
+    # True if this is a config file that is shipped with RuboCop
+    def internal?
+      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
+                                                    'config'))
+      File.expand_path(loaded_path).start_with?(base_config_path)
+    end
+
     def make_excludes_absolute
       each_key do |key|
         @validator.validate_section_presence(key)
