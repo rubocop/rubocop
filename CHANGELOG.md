@@ -7,6 +7,10 @@
 * [#7439](https://github.com/rubocop-hq/rubocop/issues/7439): Make `Style/FormatStringToken` ignore percent escapes (`%%`). ([@buehmann][])
 * [#7438](https://github.com/rubocop-hq/rubocop/issues/7438): Fix assignment edge-cases in `Layout/MultilineAssignmentLayout`. ([@gsamokovarov][])
 
+### Changes
+
+* [#7446](https://github.com/rubocop-hq/rubocop/issues/7446): Add `merge` to list of non-mutating methods. ([@cstyles][])
+
 ## 0.75.1 (2019-10-14)
 
 ### Bug fixes
@@ -4233,3 +4237,4 @@
 [@laurenball]: https://github.com/laurenball
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
 [@jdkaplan]: https://github.com/jdkaplan
+[@cstyles]: https://github.com/cstyles

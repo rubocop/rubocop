@@ -55,10 +55,10 @@ module RuboCop
         VOID_CONTEXT_TYPES = %i[def for block].freeze
         NONMUTATING_METHODS = %i[capitalize chomp chop collect compact
                                  delete_prefix delete_suffix downcase
-                                 encode flatten gsub lstrip map next reject
-                                 reverse rotate rstrip scrub select shuffle
-                                 slice sort sort_by squeeze strip sub succ
-                                 swapcase tr tr_s transform_values
+                                 encode flatten gsub lstrip map merge next
+                                 reject reverse rotate rstrip scrub select
+                                 shuffle slice sort sort_by squeeze strip sub
+                                 succ swapcase tr tr_s transform_values
                                  unicode_normalize uniq upcase].freeze
 
         def on_block(node)
