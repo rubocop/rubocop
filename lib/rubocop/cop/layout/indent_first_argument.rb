@@ -228,18 +228,20 @@ module RuboCop
         # containing the previous line that's not a comment line or a blank
         # line.
         def previous_code_line(line_number)
+          line = ''
+          while line.blank? || comment_lines.include?(line_number)
+            line_number -= 1
+            line = processed_source.lines[line_number - 1]
+          end
+          line
+        end
+
+        def comment_lines
           @comment_lines ||=
             processed_source
             .comments
             .select { |c| begins_its_line?(c.loc.expression) }
             .map { |c| c.loc.line }
-
-          line = ''
-          while line.blank? || @comment_lines.include?(line_number)
-            line_number -= 1
-            line = processed_source.lines[line_number - 1]
-          end
-          line
         end
       end
     end

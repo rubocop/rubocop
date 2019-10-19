@@ -122,18 +122,19 @@ module RuboCop
         end
 
         def correct_inverse_selector(block, corrector)
-          selector = block.loc.selector.source
+          selector_loc = block.loc.selector
+          selector = selector_loc.source
 
           if NEGATED_EQUALITY_METHODS.include?(selector.to_sym)
             selector[0] = '='
-            corrector.replace(block.loc.selector, selector)
+            corrector.replace(selector_loc, selector)
           else
             if block.loc.dot
               range = dot_range(block.loc)
               corrector.remove(range)
             end
 
-            corrector.remove(block.loc.selector)
+            corrector.remove(selector_loc)
           end
         end
 
