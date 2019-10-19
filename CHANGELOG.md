@@ -8,6 +8,10 @@
 * [#7438](https://github.com/rubocop-hq/rubocop/issues/7438): Fix assignment edge-cases in `Layout/MultilineAssignmentLayout`. ([@gsamokovarov][])
 * [#7449](https://github.com/rubocop-hq/rubocop/pull/7449): Make `Style/IfUnlessModifier` respect `rubocop:disable` comments for `Metrics/LineLength`. ([@jonas054][])
 
+### Changes
+
+* [#7446](https://github.com/rubocop-hq/rubocop/issues/7446): Add `merge` to list of non-mutating methods. ([@cstyles][])
+
 ## 0.75.1 (2019-10-14)
 
 ### Bug fixes
@@ -4234,3 +4238,4 @@
 [@laurenball]: https://github.com/laurenball
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
 [@jdkaplan]: https://github.com/jdkaplan
+[@cstyles]: https://github.com/cstyles
