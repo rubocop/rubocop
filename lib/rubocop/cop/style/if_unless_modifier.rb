@@ -70,8 +70,15 @@ module RuboCop
           return false unless max_line_length
 
           range = node.source_range
-          range.first_line == range.last_line &&
-            range.last_column > max_line_length
+          return false unless range.first_line == range.last_line
+          return false unless line_length_enabled_at_line?(range.first_line)
+
+          range.last_column > max_line_length
+        end
+
+        def line_length_enabled_at_line?(line)
+          processed_source.comment_config
+                          .cop_enabled_at_line?('Metrics/LineLength', line)
         end
 
         def named_capture_in_condition?(node)

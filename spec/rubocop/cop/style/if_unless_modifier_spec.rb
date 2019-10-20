@@ -36,13 +36,25 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       end
     end
 
-    context 'when Metrics/LineLength is disabled' do
+    context 'when Metrics/LineLength is disabled in configuration' do
       let(:line_length_config) { { 'Enabled' => false, 'Max' => 80 } }
 
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
           def f
             #{source}
+          end
+        RUBY
+      end
+    end
+
+    context 'when Metrics/LineLength is disabled with a comment' do
+      it 'accepts' do
+        expect_no_offenses(<<~RUBY)
+          def f
+            # rubocop:disable Metrics/LineLength
+            #{source}
+            # rubocop:enable Metrics/LineLength
           end
         RUBY
       end
