@@ -129,19 +129,18 @@ module RuboCop
         private
 
         def handle_comments(corrector, node, method_call)
-          return if processed_source.comments.empty?
+          comments = comments(node)
+          return if comments.empty?
 
           corrector.insert_before(method_call.loc.expression,
-                                  "#{comments(node).join("\n")}\n")
+                                  "#{comments.map(&:text).join("\n")}\n")
         end
 
         def comments(node)
-          comments = processed_source.comments.select do |comment|
-            comment.loc.first_line >= node.loc.first_line &&
-              comment.loc.last_line <= node.loc.last_line
+          processed_source.comments.select do |comment|
+            comment.loc.first_line > node.loc.first_line &&
+              comment.loc.last_line < node.loc.last_line
           end
-
-          comments.map(&:text)
         end
 
         def allowed_if_condition?(node)

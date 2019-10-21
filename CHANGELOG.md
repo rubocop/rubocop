@@ -7,6 +7,7 @@
 * [#7439](https://github.com/rubocop-hq/rubocop/issues/7439): Make `Style/FormatStringToken` ignore percent escapes (`%%`). ([@buehmann][])
 * [#7438](https://github.com/rubocop-hq/rubocop/issues/7438): Fix assignment edge-cases in `Layout/MultilineAssignmentLayout`. ([@gsamokovarov][])
 * [#7449](https://github.com/rubocop-hq/rubocop/pull/7449): Make `Style/IfUnlessModifier` respect `rubocop:disable` comments for `Metrics/LineLength`. ([@jonas054][])
+* [#7442](https://github.com/rubocop-hq/rubocop/issues/7442): Fix an incorrect autocorrect for `Style/SafeNavigation` when an object check followed by a method call with a comment at EOL. ([@koic][])
 
 ### Changes
 
