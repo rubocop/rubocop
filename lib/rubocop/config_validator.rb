@@ -131,7 +131,9 @@ module RuboCop
           next if COMMON_PARAMS.include?(param) || default_config.key?(param)
 
           supported_params = default_config.keys - INTERNAL_PARAMS
-          warn Rainbow(<<~MESSAGE).yellow
+          # FIXME: Remove .to_s, which works around a JRuby bug:
+          #   https://github.com/jruby/jruby/issues/5935
+          warn Rainbow(<<~MESSAGE).yellow.to_s
             Warning: #{name} does not support #{param} parameter.
 
             Supported parameters are:
