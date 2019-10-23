@@ -113,21 +113,29 @@ module RuboCop
           lambda do |corrector|
             if node.args_type?
               # offense is registered on args node when parentheses are unwanted
-              corrector.replace(node.loc.begin, ' ')
-              corrector.remove(node.loc.end)
+              correct_arguments(node, corrector)
             else
-              args_expr = node.arguments.source_range
-              args_with_space = range_with_surrounding_space(range: args_expr,
-                                                             side: :left)
-              just_space = range_between(args_with_space.begin_pos,
-                                         args_expr.begin_pos)
-              corrector.replace(just_space, '(')
-              corrector.insert_after(args_expr, ')')
+              correct_definition(node, corrector)
             end
           end
         end
 
         private
+
+        def correct_arguments(arg_node, corrector)
+          corrector.replace(arg_node.loc.begin, ' ')
+          corrector.remove(arg_node.loc.end)
+        end
+
+        def correct_definition(def_node, corrector)
+          arguments_range = def_node.arguments.source_range
+          args_with_space = range_with_surrounding_space(range: arguments_range,
+                                                         side: :left)
+          leading_space = range_between(args_with_space.begin_pos,
+                                        arguments_range.begin_pos)
+          corrector.replace(leading_space, '(')
+          corrector.insert_after(arguments_range, ')')
+        end
 
         def require_parentheses?(args)
           style == :require_parentheses ||
