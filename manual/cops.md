@@ -277,6 +277,7 @@ In the following section you find all available cops:
 #### Department [Naming](cops_naming.md)
 
 * [Naming/AccessorMethodName](cops_naming.md#namingaccessormethodname)
+* [Naming/AsciiConstants](cops_naming.md#namingasciiconstants)
 * [Naming/AsciiIdentifiers](cops_naming.md#namingasciiidentifiers)
 * [Naming/BinaryOperatorParameterName](cops_naming.md#namingbinaryoperatorparametername)
 * [Naming/ClassAndModuleCamelCase](cops_naming.md#namingclassandmodulecamelcase)

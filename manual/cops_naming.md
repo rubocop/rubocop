@@ -32,6 +32,44 @@ end
 
 * [https://rubystyle.guide#accessor_mutator_method_names](https://rubystyle.guide#accessor_mutator_method_names)
 
+## Naming/AsciiConstants
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.76 | -
+
+This cop checks for non-ascii characters in constant declarations.
+
+### Examples
+
+```ruby
+# bad
+class Foõ
+end
+
+# bad
+module Foõ
+end
+
+# bad
+FOÕ = "bar"
+
+# good
+class Foo
+end
+
+# good
+module Foo
+end
+
+# good
+FOO = "bar"
+```
+
+### References
+
+* [https://rubystyle.guide#english-identifiers](https://rubystyle.guide#english-identifiers)
+
 ## Naming/AsciiIdentifiers
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* "Add new `Naming/AsciiConstants` cop. ([@pjskennedy][])
+
 ### Bug fixes
 
 * [#7439](https://github.com/rubocop-hq/rubocop/issues/7439): Make `Style/FormatStringToken` ignore percent escapes (`%%`). ([@buehmann][])
@@ -4241,3 +4244,4 @@
 [@jfhinchcliffe]: https://github.com/jfhinchcliffe
 [@jdkaplan]: https://github.com/jdkaplan
 [@cstyles]: https://github.com/cstyles
+[@pjskennedy]: https://github.com/pjskennedy

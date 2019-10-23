@@ -1870,6 +1870,12 @@ Naming/AccessorMethodName:
   Enabled: true
   VersionAdded: '0.50'
 
+Naming/AsciiConstants:
+  Description: 'Use only ascii symbols in constants.'
+  StyleGuide: '#english-identifiers'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Naming/AsciiIdentifiers:
   Description: 'Use only ascii symbols in identifiers.'
   StyleGuide: '#english-identifiers'
