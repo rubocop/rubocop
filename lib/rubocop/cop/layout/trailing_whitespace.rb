@@ -14,6 +14,20 @@ module RuboCop
       #   # good
       #   x = 0
       #
+      # @example AllowInHeredoc: false (default)
+      #   # The line in this example contains spaces after the 0.
+      #   # bad
+      #   code = <<~RUBY
+      #     x = 0
+      #   RUBY
+      #
+      # @example AllowInHeredoc: true
+      #   # The line in this example contains spaces after the 0.
+      #   # good
+      #   code = <<~RUBY
+      #     x = 0
+      #   RUBY
+      #
       class TrailingWhitespace < Cop
         include RangeHelp
 

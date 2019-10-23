@@ -4785,6 +4785,24 @@ x = 0
 # good
 x = 0
 ```
+#### AllowInHeredoc: false (default)
+
+```ruby
+# The line in this example contains spaces after the 0.
+# bad
+code = <<~RUBY
+  x = 0
+RUBY
+```
+#### AllowInHeredoc: true
+
+```ruby
+# The line in this example contains spaces after the 0.
+# good
+code = <<~RUBY
+  x = 0
+RUBY
+```
 
 ### Configurable attributes
 
