@@ -429,13 +429,12 @@ module RuboCop
         [0..Float::INFINITY, 'true']
       end
 
-      # rubocop:disable Metrics/AbcSize
       # rubocop:disable Metrics/MethodLength
       def compile_any_order(capture_all = nil)
         rest = capture_rest = nil
         patterns = []
         with_temp_variables do |child, matched|
-          tokens_until('>', 'any child').each do
+          tokens_until('>', 'any child') do
             fail_due_to 'ellipsis must be at the end of <>' if rest
             token = tokens.shift
             case token
@@ -449,7 +448,6 @@ module RuboCop
         end
       end
       # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/AbcSize
 
       def insure_same_captures(enum, what)
         return to_enum __method__, enum, what unless block_given?
