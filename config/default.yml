@@ -1520,6 +1520,11 @@ Lint/RedundantCopDisableDirective:
   Enabled: true
   VersionAdded: '0.76'
 
+Lint/RedundantCopEnableDirective:
+  Description: Checks for rubocop:enable comments that can be removed.
+  Enabled: true
+  VersionAdded: '0.76'
+
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
   Enabled: true
@@ -1652,11 +1657,6 @@ Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum.'
   Enabled: true
   VersionAdded: '0.43'
-
-Lint/UnneededCopEnableDirective:
-  Description: Checks for rubocop:enable comments that can be removed.
-  Enabled: true
-  VersionAdded: '0.53'
 
 Lint/UnneededRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'

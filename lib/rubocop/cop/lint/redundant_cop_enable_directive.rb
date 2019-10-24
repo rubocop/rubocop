@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-# The Lint/UnneededCopEnableDirective cop needs to be disabled so as
+# The Lint/RedundantCopEnableDirective cop needs to be disabled so as
 # to be able to provide a (bad) example of an unneeded enable.
 
-# rubocop:disable Lint/UnneededCopEnableDirective
+# rubocop:disable Lint/RedundantCopEnableDirective
 module RuboCop
   module Cop
     module Lint
@@ -32,7 +32,7 @@ module RuboCop
       #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
       #   # rubocop:enable all
       #   baz
-      class UnneededCopEnableDirective < Cop
+      class RedundantCopEnableDirective < Cop
         include RangeHelp
         include SurroundingSpace
 

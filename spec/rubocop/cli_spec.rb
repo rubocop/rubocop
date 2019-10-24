@@ -311,7 +311,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # 2 real cops were disabled, and 1 that was incorrect
       # 2 real cops was enabled, but only 1 had been disabled correctly
       expect($stdout.string).to eq(<<~RESULT)
-        #{abs('example.rb')}:8:21: W: Lint/UnneededCopEnableDirective: Unnecessary enabling of Metrics/LineLength.
+        #{abs('example.rb')}:8:21: W: Lint/RedundantCopEnableDirective: Unnecessary enabling of Metrics/LineLength.
         #{abs('example.rb')}:9:81: C: Metrics/LineLength: Line is too long. [95/80]
         #{abs('example.rb')}:11:5: C: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RESULT
