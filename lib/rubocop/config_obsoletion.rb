@@ -8,6 +8,7 @@ module RuboCop
       'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',
       'Style/DeprecatedHashMethods' => 'Style/PreferredHashMethods',
       'Style/OpMethod' => 'Naming/BinaryOperatorParameterName',
+      'Style/UnneededCapitalW' => 'Style/RedundantCapitalW',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'
