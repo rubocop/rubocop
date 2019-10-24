@@ -15,7 +15,7 @@ module RuboCop
       #
       #   # good if @var is already a String
       #   @var
-      class UnneededInterpolation < Cop
+      class RedundantInterpolation < Cop
         include PercentLiteral
 
         MSG = 'Prefer `to_s` over string interpolation.'

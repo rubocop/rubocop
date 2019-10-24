@@ -3430,6 +3430,11 @@ Style/RedundantFreeze:
   VersionAdded: '0.34'
   VersionChanged: '0.66'
 
+Style/RedundantInterpolation:
+  Description: 'Checks for strings that are just an interpolated expression.'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."
   Enabled: true
@@ -3837,11 +3842,6 @@ Style/UnlessElse:
   StyleGuide: '#no-else-with-unless'
   Enabled: true
   VersionAdded: '0.9'
-
-Style/UnneededInterpolation:
-  Description: 'Checks for strings that are just an interpolated expression.'
-  Enabled: true
-  VersionAdded: '0.36'
 
 Style/UnneededPercentQ:
   Description: 'Checks for %q/%Q when single quotes or double quotes would do.'

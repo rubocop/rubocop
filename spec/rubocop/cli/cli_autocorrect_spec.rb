@@ -528,7 +528,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'corrects LineEndConcatenation offenses leaving the ' \
-     'UnneededInterpolation offense unchanged' do
+     'RedundantInterpolation offense unchanged' do
     # If we change string concatenation from plus to backslash, the string
     # literal that follows must remain a string literal.
     source = <<~'RUBY'

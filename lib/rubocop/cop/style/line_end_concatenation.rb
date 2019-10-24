@@ -32,7 +32,7 @@ module RuboCop
         QUOTE_DELIMITERS = %w[' "].freeze
 
         def self.autocorrect_incompatible_with
-          [Style::UnneededInterpolation]
+          [Style::RedundantInterpolation]
         end
 
         def investigate(processed_source)
