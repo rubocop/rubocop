@@ -21,7 +21,7 @@ module RuboCop
       #
       #   # good
       #   require 'unloaded_feature'
-      class UnneededRequireStatement < Cop
+      class RedundantRequireStatement < Cop
         include RangeHelp
 
         MSG = 'Remove unnecessary `require` statement.'

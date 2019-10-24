@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnneededRequireStatement, :config do
+RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
   subject(:cop) { described_class.new(config) }
 
   it "registers an offense and corrects when using `require 'enumerator'`" do

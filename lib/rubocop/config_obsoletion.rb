@@ -6,6 +6,7 @@ module RuboCop
     RENAMED_COPS = {
       'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
       'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
+      'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',
       'Style/SingleSpaceBeforeFirstArg' => 'Layout/SpaceBeforeFirstArg',
       'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',
       'Style/DeprecatedHashMethods' => 'Style/PreferredHashMethods',
