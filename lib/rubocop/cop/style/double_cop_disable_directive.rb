@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/UnneededCopDisableDirective
+# rubocop:disable Lint/RedundantCopDisableDirective
 # rubocop:disable Style/DoubleCopDisableDirective
 
 module RuboCop
@@ -26,7 +26,7 @@ module RuboCop
       #
       class DoubleCopDisableDirective < Cop
         # rubocop:enable Style/For, Style/DoubleCopDisableDirective
-        # rubocop:enable Lint/UnneededCopDisableDirective, Metrics/AbcSize
+        # rubocop:enable Lint/RedundantCopDisableDirective, Metrics/AbcSize
         MSG = 'More than one disable comment on one line.'
 
         def investigate(processed_source)
