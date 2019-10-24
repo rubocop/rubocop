@@ -30,11 +30,11 @@ module RuboCop
       #     c
       #   end
       #
-      class UnneededCondition < Cop
+      class RedundantCondition < Cop
         include RangeHelp
 
         MSG = 'Use double pipes `||` instead.'
-        UNNEEDED_CONDITION = 'This condition is not needed.'
+        REDUNDANT_CONDITION = 'This condition is not needed.'
 
         def on_if(node)
           return if node.elsif_conditional?
@@ -61,7 +61,7 @@ module RuboCop
 
         def message(node)
           if node.modifier_form? || !node.else_branch
-            UNNEEDED_CONDITION
+            REDUNDANT_CONDITION
           else
             MSG
           end

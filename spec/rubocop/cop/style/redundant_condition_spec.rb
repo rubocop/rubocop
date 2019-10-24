@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::UnneededCondition do
+RSpec.describe RuboCop::Cop::Style::RedundantCondition do
   subject(:cop) { described_class.new }
 
   context 'when regular condition (if)' do

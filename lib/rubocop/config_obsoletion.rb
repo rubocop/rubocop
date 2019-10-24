@@ -9,6 +9,7 @@ module RuboCop
       'Style/DeprecatedHashMethods' => 'Style/PreferredHashMethods',
       'Style/OpMethod' => 'Naming/BinaryOperatorParameterName',
       'Style/UnneededCapitalW' => 'Style/RedundantCapitalW',
+      'Style/UnneededCondition' => 'Style/RedundantCondition',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'
