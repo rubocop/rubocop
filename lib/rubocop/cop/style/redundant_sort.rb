@@ -49,13 +49,13 @@ module RuboCop
       #   # good
       #   arr.max_by(&:foo)
       #
-      class UnneededSort < Cop
+      class RedundantSort < Cop
         include RangeHelp
 
         MSG = 'Use `%<suggestion>s` instead of '\
               '`%<sorter>s...%<accessor_source>s`.'
 
-        def_node_matcher :unneeded_sort?, <<~MATCHER
+        def_node_matcher :redundant_sort?, <<~MATCHER
           {
             (send $(send _ $:sort ...) ${:last :first})
             (send $(send _ $:sort ...) ${:[] :at :slice} {(int 0) (int -1)})
@@ -72,7 +72,7 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          unneeded_sort?(node) do |sort_node, sorter, accessor|
+          redundant_sort?(node) do |sort_node, sorter, accessor|
             range = range_between(
               sort_node.loc.selector.begin_pos,
               node.loc.expression.end_pos
@@ -87,7 +87,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          sort_node, sorter, accessor = unneeded_sort?(node)
+          sort_node, sorter, accessor = redundant_sort?(node)
 
           lambda do |corrector|
             # Remove accessor, e.g. `first` or `[-1]`.

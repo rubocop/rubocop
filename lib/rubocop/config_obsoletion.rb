@@ -12,6 +12,7 @@ module RuboCop
       'Style/UnneededCondition' => 'Style/RedundantCondition',
       'Style/UnneededInterpolation' => 'Style/RedundantInterpolation',
       'Style/UnneededPercentQ' => 'Style/RedundantPercentQ',
+      'Style/UnneededSort' => 'Style/RedundantSort',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'

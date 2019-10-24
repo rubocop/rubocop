@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::UnneededSort do
+RSpec.describe RuboCop::Cop::Style::RedundantSort do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when first is called with sort' do
