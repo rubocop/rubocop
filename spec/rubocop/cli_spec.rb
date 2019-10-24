@@ -1145,7 +1145,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  6: Style/PercentLiteralDelimiters: %w-literals should be delimited by [ and ].
         C:  4:  6: Style/PercentLiteralDelimiters: %q-literals should be delimited by ( and ).
-        C:  4:  6: Style/UnneededPercentQ: Use %q only for strings that contain both single quotes and double quotes.
+        C:  4:  6: Style/RedundantPercentQ: Use %q only for strings that contain both single quotes and double quotes.
 
         1 file inspected, 3 offenses detected
       RESULT

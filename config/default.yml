@@ -3440,6 +3440,12 @@ Style/RedundantParentheses:
   Enabled: true
   VersionAdded: '0.36'
 
+Style/RedundantPercentQ:
+  Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
+  StyleGuide: '#percent-q'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."
   StyleGuide: '#no-explicit-return'
@@ -3842,12 +3848,6 @@ Style/UnlessElse:
   StyleGuide: '#no-else-with-unless'
   Enabled: true
   VersionAdded: '0.9'
-
-Style/UnneededPercentQ:
-  Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
-  StyleGuide: '#percent-q'
-  Enabled: true
-  VersionAdded: '0.24'
 
 Style/UnneededSort:
   Description: >-
