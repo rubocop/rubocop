@@ -5186,6 +5186,63 @@ end
 
 * [https://rubystyle.guide#begin-implicit](https://rubystyle.guide#begin-implicit)
 
+## Style/RedundantCapitalW
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop checks for usage of the %W() syntax when %w() would do.
+
+### Examples
+
+```ruby
+# bad
+%W(cat dog pig)
+%W[door wall floor]
+
+# good
+%w/swim run bike/
+%w[shirt pants shoes]
+%W(apple #{fruit} grape)
+```
+
+## Style/RedundantCondition
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop checks for unnecessary conditional expressions.
+
+### Examples
+
+```ruby
+# bad
+a = b ? b : c
+
+# good
+a = b || c
+```
+```ruby
+# bad
+if b
+  b
+else
+  c
+end
+
+# good
+b || c
+
+# good
+if b
+  b
+elsif cond
+  c
+end
+```
+
 ## Style/RedundantConditional
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -5262,6 +5319,27 @@ CONST = 1.freeze
 CONST = 1
 ```
 
+## Style/RedundantInterpolation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop checks for strings that are just an interpolated expression.
+
+### Examples
+
+```ruby
+# bad
+"#{@var}"
+
+# good
+@var.to_s
+
+# good if @var is already a String
+@var
+```
+
 ## Style/RedundantParentheses
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -5279,6 +5357,32 @@ This cop checks for redundant parentheses.
 # good
 x if y.z.nil?
 ```
+
+## Style/RedundantPercentQ
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop checks for usage of the %q/%Q syntax when '' or "" would do.
+
+### Examples
+
+```ruby
+# bad
+name = %q(Bruce Wayne)
+time = %q(8 o'clock)
+question = %q("What did you say?")
+
+# good
+name = 'Bruce Wayne'
+time = "8 o'clock"
+question = '"What did you say?"'
+```
+
+### References
+
+* [https://rubystyle.guide#percent-q](https://rubystyle.guide#percent-q)
 
 ## Style/RedundantReturn
 
@@ -5397,6 +5501,61 @@ end
 ### References
 
 * [https://rubystyle.guide#no-self-unless-required](https://rubystyle.guide#no-self-unless-required)
+
+## Style/RedundantSort
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop is used to identify instances of sorting and then
+taking only the first or last element. The same behavior can
+be accomplished without a relatively expensive sort by using
+`Enumerable#min` instead of sorting and taking the first
+element and `Enumerable#max` instead of sorting and taking the
+last element. Similarly, `Enumerable#min_by` and
+`Enumerable#max_by` can replace `Enumerable#sort_by` calls
+after which only the first or last element is used.
+
+### Examples
+
+```ruby
+# bad
+[2, 1, 3].sort.first
+[2, 1, 3].sort[0]
+[2, 1, 3].sort.at(0)
+[2, 1, 3].sort.slice(0)
+
+# good
+[2, 1, 3].min
+
+# bad
+[2, 1, 3].sort.last
+[2, 1, 3].sort[-1]
+[2, 1, 3].sort.at(-1)
+[2, 1, 3].sort.slice(-1)
+
+# good
+[2, 1, 3].max
+
+# bad
+arr.sort_by(&:foo).first
+arr.sort_by(&:foo)[0]
+arr.sort_by(&:foo).at(0)
+arr.sort_by(&:foo).slice(0)
+
+# good
+arr.min_by(&:foo)
+
+# bad
+arr.sort_by(&:foo).last
+arr.sort_by(&:foo)[-1]
+arr.sort_by(&:foo).at(-1)
+arr.sort_by(&:foo).slice(-1)
+
+# good
+arr.max_by(&:foo)
+```
 
 ## Style/RedundantSortBy
 
@@ -7036,165 +7195,6 @@ end
 ### References
 
 * [https://rubystyle.guide#no-else-with-unless](https://rubystyle.guide#no-else-with-unless)
-
-## Style/UnneededCapitalW
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.21 | 0.24
-
-This cop checks for usage of the %W() syntax when %w() would do.
-
-### Examples
-
-```ruby
-# bad
-%W(cat dog pig)
-%W[door wall floor]
-
-# good
-%w/swim run bike/
-%w[shirt pants shoes]
-%W(apple #{fruit} grape)
-```
-
-## Style/UnneededCondition
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.57 | -
-
-This cop checks for unnecessary conditional expressions.
-
-### Examples
-
-```ruby
-# bad
-a = b ? b : c
-
-# good
-a = b || c
-```
-```ruby
-# bad
-if b
-  b
-else
-  c
-end
-
-# good
-b || c
-
-# good
-if b
-  b
-elsif cond
-  c
-end
-```
-
-## Style/UnneededInterpolation
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | -
-
-This cop checks for strings that are just an interpolated expression.
-
-### Examples
-
-```ruby
-# bad
-"#{@var}"
-
-# good
-@var.to_s
-
-# good if @var is already a String
-@var
-```
-
-## Style/UnneededPercentQ
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.24 | -
-
-This cop checks for usage of the %q/%Q syntax when '' or "" would do.
-
-### Examples
-
-```ruby
-# bad
-name = %q(Bruce Wayne)
-time = %q(8 o'clock)
-question = %q("What did you say?")
-
-# good
-name = 'Bruce Wayne'
-time = "8 o'clock"
-question = '"What did you say?"'
-```
-
-### References
-
-* [https://rubystyle.guide#percent-q](https://rubystyle.guide#percent-q)
-
-## Style/UnneededSort
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | -
-
-This cop is used to identify instances of sorting and then
-taking only the first or last element. The same behavior can
-be accomplished without a relatively expensive sort by using
-`Enumerable#min` instead of sorting and taking the first
-element and `Enumerable#max` instead of sorting and taking the
-last element. Similarly, `Enumerable#min_by` and
-`Enumerable#max_by` can replace `Enumerable#sort_by` calls
-after which only the first or last element is used.
-
-### Examples
-
-```ruby
-# bad
-[2, 1, 3].sort.first
-[2, 1, 3].sort[0]
-[2, 1, 3].sort.at(0)
-[2, 1, 3].sort.slice(0)
-
-# good
-[2, 1, 3].min
-
-# bad
-[2, 1, 3].sort.last
-[2, 1, 3].sort[-1]
-[2, 1, 3].sort.at(-1)
-[2, 1, 3].sort.slice(-1)
-
-# good
-[2, 1, 3].max
-
-# bad
-arr.sort_by(&:foo).first
-arr.sort_by(&:foo)[0]
-arr.sort_by(&:foo).at(0)
-arr.sort_by(&:foo).slice(0)
-
-# good
-arr.min_by(&:foo)
-
-# bad
-arr.sort_by(&:foo).last
-arr.sort_by(&:foo)[-1]
-arr.sort_by(&:foo).at(-1)
-arr.sort_by(&:foo).slice(-1)
-
-# good
-arr.max_by(&:foo)
-```
 
 ## Style/UnpackFirst
 

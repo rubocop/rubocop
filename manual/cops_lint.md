@@ -1595,6 +1595,153 @@ rand(-1.0)
 0 # just use 0 instead
 ```
 
+## Lint/RedundantCopDisableDirective
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop detects instances of rubocop:disable comments that can be
+removed without causing any offenses to be reported. It's implemented
+as a cop in that it inherits from the Cop base class and calls
+add_offense. The unusual part of its implementation is that it doesn't
+have any on_* methods or an investigate method. This means that it
+doesn't take part in the investigation phase when the other cops do
+their work. Instead, it waits until it's called in a later stage of the
+execution. The reason it can't be implemented as a normal cop is that
+it depends on the results of all other cops to do its work.
+
+### Examples
+
+```ruby
+# bad
+# rubocop:disable Metrics/LineLength
+x += 1
+# rubocop:enable Metrics/LineLength
+
+# good
+x += 1
+```
+
+## Lint/RedundantCopEnableDirective
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop detects instances of rubocop:enable comments that can be
+removed.
+
+When comment enables all cops at once `rubocop:enable all`
+that cop checks whether any cop was actually enabled.
+
+### Examples
+
+```ruby
+# bad
+foo = 1
+# rubocop:enable Metrics/LineLength
+
+# good
+foo = 1
+```
+```ruby
+# bad
+# rubocop:disable Metrics/LineLength
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:enable Metrics/LineLength
+baz
+# rubocop:enable all
+
+# good
+# rubocop:disable Metrics/LineLength
+baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:enable all
+baz
+```
+
+## Lint/RedundantRequireStatement
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+Checks for unnecessary `require` statement.
+
+The following features are unnecessary `require` statement because
+they are already loaded.
+
+ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
+ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
+["enumerator.so", "rational.so", "complex.so", "thread.rb"]
+
+This cop targets Ruby 2.2 or higher containing these 4 features.
+
+### Examples
+
+```ruby
+# bad
+require 'unloaded_feature'
+require 'thread'
+
+# good
+require 'unloaded_feature'
+```
+
+## Lint/RedundantSplatExpansion
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | - | 0.76
+
+This cop checks for unneeded usages of splat expansion
+
+### Examples
+
+```ruby
+# bad
+
+a = *[1, 2, 3]
+a = *'a'
+a = *1
+
+begin
+  foo
+rescue *[StandardError, ApplicationError]
+  bar
+end
+
+case foo
+when *[1, 2, 3]
+  bar
+else
+  baz
+end
+```
+```ruby
+# good
+
+c = [1, 2, 3]
+a = *c
+a, b = *c
+a, *b = *c
+a = *1..10
+a = ['a']
+
+begin
+  foo
+rescue StandardError, ApplicationError
+  bar
+end
+
+case foo
+when 1, 2, 3
+  bar
+else
+  baz
+end
+```
+
 ## Lint/RedundantWithIndex
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2289,153 +2436,6 @@ This cop checks for using Fixnum or Bignum constant.
 # good
 
 1.is_a?(Integer)
-```
-
-## Lint/UnneededCopDisableDirective
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | -
-
-This cop detects instances of rubocop:disable comments that can be
-removed without causing any offenses to be reported. It's implemented
-as a cop in that it inherits from the Cop base class and calls
-add_offense. The unusual part of its implementation is that it doesn't
-have any on_* methods or an investigate method. This means that it
-doesn't take part in the investigation phase when the other cops do
-their work. Instead, it waits until it's called in a later stage of the
-execution. The reason it can't be implemented as a normal cop is that
-it depends on the results of all other cops to do its work.
-
-### Examples
-
-```ruby
-# bad
-# rubocop:disable Metrics/LineLength
-x += 1
-# rubocop:enable Metrics/LineLength
-
-# good
-x += 1
-```
-
-## Lint/UnneededCopEnableDirective
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | -
-
-This cop detects instances of rubocop:enable comments that can be
-removed.
-
-When comment enables all cops at once `rubocop:enable all`
-that cop checks whether any cop was actually enabled.
-
-### Examples
-
-```ruby
-# bad
-foo = 1
-# rubocop:enable Metrics/LineLength
-
-# good
-foo = 1
-```
-```ruby
-# bad
-# rubocop:disable Metrics/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable Metrics/LineLength
-baz
-# rubocop:enable all
-
-# good
-# rubocop:disable Metrics/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable all
-baz
-```
-
-## Lint/UnneededRequireStatement
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.51 | -
-
-Checks for unnecessary `require` statement.
-
-The following features are unnecessary `require` statement because
-they are already loaded.
-
-ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
-ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
-["enumerator.so", "rational.so", "complex.so", "thread.rb"]
-
-This cop targets Ruby 2.2 or higher containing these 4 features.
-
-### Examples
-
-```ruby
-# bad
-require 'unloaded_feature'
-require 'thread'
-
-# good
-require 'unloaded_feature'
-```
-
-## Lint/UnneededSplatExpansion
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | 0.74
-
-This cop checks for unneeded usages of splat expansion
-
-### Examples
-
-```ruby
-# bad
-
-a = *[1, 2, 3]
-a = *'a'
-a = *1
-
-begin
-  foo
-rescue *[StandardError, ApplicationError]
-  bar
-end
-
-case foo
-when *[1, 2, 3]
-  bar
-else
-  baz
-end
-```
-```ruby
-# good
-
-c = [1, 2, 3]
-a = *c
-a, b = *c
-a, *b = *c
-a = *1..10
-a = ['a']
-
-begin
-  foo
-rescue StandardError, ApplicationError
-  bar
-end
-
-case foo
-when 1, 2, 3
-  bar
-else
-  baz
-end
 ```
 
 ## Lint/UnreachableCode
