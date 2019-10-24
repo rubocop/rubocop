@@ -18,6 +18,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/UnneededCopDisableDirective' => { 'Enabled': true },
           'Lint/UnneededCopEnableDirective' => { 'Enabled': true },
           'Lint/UnneededRequireStatement' => { 'Enabled': true },
+          'Lint/UnneededSplatExpansion' => { 'Enabled': true },
           'Style/SingleSpaceBeforeFirstArg' => { 'Enabled': true },
           'Style/MethodCallParentheses' => { 'Enabled': true },
           'Style/DeprecatedHashMethods' => { 'Enabled': true },
@@ -68,6 +69,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Lint/UnneededCopEnableDirective` cop has been renamed to `Lint/RedundantCopEnableDirective`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededRequireStatement` cop has been renamed to `Lint/RedundantRequireStatement`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/UnneededSplatExpansion` cop has been renamed to `Lint/RedundantSplatExpansion`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
