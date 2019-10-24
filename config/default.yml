@@ -1530,6 +1530,11 @@ Lint/RedundantRequireStatement:
   Enabled: true
   VersionAdded: '0.76'
 
+Lint/RedundantSplatExpansion:
+  Description: 'Checks for splat unnecessarily being called on literals.'
+  Enabled: true
+  VersionChanged: '0.76'
+
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
   Enabled: true
@@ -1662,12 +1667,6 @@ Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum.'
   Enabled: true
   VersionAdded: '0.43'
-
-Lint/UnneededSplatExpansion:
-  Description: 'Checks for splat unnecessarily being called on literals.'
-  Enabled: true
-  VersionAdded: '0.43'
-  VersionChanged: '0.74'
 
 Lint/UnreachableCode:
   Description: 'Unreachable code.'

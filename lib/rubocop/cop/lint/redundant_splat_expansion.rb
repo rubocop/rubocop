@@ -49,7 +49,7 @@ module RuboCop
       #   else
       #     baz
       #   end
-      class UnneededSplatExpansion < Cop
+      class RedundantSplatExpansion < Cop
         MSG = 'Replace splat expansion with comma separated values.'
         ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'
         PERCENT_W = '%w'
@@ -70,7 +70,7 @@ module RuboCop
         PATTERN
 
         def on_splat(node)
-          unneeded_splat_expansion(node) do
+          redundant_splat_expansion(node) do
             if array_splat?(node) &&
                (method_argument?(node) || part_of_an_array?(node))
               add_offense(node, message: ARRAY_PARAM_MSG)
@@ -90,7 +90,7 @@ module RuboCop
 
         private
 
-        def unneeded_splat_expansion(node)
+        def redundant_splat_expansion(node)
           literal_expansion(node) do |expanded_item|
             if expanded_item.send_type?
               return if array_new_inside_array_literal?(expanded_item)
@@ -119,7 +119,7 @@ module RuboCop
             [node.parent.loc.expression, variable.source]
           elsif !variable.array_type?
             [loc.expression, "[#{variable.source}]"]
-          elsif unneeded_brackets?(node)
+          elsif redundant_brackets?(node)
             [loc.expression, remove_brackets(variable)]
           else
             [loc.operator, '']
@@ -141,7 +141,7 @@ module RuboCop
           parent.array_type? && parent.loc.begin && parent.loc.end
         end
 
-        def unneeded_brackets?(node)
+        def redundant_brackets?(node)
           parent = node.parent
           grandparent = node.parent.parent
 
