@@ -14,7 +14,7 @@ module RuboCop
       #   %w/swim run bike/
       #   %w[shirt pants shoes]
       #   %W(apple #{fruit} grape)
-      class UnneededCapitalW < Cop
+      class RedundantCapitalW < Cop
         include PercentLiteral
 
         MSG = 'Do not use `%W` unless interpolation is needed. ' \

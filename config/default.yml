@@ -3402,6 +3402,11 @@ Style/RedundantBegin:
   VersionAdded: '0.10'
   VersionChanged: '0.21'
 
+Style/RedundantCapitalW:
+  Description: 'Checks for %W when interpolation is not needed.'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Style/RedundantConditional:
   Description: "Don't return true/false from a conditional."
   Enabled: true
@@ -3827,12 +3832,6 @@ Style/UnlessElse:
   StyleGuide: '#no-else-with-unless'
   Enabled: true
   VersionAdded: '0.9'
-
-Style/UnneededCapitalW:
-  Description: 'Checks for %W when interpolation is not needed.'
-  Enabled: true
-  VersionAdded: '0.21'
-  VersionChanged: '0.24'
 
 Style/UnneededCondition:
   Description: 'Checks for unnecessary conditional expressions.'
