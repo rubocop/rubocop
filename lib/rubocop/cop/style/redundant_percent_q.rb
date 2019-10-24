@@ -17,7 +17,7 @@ module RuboCop
       #   time = "8 o'clock"
       #   question = '"What did you say?"'
       #
-      class UnneededPercentQ < Cop
+      class RedundantPercentQ < Cop
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
               'single quotes and double quotes%<extra>s.'
         DYNAMIC_MSG = ', or for dynamic strings that contain ' \

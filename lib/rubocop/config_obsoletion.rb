@@ -11,6 +11,7 @@ module RuboCop
       'Style/UnneededCapitalW' => 'Style/RedundantCapitalW',
       'Style/UnneededCondition' => 'Style/RedundantCondition',
       'Style/UnneededInterpolation' => 'Style/RedundantInterpolation',
+      'Style/UnneededPercentQ' => 'Style/RedundantPercentQ',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'

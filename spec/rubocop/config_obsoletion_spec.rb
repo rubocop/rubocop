@@ -22,6 +22,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Style/UnneededCapitalW' => { 'Enabled': true },
           'Style/UnneededCondition' => { 'Enabled': true },
           'Style/UnneededInterpolation' => { 'Enabled': true },
+          'Style/UnneededPercentQ' => { 'Enabled': true },
           'Layout/FirstParameterIndentation' => { 'Enabled': true },
           'Layout/IndentArray' => { 'Enabled': true },
           'Layout/IndentHash' => { 'Enabled': true },
@@ -71,6 +72,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/UnneededCondition` cop has been renamed to `Style/RedundantCondition`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededInterpolation` cop has been renamed to `Style/RedundantInterpolation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/UnneededPercentQ` cop has been renamed to `Style/RedundantPercentQ`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
