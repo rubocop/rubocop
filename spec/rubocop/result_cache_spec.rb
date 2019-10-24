@@ -231,12 +231,19 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
     end
 
+    shared_examples 'invalid cache location' do |error|
+      it 'doesn\'t raise an exception' do
+        expect(FileUtils).to receive(:mkdir_p).with(start_with(cache_root))
+                                              .and_raise(error)
+        expect { cache.save([]) }.not_to raise_error
+      end
+    end
+
     context 'when the @path is not writable' do
       let(:cache_root) { '/permission_denied_dir' }
 
-      it 'doesn\'t raise an exception' do
-        expect { cache.save([]) }.not_to raise_error
-      end
+      it_behaves_like 'invalid cache location', Errno::EACCES
+      it_behaves_like 'invalid cache location', Errno::EROFS
     end
   end
 
