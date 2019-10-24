@@ -117,7 +117,7 @@ module RuboCop
       file_offense_cache(file) do
         source = get_processed_source(file)
         source, offenses = do_inspection_loop(file, source)
-        add_unneeded_disables(file, offenses.compact.sort, source)
+        add_redundant_disables(file, offenses.compact.sort, source)
       end
     end
 
@@ -141,17 +141,17 @@ module RuboCop
       offenses
     end
 
-    def add_unneeded_disables(file, offenses, source)
-      if check_for_unneeded_disables?(source)
+    def add_redundant_disables(file, offenses, source)
+      if check_for_redundant_disables?(source)
         config = @config_store.for(file)
-        if config.for_cop(Cop::Lint::UnneededCopDisableDirective)
+        if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
                  .fetch('Enabled')
-          cop = Cop::Lint::UnneededCopDisableDirective.new(config, @options)
+          cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
           if cop.relevant_file?(file)
             cop.check(offenses, source.disabled_line_ranges, source.comments)
             offenses += cop.offenses
-            offenses += autocorrect_unneeded_disables(file, source, cop,
-                                                      offenses)
+            offenses += autocorrect_redundant_disables(file, source, cop,
+                                                       offenses)
           end
         end
       end
@@ -159,7 +159,7 @@ module RuboCop
       offenses.sort.reject(&:disabled?).freeze
     end
 
-    def check_for_unneeded_disables?(source)
+    def check_for_redundant_disables?(source)
       !source.disabled_line_ranges.empty? && !filtered_run?
     end
 
@@ -167,7 +167,7 @@ module RuboCop
       @options[:except] || @options[:only]
     end
 
-    def autocorrect_unneeded_disables(file, source, cop, offenses)
+    def autocorrect_redundant_disables(file, source, cop, offenses)
       cop.processed_source = source
 
       team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
@@ -175,7 +175,7 @@ module RuboCop
 
       return [] unless team.updated_source_file?
 
-      # Do one extra inspection loop if any unneeded disables were
+      # Do one extra inspection loop if any redundant disables were
       # removed. This is done in order to find rubocop:enable directives that
       # have now become useless.
       _source, new_offenses = do_inspection_loop(file,

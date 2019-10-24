@@ -122,7 +122,7 @@ module RuboCop
       def unqualified_cop_names
         @unqualified_cop_names ||=
           Set.new(@cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
-          'UnneededCopDisableDirective'
+          'RedundantCopDisableDirective'
       end
 
       # @return [Hash{String => Array<Class>}]

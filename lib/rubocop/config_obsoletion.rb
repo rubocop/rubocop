@@ -4,6 +4,7 @@ module RuboCop
   # This class handles obsolete configuration.
   class ConfigObsoletion
     RENAMED_COPS = {
+      'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
       'Style/SingleSpaceBeforeFirstArg' => 'Layout/SpaceBeforeFirstArg',
       'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',
       'Style/DeprecatedHashMethods' => 'Style/PreferredHashMethods',

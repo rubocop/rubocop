@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
+RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective do
   describe '.check' do
     let(:cop) do
       cop = described_class.new
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
             end
 
             it 'gives the right cop name' do
-              expect(cop.name).to eq('Lint/UnneededCopDisableDirective')
+              expect(cop.name).to eq('Lint/RedundantCopDisableDirective')
             end
 
             it 'autocorrects' do
@@ -76,10 +76,10 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
 
           context 'itself' do
             let(:source) do
-              '# rubocop:disable Lint/UnneededCopDisableDirective'
+              '# rubocop:disable Lint/RedundantCopDisableDirective'
             end
             let(:cop_disabled_line_ranges) do
-              { 'Lint/UnneededCopDisableDirective' => [1..Float::INFINITY] }
+              { 'Lint/RedundantCopDisableDirective' => [1..Float::INFINITY] }
             end
 
             it 'does not return an offense' do
@@ -90,12 +90,12 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
           context 'itself and another cop' do
             context 'disabled on the same range' do
               let(:source) do
-                '# rubocop:disable Lint/UnneededCopDisableDirective, ' \
+                '# rubocop:disable Lint/RedundantCopDisableDirective, ' \
                 'Metrics/ClassLength'
               end
 
               let(:cop_disabled_line_ranges) do
-                { 'Lint/UnneededCopDisableDirective' => [1..Float::INFINITY],
+                { 'Lint/RedundantCopDisableDirective' => [1..Float::INFINITY],
                   'Metrics/ClassLength' => [1..Float::INFINITY] }
               end
 
@@ -106,12 +106,12 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
 
             context 'disabled on different ranges' do
               let(:source) do
-                ['# rubocop:disable Lint/UnneededCopDisableDirective',
+                ['# rubocop:disable Lint/RedundantCopDisableDirective',
                  '# rubocop:disable Metrics/ClassLength'].join("\n")
               end
 
               let(:cop_disabled_line_ranges) do
-                { 'Lint/UnneededCopDisableDirective' => [1..Float::INFINITY],
+                { 'Lint/RedundantCopDisableDirective' => [1..Float::INFINITY],
                   'Metrics/ClassLength' => [2..Float::INFINITY] }
               end
 
@@ -122,13 +122,13 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
 
             context 'and the other cop is disabled a second time' do
               let(:source) do
-                ['# rubocop:disable Lint/UnneededCopDisableDirective',
+                ['# rubocop:disable Lint/RedundantCopDisableDirective',
                  '# rubocop:disable Metrics/ClassLength',
                  '# rubocop:disable Metrics/ClassLength'].join("\n")
               end
 
               let(:cop_disabled_line_ranges) do
-                { 'Lint/UnneededCopDisableDirective' => [1..Float::INFINITY],
+                { 'Lint/RedundantCopDisableDirective' => [1..Float::INFINITY],
                   'Metrics/ClassLength' => [(2..3), (3..Float::INFINITY)] }
               end
 
@@ -320,12 +320,12 @@ RSpec.describe RuboCop::Cop::Lint::UnneededCopDisableDirective do
           context 'itself and all cops' do
             context 'disabled on different ranges' do
               let(:source) do
-                ['# rubocop:disable Lint/UnneededCopDisableDirective',
+                ['# rubocop:disable Lint/RedundantCopDisableDirective',
                  '# rubocop:disable all'].join("\n")
               end
 
               let(:cop_disabled_line_ranges) do
-                { 'Lint/UnneededCopDisableDirective' => [1..Float::INFINITY],
+                { 'Lint/RedundantCopDisableDirective' => [1..Float::INFINITY],
                   'all' => [2..Float::INFINITY] }
               end
 

@@ -259,7 +259,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when --auto-correct is given' do
-      it 'does not trigger UnneededCopDisableDirective due to ' \
+      it 'does not trigger RedundantCopDisableDirective due to ' \
          'lines moving around' do
         src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
         create_file('example.rb', src)
@@ -373,9 +373,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~RESULT)
           #{abs('example.rb')}:3:81: C: Metrics/LineLength: Line is too long. [95/80]
-          #{abs('example.rb')}:4:1: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of all cops.
-          #{abs('example.rb')}:5:12: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Metrics/ClassLength`, `Metrics/LineLength`.
-          #{abs('example.rb')}:6:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:4:1: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:5:12: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Metrics/ClassLength`, `Metrics/LineLength`.
+          #{abs('example.rb')}:6:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
         RESULT
       end
 
@@ -386,9 +386,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      shared_examples 'UnneededCopDisableDirective not run' do |state, config|
-        context "and UnneededCopDisableDirective is #{state}" do
-          it 'does not report UnneededCopDisableDirective offenses' do
+      shared_examples 'RedundantCopDisableDirective not run' do |state, config|
+        context "and RedundantCopDisableDirective is #{state}" do
+          it 'does not report RedundantCopDisableDirective offenses' do
             create_file('example.rb',
                         ['# frozen_string_literal: true',
                          '',
@@ -410,18 +410,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      include_examples 'UnneededCopDisableDirective not run',
+      include_examples 'RedundantCopDisableDirective not run',
                        'individually disabled', <<~YAML
-                         Lint/UnneededCopDisableDirective:
+                         Lint/RedundantCopDisableDirective:
                            Enabled: false
                        YAML
-      include_examples 'UnneededCopDisableDirective not run',
+      include_examples 'RedundantCopDisableDirective not run',
                        'individually excluded', <<~YAML
-                         Lint/UnneededCopDisableDirective:
+                         Lint/RedundantCopDisableDirective:
                            Exclude:
                              - example.rb
                        YAML
-      include_examples 'UnneededCopDisableDirective not run',
+      include_examples 'RedundantCopDisableDirective not run',
                        'disabled through department', <<~YAML
                          Lint:
                            Enabled: false

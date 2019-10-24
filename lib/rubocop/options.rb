@@ -263,9 +263,9 @@ module RuboCop
 
     # rubocop:disable Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
-      if only_includes_unneeded_disable?
-        raise OptionArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
-                                   'be used with --only.'
+      if only_includes_redundant_disable?
+        raise OptionArgumentError, 'Lint/RedundantCopDisableDirective can ' \
+                                   'not be used with --only.'
       end
       if except_syntax?
         raise OptionArgumentError, 'Syntax checking can not be turned off.'
@@ -338,10 +338,10 @@ module RuboCop
       end
     end
 
-    def only_includes_unneeded_disable?
+    def only_includes_redundant_disable?
       @options.key?(:only) &&
-        (@options[:only] & %w[Lint/UnneededCopDisableDirective
-                              UnneededCopDisableDirective]).any?
+        (@options[:only] & %w[Lint/RedundantCopDisableDirective
+                              RedundantCopDisableDirective]).any?
     end
 
     def display_only_fail_level_offenses_with_autocorrect?
