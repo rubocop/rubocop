@@ -169,16 +169,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      %w[Lint/UnneededCopDisableDirective
-         UnneededCopDisableDirective].each do |name|
+      %w[Lint/RedundantCopDisableDirective
+         RedundantCopDisableDirective].each do |name|
         it "exits with error if cop name #{name} is passed" do
           create_file('example.rb', ['if x== 0 ',
                                      "\ty",
                                      'end'])
-          expect(cli.run(['--only', 'UnneededCopDisableDirective'])).to eq(2)
+          expect(cli.run(['--only', 'RedundantCopDisableDirective'])).to eq(2)
           expect($stderr.string)
             .to include(
-              'Lint/UnneededCopDisableDirective can not be used with --only.'
+              'Lint/RedundantCopDisableDirective can not be used with --only.'
             )
         end
       end
@@ -444,8 +444,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when several cops are given' do
-      %w[UnneededCopDisableDirective
-         Lint/UnneededCopDisableDirective Lint].each do |cop_name|
+      %w[RedundantCopDisableDirective
+         Lint/RedundantCopDisableDirective Lint].each do |cop_name|
         it "disables the given cops including #{cop_name}" do
           create_file('example.rb', ['if x== 100000000000000 ',
                                      "\ty",
@@ -455,10 +455,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                           'Style/IfUnlessModifier,Layout/Tab,' \
                           "Layout/SpaceAroundOperators,#{cop_name}",
                           'example.rb'])).to eq(1)
-          if cop_name == 'UnneededCopDisableDirective'
+          if cop_name == 'RedundantCopDisableDirective'
             expect($stderr.string.chomp)
               .to eq('--except option: Warning: no department given for ' \
-                     'UnneededCopDisableDirective.')
+                     'RedundantCopDisableDirective.')
           end
           expect($stdout.string)
             .to eq(<<~RESULT)
@@ -532,7 +532,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
-        #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
     end
@@ -562,7 +562,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
-          #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
           #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
       end
@@ -594,7 +594,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
-        #{file}:1:8: W: Lint/UnneededCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
         #{file}:1:47: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
 
@@ -1157,7 +1157,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'with disabled line' do
-        it "doesn't consider a unprinted offense to be an unneeded disable" do
+        it "doesn't consider a unprinted offense to be a redundant disable" do
           create_file(target_file, <<~RUBY)
             def f
              x # rubocop:disable Layout/IndentationWidth
@@ -1172,10 +1172,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             .to include('1 file inspected, no offenses detected')
           expect($stdout.string).not_to include 'Layout/IndentationWidth'
           expect($stdout.string)
-            .not_to include 'Lint/UnneededCopDisableDirective'
+            .not_to include 'Lint/RedundantCopDisableDirective'
         end
 
-        it "still checks unprinted offense if they're an unneeded disable" do
+        it "still checks unprinted offense if they're a redundant disable" do
           create_file(target_file, <<~RUBY)
             def f
               x # rubocop:disable Layout/IndentationWidth
@@ -1188,7 +1188,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stderr.string).to eq('')
           expect($stdout.string)
             .to include('1 file inspected, 1 offense detected')
-          expect($stdout.string).to include 'Lint/UnneededCopDisableDirective'
+          expect($stdout.string).to include 'RedundantCopDisableDirective'
         end
       end
     end

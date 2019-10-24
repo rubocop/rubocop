@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# The Lint/UnneededCopDisableDirective cop needs to be disabled so as
-# to be able to provide a (bad) example of an unneeded disable.
-# rubocop:disable Lint/UnneededCopDisableDirective
+# The Lint/RedundantCopDisableDirective cop needs to be disabled so as
+# to be able to provide a (bad) example of a redundant disable.
+# rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -25,21 +25,21 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class UnneededCopDisableDirective < Cop
+      class RedundantCopDisableDirective < Cop
         include NameSimilarity
         include RangeHelp
 
-        COP_NAME = 'Lint/UnneededCopDisableDirective'
+        COP_NAME = 'Lint/RedundantCopDisableDirective'
 
         def check(offenses, cop_disabled_line_ranges, comments)
-          unneeded_cops = Hash.new { |h, k| h[k] = Set.new }
+          redundant_cops = Hash.new { |h, k| h[k] = Set.new }
 
-          each_unneeded_disable(cop_disabled_line_ranges,
-                                offenses, comments) do |comment, unneeded_cop|
-            unneeded_cops[comment].add(unneeded_cop)
+          each_redundant_disable(cop_disabled_line_ranges,
+                                 offenses, comments) do |comment, redundant_cop|
+            redundant_cops[comment].add(redundant_cop)
           end
 
-          add_offenses(unneeded_cops)
+          add_offenses(redundant_cops)
         end
 
         def autocorrect(args)
@@ -89,8 +89,8 @@ module RuboCop
                                        newlines: false)
         end
 
-        def each_unneeded_disable(cop_disabled_line_ranges, offenses, comments,
-                                  &block)
+        def each_redundant_disable(cop_disabled_line_ranges, offenses, comments,
+                                   &block)
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
@@ -110,9 +110,9 @@ module RuboCop
             comment = comments.find { |c| c.loc.line == line_range.begin }
             next if ignore_offense?(disabled_ranges, line_range)
 
-            unneeded_cop = find_unneeded(comment, offenses, cop, line_range,
-                                         line_ranges[ix + 1])
-            yield comment, unneeded_cop if unneeded_cop
+            redundant_cop = find_redundant(comment, offenses, cop, line_range,
+                                           line_ranges[ix + 1])
+            yield comment, redundant_cop if redundant_cop
           end
         end
 
@@ -123,24 +123,24 @@ module RuboCop
 
             # If a cop is disabled in a range that begins on the same line as
             # the end of the previous range, it means that the cop was
-            # already disabled by an earlier comment. So it's unneeded
+            # already disabled by an earlier comment. So it's redundant
             # whether there are offenses or not.
-            unneeded_comment = comments.find do |c|
+            redundant_comment = comments.find do |c|
               c.loc.line == range.begin &&
                 # Comments disabling all cops don't count since it's reasonable
                 # to disable a few select cops first and then all cops further
                 # down in the code.
                 !all_disabled?(c)
             end
-            yield unneeded_comment if unneeded_comment
+            yield redundant_comment if redundant_comment
           end
         end
 
-        def find_unneeded(comment, offenses, cop, line_range, next_line_range)
+        def find_redundant(comment, offenses, cop, line_range, next_line_range)
           if all_disabled?(comment)
             # If there's a disable all comment followed by a comment
             # specifically disabling `cop`, we don't report the `all`
-            # comment. If the disable all comment is truly unneeded, we will
+            # comment. If the disable all comment is truly redundant, we will
             # detect that when examining the comments of another cop, and we
             # get the full line range for the disable all.
             if (next_line_range.nil? ||
@@ -170,8 +170,8 @@ module RuboCop
           cops_string.split(/,\s*/).size
         end
 
-        def add_offenses(unneeded_cops)
-          unneeded_cops.each do |comment, cops|
+        def add_offenses(redundant_cops)
+          redundant_cops.each do |comment, cops|
             if all_disabled?(comment) ||
                directive_count(comment) == cops.size
               add_offense_for_entire_comment(comment, cops)
@@ -260,4 +260,4 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/UnneededCopDisableDirective
+# rubocop:enable Lint/RedundantCopDisableDirective
