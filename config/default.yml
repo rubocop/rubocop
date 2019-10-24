@@ -3462,6 +3462,13 @@ Style/RedundantSelf:
   VersionAdded: '0.10'
   VersionChanged: '0.13'
 
+Style/RedundantSort:
+  Description: >-
+                  Use `min` instead of `sort.first`,
+                  `max_by` instead of `sort_by...last`, etc.
+  Enabled: true
+  VersionAdded: '0.76'
+
 Style/RedundantSortBy:
   Description: 'Use `sort` instead of `sort_by { |x| x }`.'
   Enabled: true
@@ -3848,13 +3855,6 @@ Style/UnlessElse:
   StyleGuide: '#no-else-with-unless'
   Enabled: true
   VersionAdded: '0.9'
-
-Style/UnneededSort:
-  Description: >-
-                  Use `min` instead of `sort.first`,
-                  `max_by` instead of `sort_by...last`, etc.
-  Enabled: true
-  VersionAdded: '0.55'
 
 Style/UnpackFirst:
   Description: >-
