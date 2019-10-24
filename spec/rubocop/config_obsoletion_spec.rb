@@ -20,6 +20,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Style/DeprecatedHashMethods' => { 'Enabled': true },
           'Style/OpMethod' => { 'Enabled': true },
           'Style/UnneededCapitalW' => { 'Enabled': true },
+          'Style/UnneededCondition' => { 'Enabled': true },
           'Layout/FirstParameterIndentation' => { 'Enabled': true },
           'Layout/IndentArray' => { 'Enabled': true },
           'Layout/IndentHash' => { 'Enabled': true },
@@ -65,6 +66,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/OpMethod` cop has been renamed to `Naming/BinaryOperatorParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededCapitalW` cop has been renamed to `Style/RedundantCapitalW`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/UnneededCondition` cop has been renamed to `Style/RedundantCondition`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

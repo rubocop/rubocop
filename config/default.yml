@@ -3407,6 +3407,11 @@ Style/RedundantCapitalW:
   Enabled: true
   VersionAdded: '0.76'
 
+Style/RedundantCondition:
+  Description: 'Checks for unnecessary conditional expressions.'
+  Enabled: true
+  VersionAdded: '0.76'
+
 Style/RedundantConditional:
   Description: "Don't return true/false from a conditional."
   Enabled: true
@@ -3832,11 +3837,6 @@ Style/UnlessElse:
   StyleGuide: '#no-else-with-unless'
   Enabled: true
   VersionAdded: '0.9'
-
-Style/UnneededCondition:
-  Description: 'Checks for unnecessary conditional expressions.'
-  Enabled: true
-  VersionAdded: '0.57'
 
 Style/UnneededInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
