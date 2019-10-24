@@ -771,7 +771,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       W:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
       C:  5:  1: [Corrected] Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
       C:  5:  1: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
-      W:  5: 22: [Corrected] Lint/UnneededCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
+      W:  5: 22: [Corrected] Lint/RedundantCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
       W:  7: 54: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/For.
       W:  9:  5: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
