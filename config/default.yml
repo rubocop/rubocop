@@ -3038,6 +3038,7 @@ Style/ModuleFunction:
   SupportedStyles:
     - module_function
     - extend_self
+    - forbidden
   Autocorrect: false
   SafeAutoCorrect: false
 

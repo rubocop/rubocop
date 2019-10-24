@@ -3616,10 +3616,12 @@ Enabled | Yes | Yes (Unsafe) | 0.11 | 0.65
 This cop checks for use of `extend self` or `module_function` in a
 module.
 
-Supported styles are: module_function, extend_self.
+Supported styles are: module_function, extend_self, forbidden.
 
 In case there are private methods, the cop won't be activated.
 Otherwise, it forces to change the flow of the default code.
+
+The option `forbidden` prohibits the usage of both styles.
 
 These offenses are not safe to auto-correct since there are different
 implications to each approach.
@@ -3667,12 +3669,35 @@ module Test
   # ...
 end
 ```
+#### EnforcedStyle: forbidden
+
+```ruby
+# bad
+module Test
+  module_function
+  # ...
+end
+
+# bad
+module Test
+  extend self
+  # ...
+end
+
+# bad
+module Test
+  extend self
+  # ...
+  private
+  # ...
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `module_function` | `module_function`, `extend_self`
+EnforcedStyle | `module_function` | `module_function`, `extend_self`, `forbidden`
 Autocorrect | `false` | Boolean
 
 ### References
