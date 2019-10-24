@@ -10,6 +10,7 @@ module RuboCop
       'Style/OpMethod' => 'Naming/BinaryOperatorParameterName',
       'Style/UnneededCapitalW' => 'Style/RedundantCapitalW',
       'Style/UnneededCondition' => 'Style/RedundantCondition',
+      'Style/UnneededInterpolation' => 'Style/RedundantInterpolation',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'
