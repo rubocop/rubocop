@@ -128,10 +128,7 @@ module RuboCop
           return check_uri_line(line, line_index) if allow_uri?
 
           register_offense(
-            source_range(
-              processed_source.buffer, line_index + 1,
-              highlight_start(line)...line_length(line)
-            ),
+            excess_range(nil, line, line_index),
             line,
             line_index
           )
