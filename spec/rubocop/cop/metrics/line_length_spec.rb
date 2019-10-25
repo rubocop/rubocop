@@ -207,6 +207,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'and all the excessive characters are part of an URL' do
       it 'registers an offense for the line' do
         expect_offense(<<-RUBY)
+          # Lorem ipsum dolar sit amet.
           # See: https://github.com/rubocop-hq/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
                                                                                 ^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [102/80]
         RUBY
@@ -759,7 +760,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
           expect_offense(<<~RUBY)
             foo = <<-SQL
               SELECT a b c d a b FROM c d a b c d ; COUNT(*) a b
-                                       ^^^^^^^^^^^^ Line is too long. [52/40]
+                                                    ^^^^^^^^^^^^ Line is too long. [52/40]
             SQL
           RUBY
 

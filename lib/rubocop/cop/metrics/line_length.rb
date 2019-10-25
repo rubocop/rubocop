@@ -129,7 +129,7 @@ module RuboCop
 
           register_offense(
             source_range(
-              processed_source.buffer, line_index,
+              processed_source.buffer, line_index + 1,
               highlight_start(line)...line_length(line)
             ),
             line,
