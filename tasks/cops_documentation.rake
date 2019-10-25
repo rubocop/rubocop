@@ -188,13 +188,19 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     pars = t.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
     examples_object = []
-    YARD::Registry.all(:class).detect do |code_object|
-      next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
-
+    cop_code(cop) do |code_object|
       description = code_object.docstring unless code_object.docstring.blank?
       examples_object = code_object.tags('example')
     end
     cops_body(config, cop, description, examples_object, pars)
+  end
+
+  def cop_code(cop)
+    YARD::Registry.all(:class).detect do |code_object|
+      next unless RuboCop::Cop::Badge.for(code_object.to_s) == cop.badge
+
+      yield code_object
+    end
   end
 
   def table_of_content_for_department(cops, department)
