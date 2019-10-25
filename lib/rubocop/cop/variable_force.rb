@@ -284,11 +284,7 @@ module RuboCop
       def process_scope(node)
         if TWISTED_SCOPE_TYPES.include?(node.type)
           # See the comment at the end of file for this behavior.
-          twisted_nodes = [node.children[0]]
-          twisted_nodes << node.children[1] if node.class_type?
-          twisted_nodes.compact!
-
-          twisted_nodes.each do |twisted_node|
+          twisted_nodes(node).each do |twisted_node|
             process_node(twisted_node)
             scanned_nodes << twisted_node
           end
@@ -296,6 +292,12 @@ module RuboCop
 
         inspect_variables_in_scope(node)
         skip_children!
+      end
+
+      def twisted_nodes(node)
+        twisted_nodes = [node.children[0]]
+        twisted_nodes << node.children[1] if node.class_type?
+        twisted_nodes.compact
       end
 
       def process_send(node)
