@@ -469,6 +469,10 @@ module RuboCop
         parent&.send_type? && parent.arguments.include?(self)
       end
 
+      def boolean_type?
+        true_type? || false_type?
+      end
+
       def numeric_type?
         int_type? || float_type?
       end

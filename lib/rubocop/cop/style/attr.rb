@@ -31,7 +31,7 @@ module RuboCop
           node_expr = node.source_range
           attr_expr = attr_name.source_range
 
-          if setter && (setter.true_type? || setter.false_type?)
+          if setter&.boolean_type?
             remove = range_between(attr_expr.end_pos, node_expr.end_pos)
           end
 
@@ -50,7 +50,7 @@ module RuboCop
         def replacement_method(node)
           setter = node.last_argument
 
-          if setter && (setter.true_type? || setter.false_type?)
+          if setter&.boolean_type?
             setter.true_type? ? 'attr_accessor' : 'attr_reader'
           else
             'attr_reader'
