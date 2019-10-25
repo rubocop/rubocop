@@ -113,7 +113,7 @@ module RuboCop
           first_pair = hash_node.pairs.first
 
           if first_pair
-            return if first_pair.source_range.line == left_brace.line
+            return if first_pair.first_line == left_brace.line
 
             if separator_style?(first_pair)
               check_based_on_longest_key(hash_node, left_brace,
