@@ -55,23 +55,20 @@ module RuboCop
         # of correcting, saving the file, parsing and inspecting again, and
         # then correcting one more line, and so on.
         def autocorrect_preceding_comments(comment)
-          corrections = []
-          line_no = comment.loc.line
-          column = comment.loc.column
           comments = processed_source.comments
-          (comments.index(comment) - 1).downto(0) do |ix|
-            previous_comment = comments[ix]
-            break unless should_correct?(previous_comment, column, line_no - 1)
+          index = comments.index(comment)
 
-            corrections << autocorrect_one(previous_comment)
-            line_no -= 1
-          end
-          corrections
+          comments[0..index]
+            .reverse_each
+            .each_cons(2)
+            .take_while { |below, above| should_correct?(above, below) }
+            .map { |_, above| autocorrect_one(above) }
         end
 
-        def should_correct?(comment, column, line_no)
-          loc = comment.loc
-          loc.line == line_no && loc.column == column
+        def should_correct?(preceding_comment, reference_comment)
+          loc = preceding_comment.loc
+          ref_loc = reference_comment.loc
+          loc.line == ref_loc.line - 1 && loc.column == ref_loc.column
         end
 
         def autocorrect_one(comment)
