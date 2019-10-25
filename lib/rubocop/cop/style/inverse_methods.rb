@@ -94,20 +94,25 @@ module RuboCop
         end
 
         def autocorrect(node)
-          method_call, _lhs, method, _rhs = inverse_candidate?(node)
-
-          if method_call && method
-            lambda do |corrector|
-              corrector.remove(not_to_receiver(node, method_call))
-              corrector.replace(method_call.loc.selector,
-                                inverse_methods[method].to_s)
-
-              if EQUALITY_METHODS.include?(method)
-                corrector.remove(end_parentheses(node, method_call))
-              end
-            end
-          else
+          if node.block_type?
             correct_inverse_block(node)
+          elsif node.send_type?
+            correct_inverse_method(node)
+          end
+        end
+
+        def correct_inverse_method(node)
+          method_call, _lhs, method, _rhs = inverse_candidate?(node)
+          return unless method_call && method
+
+          lambda do |corrector|
+            corrector.remove(not_to_receiver(node, method_call))
+            corrector.replace(method_call.loc.selector,
+                              inverse_methods[method].to_s)
+
+            if EQUALITY_METHODS.include?(method)
+              corrector.remove(end_parentheses(node, method_call))
+            end
           end
         end
 
