@@ -24,7 +24,7 @@ module RuboCop
         def inject
           target_line = find_target_line
           if target_line
-            configuration_entries.insert(find_target_line,
+            configuration_entries.insert(target_line,
                                          new_configuration_entry + "\n")
           else
             configuration_entries.push("\n" + new_configuration_entry)
