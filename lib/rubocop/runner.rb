@@ -143,16 +143,11 @@ module RuboCop
 
     def add_redundant_disables(file, offenses, source)
       if check_for_redundant_disables?(source)
-        config = @config_store.for(file)
-        if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
-                 .fetch('Enabled')
-          cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
-          if cop.relevant_file?(file)
-            cop.check(offenses, source.disabled_line_ranges, source.comments)
-            offenses += cop.offenses
-            offenses += autocorrect_redundant_disables(file, source, cop,
-                                                       offenses)
-          end
+        redundant_cop_disable_directive(file) do |cop|
+          cop.check(offenses, source.disabled_line_ranges, source.comments)
+          offenses += cop.offenses
+          offenses += autocorrect_redundant_disables(file, source, cop,
+                                                     offenses)
         end
       end
 
@@ -161,6 +156,15 @@ module RuboCop
 
     def check_for_redundant_disables?(source)
       !source.disabled_line_ranges.empty? && !filtered_run?
+    end
+
+    def redundant_cop_disable_directive(file)
+      config = @config_store.for(file)
+      if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
+               .fetch('Enabled')
+        cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
+        yield cop if cop.relevant_file?(file)
+      end
     end
 
     def filtered_run?
