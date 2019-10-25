@@ -123,23 +123,19 @@ module RuboCop
         self.class::MSG
       end
 
-      # rubocop:disable Metrics/CyclomaticComplexity
       def add_offense(node, location: :expression, message: nil, severity: nil)
         loc = find_location(node, location)
 
         return if duplicate_location?(loc)
 
-        severity = custom_severity || severity || default_severity
-
-        message ||= message(node)
-        message = annotate(message)
+        severity = find_severity(node, severity)
+        message = find_message(node, message)
 
         status = enabled_line?(loc.line) ? correct(node) : :disabled
 
         @offenses << Offense.new(severity, loc, message, name, status)
         yield if block_given? && status != :disabled
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
       def find_location(node, loc)
         # Location can be provided as a symbol, e.g.: `:keyword`
@@ -223,6 +219,10 @@ module RuboCop
 
       private
 
+      def find_message(node, message)
+        annotate(message || message(node))
+      end
+
       def annotate(message)
         RuboCop::Cop::MessageAnnotator.new(
           config, cop_name, cop_config, @options
@@ -248,6 +248,10 @@ module RuboCop
         return true if @options[:ignore_disable_comments] || !@processed_source
 
         @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
+      end
+
+      def find_severity(_node, severity)
+        custom_severity || severity || default_severity
       end
 
       def default_severity
