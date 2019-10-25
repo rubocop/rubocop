@@ -49,11 +49,13 @@ module RuboCop
                                 node.parent.condition.source_range.end_pos)
 
           lambda do |corrector|
-            corrector.replace(range, new_expression(node.parent, node))
+            corrector.replace(range, new_expression(node))
           end
         end
 
-        def new_expression(outer_node, inner_node)
+        def new_expression(inner_node)
+          outer_node = inner_node.parent
+
           operator = replacement_operator(outer_node.keyword)
           lh_operand = left_hand_operand(outer_node, operator)
           rh_operand = right_hand_operand(inner_node, outer_node.keyword)
