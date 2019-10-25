@@ -125,12 +125,7 @@ module RuboCop
     def validate_parameter_names(valid_cop_names)
       valid_cop_names.each do |name|
         validate_section_presence(name)
-        default_config = ConfigLoader.default_configuration[name]
-
-        @config[name].each_key do |param|
-          next if COMMON_PARAMS.include?(param) || default_config.key?(param)
-
-          supported_params = default_config.keys - INTERNAL_PARAMS
+        each_invalid_parameter(name) do |param, supported_params|
           # FIXME: Remove .to_s, which works around a JRuby bug:
           #   https://github.com/jruby/jruby/issues/5935
           warn Rainbow(<<~MESSAGE).yellow.to_s
@@ -141,6 +136,18 @@ module RuboCop
               - #{supported_params.join("\n  - ")}
           MESSAGE
         end
+      end
+    end
+
+    def each_invalid_parameter(cop_name)
+      default_config = ConfigLoader.default_configuration[cop_name]
+
+      @config[cop_name].each_key do |param|
+        next if COMMON_PARAMS.include?(param) || default_config.key?(param)
+
+        supported_params = default_config.keys - INTERNAL_PARAMS
+
+        yield param, supported_params
       end
     end
 
