@@ -26,7 +26,8 @@ module RuboCop
               'those strings.'
         CONCAT_TOKEN_TYPES = %i[tPLUS tLSHFT].freeze
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
-        COMPLEX_STRING_EDGE_TOKEN_TYPES = %i[tSTRING_BEG tSTRING_END].freeze
+        COMPLEX_STRING_BEGIN_TOKEN = :tSTRING_BEG
+        COMPLEX_STRING_END_TOKEN = :tSTRING_END
         HIGH_PRECEDENCE_OP_TOKEN_TYPES = %i[tSTAR2 tPERCENT tDOT
                                             tLBRACK2].freeze
         QUOTE_DELIMITERS = %w[' "].freeze
@@ -59,9 +60,7 @@ module RuboCop
         def check_token_set(index)
           predecessor, operator, successor = processed_source.tokens[index, 3]
 
-          return unless eligible_successor?(successor) &&
-                        eligible_operator?(operator) &&
-                        eligible_predecessor?(predecessor)
+          return unless eligible_token_set?(predecessor, operator, successor)
 
           return if operator.line == successor.line
 
@@ -70,6 +69,12 @@ module RuboCop
           return unless eligible_next_successor?(next_successor)
 
           add_offense(operator.pos, location: operator.pos)
+        end
+
+        def eligible_token_set?(predecessor, operator, successor)
+          eligible_successor?(successor) &&
+            eligible_operator?(operator) &&
+            eligible_predecessor?(predecessor)
         end
 
         def eligible_successor?(successor)
@@ -91,13 +96,12 @@ module RuboCop
 
         def token_after_last_string(successor, base_index)
           index = base_index + 3
-          begin_token, end_token = COMPLEX_STRING_EDGE_TOKEN_TYPES
-          if successor.type == begin_token
+          if successor.type == COMPLEX_STRING_BEGIN_TOKEN
             ends_to_find = 1
             while ends_to_find.positive?
               case processed_source.tokens[index].type
-              when begin_token then ends_to_find += 1
-              when end_token then ends_to_find -= 1
+              when COMPLEX_STRING_BEGIN_TOKEN then ends_to_find += 1
+              when COMPLEX_STRING_END_TOKEN then ends_to_find -= 1
               end
               index += 1
             end
@@ -109,7 +113,7 @@ module RuboCop
           case token.type
           when SIMPLE_STRING_TOKEN_TYPE
             true
-          when *COMPLEX_STRING_EDGE_TOKEN_TYPES
+          when COMPLEX_STRING_BEGIN_TOKEN, COMPLEX_STRING_END_TOKEN
             QUOTE_DELIMITERS.include?(token.text)
           else
             false
