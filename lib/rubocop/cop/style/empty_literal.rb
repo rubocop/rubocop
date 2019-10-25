@@ -84,8 +84,8 @@ module RuboCop
             # to rewrite the arguments to wrap them in parenthesis.
             args = node.parent.arguments
 
-            range_between(args[0].loc.expression.begin_pos - 1,
-                          args[-1].loc.expression.end_pos)
+            range_between(args[0].source_range.begin_pos - 1,
+                          args[-1].source_range.end_pos)
           else
             node.source_range
           end
