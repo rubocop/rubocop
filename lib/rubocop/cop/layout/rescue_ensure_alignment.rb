@@ -96,6 +96,7 @@ module RuboCop
           )
         end
 
+        # rubocop:disable Metrics/AbcSize
         def alignment_source(node, starting_loc)
           ending_loc =
             case node.type
@@ -114,6 +115,7 @@ module RuboCop
 
           range_between(starting_loc.begin_pos, ending_loc.end_pos).source
         end
+        # rubocop:enable Metrics/AbcSize
 
         # We will use ancestor or wrapper with access modifier.
 
