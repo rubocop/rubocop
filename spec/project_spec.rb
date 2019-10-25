@@ -204,7 +204,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
 
-      expect(warnings.empty?).to be(true)
+      expect(warnings).to eq []
     end
   end
 end
