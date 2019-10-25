@@ -220,14 +220,18 @@ module RuboCop
 
         private
 
+        def reset!
+          self.offences_by = {}
+          self.column_deltas = Hash.new { |hash, key| hash[key] = {} }
+        end
+
         def double_splat?(node)
           node.children.last.is_a?(Symbol)
         end
 
         def check_pairs(node)
           first_pair = node.pairs.first
-          self.offences_by = {}
-          self.column_deltas = Hash.new { |hash, key| hash[key] = {} }
+          reset!
 
           alignment_for(first_pair).each do |alignment|
             delta = alignment.deltas_for_first_pair(first_pair, node)
