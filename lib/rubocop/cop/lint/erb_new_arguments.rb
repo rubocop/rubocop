@@ -86,13 +86,13 @@ module RuboCop
           erb_new_with_non_keyword_arguments(node) do |arguments|
             return if correct_arguments?(arguments)
 
-            1.upto(3) do |i|
-              next if !arguments[i] || arguments[i].hash_type?
+            arguments[1..3].each_with_index do |argument, i|
+              next if !argument || argument.hash_type?
 
-              message = format(MESSAGES[i - 1], arg_value: arguments[i].source)
+              message = format(MESSAGES[i], arg_value: argument.source)
 
               add_offense(
-                node, location: arguments[i].source_range, message: message
+                node, location: argument.source_range, message: message
               )
             end
           end
@@ -138,14 +138,15 @@ module RuboCop
         end
 
         def override_by_legacy_args(kwargs, node)
+          arguments = node.arguments
           overridden_kwargs = kwargs.dup
 
-          if node.arguments[2]
-            overridden_kwargs[0] = "trim_mode: #{node.arguments[2].source}"
+          if arguments[2]
+            overridden_kwargs[0] = "trim_mode: #{arguments[2].source}"
           end
 
-          if node.arguments[3] && !node.arguments[3].hash_type?
-            overridden_kwargs[1] = "eoutvar: #{node.arguments[3].source}"
+          if arguments[3] && !arguments[3].hash_type?
+            overridden_kwargs[1] = "eoutvar: #{arguments[3].source}"
           end
 
           overridden_kwargs
