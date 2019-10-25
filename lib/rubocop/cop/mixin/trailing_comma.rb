@@ -18,18 +18,20 @@ module RuboCop
 
       def check(node, items, kind, begin_pos, end_pos)
         after_last_item = range_between(begin_pos, end_pos)
-
-        # If there is any heredoc in items, then match the comma succeeding
-        # any whitespace (except newlines), otherwise allow for newlines
-        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
-        comma_offset = after_last_item.source =~ comma_regex &&
-                       after_last_item.source.index(',')
+        comma_offset = comma_offset(items, after_last_item)
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
         elsif should_have_comma?(style, node)
           put_comma(node, items, kind)
         end
+      end
+
+      def comma_offset(items, range)
+        # If there is any heredoc in items, then match the comma succeeding
+        # any whitespace (except newlines), otherwise allow for newlines
+        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
+        range.source =~ comma_regex && range.source.index(',')
       end
 
       def check_comma(node, kind, comma_pos)
