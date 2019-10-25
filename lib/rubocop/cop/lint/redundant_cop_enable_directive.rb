@@ -94,16 +94,14 @@ module RuboCop
 
         def range_to_remove(begin_pos, end_pos, comma_pos, comment)
           start = comment_start(comment)
-          buffer = processed_source.buffer
-          range_class = Parser::Source::Range
 
           case comma_pos
           when :before
-            range_class.new(buffer, start + begin_pos - 1, start + end_pos)
+            range_between(start + begin_pos - 1, start + end_pos)
           when :after
-            range_class.new(buffer, start + begin_pos, start + end_pos + 1)
+            range_between(start + begin_pos, start + end_pos + 1)
           else
-            range_class.new(buffer, start, comment.loc.expression.end_pos)
+            range_between(start, comment.loc.expression.end_pos)
           end
         end
 
