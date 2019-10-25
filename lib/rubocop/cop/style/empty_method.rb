@@ -73,11 +73,11 @@ module RuboCop
         end
 
         def corrected(node)
-          has_parentheses = parentheses?(node.arguments)
-
-          arguments   = node.arguments? ? node.arguments.source : ''
-          extra_space = node.arguments? && !has_parentheses ? ' ' : ''
-          scope       = node.receiver ? "#{node.receiver.source}." : ''
+          if node.arguments?
+            arguments   = node.arguments.source
+            extra_space = ' ' unless parentheses?(node.arguments)
+          end
+          scope = node.receiver ? "#{node.receiver.source}." : ''
 
           signature = [scope, node.method_name, extra_space, arguments].join
 
