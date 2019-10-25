@@ -49,10 +49,10 @@ module RuboCop
             next unless annotation?(comment) &&
                         !correct_annotation?(first_word, colon, space, note)
 
-            length = concat_length(first_word, colon, space)
             add_offense(
               comment,
-              location: annotation_range(comment, margin, length),
+              location: annotation_range(comment, margin,
+                                         first_word, colon, space),
               message: format(note ? MSG : MISSING_NOTE, keyword: first_word)
             )
           end
@@ -62,8 +62,7 @@ module RuboCop
           margin, first_word, colon, space, note = split_comment(comment)
           return if note.nil?
 
-          length = concat_length(first_word, colon, space)
-          range = annotation_range(comment, margin, length)
+          range = annotation_range(comment, margin, first_word, colon, space)
 
           ->(corrector) { corrector.replace(range, "#{first_word.upcase}: ") }
         end
@@ -79,8 +78,9 @@ module RuboCop
           !comment_line?(comment.loc.expression.source_line)
         end
 
-        def annotation_range(comment, margin, length)
+        def annotation_range(comment, margin, first_word, colon, space)
           start = comment.loc.expression.begin_pos + margin.length
+          length = concat_length(first_word, colon, space)
           range_between(start, start + length)
         end
 
