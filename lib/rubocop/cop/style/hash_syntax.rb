@@ -168,10 +168,10 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key
+          key = pair_node.key.source_range
           op = pair_node.loc.operator
 
-          range = range_between(key.source_range.begin_pos, op.end_pos)
+          range = key.join(op)
           range = range_with_surrounding_space(range: range, side: :right)
 
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
