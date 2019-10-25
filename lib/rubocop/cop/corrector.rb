@@ -154,16 +154,17 @@ module RuboCop
 
       # :nodoc:
       def validate_range(range)
-        return if range.source_buffer == @source_buffer
+        buffer = range.source_buffer
+        return if buffer == @source_buffer
 
-        unless range.source_buffer.is_a?(Parser::Source::Buffer)
+        unless buffer.is_a?(Parser::Source::Buffer)
           # actually this should be enforced by parser gem
-          raise 'Corrector expected range source buffer to be a '\
-                "Parser::Source::Buffer, but got #{range.source_buffer.class}"
+          raise 'Corrector expected range source buffer to be a ' \
+                "Parser::Source::Buffer, but got #{buffer.class}"
         end
-        raise "Correction target buffer #{range.source_buffer.object_id} "\
-              "name:#{range.source_buffer.name.inspect}"\
-              " is not current #{@source_buffer.object_id} "\
+        raise "Correction target buffer #{buffer.object_id} " \
+              "name:#{buffer.name.inspect}" \
+              " is not current #{@source_buffer.object_id} " \
               "name:#{@source_buffer.name.inspect} under investigation"
       end
     end
