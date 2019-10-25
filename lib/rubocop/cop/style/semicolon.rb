@@ -47,8 +47,8 @@ module RuboCop
           return if exprs.size < 2
 
           # create a map matching lines to the number of expressions on them
-          exprs_lines = exprs.map { |e| e.source_range.line }
-          lines = exprs_lines.group_by { |i| i }
+          exprs_lines = exprs.map(&:first_line)
+          lines = exprs_lines.group_by(&:itself)
 
           lines.each do |line, expr_on_line|
             # Every line with more than one expression on it is a
