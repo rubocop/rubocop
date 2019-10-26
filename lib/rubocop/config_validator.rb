@@ -10,8 +10,9 @@ module RuboCop
 
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
-    INTERNAL_PARAMS = %w[Description StyleGuide VersionAdded
-                         VersionChanged Reference Safe SafeAutoCorrect].freeze
+    INTERNAL_PARAMS = %w[Description StyleGuide
+                         VersionAdded VersionChanged VersionRemoved
+                         Reference Safe SafeAutoCorrect].freeze
 
     # 2.3 is the oldest officially supported Ruby version.
     DEFAULT_RUBY_VERSION = 2.3
