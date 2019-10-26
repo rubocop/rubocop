@@ -4410,12 +4410,13 @@ Enabled | Yes | Yes  | 0.20 | 0.22
 
 This cop checks for non-nil checks, which are usually redundant.
 
-Non-nil checks are allowed if they are the final nodes of predicate.
+With `IncludeSemanticChanges` set to `false` by default, this cop
+does not report offenses for `!x.nil?` and does no changes that might
+change behavior.
 
-  # good
-  def signed_in?
-    !current_user.nil?
-  end
+With `IncludeSemanticChanges` set to `true`, this cop reports offenses
+for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
+is **usually** OK, but might change behavior.
 
 ### Examples
 
@@ -4424,13 +4425,28 @@ Non-nil checks are allowed if they are the final nodes of predicate.
 if x != nil
 end
 
-# good (when not allowing semantic changes)
-# bad (when allowing semantic changes)
-if !x.nil?
+# good
+if x
 end
 
-# good (when allowing semantic changes)
-if x
+# Non-nil checks are allowed if they are the final nodes of predicate.
+# good
+def signed_in?
+  !current_user.nil?
+end
+```
+#### IncludeSemanticChanges: false (default)
+
+```ruby
+# good
+if !x.nil?
+end
+```
+#### IncludeSemanticChanges: true
+
+```ruby
+# bad
+if !x.nil?
 end
 ```
 
