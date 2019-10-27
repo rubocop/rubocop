@@ -31,6 +31,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/AlignArguments' => { 'Enabled': true },
           'Layout/AlignArray' => { 'Enabled': true },
           'Layout/AlignHash' => { 'Enabled': true },
+          'Layout/AlignParameters' => { 'Enabled': true },
           'Layout/FirstParameterIndentation' => { 'Enabled': true },
           'Layout/IndentArray' => { 'Enabled': true },
           'Layout/IndentHash' => { 'Enabled': true },
@@ -98,6 +99,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Layout/AlignArray` cop has been renamed to `Layout/ArrayAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/AlignHash` cop has been renamed to `Layout/HashAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/AlignParameters` cop has been renamed to `Layout/ParameterAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
