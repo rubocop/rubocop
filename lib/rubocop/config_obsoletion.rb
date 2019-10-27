@@ -20,6 +20,7 @@ module RuboCop
       'Layout/AlignArguments' => 'Layout/ArgumentAlignment',
       'Layout/AlignArray' => 'Layout/ArrayAlignment',
       'Layout/AlignHash' => 'Layout/HashAlignment',
+      'Layout/AlignParameters' => 'Layout/ParameterAlignment',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'

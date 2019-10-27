@@ -68,7 +68,7 @@ module RuboCop
       #        baz)
       #     123
       #   end
-      class AlignParameters < Cop
+      class ParameterAlignment < Cop
         include Alignment
 
         ALIGN_PARAMS_MSG = 'Align the parameters of a method definition if ' \

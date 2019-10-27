@@ -218,35 +218,6 @@ Layout/AccessModifierIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/AlignParameters:
-  Description: >-
-                 Align the parameters of a method definition if they span more
-                 than one line.
-  StyleGuide: '#no-double-indent'
-  Enabled: true
-  VersionAdded: '0.49'
-  VersionChanged: '0.68'
-  # Alignment of parameters in multi-line method calls.
-  #
-  # The `with_first_parameter` style aligns the following lines along the same
-  # column as the first parameter.
-  #
-  #     def method_foo(a,
-  #                    b)
-  #
-  # The `with_fixed_indentation` style aligns the following lines with one
-  # level of indentation relative to the start of the line with the method call.
-  #
-  #     def method_foo(a,
-  #       b)
-  EnforcedStyle: with_first_parameter
-  SupportedStyles:
-    - with_first_parameter
-    - with_fixed_indentation
-  # By default, the indentation width from Layout/IndentationWidth is used
-  # But it can be overridden by setting this parameter
-  IndentationWidth: ~
-
 Layout/ArgumentAlignment:
   Description: >-
                  Align the arguments of a method call if they span more
@@ -957,6 +928,35 @@ Layout/MultilineOperationIndentation:
     - aligned
     - indented
   # By default, the indentation width from `Layout/IndentationWidth` is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
+Layout/ParameterAlignment:
+  Description: >-
+                 Align the parameters of a method definition if they span more
+                 than one line.
+  StyleGuide: '#no-double-indent'
+  Enabled: true
+  VersionAdded: '0.49'
+  VersionChanged: '0.68'
+  # Alignment of parameters in multi-line method calls.
+  #
+  # The `with_first_parameter` style aligns the following lines along the same
+  # column as the first parameter.
+  #
+  #     def method_foo(a,
+  #                    b)
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the method call.
+  #
+  #     def method_foo(a,
+  #       b)
+  EnforcedStyle: with_first_parameter
+  SupportedStyles:
+    - with_first_parameter
+    - with_fixed_indentation
+  # By default, the indentation width from Layout/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 

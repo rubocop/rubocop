@@ -54,96 +54,6 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#indent-public-private-protected](https://rubystyle.guide#indent-public-private-protected)
 
-## Layout/AlignParameters
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
-
-Here we check if the parameters on a multi-line method call or
-definition are aligned.
-
-To set the alignment of the first argument, use the cop
-FirstParameterIndentation.
-
-### Examples
-
-#### EnforcedStyle: with_first_parameter (default)
-
-```ruby
-# good
-
-def foo(bar,
-        baz)
-  123
-end
-
-def foo(
-  bar,
-  baz
-)
-  123
-end
-
-# bad
-
-def foo(bar,
-     baz)
-  123
-end
-
-# bad
-
-def foo(
-  bar,
-     baz)
-  123
-end
-```
-#### EnforcedStyle: with_fixed_indentation
-
-```ruby
-# good
-
-def foo(bar,
-  baz)
-  123
-end
-
-def foo(
-  bar,
-  baz
-)
-  123
-end
-
-# bad
-
-def foo(bar,
-        baz)
-  123
-end
-
-# bad
-
-def foo(
-  bar,
-     baz)
-  123
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `with_first_parameter` | `with_first_parameter`, `with_fixed_indentation`
-IndentationWidth | `<none>` | Integer
-
-### References
-
-* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
-
 ## Layout/ArgumentAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -3693,6 +3603,96 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `aligned` | `aligned`, `indented`
 IndentationWidth | `<none>` | Integer
+
+## Layout/ParameterAlignment
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.68
+
+Here we check if the parameters on a multi-line method call or
+definition are aligned.
+
+To set the alignment of the first argument, use the cop
+FirstParameterIndentation.
+
+### Examples
+
+#### EnforcedStyle: with_first_parameter (default)
+
+```ruby
+# good
+
+def foo(bar,
+        baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
+
+# bad
+
+def foo(bar,
+     baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
+```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+def foo(bar,
+  baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
+
+# bad
+
+def foo(bar,
+        baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_parameter` | `with_first_parameter`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
+
+### References
+
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
 ## Layout/RescueEnsureAlignment
 
