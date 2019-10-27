@@ -218,14 +218,6 @@ Layout/AccessModifierIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/AlignArray:
-  Description: >-
-                 Align the elements of an array literal if they span more than
-                 one line.
-  StyleGuide: '#align-multiline-arrays'
-  Enabled: true
-  VersionAdded: '0.49'
-
 Layout/AlignHash:
   Description: >-
                  Align the elements of a hash literal if they span more than
@@ -359,6 +351,14 @@ Layout/ArgumentAlignment:
   # By default, the indentation width from Layout/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
+
+Layout/ArrayAlignment:
+  Description: >-
+                 Align the elements of an array literal if they span more than
+                 one line.
+  StyleGuide: '#align-multiline-arrays'
+  Enabled: true
+  VersionAdded: '0.49'
 
 Layout/BlockAlignment:
   Description: 'Align block ends correctly.'

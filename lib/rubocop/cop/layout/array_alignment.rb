@@ -20,7 +20,7 @@ module RuboCop
       #   a = ['run',
       #        'forrest',
       #        'run']
-      class AlignArray < Cop
+      class ArrayAlignment < Cop
         include Alignment
 
         MSG = 'Align the elements of an array literal if they span more ' \

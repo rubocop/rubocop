@@ -129,9 +129,9 @@ method calls with argument lists.
 If autocorrection is enabled, the following Layout cops
 are recommended to further format the broken lines.
 
-  - AlignArray
   - AlignHash
   - AlignParameters
+  - ArrayAlignment
   - ClosingParenthesisIndentation
   - IndentFirstArgument
   - IndentFirstArrayElement
