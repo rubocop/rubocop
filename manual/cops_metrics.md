@@ -129,10 +129,10 @@ method calls with argument lists.
 If autocorrection is enabled, the following Layout cops
 are recommended to further format the broken lines.
 
-  - AlignHash
   - AlignParameters
   - ArrayAlignment
   - ClosingParenthesisIndentation
+  - HashAlignment
   - IndentFirstArgument
   - IndentFirstArrayElement
   - IndentFirstHashElement

@@ -11,7 +11,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
-      Layout/AlignHash:
+      Layout/HashAlignment:
         EnforcedColonStyle: table
       Style/FrozenStringLiteralComment:
         Enabled: false
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       Style/HashSyntax:
         EnforcedStyle: hash_rockets
 
-      Layout/AlignHash:
+      Layout/HashAlignment:
         EnforcedHashRocketStyle: table
     YAML
     source = <<~RUBY
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(1)
 
     # 1=>2 is changed to 1 => 2. The rest is unchanged.
-    # SpaceAroundOperators leaves it to AlignHash when the style is table.
+    # SpaceAroundOperators leaves it to HashAlignment when the style is table.
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
@@ -1012,7 +1012,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   it 'corrects complicated cases conservatively' do
     # Two cops make corrections here; Style/BracesAroundHashParameters, and
-    # Style/AlignHash. Because they make minimal corrections relating only
+    # Layout/HashAlignment. Because they make minimal corrections relating only
     # to their specific areas, and stay away from cleaning up extra
     # whitespace in the process, the combined changes don't interfere with
     # each other and the result is semantically the same as the starting
@@ -1507,7 +1507,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       }
     RUBY
     create_file('.rubocop.yml', <<~YAML)
-      Layout/AlignHash:
+      Layout/HashAlignment:
         EnforcedColonStyle: separator
     YAML
     expect(cli.run(%w[--auto-correct])).to eq(0)

@@ -86,7 +86,6 @@ In the following section you find all available cops:
 #### Department [Layout](cops_layout.md)
 
 * [Layout/AccessModifierIndentation](cops_layout.md#layoutaccessmodifierindentation)
-* [Layout/AlignHash](cops_layout.md#layoutalignhash)
 * [Layout/AlignParameters](cops_layout.md#layoutalignparameters)
 * [Layout/ArgumentAlignment](cops_layout.md#layoutargumentalignment)
 * [Layout/ArrayAlignment](cops_layout.md#layoutarrayalignment)
@@ -121,6 +120,7 @@ In the following section you find all available cops:
 * [Layout/FirstHashElementLineBreak](cops_layout.md#layoutfirsthashelementlinebreak)
 * [Layout/FirstMethodArgumentLineBreak](cops_layout.md#layoutfirstmethodargumentlinebreak)
 * [Layout/FirstMethodParameterLineBreak](cops_layout.md#layoutfirstmethodparameterlinebreak)
+* [Layout/HashAlignment](cops_layout.md#layouthashalignment)
 * [Layout/HeredocArgumentClosingParenthesis](cops_layout.md#layoutheredocargumentclosingparenthesis)
 * [Layout/IndentAssignment](cops_layout.md#layoutindentassignment)
 * [Layout/IndentFirstArgument](cops_layout.md#layoutindentfirstargument)

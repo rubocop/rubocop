@@ -872,7 +872,7 @@ RSpec.describe RuboCop::ConfigLoader do
           end
 
           it 'disables cops in other departments' do
-            cop_class = RuboCop::Cop::Layout::AlignHash
+            cop_class = RuboCop::Cop::Layout::HashAlignment
             expect(cop_enabled?(cop_class)).to be false
           end
 

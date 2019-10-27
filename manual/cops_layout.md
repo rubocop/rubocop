@@ -54,215 +54,6 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#indent-public-private-protected](https://rubystyle.guide#indent-public-private-protected)
 
-## Layout/AlignHash
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
-
-Check that the keys, separators, and values of a multi-line hash
-literal are aligned according to configuration. The configuration
-options are:
-
-  - key (left align keys, one space before hash rockets and values)
-  - separator (align hash rockets and colons, right align keys)
-  - table (left align keys, hash rockets, and values)
-
-The treatment of hashes passed as the last argument to a method call
-can also be configured. The options are:
-
-  - always_inspect
-  - always_ignore
-  - ignore_implicit (without curly braces)
-
-Alternatively you can specify multiple allowed styles. That's done by
-passing a list of styles to EnforcedStyles.
-
-### Examples
-
-#### EnforcedHashRocketStyle: key (default)
-
-```ruby
-# bad
-{
-  :foo => bar,
-   :ba => baz
-}
-{
-  :foo => bar,
-  :ba  => baz
-}
-
-# good
-{
-  :foo => bar,
-  :ba => baz
-}
-```
-#### EnforcedHashRocketStyle: separator
-
-```ruby
-# bad
-{
-  :foo => bar,
-  :ba => baz
-}
-{
-  :foo => bar,
-  :ba  => baz
-}
-
-# good
-{
-  :foo => bar,
-   :ba => baz
-}
-```
-#### EnforcedHashRocketStyle: table
-
-```ruby
-# bad
-{
-  :foo => bar,
-   :ba => baz
-}
-
-# good
-{
-  :foo => bar,
-  :ba  => baz
-}
-```
-#### EnforcedColonStyle: key (default)
-
-```ruby
-# bad
-{
-  foo: bar,
-   ba: baz
-}
-{
-  foo: bar,
-  ba:  baz
-}
-
-# good
-{
-  foo: bar,
-  ba: baz
-}
-```
-#### EnforcedColonStyle: separator
-
-```ruby
-# bad
-{
-  foo: bar,
-  ba: baz
-}
-
-# good
-{
-  foo: bar,
-   ba: baz
-}
-```
-#### EnforcedColonStyle: table
-
-```ruby
-# bad
-{
-  foo: bar,
-  ba: baz
-}
-
-# good
-{
-  foo: bar,
-  ba:  baz
-}
-```
-#### EnforcedLastArgumentHashStyle: always_inspect (default)
-
-```ruby
-# Inspect both implicit and explicit hashes.
-
-# bad
-do_something(foo: 1,
-  bar: 2)
-
-# bad
-do_something({foo: 1,
-  bar: 2})
-
-# good
-do_something(foo: 1,
-             bar: 2)
-
-# good
-do_something(
-  foo: 1,
-  bar: 2
-)
-
-# good
-do_something({foo: 1,
-              bar: 2})
-
-# good
-do_something({
-  foo: 1,
-  bar: 2
-})
-```
-#### EnforcedLastArgumentHashStyle: always_ignore
-
-```ruby
-# Ignore both implicit and explicit hashes.
-
-# good
-do_something(foo: 1,
-  bar: 2)
-
-# good
-do_something({foo: 1,
-  bar: 2})
-```
-#### EnforcedLastArgumentHashStyle: ignore_implicit
-
-```ruby
-# Ignore only implicit hashes.
-
-# bad
-do_something({foo: 1,
-  bar: 2})
-
-# good
-do_something(foo: 1,
-  bar: 2)
-```
-#### EnforcedLastArgumentHashStyle: ignore_explicit
-
-```ruby
-# Ignore only explicit hashes.
-
-# bad
-do_something(foo: 1,
-  bar: 2)
-
-# good
-do_something({foo: 1,
-  bar: 2})
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`
-EnforcedColonStyle | `key` | `key`, `separator`, `table`
-EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
-
 ## Layout/AlignParameters
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2064,6 +1855,215 @@ def method foo,
 end
 ```
 
+## Layout/HashAlignment
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | -
+
+Check that the keys, separators, and values of a multi-line hash
+literal are aligned according to configuration. The configuration
+options are:
+
+  - key (left align keys, one space before hash rockets and values)
+  - separator (align hash rockets and colons, right align keys)
+  - table (left align keys, hash rockets, and values)
+
+The treatment of hashes passed as the last argument to a method call
+can also be configured. The options are:
+
+  - always_inspect
+  - always_ignore
+  - ignore_implicit (without curly braces)
+
+Alternatively you can specify multiple allowed styles. That's done by
+passing a list of styles to EnforcedStyles.
+
+### Examples
+
+#### EnforcedHashRocketStyle: key (default)
+
+```ruby
+# bad
+{
+  :foo => bar,
+   :ba => baz
+}
+{
+  :foo => bar,
+  :ba  => baz
+}
+
+# good
+{
+  :foo => bar,
+  :ba => baz
+}
+```
+#### EnforcedHashRocketStyle: separator
+
+```ruby
+# bad
+{
+  :foo => bar,
+  :ba => baz
+}
+{
+  :foo => bar,
+  :ba  => baz
+}
+
+# good
+{
+  :foo => bar,
+   :ba => baz
+}
+```
+#### EnforcedHashRocketStyle: table
+
+```ruby
+# bad
+{
+  :foo => bar,
+   :ba => baz
+}
+
+# good
+{
+  :foo => bar,
+  :ba  => baz
+}
+```
+#### EnforcedColonStyle: key (default)
+
+```ruby
+# bad
+{
+  foo: bar,
+   ba: baz
+}
+{
+  foo: bar,
+  ba:  baz
+}
+
+# good
+{
+  foo: bar,
+  ba: baz
+}
+```
+#### EnforcedColonStyle: separator
+
+```ruby
+# bad
+{
+  foo: bar,
+  ba: baz
+}
+
+# good
+{
+  foo: bar,
+   ba: baz
+}
+```
+#### EnforcedColonStyle: table
+
+```ruby
+# bad
+{
+  foo: bar,
+  ba: baz
+}
+
+# good
+{
+  foo: bar,
+  ba:  baz
+}
+```
+#### EnforcedLastArgumentHashStyle: always_inspect (default)
+
+```ruby
+# Inspect both implicit and explicit hashes.
+
+# bad
+do_something(foo: 1,
+  bar: 2)
+
+# bad
+do_something({foo: 1,
+  bar: 2})
+
+# good
+do_something(foo: 1,
+             bar: 2)
+
+# good
+do_something(
+  foo: 1,
+  bar: 2
+)
+
+# good
+do_something({foo: 1,
+              bar: 2})
+
+# good
+do_something({
+  foo: 1,
+  bar: 2
+})
+```
+#### EnforcedLastArgumentHashStyle: always_ignore
+
+```ruby
+# Ignore both implicit and explicit hashes.
+
+# good
+do_something(foo: 1,
+  bar: 2)
+
+# good
+do_something({foo: 1,
+  bar: 2})
+```
+#### EnforcedLastArgumentHashStyle: ignore_implicit
+
+```ruby
+# Ignore only implicit hashes.
+
+# bad
+do_something({foo: 1,
+  bar: 2})
+
+# good
+do_something(foo: 1,
+  bar: 2)
+```
+#### EnforcedLastArgumentHashStyle: ignore_explicit
+
+```ruby
+# Ignore only explicit hashes.
+
+# bad
+do_something(foo: 1,
+  bar: 2)
+
+# good
+do_something({foo: 1,
+  bar: 2})
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`
+EnforcedColonStyle | `key` | `key`, `separator`, `table`
+EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
+
 ## Layout/HeredocArgumentClosingParenthesis
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2426,7 +2426,7 @@ Enabled | Yes | Yes  | 0.68 | -
 
 This cop checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
-other keys' indentations are handled by the AlignHash cop.
+other keys' indentations are handled by the HashAlignment cop.
 
 By default, Hash literals that are arguments in a method call with
 parentheses, and where the opening curly brace of the hash is on the

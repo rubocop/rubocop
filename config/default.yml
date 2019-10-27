@@ -218,83 +218,6 @@ Layout/AccessModifierIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/AlignHash:
-  Description: >-
-                 Align the elements of a hash literal if they span more than
-                 one line.
-  Enabled: true
-  AllowMultipleStyles: true
-  VersionAdded: '0.49'
-  # Alignment of entries using hash rocket as separator. Valid values are:
-  #
-  # key - left alignment of keys
-  #   'a' => 2
-  #   'bb' => 3
-  # separator - alignment of hash rockets, keys are right aligned
-  #    'a' => 2
-  #   'bb' => 3
-  # table - left alignment of keys, hash rockets, and values
-  #   'a'  => 2
-  #   'bb' => 3
-  EnforcedHashRocketStyle: key
-  SupportedHashRocketStyles:
-    - key
-    - separator
-    - table
-  # Alignment of entries using colon as separator. Valid values are:
-  #
-  # key - left alignment of keys
-  #   a: 0
-  #   bb: 1
-  # separator - alignment of colons, keys are right aligned
-  #    a: 0
-  #   bb: 1
-  # table - left alignment of keys and values
-  #   a:  0
-  #   bb: 1
-  EnforcedColonStyle: key
-  SupportedColonStyles:
-    - key
-    - separator
-    - table
-  # Select whether hashes that are the last argument in a method call should be
-  # inspected? Valid values are:
-  #
-  # always_inspect - Inspect both implicit and explicit hashes.
-  #   Registers an offense for:
-  #     function(a: 1,
-  #       b: 2)
-  #   Registers an offense for:
-  #     function({a: 1,
-  #       b: 2})
-  # always_ignore - Ignore both implicit and explicit hashes.
-  #   Accepts:
-  #     function(a: 1,
-  #       b: 2)
-  #   Accepts:
-  #     function({a: 1,
-  #       b: 2})
-  # ignore_implicit - Ignore only implicit hashes.
-  #   Accepts:
-  #     function(a: 1,
-  #       b: 2)
-  #   Registers an offense for:
-  #     function({a: 1,
-  #       b: 2})
-  # ignore_explicit - Ignore only explicit hashes.
-  #   Accepts:
-  #     function({a: 1,
-  #       b: 2})
-  #   Registers an offense for:
-  #     function(a: 1,
-  #       b: 2)
-  EnforcedLastArgumentHashStyle: always_inspect
-  SupportedLastArgumentHashStyles:
-    - always_inspect
-    - always_ignore
-    - ignore_implicit
-    - ignore_explicit
-
 Layout/AlignParameters:
   Description: >-
                  Align the parameters of a method definition if they span more
@@ -651,6 +574,83 @@ Layout/FirstMethodParameterLineBreak:
                  multi-line method parameter definition.
   Enabled: false
   VersionAdded: '0.49'
+
+Layout/HashAlignment:
+  Description: >-
+    Align the elements of a hash literal if they span more than
+    one line.
+  Enabled: true
+  AllowMultipleStyles: true
+  VersionAdded: '0.49'
+  # Alignment of entries using hash rocket as separator. Valid values are:
+  #
+  # key - left alignment of keys
+  #   'a' => 2
+  #   'bb' => 3
+  # separator - alignment of hash rockets, keys are right aligned
+  #    'a' => 2
+  #   'bb' => 3
+  # table - left alignment of keys, hash rockets, and values
+  #   'a'  => 2
+  #   'bb' => 3
+  EnforcedHashRocketStyle: key
+  SupportedHashRocketStyles:
+    - key
+    - separator
+    - table
+  # Alignment of entries using colon as separator. Valid values are:
+  #
+  # key - left alignment of keys
+  #   a: 0
+  #   bb: 1
+  # separator - alignment of colons, keys are right aligned
+  #    a: 0
+  #   bb: 1
+  # table - left alignment of keys and values
+  #   a:  0
+  #   bb: 1
+  EnforcedColonStyle: key
+  SupportedColonStyles:
+    - key
+    - separator
+    - table
+  # Select whether hashes that are the last argument in a method call should be
+  # inspected? Valid values are:
+  #
+  # always_inspect - Inspect both implicit and explicit hashes.
+  #   Registers an offense for:
+  #     function(a: 1,
+  #       b: 2)
+  #   Registers an offense for:
+  #     function({a: 1,
+  #       b: 2})
+  # always_ignore - Ignore both implicit and explicit hashes.
+  #   Accepts:
+  #     function(a: 1,
+  #       b: 2)
+  #   Accepts:
+  #     function({a: 1,
+  #       b: 2})
+  # ignore_implicit - Ignore only implicit hashes.
+  #   Accepts:
+  #     function(a: 1,
+  #       b: 2)
+  #   Registers an offense for:
+  #     function({a: 1,
+  #       b: 2})
+  # ignore_explicit - Ignore only explicit hashes.
+  #   Accepts:
+  #     function({a: 1,
+  #       b: 2})
+  #   Registers an offense for:
+  #     function(a: 1,
+  #       b: 2)
+  EnforcedLastArgumentHashStyle: always_inspect
+  SupportedLastArgumentHashStyles:
+    - always_inspect
+    - always_ignore
+    - ignore_implicit
+    - ignore_explicit
 
 Layout/HeredocArgumentClosingParenthesis:
   Description: >-

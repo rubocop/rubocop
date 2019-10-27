@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
       'SupportedStyles' => %w[special_inside_parentheses consistent
                               align_braces]
     }
-    RuboCop::Config.new('Layout/AlignHash' => align_hash_config,
+    RuboCop::Config.new('Layout/HashAlignment' => align_hash_config,
                         'Layout/IndentFirstHashElement' =>
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     end
   end
 
-  context 'when the AlignHash style is separator for :' do
+  context 'when the HashAlignment style is separator for :' do
     let(:align_hash_config) do
       {
         'Enabled' => true,
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstHashElement do
     include_examples 'right brace'
   end
 
-  context 'when the AlignHash style is separator for =>' do
+  context 'when the HashAlignment style is separator for =>' do
     let(:align_hash_config) do
       {
         'Enabled' => true,

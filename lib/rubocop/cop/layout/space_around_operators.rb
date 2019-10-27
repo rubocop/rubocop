@@ -169,7 +169,7 @@ module RuboCop
         end
 
         def align_hash_cop_config
-          config.for_cop('Layout/AlignHash')
+          config.for_cop('Layout/HashAlignment')
         end
 
         def hash_table_style?
