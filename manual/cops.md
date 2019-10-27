@@ -86,10 +86,10 @@ In the following section you find all available cops:
 #### Department [Layout](cops_layout.md)
 
 * [Layout/AccessModifierIndentation](cops_layout.md#layoutaccessmodifierindentation)
-* [Layout/AlignArguments](cops_layout.md#layoutalignarguments)
 * [Layout/AlignArray](cops_layout.md#layoutalignarray)
 * [Layout/AlignHash](cops_layout.md#layoutalignhash)
 * [Layout/AlignParameters](cops_layout.md#layoutalignparameters)
+* [Layout/ArgumentAlignment](cops_layout.md#layoutargumentalignment)
 * [Layout/BlockAlignment](cops_layout.md#layoutblockalignment)
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)

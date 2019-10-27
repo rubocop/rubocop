@@ -37,7 +37,7 @@ module RuboCop
       #
       #   foo :bar,
       #       :baz
-      class AlignArguments < Cop
+      class ArgumentAlignment < Cop
         include Alignment
 
         ALIGN_PARAMS_MSG = 'Align the arguments of a method call if ' \

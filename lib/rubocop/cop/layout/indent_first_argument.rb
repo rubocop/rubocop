@@ -5,7 +5,7 @@ module RuboCop
     # rubocop:disable Metrics/LineLength
     module Layout
       # This cop checks the indentation of the first argument in a method call.
-      # Arguments after the first one are checked by Layout/AlignArguments,
+      # Arguments after the first one are checked by Layout/ArgumentAlignment,
       # not by this cop.
       #
       # For indenting the first parameter of method *definitions*, check out
