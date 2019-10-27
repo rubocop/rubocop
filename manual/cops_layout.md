@@ -54,65 +54,6 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#indent-public-private-protected](https://rubystyle.guide#indent-public-private-protected)
 
-## Layout/AlignArguments
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
-
-Here we check if the arguments on a multi-line method
-definition are aligned.
-
-### Examples
-
-#### EnforcedStyle: with_first_argument (default)
-
-```ruby
-# good
-
-foo :bar,
-    :baz
-
-foo(
-  :bar,
-  :baz
-)
-
-# bad
-
-foo :bar,
-  :baz
-
-foo(
-  :bar,
-    :baz
-)
-```
-#### EnforcedStyle: with_fixed_indentation
-
-```ruby
-# good
-
-foo :bar,
-  :baz
-
-# bad
-
-foo :bar,
-    :baz
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `with_first_argument` | `with_first_argument`, `with_fixed_indentation`
-IndentationWidth | `<none>` | Integer
-
-### References
-
-* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
-
 ## Layout/AlignArray
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -437,6 +378,65 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `with_first_parameter` | `with_first_parameter`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
+
+### References
+
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
+
+## Layout/ArgumentAlignment
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | -
+
+Here we check if the arguments on a multi-line method
+definition are aligned.
+
+### Examples
+
+#### EnforcedStyle: with_first_argument (default)
+
+```ruby
+# good
+
+foo :bar,
+    :baz
+
+foo(
+  :bar,
+  :baz
+)
+
+# bad
+
+foo :bar,
+  :baz
+
+foo(
+  :bar,
+    :baz
+)
+```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+foo :bar,
+  :baz
+
+# bad
+
+foo :bar,
+    :baz
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_argument` | `with_first_argument`, `with_fixed_indentation`
 IndentationWidth | `<none>` | Integer
 
 ### References

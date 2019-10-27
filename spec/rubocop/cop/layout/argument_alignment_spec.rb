@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::AlignArguments do
+RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Layout/AlignArguments' => cop_config,
+    RuboCop::Config.new('Layout/ArgumentAlignment' => cop_config,
                         'Layout/IndentationWidth' => {
                           'Width' => indentation_width
                         })
@@ -495,9 +495,9 @@ RSpec.describe RuboCop::Cop::Layout::AlignArguments do
         end
       end
 
-      context 'with AlignArguments:IndentationWidth set to 4' do
+      context 'with ArgumentAlignment:IndentationWidth set to 4' do
         let(:config) do
-          RuboCop::Config.new('Layout/AlignArguments' =>
+          RuboCop::Config.new('Layout/ArgumentAlignment' =>
                               cop_config.merge('IndentationWidth' => 4))
         end
 

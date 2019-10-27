@@ -1311,7 +1311,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            'Method should be overridden in child classes'
     RUBY
     expect(cli.run(['--auto-correct', '--only',
-                    'SignalException,AlignArguments'])).to eq(0)
+                    'SignalException,ArgumentAlignment'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
         raise NotImplementedError,
@@ -1326,7 +1326,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       example.rb:1:1: C: [Corrected] Style/SignalException: Always use raise to signal exceptions.
       fail NotImplementedError,
       ^^^^
-      example.rb:2:6: C: [Corrected] Layout/AlignArguments: Align the arguments of a method call if they span more than one line.
+      example.rb:2:6: C: [Corrected] Layout/ArgumentAlignment: Align the arguments of a method call if they span more than one line.
            'Method should be overridden in child classes'
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -28,6 +28,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Style/UnneededInterpolation' => { 'Enabled': true },
           'Style/UnneededPercentQ' => { 'Enabled': true },
           'Style/UnneededSort' => { 'Enabled': true },
+          'Layout/AlignArguments' => { 'Enabled': true },
           'Layout/FirstParameterIndentation' => { 'Enabled': true },
           'Layout/IndentArray' => { 'Enabled': true },
           'Layout/IndentHash' => { 'Enabled': true },
@@ -89,6 +90,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/UnneededPercentQ` cop has been renamed to `Style/RedundantPercentQ`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededSort` cop has been renamed to `Style/RedundantSort`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/AlignArguments` cop has been renamed to `Layout/ArgumentAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
