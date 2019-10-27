@@ -9,6 +9,7 @@
 * [#7449](https://github.com/rubocop-hq/rubocop/pull/7449): Make `Style/IfUnlessModifier` respect `rubocop:disable` comments for `Metrics/LineLength`. ([@jonas054][])
 * [#7442](https://github.com/rubocop-hq/rubocop/issues/7442): Fix an incorrect autocorrect for `Style/SafeNavigation` when an object check followed by a method call with a comment at EOL. ([@koic][])
 * [#7434](https://github.com/rubocop-hq/rubocop/issues/7434): Fix an incorrect autocorrect for `Style/MultilineWhenThen` when the body of `when` branch starts with `then`. ([@koic][])
+* [#7464](https://github.com/rubocop-hq/rubocop/pull/7464): Let `Performance/StartWith` and `Performance/EndWith` correct regexes that contain forward slashes. ([@eugeneius][])
 
 ### Changes
 
