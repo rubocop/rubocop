@@ -9,7 +9,8 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
             return x, y, z
           end
         RUBY
-        expect(described_class.calculate(node)).to be_within(0.001).of(3)
+        expect(described_class.calculate(node).first)
+          .to be_within(0.001).of(3)
       end
     end
 
@@ -21,7 +22,8 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
             e = f ? g : h
           end
         RUBY
-        expect(described_class.calculate(node)).to be_within(0.001).of(6.63)
+        expect(described_class.calculate(node).first)
+          .to be_within(0.001).of(6.63)
       end
     end
 
@@ -42,7 +44,8 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
             end
           end
         RUBY
-        expect(described_class.calculate(node)).to be_within(0.001).of(9.17)
+        expect(described_class.calculate(node).first)
+          .to be_within(0.001).of(9.17)
       end
     end
 
@@ -63,7 +66,8 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
             end
           end
         RUBY
-        expect(described_class.calculate(node)).to be_within(0.001).of(10.49)
+        expect(described_class.calculate(node).first)
+          .to be_within(0.001).of(10.49)
       end
     end
 
@@ -81,7 +85,8 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
           end
         RUBY
 
-        expect(described_class.calculate(node)).to be_within(0.001).of(5.83)
+        expect(described_class.calculate(node).first)
+          .to be_within(0.001).of(5.83)
       end
 
       it 'counts else if as 2 conditions' do
@@ -99,7 +104,8 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
           end
         RUBY
 
-        expect(described_class.calculate(node)).to be_within(0.001).of(6.4)
+        expect(described_class.calculate(node).first)
+          .to be_within(0.001).of(6.4)
       end
     end
   end

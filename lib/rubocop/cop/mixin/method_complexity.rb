@@ -32,13 +32,14 @@ module RuboCop
         return unless node.body
 
         max = cop_config['Max']
-        complexity = complexity(node.body)
+        complexity, abc_vector = complexity(node.body)
 
         return unless complexity > max
 
         msg = format(self.class::MSG,
                      method: method_name,
                      complexity: complexity,
+                     abc_vector: abc_vector,
                      max: max)
 
         add_offense(node, message: msg) do
