@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes multiple valid EnforcedStyle' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignHash:
+          Layout/HashAlignment:
             EnforcedHashRocketStyle:
               - key
               - table
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Config do
             'and one invalid style' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignHash:
+          Layout/HashAlignment:
             EnforcedHashRocketStyle:
               - key
               - trailing_comma
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes multiple invalid EnforcedStyle' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignHash:
+          Layout/HashAlignment:
             EnforcedHashRocketStyle:
               - table
               - itisinvalid

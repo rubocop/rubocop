@@ -19,6 +19,7 @@ module RuboCop
       'Style/UnneededSort' => 'Style/RedundantSort',
       'Layout/AlignArguments' => 'Layout/ArgumentAlignment',
       'Layout/AlignArray' => 'Layout/ArrayAlignment',
+      'Layout/AlignHash' => 'Layout/HashAlignment',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'

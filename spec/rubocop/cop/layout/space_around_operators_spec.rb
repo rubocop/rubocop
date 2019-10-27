@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     RuboCop::Config
       .new(
         'Layout/ExtraSpacing' => { 'ForceEqualSignAlignment' => true },
-        'Layout/AlignHash' => { 'EnforcedHashRocketStyle' => hash_style },
+        'Layout/HashAlignment' => { 'EnforcedHashRocketStyle' => hash_style },
         'Layout/SpaceAroundOperators' => {
           'AllowForAlignment' => allow_for_alignment
         }
@@ -379,7 +379,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     context 'when a hash literal is on a single line' do
-      context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
+      context 'and Layout/HashAlignment:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
@@ -390,7 +390,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         end
       end
 
-      context 'and Layout/AlignHash:EnforcedHashRocketStyle is table' do
+      context 'and Layout/HashAlignment:EnforcedHashRocketStyle is table' do
         let(:hash_style) { 'table' }
 
         it 'registers an offense for a hash rocket without spaces' do
@@ -403,7 +403,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     end
 
     context 'when a hash literal is on multiple lines' do
-      context 'and Layout/AlignHash:EnforcedHashRocketStyle is key' do
+      context 'and Layout/HashAlignment:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }
 
         it 'registers an offense for a hash rocket without spaces' do
@@ -417,7 +417,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         end
       end
 
-      context 'and Layout/AlignHash:EnforcedHashRocketStyle is table' do
+      context 'and Layout/HashAlignment:EnforcedHashRocketStyle is table' do
         let(:hash_style) { 'table' }
 
         it "doesn't register an offense for a hash rocket without spaces" do

@@ -5,7 +5,7 @@ module RuboCop
     module Layout
       # This cop checks the indentation of the first key in a hash literal
       # where the opening brace and the first key are on separate lines. The
-      # other keys' indentations are handled by the AlignHash cop.
+      # other keys' indentations are handled by the HashAlignment cop.
       #
       # By default, Hash literals that are arguments in a method call with
       # parentheses, and where the opening curly brace of the hash is on the
@@ -149,7 +149,7 @@ module RuboCop
         def separator_style?(first_pair)
           separator = first_pair.loc.operator
           key = "Enforced#{separator.is?(':') ? 'Colon' : 'HashRocket'}Style"
-          config.for_cop('Layout/AlignHash')[key] == 'separator'
+          config.for_cop('Layout/HashAlignment')[key] == 'separator'
         end
 
         def check_based_on_longest_key(hash_node, left_brace, left_parenthesis)

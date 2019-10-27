@@ -175,8 +175,8 @@ module RuboCop
       #   do_something({foo: 1,
       #     bar: 2})
       #
-      class AlignHash < Cop
-        include HashAlignment
+      class HashAlignment < Cop
+        include HashAlignmentStyles
         include RangeHelp
 
         MSG = 'Align the elements of a hash literal if they span more than ' \
