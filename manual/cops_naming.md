@@ -663,7 +663,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 MinNameLength | `3` | Integer
 AllowNamesEndingInNumbers | `true` | Boolean
-AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db` | Array
+AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os` | Array
 ForbiddenNames | `[]` | Array
 
 ## Naming/VariableName

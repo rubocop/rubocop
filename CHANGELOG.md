@@ -12,6 +12,7 @@
 
 ### Changes
 
+* [#7465](https://github.com/rubocop-hq/rubocop/pull/7465): Add `os` to allowed names of `Naming/UncommunicativeMethodParamName` cop in default config. ([@nijikon][])
 * [#7446](https://github.com/rubocop-hq/rubocop/issues/7446): Add `merge` to list of non-mutating methods. ([@cstyles][])
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): Rename `Unneeded*` cops to `Redundant*` (e.g., `Style/UnneededPercentQ` becomes `Style/RedundantPercentQ`). ([@scottmatthewman][])
 

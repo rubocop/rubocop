@@ -2075,6 +2075,7 @@ Naming/UncommunicativeMethodParamName:
     - at
     - ip
     - db
+    - os
   # Blacklisted names that will register an offense
   ForbiddenNames: []
 
