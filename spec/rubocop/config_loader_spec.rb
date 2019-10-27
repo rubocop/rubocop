@@ -995,7 +995,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'set neither true nor false to value to Enabled' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignArray:
+          Layout/ArrayAlignment:
             Enabled: disable
         YAML
       end

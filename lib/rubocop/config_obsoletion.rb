@@ -18,6 +18,7 @@ module RuboCop
       'Style/UnneededPercentQ' => 'Style/RedundantPercentQ',
       'Style/UnneededSort' => 'Style/RedundantSort',
       'Layout/AlignArguments' => 'Layout/ArgumentAlignment',
+      'Layout/AlignArray' => 'Layout/ArrayAlignment',
       'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'

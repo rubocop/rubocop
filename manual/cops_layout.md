@@ -54,37 +54,6 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#indent-public-private-protected](https://rubystyle.guide#indent-public-private-protected)
 
-## Layout/AlignArray
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
-
-Here we check if the elements of a multi-line array literal are
-aligned.
-
-### Examples
-
-```ruby
-# bad
-a = [1, 2, 3,
-  4, 5, 6]
-array = ['run',
-     'forrest',
-     'run']
-
-# good
-a = [1, 2, 3,
-     4, 5, 6]
-a = ['run',
-     'forrest',
-     'run']
-```
-
-### References
-
-* [https://rubystyle.guide#align-multiline-arrays](https://rubystyle.guide#align-multiline-arrays)
-
 ## Layout/AlignHash
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -442,6 +411,37 @@ IndentationWidth | `<none>` | Integer
 ### References
 
 * [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
+
+## Layout/ArrayAlignment
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | -
+
+Here we check if the elements of a multi-line array literal are
+aligned.
+
+### Examples
+
+```ruby
+# bad
+a = [1, 2, 3,
+  4, 5, 6]
+array = ['run',
+     'forrest',
+     'run']
+
+# good
+a = [1, 2, 3,
+     4, 5, 6]
+a = ['run',
+     'forrest',
+     'run']
+```
+
+### References
+
+* [https://rubystyle.guide#align-multiline-arrays](https://rubystyle.guide#align-multiline-arrays)
 
 ## Layout/BlockAlignment
 
@@ -2165,7 +2165,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.68 | -
 
 This cop checks the indentation of the first argument in a method call.
-Arguments after the first one are checked by Layout/AlignArguments,
+Arguments after the first one are checked by Layout/ArgumentAlignment,
 not by this cop.
 
 For indenting the first parameter of method *definitions*, check out
@@ -2327,7 +2327,7 @@ Enabled | Yes | Yes  | 0.68 | -
 
 This cop checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
-The other elements' indentations are handled by the AlignArray cop.
+The other elements' indentations are handled by the ArrayAlignment cop.
 
 By default, array literals that are arguments in a method call with
 parentheses, and where the opening square bracket of the array is on the

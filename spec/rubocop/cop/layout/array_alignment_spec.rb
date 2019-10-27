@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::AlignArray do
+RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for misaligned array elements' do
