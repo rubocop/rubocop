@@ -585,6 +585,30 @@ Layout/FirstArrayElementLineBreak:
   Enabled: false
   VersionAdded: '0.49'
 
+Layout/FirstHashElementIndentation:
+  Description: 'Checks the indentation of the first key in a hash literal.'
+  Enabled: true
+  VersionAdded: '0.68'
+  # The value `special_inside_parentheses` means that hash literals with braces
+  # that have their opening brace on the same line as a surrounding opening
+  # round parenthesis, shall have their first key indented relative to the
+  # first position inside the parenthesis.
+  #
+  # The value `consistent` means that the indentation of the first key shall
+  # always be relative to the first position of the line where the opening
+  # brace is.
+  #
+  # The value `align_braces` means that the indentation of the first key shall
+  # always be relative to the position of the opening brace.
+  EnforcedStyle: special_inside_parentheses
+  SupportedStyles:
+    - special_inside_parentheses
+    - consistent
+    - align_braces
+  # By default, the indentation width from `Layout/IndentationWidth` is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
 Layout/FirstHashElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a
@@ -690,30 +714,6 @@ Layout/HeredocArgumentClosingParenthesis:
   Enabled: false
   StyleGuide: '#heredoc-argument-closing-parentheses'
   VersionAdded: '0.68'
-
-Layout/IndentFirstHashElement:
-  Description: 'Checks the indentation of the first key in a hash literal.'
-  Enabled: true
-  VersionAdded: '0.68'
-  # The value `special_inside_parentheses` means that hash literals with braces
-  # that have their opening brace on the same line as a surrounding opening
-  # round parenthesis, shall have their first key indented relative to the
-  # first position inside the parenthesis.
-  #
-  # The value `consistent` means that the indentation of the first key shall
-  # always be relative to the first position of the line where the opening
-  # brace is.
-  #
-  # The value `align_braces` means that the indentation of the first key shall
-  # always be relative to the position of the opening brace.
-  EnforcedStyle: special_inside_parentheses
-  SupportedStyles:
-    - special_inside_parentheses
-    - consistent
-    - align_braces
-  # By default, the indentation width from `Layout/IndentationWidth` is used
-  # But it can be overridden by setting this parameter
-  IndentationWidth: ~
 
 Layout/IndentFirstParameter:
   Description: >-

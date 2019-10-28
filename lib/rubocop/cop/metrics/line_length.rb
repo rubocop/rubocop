@@ -26,8 +26,8 @@ module RuboCop
       #   - ClosingParenthesisIndentation
       #   - FirstArgumentIndentation
       #   - FirstArrayElementIndentation
+      #   - FirstHashElementIndentation
       #   - HashAlignment
-      #   - IndentFirstHashElement
       #   - IndentFirstParameter
       #   - MultilineArrayLineBreaks
       #   - MultilineHashBraceLayout
