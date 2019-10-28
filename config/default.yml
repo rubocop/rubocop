@@ -1436,8 +1436,8 @@ Lint/MissingCopEnableDirective:
   # .inf for any size
   MaximumRangeSize: .inf
 
-Lint/MultipleCompare:
-  Description: "Use `&&` operator to compare multiple value."
+Lint/MultipleComparison:
+  Description: "Use `&&` operator to compare multiple values."
   Enabled: true
   VersionAdded: '0.47'
 

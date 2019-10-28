@@ -209,7 +209,7 @@ In the following section you find all available cops:
 * [Lint/LiteralInInterpolation](cops_lint.md#lintliteralininterpolation)
 * [Lint/Loop](cops_lint.md#lintloop)
 * [Lint/MissingCopEnableDirective](cops_lint.md#lintmissingcopenabledirective)
-* [Lint/MultipleCompare](cops_lint.md#lintmultiplecompare)
+* [Lint/MultipleComparison](cops_lint.md#lintmultiplecomparison)
 * [Lint/NestedMethodDefinition](cops_lint.md#lintnestedmethoddefinition)
 * [Lint/NestedPercentLiteral](cops_lint.md#lintnestedpercentliteral)
 * [Lint/NextWithoutAccumulator](cops_lint.md#lintnextwithoutaccumulator)
