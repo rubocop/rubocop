@@ -133,8 +133,8 @@ are recommended to further format the broken lines.
   - ArrayAlignment
   - ClosingParenthesisIndentation
   - FirstArgumentIndentation
+  - FirstArrayElementIndentation
   - HashAlignment
-  - IndentFirstArrayElement
   - IndentFirstHashElement
   - IndentFirstParameter
   - MultilineArrayLineBreaks

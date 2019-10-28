@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::IndentFirstArrayElement do
+RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentFirstArrayElement do
       'SupportedStyles' => %w[special_inside_parentheses consistent
                               align_brackets]
     }
-    RuboCop::Config.new('Layout/IndentFirstArrayElement' =>
+    RuboCop::Config.new('Layout/FirstArrayElementIndentation' =>
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
                         ),
