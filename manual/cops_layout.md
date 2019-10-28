@@ -2483,7 +2483,7 @@ opening HEREDOC tag.
 
 * [https://rubystyle.guide#heredoc-argument-closing-parentheses](https://rubystyle.guide#heredoc-argument-closing-parentheses)
 
-## Layout/IndentHeredoc
+## Layout/HeredocIndentation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---

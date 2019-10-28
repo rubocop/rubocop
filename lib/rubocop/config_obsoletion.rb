@@ -28,7 +28,8 @@ module RuboCop
       'Layout/IndentFirstArrayElement' => 'Layout/FirstArrayElementIndentation',
       'Layout/IndentFirstHashElement' => 'Layout/FirstHashElementIndentation',
       'Layout/IndentFirstParameter' => 'Layout/FirstParameterIndentation',
-      'Layout/IndentHash' => 'Layout/FirstHashElementIndentation'
+      'Layout/IndentHash' => 'Layout/FirstHashElementIndentation',
+      'Layout/IndentHeredoc' => 'Layout/HeredocIndentation'
     }.map do |old_name, new_name|
       [old_name, "The `#{old_name}` cop has been renamed to `#{new_name}`."]
     end
