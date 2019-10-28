@@ -1881,6 +1881,20 @@ Naming/BinaryOperatorParameterName:
   Enabled: true
   VersionAdded: '0.50'
 
+Naming/BlockParameterName:
+  Description: >-
+                 Checks for block parameter names that contain capital letters,
+                 end in numbers, or do not meet a minimal length.
+  Enabled: true
+  VersionAdded: '0.53'
+  # Parameter names may be equal to or greater than this value
+  MinNameLength: 1
+  AllowNamesEndingInNumbers: true
+  # Whitelisted names that will not register an offense
+  AllowedNames: []
+  # Blacklisted names that will register an offense
+  ForbiddenNames: []
+
 Naming/ClassAndModuleCamelCase:
   Description: 'Use CamelCase for classes and modules.'
   StyleGuide: '#camelcase-classes'
@@ -2039,20 +2053,6 @@ Naming/RescuedExceptionsVariableName:
   VersionAdded: '0.67'
   VersionChanged: '0.68'
   PreferredName: e
-
-Naming/UncommunicativeBlockParamName:
-  Description: >-
-                Checks for block parameter names that contain capital letters,
-                end in numbers, or do not meet a minimal length.
-  Enabled: true
-  VersionAdded: '0.53'
-  # Parameter names may be equal to or greater than this value
-  MinNameLength: 1
-  AllowNamesEndingInNumbers: true
-  # Whitelisted names that will not register an offense
-  AllowedNames: []
-  # Blacklisted names that will register an offense
-  ForbiddenNames: []
 
 Naming/UncommunicativeMethodParamName:
   Description: >-
