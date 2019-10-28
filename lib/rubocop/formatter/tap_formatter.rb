@@ -51,16 +51,14 @@ module RuboCop
           message: message(offense)
         )
 
-        # rubocop:disable Lint/HandleExceptions
         begin
           return unless valid_line?(offense)
 
           report_line(offense.location)
           report_highlighted_area(offense.highlighted_area)
-        rescue IndexError
+        rescue IndexError # rubocop:disable Lint/SuppressedException
           # range is not on a valid line; perhaps the source file is empty
         end
-        # rubocop:enable Lint/HandleExceptions
       end
 
       def annotate_message(msg)

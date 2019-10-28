@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'shows help text' do
         begin
           options.parse(['--help'])
-        rescue SystemExit # rubocop:disable Lint/HandleExceptions
+        rescue SystemExit # rubocop:disable Lint/SuppressedException
         end
 
         expected_help = <<~OUTPUT
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'lists all builtin formatters' do
         begin
           options.parse(['--help'])
-        rescue SystemExit # rubocop:disable Lint/HandleExceptions
+        rescue SystemExit # rubocop:disable Lint/SuppressedException
         end
 
         option_sections = $stdout.string.lines.slice_before(/^\s*-/)
