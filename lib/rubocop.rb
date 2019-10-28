@@ -273,7 +273,7 @@ require_relative 'rubocop/cop/layout/space_inside_range_literal'
 require_relative 'rubocop/cop/layout/space_inside_reference_brackets'
 require_relative 'rubocop/cop/layout/space_inside_string_interpolation'
 require_relative 'rubocop/cop/layout/tab'
-require_relative 'rubocop/cop/layout/trailing_blank_lines'
+require_relative 'rubocop/cop/layout/trailing_empty_lines'
 require_relative 'rubocop/cop/layout/trailing_whitespace'
 
 require_relative 'rubocop/cop/lint/ambiguous_block_association'

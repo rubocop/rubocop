@@ -4709,7 +4709,7 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 
-## Layout/TrailingBlankLines
+## Layout/TrailingEmptyLines
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
