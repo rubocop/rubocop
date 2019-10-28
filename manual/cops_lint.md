@@ -1165,7 +1165,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 MaximumRangeSize | `Infinity` | Float
 
-## Lint/MultipleCompare
+## Lint/MultipleComparison
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---

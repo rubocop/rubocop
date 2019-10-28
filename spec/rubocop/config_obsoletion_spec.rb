@@ -32,6 +32,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/TrailingBlankLines' => { 'Enabled': true },
           'Lint/DuplicatedKey' => { 'Enabled': true },
           'Lint/HandleExceptions' => { 'Enabled': true },
+          'Lint/MultipleCompare' => { 'Enabled': true },
           'Lint/UnneededCopDisableDirective' => { 'Enabled': true },
           'Lint/UnneededCopEnableDirective' => { 'Enabled': true },
           'Lint/UnneededRequireStatement' => { 'Enabled': true },
@@ -111,6 +112,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Lint/DuplicatedKey` cop has been renamed to `Lint/DuplicateHashKey`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/HandleExceptions` cop has been renamed to `Lint/SuppressedException`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/MultipleCompare` cop has been renamed to `Lint/MultipleComparison`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededCopDisableDirective` cop has been renamed to `Lint/RedundantCopDisableDirective`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

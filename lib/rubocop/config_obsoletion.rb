@@ -21,6 +21,7 @@ module RuboCop
       'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
       'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
       'Lint/HandleExceptions' => 'Lint/SuppressedException',
+      'Lint/MultipleCompare' => 'Lint/MultipleComparison',
       'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
       'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
       'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',

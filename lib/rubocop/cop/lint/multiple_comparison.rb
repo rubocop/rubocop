@@ -21,7 +21,7 @@ module RuboCop
       #
       #   x < y && y < z
       #   10 <= x && x <= 20
-      class MultipleCompare < Cop
+      class MultipleComparison < Cop
         MSG = 'Use the `&&` operator to compare multiple values.'
 
         def_node_matcher :multiple_compare?, <<~PATTERN
