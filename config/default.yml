@@ -1290,15 +1290,15 @@ Lint/DuplicateCaseCondition:
   Enabled: true
   VersionAdded: '0.45'
 
+Lint/DuplicateHashKey:
+  Description: 'Check for duplicate keys in hash literals.'
+  Enabled: true
+  VersionAdded: '0.34'
+
 Lint/DuplicateMethods:
   Description: 'Check for duplicate method definitions.'
   Enabled: true
   VersionAdded: '0.29'
-
-Lint/DuplicatedKey:
-  Description: 'Check for duplicate keys in hash literals.'
-  Enabled: true
-  VersionAdded: '0.34'
 
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'

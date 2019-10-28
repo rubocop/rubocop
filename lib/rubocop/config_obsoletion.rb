@@ -19,6 +19,7 @@ module RuboCop
       'Layout/IndentHeredoc' => 'Layout/HeredocIndentation',
       'Layout/LeadingBlankLines' => 'Layout/LeadingEmptyLines',
       'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
+      'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
       'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
       'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
       'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',
