@@ -1527,6 +1527,13 @@ Lint/RedundantSplatExpansion:
   Enabled: true
   VersionChanged: '0.76'
 
+Lint/RedundantStringCoercion:
+  Description: 'Checks for Object#to_s usage in string interpolation.'
+  StyleGuide: '#no-to-s'
+  Enabled: true
+  VersionAdded: '0.19'
+  VersionChanged: '0.20'
+
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
   Enabled: true
@@ -1631,13 +1638,6 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
   VersionAdded: '0.9'
-
-Lint/StringConversionInInterpolation:
-  Description: 'Checks for Object#to_s usage in string interpolation.'
-  StyleGuide: '#no-to-s'
-  Enabled: true
-  VersionAdded: '0.19'
-  VersionChanged: '0.20'
 
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."

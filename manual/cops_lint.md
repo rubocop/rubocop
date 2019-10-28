@@ -1649,6 +1649,32 @@ else
 end
 ```
 
+## Lint/RedundantStringCoercion
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.19 | 0.20
+
+This cop checks for string conversion in string interpolation,
+which is redundant.
+
+### Examples
+
+```ruby
+# bad
+
+"result is #{something.to_s}"
+```
+```ruby
+# good
+
+"result is #{something}"
+```
+
+### References
+
+* [https://rubystyle.guide#no-to-s](https://rubystyle.guide#no-to-s)
+
 ## Lint/RedundantWithIndex
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2209,32 +2235,6 @@ def some_method
   end
 end
 ```
-
-## Lint/StringConversionInInterpolation
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.19 | 0.20
-
-This cop checks for string conversion in string interpolation,
-which is redundant.
-
-### Examples
-
-```ruby
-# bad
-
-"result is #{something.to_s}"
-```
-```ruby
-# good
-
-"result is #{something}"
-```
-
-### References
-
-* [https://rubystyle.guide#no-to-s](https://rubystyle.guide#no-to-s)
 
 ## Lint/SuppressedException
 
