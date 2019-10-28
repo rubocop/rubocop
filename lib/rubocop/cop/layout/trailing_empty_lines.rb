@@ -37,7 +37,7 @@ module RuboCop
       #   class Foo; end
       #   # EOF
       #
-      class TrailingBlankLines < Cop
+      class TrailingEmptyLines < Cop
         include ConfigurableEnforcedStyle
         include RangeHelp
 

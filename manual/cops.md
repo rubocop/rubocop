@@ -170,7 +170,7 @@ In the following section you find all available cops:
 * [Layout/SpaceInsideReferenceBrackets](cops_layout.md#layoutspaceinsidereferencebrackets)
 * [Layout/SpaceInsideStringInterpolation](cops_layout.md#layoutspaceinsidestringinterpolation)
 * [Layout/Tab](cops_layout.md#layouttab)
-* [Layout/TrailingBlankLines](cops_layout.md#layouttrailingblanklines)
+* [Layout/TrailingEmptyLines](cops_layout.md#layouttrailingemptylines)
 * [Layout/TrailingWhitespace](cops_layout.md#layouttrailingwhitespace)
 
 #### Department [Lint](cops_lint.md)

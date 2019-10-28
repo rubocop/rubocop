@@ -1202,7 +1202,7 @@ Layout/Tab:
   # replace each tab.
   IndentationWidth: ~
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'
   StyleGuide: '#newline-eof'
   Enabled: true

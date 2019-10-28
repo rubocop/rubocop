@@ -1463,7 +1463,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               "Use the new Ruby 1.9 hash syntax.\n")
   end
 
-  it 'can correct TrailingBlankLines and TrailingWhitespace offenses' do
+  it 'can correct TrailingEmptyLines and TrailingWhitespace offenses' do
     create_file('example.rb',
                 ['# frozen_string_literal: true',
                  '',
@@ -1475,7 +1475,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # frozen_string_literal: true
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
-      #{abs('example.rb')}:2:1: C: [Corrected] Layout/TrailingBlankLines: 3 trailing blank lines detected.
+      #{abs('example.rb')}:2:1: C: [Corrected] Layout/TrailingEmptyLines: 3 trailing blank lines detected.
       #{abs('example.rb')}:3:1: C: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
     RESULT
   end
