@@ -1367,14 +1367,6 @@ Lint/FormatParameterMismatch:
   Enabled: true
   VersionAdded: '0.33'
 
-Lint/HandleExceptions:
-  Description: "Don't suppress exception."
-  StyleGuide: '#dont-hide-exceptions'
-  Enabled: true
-  AllowComments: false
-  VersionAdded: '0.9'
-  VersionChanged: '0.70'
-
 Lint/HeredocMethodCallPosition:
   Description: >-
                  Checks for the ordering of a method call where
@@ -1646,6 +1638,14 @@ Lint/StringConversionInInterpolation:
   Enabled: true
   VersionAdded: '0.19'
   VersionChanged: '0.20'
+
+Lint/SuppressedException:
+  Description: "Don't suppress exceptions."
+  StyleGuide: '#dont-hide-exceptions'
+  Enabled: true
+  AllowComments: false
+  VersionAdded: '0.9'
+  VersionChanged: '0.70'
 
 Lint/Syntax:
   Description: 'Checks syntax error.'

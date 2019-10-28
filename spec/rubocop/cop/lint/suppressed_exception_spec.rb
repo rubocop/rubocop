@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::HandleExceptions, :config do
+RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for empty rescue block' do

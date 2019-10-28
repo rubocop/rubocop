@@ -74,7 +74,7 @@ module RuboCop
       #   rescue
       #     # do nothing but comment
       #   end
-      class HandleExceptions < Cop
+      class SuppressedException < Cop
         MSG = 'Do not suppress exceptions.'
 
         def on_resbody(node)
