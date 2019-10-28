@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Registry do
       module Cop
         module Test
           # Create another cop with a different namespace
-          class IndentFirstArrayElement < Cop
+          class FirstArrayElementIndentation < Cop
           end
         end
 
@@ -26,10 +26,10 @@ RSpec.describe RuboCop::Cop::Registry do
     [
       RuboCop::Cop::Lint::BooleanSymbol,
       RuboCop::Cop::Lint::DuplicateMethods,
-      RuboCop::Cop::Layout::IndentFirstArrayElement,
+      RuboCop::Cop::Layout::FirstArrayElementIndentation,
       RuboCop::Cop::Metrics::MethodLength,
       RuboCop::Cop::RSpec::Foo,
-      RuboCop::Cop::Test::IndentFirstArrayElement
+      RuboCop::Cop::Test::FirstArrayElementIndentation
     ]
   end
 
@@ -64,7 +64,9 @@ RSpec.describe RuboCop::Cop::Registry do
 
   context '#contains_cop_matching?' do
     it 'can find cops matching a given name' do
-      result = registry.contains_cop_matching?(['Test/IndentFirstArrayElement'])
+      result = registry.contains_cop_matching?(
+        ['Test/FirstArrayElementIndentation']
+      )
       expect(result).to be(true)
     end
 
@@ -78,10 +80,10 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'gives back already properly qualified names' do
       result = registry.qualified_cop_name(
-        'Layout/IndentFirstArrayElement',
+        'Layout/FirstArrayElementIndentation',
         origin
       )
-      expect(result).to eql('Layout/IndentFirstArrayElement')
+      expect(result).to eql('Layout/FirstArrayElementIndentation')
     end
 
     it 'qualifies names without a namespace' do
@@ -120,15 +122,17 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'raises an error when a cop name is ambiguous' do
-      expect { registry.qualified_cop_name('IndentFirstArrayElement', origin) }
+      cop_name = 'FirstArrayElementIndentation'
+      expect { registry.qualified_cop_name(cop_name, origin) }
         .to raise_error(RuboCop::Cop::AmbiguousCopName)
         .with_message(
-          'Ambiguous cop name `IndentFirstArrayElement` used in ' \
+          'Ambiguous cop name `FirstArrayElementIndentation` used in ' \
           '/app/.rubocop.yml needs department qualifier. Did you mean ' \
-          'Layout/IndentFirstArrayElement or Test/IndentFirstArrayElement?'
+          'Layout/FirstArrayElementIndentation or ' \
+          'Test/FirstArrayElementIndentation?'
         )
         .and output('/app/.rubocop.yml: Warning: no department given for ' \
-                    "IndentFirstArrayElement.\n").to_stderr
+                    "FirstArrayElementIndentation.\n").to_stderr
     end
 
     it 'returns the provided name if no namespace is found' do
@@ -140,13 +144,12 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.to_h).to eql(
       'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
       'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/IndentFirstArrayElement' =>
-                                 [
-                                   RuboCop::Cop::Layout::IndentFirstArrayElement
-                                 ],
+      'Layout/FirstArrayElementIndentation' => [
+        RuboCop::Cop::Layout::FirstArrayElementIndentation
+      ],
       'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
-      'Test/IndentFirstArrayElement' => [
-        RuboCop::Cop::Test::IndentFirstArrayElement
+      'Test/FirstArrayElementIndentation' => [
+        RuboCop::Cop::Test::FirstArrayElementIndentation
       ],
       'RSpec/Foo' => [RuboCop::Cop::RSpec::Foo]
     )
@@ -165,7 +168,7 @@ RSpec.describe RuboCop::Cop::Registry do
   context '#enabled' do
     let(:config) do
       RuboCop::Config.new(
-        'Test/IndentFirstArrayElement' => { 'Enabled' => false },
+        'Test/FirstArrayElementIndentation' => { 'Enabled' => false },
         'RSpec/Foo' => { 'Safe' => false }
       )
     end
@@ -175,7 +178,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'overrides config if :only includes the cop' do
-      result = registry.enabled(config, ['Test/IndentFirstArrayElement'])
+      result = registry.enabled(config, ['Test/FirstArrayElementIndentation'])
       expect(result).to eql(cops)
     end
 
@@ -190,10 +193,10 @@ RSpec.describe RuboCop::Cop::Registry do
       [
         'Lint/BooleanSymbol',
         'Lint/DuplicateMethods',
-        'Layout/IndentFirstArrayElement',
+        'Layout/FirstArrayElementIndentation',
         'Metrics/MethodLength',
         'RSpec/Foo',
-        'Test/IndentFirstArrayElement'
+        'Test/FirstArrayElementIndentation'
       ]
     )
   end
