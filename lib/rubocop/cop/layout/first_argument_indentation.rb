@@ -142,7 +142,7 @@ module RuboCop
       #     nested_first_param),
       #   second_param
       #
-      class IndentFirstArgument < Cop
+      class FirstArgumentIndentation < Cop
         # rubocop:enable Metrics/LineLength
         include Alignment
         include ConfigurableEnforcedStyle

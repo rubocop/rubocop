@@ -35,6 +35,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/FirstParameterIndentation' => { 'Enabled': true },
           'Layout/IndentArray' => { 'Enabled': true },
           'Layout/IndentAssignment' => { 'Enabled': true },
+          'Layout/IndentFirstArgument' => { 'Enabled': true },
           'Layout/IndentHash' => { 'Enabled': true },
           # Moved cops
           'Lint/Eval' => { 'Enabled': true },
@@ -105,7 +106,9 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentAssignment` cop has been renamed to `Layout/AssignmentIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
+          The `Layout/IndentFirstArgument` cop has been renamed to `Layout/FirstArgumentIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/FirstArgumentIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentArray` cop has been renamed to `Layout/IndentFirstArrayElement`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

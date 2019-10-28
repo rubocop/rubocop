@@ -24,8 +24,8 @@ module RuboCop
       #   - AlignParameters
       #   - ArrayAlignment
       #   - ClosingParenthesisIndentation
+      #   - FirstArgumentIndentation
       #   - HashAlignment
-      #   - IndentFirstArgument
       #   - IndentFirstArrayElement
       #   - IndentFirstHashElement
       #   - IndentFirstParameter
