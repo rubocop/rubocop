@@ -823,99 +823,6 @@ format('A value: %s and another: %i', a_value)
 format('A value: %s and another: %i', a_value, another)
 ```
 
-## Lint/HandleExceptions
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 0.70
-
-This cop checks for *rescue* blocks with no body.
-
-### Examples
-
-#### AllowComments: false (default)
-
-```ruby
-# bad
-def some_method
-  do_something
-rescue
-end
-
-# bad
-def some_method
-  do_something
-rescue
-  # do nothing
-end
-
-# bad
-begin
-  do_something
-rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-  # do nothing
-end
-
-# good
-def some_method
-  do_something
-rescue
-  handle_exception
-end
-
-# good
-begin
-  do_something
-rescue
-  handle_exception
-end
-```
-#### AllowComments: true
-
-```ruby
-# bad
-def some_method
-  do_something
-rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-end
-
-# good
-def some_method
-  do_something
-rescue
-  # do nothing but comment
-end
-
-# good
-begin
-  do_something
-rescue
-  # do nothing but comment
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-AllowComments | `false` | Boolean
-
-### References
-
-* [https://rubystyle.guide#dont-hide-exceptions](https://rubystyle.guide#dont-hide-exceptions)
-
 ## Lint/HeredocMethodCallPosition
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2328,6 +2235,99 @@ which is redundant.
 ### References
 
 * [https://rubystyle.guide#no-to-s](https://rubystyle.guide#no-to-s)
+
+## Lint/SuppressedException
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 0.70
+
+This cop checks for *rescue* blocks with no body.
+
+### Examples
+
+#### AllowComments: false (default)
+
+```ruby
+# bad
+def some_method
+  do_something
+rescue
+end
+
+# bad
+def some_method
+  do_something
+rescue
+  # do nothing
+end
+
+# bad
+begin
+  do_something
+rescue
+end
+
+# bad
+begin
+  do_something
+rescue
+  # do nothing
+end
+
+# good
+def some_method
+  do_something
+rescue
+  handle_exception
+end
+
+# good
+begin
+  do_something
+rescue
+  handle_exception
+end
+```
+#### AllowComments: true
+
+```ruby
+# bad
+def some_method
+  do_something
+rescue
+end
+
+# bad
+begin
+  do_something
+rescue
+end
+
+# good
+def some_method
+  do_something
+rescue
+  # do nothing but comment
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing but comment
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowComments | `false` | Boolean
+
+### References
+
+* [https://rubystyle.guide#dont-hide-exceptions](https://rubystyle.guide#dont-hide-exceptions)
 
 ## Lint/Syntax
 

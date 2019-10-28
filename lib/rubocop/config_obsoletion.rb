@@ -20,6 +20,7 @@ module RuboCop
       'Layout/LeadingBlankLines' => 'Layout/LeadingEmptyLines',
       'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
       'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
+      'Lint/HandleExceptions' => 'Lint/SuppressedException',
       'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
       'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
       'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',
