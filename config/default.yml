@@ -730,7 +730,7 @@ Layout/HeredocArgumentClosingParenthesis:
   StyleGuide: '#heredoc-argument-closing-parentheses'
   VersionAdded: '0.68'
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Description: 'This cop checks the indentation of the here document bodies.'
   StyleGuide: '#squiggly-heredocs'
   Enabled: true

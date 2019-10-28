@@ -126,7 +126,7 @@ In the following section you find all available cops:
 * [Layout/FirstParameterIndentation](cops_layout.md#layoutfirstparameterindentation)
 * [Layout/HashAlignment](cops_layout.md#layouthashalignment)
 * [Layout/HeredocArgumentClosingParenthesis](cops_layout.md#layoutheredocargumentclosingparenthesis)
-* [Layout/IndentHeredoc](cops_layout.md#layoutindentheredoc)
+* [Layout/HeredocIndentation](cops_layout.md#layoutheredocindentation)
 * [Layout/IndentationConsistency](cops_layout.md#layoutindentationconsistency)
 * [Layout/IndentationWidth](cops_layout.md#layoutindentationwidth)
 * [Layout/InitialIndentation](cops_layout.md#layoutinitialindentation)

@@ -49,7 +49,7 @@ module RuboCop
       #     something
       #   RUBY
       #
-      class IndentHeredoc < Cop
+      class HeredocIndentation < Cop
         include Heredoc
         include ConfigurableEnforcedStyle
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::IndentHeredoc, :config do
+RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:allow_heredoc) { true }
