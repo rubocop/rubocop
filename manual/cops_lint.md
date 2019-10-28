@@ -359,6 +359,29 @@ when 'second'
 end
 ```
 
+## Lint/DuplicateHashKey
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.34 | -
+
+This cop checks for duplicated keys in hash literals.
+
+This cop mirrors a warning in Ruby 2.2.
+
+### Examples
+
+```ruby
+# bad
+
+hash = { food: 'apple', food: 'orange' }
+```
+```ruby
+# good
+
+hash = { food: 'apple', other_food: 'orange' }
+```
+
 ## Lint/DuplicateMethods
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -409,29 +432,6 @@ def foo
 end
 
 alias bar foo
-```
-
-## Lint/DuplicatedKey
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.34 | -
-
-This cop checks for duplicated keys in hash literals.
-
-This cop mirrors a warning in Ruby 2.2.
-
-### Examples
-
-```ruby
-# bad
-
-hash = { food: 'apple', food: 'orange' }
-```
-```ruby
-# good
-
-hash = { food: 'apple', other_food: 'orange' }
 ```
 
 ## Lint/EachWithObjectArgument

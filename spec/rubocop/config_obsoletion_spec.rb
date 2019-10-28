@@ -30,6 +30,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/IndentHeredoc' => { 'Enabled': true },
           'Layout/LeadingBlankLines' => { 'Enabled': true },
           'Layout/TrailingBlankLines' => { 'Enabled': true },
+          'Lint/DuplicatedKey' => { 'Enabled': true },
           'Lint/UnneededCopDisableDirective' => { 'Enabled': true },
           'Lint/UnneededCopEnableDirective' => { 'Enabled': true },
           'Lint/UnneededRequireStatement' => { 'Enabled': true },
@@ -105,6 +106,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Layout/LeadingBlankLines` cop has been renamed to `Layout/LeadingEmptyLines`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/TrailingBlankLines` cop has been renamed to `Layout/TrailingEmptyLines`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/DuplicatedKey` cop has been renamed to `Lint/DuplicateHashKey`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededCopDisableDirective` cop has been renamed to `Lint/RedundantCopDisableDirective`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
