@@ -2781,39 +2781,6 @@ class A
 end
 ```
 
-## Layout/LeadingBlankLines
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.57 | -
-
-This cop checks for unnecessary leading blank lines at the beginning
-of a file.
-
-### Examples
-
-```ruby
-# bad
-# (start of file)
-
-class Foo
-end
-
-# bad
-# (start of file)
-
-# a comment
-
-# good
-# (start of file)
-class Foo
-end
-
-# good
-# (start of file)
-# a comment
-```
-
 ## Layout/LeadingCommentSpace
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2865,6 +2832,39 @@ AllowDoxygenCommentStyle | `false` | Boolean
 ### References
 
 * [https://rubystyle.guide#hash-space](https://rubystyle.guide#hash-space)
+
+## Layout/LeadingEmptyLines
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.57 | -
+
+This cop checks for unnecessary leading blank lines at the beginning
+of a file.
+
+### Examples
+
+```ruby
+# bad
+# (start of file)
+
+class Foo
+end
+
+# bad
+# (start of file)
+
+# a comment
+
+# good
+# (start of file)
+class Foo
+end
+
+# good
+# (start of file)
+# a comment
+```
 
 ## Layout/MultilineArrayBraceLayout
 

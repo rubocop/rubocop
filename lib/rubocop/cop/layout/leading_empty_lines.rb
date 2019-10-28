@@ -27,7 +27,7 @@ module RuboCop
       #   # good
       #   # (start of file)
       #   # a comment
-      class LeadingBlankLines < Cop
+      class LeadingEmptyLines < Cop
         MSG = 'Unnecessary blank line at the beginning of the source.'
 
         def investigate(processed_source)

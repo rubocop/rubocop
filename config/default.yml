@@ -777,11 +777,6 @@ Layout/InitialIndentation:
   Enabled: true
   VersionAdded: '0.49'
 
-Layout/LeadingBlankLines:
-  Description: Check for unnecessary blank lines at the beginning of a file.
-  Enabled: true
-  VersionAdded: '0.57'
-
 Layout/LeadingCommentSpace:
   Description: 'Comments should start with a space.'
   StyleGuide: '#hash-space'
@@ -789,6 +784,11 @@ Layout/LeadingCommentSpace:
   VersionAdded: '0.49'
   VersionChanged: '0.73'
   AllowDoxygenCommentStyle: false
+
+Layout/LeadingEmptyLines:
+  Description: Check for unnecessary blank lines at the beginning of a file.
+  Enabled: true
+  VersionAdded: '0.57'
 
 Layout/MultilineArrayBraceLayout:
   Description: >-
