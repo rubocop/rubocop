@@ -22,7 +22,8 @@ module RuboCop
       'Layout/AlignHash' => 'Layout/HashAlignment',
       'Layout/AlignParameters' => 'Layout/ParameterAlignment',
       'Layout/IndentAssignment' => 'Layout/AssignmentIndentation',
-      'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
+      'Layout/IndentFirstArgument' => 'Layout/FirstArgumentIndentation',
+      'Layout/FirstParameterIndentation' => 'Layout/FirstArgumentIndentation',
       'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
       'Layout/IndentHash' => 'Layout/IndentFirstHashElement'
     }.map do |old_name, new_name|

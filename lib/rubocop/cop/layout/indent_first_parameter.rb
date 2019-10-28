@@ -8,7 +8,7 @@ module RuboCop
       # Layout/AlignParameters, not by this cop.
       #
       # For indenting the first argument of method *calls*, check out
-      # Layout/IndentFirstArgument, which supports options related to
+      # Layout/FirstArgumentIndentation, which supports options related to
       # nesting that are irrelevant for method *definitions*.
       #
       # @example

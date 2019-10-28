@@ -528,6 +528,30 @@ Layout/ExtraSpacing:
   # When true, forces the alignment of `=` in assignments on consecutive lines.
   ForceEqualSignAlignment: false
 
+Layout/FirstArgumentIndentation:
+  Description: 'Checks the indentation of the first argument in a method call.'
+  Enabled: true
+  VersionAdded: '0.68'
+  EnforcedStyle: special_for_inner_method_call_in_parentheses
+  SupportedStyles:
+    # The first parameter should always be indented one step more than the
+    # preceding line.
+    - consistent
+    # The first parameter should always be indented one level relative to the
+    # parent that is receiving the parameter
+    - consistent_relative_to_receiver
+    # The first parameter should normally be indented one step more than the
+    # preceding line, but if it's a parameter for a method call that is itself
+    # a parameter in a method call, then the inner parameter should be indented
+    # relative to the inner method.
+    - special_for_inner_method_call
+    # Same as `special_for_inner_method_call` except that the special rule only
+    # applies if the outer method call encloses its arguments in parentheses.
+    - special_for_inner_method_call_in_parentheses
+  # By default, the indentation width from `Layout/IndentationWidth` is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
 Layout/FirstArrayElementLineBreak:
   Description: >-
                  Checks for a line break before the first element in a
@@ -640,30 +664,6 @@ Layout/HeredocArgumentClosingParenthesis:
   Enabled: false
   StyleGuide: '#heredoc-argument-closing-parentheses'
   VersionAdded: '0.68'
-
-Layout/IndentFirstArgument:
-  Description: 'Checks the indentation of the first argument in a method call.'
-  Enabled: true
-  VersionAdded: '0.68'
-  EnforcedStyle: special_for_inner_method_call_in_parentheses
-  SupportedStyles:
-    # The first parameter should always be indented one step more than the
-    # preceding line.
-    - consistent
-    # The first parameter should always be indented one level relative to the
-    # parent that is receiving the parameter
-    - consistent_relative_to_receiver
-    # The first parameter should normally be indented one step more than the
-    # preceding line, but if it's a parameter for a method call that is itself
-    # a parameter in a method call, then the inner parameter should be indented
-    # relative to the inner method.
-    - special_for_inner_method_call
-    # Same as `special_for_inner_method_call` except that the special rule only
-    # applies if the outer method call encloses its arguments in parentheses.
-    - special_for_inner_method_call_in_parentheses
-  # By default, the indentation width from `Layout/IndentationWidth` is used
-  # But it can be overridden by setting this parameter
-  IndentationWidth: ~
 
 Layout/IndentFirstArrayElement:
   Description: >-
