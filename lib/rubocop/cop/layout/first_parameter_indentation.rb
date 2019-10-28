@@ -41,7 +41,7 @@ module RuboCop
       #   second_param)
       #     123
       #   end
-      class IndentFirstParameter < Cop
+      class FirstParameterIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation

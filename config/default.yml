@@ -630,6 +630,21 @@ Layout/FirstMethodParameterLineBreak:
   Enabled: false
   VersionAdded: '0.49'
 
+Layout/FirstParameterIndentation:
+  Description: >-
+                 Checks the indentation of the first parameter in a
+                 method definition.
+  Enabled: true
+  VersionAdded: '0.49'
+  VersionChanged: '0.68'
+  EnforcedStyle: consistent
+  SupportedStyles:
+    - consistent
+    - align_parentheses
+  # By default, the indentation width from `Layout/IndentationWidth` is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
 Layout/HashAlignment:
   Description: >-
     Align the elements of a hash literal if they span more than
@@ -714,21 +729,6 @@ Layout/HeredocArgumentClosingParenthesis:
   Enabled: false
   StyleGuide: '#heredoc-argument-closing-parentheses'
   VersionAdded: '0.68'
-
-Layout/IndentFirstParameter:
-  Description: >-
-                 Checks the indentation of the first parameter in a
-                 method definition.
-  Enabled: true
-  VersionAdded: '0.49'
-  VersionChanged: '0.68'
-  EnforcedStyle: consistent
-  SupportedStyles:
-    - consistent
-    - align_parentheses
-  # By default, the indentation width from `Layout/IndentationWidth` is used
-  # But it can be overridden by setting this parameter
-  IndentationWidth: ~
 
 Layout/IndentHeredoc:
   Description: 'This cop checks the indentation of the here document bodies.'
