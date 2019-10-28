@@ -490,6 +490,65 @@ IgnoredPatterns | `[]` | Array
 
 * [https://rubystyle.guide#snake-case-symbols-methods-vars](https://rubystyle.guide#snake-case-symbols-methods-vars)
 
+## Naming/MethodParameterName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.53 | 0.59
+
+This cop checks method parameter names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 3.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of whitelisted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+blacklisted names that will always register an offense.
+
+### Examples
+
+```ruby
+# bad
+def bar(varOne, varTwo)
+  varOne + varTwo
+end
+
+# With `AllowNamesEndingInNumbers` set to false
+def foo(num1, num2)
+  num1 * num2
+end
+
+# With `MinArgNameLength` set to number greater than 1
+def baz(a, b, c)
+  do_stuff(a, b, c)
+end
+
+# good
+def bar(thud, fred)
+  thud + fred
+end
+
+def foo(speed, distance)
+  speed * distance
+end
+
+def baz(age_a, height_b, gender_c)
+  do_stuff(age_a, height_b, gender_c)
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+MinNameLength | `3` | Integer
+AllowNamesEndingInNumbers | `true` | Boolean
+AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os` | Array
+ForbiddenNames | `[]` | Array
+
 ## Naming/PredicateName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -606,65 +665,6 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 PreferredName | `e` | String
-
-## Naming/UncommunicativeMethodParamName
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | 0.59
-
-This cop checks method parameter names for how descriptive they
-are. It is highly configurable.
-
-The `MinNameLength` config option takes an integer. It represents
-the minimum amount of characters the name must be. Its default is 3.
-The `AllowNamesEndingInNumbers` config option takes a boolean. When
-set to false, this cop will register offenses for names ending with
-numbers. Its default is false. The `AllowedNames` config option
-takes an array of whitelisted names that will never register an
-offense. The `ForbiddenNames` config option takes an array of
-blacklisted names that will always register an offense.
-
-### Examples
-
-```ruby
-# bad
-def bar(varOne, varTwo)
-  varOne + varTwo
-end
-
-# With `AllowNamesEndingInNumbers` set to false
-def foo(num1, num2)
-  num1 * num2
-end
-
-# With `MinArgNameLength` set to number greater than 1
-def baz(a, b, c)
-  do_stuff(a, b, c)
-end
-
-# good
-def bar(thud, fred)
-  thud + fred
-end
-
-def foo(speed, distance)
-  speed * distance
-end
-
-def baz(age_a, height_b, gender_c)
-  do_stuff(age_a, height_b, gender_c)
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-MinNameLength | `3` | Integer
-AllowNamesEndingInNumbers | `true` | Boolean
-AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os` | Array
-ForbiddenNames | `[]` | Array
 
 ## Naming/VariableName
 

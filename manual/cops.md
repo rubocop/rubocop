@@ -287,9 +287,9 @@ In the following section you find all available cops:
 * [Naming/HeredocDelimiterNaming](cops_naming.md#namingheredocdelimiternaming)
 * [Naming/MemoizedInstanceVariableName](cops_naming.md#namingmemoizedinstancevariablename)
 * [Naming/MethodName](cops_naming.md#namingmethodname)
+* [Naming/MethodParameterName](cops_naming.md#namingmethodparametername)
 * [Naming/PredicateName](cops_naming.md#namingpredicatename)
 * [Naming/RescuedExceptionsVariableName](cops_naming.md#namingrescuedexceptionsvariablename)
-* [Naming/UncommunicativeMethodParamName](cops_naming.md#naminguncommunicativemethodparamname)
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
 
