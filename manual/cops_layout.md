@@ -2156,6 +2156,64 @@ def method foo,
 end
 ```
 
+## Layout/FirstParameterIndentation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.68
+
+This cop checks the indentation of the first parameter in a method
+definition. Parameters after the first one are checked by
+Layout/AlignParameters, not by this cop.
+
+For indenting the first argument of method *calls*, check out
+Layout/FirstArgumentIndentation, which supports options related to
+nesting that are irrelevant for method *definitions*.
+
+### Examples
+
+```ruby
+# bad
+def some_method(
+first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: consistent (default)
+
+```ruby
+# The first parameter should always be indented one step more than the
+# preceding line.
+
+# good
+def some_method(
+  first_param,
+second_param)
+  123
+end
+```
+#### EnforcedStyle: align_parentheses
+
+```ruby
+# The first parameter should always be indented one step more than the
+# opening parenthesis.
+
+# good
+def some_method(
+                 first_param,
+second_param)
+  123
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `consistent` | `consistent`, `align_parentheses`
+IndentationWidth | `<none>` | Integer
+
 ## Layout/HashAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2424,64 +2482,6 @@ opening HEREDOC tag.
 ### References
 
 * [https://rubystyle.guide#heredoc-argument-closing-parentheses](https://rubystyle.guide#heredoc-argument-closing-parentheses)
-
-## Layout/IndentFirstParameter
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
-
-This cop checks the indentation of the first parameter in a method
-definition. Parameters after the first one are checked by
-Layout/AlignParameters, not by this cop.
-
-For indenting the first argument of method *calls*, check out
-Layout/FirstArgumentIndentation, which supports options related to
-nesting that are irrelevant for method *definitions*.
-
-### Examples
-
-```ruby
-# bad
-def some_method(
-first_param,
-second_param)
-  123
-end
-```
-#### EnforcedStyle: consistent (default)
-
-```ruby
-# The first parameter should always be indented one step more than the
-# preceding line.
-
-# good
-def some_method(
-  first_param,
-second_param)
-  123
-end
-```
-#### EnforcedStyle: align_parentheses
-
-```ruby
-# The first parameter should always be indented one step more than the
-# opening parenthesis.
-
-# good
-def some_method(
-                 first_param,
-second_param)
-  123
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `consistent` | `consistent`, `align_parentheses`
-IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentHeredoc
 
