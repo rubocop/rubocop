@@ -27,6 +27,7 @@ module RuboCop
       'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
       'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',
       'Lint/UnneededSplatExpansion' => 'Lint/RedundantSplatExpansion',
+      'Naming/UncommunicativeBlockParamName' => 'Naming/BlockParameterName',
       'Style/DeprecatedHashMethods' => 'Style/PreferredHashMethods',
       'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',
       'Style/OpMethod' => 'Naming/BinaryOperatorParameterName',

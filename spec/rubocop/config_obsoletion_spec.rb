@@ -38,6 +38,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/UnneededCopEnableDirective' => { 'Enabled': true },
           'Lint/UnneededRequireStatement' => { 'Enabled': true },
           'Lint/UnneededSplatExpansion' => { 'Enabled': true },
+          'Naming/UncommunicativeBlockParamName' => { 'Enabled': true },
           'Style/DeprecatedHashMethods' => { 'Enabled': true },
           'Style/MethodCallParentheses' => { 'Enabled': true },
           'Style/OpMethod' => { 'Enabled': true },
@@ -125,6 +126,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Lint/UnneededRequireStatement` cop has been renamed to `Lint/RedundantRequireStatement`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededSplatExpansion` cop has been renamed to `Lint/RedundantSplatExpansion`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Naming/UncommunicativeBlockParamName` cop has been renamed to `Naming/BlockParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/DeprecatedHashMethods` cop has been renamed to `Style/PreferredHashMethods`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
