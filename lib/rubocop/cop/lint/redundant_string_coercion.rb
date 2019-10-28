@@ -17,7 +17,7 @@ module RuboCop
       #   # good
       #
       #   "result is #{something}"
-      class StringConversionInInterpolation < Cop
+      class RedundantStringCoercion < Cop
         include Interpolation
 
         MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'

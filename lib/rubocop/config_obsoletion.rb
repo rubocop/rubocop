@@ -22,6 +22,7 @@ module RuboCop
       'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
       'Lint/HandleExceptions' => 'Lint/SuppressedException',
       'Lint/MultipleCompare' => 'Lint/MultipleComparison',
+      'Lint/StringConversionInInterpolation' => 'Lint/RedundantStringCoercion',
       'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
       'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
       'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',
