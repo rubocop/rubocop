@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::LeadingBlankLines, :config do
+RSpec.describe RuboCop::Cop::Layout::LeadingEmptyLines, :config do
   subject(:cop) { described_class.new(config) }
 
   it 'allows an empty input' do
