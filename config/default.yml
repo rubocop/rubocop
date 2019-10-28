@@ -2018,6 +2018,31 @@ Naming/MethodName:
   #
   IgnoredPatterns: []
 
+Naming/MethodParameterName:
+  Description: >-
+                 Checks for method parameter names that contain capital letters,
+                 end in numbers, or do not meet a minimal length.
+  Enabled: true
+  VersionAdded: '0.53'
+  VersionChanged: '0.59'
+  # Parameter names may be equal to or greater than this value
+  MinNameLength: 3
+  AllowNamesEndingInNumbers: true
+  # Whitelisted names that will not register an offense
+  AllowedNames:
+    - io
+    - id
+    - to
+    - by
+    - 'on'
+    - in
+    - at
+    - ip
+    - db
+    - os
+  # Blacklisted names that will register an offense
+  ForbiddenNames: []
+
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
@@ -2053,32 +2078,6 @@ Naming/RescuedExceptionsVariableName:
   VersionAdded: '0.67'
   VersionChanged: '0.68'
   PreferredName: e
-
-Naming/UncommunicativeMethodParamName:
-  Description: >-
-                Checks for method parameter names that contain capital letters,
-                end in numbers, or do not meet a minimal length.
-  Enabled: true
-  VersionAdded: '0.53'
-  VersionChanged: '0.59'
-  # Parameter names may be equal to or greater than this value
-  MinNameLength: 3
-  AllowNamesEndingInNumbers: true
-  # Whitelisted names that will not register an offense
-  AllowedNames:
-    - io
-    - id
-    - to
-    - by
-    - 'on'
-    - in
-    - at
-    - ip
-    - db
-    - os
-  # Blacklisted names that will register an offense
-  ForbiddenNames: []
-
 
 Naming/VariableName:
   Description: 'Use the configured style when naming variables.'
