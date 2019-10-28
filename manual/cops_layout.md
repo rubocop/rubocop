@@ -1979,6 +1979,103 @@ multi-line array.
   :b]
 ```
 
+## Layout/FirstHashElementIndentation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | -
+
+This cop checks the indentation of the first key in a hash literal
+where the opening brace and the first key are on separate lines. The
+other keys' indentations are handled by the HashAlignment cop.
+
+By default, Hash literals that are arguments in a method call with
+parentheses, and where the opening curly brace of the hash is on the
+same line as the opening parenthesis of the method call, shall have
+their first key indented one step (two spaces) more than the position
+inside the opening parenthesis.
+
+Other hash literals shall have their first key indented one step more
+than the start of the line where the opening curly brace is.
+
+This default style is called 'special_inside_parentheses'. Alternative
+styles are 'consistent' and 'align_braces'. Here are examples:
+
+### Examples
+
+#### EnforcedStyle: special_inside_parentheses (default)
+
+```ruby
+# The `special_inside_parentheses` style enforces that the first key
+# in a hash literal where the opening brace and the first key are on
+# separate lines is indented one step (two spaces) more than the
+# position inside the opening parentheses.
+
+# bad
+hash = {
+  key: :value
+}
+and_in_a_method_call({
+  no: :difference
+                     })
+
+# good
+special_inside_parentheses
+hash = {
+  key: :value
+}
+but_in_a_method_call({
+                       its_like: :this
+                     })
+```
+#### EnforcedStyle: consistent
+
+```ruby
+# The `consistent` style enforces that the first key in a hash
+# literal where the opening brace and the first key are on
+# separate lines is indented the same as a hash literal which is not
+# defined inside a method call.
+
+# bad
+hash = {
+  key: :value
+}
+but_in_a_method_call({
+                       its_like: :this
+                      })
+
+# good
+hash = {
+  key: :value
+}
+and_in_a_method_call({
+  no: :difference
+})
+```
+#### EnforcedStyle: align_braces
+
+```ruby
+# The `align_brackets` style enforces that the opening and closing
+# braces are indented to the same position.
+
+# bad
+and_now_for_something = {
+                          completely: :different
+}
+
+# good
+and_now_for_something = {
+                          completely: :different
+                        }
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_braces`
+IndentationWidth | `<none>` | Integer
+
 ## Layout/FirstHashElementLineBreak
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2327,103 +2424,6 @@ opening HEREDOC tag.
 ### References
 
 * [https://rubystyle.guide#heredoc-argument-closing-parentheses](https://rubystyle.guide#heredoc-argument-closing-parentheses)
-
-## Layout/IndentFirstHashElement
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
-
-This cop checks the indentation of the first key in a hash literal
-where the opening brace and the first key are on separate lines. The
-other keys' indentations are handled by the HashAlignment cop.
-
-By default, Hash literals that are arguments in a method call with
-parentheses, and where the opening curly brace of the hash is on the
-same line as the opening parenthesis of the method call, shall have
-their first key indented one step (two spaces) more than the position
-inside the opening parenthesis.
-
-Other hash literals shall have their first key indented one step more
-than the start of the line where the opening curly brace is.
-
-This default style is called 'special_inside_parentheses'. Alternative
-styles are 'consistent' and 'align_braces'. Here are examples:
-
-### Examples
-
-#### EnforcedStyle: special_inside_parentheses (default)
-
-```ruby
-# The `special_inside_parentheses` style enforces that the first key
-# in a hash literal where the opening brace and the first key are on
-# separate lines is indented one step (two spaces) more than the
-# position inside the opening parentheses.
-
-# bad
-hash = {
-  key: :value
-}
-and_in_a_method_call({
-  no: :difference
-                     })
-
-# good
-special_inside_parentheses
-hash = {
-  key: :value
-}
-but_in_a_method_call({
-                       its_like: :this
-                     })
-```
-#### EnforcedStyle: consistent
-
-```ruby
-# The `consistent` style enforces that the first key in a hash
-# literal where the opening brace and the first key are on
-# separate lines is indented the same as a hash literal which is not
-# defined inside a method call.
-
-# bad
-hash = {
-  key: :value
-}
-but_in_a_method_call({
-                       its_like: :this
-                      })
-
-# good
-hash = {
-  key: :value
-}
-and_in_a_method_call({
-  no: :difference
-})
-```
-#### EnforcedStyle: align_braces
-
-```ruby
-# The `align_brackets` style enforces that the opening and closing
-# braces are indented to the same position.
-
-# bad
-and_now_for_something = {
-                          completely: :different
-}
-
-# good
-and_now_for_something = {
-                          completely: :different
-                        }
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_braces`
-IndentationWidth | `<none>` | Integer
 
 ## Layout/IndentFirstParameter
 
