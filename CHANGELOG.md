@@ -5,6 +5,7 @@
 ### Changes
 
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Further standardisation of cop names. ([@scottmatthewman][])
+* [#7469](https://github.com/rubocop-hq/rubocop/pull/7469): Change a terminology from `Whitelist` and `Blacklist` to `Allowlist` and `Denylist`. ([@koic][])
 
 ## 0.76.0 (2019-10-28)
 

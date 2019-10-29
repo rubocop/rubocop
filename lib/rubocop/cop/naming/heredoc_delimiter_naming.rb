@@ -5,7 +5,7 @@ module RuboCop
     module Naming
       # This cop checks that your heredocs are using meaningful delimiters.
       # By default it disallows `END` and `EO*`, and can be configured through
-      # blacklisting additional delimiters.
+      # forbidden listing additional delimiters.
       #
       # @example
       #
@@ -41,13 +41,13 @@ module RuboCop
 
           return false unless delimiters =~ /\w/
 
-          blacklisted_delimiters.none? do |blacklisted_delimiter|
-            delimiters =~ Regexp.new(blacklisted_delimiter)
+          forbidden_delimiters.none? do |forbidden_delimiter|
+            delimiters =~ Regexp.new(forbidden_delimiter)
           end
         end
 
-        def blacklisted_delimiters
-          cop_config['Blacklist'] || []
+        def forbidden_delimiters
+          cop_config['ForbiddenDelimiters'] || []
         end
       end
     end

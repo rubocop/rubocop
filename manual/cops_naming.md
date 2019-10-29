@@ -113,9 +113,9 @@ the minimum amount of characters the name must be. Its default is 1.
 The `AllowNamesEndingInNumbers` config option takes a boolean. When
 set to false, this cop will register offenses for names ending with
 numbers. Its default is false. The `AllowedNames` config option
-takes an array of whitelisted names that will never register an
+takes an array of permitted names that will never register an
 offense. The `ForbiddenNames` config option takes an array of
-blacklisted names that will always register an offense.
+restricted names that will always register an offense.
 
 ### Examples
 
@@ -306,7 +306,7 @@ Enabled | Yes | No | 0.50 | -
 
 This cop checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
-blacklisting additional delimiters.
+forbidden listing additional delimiters.
 
 ### Examples
 
@@ -331,7 +331,7 @@ EOS
 
 Name | Default value | Configurable values
 --- | --- | ---
-Blacklist | `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))` | Array
+ForbiddenDelimiters | `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))` | Array
 
 ### References
 
@@ -504,9 +504,9 @@ the minimum amount of characters the name must be. Its default is 3.
 The `AllowNamesEndingInNumbers` config option takes a boolean. When
 set to false, this cop will register offenses for names ending with
 numbers. Its default is false. The `AllowedNames` config option
-takes an array of whitelisted names that will never register an
+takes an array of permitted names that will never register an
 offense. The `ForbiddenNames` config option takes an array of
-blacklisted names that will always register an offense.
+restricted names that will always register an offense.
 
 ### Examples
 
@@ -553,7 +553,7 @@ ForbiddenNames | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.50 | 0.51
+Enabled | Yes | No | 0.50 | 0.77
 
 This cop makes sure that predicates are named properly.
 
@@ -588,8 +588,8 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 NamePrefix | `is_`, `has_`, `have_` | Array
-NamePrefixBlacklist | `is_`, `has_`, `have_` | Array
-NameWhitelist | `is_a?` | Array
+ForbiddenPrefixes | `is_`, `has_`, `have_` | Array
+AllowedMethods | `is_a?` | Array
 MethodDefinitionMacros | `define_method`, `define_singleton_method` | Array
 Exclude | `spec/**/*` | Array
 

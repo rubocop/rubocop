@@ -2860,7 +2860,7 @@ InverseBlocks | `{:select=>:reject, :select!=>:reject!}` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.58 | -
+Disabled | Yes | No | 0.58 | 0.77
 
 This cop checks for hardcoded IP addresses, which can make code
 brittle. IP addresses are likely to need to be changed when code
@@ -2882,7 +2882,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `::` | Array
+AllowedAddresses | `::` | Array
 
 ## Style/Lambda
 
@@ -4241,7 +4241,7 @@ something if b && a
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.36 | 0.50
+Enabled | Yes | Yes  | 0.36 | 0.77
 
 This cop checks for unparenthesized method calls in the argument list
 of a parenthesized method call.
@@ -4260,7 +4260,7 @@ method1(method2 arg, method3, arg)
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_instance_of`, `be_truthy`, `be_within`, `eq`, `eql`, `end_with`, `include`, `match`, `raise_error`, `respond_to`, `start_with` | Array
+AllowedMethods | `be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_instance_of`, `be_truthy`, `be_within`, `eq`, `eql`, `end_with`, `include`, `match`, `raise_error`, `respond_to`, `start_with` | Array
 
 ## Style/NestedTernaryOperator
 
@@ -5890,7 +5890,7 @@ EnforcedStyle | `return` | `return`, `return_nil`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | 0.56
+Enabled | Yes | Yes  | 0.43 | 0.77
 
 This cop transforms usages of a method call safeguarded by a non `nil`
 check for the variable whose method is being called to
@@ -5956,7 +5956,7 @@ foo.bar > 2 if foo
 Name | Default value | Configurable values
 --- | --- | ---
 ConvertCodeThatCanStartToReturnNil | `false` | Boolean
-Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+AllowedMethods | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Style/Sample
 
@@ -7138,7 +7138,7 @@ AllowNamedUnderscoreVariables | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.9 | 0.38
+Enabled | Yes | Yes  | 0.9 | 0.77
 
 This cop looks for trivial reader/writer methods, that could
 have been created with the attr_* family of functions automatically.
@@ -7176,7 +7176,7 @@ ExactNameMatch | `true` | Boolean
 AllowPredicates | `true` | Boolean
 AllowDSLWriters | `false` | Boolean
 IgnoreClassMethods | `false` | Boolean
-Whitelist | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym` | Array
+AllowedMethod | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym` | Array
 
 ### References
 
