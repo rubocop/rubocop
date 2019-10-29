@@ -158,6 +158,42 @@ module RuboCop
         parameters: 'SafeMode',
         alternative: '`SafeMode` has been removed. ' \
                      'Use `SafeAutoCorrect` instead.'
+      },
+      {
+        cops: 'Bundler/GemComment',
+        parameters: 'Whitelist',
+        alternative: '`Whitelist` has been renamed to `IgnoredGems`.'
+      },
+      {
+        cops: %w[
+          Lint/SafeNavigationChain Lint/SafeNavigationConsistency
+          Style/NestedParenthesizedCalls Style/SafeNavigation
+          Style/TrivialAccessors
+        ],
+        parameters: 'Whitelist',
+        alternative: '`Whitelist` has been renamed to `AllowedMethods`.'
+      },
+      {
+        cops: 'Style/IpAddresses',
+        parameters: 'Whitelist',
+        alternative: '`Whitelist` has been renamed to `AllowedAddresses`.'
+      },
+      {
+        cops: 'Naming/HeredocDelimiterNaming',
+        parameters: 'Blacklist',
+        alternative: '`Blacklist` has been renamed to `ForbiddenDelimiters`.'
+      },
+      {
+        cops: 'Naming/PredicateName',
+        parameters: 'NamePrefixBlacklist',
+        alternative: '`NamePrefixBlacklist` has been renamed to ' \
+                     '`ForbiddenPrefixes`.'
+      },
+      {
+        cops: 'Naming/PredicateName',
+        parameters: 'NameWhitelist',
+        alternative: '`NameWhitelist` has been renamed to ' \
+                     '`AllowedMethods`.'
       }
     ].freeze
 

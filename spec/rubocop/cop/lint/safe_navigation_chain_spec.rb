@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    { 'Whitelist' => %w[present? blank? try presence] }
+    { 'AcceptedMethods' => %w[present? blank? try presence] }
   end
 
   shared_examples 'accepts' do |name, code|

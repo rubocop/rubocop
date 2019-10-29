@@ -141,11 +141,12 @@ Bundler/GemComment:
   Description: 'Add a comment describing each gem.'
   Enabled: false
   VersionAdded: '0.59'
+  VersionChanged: '0.77'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
-  Whitelist: []
+  IgnoredGems: []
 
 Bundler/InsecureProtocolSource:
   Description: >-
@@ -1590,8 +1591,8 @@ Lint/SafeNavigationChain:
   Description: 'Do not chain ordinary method call after safe navigation operator.'
   Enabled: true
   VersionAdded: '0.47'
-  VersionChanged: '0.56'
-  Whitelist:
+  VersionChanged: '0.77'
+  AllowedMethods:
     - present?
     - blank?
     - presence
@@ -1605,13 +1606,13 @@ Lint/SafeNavigationConsistency:
                  for all method calls on that same object.
   Enabled: true
   VersionAdded: '0.55'
-  Whitelist:
+  VersionChanged: '0.77'
+  AllowedMethods:
     - present?
     - blank?
     - presence
     - try
     - try!
-
 
 Lint/SafeNavigationWithEmpty:
   Description: 'Avoid `foo&.empty?` in conditionals.'
@@ -1902,9 +1903,9 @@ Naming/BlockParameterName:
   # Parameter names may be equal to or greater than this value
   MinNameLength: 1
   AllowNamesEndingInNumbers: true
-  # Whitelisted names that will not register an offense
+  # Allowed names that will not register an offense
   AllowedNames: []
-  # Blacklisted names that will register an offense
+  # Forbidden names that will register an offense
   ForbiddenNames: []
 
 Naming/ClassAndModuleCamelCase:
@@ -1998,7 +1999,7 @@ Naming/HeredocDelimiterNaming:
   StyleGuide: '#heredoc-delimiters'
   Enabled: true
   VersionAdded: '0.50'
-  Blacklist:
+  ForbiddenDelimiters:
     - !ruby/regexp '/(^|\s)(EO[A-Z]{1}|END)(\s|$)/'
 
 Naming/MemoizedInstanceVariableName:
@@ -2040,7 +2041,7 @@ Naming/MethodParameterName:
   # Parameter names may be equal to or greater than this value
   MinNameLength: 3
   AllowNamesEndingInNumbers: true
-  # Whitelisted names that will not register an offense
+  # Allowed names that will not register an offense
   AllowedNames:
     - io
     - id
@@ -2052,7 +2053,7 @@ Naming/MethodParameterName:
     - ip
     - db
     - os
-  # Blacklisted names that will register an offense
+  # Fobidden names that will register an offense
   ForbiddenNames: []
 
 Naming/PredicateName:
@@ -2060,20 +2061,20 @@ Naming/PredicateName:
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '0.51'
+  VersionChanged: '0.77'
   # Predicate name prefixes.
   NamePrefix:
     - is_
     - has_
     - have_
   # Predicate name prefixes that should be removed.
-  NamePrefixBlacklist:
+  ForbiddenPrefixes:
     - is_
     - has_
     - have_
-  # Predicate names which, despite having a blacklisted prefix, or no `?`,
+  # Predicate names which, despite having a forbidden prefix, or no `?`,
   # should still be accepted
-  NameWhitelist:
+  AllowedMethods:
     - is_a?
   # Method definition macros for dynamically generated methods.
   MethodDefinitionMacros:
@@ -2885,8 +2886,9 @@ Style/IpAddresses:
   Description: "Don't include literal IP addresses in code."
   Enabled: false
   VersionAdded: '0.58'
-  # Allow strings to be whitelisted
-  Whitelist:
+  VersionChanged: '0.77'
+  # Allow addresses to be permitted
+  AllowedAddresses:
     - "::"
     # :: is a valid IPv6 address, but could potentially be legitimately in code
 
@@ -3159,8 +3161,8 @@ Style/NestedParenthesizedCalls:
                  argument list of another parenthesized method call.
   Enabled: true
   VersionAdded: '0.36'
-  VersionChanged: '0.50'
-  Whitelist:
+  VersionChanged: '0.77'
+  AllowedMethods:
     - be
     - be_a
     - be_an
@@ -3537,11 +3539,11 @@ Style/SafeNavigation:
                   safe navigation (`&.`).
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '0.56'
+  VersionChanged: '0.77'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
-  Whitelist:
+  AllowedMethods:
     - present?
     - blank?
     - presence
@@ -3819,7 +3821,7 @@ Style/TrivialAccessors:
   StyleGuide: '#attr_family'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '0.38'
+  VersionChanged: '0.77'
   # When set to `false` the cop will suggest the use of accessor methods
   # in situations like:
   #
@@ -3840,7 +3842,7 @@ Style/TrivialAccessors:
   # Commonly used in DSLs
   AllowDSLWriters: false
   IgnoreClassMethods: false
-  Whitelist:
+  AllowedMethod:
     - to_ary
     - to_a
     - to_c

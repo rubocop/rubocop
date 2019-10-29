@@ -1908,7 +1908,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 0.56
+Enabled | Yes | No | 0.47 | 0.77
 
 The safe navigation operator returns nil if the receiver is
 nil. If you chain an ordinary method call after a safe
@@ -1936,13 +1936,13 @@ x&.foo || bar
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+AllowedMethods | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/SafeNavigationConsistency
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | -
+Enabled | Yes | Yes  | 0.55 | 0.77
 
 This cop check to make sure that if safe navigation is used for a method
 call in an `&&` or `||` condition that safe navigation is used for all
@@ -1974,7 +1974,7 @@ foo&.bar && (foobar.baz || foo&.baz)
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+AllowedMethods | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/SafeNavigationWithEmpty
 

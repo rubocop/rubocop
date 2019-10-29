@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
   end
 
   let(:cop_config) do
-    { 'Blacklist' => %w[END] }
+    { 'ForbiddenDelimiters' => %w[END] }
   end
 
   context 'with an interpolated heredoc' do

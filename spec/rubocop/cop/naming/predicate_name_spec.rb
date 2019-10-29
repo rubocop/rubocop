@@ -3,10 +3,10 @@
 RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'with blacklisted prefixes' do
+  context 'with restricted prefixes' do
     let(:cop_config) do
       { 'NamePrefix' => %w[has_ is_],
-        'NamePrefixBlacklist' => %w[has_ is_] }
+        'ForbiddenPrefixes' => %w[has_ is_] }
     end
 
     it 'registers an offense when method name starts with "is"' do
@@ -42,9 +42,9 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
   end
 
-  context 'without blacklisted prefixes' do
+  context 'without restricted prefixes' do
     let(:cop_config) do
-      { 'NamePrefix' => %w[has_ is_], 'NamePrefixBlacklist' => [] }
+      { 'NamePrefix' => %w[has_ is_], 'ForbiddenPrefixes' => [] }
     end
 
     it 'registers an offense when method name starts with "is"' do
@@ -74,13 +74,13 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
     end
   end
 
-  context 'with whitelisted predicate names' do
+  context 'with permitted predicate names' do
     let(:cop_config) do
-      { 'NamePrefix' => %w[is_], 'NamePrefixBlacklist' => %w[is_],
-        'NameWhitelist' => %w[is_a?] }
+      { 'NamePrefix' => %w[is_], 'ForbiddenPrefixes' => %w[is_],
+        'AllowedMethods' => %w[is_a?] }
     end
 
-    it 'accepts method name which is in whitelist' do
+    it 'accepts method name which is in permitted list' do
       expect_no_offenses(<<~RUBY)
         def is_a?; end
       RUBY
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
 
   context 'with method definition macros' do
     let(:cop_config) do
-      { 'NamePrefix' => %w[is_], 'NamePrefixBlacklist' => %w[is_],
+      { 'NamePrefix' => %w[is_], 'ForbiddenPrefixes' => %w[is_],
         'MethodDefinitionMacros' => %w[define_method def_node_matcher] }
     end
 
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
 
   context 'without method definition macros' do
     let(:cop_config) do
-      { 'NamePrefix' => %w[is_], 'NamePrefixBlacklist' => %w[is_] }
+      { 'NamePrefix' => %w[is_], 'ForbiddenPrefixes' => %w[is_] }
     end
 
     it 'registers an offense when using `define_method`' do

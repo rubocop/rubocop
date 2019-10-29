@@ -70,11 +70,11 @@ module RuboCop
           !method_name.match(/^#{prefix}[^0-9]/) ||
             method_name == expected_name(method_name, prefix) ||
             method_name.end_with?('=') ||
-            predicate_whitelist.include?(method_name)
+            allowed_methods.include?(method_name)
         end
 
         def expected_name(method_name, prefix)
-          new_name = if prefix_blacklist.include?(prefix)
+          new_name = if forbidden_prefixes.include?(prefix)
                        method_name.sub(prefix, '')
                      else
                        method_name.dup
@@ -87,16 +87,16 @@ module RuboCop
           "Rename `#{method_name}` to `#{new_name}`."
         end
 
-        def prefix_blacklist
-          cop_config['NamePrefixBlacklist']
+        def forbidden_prefixes
+          cop_config['ForbiddenPrefixes']
         end
 
         def predicate_prefixes
           cop_config['NamePrefix']
         end
 
-        def predicate_whitelist
-          cop_config['NameWhitelist']
+        def allowed_methods
+          cop_config['AllowedMethods']
         end
 
         def method_definition_macros(macro_name)

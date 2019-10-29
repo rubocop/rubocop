@@ -410,10 +410,10 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
   end
 
-  context 'with whitelist' do
-    let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar='] } }
+  context 'with allowed methods' do
+    let(:cop_config) { { 'AllowedMethods' => ['to_foo', 'bar='] } }
 
-    it 'accepts whitelisted reader' do
+    it 'accepts allowed reader' do
       expect_no_offenses(<<~RUBY)
         class Foo
           def to_foo
@@ -423,7 +423,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
       RUBY
     end
 
-    it 'accepts whitelisted writer' do
+    it 'accepts allowed writer' do
       expect_no_offenses(<<~RUBY)
         class Foo
           def bar=(bar)
@@ -436,10 +436,10 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     context 'with AllowPredicates: false' do
       let(:cop_config) do
         { 'AllowPredicates' => false,
-          'Whitelist' => ['foo?'] }
+          'AllowedMethods' => ['foo?'] }
       end
 
-      it 'accepts whitelisted predicate' do
+      it 'accepts allowed predicate' do
         expect_no_offenses(<<~RUBY)
           class Foo
             def foo?

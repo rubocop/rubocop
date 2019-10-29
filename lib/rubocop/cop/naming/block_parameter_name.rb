@@ -11,9 +11,9 @@ module RuboCop
       # The `AllowNamesEndingInNumbers` config option takes a boolean. When
       # set to false, this cop will register offenses for names ending with
       # numbers. Its default is false. The `AllowedNames` config option
-      # takes an array of whitelisted names that will never register an
+      # takes an array of permitted names that will never register an
       # offense. The `ForbiddenNames` config option takes an array of
-      # blacklisted names that will always register an offense.
+      # restricted names that will always register an offense.
       #
       # @example
       #   # bad

@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
 
   let(:config) do
     RuboCop::Config.new(
-      'Style/NestedParenthesizedCalls' => { 'Whitelist' => ['be'] }
+      'Style/NestedParenthesizedCalls' => { 'AllowedMethods' => ['be'] }
     )
   end
 
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
     end
   end
 
-  context 'on a whitelisted method' do
+  context 'on a permitted method' do
     it "doesn't register an offense" do
       expect_no_offenses('expect(obj).to(be true)')
     end
