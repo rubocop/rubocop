@@ -103,7 +103,7 @@ def +(other); end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | -
+Enabled | Yes | No | 0.77 | -
 
 This cop checks block parameter names for how descriptive they
 are. It is highly configurable.
@@ -494,7 +494,7 @@ IgnoredPatterns | `[]` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | 0.59
+Enabled | Yes | No | 0.77 | -
 
 This cop checks method parameter names for how descriptive they
 are. It is highly configurable.
