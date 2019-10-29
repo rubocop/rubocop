@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Further standardisation of cop names. ([@scottmatthewman][])
+
 ## 0.76.0 (2019-10-28)
 
 ### Bug fixes
