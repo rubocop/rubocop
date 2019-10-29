@@ -58,7 +58,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 Here we check if the arguments on a multi-line method
 definition are aligned.
@@ -117,7 +117,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 Here we check if the elements of a multi-line array literal are
 aligned.
@@ -148,7 +148,7 @@ a = ['run',
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks the indentation of the first line of the
 right-hand-side of a multi-line assignment.
@@ -1701,7 +1701,7 @@ ForceEqualSignAlignment | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks the indentation of the first argument in a method call.
 Arguments after the first one are checked by Layout/ArgumentAlignment,
@@ -1862,7 +1862,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
@@ -1983,7 +1983,7 @@ multi-line array.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
@@ -2160,7 +2160,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks the indentation of the first parameter in a method
 definition. Parameters after the first one are checked by
@@ -2218,7 +2218,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 Check that the keys, separators, and values of a multi-line hash
 literal are aligned according to configuration. The configuration
@@ -2487,7 +2487,7 @@ opening HEREDOC tag.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.69
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks the indentation of the here document bodies. The bodies
 are indented one step.
@@ -2837,7 +2837,7 @@ AllowDoxygenCommentStyle | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.57 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop checks for unnecessary leading blank lines at the beginning
 of a file.
@@ -3608,7 +3608,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
+Enabled | Yes | Yes  | 0.77 | -
 
 Here we check if the parameters on a multi-line method call or
 definition are aligned.
@@ -4713,7 +4713,7 @@ IndentationWidth | `<none>` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.77 | -
 
 This cop looks for trailing blank lines and a final newline in the
 source code.
