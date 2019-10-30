@@ -2684,34 +2684,40 @@ class or module body. Conditionally-defined methods are considered as
 always being defined, and thus access modifiers guarding such methods
 are not redundant.
 
+This cop has `ContextCreatingMethods` option. The default setting value
+is an empty array that means no method is specified.
+This setting is an array of methods which, when called, are known to
+create its own context in the module's current access context.
+
+It also has `MethodCreatingMethods` option. The default setting value
+is an empty array that means no method is specified.
+This setting is an array of methods which, when called, are known to
+create other methods in the module's current access context.
+
 ### Examples
 
 ```ruby
+# bad
 class Foo
   public # this is redundant (default access is public)
 
   def method
   end
-
-  private # this is not redundant (a method is defined)
-  def method2
-  end
-
-  private # this is redundant (no following methods are defined)
 end
-```
-```ruby
+
+# bad
 class Foo
-  # The following is not redundant (conditionally defined methods are
-  # considered as always defining a method)
-  private
+  # The following is redundant (methods defined on the class'
+  # singleton class are not affected by the public modifier)
+  public
 
-  if condition?
-    def method
-    end
+  def self.method3
   end
+end
 
-  protected # this is not redundant (method is defined)
+# bad
+class Foo
+  protected
 
   define_method(:method2) do
   end
@@ -2722,19 +2728,49 @@ class Foo
     define_method("foo#{i}") do
     end
   end
+end
 
-  # The following is redundant (methods defined on the class'
-  # singleton class are not affected by the public modifier)
-  public
+# bad
+class Foo
+  private # this is redundant (no following methods are defined)
+end
 
-  def self.method3
+# good
+class Foo
+  private # this is not redundant (a method is defined)
+
+  def method2
+  end
+end
+
+# good
+class Foo
+  # The following is not redundant (conditionally defined methods are
+  # considered as always defining a method)
+  private
+
+  if condition?
+    def method
+    end
+  end
+end
+
+# good
+class Foo
+  protected # this is not redundant (a method is defined)
+
+  define_method(:method2) do
   end
 end
 ```
+#### ContextCreatingMethods: concerning
+
 ```ruby
 # Lint/UselessAccessModifier:
 #   ContextCreatingMethods:
 #     - concerning
+
+# good
 require 'active_support/concern'
 class Foo
   concerning :Bar do
@@ -2754,10 +2790,14 @@ class Foo
   end
 end
 ```
+#### MethodCreatingMethods: delegate
+
 ```ruby
 # Lint/UselessAccessModifier:
 #   MethodCreatingMethods:
 #     - delegate
+
+# good
 require 'active_support/core_ext/module/delegation'
 class Foo
   # this is not redundant because `delegate` creates methods
