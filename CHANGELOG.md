@@ -21,6 +21,7 @@
 * [#7515](https://github.com/rubocop-hq/rubocop/issues/7515): Fix a false negative for `Style/RedundantParentheses` when calling a method with safe navigation operator. ([@koic][])
 * [#7477](https://github.com/rubocop-hq/rubocop/issues/7477): Fix line length autocorrect for semicolons in string literals. ([@maxh][])
 * [#7522](https://github.com/rubocop-hq/rubocop/pull/7522): Fix a false-positive edge case (`n % 2 == 2`) for `Style/EvenOdd`. ([@buehmann][])
+* [#7506](https://github.com/rubocop-hq/rubocop/issues/7506): Make `Style/IfUnlessModifier` respect all settings in `Metrics/LineLength`. ([@jonas054][])
 
 ### Changes
 
