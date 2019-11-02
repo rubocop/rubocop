@@ -127,9 +127,7 @@ module RuboCop
       valid_cop_names.each do |name|
         validate_section_presence(name)
         each_invalid_parameter(name) do |param, supported_params|
-          # FIXME: Remove .to_s, which works around a JRuby bug:
-          #   https://github.com/jruby/jruby/issues/5935
-          warn Rainbow(<<~MESSAGE).yellow.to_s
+          warn Rainbow(<<~MESSAGE).yellow
             Warning: #{name} does not support #{param} parameter.
 
             Supported parameters are:
