@@ -39,7 +39,17 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
   context 'when AllowURI option is enabled' do
     let(:cop_config) { { 'Max' => 80, 'AllowURI' => true } }
 
-    context 'and all the excessive characters are part of an URL' do
+    context 'and the URL fits within the max allowed characters' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # Some documentation comment...
+          # See: https://github.com/rubocop-hq/rubocop and then words that are not part of a URL
+                                                                                ^^^^^^^^^^^^^^^^ Line is too long. [96/80]
+        RUBY
+      end
+    end
+
+    context 'and all the excessive characters are part of a URL' do
       it 'accepts the line' do
         expect_no_offenses(<<-RUBY)
           # Some documentation comment...
@@ -73,7 +83,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       end
     end
 
-    context 'and the excessive characters include part of an URL ' \
+    context 'and the excessive characters include part of a URL ' \
             'and another word' do
       it 'registers an offense for the line' do
         expect_offense(<<-RUBY)
@@ -85,7 +95,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'and an error other than URI::InvalidURIError is raised ' \
-            'while validating an URI-ish string' do
+            'while validating a URI-ish string' do
       let(:cop_config) do
         { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w[LDAP] }
       end
@@ -204,7 +214,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
   context 'when AllowURI option is disabled' do
     let(:cop_config) { { 'Max' => 80, 'AllowURI' => false } }
 
-    context 'and all the excessive characters are part of an URL' do
+    context 'and all the excessive characters are part of a URL' do
       it 'registers an offense for the line' do
         expect_offense(<<-RUBY)
           # Lorem ipsum dolar sit amet.
