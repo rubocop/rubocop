@@ -224,7 +224,8 @@ Layout/ArgumentAlignment:
                  than one line.
   StyleGuide: '#no-double-indent'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.68'
+  VersionChanged: '0.77'
   # Alignment of arguments in multi-line method calls.
   #
   # The `with_first_argument` style aligns the following lines along the same
@@ -252,14 +253,16 @@ Layout/ArrayAlignment:
                  one line.
   StyleGuide: '#align-multiline-arrays'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
 
 Layout/AssignmentIndentation:
   Description: >-
                 Checks the indentation of the first line of the
                 right-hand-side of a multi-line assignment.
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
   # By default, the indentation width from `Layout/IndentationWidth` is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
@@ -531,7 +534,8 @@ Layout/ExtraSpacing:
 Layout/FirstArgumentIndentation:
   Description: 'Checks the indentation of the first argument in a method call.'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.68'
+  VersionChanged: '0.77'
   EnforcedStyle: special_for_inner_method_call_in_parentheses
   SupportedStyles:
     # The first parameter should always be indented one step more than the
@@ -557,7 +561,8 @@ Layout/FirstArrayElementIndentation:
                  Checks the indentation of the first element in an array
                  literal.
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.68'
+  VersionChanged: '0.77'
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -588,7 +593,8 @@ Layout/FirstArrayElementLineBreak:
 Layout/FirstHashElementIndentation:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.68'
+  VersionChanged: '0.77'
   # The value `special_inside_parentheses` means that hash literals with braces
   # that have their opening brace on the same line as a surrounding opening
   # round parenthesis, shall have their first key indented relative to the
@@ -635,7 +641,8 @@ Layout/FirstParameterIndentation:
                  Checks the indentation of the first parameter in a
                  method definition.
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
   EnforcedStyle: consistent
   SupportedStyles:
     - consistent
@@ -650,7 +657,8 @@ Layout/HashAlignment:
     one line.
   Enabled: true
   AllowMultipleStyles: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
   # Alignment of entries using hash rocket as separator. Valid values are:
   #
   # key - left alignment of keys
@@ -733,7 +741,8 @@ Layout/HeredocIndentation:
   Description: 'This cop checks the indentation of the here document bodies.'
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
   EnforcedStyle: squiggly
   SupportedStyles:
     - squiggly
@@ -786,7 +795,8 @@ Layout/LeadingCommentSpace:
 Layout/LeadingEmptyLines:
   Description: Check for unnecessary blank lines at the beginning of a file.
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.57'
+  VersionChanged: '0.77'
 
 Layout/MultilineArrayBraceLayout:
   Description: >-
@@ -935,7 +945,8 @@ Layout/ParameterAlignment:
                  than one line.
   StyleGuide: '#no-double-indent'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
   # Alignment of parameters in multi-line method calls.
   #
   # The `with_first_parameter` style aligns the following lines along the same
@@ -1203,7 +1214,8 @@ Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'
   StyleGuide: '#newline-eof'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.49'
+  VersionChanged: '0.77'
   EnforcedStyle: final_newline
   SupportedStyles:
     - final_newline
@@ -1290,7 +1302,8 @@ Lint/DuplicateCaseCondition:
 Lint/DuplicateHashKey:
   Description: 'Check for duplicate keys in hash literals.'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.34'
+  VersionChanged: '0.77'
 
 Lint/DuplicateMethods:
   Description: 'Check for duplicate method definitions.'
@@ -1436,7 +1449,8 @@ Lint/MissingCopEnableDirective:
 Lint/MultipleComparison:
   Description: "Use `&&` operator to compare multiple values."
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.47'
+  VersionChanged: '0.77'
 
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
@@ -1528,7 +1542,8 @@ Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: '#no-to-s'
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.19'
+  VersionChanged: '0.77'
 
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
@@ -1640,7 +1655,8 @@ Lint/SuppressedException:
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
   AllowComments: false
-  VersionAdded: '0.77'
+  VersionAdded: '0.9'
+  VersionChanged: '0.77'
 
 Lint/Syntax:
   Description: 'Checks syntax error.'
@@ -1881,7 +1897,8 @@ Naming/BlockParameterName:
                  Checks for block parameter names that contain capital letters,
                  end in numbers, or do not meet a minimal length.
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.53'
+  VersionChanged: '0.77'
   # Parameter names may be equal to or greater than this value
   MinNameLength: 1
   AllowNamesEndingInNumbers: true
@@ -2018,7 +2035,8 @@ Naming/MethodParameterName:
                  Checks for method parameter names that contain capital letters,
                  end in numbers, or do not meet a minimal length.
   Enabled: true
-  VersionAdded: '0.77'
+  VersionAdded: '0.53'
+  VersionChanged: '0.77'
   # Parameter names may be equal to or greater than this value
   MinNameLength: 3
   AllowNamesEndingInNumbers: true
