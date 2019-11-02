@@ -363,7 +363,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.77 | -
+Enabled | Yes | No | 0.34 | 0.77
 
 This cop checks for duplicated keys in hash literals.
 
@@ -1169,7 +1169,7 @@ MaximumRangeSize | `Infinity` | Float
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.77 | -
+Enabled | Yes | Yes  | 0.47 | 0.77
 
 In math and Python, we can use `x < y < z` style comparison to compare
 multiple value. However, we can't use the comparison in Ruby. However,
@@ -1653,7 +1653,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.77 | -
+Enabled | Yes | Yes  | 0.19 | 0.77
 
 This cop checks for string conversion in string interpolation,
 which is redundant.
@@ -2240,7 +2240,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.77 | -
+Enabled | Yes | No | 0.9 | 0.77
 
 This cop checks for *rescue* blocks with no body.
 
