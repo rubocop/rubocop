@@ -179,8 +179,12 @@ module RuboCop
         include HashAlignmentStyles
         include RangeHelp
 
-        MSG = 'Align the elements of a hash literal if they span more than ' \
-              'one line.'
+        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
+                      'they span more than one line.',
+                     SeparatorAlignment => 'Align the separators of a hash ' \
+                       'literal if they span more than one line.',
+                     TableAlignment => 'Align the keys and values of a hash ' \
+                       'literal if they span more than one line.' }.freeze
 
         def on_send(node)
           return if double_splat?(node)
@@ -249,9 +253,9 @@ module RuboCop
         end
 
         def add_offences
-          _format, offences = offences_by.min_by { |_, v| v.length }
+          format, offences = offences_by.min_by { |_, v| v.length }
           (offences || []).each do |offence|
-            add_offense offence
+            add_offense(offence, message: MESSAGES[format])
           end
         end
 

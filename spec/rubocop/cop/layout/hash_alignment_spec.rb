@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         func(a: 0,
           b: 1)
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         func({a: 0,
           b: 1})
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         super(a: 0,
           b: 1)
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         super({a: 0,
           b: 1})
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         yield(a: 0,
           b: 1)
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         yield({a: 0,
           b: 1})
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
   end
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         func({a: 0,
           b: 1})
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         super({a: 0,
           b: 1})
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         yield({a: 0,
           b: 1})
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
   end
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         func(a: 0,
           b: 1)
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         super(a: 0,
           b: 1)
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -239,7 +239,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         yield(a: 0,
           b: 1)
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -257,12 +257,12 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         hash1 = {
           a: 0,
            bb: 1
-           ^^^^^ Align the elements of a hash literal if they span more than one line.
+           ^^^^^ Align the keys of a hash literal if they span more than one line.
         }
         hash2 = {
           'ccc' => 2,
          'dddd'  =>  2
-         ^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+         ^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         hash = { a: 1, b: 2,
                 c: 3 }
-                ^^^^ Align the elements of a hash literal if they span more than one line.
+                ^^^^ Align the keys of a hash literal if they span more than one line.
       RUBY
     end
 
@@ -296,15 +296,15 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         hash1 = {
           a:   0,
-          ^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^ Align the keys of a hash literal if they span more than one line.
           bb:1,
-          ^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^ Align the keys of a hash literal if they span more than one line.
         }
         hash2 = {
           'ccc'=> 2,
-          ^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
           'dddd' =>  3
-          ^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -314,7 +314,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         hash = {
             'a' => 0,
           'bbb' => 1
-          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -323,7 +323,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         hash = {
           'a'   => 0,
-          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
           'bbb' => 1
         }
       RUBY
@@ -333,7 +333,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         hash = {
           'a' =>  (
-          ^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
             ),
           'bbb' => 1
         }
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         expect_offense(<<~RUBY)
           func(a: 0,
             b: 1)
-            ^^^^ Align the elements of a hash literal if they span more than one line.
+            ^^^^ Align the keys of a hash literal if they span more than one line.
         RUBY
       end
 
@@ -363,7 +363,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         expect_offense(<<~RUBY)
           func(a: 0,
              bbb: 1)
-             ^^^^^^ Align the elements of a hash literal if they span more than one line.
+             ^^^^^^ Align the keys of a hash literal if they span more than one line.
         RUBY
       end
 
@@ -528,13 +528,13 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         hash1 = {
           'a'   =>  0,
-          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
           'bbb' => 1
         }
         hash2 = {
           a:   0,
           bbb:1
-          ^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^ Align the keys and values of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -543,15 +543,15 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         hash1 = {
           'a'   =>  0,
-          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
          'bbb'  =>  1
-         ^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+         ^^^^^^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
         }
         hash2 = {
            a:  0,
-           ^^^^^ Align the elements of a hash literal if they span more than one line.
+           ^^^^^ Align the keys and values of a hash literal if they span more than one line.
           bbb: 1
-          ^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^ Align the keys and values of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -561,7 +561,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         hash = {
           'a'   => 0,
           'bbb'  => 1
-          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -648,7 +648,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         hash = {
             'a' =>  0,
           'bbb' => 1
-          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -658,7 +658,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         hash = {
             'a'  => 0,
           'bbb' =>  1
-          ^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^^ Align the separators of a hash literal if they span more than one line.
         }
       RUBY
     end
@@ -783,9 +783,9 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         expect_offense(<<~RUBY)
           hash = {
               'a' =>  0,
-              ^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+              ^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
             'bbb' => 1
-            ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            ^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
           }
         RUBY
       end
@@ -798,9 +798,9 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
             'gijk'    => 0,
             'a'       => 0,
             'b' => 1,
-            ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            ^^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
                   'c' => 1
-                  ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+                  ^^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
           }
         RUBY
       end
@@ -810,12 +810,12 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           hash = {
             'abcdefg' => 0,
             'abcdef'  => 0,
-            ^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            ^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
             'gijk' => 0,
             'a' => 0,
             'b' => 1,
                   'c' => 1
-                  ^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+                  ^^^^^^^^ Align the keys of a hash literal if they span more than one line.
           }
         RUBY
       end
@@ -825,7 +825,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           headers = {
             "Content-Type" => 0,
              Authorization: 1
-             ^^^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+             ^^^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
           }
         RUBY
       end
@@ -835,14 +835,14 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           hash = {
             'abcdefg' => 0,
             'abcdef'  => 0,
-            ^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            ^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
             'gijk' => 0
           }
 
           hash = {
             'abcdefg' => 0,
             'abcdef'       => 0,
-            ^^^^^^^^^^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+            ^^^^^^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
             'gijk' => 0
           }
         RUBY
@@ -940,12 +940,12 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         hash1 = {
           a:   0,
           bbb: 1
-          ^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^ Align the separators of a hash literal if they span more than one line.
         }
         hash2 = {
             'a' => 0,
           'bbb' => 1
-          ^^^^^^^^^^ Align the elements of a hash literal if they span more than one line.
+          ^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
         }
       RUBY
     end
