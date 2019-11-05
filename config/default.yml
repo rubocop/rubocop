@@ -2053,7 +2053,7 @@ Naming/MethodParameterName:
     - ip
     - db
     - os
-  # Fobidden names that will register an offense
+  # Forbidden names that will register an offense
   ForbiddenNames: []
 
 Naming/PredicateName:
