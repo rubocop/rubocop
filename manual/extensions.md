@@ -28,7 +28,9 @@ other cop.
 
 #### Writing your own Cops
 
-See [development](development.md).
+If you'd like to create an extension gem, you can use [rubocop-extension-generator](https://github.com/rubocop-hq/rubocop-extension-generator).
+
+See [development](development.md) to learn how to implement a cop.
 
 #### Known Custom Cops
 
