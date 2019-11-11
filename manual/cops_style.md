@@ -6747,7 +6747,7 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.29 | -
+Enabled | Yes | Yes (Unsafe) | 0.29 | 0.81
 
 This cop checks for inheritance from Struct.new.
 

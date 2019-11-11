@@ -46,4 +46,66 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance do
       end
     RUBY
   end
+
+  it 'autocorrects simple inline class with no block' do
+    new_source = autocorrect_source(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name)
+      end
+    RUBY
+
+    expect(new_source).to eq(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name)
+    RUBY
+  end
+
+  it 'autocorrects a class with a body' do
+    new_source = autocorrect_source(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name)
+        def age
+          42
+        end
+      end
+    RUBY
+
+    expect(new_source).to eq(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
+        def age
+          42
+        end
+      end
+    RUBY
+  end
+
+  it 'ignores a class with an empty block and empty body' do
+    original_source = <<~RUBY
+      class Person < Struct.new(:first_name, :last_name) do end
+      end
+    RUBY
+
+    expect(autocorrect_source(original_source)).to eq(original_source)
+  end
+
+  it 'ignores a class with a body and an empty block' do
+    original_source = <<~RUBY
+      class Person < Struct.new(:first_name, :last_name) do end
+        def age
+          42
+        end
+      end
+    RUBY
+
+    expect(autocorrect_source(original_source)).to eq(original_source)
+  end
+
+  it 'ignores a class with a body and a block' do
+    original_source = <<~RUBY
+      class Person < Struct.new(:first_name, :last_name) do def baz; end end
+        def age
+          42
+        end
+      end
+    RUBY
+
+    expect(autocorrect_source(original_source)).to eq(original_source)
+  end
 end

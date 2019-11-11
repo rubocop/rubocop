@@ -12,6 +12,7 @@
 * [#7786](https://github.com/rubocop-hq/rubocop/pull/7786): Support Ruby 2.7's pattern match for `Layout/ElseAlignment` cop. ([@koic][])
 * [#7784](https://github.com/rubocop-hq/rubocop/pull/7784): Support Ruby 2.7's numbered parameter for `Lint/SafeNavigationChain`. ([@koic][])
 * [#7331](https://github.com/rubocop-hq/rubocop/issues/7331): Add `forbidden` option to `Style/ModuleFunction` cop. ([@weh][])
+* [#7499](https://github.com/rubocop-hq/rubocop/pull/7499): Autocorrection for `Style/StructInheritance`. ([@bubaflub][])
 
 ### Bug fixes
 
@@ -4411,3 +4412,4 @@
 [@nikitasakov]: https://github.com/nikitasakov
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
+[@bubaflub]: https://github.com/bubaflub

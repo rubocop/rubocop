@@ -3758,7 +3758,9 @@ Style/StructInheritance:
   Description: 'Checks for inheritance from Struct.new.'
   StyleGuide: '#no-extend-struct-new'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.29'
+  VersionChanged: '0.81'
 
 Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
