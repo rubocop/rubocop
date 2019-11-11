@@ -1708,7 +1708,7 @@ Arguments after the first one are checked by Layout/ArgumentAlignment,
 not by this cop.
 
 For indenting the first parameter of method *definitions*, check out
-Layout/IndentFirstParameter.
+Layout/FirstParameterIndentation.
 
 ### Examples
 
@@ -2164,7 +2164,7 @@ Enabled | Yes | Yes  | 0.49 | 0.77
 
 This cop checks the indentation of the first parameter in a method
 definition. Parameters after the first one are checked by
-Layout/AlignParameters, not by this cop.
+Layout/ParameterAlignment, not by this cop.
 
 For indenting the first argument of method *calls*, check out
 Layout/FirstArgumentIndentation, which supports options related to

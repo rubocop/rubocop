@@ -9,7 +9,7 @@ module RuboCop
       # not by this cop.
       #
       # For indenting the first parameter of method *definitions*, check out
-      # Layout/IndentFirstParameter.
+      # Layout/FirstParameterIndentation.
       #
       # @example
       #
