@@ -16,6 +16,22 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
     RUBY
   end
 
+  it 'registers an offense and corrects when the first cop is ' \
+    'unnecessarily enabled' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Layout/LineLength
+      foo
+      # rubocop:enable Metrics/AbcSize, Layout/LineLength
+                       ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Layout/LineLength
+      foo
+      # rubocop:enable Layout/LineLength
+    RUBY
+  end
+
   it 'registers multiple offenses and corrects the same comment' do
     expect_offense(<<~RUBY)
       foo
@@ -99,100 +115,68 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
     end
   end
 
-  context 'autocorrection' do
-    context 'when first cop unnecessarily enables' do
-      let(:source) do
-        <<~RUBY
-          # rubocop:disable Layout/LineLength
-          foo
-          # rubocop:enable Metrics/AbcSize, Layout/LineLength
-        RUBY
-      end
+  context 'when last cop is unnecessarily enabled' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        foo
+        # rubocop:enable Layout/LineLength, Metrics/AbcSize
+                                            ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+      RUBY
 
-      it 'removes unnecessary enables' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
-          # rubocop:disable Layout/LineLength
-          foo
-          # rubocop:enable Layout/LineLength
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        foo
+        # rubocop:enable Layout/LineLength
+      RUBY
     end
 
-    context 'when last cop unnecessarily enables' do
-      let(:source) do
-        <<~RUBY
-          # rubocop:disable Layout/LineLength
-          foo
-          # rubocop:enable Layout/LineLength, Metrics/AbcSize
-        RUBY
-      end
+    it 'registers an offense and corrects when there is no space ' \
+      'between the cops and the comma' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        foo
+        # rubocop:enable Layout/LineLength,Metrics/AbcSize
+                                           ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+      RUBY
 
-      it 'removes unnecessary enables' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
-          # rubocop:disable Layout/LineLength
-          foo
-          # rubocop:enable Layout/LineLength
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        foo
+        # rubocop:enable Layout/LineLength
+      RUBY
+    end
+  end
 
-      context 'with no space between cops & comma' do
-        let(:source) do
-          <<~RUBY
-            # rubocop:disable Layout/LineLength
-            foo
-            # rubocop:enable Layout/LineLength,Metrics/AbcSize
-          RUBY
-        end
+  context 'when middle cop is unnecessarily enabled' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Lint/Debugger
+        foo
+        # rubocop:enable Layout/LineLength, Metrics/AbcSize, Lint/Debugger
+                                            ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+      RUBY
 
-        it 'removes unnecessary enables' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq(<<~RUBY)
-            # rubocop:disable Layout/LineLength
-            foo
-            # rubocop:enable Layout/LineLength
-          RUBY
-        end
-      end
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Lint/Debugger
+        foo
+        # rubocop:enable Layout/LineLength, Lint/Debugger
+      RUBY
     end
 
-    context 'when middle cop unnecessarily enables' do
-      let(:source) do
-        <<~RUBY
-          # rubocop:disable Layout/LineLength, Lint/Debugger
-          foo
-          # rubocop:enable Layout/LineLength, Metrics/AbcSize, Lint/Debugger
-        RUBY
-      end
+    it 'registers an offense and corrects when there is extra white space' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength,  Lint/Debugger
+        foo
+        # rubocop:enable Layout/LineLength,  Metrics/AbcSize,  Lint/Debugger
+                                             ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+      RUBY
 
-      it 'removes unnecessary enables' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
-          # rubocop:disable Layout/LineLength, Lint/Debugger
-          foo
-          # rubocop:enable Layout/LineLength, Lint/Debugger
-        RUBY
-      end
-
-      context 'with extra space after commas' do
-        let(:source) do
-          <<~RUBY
-            # rubocop:disable Layout/LineLength,  Lint/Debugger
-            foo
-            # rubocop:enable Layout/LineLength,  Metrics/AbcSize,  Lint/Debugger
-          RUBY
-        end
-
-        it 'removes unnecessary enables' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq(<<~RUBY)
-            # rubocop:disable Layout/LineLength,  Lint/Debugger
-            foo
-            # rubocop:enable Layout/LineLength,  Lint/Debugger
-          RUBY
-        end
-      end
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength,  Lint/Debugger
+        foo
+        # rubocop:enable Layout/LineLength,  Lint/Debugger
+      RUBY
     end
   end
 end
