@@ -40,13 +40,13 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes an empty section' do
       before do
-        create_file(configuration_path, ['Metrics/LineLength:'])
+        create_file(configuration_path, ['Layout/LineLength:'])
       end
 
       it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(RuboCop::ValidationError,
-                          %r{^empty section Metrics/LineLength})
+                          %r{^empty section Layout/LineLength})
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes any unrecognized parameter' do
       before do
         create_file(configuration_path, <<~YAML)
-          Metrics/LineLength:
+          Layout/LineLength:
             Enabled: true
             Min: 10
         YAML
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Config do
       it 'prints a warning message' do
         configuration # ConfigLoader.load_file will validate config
         expect($stderr.string).to match(
-          %r{Metrics/LineLength does not support Min parameter.}
+          %r{Layout/LineLength does not support Min parameter.}
         )
       end
     end

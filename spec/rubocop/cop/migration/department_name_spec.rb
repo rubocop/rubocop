@@ -28,9 +28,9 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName do
       end.to output(warning).to_stderr
 
       expect_correction(<<~RUBY)
-        # rubocop:todo Style/Alias, Metrics/LineLength
+        # rubocop:todo Style/Alias, Layout/LineLength
         alias :ala :bala
-        # rubocop:enable Style/Alias, Metrics/LineLength
+        # rubocop:enable Style/Alias, Layout/LineLength
       RUBY
     end
   end

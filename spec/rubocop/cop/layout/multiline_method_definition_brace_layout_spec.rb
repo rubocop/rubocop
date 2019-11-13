@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :config do # rubocop:disable Metrics/LineLength
+RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :config do # rubocop:disable Layout/LineLength
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }

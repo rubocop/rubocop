@@ -317,12 +317,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                    '  ' + '#' * 100,
                                    "\ty",
                                    'end'])
-        expect(cli.run(%w[-f offenses --only Metrics example.rb])).to eq(1)
+        expect(cli.run(%w[-f offenses --only Layout example.rb])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
 
-          1  Metrics/LineLength
+          1  Layout/CommentIndentation
+          1  Layout/IndentationWidth
+          1  Layout/LineLength
+          1  Layout/SpaceAroundOperators
+          1  Layout/Tab
+          1  Layout/TrailingWhitespace
           --
-          1  Total
+          6  Total
 
         RESULT
       end
@@ -345,9 +350,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             1  Layout/CommentIndentation
             1  Layout/IndentationWidth
+            1  Layout/LineLength
             1  Layout/Tab
             1  Layout/TrailingWhitespace
-            1  Metrics/LineLength
             1  Style/FrozenStringLiteralComment
             1  Style/NumericLiterals
             --
@@ -683,7 +688,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     before do
       create_file('.rubocop.yml', <<~YAML)
-        Metrics/LineLength:
+        Layout/LineLength:
           Max: 110
       YAML
       # expect(cli.run(['--show-cops'] + arguments)).to eq(0)
@@ -763,7 +768,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with two cops given' do
-      let(:arguments) { ['Layout/Tab,Metrics/LineLength'] }
+      let(:arguments) { ['Layout/Tab,Layout/LineLength'] }
 
       include_examples 'prints config'
     end
@@ -783,10 +788,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with --force-default-config' do
-      let(:arguments) { ['Metrics/LineLength', '--force-default-config'] }
+      let(:arguments) { ['Layout/LineLength', '--force-default-config'] }
 
       it 'prioritizes default config' do
-        expect(YAML.safe_load(stdout)['Metrics/LineLength']['Max']).to eq(80)
+        expect(YAML.safe_load(stdout)['Layout/LineLength']['Max']).to eq(80)
       end
     end
   end
@@ -806,7 +811,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             .to include(<<~RESULT)
               == #{target_file} ==
               C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-              C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
+              C:  1: 81: Layout/LineLength: Line is too long. [90/80]
 
               1 file inspected, 2 offenses detected
             RESULT
@@ -901,7 +906,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             'Trailing whitespace detected.',
             'x= 0 ',
             '    ^',
-            'example1.rb:2:81: C: Metrics/LineLength: ' \
+            'example1.rb:2:81: C: Layout/LineLength: ' \
             'Line is too long. [85/80]',
             '###################################################' \
             '##################################',
@@ -1045,9 +1050,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to include(<<~RESULT)
         == #{target_file} ==
         C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-        C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
+        C:  1: 81: Layout/LineLength: Line is too long. [90/80]
         #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
-        #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
+        #{abs(target_file)}:1:81: C: Layout/LineLength: Line is too long. [90/80]
       RESULT
     end
   end
@@ -1072,7 +1077,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to eq(<<~RESULT)
         == #{target_file} ==
         C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
-        C:  1: 81: Metrics/LineLength: Line is too long. [90/80]
+        C:  1: 81: Layout/LineLength: Line is too long. [90/80]
 
         1 file inspected, 2 offenses detected
       RESULT
@@ -1080,7 +1085,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(File.read('emacs_output.txt'))
         .to eq(<<~RESULT)
           #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment `# frozen_string_literal: true`.
-          #{abs(target_file)}:1:81: C: Metrics/LineLength: Line is too long. [90/80]
+          #{abs(target_file)}:1:81: C: Layout/LineLength: Line is too long. [90/80]
       RESULT
     end
   end

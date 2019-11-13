@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Cop do
 
     it 'adds namespace if the cop name is found in exactly one namespace' do
       expect(described_class.qualified_cop_name('LineLength', '--only'))
-        .to eq('Metrics/LineLength')
+        .to eq('Layout/LineLength')
     end
 
     it 'returns the given cop name if it is not found in any namespace' do
@@ -33,14 +33,14 @@ RSpec.describe RuboCop::Cop::Cop do
     end
 
     it 'returns the given cop name if it already has a namespace' do
-      expect(described_class.qualified_cop_name('Metrics/LineLength', '--only'))
-        .to eq('Metrics/LineLength')
+      expect(described_class.qualified_cop_name('Layout/LineLength', '--only'))
+        .to eq('Layout/LineLength')
     end
 
     it 'returns the cop name in a different namespace if the provided ' \
        'namespace is incorrect' do
       expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
-        .to eq('Metrics/LineLength')
+        .to eq('Layout/LineLength')
     end
 
     # `Rails/SafeNavigation` was extracted to rubocop-rails gem,

@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     context 'when correction would exceed maximum line length' do
       let(:other_cops) do
         {
-          'Metrics/LineLength' => { 'Max' => 5 }
+          'Layout/LineLength' => { 'Max' => 5 }
         }
       end
 
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     context 'when correction would not exceed maximum line length' do
       let(:other_cops) do
         {
-          'Metrics/LineLength' => { 'Max' => 25 }
+          'Layout/LineLength' => { 'Max' => 25 }
         }
       end
 

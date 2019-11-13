@@ -76,7 +76,7 @@ module RuboCop
       end
 
       def max_line_length
-        config.for_cop('Metrics/LineLength')['Max'] || 80
+        config.for_cop('Layout/LineLength')['Max'] || 80
       end
 
       def disable_offense_at_end_of_line(range, eol_comment)

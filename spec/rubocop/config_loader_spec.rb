@@ -495,7 +495,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_empty_file('dir/subdir/example.rb')
 
         create_file('.rubocop.yml', <<~YAML)
-          Metrics/LineLength:
+          Layout/LineLength:
             Enabled: false
             Max: 77
         YAML
@@ -512,7 +512,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file(file_path, <<~YAML)
           inherit_from: ../.rubocop.yml
 
-          Metrics/LineLength:
+          Layout/LineLength:
             Enabled: true
 
           Metrics/MethodLength:
@@ -523,15 +523,15 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'returns the ancestor configuration plus local overrides' do
         config =
           default_config.merge(
-            'Metrics/LineLength' => {
+            'Layout/LineLength' => {
               'Description' =>
-              default_config['Metrics/LineLength']['Description'],
+              default_config['Layout/LineLength']['Description'],
               'StyleGuide' => '#80-character-limits',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Metrics/LineLength']['VersionAdded'],
+              default_config['Layout/LineLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Metrics/LineLength']['VersionChanged'],
+              default_config['Layout/LineLength']['VersionChanged'],
               'AutoCorrect' => false,
               'Max' => 77,
               'AllowHeredoc' => true,
@@ -627,15 +627,15 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'returns includes both of the cop changes' do
         config =
           default_config.merge(
-            'Metrics/LineLength' => {
+            'Layout/LineLength' => {
               'Description' =>
-              default_config['Metrics/LineLength']['Description'],
+              default_config['Layout/LineLength']['Description'],
               'StyleGuide' => '#80-character-limits',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Metrics/LineLength']['VersionAdded'],
+              default_config['Layout/LineLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Metrics/LineLength']['VersionChanged'],
+              default_config['Layout/LineLength']['VersionChanged'],
               'AutoCorrect' => false,
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
@@ -707,12 +707,12 @@ RSpec.describe RuboCop::ConfigLoader do
                     YAML
         create_file("#{gem_root}/gemtwo/config/default.yml",
                     <<~YAML)
-                      Metrics/LineLength:
+                      Layout/LineLength:
                         Enabled: true
                     YAML
         create_file("#{gem_root}/gemtwo/config/strict.yml",
                     <<~YAML)
-                      Metrics/LineLength:
+                      Layout/LineLength:
                         Max: 72
                         AllowHeredoc: false
                     YAML
@@ -732,7 +732,7 @@ RSpec.describe RuboCop::ConfigLoader do
           Metrics/MethodLength:
             Enabled: true
 
-          Metrics/LineLength:
+          Layout/LineLength:
             AllowURI: false
         YAML
       end
@@ -759,7 +759,7 @@ RSpec.describe RuboCop::ConfigLoader do
                      'AllowHeredoc' => false,  # gemtwo/config/strict.yml
                      'AllowURI' => false }     # overridden in .rubocop.yml
         expect(
-          configuration_from_file['Metrics/LineLength']
+          configuration_from_file['Layout/LineLength']
             .to_set.superset?(expected.to_set)
         ).to be(true)
       end

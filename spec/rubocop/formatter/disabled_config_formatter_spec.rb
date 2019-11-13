@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do # rubocop:disable Metrics/LineLength
+RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do # rubocop:disable Layout/LineLength
   include FileHelper
 
   subject(:formatter) { described_class.new(output) }

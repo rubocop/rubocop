@@ -224,7 +224,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'is invalid' do
         cache.save(offenses)
         cache2 = described_class.new(file, team,
-                                     { only: ['Metrics/LineLength'] },
+                                     { only: ['Layout/LineLength'] },
                                      config_store, cache_root)
         expect(cache2.valid?).to eq(false)
       end

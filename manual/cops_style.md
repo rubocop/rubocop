@@ -2658,7 +2658,7 @@ Checks for `if` and `unless` statements that would fit on one line if
 written as modifier `if`/`unless`. The cop also checks for modifier
 `if`/`unless` lines that exceed the maximum line length.
 
-The maximum line length is configured in the `Metrics/LineLength`
+The maximum line length is configured in the `Layout/LineLength`
 cop. The tab size is configured in the `IndentationWidth` of the
 `Layout/Tab` cop.
 
@@ -7339,7 +7339,7 @@ Enabled | Yes | Yes  | 0.9 | 0.30
 
 Checks for while and until statements that would fit on one line
 if written as a modifier while/until. The maximum line length is
-configured in the `Metrics/LineLength` cop.
+configured in the `Layout/LineLength` cop.
 
 ### Examples
 

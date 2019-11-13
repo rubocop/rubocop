@@ -244,7 +244,7 @@ cops and the number of offenses found for each by running:
 ```sh
 $ rubocop --format offenses
 
-36   Metrics/LineLength
+36   Layout/LineLength
 18   Style/StringLiterals
 13   Style/Documentation
 10   Style/ExpandPathArguments

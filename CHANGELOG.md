@@ -11,6 +11,10 @@
 * [#7513](https://github.com/rubocop-hq/rubocop/issues/7513): Fix abrupt error on autocorrecting with `--disable-uncorrectable`. ([@tejasbubane][])
 * [#7537](https://github.com/rubocop-hq/rubocop/issues/7537): Fix a false positive for `Layout/SpaceAroundOperators` when using a Rational literal with `/` (e.g. `2/3r`). ([@koic][])
 
+### Changes
+
+* [#7542](https://github.com/rubocop-hq/rubocop/pull/7542): Move `LineLength` cop from `Metrics` department to `Layout` department. ([@koic][])
+
 ## 0.77.0 (2019-11-27)
 
 ### Bug fixes

@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Team do
       end
 
       it 'returns offenses from cops' do
-        expect(cop_names).to include('Metrics/LineLength')
+        expect(cop_names).to include('Layout/LineLength')
       end
     end
 
@@ -250,15 +250,15 @@ RSpec.describe RuboCop::Cop::Team do
     context 'when only some cop classes are passed to .new' do
       let(:cop_classes) do
         RuboCop::Cop::Registry.new(
-          [RuboCop::Cop::Lint::Void, RuboCop::Cop::Metrics::LineLength]
+          [RuboCop::Cop::Lint::Void, RuboCop::Cop::Layout::LineLength]
         )
       end
 
       it 'returns only instances of the classes' do
         expect(cops.size).to eq(2)
         cops.sort! { |a, b| a.name <=> b.name }
-        expect(cops[0].name).to eq('Lint/Void')
-        expect(cops[1].name).to eq('Metrics/LineLength')
+        expect(cops[0].name).to eq('Layout/LineLength')
+        expect(cops[1].name).to eq('Lint/Void')
       end
     end
 
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Team do
       let(:disabled_config) do
         %w[
           Lint/Void
-          Metrics/LineLength
+          Layout/LineLength
         ].each_with_object(RuboCop::Config.new) do |cop_name, accum|
           accum[cop_name] = { 'Enabled' => false }
         end
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Team do
       it 'does not return instances of the classes' do
         expect(cops.empty?).to be(false)
         expect(cop_names).not_to include('Lint/Void')
-        expect(cop_names).not_to include('Metrics/LineLength')
+        expect(cop_names).not_to include('Layout/LineLength')
       end
     end
   end

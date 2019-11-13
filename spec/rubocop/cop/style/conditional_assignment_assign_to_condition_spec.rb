@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                           'EnforcedStyleAlignWith' => end_alignment_align_with,
                           'Enabled' => true
                         },
-                        'Metrics/LineLength' => {
+                        'Layout/LineLength' => {
                           'Max' => 80,
                           'Enabled' => true
                         })
@@ -1638,7 +1638,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                             'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
-                          'Metrics/LineLength' => {
+                          'Layout/LineLength' => {
                             'Max' => 80,
                             'Enabled' => true
                           })
@@ -2185,7 +2185,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                             'EnforcedStyleAlignWith' => 'keyword',
                             'Enabled' => true
                           },
-                          'Metrics/LineLength' => {
+                          'Layout/LineLength' => {
                             'Max' => 80,
                             'Enabled' => true
                           })

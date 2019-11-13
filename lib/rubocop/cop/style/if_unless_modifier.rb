@@ -7,7 +7,7 @@ module RuboCop
       # written as modifier `if`/`unless`. The cop also checks for modifier
       # `if`/`unless` lines that exceed the maximum line length.
       #
-      # The maximum line length is configured in the `Metrics/LineLength`
+      # The maximum line length is configured in the `Layout/LineLength`
       # cop. The tab size is configured in the `IndentationWidth` of the
       # `Layout/Tab` cop.
       #
@@ -69,7 +69,7 @@ module RuboCop
         private
 
         def ignored_patterns
-          config.for_cop('Metrics/LineLength')['IgnoredPatterns'] || []
+          config.for_cop('Layout/LineLength')['IgnoredPatterns'] || []
         end
 
         def too_long_single_line?(node)
@@ -113,7 +113,7 @@ module RuboCop
 
         def line_length_enabled_at_line?(line)
           processed_source.comment_config
-                          .cop_enabled_at_line?('Metrics/LineLength', line)
+                          .cop_enabled_at_line?('Layout/LineLength', line)
         end
 
         def named_capture_in_condition?(node)

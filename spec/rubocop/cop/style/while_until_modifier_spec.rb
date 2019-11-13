@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Metrics/LineLength' => { 'Max' => 80 })
+    RuboCop::Config.new('Layout/LineLength' => { 'Max' => 80 })
   end
 
   it "accepts multiline unless that doesn't fit on one line" do
@@ -110,10 +110,10 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier do
     end
   end
 
-  context 'when Metrics/LineLength is disabled' do
+  context 'when Layout/LineLength is disabled' do
     let(:config) do
       RuboCop::Config.new(
-        'Metrics/LineLength' => {
+        'Layout/LineLength' => {
           'Enabled' => false,
           'Max' => 80
         }
