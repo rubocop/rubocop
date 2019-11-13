@@ -8,7 +8,6 @@ module RuboCop
       'Layout/AlignArray' => 'Layout/ArrayAlignment',
       'Layout/AlignHash' => 'Layout/HashAlignment',
       'Layout/AlignParameters' => 'Layout/ParameterAlignment',
-      'Layout/FirstParameterIndentation' => 'Layout/FirstArgumentIndentation',
       'Layout/IndentArray' => 'Layout/FirstArrayElementIndentation',
       'Layout/IndentAssignment' => 'Layout/AssignmentIndentation',
       'Layout/IndentFirstArgument' => 'Layout/FirstArgumentIndentation',
