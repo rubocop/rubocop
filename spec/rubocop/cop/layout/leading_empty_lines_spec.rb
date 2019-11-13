@@ -30,81 +30,60 @@ RSpec.describe RuboCop::Cop::Layout::LeadingEmptyLines, :config do
     RUBY
   end
 
-  it 'registers an offense when there is a new line before a class' do
+  it 'registers an offense and corrects a new line before a class' do
     expect_offense(<<~RUBY)
 
       class Foo
       ^^^^^ Unnecessary blank line at the beginning of the source.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+      end
+    RUBY
   end
 
-  it 'registers an offense when there is a new line before code' do
+  it 'registers an offense and corrects a new line before code' do
     expect_offense(<<~RUBY)
 
       puts 1
       ^^^^ Unnecessary blank line at the beginning of the source.
     RUBY
+
+    expect_correction(<<~RUBY)
+      puts 1
+    RUBY
   end
 
-  it 'registers an offense when there is a new line before a comment' do
+  it 'registers an offense and corrects a new line before a comment' do
     expect_offense(<<~RUBY)
 
       # something
       ^^^^^^^^^^^ Unnecessary blank line at the beginning of the source.
     RUBY
+
+    expect_correction(<<~RUBY)
+      # something
+    RUBY
+  end
+
+  it 'registers an offense and corrects multiple new lines before a class' do
+    expect_offense(<<~RUBY)
+
+
+      class Foo
+      ^^^^^ Unnecessary blank line at the beginning of the source.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+      end
+    RUBY
   end
 
   context 'auto-correct' do
-    it 'removes new lines before a class' do
-      new_source = autocorrect_source(<<~RUBY)
-
-        class Foo
-        end
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        class Foo
-        end
-      RUBY
-    end
-
-    it 'removes new lines before code' do
-      new_source = autocorrect_source(<<~RUBY)
-
-        puts 1
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        puts 1
-      RUBY
-    end
-
-    it 'removes new lines before a comment' do
-      new_source = autocorrect_source(<<~RUBY)
-
-        # something
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        # something
-      RUBY
-    end
-
-    it 'removes multiple new lines' do
-      new_source = autocorrect_source(<<~RUBY)
-
-
-        class Foo
-        end
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        class Foo
-        end
-      RUBY
-    end
-
     context 'in collaboration' do
       let(:config) do
         RuboCop::Config.new('Layout/SpaceAroundEqualsInParameterDefault' => {

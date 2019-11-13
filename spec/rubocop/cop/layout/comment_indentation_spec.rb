@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
       expect_no_offenses('hello # comment')
     end
 
-    it 'accepts a documentation comment' do
+    it 'registers an offense and corrects a documentation comment' do
       expect_offense(<<~RUBY)
         =begin
         Doc comment
@@ -28,19 +28,38 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
          ^ Incorrect indentation detected (column 1 instead of 0).
         hi
       RUBY
+
+      expect_correction(<<~RUBY)
+        =begin
+        Doc comment
+        =end
+          hello
+        #
+        hi
+      RUBY
     end
 
-    it 'registers an offense for an incorrectly indented (1) comment' do
+    it 'registers an offense and corrects an incorrectly ' \
+      'indented (1) comment' do
       expect_offense(<<-RUBY.strip_margin('|'))
         | # comment
         | ^^^^^^^^^ Incorrect indentation detected (column 1 instead of 0).
       RUBY
+
+      expect_correction(<<-RUBY.strip_margin('|'))
+        |# comment
+      RUBY
     end
 
-    it 'registers an offense for an incorrectly indented (2) comment' do
+    it 'registers an offense and corrects an incorrectly ' \
+      'indented (2) comment' do
       expect_offense(<<-RUBY.strip_margin('|'))
         |  # comment
         |  ^^^^^^^^^ Incorrect indentation detected (column 2 instead of 0).
+      RUBY
+
+      expect_correction(<<-RUBY.strip_margin('|'))
+        |# comment
       RUBY
     end
 
@@ -58,10 +77,16 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
     end
   end
 
-  it 'registers offenses before __END__ but not after' do
+  it 'registers offenses and corrects before __END__ but not after' do
     expect_offense(<<~RUBY)
        #
        ^ Incorrect indentation detected (column 1 instead of 0).
+      __END__
+        #
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #
       __END__
         #
     RUBY
@@ -169,6 +194,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
           b
         end
     RUBY
+
     expect(new_source).to eq(<<~RUBY)
       # comment
       # comment

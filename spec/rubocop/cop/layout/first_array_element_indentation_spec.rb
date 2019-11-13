@@ -26,33 +26,31 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
       RUBY
     end
 
-    it 'registers an offense for incorrectly indented first element' do
+    it 'registers an offense and corrects incorrectly indented first element' do
       expect_offense(<<~RUBY)
         a << [
          1
          ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
         ]
       RUBY
-    end
 
-    it 'auto-corrects incorrectly indented first element' do
-      corrected = autocorrect_source(<<~RUBY)
-        a << [
-         1
-        ]
-      RUBY
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         a << [
           1
         ]
       RUBY
     end
 
-    it 'registers an offense for incorrectly indented ]' do
+    it 'registers an offense and corrects incorrectly indented ]' do
       expect_offense(<<~RUBY)
         a << [
           ]
           ^ Indent the right bracket the same as the start of the line where the left bracket is.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a << [
+        ]
       RUBY
     end
 
@@ -67,11 +65,17 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
         RUBY
       end
 
-      it 'registers an offense for incorrectly indented first element' do
+      it 'registers an offense and corrects incorrectly indented 1st element' do
         expect_offense(<<~RUBY)
           a << [
             1
             ^ Use 4 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a << [
+              1
           ]
         RUBY
       end
@@ -89,7 +93,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
       RUBY
     end
 
-    it 'registers an offense for incorrectly indented first element' do
+    it 'registers an offense and corrects incorrectly indented first element' do
       expect_offense(<<~RUBY)
         config.rack_cache = [
         "rails:/",
@@ -98,11 +102,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
         false
         ]
       RUBY
+
+      expect_correction(<<~RUBY)
+        config.rack_cache = [
+          "rails:/",
+        "rails:/",
+        false
+        ]
+      RUBY
     end
   end
 
   context 'when array is right hand side in assignment' do
-    it 'registers an offense for incorrectly indented first element' do
+    it 'registers an offense and corrects incorrectly indented first element' do
       expect_offense(<<~RUBY)
         a = [
             1,
@@ -111,17 +123,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
          3
         ]
       RUBY
-    end
 
-    it 'auto-corrects incorrectly indented first element' do
-      corrected = autocorrect_source(<<~RUBY)
-        a = [
-            1,
-          2,
-         3
-        ]
-      RUBY
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         a = [
           1,
           2,
@@ -193,7 +196,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
           RUBY
         end
 
-        it "registers an offense for 'consistent' indentation" do
+        it "registers an offense and corrects 'consistent' indentation" do
           expect_offense(<<~RUBY)
             func([
               1
@@ -201,10 +204,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
             ])
             ^ Indent the right bracket the same as the first position after the preceding left parenthesis.
           RUBY
+
+          expect_correction(<<~RUBY)
+            func([
+                   1
+                 ])
+          RUBY
         end
 
         context 'when using safe navigation operator' do
-          it "registers an offense for 'consistent' indentation" do
+          it "registers an offense and corrects 'consistent' indentation" do
             expect_offense(<<~RUBY)
               receiver&.func([
                 1
@@ -212,10 +221,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
               ])
               ^ Indent the right bracket the same as the first position after the preceding left parenthesis.
             RUBY
+
+            expect_correction(<<~RUBY)
+              receiver&.func([
+                               1
+                             ])
+            RUBY
           end
         end
 
-        it "registers an offense for 'align_brackets' indentation" do
+        it "registers an offense and corrects 'align_brackets' indentation" do
           expect_offense(<<~RUBY)
             var = [
                     1
@@ -223,18 +238,11 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
                   ]
                   ^ Indent the right bracket the same as the start of the line where the left bracket is.
           RUBY
-        end
 
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            func([
+          expect_correction(<<~RUBY)
+            var = [
               1
-            ])
-          RUBY
-          expect(corrected).to eq <<~RUBY
-            func([
-                   1
-                 ])
+            ]
           RUBY
         end
 
@@ -279,13 +287,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
           RUBY
         end
 
-        it 'registers an offense for incorrect indentation' do
+        it 'registers an offense and corrects incorrect indentation' do
           expect_offense(<<~RUBY)
             func([
                    1
                    ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
                  ])
                  ^ Indent the right bracket the same as the start of the line where the left bracket is.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            func([
+              1
+            ])
           RUBY
         end
 
@@ -314,12 +328,17 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
         RUBY
       end
 
-      it 'registers an offense for incorrectly indented multi-line array ' \
-         'with brackets' do
+      it 'registers an offense and corrects incorrectly indented multi-line ' \
+        'array with brackets' do
         expect_offense(<<~RUBY)
           func x, [
                  1, 2]
                  ^ Use 2 spaces for indentation in an array, relative to the start of the line where the left square bracket is.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          func x, [
+            1, 2]
         RUBY
       end
     end
@@ -368,7 +387,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
     end
 
     context "when 'consistent' style is used" do
-      it 'registers an offense for incorrect indentation' do
+      it 'registers an offense and corrects incorrect indentation' do
         expect_offense(<<~RUBY)
           func([
             1
@@ -376,17 +395,24 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
           ])
           ^ Indent the right bracket the same as the left bracket.
         RUBY
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'consistent')
+
+        expect_correction(<<~RUBY)
+          func([
+                 1
+               ])
+        RUBY
       end
 
-      it 'auto-corrects incorrectly indented first element' do
-        corrected = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects incorrectly indented 1st element' do
+        expect_offense(<<~RUBY)
           var = [
             1
+            ^ Use 2 spaces for indentation in an array, relative to the position of the opening bracket.
           ]
+          ^ Indent the right bracket the same as the left bracket.
         RUBY
-        expect(corrected).to eq <<~RUBY
+
+        expect_correction(<<~RUBY)
           var = [
                   1
                 ]
@@ -395,7 +421,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
     end
 
     context "when 'special_inside_parentheses' style is used" do
-      it 'registers an offense for incorrect indentation' do
+      it 'registers an offense and corrects incorrect indentation' do
         expect_offense(<<~RUBY)
           var = [
             1
@@ -406,14 +432,28 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
                  1
                ])
         RUBY
+
+        expect_correction(<<~RUBY)
+          var = [
+                  1
+                ]
+          func([
+                 1
+               ])
+        RUBY
       end
     end
 
-    it 'registers an offense for incorrectly indented ]' do
+    it 'registers an offense and corrects incorrectly indented ]' do
       expect_offense(<<~RUBY)
         a << [
           ]
           ^ Indent the right bracket the same as the left bracket.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a << [
+             ]
       RUBY
     end
 
@@ -428,13 +468,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
         RUBY
       end
 
-      it 'autocorrects indentation which does not match IndentationWidth' do
-        new_source = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects indentation ' \
+        'that does not match IndentationWidth' do
+        expect_offense(<<~RUBY)
           a = [
                 1
+                ^ Use 4 spaces for indentation in an array, relative to the position of the opening bracket.
               ]
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           a = [
                   1
               ]

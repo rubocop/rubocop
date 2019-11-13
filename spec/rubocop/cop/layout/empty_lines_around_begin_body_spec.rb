@@ -8,12 +8,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
   shared_examples 'offense' do |name, message, code, correction|
     it "registers an offense for #{name} with a blank" do
       inspect_source(code)
-      message = "Extra empty line detected at `begin` body #{message}."
-      expect(cop.messages).to eq([message])
+      expect(cop.messages)
+        .to eq(["Extra empty line detected at `begin` body #{message}."])
     end
 
     it "autocorrects for #{name} with a blank" do
       corrected = autocorrect_source(code)
+
       expect(corrected).to eq(correction)
     end
   end
@@ -35,6 +36,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       foo
     end
   CORRECTION
+
   include_examples 'offense', 'begin body ending', 'end', <<-CODE, <<-CORRECTION
     begin
       foo
@@ -45,6 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       foo
     end
   CORRECTION
+
   include_examples 'offense',
                    'begin body starting in method', 'beginning',
                    <<-CODE, <<-CORRECTION
@@ -61,6 +64,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       end
     end
   CORRECTION
+
   include_examples 'offense',
                    'begin body ending in method', 'end', <<-CODE, <<-CORRECTION
     def bar
@@ -93,6 +97,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       bar
     end
   CORRECTION
+
   include_examples 'offense',
                    'rescue body ending', 'end',
                    <<-CODE, <<-CORRECTION
@@ -128,6 +133,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       baz
     end
   CORRECTION
+
   include_examples 'offense',
                    'ensure body ending', 'end',
                    <<-CODE, <<-CORRECTION
@@ -163,6 +169,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
       end
     RUBY
+
     let(:correction) { <<~RUBY }
       begin
         do_something1
@@ -195,6 +202,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       foo
     end
   RUBY
+
   include_examples 'accepts',
                    'begin block without empty line in a method', <<-RUBY
     def foo
