@@ -1522,9 +1522,9 @@ it depends on the results of all other cops to do its work.
 
 ```ruby
 # bad
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 x += 1
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
 
 # good
 x += 1
@@ -1547,21 +1547,21 @@ that cop checks whether any cop was actually enabled.
 ```ruby
 # bad
 foo = 1
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
 
 # good
 foo = 1
 ```
 ```ruby
 # bad
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
 baz
 # rubocop:enable all
 
 # good
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
 # rubocop:enable all
 baz

@@ -800,6 +800,29 @@ Layout/LeadingEmptyLines:
   VersionAdded: '0.57'
   VersionChanged: '0.77'
 
+Layout/LineLength:
+  Description: 'Limit lines to 80 characters.'
+  StyleGuide: '#80-character-limits'
+  Enabled: true
+  VersionAdded: '0.25'
+  VersionChanged: '0.78'
+  AutoCorrect: false
+  Max: 80
+  # To make it possible to copy or click on URIs in the code, we allow lines
+  # containing a URI to be longer than Max.
+  AllowHeredoc: true
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+  # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
+  # directives like '# rubocop: enable ...' when calculating a line's length.
+  IgnoreCopDirectives: true
+  # The IgnoredPatterns option is a list of !ruby/regexp and/or string
+  # elements. Strings will be converted to Regexp objects. A line that matches
+  # any regular expression listed in this option will be ignored by LineLength.
+  IgnoredPatterns: []
+
 Layout/MultilineArrayBraceLayout:
   Description: >-
                  Checks that the closing brace in an array literal is
@@ -1809,29 +1832,6 @@ Metrics/CyclomaticComplexity:
   Enabled: true
   VersionAdded: '0.25'
   Max: 6
-
-Metrics/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  StyleGuide: '#80-character-limits'
-  Enabled: true
-  VersionAdded: '0.25'
-  VersionChanged: '0.68'
-  AutoCorrect: false
-  Max: 80
-  # To make it possible to copy or click on URIs in the code, we allow lines
-  # containing a URI to be longer than Max.
-  AllowHeredoc: true
-  AllowURI: true
-  URISchemes:
-    - http
-    - https
-  # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
-  # directives like '# rubocop: enable ...' when calculating a line's length.
-  IgnoreCopDirectives: true
-  # The IgnoredPatterns option is a list of !ruby/regexp and/or string
-  # elements. Strings will be converted to Regexp objects. A line that matches
-  # any regular expression listed in this option will be ignored by LineLength.
-  IgnoredPatterns: []
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'

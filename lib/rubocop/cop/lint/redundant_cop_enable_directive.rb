@@ -15,20 +15,20 @@ module RuboCop
       # @example
       #   # bad
       #   foo = 1
-      #   # rubocop:enable Metrics/LineLength
+      #   # rubocop:enable Layout/LineLength
       #
       #   # good
       #   foo = 1
       # @example
       #   # bad
-      #   # rubocop:disable Metrics/LineLength
+      #   # rubocop:disable Layout/LineLength
       #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-      #   # rubocop:enable Metrics/LineLength
+      #   # rubocop:enable Layout/LineLength
       #   baz
       #   # rubocop:enable all
       #
       #   # good
-      #   # rubocop:disable Metrics/LineLength
+      #   # rubocop:disable Layout/LineLength
       #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
       #   # rubocop:enable all
       #   baz

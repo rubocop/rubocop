@@ -22,7 +22,7 @@ RSpec.describe RuboCop::CommentConfig do
         '',
         'def some_method',
         "  puts 'Disabling indented single line' # rubocop:disable " \
-        'Metrics/LineLength',
+        'Layout/LineLength',
         'end',
         '',                                                  # 18
         'string = <<END',
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'handles indented single line' do
-      line_length_disabled_lines = disabled_lines_of_cop('Metrics/LineLength')
+      line_length_disabled_lines = disabled_lines_of_cop('Layout/LineLength')
       expect(line_length_disabled_lines).to include(16)
       expect(line_length_disabled_lines).not_to include(18)
     end

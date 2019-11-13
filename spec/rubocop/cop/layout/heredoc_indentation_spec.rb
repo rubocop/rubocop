@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
   let(:allow_heredoc) { true }
   let(:other_cops) do
     {
-      'Metrics/LineLength' => { 'Max' => 5, 'AllowHeredoc' => allow_heredoc }
+      'Layout/LineLength' => { 'Max' => 5, 'AllowHeredoc' => allow_heredoc }
     }
   end
 
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
         RUBY2
       RUBY
 
-      context 'when Metrics/LineLength is configured' do
+      context 'when Layout/LineLength is configured' do
         let(:allow_heredoc) { false }
 
         include_examples 'offense', 'short heredoc', <<~RUBY, <<~CORRECTION

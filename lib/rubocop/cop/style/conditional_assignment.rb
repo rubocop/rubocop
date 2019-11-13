@@ -212,7 +212,7 @@ module RuboCop
           %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
                            %i[and_asgn or_asgn op_asgn masgn].freeze
-        LINE_LENGTH = 'Metrics/LineLength'
+        LINE_LENGTH = 'Layout/LineLength'
         INDENTATION_WIDTH = 'Layout/IndentationWidth'
         ENABLED = 'Enabled'
         MAX = 'Max'
@@ -376,7 +376,7 @@ module RuboCop
             assignment_types_match?(*statements)
         end
 
-        # If `Metrics/LineLength` is enabled, we do not want to introduce an
+        # If `Layout/LineLength` is enabled, we do not want to introduce an
         # offense by auto-correcting this cop. Find the max configured line
         # length. Find the longest line of condition. Remove the assignment
         # from lines that contain the offending assignment because after

@@ -259,9 +259,9 @@ RSpec.describe RuboCop::ConfigObsoletion do
           obsolete parameter AutoCorrectEncodingComment (for Style/Encoding) found in example/.rubocop.yml
           Style/Encoding no longer supports styles. The "never" behavior is always assumed.
           obsolete parameter MaxLineLength (for Style/IfUnlessModifier) found in example/.rubocop.yml
-          `Style/IfUnlessModifier: MaxLineLength` has been removed. Use `Metrics/LineLength: Max` instead
+          `Style/IfUnlessModifier: MaxLineLength` has been removed. Use `Layout/LineLength: Max` instead
           obsolete parameter MaxLineLength (for Style/WhileUntilModifier) found in example/.rubocop.yml
-          `Style/WhileUntilModifier: MaxLineLength` has been removed. Use `Metrics/LineLength: Max` instead
+          `Style/WhileUntilModifier: MaxLineLength` has been removed. Use `Layout/LineLength: Max` instead
           obsolete parameter RunRailsCops (for AllCops) found in example/.rubocop.yml
           Use the following configuration instead:
           Rails:

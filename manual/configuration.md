@@ -15,7 +15,7 @@ inherit_from: ../.rubocop.yml
 Style/Encoding:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 99
 ```
 
@@ -402,7 +402,7 @@ for every cop.
 Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
 
 ```yaml
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 ```
 
@@ -455,7 +455,7 @@ Metrics/CyclomaticComplexity:
 Individual cops can be embellished with extra details in offense messages:
 
 ```yaml
-Metrics/LineLength:
+Layout/LineLength:
   Details: >-
     If lines are too short, text becomes hard to read because you must
     constantly jump from one line to the next while reading. If lines are too
@@ -552,9 +552,9 @@ One or more individual cops can be disabled locally in a section of a
 file by adding a comment such as
 
 ```ruby
-# rubocop:disable Metrics/LineLength, Style/StringLiterals
+# rubocop:disable Layout/LineLength, Style/StringLiterals
 [...]
-# rubocop:enable Metrics/LineLength, Style/StringLiterals
+# rubocop:enable Layout/LineLength, Style/StringLiterals
 ```
 
 You can also disable *all* cops with
@@ -569,9 +569,9 @@ In cases where you want to differentiate intentional disabled vs disables that
 you'd like to revisit later, you can use disable:todo as an alias of rubocop:disable.
 
 ```ruby
-# rubocop:todo Metrics/LineLength, Style/StringLiterals
+# rubocop:todo Layout/LineLength, Style/StringLiterals
 [...]
-# rubocop:enable Metrics/LineLength, Style/StringLiterals
+# rubocop:enable Layout/LineLength, Style/StringLiterals
 ```
 
 One or more cops can be disabled on a single line with an end-of-line

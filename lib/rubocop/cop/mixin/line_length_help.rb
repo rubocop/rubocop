@@ -7,7 +7,7 @@ module RuboCop
       private
 
       def ignore_cop_directives?
-        config.for_cop('Metrics/LineLength')['IgnoreCopDirectives']
+        config.for_cop('Layout/LineLength')['IgnoreCopDirectives']
       end
 
       def directive_on_source_line?(line_index)
@@ -22,7 +22,7 @@ module RuboCop
       end
 
       def allow_uri?
-        config.for_cop('Metrics/LineLength')['AllowURI']
+        config.for_cop('Layout/LineLength')['AllowURI']
       end
 
       def allowed_uri_position?(line, uri_range)
@@ -69,7 +69,7 @@ module RuboCop
       def uri_regexp
         @uri_regexp ||=
           URI::DEFAULT_PARSER
-          .make_regexp(config.for_cop('Metrics/LineLength')['URISchemes'])
+          .make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
       end
 
       def valid_uri?(uri_ish_string)

@@ -7,13 +7,13 @@ module RuboCop
       class AutoGenerateConfig < Base
         self.command_name = :auto_gen_config
 
-        PHASE_1 = 'Phase 1 of 2: run Metrics/LineLength cop'
+        PHASE_1 = 'Phase 1 of 2: run Layout/LineLength cop'
         PHASE_2 = 'Phase 2 of 2: run all cops'
 
         PHASE_1_OVERRIDDEN =
-          '(skipped because the default Metrics/LineLength:Max is overridden)'
+          '(skipped because the default Layout/LineLength:Max is overridden)'
         PHASE_1_DISABLED =
-          '(skipped because Metrics/LineLength is disabled)'
+          '(skipped because Layout/LineLength is disabled)'
 
         def run
           add_formatter
@@ -54,15 +54,15 @@ module RuboCop
         end
 
         def line_length_cop(config)
-          config.for_cop('Metrics/LineLength')
+          config.for_cop('Layout/LineLength')
         end
 
-        # Do an initial run with only Metrics/LineLength so that cops that
-        # depend on Metrics/LineLength:Max get the correct value for that
+        # Do an initial run with only Layout/LineLength so that cops that
+        # depend on Layout/LineLength:Max get the correct value for that
         # parameter.
         def run_line_length_cop
           puts Rainbow(PHASE_1).yellow
-          @options[:only] = ['Metrics/LineLength']
+          @options[:only] = ['Layout/LineLength']
           execute_runner
           @options.delete(:only)
           @config_store = ConfigStore.new

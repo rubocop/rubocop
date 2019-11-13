@@ -2494,9 +2494,9 @@ are indented one step.
 In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
 use the older rubies, you should introduce some library to your project
 (e.g. ActiveSupport, Powerpack or Unindent).
-Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
+Note: When `Layout/LineLength`'s `AllowHeredoc` is false (not default),
       this cop does not add any offenses for long here documents to
-      avoid `Metrics/LineLength`'s offenses.
+      avoid `Layout/LineLength`'s offenses.
 
 ### Examples
 
@@ -2865,6 +2865,78 @@ end
 # (start of file)
 # a comment
 ```
+
+## Layout/LineLength
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.25 | 0.78
+
+This cop checks the length of lines in the source code.
+The maximum length is configurable.
+The tab size is configured in the `IndentationWidth`
+of the `Layout/Tab` cop.
+It also ignores a shebang line by default.
+
+This cop has some autocorrection capabilities.
+It can programmatically shorten certain long lines by
+inserting line breaks into expressions that can be safely
+split across lines. These include arrays, hashes, and
+method calls with argument lists.
+
+If autocorrection is enabled, the following Layout cops
+are recommended to further format the broken lines.
+
+  - ParameterAlignment
+  - ArgumentAlignment
+  - ClosingParenthesisIndentation
+  - FirstArgumentIndentation
+  - FirstArrayElementIndentation
+  - FirstHashElementIndentation
+  - FirstParameterIndentation
+  - HashAlignment
+  - MultilineArrayLineBreaks
+  - MultilineHashBraceLayout
+  - MultilineHashKeyLineBreaks
+  - MultilineMethodArgumentLineBreaks
+
+Together, these cops will pretty print hashes, arrays,
+method calls, etc. For example, let's say the max columns
+is 25:
+
+### Examples
+
+```ruby
+# bad
+{foo: "0000000000", bar: "0000000000", baz: "0000000000"}
+
+# good
+{foo: "0000000000",
+bar: "0000000000", baz: "0000000000"}
+
+# good (with recommended cops enabled)
+{
+  foo: "0000000000",
+  bar: "0000000000",
+  baz: "0000000000",
+}
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
+Max | `80` | Integer
+AllowHeredoc | `true` | Boolean
+AllowURI | `true` | Boolean
+URISchemes | `http`, `https` | Array
+IgnoreCopDirectives | `true` | Boolean
+IgnoredPatterns | `[]` | Array
+
+### References
+
+* [https://rubystyle.guide#80-character-limits](https://rubystyle.guide#80-character-limits)
 
 ## Layout/MultilineArrayBraceLayout
 

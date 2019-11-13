@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
+RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
@@ -231,8 +231,8 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     context 'and the source is acceptable length' do
       let(:acceptable_source) { 'a' * 80 }
 
-      context 'with a trailing Rubocop directive' do
-        let(:cop_directive) { ' # rubcop:disable Metrics/SomeCop' }
+      context 'with a trailing RuboCop directive' do
+        let(:cop_directive) { ' # rubcop:disable Layout/SomeCop' }
         let(:source) { acceptable_source + cop_directive }
 
         it 'registers an offense for the line' do
@@ -336,7 +336,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
 
       context 'and the source contains non-directive #s as non-comment' do
         let(:source) { <<-RUBY }
-          LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable Metrics/LineLength
+          LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable Layout/LineLength
         RUBY
 
         it 'registers an offense for the line' do
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
             'Enabled' => false,
             'IndentationWidth' => 2
           },
-          'Metrics/LineLength' => {
+          'Layout/LineLength' => {
             'Max' => 30
           }
         )
@@ -403,7 +403,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
             'Enabled' => false,
             'IndentationWidth' => 2
           },
-          'Metrics/LineLength' => {
+          'Layout/LineLength' => {
             'Max' => 30,
             'AllowURI' => true
           }

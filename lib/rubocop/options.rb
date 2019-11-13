@@ -373,7 +373,7 @@ module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
-    # rubocop:disable Metrics/LineLength
+    # rubocop:disable Layout/LineLength
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
     TEXT = {
@@ -455,6 +455,6 @@ module RuboCop
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
     }.freeze
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
   end
 end

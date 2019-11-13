@@ -19,9 +19,9 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   # rubocop:disable Metrics/LineLength
+      #   # rubocop:disable Layout/LineLength
       #   x += 1
-      #   # rubocop:enable Metrics/LineLength
+      #   # rubocop:enable Layout/LineLength
       #
       #   # good
       #   x += 1

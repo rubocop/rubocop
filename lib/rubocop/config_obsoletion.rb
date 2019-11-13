@@ -48,7 +48,7 @@ module RuboCop
                      Style/VariableName Style/VariableNumber
                      Style/AccessorMethodName Style/AsciiIdentifiers],
       'Layout' => %w[Lint/BlockAlignment Lint/EndAlignment
-                     Lint/DefEndAlignment],
+                     Lint/DefEndAlignment Metrics/LineLength],
       'Lint' => 'Style/FlipFlop'
     }.map do |new_department, old_names|
       Array(old_names).map do |old_name|
@@ -114,13 +114,13 @@ module RuboCop
         cops: 'Style/IfUnlessModifier',
         parameters: 'MaxLineLength',
         alternative: '`Style/IfUnlessModifier: MaxLineLength` has been ' \
-                     'removed. Use `Metrics/LineLength: Max` instead'
+                     'removed. Use `Layout/LineLength: Max` instead'
       },
       {
         cops: 'Style/WhileUntilModifier',
         parameters: 'MaxLineLength',
         alternative: '`Style/WhileUntilModifier: MaxLineLength` has been ' \
-                     'removed. Use `Metrics/LineLength: Max` instead'
+                     'removed. Use `Layout/LineLength: Max` instead'
       },
       {
         cops: 'AllCops',

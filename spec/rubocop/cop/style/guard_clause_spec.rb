@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
   let(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new(
-      'Metrics/LineLength' => {
+      'Layout/LineLength' => {
         'Enabled' => line_length_enabled,
         'Max' => 80
       },

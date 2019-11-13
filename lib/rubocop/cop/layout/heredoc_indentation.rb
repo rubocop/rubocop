@@ -8,9 +8,9 @@ module RuboCop
       # In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
       # use the older rubies, you should introduce some library to your project
       # (e.g. ActiveSupport, Powerpack or Unindent).
-      # Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
+      # Note: When `Layout/LineLength`'s `AllowHeredoc` is false (not default),
       #       this cop does not add any offenses for long here documents to
-      #       avoid `Metrics/LineLength`'s offenses.
+      #       avoid `Layout/LineLength`'s offenses.
       #
       # @example EnforcedStyle: squiggly (default)
       #   # bad
@@ -159,11 +159,11 @@ module RuboCop
         end
 
         def unlimited_heredoc_length?
-          config.for_cop('Metrics/LineLength')['AllowHeredoc']
+          config.for_cop('Layout/LineLength')['AllowHeredoc']
         end
 
         def max_line_length
-          config.for_cop('Metrics/LineLength')['Max']
+          config.for_cop('Layout/LineLength')['Max']
         end
 
         def correct_by_squiggly(node)

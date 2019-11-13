@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::MultipleComparison do
 
   let(:config) { RuboCop::Config.new }
 
-  shared_examples 'Check to use two comparison operator' do |operator1, operator2| # rubocop:disable Metrics/LineLength
+  shared_examples 'Check to use two comparison operator' do |operator1, operator2| # rubocop:disable Layout/LineLength
     bad_source = "x #{operator1} y #{operator2} z"
     good_source = "x #{operator1} y && y #{operator2} z"
 
