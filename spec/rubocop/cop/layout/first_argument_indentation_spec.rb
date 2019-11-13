@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     context 'when IndentationWidth:Width is 2' do
       let(:indentation_width) { 2 }
 
-      it 'registers an offense for an over-indented first argument' do
+      it 'registers an offense and corrects an over-indented first argument' do
         expect_offense(<<~RUBY)
           run(
               :foo,
@@ -27,9 +27,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
               bar: 3
           )
         RUBY
+
+        expect_correction(<<~RUBY)
+          run(
+            :foo,
+              bar: 3
+          )
+        RUBY
       end
 
-      it 'registers an offense for an under-indented first argument' do
+      it 'registers an offense and corrects an under-indented first argument' do
         expect_offense(<<~RUBY)
           run(
            :foo,
@@ -37,9 +44,17 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
               bar: 3
           )
         RUBY
+
+        expect_correction(<<~RUBY)
+          run(
+            :foo,
+              bar: 3
+          )
+        RUBY
       end
 
-      it 'registers an offense on lines affected by another offense' do
+      it 'registers an offense and corrects lines ' \
+        'affected by another offense' do
         expect_offense(<<~RUBY)
           foo(
            bar(
@@ -49,10 +64,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           )
           )
         RUBY
+
+        # The first `)` Will be corrected by IndentationConsistency.
+        expect_correction(<<~RUBY)
+          foo(
+            bar(
+             7
+           )
+          )
+        RUBY
       end
 
       context 'when using safe navigation operator' do
-        it 'registers an offense for an under-indented first argument' do
+        it 'registers an offense and corrects an under-indented 1st argument' do
           expect_offense(<<~RUBY)
             receiver&.run(
              :foo,
@@ -60,26 +84,14 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
                 bar: 3
             )
           RUBY
+
+          expect_correction(<<~RUBY)
+            receiver&.run(
+              :foo,
+                bar: 3
+            )
+          RUBY
         end
-      end
-
-      it 'auto-corrects nested offenses' do
-        new_source = autocorrect_source(<<~RUBY)
-          foo(
-           bar(
-            7
-          )
-          )
-        RUBY
-
-        # The first `)` Will be corrected by IndentationConsistency.
-        expect(new_source).to eq(<<~RUBY)
-          foo(
-            bar(
-             7
-           )
-          )
-        RUBY
       end
 
       context 'for assignment' do
@@ -102,12 +114,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense for an under-indented first argument' do
+          it 'registers an offense and corrects ' \
+            'an under-indented first argument' do
             expect_offense(<<~RUBY)
               @x =
                 run(
                 :foo)
                 ^^^^ Indent the first argument one step more than the start of the previous line.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              @x =
+                run(
+                  :foo)
             RUBY
           end
         end
@@ -130,12 +149,20 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense for an over-indented first argument' do
+        it 'registers an offense and corrects ' \
+          'an over-indented first argument' do
           expect_offense(<<~RUBY)
             puts x.
               merge(
                   b: 2
                   ^^^^ Indent the first argument one step more than the start of the previous line.
+              )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            puts x.
+              merge(
+                b: 2
               )
           RUBY
         end
@@ -162,13 +189,22 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense for an under-indented first argument' do
+          it 'registers an offense and corrects ' \
+            'an under-indented first argument' do
             expect_offense(<<~RUBY)
               puts x.
                 merge(
                 # comment
                 b: 2
                 ^^^^ Indent the first argument one step more than the start of the previous line (not counting the comment).
+                )
+            RUBY
+
+            expect_correction(<<~RUBY)
+              puts x.
+                merge(
+                # comment
+                  b: 2
                 )
             RUBY
           end
@@ -206,35 +242,20 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           ).freeze
         RUBY
       end
-
-      it 'auto-corrects an under-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
-          x =
-            run(
-            :foo,
-              bar: 3
-          )
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          x =
-            run(
-              :foo,
-              bar: 3
-          )
-        RUBY
-      end
     end
 
     context 'when IndentationWidth:Width is 4' do
       let(:indentation_width) { 4 }
 
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects an over-indented first argument' do
+        expect_offense(<<~RUBY)
           run(
                   :foo,
+                  ^^^^ Indent the first argument one step more than the start of the previous line.
               bar: 3)
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           run(
               :foo,
               bar: 3)
@@ -259,13 +280,15 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
 
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects an over-indented first argument' do
+        expect_offense(<<~RUBY)
           run(
                   :foo,
+                  ^^^^ Indent the first argument one step more than the start of the previous line.
               bar: 3)
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           run(
               :foo,
               bar: 3)
@@ -282,11 +305,17 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
 
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
-        it 'registers an offense for an over-indented first argument' do
+        it 'registers an offense and corrects ' \
+          'an over-indented first argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.merge(
                                     bar: 3))
                                     ^^^^^^ Indent the first argument one step more than `defaults.merge(`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            run(:foo, defaults.merge(
+                        bar: 3))
           RUBY
         end
       end
@@ -298,17 +327,6 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
                         bar: 3)
           RUBY
         end
-      end
-
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
-          run(:foo, defaults.merge(
-                                  bar: 3))
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          run(:foo, defaults.merge(
-                      bar: 3))
-        RUBY
       end
     end
   end
@@ -322,20 +340,33 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
 
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
-        it 'registers an offense for an over-indented first argument' do
+        it 'registers an offense and corrects ' \
+          'an over-indented first argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.merge(
                                     bar: 3))
                                     ^^^^^^ Indent the first argument one step more than `defaults.merge(`.
           RUBY
+
+          expect_correction(<<~RUBY)
+            run(:foo, defaults.merge(
+                        bar: 3))
+          RUBY
         end
 
-        it 'registers an offense for an under-indented first argument' do
+        it 'registers an offense and corrects ' \
+          'an under-indented first argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.
                       merge(
               bar: 3))
               ^^^^^^ Indent the first argument one step more than the start of the previous line.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            run(:foo, defaults.
+                      merge(
+                        bar: 3))
           RUBY
         end
 
@@ -368,17 +399,6 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
       end
-
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
-          run(:foo, defaults.merge(
-                                  bar: 3))
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          run(:foo, defaults.merge(
-                      bar: 3))
-        RUBY
-      end
     end
   end
 
@@ -389,11 +409,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     include_examples 'common behavior'
 
     context 'for method calls within method calls' do
-      it 'registers an offense for an over-indented first argument' do
+      it 'registers an offense and corrects an over-indented first argument' do
         expect_offense(<<~RUBY)
           run(:foo, defaults.merge(
                       bar: 3))
                       ^^^^^^ Indent the first argument one step more than the start of the previous line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          run(:foo, defaults.merge(
+            bar: 3))
         RUBY
       end
 
@@ -401,17 +426,6 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         expect_no_offenses(<<~RUBY)
           @diagnostics.process(Diagnostic.new(
             :error, :token, { :token => name }, location))
-        RUBY
-      end
-
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
-          run(:foo, defaults.merge(
-                                  bar: 3))
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          run(:foo, defaults.merge(
-            bar: 3))
         RUBY
       end
     end
@@ -423,7 +437,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     context 'when IndentationWidth:Width is 2' do
       let(:indentation_width) { 2 }
 
-      it 'registers an offense for an over-indented first argument' do
+      it 'registers an offense and corrects an over-indented first argument' do
         expect_offense(<<~RUBY)
           run(
               :foo,
@@ -431,9 +445,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
               bar: 3
           )
         RUBY
+
+        expect_correction(<<~RUBY)
+          run(
+            :foo,
+              bar: 3
+          )
+        RUBY
       end
 
-      it 'registers an offense for an under-indented first argument' do
+      it 'registers an offense and corrects an under-indented first argument' do
         expect_offense(<<~RUBY)
           run(
            :foo,
@@ -441,9 +462,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
               bar: 3
           )
         RUBY
+
+        expect_correction(<<~RUBY)
+          run(
+            :foo,
+              bar: 3
+          )
+        RUBY
       end
 
-      it 'registers an offense on lines affected by another offense' do
+      it 'registers an offense and corrects lines affected by other offenses' do
         expect_offense(<<~RUBY)
           foo(
            bar(
@@ -453,19 +481,9 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           )
           )
         RUBY
-      end
-
-      it 'auto-corrects nested offenses' do
-        new_source = autocorrect_source(<<~RUBY)
-          foo(
-           bar(
-            7
-          )
-          )
-        RUBY
 
         # The first `)` Will be corrected by IndentationConsistency.
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           foo(
             bar(
              7
@@ -475,12 +493,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
       end
 
       context 'for assignment' do
-        it 'accepts a correctly indented first argument and does not care ' \
-           'about the second argument' do
+        it 'register an offense and corrects a correctly indented first ' \
+          'argument and does not care about the second argument' do
           expect_offense(<<~RUBY)
             x = run(
               :foo,
               ^^^^ Indent the first argument one step more than `run(`.
+                bar: 3
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x = run(
+                  :foo,
                 bar: 3
             )
           RUBY
@@ -495,12 +520,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense for an under-indented first argument' do
+          it 'registers an offense and corrects ' \
+            'an under-indented first argument' do
             expect_offense(<<~RUBY)
               @x =
                 run(
                 :foo)
                 ^^^^ Indent the first argument one step more than `run(`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              @x =
+                run(
+                  :foo)
             RUBY
           end
         end
@@ -523,12 +555,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense for an over-indented first argument' do
+        it 'registers an offense and corrects an over-indented 1st argument' do
           expect_offense(<<~RUBY)
             puts x.
               merge(
                   b: 2
                   ^^^^ Indent the first argument one step more than the start of the previous line.
+              )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            puts x.
+              merge(
+                b: 2
               )
           RUBY
         end
@@ -555,13 +594,22 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense for an under-indented first argument' do
+          it 'registers an offense and corrects ' \
+            'an under-indented first argument' do
             expect_offense(<<~RUBY)
               puts x.
                 merge(
                 # comment
                 b: 2
                 ^^^^ Indent the first argument one step more than the start of the previous line (not counting the comment).
+                )
+            RUBY
+
+            expect_correction(<<~RUBY)
+              puts x.
+                merge(
+                # comment
+                  b: 2
                 )
             RUBY
           end
@@ -599,35 +647,20 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
               ).freeze
         RUBY
       end
-
-      it 'auto-corrects an under-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
-          x =
-            run(
-            :foo,
-              bar: 3
-          )
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          x =
-            run(
-              :foo,
-              bar: 3
-          )
-        RUBY
-      end
     end
 
     context 'when IndentationWidth:Width is 4' do
       let(:indentation_width) { 4 }
 
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects an over-indented first argument' do
+        expect_offense(<<~RUBY)
           run(
                   :foo,
+                  ^^^^ Indent the first argument one step more than `run(`.
               bar: 3)
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           run(
               :foo,
               bar: 3)
@@ -653,13 +686,15 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
 
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects an over-indented first argument' do
+        expect_offense(<<~RUBY)
           run(
                   :foo,
+                  ^^^^ Indent the first argument one step more than `run(`.
               bar: 3)
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           run(
               :foo,
               bar: 3)
@@ -671,11 +706,16 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
       let(:indentation_width) { 2 }
 
       context 'with outer parentheses' do
-        it 'registers an offense for an over-indented first argument' do
+        it 'registers an offense and corrects an over-indented 1st argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.merge(
                                     bar: 3))
                                     ^^^^^^ Indent the first argument one step more than `defaults.merge(`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            run(:foo, defaults.merge(
+                        bar: 3))
           RUBY
         end
 
@@ -724,22 +764,6 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
                                   bar: 3))
           RUBY
         end
-      end
-
-      it 'auto-corrects an over-indented first argument' do
-        new_source = autocorrect_source(
-          autocorrect_source(<<~RUBY)
-            run(
-                  :foo, defaults.merge(
-                                        bar: 3))
-          RUBY
-        )
-
-        expect(new_source).to eq(<<~RUBY)
-          run(
-            :foo, defaults.merge(
-                    bar: 3))
-        RUBY
       end
     end
   end

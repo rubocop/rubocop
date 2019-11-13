@@ -10,52 +10,71 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       expect_no_offenses('each { puts }')
     end
 
-    it 'registers an offense for left brace without outer space' do
+    it 'registers an offense and corrects left brace without outer space' do
       expect_offense(<<~RUBY)
         each{ puts }
             ^ Space missing to the left of {.
       RUBY
+
+      expect_correction(<<~RUBY)
+        each { puts }
+      RUBY
     end
 
-    it 'registers an offense for opposite + correct style' do
+    it 'registers an offense and corrects opposite + correct style' do
       expect_offense(<<~RUBY)
         each{ puts }
             ^ Space missing to the left of {.
         each { puts }
       RUBY
+
+      expect_correction(<<~RUBY)
+        each { puts }
+        each { puts }
+      RUBY
     end
 
-    it 'registers an offense for multiline block where left brace has no ' \
-       'outer space' do
+    it 'registers an offense and corrects multiline block where the left ' \
+      'brace has no outer space' do
       expect_offense(<<~RUBY)
         foo.map{ |a|
                ^ Space missing to the left of {.
           a.bar.to_s
         }
       RUBY
-    end
 
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source('each{ puts }')
-      expect(new_source).to eq('each { puts }')
+      expect_correction(<<~RUBY)
+        foo.map { |a|
+          a.bar.to_s
+        }
+      RUBY
     end
   end
 
   context 'when EnforcedStyle is no_space' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
-    it 'registers an offense for braces surrounded by spaces' do
+    it 'registers an offense and corrects braces surrounded by spaces' do
       expect_offense(<<~RUBY)
         each { puts }
             ^ Space detected to the left of {.
       RUBY
+
+      expect_correction(<<~RUBY)
+        each{ puts }
+      RUBY
     end
 
-    it 'registers an offense for correct + opposite style' do
+    it 'registers an offense and corrects correct + opposite style' do
       expect_offense(<<~RUBY)
         each{ puts }
         each { puts }
             ^ Space detected to the left of {.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        each{ puts }
+        each{ puts }
       RUBY
     end
 
@@ -95,16 +114,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       expect_no_offenses('->{}')
     end
 
-    it 'registers an offense for empty braces' do
+    it 'registers an offense and corrects empty braces' do
       expect_offense(<<~RUBY)
         -> {}
           ^ Space detected to the left of {.
       RUBY
-    end
 
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source('-> {}')
-      expect(new_source).to eq('->{}')
+      expect_correction(<<~RUBY)
+        ->{}
+      RUBY
     end
   end
 
@@ -120,16 +138,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       expect_no_offenses('-> {}')
     end
 
-    it 'registers an offense for empty braces' do
+    it 'registers an offense and corrects empty braces' do
       expect_offense(<<~RUBY)
         ->{}
           ^ Space missing to the left of {.
       RUBY
-    end
 
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source('->{}')
-      expect(new_source).to eq('-> {}')
+      expect_correction(<<~RUBY)
+        -> {}
+      RUBY
     end
   end
 

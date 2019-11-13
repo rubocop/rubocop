@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for misaligned array elements' do
+  it 'registers an offense and corrects misaligned array elements' do
     expect_offense(<<~RUBY)
       array = [
         a,
@@ -12,6 +12,15 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
         c,
          d
          ^ Align the elements of an array literal if they span more than one line.
+      ]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array = [
+        a,
+        b,
+        c,
+        d
       ]
     RUBY
   end
@@ -45,35 +54,18 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
     RUBY
   end
 
-  it 'auto-corrects alignment' do
-    new_source = autocorrect_source(<<~RUBY)
-      array = [
-        a,
-         b,
-        c,
-       d
-      ]
-    RUBY
-    expect(new_source).to eq(<<~RUBY)
-      array = [
-        a,
-        b,
-        c,
-        d
-      ]
-    RUBY
-  end
-
   it 'does not auto-correct array within array with too much indentation' do
-    original_source = <<~RUBY
+    expect_offense(<<~RUBY)
       [:l1,
         [:l2,
+        ^^^^^ Align the elements of an array literal if they span more than one line.
 
           [:l3,
+          ^^^^^ Align the elements of an array literal if they span more than one line.
            [:l4]]]]
     RUBY
-    new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       [:l1,
        [:l2,
 
@@ -83,15 +75,17 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
   end
 
   it 'does not auto-correct array within array with too little indentation' do
-    original_source = <<~RUBY
+    expect_offense(<<~RUBY)
       [:l1,
       [:l2,
+      ^^^^^ Align the elements of an array literal if they span more than one line.
 
         [:l3,
+        ^^^^^ Align the elements of an array literal if they span more than one line.
          [:l4]]]]
     RUBY
-    new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       [:l1,
        [:l2,
 
@@ -100,17 +94,8 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
     RUBY
   end
 
-  it 'auto-corrects only elements that begin a line' do
-    original_source = <<~RUBY
-      array = [:bar, {
-               whiz: 2, bang: 3 }, option: 3]
-    RUBY
-    new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(original_source)
-  end
-
   it 'does not indent heredoc strings in autocorrect' do
-    original_source = <<~RUBY
+    expect_offense(<<~RUBY)
       var = [
              { :type => 'something',
                :sql => <<EOF
@@ -119,6 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
       EOF
              },
             { :type => 'something',
+            ^^^^^^^^^^^^^^^^^^^^^^^ Align the elements of an array literal if they span more than one line.
               :sql => <<EOF
       Select something
       from atable
@@ -126,8 +112,8 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
             }
       ]
     RUBY
-    new_source = autocorrect_source(original_source)
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       var = [
              { :type => 'something',
                :sql => <<EOF

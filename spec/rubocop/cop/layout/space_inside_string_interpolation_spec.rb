@@ -84,20 +84,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     context 'for well-formatted string interpolations' do
-      let(:source) do
-        <<~'RUBY'
+      it 'accepts excess literal spacing' do
+        expect_no_offenses(<<~'RUBY')
           "Variable is    #{var}      "
           "  Variable is  #{var}"
         RUBY
-      end
-
-      it 'does not register an offense for excess literal spacing' do
-        expect_no_offenses(source)
-      end
-
-      it 'does not correct valid string interpolations' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
       end
     end
 
@@ -173,20 +164,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     context 'for well-formatted string interpolations' do
-      let(:source) do
-        <<~'RUBY'
+      it 'does not register an offense for excess literal spacing' do
+        expect_no_offenses(<<~'RUBY')
           "Variable is    #{ var }      "
           "  Variable is  #{ var }"
         RUBY
-      end
-
-      it 'does not register an offense for excess literal spacing' do
-        expect_no_offenses(source)
-      end
-
-      it 'does not correct valid string interpolations' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
       end
     end
 

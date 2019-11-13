@@ -108,7 +108,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
 
     context 'invalid indentation on multi-line defs' do
       context 'normal arguments' do
-        it 'detects incorrectly indented first element' do
+        it 'registers an offense and corrects incorrectly indented ' \
+          'first element' do
           expect_offense(<<~RUBY)
             def abc(
                         foo,
@@ -119,19 +120,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
               foo
             end
           RUBY
-        end
 
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            def abc(
-                        foo,
-                        bar,
-                        baz
-            )
-              foo
-            end
-          RUBY
-          expect(corrected).to eq <<~RUBY
+          expect_correction(<<~RUBY)
             def abc(
               foo,
                         bar,
@@ -144,7 +134,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments' do
-        it 'detects incorrectly indented first element' do
+        it 'registers an offense and corrects incorrectly indented ' \
+          'first element' do
           expect_offense(<<~RUBY)
             def abc(
                       foo: 1,
@@ -155,22 +146,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
               foo
             end
           RUBY
-        end
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            def abc(
-                        foo: 1,
-                        bar: 3,
-                        baz: 3
-            )
-              foo
-            end
-          RUBY
-          expect(corrected).to eq <<~RUBY
+
+          expect_correction(<<~RUBY)
             def abc(
               foo: 1,
-                        bar: 3,
-                        baz: 3
+                      bar: 3,
+                      baz: 3
             )
               foo
             end
@@ -179,7 +160,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments static method def' do
-        it 'detects incorrectly indented first element' do
+        it 'registers an offense and corrects incorrectly indented ' \
+          'first element' do
           expect_offense(<<~RUBY)
             def self.abc(
                       foo: 1,
@@ -190,22 +172,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
               foo
             end
           RUBY
-        end
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            def self.abc(
-                        foo: 1,
-                        bar: 3,
-                        baz: 3
-            )
-              foo
-            end
-          RUBY
-          expect(corrected).to eq <<~RUBY
+
+          expect_correction(<<~RUBY)
             def self.abc(
               foo: 1,
-                        bar: 3,
-                        baz: 3
+                      bar: 3,
+                      baz: 3
             )
               foo
             end
@@ -282,7 +254,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
 
     context 'invalid indentation on multi-line defs' do
       context 'normal arguments' do
-        it 'detects incorrectly indented first element' do
+        it 'registers an offense and corrects incorrectly indented ' \
+          'first element' do
           expect_offense(<<~RUBY)
             def abc(
                         foo,
@@ -293,19 +266,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
               foo
             end
           RUBY
-        end
 
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            def abc(
-                        foo,
-                        bar,
-                        baz
-            )
-              foo
-            end
-          RUBY
-          expect(corrected).to eq <<~RUBY
+          expect_correction(<<~RUBY)
             def abc(
                      foo,
                         bar,
@@ -318,7 +280,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments' do
-        it 'detects incorrectly indented first element' do
+        it 'registers an offense and corrects incorrectly indented ' \
+          'first element' do
           expect_offense(<<~RUBY)
             def abc(
                       foo: 1,
@@ -329,22 +292,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
               foo
             end
           RUBY
-        end
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            def abc(
-                        foo: 1,
-                        bar: 3,
-                        baz: 3
-            )
-              foo
-            end
-          RUBY
-          expect(corrected).to eq <<~RUBY
+
+          expect_correction(<<~RUBY)
             def abc(
                      foo: 1,
-                        bar: 3,
-                        baz: 3
+                      bar: 3,
+                      baz: 3
             )
               foo
             end
@@ -353,7 +306,8 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments static def' do
-        it 'detects incorrectly indented first element' do
+        it 'registers an offense and corrects incorrectly indented ' \
+          'first element' do
           expect_offense(<<~RUBY)
             def self.abc(
                       foo: 1,
@@ -364,22 +318,12 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
               foo
             end
           RUBY
-        end
-        it 'auto-corrects incorrectly indented first element' do
-          corrected = autocorrect_source(<<~RUBY)
-            def self.abc(
-                        foo: 1,
-                        bar: 3,
-                        baz: 3
-            )
-              foo
-            end
-          RUBY
-          expect(corrected).to eq <<~RUBY
+
+          expect_correction(<<~RUBY)
             def self.abc(
                           foo: 1,
-                        bar: 3,
-                        baz: 3
+                      bar: 3,
+                      baz: 3
             )
               foo
             end

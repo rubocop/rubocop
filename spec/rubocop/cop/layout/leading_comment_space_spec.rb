@@ -3,10 +3,14 @@
 RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
   subject(:cop) { described_class.new(config) }
 
-  it 'registers an offense for comment without leading space' do
+  it 'registers an offense and corrects comment without leading space' do
     expect_offense(<<~RUBY)
       #missing space
       ^^^^^^^^^^^^^^ Missing space after `#`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # missing space
     RUBY
   end
 
@@ -33,11 +37,16 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
     RUBY
   end
 
-  it 'registers an offense for #! after the first line' do
+  it 'registers an offense and corrects #! after the first line' do
     expect_offense(<<~RUBY)
       test
       #!/usr/bin/ruby
       ^^^^^^^^^^^^^^^ Missing space after `#`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test
+      # !/usr/bin/ruby
     RUBY
   end
 
@@ -49,29 +58,44 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
       RUBY
     end
 
-    it 'registers an offense for #\ after the first line' do
-      expect_offense(<<~'RUBY', 'config.ru')
+    it 'registers an offense and corrects for #\ after the first line' do
+      expect_offense(<<~'RUBY')
         test
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        test
+        # \ -w -p 8765
       RUBY
     end
   end
 
   context 'file not named config.ru' do
-    it 'registers an offense for #\ on first line' do
-      expect_offense(<<~'RUBY', 'test/test_case.rb')
+    it 'registers an offense and corrects #\ on first line' do
+      expect_offense(<<~'RUBY')
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
         test
       RUBY
+
+      expect_correction(<<~'RUBY')
+        # \ -w -p 8765
+        test
+      RUBY
     end
 
-    it 'registers an offense for #\ after the first line' do
-      expect_offense(<<~'RUBY', 'test/test_case.rb')
+    it 'registers an offense and corrects #\ after the first line' do
+      expect_offense(<<~'RUBY')
         test
         #\ -w -p 8765
         ^^^^^^^^^^^^^ Missing space after `#`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        test
+        # \ -w -p 8765
       RUBY
     end
   end
@@ -80,7 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
     context 'when config option is disabled' do
       let(:cop_config) { { 'AllowDoxygenCommentStyle' => false } }
 
-      it 'registers an offense when using Doxygen style' do
+      it 'registers an offense and corrects using Doxygen style' do
         expect_offense(<<~RUBY)
           #**
           ^^^ Missing space after `#`.
@@ -88,6 +112,13 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
           # Another comment on a second line
           #*
           ^^ Missing space after `#`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # **
+          # Some comment
+          # Another comment on a second line
+          # *
         RUBY
       end
     end
@@ -116,11 +147,6 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
 
   it 'accepts sprockets directives' do
     expect_no_offenses('#= require_tree .')
-  end
-
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source('#comment')
-    expect(new_source).to eq('# comment')
   end
 
   it 'accepts =begin/=end comments' do

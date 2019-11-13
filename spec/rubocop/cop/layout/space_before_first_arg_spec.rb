@@ -6,41 +6,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   let(:cop_config) { { 'AllowForAlignment' => true } }
 
   context 'for method calls without parentheses' do
-    it 'registers an offense for method call with two spaces before the ' \
-       'first arg' do
+    it 'registers an offense and corrects method call with two spaces ' \
+      'before the first arg' do
       expect_offense(<<~RUBY)
         something  x
                  ^^ Put one space between the method name and the first argument.
         a.something  y, z
                    ^^ Put one space between the method name and the first argument.
       RUBY
-    end
 
-    it 'auto-corrects extra space' do
-      new_source = autocorrect_source(<<~RUBY)
-        something  x
-        a.something   y, z
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         something x
         a.something y, z
       RUBY
     end
 
     context 'when using safe navigation operator' do
-      it 'registers an offense for method call with two spaces before the ' \
-         'first arg' do
+      it 'registers an offense and corrects method call with two spaces ' \
+        'before the first arg' do
         expect_offense(<<~RUBY)
           a&.something  y, z
                       ^^ Put one space between the method name and the first argument.
         RUBY
-      end
 
-      it 'auto-corrects extra space' do
-        new_source = autocorrect_source(<<~RUBY)
-          a&.something  y, z
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a&.something y, z
         RUBY
       end
@@ -52,6 +41,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
         something'hello'
         a.something'hello world'
       RUBY
+
       expect(cop.messages)
         .to eq(['Put one space between the method name and the first ' \
                 'argument.'] * 2)
@@ -62,6 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
         something'hello'
         a.something'hello world'
       RUBY
+
       expect(new_source).to eq(<<~RUBY)
         something 'hello'
         a.something 'hello world'
@@ -111,7 +102,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
     context 'when AllowForAlignment is false' do
       let(:cop_config) { { 'AllowForAlignment' => false } }
 
-      it 'does not accept method calls with aligned first arguments' do
+      it 'registers an offense and corrects method calls ' \
+        'with aligned first arguments' do
         expect_offense(<<~RUBY)
           form.inline_input   :full_name,     as: :string
                            ^^^ Put one space between the method name and the first argument.
@@ -122,6 +114,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
                            ^^^ Put one space between the method name and the first argument.
           form.masked_input   :phone_number,  as: :tel
                            ^^^ Put one space between the method name and the first argument.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          form.inline_input :full_name,     as: :string
+          form.disabled_input :password,      as: :passwd
+          form.masked_input :zip_code,      as: :string
+          form.masked_input :email_address, as: :email
+          form.masked_input :phone_number,  as: :tel
         RUBY
       end
     end
