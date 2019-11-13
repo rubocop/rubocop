@@ -90,8 +90,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/AlignParameters` cop has been renamed to `Layout/ParameterAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/FirstArgumentIndentation`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentArray` cop has been renamed to `Layout/FirstArrayElementIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentAssignment` cop has been renamed to `Layout/AssignmentIndentation`.
