@@ -68,6 +68,10 @@ module RuboCop
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
 
+        def investigate(processed_source)
+          check_for_breakable_semicolons(processed_source)
+        end
+
         def investigate_post_walk(processed_source)
           processed_source.lines.each_with_index do |line, line_index|
             check_line(line, line_index)
@@ -89,11 +93,37 @@ module RuboCop
           return if breakable_node.nil?
 
           line_index = breakable_node.first_line - 1
-          breakable_nodes_by_line_index[line_index] = breakable_node
+          range = breakable_node.source_range
+
+          existing = breakable_range_by_line_index[line_index]
+          return if existing
+
+          breakable_range_by_line_index[line_index] = range
         end
 
-        def breakable_nodes_by_line_index
-          @breakable_nodes_by_line_index ||= {}
+        def check_for_breakable_semicolons(processed_source)
+          tokens = processed_source.tokens.select { |t| t.type == :tSEMI }
+          tokens.reverse_each do |token|
+            range = breakable_range_after_semicolon(token)
+            breakable_range_by_line_index[range.line - 1] = range if range
+          end
+        end
+
+        def breakable_range_after_semicolon(semicolon_token)
+          range = semicolon_token.pos
+          end_pos = range.end_pos
+          next_range = range_between(end_pos, end_pos + 1)
+          return nil unless next_range.line == range.line
+
+          next_char = next_range.source
+          return nil if /[\r\n]/ =~ next_char
+          return nil if next_char == ';'
+
+          next_range
+        end
+
+        def breakable_range_by_line_index
+          @breakable_range_by_line_index ||= {}
         end
 
         def heredocs
@@ -147,31 +177,10 @@ module RuboCop
         def register_offense(loc, line, line_index)
           message = format(MSG, length: line_length(line), max: max)
 
-          breakable_range = breakable_range(line, line_index)
+          breakable_range = breakable_range_by_line_index[line_index]
           add_offense(breakable_range, location: loc, message: message) do
             self.max = line_length(line)
           end
-        end
-
-        def breakable_range(line, line_index)
-          return if line_in_heredoc?(line_index + 1)
-
-          semicolon_range = breakable_semicolon_range(line, line_index)
-          return semicolon_range if semicolon_range
-
-          breakable_node = breakable_nodes_by_line_index[line_index]
-          return breakable_node.source_range if breakable_node
-        end
-
-        def breakable_semicolon_range(line, line_index)
-          semicolon_separated_parts = line.split(';')
-          return if semicolon_separated_parts.length <= 1
-
-          column = semicolon_separated_parts.first.length + 1
-          range = source_range(processed_source.buffer, line_index, column, 1)
-          return if processed_source.commented?(range)
-
-          range
         end
 
         def excess_range(uri_range, line, line_index)
@@ -213,12 +222,6 @@ module RuboCop
           heredocs.any? do |range, delimiter|
             range.cover?(line_number) &&
               (allowed_heredoc == true || allowed_heredoc.include?(delimiter))
-          end
-        end
-
-        def line_in_heredoc?(line_number)
-          heredocs.any? do |range, _delimiter|
-            range.cover?(line_number)
           end
         end
 

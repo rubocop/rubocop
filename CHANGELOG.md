@@ -15,6 +15,10 @@
 * [#7469](https://github.com/rubocop-hq/rubocop/pull/7469): **(Breaking)** Replace usages of the terms `Whitelist` and `Blacklist` with better alternatives. ([@koic][])
 * [#7502](https://github.com/rubocop-hq/rubocop/pull/7502): Remove `SafeMode` module. ([@koic][])
 
+### Bug fixes
+
+* [#7477](https://github.com/rubocop-hq/rubocop/issues/7477): Fix line length autocorrect for semicolons in string literals. ([@maxh][])
+
 ## 0.76.0 (2019-10-28)
 
 ### Bug fixes

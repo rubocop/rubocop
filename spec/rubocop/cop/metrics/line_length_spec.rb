@@ -735,7 +735,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
       end
 
       context 'when over limit' do
-        it 'adds offense and autocorrects it by breaking the semicolon ' \
+        it 'adds offense and autocorrects it by breaking the semicolon' \
           'before the hash' do
           expect_offense(<<~RUBY)
             {foo: 1, bar: "2"}; a = 400000000000 + 500000000000000
@@ -748,6 +748,106 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
           RUBY
         end
       end
+
+      context 'when over limit and semicolon at end of line' do
+        it 'adds offense and autocorrects it by breaking the first semicolon' \
+          'before the hash' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: "2"}; a = 400000000000 + 500000000000000;
+                                                    ^^^^^^^^^^^^^^^ Line is too long. [55/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: "2"};
+             a = 400000000000 + 500000000000000;
+          RUBY
+        end
+      end
+
+      context 'when over limit and many spaces around semicolon' do
+        it 'adds offense and autocorrects it by breaking the semicolon' \
+          'before the hash' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: "2"}  ;   a = 400000000000 + 500000000000000
+                                                    ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: "2"}  ;
+               a = 400000000000 + 500000000000000
+          RUBY
+        end
+      end
+
+      context 'when over limit and many semicolons' do
+        it 'adds offense and autocorrects it by breaking the semicolon' \
+          'before the hash' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: "2"}  ;;; a = 400000000000 + 500000000000000
+                                                    ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: "2"}  ;;;
+             a = 400000000000 + 500000000000000
+          RUBY
+        end
+      end
+
+      context 'when over limit and one semicolon at the end' do
+        it 'adds offense and does not autocorrect' \
+          'before the hash' do
+          expect_offense(<<~RUBY)
+            a = 400000000000 + 500000000000000000000;
+                                                    ^ Line is too long. [41/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a = 400000000000 + 500000000000000000000;
+          RUBY
+        end
+      end
+
+      context 'when over limit and many semicolons at the end' do
+        it 'adds offense and does not autocorrect' \
+          'before the hash' do
+          expect_offense(<<~RUBY)
+            a = 400000000000 + 500000000000000000000;;;;;;;
+                                                    ^^^^^^^ Line is too long. [47/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a = 400000000000 + 500000000000000000000;;;;;;;
+          RUBY
+        end
+      end
+
+      context 'semicolon inside string literal' do
+        it 'adds offense and autocorrects elsewhere' do
+          expect_offense(<<~RUBY)
+            FooBar.new(baz: 30, bat: 'publisher_group:123;publisher:456;s:123')
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [67/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            FooBar.new(baz: 30,\s
+            bat: 'publisher_group:123;publisher:456;s:123')
+          RUBY
+        end
+      end
+
+      context 'semicolons  inside string literal' do
+        it 'adds offense and autocorrects elsewhere' do
+          expect_offense(<<~RUBY)
+            "00000000000000000;0000000000000000000'000000;00000'0000;0000;000"
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [66/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            "00000000000000000;0000000000000000000'000000;00000'0000;0000;000"
+          RUBY
+        end
+      end
     end
 
     context 'HEREDOC' do
@@ -755,7 +855,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
         { 'Max' => 40, 'AllowURI' => false, 'AllowHeredoc' => false }
       end
 
-      context 'when over limit with semi-colon' do
+      context 'when over limit with semicolon' do
         it 'adds offense and does not autocorrect' do
           expect_offense(<<~RUBY)
             foo = <<-SQL
@@ -774,7 +874,7 @@ RSpec.describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'comments' do
-      context 'when over limit with semi-colon' do
+      context 'when over limit with semicolon' do
         it 'adds offense and does not autocorrect' do
           expect_offense(<<~RUBY)
             # a b c d a b c d a b c d ; a b c d a b c d a b c d a
