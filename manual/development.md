@@ -369,6 +369,13 @@ CI will fail if the manual and `yard` comments do not match exactly. `rake defau
 Generally, is a good practice to check if your cop is working properly over a
 huge codebase to guarantee it's working in a range of different syntaxes.
 
+There are several ways to do this. Two common approaches:
+
+1. From within your local `rubocop` repo, run `exe/rubocop ~/your/other/codebase`.
+2. From within the other codebase's `Gemfile`, set a path to your local repo like this: `gem 'rubocop', path: '/full/path/to/rubocop'`. Then run `rubocop` within your codebase.
+
+With approach #2, you can use local versions of RuboCop extension repos such as `rubocop-rspec` as well.
+
 To make it fast and do not get confused with other cops in action,  you can use
 `--only` parameter in the command line to filter by your cop name:
 
