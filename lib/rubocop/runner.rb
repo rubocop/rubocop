@@ -121,8 +121,14 @@ module RuboCop
       end
     end
 
+    def cached_result(file, team)
+      ResultCache.new(file, team, @options, @config_store)
+    end
+
     def file_offense_cache(file)
-      cache = ResultCache.new(file, @options, @config_store) if cached_run?
+      config = @config_store.for(file)
+      cache = cached_result(file, standby_team(config)) if cached_run?
+
       if cache&.valid?
         offenses = cache.load
         # If we're running --auto-correct and the cache says there are
@@ -358,6 +364,12 @@ module RuboCop
       else
         ProcessedSource.from_file(file, ruby_version)
       end
+    end
+
+    def standby_team(config)
+      @team_by_config ||= {}
+      @team_by_config[config.object_id] ||=
+        Cop::Team.new(mobilized_cop_classes(config), config, @options)
     end
   end
 end
