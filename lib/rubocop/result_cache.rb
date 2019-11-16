@@ -77,12 +77,13 @@ module RuboCop
       config_store.for('.').for_all_cops['AllowSymlinksInCacheRootDirectory']
     end
 
-    def initialize(file, options, config_store, cache_root = nil)
+    def initialize(file, team, options, config_store, cache_root = nil)
       cache_root ||= ResultCache.cache_root(config_store)
       @allow_symlinks_in_cache_location =
         ResultCache.allow_symlinks_in_cache_location?(config_store)
-      @path = File.join(cache_root, rubocop_checksum,
-                        relevant_options_digest(options),
+      @path = File.join(cache_root,
+                        rubocop_checksum,
+                        context_checksum(team, options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
     end
@@ -182,10 +183,23 @@ module RuboCop
     # don't affect caching.
     def relevant_options_digest(options)
       options = options.reject { |key, _| NON_CHANGING.include?(key) }
-      options = options.to_s.gsub(/[^a-z]+/i, '_')
-      # We must avoid making file names too long for some filesystems to handle
-      # If they are short, we can leave them human-readable
-      options.length <= 32 ? options : Digest::SHA1.hexdigest(options)
+      options.to_s.gsub(/[^a-z]+/i, '_')
+    end
+
+    def team_checksum(team)
+      @checksum_by_team ||= {}
+      @checksum_by_team[team.object_id] ||= team.external_dependency_checksum
+    end
+
+    # We combine team and options into a single "context" checksum to avoid
+    # making file names that are too long for some filesystems to handle.
+    # This context is for anything that's not (1) the RuboCop executable
+    # checksum or (2) the inspected file checksum.
+    def context_checksum(team, options)
+      Digest::SHA1.hexdigest([
+        team_checksum(team),
+        relevant_options_digest(options)
+      ].join)
     end
   end
 end

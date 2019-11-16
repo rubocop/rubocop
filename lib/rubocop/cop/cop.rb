@@ -217,6 +217,25 @@ module RuboCop
         !relevant_file?(file)
       end
 
+      # This method should be overriden when a cop's behavior depends
+      # on state that lives outside of these locations:
+      #
+      #   (1) the file under inspection
+      #   (2) the cop's source code
+      #   (3) the config (eg a .rubocop.yml file)
+      #
+      # For example, some cops may want to look at other parts of
+      # the codebase being inspected to find violations. A cop may
+      # use the presence or absence of file `foo.rb` to determine
+      # whether a certain violation exists in `bar.rb`.
+      #
+      # Overriding this method allows the cop to indicate to RuboCop's
+      # ResultCache system when those external dependencies change,
+      # ie when the ResultCache should be invalidated.
+      def external_dependency_checksum
+        nil
+      end
+
       private
 
       def find_message(node, message)
