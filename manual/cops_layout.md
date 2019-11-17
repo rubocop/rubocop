@@ -1887,7 +1887,7 @@ styles are 'consistent' and 'align_brackets'. Here are examples:
 ```ruby
 # The `special_inside_parentheses` style enforces that the first
 # element in an array literal where the opening bracket and first
-# element are on seprate lines is indented one step (two spaces) more
+# element are on separate lines is indented one step (two spaces) more
 # than the position inside the opening parenthesis.
 
 #bad
@@ -1911,7 +1911,7 @@ but_in_a_method_call([
 ```ruby
 # The `consistent` style enforces that the first element in an array
 # literal where the opening bracket and the first element are on
-# seprate lines is indented the same as an array literal which is not
+# separate lines is indented the same as an array literal which is not
 # defined inside a method call.
 
 #bad
