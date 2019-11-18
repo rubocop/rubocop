@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#7493](https://github.com/rubocop-hq/rubocop/issues/7493): Fix `Style/RedundantReturn` to inspect conditional constructs that are preceded by other statements. ([@buehmann][])
+* [#7509](https://github.com/rubocop-hq/rubocop/issues/7509): Fix `Layout/SpaceInsideArrayLiteralBrackets` to correct empty lines. ([@ayacai115][])
 
 ### Changes
 
@@ -4258,3 +4259,4 @@
 [@jdkaplan]: https://github.com/jdkaplan
 [@cstyles]: https://github.com/cstyles
 [@avmnu-sng]: https://github.com/avmnu-sng
+[@ayacai115]: https://github.com/ayacai115
