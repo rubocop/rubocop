@@ -11,6 +11,7 @@
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Further standardisation of cop names. ([@scottmatthewman][])
 * [#7469](https://github.com/rubocop-hq/rubocop/pull/7469): **(Breaking)** Replace usages of the terms `Whitelist` and `Blacklist` with better alternatives. ([@koic][])
 * [#7502](https://github.com/rubocop-hq/rubocop/pull/7502): Remove `SafeMode` module. ([@koic][])
+* [#7514](https://github.com/rubocop-hq/rubocop/pull/7514): Exposing correctable status on offense and in formatters. ([@tyler-ball][])
 
 ## 0.76.0 (2019-10-28)
 
@@ -4258,3 +4259,4 @@
 [@jdkaplan]: https://github.com/jdkaplan
 [@cstyles]: https://github.com/cstyles
 [@avmnu-sng]: https://github.com/avmnu-sng
+[@tyler-ball]: https://github.com/tyler-ball
