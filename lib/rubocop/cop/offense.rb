@@ -67,6 +67,17 @@ module RuboCop
 
       # @api public
       #
+      # @!attribute [r] correctable?
+      #
+      # @return [Boolean]
+      #   whether this offense can be automatically corrected via
+      #   autocorrect or a todo.
+      def correctable?
+        @status != :unsupported
+      end
+
+      # @api public
+      #
       # @!attribute [r] corrected?
       #
       # @return [Boolean]
