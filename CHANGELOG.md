@@ -6,6 +6,7 @@
 
 * [#7493](https://github.com/rubocop-hq/rubocop/issues/7493): Fix `Style/RedundantReturn` to inspect conditional constructs that are preceded by other statements. ([@buehmann][])
 * [#7509](https://github.com/rubocop-hq/rubocop/issues/7509): Fix `Layout/SpaceInsideArrayLiteralBrackets` to correct empty lines. ([@ayacai115][])
+* [#7517](https://github.com/rubocop-hq/rubocop/issues/7517): `Style/SpaceAroundKeyword` allows `::` after `super`. ([@ozydingo][])
 
 ### Changes
 
@@ -4260,3 +4261,4 @@
 [@cstyles]: https://github.com/cstyles
 [@avmnu-sng]: https://github.com/avmnu-sng
 [@ayacai115]: https://github.com/ayacai115
+[@ozydingo]: https://github.com/ozydingo
