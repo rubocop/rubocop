@@ -146,7 +146,7 @@ module RuboCop
           grandparent = node.parent.parent
 
           parent.when_type? || parent.send_type? || part_of_an_array?(node) ||
-            (grandparent&.resbody_type?)
+            grandparent&.resbody_type?
         end
 
         def remove_brackets(array)
