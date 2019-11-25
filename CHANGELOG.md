@@ -8,16 +8,14 @@
 * [#7509](https://github.com/rubocop-hq/rubocop/issues/7509): Fix `Layout/SpaceInsideArrayLiteralBrackets` to correct empty lines. ([@ayacai115][])
 * [#7517](https://github.com/rubocop-hq/rubocop/issues/7517): `Style/SpaceAroundKeyword` allows `::` after `super`. ([@ozydingo][])
 * [#7515](https://github.com/rubocop-hq/rubocop/issues/7515): Fix a false negative for `Style/RedundantParentheses` when calling a method with safe navigation operator. ([@koic][])
+* [#7477](https://github.com/rubocop-hq/rubocop/issues/7477): Fix line length autocorrect for semicolons in string literals. ([@maxh][])
+* [#7522](https://github.com/rubocop-hq/rubocop/pull/7522): Fix a false-positive edge case (`n % 2 == 2`) for `Style/EvenOdd`. ([@buehmann][])
 
 ### Changes
 
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Further standardisation of cop names. ([@scottmatthewman][])
 * [#7469](https://github.com/rubocop-hq/rubocop/pull/7469): **(Breaking)** Replace usages of the terms `Whitelist` and `Blacklist` with better alternatives. ([@koic][])
 * [#7502](https://github.com/rubocop-hq/rubocop/pull/7502): Remove `SafeMode` module. ([@koic][])
-
-### Bug fixes
-
-* [#7477](https://github.com/rubocop-hq/rubocop/issues/7477): Fix line length autocorrect for semicolons in string literals. ([@maxh][])
 
 ## 0.76.0 (2019-10-28)
 
