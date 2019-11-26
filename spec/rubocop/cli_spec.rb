@@ -1415,7 +1415,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
+    it 'prints an error for an unrecognized cop name in .rubocop.yml' do
       create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', <<~YAML)
@@ -1424,9 +1424,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Max: 100
       YAML
 
-      expect(cli.run(%w[--format simple example])).to eq(1)
+      expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
-        .to eq(['Warning: unrecognized cop Style/LyneLenth found in ' \
+        .to eq(['Error: unrecognized cop Style/LyneLenth found in ' \
                 'example/.rubocop.yml',
                 ''].join("\n"))
     end
@@ -1695,6 +1695,22 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            '`Style/TrailingCommaInHashLiteral` instead.',
            '(obsolete configuration found in .rubocop.yml, ' \
            'please update it)'].join("\n")
+        )
+      end
+    end
+  end
+
+  describe 'unknown cop' do
+    context 'in configuration file is given' do
+      it 'prints the error and exists with code 2' do
+        create_file('example1.rb', "puts 'no offenses here'")
+        create_file('.rubocop.yml', <<~YAML)
+          Syntax/Whatever:
+            Enabled: true
+        YAML
+        expect(cli.run(['example1.rb'])).to eq(2)
+        expect($stderr.string.strip).to eq(
+          'Error: unrecognized cop Syntax/Whatever found in .rubocop.yml'
         )
       end
     end

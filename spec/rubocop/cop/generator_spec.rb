@@ -302,8 +302,12 @@ RSpec.describe RuboCop::Cop::Generator do
 
     around do |example|
       orig_registry = RuboCop::Cop::Cop.registry
-      RuboCop::Cop::Cop.instance_variable_set(:@registry,
-                                              RuboCop::Cop::Registry.new)
+      RuboCop::Cop::Cop.instance_variable_set(
+        :@registry,
+        RuboCop::Cop::Registry.new(
+          [RuboCop::Cop::InternalAffairs::NodeDestructuring]
+        )
+      )
       example.run
       RuboCop::Cop::Cop.instance_variable_set(:@registry, orig_registry)
     end
@@ -320,22 +324,12 @@ RSpec.describe RuboCop::Cop::Generator do
 
     it 'generates a cop file that has no offense' do
       generator.write_source
-      result = nil
-      expect { result = runner.run([]) }.to output(<<~OUTPUT).to_stderr
-        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop_todo.yml
-        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop.yml
-      OUTPUT
-      expect(result).to be true
+      expect(runner.run([])).to be true
     end
 
     it 'generates a spec file that has no offense' do
       generator.write_spec
-      result = nil
-      expect { result = runner.run([]) }.to output(<<~OUTPUT).to_stderr
-        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop_todo.yml
-        Warning: unrecognized cop InternalAffairs/NodeDestructuring found in #{HOME_DIR}/.rubocop.yml
-      OUTPUT
-      expect(result).to be true
+      expect(runner.run([])).to be true
     end
   end
 end

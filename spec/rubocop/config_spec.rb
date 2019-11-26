@@ -10,6 +10,7 @@ RSpec.describe RuboCop::Config do
 
   describe '#validate', :isolated_environment do
     subject(:configuration) do
+      # ConfigLoader.load_file will validate config
       RuboCop::ConfigLoader.load_file(configuration_path)
     end
 
@@ -29,9 +30,11 @@ RSpec.describe RuboCop::Config do
         $stderr = STDERR
       end
 
-      it 'prints a warning message' do
-        configuration # ConfigLoader.load_file will validate config
-        expect($stderr.string).to match(/unrecognized cop LyneLenth/)
+      it 'raises an validation error' do
+        expect { configuration }.to raise_error(
+          RuboCop::ValidationError,
+          'unrecognized cop LyneLenth found in .rubocop.yml'
+        )
       end
     end
 
