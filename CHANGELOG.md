@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7530](https://github.com/rubocop-hq/rubocop/issues/7530): Typo in `Style/TrivialAccessors`'s `AllowedMethods`. ([@movermeyer][])
+
 ## 0.77.0 (2019-11-27)
 
 ### Bug fixes
@@ -4267,3 +4271,4 @@
 [@avmnu-sng]: https://github.com/avmnu-sng
 [@ayacai115]: https://github.com/ayacai115
 [@ozydingo]: https://github.com/ozydingo
+[@movermeyer]: https://github.com/movermeyer
