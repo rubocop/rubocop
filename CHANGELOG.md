@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.77.0 (2019-11-27)
+
 ### Bug fixes
 
 * [#7493](https://github.com/rubocop-hq/rubocop/issues/7493): Fix `Style/RedundantReturn` to inspect conditional constructs that are preceded by other statements. ([@buehmann][])

@@ -35,5 +35,5 @@ Include the output of `rubocop -V` or `bundle exec rubocop -V` if using Bundler.
 
 ```
 $ [bundle exec] rubocop -V
-0.76.0 (using Parser 2.5.1.2, running on ruby 2.5.1 x86_64-linux)
+0.77.0 (using Parser 2.5.1.2, running on ruby 2.5.1 x86_64-linux)
 ```
