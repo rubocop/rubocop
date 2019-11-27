@@ -3842,7 +3842,7 @@ Style/TrivialAccessors:
   # Commonly used in DSLs
   AllowDSLWriters: false
   IgnoreClassMethods: false
-  AllowedMethod:
+  AllowedMethods:
     - to_ary
     - to_a
     - to_c
