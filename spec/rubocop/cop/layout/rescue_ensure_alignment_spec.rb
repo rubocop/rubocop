@@ -1,62 +1,106 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
+  let(:cop_config) do
+    { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true }
+  end
+
   it 'accepts the modifier form' do
     expect_no_offenses('test rescue nil')
   end
 
-  context 'rescue with begin' do
-    it 'registers an offense' do
+  it 'rescue not aligned with begin registers an offense' do
+    expect_offense(<<~RUBY)
+      begin
+        something
+          rescue
+          ^^^^^^ `rescue` at 3, 4 is not aligned with `begin` at 1, 0.
+          error
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        something
+      rescue
+          error
+      end
+    RUBY
+  end
+
+  context 'on assignment with keyword style' do
+    let(:cop_config) do
+      { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true }
+    end
+
+    it 'accepts multi-line, aligned with keyword' do
+      expect_no_offenses(<<~RUBY)
+        x ||= begin
+                1
+              rescue
+                2
+              end
+      RUBY
+    end
+
+    it 'accepts multi-line, indented' do
+      expect_no_offenses(<<~RUBY)
+        x ||=
+          begin
+            1
+          rescue
+            2
+          end
+      RUBY
+    end
+
+    it 'registers offense for incorrect alignment' do
       expect_offense(<<~RUBY)
-        begin
-          something
-            rescue
-            ^^^^^^ `rescue` at 3, 4 is not aligned with `begin` at 1, 0.
-            error
+        x ||= begin
+          1
+        rescue
+        ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
+          2
         end
       RUBY
+    end
+  end
 
-      expect_correction(<<~RUBY)
-        begin
-          something
+  context 'on assignment with variable style' do
+    let(:cop_config) do
+      { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
+    end
+
+    it 'accepts multi-line, aligned with variable' do
+      expect_no_offenses(<<~RUBY)
+        x ||= begin
+          1
         rescue
-            error
+          2
         end
       RUBY
     end
 
-    context 'as RHS of assignment' do
-      it 'accepts multi-line, aligned' do
-        expect_no_offenses(<<~RUBY)
-          x ||= begin
-                  1
-                rescue
-                  2
-                end
-        RUBY
-      end
-
-      it 'accepts multi-line, indented' do
-        expect_no_offenses(<<~RUBY)
-          x ||=
-            begin
-              1
-            rescue
-              2
-            end
-        RUBY
-      end
-
-      it 'registers offense for incorrect alignment' do
-        expect_offense(<<~RUBY)
-          x ||= begin
+    it 'registers offense for multi-line, indented' do
+      expect_no_offenses(<<~RUBY)
+        x ||=
+          begin
             1
           rescue
-          ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
             2
           end
-        RUBY
-      end
+      RUBY
+    end
+
+    it 'registers offense for keyword alignment' do
+      expect_offense(<<~RUBY)
+        x ||= begin
+                1
+              rescue
+              ^^^^^^ `rescue` at 3, 6 is not aligned with `x` at 1, 0.
+                2
+              end
+      RUBY
     end
   end
 
@@ -283,16 +327,6 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
       ensure
         error
       end
-    RUBY
-  end
-
-  it 'accepts correctly aligned rescue in assigned begin-end block' do
-    expect_no_offenses(<<-RUBY)
-      foo = begin
-              bar
-            rescue BazError
-              qux
-            end
     RUBY
   end
 

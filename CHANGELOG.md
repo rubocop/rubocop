@@ -9,6 +9,7 @@
 * [#8164](https://github.com/rubocop-hq/rubocop/pull/8164): Support auto-correction for `Lint/InterpolationCheck`. ([@koic][])
 * [#8223](https://github.com/rubocop-hq/rubocop/pull/8223): Support auto-correction for `Style/IfUnlessModifierOfIfUnless`. ([@koic][])
 * [#8172](https://github.com/rubocop-hq/rubocop/pull/8172): Support auto-correction for `Lint/SafeNavigationWithEmpty`. ([@koic][])
+* [#7531](https://github.com/rubocop-hq/rubocop/pull/7531): Add support for variable alignment to Layout/RescueEnsureAlignment. ([@dylanahsmith][])
 
 ### Bug fixes
 

@@ -4757,24 +4757,64 @@ end
 This cop checks whether the rescue and ensure keywords are aligned
 properly.
 
+Two modes are supported through the `EnforcedStyleAlignWith`
+configuration parameter:
+
+If it's set to `keyword` (which is the default), the `rescue`
+shall be aligned with the start of the begin keyword.
+
+If it's set to `variable` the `rescue` shall be aligned with the
+left-hand-side of the variable assignment, if there is one.
+
 === Examples
+
+==== EnforcedStyleAlignWith: keyword (default)
 
 [source,ruby]
 ----
 # bad
-begin
+result = begin
+           something
+           rescue
+           puts 'error'
+         end
+
+# good
+result = begin
+           something
+         rescue
+           puts 'error'
+         end
+----
+
+==== EnforcedStyleAlignWith: variable
+
+[source,ruby]
+----
+# bad
+result = begin
   something
   rescue
   puts 'error'
 end
 
 # good
-begin
+result = begin
   something
 rescue
   puts 'error'
 end
 ----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyleAlignWith
+| `keyword`
+| `keyword`, `variable`
+|===
 
 == Layout/SpaceAfterColon
 

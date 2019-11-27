@@ -6,22 +6,48 @@ module RuboCop
       # This cop checks whether the rescue and ensure keywords are aligned
       # properly.
       #
-      # @example
+      # Two modes are supported through the `EnforcedStyleAlignWith`
+      # configuration parameter:
+      #
+      # If it's set to `keyword` (which is the default), the `rescue`
+      # shall be aligned with the start of the begin keyword.
+      #
+      # If it's set to `variable` the `rescue` shall be aligned with the
+      # left-hand-side of the variable assignment, if there is one.
+      #
+      # @example EnforcedStyleAlignWith: keyword (default)
       #
       #   # bad
-      #   begin
+      #   result = begin
+      #              something
+      #              rescue
+      #              puts 'error'
+      #            end
+      #
+      #   # good
+      #   result = begin
+      #              something
+      #            rescue
+      #              puts 'error'
+      #            end
+      #
+      # @example EnforcedStyleAlignWith: variable
+      #
+      #   # bad
+      #   result = begin
       #     something
       #     rescue
       #     puts 'error'
       #   end
       #
       #   # good
-      #   begin
+      #   result = begin
       #     something
       #   rescue
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Cop
+        include ConfigurableEnforcedStyle
         include RangeHelp
 
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
@@ -39,6 +65,10 @@ module RuboCop
 
         def on_ensure(node)
           check(node)
+        end
+
+        def style_parameter_name
+          'EnforcedStyleAlignWith'
         end
 
         def autocorrect(node)
@@ -122,8 +152,8 @@ module RuboCop
         def alignment_node(node)
           ancestor_node = ancestor_node(node)
 
-          return ancestor_node if ancestor_node.nil? ||
-                                  ancestor_node.kwbegin_type?
+          return ancestor_node if ancestor_node.nil?
+          return ancestor_node if style == :keyword && ancestor_node.kwbegin_type?
 
           assignment_node = assignment_node(ancestor_node)
           return assignment_node if same_line?(ancestor_node, assignment_node)

@@ -1059,6 +1059,10 @@ Layout/ParameterAlignment:
 
 Layout/RescueEnsureAlignment:
   Description: 'Align rescues and ensures correctly.'
+  EnforcedStyleAlignWith: keyword
+  SupportedStylesAlignWith:
+    - keyword
+    - variable
   Enabled: true
   VersionAdded: '0.49'
 
