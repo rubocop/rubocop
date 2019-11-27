@@ -1495,6 +1495,12 @@ Lint/NextWithoutAccumulator:
   Enabled: true
   VersionAdded: '0.36'
 
+Lint/NonDeterministicRequireOrder:
+  Description: 'Always sort arrays returned by Dir.glob when requiring files.'
+  Enabled: true
+  VersionAdded: '0.78'
+  Safe: false
+
 Lint/NonLocalExitFromIterator:
   Description: 'Do not use return in iterator to cause non-local exit.'
   Enabled: true

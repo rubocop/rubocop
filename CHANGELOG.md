@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7528](https://github.com/rubocop-hq/rubocop/pull/7528): Add new `Lint/NonDeterministicRequireOrder` cop. ([@mangara][])
+
 ### Bug fixes
 
 * [#7530](https://github.com/rubocop-hq/rubocop/issues/7530): Typo in `Style/TrivialAccessors`'s `AllowedMethods`. ([@movermeyer][])
@@ -4284,3 +4288,4 @@
 [@ozydingo]: https://github.com/ozydingo
 [@movermeyer]: https://github.com/movermeyer
 [@jethroo]: https://github.com/jethroo
+[@mangara]: https://github.com/mangara
