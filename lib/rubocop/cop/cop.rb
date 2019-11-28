@@ -217,7 +217,7 @@ module RuboCop
         !relevant_file?(file)
       end
 
-      # This method should be overriden when a cop's behavior depends
+      # This method should be overridden when a cop's behavior depends
       # on state that lives outside of these locations:
       #
       #   (1) the file under inspection
