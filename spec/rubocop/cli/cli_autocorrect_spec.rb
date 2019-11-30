@@ -1653,7 +1653,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
-  it 'corrects Style/BlockDelimiters offenses when specifing' \
+  it 'corrects Style/BlockDelimiters offenses when specifying' \
      'Layout/SpaceBeforeBlockBraces with `EnforcedStyle: no_space` together' do
     create_file('example.rb', <<~RUBY)
       foo {
