@@ -21,6 +21,7 @@ module RuboCop
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
         include RangeHelp
+        include RationalLiteral
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
         EXCESSIVE_SPACE = '  '
@@ -53,6 +54,8 @@ module RuboCop
         end
 
         def on_send(node)
+          return if rational_literal?(node)
+
           if node.setter_method?
             on_special_asgn(node)
           elsif regular_operator?(node)
