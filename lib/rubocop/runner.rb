@@ -366,6 +366,10 @@ module RuboCop
       end
     end
 
+    # A Cop::Team instance is stateful and may change when inspecting.
+    # The "standby" team for a given config is an initialized but
+    # otherwise dormant team that can be used for config- and option-
+    # level caching in ResultCache.
     def standby_team(config)
       @team_by_config ||= {}
       @team_by_config[config.object_id] ||=
