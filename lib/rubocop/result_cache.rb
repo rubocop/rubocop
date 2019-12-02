@@ -186,6 +186,8 @@ module RuboCop
       options.to_s.gsub(/[^a-z]+/i, '_')
     end
 
+    # The external dependency checksums are cached per RuboCop team so that
+    # the checksums don't need to be recomputed for each file.
     def team_checksum(team)
       @checksum_by_team ||= {}
       @checksum_by_team[team.object_id] ||= team.external_dependency_checksum
