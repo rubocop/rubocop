@@ -42,6 +42,21 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
           expect(offense.severity).to eq(:error)
         end
       end
+
+      context 'with --auto-correct --disable-uncorrectable options' do
+        let(:options) { { auto_correct: true, disable_uncorrectable: true } }
+
+        it 'returns an offense' do
+          expect(offenses.size).to eq(1)
+          message = <<~MESSAGE.chomp
+            unexpected token $end
+            (Using Ruby 2.4 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+          MESSAGE
+          offense = offenses.first
+          expect(offense.message).to eq(message)
+          expect(offense.severity).to eq(:error)
+        end
+      end
     end
 
     context 'with a parser error' do
