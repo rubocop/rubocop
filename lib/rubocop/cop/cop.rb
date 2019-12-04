@@ -172,6 +172,8 @@ module RuboCop
       end
 
       def disable_uncorrectable(node)
+        return unless node
+
         @disabled_lines ||= {}
         line = node.location.line
         return if @disabled_lines.key?(line)
