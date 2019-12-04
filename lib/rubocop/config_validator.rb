@@ -41,7 +41,7 @@ module RuboCop
 
       @config_obsoletion.reject_obsolete_cops_and_parameters
 
-      warn_about_unrecognized_cops(invalid_cop_names)
+      alert_about_unrecognized_cops(invalid_cop_names)
       check_target_ruby
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
@@ -96,7 +96,8 @@ module RuboCop
       raise ValidationError, msg
     end
 
-    def warn_about_unrecognized_cops(invalid_cop_names)
+    def alert_about_unrecognized_cops(invalid_cop_names)
+      unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
         next if Cop::Cop.registry.contains_cop_matching?([name])
@@ -106,9 +107,10 @@ module RuboCop
         # to do so than to pass the value around to various methods.
         next if name == 'inherit_mode'
 
-        warn Rainbow("Warning: unrecognized cop #{name} found in " \
-                     "#{smart_loaded_path}").yellow
+        unknown_cops << "unrecognized cop #{name} found in " \
+          "#{smart_loaded_path}"
       end
+      raise ValidationError, unknown_cops.join(', ') if unknown_cops.any?
     end
 
     def validate_syntax_cop

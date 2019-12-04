@@ -7,6 +7,7 @@
 * [#7530](https://github.com/rubocop-hq/rubocop/issues/7530): Typo in `Style/TrivialAccessors`'s `AllowedMethods`. ([@movermeyer][])
 * [#7532](https://github.com/rubocop-hq/rubocop/issues/7532): Fix an error for `Style/TrailingCommaInArguments` when using an anonymous function with multiple line arguments with `EnforcedStyleForMultiline: consistent_comma`. ([@koic][])
 * [#7534](https://github.com/rubocop-hq/rubocop/issues/7534): Fix an incorrect autocorrect for `Style/BlockDelimiters` cop and `Layout/SpaceBeforeBlockBraces` cop with `EnforcedStyle: no_space` when using multiline braces. ([@koic][])
+* [#7231](https://github.com/rubocop-hq/rubocop/issues/7231): Fix the exit code to be `2` rather when `0` when the config file contains an unknown cop. ([@jethroo][])
 
 ## 0.77.0 (2019-11-27)
 
@@ -4274,3 +4275,4 @@
 [@ayacai115]: https://github.com/ayacai115
 [@ozydingo]: https://github.com/ozydingo
 [@movermeyer]: https://github.com/movermeyer
+[@jethroo]: https://github.com/jethroo
