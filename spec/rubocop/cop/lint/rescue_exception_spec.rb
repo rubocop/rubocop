@@ -122,4 +122,41 @@ RSpec.describe RuboCop::Cop::Lint::RescueException do
       end
     RUBY
   end
+
+  it 'does not register an offense if exception is re-raised' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      rescue Exception => error
+        do_something_with_error
+        raise
+      end
+    RUBY
+  end
+
+  it 'registers an offense if different exception is re-raised' do
+    expect_offense(<<~RUBY)
+      begin
+        do_something
+      rescue Exception => error
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid rescuing the `Exception` class. Perhaps you meant to rescue `StandardError`?
+        do_something_with_error
+        raise 'New Exception'
+      end
+    RUBY
+  end
+
+  it 'does not register an offense if exception is re-raised, but raise ' \
+     'is not the last expression' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      rescue Exception => error
+        do_something_with_error
+        raise
+        # some comments
+        dead_code
+      end
+    RUBY
+  end
 end
