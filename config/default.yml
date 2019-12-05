@@ -59,6 +59,7 @@ AllCops:
     - '**/Vagrantfile'
   Exclude:
     - 'node_modules/**/*'
+    - 'tmp/**/*'
     - 'vendor/**/*'
     - '.git/**/*'
   # Default formatter will be used if no `-f/--format` option is given.
