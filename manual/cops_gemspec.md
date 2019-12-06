@@ -157,7 +157,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-Include | `**/*.gemspec`, `<none>` | Array
+Include | `**/*.gemspec` | Array
 
 ## Gemspec/RubyVersionGlobalsUsage
 
