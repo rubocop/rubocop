@@ -200,6 +200,7 @@ Gemspec/RequiredRubyVersion:
 
 Gemspec/RubyVersionGlobalsUsage:
   Description: Checks usage of RUBY_VERSION in gemspec.
+  StyleGuide: '#no-ruby-version-in-the-gemspec'
   Enabled: true
   VersionAdded: '0.72'
   Include:
