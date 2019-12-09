@@ -12,6 +12,10 @@
 * [#7537](https://github.com/rubocop-hq/rubocop/issues/7537): Fix a false positive for `Layout/SpaceAroundOperators` when using a Rational literal with `/` (e.g. `2/3r`). ([@koic][])
 * [#7029](https://github.com/rubocop-hq/rubocop/issues/7029): Make `Style/Attr` not flag offense for custom `attr` method. ([@tejasbubane][])
 
+### Changes
+
+* [#7514](https://github.com/rubocop-hq/rubocop/pull/7514): Expose correctable status on offense and in formatters. ([@tyler-ball][])
+
 ## 0.77.0 (2019-11-27)
 
 ### Bug fixes
@@ -29,7 +33,6 @@
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Further standardisation of cop names. ([@scottmatthewman][])
 * [#7469](https://github.com/rubocop-hq/rubocop/pull/7469): **(Breaking)** Replace usages of the terms `Whitelist` and `Blacklist` with better alternatives. ([@koic][])
 * [#7502](https://github.com/rubocop-hq/rubocop/pull/7502): Remove `SafeMode` module. ([@koic][])
-* [#7514](https://github.com/rubocop-hq/rubocop/pull/7514): Exposing correctable status on offense and in formatters. ([@tyler-ball][])
 
 ## 0.76.0 (2019-10-28)
 
