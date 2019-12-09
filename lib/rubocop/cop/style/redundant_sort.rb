@@ -127,7 +127,7 @@ module RuboCop
         end
 
         def base(accessor, arg)
-          if accessor == :first || (arg&.zero?)
+          if accessor == :first || arg&.zero?
             'min'
           elsif accessor == :last || arg == -1
             'max'

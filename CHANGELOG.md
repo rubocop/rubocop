@@ -4,7 +4,25 @@
 
 ### Bug fixes
 
+* [#7530](https://github.com/rubocop-hq/rubocop/issues/7530): Typo in `Style/TrivialAccessors`'s `AllowedMethods`. ([@movermeyer][])
+* [#7532](https://github.com/rubocop-hq/rubocop/issues/7532): Fix an error for `Style/TrailingCommaInArguments` when using an anonymous function with multiple line arguments with `EnforcedStyleForMultiline: consistent_comma`. ([@koic][])
+* [#7534](https://github.com/rubocop-hq/rubocop/issues/7534): Fix an incorrect autocorrect for `Style/BlockDelimiters` cop and `Layout/SpaceBeforeBlockBraces` cop with `EnforcedStyle: no_space` when using multiline braces. ([@koic][])
+* [#7231](https://github.com/rubocop-hq/rubocop/issues/7231): Fix the exit code to be `2` rather when `0` when the config file contains an unknown cop. ([@jethroo][])
+* [#7513](https://github.com/rubocop-hq/rubocop/issues/7513): Fix abrupt error on autocorrecting with `--disable-uncorrectable`. ([@tejasbubane][])
+* [#7537](https://github.com/rubocop-hq/rubocop/issues/7537): Fix a false positive for `Layout/SpaceAroundOperators` when using a Rational literal with `/` (e.g. `2/3r`). ([@koic][])
+* [#7029](https://github.com/rubocop-hq/rubocop/issues/7029): Make `Style/Attr` not flag offense for custom `attr` method. ([@tejasbubane][])
+
+## 0.77.0 (2019-11-27)
+
+### Bug fixes
+
 * [#7493](https://github.com/rubocop-hq/rubocop/issues/7493): Fix `Style/RedundantReturn` to inspect conditional constructs that are preceded by other statements. ([@buehmann][])
+* [#7509](https://github.com/rubocop-hq/rubocop/issues/7509): Fix `Layout/SpaceInsideArrayLiteralBrackets` to correct empty lines. ([@ayacai115][])
+* [#7517](https://github.com/rubocop-hq/rubocop/issues/7517): `Style/SpaceAroundKeyword` allows `::` after `super`. ([@ozydingo][])
+* [#7515](https://github.com/rubocop-hq/rubocop/issues/7515): Fix a false negative for `Style/RedundantParentheses` when calling a method with safe navigation operator. ([@koic][])
+* [#7477](https://github.com/rubocop-hq/rubocop/issues/7477): Fix line length autocorrect for semicolons in string literals. ([@maxh][])
+* [#7522](https://github.com/rubocop-hq/rubocop/pull/7522): Fix a false-positive edge case (`n % 2 == 2`) for `Style/EvenOdd`. ([@buehmann][])
+* [#7506](https://github.com/rubocop-hq/rubocop/issues/7506): Make `Style/IfUnlessModifier` respect all settings in `Metrics/LineLength`. ([@jonas054][])
 
 ### Changes
 
@@ -234,6 +252,7 @@
 * [#6969](https://github.com/rubocop-hq/rubocop/issues/6969): Fix a false positive with block methods in `Style/InverseMethods`. ([@dduugg][])
 * [#6729](https://github.com/rubocop-hq/rubocop/pull/6729): Handle array spread for `change_column_default` in `Rails/ReversibleMigration` cop. ([@tejasbubane][])
 * [#7033](https://github.com/rubocop-hq/rubocop/issues/7033): Fix an error for `Layout/EmptyLineAfterGuardClause` when guard clause is a ternary operator. ([@koic][])
+* Replace `Time.zone.current` with `Time.zone.today` on `Rails::Date` cop message. ([@vfonic][])
 
 ### Changes
 
@@ -255,9 +274,6 @@
 * [#6738](https://github.com/rubocop-hq/rubocop/issues/6738): Prevent auto-correct conflict of `Style/Next` and `Style/SafeNavigation`. ([@hoshinotsuyoshi][])
 * [#6847](https://github.com/rubocop-hq/rubocop/pull/6847): Fix `Style/BlockDelimiters` to properly check if the node is chained when `braces_for_chaining` is set. ([@att14][])
 
-### Bug fixes
-
-* Replace `Time.zone.current` with `Time.zone.today` on `Rails::Date` cop message. ([@vfonic][])
 
 ## 0.68.0 (2019-04-29)
 
@@ -488,7 +504,7 @@
 ### New features
 
 * [#6580](https://github.com/rubocop-hq/rubocop/pull/6580): New cop `Rails/LinkToBlank` checks for `link_to` calls with `target: '_blank'` and no `rel: 'noopener'`. ([@Intrepidd][])
-* [#6586](https://github.com/rubocop-hq/rubocop/issues/6586): New cop `Style/DisjunctiveAssignmentInConstructor` checks constructors for disjunctive assignments that should be plain assignments. ([@jaredbeck][])
+* [#6586](https://github.com/rubocop-hq/rubocop/issues/6586): New cop `Lint/DisjunctiveAssignmentInConstructor` checks constructors for disjunctive assignments that should be plain assignments. ([@jaredbeck][])
 
 ### Bug fixes
 
@@ -4260,3 +4276,7 @@
 [@cstyles]: https://github.com/cstyles
 [@avmnu-sng]: https://github.com/avmnu-sng
 [@tyler-ball]: https://github.com/tyler-ball
+[@ayacai115]: https://github.com/ayacai115
+[@ozydingo]: https://github.com/ozydingo
+[@movermeyer]: https://github.com/movermeyer
+[@jethroo]: https://github.com/jethroo

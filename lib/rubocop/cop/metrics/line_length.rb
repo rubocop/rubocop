@@ -2,7 +2,6 @@
 
 require 'uri'
 
-# rubocop:disable Metrics/ClassLength
 module RuboCop
   module Cop
     module Metrics
@@ -58,6 +57,7 @@ module RuboCop
         include ConfigurableMax
         include IgnoredPattern
         include RangeHelp
+        include LineLengthHelp
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
 
@@ -67,6 +67,10 @@ module RuboCop
         alias on_array on_potential_breakable_node
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
+
+        def investigate(processed_source)
+          check_for_breakable_semicolons(processed_source)
+        end
 
         def investigate_post_walk(processed_source)
           processed_source.lines.each_with_index do |line, line_index|
@@ -89,29 +93,41 @@ module RuboCop
           return if breakable_node.nil?
 
           line_index = breakable_node.first_line - 1
-          breakable_nodes_by_line_index[line_index] = breakable_node
+          range = breakable_node.source_range
+
+          existing = breakable_range_by_line_index[line_index]
+          return if existing
+
+          breakable_range_by_line_index[line_index] = range
         end
 
-        def breakable_nodes_by_line_index
-          @breakable_nodes_by_line_index ||= {}
+        def check_for_breakable_semicolons(processed_source)
+          tokens = processed_source.tokens.select { |t| t.type == :tSEMI }
+          tokens.reverse_each do |token|
+            range = breakable_range_after_semicolon(token)
+            breakable_range_by_line_index[range.line - 1] = range if range
+          end
+        end
+
+        def breakable_range_after_semicolon(semicolon_token)
+          range = semicolon_token.pos
+          end_pos = range.end_pos
+          next_range = range_between(end_pos, end_pos + 1)
+          return nil unless next_range.line == range.line
+
+          next_char = next_range.source
+          return nil if /[\r\n]/ =~ next_char
+          return nil if next_char == ';'
+
+          next_range
+        end
+
+        def breakable_range_by_line_index
+          @breakable_range_by_line_index ||= {}
         end
 
         def heredocs
           @heredocs ||= extract_heredocs(processed_source.ast)
-        end
-
-        def tab_indentation_width
-          config.for_cop('Layout/Tab')['IndentationWidth']
-        end
-
-        def indentation_difference(line)
-          return 0 unless tab_indentation_width
-
-          line.match(/^\t*/)[0].size * (tab_indentation_width - 1)
-        end
-
-        def line_length(line)
-          line.length + indentation_difference(line)
         end
 
         def highlight_start(line)
@@ -147,31 +163,10 @@ module RuboCop
         def register_offense(loc, line, line_index)
           message = format(MSG, length: line_length(line), max: max)
 
-          breakable_range = breakable_range(line, line_index)
+          breakable_range = breakable_range_by_line_index[line_index]
           add_offense(breakable_range, location: loc, message: message) do
             self.max = line_length(line)
           end
-        end
-
-        def breakable_range(line, line_index)
-          return if line_in_heredoc?(line_index + 1)
-
-          semicolon_range = breakable_semicolon_range(line, line_index)
-          return semicolon_range if semicolon_range
-
-          breakable_node = breakable_nodes_by_line_index[line_index]
-          return breakable_node.source_range if breakable_node
-        end
-
-        def breakable_semicolon_range(line, line_index)
-          semicolon_separated_parts = line.split(';')
-          return if semicolon_separated_parts.length <= 1
-
-          column = semicolon_separated_parts.first.length + 1
-          range = source_range(processed_source.buffer, line_index, column, 1)
-          return if processed_source.commented?(range)
-
-          range
         end
 
         def excess_range(uri_range, line, line_index)
@@ -222,53 +217,6 @@ module RuboCop
           end
         end
 
-        def allow_uri?
-          cop_config['AllowURI']
-        end
-
-        def ignore_cop_directives?
-          cop_config['IgnoreCopDirectives']
-        end
-
-        def allowed_uri_position?(line, uri_range)
-          uri_range.begin < max &&
-            (uri_range.end == line_length(line) ||
-             uri_range.end == line_length(line) - 1)
-        end
-
-        def find_excessive_uri_range(line)
-          last_uri_match = match_uris(line).last
-          return nil unless last_uri_match
-
-          begin_position, end_position =
-            last_uri_match.offset(0).map do |pos|
-              pos + indentation_difference(line)
-            end
-          return nil if begin_position < max && end_position < max
-
-          begin_position...end_position
-        end
-
-        def match_uris(string)
-          matches = []
-          string.scan(uri_regexp) do
-            matches << $LAST_MATCH_INFO if valid_uri?($LAST_MATCH_INFO[0])
-          end
-          matches
-        end
-
-        def valid_uri?(uri_ish_string)
-          URI.parse(uri_ish_string)
-          true
-        rescue URI::InvalidURIError, NoMethodError
-          false
-        end
-
-        def uri_regexp
-          @uri_regexp ||=
-            URI::DEFAULT_PARSER.make_regexp(cop_config['URISchemes'])
-        end
-
         def check_directive_line(line, line_index)
           return if line_length_without_directive(line) <= max
 
@@ -282,23 +230,6 @@ module RuboCop
             line,
             line_index
           )
-        end
-
-        def directive_on_source_line?(line_index)
-          source_line_number = line_index + processed_source.buffer.first_line
-          comment =
-            processed_source
-            .comments
-            .detect { |e| e.location.line == source_line_number }
-
-          return false unless comment
-
-          comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
-        end
-
-        def line_length_without_directive(line)
-          before_comment, = line.split(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
-          before_comment.rstrip.length
         end
 
         def check_uri_line(line, line_index)
@@ -315,4 +246,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

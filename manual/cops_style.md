@@ -7129,8 +7129,17 @@ a, = foo()
 # => We need to know to not include 2 variables in a
 a, *b, _ = foo()
 # => The correction `a, *b, = foo()` is a syntax error
+```
+#### AllowNamedUnderscoreVariables: true (default)
 
-# good if AllowNamedUnderscoreVariables is true
+```ruby
+# good
+a, b, _something = foo()
+```
+#### AllowNamedUnderscoreVariables: false
+
+```ruby
+# bad
 a, b, _something = foo()
 ```
 
@@ -7182,7 +7191,7 @@ ExactNameMatch | `true` | Boolean
 AllowPredicates | `true` | Boolean
 AllowDSLWriters | `false` | Boolean
 IgnoreClassMethods | `false` | Boolean
-AllowedMethod | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym` | Array
+AllowedMethods | `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym` | Array
 
 ### References
 

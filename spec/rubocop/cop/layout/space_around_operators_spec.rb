@@ -28,6 +28,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     expect_no_offenses('a, b = (1..2), (1...3)')
   end
 
+  it 'accepts rational' do
+    expect_no_offenses('x = 2/3r')
+  end
+
   it 'accepts scope operator' do
     expect_no_offenses('@io.class == Zlib::GzipWriter')
   end

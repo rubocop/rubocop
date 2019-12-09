@@ -21,6 +21,10 @@ module RuboCop
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?
+          # check only for method definitions in class/module body
+          return if node.parent &&
+                    !node.parent.class_type? &&
+                    !class_eval?(node.parent)
 
           add_offense(node, location: :selector)
         end
@@ -56,6 +60,10 @@ module RuboCop
             'attr_reader'
           end
         end
+
+        def_node_matcher :class_eval?, <<~PATTERN
+          (block (send _ {:class_eval :module_eval}) ...)
+        PATTERN
       end
     end
   end

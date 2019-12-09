@@ -333,4 +333,66 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
   end
+
+  describe '#external_dependency_checksum' do
+    let(:cop_classes) { RuboCop::Cop::Registry.new }
+
+    it 'does not error with no cops' do
+      expect(team.external_dependency_checksum.is_a?(String)).to be(true)
+    end
+
+    context 'when a cop joins' do
+      let(:cop_classes) do
+        RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment])
+      end
+
+      it 'returns string' do
+        expect(team.external_dependency_checksum.is_a?(String)).to be(true)
+      end
+    end
+
+    context 'when multiple cops join' do
+      let(:cop_classes) do
+        RuboCop::Cop::Registry.new(
+          [
+            RuboCop::Cop::Lint::UselessAssignment,
+            RuboCop::Cop::Lint::ShadowingOuterLocalVariable
+          ]
+        )
+      end
+
+      it 'returns string' do
+        expect(team.external_dependency_checksum.is_a?(String)).to be(true)
+      end
+    end
+
+    context 'when cop with different checksum joins' do
+      before do
+        module Test
+          class CopWithExternalDeps < ::RuboCop::Cop::Cop
+            def external_dependency_checksum
+              'something other than nil'
+            end
+          end
+        end
+      end
+
+      let(:new_cop_classes) do
+        RuboCop::Cop::Registry.new(
+          [
+            Test::CopWithExternalDeps,
+            RuboCop::Cop::Lint::UselessAssignment,
+            RuboCop::Cop::Lint::ShadowingOuterLocalVariable
+          ]
+        )
+      end
+
+      it 'has a different checksum for the whole team' do
+        original_checksum = team.external_dependency_checksum
+        new_team = described_class.new(new_cop_classes, config, options)
+        new_checksum = new_team.external_dependency_checksum
+        expect(original_checksum).not_to eq(new_checksum)
+      end
+    end
+  end
 end

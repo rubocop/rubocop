@@ -42,6 +42,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       new_source = autocorrect_source('a = [           ]')
       expect(new_source).to eq('a = []')
     end
+
+    it 'auto-corrects multiline spaces' do
+      new_source = autocorrect_source("a = [\n]")
+      expect(new_source).to eq('a = []')
+    end
   end
 
   context 'with space inside empty braces allowed' do

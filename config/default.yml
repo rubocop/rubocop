@@ -59,6 +59,7 @@ AllCops:
     - '**/Vagrantfile'
   Exclude:
     - 'node_modules/**/*'
+    - 'tmp/**/*'
     - 'vendor/**/*'
     - '.git/**/*'
   # Default formatter will be used if no `-f/--format` option is given.
@@ -196,7 +197,7 @@ Gemspec/RequiredRubyVersion:
   VersionAdded: '0.52'
   Include:
     - '**/*.gemspec'
-    -
+
 Gemspec/RubyVersionGlobalsUsage:
   Description: Checks usage of RUBY_VERSION in gemspec.
   Enabled: true
@@ -3842,7 +3843,7 @@ Style/TrivialAccessors:
   # Commonly used in DSLs
   AllowDSLWriters: false
   IgnoreClassMethods: false
-  AllowedMethod:
+  AllowedMethods:
     - to_ary
     - to_a
     - to_c

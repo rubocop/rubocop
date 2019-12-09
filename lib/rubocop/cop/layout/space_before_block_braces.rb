@@ -41,6 +41,14 @@ module RuboCop
         def on_block(node)
           return if node.keywords?
 
+          # Do not register an offense for multi-line braces when specifying
+          # `EnforcedStyle: no_space`. It will conflict with auto-correction
+          # by `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` cop.
+          # That means preventing auto-correction to incorrect auto-corrected
+          # code.
+          # See: https://github.com/rubocop-hq/rubocop/issues/7534
+          return if conflict_with_block_delimiters?
+
           left_brace = node.loc.begin
           space_plus_brace = range_with_surrounding_space(range: left_brace)
           used_style =
@@ -108,6 +116,15 @@ module RuboCop
           when nil then style
           else raise 'Unknown EnforcedStyleForEmptyBraces selected!'
           end
+        end
+
+        def conflict_with_block_delimiters?
+          block_delimiters_style == 'line_count_based' &&
+            style == :no_space && node.multiline?
+        end
+
+        def block_delimiters_style
+          config.for_cop('Style/BlockDelimiters')['EnforcedStyle']
         end
 
         def empty_braces?(loc)

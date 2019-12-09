@@ -23,7 +23,7 @@ module RuboCop
             {(send $_ :% (int 2))
              (begin (send $_ :% (int 2)))}
             ${:== :!=}
-            (int ${0 1 2}))
+            (int ${0 1}))
         PATTERN
 
         def on_send(node)

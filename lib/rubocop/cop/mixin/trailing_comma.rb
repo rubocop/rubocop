@@ -93,9 +93,12 @@ module RuboCop
       end
 
       def method_name_and_arguments_on_same_line?(node)
-        %i[send csend].include?(node.type) &&
-          node.loc.selector.line == node.arguments.last.last_line &&
-          node.last_line == node.arguments.last.last_line
+        return false unless node.call_type?
+
+        line = node.loc.selector.nil? ? node.loc.line : node.loc.selector.line
+
+        line == node.last_argument.last_line &&
+          node.last_line == node.last_argument.last_line
       end
 
       # A single argument with the closing bracket on the same line as the end
