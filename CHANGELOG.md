@@ -15,7 +15,7 @@
 ### Changes
 
 * [#7514](https://github.com/rubocop-hq/rubocop/pull/7514): Expose correctable status on offense and in formatters. ([@tyler-ball][])
-* [#7542](https://github.com/rubocop-hq/rubocop/pull/7542): Move `LineLength` cop from `Metrics` department to `Layout` department. ([@koic][])
+* [#7542](https://github.com/rubocop-hq/rubocop/pull/7542): **(Breaking)** Move `LineLength` cop from `Metrics` department to `Layout` department. ([@koic][])
 
 ## 0.77.0 (2019-11-27)
 
