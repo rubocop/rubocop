@@ -3,21 +3,33 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks that operators have space around them, except for **
-      # which should not have surrounding space.
+      # Checks that operators have space around them, except for ** which
+      # should or shouldn't have surrounding space depending on configuration.
       #
       # @example
       #   # bad
       #   total = 3*4
       #   "apple"+"juice"
       #   my_number = 38/4
-      #   a ** b
       #
       #   # good
       #   total = 3 * 4
       #   "apple" + "juice"
       #   my_number = 38 / 4
+      #
+      # @example EnforcedStyleForExponentOperator: no_space (default)
+      #   # bad
+      #   a ** b
+      #
+      #   # good
       #   a**b
+      #
+      # @example EnforcedStyleForExponentOperator: space
+      #   # bad
+      #   a**b
+      #
+      #   # good
+      #   a ** b
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
         include RangeHelp
@@ -104,7 +116,7 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            if range.source =~ /\*\*/
+            if range.source =~ /\*\*/ && !space_around_exponent_operator?
               corrector.replace(range, '**')
             elsif range.source.end_with?("\n")
               corrector.replace(range, " #{range.source.strip}\n")
@@ -141,8 +153,10 @@ module RuboCop
         end
 
         def offense_message(type, operator, with_space, right_operand)
-          if operator.is?('**')
-            'Space around operator `**` detected.' unless with_space.is?('**')
+          if should_not_have_surrounding_space?(operator)
+            return if with_space.is?(operator.source)
+
+            "Space around operator `#{operator.source}` detected."
           elsif with_space.source !~ /^\s.*\s$/
             "Surrounding space missing for operator `#{operator.source}`."
           elsif excess_leading_space?(type, operator, with_space) ||
@@ -178,6 +192,14 @@ module RuboCop
         def hash_table_style?
           align_hash_cop_config &&
             align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
+        end
+
+        def space_around_exponent_operator?
+          cop_config['EnforcedStyleForExponentOperator'] == 'space'
+        end
+
+        def should_not_have_surrounding_space?(operator)
+          operator.is?('**') ? !space_around_exponent_operator? : false
         end
       end
     end

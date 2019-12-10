@@ -1066,6 +1066,10 @@ Layout/SpaceAroundOperators:
   # with an operator on the previous or next line, not counting empty lines
   # or comment lines.
   AllowForAlignment: true
+  EnforcedStyleForExponentOperator: no_space
+  SupportedStylesForExponentOperator:
+    - space
+    - no_space
 
 Layout/SpaceBeforeBlockBraces:
   Description: >-

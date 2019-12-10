@@ -321,7 +321,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(IO.readlines('.rubocop_todo.yml')[8..-1].map(&:chomp))
         .to eq(['# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AllowForAlignment.',
+                '# Configuration parameters: AllowForAlignment, ' \
+                'EnforcedStyleForExponentOperator.',
+                '# SupportedStylesForExponentOperator: space, no_space',
                 'Layout/SpaceAroundOperators:',
                 '  Exclude:',
                 "    - 'example1.rb'",
@@ -589,7 +591,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowForAlignment.',
+         '# Configuration parameters: AllowForAlignment, ' \
+         'EnforcedStyleForExponentOperator.',
+         '# SupportedStylesForExponentOperator: space, no_space',
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
@@ -686,7 +690,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowForAlignment.',
+         '# Configuration parameters: AllowForAlignment, ' \
+         'EnforcedStyleForExponentOperator.',
+         '# SupportedStylesForExponentOperator: space, no_space',
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
@@ -889,7 +895,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          "    - 'example2.rb'",
          '',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowForAlignment.',
+         '# Configuration parameters: AllowForAlignment, ' \
+         'EnforcedStyleForExponentOperator.',
+         '# SupportedStylesForExponentOperator: space, no_space',
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
