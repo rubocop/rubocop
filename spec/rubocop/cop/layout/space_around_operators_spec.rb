@@ -9,12 +9,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
         'Layout/ExtraSpacing' => { 'ForceEqualSignAlignment' => true },
         'Layout/HashAlignment' => { 'EnforcedHashRocketStyle' => hash_style },
         'Layout/SpaceAroundOperators' => {
-          'AllowForAlignment' => allow_for_alignment
+          'AllowForAlignment' => allow_for_alignment,
+          'EnforcedStyleForExponentOperator' => exponent_operator_style
         }
       )
   end
   let(:hash_style) { 'key' }
   let(:allow_for_alignment) { true }
+  let(:exponent_operator_style) { nil }
 
   it 'accepts operator surrounded by tabs' do
     expect_no_offenses("a\t+\tb")
@@ -186,6 +188,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
 
   it 'accepts exponent operator without spaces' do
     expect_no_offenses('x = a * b**2')
+  end
+
+  context 'when EnforcedStyleForExponentOperator is space' do
+    let(:exponent_operator_style) { 'space' }
+
+    it 'registers an offenses for exponent operator without spaces' do
+      expect_offense(<<~RUBY)
+        x = a * b**2
+                 ^^ Surrounding space missing for operator `**`.
+      RUBY
+    end
+
+    it 'auto-corrects a exponent operator without space' do
+      new_source = autocorrect_source(<<~RUBY)
+        x = a * b ** 2
+        y = a * b** 2
+      RUBY
+      expect(new_source).to eq(<<~RUBY)
+        x = a * b ** 2
+        y = a * b ** 2
+      RUBY
+    end
   end
 
   it 'accepts unary operators without space' do
