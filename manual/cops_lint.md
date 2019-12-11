@@ -88,6 +88,47 @@ do_something /pattern/i
 do_something(/pattern/i)
 ```
 
+## Lint/ApprovedCallSite
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.78 | -
+
+This cop checks for call sites where a module or class name acts as
+a receiver. The purpose is to generate a list of offenses where the
+identifier is being called that can be used to audit the use of the
+receiver.
+
+E.g. you have ThirdPartyAPILibrary that you would like to ensure is only
+called from within a wrapper class, WrapThirdParty. You may annotate
+those calls made within WrapThirdParty with a local disable to show they
+are approved. If a future developer attempted to make a call to
+ThirdPartyAPILibrary, it would be caught as a rubocop offense.
+
+### Examples
+
+#### Identifiers: ['FakeClassName', 'FakeModuleName']
+
+```ruby
+# bad
+FakeModuleName.example_method
+
+# bad
+FakeClassName.another_example
+
+# good
+FakeModuleName
+
+# good
+FakeClassName
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+Identifiers | `[]` | Array
+
 ## Lint/AssignmentInCondition
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

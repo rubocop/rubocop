@@ -179,6 +179,7 @@ In the following section you find all available cops:
 * [Lint/AmbiguousBlockAssociation](cops_lint.md#lintambiguousblockassociation)
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
 * [Lint/AmbiguousRegexpLiteral](cops_lint.md#lintambiguousregexpliteral)
+* [Lint/ApprovedCallSite](cops_lint.md#lintapprovedcallsite)
 * [Lint/AssignmentInCondition](cops_lint.md#lintassignmentincondition)
 * [Lint/BigDecimalNew](cops_lint.md#lintbigdecimalnew)
 * [Lint/BooleanSymbol](cops_lint.md#lintbooleansymbol)

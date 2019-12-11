@@ -1285,6 +1285,12 @@ Lint/AmbiguousRegexpLiteral:
   Enabled: true
   VersionAdded: '0.17'
 
+Lint/ApprovedCallSite:
+  Description: 'Checks call sites for the provided class or module names.'
+  Identifiers: []
+  Enabled: true
+  VersionAdded: '0.78'
+
 Lint/AssignmentInCondition:
   Description: "Don't use assignment in conditions."
   StyleGuide: '#safe-assignment-in-condition'
