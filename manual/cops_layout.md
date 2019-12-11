@@ -4034,8 +4034,8 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | -
 
-Checks that operators have space around them, except for **
-which should not have surrounding space.
+Checks that operators have space around them, except for ** which
+should or shouldn't have surrounding space depending on configuration.
 
 ### Examples
 
@@ -4044,13 +4044,29 @@ which should not have surrounding space.
 total = 3*4
 "apple"+"juice"
 my_number = 38/4
-a ** b
 
 # good
 total = 3 * 4
 "apple" + "juice"
 my_number = 38 / 4
+```
+#### EnforcedStyleForExponentOperator: no_space (default)
+
+```ruby
+# bad
+a ** b
+
+# good
 a**b
+```
+#### EnforcedStyleForExponentOperator: space
+
+```ruby
+# bad
+a**b
+
+# good
+a ** b
 ```
 
 ### Configurable attributes
@@ -4058,6 +4074,7 @@ a**b
 Name | Default value | Configurable values
 --- | --- | ---
 AllowForAlignment | `true` | Boolean
+EnforcedStyleForExponentOperator | `no_space` | `space`, `no_space`
 
 ### References
 

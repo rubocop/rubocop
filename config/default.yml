@@ -200,6 +200,7 @@ Gemspec/RequiredRubyVersion:
 
 Gemspec/RubyVersionGlobalsUsage:
   Description: Checks usage of RUBY_VERSION in gemspec.
+  StyleGuide: '#no-ruby-version-in-the-gemspec'
   Enabled: true
   VersionAdded: '0.72'
   Include:
@@ -1066,6 +1067,10 @@ Layout/SpaceAroundOperators:
   # with an operator on the previous or next line, not counting empty lines
   # or comment lines.
   AllowForAlignment: true
+  EnforcedStyleForExponentOperator: no_space
+  SupportedStylesForExponentOperator:
+    - space
+    - no_space
 
 Layout/SpaceBeforeBlockBraces:
   Description: >-
