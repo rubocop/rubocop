@@ -72,6 +72,15 @@ module RuboCop
         include EndKeywordAlignment
         include RangeHelp
 
+        def on_kwbegin(node)
+          align_with = {
+            keyword: node.loc.begin,
+            variable: node.loc.begin,
+            start_of_line: start_line_range(node)
+          }
+          check_end_kw_alignment(node, align_with)
+        end
+
         def on_class(node)
           check_other_alignment(node)
         end

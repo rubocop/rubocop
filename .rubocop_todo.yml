@@ -10,6 +10,41 @@
 InternalAffairs/NodeDestructuring:
   Enabled: false
 
+# It is not intended that the following exclusions be merged. These exclusions
+# are temporary pending a maintainer decision re: the current discrepancy
+# between eg:
+#
+#     x = begin
+#       foo
+#     end
+#
+# and
+#
+#     x = if y
+#           foo
+#         end
+#
+# EndAlignment recently began to care about the former (`begin`) thus making
+# these temporary exclusions necessary.
+Layout/EndAlignment:
+  Exclude:
+    - lib/rubocop/cli.rb
+    - lib/rubocop/comment_config.rb
+    - lib/rubocop/config_validator.rb
+    - lib/rubocop/cop/generator/require_file_injector.rb
+    - lib/rubocop/cop/message_annotator.rb
+    - lib/rubocop/cop/mixin/configurable_enforced_style.rb
+    - lib/rubocop/cop/mixin/configurable_enforced_style.rb
+    - lib/rubocop/cop/mixin/preceding_following_alignment.rb
+    - lib/rubocop/cop/mixin/surrounding_space.rb
+    - lib/rubocop/cop/mixin/uncommunicative_name.rb
+    - lib/rubocop/cop/style/braces_around_hash_parameters.rb
+    - lib/rubocop/formatter/colorizable.rb
+    - lib/rubocop/formatter/pacman_formatter.rb
+    - lib/rubocop/processed_source.rb
+    - lib/rubocop/remote_config.rb
+    - lib/rubocop/runner.rb
+
 # Offense count: 49
 # Configuration parameters: CountComments.
 Metrics/ClassLength:

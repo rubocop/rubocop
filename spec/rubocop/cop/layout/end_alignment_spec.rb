@@ -16,6 +16,15 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   include_examples 'aligned', 'while',  'test',      'end'
   include_examples 'aligned', 'until',  'test',      'end'
   include_examples 'aligned', 'case',   'a when b',  'end'
+  include_examples 'aligned', 'begin',  'test',      'end'
+
+  it 'can handle block assignment' do
+    expect_no_offenses <<~RUBY
+      x = begin
+            :foo
+          end
+    RUBY
+  end
 
   include_examples 'misaligned', <<~RUBY, false
     puts 1; class Test
@@ -73,6 +82,11 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     case a when b
       end
       ^^^ `end` at 2, 2 is not aligned with `case` at 1, 0.
+
+    begin
+      # foo
+      end
+      ^^^ `end` at 3, 2 is not aligned with `begin` at 1, 0.
   RUBY
 
   include_examples 'aligned', 'puts 1; class',  'Test',     '        end'
@@ -103,6 +117,15 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     include_examples 'aligned', 'puts 1; while',  'test',     'end'
     include_examples 'aligned', 'puts 1; until',  'test',     'end'
     include_examples 'aligned', 'puts 1; case',   'a when b', 'end'
+    include_examples 'aligned', 'puts 1; begin',  'test',     'end'
+
+    it 'can handle block assignment' do
+      expect_no_offenses <<~RUBY
+        x = begin
+          :foo
+        end
+      RUBY
+    end
 
     include_examples 'misaligned', <<~RUBY, false
       puts 1; class Test
