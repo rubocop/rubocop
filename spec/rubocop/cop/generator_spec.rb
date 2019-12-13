@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Generator do
 
           Style/FakeCop:
             Description: 'TODO: Write a description of the cop.'
-            Enabled: true
+            Enabled: pending
             VersionAdded: '0.59'
 
           Style/Lambda:
@@ -217,10 +217,9 @@ RSpec.describe RuboCop::Cop::Generator do
 
         generator.inject_config(config_file_path: path)
 
-        expect(stdout.string).to eq(<<~MESSAGE)
-          [modify] A configuration for the cop is added into #{path}.
-                   If you want to disable the cop by default, set `Enabled` option to false.
-        MESSAGE
+        expect(stdout.string)
+          .to eq('[modify] A configuration for the cop is added into ' \
+                 "#{path}.\n")
       end
     end
 
@@ -231,7 +230,7 @@ RSpec.describe RuboCop::Cop::Generator do
         expect(File).to receive(:write).with(path, <<~YAML)
           Style/Aaa:
             Description: 'TODO: Write a description of the cop.'
-            Enabled: true
+            Enabled: pending
             VersionAdded: '0.59'
 
           Style/Alias:
@@ -246,10 +245,9 @@ RSpec.describe RuboCop::Cop::Generator do
 
         generator.inject_config(config_file_path: path)
 
-        expect(stdout.string).to eq(<<~MESSAGE)
-          [modify] A configuration for the cop is added into #{path}.
-                   If you want to disable the cop by default, set `Enabled` option to false.
-        MESSAGE
+        expect(stdout.string)
+          .to eq('[modify] A configuration for the cop is added into ' \
+                 "#{path}.\n")
       end
     end
 
@@ -269,16 +267,15 @@ RSpec.describe RuboCop::Cop::Generator do
 
           Style/Zzz:
             Description: 'TODO: Write a description of the cop.'
-            Enabled: true
+            Enabled: pending
             VersionAdded: '0.59'
         YAML
 
         generator.inject_config(config_file_path: path)
 
-        expect(stdout.string).to eq(<<~MESSAGE)
-          [modify] A configuration for the cop is added into #{path}.
-                   If you want to disable the cop by default, set `Enabled` option to false.
-        MESSAGE
+        expect(stdout.string)
+          .to eq('[modify] A configuration for the cop is added into ' \
+                 "#{path}.\n")
       end
     end
   end
