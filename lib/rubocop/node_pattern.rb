@@ -380,7 +380,7 @@ module RuboCop
         def compile_seq_head
           return unless seq_head?
 
-          fail_due_to 'sequences can not start with <' \
+          fail_due_to 'sequences cannot start with <' \
             if @terms[0].respond_to? :call
 
           with_seq_head_context(@terms[0])

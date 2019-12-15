@@ -115,7 +115,7 @@ module RuboCop
       relative_file_path = path_relative_to_config(file)
 
       # Optimization to quickly decide if the given file is hidden (on the top
-      # level) and can not be matched by any pattern.
+      # level) and cannot be matched by any pattern.
       is_hidden = relative_file_path.start_with?('.') &&
                   !relative_file_path.start_with?('..')
       return false if is_hidden && !possibly_include_hidden?

@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       context 'combined with --auto-correct' do
         it 'fails with an error message' do
-          msg = '-P/--parallel can not be combined with --auto-correct.'
+          msg = '-P/--parallel cannot be combined with --auto-correct.'
           expect { options.parse %w[--parallel --auto-correct] }
             .to raise_error(RuboCop::OptionArgumentError, msg)
         end
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       context 'combined with --fail-fast' do
         it 'fails with an error message' do
-          msg = '-P/--parallel can not be combined with -F/--fail-fast.'
+          msg = '-P/--parallel cannot be combined with -F/--fail-fast.'
           expect { options.parse %w[--parallel --fail-fast] }
             .to raise_error(RuboCop::OptionArgumentError, msg)
         end

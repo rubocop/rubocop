@@ -264,18 +264,18 @@ module RuboCop
     # rubocop:disable Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_redundant_disable?
-        raise OptionArgumentError, 'Lint/RedundantCopDisableDirective can ' \
-                                   'not be used with --only.'
+        raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot ' \
+                                   'be used with --only.'
       end
       if except_syntax?
-        raise OptionArgumentError, 'Syntax checking can not be turned off.'
+        raise OptionArgumentError, 'Syntax checking cannot be turned off.'
       end
       unless boolean_or_empty_cache?
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
 
       if display_only_fail_level_offenses_with_autocorrect?
-        raise OptionArgumentError, '--autocorrect can not be used with ' \
+        raise OptionArgumentError, '--autocorrect cannot be used with ' \
           '--display-only-fail-level-offenses'
       end
       validate_auto_gen_config
@@ -329,8 +329,8 @@ module RuboCop
         auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
                          'while --auto-gen-config needs a non-cached run, ' \
                          'so they cannot be combined.',
-        fail_fast: '-P/--parallel can not be combined with -F/--fail-fast.',
-        auto_correct: '-P/--parallel can not be combined with --auto-correct.'
+        fail_fast: '-P/--parallel cannot be combined with -F/--fail-fast.',
+        auto_correct: '-P/--parallel cannot be combined with --auto-correct.'
       }
 
       combos.each do |key, msg|
