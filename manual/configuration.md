@@ -439,7 +439,7 @@ and `fatal`.
 
 There is one exception from the general rule above and that is `Lint/Syntax`, a
 special cop that checks for syntax errors before the other cops are invoked. It
-can not be disabled and its severity (`fatal`) can not be changed in
+cannot be disabled and its severity (`fatal`) cannot be changed in
 configuration.
 
 ```yaml

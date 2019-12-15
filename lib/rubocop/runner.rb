@@ -214,7 +214,7 @@ module RuboCop
          @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
-        # need to do that processing and can not use caching.
+        # need to do that processing and cannot use caching.
         !@options[:auto_gen_config] &&
         # We can't cache results from code which is piped in to stdin
         !@options[:stdin]

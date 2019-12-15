@@ -178,7 +178,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(['--only', 'RedundantCopDisableDirective'])).to eq(2)
           expect($stderr.string)
             .to include(
-              'Lint/RedundantCopDisableDirective can not be used with --only.'
+              'Lint/RedundantCopDisableDirective cannot be used with --only.'
             )
         end
       end
@@ -394,7 +394,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           create_file('example.rb', 'x ')
           expect(cli.run(['--except', name])).to eq(2)
           expect($stderr.string)
-            .to include('Syntax checking can not be turned off.')
+            .to include('Syntax checking cannot be turned off.')
         end
       end
     end

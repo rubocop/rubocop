@@ -2567,7 +2567,7 @@
 * [#1832](https://github.com/rubocop-hq/rubocop/pull/1832): Fix bug in `UnusedMethodArgument` that would cause them to report having been auto-corrected when they were not. ([@jonas054][])
 * [#1834](https://github.com/rubocop-hq/rubocop/issues/1834): Support only boolean values for `AutoCorrect` configuration parameter, and remove warning for unknown parameter. ([@jonas054][])
 * [#1843](https://github.com/rubocop-hq/rubocop/issues/1843): Fix crash in `TrailingBlankLines` when a file ends with a block comment without final newline. ([@jonas054][])
-* [#1849](https://github.com/rubocop-hq/rubocop/issues/1849): Fix bug where you can not have nested arrays in the Rake task configuration. ([@rrosenblum][])
+* [#1849](https://github.com/rubocop-hq/rubocop/issues/1849): Fix bug where you cannot have nested arrays in the Rake task configuration. ([@rrosenblum][])
 * Fix bug in `MultilineTernaryOperator` where it will not register an offense when only the false branch is on a separate line. ([@rrosenblum][])
 * Fix crash in `MultilineBlockLayout` when using new lambda literal syntax without parentheses. ([@hbd225][])
 * [#1859](https://github.com/rubocop-hq/rubocop/pull/1859): Fix bugs in `IfUnlessModifier` concerning comments and empty lines. ([@jonas054][])
@@ -2726,7 +2726,7 @@
 
 * [#801](https://github.com/rubocop-hq/rubocop/issues/801): New style `context_dependent` for `Style/BracesAroundHashParameters` looks at preceding parameter to determine if braces should be used for final parameter. ([@jonas054][])
 * [#1427](https://github.com/rubocop-hq/rubocop/issues/1427): Excluding directories on the top level is now done earlier, so that these file trees are not searched, thus saving time when inspecting projects with many excluded files. ([@jonas054][])
-* [#1325](https://github.com/rubocop-hq/rubocop/issues/1325): When running with `--auto-correct`, only offenses *that can not be corrected* will result in a non-zero exit code. ([@jonas054][])
+* [#1325](https://github.com/rubocop-hq/rubocop/issues/1325): When running with `--auto-correct`, only offenses *that cannot be corrected* will result in a non-zero exit code. ([@jonas054][])
 * [#1445](https://github.com/rubocop-hq/rubocop/issues/1445): Allow sprockets directive comments (starting with `#=`) in `Style/LeadingCommentSpace`. ([@bbatsov][])
 
 ### Bugs fixed
