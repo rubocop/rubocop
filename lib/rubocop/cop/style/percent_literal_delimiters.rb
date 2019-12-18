@@ -88,27 +88,27 @@ module RuboCop
         end
 
         def contains_preferred_delimiter?(node, type)
-          preferred_delimiters = preferred_delimiters_for(type)
-          node
-            .children.map { |n| string_source(n) }.compact
-            .any? { |s| preferred_delimiters.any? { |d| s.include?(d) } }
+          contains_delimiter?(node, preferred_delimiters_for(type))
         end
 
         def include_same_character_as_used_for_delimiter?(node, type)
           return false unless %w[%w %i].include?(type)
 
           used_delimiters = matchpairs(begin_source(node)[-1])
-          escaped_delimiters = used_delimiters.map { |d| "\\#{d}" }.join('|')
+          contains_delimiter?(node, used_delimiters)
+        end
 
+        def contains_delimiter?(node, delimiters)
+          delimiters_regexp = Regexp.union(delimiters)
           node
             .children.map { |n| string_source(n) }.compact
-            .any? { |s| Regexp.new(escaped_delimiters) =~ s }
+            .any? { |s| delimiters_regexp =~ s }
         end
 
         def string_source(node)
           if node.is_a?(String)
             node
-          elsif node.respond_to?(:type) && node.str_type?
+          elsif node.respond_to?(:type) && (node.str_type? || node.sym_type?)
             node.source
           end
         end
