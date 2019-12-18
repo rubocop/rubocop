@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7193](https://github.com/rubocop-hq/rubocop/issues/7193): Prevent `Style/PercentLiteralDelimiters` from changing `%i` literals that contain escaped delimiters. ([@buehmann][])
+
 ## 0.78.0 (2019-12-18)
 
 ### New features
