@@ -49,8 +49,9 @@ module RuboCop
 
           if body.if_type?
             check_ending_if(body)
-          elsif body.begin_type? && body.children.last.if_type?
-            check_ending_if(body.children.last)
+          elsif body.begin_type?
+            final_expression = body.children.last
+            check_ending_if(final_expression) if final_expression&.if_type?
           end
         end
         alias on_defs on_def
