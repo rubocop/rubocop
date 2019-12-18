@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.78.0 (2019-12-18)
+
 ### New features
 
 * [#7528](https://github.com/rubocop-hq/rubocop/pull/7528): Add new `Lint/NonDeterministicRequireOrder` cop. ([@mangara][])
