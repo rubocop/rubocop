@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
       end
 
       def func
-        work if something
+        work unless something
       end
     RUBY
   end
