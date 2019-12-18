@@ -16,6 +16,7 @@
 * [#7513](https://github.com/rubocop-hq/rubocop/issues/7513): Fix abrupt error on autocorrecting with `--disable-uncorrectable`. ([@tejasbubane][])
 * [#7537](https://github.com/rubocop-hq/rubocop/issues/7537): Fix a false positive for `Layout/SpaceAroundOperators` when using a Rational literal with `/` (e.g. `2/3r`). ([@koic][])
 * [#7029](https://github.com/rubocop-hq/rubocop/issues/7029): Make `Style/Attr` not flag offense for custom `attr` method. ([@tejasbubane][])
+* [#7574](https://github.com/rubocop-hq/rubocop/issues/7574): Fix a corner case that made `Style/GuardClause` crash. ([@buehmann][])
 
 ### Changes
 
