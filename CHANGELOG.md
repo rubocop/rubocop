@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7577](https://github.com/rubocop-hq/rubocop/pull/7577): Add `AllowGemfileRubyComment` configuration on `Layout/LeadingCommentSpace`. ([@cetinajero][])
+
 ### Changes
 
 * [#7636](https://github.com/rubocop-hq/rubocop/issues/7636): Remove `console` from `Lint/Debugger` to prevent false positives. ([@gsamokovarov][])
@@ -4324,3 +4328,4 @@
 [@mangara]: https://github.com/mangara
 [@pirj]: https://github.com/pirj
 [@pawptart]: https://github.com/pawptart
+[@cetinajero]: https://github.com/cetinajero
