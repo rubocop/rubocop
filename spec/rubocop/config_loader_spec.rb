@@ -915,7 +915,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before do
         stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', 'rubocop')
-        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE', File.join('rubocop', 'config', 'default.yml'))
+        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE',
+                   File.join('rubocop', 'config', 'default.yml'))
         create_file('rubocop/config/default.yml',
                     <<~YAML)
                       AllCops:
