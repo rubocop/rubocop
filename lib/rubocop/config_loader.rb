@@ -124,8 +124,8 @@ module RuboCop
         return if pending_cops.none?
 
         warn Rainbow('The following cops were added to RuboCop, but are not ' \
-        'configured. Please set Enabled to either `true` or `false` in your ' \
-        '`.rubocop.yml` file:').yellow
+                     'configured. Please set Enabled to either `true` or ' \
+                     '`false` in your `.rubocop.yml` file:').yellow
 
         pending_cops.each do |cop|
           warn Rainbow(" - #{cop}").yellow
