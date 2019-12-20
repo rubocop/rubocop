@@ -914,8 +914,12 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:cop_class) { RuboCop::Cop::Metrics::MethodLength }
 
       before do
-        create_file('~/.rubocop.yml',
+        stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', 'rubocop')
+        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE', File.join('rubocop', 'config', 'default.yml'))
+        create_file('rubocop/config/default.yml',
                     <<~YAML)
+                      AllCops:
+                        AnythingGoes: banana
                       Metrics/MethodLength:
                         Enabled: pending
                     YAML
@@ -923,7 +927,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       context 'when not configured explicitly' do
-        let(:config) { ['inherit_from: ~/.rubocop.yml'] }
+        let(:config) { '' }
 
         it 'is disabled' do
           expect(cop_enabled?(cop_class)).to eq 'pending'
@@ -933,7 +937,6 @@ RSpec.describe RuboCop::ConfigLoader do
       context 'when enabled explicitly in config' do
         let(:config) do
           <<~YAML
-            inherit_from: ~/.rubocop.yml
             Metrics/MethodLength:
               Enabled: true
           YAML
@@ -947,7 +950,6 @@ RSpec.describe RuboCop::ConfigLoader do
       context 'when disabled explicitly in config' do
         let(:config) do
           <<~YAML
-            inherit_from: ~/.rubocop.yml
             Metrics/MethodLength:
               Enabled: false
           YAML
@@ -961,14 +963,12 @@ RSpec.describe RuboCop::ConfigLoader do
       context 'when DisabledByDefault is true' do
         let(:config) do
           <<~YAML
-            inherit_from: ~/.rubocop.yml
             AllCops:
               DisabledByDefault: true
           YAML
         end
 
         it 'is disabled' do
-          pending
           expect(cop_enabled?(cop_class)).to be false
         end
       end
@@ -976,14 +976,12 @@ RSpec.describe RuboCop::ConfigLoader do
       context 'when EnabledByDefault is true' do
         let(:config) do
           <<~YAML
-            inherit_from: ~/.rubocop.yml
             AllCops:
               EnabledByDefault: true
           YAML
         end
 
         it 'is enabled' do
-          pending
           expect(cop_enabled?(cop_class)).to be true
         end
       end
