@@ -122,7 +122,7 @@ lib/bar.rb:13:14: W: Lint/DeprecatedClassMethods: File.exists? is deprecated in 
 
 ### Pacman Style Formatter
 
-The `pacman` style formatter prints a PACDOT per every file to be analized. Pacman will "eat" one PACDOT per file when no offense is detected. Otherwise it will print a Ghost.
+The `pacman` style formatter prints a PACDOT per every file to be analyzed. Pacman will "eat" one PACDOT per file when no offense is detected. Otherwise it will print a Ghost.
 This is inspired by the [Pacman](https://github.com/go-labs/rspec_pacman_formatter) formatter for RSpec.
 
 ```sh
