@@ -213,7 +213,7 @@ module RuboCop
         end
 
         def matching_range(haystack, needle)
-          offset = (haystack.source =~ Regexp.new(Regexp.escape(needle)))
+          offset = haystack.source.index(needle)
           return unless offset
 
           offset += haystack.begin_pos
