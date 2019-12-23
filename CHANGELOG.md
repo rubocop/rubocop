@@ -12,6 +12,7 @@
 
 * [#7528](https://github.com/rubocop-hq/rubocop/pull/7528): Add new `Lint/NonDeterministicRequireOrder` cop. ([@mangara][])
 * [#7559](https://github.com/rubocop-hq/rubocop/pull/7559): Add `EnforcedStyleForExponentOperator` parameter to `Layout/SpaceAroundOperators` cop. ([@khiav223577][])
+* [#7587](https://github.com/rubocop-hq/rubocop/issues/7587): Add `Style/RedundantReturn`'s `AllowedMethods` option. ([@QWYNG][])
 
 ### Bug fixes
 
@@ -4297,3 +4298,5 @@
 [@movermeyer]: https://github.com/movermeyer
 [@jethroo]: https://github.com/jethroo
 [@mangara]: https://github.com/mangara
+[@QWYNG]: https://github.com/QWYNG
+

@@ -123,6 +123,10 @@ module RuboCop
           return if cop_config['AllowMultipleReturnValues'] &&
                     node.children.size > 1
 
+          around_methods = [method_name_before_of(node),
+                            method_name_first_child_of(node)]
+          return if (allowed_methods & around_methods).any?
+
           add_offense(node, location: :keyword)
         end
 
@@ -164,6 +168,29 @@ module RuboCop
           else
             MSG
           end
+        end
+
+        def allowed_methods
+          cop_config['AllowedMethods']&.map(&:to_sym) || []
+        end
+
+        def method_name_before_of(node)
+          parent = node.parent
+          return unless %i[begin kwbegin].include?(parent.type)
+
+          node_place_index = parent.children.find_index(node)
+          return if node_place_index.zero?
+
+          before_node = parent.children[node_place_index - 1]
+          return unless before_node.send_type?
+
+          before_node.method_name
+        end
+
+        def method_name_first_child_of(node)
+          return unless node.children.first&.send_type?
+
+          node.children.first.method_name
         end
       end
     end

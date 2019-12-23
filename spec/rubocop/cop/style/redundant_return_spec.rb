@@ -475,4 +475,29 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       RUBY
     end
   end
+
+  context 'with permitted methods' do
+    let(:cop_config) { { 'AllowedMethods' => %w[redirect_to] } }
+
+    it 'accepts before method name which is in permitted list' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          if cond?
+            redirect_to some_path
+            return
+          end
+        end
+      RUBY
+    end
+
+    it 'accepts after method name which is in permitted list' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          if cond?
+            return redirect_to some_path
+          end
+        end
+      RUBY
+    end
+  end
 end
