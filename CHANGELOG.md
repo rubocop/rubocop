@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7567](https://github.com/rubocop-hq/rubocop/pull/7567): Introduce new `pending` status for new cops. ([@Darhazer][], [@pirj][])
+
 ### Bug fixes
 
 * [#7193](https://github.com/rubocop-hq/rubocop/issues/7193): Prevent `Style/PercentLiteralDelimiters` from changing `%i` literals that contain escaped delimiters. ([@buehmann][])
@@ -12,7 +16,6 @@
 
 * [#7528](https://github.com/rubocop-hq/rubocop/pull/7528): Add new `Lint/NonDeterministicRequireOrder` cop. ([@mangara][])
 * [#7559](https://github.com/rubocop-hq/rubocop/pull/7559): Add `EnforcedStyleForExponentOperator` parameter to `Layout/SpaceAroundOperators` cop. ([@khiav223577][])
-* [#7567](https://github.com/rubocop-hq/rubocop/pull/7567): Introduce new `pending` status for new cops. ([@Darhazer][], [@pirj][])
 
 ### Bug fixes
 
