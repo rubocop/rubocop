@@ -62,6 +62,25 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     it 'accepts left brace without outer space' do
       expect_no_offenses('each{ puts }')
     end
+
+    context 'with `EnforcedStyle` of `Style/BlockDelimiters`' do
+      let(:config) do
+        merged_config = RuboCop::ConfigLoader.default_configuration[
+          'Layout/SpaceBeforeBlockBraces'
+        ].merge(cop_config)
+
+        RuboCop::Config.new(
+          'Layout/SpaceBeforeBlockBraces' => merged_config,
+          'Style/BlockDelimiters' => { 'EnforcedStyle' => 'line_count_based' }
+        )
+      end
+
+      it 'accepts left brace without outer space' do
+        expect_no_offenses(<<~RUBY)
+          let(:foo){{foo: 1, bar: 2}}
+        RUBY
+      end
+    end
   end
 
   context 'with space before empty braces not allowed' do

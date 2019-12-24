@@ -47,7 +47,7 @@ module RuboCop
           # That means preventing auto-correction to incorrect auto-corrected
           # code.
           # See: https://github.com/rubocop-hq/rubocop/issues/7534
-          return if conflict_with_block_delimiters?
+          return if conflict_with_block_delimiters?(node)
 
           left_brace = node.loc.begin
           space_plus_brace = range_with_surrounding_space(range: left_brace)
@@ -118,7 +118,7 @@ module RuboCop
           end
         end
 
-        def conflict_with_block_delimiters?
+        def conflict_with_block_delimiters?(node)
           block_delimiters_style == 'line_count_based' &&
             style == :no_space && node.multiline?
         end
