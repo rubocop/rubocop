@@ -32,7 +32,9 @@ module RuboCop
     end
 
     def validate
-      # Don't validate RuboCop's own files. Avoids infinite recursion.
+      check_cop_config_value(@config)
+
+      # Don't validate RuboCop's own files further. Avoids infinite recursion.
       return if @config.internal?
 
       valid_cop_names, invalid_cop_names = @config.keys.partition do |key|
@@ -243,6 +245,28 @@ module RuboCop
 
       msg = 'Cops cannot be both enabled by default and disabled by default'
       raise ValidationError, msg
+    end
+
+    def check_cop_config_value(hash, parent = nil)
+      hash.each do |key, value|
+        check_cop_config_value(value, key) if value.is_a?(Hash)
+
+        next unless %w[Enabled
+                       Safe
+                       SafeAutoCorrect
+                       AutoCorrect].include?(key) && value.is_a?(String)
+
+        next if key == 'Enabled' && value == 'pending'
+
+        raise ValidationError, msg_not_boolean(parent, key, value)
+      end
+    end
+
+    # FIXME: Handling colors in exception messages like this is ugly.
+    def msg_not_boolean(parent, key, value)
+      "#{Rainbow('').reset}" \
+        "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \
+        " is supposed to be a boolean and #{Rainbow(value).yellow} is not."
     end
   end
 end
