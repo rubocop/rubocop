@@ -104,10 +104,9 @@ module RuboCop
         end
       SPEC
 
-      CONFIGURATION_ADDED_MESSAGE = <<~MESSAGE
-        [modify] A configuration for the cop is added into %<configuration_file_path>s.
-                 If you want to disable the cop by default, set `Enabled` option to false.
-      MESSAGE
+      CONFIGURATION_ADDED_MESSAGE =
+        '[modify] A configuration for the cop is added into ' \
+          '%<configuration_file_path>s.'
 
       def initialize(name, github_user, output: $stdout)
         @badge = Badge.parse(name)

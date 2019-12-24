@@ -406,7 +406,9 @@ Layout/LineLength:
   Enabled: false
 ```
 
-Most cops are enabled by default. Some cops, configured the above `Enabled: false`
+Most cops are enabled by default. Cops, introduced or significantly updated
+between major versions, are in a special pending status (read more in
+["Versioning"](versioning.md)). Some cops, configured the above `Enabled: false`
 in [config/default.yml](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml),
 are disabled by default. The cop enabling process can be altered by
 setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.

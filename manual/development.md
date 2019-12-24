@@ -10,7 +10,6 @@ Files created:
 File modified:
   - `require_relative 'rubocop/cop/department/name'` added into lib/rubocop.rb
   - A configuration for the cop is added into config/default.yml
-    - If you want to disable the cop by default, set `Enabled` option to false.
 
 Do 3 steps:
   1. Add an entry to the "New features" section in CHANGELOG.md,

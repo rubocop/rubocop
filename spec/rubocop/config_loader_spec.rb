@@ -904,6 +904,89 @@ RSpec.describe RuboCop::ConfigLoader do
         end
       end
     end
+
+    context 'when a new cop is introduced' do
+      def cop_enabled?(cop_class)
+        configuration_from_file.for_cop(cop_class).fetch('Enabled')
+      end
+
+      let(:file_path) { '.rubocop.yml' }
+      let(:cop_class) { RuboCop::Cop::Metrics::MethodLength }
+
+      before do
+        stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', 'rubocop')
+        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE',
+                   File.join('rubocop', 'config', 'default.yml'))
+        create_file('rubocop/config/default.yml',
+                    <<~YAML)
+                      AllCops:
+                        AnythingGoes: banana
+                      Metrics/MethodLength:
+                        Enabled: pending
+                    YAML
+        create_file(file_path, config)
+      end
+
+      context 'when not configured explicitly' do
+        let(:config) { '' }
+
+        it 'is disabled' do
+          expect(cop_enabled?(cop_class)).to eq 'pending'
+        end
+      end
+
+      context 'when enabled explicitly in config' do
+        let(:config) do
+          <<~YAML
+            Metrics/MethodLength:
+              Enabled: true
+          YAML
+        end
+
+        it 'is enabled' do
+          expect(cop_enabled?(cop_class)).to be true
+        end
+      end
+
+      context 'when disabled explicitly in config' do
+        let(:config) do
+          <<~YAML
+            Metrics/MethodLength:
+              Enabled: false
+          YAML
+        end
+
+        it 'is disabled' do
+          expect(cop_enabled?(cop_class)).to be false
+        end
+      end
+
+      context 'when DisabledByDefault is true' do
+        let(:config) do
+          <<~YAML
+            AllCops:
+              DisabledByDefault: true
+          YAML
+        end
+
+        it 'is disabled' do
+          expect(cop_enabled?(cop_class)).to be false
+        end
+      end
+
+      context 'when EnabledByDefault is true' do
+        let(:config) do
+          <<~YAML
+            AllCops:
+              EnabledByDefault: true
+          YAML
+        end
+
+        it 'is enabled' do
+          expect(cop_enabled?(cop_class)).to be true
+        end
+      end
+    end
   end
 
   describe '.load_file', :isolated_environment do
