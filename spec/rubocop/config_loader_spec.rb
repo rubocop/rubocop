@@ -1087,7 +1087,7 @@ RSpec.describe RuboCop::ConfigLoader do
         expect do
           load_file
         end.to raise_error(
-          SystemExit,
+          RuboCop::ValidationError,
           /supposed to be a boolean and disable is not/
         )
       end
