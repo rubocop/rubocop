@@ -75,7 +75,7 @@ task :bench_cop, %i[cop srcpath times] do |_task, args|
   puts "(#{pluralize(iterations, 'iteration')}, " \
     "#{pluralize(files.size, 'file')})"
 
-  ruby_version = RuboCop::Config::KNOWN_RUBIES.last
+  ruby_version = RuboCop::TargetRuby.supported_versions.last
   srcs = files.map { |file| ProcessedSource.from_file(file, ruby_version) }
 
   puts 'Finished parsing source, testing inspection...'

@@ -14,21 +14,12 @@ module RuboCop
                          VersionAdded VersionChanged VersionRemoved
                          Reference Safe SafeAutoCorrect].freeze
 
-    # 2.3 is the oldest officially supported Ruby version.
-    DEFAULT_RUBY_VERSION = 2.3
-    KNOWN_RUBIES = [2.3, 2.4, 2.5, 2.6, 2.7].freeze
-    OBSOLETE_RUBIES = {
-      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69'
-    }.freeze
-    RUBY_VERSION_FILENAME = '.ruby-version'
-
-    def_delegators :@config,
-                   :smart_loaded_path, :for_all_cops, :find_file_upwards,
-                   :base_dir_for_path_parameters, :bundler_lock_file_path
+    def_delegators :@config, :smart_loaded_path, :for_all_cops
 
     def initialize(config)
       @config = config
       @config_obsoletion = ConfigObsoletion.new(config)
+      @target_ruby = TargetRuby.new(config)
     end
 
     def validate
@@ -52,23 +43,7 @@ module RuboCop
     end
 
     def target_ruby_version
-      @target_ruby_version ||= begin
-        if for_all_cops['TargetRubyVersion']
-          @target_ruby_version_source = :rubocop_yml
-
-          for_all_cops['TargetRubyVersion'].to_f
-        elsif target_ruby_version_from_version_file
-          @target_ruby_version_source = :ruby_version_file
-
-          target_ruby_version_from_version_file
-        elsif target_ruby_version_from_bundler_lock_file
-          @target_ruby_version_source = :bundler_lock_file
-
-          target_ruby_version_from_bundler_lock_file
-        else
-          DEFAULT_RUBY_VERSION
-        end
-      end
+      target_ruby.version
     end
 
     def validate_section_presence(name)
@@ -80,20 +55,24 @@ module RuboCop
 
     private
 
-    def check_target_ruby
-      return if KNOWN_RUBIES.include?(target_ruby_version)
+    attr_reader :target_ruby
 
-      msg = if OBSOLETE_RUBIES.include?(target_ruby_version)
+    def check_target_ruby
+      return if target_ruby.supported?
+
+      source = target_ruby.source
+      last_version = target_ruby.rubocop_version_with_support
+
+      msg = if last_version
               "RuboCop found unsupported Ruby version #{target_ruby_version} " \
-              "in #{target_ruby_source}. #{target_ruby_version}-compatible " \
-              'analysis was dropped after version ' \
-              "#{OBSOLETE_RUBIES[target_ruby_version]}."
+              "in #{source}. #{target_ruby_version}-compatible " \
+              "analysis was dropped after version #{last_version}."
             else
               'RuboCop found unknown Ruby version ' \
-              "#{target_ruby_version.inspect} in #{target_ruby_source}."
+              "#{target_ruby_version.inspect} in #{source}."
             end
 
-      msg += "\nSupported versions: #{KNOWN_RUBIES.join(', ')}"
+      msg += "\nSupported versions: #{TargetRuby.supported_versions.join(', ')}"
 
       raise ValidationError, msg
     end
@@ -178,64 +157,6 @@ module RuboCop
       ConfigLoader.default_configuration[name]['AllowMultipleStyles'] &&
         formats.is_a?(Array) &&
         formats.all? { |format| valid.include?(format) }
-    end
-
-    def target_ruby_source
-      case @target_ruby_version_source
-      when :ruby_version_file
-        "`#{RUBY_VERSION_FILENAME}`"
-      when :bundler_lock_file
-        "`#{bundler_lock_file_path}`"
-      when :rubocop_yml
-        "`TargetRubyVersion` parameter (in #{smart_loaded_path})"
-      end
-    end
-
-    def ruby_version_file
-      @ruby_version_file ||=
-        find_file_upwards(RUBY_VERSION_FILENAME, base_dir_for_path_parameters)
-    end
-
-    def target_ruby_version_from_version_file
-      file = ruby_version_file
-      return unless file && File.file?(file)
-
-      @target_ruby_version_from_version_file ||=
-        File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
-          md[:version].to_f
-        end
-    end
-
-    def target_ruby_version_from_bundler_lock_file
-      @target_ruby_version_from_bundler_lock_file ||=
-        read_ruby_version_from_bundler_lock_file
-    end
-
-    def read_ruby_version_from_bundler_lock_file
-      lock_file_path = bundler_lock_file_path
-      return nil unless lock_file_path
-
-      in_ruby_section = false
-      File.foreach(lock_file_path) do |line|
-        # If ruby is in Gemfile.lock or gems.lock, there should be two lines
-        # towards the bottom of the file that look like:
-        #     RUBY VERSION
-        #       ruby W.X.YpZ
-        # We ultimately want to match the "ruby W.X.Y.pZ" line, but there's
-        # extra logic to make sure we only start looking once we've seen the
-        # "RUBY VERSION" line.
-        in_ruby_section ||= line.match(/^\s*RUBY\s*VERSION\s*$/)
-        next unless in_ruby_section
-
-        # We currently only allow this feature to work with MRI ruby. If jruby
-        # (or something else) is used by the project, it's lock file will have a
-        # line that looks like:
-        #     RUBY VERSION
-        #       ruby W.X.YpZ (jruby x.x.x.x)
-        # The regex won't match in this situation.
-        result = line.match(/^\s*ruby\s+(\d+\.\d+)[p.\d]*\s*$/)
-        return result.captures.first.to_f if result
-      end
     end
 
     def reject_mutually_exclusive_defaults
