@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Team do
   let(:cop_classes) { RuboCop::Cop::Cop.registry }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { nil }
-  let(:ruby_version) { RuboCop::ConfigValidator::KNOWN_RUBIES.last }
+  let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
   before do
     RuboCop::ConfigLoader.default_configuration = nil
