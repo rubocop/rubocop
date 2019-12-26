@@ -192,6 +192,42 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
       }
     end
 
+    context 'simple method call' do
+      context '`EnforcedStyle` is `predicate`' do
+        let(:cop_config) do
+          {
+            'EnforcedStyle' => 'predicate',
+            'IgnoredMethods' => %w[==]
+          }
+        end
+
+        context 'when checking if a number is zero' do
+          it_behaves_like 'code without offense', <<~RUBY
+            if number == 0
+              puts 'hello'
+            end
+          RUBY
+        end
+      end
+
+      context '`EnforcedStyle` is `comparison`' do
+        let(:cop_config) do
+          {
+            'EnforcedStyle' => 'comparison',
+            'IgnoredMethods' => %w[zero?]
+          }
+        end
+
+        context 'when checking if a number is zero' do
+          it_behaves_like 'code without offense', <<~RUBY
+            if number.zero?
+              puts 'hello'
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'in argument' do
       context 'ignored method' do
         context 'when checking if a number is positive' do
