@@ -5,6 +5,12 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'bump', require: false
+# Workaround for YARD 0.9.20 or lower.
+# Depends on `e2mmap` and `irb` until the release that includes
+# the following changes:
+# https://github.com/lsegal/yard/pull/1296
+gem 'e2mmap'
+gem 'irb', '1.0.0'
 # Workaround for Parser 2.7.0.0.
 # It specifies the upper version until Parser 2.7.0.1 release.
 gem 'parser', '>= 2.6', '< 2.7'
