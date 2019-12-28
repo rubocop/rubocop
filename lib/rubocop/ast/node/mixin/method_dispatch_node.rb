@@ -8,6 +8,7 @@ module RuboCop
       extend NodePattern::Macros
       include MethodIdentifierPredicates
 
+      ARITHMETIC_OPERATORS = %i[+ - * / % **].freeze
       SPECIAL_MODIFIERS = %w[private protected].freeze
 
       # The receiving node of the method dispatch.
@@ -150,6 +151,14 @@ module RuboCop
       # @return [Boolean] whether the dispatched method has a block
       def block_literal?
         parent&.block_type? && eql?(parent.send_node)
+      end
+
+      # Checks whether this node is an arithmetic operation
+      #
+      # @return [Boolean] whether the dispatched method is an arithmetic
+      #                   operation
+      def arithmetic_operation?
+        ARITHMETIC_OPERATORS.include?(method_name)
       end
 
       # Checks if this node is part of a chain of `def` modifiers.
