@@ -184,6 +184,10 @@ module RuboCop
           cop_config['Max']
         end
 
+        def allow_heredoc?
+          allowed_heredoc
+        end
+
         def allowed_heredoc
           cop_config['AllowHeredoc']
         end
@@ -204,6 +208,12 @@ module RuboCop
           heredocs.any? do |range, delimiter|
             range.cover?(line_number) &&
               (allowed_heredoc == true || allowed_heredoc.include?(delimiter))
+          end
+        end
+
+        def line_in_heredoc?(line_number)
+          heredocs.any? do |range, _delimiter|
+            range.cover?(line_number)
           end
         end
 

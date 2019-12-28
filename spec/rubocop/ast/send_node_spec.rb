@@ -996,6 +996,26 @@ RSpec.describe RuboCop::AST::SendNode do
     end
   end
 
+  describe '#arithmetic_operation?' do
+    context 'with a binary arithmetic operation' do
+      let(:source) { 'foo + bar' }
+
+      it { expect(send_node.arithmetic_operation?).to be_truthy }
+    end
+
+    context 'with a unary numeric operation' do
+      let(:source) { '+foo' }
+
+      it { expect(send_node.arithmetic_operation?).to be_falsey }
+    end
+
+    context 'with a regular method call' do
+      let(:source) { 'foo.bar' }
+
+      it { expect(send_node.arithmetic_operation?).to be_falsey }
+    end
+  end
+
   describe '#block_node' do
     context 'with a block literal' do
       let(:send_node) { parse_source(source).ast.children[0] }

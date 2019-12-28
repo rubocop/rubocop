@@ -14,6 +14,14 @@ module RuboCop
         loc.keyword.line == condition.source_range.line
       end
 
+      # Checks whether the condition of the node is written on more than
+      # one line.
+      #
+      # @return [Boolean] whether the condition is on more than one line
+      def multiline_condition?
+        !single_line_condition?
+      end
+
       # Returns the condition of the node. This works together with each node's
       # custom destructuring method to select the correct part of the node.
       #
