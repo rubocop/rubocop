@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a dsabled frozen string literal below an encoding comment' do
+    it 'accepts a disabled frozen string literal below an encoding comment' do
       expect_no_offenses(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: false
@@ -375,7 +375,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a dsabled frozen string literal below ' \
+    it 'registers an offense for a disabled frozen string literal below ' \
       'an encoding comment' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
@@ -500,7 +500,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         RUBY
       end
 
-      it 'removes a dsabled frozen string literal below an encoding comment' do
+      it 'removes a disabled frozen string literal below an encoding comment' do
         new_source = autocorrect_source(<<~RUBY)
           # encoding: utf-8
           # frozen_string_literal: false
