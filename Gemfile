@@ -11,7 +11,6 @@ gem 'bump', require: false
 # https://github.com/lsegal/yard/pull/1296
 gem 'e2mmap'
 gem 'irb', '1.0.0'
-gem 'parser', '>= 2.6'
 gem 'pry'
 gem 'rake', '~> 12.0'
 gem 'rspec', '~> 3.7'
