@@ -15,6 +15,7 @@
 * [#7576](https://github.com/rubocop-hq/rubocop/issues/7576): Fix an error for `Gemspec/OrderedDependencies` when using a local variable in an argument of dependent gem. ([@koic][])
 * [#7595](https://github.com/rubocop-hq/rubocop/issues/7595): Make `Style/NumericPredicate` aware of ignored methods when specifying ignored methods. ([@koic][])
 * [#7607](https://github.com/rubocop-hq/rubocop/issues/7607): Fix `Style/FrozenStringLiteralComment` infinite loop when magic comments are newline-separated. ([@pirj][])
+* [#7602](https://github.com/rubocop-hq/rubocop/pull/7602): Ensure proper handling of Ruby 2.7 syntax. ([@drenmi][])
 
 ## 0.78.0 (2019-12-18)
 
