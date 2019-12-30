@@ -40,13 +40,7 @@ module RuboCop
       end
 
       def leading_comment_lines
-        comments = processed_source.comments
-
-        comments.each_with_object([]) do |comment, leading_comments|
-          next if comment.loc.line > 3
-
-          leading_comments << comment.text
-        end
+        processed_source.comments.first(3).map(&:text)
       end
     end
   end

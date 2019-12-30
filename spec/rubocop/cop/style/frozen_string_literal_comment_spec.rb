@@ -117,6 +117,18 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
+    it 'accepts a frozen string literal comment below newline-separated ' \
+       'magic comments' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+
+        # encoding: utf-8
+
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
     it 'accepts a disabled frozen string literal comment below shebang and ' \
        'encoding comments' do
       expect_no_offenses(<<~RUBY)
