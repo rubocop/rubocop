@@ -16,6 +16,17 @@ module RuboCop
         method?(:initialize) || assignment_method?
       end
 
+      # Checks whether this method definition node forwards its arguments
+      # as per the feature added in Ruby 2.7.
+      #
+      # @note This is written in a way that may support lead arguments
+      #       which are rumored to be added in a later version of Ruby.
+      #
+      # @return [Boolean] whether the `def` node uses argument forwarding
+      def argument_forwarding?
+        arguments.any?(&:forward_args_type?)
+      end
+
       # The name of the defined method as a symbol.
       #
       # @return [Symbol] the name of the defined method
