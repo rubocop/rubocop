@@ -11,9 +11,7 @@ gem 'bump', require: false
 # https://github.com/lsegal/yard/pull/1296
 gem 'e2mmap'
 gem 'irb', '1.0.0'
-# Workaround for Parser 2.7.0.0.
-# It specifies the upper version until Parser 2.7.0.1 release.
-gem 'parser', '>= 2.6', '< 2.7'
+gem 'parser', '>= 2.6'
 gem 'pry'
 gem 'rake', '~> 12.0'
 gem 'rspec', '~> 3.7'
