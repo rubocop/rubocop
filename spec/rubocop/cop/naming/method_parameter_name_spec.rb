@@ -10,6 +10,14 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     }
   end
 
+  context 'when using argument forwarding', :ruby27 do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def foo(...); end
+      RUBY
+    end
+  end
+
   it 'does not register for method without parameters' do
     expect_no_offenses(<<~RUBY)
       def something
