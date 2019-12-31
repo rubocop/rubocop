@@ -24,15 +24,18 @@ module RuboCop
         @options[:disable_uncorrectable] == true
       end
 
+      def safe_autocorrect?
+        cop_config.fetch('Safe', true) &&
+          cop_config.fetch('SafeAutoCorrect', true)
+      end
+
       def autocorrect_enabled?
         # allow turning off autocorrect on a cop by cop basis
         return true unless cop_config
 
         return false if cop_config['AutoCorrect'] == false
 
-        if @options.fetch(:safe_auto_correct, false)
-          return cop_config.fetch('SafeAutoCorrect', true)
-        end
+        return safe_autocorrect? if @options.fetch(:safe_auto_correct, false)
 
         true
       end

@@ -24,6 +24,7 @@ module RuboCop
 
     def validate
       check_cop_config_value(@config)
+      reject_conflicting_safe_settings
 
       # Don't validate RuboCop's own files further. Avoids infinite recursion.
       return if @config.internal?
@@ -166,6 +167,18 @@ module RuboCop
 
       msg = 'Cops cannot be both enabled by default and disabled by default'
       raise ValidationError, msg
+    end
+
+    def reject_conflicting_safe_settings
+      @config.each do |name, cop_config|
+        next unless cop_config.is_a?(Hash)
+        next unless cop_config['Safe'] == false &&
+                    cop_config['SafeAutoCorrect'] == true
+
+        msg = 'Unsafe cops cannot have a safe auto-correction ' \
+              "(section #{name} in #{smart_loaded_path})"
+        raise ValidationError, msg
+      end
     end
 
     def check_cop_config_value(hash, parent = nil)

@@ -304,4 +304,29 @@ RSpec.describe RuboCop::Cop::Cop do
       end
     end
   end
+
+  describe '#safe_autocorrect?' do
+    subject { cop.safe_autocorrect? }
+
+    let(:config) { RuboCop::Config.new('Cop/Cop' => cop_config) }
+    let(:cop) { described_class.new(config) }
+
+    context 'when cop is declared unsafe' do
+      let(:cop_config) { { 'Safe' => false } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when auto-correction of the cop is declared unsafe' do
+      let(:cop_config) { { 'SafeAutoCorrect' => false } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when safety is undeclared' do
+      let(:cop_config) { {} }
+
+      it { is_expected.to be(true) }
+    end
+  end
 end
