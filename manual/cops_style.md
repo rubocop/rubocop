@@ -754,7 +754,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | No | Yes  | 0.9 | 0.27
+Disabled | No | Yes (Unsafe) | 0.9 | 0.27
 
 This cop enforces the use of consistent method names
 from the Enumerable module.
@@ -2271,7 +2271,7 @@ EnforcedStyle | `annotated` | `annotated`, `template`, `unannotated`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.36 | 0.79
+Enabled | No | Yes (Unsafe) | 0.36 | 0.79
 
 This cop is designed to help you transition from mutable string literals
 to frozen string literals.
@@ -2813,7 +2813,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.48 | -
+Enabled | No | Yes (Unsafe) | 0.48 | -
 
 This cop check for usages of not (`not` or `!`) called on a method
 when an inverse of that method can be used instead.
@@ -4992,7 +4992,7 @@ puts Regexp.last_match(1)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.41 | 0.70
+Enabled | No | Yes (Unsafe) | 0.41 | 0.70
 
 This cop (by default) checks for uses of methods Hash#has_key? and
 Hash#has_value? where it enforces Hash#key? and Hash#value?
@@ -6452,7 +6452,7 @@ warn('hello')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | No | Yes  | 0.52 | 0.75
+Disabled | No | Yes (Unsafe) | 0.52 | 0.75
 
 This cop checks for the use of strings as keys in hashes. The use of
 symbols is preferred instead.
@@ -7429,7 +7429,7 @@ WordRegex | `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)` |
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.49 | 0.75
+Enabled | No | Yes (Unsafe) | 0.49 | 0.75
 
 This cop can either enforce or forbid Yoda conditions,
 i.e. comparison operations where the order of expression is reversed.
@@ -7504,7 +7504,7 @@ EnforcedStyle | `forbid_for_all_comparison_operators` | `forbid_for_all_comparis
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.37 | 0.39
+Enabled | No | Yes (Unsafe) | 0.37 | 0.39
 
 This cop checks for numeric comparisons that can be replaced
 by a predicate method, such as receiver.length == 0,

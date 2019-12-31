@@ -1304,7 +1304,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.78 | -
+Enabled | No | Yes (Unsafe) | 0.78 | -
 
 `Dir[...]` and `Dir.glob(...)` do not make any guarantees about
 the order in which files are returned. The final order is
@@ -1470,7 +1470,7 @@ puts(x + y)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.41 | -
+Enabled | No | Yes (Unsafe) | 0.41 | -
 
 This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 

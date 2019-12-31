@@ -389,6 +389,41 @@ RSpec.describe RuboCop::Config do
         end
       end
     end
+
+    describe 'conflicting Safe settings' do
+      context 'when the configuration includes an unsafe cop that is ' \
+              'explicitly declared to have a safe auto-correction' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Style/PreferredHashMethods:
+              Safe: false
+              SafeAutoCorrect: true
+          YAML
+        end
+
+        it 'raises validation error' do
+          expect { configuration.validate }
+            .to raise_error(
+              RuboCop::ValidationError,
+              /Unsafe cops cannot have a safe auto-correction/
+            )
+        end
+      end
+
+      context 'when the configuration includes an unsafe cop without ' \
+              'a declaration of its auto-correction' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Style/PreferredHashMethods:
+              Safe: false
+          YAML
+        end
+
+        it 'does not raise validation error' do
+          expect { configuration.validate }.not_to raise_error
+        end
+      end
+    end
   end
 
   describe '#make_excludes_absolute' do
