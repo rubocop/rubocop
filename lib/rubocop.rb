@@ -460,7 +460,11 @@ require_relative 'rubocop/cop/style/lambda'
 require_relative 'rubocop/cop/style/lambda_call'
 require_relative 'rubocop/cop/style/line_end_concatenation'
 require_relative 'rubocop/cop/style/method_call_without_args_parentheses'
+# rubocop:disable Layout/LineLength
 require_relative 'rubocop/cop/style/method_call_with_args_parentheses'
+require_relative 'rubocop/cop/style/method_call_with_args_parentheses/omit_parentheses'
+require_relative 'rubocop/cop/style/method_call_with_args_parentheses/require_parentheses'
+# rubocop:enable Layout/LineLength
 require_relative 'rubocop/cop/style/method_called_on_do_end_block'
 require_relative 'rubocop/cop/style/method_def_parentheses'
 require_relative 'rubocop/cop/style/method_missing_super'
