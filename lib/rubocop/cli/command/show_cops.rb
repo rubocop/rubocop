@@ -8,6 +8,13 @@ module RuboCop
       class ShowCops < Base
         self.command_name = :show_cops
 
+        def initialize(env)
+          super
+
+          # Load the configs so the require()s are done for custom cops
+          @config = @config_store.for(Dir.pwd)
+        end
+
         def run
           print_available_cops
         end
@@ -15,8 +22,6 @@ module RuboCop
         private
 
         def print_available_cops
-          # Load the configs so the require()s are done for custom cops
-          @config_store.for(Dir.pwd)
           registry = Cop::Cop.registry
           show_all = @options[:show_cops].empty?
 
@@ -46,7 +51,9 @@ module RuboCop
 
         def print_cop_details(cops)
           cops.each do |cop|
-            puts '# Supports --auto-correct' if cop.new.support_autocorrect?
+            if cop.new(@config).support_autocorrect?
+              puts '# Supports --auto-correct'
+            end
             puts "#{cop.cop_name}:"
             puts config_lines(cop)
             puts
@@ -64,7 +71,7 @@ module RuboCop
         end
 
         def config_lines(cop)
-          cnf = @config_store.for(Dir.pwd).for_cop(cop)
+          cnf = @config.for_cop(cop)
           cnf.to_yaml.lines.to_a.drop(1).map { |line| '  ' + line }
         end
       end
