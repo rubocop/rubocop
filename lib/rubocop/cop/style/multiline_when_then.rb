@@ -35,7 +35,7 @@ module RuboCop
           return if !node.children.last.nil? && !node.multiline? && node.then?
 
           # With more than one statements after then, there's not offense
-          return if node.children.last&.begin_type?
+          return if accept_node_type?(node.body)
 
           add_offense(node, location: :begin)
         end
@@ -48,6 +48,10 @@ module RuboCop
               )
             )
           end
+        end
+
+        def accept_node_type?(node)
+          node&.begin_type? || node&.array_type? || node&.hash_type?
         end
       end
     end
