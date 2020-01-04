@@ -43,4 +43,13 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName do
       RUBY
     end
   end
+
+  context 'when a disable comment contains a plain comment' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Style/Alias # Plain code comment
+        alias :ala :bala
+      RUBY
+    end
+  end
 end
