@@ -259,4 +259,39 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
       end
     RUBY
   end
+
+  it 'does not auto-correct a trailing comma when only one argument ' \
+     'is present' do
+    new_source = autocorrect_source(<<~RUBY)
+      def f
+        X.map do |
+          a,
+        |
+        end
+      end
+    RUBY
+    expect(new_source).to eq(<<~RUBY)
+      def f
+        X.map do |a,|
+        end
+      end
+    RUBY
+  end
+
+  it 'auto-corrects nested parens correctly' do
+    new_source = autocorrect_source(<<~RUBY)
+      def f
+        X.map do |
+          (((a), b), c)
+        |
+        end
+      end
+    RUBY
+    expect(new_source).to eq(<<~RUBY)
+      def f
+        X.map do |(((a), b), c)|
+        end
+      end
+    RUBY
+  end
 end

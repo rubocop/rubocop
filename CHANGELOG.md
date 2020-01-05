@@ -18,6 +18,7 @@
 * [#7602](https://github.com/rubocop-hq/rubocop/pull/7602): Ensure proper handling of Ruby 2.7 syntax. ([@drenmi][])
 * [#7620](https://github.com/rubocop-hq/rubocop/issues/7620): Fix a false positive for `Migration/DepartmentName` when a disable comment contains a plain comment. ([@koic][])
 * [#7616](https://github.com/rubocop-hq/rubocop/issues/7616): Fix an incorrect autocorrect for `Style/MultilineWhenThen` for when statement with then is an array or a hash. ([@koic][])
+* [#7628](https://github.com/rubocop-hq/rubocop/issues/7628): Fix an incorrect autocorrect for `Layout/MultilineBlockLayout` removing trailing comma with single argument. ([@pawptart][])
 
 ### Changes
 
@@ -4315,3 +4316,4 @@
 [@jethroo]: https://github.com/jethroo
 [@mangara]: https://github.com/mangara
 [@pirj]: https://github.com/pirj
+[@pawptart]: https://github.com/pawptart
