@@ -33,6 +33,26 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName do
         # rubocop:enable Style/Alias, Layout/LineLength
       RUBY
     end
+
+    it 'registers offenses and corrects when there is space around `:`' do
+      expect do
+        expect_offense(<<~RUBY, 'file.rb')
+          # rubocop : todo Alias, LineLength
+                                  ^^^^^^^^^^ Department name is missing.
+                           ^^^^^ Department name is missing.
+          alias :ala :bala
+          # rubocop : enable Alias, LineLength
+                                    ^^^^^^^^^^ Department name is missing.
+                             ^^^^^ Department name is missing.
+        RUBY
+      end.to output(warning).to_stderr
+
+      expect_correction(<<~RUBY)
+        # rubocop : todo Style/Alias, Layout/LineLength
+        alias :ala :bala
+        # rubocop : enable Style/Alias, Layout/LineLength
+      RUBY
+    end
   end
 
   context 'when a disable comment has cop names with departments' do
