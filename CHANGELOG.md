@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [rubocop-hq/rubocop-rails#127](https://github.com/rubocop-hq/rubocop-rails/issues/127): Use `ConfigLoader.default_configuration` for the default config. ([@hanachin][])
+
 ## 0.79.0 (2020-01-06)
 
 ### New features
@@ -4320,3 +4324,4 @@
 [@mangara]: https://github.com/mangara
 [@pirj]: https://github.com/pirj
 [@pawptart]: https://github.com/pawptart
+[@hanachin]: https://github.com/hanachin

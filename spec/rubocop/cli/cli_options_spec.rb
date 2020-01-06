@@ -508,7 +508,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       home = File.dirname(File.dirname(File.dirname(File.dirname(__FILE__))))
       expect($stdout.string.lines.grep(/configuration/).map(&:chomp))
         .to eq(["For #{abs('')}:" \
-                " configuration from #{home}/config/default.yml"])
+                " Default configuration from #{home}/config/default.yml"])
     end
 
     it 'shows cop names' do

@@ -11,6 +11,7 @@ RSpec.shared_context 'cli spec behavior' do
 
   before do
     RuboCop::ConfigLoader.debug = false
+    RuboCop::ConfigLoader.default_configuration = nil
 
     # OPTIMIZE: Makes these specs faster. Work directory (the parent of
     # .rubocop_cache) is removed afterwards anyway.
