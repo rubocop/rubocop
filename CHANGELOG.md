@@ -19,6 +19,7 @@
 * [#7620](https://github.com/rubocop-hq/rubocop/issues/7620): Fix a false positive for `Migration/DepartmentName` when a disable comment contains a plain comment. ([@koic][])
 * [#7616](https://github.com/rubocop-hq/rubocop/issues/7616): Fix an incorrect autocorrect for `Style/MultilineWhenThen` for when statement with then is an array or a hash. ([@koic][])
 * [#7628](https://github.com/rubocop-hq/rubocop/issues/7628): Fix an incorrect autocorrect for `Layout/MultilineBlockLayout` removing trailing comma with single argument. ([@pawptart][])
+* [#7627](https://github.com/rubocop-hq/rubocop/issues/7627): Fix a false negative for `Migration/DepartmentName` when there is space around `:` (e.g. `# rubocop : disable`). ([@koic][])
 
 ### Changes
 

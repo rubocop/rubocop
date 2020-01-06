@@ -10,6 +10,9 @@ module RuboCop
 
         MSG = 'Department name is missing.'
 
+        DISABLE_COMMENT_FORMAT =
+          /\A(# *rubocop *: *((dis|en)able|todo) +)(.*)/.freeze
+
         # The token that makes up a disable comment.
         # The token used after `# rubocop: disable` are `A-z`, `/`, and `,`.
         # Also `A-z` includes `all`.
@@ -17,7 +20,7 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|
-            next if comment.text !~ /\A(# *rubocop:((dis|en)able|todo) +)(.*)/
+            next if comment.text !~ DISABLE_COMMENT_FORMAT
 
             offset = Regexp.last_match(1).length
             Regexp.last_match(4).scan(%r{[\w/]+|\W+}) do |name|
