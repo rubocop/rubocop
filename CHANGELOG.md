@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.79.0 (2020-01-06)
+
 ### New features
 
 * [#7296](https://github.com/rubocop-hq/rubocop/issues/7296): Recognize `console` and `binding.console` ([rails/web-console](https://github.com/rails/web-console)) calls in `Lint/Debuggers`. ([@gsamokovarov][])
