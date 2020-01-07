@@ -81,7 +81,7 @@ module RuboCop
 
         MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: '\
                            'true`.'
-        MSG_MISSING = 'Missing magic "frozen_string_literal" comment.'
+        MSG_MISSING = 'Missing frozen string literal comment.'
         MSG_UNNECESSARY = 'Unnecessary frozen string literal comment.'
         MSG_DISABLED = 'Frozen string literal comment must be set to `true`.'
         SHEBANG = '#!'

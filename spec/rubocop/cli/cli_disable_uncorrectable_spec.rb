@@ -16,7 +16,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stderr.string).to eq('')
       expect($stdout.string).to eq(<<~OUTPUT)
         == example.rb ==
-        C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
+        C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:  7: [Corrected] Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
         C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~OUTPUT)
           == example.rb ==
-          C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
+          C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           C:  1:  5: [Todo] Naming/PredicateName: Rename is_example to example?.
           C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stderr.string).to eq('')
           expect($stdout.string).to eq(<<~OUTPUT)
             == example.rb ==
-            C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
+            C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
             C:  1:  4: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
             C:  1: 15: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
             C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stderr.string).to eq('')
           expect($stdout.string).to eq(<<~OUTPUT)
             == example.rb ==
-            C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
+            C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
             C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
             C:  3:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [<8, 12, 6> 15.62/15]
             C:  3:  3: [Todo] Metrics/CyclomaticComplexity: Cyclomatic complexity for choose_move is too high. [7/6]
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<~OUTPUT)
           == example.rb ==
           C:  1:  1: [Todo] Metrics/MethodLength: Method has too many lines. [2/1]
-          C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
+          C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           C:  3:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
           1 file inspected, 3 offenses detected, 3 offenses corrected

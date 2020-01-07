@@ -79,7 +79,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         .to eq(<<~RESULT)
           == example.rb ==
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
-          C:  1:  1: Style/FrozenStringLiteralComment: Missing magic "frozen_string_literal" comment.
+          C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
           1 file inspected, 2 offenses detected
       RESULT
