@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     it 'registers an offense for arbitrary tokens' do
       expect_offense(<<~RUBY)
         # frozen_string_literal: token
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
         puts 1
       RUBY
     end
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'on the top line' do
       expect_offense(<<~RUBY)
         puts 1
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
         puts 1
       RUBY
 
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'when there is only a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under an encoding comment' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
         puts 1
       RUBY
 
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under an encoding comment separated by a newline' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
 
         puts 1
       RUBY
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under a shebang and an encoding comment' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
         # encoding: utf-8
         puts 1
       RUBY
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'and the code' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
         # encoding: utf-8
 
         puts 1
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'when there is only a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic "frozen_string_literal" comment.
+        ^ Missing frozen string literal comment.
       RUBY
     end
 
