@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#7636](https://github.com/rubocop-hq/rubocop/issues/7636): Remove `console` from `Lint/Debugger` to prevent false positives. ([@gsamokovarov][])
+
 ## 0.79.0 (2020-01-06)
 
 ### New features
