@@ -471,6 +471,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     it 'accepts parens in calls with logical operators' do
       expect_no_offenses('foo(a) && bar(b)')
       expect_no_offenses('foo(a) || bar(b)')
+      expect_no_offenses(<<~RUBY)
+        foo(a) || bar(b) do
+          pass
+        end
+      RUBY
     end
 
     it 'accepts parens in calls with args with logical operators' do
