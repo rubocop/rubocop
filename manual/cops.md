@@ -315,7 +315,6 @@ In the following section you find all available cops:
 * [Style/BeginBlock](cops_style.md#stylebeginblock)
 * [Style/BlockComments](cops_style.md#styleblockcomments)
 * [Style/BlockDelimiters](cops_style.md#styleblockdelimiters)
-* [Style/BracesAroundHashParameters](cops_style.md#stylebracesaroundhashparameters)
 * [Style/CaseEquality](cops_style.md#stylecaseequality)
 * [Style/CharacterLiteral](cops_style.md#stylecharacterliteral)
 * [Style/ClassAndModuleChildren](cops_style.md#styleclassandmodulechildren)

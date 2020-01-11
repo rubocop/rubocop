@@ -2356,24 +2356,6 @@ Style/BlockDelimiters:
   #   collection.each do |element| puts element end
   AllowBracesOnProceduralOneLiners: false
 
-Style/BracesAroundHashParameters:
-  Description: 'Enforce braces style around hash parameters.'
-  Enabled: true
-  VersionAdded: '0.14.1'
-  VersionChanged: '0.28'
-  EnforcedStyle: no_braces
-  SupportedStyles:
-    # The `braces` style enforces braces around all method parameters that are
-    # hashes.
-    - braces
-    # The `no_braces` style checks that the last parameter doesn't have braces
-    # around it.
-    - no_braces
-    # The `context_dependent` style checks that the last parameter doesn't have
-    # braces around it, but requires braces if the second to last parameter is
-    # also a hash literal.
-    - context_dependent
-
 Style/CaseEquality:
   Description: 'Avoid explicit use of the case equality operator(===).'
   StyleGuide: '#no-case-equality'

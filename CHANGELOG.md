@@ -9,6 +9,7 @@
 ### Changes
 
 * [#7636](https://github.com/rubocop-hq/rubocop/issues/7636): Remove `console` from `Lint/Debugger` to prevent false positives. ([@gsamokovarov][])
+* [#7641](https://github.com/rubocop-hq/rubocop/issues/7641): **(Breaking)** Remove `Style/BracesAroundHashParameters` cop. ([@pocke][])
 
 ## 0.79.0 (2020-01-06)
 
