@@ -293,6 +293,81 @@ end
 
 * https://rubystyle.guide#no-and-or-or
 
+== Style/ArgumentsForwarding
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.1
+| -
+|===
+
+In Ruby 2.7, arguments forwarding has been added.
+
+This cop identifies places where `do_something(*args, &block)`
+can be replaced by `do_something(...)`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def foo(*args, &block)
+  bar(*args, &block)
+end
+
+# bad
+def foo(*args, **kwargs, &block)
+  bar(*args, **kwargs, &block)
+end
+
+# good
+def foo(...)
+  bar(...)
+end
+----
+
+==== AllowOnlyRestArgument: true (default)
+
+[source,ruby]
+----
+# good
+def foo(*args)
+  bar(*args)
+end
+----
+
+==== AllowOnlyRestArgument: false
+
+[source,ruby]
+----
+# bad
+# The following code can replace the arguments with `...`,
+# but it will change the behavior. Because `...` forwards block also.
+def foo(*args)
+  bar(*args)
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowOnlyRestArgument
+| `true`
+| Boolean
+|===
+
+=== References
+
+* https://rubystyle.guide#arguments-forwarding
+
 == Style/ArrayCoercion
 
 |===

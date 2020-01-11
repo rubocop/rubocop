@@ -337,6 +337,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleaccessorgrouping[Style/AccessorGrouping]
 * xref:cops_style.adoc#stylealias[Style/Alias]
 * xref:cops_style.adoc#styleandor[Style/AndOr]
+* xref:cops_style.adoc#styleargumentsforwarding[Style/ArgumentsForwarding]
 * xref:cops_style.adoc#stylearraycoercion[Style/ArrayCoercion]
 * xref:cops_style.adoc#stylearrayjoin[Style/ArrayJoin]
 * xref:cops_style.adoc#styleasciicomments[Style/AsciiComments]
