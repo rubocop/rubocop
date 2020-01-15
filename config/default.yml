@@ -2065,6 +2065,7 @@ Naming/MethodParameterName:
     - ip
     - db
     - os
+    - pp
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
