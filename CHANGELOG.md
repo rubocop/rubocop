@@ -6,6 +6,7 @@
 
 * [#7639](https://github.com/rubocop-hq/rubocop/pull/7639): Fix logical operator edge case in `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
 * [#7661](https://github.com/rubocop-hq/rubocop/pull/7661): Fix to return correct info from multi-line regexp. ([@Tietew][])
+* [#7655](https://github.com/rubocop-hq/rubocop/issues/7655): Fix an error when processing a regexp with a line break at the start of capture parenthesis. ([@koic][])
 
 ### Changes
 

@@ -29,5 +29,22 @@ RSpec.describe RuboCop::Cop::VariableForce do
         expect { force.process_node(node) }.not_to raise_error
       end
     end
+
+    context 'when processing a regexp with a line break at ' \
+            'the start of capture parenthesis' do
+      let(:node) do
+        s(:match_with_lvasgn,
+          s(:regexp,
+            s(:str, "(\n"),
+            s(:str, "  pattern\n"),
+            s(:str, ')'),
+            s(:regopt)),
+          s(:send, nil?, :string))
+      end
+
+      it 'does not raise an error' do
+        expect { force.process_node(node) }.not_to raise_error
+      end
+    end
   end
 end

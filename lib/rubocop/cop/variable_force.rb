@@ -190,7 +190,10 @@ module RuboCop
       end
 
       def regexp_captured_names(node)
-        regexp_string = node.children[0].children[0] || ''
+        regexp_string = node.children.select(&:str_type?).map do |child|
+          child.children.first
+        end.join || ''
+
         regexp = Regexp.new(regexp_string)
 
         regexp.named_captures.keys
