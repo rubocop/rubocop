@@ -567,7 +567,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
       RUBY
     end
 
-    it 'registers an offense and corrects string concatination ' \
+    it 'registers an offense and corrects string concatenation ' \
       'without messing up new lines' do
       expect_offense(<<~RUBY)
         'Here is a'+
