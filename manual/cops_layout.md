@@ -2886,19 +2886,25 @@ method calls with argument lists.
 
 If autocorrection is enabled, the following Layout cops
 are recommended to further format the broken lines.
+(Many of these are enabled by default.)
 
-  - ParameterAlignment
   - ArgumentAlignment
+  - BlockAlignment
+  - BlockDelimiters
+  - BlockEndNewline
   - ClosingParenthesisIndentation
   - FirstArgumentIndentation
   - FirstArrayElementIndentation
   - FirstHashElementIndentation
   - FirstParameterIndentation
   - HashAlignment
+  - IndentationWidth
   - MultilineArrayLineBreaks
+  - MultilineBlockLayout
   - MultilineHashBraceLayout
   - MultilineHashKeyLineBreaks
   - MultilineMethodArgumentLineBreaks
+  - ParameterAlignment
 
 Together, these cops will pretty print hashes, arrays,
 method calls, etc. For example, let's say the max columns

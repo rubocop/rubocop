@@ -6,6 +6,10 @@
 
 * [#7639](https://github.com/rubocop-hq/rubocop/pull/7639): Fix logical operator edge case in `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
 
+### New features
+
+* [#7659](https://github.com/rubocop-hq/rubocop/pull/7659): Layout/LineLength autocorrect now breaks up long lines with blocks. ([@maxh][])
+
 ### Changes
 
 * [#7636](https://github.com/rubocop-hq/rubocop/issues/7636): Remove `console` from `Lint/Debugger` to prevent false positives. ([@gsamokovarov][])
