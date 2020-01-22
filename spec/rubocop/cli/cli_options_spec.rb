@@ -207,9 +207,47 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         # process. Otherwise, the extra cop will affect other specs.
         output =
           `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
-        expect($CHILD_STATUS.success?).to be_truthy
+        # Excludes a warning when new `Enabled: pending` status cop is specified
+        # in config/default.yml.
+        output_excluding_warn_for_pending_cops =
+          output.split("\n").last(4).join("\n") << "\n"
+        expect(output_excluding_warn_for_pending_cops)
+          .to eq(<<~RESULT)
+            Inspecting 2 files
+            ..
+
+            2 files inspected, no offenses detected
+          RESULT
+      end
+
+      it 'accepts cop names from plugins with a pending cop' do
+        create_file('.rubocop.yml', <<~YAML)
+          require: rubocop_ext
+
+          Style/SomeCop:
+            Description: Something
+            Enabled: pending
+        YAML
+        create_file('rubocop_ext.rb', <<~RUBY)
+          module RuboCop
+            module Cop
+              module Style
+                class SomeCop < Cop
+                end
+              end
+            end
+          end
+        RUBY
+        create_file('redirect.rb', '$stderr = STDOUT')
+        rubocop = "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop"
+        # Since we define a new cop class, we have to do this in a separate
+        # process. Otherwise, the extra cop will affect other specs.
+        output =
+          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
         expect(output)
           .to eq(<<~RESULT)
+            The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
+             - Style/SomeCop
             Inspecting 2 files
             ..
 
