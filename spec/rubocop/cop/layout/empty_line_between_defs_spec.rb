@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           def n
           end
           def o
-          ^^^ Use empty lines between method definitions.
+          ^^^^^ Use empty lines between method definitions.
           end
         end
         # checks something
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           # checks something o-related
           # and more
           def o
-          ^^^ Use empty lines between method definitions.
+          ^^^^^ Use empty lines between method definitions.
           end
         end
       RUBY
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
             true
           end
           def bar
-          ^^^ Use empty lines between method definitions.
+          ^^^^^^^ Use empty lines between method definitions.
             true
           end
         else
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
               true
             end
             def self.bar
-            ^^^ Use empty lines between method definitions.
+            ^^^^^^^^^^^^ Use empty lines between method definitions.
               true
             end
           end
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
               true
             end
             def self.bar
-            ^^^ Use empty lines between method definitions.
+            ^^^^^^^^^^^^ Use empty lines between method definitions.
               true
             end
           end
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     expect_offense(<<~RUBY)
       def a; end
       def b; end
-      ^^^ Use empty lines between method definitions.
+      ^^^^^ Use empty lines between method definitions.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
 
       def b; end
-      ^^^ Use empty lines between method definitions.
+      ^^^^^ Use empty lines between method definitions.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
 
         def o
-        ^^^ Use empty lines between method definitions.
+        ^^^^^ Use empty lines between method definitions.
         end
       end
     RUBY
@@ -293,10 +293,10 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def a; end
         def b; end
         def c # Not a one-liner, so this is an offense.
-        ^^^ Use empty lines between method definitions.
+        ^^^^^ Use empty lines between method definitions.
         end
         def d; end # Also an offense since previous was multi-line:
-        ^^^ Use empty lines between method definitions.
+        ^^^^^ Use empty lines between method definitions.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
 
         def o
-        ^^^ Use empty lines between method definitions.
+        ^^^^^ Use empty lines between method definitions.
         end
       RUBY
 
@@ -363,7 +363,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         end
 
         def o
-        ^^^ Use empty lines between method definitions.
+        ^^^^^ Use empty lines between method definitions.
         end
       RUBY
 
@@ -386,7 +386,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
 
         def o
-        ^^^ Use empty lines between method definitions.
+        ^^^^^ Use empty lines between method definitions.
         end
       RUBY
 
