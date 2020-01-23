@@ -17,6 +17,10 @@
 * Add the method name to highlight area of `Layout/EmptyLineBetweenDefs` to help provide more context. ([@rrosenblum][])
 * [#7652](https://github.com/rubocop-hq/rubocop/pull/7652): Allow `pp` to allowed names of `Naming/MethodParameterName` cop in default config. ([@masarakki][])
 
+### New features
+
+* [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformMethods` cop. ([@djudd][])
+
 ## 0.79.0 (2020-01-06)
 
 ### New features
@@ -4340,3 +4344,4 @@
 [@Tietew]: https://github.com/Tietew
 [@hanachin]: https://github.com/hanachin
 [@masarakki]: https://github.com/masarakki
+[@djudd]: https://github.com/djudd
