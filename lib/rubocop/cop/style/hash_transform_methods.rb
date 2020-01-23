@@ -25,6 +25,10 @@ module RuboCop
       #   {a: 1, b: 2}.transform_values { |v| v*v }
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
       class HashTransformMethods < Cop
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.5
+
         EACH_WITH_OBJECT_PATTERN = NodePattern.new(<<~PATTERN)
           (block
             ({send csend} _ :each_with_object (hash))
