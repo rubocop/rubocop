@@ -2472,6 +2472,37 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 
 * [https://rubystyle.guide#hash-literals](https://rubystyle.guide#hash-literals)
 
+## Style/HashTransformMethods
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | No | Yes (Unsafe) | - | -
+
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map{...}.to_h`, and `Hash[_.map{...}]` that are actually just
+transforming either the keys or the values of a hash, and tries to use
+a simpler & faster call to `transform_keys` or `transform_values`
+instead.
+
+This can produce false positives if we are transforming an enumerable
+of key-value-like pairs that isn't actually a hash, e.g.:
+`[[k1, v1], [k2, v2], ...]`
+
+This cop should only be enabled on Ruby version 2.5 or newer
+(`transform_values` was added in 2.4, and `transform_keys` in 2.5.)
+
+### Examples
+
+```ruby
+# bad
+{a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = v*v }
+{a: 1, b: 2}.map { |k, v| [k.to_s, v] }
+
+# good
+{a: 1, b: 2}.transform_values { |v| v*v }
+{a: 1, b: 2}.transform_keys { |k| k.to_s }
+```
+
 ## Style/IdenticalConditionalBranches
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
