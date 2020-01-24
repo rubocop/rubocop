@@ -7,6 +7,7 @@
 * [#7639](https://github.com/rubocop-hq/rubocop/pull/7639): Fix logical operator edge case in `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
 * [#7661](https://github.com/rubocop-hq/rubocop/pull/7661): Fix to return correct info from multi-line regexp. ([@Tietew][])
 * [#7655](https://github.com/rubocop-hq/rubocop/issues/7655): Fix an error when processing a regexp with a line break at the start of capture parenthesis. ([@koic][])
+* [#7647](https://github.com/rubocop-hq/rubocop/issues/7647): Fix an `undefined method on_numblock` error when using Ruby 2.7's numbered parameters. ([@hanachin][])
 
 ### Changes
 
@@ -4335,3 +4336,4 @@
 [@pawptart]: https://github.com/pawptart
 [@gfyoung]: https://github.com/gfyoung
 [@Tietew]: https://github.com/Tietew
+[@hanachin]: https://github.com/hanachin

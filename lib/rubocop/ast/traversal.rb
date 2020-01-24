@@ -185,6 +185,15 @@ module RuboCop
       alias on_when    on_case
       alias on_irange  on_case
       alias on_erange  on_case
+
+      def on_numblock(node)
+        children = node.children
+        child = children[0]
+        send(:"on_#{child.type}", child)
+        return unless (child = children[2])
+
+        send(:"on_#{child.type}", child)
+      end
     end
   end
 end
