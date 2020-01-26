@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop looks for uses of `_.each_with_object({}) {...}`,
-      # `_.map{...}.to_h`, and `Hash[_.map{...}]` that are actually just
+      # `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
       # transforming either the keys or the values of a hash, and tries to use
       # a simpler & faster call to `transform_keys` or `transform_values`
       # instead.
@@ -18,11 +18,11 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   {a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = v*v }
+      #   {a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = v * v }
       #   {a: 1, b: 2}.map { |k, v| [k.to_s, v] }
       #
       #   # good
-      #   {a: 1, b: 2}.transform_values { |v| v*v }
+      #   {a: 1, b: 2}.transform_values { |v| v * v }
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
       class HashTransformMethods < Cop
         extend TargetRubyVersion
@@ -31,13 +31,13 @@ module RuboCop
 
         EACH_WITH_OBJECT_PATTERN = NodePattern.new(<<~PATTERN)
           (block
-            ({send csend} _ :each_with_object (hash))
+            ({send csend} !(send _ :each_with_index) :each_with_object (hash))
             (args
               (mlhs
                 (arg $_)
                 (arg $_))
-              (arg $_))
-            ({send csend} (lvar $_) :[]= $_ $_))
+              (arg _memo))
+            ({send csend} (lvar _memo) :[]= $_ $_))
         PATTERN
 
         HASH_BRACKETS_MAP_PATTERN = NodePattern.new(<<~PATTERN)
@@ -45,7 +45,7 @@ module RuboCop
             (const _ :Hash)
             :[]
             (block
-              ({send csend} _ :map)
+              ({send csend} !(send _ :each_with_index) {:map :collect})
               (args
                 (arg $_)
                 (arg $_))
@@ -55,7 +55,7 @@ module RuboCop
         MAP_TO_H_PATTERN = NodePattern.new(<<~PATTERN)
           ({send csend}
             (block
-              ({send csend} _ :map)
+              ({send csend} !(send _ :each_with_index) {:map :collect})
               (args
                 (arg $_)
                 (arg $_))
@@ -63,19 +63,12 @@ module RuboCop
             :to_h)
         PATTERN
 
-        VALS_MSG = 'Use `transform_values` to transform just the values of a ' \
-                   'hash, rather than `each_with_object` or `map`'
-        KEYS_MSG = 'Use `transform_keys` to transform just the keys of a ' \
-                   'hash, rather than `each_with_object` or `map`'
+        VALS_MSG = 'Prefer `transform_values` over `each_with_object` or `map`.'
+        KEYS_MSG = 'Prefer `transform_keys` over `each_with_object` or `map`.'
 
         def on_block(node)
           match = EACH_WITH_OBJECT_PATTERN.match(node)
-          return unless match
-
-          k_arg, v_arg, hash_arg, hash_body, k_body, v_body = *match
-          return unless hash_arg == hash_body
-
-          handle_possible_offense(node, k_arg, v_arg, k_body, v_body)
+          handle_possible_offense(node, *match) if match
         end
 
         def on_send(node)
@@ -103,9 +96,15 @@ module RuboCop
 
         private
 
-        def handle_possible_offense(node, k_arg, v_arg, k_body, v_body)
-          unchanged_key = unchanged_key_or_val?(k_body, k_arg)
-          unchanged_val = unchanged_key_or_val?(v_body, v_arg)
+        def handle_possible_offense(
+          node,
+          k_argname,
+          v_argname,
+          k_body_expr,
+          v_body_expr
+        )
+          unchanged_key = noop_transformation?(k_body_expr, k_argname)
+          unchanged_val = noop_transformation?(v_body_expr, v_argname)
 
           # If both key and value are changed, this block can't be replaced.
           # If neither is changed, this is either a false positive (receiver
@@ -114,15 +113,16 @@ module RuboCop
 
           # Can't use `transform_values` if value transformation uses key,
           # or `transform_keys` if key transformation uses value
-          if unchanged_key && !v_body.descendants.include?(k_body)
+          if unchanged_key && !v_body_expr.descendants.include?(k_body_expr)
             add_offense(node, message: VALS_MSG)
-          elsif unchanged_val && !k_body.descendants.include?(v_body)
+          elsif unchanged_val && !k_body_expr.descendants.include?(v_body_expr)
             add_offense(node, message: KEYS_MSG)
           end
         end
 
-        def unchanged_key_or_val?(body, arg)
-          body.lvar_type? && body.children == [arg]
+        def noop_transformation?(expression_in_block, block_argname)
+          expression_in_block.lvar_type? &&
+            expression_in_block.children == [block_argname]
         end
 
         def preprocess_by_match_type_for_autocorrect(node, corrector) # rubocop:disable Metrics/AbcSize
@@ -143,44 +143,68 @@ module RuboCop
         end
 
         def each_with_object_autocorrect_data(node, match)
-          _, _, _, _, k_body, v_body = *match
-          k_arg, v_arg = *node.arguments.first.children
-          Autocorrection.new(node, k_arg, v_arg, k_body, v_body)
+          _, _, k_body_expr, v_body_expr = *match
+          k_arg_node, v_arg_node = *node.arguments.first.children
+          Autocorrection.new(
+            node,
+            k_arg_node,
+            v_arg_node,
+            k_body_expr,
+            v_body_expr
+          )
         end
 
         def hash_brackets_map_autocorrect_data(node, match)
-          _, _, k_body, v_body = *match
+          _, _, k_body_expr, v_body_expr = *match
           block_node = node.children.last
-          k_arg, v_arg = *block_node.arguments
-          Autocorrection.new(block_node, k_arg, v_arg, k_body, v_body)
+          k_arg_node, v_arg_node = *block_node.arguments
+          Autocorrection.new(
+            block_node,
+            k_arg_node,
+            v_arg_node,
+            k_body_expr,
+            v_body_expr
+          )
         end
 
         def map_to_h_autocorrect_data(node, match)
-          _, _, k_body, v_body = *match
+          _, _, k_body_expr, v_body_expr = *match
           block_node = node.children.first
-          k_arg, v_arg = *block_node.arguments
-          Autocorrection.new(block_node, k_arg, v_arg, k_body, v_body)
+          k_arg_node, v_arg_node = *block_node.arguments
+          Autocorrection.new(
+            block_node,
+            k_arg_node,
+            v_arg_node,
+            k_body_expr,
+            v_body_expr
+          )
         end
 
         # Internal helper class to represent a planned autocorrection
         class Autocorrection
-          def initialize(node, k_arg, v_arg, k_body, v_body)
-            @node = node
+          def initialize(
+            block_node,
+            k_arg_node,
+            v_arg_node,
+            k_body_expr,
+            v_body_expr
+          )
+            @block_node = block_node
 
             # Use `transform_values` if the key wasn't transformed, & vice versa
-            if k_body.lvar_type?
-              @new_method = 'transform_values'
-              @new_arg = v_arg
-              @new_body = v_body
+            if k_body_expr.lvar_type?
+              @new_method_name = 'transform_values'
+              @new_arg_node = v_arg_node
+              @new_body_expr = v_body_expr
             else
-              @new_method = 'transform_keys'
-              @new_arg = k_arg
-              @new_body = k_body
+              @new_method_name = 'transform_keys'
+              @new_arg_node = k_arg_node
+              @new_body_expr = k_body_expr
             end
           end
 
           def apply(corrector)
-            corrector.replace(method_call_range_to_replace, @new_method)
+            corrector.replace(method_call_range_to_replace, @new_method_name)
             corrector.replace(arg_range_to_replace, "|#{new_arg_source}|")
             corrector.replace(body_range_to_replace, new_body_source)
           end
@@ -188,24 +212,24 @@ module RuboCop
           private
 
           def body_range_to_replace
-            @node.body.loc.expression
+            @block_node.body.loc.expression
           end
 
           def new_body_source
-            @new_body.loc.expression.source
+            @new_body_expr.loc.expression.source
           end
 
           def arg_range_to_replace
-            @node.arguments.loc.expression
+            @block_node.arguments.loc.expression
           end
 
           def new_arg_source
-            @new_arg.loc.expression.source
+            @new_arg_node.loc.expression.source
           end
 
           def method_call_range_to_replace
-            range = @node.send_node.loc.selector
-            if (send_end = @node.send_node.loc.end)
+            range = @block_node.send_node.loc.selector
+            if (send_end = @block_node.send_node.loc.end)
               # If there are arguments (only true in the `each_with_object`
               # case)
               range.begin.join(send_end)

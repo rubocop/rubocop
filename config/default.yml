@@ -2802,8 +2802,7 @@ Style/HashSyntax:
 
 Style/HashTransformMethods:
   Description: 'Prefer `transform_keys` and `transform_values` over `each_with_object` and `map`.'
-  # Should only be enabled when Ruby 2.5 or greater is in use
-  Enabled: false
+  Enabled: 'pending'
   Safe: false
 
 Style/IdenticalConditionalBranches:

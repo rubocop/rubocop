@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformMethods` cop. ([@djudd][])
+
 ### Bug fixes
 
 * [#7639](https://github.com/rubocop-hq/rubocop/pull/7639): Fix logical operator edge case in `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
@@ -16,10 +20,6 @@
 * [#7641](https://github.com/rubocop-hq/rubocop/issues/7641): **(Breaking)** Remove `Style/BracesAroundHashParameters` cop. ([@pocke][])
 * Add the method name to highlight area of `Layout/EmptyLineBetweenDefs` to help provide more context. ([@rrosenblum][])
 * [#7652](https://github.com/rubocop-hq/rubocop/pull/7652): Allow `pp` to allowed names of `Naming/MethodParameterName` cop in default config. ([@masarakki][])
-
-### New features
-
-* [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformMethods` cop. ([@djudd][])
 
 ## 0.79.0 (2020-01-06)
 

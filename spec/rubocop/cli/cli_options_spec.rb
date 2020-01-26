@@ -244,15 +244,23 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         # process. Otherwise, the extra cop will affect other specs.
         output =
           `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
-        expect(output)
-          .to eq(<<~RESULT)
-            The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
-             - Style/SomeCop
-            Inspecting 2 files
-            ..
 
-            2 files inspected, no offenses detected
-          RESULT
+        expected_prefix = <<~PREFIX
+          The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
+        PREFIX
+        expected_suffix = <<~SUFFIX
+          Inspecting 2 files
+          ..
+
+          2 files inspected, no offenses detected
+        SUFFIX
+
+        expect(output).to start_with(expected_prefix)
+        expect(output).to end_with(expected_suffix)
+
+        remaining_range = expected_prefix.length..-(expected_suffix.length + 1)
+        pending_cops = output[remaining_range].split("\n")
+        expect(pending_cops).to include(' - Style/SomeCop')
       end
 
       context 'without using namespace' do
