@@ -16,6 +16,7 @@
 * [#7655](https://github.com/rubocop-hq/rubocop/issues/7655): Fix an error when processing a regexp with a line break at the start of capture parenthesis. ([@koic][])
 * [#7647](https://github.com/rubocop-hq/rubocop/issues/7647): Fix an `undefined method on_numblock` error when using Ruby 2.7's numbered parameters. ([@hanachin][])
 * [#7675](https://github.com/rubocop-hq/rubocop/issues/7675): Fix a false negative for `Layout/SpaceBeforeFirstArg` when a vertical argument positions are aligned. ([@koic][])
+* Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
 
 ### Changes
 
@@ -109,7 +110,6 @@
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Rename `Unneeded*` cops to `Redundant*` (e.g., `Style/UnneededPercentQ` becomes `Style/RedundantPercentQ`). ([@scottmatthewman][])
 * [#7396](https://github.com/rubocop-hq/rubocop/issues/7396): Display assignments, branches, and conditions values with the offense. ([@avmnu-sng][])
 * [#7434](https://github.com/rubocop-hq/rubocop/issues/7434): Fix an incorrect autocorrect for `Style/MultilineWhenThen` when the body of `when` branch starts with `then`. ([@koic][])
-* Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
 
 ## 0.75.1 (2019-10-14)
 

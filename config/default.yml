@@ -2782,7 +2782,7 @@ Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
   Enabled: true
-  VersionAdded: '0.75'
+  VersionAdded: '0.79'
 
 Style/HashSyntax:
   Description: >-
