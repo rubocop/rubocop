@@ -2781,8 +2781,9 @@ Style/GuardClause:
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
-  Enabled: true
+  Enabled: pending
   VersionAdded: '0.79'
+  Safe: false
 
 Style/HashSyntax:
   Description: >-
