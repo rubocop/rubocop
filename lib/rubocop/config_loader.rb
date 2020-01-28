@@ -55,7 +55,7 @@ module RuboCop
       end
 
       def add_missing_namespaces(path, hash)
-        hash.keys.each do |key|
+        hash.keys.each do |key| # rubocop:disable Style/HashEachMethods
           q = Cop::Cop.qualified_cop_name(key, path)
           next if q == key
 
