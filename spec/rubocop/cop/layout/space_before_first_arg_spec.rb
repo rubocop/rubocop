@@ -59,6 +59,31 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
       RUBY
     end
 
+    context 'when a vertical argument positions are aligned' do
+      it 'registers an offense' do
+        inspect_source(<<~RUBY)
+          obj = a_method(arg, arg2)
+          obj.no_parenthesized'asdf'
+        RUBY
+
+        expect(cop.messages).to eq(
+          ['Put one space between the method name and the first argument.']
+        )
+      end
+
+      it 'auto-corrects missing space' do
+        new_source = autocorrect_source(<<~RUBY)
+          obj = a_method(arg, arg2)
+          obj.no_parenthesized'asdf'
+        RUBY
+
+        expect(new_source).to eq(<<~RUBY)
+          obj = a_method(arg, arg2)
+          obj.no_parenthesized 'asdf'
+        RUBY
+      end
+    end
+
     it 'accepts a method call with one space before the first arg' do
       expect_no_offenses(<<~RUBY)
         something x
