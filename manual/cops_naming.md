@@ -546,7 +546,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 MinNameLength | `3` | Integer
 AllowNamesEndingInNumbers | `true` | Boolean
-AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os` | Array
+AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os`, `pp` | Array
 ForbiddenNames | `[]` | Array
 
 ## Naming/PredicateName

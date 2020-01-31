@@ -15,6 +15,7 @@
 * [#7636](https://github.com/rubocop-hq/rubocop/issues/7636): Remove `console` from `Lint/Debugger` to prevent false positives. ([@gsamokovarov][])
 * [#7641](https://github.com/rubocop-hq/rubocop/issues/7641): **(Breaking)** Remove `Style/BracesAroundHashParameters` cop. ([@pocke][])
 * Add the method name to highlight area of `Layout/EmptyLineBetweenDefs` to help provide more context. ([@rrosenblum][])
+* [#7652](https://github.com/rubocop-hq/rubocop/pull/7652): Allow `pp` to allowed names of `Naming/MethodParameterName` cop in default config. ([@masarakki][])
 
 ## 0.79.0 (2020-01-06)
 
@@ -4338,3 +4339,4 @@
 [@gfyoung]: https://github.com/gfyoung
 [@Tietew]: https://github.com/Tietew
 [@hanachin]: https://github.com/hanachin
+[@masarakki]: https://github.com/masarakki
