@@ -69,7 +69,7 @@ lib/foo.rb:6:5: C: Style/Documentation: Missing top-level class documentation co
 Behaves like Progress Formatter except that it will not show any offenses.
 
 ```sh
-$ rubocop
+$ rubocop --format autogenconf
 Inspecting 26 files
 ..W.C....C..CWCW.C...WC.CC
 
@@ -81,7 +81,7 @@ Inspecting 26 files
 The `clang` formatter displays the offenses in a manner similar to `clang`:
 
 ```sh
-$ rubocop test.rb
+$ rubocop --format clang test.rb
 Inspecting 1 file
 W
 
@@ -166,7 +166,11 @@ W:  4:  5: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2, 2
 
 ### Quiet Formatter
 
-Behaves like Simple Formatter if there are offenses. Completely quiet otherwise.
+Behaves like Simple Formatter if there are offenses. Completely quiet otherwise:
+
+```sh
+$ rubocop --format quiet
+```
 
 ### File List Formatter
 
