@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::AST::Node do
-  describe '#value_used?' do
-    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
+  let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 
+  describe '#value_used?' do
     before do
       module RuboCop
         module AST
@@ -116,8 +116,6 @@ RSpec.describe RuboCop::AST::Node do
   end
 
   describe '#recursive_basic_literal?' do
-    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
-
     shared_examples 'literal' do |source|
       let(:src) { source }
 
@@ -164,8 +162,6 @@ RSpec.describe RuboCop::AST::Node do
   end
 
   describe '#pure?' do
-    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
-
     context 'for a method call' do
       let(:src) { 'obj.method(arg1, arg2)' }
 
@@ -337,8 +333,6 @@ RSpec.describe RuboCop::AST::Node do
   end
 
   describe '#sibling_index' do
-    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
-
     let(:src) do
       [
         'def foo; end',
