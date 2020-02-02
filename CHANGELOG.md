@@ -109,7 +109,6 @@
 * [#7446](https://github.com/rubocop-hq/rubocop/issues/7446): Add `merge` to list of non-mutating methods. ([@cstyles][])
 * [#7077](https://github.com/rubocop-hq/rubocop/issues/7077): **(Breaking)** Rename `Unneeded*` cops to `Redundant*` (e.g., `Style/UnneededPercentQ` becomes `Style/RedundantPercentQ`). ([@scottmatthewman][])
 * [#7396](https://github.com/rubocop-hq/rubocop/issues/7396): Display assignments, branches, and conditions values with the offense. ([@avmnu-sng][])
-* [#7434](https://github.com/rubocop-hq/rubocop/issues/7434): Fix an incorrect autocorrect for `Style/MultilineWhenThen` when the body of `when` branch starts with `then`. ([@koic][])
 
 ## 0.75.1 (2019-10-14)
 
