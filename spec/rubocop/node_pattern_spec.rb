@@ -1638,6 +1638,46 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
+  describe 'descend' do
+    let(:ruby) { '[1, [[2, 3, [[5]]], 4]]' }
+
+    context 'with an immediate match' do
+      let(:pattern) { '(array `$int _)' }
+
+      let(:captured_val) { s(:int, 1) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'with a match multiple levels, depth first' do
+      let(:pattern) { '(array (int 1) `$int)' }
+
+      let(:captured_val) { s(:int, 2) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'nested' do
+      let(:pattern) { '(array (int 1) `(array <`(array $int) ...>))' }
+
+      let(:captured_val) { s(:int, 5) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'with a literal match' do
+      let(:pattern) { '(array (int 1) `4)' }
+
+      it_behaves_like 'matching'
+    end
+
+    context 'without match' do
+      let(:pattern) { '(array `$str ...)' }
+
+      it_behaves_like 'nonmatching'
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }
@@ -1709,6 +1749,22 @@ RSpec.describe RuboCop::NodePattern do
       let(:pattern) { '(send ... ...)' }
 
       it_behaves_like 'invalid'
+    end
+  end
+
+  describe '.descend' do
+    let(:ruby) { '[[1, 2], 3]' }
+
+    it 'yields all children depth first' do
+      e = described_class.descend(node)
+      expect(e.instance_of?(Enumerator)).to be(true)
+      array, three = node.children
+      one, two = array.children
+      expect(e.to_a).to eq([node, array, one, 1, two, 2, three, 3])
+    end
+
+    it 'yields the given argument if it is not a Node' do
+      expect(described_class.descend(42).to_a).to eq([42])
     end
   end
 end

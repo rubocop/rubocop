@@ -78,6 +78,8 @@ module RuboCop
   #                         # matching process starts
   #     '^^send'            # each ^ ascends one level in the AST
   #                         # so this matches against the grandparent node
+  #     '`send'             # descends any number of level in the AST
+  #                         # so this matches against any descendant node
   #     '#method'           # we call this a 'funcall'; it calls a method in the
   #                         # context where a pattern-matching method is defined
   #                         # if that returns a truthy value, the match succeeds
@@ -112,7 +114,7 @@ module RuboCop
       SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
       IDENTIFIER   = /[a-zA-Z_][a-zA-Z0-9_-]*/.freeze
       META         = Regexp.union(
-        %w"( ) { } [ ] $< < > $... $ ! ^ ... + * ?"
+        %w"( ) { } [ ] $< < > $... $ ! ^ ` ... + * ?"
       ).freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
@@ -223,6 +225,7 @@ module RuboCop
         when '!'       then compile_negation
         when '$'       then compile_capture
         when '^'       then compile_ascend
+        when '`'       then compile_descend
         when WILDCARD  then compile_wildcard(token[1..-1])
         when FUNCALL   then compile_funcall(token)
         when LITERAL   then compile_literal(token)
@@ -551,6 +554,19 @@ module RuboCop
         with_context("#{CUR_NODE} && #{compile_expr}", "#{CUR_NODE}.parent")
       end
 
+      def compile_descend
+        with_temp_variables do |descendant|
+          pattern = with_context(compile_expr, descendant,
+                                 use_temp_node: false)
+          [
+            "RuboCop::NodePattern.descend(#{CUR_ELEMENT}).",
+            "any? do |#{descendant}|",
+            "  #{pattern}",
+            'end'
+          ].join("\n")
+        end
+      end
+
       def compile_wildcard(name)
         if name.empty?
           'true'
@@ -849,6 +865,22 @@ module RuboCop
 
     def to_s
       "#<#{self.class} #{pattern}>"
+    end
+
+    # Yields its argument and any descendants, depth-first.
+    #
+    def self.descend(element, &block)
+      return to_enum(__method__, element) unless block_given?
+
+      yield element
+
+      if element.is_a?(::RuboCop::AST::Node)
+        element.children.each do |child|
+          descend(child, &block)
+        end
+      end
+
+      nil
     end
   end
 end
