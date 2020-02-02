@@ -141,9 +141,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_ancestor(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each ancestor node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -178,9 +175,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_child_node(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each child node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -216,9 +210,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_descendant(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each descendant node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -254,9 +245,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_node(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
