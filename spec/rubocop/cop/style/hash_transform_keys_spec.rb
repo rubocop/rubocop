@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
 
-    it 'correctly autocorrects _.map{...}.to_h' do
+    it 'correctly autocorrects _.map{...}.to_h without block' do
       corrected = autocorrect_source(<<~RUBY)
         {a: 1, b: 2}.map do |k, v|
           [k.to_s, v]
@@ -104,6 +104,16 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
         {a: 1, b: 2}.transform_keys do |k|
           k.to_s
         end
+      RUBY
+    end
+
+    it 'correctly autocorrects _.map{...}.to_h with block' do
+      corrected = autocorrect_source(<<~RUBY)
+        {a: 1, b: 2}.map {|k, v| [k.to_s, v]}.to_h {|k, v| [v, k]}
+      RUBY
+
+      expect(corrected).to eq(<<~RUBY)
+        {a: 1, b: 2}.transform_keys {|k| k.to_s}.to_h {|k, v| [v, k]}
       RUBY
     end
 

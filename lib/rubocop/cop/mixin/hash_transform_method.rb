@@ -51,6 +51,7 @@ module RuboCop
       end
 
       def handle_possible_offense(node, match, match_desc)
+        puts node.class
         captures = extract_captures(match)
 
         # If key didn't actually change either, this is most likely a false
@@ -82,39 +83,27 @@ module RuboCop
       end
 
       def prepare_correction(node)
-        on_bad_each_with_object(node) do |*match|
-          return Autocorrection.new(match, node, 0, 0)
-        end
-
-        on_bad_hash_brackets_map(node) do |*match|
-          block = node.children.last
-          return Autocorrection.new(match, block, 'Hash['.length, ']'.length)
-        end
-
-        on_bad_map_to_h(node) do |*match|
-          block = node.children.first
-          return Autocorrection.new(match, block, 0, '.to_h'.length)
+        if (match = on_bad_each_with_object(node))
+          Autocorrection.from_each_with_object(node, match)
+        elsif (match = on_bad_hash_brackets_map(node))
+          Autocorrection.from_hash_brackets_map(node, match)
+        elsif (match = on_bad_map_to_h(node))
+          Autocorrection.from_map_to_h(node, match)
+        else
+          raise 'unreachable'
         end
       end
 
-      def execute_correction(corrector, node, correction) # rubocop:disable Metrics/AbcSize
-        root_expression = node.loc.expression
-        corrector.remove_leading(root_expression, correction.leading)
-        corrector.remove_trailing(root_expression, correction.trailing)
-
-        corrector.replace(correction.method_call_range, new_method_name)
+      def execute_correction(corrector, node, correction)
+        correction.strip_prefix_and_suffix(node, corrector)
+        correction.set_new_method_name(new_method_name, corrector)
 
         captures = extract_captures(correction.match)
-        corrector.replace(correction.arg_range, new_arg_source(captures))
-        corrector.replace(correction.body_range, new_body_source(captures))
-      end
-
-      def new_arg_source(captures)
-        "|#{captures.transformed_argname}|"
-      end
-
-      def new_body_source(captures)
-        captures.transforming_body_expr.loc.expression.source
+        correction.set_new_arg_name(captures.transformed_argname, corrector)
+        correction.set_new_body_expression(
+          captures.transforming_body_expr,
+          corrector
+        )
       end
 
       # Internal helper class to hold match data
@@ -134,24 +123,48 @@ module RuboCop
       end
 
       # Internal helper class to hold autocorrect data
-      Autocorrection = Struct.new(:match, :block_node, :leading, :trailing) do
-        def method_call_range
+      Autocorrection = Struct.new(:match, :block_node, :leading, :trailing) do # rubocop:disable Metrics/BlockLength
+        def self.from_each_with_object(node, match)
+          new(match, node, 0, 0)
+        end
+
+        def self.from_hash_brackets_map(node, match)
+          new(match, node.children.last, 'Hash['.length, ']'.length)
+        end
+
+        def self.from_map_to_h(node, match)
+          strip_trailing_chars = node.parent&.block_type? ? 0 : '.to_h'.length
+          new(match, node.children.first, 0, strip_trailing_chars)
+        end
+
+        def strip_prefix_and_suffix(node, corrector)
+          expression = node.loc.expression
+          corrector.remove_leading(expression, leading)
+          corrector.remove_trailing(expression, trailing)
+        end
+
+        def set_new_method_name(new_method_name, corrector)
           range = block_node.send_node.loc.selector
           if (send_end = block_node.send_node.loc.end)
             # If there are arguments (only true in the `each_with_object`
             # case)
-            range.begin.join(send_end)
-          else
-            range
+            range = range.begin.join(send_end)
           end
+          corrector.replace(range, new_method_name)
         end
 
-        def arg_range
-          block_node.arguments.loc.expression
+        def set_new_arg_name(transformed_argname, corrector)
+          corrector.replace(
+            block_node.arguments.loc.expression,
+            "|#{transformed_argname}|"
+          )
         end
 
-        def body_range
-          block_node.body.loc.expression
+        def set_new_body_expression(transforming_body_expr, corrector)
+          corrector.replace(
+            block_node.body.loc.expression,
+            transforming_body_expr.loc.expression.source
+          )
         end
       end
     end

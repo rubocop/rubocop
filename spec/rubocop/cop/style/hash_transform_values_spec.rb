@@ -89,13 +89,23 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       RUBY
     end
 
-    it 'correctly autocorrects _.map{...}.to_h' do
+    it 'correctly autocorrects _.map{...}.to_h without block' do
       corrected = autocorrect_source(<<~RUBY)
         {a: 1, b: 2}.map {|k, v| [k, foo(v)]}.to_h
       RUBY
 
       expect(corrected).to eq(<<~RUBY)
         {a: 1, b: 2}.transform_values {|v| foo(v)}
+      RUBY
+    end
+
+    it 'correctly autocorrects _.map{...}.to_h with block' do
+      corrected = autocorrect_source(<<~RUBY)
+        {a: 1, b: 2}.map {|k, v| [k, foo(v)]}.to_h {|k, v| [v, k]}
+      RUBY
+
+      expect(corrected).to eq(<<~RUBY)
+        {a: 1, b: 2}.transform_values {|v| foo(v)}.to_h {|k, v| [v, k]}
       RUBY
     end
 
