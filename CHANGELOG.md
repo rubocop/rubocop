@@ -4,7 +4,7 @@
 
 ### New features
 
-* [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformMethods` cop. ([@djudd][], [@eugeneius][])
+* [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformKeys` and `Style/HashTransformValues` cops. ([@djudd][], [@eugeneius][])
 
 ### Bug fixes
 

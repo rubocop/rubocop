@@ -2800,8 +2800,13 @@ Style/HashSyntax:
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
-Style/HashTransformMethods:
-  Description: 'Prefer `transform_keys` and `transform_values` over `each_with_object` and `map`.'
+Style/HashTransformKeys:
+  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  Safe: false
+
+Style/HashTransformValues:
+  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
   Enabled: 'pending'
   Safe: false
 
