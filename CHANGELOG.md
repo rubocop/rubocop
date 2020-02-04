@@ -5,6 +5,7 @@
 ### New features
 
 * [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformKeys` and `Style/HashTransformValues` cops. ([@djudd][], [@eugeneius][])
+* [#7619](https://github.com/rubocop-hq/rubocop/issues/7619): Support autocorrect of legacy cop names for `Migration/DepartmentName`. ([@koic][])
 
 ### Bug fixes
 
