@@ -15,7 +15,8 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
     RUBY
   end
 
-  it 'registers an offense when multiline block end is not on its own line' do
+  it 'registers an offense and corrects when multiline block end ' \
+    'is not on its own line' do
     expect_offense(<<~RUBY)
       test do
         foo end
@@ -29,7 +30,8 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
     RUBY
   end
 
-  it 'registers an offense when multiline block } is not on its own line' do
+  it 'registers an offense and corrects when multiline block } ' \
+    'is not on its own line' do
     expect_offense(<<~RUBY)
       test {
         foo }
@@ -39,26 +41,6 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
     expect_correction(<<~RUBY)
       test {
         foo
-      }
-    RUBY
-  end
-
-  it 'autocorrects a {} block where the } is top level code ' \
-    'outside of a class' do
-    new_source = autocorrect_source(<<~RUBY)
-      # frozen_string_literal: true
-
-      test {[
-        foo
-      ]}
-    RUBY
-
-    expect(new_source).to eq(<<~RUBY)
-      # frozen_string_literal: true
-
-      test {[
-        foo
-      ]
       }
     RUBY
   end

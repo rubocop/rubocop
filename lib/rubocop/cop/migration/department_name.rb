@@ -35,8 +35,13 @@ module RuboCop
 
         def autocorrect(range)
           shall_warn = false
-          qualified_cop_name = Cop.registry.qualified_cop_name(range.source,
+          cop_name = range.source
+          qualified_cop_name = Cop.registry.qualified_cop_name(cop_name,
                                                                nil, shall_warn)
+          unless qualified_cop_name.include?('/')
+            qualified_cop_name = qualified_legacy_cop_name(cop_name)
+          end
+
           ->(corrector) { corrector.replace(range, qualified_cop_name) }
         end
 
@@ -52,6 +57,14 @@ module RuboCop
 
         def valid_content_token?(content_token)
           !DISABLING_COPS_CONTENT_TOKEN.match(content_token).nil?
+        end
+
+        def qualified_legacy_cop_name(cop_name)
+          legacy_cop_names = RuboCop::ConfigObsoletion::OBSOLETE_COPS.keys
+
+          legacy_cop_names.detect do |legacy_cop_name|
+            legacy_cop_name.split('/')[1] == cop_name
+          end
         end
       end
     end

@@ -79,7 +79,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         .to eq(<<~RESULT)
           == example.rb ==
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
-          C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+          C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
           1 file inspected, 2 offenses detected
       RESULT
@@ -1461,16 +1461,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'prints an error message for an unrecognized EnforcedStyle' do
       create_file('example/example1.rb', 'puts "hello"')
       create_file('example/.rubocop.yml', <<~YAML)
-        Style/BracesAroundHashParameters:
-          EnforcedStyle: context
+        Layout/AccessModifierIndentation:
+          EnforcedStyle: ident
       YAML
 
       expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
-        .to eq(["Error: invalid EnforcedStyle 'context' for " \
-                'Style/BracesAroundHashParameters found in ' \
+        .to eq(["Error: invalid EnforcedStyle 'ident' for " \
+                'Layout/AccessModifierIndentation found in ' \
                 'example/.rubocop.yml',
-                'Valid choices are: braces, no_braces, context_dependent',
+                'Valid choices are: outdent, indent',
                 ''].join("\n"))
     end
 

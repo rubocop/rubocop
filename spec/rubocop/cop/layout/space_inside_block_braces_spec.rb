@@ -45,26 +45,23 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       RUBY
     end
 
-    it 'registers an offense for empty braces with space inside' do
+    it 'registers an offense and corrects empty braces with space inside' do
       expect_offense(<<~RUBY)
         each { }
               ^ Space inside empty braces detected.
       RUBY
+
+      expect_correction(<<~RUBY)
+        each {}
+      RUBY
     end
 
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source('each { }')
-      expect(new_source).to eq('each {}')
-    end
-
-    it 'does not auto-correct when braces are not empty' do
-      old_source = <<-RUBY
+    it 'accepts braces that are not empty' do
+      expect_no_offenses(<<~RUBY)
         a {
           b
         }
       RUBY
-      new_source = autocorrect_source(old_source)
-      expect(new_source).to eq(old_source)
     end
   end
 
@@ -75,16 +72,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       expect_no_offenses('each { }')
     end
 
-    it 'registers an offense for empty braces with no space inside' do
+    it 'registers an offense and corrects empty braces with no space inside' do
       expect_offense(<<~RUBY)
         each {}
              ^^ Space missing inside empty braces.
       RUBY
-    end
 
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source('each {}')
-      expect(new_source).to eq('each { }')
+      expect_correction(<<~RUBY)
+        each { }
+      RUBY
     end
   end
 
@@ -105,21 +101,29 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     expect_no_offenses('each{ puts }')
   end
 
-  it 'registers an offense for left brace without inner space' do
+  it 'registers an offense and corrects left brace without inner space' do
     expect_offense(<<~RUBY)
       each {puts }
             ^ Space missing inside {.
     RUBY
+
+    expect_correction(<<~RUBY)
+      each { puts }
+    RUBY
   end
 
-  it 'registers an offense for right brace without inner space' do
+  it 'registers an offense and corrects right brace without inner space' do
     expect_offense(<<~RUBY)
       each { puts}
                  ^ Space missing inside }.
     RUBY
+
+    expect_correction(<<~RUBY)
+      each { puts }
+    RUBY
   end
 
-  it 'registers offenses for both braces without inner space' do
+  it 'register offenses and correct both braces without inner space' do
     expect_offense(<<~RUBY)
       a {}
       b { }
@@ -128,11 +132,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
             ^ Space missing inside {.
                 ^ Space missing inside }.
     RUBY
-  end
 
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source('each {puts}')
-    expect(new_source).to eq('each { puts }')
+    expect_correction(<<~RUBY)
+      a {}
+      b {}
+      each { puts }
+    RUBY
   end
 
   context 'with passed in parameters' do
@@ -141,10 +146,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         expect_no_offenses('each { |x| puts }')
       end
 
-      it 'registers an offense for left brace without inner space' do
+      it 'registers an offense and corrects left brace without inner space' do
         expect_offense(<<~RUBY)
           each {|x| puts }
                ^^ Space between { and | missing.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          each { |x| puts }
         RUBY
       end
     end
@@ -158,37 +167,24 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         RUBY
       end
 
-      it 'registers an offense for left brace without inner space' do
+      it 'registers an offense and corrects left brace without inner space' do
         expect_offense(<<~RUBY)
           each {|x|
                ^^ Space between { and | missing.
             puts
           }
         RUBY
-      end
 
-      it 'auto-corrects missing space' do
-        new_source = autocorrect_source(<<-SOURCE)
-          each {|x|
-            puts
-          }
-        SOURCE
-
-        expect(new_source).to eq(<<-NEW_SOURCE)
+        expect_correction(<<~RUBY)
           each { |x|
             puts
           }
-        NEW_SOURCE
+        RUBY
       end
     end
 
     it 'accepts new lambda syntax' do
       expect_no_offenses('->(x) { x }')
-    end
-
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source('each {|x| puts }')
-      expect(new_source).to eq('each { |x| puts }')
     end
 
     context 'and BlockDelimiters cop enabled' do
@@ -197,19 +193,27 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
                             'Layout/SpaceInsideBlockBraces' => cop_config)
       end
 
-      it 'does auto-correction for single-line blocks' do
-        new_source = autocorrect_source('each {|x| puts}')
-        expect(new_source).to eq('each { |x| puts }')
+      it 'registers an offense and corrects for single-line blocks' do
+        expect_offense(<<~RUBY)
+          each {|x| puts}
+                        ^ Space missing inside }.
+               ^^ Space between { and | missing.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          each { |x| puts }
+        RUBY
       end
 
-      it 'does auto-correction for multi-line blocks' do
-        old_source = <<~RUBY
+      it 'registers an offense and corrects multi-line blocks' do
+        expect_offense(<<~RUBY)
           each {|x|
+               ^^ Space between { and | missing.
             puts
           }
         RUBY
-        new_source = autocorrect_source(old_source)
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           each { |x|
             puts
           }
@@ -226,20 +230,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
         }
       end
 
-      it 'registers an offense for left brace with inner space' do
+      it 'registers an offense and corrects left brace with inner space' do
         expect_offense(<<~RUBY)
           each { |x| puts }
                 ^ Space between { and | detected.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          each {|x| puts }
         RUBY
       end
 
       it 'accepts new lambda syntax' do
         expect_no_offenses('->(x) { x }')
-      end
-
-      it 'auto-corrects unwanted space' do
-        new_source = autocorrect_source('each { |x| puts }')
-        expect(new_source).to eq('each {|x| puts }')
       end
 
       it 'accepts left brace without inner space' do
@@ -261,27 +264,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
       expect_no_offenses('each {puts}')
     end
 
-    it 'registers an offense for left brace with inner space' do
+    it 'registers an offense and corrects left brace with inner space' do
       expect_offense(<<~RUBY)
         each { puts}
               ^ Space inside { detected.
       RUBY
+
+      expect_correction(<<~RUBY)
+        each {puts}
+      RUBY
     end
 
-    it 'registers an offense for right brace with inner space' do
+    it 'registers an offense and corrects right brace with inner space' do
       expect_offense(<<~RUBY)
         each {puts }
                   ^ Space inside } detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        each {puts}
       RUBY
     end
 
     it 'accepts left brace without outer space' do
       expect_no_offenses('each{puts}')
-    end
-
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source('each{ puts }')
-      expect(new_source).to eq('each{puts}')
     end
 
     context 'with passed in parameters' do
@@ -290,20 +296,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           expect_no_offenses('each { |x| puts}')
         end
 
-        it 'registers an offense for left brace without inner space' do
+        it 'registers an offense and corrects left brace without inner space' do
           expect_offense(<<~RUBY)
             each {|x| puts}
                  ^^ Space between { and | missing.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            each { |x| puts}
           RUBY
         end
 
         it 'accepts new lambda syntax' do
           expect_no_offenses('->(x) {x}')
-        end
-
-        it 'auto-corrects missing space' do
-          new_source = autocorrect_source('each {|x| puts}')
-          expect(new_source).to eq('each { |x| puts}')
         end
       end
 
@@ -316,10 +321,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           }
         end
 
-        it 'registers an offense for left brace with inner space' do
+        it 'registers an offense and corrects left brace with inner space' do
           expect_offense(<<~RUBY)
             each { |x| puts}
                   ^ Space between { and | detected.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            each {|x| puts}
           RUBY
         end
 
@@ -327,8 +336,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           expect_no_offenses('->(x) {x}')
         end
 
-        it 'does not register an offense when braces are aligned in ' \
-           'multiline block' do
+        it 'accepts when braces are aligned in multiline block' do
           expect_no_offenses(<<~RUBY)
             items.map {|item|
               item.do_something
@@ -346,11 +354,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
 
           expect(cop.offenses.size).to eq(1)
           expect(cop.messages).to eq(['Space inside } detected.'])
-        end
-
-        it 'auto-corrects unwanted space' do
-          new_source = autocorrect_source('each { |x| puts}')
-          expect(new_source).to eq('each {|x| puts}')
         end
       end
     end

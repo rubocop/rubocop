@@ -74,10 +74,11 @@ module RuboCop
           end
 
           def call_in_logical_operators?(node)
-            node.parent &&
-              (logical_operator?(node.parent) ||
-              node.parent.send_type? &&
-              node.parent.arguments.any?(&method(:logical_operator?)))
+            parent = node.parent&.block_type? ? node.parent.parent : node.parent
+            parent &&
+              (logical_operator?(parent) ||
+              parent.send_type? &&
+              parent.arguments.any?(&method(:logical_operator?)))
           end
 
           def call_in_optional_arguments?(node)

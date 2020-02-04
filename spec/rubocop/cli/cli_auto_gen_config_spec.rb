@@ -178,7 +178,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Offense count: 1
               # Cop supports --auto-correct.
               # Configuration parameters: EnforcedStyle.
-              # SupportedStyles: always, never
+              # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
                   - 'example.rb'
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Offense count: 1
               # Cop supports --auto-correct.
               # Configuration parameters: EnforcedStyle.
-              # SupportedStyles: always, never
+              # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
                   - 'example.rb'
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Offense count: 1
               # Cop supports --auto-correct.
               # Configuration parameters: EnforcedStyle.
-              # SupportedStyles: always, never
+              # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
                   - 'example.rb'
@@ -371,7 +371,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
                 '# Configuration parameters: EnforcedStyle.',
-                '# SupportedStyles: always, never',
+                '# SupportedStyles: always, always_true, never',
                 'Style/FrozenStringLiteralComment:',
                 '  Exclude:',
                 "    - 'example1.rb'",
@@ -413,7 +413,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # Offense count: 1
           # Cop supports --auto-correct.
           # Configuration parameters: EnforcedStyle.
-          # SupportedStyles: always, never
+          # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
               - 'example1.rb'
@@ -461,7 +461,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # Offense count: 1
           # Cop supports --auto-correct.
           # Configuration parameters: EnforcedStyle.
-          # SupportedStyles: always, never
+          # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
               - 'example1.rb'
@@ -1014,7 +1014,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # Offense count: 3
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
-            # SupportedStyles: always, never
+            # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Enabled: false
 
@@ -1035,7 +1035,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # Offense count: 4
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
-            # SupportedStyles: always, never
+            # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Exclude:
                 - 'example1.rb'

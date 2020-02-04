@@ -2903,19 +2903,25 @@ method calls with argument lists.
 
 If autocorrection is enabled, the following Layout cops
 are recommended to further format the broken lines.
+(Many of these are enabled by default.)
 
-  - ParameterAlignment
   - ArgumentAlignment
+  - BlockAlignment
+  - BlockDelimiters
+  - BlockEndNewline
   - ClosingParenthesisIndentation
   - FirstArgumentIndentation
   - FirstArrayElementIndentation
   - FirstHashElementIndentation
   - FirstParameterIndentation
   - HashAlignment
+  - IndentationWidth
   - MultilineArrayLineBreaks
+  - MultilineBlockLayout
   - MultilineHashBraceLayout
   - MultilineHashKeyLineBreaks
   - MultilineMethodArgumentLineBreaks
+  - ParameterAlignment
 
 Together, these cops will pretty print hashes, arrays,
 method calls, etc. For example, let's say the max columns
@@ -4054,6 +4060,10 @@ Enabled | Yes | Yes  | 0.49 | -
 Checks that operators have space around them, except for ** which
 should or shouldn't have surrounding space depending on configuration.
 
+This cop has `AllowForAlignment` option. When `true`, allows most
+uses of extra spacing if the intent is to align with an operator on
+the previous or next line, not counting empty lines or comment lines.
+
 ### Examples
 
 ```ruby
@@ -4066,6 +4076,24 @@ my_number = 38/4
 total = 3 * 4
 "apple" + "juice"
 my_number = 38 / 4
+```
+#### AllowForAlignment: true (default)
+
+```ruby
+# good
+{
+  1 =>  2,
+  11 => 3
+}
+```
+#### AllowForAlignment: false
+
+```ruby
+# bad
+{
+  1 =>  2,
+  11 => 3
+}
 ```
 #### EnforcedStyleForExponentOperator: no_space (default)
 

@@ -485,14 +485,16 @@ inspected code must run on. For example, enforcing using Ruby 2.3+ safe
 navigation operator rather than `try` can help make your code shorter and
 more consistent... _unless_ it must run on Ruby 2.2.
 
-If `.ruby-version` exists in the directory RuboCop is invoked in, RuboCop
-will use the version specified by it. Otherwise, users may let RuboCop
-know the oldest version of Ruby which your project supports with:
+Users may let RuboCop know the oldest version of Ruby which your project
+supports with:
 
 ```yaml
 AllCops:
   TargetRubyVersion: 2.2
 ```
+
+Otherwise, RuboCop will then check your project for `.ruby-version` and
+use the version specified by it.
 
 ### Automatically Generated Configuration
 

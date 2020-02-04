@@ -2066,6 +2066,7 @@ Naming/MethodParameterName:
     - ip
     - db
     - os
+    - pp
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
@@ -2356,24 +2357,6 @@ Style/BlockDelimiters:
   #   # also good
   #   collection.each do |element| puts element end
   AllowBracesOnProceduralOneLiners: false
-
-Style/BracesAroundHashParameters:
-  Description: 'Enforce braces style around hash parameters.'
-  Enabled: true
-  VersionAdded: '0.14.1'
-  VersionChanged: '0.28'
-  EnforcedStyle: no_braces
-  SupportedStyles:
-    # The `braces` style enforces braces around all method parameters that are
-    # hashes.
-    - braces
-    # The `no_braces` style checks that the last parameter doesn't have braces
-    # around it.
-    - no_braces
-    # The `context_dependent` style checks that the last parameter doesn't have
-    # braces around it, but requires braces if the second to last parameter is
-    # also a hash literal.
-    - context_dependent
 
 Style/CaseEquality:
   Description: 'Avoid explicit use of the case equality operator(===).'
@@ -2767,6 +2750,10 @@ Style/FrozenStringLiteralComment:
     # string literal. If you run code against multiple versions of Ruby, it is
     # possible that this will create errors in Ruby 2.3.0+.
     - always
+    # `always_true` will add the frozen string literal comment to a file,
+    # similarly to the `always` style, but will also change any disabled
+    # comments (e.g. `# frozen_string_literal: false`) to be enabled.
+    - always_true
     # `never` will enforce that the frozen string literal comment does not
     # exist in a file.
     - never
@@ -2813,6 +2800,16 @@ Style/HashSyntax:
   UseHashRocketsWithSymbolValues: false
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
+
+Style/HashTransformKeys:
+  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  Safe: false
+
+Style/HashTransformValues:
+  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  Safe: false
 
 Style/IdenticalConditionalBranches:
   Description: >-

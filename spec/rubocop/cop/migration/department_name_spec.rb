@@ -53,6 +53,23 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName do
         # rubocop : enable Style/Alias, Layout/LineLength
       RUBY
     end
+
+    it 'registers offenses and corrects when using a legacy cop name' do
+      expect_offense(<<~RUBY, 'file.rb')
+        # rubocop:disable SingleSpaceBeforeFirstArg, Layout/LineLength
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^ Department name is missing.
+        name             "apache_kafka"
+      RUBY
+
+      # `Style/SingleSpaceBeforeFirstArg` is a legacy name that has been
+      # renamed to `Layout/SpaceBeforeFirstArg`. In the autocorrection,
+      # the department name is complemented by the legacy cop name.
+      # Migration to the new name is expected to be modified using Gry gem.
+      expect_correction(<<~RUBY)
+        # rubocop:disable Style/SingleSpaceBeforeFirstArg, Layout/LineLength
+        name             "apache_kafka"
+      RUBY
+    end
   end
 
   context 'when a disable comment has cop names with departments' do

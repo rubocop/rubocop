@@ -18,19 +18,45 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       }
     end
 
-    it 'registers an offense for arguments with single indent' do
+    it 'registers an offense and corrects arguments with single indent' do
       expect_offense(<<~RUBY)
         function(a,
           if b then c else d end)
           ^^^^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
       RUBY
+
+      expect_correction(<<~RUBY)
+        function(a,
+                 if b then c else d end)
+      RUBY
     end
 
-    it 'registers an offense for arguments with double indent' do
+    it 'registers an offense and corrects multiline missed indendation' do
+      expect_offense(<<~RUBY)
+        func(a,
+               b,
+               ^ Align the arguments of a method call if they span more than one line.
+        c)
+        ^ Align the arguments of a method call if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func(a,
+             b,
+             c)
+      RUBY
+    end
+
+    it 'registers an offense and corrects arguments with double indent' do
       expect_offense(<<~RUBY)
         function(a,
             if b then c else d end)
             ^^^^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        function(a,
+                 if b then c else d end)
       RUBY
     end
 
@@ -68,7 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       RUBY
     end
 
-    it "doesn't get confused by splat operator" do
+    it 'registers an offense and corrects splat operator' do
       expect_offense(<<~RUBY)
         func1(*a,
               *b,
@@ -79,6 +105,16 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
               c)
         func3(*a)
       RUBY
+
+      expect_correction(<<~RUBY)
+        func1(*a,
+              *b,
+              c)
+        func2(a,
+              *b,
+              c)
+        func3(*a)
+      RUBY
     end
 
     it "doesn't get confused by extra comma at the end" do
@@ -86,6 +122,11 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
         func1(a,
              b,)
              ^ Align the arguments of a method call if they span more than one line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func1(a,
+              b,)
       RUBY
     end
 
@@ -239,89 +280,73 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       end
     end
 
-    it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<~RUBY)
-        func(a,
-               b,
-        c)
+    it 'registers an offense and corrects multi-line outdented parameters' do
+      expect_offense(<<~RUBY)
+        create :transaction, :closed,
+              account:          account,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+              open_price:       1.29,
+              close_price:      1.30
       RUBY
-      expect(new_source).to eq(<<~RUBY)
-        func(a,
-             b,
-             c)
+
+      expect_correction(<<~RUBY)
+        create :transaction, :closed,
+               account:          account,
+               open_price:       1.29,
+               close_price:      1.30
       RUBY
     end
 
-    it 'auto-corrects each line of a multi-line parameter to the right' do
-      new_source =
-        autocorrect_source(<<~RUBY)
-          create :transaction, :closed,
-                account:          account,
-                open_price:       1.29,
-                close_price:      1.30
-        RUBY
-      expect(new_source)
-        .to eq(<<~RUBY)
-          create :transaction, :closed,
+    it 'registers an offense and correct multi-line parameters' \
+      'indented too far' do
+      expect_offense(<<~RUBY)
+        create :transaction, :closed,
                  account:          account,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
                  open_price:       1.29,
                  close_price:      1.30
-        RUBY
-    end
-
-    it 'auto-corrects each line of a multi-line parameter to the left' do
-      new_source =
-        autocorrect_source(<<~RUBY)
-          create :transaction, :closed,
-                   account:          account,
-                   open_price:       1.29,
-                   close_price:      1.30
-        RUBY
-      expect(new_source)
-        .to eq(<<~RUBY)
-          create :transaction, :closed,
-                 account:          account,
-                 open_price:       1.29,
-                 close_price:      1.30
-        RUBY
-    end
-
-    it 'auto-corrects only arguments that begin a line' do
-      original_source = <<~RUBY
-        foo(:bar, {
-            whiz: 2, bang: 3 }, option: 3)
       RUBY
-      new_source = autocorrect_source(original_source)
-      expect(new_source).to eq(original_source)
+
+      expect_correction(<<~RUBY)
+        create :transaction, :closed,
+               account:          account,
+               open_price:       1.29,
+               close_price:      1.30
+      RUBY
     end
 
     it 'does not crash in autocorrect on dynamic string in parameter value' do
-      src = <<~'RUBY'
+      expect_offense(<<~'RUBY')
         class MyModel < ActiveRecord::Base
           has_many :other_models,
             class_name: "legacy_name",
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
             order: "#{legacy_name.table_name}.published DESC"
 
         end
       RUBY
-      new_source = autocorrect_source(src)
-      expect(new_source)
-        .to eq <<~'RUBY'
-          class MyModel < ActiveRecord::Base
-            has_many :other_models,
-                     class_name: "legacy_name",
-                     order: "#{legacy_name.table_name}.published DESC"
 
-          end
-        RUBY
+      expect_correction(<<~'RUBY')
+        class MyModel < ActiveRecord::Base
+          has_many :other_models,
+                   class_name: "legacy_name",
+                   order: "#{legacy_name.table_name}.published DESC"
+
+        end
+      RUBY
     end
 
     context 'when using safe navigation operator' do
-      it 'registers an offense for arguments with single indent' do
+      it 'registers an offense and corrects arguments with single indent' do
         expect_offense(<<~RUBY)
           receiver&.function(a,
             if b then c else d end)
             ^^^^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          receiver&.function(a,
+                             if b then c else d end)
         RUBY
       end
     end
@@ -343,52 +368,55 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       RUBY
     end
 
-    it 'does not autocorrect correct source' do
-      expect(autocorrect_source(correct_source))
-        .to eq(correct_source)
-    end
-
     it 'autocorrects by outdenting when indented too far' do
-      original_source = <<~RUBY
+      expect_offense(<<~RUBY)
         create :transaction, :closed,
                account:     account,
+               ^^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
                open_price:  1.29,
                close_price: 1.30
       RUBY
 
-      expect(autocorrect_source(original_source))
-        .to eq(correct_source)
+      expect_correction(<<~RUBY)
+        create :transaction, :closed,
+          account:     account,
+          open_price:  1.29,
+          close_price: 1.30
+      RUBY
     end
 
     it 'autocorrects by indenting when not indented' do
-      original_source = <<~RUBY
+      expect_offense(<<~RUBY)
         create :transaction, :closed,
         account:     account,
+        ^^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         open_price:  1.29,
         close_price: 1.30
       RUBY
 
-      expect(autocorrect_source(original_source))
-        .to eq(correct_source)
+      expect_correction(<<~RUBY)
+        create :transaction, :closed,
+          account:     account,
+          open_price:  1.29,
+          close_price: 1.30
+      RUBY
     end
 
     it 'autocorrects when first line is indented' do
-      original_source = <<-RUBY.strip_margin('|')
+      expect_offense(<<-RUBY.strip_margin('|'))
         |  create :transaction, :closed,
         |  account:     account,
+        |  ^^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         |  open_price:  1.29,
         |  close_price: 1.30
       RUBY
 
-      correct_source = <<-RUBY.strip_margin('|')
+      expect_correction(<<-RUBY.strip_margin('|'))
         |  create :transaction, :closed,
         |    account:     account,
         |    open_price:  1.29,
         |    close_price: 1.30
       RUBY
-
-      expect(autocorrect_source(original_source))
-        .to eq(correct_source)
     end
 
     context 'multi-line method calls' do
@@ -403,7 +431,8 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
         RUBY
       end
 
-      it 'registers offenses for double indentation from relevant method' do
+      it 'registers offenses and corrects double indentation ' \
+        'from relevant method' do
         expect_offense(<<~RUBY)
           something
             .method_name(
@@ -413,6 +442,15 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
                 ^ Use one level of indentation for arguments following the first line of a multi-line method call.
                 c
                 ^ Use one level of indentation for arguments following the first line of a multi-line method call.
+            )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          something
+            .method_name(
+              a,
+              b,
+              c
             )
         RUBY
       end
@@ -429,15 +467,19 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       end
 
       it 'autocorrects relative to position of relevant method call' do
-        original_source = <<-RUBY.strip_margin('|')
+        expect_offense(<<-RUBY.strip_margin('|'))
           | something
           |   .method_name(
           |       a,
+          |       ^ Use one level of indentation for arguments following the first line of a multi-line method call.
           |          b,
+          |          ^ Use one level of indentation for arguments following the first line of a multi-line method call.
           |            c
+          |            ^ Use one level of indentation for arguments following the first line of a multi-line method call.
           |   )
         RUBY
-        correct_source = <<-RUBY.strip_margin('|')
+
+        expect_correction(<<-RUBY.strip_margin('|'))
           | something
           |   .method_name(
           |     a,
@@ -445,8 +487,6 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
           |     c
           |   )
         RUBY
-        expect(autocorrect_source(original_source))
-          .to eq(correct_source)
       end
     end
 
@@ -474,24 +514,24 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
         end
 
         it 'autocorrects even when first argument is in wrong position' do
-          original_source = <<-RUBY.strip_margin('|')
+          expect_offense(<<-RUBY.strip_margin('|'))
             | assigned_value = match(
             |         a,
+            |         ^ Use one level of indentation for arguments following the first line of a multi-line method call.
             |            b,
+            |            ^ Use one level of indentation for arguments following the first line of a multi-line method call.
             |                    c
+            |                    ^ Use one level of indentation for arguments following the first line of a multi-line method call.
             | )
           RUBY
 
-          correct_source = <<-RUBY.strip_margin('|')
+          expect_correction(<<-RUBY.strip_margin('|'))
             | assigned_value = match(
             |     a,
             |     b,
             |     c
             | )
           RUBY
-
-          expect(autocorrect_source(original_source))
-            .to eq(correct_source)
         end
       end
 

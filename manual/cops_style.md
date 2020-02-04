@@ -488,64 +488,6 @@ AllowBracesOnProceduralOneLiners | `false` | Boolean
 
 * [https://rubystyle.guide#single-line-blocks](https://rubystyle.guide#single-line-blocks)
 
-## Style/BracesAroundHashParameters
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.14.1 | 0.28
-
-This cop checks for braces around the last parameter in a method call
-if the last parameter is a hash.
-It supports `braces`, `no_braces` and `context_dependent` styles.
-
-### Examples
-
-#### EnforcedStyle: braces
-
-```ruby
-# The `braces` style enforces braces around all method
-# parameters that are hashes.
-
-# bad
-some_method(x, y, a: 1, b: 2)
-
-# good
-some_method(x, y, {a: 1, b: 2})
-```
-#### EnforcedStyle: no_braces (default)
-
-```ruby
-# The `no_braces` style checks that the last parameter doesn't
-# have braces around it.
-
-# bad
-some_method(x, y, {a: 1, b: 2})
-
-# good
-some_method(x, y, a: 1, b: 2)
-```
-#### EnforcedStyle: context_dependent
-
-```ruby
-# The `context_dependent` style checks that the last parameter
-# doesn't have braces around it, but requires braces if the
-# second to last parameter is also a hash literal.
-
-# bad
-some_method(x, y, {a: 1, b: 2})
-some_method(x, y, {a: 1, b: 2}, a: 1, b: 2)
-
-# good
-some_method(x, y, a: 1, b: 2)
-some_method(x, y, {a: 1, b: 2}, {a: 1, b: 2})
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedStyle | `no_braces` | `braces`, `no_braces`, `context_dependent`
-
 ## Style/CaseEquality
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2328,12 +2270,37 @@ module Baz
   # ...
 end
 ```
+#### EnforcedStyle: always_true
+
+```ruby
+# The `always_true` style enforces that the frozen string literal
+# comment is set to `true`. This is a stricter option than `always`
+# and forces projects to use frozen string literals.
+# bad
+# frozen_string_literal: false
+
+module Baz
+  # ...
+end
+
+# bad
+module Baz
+  # ...
+end
+
+# good
+# frozen_string_literal: true
+
+module Bar
+  # ...
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `always` | `always`, `never`
+EnforcedStyle | `always` | `always`, `always_true`, `never`
 
 ## Style/GlobalVars
 
@@ -2504,6 +2471,66 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 ### References
 
 * [https://rubystyle.guide#hash-literals](https://rubystyle.guide#hash-literals)
+
+## Style/HashTransformKeys
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | Yes (Unsafe) | - | -
+
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+transforming the keys of a hash, and tries to use a simpler & faster
+call to `transform_keys` instead.
+
+This can produce false positives if we are transforming an enumerable
+of key-value-like pairs that isn't actually a hash, e.g.:
+`[[k1, v1], [k2, v2], ...]`
+
+This cop should only be enabled on Ruby version 2.5 or newer
+(`transform_keys` was added in Ruby 2.5.)
+
+### Examples
+
+```ruby
+# bad
+{a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[foo(k)] = v }
+{a: 1, b: 2}.map { |k, v| [k.to_s, v] }
+
+# good
+{a: 1, b: 2}.transform_keys { |k| foo(k) }
+{a: 1, b: 2}.transform_keys { |k| k.to_s }
+```
+
+## Style/HashTransformValues
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | Yes (Unsafe) | - | -
+
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+transforming the values of a hash, and tries to use a simpler & faster
+call to `transform_values` instead.
+
+This can produce false positives if we are transforming an enumerable
+of key-value-like pairs that isn't actually a hash, e.g.:
+`[[k1, v1], [k2, v2], ...]`
+
+This cop should only be enabled on Ruby version 2.4 or newer
+(`transform_values` was added in Ruby 2.4.)
+
+### Examples
+
+```ruby
+# bad
+{a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = foo(v) }
+{a: 1, b: 2}.map { |k, v| [k, v * v] }
+
+# good
+{a: 1, b: 2}.transform_values { |v| foo(v) }
+{a: 1, b: 2}.transform_values { |v| v * v }
+```
 
 ## Style/IdenticalConditionalBranches
 

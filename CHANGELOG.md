@@ -5,10 +5,27 @@
 ### New features
 
 * [#7577](https://github.com/rubocop-hq/rubocop/pull/7577): Add `AllowGemfileRubyComment` configuration on `Layout/LeadingCommentSpace`. ([@cetinajero][])
+* [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformKeys` and `Style/HashTransformValues` cops. ([@djudd][], [@eugeneius][])
+* [#7619](https://github.com/rubocop-hq/rubocop/issues/7619): Support autocorrect of legacy cop names for `Migration/DepartmentName`. ([@koic][])
+
+### Bug fixes
+
+* [#7639](https://github.com/rubocop-hq/rubocop/pull/7639): Fix logical operator edge case in `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
+* [#7661](https://github.com/rubocop-hq/rubocop/pull/7661): Fix to return correct info from multi-line regexp. ([@Tietew][])
+* [#7655](https://github.com/rubocop-hq/rubocop/issues/7655): Fix an error when processing a regexp with a line break at the start of capture parenthesis. ([@koic][])
+* [#7647](https://github.com/rubocop-hq/rubocop/issues/7647): Fix an `undefined method on_numblock` error when using Ruby 2.7's numbered parameters. ([@hanachin][])
+* [#7675](https://github.com/rubocop-hq/rubocop/issues/7675): Fix a false negative for `Layout/SpaceBeforeFirstArg` when a vertical argument positions are aligned. ([@koic][])
+
+### New features
+
+* [#7659](https://github.com/rubocop-hq/rubocop/pull/7659): Layout/LineLength autocorrect now breaks up long lines with blocks. ([@maxh][])
 
 ### Changes
 
 * [#7636](https://github.com/rubocop-hq/rubocop/issues/7636): Remove `console` from `Lint/Debugger` to prevent false positives. ([@gsamokovarov][])
+* [#7641](https://github.com/rubocop-hq/rubocop/issues/7641): **(Breaking)** Remove `Style/BracesAroundHashParameters` cop. ([@pocke][])
+* Add the method name to highlight area of `Layout/EmptyLineBetweenDefs` to help provide more context. ([@rrosenblum][])
+* [#7652](https://github.com/rubocop-hq/rubocop/pull/7652): Allow `pp` to allowed names of `Naming/MethodParameterName` cop in default config. ([@masarakki][])
 
 ## 0.79.0 (2020-01-06)
 
@@ -16,6 +33,7 @@
 
 * [#7296](https://github.com/rubocop-hq/rubocop/issues/7296): Recognize `console` and `binding.console` ([rails/web-console](https://github.com/rails/web-console)) calls in `Lint/Debuggers`. ([@gsamokovarov][])
 * [#7567](https://github.com/rubocop-hq/rubocop/pull/7567): Introduce new `pending` status for new cops. ([@Darhazer][], [@pirj][])
+* [#7426](https://github.com/rubocop-hq/rubocop/issues/7426): Add `always_true` style to Style/FrozenStringLiteralComment. ([@parkerfinch][], [@gfyoung][])
 
 ### Bug fixes
 
@@ -4329,3 +4347,8 @@
 [@pirj]: https://github.com/pirj
 [@pawptart]: https://github.com/pawptart
 [@cetinajero]: https://github.com/cetinajero
+[@gfyoung]: https://github.com/gfyoung
+[@Tietew]: https://github.com/Tietew
+[@hanachin]: https://github.com/hanachin
+[@masarakki]: https://github.com/masarakki
+[@djudd]: https://github.com/djudd

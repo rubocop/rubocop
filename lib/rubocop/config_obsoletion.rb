@@ -69,7 +69,8 @@ module RuboCop
                                'Style/TrailingCommaInHashLiteral',
       'Style/TrailingCommaInLiteral' => 'Style/TrailingCommaInArrayLiteral ' \
                                         'and/or ' \
-                                        'Style/TrailingCommaInHashLiteral'
+                                        'Style/TrailingCommaInHashLiteral',
+      'Style/BracesAroundHashParameters' => nil
     }.map do |old_name, other_cops|
       if other_cops
         more = ". Please use #{other_cops} instead".gsub(%r{[A-Z]\w+/\w+},

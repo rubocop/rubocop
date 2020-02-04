@@ -56,7 +56,8 @@ module RuboCop
           return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
-          add_offense(nodes.last, location: :keyword)
+          location = nodes.last.loc.keyword.join(nodes.last.loc.name)
+          add_offense(nodes.last, location: location)
         end
 
         def autocorrect(node)

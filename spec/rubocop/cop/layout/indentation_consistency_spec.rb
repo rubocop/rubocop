@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with if statement' do
-    it 'registers an offense for bad indentation in an if body' do
+    it 'registers an offense and corrects bad indentation in an if body' do
       expect_offense(<<~RUBY)
         if cond
          func
@@ -22,9 +22,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           ^^^^ Inconsistent indentation detected.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+         func
+         func
+        end
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in an else body' do
+    it 'registers an offense and corrects bad indentation in an else body' do
       expect_offense(<<~RUBY)
         if cond
           func1
@@ -34,9 +41,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           ^^^^^ Inconsistent indentation detected.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          func1
+        else
+         func2
+         func2
+        end
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in an elsif body' do
+    it 'registers an offense and corrects bad indentation in an elsif body' do
       expect_offense(<<~RUBY)
         if a1
           b1
@@ -48,27 +64,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           c
         end
       RUBY
-    end
 
-    it 'autocorrects bad indentation' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_correction(<<~RUBY)
         if a1
-           b1
-        elsif a2
-         b2
-          b3
-        else
-            c
-        end
-      RUBY
-      expect(corrected).to eq <<~RUBY
-        if a1
-           b1
+          b1
         elsif a2
          b2
          b3
         else
-            c
+          c
         end
       RUBY
     end
@@ -226,12 +230,19 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with unless' do
-    it 'registers an offense for bad indentation in an unless body' do
+    it 'registers an offense and corrects bad indentation in an unless body' do
       expect_offense(<<~RUBY)
         unless cond
          func
           func
           ^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless cond
+         func
+         func
         end
       RUBY
     end
@@ -246,7 +257,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with case' do
-    it 'registers an offense for bad indentation in a case/when body' do
+    it 'registers an offense and corrects bad indentation ' \
+      'in a case/when body' do
       expect_offense(<<~RUBY)
         case a
         when b
@@ -255,9 +267,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
             ^ Inconsistent indentation detected.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        case a
+        when b
+         c
+         d
+        end
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in a case/else body' do
+    it 'registers an offense and corrects bad indentation ' \
+      'in a case/else body' do
       expect_offense(<<~RUBY)
         case a
         when b
@@ -268,6 +289,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
            f
           g
           ^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case a
+        when b
+          c
+        when d
+          e
+        else
+           f
+           g
         end
       RUBY
     end
@@ -322,7 +355,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with while/until' do
-    it 'registers an offense for bad indentation in a while body' do
+    it 'registers an offense and corrects bad indentation in a while body' do
       expect_offense(<<~RUBY)
         while cond
          func
@@ -330,9 +363,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           ^^^^ Inconsistent indentation detected.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        while cond
+         func
+         func
+        end
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in begin/end/while' do
+    it 'registers an offense and corrects bad indentation in begin/end/while' do
       expect_offense(<<~RUBY)
         something = begin
          func1
@@ -340,14 +380,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
            ^^^^^ Inconsistent indentation detected.
         end while cond
       RUBY
+
+      expect_correction(<<~RUBY)
+        something = begin
+         func1
+         func2
+        end while cond
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in an until body' do
+    it 'registers an offense and corrects bad indentation in an until body' do
       expect_offense(<<~RUBY)
         until cond
          func
           func
           ^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        until cond
+         func
+         func
         end
       RUBY
     end
@@ -361,12 +415,19 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with for' do
-    it 'registers an offense for bad indentation in a for body' do
+    it 'registers an offense and corrects bad indentation in a for body' do
       expect_offense(<<~RUBY)
         for var in 1..10
          func
         func
         ^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for var in 1..10
+         func
+         func
         end
       RUBY
     end
@@ -380,7 +441,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with def/defs' do
-    it 'registers an offense for bad indentation in a def body' do
+    it 'registers an offense and corrects bad indentation in a def body' do
       expect_offense(<<~RUBY)
         def test
             func1
@@ -388,14 +449,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
              ^^^^^ Inconsistent indentation detected.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+            func1
+            func2
+        end
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in a defs body' do
+    it 'registers an offense and corrects bad indentation in a defs body' do
       expect_offense(<<~RUBY)
         def self.test
            func
             func
             ^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.test
+           func
+           func
         end
       RUBY
     end
@@ -457,7 +532,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     context 'with normal style configured' do
-      it 'registers an offense for bad indentation in a class body' do
+      it 'registers an offense and corrects bad indentation in a class body' do
         expect_offense(<<~RUBY)
           class Test
               def func1
@@ -465,6 +540,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
             def func2
             ^^^^^^^^^ Inconsistent indentation detected.
             end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+              def func1
+              end
+              def func2
+              end
           end
         RUBY
       end
@@ -497,8 +581,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         RUBY
       end
 
-      it 'registers an offense for bad indentation in def but not for ' \
-         'outdented public, protected, and private' do
+      it 'registers an offense and corrects bad indentation ' \
+        'in def but not for outdented public, protected, and private' do
         expect_offense(<<~RUBY)
           class Test
           public
@@ -518,12 +602,31 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
            end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+          public
+
+            def e
+            end
+
+          protected
+
+            def f
+            end
+
+          private
+
+            def g
+            end
+          end
+        RUBY
       end
     end
   end
 
   context 'with module' do
-    it 'registers an offense for bad indentation in a module body' do
+    it 'registers an offense and corrects bad indentation in a module body' do
       expect_offense(<<~RUBY)
         module Test
             def func1
@@ -531,6 +634,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
              def func2
              ^^^^^^^^^ Inconsistent indentation detected.
              end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+            def func1
+            end
+            def func2
+            end
         end
       RUBY
     end
@@ -542,7 +654,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
 
-    it 'registers an offense for bad indentation of private methods' do
+    it 'registers an offense and corrects bad indentation of private methods' do
       expect_offense(<<~RUBY)
         module Test
           def pub
@@ -553,10 +665,21 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
             end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+          def pub
+          end
+          private
+          def priv
+          end
+        end
+      RUBY
     end
 
     context 'even when there are no public methods' do
-      it 'still registers an offense for bad indentation of private methods' do
+      it 'registers an offense and corrects bad indentation ' \
+        'of private methods' do
         expect_offense(<<~RUBY)
           module Test
             private
@@ -565,12 +688,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
               end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          module Test
+            private
+            def priv
+            end
+          end
+        RUBY
       end
     end
   end
 
   context 'with block' do
-    it 'registers an offense for bad indentation in a do/end body' do
+    it 'registers an offense and correct bad indentation in a do/end body' do
       expect_offense(<<~RUBY)
         a = func do
          b
@@ -578,14 +709,28 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           ^ Inconsistent indentation detected.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        a = func do
+         b
+         c
+        end
+      RUBY
     end
 
-    it 'registers an offense for bad indentation in a {} body' do
+    it 'registers an offense and corrects bad indentation in a {} body' do
       expect_offense(<<~RUBY)
         func {
            b
           c
           ^ Inconsistent indentation detected.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func {
+           b
+           c
         }
       RUBY
     end
@@ -607,28 +752,29 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     it 'does not auto-correct an offense within another offense' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         require 'spec_helper'
         describe ArticlesController do
           render_views
-            describe "GET \'index\'" do
+            describe "GET 'index'" do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Inconsistent indentation detected.
                     it "returns success" do
                     end
                 describe "admin user" do
+                ^^^^^^^^^^^^^^^^^^^^^^^^ Inconsistent indentation detected.
                      before(:each) do
                     end
                 end
             end
         end
       RUBY
-      expect(cop.offenses.map(&:line)).to eq [4, 7] # Two offenses are found.
 
       # The offense on line 4 is corrected, affecting lines 4 to 11.
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         require 'spec_helper'
         describe ArticlesController do
           render_views
-          describe \"GET 'index'\" do
+          describe "GET 'index'" do
                   it "returns success" do
                   end
               describe "admin user" do
