@@ -212,6 +212,26 @@ The following pattern will have two captures, both arrays:
 (send nil? $int+ (send $...))
 ```
 
+## `^` for parent
+
+One may use the `^` character to check against a parent.
+
+For example, the following pattern would find any node with two children and
+with a parent that is a hash:
+
+```
+(^hash _key $_value)
+```
+
+It is possible to use `^` somewhere else than the head of a sequnece; in that
+case it is relative to that child (i.e. the current node). One case also use
+multiple `^` to go up multiple levels.
+For example, the previous example is basically the same as:
+
+```
+(pair ^^hash $_value)
+```
+
 ## Predicate methods
 
 Words which end with a `?` are predicate methods, are called on the target
