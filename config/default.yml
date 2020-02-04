@@ -2800,6 +2800,16 @@ Style/HashSyntax:
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
+Style/HashTransformKeys:
+  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  Safe: false
+
+Style/HashTransformValues:
+  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  Safe: false
+
 Style/IdenticalConditionalBranches:
   Description: >-
                  Checks that conditional statements do not have an identical
