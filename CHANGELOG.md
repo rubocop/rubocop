@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7577](https://github.com/rubocop-hq/rubocop/pull/7577): Add `AllowGemfileRubyComment` configuration on `Layout/LeadingCommentSpace`. ([@cetinajero][])
 * [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformKeys` and `Style/HashTransformValues` cops. ([@djudd][], [@eugeneius][])
 * [#7619](https://github.com/rubocop-hq/rubocop/issues/7619): Support autocorrect of legacy cop names for `Migration/DepartmentName`. ([@koic][])
 
@@ -4345,6 +4346,7 @@
 [@mangara]: https://github.com/mangara
 [@pirj]: https://github.com/pirj
 [@pawptart]: https://github.com/pawptart
+[@cetinajero]: https://github.com/cetinajero
 [@gfyoung]: https://github.com/gfyoung
 [@Tietew]: https://github.com/Tietew
 [@hanachin]: https://github.com/hanachin

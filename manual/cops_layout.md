@@ -2822,12 +2822,29 @@ or rackup options.
 # Another line of comment
 #*
 ```
+#### AllowGemfileRubyComment: false (default)
+
+```ruby
+# bad
+
+#ruby=2.7.0
+#ruby-gemset=myproject
+```
+#### AllowGemfileRubyComment: true
+
+```ruby
+# good
+
+#ruby=2.7.0
+#ruby-gemset=myproject
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowDoxygenCommentStyle | `false` | Boolean
+AllowGemfileRubyComment | `false` | Boolean
 
 ### References
 
