@@ -7,23 +7,23 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods do
     context 'when receiver is a send' do
       it 'registers offense, auto-corrects foo#keys.each to foo#each_key' do
         expect_offense(<<~RUBY)
-        foo.keys.each { |k| p k }
-            ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+          foo.keys.each { |k| p k }
+              ^^^^^^^^^ Use `each_key` instead of `keys.each`.
         RUBY
 
         expect_correction(<<~RUBY)
-        foo.each_key { |k| p k }
+          foo.each_key { |k| p k }
         RUBY
       end
 
       it 'registers offense, auto-corrects foo#values.each to foo#each_value' do
         expect_offense(<<~RUBY)
-        foo.values.each { |v| p v }
-            ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+          foo.values.each { |v| p v }
+              ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
         RUBY
 
         expect_correction(<<~RUBY)
-        foo.each_value { |v| p v }
+          foo.each_value { |v| p v }
         RUBY
       end
 
@@ -39,23 +39,23 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods do
     context 'when receiver is a hash literal' do
       it 'registers offense, auto-corrects {}#keys.each with {}#each_key' do
         expect_offense(<<~RUBY)
-        {}.keys.each { |k| p k }
-           ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+          {}.keys.each { |k| p k }
+             ^^^^^^^^^ Use `each_key` instead of `keys.each`.
         RUBY
 
         expect_correction(<<~RUBY)
-        {}.each_key { |k| p k }
+          {}.each_key { |k| p k }
         RUBY
       end
 
       it 'registers offense, auto-corrects {}#values.each with {}#each_value' do
         expect_offense(<<~RUBY)
-        {}.values.each { |k| p k }
-           ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+          {}.values.each { |k| p k }
+             ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
         RUBY
 
         expect_correction(<<~RUBY)
-        {}.each_value { |k| p k }
+          {}.each_value { |k| p k }
         RUBY
       end
 
@@ -76,18 +76,18 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods do
         RUBY
 
         expect_correction(<<~RUBY)
-        each_key { |k| p k }
+          each_key { |k| p k }
         RUBY
       end
 
       it 'registers an offense and auto-corrects values.each with each_value' do
         expect_offense(<<~RUBY)
-        values.each { |v| p v }
-        ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+          values.each { |v| p v }
+          ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
         RUBY
 
         expect_correction(<<~RUBY)
-        each_value { |v| p v }
+          each_value { |v| p v }
         RUBY
       end
 

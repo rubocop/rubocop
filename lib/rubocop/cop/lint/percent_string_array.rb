@@ -42,7 +42,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            node.values.each do |value| # rubocop:disable Style/HashEachMethods
+            node.values.each do |value|
               range = value.loc.expression
 
               match = range.source.match(TRAILING_QUOTE)

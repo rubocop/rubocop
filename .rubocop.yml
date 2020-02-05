@@ -28,6 +28,9 @@ Style/FormatStringToken:
   Exclude:
     - spec/**/*
 
+Style/HashEachMethods:
+  Enabled: false
+
 Style/IpAddresses:
   # The test for this cop includes strings that would cause offenses
   Exclude:
