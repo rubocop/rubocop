@@ -8,7 +8,7 @@
 * [#7663](https://github.com/rubocop-hq/rubocop/pull/7663): Add new `Style/HashTransformKeys` and `Style/HashTransformValues` cops. ([@djudd][], [@eugeneius][])
 * [#7619](https://github.com/rubocop-hq/rubocop/issues/7619): Support autocorrect of legacy cop names for `Migration/DepartmentName`. ([@koic][])
 * [#7659](https://github.com/rubocop-hq/rubocop/pull/7659): Layout/LineLength autocorrect now breaks up long lines with blocks. ([@maxh][])
-* Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
+* [#7677](https://github.com/rubocop-hq/rubocop/pull/7677): Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
 
 ### Bug fixes
 
