@@ -41,7 +41,7 @@ automatically fix some of the problems for you.
 $ gem install rubocop
 ```
 
-If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
+If you'd rather install RuboCop using `bundler`, require it in your `Gemfile`:
 
 ```rb
 gem 'rubocop', require: false
