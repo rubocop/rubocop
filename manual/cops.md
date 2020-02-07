@@ -357,6 +357,7 @@ In the following section you find all available cops:
 * [Style/FrozenStringLiteralComment](cops_style.md#stylefrozenstringliteralcomment)
 * [Style/GlobalVars](cops_style.md#styleglobalvars)
 * [Style/GuardClause](cops_style.md#styleguardclause)
+* [Style/HashEachMethods](cops_style.md#stylehasheachmethods)
 * [Style/HashSyntax](cops_style.md#stylehashsyntax)
 * [Style/HashTransformKeys](cops_style.md#stylehashtransformkeys)
 * [Style/HashTransformValues](cops_style.md#stylehashtransformvalues)
