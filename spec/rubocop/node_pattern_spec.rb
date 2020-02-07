@@ -1607,4 +1607,18 @@ RSpec.describe RuboCop::NodePattern do
       it_behaves_like 'invalid'
     end
   end
+
+  describe 'macros' do
+    describe '#def_node_matcher' do
+      let(:macro) { RuboCop::AST::Node.method(:def_node_matcher) }
+
+      it { expect(macro.call(:foo?, 'send_type?')).to eq(:foo?) }
+    end
+
+    describe '#def_node_search' do
+      let(:macro) { RuboCop::AST::Node.method(:def_node_search) }
+
+      it { expect(macro.call(:bar?, 'send_type?')).to eq(:bar?) }
+    end
+  end
 end

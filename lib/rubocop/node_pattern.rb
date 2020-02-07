@@ -708,6 +708,8 @@ module RuboCop
 
         location = caller_locations(1, 1).first
         class_eval(src, location.path, location.lineno)
+
+        method_name
       end
 
       # Define a method which recurses over the descendants of an AST node,
@@ -725,6 +727,8 @@ module RuboCop
         else
           node_search_all(method_name, compiler, called_from)
         end
+
+        method_name
       end
 
       def node_search_first(method_name, compiler, called_from)
