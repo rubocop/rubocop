@@ -460,6 +460,110 @@ RSpec.describe RuboCop::NodePattern do
 
         it_behaves_like 'matching'
       end
+
+      context 'within a union' do
+        context 'confined to the union' do
+          context 'without unification' do
+            let(:pattern) { '{(array (int 1) _num) (array _num (int 1))}' }
+            let(:ruby) { '[2, 1]' }
+
+            it_behaves_like 'matching'
+          end
+
+          context 'with partial unification' do
+            let(:pattern) { '{(array _num _num) (array _num (int 1))}' }
+
+            context 'matching the unified branch' do
+              let(:ruby) { '[5, 5]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'matching the free branch' do
+              let(:ruby) { '[2, 1]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'that can not be unified' do
+              let(:ruby) { '[3, 2]' }
+
+              it_behaves_like 'nonmatching'
+            end
+          end
+        end
+
+        context 'with a preceeding unifying constraint' do
+          let(:pattern) do
+            '(array _num {(array (int 1) _num)
+                          send
+                          (array _num (int 1))})'
+          end
+
+          context 'matching a branch' do
+            let(:ruby) { '[2, [2, 1]]' }
+
+            it_behaves_like 'matching'
+          end
+
+          context 'that can not be unified' do
+            let(:ruby) { '[3, [2, 1]]' }
+
+            it_behaves_like 'nonmatching'
+          end
+        end
+
+        context 'with a succeeding unifying constraint' do
+          context 'with branches without the wildcard' do
+            context 'encountered first' do
+              let(:pattern) do
+                '(array {send
+                         (array (int 1) _num)
+                        } _num)'
+              end
+
+              it_behaves_like 'invalid'
+            end
+
+            context 'encountered after' do
+              let(:pattern) do
+                '(array {(array (int 1) _num)
+                         (array _num (int 1))
+                          send
+                        } _num)'
+              end
+
+              it_behaves_like 'invalid'
+            end
+          end
+
+          context 'with all branches with the wildcard' do
+            let(:pattern) do
+              '(array {(array (int 1) _num)
+                       (array _num (int 1))
+                      } _num)'
+            end
+
+            context 'matching the first branch' do
+              let(:ruby) { '[[1, 2], 2]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'matching another branch' do
+              let(:ruby) { '[[2, 1], 2]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'that can not be unified' do
+              let(:ruby) { '[[2, 1], 1]' }
+
+              it_behaves_like 'nonmatching'
+            end
+          end
+        end
+      end
     end
   end
 
