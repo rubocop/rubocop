@@ -60,6 +60,10 @@ module RuboCop
       alias conflicting_styles_detected no_acceptable_style!
       alias unrecognized_style_detected no_acceptable_style!
 
+      def style_configured?
+        cop_config.key?(style_parameter_name)
+      end
+
       def style
         @style ||= begin
           s = cop_config[style_parameter_name].to_sym
