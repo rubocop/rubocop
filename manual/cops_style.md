@@ -473,6 +473,33 @@ words.each { |word|
   word.flip.flop
 }
 ```
+#### BracesRequiredMethods: ['sig']
+
+```ruby
+# Methods listed in the BracesRequiredMethods list, such as 'sig'
+# in this example, will require `{...}` braces. This option takes
+# precedence over all other configurations except IgnoredMethods.
+
+# bad
+sig do
+  params(
+    foo: string,
+  ).void
+end
+def bar(foo)
+  puts foo
+end
+
+# good
+sig {
+  params(
+    foo: string,
+  ).void
+}
+def bar(foo)
+  puts foo
+end
+```
 
 ### Configurable attributes
 
@@ -483,6 +510,7 @@ ProceduralMethods | `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `me
 FunctionalMethods | `let`, `let!`, `subject`, `watch` | Array
 IgnoredMethods | `lambda`, `proc`, `it` | Array
 AllowBracesOnProceduralOneLiners | `false` | Boolean
+BracesRequiredMethods | `[]` | Array
 
 ### References
 
