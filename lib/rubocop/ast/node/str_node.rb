@@ -11,6 +11,14 @@ module RuboCop
       def heredoc?
         loc.is_a?(Parser::Source::Map::Heredoc)
       end
+
+      def value
+        if str_type?
+          super
+        else
+          each_child_node(:str, :dstr, :xstr).map(&:value).join
+        end
+      end
     end
   end
 end

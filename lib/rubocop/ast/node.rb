@@ -306,8 +306,6 @@ module RuboCop
         {(send $_ ...) (block (send $_ ...) ...)}
       PATTERN
 
-      def_node_matcher :str_content, '(str $_)'
-
       def const_name
         return unless const_type?
 

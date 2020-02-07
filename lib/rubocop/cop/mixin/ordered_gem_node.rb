@@ -43,7 +43,7 @@ module RuboCop
       end
 
       def find_gem_name(gem_node)
-        return gem_node.str_content if gem_node.str_type?
+        return gem_node.value if gem_node.str_type?
 
         find_gem_name(gem_node.receiver)
       end

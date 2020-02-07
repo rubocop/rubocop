@@ -64,11 +64,11 @@ module RuboCop
         def extract_ruby_version(required_ruby_version)
           if required_ruby_version.array_type?
             required_ruby_version = required_ruby_version.children.detect do |v|
-              v.str_content =~ /[>=]/
+              v.value =~ /[>=]/
             end
           end
 
-          required_ruby_version.str_content.match(/(\d\.\d)/)[1]
+          required_ruby_version.value.match(/(\d\.\d)/)[1]
         end
 
         def message(required_ruby_version, target_ruby_version)

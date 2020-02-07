@@ -11,7 +11,7 @@ module RuboCop
           return if node.dstr_type?
 
           lambda do |corrector|
-            str = node.str_content
+            str = node.value
             if style == :single_quotes
               corrector.replace(node.source_range, to_string_literal(str))
             else

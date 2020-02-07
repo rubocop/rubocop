@@ -82,17 +82,9 @@ module RuboCop
 
         def display_str(node)
           if node.source =~ /\n/
-            str_content(node).inspect
+            node.value.inspect
           else
             node.source
-          end
-        end
-
-        def str_content(node)
-          if node.str_type?
-            node.children[0]
-          else
-            node.children.map { |c| str_content(c) }.join
           end
         end
       end

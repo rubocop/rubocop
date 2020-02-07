@@ -38,7 +38,7 @@ module RuboCop
 
         def safe?(node)
           if simple_string?(node)
-            safe_argument?(node.str_content)
+            safe_argument?(node.value)
           elsif composite_string?(node)
             safe?(node.children.first)
           else

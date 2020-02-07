@@ -26,7 +26,7 @@ module RuboCop
 
       # @return [String] a string of regexp content
       def content
-        children.select(&:str_type?).map(&:str_content).join
+        children.select(&:str_type?).map(&:value).join
       end
     end
   end
