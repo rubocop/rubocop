@@ -2395,7 +2395,7 @@ MinBodyLength | `1` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | No | Yes (Unsafe) | 0.80 | -
+Pending | No | Yes (Unsafe) | 0.80 | -
 
 This cop checks for uses of `each_key` and `each_value` Hash methods.
 
