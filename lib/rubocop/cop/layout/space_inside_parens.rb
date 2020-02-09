@@ -32,7 +32,6 @@ module RuboCop
       #   y()
       #
       class SpaceInsideParens < Cop
-        include SurroundingSpace
         include RangeHelp
         include ConfigurableEnforcedStyle
 
