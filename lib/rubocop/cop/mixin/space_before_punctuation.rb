@@ -16,6 +16,10 @@ module RuboCop
         end
       end
 
+      def autocorrect(space)
+        PunctuationCorrector.remove_space(space)
+      end
+
       private
 
       def each_extraneous_space(tokens)
