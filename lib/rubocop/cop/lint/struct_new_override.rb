@@ -22,7 +22,8 @@ module RuboCop
       #   g.count #=> 2
       #
       class StructNewOverride < Cop
-        MSG = 'Disallow overriding the `Struct#%<method_name>s` method.'
+        MSG = '`%<member_name>s` member overrides `Struct#%<method_name>s`' \
+              ' and it may be unexpected.'
 
         STRUCT_METHOD_NAMES = Struct.instance_methods
         STRUCT_MEMBER_NAME_TYPES = %i[sym str].freeze
@@ -41,11 +42,13 @@ module RuboCop
               # Ignore if the argument is not a member name
               next unless STRUCT_MEMBER_NAME_TYPES.include?(arg.type)
 
-              member_name = arg.value.to_sym
+              member_name = arg.value
 
-              next unless STRUCT_METHOD_NAMES.include?(member_name)
+              next unless STRUCT_METHOD_NAMES.include?(member_name.to_sym)
 
-              add_offense(arg, message: format(MSG, method_name: member_name))
+              message = format(MSG, member_name: member_name.inspect,
+                                    method_name: member_name.to_s)
+              add_offense(arg, message: message)
             end
           end
         end
