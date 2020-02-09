@@ -37,6 +37,7 @@ module RuboCop
       class SpaceBeforeComma < Cop
         include SpaceBeforePunctuation
         include ConfigurableEnforcedStyle
+        include KwargNode
 
         MSG_SPACE_AFTER_COLON = 'No space found after colon.'
 
@@ -63,13 +64,7 @@ module RuboCop
         end
 
         def space_required_after_kwarg?(token)
-          style == :space_after_colon && node_at_pos(token.pos)&.kwarg_type?
-        end
-
-        def node_at_pos(pos)
-          processed_source.ast.descendants.detect do |arg|
-            arg.source_range == pos
-          end
+          style == :space_after_colon && kwarg?(token)
         end
 
         def space_missing?(token1, token2)
