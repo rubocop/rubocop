@@ -1216,11 +1216,12 @@ Layout/SpaceInsideParens:
   StyleGuide: '#spaces-braces'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '0.55'
+  VersionChanged: '0.81'
   EnforcedStyle: no_space
   SupportedStyles:
     - space
     - no_space
+    - space_after_colon
 
 Layout/SpaceInsidePercentLiteralDelimiters:
   Description: 'No unnecessary spaces inside delimiters of %i/%w/%x literals.'

@@ -4652,7 +4652,7 @@ EnforcedStyleForEmptyBraces | `no_space` | `space`, `no_space`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.55
+Enabled | Yes | Yes  | 0.49 | 0.81
 
 Checks for spaces inside ordinary round parentheses.
 
@@ -4688,12 +4688,30 @@ f( 3 )
 g = ( a + 3 )
 y()
 ```
+#### EnforcedStyle: space_after_colon
+
+```ruby
+# The `space_after_colon` style enforces that parentheses do not have
+# spaces, except after keyword parameters with no value.
+
+# bad
+f( 3)
+g = (a + 3 )
+def y(x:); end
+y(x: 1 )
+
+# good
+f(3)
+g = (a + 3)
+def y(x: ); end
+y(x: 1)
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `no_space` | `space`, `no_space`
+EnforcedStyle | `no_space` | `space`, `no_space`, `space_after_colon`
 
 ### References
 
