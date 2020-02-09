@@ -77,6 +77,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                  [fu]ubar
                                                  [h]tml
                                                  [j]son
+                                                 [ju]nit
                                                  [o]ffenses
                                                  [pa]cman
                                                  [p]rogress

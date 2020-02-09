@@ -95,6 +95,10 @@ Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
 
+RSpec/FilePath:
+  Exclude:
+    - spec/rubocop/formatter/junit_formatter_spec.rb
+
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit
 

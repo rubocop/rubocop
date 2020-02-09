@@ -237,6 +237,37 @@ The JSON structure is like the following example:
 }
 ```
 
+### JUnit Style Formatter
+
+**Machine-parsable**
+
+The `junit` style formatter provides the JUnit formatting.
+This formatter is based on [rubocop-junit-formatter gem](https://github.com/mikian/rubocop-junit-formatter).
+
+```sh
+$ rubocop --format junit
+<?xml version='1.0'?>
+<testsuites>
+  <testsuite name='rubocop'>
+    <testcase classname='example' name='Style/FrozenStringLiteralComment'>
+      <failure type='Style/FrozenStringLiteralComment' message='Style/FrozenStringLiteralComment: Missing frozen string literal comment.'>
+        /tmp/src/example.rb:1:1
+      </failure>
+    </testcase>
+    <testcase classname='example' name='Naming/MethodName'>
+      <failure type='Naming/MethodName' message='Naming/MethodName: Use snake_case for method names.'>
+        /tmp/src/example.rb:1:5
+      </failure>
+    </testcase>
+    <testcase classname='example' name='Lint/DeprecatedClassMethods'>
+      <failure type='Lint/DeprecatedClassMethods' message='Lint/DeprecatedClassMethods: `File.exists?` is deprecated in favor of `File.exist?`.'>
+        /tmp/src/example.rb:2:8
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
+```
+
 ### Offense Count Formatter
 
 Sometimes when first applying RuboCop to a codebase, it's nice to be able to
