@@ -10,9 +10,9 @@ module RuboCop
       MSG = 'Space found before %<token>s.'
 
       def investigate(processed_source)
-        each_extraneous_space(processed_source.tokens) do |token, pos_before|
+        each_violation(processed_source.tokens) do |token, pos_before|
           add_offense(pos_before, location: pos_before,
-                                  message: format(MSG, token: kind(token)))
+                                  message: message_for(token))
         end
       end
 
@@ -22,17 +22,16 @@ module RuboCop
 
       private
 
-      def each_extraneous_space(tokens)
+      def each_violation(tokens)
         tokens.each_cons(2) do |token1, token2|
-          next unless kind(token2)
-          next unless space_present?(token1, token2)
-          next if space_required_after?(token1)
+          next unless kind(token2) && violation?(token1, token2)
 
-          pos_before_punctuation = range_between(token1.end_pos,
-                                                 token2.begin_pos)
-
-          yield token2, pos_before_punctuation
+          yield token2, pos_before_punctuation(token1, token2)
         end
+      end
+
+      def violation?(token1, token2)
+        space_present?(token1, token2) && !space_required_after?(token1)
       end
 
       def space_present?(token1, token2)
@@ -47,6 +46,14 @@ module RuboCop
         cfg = config.for_cop('Layout/SpaceInsideBlockBraces')
         style = cfg['EnforcedStyle'] || 'space'
         style == 'space'
+      end
+
+      def pos_before_punctuation(token1, token2)
+        range_between(token1.end_pos, token2.begin_pos)
+      end
+
+      def message_for(token)
+        format(MSG, token: kind(token))
       end
     end
   end

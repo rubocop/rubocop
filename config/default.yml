@@ -1111,9 +1111,16 @@ Layout/SpaceBeforeBlockBraces:
   VersionChanged: '0.52.1'
 
 Layout/SpaceBeforeComma:
-  Description: 'No spaces before commas.'
+  Description: >-
+                 No spaces before commas, exception optionally in the case of
+                 keyword arguments.
   Enabled: true
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - no_space
+    - space_after_colon
   VersionAdded: '0.49'
+  VersionChanged: '0.81'
 
 Layout/SpaceBeforeComment:
   Description: >-

@@ -4198,23 +4198,51 @@ EnforcedStyleForEmptyBraces | `space` | `space`, `no_space`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.81
 
 Checks for comma (,) preceded by space.
 
 ### Examples
+
+#### EnforcedStyle: no_space (default)
 
 ```ruby
 # bad
 [1 , 2 , 3]
 a(1 , 2)
 each { |a , b| }
+def a(x: , y: nil); end
 
 # good
 [1, 2, 3]
 a(1, 2)
 each { |a, b| }
+def a(x:, y: nil); end
 ```
+#### EnforcedStyle: space_after_colon
+
+```ruby
+# The `space_after_colon` style enforces that keyword arguments with
+# no default value have a space after the colon.
+
+# bad
+[1 , 2 , 3]
+a(1 , 2)
+each { |a , b| }
+def a(x:, y: nil); end
+
+# good
+[1, 2, 3]
+a(1, 2)
+each { |a, b| }
+def a(x: , y: nil); end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `no_space` | `no_space`, `space_after_colon`
 
 ## Layout/SpaceBeforeComment
 
