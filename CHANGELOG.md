@@ -5,6 +5,7 @@
 ### New features
 
 * [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
+* [#7700](https://github.com/rubocop-hq/rubocop/pull/7700): Add `space_after_colon` style to Layout/SpaceBeforeComma and Layout/SpaceInsideParens cops. ([@amilligan][])
 
 ### Bug fixes
 
@@ -4389,3 +4390,4 @@
 [@djudd]: https://github.com/djudd
 [@jemmaissroff]: https://github.com/jemmaissroff
 [@nikitasakov]: https://github.com/nikitasakov
+[@amilligan]: https://github.com/amilligan
