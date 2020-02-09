@@ -25,6 +25,7 @@ module RuboCop
         MSG = 'Disallow overriding the `Struct#%<method_name>s` method.'
 
         STRUCT_METHOD_NAMES = Struct.instance_methods
+        STRUCT_MEMBER_NAME_TYPES = %i[sym str].freeze
 
         def_node_matcher :struct_new, <<~PATTERN
           (send
@@ -38,7 +39,7 @@ module RuboCop
               next if index.zero? && arg.str_type?
 
               # Ignore if the argument is not a member name
-              next unless arg.str_type? || arg.sym_type?
+              next unless STRUCT_MEMBER_NAME_TYPES.include?(arg.type)
 
               member_name = arg.value.to_sym
 
