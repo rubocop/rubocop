@@ -17,6 +17,7 @@ module RuboCop
         '[fu]ubar'      => FuubarStyleFormatter,
         '[h]tml'        => HTMLFormatter,
         '[j]son'        => JSONFormatter,
+        '[ju]nit'       => JUnitFormatter,
         '[o]ffenses'    => OffenseCountFormatter,
         '[pa]cman'      => PacmanFormatter,
         '[p]rogress'    => ProgressFormatter,

@@ -18,11 +18,6 @@ gem 'test-queue'
 gem 'yard', '~> 0.9'
 
 group :test do
-  # Workaround for crack 0.4.3 or lower.
-  # Depends on `rexml` until the release that includes
-  # the following changes:
-  # https://github.com/jnunemaker/crack/pull/62
-  gem 'rexml'
   gem 'safe_yaml', require: false
   gem 'webmock', require: false
 end

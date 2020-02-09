@@ -10,6 +10,7 @@
 * [#7659](https://github.com/rubocop-hq/rubocop/pull/7659): Layout/LineLength autocorrect now breaks up long lines with blocks. ([@maxh][])
 * [#7677](https://github.com/rubocop-hq/rubocop/pull/7677): Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
 * Add `BracesRequiredMethods` parameter to `Style/BlockDelimiters` to require braces for specific methods such as Sorbet's `sig`. ([@maxh][])
+* [#7686](https://github.com/rubocop-hq/rubocop/pull/7686): Add new `JUnitFormatter` formatter based on rubocop-junit-formatter gem. ([@koic][])
 
 ### Bug fixes
 
