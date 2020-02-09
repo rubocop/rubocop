@@ -33,6 +33,13 @@ RSpec.describe RuboCop::Cop::Lint::StructNewOverride do
     RUBY
   end
 
+  it 'registers an offense using `Struct.new(symbol, string)`' do
+    expect_offense(<<~RUBY)
+      Bad = Struct.new(:name, "members")
+                              ^^^^^^^^^ Disallow overriding the `Struct#members` method.
+    RUBY
+  end
+
   it 'registers an offense using `Struct.new(...)` with a block' do
     expect_offense(<<~RUBY)
       Struct.new(:members) do

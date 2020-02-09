@@ -33,14 +33,18 @@ module RuboCop
 
         def on_send(node)
           return unless struct_new(node) do
-            node.arguments.each do |arg|
-              next unless arg.respond_to?(:value)
+            node.arguments.each_with_index do |arg, index|
+              # Ignore if the first argument is a class name
+              next if index.zero? && arg.str_type?
 
-              method_name = arg.value
+              # Ignore if the argument is not a member name
+              next unless arg.str_type? || arg.sym_type?
 
-              next unless STRUCT_METHOD_NAMES.include?(method_name)
+              member_name = arg.value.to_sym
 
-              add_offense(arg, message: format(MSG, method_name: method_name))
+              next unless STRUCT_METHOD_NAMES.include?(member_name)
+
+              add_offense(arg, message: format(MSG, method_name: member_name))
             end
           end
         end
