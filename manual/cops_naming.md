@@ -350,7 +350,7 @@ This cop can be configured with the EnforcedStyleForLeadingUnderscores
 directive. It can be configured to allow for memoized instance variables
 prefixed with an underscore. Prefixing ivars with an underscore is a
 convention that is used to implicitly indicate that an ivar should not
-be set or referencd outside of the memoization method.
+be set or referenced outside of the memoization method.
 
 ### Examples
 
