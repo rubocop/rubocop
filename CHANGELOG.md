@@ -15,6 +15,7 @@
 
 ### Bug fixes
 
+* [#7705](https://github.com/rubocop-hq/rubocop/issues/7705): Fix problem of one_line_conditional cop with elsif conditionals. ([@Lykos][])
 * [#7644](https://github.com/rubocop-hq/rubocop/issues/7644): Fix patterns with named wildcards in unions. ([@marcandre][])
 * [#7639](https://github.com/rubocop-hq/rubocop/pull/7639): Fix logical operator edge case in `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
 * [#7661](https://github.com/rubocop-hq/rubocop/pull/7661): Fix to return correct info from multi-line regexp. ([@Tietew][])
@@ -4357,3 +4358,4 @@
 [@masarakki]: https://github.com/masarakki
 [@djudd]: https://github.com/djudd
 [@jemmaissroff]: https://github.com/jemmaissroff
+[@Lykos]: https://github.com/Lykos

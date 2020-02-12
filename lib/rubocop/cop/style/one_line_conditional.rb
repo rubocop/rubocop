@@ -25,11 +25,13 @@ module RuboCop
       class OneLineConditional < Cop
         include OnNormalIfUnless
 
-        MSG = 'Favor the ternary operator (`?:`) ' \
-              'over `%<keyword>s/then/else/end` constructs.'
+        MSG_USE_TERNARY = 'Favor the ternary operator (`?:`) ' \
+                          'over `%<keyword>s/then/else/end` constructs.'
+        MSG_USE_MULTILINE = 'Use multiple lines for ' \
+                            '`if/then/elsif/then/else/end` constructs.'
 
         def on_normal_if_unless(node)
-          return unless node.single_line? && node.else_branch
+          return unless node.single_line? && node.else_branch && !node.elsif?
 
           add_offense(node)
         end
@@ -43,21 +45,55 @@ module RuboCop
         private
 
         def message(node)
-          format(MSG, keyword: node.keyword)
+          if node.elsif_conditional?
+            MSG_USE_MULTILINE
+          else
+            format(MSG_USE_TERNARY, keyword: node.keyword)
+          end
         end
 
         def replacement(node)
-          return to_ternary(node) unless node.parent
+          return to_ternary_or_multiline(node) unless node.parent
 
           if %i[and or].include?(node.parent.type)
-            return "(#{to_ternary(node)})"
+            return "(#{to_ternary_or_multiline(node)})"
           end
 
           if node.parent.send_type? && node.parent.operator_method?
-            return "(#{to_ternary(node)})"
+            return "(#{to_ternary_or_multiline(node)})"
           end
 
-          to_ternary(node)
+          to_ternary_or_multiline(node)
+        end
+
+        def to_ternary_or_multiline(node)
+          node.elsif_conditional? ? to_multiline(node) : to_ternary(node)
+        end
+
+        def to_multiline(node)
+          indentation = ' ' * node.source_range.column
+          to_indented_multiline(node, indentation)
+        end
+
+        def to_indented_multiline(node, indentation)
+          if_branch = <<~RUBY
+            #{node.keyword} #{node.condition.source}
+            #{indentation}  #{node.if_branch.source}
+          RUBY
+          else_branch = else_branch_to_multiline(node.else_branch, indentation)
+          if_branch + else_branch
+        end
+
+        def else_branch_to_multiline(else_branch, indentation)
+          if else_branch.if_type? && else_branch.elsif?
+            to_indented_multiline(else_branch, indentation)
+          else
+            <<~RUBY.chomp
+              #{indentation}else
+              #{indentation}  #{else_branch.source}
+              #{indentation}end
+            RUBY
+          end
         end
 
         def to_ternary(node)

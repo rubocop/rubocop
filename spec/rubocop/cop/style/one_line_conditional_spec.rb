@@ -12,6 +12,15 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
     end
   end
 
+  shared_examples 'multiline offense' do
+    it 'registers an offense where multiline should be used' do
+      inspect_source(source)
+      expect(cop.messages)
+        .to eq(['Use multiple lines for ' \
+                '`if/then/elsif/then/else/end` constructs.'])
+    end
+  end
+
   shared_examples 'no offense' do
     it 'does not register an offense' do
       expect_no_offenses(source)
@@ -36,6 +45,40 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
 
       include_examples 'no offense'
     end
+  end
+
+  context 'one line if/then/elsif/then/else/end' do
+    let(:source) { 'if cond then run elsif elscond then elsrun else dont end' }
+
+    include_examples 'multiline offense'
+    include_examples 'autocorrect', <<~RUBY.chomp
+      if cond
+        run
+      elsif elscond
+        elsrun
+      else
+        dont
+      end
+    RUBY
+  end
+
+  context 'one line if/then/elsif/then/else/end with multiple elsifs' do
+    let(:source) do
+      'if c0 then r0 elsif c1 then r1 elsif c2 then r2 else r3 end'
+    end
+
+    include_examples 'multiline offense'
+    include_examples 'autocorrect', <<~RUBY.chomp
+      if c0
+        r0
+      elsif c1
+        r1
+      elsif c2
+        r2
+      else
+        r3
+      end
+    RUBY
   end
 
   context 'one line if/then/else/end when `then` branch has no body' do
