@@ -427,6 +427,7 @@ In the following section you find all available cops:
 * [Style/RedundantException](cops_style.md#styleredundantexception)
 * [Style/RedundantFreeze](cops_style.md#styleredundantfreeze)
 * [Style/RedundantInterpolation](cops_style.md#styleredundantinterpolation)
+* [Style/RedundantNestedInterpolation](cops_style.md#styleredundantnestedinterpolation)
 * [Style/RedundantParentheses](cops_style.md#styleredundantparentheses)
 * [Style/RedundantPercentQ](cops_style.md#styleredundantpercentq)
 * [Style/RedundantReturn](cops_style.md#styleredundantreturn)

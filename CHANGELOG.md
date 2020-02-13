@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7480](https://github.com/rubocop-hq/rubocop/issues/7480): Add new `Style::RedundantNestedInterpolation` cop. ([@r.dubrovsky][])
+
 ### Bug fixes
 
 * [#7719](https://github.com/rubocop-hq/rubocop/issues/7719): Fix `Style/NestedParenthesizedCalls` cop for newline. ([@tejasbubane][])
@@ -4370,3 +4374,4 @@
 [@masarakki]: https://github.com/masarakki
 [@djudd]: https://github.com/djudd
 [@jemmaissroff]: https://github.com/jemmaissroff
+[@r.dubrovsky]: https://github.com/roman-dubrovsky

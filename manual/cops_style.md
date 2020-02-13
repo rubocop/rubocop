@@ -5445,6 +5445,25 @@ This cop checks for strings that are just an interpolated expression.
 @var
 ```
 
+## Style/RedundantNestedInterpolation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.81 | -
+
+This cop checks nested interpolations
+
+### Examples
+
+```ruby
+# bad
+"Hello, #{user.blank? ? 'guest' : "dear #{user.name}"}"
+
+# good
+user_name = user.blank? ? 'guest' : "dear #{user.name}"
+"Hello, #{user_name}"
+```
+
 ## Style/RedundantParentheses
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

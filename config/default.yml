@@ -3475,6 +3475,11 @@ Style/RedundantInterpolation:
   Enabled: true
   VersionAdded: '0.76'
 
+Style/RedundantNestedInterpolation:
+  Description: 'Avoid using nested interpolation.'
+  Enabled: pending
+  VersionAdded: '0.81'
+
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."
   Enabled: true

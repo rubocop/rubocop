@@ -248,9 +248,11 @@ module RuboCop
           end
 
           def begin_correction(rescue_result)
+            indentation_node_with_new_line = "\n#{indentation(node)}"
+
             "begin\n" \
               "#{indentation(node)}" \
-              "#{assignment.join("\n#{indentation(node)}")}" \
+              "#{assignment.join(indentation_node_with_new_line)}" \
               "\n#{offset(node)}rescue\n" \
               "#{indentation(node)}#{rescue_result.source}" \
               "\n#{offset(node)}end"
@@ -262,10 +264,11 @@ module RuboCop
         class ModifierCorrector < GenericCorrector
           def correction
             parent = node.parent
+            indentation_node_with_new_line = "\n#{indentation(node)}"
 
             "#{modifier_range(parent).source}\n" \
               "#{indentation(node)}" \
-              "#{assignment.join("\n#{indentation(node)}")}" \
+              "#{assignment.join(indentation_node_with_new_line)}" \
               "\n#{offset(node)}end"
           end
 
