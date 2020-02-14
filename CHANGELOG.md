@@ -12,6 +12,7 @@
 * [#7677](https://github.com/rubocop-hq/rubocop/pull/7677): Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
 * Add `BracesRequiredMethods` parameter to `Style/BlockDelimiters` to require braces for specific methods such as Sorbet's `sig`. ([@maxh][])
 * [#7686](https://github.com/rubocop-hq/rubocop/pull/7686): Add new `JUnitFormatter` formatter based on `rubocop-junit-formatter` gem. ([@koic][])
+* [#7715](https://github.com/rubocop-hq/rubocop/pull/7715): Add `Steepfile` to default `Include` list. ([@ybiquitous][])
 
 ### Bug fixes
 
