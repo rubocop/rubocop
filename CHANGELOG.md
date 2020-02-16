@@ -25,6 +25,7 @@
 * [#7688](https://github.com/rubocop-hq/rubocop/issues/7688): Fix a bug in `Style/MethodCallWithArgsParentheses` that made `--auto-gen-config` crash. ([@buehmann][])
 * [#7203](https://github.com/rubocop-hq/rubocop/issues/7203): Fix an infinite loop error for `Style/TernaryParentheses` with `Style/RedundantParentheses` when using `EnforcedStyle: require_parentheses_when_complex`. ([@koic][])
 * [#7708](https://github.com/rubocop-hq/rubocop/issues/7708): Make it possible to use EOL `rubocop:disable` comments on comment lines. ([@jonas054][])
+* [#7712](https://github.com/rubocop-hq/rubocop/issues/7712): Fix an incorrect autocorrect for `Style/OrAssignment` when using `elsif` branch. ([@koic][])
 
 ### Changes
 

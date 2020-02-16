@@ -34,7 +34,7 @@ module RuboCop
             (if
               ({lvar ivar cvar gvar} _var)
               ({lvar ivar cvar gvar} _var)
-              _))
+              $_))
         PATTERN
 
         def_node_matcher :unless_assignment?, <<~PATTERN
@@ -51,7 +51,8 @@ module RuboCop
         end
 
         def on_lvasgn(node)
-          return unless ternary_assignment?(node)
+          return unless (else_branch = ternary_assignment?(node))
+          return if else_branch.if_type?
 
           add_offense(node)
         end
