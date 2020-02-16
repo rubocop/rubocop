@@ -585,6 +585,13 @@ comment.
 for x in (0..19) # rubocop:disable Style/For
 ```
 
+If you want to disable a cop that inspects comments, you can do so by
+adding an "inner comment" on the comment line.
+
+```ruby
+# coding: utf-8 # rubocop:disable Style/Encoding
+```
+
 Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.

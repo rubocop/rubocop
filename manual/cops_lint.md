@@ -1593,15 +1593,15 @@ foo = 1
 ```
 ```ruby
 # bad
-# rubocop:disable Layout/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable Layout/LineLength
+# rubocop:disable Style/StringLiterals
+foo = "1"
+# rubocop:enable Style/StringLiterals
 baz
 # rubocop:enable all
 
 # good
-# rubocop:disable Layout/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:disable Style/StringLiterals
+foo = "1"
 # rubocop:enable all
 baz
 ```
