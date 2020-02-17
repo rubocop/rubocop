@@ -113,13 +113,18 @@ module RuboCop
     def each_mentioned_cop
       each_directive do |comment, cop_names, disabled|
         comment_line_number = comment.loc.expression.line
-        single_line = !comment_only_line?(comment_line_number)
+        single_line = !comment_only_line?(comment_line_number) ||
+                      directive_on_comment_line?(comment)
 
         cop_names.each do |cop_name|
           yield qualified_cop_name(cop_name), disabled, comment_line_number,
                 single_line
         end
       end
+    end
+
+    def directive_on_comment_line?(comment)
+      comment.text[1..-1].match(COMMENT_DIRECTIVE_REGEXP)
     end
 
     def each_directive
