@@ -464,10 +464,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             1  Layout/SpaceAroundOperators
             1  Layout/Tab
             1  Layout/TrailingWhitespace
+            1  Migration/DepartmentName
             1  Style/FrozenStringLiteralComment
             1  Style/NumericPredicate
             --
-            6  Total
+            7  Total
 
           RESULT
       end
@@ -584,6 +585,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:26: C: Migration/DepartmentName: Department name is missing.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
     end
@@ -595,6 +597,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: Missing frozen string literal comment.
           #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:26: C: Department name is missing.
           #{file}:1:41: C: Trailing whitespace detected.
         RESULT
       end
@@ -614,6 +617,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:26: C: Migration/DepartmentName: Department name is missing.
           #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
       end
@@ -624,6 +628,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).to eq(<<~RESULT)
             #{file}:1:1: C: Missing frozen string literal comment.
             #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
+            #{file}:1:26: C: Department name is missing.
             #{file}:1:41: C: Trailing whitespace detected.
           RESULT
         end
