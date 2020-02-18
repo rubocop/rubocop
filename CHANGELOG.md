@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.80.0 (2020-02-18)
+
 ### New features
 
 * [#7693](https://github.com/rubocop-hq/rubocop/pull/7693): NodePattern: Add `` ` `` for descendant search. ([@marcandre][])
