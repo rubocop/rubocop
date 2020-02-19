@@ -44,6 +44,7 @@ module RuboCop
         resbody:      ResbodyNode,
         retry:        RetryNode,
         return:       ReturnNode,
+        self:         SelfNode,
         csend:        SendNode,
         send:         SendNode,
         str:          StrNode,
