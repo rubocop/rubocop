@@ -51,7 +51,6 @@ module RuboCop
       end
 
       def handle_possible_offense(node, match, match_desc)
-        puts node.class
         captures = extract_captures(match)
 
         # If key didn't actually change either, this is most likely a false
