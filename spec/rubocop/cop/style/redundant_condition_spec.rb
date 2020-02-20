@@ -96,6 +96,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
           RUBY
         end
       end
+
+      it 'registers an offense and corrects when the else branch ' \
+        'contains an irange' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            foo
+          else
+            1..2
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo || (1..2)
+        RUBY
+      end
     end
 
     describe '#autocorrection' do
@@ -199,6 +215,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
         expect_offense(<<~RUBY)
           b ? b : c
             ^^^^^ Use double pipes `||` instead.
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the else branch ' \
+        'contains an irange' do
+        expect_offense(<<~RUBY)
+          time_period = updated_during ? updated_during : 2.days.ago..Time.now
+                                       ^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          time_period = updated_during || (2.days.ago..Time.now)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the else branch ' \
+        'contains an erange' do
+        expect_offense(<<~RUBY)
+          time_period = updated_during ? updated_during : 2.days.ago...Time.now
+                                       ^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          time_period = updated_during || (2.days.ago...Time.now)
         RUBY
       end
     end
