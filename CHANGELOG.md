@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#7719](https://github.com/rubocop-hq/rubocop/issues/7719): Fix `Style/NestedParenthesizedCalls` cop for newline. ([@tejasbubane][])
+* [#7709](https://github.com/rubocop-hq/rubocop/issues/7709): Fix correction of `Style/RedundantCondition` when the else branch contains a range. ([@rrosenblum][])
 
 ## 0.80.0 (2020-02-18)
 
