@@ -1768,9 +1768,10 @@ Lint/UnusedMethodArgument:
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
   VersionAdded: '0.21'
-  VersionChanged: '0.35'
+  VersionChanged: '0.81'
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
+  IgnoreNotImplementedMethods: true
 
 Lint/UriEscapeUnescape:
   Description: >-

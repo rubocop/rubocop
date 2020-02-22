@@ -2636,7 +2636,7 @@ AllowUnusedKeywordArguments | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.21 | 0.35
+Enabled | Yes | Yes  | 0.21 | 0.81
 
 This cop checks for unused method arguments.
 
@@ -2683,6 +2683,30 @@ end
 def do_something(unused)
 end
 ```
+#### IgnoreNotImplementedMethods: true (default)
+
+```ruby
+# good
+def do_something(unused)
+  raise NotImplementedError
+end
+
+def do_something_else(unused)
+  fail "TODO"
+end
+```
+#### IgnoreNotImplementedMethods: false
+
+```ruby
+# bad
+def do_something(unused)
+  raise NotImplementedError
+end
+
+def do_something_else(unused)
+  fail "TODO"
+end
+```
 
 ### Configurable attributes
 
@@ -2690,6 +2714,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 AllowUnusedKeywordArguments | `false` | Boolean
 IgnoreEmptyMethods | `true` | Boolean
+IgnoreNotImplementedMethods | `true` | Boolean
 
 ### References
 
