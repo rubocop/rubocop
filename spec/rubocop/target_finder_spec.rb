@@ -79,6 +79,170 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     create_empty_file('.hidden/ruby4.rb')
   end
 
+  shared_examples 'common behavior for #find' do
+    context 'when a file with a ruby filename is passed' do
+      let(:args) { RUBY_FILENAMES.map { |name| "dir2/#{name}" } }
+
+      it 'picks all the ruby files' do
+        expect(found_basenames).to eq(RUBY_FILENAMES)
+      end
+    end
+
+    context 'when files with ruby interpreters are passed' do
+      let(:args) { RUBY_INTERPRETERS.map { |name| "dir2/#{name}" } }
+
+      before do
+        RUBY_INTERPRETERS.each do |interpreter|
+          create_file("dir2/#{interpreter}", "#!/usr/bin/#{interpreter}")
+        end
+      end
+
+      it 'picks all the ruby files' do
+        expect(found_basenames).to eq(RUBY_INTERPRETERS)
+      end
+    end
+
+    context 'when a pattern is passed' do
+      let(:args) { ['dir1/*2.rb'] }
+
+      it 'finds files which match the pattern' do
+        expect(found_basenames).to eq(['ruby2.rb'])
+      end
+    end
+
+    context 'when same paths are passed' do
+      let(:args) { %w[dir1 dir1] }
+
+      it 'does not return duplicated file paths' do
+        count = found_basenames.count { |f| f == 'ruby1.rb' }
+        expect(count).to eq(1)
+      end
+    end
+
+    context 'when some paths are specified in the configuration Exclude ' \
+            'and they are explicitly passed as arguments' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - dir1/ruby1.rb
+              - 'dir2/*'
+        YAML
+
+        create_file('dir1/.rubocop.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - executable
+        YAML
+      end
+
+      let(:args) do
+        ['dir1/ruby1.rb', 'dir1/ruby2.rb', 'dir1/exe*', 'dir2/ruby3.rb']
+      end
+
+      context 'normally' do
+        it 'does not exclude them' do
+          expect(found_basenames)
+            .to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
+        end
+      end
+
+      context "when it's forced to adhere file exclusion configuration" do
+        let(:force_exclusion) { true }
+
+        it 'excludes them' do
+          expect(found_basenames).to eq(['ruby2.rb'])
+        end
+      end
+    end
+
+    it 'returns absolute paths' do
+      expect(found_files.empty?).to be(false)
+      found_files.each do |file|
+        expect(Pathname.new(file).absolute?).to be(true)
+      end
+    end
+
+    it 'does not find hidden files' do
+      expect(found_files).not_to include('.hidden/ruby4.rb')
+    end
+
+    context 'when no argument is passed' do
+      let(:args) { [] }
+
+      it 'finds files under the current directory' do
+        RuboCop::PathUtil.chdir('dir1') do
+          expect(found_files.empty?).to be(false)
+          found_files.each do |file|
+            expect(file).to include('/dir1/')
+            expect(file).not_to include('/dir2/')
+          end
+        end
+      end
+    end
+
+    context 'when a directory path is passed' do
+      let(:args) { ['../dir2'] }
+
+      it 'finds files under the specified directory' do
+        RuboCop::PathUtil.chdir('dir1') do
+          expect(found_files.empty?).to be(false)
+          found_files.each do |file|
+            expect(file).to include('/dir2/')
+            expect(file).not_to include('/dir1/')
+          end
+        end
+      end
+    end
+
+    context 'when a hidden directory path is passed' do
+      let(:args) { ['.hidden'] }
+
+      it 'finds files under the specified directory' do
+        expect(found_files.size).to be(1)
+        expect(found_files.first).to include('.hidden/ruby4.rb')
+      end
+    end
+
+    context 'when some non-known Ruby files are specified in the ' \
+            'configuration Include and they are explicitly passed ' \
+            'as arguments' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Include:
+              - dir1/file
+        YAML
+      end
+
+      let(:args) do
+        ['dir1/file']
+      end
+
+      it 'includes them' do
+        expect(found_basenames)
+          .to contain_exactly('file')
+      end
+    end
+  end
+
+  shared_examples 'when input is passed on stdin' do
+    context 'when input is passed on stdin' do
+      let(:options) do
+        {
+          force_exclusion: force_exclusion,
+          debug: debug,
+          stdin: 'def example; end'
+        }
+      end
+      let(:args) { ['Untitled'] }
+
+      it 'includes the file' do
+        expect(found_basenames).to eq(['Untitled'])
+      end
+    end
+  end
+
   describe '#find(..., :only_recognized_file_types)' do
     let(:found_files) { target_finder.find(args, :only_recognized_file_types) }
     let(:found_basenames) { found_files.map { |f| File.basename(f) } }
@@ -179,101 +343,60 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         end
       end
     end
+  end
 
-    context 'when a file with a ruby filename is passed' do
-      let(:args) { RUBY_FILENAMES.map { |name| "dir2/#{name}" } }
+  describe '#find(..., :only_recognized_file_types)' do
+    let(:found_files) { target_finder.find(args, :only_recognized_file_types) }
+    let(:found_basenames) { found_files.map { |f| File.basename(f) } }
+    let(:args) { [] }
+
+    include_examples 'common behavior for #find'
+
+    context 'when a non-ruby file is passed' do
+      let(:args) { ['dir2/file'] }
+
+      it "doesn't pick the file" do
+        expect(found_basenames.empty?).to be(true)
+      end
+    end
+
+    context 'when files with a ruby extension are passed' do
+      let(:args) { RUBY_EXTENSIONS.map { |ext| "dir2/file#{ext}" } }
 
       it 'picks all the ruby files' do
-        expect(found_basenames).to eq(RUBY_FILENAMES)
-      end
-    end
-
-    context 'when files with ruby interpreters are passed' do
-      let(:args) { RUBY_INTERPRETERS.map { |name| "dir2/#{name}" } }
-
-      before do
-        RUBY_INTERPRETERS.each do |interpreter|
-          create_file("dir2/#{interpreter}", "#!/usr/bin/#{interpreter}")
-        end
-      end
-
-      it 'picks all the ruby files' do
-        expect(found_basenames).to eq(RUBY_INTERPRETERS)
-      end
-    end
-
-    context 'when a pattern is passed' do
-      let(:args) { ['dir1/*2.rb'] }
-
-      it 'finds files which match the pattern' do
-        expect(found_basenames).to eq(['ruby2.rb'])
-      end
-    end
-
-    context 'when same paths are passed' do
-      let(:args) { %w[dir1 dir1] }
-
-      it 'does not return duplicated file paths' do
-        count = found_basenames.count { |f| f == 'ruby1.rb' }
-        expect(count).to eq(1)
-      end
-    end
-
-    context 'when some paths are specified in the configuration Exclude ' \
-            'and they are explicitly passed as arguments' do
-      before do
-        create_file('.rubocop.yml', <<~YAML)
-          AllCops:
-            Exclude:
-              - dir1/ruby1.rb
-              - 'dir2/*'
-        YAML
-
-        create_file('dir1/.rubocop.yml', <<~YAML)
-          AllCops:
-            Exclude:
-              - executable
-        YAML
-      end
-
-      let(:args) do
-        ['dir1/ruby1.rb', 'dir1/ruby2.rb', 'dir1/exe*', 'dir2/ruby3.rb']
-      end
-
-      context 'normally' do
-        it 'does not exclude them' do
-          expect(found_basenames)
-            .to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
-        end
-      end
-
-      context "when it's forced to adhere file exclusion configuration" do
-        let(:force_exclusion) { true }
-
-        it 'excludes them' do
-          expect(found_basenames).to eq(['ruby2.rb'])
-        end
-      end
-    end
-
-    context 'when some non-known Ruby files are specified in the ' \
-            'configuration Include and they are explicitly passed ' \
-            'as arguments' do
-      before do
-        create_file('.rubocop.yml', <<~YAML)
-          AllCops:
-            Include:
-              - dir1/file
-        YAML
-      end
-
-      let(:args) do
-        ['dir1/file']
-      end
-
-      it 'includes them' do
         expect(found_basenames)
-          .to contain_exactly('file')
+          .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
+      end
+
+      context 'when local AllCops/Include lists two patterns' do
+        before do
+          create_file('.rubocop.yml', <<-YAML)
+            AllCops:
+              Include:
+                - '**/*.rb'
+                - '**/*.arb'
+          YAML
+        end
+
+        it 'picks two files' do
+          expect(found_basenames).to eq(%w[file.rb file.arb])
+        end
+
+        context 'when a subdirectory AllCops/Include only lists one pattern' do
+          before do
+            create_file('dir2/.rubocop.yml', <<-YAML)
+              AllCops:
+                Include:
+                  - '**/*.ruby'
+            YAML
+          end
+
+          # Include and Exclude patterns are take from the top directory and
+          # settings in subdirectories are silently ignored.
+          it 'picks two files' do
+            expect(found_basenames).to eq(%w[file.rb file.arb])
+          end
+        end
       end
     end
 
@@ -299,20 +422,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    context 'when input is passed on stdin' do
-      let(:options) do
-        {
-          force_exclusion: force_exclusion,
-          debug: debug,
-          stdin: 'def example; end'
-        }
-      end
-      let(:args) { ['Untitled'] }
-
-      it 'includes the file' do
-        expect(found_basenames).to eq(['Untitled'])
-      end
-    end
+    include_examples 'when input is passed on stdin'
   end
 
   describe '#find(..., :all_file_types)' do
@@ -320,69 +430,27 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     let(:found_basenames) { found_files.map { |f| File.basename(f) } }
     let(:args) { [] }
 
-    it 'returns absolute paths' do
-      expect(found_files.empty?).to be(false)
-      found_files.each do |file|
-        expect(file.sub(/^[A-Z]:/, '')).to start_with('/')
-      end
-    end
-
-    it 'does not find hidden files' do
-      expect(found_files).not_to include('.hidden/ruby4.rb')
-    end
-
-    context 'when no argument is passed' do
-      let(:args) { [] }
-
-      it 'finds files under the current directory' do
-        RuboCop::PathUtil.chdir('dir1') do
-          expect(found_files.empty?).to be(false)
-          found_files.each do |file|
-            expect(file).to include('/dir1/')
-            expect(file).not_to include('/dir2/')
-          end
-        end
-      end
-    end
-
-    context 'when a directory path is passed' do
-      let(:args) { ['../dir2'] }
-
-      it 'finds files under the specified directory' do
-        RuboCop::PathUtil.chdir('dir1') do
-          expect(found_files.empty?).to be(false)
-          found_files.each do |file|
-            expect(file).to include('/dir2/')
-            expect(file).not_to include('/dir1/')
-          end
-        end
-      end
-    end
-
-    context 'when a hidden directory path is passed' do
-      let(:args) { ['.hidden'] }
-
-      it 'finds files under the specified directory' do
-        expect(found_files.size).to be(1)
-        expect(found_files.first).to include('.hidden/ruby4.rb')
-      end
-    end
+    include_examples 'common behavior for #find'
 
     context 'when a non-ruby file is passed' do
       let(:args) { ['dir2/file'] }
 
-      it "doesn't pick the file" do
+      it 'picks the file' do
         expect(found_basenames).to contain_exactly('file')
       end
     end
 
     context 'when files with a ruby extension are passed' do
+      shared_examples 'picks all the ruby files' do
+        it 'picks all the ruby files' do
+          expect(found_basenames)
+            .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
+        end
+      end
+
       let(:args) { RUBY_EXTENSIONS.map { |ext| "dir2/file#{ext}" } }
 
-      it 'picks all the ruby files' do
-        expect(found_basenames)
-          .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
-      end
+      include_examples 'picks all the ruby files'
 
       context 'when local AllCops/Include lists two patterns' do
         before do
@@ -394,10 +462,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
           YAML
         end
 
-        it 'picks all the ruby files' do
-          expect(found_basenames)
-            .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
-        end
+        include_examples 'picks all the ruby files'
 
         context 'when a subdirectory AllCops/Include only lists one pattern' do
           before do
@@ -408,108 +473,8 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
             YAML
           end
 
-          it 'picks all the ruby files' do
-            expect(found_basenames)
-              .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
-          end
+          include_examples 'picks all the ruby files'
         end
-      end
-    end
-
-    context 'when a file with a ruby filename is passed' do
-      let(:args) { RUBY_FILENAMES.map { |name| "dir2/#{name}" } }
-
-      it 'picks all the ruby files' do
-        expect(found_basenames).to eq(RUBY_FILENAMES)
-      end
-    end
-
-    context 'when files with ruby interpreters are passed' do
-      let(:args) { RUBY_INTERPRETERS.map { |name| "dir2/#{name}" } }
-
-      before do
-        RUBY_INTERPRETERS.each do |interpreter|
-          create_file("dir2/#{interpreter}", "#!/usr/bin/#{interpreter}")
-        end
-      end
-
-      it 'picks all the ruby files' do
-        expect(found_basenames).to eq(RUBY_INTERPRETERS)
-      end
-    end
-
-    context 'when a pattern is passed' do
-      let(:args) { ['dir1/*2.rb'] }
-
-      it 'finds files which match the pattern' do
-        expect(found_basenames).to eq(['ruby2.rb'])
-      end
-    end
-
-    context 'when same paths are passed' do
-      let(:args) { %w[dir1 dir1] }
-
-      it 'does not return duplicated file paths' do
-        count = found_basenames.count { |f| f == 'ruby1.rb' }
-        expect(count).to eq(1)
-      end
-    end
-
-    context 'when some paths are specified in the configuration Exclude ' \
-            'and they are explicitly passed as arguments' do
-      before do
-        create_file('.rubocop.yml', <<~YAML)
-          AllCops:
-            Exclude:
-              - dir1/ruby1.rb
-              - 'dir2/*'
-        YAML
-
-        create_file('dir1/.rubocop.yml', <<~YAML)
-          AllCops:
-            Exclude:
-              - executable
-        YAML
-      end
-
-      let(:args) do
-        ['dir1/ruby1.rb', 'dir1/ruby2.rb', 'dir1/exe*', 'dir2/ruby3.rb']
-      end
-
-      context 'normally' do
-        it 'does not exclude them' do
-          expect(found_basenames)
-            .to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
-        end
-      end
-
-      context "when it's forced to adhere file exclusion configuration" do
-        let(:force_exclusion) { true }
-
-        it 'excludes them' do
-          expect(found_basenames).to eq(['ruby2.rb'])
-        end
-      end
-    end
-
-    context 'when some non-known Ruby files are specified in the ' \
-            'configuration Include and they are explicitly passed ' \
-            'as arguments' do
-      before do
-        create_file('.rubocop.yml', <<~YAML)
-          AllCops:
-            Include:
-              - dir1/file
-        YAML
-      end
-
-      let(:args) do
-        ['dir1/file']
-      end
-
-      it 'includes them' do
-        expect(found_basenames)
-          .to contain_exactly('file')
       end
     end
 
@@ -536,20 +501,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    context 'when input is passed on stdin' do
-      let(:options) do
-        {
-          force_exclusion: force_exclusion,
-          debug: debug,
-          stdin: 'def example; end'
-        }
-      end
-      let(:args) { ['Untitled'] }
-
-      it 'includes the file' do
-        expect(found_basenames).to eq(['Untitled'])
-      end
-    end
+    include_examples 'when input is passed on stdin'
   end
 
   describe '#find_files' do
