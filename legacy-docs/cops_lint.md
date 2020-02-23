@@ -1210,6 +1210,29 @@ Name | Default value | Configurable values
 --- | --- | ---
 MaximumRangeSize | `Infinity` | Float
 
+## Lint/MixedRegexpCaptureTypes
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.85 | -
+
+Do not mix named captures and numbered captures in a Regexp literal
+because numbered capture is ignored if they're mixed.
+Replace numbered captures with non-capturing groupings or
+named captures.
+
+  # bad
+  /(?<foo>FOO)(BAR)/
+
+  # good
+  /(?<foo>FOO)(?<bar>BAR)/
+
+  # good
+  /(?<foo>FOO)(?:BAR)/
+
+  # good
+  /(FOO)(BAR)/
+
 ## Lint/MultipleComparison
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
