@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes do
   it 'does not register offense to a regexp with named capture and ' \
      'non-capturing group' do
     expect_no_offenses(<<~RUBY)
-      /(<foo>bar)(?:bar)/
+      /(?<foo>bar)(?:bar)/
     RUBY
   end
 end
