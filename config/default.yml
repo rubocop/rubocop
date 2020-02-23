@@ -1478,6 +1478,11 @@ Lint/MissingCopEnableDirective:
   # .inf for any size
   MaximumRangeSize: .inf
 
+Lint/MixedRegexpCaptureTypes:
+  Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
+  Enabled: pending
+  VersionAdded: '0.81'
+
 Lint/MultipleComparison:
   Description: "Use `&&` operator to compare multiple values."
   Enabled: true

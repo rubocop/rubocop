@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7746](https://github.com/rubocop-hq/rubocop/issues/7746): Add new `Lint/MixedRegexpCaptureTypes` cop. ([@pocke][])
+
 ### Bug fixes
 
 * [#7719](https://github.com/rubocop-hq/rubocop/issues/7719): Fix `Style/NestedParenthesizedCalls` cop for newline. ([@tejasbubane][])
