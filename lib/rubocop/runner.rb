@@ -61,7 +61,7 @@ module RuboCop
 
     def find_target_files(paths)
       target_finder = TargetFinder.new(@config_store, @options)
-      target_files = target_finder.find(paths)
+      target_files = target_finder.find(paths, :only_recognized_file_types)
       target_files.each(&:freeze).freeze
     end
 

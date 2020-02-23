@@ -27,7 +27,7 @@ module RuboCop
     # (if any). If args is empty, recursively find all Ruby source
     # files under the current directory
     # @return [Array] array of file paths
-    def find(args)
+    def find(args, mode)
       return target_files_in_dir if args.empty?
 
       files = []
@@ -36,7 +36,7 @@ module RuboCop
         files += if File.directory?(arg)
                    target_files_in_dir(arg.chomp(File::SEPARATOR))
                  else
-                   process_explicit_path(arg)
+                   process_explicit_path(arg, mode)
                  end
       end
 
@@ -169,10 +169,12 @@ module RuboCop
       ruby_file?(file) || configured_include?(file)
     end
 
-    def process_explicit_path(path)
+    def process_explicit_path(path, mode)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| included_file?(file) }
+      if mode == :only_recognized_file_types || force_exclusion?
+        files.select! { |file| included_file?(file) }
+      end
 
       return files unless force_exclusion?
 
