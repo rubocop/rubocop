@@ -3,16 +3,21 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks nested interpolations
+      # This cop checks for nested interpolation expressions
+      # which can be splitted.
       #
       # @example
       #
       #   # bad
       #   "Hello, #{user.blank? ? 'guest' : "dear #{user.name}"}"
+      #   "Text: #{array_string.join("\n#{indentation_size}")}"
       #
       #   # good
       #   user_name = user.blank? ? 'guest' : "dear #{user.name}"
       #   "Hello, #{user_name}"
+      #
+      #   text = array_string.join("\n#{indentation_size}")
+      #   "Text: #{text}"
       class RedundantNestedInterpolation < Cop
         include Interpolation
 

@@ -5451,17 +5451,22 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Pending | Yes | No | 0.81 | -
 
-This cop checks nested interpolations
+This cop checks for nested interpolation expressions
+which can be splitted.
 
 ### Examples
 
 ```ruby
 # bad
 "Hello, #{user.blank? ? 'guest' : "dear #{user.name}"}"
+"Text: #{array_string.join("\n#{indentation_size}")}"
 
 # good
 user_name = user.blank? ? 'guest' : "dear #{user.name}"
 "Hello, #{user_name}"
+
+text = array_string.join("\n#{indentation_size}")
+"Text: #{text}"
 ```
 
 ## Style/RedundantParentheses
