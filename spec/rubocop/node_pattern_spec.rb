@@ -493,7 +493,7 @@ RSpec.describe RuboCop::NodePattern do
           end
         end
 
-        context 'with a preceeding unifying constraint' do
+        context 'with a preceding unifying constraint' do
           let(:pattern) do
             '(array _num {(array (int 1) _num)
                           send
