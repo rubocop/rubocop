@@ -32,19 +32,15 @@ module RuboCop
         private
 
         def named_capture?(tree)
-          each_regexp_expr(tree).any? do |e|
+          tree.each_expression.any? do |e|
             e.instance_of?(Regexp::Expression::Group::Capture)
           end
         end
 
         def numbered_capture?(tree)
-          each_regexp_expr(tree).any? do |e|
+          tree.each_expression.any? do |e|
             e.instance_of?(Regexp::Expression::Group::Named)
           end
-        end
-
-        def each_regexp_expr(tree)
-          tree.to_enum(:each_expression)
         end
       end
     end
