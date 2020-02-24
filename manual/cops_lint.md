@@ -1185,6 +1185,9 @@ named captures.
   # good
   /(?<foo>FOO)(?:BAR)/
 
+  # good
+  /(FOO)(BAR)/
+
 ## Lint/MultipleComparison
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
