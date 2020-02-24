@@ -14,13 +14,13 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes do
 
   it 'does not register offense to a regexp with named capture only' do
     expect_no_offenses(<<~RUBY)
-      /(?<foo>bar)/
+      /(?<foo>foo?<bar>bar)/
     RUBY
   end
 
   it 'does not register offense to a regexp with numbered capture only' do
     expect_no_offenses(<<~RUBY)
-      /(bar)/
+      /(foo)(bar)/
     RUBY
   end
 
