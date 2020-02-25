@@ -2532,7 +2532,7 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Pending | No | Yes (Unsafe) | - | -
+Pending | No | Yes (Unsafe) | 0.80 | -
 
 This cop looks for uses of `_.each_with_object({}) {...}`,
 `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
@@ -2562,7 +2562,7 @@ This cop should only be enabled on Ruby version 2.5 or newer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Pending | No | Yes (Unsafe) | - | -
+Pending | No | Yes (Unsafe) | 0.80 | -
 
 This cop looks for uses of `_.each_with_object({}) {...}`,
 `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just

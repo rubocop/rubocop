@@ -2820,11 +2820,13 @@ Style/HashSyntax:
 Style/HashTransformKeys:
   Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
   Enabled: 'pending'
+  VersionAdded: '0.80'
   Safe: false
 
 Style/HashTransformValues:
   Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
   Enabled: 'pending'
+  VersionAdded: '0.80'
   Safe: false
 
 Style/IdenticalConditionalBranches:
