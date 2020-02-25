@@ -2,6 +2,9 @@
 
 require 'pathname'
 
+# FIXME: Moving Rails department code to RuboCop Rails will remove
+# the following rubocop:disable comment.
+# rubocop:disable Metrics/ClassLength
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
@@ -215,6 +218,15 @@ module RuboCop
       nil
     end
 
+    def pending_cops
+      keys.select do |qualified_cop_name|
+        department = department_of(qualified_cop_name)
+        next if department && department['Enabled'] == false
+
+        self[qualified_cop_name]['Enabled'] == 'pending'
+      end
+    end
+
     private
 
     def target_rails_version_from_bundler_lock_file
@@ -235,17 +247,18 @@ module RuboCop
     end
 
     def enable_cop?(qualified_cop_name, cop_options)
-      cop_department, cop_name = qualified_cop_name.split('/')
-      department = cop_name.nil?
-
-      unless department
-        department_options = self[cop_department]
-        if department_options && department_options['Enabled'] == false
-          return false
-        end
-      end
+      department = department_of(qualified_cop_name)
+      return false if department && department['Enabled'] == false
 
       cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
     end
+
+    def department_of(qualified_cop_name)
+      cop_department, cop_name = qualified_cop_name.split('/')
+      return nil if cop_name.nil?
+
+      self[cop_department]
+    end
   end
 end
+# rubocop:enable Metrics/ClassLength

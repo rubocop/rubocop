@@ -220,47 +220,81 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           RESULT
       end
 
-      it 'accepts cop names from plugins with a pending cop' do
-        create_file('.rubocop.yml', <<~YAML)
-          require: rubocop_ext
+      context 'when specifying a pending cop' do
+        let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 
-          Style/SomeCop:
-            Description: Something
-            Enabled: pending
-        YAML
-        create_file('rubocop_ext.rb', <<~RUBY)
-          module RuboCop
-            module Cop
-              module Style
-                class SomeCop < Cop
-                end
-              end
-            end
-          end
-        RUBY
-        create_file('redirect.rb', '$stderr = STDOUT')
-        rubocop = "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop"
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
-        output =
+        let(:output) do
           `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
+        end
 
-        expected_prefix = <<~PREFIX
+        let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
           The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
-        PREFIX
-        expected_suffix = <<~SUFFIX
+        PENDING_COP_WARNING
+
+        let(:inspected_output) { <<~INSPECTED_OUTPUT }
           Inspecting 2 files
           ..
 
           2 files inspected, no offenses detected
-        SUFFIX
+        INSPECTED_OUTPUT
 
-        expect(output).to start_with(expected_prefix)
-        expect(output).to end_with(expected_suffix)
+        before do
+          create_file('rubocop_ext.rb', <<~RUBY)
+            module RuboCop
+              module Cop
+                module Style
+                  class SomeCop < Cop
+                  end
+                end
+              end
+            end
+          RUBY
 
-        remaining_range = expected_prefix.length..-(expected_suffix.length + 1)
-        pending_cops = output[remaining_range].split("\n")
-        expect(pending_cops).to include(' - Style/SomeCop')
+          create_file('redirect.rb', '$stderr = STDOUT')
+        end
+
+        context 'when Style department is enabled' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              require: rubocop_ext
+
+              Style/SomeCop:
+                Description: Something
+                Enabled: pending
+            YAML
+          end
+
+          it 'accepts cop names from plugins with a pending cop warning' do
+            expect(output).to start_with(pending_cop_warning)
+            expect(output).to end_with(inspected_output)
+
+            remaining_range =
+              pending_cop_warning.length..-(inspected_output.length + 1)
+            pending_cops = output[remaining_range].split("\n")
+            expect(pending_cops).to include(' - Style/SomeCop')
+          end
+        end
+
+        context 'when Style department is disabled' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              require: rubocop_ext
+
+              Style:
+                Enabled: false
+
+              Style/SomeCop:
+                Description: Something
+                Enabled: pending
+            YAML
+          end
+
+          it 'does not show pending cop warning' do
+            expect(output).to eq(inspected_output)
+          end
+        end
       end
 
       context 'without using namespace' do
