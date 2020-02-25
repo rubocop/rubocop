@@ -117,11 +117,8 @@ module RuboCop
       end
 
       def warn_on_pending_cops(config)
-        pending_cops = config.keys.select do |key|
-          config[key]['Enabled'] == 'pending'
-        end
-
-        return if pending_cops.none?
+        pending_cops = config.pending_cops
+        return if pending_cops.empty?
 
         warn Rainbow('The following cops were added to RuboCop, but are not ' \
                      'configured. Please set Enabled to either `true` or ' \
