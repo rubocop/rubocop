@@ -92,7 +92,7 @@ module RuboCop
           add_excludes_from_files(config, config_file)
         end
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config)
+          warn_on_pending_cops(merged_config.pending_cops)
         end
       end
 
@@ -116,8 +116,7 @@ module RuboCop
                                    end
       end
 
-      def warn_on_pending_cops(config)
-        pending_cops = config.pending_cops
+      def warn_on_pending_cops(pending_cops)
         return if pending_cops.empty?
 
         warn Rainbow('The following cops were added to RuboCop, but are not ' \
@@ -125,8 +124,12 @@ module RuboCop
                      '`false` in your `.rubocop.yml` file:').yellow
 
         pending_cops.each do |cop|
-          warn Rainbow(" - #{cop}").yellow
+          warn Rainbow(
+            " - #{cop.name} (#{cop.metadata['VersionAdded']})"
+          ).yellow
         end
+
+        warn Rainbow('For more information: https://docs.rubocop.org/en/latest/versioning/').yellow
       end
 
       # Merges the given configuration with the default one. If

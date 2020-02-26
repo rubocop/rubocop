@@ -16,6 +16,8 @@ module RuboCop
     include FileFinder
     extend Forwardable
 
+    CopConfig = Struct.new(:name, :metadata)
+
     DEFAULT_RAILS_VERSION = 5.0
     attr_reader :loaded_path
 
@@ -219,11 +221,14 @@ module RuboCop
     end
 
     def pending_cops
-      keys.select do |qualified_cop_name|
+      keys.each_with_object([]) do |qualified_cop_name, pending_cops|
         department = department_of(qualified_cop_name)
         next if department && department['Enabled'] == false
 
-        self[qualified_cop_name]['Enabled'] == 'pending'
+        cop_metadata = self[qualified_cop_name]
+        next unless cop_metadata['Enabled'] == 'pending'
+
+        pending_cops << CopConfig.new(qualified_cop_name, cop_metadata)
       end
     end
 
