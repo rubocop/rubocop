@@ -12,6 +12,33 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       RUBY
     end
+
+    context 'allow access modifiers on symbols' do
+      let(:cop_config) { { 'AllowModifiersOnSymbols' => true } }
+
+      it 'accepts when argument to #{access_modifier} is a symbol' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            foo
+            #{access_modifier} :bar
+          end
+        RUBY
+      end
+    end
+
+    context 'do not allow access modifiers on symbols' do
+      let(:cop_config) { { 'AllowModifiersOnSymbols' => false } }
+
+      it 'accepts when argument to #{access_modifier} is a symbol' do
+        expect_offense(<<~RUBY)
+          class Foo
+            foo
+            #{access_modifier} :bar
+            #{'^' * access_modifier.length} `#{access_modifier}` should not be inlined in method definitions.
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when `group` is configured' do
@@ -27,17 +54,6 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           class Test
             #{access_modifier} def foo; end
             #{'^' * access_modifier.length} `#{access_modifier}` should not be inlined in method definitions.
-          end
-        RUBY
-      end
-
-      it "offends when #{access_modifier} is inlined with a symbol" do
-        expect_offense(<<~RUBY)
-          class Test
-            #{access_modifier} :foo
-            #{'^' * access_modifier.length} `#{access_modifier}` should not be inlined in method definitions.
-
-            def foo; end
           end
         RUBY
       end

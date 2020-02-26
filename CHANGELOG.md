@@ -15,6 +15,7 @@
 * [#7699](https://github.com/rubocop-hq/rubocop/pull/7699): Add new `Lint/StructNewOverride` cop. ([@ybiquitous][])
 * [#7809](https://github.com/rubocop-hq/rubocop/pull/7809): Add auto-correction for `Style/EndBlock` cop. ([@tejasbubane][])
 * [#7739](https://github.com/rubocop-hq/rubocop/pull/7739): Add `IgnoreNotImplementedMethods` configuration to `Lint/UnusedMethodArgument`. ([@tejasbubane][])
+* [#7740](https://github.com/rubocop-hq/rubocop/issues/7740): Add `AllowModifiersOnSymbols` configuration to `Style/AccessModifierDeclarations`. ([@tejasbubane][])
 
 ### Bug fixes
 
