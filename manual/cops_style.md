@@ -4,10 +4,13 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.57 | -
+Enabled | Yes | No | 0.57 | 0.81
 
 Access modifiers should be declared to apply to a group of methods
 or inline before each method, depending on configuration.
+EnforcedStyle config covers only method definitions.
+Applications of visibility methods to symbols can be controlled
+using AllowModifiersOnSymbols config.
 
 ### Examples
 
@@ -15,7 +18,6 @@ or inline before each method, depending on configuration.
 
 ```ruby
 # bad
-
 class Foo
 
   private def bar; end
@@ -24,7 +26,6 @@ class Foo
 end
 
 # good
-
 class Foo
 
   private
@@ -38,7 +39,6 @@ end
 
 ```ruby
 # bad
-
 class Foo
 
   private
@@ -49,11 +49,30 @@ class Foo
 end
 
 # good
-
 class Foo
 
   private def bar; end
   private def baz; end
+
+end
+```
+#### AllowModifiersOnSymbols: true
+
+```ruby
+# good
+class Foo
+
+  private :bar, :baz
+
+end
+```
+#### AllowModifiersOnSymbols: false
+
+```ruby
+# bad
+class Foo
+
+  private :bar, :baz
 
 end
 ```
@@ -63,6 +82,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `group` | `inline`, `group`
+AllowModifiersOnSymbols | `true` | Boolean
 
 ## Style/Alias
 

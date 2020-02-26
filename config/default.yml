@@ -2212,10 +2212,12 @@ Style/AccessModifierDeclarations:
   Description: 'Checks style of how access modifiers are used.'
   Enabled: true
   VersionAdded: '0.57'
+  VersionChanged: '0.81'
   EnforcedStyle: group
   SupportedStyles:
     - inline
     - group
+  AllowModifiersOnSymbols: true
 
 Style/Alias:
   Description: 'Use alias instead of alias_method.'
