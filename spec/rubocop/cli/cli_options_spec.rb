@@ -240,6 +240,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           2 files inspected, no offenses detected
         INSPECTED_OUTPUT
 
+        let(:versioning_manual_url) { <<~VERSIONING_MANUAL_URL.chop }
+          For more information: https://docs.rubocop.org/en/latest/versioning/
+        VERSIONING_MANUAL_URL
+
         before do
           create_file('rubocop_ext.rb', <<~RUBY)
             module RuboCop
@@ -263,6 +267,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Style/SomeCop:
                 Description: Something
                 Enabled: pending
+                VersionAdded: '0.80'
             YAML
           end
 
@@ -273,7 +278,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             remaining_range =
               pending_cop_warning.length..-(inspected_output.length + 1)
             pending_cops = output[remaining_range].split("\n")
-            expect(pending_cops).to include(' - Style/SomeCop')
+
+            expect(pending_cops).to include(
+              ' - Style/SomeCop (0.80)'
+            )
+
+            manual_url = output[remaining_range].split("\n").last
+
+            expect(manual_url).to eq(versioning_manual_url)
           end
         end
 

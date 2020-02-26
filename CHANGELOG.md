@@ -10,6 +10,10 @@
 * [#7745](https://github.com/rubocop-hq/rubocop/issues/7745): Suppress a pending cop warnings when pending cop's department is disabled. ([@koic][])
 * [#7759](https://github.com/rubocop-hq/rubocop/issues/7759): Fix an error for `Layout/LineLength` cop when using lambda syntax that argument is not enclosed in parentheses. ([@koic][])
 
+### Changes
+
+* [#7765](https://github.com/rubocop-hq/rubocop/pull/7765): When warning about a pending cop, display the version with the cop added. ([@koic][])
+
 ## 0.80.0 (2020-02-18)
 
 ### New features
