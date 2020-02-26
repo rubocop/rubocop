@@ -131,7 +131,7 @@ module RuboCop
         end
 
         def breakable_block_range(block_node)
-          if block_node.arguments?
+          if block_node.arguments? && !block_node.lambda?
             block_node.arguments.loc.end
           else
             block_node.loc.begin

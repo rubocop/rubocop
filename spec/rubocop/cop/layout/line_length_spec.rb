@@ -791,6 +791,36 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
         end
       end
+
+      context 'lambda syntax' do
+        context 'when argument is enclosed in parentheses' do
+          it 'registers an offense and corrects' do
+            expect_offense(<<~RUBY)
+              ->(x) { fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ->(x) {
+               fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+            RUBY
+          end
+        end
+
+        context 'when argument is not enclosed in parentheses' do
+          it 'registers an offense and corrects' do
+            expect_offense(<<~RUBY)
+              -> x { foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              -> x {
+               foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+            RUBY
+          end
+        end
+      end
     end
 
     context 'semicolon' do
