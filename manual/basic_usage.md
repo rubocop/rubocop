@@ -123,7 +123,7 @@ Command flag                    | Description
 `   --exclude-limit`            | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `-E/--extra-details`            | Displays extra details in offense messages.
 `-f/--format`                   | Choose a formatter, see [Formatters](formatters.md).
-`-F/--fail-fast`                | Inspects in modification time order and stops after first file with offenses.
+`-F/--fail-fast`                | Inspect files in order of modification time and stops after first file with offenses.
 `   --fail-level`               | Minimum [severity](configuration.md#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 `   --force-exclusion`          | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
 `-h/--help`                     | Print usage information.
