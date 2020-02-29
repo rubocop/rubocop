@@ -13,8 +13,8 @@ We're following http://semver.org/[SemVer] (as much as one can be
 following it when the major version is 0). At this point bumps of the
 minor (second) version number are considered major releases and always
 include new features or significant changes to existing features. API
-compatibility between major releases is not a (big) concern (although we try
-to break the API rarely and only for a good reason).
+compatibility between major releases is a big concern, as there are
+many RuboCop extensions that can be affected by breaking API changes.
 
 The development cycle for the next major
 release starts immediately after the previous one has been
@@ -23,10 +23,10 @@ never contain new features.
 
 Here are a few examples:
 
-* 0.5.0 - Feature release
-* 0.5.1 - Bug-fix release
-* 0.5.2 - Bug-fix release
-* 0.6.0 - Feature release
+* 0.50.0 - Feature release
+* 0.50.1 - Bug-fix release
+* 0.50.2 - Bug-fix release
+* 0.51.0 - Feature release
 
 ## Pending Cops
 
