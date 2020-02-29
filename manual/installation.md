@@ -1,3 +1,5 @@
+# Installation
+
 **RuboCop**'s installation is pretty standard:
 
 ```sh
