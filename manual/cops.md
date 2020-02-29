@@ -69,21 +69,21 @@ Gemspec cops check for style and bad practices in gemspec files, e.g. `rubocop.g
 In the following section you find all available cops:
 
 <!-- START_COP_LIST -->
-#### Department [Bundler](cops_bundler.md)
+### Department [Bundler](cops_bundler.md)
 
 * [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)
 * [Bundler/GemComment](cops_bundler.md#bundlergemcomment)
 * [Bundler/InsecureProtocolSource](cops_bundler.md#bundlerinsecureprotocolsource)
 * [Bundler/OrderedGems](cops_bundler.md#bundlerorderedgems)
 
-#### Department [Gemspec](cops_gemspec.md)
+### Department [Gemspec](cops_gemspec.md)
 
 * [Gemspec/DuplicatedAssignment](cops_gemspec.md#gemspecduplicatedassignment)
 * [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 * [Gemspec/RequiredRubyVersion](cops_gemspec.md#gemspecrequiredrubyversion)
 * [Gemspec/RubyVersionGlobalsUsage](cops_gemspec.md#gemspecrubyversionglobalsusage)
 
-#### Department [Layout](cops_layout.md)
+### Department [Layout](cops_layout.md)
 
 * [Layout/AccessModifierIndentation](cops_layout.md#layoutaccessmodifierindentation)
 * [Layout/ArgumentAlignment](cops_layout.md#layoutargumentalignment)
@@ -174,7 +174,7 @@ In the following section you find all available cops:
 * [Layout/TrailingEmptyLines](cops_layout.md#layouttrailingemptylines)
 * [Layout/TrailingWhitespace](cops_layout.md#layouttrailingwhitespace)
 
-#### Department [Lint](cops_lint.md)
+### Department [Lint](cops_lint.md)
 
 * [Lint/AmbiguousBlockAssociation](cops_lint.md#lintambiguousblockassociation)
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
@@ -259,7 +259,7 @@ In the following section you find all available cops:
 * [Lint/UselessSetterCall](cops_lint.md#lintuselesssettercall)
 * [Lint/Void](cops_lint.md#lintvoid)
 
-#### Department [Metrics](cops_metrics.md)
+### Department [Metrics](cops_metrics.md)
 
 * [Metrics/AbcSize](cops_metrics.md#metricsabcsize)
 * [Metrics/BlockLength](cops_metrics.md#metricsblocklength)
@@ -271,11 +271,11 @@ In the following section you find all available cops:
 * [Metrics/ParameterLists](cops_metrics.md#metricsparameterlists)
 * [Metrics/PerceivedComplexity](cops_metrics.md#metricsperceivedcomplexity)
 
-#### Department [Migration](cops_migration.md)
+### Department [Migration](cops_migration.md)
 
 * [Migration/DepartmentName](cops_migration.md#migrationdepartmentname)
 
-#### Department [Naming](cops_naming.md)
+### Department [Naming](cops_naming.md)
 
 * [Naming/AccessorMethodName](cops_naming.md#namingaccessormethodname)
 * [Naming/AsciiIdentifiers](cops_naming.md#namingasciiidentifiers)
@@ -294,7 +294,7 @@ In the following section you find all available cops:
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
 
-#### Department [Security](cops_security.md)
+### Department [Security](cops_security.md)
 
 * [Security/Eval](cops_security.md#securityeval)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
@@ -302,7 +302,7 @@ In the following section you find all available cops:
 * [Security/Open](cops_security.md#securityopen)
 * [Security/YAMLLoad](cops_security.md#securityyamlload)
 
-#### Department [Style](cops_style.md)
+### Department [Style](cops_style.md)
 
 * [Style/AccessModifierDeclarations](cops_style.md#styleaccessmodifierdeclarations)
 * [Style/Alias](cops_style.md#stylealias)
