@@ -1,4 +1,4 @@
-## Cops
+# Cops
 
 In RuboCop lingo the various checks performed on the code are called cops.
 Each cop is responsible for detecting one particular offense. There are several
@@ -10,17 +10,17 @@ enforce different coding conventions.
 
 You can also load [custom cops](extensions.md#custom-cops).
 
-### Style
+## Style
 
 Style cops check for stylistic consistency of your code. Many of the them are
 based on the [Ruby Style Guide](https://rubystyle.guide).
 
-### Layout
+## Layout
 
 Layout cops inspect your code for consistent use of indentation, alignment,
 and white space.
 
-### Lint
+## Lint
 
 Lint cops check for ambiguities and possible errors in your code.
 
@@ -38,7 +38,7 @@ enabled Lint cops plus a selection of other cops.
 
 Disabling Lint cops is generally a bad idea.
 
-### Metrics
+## Metrics
 
 Metrics cops deal with properties of the source code that can be measured,
 such as class length, method length, etc. Generally speaking, they have a
@@ -46,25 +46,25 @@ configuration parameter called `Max` and when running
 `rubocop --auto-gen-config`, this parameter will be set to the highest value
 found for the inspected code.
 
-### Naming
+## Naming
 
 Naming cops check for naming issue of your code, such as method name, constant
 name, file name, etc.
 
-### Security
+## Security
 
 Security cops checks for method calls and constructs which are known to be
 associated with potential security issues.
 
-### Bundler
+## Bundler
 
 Bundler cops check for style and bad practices in Bundler files, e.g. `Gemfile`.
 
-### Gemspec
+## Gemspec
 
 Gemspec cops check for style and bad practices in gemspec files, e.g. `rubocop.gemspec`.
 
-### Available cops
+## Available cops
 
 In the following section you find all available cops:
 

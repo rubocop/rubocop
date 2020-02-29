@@ -1,4 +1,4 @@
-## Formatters
+# Formatters
 
 You can change the output format of RuboCop by specifying formatters with the `-f/--format` option.
 RuboCop ships with several built-in formatters, and also you can create your custom formatter.
@@ -41,7 +41,7 @@ $ rubocop --out result.txt --format simple
 
 You can also load [custom formatters](extensions.md#custom-formatters).
 
-### Progress Formatter (default)
+## Progress Formatter (default)
 
 The default `progress` formatter outputs a character for each inspected file,
 and at the end it displays all detected offenses in the `clang` format.
@@ -64,7 +64,7 @@ lib/foo.rb:6:5: C: Style/Documentation: Missing top-level class documentation co
 26 files inspected, 46 offenses detected
 ```
 
-### Auto Gen Formatter
+## Auto Gen Formatter
 
 Behaves like Progress Formatter except that it will not show any offenses.
 
@@ -76,7 +76,7 @@ Inspecting 26 files
 26 files inspected, 46 offenses detected
 ```
 
-### Clang Style Formatter
+## Clang Style Formatter
 
 The `clang` formatter displays the offenses in a manner similar to `clang`:
 
@@ -103,7 +103,7 @@ test.rb:4:5: W: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2,
 1 file inspected, 4 offenses detected
 ```
 
-### Fuubar Style Formatter
+## Fuubar Style Formatter
 
 The `fuubar` style formatter displays a progress bar
 and shows details of offenses in the `clang` format as soon as they are detected.
@@ -120,7 +120,7 @@ lib/bar.rb:13:14: W: Lint/DeprecatedClassMethods: File.exists? is deprecated in 
  22/53 files |======== 43 ========>                           |  ETA: 00:00:02
 ```
 
-### Pacman Style Formatter
+## Pacman Style Formatter
 
 The `pacman` style formatter prints a PACDOT per every file to be analyzed. Pacman will "eat" one PACDOT per file when no offense is detected. Otherwise it will print a Ghost.
 This is inspired by the [Pacman](https://github.com/go-labs/rspec_pacman_formatter) formatter for RSpec.
@@ -136,7 +136,7 @@ src/bar.rb:14:15: C: Style/MutableConstant: Freeze mutable objects assigned to c
 31 examples, 2 failures
 ```
 
-### Emacs Style Formatter
+## Emacs Style Formatter
 
 **Machine-parsable**
 
@@ -149,7 +149,7 @@ $ rubocop --format emacs test.rb
 /Users/bozhidar/projects/test.rb:4:5: W: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2, 2
 ```
 
-### Simple Formatter
+## Simple Formatter
 
 The name of the formatter says it all :-)
 
@@ -164,7 +164,7 @@ W:  4:  5: Layout/DefEndAlignment: end at 4, 4 is not aligned with if at 2, 2
 1 file inspected, 4 offenses detected
 ```
 
-### Quiet Formatter
+## Quiet Formatter
 
 Behaves like Simple Formatter if there are offenses. Completely quiet otherwise:
 
@@ -172,7 +172,7 @@ Behaves like Simple Formatter if there are offenses. Completely quiet otherwise:
 $ rubocop --format quiet
 ```
 
-### File List Formatter
+## File List Formatter
 
  **Machine-parsable**
 
@@ -184,7 +184,7 @@ with offenses in them and makes it possible to do something like:
 $ rubocop --format files | xargs vim
 ```
 
-### JSON Formatter
+## JSON Formatter
 
 **Machine-parsable**
 
@@ -237,7 +237,7 @@ The JSON structure is like the following example:
 }
 ```
 
-### JUnit Style Formatter
+## JUnit Style Formatter
 
 **Machine-parsable**
 
@@ -268,7 +268,7 @@ $ rubocop --format junit
 </testsuites>
 ```
 
-### Offense Count Formatter
+## Offense Count Formatter
 
 Sometimes when first applying RuboCop to a codebase, it's nice to be able to
 see where most of your style cleanup is going to be spent.
@@ -295,7 +295,7 @@ $ rubocop --format offenses
 
 ```
 
-### Worst Offenders Formatter
+## Worst Offenders Formatter
 
 Similar to the Offense Count formatter, but lists the files which need the most attention:
 
@@ -308,7 +308,7 @@ $ rubocop --format worst
 91  Total
 ```
 
-### HTML Formatter
+## HTML Formatter
 
 Useful for CI environments. It will create an HTML report like [this](http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html).
 
@@ -316,7 +316,7 @@ Useful for CI environments. It will create an HTML report like [this](http://f.c
 $ rubocop --format html -o rubocop.html
 ```
 
-### TAP Formatter
+## TAP Formatter
 
  **Machine-parsable**
 

@@ -205,7 +205,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def table_of_content_for_department(cops, department)
     type_title = department[0].upcase + department[1..-1]
     filename = "cops_#{department.downcase}.md"
-    content = +"#### Department [#{type_title}](#{filename})\n\n"
+    content = +"### Department [#{type_title}](#{filename})\n\n"
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
       content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"

@@ -1,4 +1,4 @@
-## Basic Usage
+# Basic Usage
 
 RuboCop has three primary uses:
 
@@ -8,7 +8,7 @@ RuboCop has three primary uses:
 
 In the next sections we'll briefly cover all of them.
 
-### 1. Code style checker
+## 1. Code style checker
 
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
@@ -60,7 +60,7 @@ test.rb:4:5: W: Layout/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
 1 file inspected, 5 offenses detected
 ```
 
-#### Auto-correcting offenses
+### Auto-correcting offenses
 
 You can also run RuboCop in an auto-correct mode, where it will try to
 automatically fix the problems it found in your code:
@@ -71,7 +71,7 @@ $ rubocop -a
 
 See [Auto-correct](auto_correct.md).
 
-#### Changing what RuboCop considers to be offenses
+### Changing what RuboCop considers to be offenses
 
 RuboCop comes with a preconfigured set of rules for each of its cops, based on the [Ruby Style Guide](https://rubystyle.guide).
 Depending on your project, you may wish to reconfigure a cop, tell to ignore certain files, or disable it altogether.
@@ -81,7 +81,7 @@ project's root directory.
 
 For more information, see [Configuration](configuration.md).
 
-### 2. RuboCop as a replacement for `ruby -w`
+## 2. RuboCop as a replacement for `ruby -w`
 
 RuboCop natively implements almost all `ruby -w` lint warning checks, and then some. If you want you can use RuboCop
 simply as a replacement for `ruby -w`:
@@ -90,7 +90,7 @@ simply as a replacement for `ruby -w`:
 $ rubocop -l
 ```
 
-### 3. RuboCop as a formatter
+## 3. RuboCop as a formatter
 
 There's a handy shortcut to run auto-correction only on code layout (a.k.a. formatting) offenses:
 
