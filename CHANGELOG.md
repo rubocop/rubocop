@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.80.1 (2020-02-29)
+
 ### Bug fixes
 
 * [#7719](https://github.com/rubocop-hq/rubocop/issues/7719): Fix `Style/NestedParenthesizedCalls` cop for newline. ([@tejasbubane][])
