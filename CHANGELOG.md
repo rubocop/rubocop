@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
+
 ## 0.80.1 (2020-02-29)
 
 ### Bug fixes
@@ -29,7 +33,6 @@
 * Add `BracesRequiredMethods` parameter to `Style/BlockDelimiters` to require braces for specific methods such as Sorbet's `sig`. ([@maxh][])
 * [#7686](https://github.com/rubocop-hq/rubocop/pull/7686): Add new `JUnitFormatter` formatter based on `rubocop-junit-formatter` gem. ([@koic][])
 * [#7715](https://github.com/rubocop-hq/rubocop/pull/7715): Add `Steepfile` to default `Include` list. ([@ybiquitous][])
-* [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
 
 ### Bug fixes
 
