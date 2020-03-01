@@ -124,25 +124,49 @@ aligned.
 
 ### Examples
 
+#### EnforcedStyle: with_first_element (default)
+
 ```ruby
+# good
+
+array = [1, 2, 3,
+         4, 5, 6]
+array = ['run',
+         'forrest',
+         'run']
+
 # bad
-a = [1, 2, 3,
+
+array = [1, 2, 3,
   4, 5, 6]
 array = ['run',
      'forrest',
      'run']
-
-# good
-a = [1, 2, 3,
-     4, 5, 6]
-a = ['run',
-     'forrest',
-     'run']
 ```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+array = [1, 2, 3,
+  4, 5, 6]
+
+# bad
+
+array = [1, 2, 3,
+         4, 5, 6]
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_element` | `with_first_element`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://rubystyle.guide#align-multiline-arrays](https://rubystyle.guide#align-multiline-arrays)
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
 ## Layout/AssignmentIndentation
 

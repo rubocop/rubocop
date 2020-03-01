@@ -255,10 +255,30 @@ Layout/ArrayAlignment:
   Description: >-
                  Align the elements of an array literal if they span more than
                  one line.
-  StyleGuide: '#align-multiline-arrays'
+  StyleGuide: '#no-double-indent'
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '0.77'
+  # Alignment of elements of a multi-line array.
+  #
+  # The `with_first_parameter` style aligns the following lines along the same
+  # column as the first element.
+  #
+  #     array = [1, 2, 3,
+  #              4, 5, 6]
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with start of array.
+  #
+  #     array = [1, 2, 3,
+  #       4, 5, 6]
+  EnforcedStyle: with_first_element
+  SupportedStyles:
+    - with_first_element
+    - with_fixed_indentation
+  # By default, the indentation width from Layout/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Layout/AssignmentIndentation:
   Description: >-
