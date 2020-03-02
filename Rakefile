@@ -18,12 +18,6 @@ require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-desc 'Deprecated: Run test and RuboCop in parallel'
-task :parallel do
-  warn '`rake parallel` is deprecated. Use `rake default` instead.'
-  Rake::Task[:default].execute
-end
-
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation).tap do |task|
   if RUBY_ENGINE == 'ruby' &&
