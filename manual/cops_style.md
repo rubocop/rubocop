@@ -6962,6 +6962,13 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.36 | -
 
 This cop checks for trailing comma in argument lists.
+The supported styles are:
+
+- `consistent_comma`: Requires a comma after the last argument,
+for all parenthesized method calls with arguments.
+- `comma`: Requires a comma after the last argument, but only for
+parenthesized method calls where each argument is on its own line.
+- `no_comma`: Does not requires a comma after the last argument.
 
 ### Examples
 
@@ -6982,6 +6989,11 @@ method(
 
 # good
 method(
+  1, 2, 3,
+)
+
+# good
+method(
   1,
   2,
 )
@@ -6994,6 +7006,28 @@ method(1, 2,)
 
 # good
 method(1, 2)
+
+# bad
+method(
+  1, 2,
+  3,
+)
+
+# good
+method(
+  1, 2,
+  3
+)
+
+# bad
+method(
+  1, 2, 3,
+)
+
+# good
+method(
+  1, 2, 3
+)
 
 # good
 method(
@@ -7034,6 +7068,14 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing comma in array literals.
+The configuration options are:
+
+- `consistent_comma`: Requires a comma after the
+last item of all non-empty, multiline array literals.
+- `comma`: Requires a comma after last item in an array,
+but only when each item is on its own line.
+- `no_comma`: Does not requires a comma after the
+last item in an array
 
 ### Examples
 
@@ -7044,9 +7086,17 @@ This cop checks for trailing comma in array literals.
 a = [1, 2,]
 
 # good
+a = [1, 2]
+
+# good
 a = [
   1, 2,
   3,
+]
+
+# good
+a = [
+  1, 2, 3,
 ]
 
 # good
@@ -7060,6 +7110,31 @@ a = [
 ```ruby
 # bad
 a = [1, 2,]
+
+# good
+a = [1, 2]
+
+# bad
+a = [
+  1, 2,
+  3,
+]
+
+# good
+a = [
+  1, 2,
+  3
+]
+
+# bad
+a = [
+  1, 2, 3,
+]
+
+# good
+a = [
+  1, 2, 3
+]
 
 # good
 a = [
@@ -7097,6 +7172,14 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing comma in hash literals.
+The configuration options are:
+
+- `consistent_comma`: Requires a comma after the
+last item of all non-empty, multiline hash literals.
+- `comma`: Requires a comma after the last item in a hash,
+but only when each item is on its own line.
+- `no_comma`: Does not requires a comma after the
+last item in a hash
 
 ### Examples
 
@@ -7107,9 +7190,17 @@ This cop checks for trailing comma in hash literals.
 a = { foo: 1, bar: 2, }
 
 # good
+a = { foo: 1, bar: 2 }
+
+# good
 a = {
   foo: 1, bar: 2,
   qux: 3,
+}
+
+# good
+a = {
+  foo: 1, bar: 2, qux: 3,
 }
 
 # good
@@ -7123,6 +7214,31 @@ a = {
 ```ruby
 # bad
 a = { foo: 1, bar: 2, }
+
+# good
+a = { foo: 1, bar: 2 }
+
+# bad
+a = {
+  foo: 1, bar: 2,
+  qux: 3,
+}
+
+# good
+a = {
+  foo: 1, bar: 2,
+  qux: 3
+}
+
+# bad
+a = {
+  foo: 1, bar: 2, qux: 3,
+}
+
+# good
+a = {
+  foo: 1, bar: 2, qux: 3
+}
 
 # good
 a = {

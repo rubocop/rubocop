@@ -3826,9 +3826,10 @@ Style/TrailingCommaInArrayLiteral:
   StyleGuide: '#no-trailing-array-commas'
   Enabled: true
   VersionAdded: '0.53'
+  # If `comma`, the cop requires a comma after the last item in an array,
   # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty array literals.
+  # non-empty, multiline array literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma
@@ -3841,7 +3842,7 @@ Style/TrailingCommaInHashLiteral:
   # If `comma`, the cop requires a comma after the last item in a hash,
   # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty hash literals.
+  # non-empty, multiline hash literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma

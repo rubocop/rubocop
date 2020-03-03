@@ -4,6 +4,13 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for trailing comma in argument lists.
+      # The supported styles are:
+      #
+      # - `consistent_comma`: Requires a comma after the last argument,
+      # for all parenthesized method calls with arguments.
+      # - `comma`: Requires a comma after the last argument, but only for
+      # parenthesized method calls where each argument is on its own line.
+      # - `no_comma`: Does not requires a comma after the last argument.
       #
       # @example EnforcedStyleForMultiline: consistent_comma
       #   # bad
@@ -20,6 +27,11 @@ module RuboCop
       #
       #   # good
       #   method(
+      #     1, 2, 3,
+      #   )
+      #
+      #   # good
+      #   method(
       #     1,
       #     2,
       #   )
@@ -30,6 +42,28 @@ module RuboCop
       #
       #   # good
       #   method(1, 2)
+      #
+      #   # bad
+      #   method(
+      #     1, 2,
+      #     3,
+      #   )
+      #
+      #   # good
+      #   method(
+      #     1, 2,
+      #     3
+      #   )
+      #
+      #   # bad
+      #   method(
+      #     1, 2, 3,
+      #   )
+      #
+      #   # good
+      #   method(
+      #     1, 2, 3
+      #   )
       #
       #   # good
       #   method(
