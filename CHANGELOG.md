@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
+
 ### Bug fixes
 
 * [#8008](https://github.com/rubocop-hq/rubocop/issues/8008): Fix an error for `Lint/SuppressedException` when empty rescue block in `def`. ([@koic][])
@@ -4546,3 +4550,4 @@
 [@laurmurclar]: https://github.com/laurmurclar
 [@jethrodaniel]: https://github.com/jethrodaniel
 [@CvX]: https://github.com/CvX
+[@jschneid]: https://github.com/jschneid

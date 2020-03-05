@@ -2025,6 +2025,10 @@ Naming/FileName:
   # It further expects it to be nested inside modules which match the names
   # of subdirectories in its path.
   ExpectMatchingDefinition: false
+  # When `false`, changes the behavior of ExpectMatchingDefinition to match only
+  # whether each source file's class or module name matches the file name --
+  # not whether the nested module hierarchy matches the subdirectory path.
+  CheckDefinitionPathHierarchy: true
   # If non-`nil`, expect all source file names to match the following regex.
   # Only the file name itself is matched, not the entire file path.
   # Use anchors as necessary if you want to match the entire name rather than
