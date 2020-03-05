@@ -126,7 +126,11 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
 
   context 'when ExpectMatchingDefinition is true' do
     let(:cop_config) do
-      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'CheckDefinitionPathHierarchy' => 'true'
+      }
     end
 
     context 'on a file which defines no class or module at all' do
@@ -270,6 +274,104 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       RUBY
 
       include_examples 'matching module or class'
+    end
+  end
+
+  context 'when CheckDefinitionPathHierarchy is false' do
+    let(:cop_config) do
+      {
+        'IgnoreExecutableScripts' => true,
+        'ExpectMatchingDefinition' => true,
+        'CheckDefinitionPathHierarchy' => false
+      }
+    end
+
+    context 'on a file with a matching class' do
+      let(:source) { <<~RUBY }
+        begin
+          class ImageCollection
+          end
+        end
+      RUBY
+      let(:filename) { '/lib/image_collection.rb' }
+
+      it 'does not register an offense' do
+        expect(cop.offenses.empty?).to be(true)
+      end
+    end
+
+    context 'on a file with a non-matching class' do
+      let(:source) { <<~RUBY }
+        begin
+          class PictureCollection
+          end
+        end
+      RUBY
+      let(:filename) { '/lib/image_collection.rb' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['image_collection.rb should define a ' \
+                                    'class or module called ' \
+                                    '`ImageCollection`.'])
+      end
+    end
+
+    context 'on an empty file' do
+      let(:source) { '' }
+      let(:filename) { '/lib/rubocop/foo.rb' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['foo.rb should define a class ' \
+                                    'or module called `Foo`.'])
+      end
+    end
+
+    context 'in a non-matching directory, but with a matching class' do
+      let(:source) { <<~RUBY }
+        begin
+          module Foo
+          end
+        end
+      RUBY
+      let(:filename) { '/lib/some/path/foo.rb' }
+
+      it 'does not register an offense' do
+        expect(cop.offenses.empty?).to be(true)
+      end
+    end
+
+    context 'with a non-matching module containing a matching class' do
+      let(:source) { <<~RUBY }
+        begin
+          module NonMatching
+            class Foo
+            end
+          end
+        end
+      RUBY
+      let(:filename) { 'lib/foo.rb' }
+
+      it 'does not register an offense' do
+        expect(cop.offenses.empty?).to be(true)
+      end
+    end
+
+    context 'with a matching module containing a non-matching class' do
+      let(:source) { <<~RUBY }
+        begin
+          module Foo
+            class NonMatching
+            end
+          end
+        end
+      RUBY
+      let(:filename) { 'lib/foo.rb' }
+
+      it 'does not register an offense' do
+        expect(cop.offenses.empty?).to be(true)
+      end
     end
   end
 
