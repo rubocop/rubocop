@@ -29,16 +29,27 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
-        offenses.group_by(&:cop_name).each do |cop_name, grouped_offenses|
+        # TODO: Returns all cops with the same behavior as
+        # the original rubocop-junit-formatter.
+        # https://github.com/mikian/rubocop-junit-formatter/blob/v0.1.4/lib/rubocop/formatter/junit_formatter.rb#L9
+        #
+        # In the future, it would be preferable to return only enabled cops.
+        Cop::Cop.all.each do |cop|
           REXML::Element.new('testcase', @testsuite).tap do |testcase|
-            testcase.attributes['classname'] = file.gsub(
-              /\.rb\Z/, ''
-            ).gsub("#{Dir.pwd}/", '').tr('/', '.')
-            testcase.attributes['name'] = cop_name
+            testcase.attributes['classname'] = classname_attribute_value(file)
+            testcase.attributes['name'] = cop.cop_name
 
-            add_failure_to(testcase, grouped_offenses, cop_name)
+            target_offenses = offenses.select do |offense|
+              offense.cop_name == cop.cop_name
+            end
+
+            add_failure_to(testcase, target_offenses, cop.cop_name)
           end
         end
+      end
+
+      def classname_attribute_value(file)
+        file.gsub(/\.rb\Z/, '').gsub("#{Dir.pwd}/", '').tr('/', '.')
       end
 
       def finished(_inspected_files)
