@@ -6,6 +6,10 @@
 
 * [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
 
+### Bug fixes
+
+* [#7733](https://github.com/rubocop-hq/rubocop/issues/7733): Fix rubocop-junit-formatter imcompatibility XML for JUnit formatter. ([@koic][])
+
 ## 0.80.1 (2020-02-29)
 
 ### Bug fixes
