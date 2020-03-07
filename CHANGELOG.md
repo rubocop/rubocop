@@ -6,6 +6,10 @@
 
 * [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
 
+### Bug fixes
+
+* [#7779](https://github.com/rubocop-hq/rubocop/issues/7779): Fix a false positive for `Style/MultilineMethodCallIndentation` when using Ruby 2.7's numbered parameter. ([@koic][])
+
 ## 0.80.1 (2020-02-29)
 
 ### Bug fixes

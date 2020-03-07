@@ -291,7 +291,7 @@ module RuboCop
       ## Destructuring
 
       def_node_matcher :receiver, <<~PATTERN
-        {(send $_ ...) (block (send $_ ...) ...)}
+        {(send $_ ...) ({block numblock} (send $_ ...) ...)}
       PATTERN
 
       def_node_matcher :str_content, '(str $_)'
