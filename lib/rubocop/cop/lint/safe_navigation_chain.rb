@@ -32,7 +32,7 @@ module RuboCop
         def_node_matcher :bad_method?, <<~PATTERN
           {
             (send $(csend ...) $_ ...)
-            (send $(block (csend ...) ...) $_ ...)
+            (send $({block numblock} (csend ...) ...) $_ ...)
           }
         PATTERN
 
