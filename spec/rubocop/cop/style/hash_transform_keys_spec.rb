@@ -53,6 +53,12 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
 
+    it 'does not flag each_with_object when its receiver is array literal' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each_with_object({}) {|(k, v), h| h[foo(k)] = v}
+      RUBY
+    end
+
     it 'flags _.map{...}.to_h when transform_keys could be used' do
       expect_offense(<<~RUBY)
         x.map {|k, v| [k.to_sym, v]}.to_h
@@ -77,6 +83,12 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
 
     it 'does not flag key transformation in the absence of to_h' do
       expect_no_offenses('x.map {|k, v| [k.to_sym, v]}')
+    end
+
+    it 'does not flag key transformation when receiver is array literal' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].map {|k, v| [k.to_sym, v]}.to_h
+      RUBY
     end
 
     it 'correctly autocorrects each_with_object' do
