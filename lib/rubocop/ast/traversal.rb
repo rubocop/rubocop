@@ -21,7 +21,7 @@ module RuboCop
                              arg restarg blockarg shadowarg
                              kwrestarg zsuper lambda redo retry
                              forward_args forwarded_args
-                             match_var match_nil_pattern].freeze
+                             match_var match_nil_pattern empty_else].freeze
       ONE_CHILD_NODE    = %i[splat kwsplat block_pass not break next
                              preexe postexe match_current_line defined?
                              arg_expr pin match_rest if_guard unless_guard
@@ -31,7 +31,7 @@ module RuboCop
                              undef alias args super yield or and
                              while_post until_post iflipflop eflipflop
                              match_with_lvasgn begin kwbegin return
-                             in_match case_match in_pattern match_alt
+                             in_match match_alt
                              match_as array_pattern array_pattern_with_tail
                              hash_pattern const_pattern].freeze
       SECOND_CHILD_ONLY = %i[lvasgn ivasgn cvasgn gvasgn optarg kwarg
@@ -178,13 +178,15 @@ module RuboCop
         nil
       end
 
-      alias on_rescue  on_case
-      alias on_resbody on_case
-      alias on_ensure  on_case
-      alias on_for     on_case
-      alias on_when    on_case
-      alias on_irange  on_case
-      alias on_erange  on_case
+      alias on_rescue     on_case
+      alias on_resbody    on_case
+      alias on_ensure     on_case
+      alias on_for        on_case
+      alias on_when       on_case
+      alias on_case_match on_case
+      alias on_in_pattern on_case
+      alias on_irange     on_case
+      alias on_erange     on_case
 
       def on_numblock(node)
         children = node.children
