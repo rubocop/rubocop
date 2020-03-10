@@ -10,6 +10,7 @@
 
 * [#7779](https://github.com/rubocop-hq/rubocop/issues/7779): Fix a false positive for `Style/MultilineMethodCallIndentation` when using Ruby 2.7's numbered parameter. ([@koic][])
 * [#7733](https://github.com/rubocop-hq/rubocop/issues/7733): Fix rubocop-junit-formatter imcompatibility XML for JUnit formatter. ([@koic][])
+* [#7767](https://github.com/rubocop-hq/rubocop/issues/7767): Skip array literals in `Style/HashTransformValues` and `Style/HashTransformKeys`. ([@tejasbubane][])
 
 ## 0.80.1 (2020-02-29)
 
