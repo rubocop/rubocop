@@ -2455,7 +2455,7 @@ Style/ClassVars:
 # Align with the style guide.
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
-  StyleGuide: '#map-find-select-reduce-size'
+  StyleGuide: '#map-find-select-reduce-include-size'
   Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.27'
@@ -2472,6 +2472,7 @@ Style/CollectionMethods:
     inject: 'reduce'
     detect: 'find'
     find_all: 'select'
+    member?: 'include?'
 
 Style/ColonMethodCall:
   Description: 'Do not use :: for method call.'

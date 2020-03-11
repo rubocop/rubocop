@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7793](https://github.com/rubocop-hq/rubocop/pull/7793): Prefer `include?` over `member?` in `Style/CollectionMethods`. ([@dmolesUC][])
 * [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
 
 ### Bug fixes
@@ -4389,3 +4390,4 @@
 [@djudd]: https://github.com/djudd
 [@jemmaissroff]: https://github.com/jemmaissroff
 [@nikitasakov]: https://github.com/nikitasakov
+[@dmolesUC]: https://github.com/dmolesUC

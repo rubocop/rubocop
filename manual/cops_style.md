@@ -752,6 +752,7 @@ items.collect!
 items.inject
 items.detect
 items.find_all
+items.member?
 
 # good
 items.map
@@ -759,17 +760,18 @@ items.map!
 items.reduce
 items.find
 items.select
+items.include?
 ```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}` | 
+PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}` | 
 
 ### References
 
-* [https://rubystyle.guide#map-find-select-reduce-size](https://rubystyle.guide#map-find-select-reduce-size)
+* [https://rubystyle.guide#map-find-select-reduce-include-size](https://rubystyle.guide#map-find-select-reduce-include-size)
 
 ## Style/ColonMethodCall
 
