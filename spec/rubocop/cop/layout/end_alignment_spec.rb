@@ -277,14 +277,8 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   end
 
   context 'when end is preceded by something else than whitespace' do
-    it 'registers an offense and does not correct' do
-      expect_offense(<<~RUBY)
-        module A
-        puts a end
-               ^^^ `end` at 2, 7 is not aligned with `module` at 1, 0.
-      RUBY
-
-      expect_correction(<<~RUBY)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
         module A
         puts a end
       RUBY

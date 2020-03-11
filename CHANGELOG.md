@@ -15,6 +15,7 @@
 * [#7733](https://github.com/rubocop-hq/rubocop/issues/7733): Fix rubocop-junit-formatter imcompatibility XML for JUnit formatter. ([@koic][])
 * [#7767](https://github.com/rubocop-hq/rubocop/issues/7767): Skip array literals in `Style/HashTransformValues` and `Style/HashTransformKeys`. ([@tejasbubane][])
 * [#7791](https://github.com/rubocop-hq/rubocop/issues/7791): Fix an error on auto-correction for `Layout/BlockEndNewline` when `}` of multiline block without processing is not on its own line. ([@koic][])
+* [#7778](https://github.com/rubocop-hq/rubocop/issues/7778): Fix a false positive for `Layout/EndAlignment` when a non-whitespace is used before the `end` keyword. ([@koic][])
 
 ### Changes
 
