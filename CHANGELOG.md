@@ -13,6 +13,10 @@
 * [#7733](https://github.com/rubocop-hq/rubocop/issues/7733): Fix rubocop-junit-formatter imcompatibility XML for JUnit formatter. ([@koic][])
 * [#7767](https://github.com/rubocop-hq/rubocop/issues/7767): Skip array literals in `Style/HashTransformValues` and `Style/HashTransformKeys`. ([@tejasbubane][])
 
+### Changes
+
+* [#7797](https://github.com/rubocop-hq/rubocop/pull/7797): Allow unicode-display_width dependency version 1.7.0. ([@yuritomanek][])
+
 ## 0.80.1 (2020-02-29)
 
 ### Bug fixes
@@ -4391,3 +4395,4 @@
 [@jemmaissroff]: https://github.com/jemmaissroff
 [@nikitasakov]: https://github.com/nikitasakov
 [@dmolesUC]: https://github.com/dmolesUC
+[@yuritomanek]: https://github.com/yuritomanek
