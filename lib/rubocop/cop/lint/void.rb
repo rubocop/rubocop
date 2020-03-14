@@ -62,7 +62,7 @@ module RuboCop
                                  unicode_normalize uniq upcase].freeze
 
         def on_block(node)
-          return unless node.body && !node.body.begin_type?
+          return unless !node.leaves.flatten.include?(:map) && node.body && !node.body.begin_type?
           return unless in_void_context?(node.body)
 
           check_expression(node.body)

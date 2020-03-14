@@ -229,6 +229,15 @@ module RuboCop
         each_descendant.to_a
       end
 
+      def leaves
+        _leaves = lambda do |node|
+          return node unless node.respond_to?(:children)
+
+          node.children.map(&_leaves)
+        end
+        _leaves.call(self)
+      end
+
       # Calls the given block for the receiver and each descendant node in
       # depth-first order.
       # If no block is given, an `Enumerator` is returned.

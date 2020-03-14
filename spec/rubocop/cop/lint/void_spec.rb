@@ -180,6 +180,14 @@ RSpec.describe RuboCop::Cop::Lint::Void do
     RUBY
   end
 
+  context 'object is an Enumerator instance' do
+    it 'handles `#each` block with single expression' do
+      expect_no_offenses(<<~RUBY)
+        array.map.each { |_item| 42 }
+      RUBY
+    end
+  end
+
   it 'handles `#each` block with single expression' do
     expect_offense(<<~RUBY)
       array.each do |_item|
