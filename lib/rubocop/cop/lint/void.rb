@@ -5,6 +5,10 @@ module RuboCop
     module Lint
       # This cop checks for operators, variables, literals, and nonmutating
       # methods used in void context.
+      # It correctly works for methods inherited from Enumerable. Does not work
+      # for others, except for `#defined?` method.
+      # This cop can yield some false positives in case of Enumerable-like
+      # methods.
       #
       # @example CheckForMethodsWithNoSideEffects: false (default)
       #   # bad
@@ -25,6 +29,15 @@ module RuboCop
       #     do_something(some_array)
       #   end
       #
+      #   def some_method(some_array)
+      #     some_array.each(&:some_other_method)
+      #   end
+      #
+      #   def some_method(some_array)
+      #     enumerator = some_array.each
+      #     enumerator.each(&:some_other_method)
+      #   end
+      #
       #   # good
       #   def some_method
       #     do_something
@@ -39,6 +52,11 @@ module RuboCop
       #   def some_method(some_array)
       #     some_array.sort!
       #     do_something(some_array)
+      #   end
+      #
+      #   def some_method(some_array)
+      #     enumerator = some_array.map
+      #     enumerator.each(&:some_other_method)
       #   end
       class Void < Cop
         OP_MSG = 'Operator `%<op>s` used in void context.'
@@ -60,6 +78,10 @@ module RuboCop
                                  shuffle slice sort sort_by squeeze strip sub
                                  succ swapcase tr tr_s transform_values
                                  unicode_normalize uniq upcase].freeze
+        VALUE_RETURNING_METHODS = %i[collect collect! delete_if drop_while
+                                     filter! find_index index keep_if map map!
+                                     reject reject! rindex select select! sort
+                                     sort! take_while uniq uniq!].freeze
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?
@@ -143,7 +165,22 @@ module RuboCop
 
           return false unless parent && parent.children.last == node
 
+          return false if VALUE_RETURNING_METHODS.any? do |method|
+            enumerating_assigned?(parent, method) ||
+            enumerating_chained?(parent, method)
+          end
+
           VOID_CONTEXT_TYPES.include?(parent.type) && parent.void_context?
+        end
+
+        def enumerating_chained?(parent, method)
+          method == parent.enumerated_method
+        end
+
+        def enumerating_assigned?(parent, method)
+          lvasgn_name, lvasgn_value = parent.parent&.lvasgn_return
+          lvasgn_value == method && !parent.enumerated.nil? &&
+            parent.enumerated == lvasgn_name
         end
       end
     end

@@ -290,6 +290,18 @@ module RuboCop
 
       ## Destructuring
 
+      def_node_matcher :lvasgn_return, <<~PATTERN
+        `(lvasgn $_ (send _ $_))
+      PATTERN
+
+      def_node_matcher :enumerated_method, <<~PATTERN
+        `(send (send (send _ :array) $_) :each)
+      PATTERN
+
+      def_node_matcher :enumerated, <<~PATTERN
+        ^`(send (lvar $_) :each)
+      PATTERN
+
       def_node_matcher :receiver, <<~PATTERN
         {(send $_ ...) ({block numblock} (send $_ ...) ...)}
       PATTERN

@@ -180,6 +180,75 @@ RSpec.describe RuboCop::Cop::Lint::Void do
     RUBY
   end
 
+  context 'object is an Enumerator instance' do
+    context 'Enumerator instance created with #each' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          array.each.each { |_item| 42 }
+                                    ^^ Literal `42` used in void context.
+        RUBY
+      end
+    end
+
+    context 'Enumerator instance created with #map' do
+      it "doesn't register an offense" do
+        expect_no_offenses(<<~RUBY)
+          array.map.each { |_item| 42 }
+        RUBY
+      end
+    end
+
+    context 'Enumerator instance is assigned to variable' do
+      context 'Enumerator instance created with #each' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            enum = array.each
+            enum.each { |_item| 42 }
+                                ^^ Literal `42` used in void context.
+          RUBY
+        end
+      end
+
+      context 'Enumerator instance created with #map' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            enum = array.map
+            enum.each { |_item| 42 }
+          RUBY
+        end
+      end
+
+      context 'node is in nested scope' do
+        context 'Enumerator instance created with #each' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              def enum
+                array.each
+              end
+              def abc
+                enum.each { |_item| 42 }
+                                    ^^ Literal `42` used in void context.
+              end
+            RUBY
+          end
+        end
+
+        context 'Enumerator instance created with #map' do
+          it "doesn't register an offense" do
+            expect_no_offenses(<<~RUBY)
+              def enum
+                array.map
+              end
+              def abc
+                enum.each { |_item| asdf }
+              end
+            RUBY
+          end
+        end
+      end
+    end
+  end
+
   it 'handles `#each` block with single expression' do
     expect_offense(<<~RUBY)
       array.each do |_item|

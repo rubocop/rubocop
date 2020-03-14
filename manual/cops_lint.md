@@ -3041,6 +3041,10 @@ Enabled | Yes | No | 0.9 | -
 
 This cop checks for operators, variables, literals, and nonmutating
 methods used in void context.
+It correctly works for methods inherited from Enumerable. Does not work
+for others, except for `#defined?` method.
+This cop can yield some false positives in case of Enumerable-like
+methods.
 
 ### Examples
 
@@ -3067,6 +3071,15 @@ def some_method(some_array)
   do_something(some_array)
 end
 
+def some_method(some_array)
+  some_array.each(&:some_other_method)
+end
+
+def some_method(some_array)
+  enumerator = some_array.each
+  enumerator.each(&:some_other_method)
+end
+
 # good
 def some_method
   do_something
@@ -3081,6 +3094,11 @@ end
 def some_method(some_array)
   some_array.sort!
   do_something(some_array)
+end
+
+def some_method(some_array)
+  enumerator = some_array.map
+  enumerator.each(&:some_other_method)
 end
 ```
 
