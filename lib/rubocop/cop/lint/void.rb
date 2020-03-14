@@ -25,6 +25,10 @@ module RuboCop
       #     do_something(some_array)
       #   end
       #
+      #   def some_method(some_array)
+      #     some_array.each(&:some_other_method)
+      #   end
+      #
       #   # good
       #   def some_method
       #     do_something
@@ -39,6 +43,11 @@ module RuboCop
       #   def some_method(some_array)
       #     some_array.sort!
       #     do_something(some_array)
+      #   end
+      #
+      #   def some_method(some_array)
+      #     some_array = some_array.map
+      #     some_array.map(&:some_other_method)
       #   end
       class Void < Cop
         OP_MSG = 'Operator `%<op>s` used in void context.'
@@ -60,6 +69,10 @@ module RuboCop
                                  shuffle slice sort sort_by squeeze strip sub
                                  succ swapcase tr tr_s transform_values
                                  unicode_normalize uniq upcase].freeze
+        VALUE_RETURNING_METHODS = %i[collect collect! delete_if drop_while
+                                     filter! find_index index keep_if map map!
+                                     reject reject! rindex select select! sort
+                                     sort! take_while uniq uniq!].freeze
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?
@@ -142,6 +155,10 @@ module RuboCop
           parent = node.parent
 
           return false unless parent && parent.children.last == node
+
+          return false if VALUE_RETURNING_METHODS.any? do |method|
+            node.enumerating?(method)
+          end
 
           VOID_CONTEXT_TYPES.include?(parent.type) && parent.void_context?
         end

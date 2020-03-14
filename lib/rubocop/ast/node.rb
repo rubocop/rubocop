@@ -290,6 +290,18 @@ module RuboCop
 
       ## Destructuring
 
+      def_node_matcher :lvasgn_return, <<~PATTERN
+        `(lvasgn $_ (send _ $_))
+      PATTERN
+
+      def_node_matcher :enumerated_method, <<~PATTERN
+        `(send (send (send _ :array) $_) :each)
+      PATTERN
+
+      def_node_matcher :enumerated, <<~PATTERN
+        ^`(send (lvar $_) :each)
+      PATTERN
+
       def_node_matcher :receiver, <<~PATTERN
         {(send $_ ...) ({block numblock} (send $_ ...) ...)}
       PATTERN
@@ -355,6 +367,10 @@ module RuboCop
       def_node_matcher :assignment_or_similar?, <<~PATTERN
         {assignment? (send _recv :<< ...)}
       PATTERN
+
+      def enumerating?(method)
+        enumerating_assigned?(method) || enumerating_chained?(method)
+      end
 
       def literal?
         LITERALS.include?(type)
@@ -558,6 +574,15 @@ module RuboCop
       end
 
       private
+
+      def enumerating_chained?(method)
+        method == parent.enumerated_method
+      end
+
+      def enumerating_assigned?(method)
+        lvasgn_name, lvasgn_value = parent.parent&.lvasgn_return
+        lvasgn_value == method && !enumerated.nil? && enumerated == lvasgn_name
+      end
 
       def visit_ancestors(types)
         last_node = self

@@ -3044,6 +3044,10 @@ def some_method(some_array)
   do_something(some_array)
 end
 
+def some_method(some_array)
+  some_array.each(&:some_other_method)
+end
+
 # good
 def some_method
   do_something
@@ -3058,6 +3062,11 @@ end
 def some_method(some_array)
   some_array.sort!
   do_something(some_array)
+end
+
+def some_method(some_array)
+  some_array = some_array.map
+  some_array.map(&:some_other_method)
 end
 ```
 

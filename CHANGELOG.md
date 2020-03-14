@@ -7,6 +7,7 @@
 * [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when raising Exception with explicit namespace. ([@koic][])
 * [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 * [#7841](https://github.com/rubocop-hq/rubocop/issues/7841): Fix an error for `Style/TrailingCommaInBlockArgs` when lambda literal (`->`) has multiple arguments. ([@koic][])
+* [#6963](https://github.com/rubocop-hq/rubocop/issues/6963): Check if iterating through Enumerator created with value returning method. ([@tomurb][])
 
 ## 0.81.0 (2020-04-01)
 
@@ -4434,3 +4435,4 @@
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
 [@egze]: https://github.com/egze
+[@tomurb]: https://github.com/tomurb
