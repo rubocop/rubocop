@@ -6,6 +6,7 @@
 
 * [#7793](https://github.com/rubocop-hq/rubocop/pull/7793): Prefer `include?` over `member?` in `Style/CollectionMethods`. ([@dmolesUC][])
 * [#7654](https://github.com/rubocop-hq/rubocop/issues/7654): Support `with_fixed_indentation` option for `Layout/ArrayAlignment` cop. ([@nikitasakov][])
+* [#7803](https://github.com/rubocop-hq/rubocop/pull/7803): Add rake task `release_github_rubygems` to release gem on GitHub Packages and rubygems. ([@shockwavenn][])
 
 ### Bug fixes
 
@@ -4396,3 +4397,4 @@
 [@nikitasakov]: https://github.com/nikitasakov
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
+[@shockwavenn]: https://github.com/shockwavenn

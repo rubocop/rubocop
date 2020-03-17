@@ -126,3 +126,11 @@ task documentation_syntax_check: :yard_for_generate_documentation do
   end
   abort unless ok
 end
+
+desc 'Release gem to github release and rubygems'
+task :release_github_rubygems do
+  Rake::Task['release'].invoke
+  `gem push --key github \
+   --host https://rubygems.pkg.github.com/rubocop-hq \
+   pkg/rubocop-#{RuboCop::Version::STRING}.gem`
+end
