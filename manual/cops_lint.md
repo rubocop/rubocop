@@ -1638,7 +1638,7 @@ require 'unloaded_feature'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | 0.76
+Enabled | Yes | Yes  | 0.76 | -
 
 This cop checks for unneeded usages of splat expansion
 
@@ -2382,7 +2382,7 @@ into RuboCop's offenses.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | -
+Enabled | Yes | Yes  | 0.66 | -
 
 This cop checks to make sure `#to_json` includes an optional argument.
 When overriding `#to_json`, callers may invoke JSON
