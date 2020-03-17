@@ -3042,7 +3042,7 @@ EnforcedStyle | `line_count_dependent` | `line_count_dependent`, `lambda`, `lite
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.13.1 | 0.14
+Enabled | Yes | Yes  | 0.13 | 0.14
 
 This cop checks for use of the lambda.(args) syntax.
 

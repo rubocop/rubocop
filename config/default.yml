@@ -1594,7 +1594,7 @@ Lint/RedundantRequireStatement:
 Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
-  VersionChanged: '0.76'
+  VersionAdded: '0.76'
 
 Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
@@ -1725,6 +1725,7 @@ Lint/Syntax:
 Lint/ToJSON:
   Description: 'Ensure #to_json includes an optional argument.'
   Enabled: true
+  VersionAdded: '0.66'
 
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
@@ -1908,6 +1909,7 @@ Migration/DepartmentName:
                  Check that cop names in rubocop:disable (etc) comments are
                  given with department name.
   Enabled: true
+  VersionAdded: '0.75'
 
 #################### Naming ##############################
 
@@ -2958,7 +2960,7 @@ Style/LambdaCall:
   Description: 'Use lambda.call(...) instead of lambda.(...).'
   StyleGuide: '#proc-call'
   Enabled: true
-  VersionAdded: '0.13.1'
+  VersionAdded: '0.13'
   VersionChanged: '0.14'
   EnforcedStyle: call
   SupportedStyles:
