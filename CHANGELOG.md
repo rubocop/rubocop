@@ -16,6 +16,7 @@
 ### Changes
 
 * [#7797](https://github.com/rubocop-hq/rubocop/pull/7797): Allow unicode-display_width dependency version 1.7.0. ([@yuritomanek][])
+* [#7779](https://github.com/rubocop-hq/rubocop/issues/7779): Change `AllowComments` option of `Lint/SuppressedException` to true by default. ([@koic][])
 
 ## 0.80.1 (2020-02-29)
 

@@ -1712,9 +1712,9 @@ Lint/SuppressedException:
   Description: "Don't suppress exceptions."
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
-  AllowComments: false
+  AllowComments: true
   VersionAdded: '0.9'
-  VersionChanged: '0.77'
+  VersionChanged: '0.81'
 
 Lint/Syntax:
   Description: 'Checks syntax error.'
