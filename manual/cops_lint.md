@@ -2279,13 +2279,11 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 0.77
+Enabled | Yes | No | 0.9 | 0.81
 
 This cop checks for *rescue* blocks with no body.
 
 ### Examples
-
-#### AllowComments: false (default)
 
 ```ruby
 # bad
@@ -2295,23 +2293,9 @@ rescue
 end
 
 # bad
-def some_method
-  do_something
-rescue
-  # do nothing
-end
-
-# bad
 begin
   do_something
 rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-  # do nothing
 end
 
 # good
@@ -2328,33 +2312,38 @@ rescue
   handle_exception
 end
 ```
-#### AllowComments: true
+#### AllowComments: true (default)
+
+```ruby
+# good
+def some_method
+  do_something
+rescue
+  # do nothing
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing
+end
+```
+#### AllowComments: false
 
 ```ruby
 # bad
 def some_method
   do_something
 rescue
+  # do nothing
 end
 
 # bad
 begin
   do_something
 rescue
-end
-
-# good
-def some_method
-  do_something
-rescue
-  # do nothing but comment
-end
-
-# good
-begin
-  do_something
-rescue
-  # do nothing but comment
+  # do nothing
 end
 ```
 
@@ -2362,7 +2351,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-AllowComments | `false` | Boolean
+AllowComments | `true` | Boolean
 
 ### References
 
