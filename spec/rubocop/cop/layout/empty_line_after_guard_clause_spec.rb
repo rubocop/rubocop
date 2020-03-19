@@ -163,6 +163,44 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `and return` ' \
+     'before guard condition' do
+    expect_offense(<<~RUBY)
+      def foo
+        render :foo and return if condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        render :foo and return if condition
+
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `or return` ' \
+     'before guard condition' do
+    expect_offense(<<~RUBY)
+      def foo
+        render :foo or return if condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        render :foo or return if condition
+
+        do_something
+      end
+    RUBY
+  end
+
   it 'accepts modifier if' do
     expect_no_offenses(<<~RUBY)
       def foo

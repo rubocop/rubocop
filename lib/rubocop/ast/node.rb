@@ -469,7 +469,13 @@ module RuboCop
         irange_type? || erange_type?
       end
 
-      def_node_matcher :guard_clause?, <<~PATTERN
+      def guard_clause?
+        node = and_type? || or_type? ? rhs : self
+
+        node.match_guard_clause?
+      end
+
+      def_node_matcher :match_guard_clause?, <<~PATTERN
         [${(send nil? {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
