@@ -243,6 +243,7 @@ In the following section you find all available cops:
 * [Lint/ShadowedArgument](cops_lint.md#lintshadowedargument)
 * [Lint/ShadowedException](cops_lint.md#lintshadowedexception)
 * [Lint/ShadowingOuterLocalVariable](cops_lint.md#lintshadowingouterlocalvariable)
+* [Lint/StructNewOverride](cops_lint.md#lintstructnewoverride)
 * [Lint/SuppressedException](cops_lint.md#lintsuppressedexception)
 * [Lint/Syntax](cops_lint.md#lintsyntax)
 * [Lint/ToJSON](cops_lint.md#linttojson)
