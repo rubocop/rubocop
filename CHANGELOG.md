@@ -12,6 +12,7 @@
 * [#7786](https://github.com/rubocop-hq/rubocop/pull/7786): Support Ruby 2.7's pattern match for `Layout/ElseAlignment` cop. ([@koic][])
 * [#7784](https://github.com/rubocop-hq/rubocop/pull/7784): Support Ruby 2.7's numbered parameter for `Lint/SafeNavigationChain`. ([@koic][])
 * [#7331](https://github.com/rubocop-hq/rubocop/issues/7331): Add `forbidden` option to `Style/ModuleFunction` cop. ([@weh][])
+* [#7699](https://github.com/rubocop-hq/rubocop/pull/7699): Add new `Lint/StructNewOverride` cop. ([@ybiquitous][])
 
 ### Bug fixes
 
@@ -57,9 +58,6 @@
 * Add `BracesRequiredMethods` parameter to `Style/BlockDelimiters` to require braces for specific methods such as Sorbet's `sig`. ([@maxh][])
 * [#7686](https://github.com/rubocop-hq/rubocop/pull/7686): Add new `JUnitFormatter` formatter based on `rubocop-junit-formatter` gem. ([@koic][])
 * [#7715](https://github.com/rubocop-hq/rubocop/pull/7715): Add `Steepfile` to default `Include` list. ([@ybiquitous][])
-* [#7659](https://github.com/rubocop-hq/rubocop/pull/7659): Layout/LineLength autocorrect now breaks up long lines with blocks. ([@maxh][])
-* [#7677](https://github.com/rubocop-hq/rubocop/pull/7677): Add a cop for `Hash#each_key` and `Hash#each_value`. ([@jemmaissroff][])
-* [#7699](https://github.com/rubocop-hq/rubocop/pull/7699): Add new `Lint/StructNewOverride` cop. ([@ybiquitous][])
 
 ### Bug fixes
 
