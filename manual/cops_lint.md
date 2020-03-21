@@ -2302,9 +2302,9 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Pending | Yes | No | 0.80 | -
+Pending | Yes | No | 0.81 | -
 
-This cop checks unexpected overrides of the `Struct` original methods
+This cop checks unexpected overrides of the `Struct` built-in methods
 via `Struct.new`.
 
 ### Examples

@@ -1715,9 +1715,9 @@ Lint/ShadowingOuterLocalVariable:
   VersionAdded: '0.9'
 
 Lint/StructNewOverride:
-  Description: 'Disallow overriding the `Struct` original methods via `Struct.new`.'
+  Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
   Enabled: pending
-  VersionAdded: '0.80'
+  VersionAdded: '0.81'
 
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."
