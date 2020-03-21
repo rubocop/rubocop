@@ -6,7 +6,8 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
       'collect' => 'map',
       'inject' => 'reduce',
       'detect' => 'find',
-      'find_all' => 'select'
+      'find_all' => 'select',
+      'member?' => 'include?'
     }
   }
 

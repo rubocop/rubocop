@@ -105,10 +105,6 @@ module RuboCop
         ALWAYS_SAME_LINE_MESSAGE = 'Closing hash brace must be on the same ' \
           'line as the last hash element.'
 
-        def self.autocorrect_incompatible_with
-          [Style::BracesAroundHashParameters]
-        end
-
         def on_hash(node)
           check_brace_layout(node)
         end

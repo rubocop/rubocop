@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    { 'Whitelist' => %w[present? blank? try presence] }
+    { 'AllowedMethods' => %w[present? blank? try presence] }
   end
 
   it 'allows && without safe navigation' do

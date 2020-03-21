@@ -54,11 +54,11 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#indent-public-private-protected](https://rubystyle.guide#indent-public-private-protected)
 
-## Layout/AlignArguments
+## Layout/ArgumentAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.68 | 0.77
 
 Here we check if the arguments on a multi-line method
 definition are aligned.
@@ -113,335 +113,94 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
-## Layout/AlignArray
+## Layout/ArrayAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.77
 
 Here we check if the elements of a multi-line array literal are
 aligned.
 
 ### Examples
 
+#### EnforcedStyle: with_first_element (default)
+
 ```ruby
+# good
+
+array = [1, 2, 3,
+         4, 5, 6]
+array = ['run',
+         'forrest',
+         'run']
+
 # bad
-a = [1, 2, 3,
+
+array = [1, 2, 3,
   4, 5, 6]
 array = ['run',
      'forrest',
      'run']
-
-# good
-a = [1, 2, 3,
-     4, 5, 6]
-a = ['run',
-     'forrest',
-     'run']
-```
-
-### References
-
-* [https://rubystyle.guide#align-multiline-arrays](https://rubystyle.guide#align-multiline-arrays)
-
-## Layout/AlignHash
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
-
-Check that the keys, separators, and values of a multi-line hash
-literal are aligned according to configuration. The configuration
-options are:
-
-  - key (left align keys, one space before hash rockets and values)
-  - separator (align hash rockets and colons, right align keys)
-  - table (left align keys, hash rockets, and values)
-
-The treatment of hashes passed as the last argument to a method call
-can also be configured. The options are:
-
-  - always_inspect
-  - always_ignore
-  - ignore_implicit (without curly braces)
-
-Alternatively you can specify multiple allowed styles. That's done by
-passing a list of styles to EnforcedStyles.
-
-### Examples
-
-#### EnforcedHashRocketStyle: key (default)
-
-```ruby
-# bad
-{
-  :foo => bar,
-   :ba => baz
-}
-{
-  :foo => bar,
-  :ba  => baz
-}
-
-# good
-{
-  :foo => bar,
-  :ba => baz
-}
-```
-#### EnforcedHashRocketStyle: separator
-
-```ruby
-# bad
-{
-  :foo => bar,
-  :ba => baz
-}
-{
-  :foo => bar,
-  :ba  => baz
-}
-
-# good
-{
-  :foo => bar,
-   :ba => baz
-}
-```
-#### EnforcedHashRocketStyle: table
-
-```ruby
-# bad
-{
-  :foo => bar,
-   :ba => baz
-}
-
-# good
-{
-  :foo => bar,
-  :ba  => baz
-}
-```
-#### EnforcedColonStyle: key (default)
-
-```ruby
-# bad
-{
-  foo: bar,
-   ba: baz
-}
-{
-  foo: bar,
-  ba:  baz
-}
-
-# good
-{
-  foo: bar,
-  ba: baz
-}
-```
-#### EnforcedColonStyle: separator
-
-```ruby
-# bad
-{
-  foo: bar,
-  ba: baz
-}
-
-# good
-{
-  foo: bar,
-   ba: baz
-}
-```
-#### EnforcedColonStyle: table
-
-```ruby
-# bad
-{
-  foo: bar,
-  ba: baz
-}
-
-# good
-{
-  foo: bar,
-  ba:  baz
-}
-```
-#### EnforcedLastArgumentHashStyle: always_inspect (default)
-
-```ruby
-# Inspect both implicit and explicit hashes.
-
-# bad
-do_something(foo: 1,
-  bar: 2)
-
-# bad
-do_something({foo: 1,
-  bar: 2})
-
-# good
-do_something(foo: 1,
-             bar: 2)
-
-# good
-do_something(
-  foo: 1,
-  bar: 2
-)
-
-# good
-do_something({foo: 1,
-              bar: 2})
-
-# good
-do_something({
-  foo: 1,
-  bar: 2
-})
-```
-#### EnforcedLastArgumentHashStyle: always_ignore
-
-```ruby
-# Ignore both implicit and explicit hashes.
-
-# good
-do_something(foo: 1,
-  bar: 2)
-
-# good
-do_something({foo: 1,
-  bar: 2})
-```
-#### EnforcedLastArgumentHashStyle: ignore_implicit
-
-```ruby
-# Ignore only implicit hashes.
-
-# bad
-do_something({foo: 1,
-  bar: 2})
-
-# good
-do_something(foo: 1,
-  bar: 2)
-```
-#### EnforcedLastArgumentHashStyle: ignore_explicit
-
-```ruby
-# Ignore only explicit hashes.
-
-# bad
-do_something(foo: 1,
-  bar: 2)
-
-# good
-do_something({foo: 1,
-  bar: 2})
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`
-EnforcedColonStyle | `key` | `key`, `separator`, `table`
-EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
-
-## Layout/AlignParameters
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
-
-Here we check if the parameters on a multi-line method call or
-definition are aligned.
-
-To set the alignment of the first argument, use the cop
-FirstParameterIndentation.
-
-### Examples
-
-#### EnforcedStyle: with_first_parameter (default)
-
-```ruby
-# good
-
-def foo(bar,
-        baz)
-  123
-end
-
-def foo(
-  bar,
-  baz
-)
-  123
-end
-
-# bad
-
-def foo(bar,
-     baz)
-  123
-end
-
-# bad
-
-def foo(
-  bar,
-     baz)
-  123
-end
 ```
 #### EnforcedStyle: with_fixed_indentation
 
 ```ruby
 # good
 
-def foo(bar,
-  baz)
-  123
-end
-
-def foo(
-  bar,
-  baz
-)
-  123
-end
+array = [1, 2, 3,
+  4, 5, 6]
 
 # bad
 
-def foo(bar,
-        baz)
-  123
-end
-
-# bad
-
-def foo(
-  bar,
-     baz)
-  123
-end
+array = [1, 2, 3,
+         4, 5, 6]
 ```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `with_first_parameter` | `with_first_parameter`, `with_fixed_indentation`
+EnforcedStyle | `with_first_element` | `with_first_element`, `with_fixed_indentation`
 IndentationWidth | `<none>` | Integer
 
 ### References
 
 * [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
+
+## Layout/AssignmentIndentation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.77
+
+This cop checks the indentation of the first line of the
+right-hand-side of a multi-line assignment.
+
+The indentation of the remaining lines can be corrected with
+other cops such as `IndentationConsistency` and `EndAlignment`.
+
+### Examples
+
+```ruby
+# bad
+value =
+if foo
+  'bar'
+end
+
+# good
+value =
+  if foo
+    'bar'
+  end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+IndentationWidth | `<none>` | Integer
 
 ## Layout/BlockAlignment
 
@@ -1962,214 +1721,18 @@ AllowForAlignment | `true` | Boolean
 AllowBeforeTrailingComments | `false` | Boolean
 ForceEqualSignAlignment | `false` | Boolean
 
-## Layout/FirstArrayElementLineBreak
+## Layout/FirstArgumentIndentation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.49 | -
-
-This cop checks for a line break before the first element in a
-multi-line array.
-
-### Examples
-
-```ruby
-# bad
-[ :a,
-  :b]
-
-# good
-[
-  :a,
-  :b]
-```
-
-## Layout/FirstHashElementLineBreak
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.49 | -
-
-This cop checks for a line break before the first element in a
-multi-line hash.
-
-### Examples
-
-```ruby
-# bad
-{ a: 1,
-  b: 2}
-
-# good
-{
-  a: 1,
-  b: 2 }
-```
-
-## Layout/FirstMethodArgumentLineBreak
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.49 | -
-
-This cop checks for a line break before the first argument in a
-multi-line method call.
-
-### Examples
-
-```ruby
-# bad
-method(foo, bar,
-  baz)
-
-# good
-method(
-  foo, bar,
-  baz)
-
-# ignored
-method foo, bar,
-  baz
-```
-
-## Layout/FirstMethodParameterLineBreak
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.49 | -
-
-This cop checks for a line break before the first parameter in a
-multi-line method parameter definition.
-
-### Examples
-
-```ruby
-# bad
-def method(foo, bar,
-    baz)
-  do_something
-end
-
-# good
-def method(
-    foo, bar,
-    baz)
-  do_something
-end
-
-# ignored
-def method foo,
-    bar
-  do_something
-end
-```
-
-## Layout/HeredocArgumentClosingParenthesis
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.68 | -
-
-This cop checks for the placement of the closing parenthesis
-in a method call that passes a HEREDOC string as an argument.
-It should be placed at the end of the line containing the
-opening HEREDOC tag.
-
-### Examples
-
-```ruby
-# bad
-
-   foo(<<-SQL
-     bar
-   SQL
-   )
-
-   foo(<<-SQL, 123, <<-NOSQL,
-     bar
-   SQL
-     baz
-   NOSQL
-   )
-
-   foo(
-     bar(<<-SQL
-       baz
-     SQL
-     ),
-     123,
-   )
-
-# good
-
-   foo(<<-SQL)
-     bar
-   SQL
-
-   foo(<<-SQL, 123, <<-NOSQL)
-     bar
-   SQL
-     baz
-   NOSQL
-
-   foo(
-     bar(<<-SQL),
-       baz
-     SQL
-     123,
-   )
-```
-
-### References
-
-* [https://rubystyle.guide#heredoc-argument-closing-parentheses](https://rubystyle.guide#heredoc-argument-closing-parentheses)
-
-## Layout/IndentAssignment
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
-
-This cop checks the indentation of the first line of the
-right-hand-side of a multi-line assignment.
-
-The indentation of the remaining lines can be corrected with
-other cops such as `IndentationConsistency` and `EndAlignment`.
-
-### Examples
-
-```ruby
-# bad
-value =
-if foo
-  'bar'
-end
-
-# good
-value =
-  if foo
-    'bar'
-  end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-IndentationWidth | `<none>` | Integer
-
-## Layout/IndentFirstArgument
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.68 | 0.77
 
 This cop checks the indentation of the first argument in a method call.
-Arguments after the first one are checked by Layout/AlignArguments,
+Arguments after the first one are checked by Layout/ArgumentAlignment,
 not by this cop.
 
 For indenting the first parameter of method *definitions*, check out
-Layout/IndentFirstParameter.
+Layout/FirstParameterIndentation.
 
 ### Examples
 
@@ -2319,15 +1882,15 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_for_inner_method_call_in_parentheses` | `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentFirstArrayElement
+## Layout/FirstArrayElementIndentation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Enabled | Yes | Yes  | 0.68 | 0.77
 
 This cop checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
-The other elements' indentations are handled by the AlignArray cop.
+The other elements' indentations are handled by the ArrayAlignment cop.
 
 By default, array literals that are arguments in a method call with
 parentheses, and where the opening square bracket of the array is on the
@@ -2348,7 +1911,7 @@ styles are 'consistent' and 'align_brackets'. Here are examples:
 ```ruby
 # The `special_inside_parentheses` style enforces that the first
 # element in an array literal where the opening bracket and first
-# element are on seprate lines is indented one step (two spaces) more
+# element are on separate lines is indented one step (two spaces) more
 # than the position inside the opening parenthesis.
 
 #bad
@@ -2372,7 +1935,7 @@ but_in_a_method_call([
 ```ruby
 # The `consistent` style enforces that the first element in an array
 # literal where the opening bracket and the first element are on
-# seprate lines is indented the same as an array literal which is not
+# separate lines is indented the same as an array literal which is not
 # defined inside a method call.
 
 #bad
@@ -2418,15 +1981,37 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_brackets`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentFirstHashElement
+## Layout/FirstArrayElementLineBreak
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.68 | -
+Disabled | Yes | Yes  | 0.49 | -
+
+This cop checks for a line break before the first element in a
+multi-line array.
+
+### Examples
+
+```ruby
+# bad
+[ :a,
+  :b]
+
+# good
+[
+  :a,
+  :b]
+```
+
+## Layout/FirstHashElementIndentation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.68 | 0.77
 
 This cop checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
-other keys' indentations are handled by the AlignHash cop.
+other keys' indentations are handled by the HashAlignment cop.
 
 By default, Hash literals that are arguments in a method call with
 parentheses, and where the opening curly brace of the hash is on the
@@ -2515,18 +2100,98 @@ Name | Default value | Configurable values
 EnforcedStyle | `special_inside_parentheses` | `special_inside_parentheses`, `consistent`, `align_braces`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentFirstParameter
+## Layout/FirstHashElementLineBreak
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.68
+Disabled | Yes | Yes  | 0.49 | -
+
+This cop checks for a line break before the first element in a
+multi-line hash.
+
+### Examples
+
+```ruby
+# bad
+{ a: 1,
+  b: 2}
+
+# good
+{
+  a: 1,
+  b: 2 }
+```
+
+## Layout/FirstMethodArgumentLineBreak
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.49 | -
+
+This cop checks for a line break before the first argument in a
+multi-line method call.
+
+### Examples
+
+```ruby
+# bad
+method(foo, bar,
+  baz)
+
+# good
+method(
+  foo, bar,
+  baz)
+
+# ignored
+method foo, bar,
+  baz
+```
+
+## Layout/FirstMethodParameterLineBreak
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.49 | -
+
+This cop checks for a line break before the first parameter in a
+multi-line method parameter definition.
+
+### Examples
+
+```ruby
+# bad
+def method(foo, bar,
+    baz)
+  do_something
+end
+
+# good
+def method(
+    foo, bar,
+    baz)
+  do_something
+end
+
+# ignored
+def method foo,
+    bar
+  do_something
+end
+```
+
+## Layout/FirstParameterIndentation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.77
 
 This cop checks the indentation of the first parameter in a method
 definition. Parameters after the first one are checked by
-Layout/AlignParameters, not by this cop.
+Layout/ParameterAlignment, not by this cop.
 
 For indenting the first argument of method *calls*, check out
-Layout/IndentFirstArgument, which supports options related to
+Layout/FirstArgumentIndentation, which supports options related to
 nesting that are irrelevant for method *definitions*.
 
 ### Examples
@@ -2573,20 +2238,289 @@ Name | Default value | Configurable values
 EnforcedStyle | `consistent` | `consistent`, `align_parentheses`
 IndentationWidth | `<none>` | Integer
 
-## Layout/IndentHeredoc
+## Layout/HashAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.69
+Enabled | Yes | Yes  | 0.49 | 0.77
+
+Check that the keys, separators, and values of a multi-line hash
+literal are aligned according to configuration. The configuration
+options are:
+
+  - key (left align keys, one space before hash rockets and values)
+  - separator (align hash rockets and colons, right align keys)
+  - table (left align keys, hash rockets, and values)
+
+The treatment of hashes passed as the last argument to a method call
+can also be configured. The options are:
+
+  - always_inspect
+  - always_ignore
+  - ignore_implicit (without curly braces)
+
+Alternatively you can specify multiple allowed styles. That's done by
+passing a list of styles to EnforcedStyles.
+
+### Examples
+
+#### EnforcedHashRocketStyle: key (default)
+
+```ruby
+# bad
+{
+  :foo => bar,
+   :ba => baz
+}
+{
+  :foo => bar,
+  :ba  => baz
+}
+
+# good
+{
+  :foo => bar,
+  :ba => baz
+}
+```
+#### EnforcedHashRocketStyle: separator
+
+```ruby
+# bad
+{
+  :foo => bar,
+  :ba => baz
+}
+{
+  :foo => bar,
+  :ba  => baz
+}
+
+# good
+{
+  :foo => bar,
+   :ba => baz
+}
+```
+#### EnforcedHashRocketStyle: table
+
+```ruby
+# bad
+{
+  :foo => bar,
+   :ba => baz
+}
+
+# good
+{
+  :foo => bar,
+  :ba  => baz
+}
+```
+#### EnforcedColonStyle: key (default)
+
+```ruby
+# bad
+{
+  foo: bar,
+   ba: baz
+}
+{
+  foo: bar,
+  ba:  baz
+}
+
+# good
+{
+  foo: bar,
+  ba: baz
+}
+```
+#### EnforcedColonStyle: separator
+
+```ruby
+# bad
+{
+  foo: bar,
+  ba: baz
+}
+
+# good
+{
+  foo: bar,
+   ba: baz
+}
+```
+#### EnforcedColonStyle: table
+
+```ruby
+# bad
+{
+  foo: bar,
+  ba: baz
+}
+
+# good
+{
+  foo: bar,
+  ba:  baz
+}
+```
+#### EnforcedLastArgumentHashStyle: always_inspect (default)
+
+```ruby
+# Inspect both implicit and explicit hashes.
+
+# bad
+do_something(foo: 1,
+  bar: 2)
+
+# bad
+do_something({foo: 1,
+  bar: 2})
+
+# good
+do_something(foo: 1,
+             bar: 2)
+
+# good
+do_something(
+  foo: 1,
+  bar: 2
+)
+
+# good
+do_something({foo: 1,
+              bar: 2})
+
+# good
+do_something({
+  foo: 1,
+  bar: 2
+})
+```
+#### EnforcedLastArgumentHashStyle: always_ignore
+
+```ruby
+# Ignore both implicit and explicit hashes.
+
+# good
+do_something(foo: 1,
+  bar: 2)
+
+# good
+do_something({foo: 1,
+  bar: 2})
+```
+#### EnforcedLastArgumentHashStyle: ignore_implicit
+
+```ruby
+# Ignore only implicit hashes.
+
+# bad
+do_something({foo: 1,
+  bar: 2})
+
+# good
+do_something(foo: 1,
+  bar: 2)
+```
+#### EnforcedLastArgumentHashStyle: ignore_explicit
+
+```ruby
+# Ignore only explicit hashes.
+
+# bad
+do_something(foo: 1,
+  bar: 2)
+
+# good
+do_something({foo: 1,
+  bar: 2})
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedHashRocketStyle | `key` | `key`, `separator`, `table`
+EnforcedColonStyle | `key` | `key`, `separator`, `table`
+EnforcedLastArgumentHashStyle | `always_inspect` | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
+
+## Layout/HeredocArgumentClosingParenthesis
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.68 | -
+
+This cop checks for the placement of the closing parenthesis
+in a method call that passes a HEREDOC string as an argument.
+It should be placed at the end of the line containing the
+opening HEREDOC tag.
+
+### Examples
+
+```ruby
+# bad
+
+   foo(<<-SQL
+     bar
+   SQL
+   )
+
+   foo(<<-SQL, 123, <<-NOSQL,
+     bar
+   SQL
+     baz
+   NOSQL
+   )
+
+   foo(
+     bar(<<-SQL
+       baz
+     SQL
+     ),
+     123,
+   )
+
+# good
+
+   foo(<<-SQL)
+     bar
+   SQL
+
+   foo(<<-SQL, 123, <<-NOSQL)
+     bar
+   SQL
+     baz
+   NOSQL
+
+   foo(
+     bar(<<-SQL),
+       baz
+     SQL
+     123,
+   )
+```
+
+### References
+
+* [https://rubystyle.guide#heredoc-argument-closing-parentheses](https://rubystyle.guide#heredoc-argument-closing-parentheses)
+
+## Layout/HeredocIndentation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.77
 
 This cop checks the indentation of the here document bodies. The bodies
 are indented one step.
 In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
 use the older rubies, you should introduce some library to your project
 (e.g. ActiveSupport, Powerpack or Unindent).
-Note: When `Metrics/LineLength`'s `AllowHeredoc` is false (not default),
+Note: When `Layout/LineLength`'s `AllowHeredoc` is false (not default),
       this cop does not add any offenses for long here documents to
-      avoid `Metrics/LineLength`'s offenses.
+      avoid `Layout/LineLength`'s offenses.
 
 ### Examples
 
@@ -2871,39 +2805,6 @@ class A
 end
 ```
 
-## Layout/LeadingBlankLines
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.57 | -
-
-This cop checks for unnecessary leading blank lines at the beginning
-of a file.
-
-### Examples
-
-```ruby
-# bad
-# (start of file)
-
-class Foo
-end
-
-# bad
-# (start of file)
-
-# a comment
-
-# good
-# (start of file)
-class Foo
-end
-
-# good
-# (start of file)
-# a comment
-```
-
 ## Layout/LeadingCommentSpace
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2945,16 +2846,144 @@ or rackup options.
 # Another line of comment
 #*
 ```
+#### AllowGemfileRubyComment: false (default)
+
+```ruby
+# bad
+
+#ruby=2.7.0
+#ruby-gemset=myproject
+```
+#### AllowGemfileRubyComment: true
+
+```ruby
+# good
+
+#ruby=2.7.0
+#ruby-gemset=myproject
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowDoxygenCommentStyle | `false` | Boolean
+AllowGemfileRubyComment | `false` | Boolean
 
 ### References
 
 * [https://rubystyle.guide#hash-space](https://rubystyle.guide#hash-space)
+
+## Layout/LeadingEmptyLines
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.57 | 0.77
+
+This cop checks for unnecessary leading blank lines at the beginning
+of a file.
+
+### Examples
+
+```ruby
+# bad
+# (start of file)
+
+class Foo
+end
+
+# bad
+# (start of file)
+
+# a comment
+
+# good
+# (start of file)
+class Foo
+end
+
+# good
+# (start of file)
+# a comment
+```
+
+## Layout/LineLength
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.25 | 0.78
+
+This cop checks the length of lines in the source code.
+The maximum length is configurable.
+The tab size is configured in the `IndentationWidth`
+of the `Layout/Tab` cop.
+It also ignores a shebang line by default.
+
+This cop has some autocorrection capabilities.
+It can programmatically shorten certain long lines by
+inserting line breaks into expressions that can be safely
+split across lines. These include arrays, hashes, and
+method calls with argument lists.
+
+If autocorrection is enabled, the following Layout cops
+are recommended to further format the broken lines.
+(Many of these are enabled by default.)
+
+  - ArgumentAlignment
+  - BlockAlignment
+  - BlockDelimiters
+  - BlockEndNewline
+  - ClosingParenthesisIndentation
+  - FirstArgumentIndentation
+  - FirstArrayElementIndentation
+  - FirstHashElementIndentation
+  - FirstParameterIndentation
+  - HashAlignment
+  - IndentationWidth
+  - MultilineArrayLineBreaks
+  - MultilineBlockLayout
+  - MultilineHashBraceLayout
+  - MultilineHashKeyLineBreaks
+  - MultilineMethodArgumentLineBreaks
+  - ParameterAlignment
+
+Together, these cops will pretty print hashes, arrays,
+method calls, etc. For example, let's say the max columns
+is 25:
+
+### Examples
+
+```ruby
+# bad
+{foo: "0000000000", bar: "0000000000", baz: "0000000000"}
+
+# good
+{foo: "0000000000",
+bar: "0000000000", baz: "0000000000"}
+
+# good (with recommended cops enabled)
+{
+  foo: "0000000000",
+  bar: "0000000000",
+  baz: "0000000000",
+}
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AutoCorrect | `false` | Boolean
+Max | `80` | Integer
+AllowHeredoc | `true` | Boolean
+AllowURI | `true` | Boolean
+URISchemes | `http`, `https` | Array
+IgnoreCopDirectives | `true` | Boolean
+IgnoredPatterns | `[]` | Array
+
+### References
+
+* [https://rubystyle.guide#80-character-limits](https://rubystyle.guide#80-character-limits)
 
 ## Layout/MultilineArrayBraceLayout
 
@@ -3694,6 +3723,96 @@ Name | Default value | Configurable values
 EnforcedStyle | `aligned` | `aligned`, `indented`
 IndentationWidth | `<none>` | Integer
 
+## Layout/ParameterAlignment
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.77
+
+Here we check if the parameters on a multi-line method call or
+definition are aligned.
+
+To set the alignment of the first argument, use the cop
+FirstParameterIndentation.
+
+### Examples
+
+#### EnforcedStyle: with_first_parameter (default)
+
+```ruby
+# good
+
+def foo(bar,
+        baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
+
+# bad
+
+def foo(bar,
+     baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
+```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+def foo(bar,
+  baz)
+  123
+end
+
+def foo(
+  bar,
+  baz
+)
+  123
+end
+
+# bad
+
+def foo(bar,
+        baz)
+  123
+end
+
+# bad
+
+def foo(
+  bar,
+     baz)
+  123
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_parameter` | `with_first_parameter`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
+
+### References
+
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
+
 ## Layout/RescueEnsureAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -3962,8 +4081,12 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | -
 
-Checks that operators have space around them, except for **
-which should not have surrounding space.
+Checks that operators have space around them, except for ** which
+should or shouldn't have surrounding space depending on configuration.
+
+This cop has `AllowForAlignment` option. When `true`, allows most
+uses of extra spacing if the intent is to align with an operator on
+the previous or next line, not counting empty lines or comment lines.
 
 ### Examples
 
@@ -3972,13 +4095,47 @@ which should not have surrounding space.
 total = 3*4
 "apple"+"juice"
 my_number = 38/4
-a ** b
 
 # good
 total = 3 * 4
 "apple" + "juice"
 my_number = 38 / 4
+```
+#### AllowForAlignment: true (default)
+
+```ruby
+# good
+{
+  1 =>  2,
+  11 => 3
+}
+```
+#### AllowForAlignment: false
+
+```ruby
+# bad
+{
+  1 =>  2,
+  11 => 3
+}
+```
+#### EnforcedStyleForExponentOperator: no_space (default)
+
+```ruby
+# bad
+a ** b
+
+# good
 a**b
+```
+#### EnforcedStyleForExponentOperator: space
+
+```ruby
+# bad
+a**b
+
+# good
+a ** b
 ```
 
 ### Configurable attributes
@@ -3986,6 +4143,7 @@ a**b
 Name | Default value | Configurable values
 --- | --- | ---
 AllowForAlignment | `true` | Boolean
+EnforcedStyleForExponentOperator | `no_space` | `space`, `no_space`
 
 ### References
 
@@ -4709,11 +4867,11 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 
-## Layout/TrailingBlankLines
+## Layout/TrailingEmptyLines
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | -
+Enabled | Yes | Yes  | 0.49 | 0.77
 
 This cop looks for trailing blank lines and a final newline in the
 source code.

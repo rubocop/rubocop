@@ -1,4 +1,4 @@
-## Cops
+# Cops
 
 In RuboCop lingo the various checks performed on the code are called cops.
 Each cop is responsible for detecting one particular offense. There are several
@@ -10,17 +10,17 @@ enforce different coding conventions.
 
 You can also load [custom cops](extensions.md#custom-cops).
 
-### Style
+## Style
 
 Style cops check for stylistic consistency of your code. Many of the them are
 based on the [Ruby Style Guide](https://rubystyle.guide).
 
-### Layout
+## Layout
 
 Layout cops inspect your code for consistent use of indentation, alignment,
 and white space.
 
-### Lint
+## Lint
 
 Lint cops check for ambiguities and possible errors in your code.
 
@@ -38,7 +38,7 @@ enabled Lint cops plus a selection of other cops.
 
 Disabling Lint cops is generally a bad idea.
 
-### Metrics
+## Metrics
 
 Metrics cops deal with properties of the source code that can be measured,
 such as class length, method length, etc. Generally speaking, they have a
@@ -46,50 +46,49 @@ configuration parameter called `Max` and when running
 `rubocop --auto-gen-config`, this parameter will be set to the highest value
 found for the inspected code.
 
-### Naming
+## Naming
 
 Naming cops check for naming issue of your code, such as method name, constant
 name, file name, etc.
 
-### Security
+## Security
 
 Security cops checks for method calls and constructs which are known to be
 associated with potential security issues.
 
-### Bundler
+## Bundler
 
 Bundler cops check for style and bad practices in Bundler files, e.g. `Gemfile`.
 
-### Gemspec
+## Gemspec
 
 Gemspec cops check for style and bad practices in gemspec files, e.g. `rubocop.gemspec`.
 
-### Available cops
+## Available cops
 
 In the following section you find all available cops:
 
 <!-- START_COP_LIST -->
-#### Department [Bundler](cops_bundler.md)
+### Department [Bundler](cops_bundler.md)
 
 * [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)
 * [Bundler/GemComment](cops_bundler.md#bundlergemcomment)
 * [Bundler/InsecureProtocolSource](cops_bundler.md#bundlerinsecureprotocolsource)
 * [Bundler/OrderedGems](cops_bundler.md#bundlerorderedgems)
 
-#### Department [Gemspec](cops_gemspec.md)
+### Department [Gemspec](cops_gemspec.md)
 
 * [Gemspec/DuplicatedAssignment](cops_gemspec.md#gemspecduplicatedassignment)
 * [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 * [Gemspec/RequiredRubyVersion](cops_gemspec.md#gemspecrequiredrubyversion)
 * [Gemspec/RubyVersionGlobalsUsage](cops_gemspec.md#gemspecrubyversionglobalsusage)
 
-#### Department [Layout](cops_layout.md)
+### Department [Layout](cops_layout.md)
 
 * [Layout/AccessModifierIndentation](cops_layout.md#layoutaccessmodifierindentation)
-* [Layout/AlignArguments](cops_layout.md#layoutalignarguments)
-* [Layout/AlignArray](cops_layout.md#layoutalignarray)
-* [Layout/AlignHash](cops_layout.md#layoutalignhash)
-* [Layout/AlignParameters](cops_layout.md#layoutalignparameters)
+* [Layout/ArgumentAlignment](cops_layout.md#layoutargumentalignment)
+* [Layout/ArrayAlignment](cops_layout.md#layoutarrayalignment)
+* [Layout/AssignmentIndentation](cops_layout.md#layoutassignmentindentation)
 * [Layout/BlockAlignment](cops_layout.md#layoutblockalignment)
 * [Layout/BlockEndNewline](cops_layout.md#layoutblockendnewline)
 * [Layout/CaseIndentation](cops_layout.md#layoutcaseindentation)
@@ -117,22 +116,23 @@ In the following section you find all available cops:
 * [Layout/EndAlignment](cops_layout.md#layoutendalignment)
 * [Layout/EndOfLine](cops_layout.md#layoutendofline)
 * [Layout/ExtraSpacing](cops_layout.md#layoutextraspacing)
+* [Layout/FirstArgumentIndentation](cops_layout.md#layoutfirstargumentindentation)
+* [Layout/FirstArrayElementIndentation](cops_layout.md#layoutfirstarrayelementindentation)
 * [Layout/FirstArrayElementLineBreak](cops_layout.md#layoutfirstarrayelementlinebreak)
+* [Layout/FirstHashElementIndentation](cops_layout.md#layoutfirsthashelementindentation)
 * [Layout/FirstHashElementLineBreak](cops_layout.md#layoutfirsthashelementlinebreak)
 * [Layout/FirstMethodArgumentLineBreak](cops_layout.md#layoutfirstmethodargumentlinebreak)
 * [Layout/FirstMethodParameterLineBreak](cops_layout.md#layoutfirstmethodparameterlinebreak)
+* [Layout/FirstParameterIndentation](cops_layout.md#layoutfirstparameterindentation)
+* [Layout/HashAlignment](cops_layout.md#layouthashalignment)
 * [Layout/HeredocArgumentClosingParenthesis](cops_layout.md#layoutheredocargumentclosingparenthesis)
-* [Layout/IndentAssignment](cops_layout.md#layoutindentassignment)
-* [Layout/IndentFirstArgument](cops_layout.md#layoutindentfirstargument)
-* [Layout/IndentFirstArrayElement](cops_layout.md#layoutindentfirstarrayelement)
-* [Layout/IndentFirstHashElement](cops_layout.md#layoutindentfirsthashelement)
-* [Layout/IndentFirstParameter](cops_layout.md#layoutindentfirstparameter)
-* [Layout/IndentHeredoc](cops_layout.md#layoutindentheredoc)
+* [Layout/HeredocIndentation](cops_layout.md#layoutheredocindentation)
 * [Layout/IndentationConsistency](cops_layout.md#layoutindentationconsistency)
 * [Layout/IndentationWidth](cops_layout.md#layoutindentationwidth)
 * [Layout/InitialIndentation](cops_layout.md#layoutinitialindentation)
-* [Layout/LeadingBlankLines](cops_layout.md#layoutleadingblanklines)
 * [Layout/LeadingCommentSpace](cops_layout.md#layoutleadingcommentspace)
+* [Layout/LeadingEmptyLines](cops_layout.md#layoutleadingemptylines)
+* [Layout/LineLength](cops_layout.md#layoutlinelength)
 * [Layout/MultilineArrayBraceLayout](cops_layout.md#layoutmultilinearraybracelayout)
 * [Layout/MultilineArrayLineBreaks](cops_layout.md#layoutmultilinearraylinebreaks)
 * [Layout/MultilineAssignmentLayout](cops_layout.md#layoutmultilineassignmentlayout)
@@ -144,6 +144,7 @@ In the following section you find all available cops:
 * [Layout/MultilineMethodCallIndentation](cops_layout.md#layoutmultilinemethodcallindentation)
 * [Layout/MultilineMethodDefinitionBraceLayout](cops_layout.md#layoutmultilinemethoddefinitionbracelayout)
 * [Layout/MultilineOperationIndentation](cops_layout.md#layoutmultilineoperationindentation)
+* [Layout/ParameterAlignment](cops_layout.md#layoutparameteralignment)
 * [Layout/RescueEnsureAlignment](cops_layout.md#layoutrescueensurealignment)
 * [Layout/SpaceAfterColon](cops_layout.md#layoutspaceaftercolon)
 * [Layout/SpaceAfterComma](cops_layout.md#layoutspaceaftercomma)
@@ -170,10 +171,10 @@ In the following section you find all available cops:
 * [Layout/SpaceInsideReferenceBrackets](cops_layout.md#layoutspaceinsidereferencebrackets)
 * [Layout/SpaceInsideStringInterpolation](cops_layout.md#layoutspaceinsidestringinterpolation)
 * [Layout/Tab](cops_layout.md#layouttab)
-* [Layout/TrailingBlankLines](cops_layout.md#layouttrailingblanklines)
+* [Layout/TrailingEmptyLines](cops_layout.md#layouttrailingemptylines)
 * [Layout/TrailingWhitespace](cops_layout.md#layouttrailingwhitespace)
 
-#### Department [Lint](cops_lint.md)
+### Department [Lint](cops_lint.md)
 
 * [Lint/AmbiguousBlockAssociation](cops_lint.md#lintambiguousblockassociation)
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
@@ -186,8 +187,8 @@ In the following section you find all available cops:
 * [Lint/DeprecatedClassMethods](cops_lint.md#lintdeprecatedclassmethods)
 * [Lint/DisjunctiveAssignmentInConstructor](cops_lint.md#lintdisjunctiveassignmentinconstructor)
 * [Lint/DuplicateCaseCondition](cops_lint.md#lintduplicatecasecondition)
+* [Lint/DuplicateHashKey](cops_lint.md#lintduplicatehashkey)
 * [Lint/DuplicateMethods](cops_lint.md#lintduplicatemethods)
-* [Lint/DuplicatedKey](cops_lint.md#lintduplicatedkey)
 * [Lint/EachWithObjectArgument](cops_lint.md#linteachwithobjectargument)
 * [Lint/ElseLayout](cops_lint.md#lintelselayout)
 * [Lint/EmptyEnsure](cops_lint.md#lintemptyensure)
@@ -200,7 +201,6 @@ In the following section you find all available cops:
 * [Lint/FlipFlop](cops_lint.md#lintflipflop)
 * [Lint/FloatOutOfRange](cops_lint.md#lintfloatoutofrange)
 * [Lint/FormatParameterMismatch](cops_lint.md#lintformatparametermismatch)
-* [Lint/HandleExceptions](cops_lint.md#linthandleexceptions)
 * [Lint/HeredocMethodCallPosition](cops_lint.md#lintheredocmethodcallposition)
 * [Lint/ImplicitStringConcatenation](cops_lint.md#lintimplicitstringconcatenation)
 * [Lint/IneffectiveAccessModifier](cops_lint.md#lintineffectiveaccessmodifier)
@@ -210,10 +210,11 @@ In the following section you find all available cops:
 * [Lint/LiteralInInterpolation](cops_lint.md#lintliteralininterpolation)
 * [Lint/Loop](cops_lint.md#lintloop)
 * [Lint/MissingCopEnableDirective](cops_lint.md#lintmissingcopenabledirective)
-* [Lint/MultipleCompare](cops_lint.md#lintmultiplecompare)
+* [Lint/MultipleComparison](cops_lint.md#lintmultiplecomparison)
 * [Lint/NestedMethodDefinition](cops_lint.md#lintnestedmethoddefinition)
 * [Lint/NestedPercentLiteral](cops_lint.md#lintnestedpercentliteral)
 * [Lint/NextWithoutAccumulator](cops_lint.md#lintnextwithoutaccumulator)
+* [Lint/NonDeterministicRequireOrder](cops_lint.md#lintnondeterministicrequireorder)
 * [Lint/NonLocalExitFromIterator](cops_lint.md#lintnonlocalexitfromiterator)
 * [Lint/NumberConversion](cops_lint.md#lintnumberconversion)
 * [Lint/OrderedMagicComments](cops_lint.md#lintorderedmagiccomments)
@@ -226,6 +227,7 @@ In the following section you find all available cops:
 * [Lint/RedundantCopEnableDirective](cops_lint.md#lintredundantcopenabledirective)
 * [Lint/RedundantRequireStatement](cops_lint.md#lintredundantrequirestatement)
 * [Lint/RedundantSplatExpansion](cops_lint.md#lintredundantsplatexpansion)
+* [Lint/RedundantStringCoercion](cops_lint.md#lintredundantstringcoercion)
 * [Lint/RedundantWithIndex](cops_lint.md#lintredundantwithindex)
 * [Lint/RedundantWithObject](cops_lint.md#lintredundantwithobject)
 * [Lint/RegexpAsCondition](cops_lint.md#lintregexpascondition)
@@ -241,7 +243,7 @@ In the following section you find all available cops:
 * [Lint/ShadowedArgument](cops_lint.md#lintshadowedargument)
 * [Lint/ShadowedException](cops_lint.md#lintshadowedexception)
 * [Lint/ShadowingOuterLocalVariable](cops_lint.md#lintshadowingouterlocalvariable)
-* [Lint/StringConversionInInterpolation](cops_lint.md#lintstringconversionininterpolation)
+* [Lint/SuppressedException](cops_lint.md#lintsuppressedexception)
 * [Lint/Syntax](cops_lint.md#lintsyntax)
 * [Lint/ToJSON](cops_lint.md#linttojson)
 * [Lint/UnderscorePrefixedVariableName](cops_lint.md#lintunderscoreprefixedvariablename)
@@ -258,28 +260,28 @@ In the following section you find all available cops:
 * [Lint/UselessSetterCall](cops_lint.md#lintuselesssettercall)
 * [Lint/Void](cops_lint.md#lintvoid)
 
-#### Department [Metrics](cops_metrics.md)
+### Department [Metrics](cops_metrics.md)
 
 * [Metrics/AbcSize](cops_metrics.md#metricsabcsize)
 * [Metrics/BlockLength](cops_metrics.md#metricsblocklength)
 * [Metrics/BlockNesting](cops_metrics.md#metricsblocknesting)
 * [Metrics/ClassLength](cops_metrics.md#metricsclasslength)
 * [Metrics/CyclomaticComplexity](cops_metrics.md#metricscyclomaticcomplexity)
-* [Metrics/LineLength](cops_metrics.md#metricslinelength)
 * [Metrics/MethodLength](cops_metrics.md#metricsmethodlength)
 * [Metrics/ModuleLength](cops_metrics.md#metricsmodulelength)
 * [Metrics/ParameterLists](cops_metrics.md#metricsparameterlists)
 * [Metrics/PerceivedComplexity](cops_metrics.md#metricsperceivedcomplexity)
 
-#### Department [Migration](cops_migration.md)
+### Department [Migration](cops_migration.md)
 
 * [Migration/DepartmentName](cops_migration.md#migrationdepartmentname)
 
-#### Department [Naming](cops_naming.md)
+### Department [Naming](cops_naming.md)
 
 * [Naming/AccessorMethodName](cops_naming.md#namingaccessormethodname)
 * [Naming/AsciiIdentifiers](cops_naming.md#namingasciiidentifiers)
 * [Naming/BinaryOperatorParameterName](cops_naming.md#namingbinaryoperatorparametername)
+* [Naming/BlockParameterName](cops_naming.md#namingblockparametername)
 * [Naming/ClassAndModuleCamelCase](cops_naming.md#namingclassandmodulecamelcase)
 * [Naming/ConstantName](cops_naming.md#namingconstantname)
 * [Naming/FileName](cops_naming.md#namingfilename)
@@ -287,14 +289,13 @@ In the following section you find all available cops:
 * [Naming/HeredocDelimiterNaming](cops_naming.md#namingheredocdelimiternaming)
 * [Naming/MemoizedInstanceVariableName](cops_naming.md#namingmemoizedinstancevariablename)
 * [Naming/MethodName](cops_naming.md#namingmethodname)
+* [Naming/MethodParameterName](cops_naming.md#namingmethodparametername)
 * [Naming/PredicateName](cops_naming.md#namingpredicatename)
 * [Naming/RescuedExceptionsVariableName](cops_naming.md#namingrescuedexceptionsvariablename)
-* [Naming/UncommunicativeBlockParamName](cops_naming.md#naminguncommunicativeblockparamname)
-* [Naming/UncommunicativeMethodParamName](cops_naming.md#naminguncommunicativemethodparamname)
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
 
-#### Department [Security](cops_security.md)
+### Department [Security](cops_security.md)
 
 * [Security/Eval](cops_security.md#securityeval)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
@@ -302,7 +303,7 @@ In the following section you find all available cops:
 * [Security/Open](cops_security.md#securityopen)
 * [Security/YAMLLoad](cops_security.md#securityyamlload)
 
-#### Department [Style](cops_style.md)
+### Department [Style](cops_style.md)
 
 * [Style/AccessModifierDeclarations](cops_style.md#styleaccessmodifierdeclarations)
 * [Style/Alias](cops_style.md#stylealias)
@@ -315,7 +316,6 @@ In the following section you find all available cops:
 * [Style/BeginBlock](cops_style.md#stylebeginblock)
 * [Style/BlockComments](cops_style.md#styleblockcomments)
 * [Style/BlockDelimiters](cops_style.md#styleblockdelimiters)
-* [Style/BracesAroundHashParameters](cops_style.md#stylebracesaroundhashparameters)
 * [Style/CaseEquality](cops_style.md#stylecaseequality)
 * [Style/CharacterLiteral](cops_style.md#stylecharacterliteral)
 * [Style/ClassAndModuleChildren](cops_style.md#styleclassandmodulechildren)
@@ -358,7 +358,10 @@ In the following section you find all available cops:
 * [Style/FrozenStringLiteralComment](cops_style.md#stylefrozenstringliteralcomment)
 * [Style/GlobalVars](cops_style.md#styleglobalvars)
 * [Style/GuardClause](cops_style.md#styleguardclause)
+* [Style/HashEachMethods](cops_style.md#stylehasheachmethods)
 * [Style/HashSyntax](cops_style.md#stylehashsyntax)
+* [Style/HashTransformKeys](cops_style.md#stylehashtransformkeys)
+* [Style/HashTransformValues](cops_style.md#stylehashtransformvalues)
 * [Style/IdenticalConditionalBranches](cops_style.md#styleidenticalconditionalbranches)
 * [Style/IfInsideElse](cops_style.md#styleifinsideelse)
 * [Style/IfUnlessModifier](cops_style.md#styleifunlessmodifier)

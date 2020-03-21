@@ -5,7 +5,7 @@ RSpec.describe RuboCop::ProcessedSource do
 
   subject(:processed_source) { described_class.new(source, ruby_version, path) }
 
-  let(:ruby_version) { RuboCop::ConfigValidator::KNOWN_RUBIES.last }
+  let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
   let(:source) { <<~RUBY }
     # an awesome method

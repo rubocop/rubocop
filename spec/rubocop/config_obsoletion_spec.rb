@@ -15,48 +15,66 @@ RSpec.describe RuboCop::ConfigObsoletion do
       let(:hash) do
         {
           # Renamed cops
+          'Layout/AlignArguments' => { 'Enabled': true },
+          'Layout/AlignArray' => { 'Enabled': true },
+          'Layout/AlignHash' => { 'Enabled': true },
+          'Layout/AlignParameters' => { 'Enabled': true },
+          'Layout/FirstParameterIndentation' => { 'Enabled': true },
+          'Layout/IndentArray' => { 'Enabled': true },
+          'Layout/IndentAssignment' => { 'Enabled': true },
+          'Layout/IndentFirstArgument' => { 'Enabled': true },
+          'Layout/IndentFirstArrayElement' => { 'Enabled': true },
+          'Layout/IndentFirstHashElement' => { 'Enabled': true },
+          'Layout/IndentFirstParameter' => { 'Enabled': true },
+          'Layout/IndentHash' => { 'Enabled': true },
+          'Layout/IndentHeredoc' => { 'Enabled': true },
+          'Layout/LeadingBlankLines' => { 'Enabled': true },
+          'Layout/TrailingBlankLines' => { 'Enabled': true },
+          'Lint/DuplicatedKey' => { 'Enabled': true },
+          'Lint/HandleExceptions' => { 'Enabled': true },
+          'Lint/MultipleCompare' => { 'Enabled': true },
+          'Lint/StringConversionInInterpolation' => { 'Enabled': true },
           'Lint/UnneededCopDisableDirective' => { 'Enabled': true },
           'Lint/UnneededCopEnableDirective' => { 'Enabled': true },
           'Lint/UnneededRequireStatement' => { 'Enabled': true },
           'Lint/UnneededSplatExpansion' => { 'Enabled': true },
-          'Style/SingleSpaceBeforeFirstArg' => { 'Enabled': true },
-          'Style/MethodCallParentheses' => { 'Enabled': true },
+          'Naming/UncommunicativeBlockParamName' => { 'Enabled': true },
+          'Naming/UncommunicativeMethodParamName' => { 'Enabled': true },
           'Style/DeprecatedHashMethods' => { 'Enabled': true },
+          'Style/MethodCallParentheses' => { 'Enabled': true },
           'Style/OpMethod' => { 'Enabled': true },
+          'Style/SingleSpaceBeforeFirstArg' => { 'Enabled': true },
           'Style/UnneededCapitalW' => { 'Enabled': true },
           'Style/UnneededCondition' => { 'Enabled': true },
           'Style/UnneededInterpolation' => { 'Enabled': true },
           'Style/UnneededPercentQ' => { 'Enabled': true },
           'Style/UnneededSort' => { 'Enabled': true },
-          'Layout/FirstParameterIndentation' => { 'Enabled': true },
-          'Layout/IndentArray' => { 'Enabled': true },
-          'Layout/IndentHash' => { 'Enabled': true },
           # Moved cops
-          'Lint/Eval' => { 'Enabled': true },
           'Lint/BlockAlignment' => { 'Enabled': true },
-          'Lint/EndAlignment' => { 'Enabled': true },
           'Lint/DefEndAlignment' => { 'Enabled': true },
+          'Lint/EndAlignment' => { 'Enabled': true },
+          'Lint/Eval' => { 'Enabled': true },
+          'Style/AccessorMethodName' => { 'Enabled': true },
+          'Style/AsciiIdentifiers' => { 'Enabled': true },
           'Style/ClassAndModuleCamelCase' => { 'Enabled': true },
           'Style/ConstantName' => { 'Enabled': true },
           'Style/FileName' => { 'Enabled': true },
+          'Style/FlipFlop' => { 'Enabled': true },
           'Style/MethodName' => { 'Enabled': true },
           'Style/PredicateName' => { 'Enabled': true },
           'Style/VariableName' => { 'Enabled': true },
           'Style/VariableNumber' => { 'Enabled': true },
-          'Style/FlipFlop' => { 'Enabled': true },
-          'Style/AccessorMethodName' => { 'Enabled': true },
-          'Style/AsciiIdentifiers' => { 'Enabled': true },
           # Removed cops
-          'Rails/DefaultScope' => { 'Enabled': true },
           'Layout/SpaceAfterControlKeyword' => { 'Enabled': true },
           'Layout/SpaceBeforeModifierKeyword' => { 'Enabled': true },
+          'Lint/InvalidCharacterLiteral' => { 'Enabled': true },
+          'Lint/RescueWithoutErrorClass' => { 'Enabled': true },
+          'Lint/SpaceBeforeFirstArg' => { 'Enabled': true },
+          'Rails/DefaultScope' => { 'Enabled': true },
           'Style/SpaceAfterControlKeyword' => { 'Enabled': true },
           'Style/SpaceBeforeModifierKeyword' => { 'Enabled': true },
           'Style/TrailingComma' => { 'Enabled': true },
           'Style/TrailingCommaInLiteral' => { 'Enabled': true },
-          'Lint/RescueWithoutErrorClass' => { 'Enabled': true },
-          'Lint/InvalidCharacterLiteral' => { 'Enabled': true },
-          'Lint/SpaceBeforeFirstArg' => { 'Enabled': true },
           # Split cops
           'Style/MethodMissing' => { 'Enabled': true }
         }
@@ -64,6 +82,42 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
       let(:expected_message) do
         <<~OUTPUT.chomp
+          The `Layout/AlignArguments` cop has been renamed to `Layout/ArgumentAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/AlignArray` cop has been renamed to `Layout/ArrayAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/AlignHash` cop has been renamed to `Layout/HashAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/AlignParameters` cop has been renamed to `Layout/ParameterAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentArray` cop has been renamed to `Layout/FirstArrayElementIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentAssignment` cop has been renamed to `Layout/AssignmentIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentFirstArgument` cop has been renamed to `Layout/FirstArgumentIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentFirstArrayElement` cop has been renamed to `Layout/FirstArrayElementIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentFirstHashElement` cop has been renamed to `Layout/FirstHashElementIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentFirstParameter` cop has been renamed to `Layout/FirstParameterIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentHash` cop has been renamed to `Layout/FirstHashElementIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentHeredoc` cop has been renamed to `Layout/HeredocIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/LeadingBlankLines` cop has been renamed to `Layout/LeadingEmptyLines`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/TrailingBlankLines` cop has been renamed to `Layout/TrailingEmptyLines`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/DuplicatedKey` cop has been renamed to `Lint/DuplicateHashKey`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/HandleExceptions` cop has been renamed to `Lint/SuppressedException`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/MultipleCompare` cop has been renamed to `Lint/MultipleComparison`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/StringConversionInInterpolation` cop has been renamed to `Lint/RedundantStringCoercion`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededCopDisableDirective` cop has been renamed to `Lint/RedundantCopDisableDirective`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededCopEnableDirective` cop has been renamed to `Lint/RedundantCopEnableDirective`.
@@ -72,13 +126,17 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededSplatExpansion` cop has been renamed to `Lint/RedundantSplatExpansion`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
+          The `Naming/UncommunicativeBlockParamName` cop has been renamed to `Naming/BlockParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/MethodCallParentheses` cop has been renamed to `Style/MethodCallWithoutArgsParentheses`.
+          The `Naming/UncommunicativeMethodParamName` cop has been renamed to `Naming/MethodParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/DeprecatedHashMethods` cop has been renamed to `Style/PreferredHashMethods`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/MethodCallParentheses` cop has been renamed to `Style/MethodCallWithoutArgsParentheses`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/OpMethod` cop has been renamed to `Naming/BinaryOperatorParameterName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededCapitalW` cop has been renamed to `Style/RedundantCapitalW`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -89,12 +147,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/UnneededPercentQ` cop has been renamed to `Style/RedundantPercentQ`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededSort` cop has been renamed to `Style/RedundantSort`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Layout/FirstParameterIndentation` cop has been renamed to `Layout/IndentFirstArgument`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Layout/IndentArray` cop has been renamed to `Layout/IndentFirstArrayElement`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Layout/IndentHash` cop has been renamed to `Layout/IndentFirstHashElement`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/Eval` cop has been moved to `Security/Eval`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -124,11 +176,13 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Rails/DefaultScope` cop has been removed.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceBeforeModifierKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/RescueWithoutErrorClass` cop has been removed. Please use `Style/RescueStandardError` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Rails/DefaultScope` cop has been removed.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -137,8 +191,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/TrailingComma` cop has been removed. Please use `Style/TrailingCommaInArguments`, `Style/TrailingCommaInArrayLiteral`, and/or `Style/TrailingCommaInHashLiteral` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/TrailingCommaInLiteral` cop has been removed. Please use `Style/TrailingCommaInArrayLiteral` and/or `Style/TrailingCommaInHashLiteral` instead.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/RescueWithoutErrorClass` cop has been removed. Please use `Style/RescueStandardError` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -207,9 +259,9 @@ RSpec.describe RuboCop::ConfigObsoletion do
           obsolete parameter AutoCorrectEncodingComment (for Style/Encoding) found in example/.rubocop.yml
           Style/Encoding no longer supports styles. The "never" behavior is always assumed.
           obsolete parameter MaxLineLength (for Style/IfUnlessModifier) found in example/.rubocop.yml
-          `Style/IfUnlessModifier: MaxLineLength` has been removed. Use `Metrics/LineLength: Max` instead
+          `Style/IfUnlessModifier: MaxLineLength` has been removed. Use `Layout/LineLength: Max` instead
           obsolete parameter MaxLineLength (for Style/WhileUntilModifier) found in example/.rubocop.yml
-          `Style/WhileUntilModifier: MaxLineLength` has been removed. Use `Metrics/LineLength: Max` instead
+          `Style/WhileUntilModifier: MaxLineLength` has been removed. Use `Layout/LineLength: Max` instead
           obsolete parameter RunRailsCops (for AllCops) found in example/.rubocop.yml
           Use the following configuration instead:
           Rails:

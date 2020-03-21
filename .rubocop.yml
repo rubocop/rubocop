@@ -60,7 +60,7 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedHashRocketStyle:
     - key
     - table
@@ -94,6 +94,10 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
+
+RSpec/FilePath:
+  Exclude:
+    - spec/rubocop/formatter/junit_formatter_spec.rb
 
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit

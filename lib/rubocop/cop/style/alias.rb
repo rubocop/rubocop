@@ -91,7 +91,7 @@ module RuboCop
             when :def, :defs
               return :dynamic
             when :block
-              return :instance_eval if parent.method_name == :instance_eval
+              return :instance_eval if parent.method?(:instance_eval)
 
               return :dynamic
             end

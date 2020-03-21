@@ -157,7 +157,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-Include | `**/*.gemspec`, `<none>` | Array
+Include | `**/*.gemspec` | Array
 
 ## Gemspec/RubyVersionGlobalsUsage
 
@@ -194,3 +194,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/*.gemspec` | Array
+
+### References
+
+* [https://rubystyle.guide#no-ruby-version-in-the-gemspec](https://rubystyle.guide#no-ruby-version-in-the-gemspec)

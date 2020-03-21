@@ -20,7 +20,7 @@ module RuboCop
         return if ignored_node?(node)
 
         end_loc = node.loc.end
-        return unless end_loc # Discard modifier forms of if/while/until.
+        return if accept_end_kw_alignment?(end_loc)
 
         matching = matching_ranges(end_loc, align_ranges)
 
@@ -47,6 +47,11 @@ module RuboCop
                           align_line: align_with.line,
                           align_col: align_with.column)
         add_offense(node, location: end_loc, message: msg)
+      end
+
+      def accept_end_kw_alignment?(end_loc)
+        end_loc.nil? || # Discard modifier forms of if/while/until.
+          processed_source.lines[end_loc.line - 1] !~ /\A[ \t]*end/
       end
 
       def style_parameter_name

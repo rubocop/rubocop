@@ -121,8 +121,14 @@ module RuboCop
       end
     end
 
+    def cached_result(file, team)
+      ResultCache.new(file, team, @options, @config_store)
+    end
+
     def file_offense_cache(file)
-      cache = ResultCache.new(file, @options, @config_store) if cached_run?
+      config = @config_store.for(file)
+      cache = cached_result(file, standby_team(config)) if cached_run?
+
       if cache&.valid?
         offenses = cache.load
         # If we're running --auto-correct and the cache says there are
@@ -208,7 +214,7 @@ module RuboCop
          @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
-        # need to do that processing and can not use caching.
+        # need to do that processing and cannot use caching.
         !@options[:auto_gen_config] &&
         # We can't cache results from code which is piped in to stdin
         !@options[:stdin]
@@ -358,6 +364,16 @@ module RuboCop
       else
         ProcessedSource.from_file(file, ruby_version)
       end
+    end
+
+    # A Cop::Team instance is stateful and may change when inspecting.
+    # The "standby" team for a given config is an initialized but
+    # otherwise dormant team that can be used for config- and option-
+    # level caching in ResultCache.
+    def standby_team(config)
+      @team_by_config ||= {}
+      @team_by_config[config.object_id] ||=
+        Cop::Team.new(mobilized_cop_classes(config), config, @options)
     end
   end
 end

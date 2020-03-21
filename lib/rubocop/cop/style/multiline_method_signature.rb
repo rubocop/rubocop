@@ -53,7 +53,7 @@ module RuboCop
         end
 
         def max_line_length
-          config.for_cop('Metrics/LineLength')['Max'] || 80
+          config.for_cop('Layout/LineLength')['Max'] || 80
         end
       end
     end

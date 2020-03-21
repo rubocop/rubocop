@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'shows help text' do
         begin
           options.parse(['--help'])
-        rescue SystemExit # rubocop:disable Lint/HandleExceptions
+        rescue SystemExit # rubocop:disable Lint/SuppressedException
         end
 
         expected_help = <<~OUTPUT
@@ -77,6 +77,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                  [fu]ubar
                                                  [h]tml
                                                  [j]son
+                                                 [ju]nit
                                                  [o]ffenses
                                                  [pa]cman
                                                  [p]rogress
@@ -131,7 +132,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'lists all builtin formatters' do
         begin
           options.parse(['--help'])
-        rescue SystemExit # rubocop:disable Lint/HandleExceptions
+        rescue SystemExit # rubocop:disable Lint/SuppressedException
         end
 
         option_sections = $stdout.string.lines.slice_before(/^\s*-/)
@@ -194,7 +195,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       context 'combined with --auto-correct' do
         it 'fails with an error message' do
-          msg = '-P/--parallel can not be combined with --auto-correct.'
+          msg = '-P/--parallel cannot be combined with --auto-correct.'
           expect { options.parse %w[--parallel --auto-correct] }
             .to raise_error(RuboCop::OptionArgumentError, msg)
         end
@@ -212,7 +213,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       context 'combined with --fail-fast' do
         it 'fails with an error message' do
-          msg = '-P/--parallel can not be combined with -F/--fail-fast.'
+          msg = '-P/--parallel cannot be combined with -F/--fail-fast.'
           expect { options.parse %w[--parallel --fail-fast] }
             .to raise_error(RuboCop::OptionArgumentError, msg)
         end

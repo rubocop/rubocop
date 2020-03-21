@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
 
   let(:config) do
     RuboCop::Config.new(
-      'Style/NestedParenthesizedCalls' => { 'Whitelist' => ['be'] }
+      'Style/NestedParenthesizedCalls' => { 'AllowedMethods' => ['be'] }
     )
   end
 
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
     end
   end
 
-  context 'on a whitelisted method' do
+  context 'on a permitted method' do
     it "doesn't register an offense" do
       expect_no_offenses('expect(obj).to(be true)')
     end
@@ -98,6 +98,20 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
   context 'on a call to a setter method' do
     it "doesn't register an offense" do
       expect_no_offenses('expect(object1.attr = 1).to eq 1')
+    end
+  end
+
+  context 'backslash newline in method call' do
+    let(:source) do
+      <<~RUBY
+        puts(nex \
+               5)
+      RUBY
+    end
+
+    it 'auto-corrects by adding parentheses' do
+      new_source = autocorrect_source(source.strip)
+      expect(new_source).to eq('puts(nex(5))')
     end
   end
 end

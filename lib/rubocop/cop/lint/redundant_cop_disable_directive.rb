@@ -19,9 +19,9 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   # rubocop:disable Metrics/LineLength
+      #   # rubocop:disable Layout/LineLength
       #   x += 1
-      #   # rubocop:enable Metrics/LineLength
+      #   # rubocop:enable Layout/LineLength
       #
       #   # good
       #   x += 1
@@ -213,7 +213,7 @@ module RuboCop
         end
 
         def matching_range(haystack, needle)
-          offset = (haystack.source =~ Regexp.new(Regexp.escape(needle)))
+          offset = haystack.source.index(needle)
           return unless offset
 
           offset += haystack.begin_pos

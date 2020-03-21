@@ -7,26 +7,38 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     { 'AllowBorderComment' => true, 'AllowMarginComment' => true }
   end
 
-  it 'registers an offense when using single line empty comment' do
+  it 'registers an offense and corrects using single line empty comment' do
     expect_offense(<<~RUBY)
       #
       ^ Source code comment is empty.
     RUBY
+
+    expect_correction(<<~RUBY)
+    RUBY
   end
 
-  it 'registers an offense when using multiline empty comments' do
+  it 'registers an offense and corrects using multiline empty comments' do
     expect_offense(<<~RUBY)
       #
       ^ Source code comment is empty.
       #
       ^ Source code comment is empty.
     RUBY
+
+    expect_correction(<<~RUBY)
+    RUBY
   end
 
-  it 'registers an offense when using an empty comment next to code' do
+  it 'registers an offense and corrects using an empty comment next to code' do
     expect_offense(<<~RUBY)
       def foo #
               ^ Source code comment is empty.
+        something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
         something
       end
     RUBY
@@ -70,17 +82,23 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
   context 'disallow border comment' do
     let(:cop_config) { { 'AllowBorderComment' => false } }
 
-    it 'registers an offense when using single line empty comment' do
+    it 'registers an offense and corrects using single line empty comment' do
       expect_offense(<<~RUBY)
         #
         ^ Source code comment is empty.
       RUBY
+
+      expect_correction(<<~RUBY)
+      RUBY
     end
 
-    it 'registers an offense when using border comment' do
+    it 'registers an offense and corrects using border comment' do
       expect_offense(<<~RUBY)
         #################################
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Source code comment is empty.
+      RUBY
+
+      expect_correction(<<~RUBY)
       RUBY
     end
   end
@@ -100,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
   context 'disallow margin comment' do
     let(:cop_config) { { 'AllowMarginComment' => false } }
 
-    it 'registers an offense when using margin comment' do
+    it 'registers an offense and corrects using margin comment' do
       expect_offense(<<~RUBY)
         #
         ^ Source code comment is empty.
@@ -110,77 +128,58 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
         def hello
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        # Description of `hello` method.
+        def hello
+        end
+      RUBY
     end
   end
 
-  it 'autocorrects empty comment' do
-    new_source = autocorrect_source(<<~RUBY)
-      #
-      class Foo
-        #
-        def hello
-        end
-      end
-    RUBY
-
-    expect(new_source).to eq <<~RUBY
-      class Foo
-        def hello
-        end
-      end
-    RUBY
-  end
-
-  it 'autocorrects an empty comment next to code' do
-    new_source = autocorrect_source(<<~RUBY)
-      def foo #
-        something
-      end
-    RUBY
-
-    expect(new_source).to eq(<<~RUBY)
-      def foo
-        something
-      end
-    RUBY
-  end
-
-  it 'autocorrects an empty comment without space next to code' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'registers an offense and corrects an empty comment without space ' \
+    'next to code' do
+    expect_offense(<<~RUBY)
       def foo#
+             ^ Source code comment is empty.
         something
       end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       def foo
         something
       end
     RUBY
   end
 
-  it 'autocorrects multiple empty comments next to code' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'register offenses and correct multiple empty comments next to code' do
+    expect_offense(<<~RUBY)
       def foo #
+              ^ Source code comment is empty.
         something #
+                  ^ Source code comment is empty.
       end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       def foo
         something
       end
     RUBY
   end
 
-  it 'autocorrects multiple aligned empty comments next to code' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'register offenses and correct multiple aligned empty comments ' \
+    'next to code' do
+    expect_offense(<<~RUBY)
       def foo     #
+                  ^ Source code comment is empty.
         something #
+                  ^ Source code comment is empty.
       end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       def foo
         something
       end

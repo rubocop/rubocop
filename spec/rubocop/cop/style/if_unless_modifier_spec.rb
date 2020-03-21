@@ -6,15 +6,28 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Metrics/LineLength' => line_length_config)
+    RuboCop::Config.new('Layout/LineLength' => line_length_config)
   end
-  let(:line_length_config) { { 'Enabled' => true, 'Max' => 80 } }
+  let(:line_length_config) do
+    {
+      'Enabled' => true,
+      'Max' => 80,
+      'AllowURI' => allow_uri,
+      'IgnoreCopDirectives' => ignore_cop_directives,
+      'URISchemes' => %w[http https]
+    }
+  end
+  let(:allow_uri) { true }
+  let(:ignore_cop_directives) { true }
 
   context 'modifier if that does not fit on one line' do
     let(:spaces) { ' ' * 59 }
     let(:source) { "puts '#{spaces}' if condition" }
+    let(:long_url) do
+      'https://some.example.com/with/a/rather?long&and=very&complicated=path'
+    end
 
-    context 'when Metrics/LineLength is enabled' do
+    context 'when Layout/LineLength is enabled' do
       it 'corrects it to normal form' do
         expect(source.length).to be(79) # That's 81 including indentation.
         expect_offense(<<~RUBY)
@@ -34,9 +47,66 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
           end
         RUBY
       end
+
+      context 'and the long line is allowed because AllowURI is true' do
+        it 'accepts' do
+          expect_no_offenses(<<~RUBY)
+            puts 1 if url == '#{long_url}'
+          RUBY
+        end
+      end
+
+      context 'and the long line is too long because AllowURI is false' do
+        let(:allow_uri) { false }
+
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            puts 1 if url == '#{long_url}'
+                   ^^ Modifier form of `if` makes the line too long.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if url == '#{long_url}'
+              puts 1
+            end
+          RUBY
+        end
+      end
+
+      describe 'IgnoreCopDirectives' do
+        let(:spaces) { ' ' * 57 }
+        let(:comment) { '# rubocop:disable Style/For' }
+        let(:source) { "puts '#{spaces}' if condition" }
+
+        context 'and the long line is allowed because IgnoreCopDirectives is ' \
+                'true' do
+          it 'accepts' do
+            expect(source.length).to eq(77) # That's 79 including indentation.
+            expect_no_offenses(<<~RUBY)
+              def f
+                #{source} #{comment}
+              end
+            RUBY
+          end
+        end
+
+        context 'and the long line is too long because IgnoreCopDirectives ' \
+                'is false' do
+          let(:ignore_cop_directives) { false }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              def f
+                #{source} #{comment}
+                #{spaces}        ^^ Modifier form of `if` makes the line too long.
+              end
+            RUBY
+          end
+        end
+      end
     end
 
-    context 'when Metrics/LineLength is disabled in configuration' do
+    context 'when Layout/LineLength is disabled in configuration' do
       let(:line_length_config) { { 'Enabled' => false, 'Max' => 80 } }
 
       it 'accepts' do
@@ -48,13 +118,24 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       end
     end
 
-    context 'when Metrics/LineLength is disabled with a comment' do
+    context 'when Layout/LineLength is disabled with enable/disable ' \
+            'comments' do
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
           def f
-            # rubocop:disable Metrics/LineLength
+            # rubocop:disable Layout/LineLength
             #{source}
-            # rubocop:enable Metrics/LineLength
+            # rubocop:enable Layout/LineLength
+          end
+        RUBY
+      end
+    end
+
+    context 'when Layout/LineLength is disabled with an EOL comment' do
+      it 'accepts' do
+        expect_no_offenses(<<~RUBY)
+          def f
+            #{source} # rubocop:disable Layout/LineLength
           end
         RUBY
       end
@@ -471,7 +552,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
             'Enabled' => false,
             'IndentationWidth' => 2
           },
-          'Metrics/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
+          'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
         )
       end
 
@@ -487,7 +568,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
           'Layout/Tab' => {
             'Enabled' => false
           },
-          'Metrics/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
+          'Layout/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
         )
       end
 
@@ -500,7 +581,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
           'Layout/Tab' => {
             'Enabled' => false
           },
-          'Metrics/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
+          'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
         )
       end
 
@@ -508,10 +589,10 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
-  context 'when Metrics/LineLength is disabled' do
+  context 'when Layout/LineLength is disabled' do
     let(:config) do
       RuboCop::Config.new(
-        'Metrics/LineLength' => {
+        'Layout/LineLength' => {
           'Enabled' => false,
           'Max' => 80
         }

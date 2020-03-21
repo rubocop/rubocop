@@ -121,6 +121,10 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
       expect(hash[:cop_name]).to eq('CopName')
     end
 
+    it 'sets Offense#correctable? value for :correctable key' do
+      expect(hash[:correctable]).to be_truthy
+    end
+
     it 'sets Offense#corrected? value for :corrected key' do
       expect(hash[:corrected]).to be_truthy
     end

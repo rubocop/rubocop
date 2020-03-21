@@ -78,6 +78,8 @@ module RuboCop
   #                         # matching process starts
   #     '^^send'            # each ^ ascends one level in the AST
   #                         # so this matches against the grandparent node
+  #     '`send'             # descends any number of level in the AST
+  #                         # so this matches against any descendant node
   #     '#method'           # we call this a 'funcall'; it calls a method in the
   #                         # context where a pattern-matching method is defined
   #                         # if that returns a truthy value, the match succeeds
@@ -112,7 +114,7 @@ module RuboCop
       SYMBOL       = %r{:(?:[\w+@*/?!<>=~|%^-]+|\[\]=?)}.freeze
       IDENTIFIER   = /[a-zA-Z_][a-zA-Z0-9_-]*/.freeze
       META         = Regexp.union(
-        %w"( ) { } [ ] $< < > $... $ ! ^ ... + * ?"
+        %w"( ) { } [ ] $< < > $... $ ! ^ ` ... + * ?"
       ).freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
@@ -188,7 +190,7 @@ module RuboCop
 
         @temps    = 0  # avoid name clashes between temp variables
         @captures = 0  # number of captures seen
-        @unify    = {} # named wildcard -> temp variable number
+        @unify    = {} # named wildcard -> temp variable
         @params   = 0  # highest % (param) number seen
         run(node_var)
       end
@@ -223,6 +225,7 @@ module RuboCop
         when '!'       then compile_negation
         when '$'       then compile_capture
         when '^'       then compile_ascend
+        when '`'       then compile_descend
         when WILDCARD  then compile_wildcard(token[1..-1])
         when FUNCALL   then compile_funcall(token)
         when LITERAL   then compile_literal(token)
@@ -380,7 +383,7 @@ module RuboCop
         def compile_seq_head
           return unless seq_head?
 
-          fail_due_to 'sequences can not start with <' \
+          fail_due_to 'sequences cannot start with <' \
             if @terms[0].respond_to? :call
 
           with_seq_head_context(@terms[0])
@@ -466,12 +469,67 @@ module RuboCop
         end
       end
 
+      def access_unify(name)
+        var = @unify[name]
+
+        if var == :forbidden_unification
+          fail_due_to "Wildcard #{name} was first seen in a subset of a" \
+                      " union and can't be used outside that union"
+        end
+        var
+      end
+
+      def forbid_unification(*names)
+        names.each do |name|
+          @unify[name] = :forbidden_unification
+        end
+      end
+
+      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      def unify_in_union(enum)
+        # We need to reset @unify before each branch is processed.
+        # Moreover we need to keep track of newly encountered wildcards.
+        # Var `new_unify_intersection` will hold those that are encountered
+        # in all branches; these are not a problem.
+        # Var `partial_unify` will hold those encountered in only a subset
+        # of the branches; these can't be used outside of the union.
+
+        return to_enum __method__, enum unless block_given?
+
+        new_unify_intersection = nil
+        partial_unify = []
+        unify_before = @unify.dup
+
+        result = enum.each do |e|
+          @unify = unify_before.dup if new_unify_intersection
+          yield e
+          new_unify = @unify.keys - unify_before.keys
+          if new_unify_intersection.nil?
+            # First iteration
+            new_unify_intersection = new_unify
+          else
+            union = new_unify_intersection | new_unify
+            new_unify_intersection &= new_unify
+            partial_unify |= union - new_unify_intersection
+          end
+        end
+
+        # At this point, all members of `new_unify_intersection` can be used
+        # for unification outside of the union, but partial_unify may not
+
+        forbid_unification(*partial_unify)
+
+        result
+      end
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
       def compile_union
         # we need to ensure that each branch of the {} contains the same
         # number of captures (since only one branch of the {} can actually
         # match, the same variables are used to hold the captures for each
         # branch)
         enum = tokens_until('}', 'union')
+        enum = unify_in_union(enum)
         terms = insure_same_captures(enum, 'branch of {}')
                 .map { compile_expr }
 
@@ -496,6 +554,19 @@ module RuboCop
         with_context("#{CUR_NODE} && #{compile_expr}", "#{CUR_NODE}.parent")
       end
 
+      def compile_descend
+        with_temp_variables do |descendant|
+          pattern = with_context(compile_expr, descendant,
+                                 use_temp_node: false)
+          [
+            "RuboCop::NodePattern.descend(#{CUR_ELEMENT}).",
+            "any? do |#{descendant}|",
+            "  #{pattern}",
+            'end'
+          ].join("\n")
+        end
+      end
+
       def compile_wildcard(name)
         if name.empty?
           'true'
@@ -503,12 +574,12 @@ module RuboCop
           # we have already seen a wildcard with this name before
           # so the value it matched the first time will already be stored
           # in a temp. check if this value matches the one stored in the temp
-          "#{CUR_ELEMENT} == temp#{@unify[name]}"
+          "#{CUR_ELEMENT} == #{access_unify(name)}"
         else
-          n = @unify[name] = next_temp_value
-          # double assign to temp#{n} to avoid "assigned but unused variable"
-          "(temp#{n} = #{CUR_ELEMENT}; " \
-          "temp#{n} = temp#{n}; true)"
+          n = @unify[name] = "unify_#{name.gsub('-', '__')}"
+          # double assign to avoid "assigned but unused variable"
+          "(#{n} = #{CUR_ELEMENT}; " \
+          "#{n} = #{n}; true)"
         end
       end
 
@@ -560,9 +631,8 @@ module RuboCop
       def compile_arg(token)
         case token
         when WILDCARD  then
-          name   = token[1..-1]
-          number = @unify[name] || fail_due_to('invalid in arglist: ' + token)
-          "temp#{number}"
+          name = token[1..-1]
+          access_unify(name) || fail_due_to('invalid in arglist: ' + token)
         when LITERAL   then token
         when PARAM     then get_param(token[1..-1])
         when CLOSING   then fail_due_to("#{token} in invalid position")
@@ -795,6 +865,22 @@ module RuboCop
 
     def to_s
       "#<#{self.class} #{pattern}>"
+    end
+
+    # Yields its argument and any descendants, depth-first.
+    #
+    def self.descend(element, &block)
+      return to_enum(__method__, element) unless block_given?
+
+      yield element
+
+      if element.is_a?(::RuboCop::AST::Node)
+        element.children.each do |child|
+          descend(child, &block)
+        end
+      end
+
+      nil
     end
   end
 end

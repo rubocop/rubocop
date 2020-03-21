@@ -1,32 +1,50 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do # rubocop:disable Metrics/LineLength
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do # rubocop:disable Layout/LineLength
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is space' do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
-    it 'registers an offense for default value assignment without space' do
+    it 'registers an offense and corrects default value assignment ' \
+      'without space' do
       expect_offense(<<~RUBY)
         def f(x, y=0, z= 1)
                   ^ Surrounding space missing in default value assignment.
                        ^^ Surrounding space missing in default value assignment.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def f(x, y = 0, z = 1)
+        end
+      RUBY
     end
 
-    it 'registers an offense for assignment empty string without space' do
+    it 'registers an offense and corrects assigning empty string ' \
+      'without space' do
       expect_offense(<<~RUBY)
         def f(x, y="")
                   ^ Surrounding space missing in default value assignment.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def f(x, y = "")
+        end
+      RUBY
     end
 
-    it 'registers an offense for assignment of empty list without space' do
+    it 'registers an offense and corrects assignment of empty list ' \
+      'without space' do
       expect_offense(<<~RUBY)
         def f(x, y=[])
                   ^ Surrounding space missing in default value assignment.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def f(x, y = [])
         end
       RUBY
     end
@@ -38,18 +56,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
       RUBY
     end
 
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source(<<~RUBY)
-        def f(x, y=0, z=1)
-        end
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        def f(x, y = 0, z = 1)
-        end
-      RUBY
-    end
-
     it 'accepts default value assignment with spaces and unary + operator' do
       expect_no_offenses(<<~RUBY)
         def f(x, y = +1, z = {})
@@ -57,12 +63,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
       RUBY
     end
 
-    it 'auto-corrects missing space for arguments with unary operators' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects missing space for arguments ' \
+      'with unary operators' do
+      expect_offense(<<~RUBY)
         def f(x=-1, y= 0, z =+1)
+                           ^^ Surrounding space missing in default value assignment.
+                     ^^ Surrounding space missing in default value assignment.
+               ^ Surrounding space missing in default value assignment.
         end
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         def f(x = -1, y = 0, z = +1)
         end
       RUBY
@@ -72,7 +83,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
   context 'when EnforcedStyle is no_space' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
-    it 'registers an offense for default value assignment with space' do
+    it 'registers an offense and corrects default value assignment ' \
+      'with space' do
       expect_offense(<<~RUBY)
         def f(x, y = 0, z =1, w= 2)
                   ^^^ Surrounding space detected in default value assignment.
@@ -80,20 +92,37 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
                                ^^ Surrounding space detected in default value assignment.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def f(x, y=0, z=1, w=2)
+        end
+      RUBY
     end
 
-    it 'registers an offense for assignment empty string with space' do
+    it 'registers an offense and corrects assignment of empty string ' \
+      'with space' do
       expect_offense(<<~RUBY)
         def f(x, y = "")
                   ^^^ Surrounding space detected in default value assignment.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def f(x, y="")
+        end
+      RUBY
     end
 
-    it 'registers an offense for assignment of empty list with space' do
+    it 'registers an offense and corrects assignment ' \
+      'of empty list with space' do
       expect_offense(<<~RUBY)
         def f(x, y = [])
                   ^^^ Surrounding space detected in default value assignment.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def f(x, y=[])
         end
       RUBY
     end
@@ -101,17 +130,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
     it 'accepts default value assignment without space' do
       expect_no_offenses(<<~RUBY)
         def f(x, y=0, z={})
-        end
-      RUBY
-    end
-
-    it 'auto-corrects unwanted space' do
-      new_source = autocorrect_source(<<~RUBY)
-        def f(x, y = 0, z= 1, w= 2)
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        def f(x, y=0, z=1, w=2)
         end
       RUBY
     end

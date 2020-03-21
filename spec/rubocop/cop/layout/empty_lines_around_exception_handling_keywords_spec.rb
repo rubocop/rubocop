@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do # rubocop:disable Metrics/LineLength
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do # rubocop:disable Layout/LineLength
   subject(:cop) { described_class.new(config) }
 
   let(:config) { RuboCop::Config.new }

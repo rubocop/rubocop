@@ -103,6 +103,12 @@ RSpec.describe RuboCop::AST::DefNode do
 
       it { expect(def_node.arguments.size).to eq(2) }
     end
+
+    context 'with argument forwarding', :ruby27 do
+      let(:source) { 'def foo(...); end' }
+
+      it { expect(def_node.arguments.size).to eq(1) }
+    end
   end
 
   describe '#first_argument' do
@@ -340,6 +346,14 @@ RSpec.describe RuboCop::AST::DefNode do
       let(:source) { 'def foo(bar); end' }
 
       it { expect(def_node.void_context?).to be_falsey }
+    end
+  end
+
+  context 'when using Ruby 2.7 or newer', :ruby27 do
+    describe '#argument_forwarding?' do
+      let(:source) { 'def foo(...); end' }
+
+      it { expect(def_node.argument_forwarding?).to be_truthy }
     end
   end
 

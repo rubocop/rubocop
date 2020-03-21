@@ -60,7 +60,7 @@ module RuboCop
             when :module
               return true
             else
-              return true if pnode.method_name == :instance_eval
+              return true if pnode.method?(:instance_eval)
             end
           end
           false
@@ -95,9 +95,9 @@ module RuboCop
           cop_config['IgnoreClassMethods']
         end
 
-        def whitelist
-          whitelist = cop_config['Whitelist']
-          Array(whitelist).map(&:to_sym) + [:initialize]
+        def allowed_methods
+          allowed_methods = cop_config['AllowedMethods']
+          Array(allowed_methods).map(&:to_sym) + [:initialize]
         end
 
         def dsl_writer?(method_name)
@@ -124,7 +124,7 @@ module RuboCop
         PATTERN
 
         def allowed_method?(node)
-          whitelist.include?(node.method_name) ||
+          allowed_methods.include?(node.method_name) ||
             exact_name_match? && !names_match?(node)
         end
 

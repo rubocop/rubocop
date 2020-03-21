@@ -254,29 +254,18 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   end
 
   context 'correct + opposite' do
-    let(:source) do
-      <<~RUBY
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         x = if a
               a1
             end
         y = if b
           b1
         end
+        ^^^ `end` at 6, 0 is not aligned with `if` at 4, 4.
       RUBY
-    end
 
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages.first)
-        .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4.')
-      expect(cop.highlights.first).to eq('end')
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-    end
-
-    it 'does auto-correction' do
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         x = if a
               a1
             end
@@ -288,25 +277,11 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   end
 
   context 'when end is preceded by something else than whitespace' do
-    let(:source) do
-      <<~RUBY
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
         module A
         puts a end
       RUBY
-    end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages.first)
-        .to eq('`end` at 2, 7 is not aligned with `module` at 1, 0.')
-      expect(cop.highlights.first).to eq('end')
-    end
-
-    it "doesn't auto-correct" do
-      expect(autocorrect_source(source))
-        .to eq(source)
-      expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
   end
 

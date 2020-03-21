@@ -23,6 +23,12 @@ RSpec.describe RuboCop::AST::RegexpNode do
       it { expect(regexp_node.to_regexp).to eq(eval(source)) }
     end
 
+    context 'with a multi-line regexp without option' do
+      let(:source) { "/\n.+\n/" }
+
+      it { expect(regexp_node.to_regexp).to eq(eval(source)) }
+    end
+
     context 'with an empty regexp with option' do
       let(:source) { '//ix' }
 
@@ -31,6 +37,12 @@ RSpec.describe RuboCop::AST::RegexpNode do
 
     context 'with a regexp with option' do
       let(:source) { '/.+/imx' }
+
+      it { expect(regexp_node.to_regexp).to eq(eval(source)) }
+    end
+
+    context 'with a multi-line regexp with option' do
+      let(:source) { "/\n.+\n/ix" }
 
       it { expect(regexp_node.to_regexp).to eq(eval(source)) }
     end
@@ -54,6 +66,13 @@ RSpec.describe RuboCop::AST::RegexpNode do
       it { expect(regopt.children.empty?).to be(true) }
     end
 
+    context 'with a multi-line regexp without option' do
+      let(:source) { "/\n.+\n/" }
+
+      it { expect(regopt.regopt_type?).to be(true) }
+      it { expect(regopt.children.empty?).to be(true) }
+    end
+
     context 'with an empty regexp with option' do
       let(:source) { '//ix' }
 
@@ -63,6 +82,13 @@ RSpec.describe RuboCop::AST::RegexpNode do
 
     context 'with a regexp with option' do
       let(:source) { '/.+/imx' }
+
+      it { expect(regopt.regopt_type?).to be(true) }
+      it { expect(regopt.children).to eq(%i[i m x]) }
+    end
+
+    context 'with a multi-line regexp with option' do
+      let(:source) { "/\n.+\n/imx" }
 
       it { expect(regopt.regopt_type?).to be(true) }
       it { expect(regopt.children).to eq(%i[i m x]) }
@@ -84,6 +110,12 @@ RSpec.describe RuboCop::AST::RegexpNode do
       it { expect(content).to eq('.+') }
     end
 
+    context 'with a multi-line regexp without option' do
+      let(:source) { "/\n.+\n/" }
+
+      it { expect(content).to eq("\n.+\n") }
+    end
+
     context 'with an empty regexp with option' do
       let(:source) { '//ix' }
 
@@ -94,6 +126,12 @@ RSpec.describe RuboCop::AST::RegexpNode do
       let(:source) { '/.+/imx' }
 
       it { expect(content).to eq('.+') }
+    end
+
+    context 'with a multi-line regexp with option' do
+      let(:source) { "/\n.+\n/imx" }
+
+      it { expect(content).to eq("\n.+\n") }
     end
   end
 end

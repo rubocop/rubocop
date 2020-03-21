@@ -71,8 +71,8 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
         expect_no_offenses('"::"')
       end
 
-      context 'when it is removed from the whitelist' do
-        let(:cop_config) { { 'Whitelist' => [] } }
+      context 'when it is removed from the allowed addresses' do
+        let(:cop_config) { { 'AllowedAddresses' => [] } }
 
         it 'registers an offense' do
           expect_offense(<<~RUBY)
@@ -84,10 +84,10 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
     end
   end
 
-  context 'with whitelist' do
-    let(:cop_config) { { 'Whitelist' => ['a::b'] } }
+  context 'with allowed addresses' do
+    let(:cop_config) { { 'AllowedAddresses' => ['a::b'] } }
 
-    it 'does not register an offense for a whitelisted address' do
+    it 'does not register an offense for a allowed addresses' do
       expect_no_offenses('"a::b"')
     end
 

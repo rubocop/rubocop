@@ -26,7 +26,7 @@ module RuboCop
           'on a separate line.'
 
         def on_send(node)
-          return if node.method_name == :[]=
+          return if node.method?(:[]=)
 
           args = node.arguments
 

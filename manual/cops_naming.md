@@ -99,6 +99,57 @@ def +(other); end
 
 * [https://rubystyle.guide#other-arg](https://rubystyle.guide#other-arg)
 
+## Naming/BlockParameterName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.53 | 0.77
+
+This cop checks block parameter names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 1.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of permitted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+restricted names that will always register an offense.
+
+### Examples
+
+```ruby
+# bad
+bar do |varOne, varTwo|
+  varOne + varTwo
+end
+
+# With `AllowNamesEndingInNumbers` set to false
+foo { |num1, num2| num1 * num2 }
+
+# With `MinParamNameLength` set to number greater than 1
+baz { |a, b, c| do_stuff(a, b, c) }
+
+# good
+bar do |thud, fred|
+  thud + fred
+end
+
+foo { |speed, distance| speed * distance }
+
+baz { |age, height, gender| do_stuff(age, height, gender) }
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+MinNameLength | `1` | Integer
+AllowNamesEndingInNumbers | `true` | Boolean
+AllowedNames | `[]` | Array
+ForbiddenNames | `[]` | Array
+
 ## Naming/ClassAndModuleCamelCase
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -255,7 +306,7 @@ Enabled | Yes | No | 0.50 | -
 
 This cop checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
-blacklisting additional delimiters.
+forbidden listing additional delimiters.
 
 ### Examples
 
@@ -280,7 +331,7 @@ EOS
 
 Name | Default value | Configurable values
 --- | --- | ---
-Blacklist | `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))` | Array
+ForbiddenDelimiters | `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))` | Array
 
 ### References
 
@@ -299,7 +350,7 @@ This cop can be configured with the EnforcedStyleForLeadingUnderscores
 directive. It can be configured to allow for memoized instance variables
 prefixed with an underscore. Prefixing ivars with an underscore is a
 convention that is used to implicitly indicate that an ivar should not
-be set or referencd outside of the memoization method.
+be set or referenced outside of the memoization method.
 
 ### Examples
 
@@ -439,11 +490,70 @@ IgnoredPatterns | `[]` | Array
 
 * [https://rubystyle.guide#snake-case-symbols-methods-vars](https://rubystyle.guide#snake-case-symbols-methods-vars)
 
+## Naming/MethodParameterName
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.53 | 0.77
+
+This cop checks method parameter names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 3.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of permitted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+restricted names that will always register an offense.
+
+### Examples
+
+```ruby
+# bad
+def bar(varOne, varTwo)
+  varOne + varTwo
+end
+
+# With `AllowNamesEndingInNumbers` set to false
+def foo(num1, num2)
+  num1 * num2
+end
+
+# With `MinArgNameLength` set to number greater than 1
+def baz(a, b, c)
+  do_stuff(a, b, c)
+end
+
+# good
+def bar(thud, fred)
+  thud + fred
+end
+
+def foo(speed, distance)
+  speed * distance
+end
+
+def baz(age_a, height_b, gender_c)
+  do_stuff(age_a, height_b, gender_c)
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+MinNameLength | `3` | Integer
+AllowNamesEndingInNumbers | `true` | Boolean
+AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os`, `pp` | Array
+ForbiddenNames | `[]` | Array
+
 ## Naming/PredicateName
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.50 | 0.51
+Enabled | Yes | No | 0.50 | 0.77
 
 This cop makes sure that predicates are named properly.
 
@@ -478,8 +588,8 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 NamePrefix | `is_`, `has_`, `have_` | Array
-NamePrefixBlacklist | `is_`, `has_`, `have_` | Array
-NameWhitelist | `is_a?` | Array
+ForbiddenPrefixes | `is_`, `has_`, `have_` | Array
+AllowedMethods | `is_a?` | Array
 MethodDefinitionMacros | `define_method`, `define_singleton_method` | Array
 Exclude | `spec/**/*` | Array
 
@@ -555,116 +665,6 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 PreferredName | `e` | String
-
-## Naming/UncommunicativeBlockParamName
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | -
-
-This cop checks block parameter names for how descriptive they
-are. It is highly configurable.
-
-The `MinNameLength` config option takes an integer. It represents
-the minimum amount of characters the name must be. Its default is 1.
-The `AllowNamesEndingInNumbers` config option takes a boolean. When
-set to false, this cop will register offenses for names ending with
-numbers. Its default is false. The `AllowedNames` config option
-takes an array of whitelisted names that will never register an
-offense. The `ForbiddenNames` config option takes an array of
-blacklisted names that will always register an offense.
-
-### Examples
-
-```ruby
-# bad
-bar do |varOne, varTwo|
-  varOne + varTwo
-end
-
-# With `AllowNamesEndingInNumbers` set to false
-foo { |num1, num2| num1 * num2 }
-
-# With `MinParamNameLength` set to number greater than 1
-baz { |a, b, c| do_stuff(a, b, c) }
-
-# good
-bar do |thud, fred|
-  thud + fred
-end
-
-foo { |speed, distance| speed * distance }
-
-baz { |age, height, gender| do_stuff(age, height, gender) }
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-MinNameLength | `1` | Integer
-AllowNamesEndingInNumbers | `true` | Boolean
-AllowedNames | `[]` | Array
-ForbiddenNames | `[]` | Array
-
-## Naming/UncommunicativeMethodParamName
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | 0.59
-
-This cop checks method parameter names for how descriptive they
-are. It is highly configurable.
-
-The `MinNameLength` config option takes an integer. It represents
-the minimum amount of characters the name must be. Its default is 3.
-The `AllowNamesEndingInNumbers` config option takes a boolean. When
-set to false, this cop will register offenses for names ending with
-numbers. Its default is false. The `AllowedNames` config option
-takes an array of whitelisted names that will never register an
-offense. The `ForbiddenNames` config option takes an array of
-blacklisted names that will always register an offense.
-
-### Examples
-
-```ruby
-# bad
-def bar(varOne, varTwo)
-  varOne + varTwo
-end
-
-# With `AllowNamesEndingInNumbers` set to false
-def foo(num1, num2)
-  num1 * num2
-end
-
-# With `MinArgNameLength` set to number greater than 1
-def baz(a, b, c)
-  do_stuff(a, b, c)
-end
-
-# good
-def bar(thud, fred)
-  thud + fred
-end
-
-def foo(speed, distance)
-  speed * distance
-end
-
-def baz(age_a, height_b, gender_c)
-  do_stuff(age_a, height_b, gender_c)
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-MinNameLength | `3` | Integer
-AllowNamesEndingInNumbers | `true` | Boolean
-AllowedNames | `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os` | Array
-ForbiddenNames | `[]` | Array
 
 ## Naming/VariableName
 

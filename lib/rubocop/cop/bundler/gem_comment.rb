@@ -24,7 +24,7 @@ module RuboCop
 
         def on_send(node)
           return unless gem_declaration?(node)
-          return if whitelisted_gem?(node)
+          return if ignored_gem?(node)
           return if commented?(node)
 
           add_offense(node)
@@ -54,9 +54,9 @@ module RuboCop
             comment_line?(node2.loc.expression.source)
         end
 
-        def whitelisted_gem?(node)
-          whitelist = Array(cop_config['Whitelist'])
-          whitelist.include?(node.first_argument.value)
+        def ignored_gem?(node)
+          ignored_gems = Array(cop_config['IgnoredGems'])
+          ignored_gems.include?(node.first_argument.value)
         end
       end
     end

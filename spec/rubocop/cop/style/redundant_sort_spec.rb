@@ -178,4 +178,42 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort do
       expect(new_source).to eq('foo.max_by { |x| x.something }')
     end
   end
+
+  context '>= Ruby 2.7', :ruby27 do
+    context 'when using numbered parameter' do
+      it 'registers an offense and corrects when last is called on sort with ' \
+         'comparator' do
+        expect_offense(<<~RUBY)
+          foo.sort { _2 <=> _1 }.last
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use `max` instead of `sort...last`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.max { _2 <=> _1 }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when first is called on sort_by' do
+        expect_offense(<<~RUBY)
+          [1, 2, 3].sort_by { _1.length }.first
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].min_by { _1.length }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when at(0) is called on sort_by' do
+        expect_offense(<<~RUBY)
+          [1, 2, 3].sort_by { _1.foo }.at(0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...at(0)`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].min_by { _1.foo }
+        RUBY
+      end
+    end
+  end
 end

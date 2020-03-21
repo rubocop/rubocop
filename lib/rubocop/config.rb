@@ -2,6 +2,9 @@
 
 require 'pathname'
 
+# FIXME: Moving Rails department code to RuboCop Rails will remove
+# the following rubocop:disable comment.
+# rubocop:disable Metrics/ClassLength
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
@@ -12,6 +15,8 @@ module RuboCop
     include PathUtil
     include FileFinder
     extend Forwardable
+
+    CopConfig = Struct.new(:name, :metadata)
 
     DEFAULT_RAILS_VERSION = 5.0
     attr_reader :loaded_path
@@ -115,7 +120,7 @@ module RuboCop
       relative_file_path = path_relative_to_config(file)
 
       # Optimization to quickly decide if the given file is hidden (on the top
-      # level) and can not be matched by any pattern.
+      # level) and cannot be matched by any pattern.
       is_hidden = relative_file_path.start_with?('.') &&
                   !relative_file_path.start_with?('..')
       return false if is_hidden && !possibly_include_hidden?
@@ -215,6 +220,18 @@ module RuboCop
       nil
     end
 
+    def pending_cops
+      keys.each_with_object([]) do |qualified_cop_name, pending_cops|
+        department = department_of(qualified_cop_name)
+        next if department && department['Enabled'] == false
+
+        cop_metadata = self[qualified_cop_name]
+        next unless cop_metadata['Enabled'] == 'pending'
+
+        pending_cops << CopConfig.new(qualified_cop_name, cop_metadata)
+      end
+    end
+
     private
 
     def target_rails_version_from_bundler_lock_file
@@ -235,17 +252,18 @@ module RuboCop
     end
 
     def enable_cop?(qualified_cop_name, cop_options)
-      cop_department, cop_name = qualified_cop_name.split('/')
-      department = cop_name.nil?
-
-      unless department
-        department_options = self[cop_department]
-        if department_options && department_options['Enabled'] == false
-          return false
-        end
-      end
+      department = department_of(qualified_cop_name)
+      return false if department && department['Enabled'] == false
 
       cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
     end
+
+    def department_of(qualified_cop_name)
+      cop_department, cop_name = qualified_cop_name.split('/')
+      return nil if cop_name.nil?
+
+      self[cop_department]
+    end
   end
 end
+# rubocop:enable Metrics/ClassLength

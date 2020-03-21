@@ -4,7 +4,17 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   include FileHelper
 
   subject(:cache) do
-    described_class.new(file, options, config_store, cache_root)
+    described_class.new(file, team, options, config_store, cache_root)
+  end
+
+  let(:cops) { RuboCop::Cop::Cop.all }
+  let(:registry) { RuboCop::Cop::Cop.registry }
+  let(:team) do
+    RuboCop::Cop::Team.new(
+      registry,
+      RuboCop::ConfigLoader.default_configuration,
+      options
+    )
   end
 
   let(:file) { 'example.rb' }
@@ -34,13 +44,16 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     RUBY
     allow(config_store).to receive(:for).with('example.rb')
                                         .and_return(RuboCop::Config.new)
+    allow(team).to receive(:external_dependency_checksum).and_return('foo')
   end
 
   describe 'cached result that was saved with no command line option' do
     shared_examples 'valid' do
       it 'is valid and can be loaded' do
         cache.save(offenses)
-        cache2 = described_class.new(file, options2, config_store, cache_root)
+        cache2 = described_class.new(
+          file, team, options2, config_store, cache_root
+        )
         expect(cache2.valid?).to eq(true)
         saved_offenses = cache2.load
         expect(saved_offenses).to eq(offenses)
@@ -79,7 +92,9 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         it 'is invalid' do
           cache.save(offenses)
           create_file('example.rb', ['x = 2'])
-          cache2 = described_class.new(file, options, config_store, cache_root)
+          cache2 = described_class.new(
+            file, team, options, config_store, cache_root
+          )
           expect(cache2.valid?).to eq(false)
         end
       end
@@ -89,7 +104,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           it 'is invalid' do
             cache.save(offenses)
             FileUtils.chmod('+x', file)
-            cache2 = described_class.new(file, options,
+            cache2 = described_class.new(file, team, options,
                                          config_store, cache_root)
             expect(cache2.valid?).to eq(false)
           end
@@ -107,15 +122,41 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
               f.write(contents.gsub(/\n/, "\r\n"))
             end
           end
-          cache2 = described_class.new(file, options,
+          cache2 = described_class.new(file, team, options,
                                        config_store, cache_root)
           expect(cache2.valid?).to eq(false)
         end
       end
 
+      context 'when team external_dependency_checksum changes' do
+        it 'is invalid' do
+          cache.save(offenses)
+          expect(team).to(
+            receive(:external_dependency_checksum).and_return('bar')
+          )
+          cache2 = described_class.new(
+            file, team, options, config_store, cache_root
+          )
+          expect(cache2.valid?).to eq(false)
+        end
+      end
+
+      context 'when team external_dependency_checksum is the same' do
+        it 'is valid' do
+          cache.save(offenses)
+          expect(team).to(
+            receive(:external_dependency_checksum).and_return('foo')
+          )
+          cache2 = described_class.new(
+            file, team, options, config_store, cache_root
+          )
+          expect(cache2.valid?).to eq(true)
+        end
+      end
+
       context 'when a symlink is present in the cache location' do
         let(:cache2) do
-          described_class.new(file, options, config_store, cache_root)
+          described_class.new(file, team, options, config_store, cache_root)
         end
 
         let(:attack_target_dir) { Dir.mktmpdir }
@@ -128,12 +169,10 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           end
 
           cache.save(offenses)
-          Find.find(cache_root) do |path|
-            next unless File.basename(path) == '_'
-
-            FileUtils.rm_rf(path)
-            FileUtils.ln_s(attack_target_dir, path)
-          end
+          result = Dir["#{cache_root}/*/*"]
+          path = result.first
+          FileUtils.rm_rf(path)
+          FileUtils.ln_s(attack_target_dir, path)
           $stderr = StringIO.new
         end
 
@@ -184,7 +223,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     context 'when --only is given' do
       it 'is invalid' do
         cache.save(offenses)
-        cache2 = described_class.new(file, { only: ['Metrics/LineLength'] },
+        cache2 = described_class.new(file, team,
+                                     { only: ['Layout/LineLength'] },
                                      config_store, cache_root)
         expect(cache2.valid?).to eq(false)
       end
@@ -193,7 +233,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     context 'when --display-cop-names is given' do
       it 'is invalid' do
         cache.save(offenses)
-        cache2 = described_class.new(file, { display_cop_names: true },
+        cache2 = described_class.new(file, team, { display_cop_names: true },
                                      config_store, cache_root)
         expect(cache2.valid?).to eq(false)
       end
@@ -262,14 +302,14 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
     it 'removes the oldest files in the cache if needed' do
       cache.save(offenses)
-      cache2 = described_class.new('other.rb', options, config_store,
+      cache2 = described_class.new('other.rb', team, options, config_store,
                                    cache_root)
-      expect(Dir["#{cache_root}/*/_/*"].size).to eq(1)
+      expect(Dir["#{cache_root}/*/*/*"].size).to eq(1)
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect($stdout.string).to eq('')
 
       cache2.save(offenses)
-      underscore_dir = Dir["#{cache_root}/*/_"].first
+      underscore_dir = Dir["#{cache_root}/*/*"].first
       expect(Dir["#{underscore_dir}/*"].size).to eq(2)
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect(File.exist?(underscore_dir)).to be_falsey

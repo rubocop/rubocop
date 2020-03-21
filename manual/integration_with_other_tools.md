@@ -1,3 +1,5 @@
+# Integration with Other Tools
+
 ## Editor integration
 
 ### Emacs

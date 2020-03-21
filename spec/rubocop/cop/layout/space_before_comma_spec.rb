@@ -3,24 +3,38 @@
 RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for block argument with space before comma' do
+  it 'registers an offense and corrects block argument ' \
+    'with space before comma' do
     expect_offense(<<~RUBY)
       each { |s , t| }
                ^ Space found before comma.
     RUBY
+
+    expect_correction(<<~RUBY)
+      each { |s, t| }
+    RUBY
   end
 
-  it 'registers an offense for array index with space before comma' do
+  it 'registers an offense and corrects array index with space before comma' do
     expect_offense(<<~RUBY)
       formats[0 , 1]
                ^ Space found before comma.
     RUBY
+
+    expect_correction(<<~RUBY)
+      formats[0, 1]
+    RUBY
   end
 
-  it 'registers an offense for method call arg with space before comma' do
+  it 'registers an offense and corrects method call arg ' \
+    'with space before comma' do
     expect_offense(<<~RUBY)
       a(1 , 2)
          ^ Space found before comma.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a(1, 2)
     RUBY
   end
 
@@ -28,13 +42,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma do
     expect_no_offenses('a(1, 2)')
   end
 
-  it 'auto-corrects space before comma' do
-    new_source = autocorrect_source('each { |s , t| a(1 , formats[0 , 1])}')
-    expect(new_source).to eq('each { |s, t| a(1, formats[0, 1])}')
-  end
-
   it 'handles more than one space before a comma' do
-    new_source = autocorrect_source('each { |s  , t| a(1  , formats[0  , 1])}')
-    expect(new_source).to eq('each { |s, t| a(1, formats[0, 1])}')
+    expect_offense(<<~RUBY)
+      each { |s  , t| a(1  , formats[0  , 1])}
+                                      ^^ Space found before comma.
+                         ^^ Space found before comma.
+               ^^ Space found before comma.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      each { |s, t| a(1, formats[0, 1])}
+    RUBY
   end
 end
