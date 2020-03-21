@@ -187,6 +187,38 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
     RUBY
   end
 
+  context 'without documentation' do
+    context 'with non-empty module' do
+      context 'with constants visibility declaration content' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            module Namespace
+              class Private
+              end
+
+              private_constant :Private
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'with non-empty class' do
+      context 'with constants visibility declaration content' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class Namespace
+              class Private
+              end
+
+              private_constant :Private
+            end
+          RUBY
+        end
+      end
+    end
+  end
+
   it 'does not raise an error for an implicit match conditional' do
     expect do
       inspect_source(<<~RUBY)
