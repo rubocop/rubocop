@@ -108,5 +108,14 @@ RSpec.describe RuboCop::Cop::Lint::ErbNewArguments, :config do
         ERB.new(str)
       RUBY
     end
+
+    context 'when using `ActionView::Template::Handlers::ERB.new`' do
+      it 'does not register an offense when using `ERB.new` ' \
+         'without arguments' do
+        expect_no_offenses(<<~RUBY)
+          ERB.new
+        RUBY
+      end
+    end
   end
 end
