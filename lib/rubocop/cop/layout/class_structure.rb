@@ -147,6 +147,10 @@ module RuboCop
         MSG = '`%<category>s` is supposed to appear before ' \
               '`%<previous>s`.'
 
+        def_node_matcher :dynamic_constant?, <<~PATTERN
+          (casgn nil? _ (send ...))
+        PATTERN
+
         # Validates code style on class declaration.
         # Add offense when find a node out of expected order.
         def on_class(class_node)
@@ -168,11 +172,10 @@ module RuboCop
 
         # Autocorrect by swapping between two nodes autocorrecting them
         def autocorrect(corrector, node)
-          node_classification = classify(node)
           previous = node.left_siblings.find do |sibling|
-            classification = classify(sibling)
-            !ignore?(classification) && node_classification != classification
+            !ignore_for_autocorrect?(node, sibling)
           end
+          return unless previous
 
           current_range = source_range_with_comment(node)
           previous_range = source_range_with_comment(previous)
@@ -239,6 +242,15 @@ module RuboCop
           classification.nil? ||
             classification.to_s.end_with?('=') ||
             expected_order.index(classification).nil?
+        end
+
+        def ignore_for_autocorrect?(node, sibling)
+          classification = classify(node)
+          sibling_class = classify(sibling)
+
+          ignore?(sibling_class) ||
+            classification == sibling_class ||
+            dynamic_constant?(node)
         end
 
         def humanize_node(node)

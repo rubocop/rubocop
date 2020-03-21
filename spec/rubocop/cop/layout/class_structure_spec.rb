@@ -193,6 +193,22 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     it { expect_offense(code) }
   end
 
+  context 'constant is not a literal' do
+    it 'registers offense but does not autocorrect' do
+      expect_offense <<~RUBY
+        class Person
+          def name; end
+
+          foo = 5
+          LIMIT = foo + 1
+          ^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
   describe '#autocorrect' do
     context 'when there is a comment in the macro method' do
       it 'autocorrects the offenses' do
@@ -209,6 +225,26 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
             attr_reader :foo
             # This is a comment for macro method.
             validates :attr
+          end
+        RUBY
+      end
+    end
+
+    context 'literal constant is after method definitions' do
+      it 'autocorrects the offenses' do
+        new_source = autocorrect_source(<<~RUBY)
+          class Foo
+            def name; end
+
+            LIMIT = 10
+          end
+        RUBY
+
+        expect(new_source).to eq(<<~RUBY)
+          class Foo
+            LIMIT = 10
+            def name; end
+
           end
         RUBY
       end
