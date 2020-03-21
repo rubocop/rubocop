@@ -294,6 +294,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             create_file('.rubocop.yml', <<~YAML)
               require: rubocop_ext
 
+              Lint:
+                Enabled: false
               Style:
                 Enabled: false
 
