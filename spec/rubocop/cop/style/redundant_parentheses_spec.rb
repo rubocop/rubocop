@@ -88,6 +88,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(x)', 'x', 'a method call'
   it_behaves_like 'redundant', '(x(1, 2))', 'x(1, 2)', 'a method call'
   it_behaves_like 'redundant', '("x".to_sym)', '"x".to_sym', 'a method call'
+  it_behaves_like 'redundant', '("x"&.to_sym)', '"x"&.to_sym', 'a method call'
   it_behaves_like 'redundant', '(x[:y])', 'x[:y]', 'a method call'
   it_behaves_like 'redundant', '("foo"[0])', '"foo"[0]', 'a method call'
   it_behaves_like 'redundant', '(["foo"][0])', '["foo"][0]', 'a method call'

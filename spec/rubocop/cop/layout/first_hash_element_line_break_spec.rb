@@ -3,50 +3,32 @@
 RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
   subject(:cop) { described_class.new }
 
-  context 'elements listed on the first line' do
-    it 'detects the offense' do
-      expect_offense(<<~RUBY)
-        a = { a: 1,
-              ^^^^ Add a line break before the first element of a multi-line hash.
-              b: 2 }
-      RUBY
-    end
+  it 'registers an offense and corrects elements listed on the first line' do
+    expect_offense(<<~RUBY)
+      a = { a: 1,
+            ^^^^ Add a line break before the first element of a multi-line hash.
+            b: 2 }
+    RUBY
 
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
-        a = { a: 1,
-              b: 2 }
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        a = { 
-        a: 1,
-              b: 2 }
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      a = { 
+      a: 1,
+            b: 2 }
+    RUBY
   end
 
-  context 'hash nested in a method call' do
-    it 'detects the offense' do
-      expect_offense(<<~RUBY)
-        method({ foo: 1,
-                 ^^^^^^ Add a line break before the first element of a multi-line hash.
-                 bar: 2 })
-      RUBY
-    end
+  it 'registers an offense and corrects hash nested in a method call' do
+    expect_offense(<<~RUBY)
+      method({ foo: 1,
+               ^^^^^^ Add a line break before the first element of a multi-line hash.
+               bar: 2 })
+    RUBY
 
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
-        method({ foo: 1,
-                 bar: 2 })
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        method({ 
-        foo: 1,
-                 bar: 2 })
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      method({ 
+      foo: 1,
+               bar: 2 })
+    RUBY
   end
 
   it 'ignores implicit hashes in method calls with parens' do

@@ -76,6 +76,12 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
 
       expect(new_source).to eq('foo.any? { |f| f.even? }')
     end
+
+    it 'corrects inverse any? inside parens' do
+      new_source = autocorrect_source('!(foo.any? &:working?)')
+
+      expect(new_source).to eq('foo.none? &:working?')
+    end
   end
 
   shared_examples 'all variable types' do |variable|

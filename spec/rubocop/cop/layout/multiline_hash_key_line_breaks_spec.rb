@@ -31,30 +31,21 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
     end
   end
 
-  context 'when key starts on same line as another' do
-    it 'adds an offense' do
-      expect_offense(<<~RUBY)
-        {
-          foo: 1,
-          baz: 3, bar: "2"}
-                  ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
-      RUBY
-    end
+  it 'registers an offense and corrects when key starts ' \
+    'on same line as another' do
+    expect_offense(<<~RUBY)
+      {
+        foo: 1,
+        baz: 3, bar: "2"}
+                ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
+    RUBY
 
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
-        {
-          foo: 1,
-          baz: 3, bar: "2"}
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        {
-          foo: 1,
-          baz: 3,\s
-        bar: "2"}
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      {
+        foo: 1,
+        baz: 3,\s
+      bar: "2"}
+    RUBY
   end
 
   context 'when key starts on same line as another with rockets' do
@@ -65,77 +56,46 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks do
           baz => 3, bar: "2"}
                     ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
       RUBY
-    end
 
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
-        {
-          foo => 1,
-          baz => 3, bar => "2"}
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         {
           foo => 1,
           baz => 3,\s
-        bar => "2"}
-      RUBY
-    end
-  end
-
-  context 'when key starts on same line as another' do
-    it 'adds an offense' do
-      expect_offense(
-        <<-RUBY
-          {foo: 1,
-            baz: 3, bar: "2"}
-                    ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
-        RUBY
-      )
-    end
-
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
-        {foo: 1,
-          baz: 3, bar: "2"}
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        {foo: 1,
-          baz: 3,\s
         bar: "2"}
       RUBY
     end
   end
 
-  context 'when nested hashes' do
-    it 'adds an offense' do
-      expect_offense(
-        <<-RUBY
-          {foo: 1,
-            baz: {
-              as: 12,
-            }, bar: "2"}
-               ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
-        RUBY
-      )
-    end
+  it 'registers an offense and corrects when key starts ' \
+    'on same line as another' do
+    expect_offense(<<~RUBY)
+      {foo: 1,
+        baz: 3, bar: "2"}
+                ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
+    RUBY
 
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
-        {foo: 1,
-          baz: {
-            as: 12,
-          }, bar: "2"}
-      RUBY
+    expect_correction(<<~RUBY)
+      {foo: 1,
+        baz: 3,\s
+      bar: "2"}
+    RUBY
+  end
 
-      expect(new_source).to eq(<<~RUBY)
-        {foo: 1,
-          baz: {
-            as: 12,
-          },\s
-        bar: "2"}
-      RUBY
-    end
+  it 'registers an offense and corrects nested hashes' do
+    expect_offense(<<~RUBY)
+      {foo: 1,
+        baz: {
+          as: 12,
+        }, bar: "2"}
+           ^^^^^^^^ Each key in a multi-line hash must start on a separate line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {foo: 1,
+        baz: {
+          as: 12,
+        },\s
+      bar: "2"}
+    RUBY
   end
 end

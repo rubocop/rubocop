@@ -10,7 +10,7 @@ module RuboCop
         TEMPLATE = <<~YAML
           %<badge>s:
             Description: 'TODO: Write a description of the cop.'
-            Enabled: true
+            Enabled: pending
             VersionAdded: '%<version_added>s'
         YAML
 

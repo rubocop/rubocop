@@ -4,13 +4,19 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'common behavior' do
-    it 'registers an offense for alignment with token not preceded by space' do
+    it 'registers an offense and corrects alignment with token ' \
+      'not preceded by space' do
       # The = and the ( are on the same column, but this is not for alignment,
       # it's just a mistake.
       expect_offense(<<~RUBY)
         website("example.org")
         name   = "Jill"
             ^^ Unnecessary spacing detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        website("example.org")
+        name = "Jill"
       RUBY
     end
 
@@ -48,54 +54,73 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     context 'when spaces are present in a single-line hash literal' do
-      it 'registers an offense for hashes with symbol keys' do
+      it 'registers an offense and corrects hashes with symbol keys' do
         expect_offense(<<~RUBY)
           hash = {a:   1,  b:    2}
                     ^^ Unnecessary spacing detected.
                          ^ Unnecessary spacing detected.
                              ^^^ Unnecessary spacing detected.
         RUBY
+
+        expect_correction(<<~RUBY)
+          hash = {a: 1, b: 2}
+        RUBY
       end
 
-      it 'registers an offense for hashes with hash rockets' do
+      it 'registers an offense and corrects hashes with hash rockets' do
         expect_offense(<<~RUBY)
           let(:single_line_hash) {
             {"a"   => "1", "b" => "2"}
                 ^^ Unnecessary spacing detected.
           }
         RUBY
+
+        expect_correction(<<~RUBY)
+          let(:single_line_hash) {
+            {"a" => "1", "b" => "2"}
+          }
+        RUBY
       end
     end
 
-    it 'can handle extra space before a float' do
+    it 'registers an offense and corrects extra space before a float' do
       expect_offense(<<~RUBY)
         {:a => "a",
          :b => [nil,  2.5]}
                     ^ Unnecessary spacing detected.
       RUBY
+
+      expect_correction(<<~RUBY)
+        {:a => "a",
+         :b => [nil, 2.5]}
+      RUBY
     end
 
-    it 'can handle unary plus in an argument list' do
+    it 'registers an offense and corrects extra spacing before a unary plus ' \
+      'in an argument list' do
       expect_offense(<<~RUBY)
         assert_difference(MyModel.count, +2,
                           3,  +3, # Extra spacing only here.
                             ^ Unnecessary spacing detected.
                           4,+4)
       RUBY
-    end
 
-    it 'gives the correct line' do
-      expect_offense(<<~RUBY)
-        class A   < String
-               ^^ Unnecessary spacing detected.
-        end
+      expect_correction(<<~RUBY)
+        assert_difference(MyModel.count, +2,
+                          3, +3, # Extra spacing only here.
+                          4,+4)
       RUBY
     end
 
-    it 'registers an offense for double extra spacing on variable assignment' do
+    it 'registers an offense and corrects double extra spacing ' \
+      'in variable assignment' do
       expect_offense(<<~RUBY)
         m    = "hello"
          ^^^ Unnecessary spacing detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        m = "hello"
       RUBY
     end
 
@@ -112,31 +137,14 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
                           '      end'].join("\n"))
     end
 
-    it 'registers an offense on class inheritance' do
+    it 'registers an offense and corrects extra spacing in class inheritance' do
       expect_offense(<<~RUBY)
         class A   < String
                ^^ Unnecessary spacing detected.
         end
       RUBY
-    end
 
-    it 'auto-corrects a line indented with mixed whitespace' do
-      new_source = autocorrect_source(<<~RUBY)
-        website("example.org")
-        name    = "Jill"
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        website("example.org")
-        name = "Jill"
-      RUBY
-    end
-
-    it 'auto-corrects the class inheritance' do
-      new_source = autocorrect_source(<<~RUBY)
-        class A   < String
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         class A < String
         end
       RUBY
@@ -270,6 +278,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       it 'allows it' do
         expect_no_offenses(src_with_extra)
       end
+
       context "doesn't interfere with AllowForAlignment" do
         context 'being true' do
           let(:allow_alignment) { true }
@@ -311,6 +320,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         inspect_source(src_with_extra)
         expect(cop.offenses.empty?).to be(false)
       end
+
       it 'does not trigger on only one space before comment' do
         src_without_extra = src_with_extra.gsub(/\s*#/, ' #')
         expect_no_offenses(src_without_extra)
@@ -323,13 +333,20 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
     end
 
-    it 'registers an offense if consecutive assignments are not aligned' do
+    it 'registers an offense and corrects consecutive assignments ' \
+      'that are not aligned' do
       expect_offense(<<~RUBY)
         a = 1
         bb = 2
            ^ `=` is not aligned with the preceding assignment.
         ccc = 3
             ^ `=` is not aligned with the preceding assignment.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a   = 1
+        bb  = 2
+        ccc = 3
       RUBY
     end
 
@@ -393,17 +410,23 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'autocorrects consecutive assignments which are not aligned' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects consecutive assignments ' \
+      'that are not aligned' do
+      expect_offense(<<~RUBY)
         a = 1
         bb = 2
+           ^ `=` is not aligned with the preceding assignment.
         ccc = 3
+            ^ `=` is not aligned with the preceding assignment.
 
         abcde        = 1
         a                 = 2
+                          ^ `=` is not aligned with the preceding assignment.
         abc = 3
+            ^ `=` is not aligned with the preceding assignment.
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         a   = 1
         bb  = 2
         ccc = 3
@@ -414,17 +437,22 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'autocorrects consecutive operator assignments which are not aligned' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'register offenses and correct consecutive operator assignments ' \
+      'which are not aligned' do
+      expect_offense(<<~RUBY)
         a += 1
         bb = 2
         ccc <<= 3
+            ^^^ `=` is not aligned with the preceding assignment.
 
         abcde        = 1
         a                 *= 2
+                          ^^ `=` is not aligned with the preceding assignment.
         abc ||= 3
+            ^^^ `=` is not aligned with the preceding assignment.
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         a    += 1
         bb    = 2
         ccc <<= 3
@@ -435,17 +463,23 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'autocorrects consecutive aref assignments which are not aligned' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects consecutive aref assignments ' \
+      'which are not aligned' do
+      expect_offense(<<~RUBY)
         a[1] = 1
         bb[2,3] = 2
+                ^ `=` is not aligned with the preceding assignment.
         ccc[:key] = 3
+                  ^ `=` is not aligned with the preceding assignment.
 
         abcde[0]        = 1
         a                 = 2
+                          ^ `=` is not aligned with the preceding assignment.
         abc += 3
+            ^^ `=` is not aligned with the preceding assignment.
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         a[1]      = 1
         bb[2,3]   = 2
         ccc[:key] = 3
@@ -456,17 +490,23 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'autocorrects consecutive attribute assignments which are not aligned' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'register offenses and correct consecutive attribute assignments ' \
+      'which are not aligned' do
+      expect_offense(<<~RUBY)
         a.attr = 1
         bb &&= 2
+           ^^^ `=` is not aligned with the preceding assignment.
         ccc.s = 3
+              ^ `=` is not aligned with the preceding assignment.
 
         abcde.blah        = 1
         a.attribute_name              = 2
+                                      ^ `=` is not aligned with the preceding assignment.
         abc[1] = 3
+               ^ `=` is not aligned with the preceding assignment.
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         a.attr = 1
         bb   &&= 2
         ccc.s  = 3
@@ -477,32 +517,38 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'autocorrects complex nested assignments' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'register offenses and correct complex nested assignments' do
+      expect_offense(<<~RUBY)
         def batch
           @areas = params[:param].map {
                        var_1 = 123_456
                        variable_2 = 456_123 }
+                                  ^ `=` is not aligned with the preceding assignment.
           @another = params[:param].map {
+                   ^ `=` is not aligned with the preceding assignment.
                        char_1 = begin
                                   variable_1_1     = 'a'
                                   variable_1_20  = 'b'
+                                                 ^ `=` is not aligned with the preceding assignment.
 
                                   variable_1_300    = 'c'
                                   # A Comment
                                   variable_1_4000      = 'd'
+                                                       ^ `=` is not aligned with the preceding assignment.
 
                                   variable_1_50000     = 'e'
                                   puts 'a non-assignment statement without a blank line'
                                   some_other_length_variable     = 'f'
+                                                                 ^ `=` is not aligned with the preceding assignment.
                                 end
                        var_2 = 456_123 }
+                             ^ `=` is not aligned with the preceding assignment.
 
           render json: @areas
         end
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         def batch
           @areas   = params[:param].map {
                        var_1      = 123_456

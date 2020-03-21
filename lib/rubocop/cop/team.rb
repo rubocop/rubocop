@@ -86,6 +86,11 @@ module RuboCop
         raise e.cause
       end
 
+      def external_dependency_checksum
+        keys = cops.map(&:external_dependency_checksum).compact
+        Digest::SHA1.hexdigest(keys.join)
+      end
+
       private
 
       def offenses(processed_source)

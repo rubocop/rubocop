@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module RuboCop
   module AST
     # Provides methods for traversing an AST.
@@ -18,15 +19,21 @@ module RuboCop
                              rational str sym regopt self lvar
                              ivar cvar gvar nth_ref back_ref cbase
                              arg restarg blockarg shadowarg
-                             kwrestarg zsuper lambda redo retry].freeze
+                             kwrestarg zsuper lambda redo retry
+                             forward_args forwarded_args
+                             match_var match_nil_pattern empty_else].freeze
       ONE_CHILD_NODE    = %i[splat kwsplat block_pass not break next
                              preexe postexe match_current_line defined?
-                             arg_expr].freeze
+                             arg_expr pin match_rest if_guard unless_guard
+                             match_with_trailing_comma].freeze
       MANY_CHILD_NODES  = %i[dstr dsym xstr regexp array hash pair
                              mlhs masgn or_asgn and_asgn
                              undef alias args super yield or and
                              while_post until_post iflipflop eflipflop
-                             match_with_lvasgn begin kwbegin return].freeze
+                             match_with_lvasgn begin kwbegin return
+                             in_match match_alt
+                             match_as array_pattern array_pattern_with_tail
+                             hash_pattern const_pattern].freeze
       SECOND_CHILD_ONLY = %i[lvasgn ivasgn cvasgn gvasgn optarg kwarg
                              kwoptarg].freeze
 
@@ -171,13 +178,25 @@ module RuboCop
         nil
       end
 
-      alias on_rescue  on_case
-      alias on_resbody on_case
-      alias on_ensure  on_case
-      alias on_for     on_case
-      alias on_when    on_case
-      alias on_irange  on_case
-      alias on_erange  on_case
+      alias on_rescue     on_case
+      alias on_resbody    on_case
+      alias on_ensure     on_case
+      alias on_for        on_case
+      alias on_when       on_case
+      alias on_case_match on_case
+      alias on_in_pattern on_case
+      alias on_irange     on_case
+      alias on_erange     on_case
+
+      def on_numblock(node)
+        children = node.children
+        child = children[0]
+        send(:"on_#{child.type}", child)
+        return unless (child = children[2])
+
+        send(:"on_#{child.type}", child)
+      end
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

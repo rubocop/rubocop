@@ -10,6 +10,7 @@ RSpec.describe RuboCop::Config do
 
   describe '#validate', :isolated_environment do
     subject(:configuration) do
+      # ConfigLoader.load_file will validate config
       RuboCop::ConfigLoader.load_file(configuration_path)
     end
 
@@ -29,21 +30,23 @@ RSpec.describe RuboCop::Config do
         $stderr = STDERR
       end
 
-      it 'prints a warning message' do
-        configuration # ConfigLoader.load_file will validate config
-        expect($stderr.string).to match(/unrecognized cop LyneLenth/)
+      it 'raises an validation error' do
+        expect { configuration }.to raise_error(
+          RuboCop::ValidationError,
+          'unrecognized cop LyneLenth found in .rubocop.yml'
+        )
       end
     end
 
     context 'when the configuration includes an empty section' do
       before do
-        create_file(configuration_path, ['Metrics/LineLength:'])
+        create_file(configuration_path, ['Layout/LineLength:'])
       end
 
       it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(RuboCop::ValidationError,
-                          %r{^empty section Metrics/LineLength})
+                          %r{^empty section Layout/LineLength})
       end
     end
 
@@ -78,7 +81,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes any unrecognized parameter' do
       before do
         create_file(configuration_path, <<~YAML)
-          Metrics/LineLength:
+          Layout/LineLength:
             Enabled: true
             Min: 10
         YAML
@@ -92,7 +95,7 @@ RSpec.describe RuboCop::Config do
       it 'prints a warning message' do
         configuration # ConfigLoader.load_file will validate config
         expect($stderr.string).to match(
-          %r{Metrics/LineLength does not support Min parameter.}
+          %r{Layout/LineLength does not support Min parameter.}
         )
       end
     end
@@ -177,7 +180,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes multiple valid EnforcedStyle' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignHash:
+          Layout/HashAlignment:
             EnforcedHashRocketStyle:
               - key
               - table
@@ -193,7 +196,7 @@ RSpec.describe RuboCop::Config do
             'and one invalid style' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignHash:
+          Layout/HashAlignment:
             EnforcedHashRocketStyle:
               - key
               - trailing_comma
@@ -225,7 +228,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes multiple invalid EnforcedStyle' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignHash:
+          Layout/HashAlignment:
             EnforcedHashRocketStyle:
               - table
               - itisinvalid
@@ -383,6 +386,41 @@ RSpec.describe RuboCop::Config do
               RuboCop::ValidationError,
               /configuration for Syntax cop found/
             )
+        end
+      end
+    end
+
+    describe 'conflicting Safe settings' do
+      context 'when the configuration includes an unsafe cop that is ' \
+              'explicitly declared to have a safe auto-correction' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Style/PreferredHashMethods:
+              Safe: false
+              SafeAutoCorrect: true
+          YAML
+        end
+
+        it 'raises validation error' do
+          expect { configuration.validate }
+            .to raise_error(
+              RuboCop::ValidationError,
+              /Unsafe cops cannot have a safe auto-correction/
+            )
+        end
+      end
+
+      context 'when the configuration includes an unsafe cop without ' \
+              'a declaration of its auto-correction' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Style/PreferredHashMethods:
+              Safe: false
+          YAML
+        end
+
+        it 'does not raise validation error' do
+          expect { configuration.validate }.not_to raise_error
         end
       end
     end
@@ -777,309 +815,6 @@ RSpec.describe RuboCop::Config do
 
         it 'enables the cop that is not mentioned' do
           expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
-        end
-      end
-    end
-  end
-
-  describe '#target_ruby_version', :isolated_environment do
-    context 'when TargetRubyVersion is set' do
-      let(:ruby_version) { 2.3 }
-
-      let(:hash) do
-        {
-          'AllCops' => {
-            'TargetRubyVersion' => ruby_version
-          }
-        }
-      end
-
-      it 'uses TargetRubyVersion' do
-        expect(configuration.target_ruby_version).to eq ruby_version
-      end
-
-      it 'does not read .ruby-version' do
-        expect(File).not_to receive(:file?).with('.ruby-version')
-        configuration.target_ruby_version
-      end
-
-      it 'does not read Gemfile.lock or gems.locked' do
-        expect(File).not_to receive(:file?).with('Gemfile')
-        expect(File).not_to receive(:file?).with('gems.locked')
-        configuration.target_ruby_version
-      end
-    end
-
-    context 'when TargetRubyVersion is not set' do
-      context 'when .ruby-version is present' do
-        before do
-          dir = configuration.base_dir_for_path_parameters
-          create_file(File.join(dir, '.ruby-version'), ruby_version)
-        end
-
-        context 'when .ruby-version contains an MRI version' do
-          let(:ruby_version) { '2.3.8' }
-          let(:ruby_version_to_f) { 2.3 }
-
-          it 'reads it to determine the target ruby version' do
-            expect(configuration.target_ruby_version).to eq ruby_version_to_f
-          end
-        end
-
-        context 'when the MRI version contains multiple digits' do
-          let(:ruby_version) { '10.11.0' }
-          let(:ruby_version_to_f) { 10.11 }
-
-          it 'reads it to determine the target ruby version' do
-            expect(configuration.target_ruby_version).to eq ruby_version_to_f
-          end
-        end
-
-        context 'when .ruby-version contains a version prefixed by "ruby-"' do
-          let(:ruby_version) { 'ruby-2.3.0' }
-          let(:ruby_version_to_f) { 2.3 }
-
-          it 'correctly determines the target ruby version' do
-            expect(configuration.target_ruby_version).to eq ruby_version_to_f
-          end
-        end
-
-        context 'when .ruby-version contains a JRuby version' do
-          let(:ruby_version) { 'jruby-9.1.2.0' }
-
-          it 'uses the default target ruby version' do
-            expect(configuration.target_ruby_version)
-              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-          end
-        end
-
-        context 'when .ruby-version contains a Rbx version' do
-          let(:ruby_version) { 'rbx-3.42' }
-
-          it 'uses the default target ruby version' do
-            expect(configuration.target_ruby_version)
-              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-          end
-        end
-
-        context 'when .ruby-version contains "system" version' do
-          let(:ruby_version) { 'system' }
-
-          it 'uses the default target ruby version' do
-            expect(configuration.target_ruby_version)
-              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-          end
-        end
-
-        it 'does not read Gemfile.lock or gems.locked' do
-          expect(File).not_to receive(:file?).with('Gemfile')
-          expect(File).not_to receive(:file?).with('gems.locked')
-          configuration.target_ruby_version
-        end
-      end
-
-      context 'when .ruby-version is not present' do
-        ['Gemfile.lock', 'gems.locked'].each do |file_name|
-          context "and #{file_name} exists" do
-            let(:base_path) { configuration.base_dir_for_path_parameters }
-            let(:lock_file_path) { File.join(base_path, file_name) }
-
-            it "uses MRI Ruby version when it is present in #{file_name}" do
-              content =
-                <<-HEREDOC
-                  GEM
-                    remote: https://rubygems.org/
-                    specs:
-                      actionmailer (4.1.0)
-                      actionpack (= 4.1.0)
-                    rails (4.1.0)
-                      actionmailer (= 4.1.0)
-                      actionpack (= 4.1.0)
-
-                  PLATFORMS
-                    ruby
-
-                  DEPENDENCIES
-                    ruby-extensions (~> 1.9.0)
-
-                  RUBY VERSION
-                     ruby 2.0.0p0
-
-                  BUNDLED WITH
-                    1.16.1
-                HEREDOC
-              create_file(lock_file_path, content)
-              expect(configuration.target_ruby_version).to eq 2.0
-            end
-
-            it 'uses MRI Ruby version when it has multiple digits' do
-              content =
-                <<-HEREDOC
-                  GEM
-                    remote: https://rubygems.org/
-                    specs:
-                      actionmailer (4.1.0)
-                      actionpack (= 4.1.0)
-                    rails (4.1.0)
-                      actionmailer (= 4.1.0)
-                      actionpack (= 4.1.0)
-
-                  PLATFORMS
-                    ruby
-
-                  DEPENDENCIES
-                    ruby-extensions (~> 1.9.0)
-
-                  RUBY VERSION
-                     ruby 20.10.100p450
-
-                  BUNDLED WITH
-                    1.16.1
-                HEREDOC
-              create_file(lock_file_path, content)
-              expect(configuration.target_ruby_version).to eq 20.10
-            end
-
-            it "uses the default Ruby when Ruby is not in #{file_name}" do
-              content =
-                <<-HEREDOC
-                  GEM
-                    remote: https://rubygems.org/
-                    specs:
-                      addressable (2.5.2)
-                        public_suffix (>= 2.0.2, < 4.0)
-                      ast (2.4.0)
-                      bump (0.5.4)
-
-                  PLATFORMS
-                    ruby
-
-                  DEPENDENCIES
-                    bump
-                    bundler (~> 1.3)
-                    ruby-extensions (~> 1.9.0)
-
-                  BUNDLED WITH
-                    1.16.1
-                HEREDOC
-              create_file(lock_file_path, content)
-              default = RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-              expect(configuration.target_ruby_version).to eq default
-            end
-
-            it "uses the default Ruby when rbx is in #{file_name}" do
-              content =
-                <<-HEREDOC
-                  GEM
-                    remote: https://rubygems.org/
-                    specs:
-                      addressable (2.5.2)
-                        public_suffix (>= 2.0.2, < 4.0)
-                      ast (2.4.0)
-                      bump (0.5.4)
-
-                  PLATFORMS
-                    ruby
-
-                  DEPENDENCIES
-                    bump
-                    bundler (~> 1.3)
-                    ruby-extensions (~> 1.9.0)
-
-                  RUBY VERSION
-                     ruby 2.0.0p0 (rbx 3.42)
-
-                  BUNDLED WITH
-                    1.16.1
-                HEREDOC
-              create_file(lock_file_path, content)
-              default = RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-              expect(configuration.target_ruby_version).to eq default
-            end
-
-            it "uses the default Ruby when jruby is in #{file_name}" do
-              content =
-                <<-HEREDOC
-                  GEM
-                    remote: https://rubygems.org/
-                    specs:
-                      addressable (2.5.2)
-                        public_suffix (>= 2.0.2, < 4.0)
-                      ast (2.4.0)
-                      bump (0.5.4)
-
-                  PLATFORMS
-                    ruby
-
-                  DEPENDENCIES
-                    bump
-                    bundler (~> 1.3)
-                    ruby-extensions (~> 1.9.0)
-
-                  RUBY VERSION
-                     ruby 2.0.0p0 (jruby 9.1.13.0)
-
-                  BUNDLED WITH
-                    1.16.1
-                HEREDOC
-              create_file(lock_file_path, content)
-              default = RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-              expect(configuration.target_ruby_version).to eq default
-            end
-          end
-        end
-
-        context 'when bundler lock files are not present' do
-          it 'uses the default target ruby version' do
-            expect(configuration.target_ruby_version)
-              .to eq RuboCop::ConfigValidator::DEFAULT_RUBY_VERSION
-          end
-        end
-      end
-
-      context 'when .ruby-version is in a parent directory' do
-        before do
-          dir = configuration.base_dir_for_path_parameters
-          create_file(File.join(dir, '..', '.ruby-version'), '2.4.1')
-        end
-
-        it 'reads it to determine the target ruby version' do
-          expect(configuration.target_ruby_version).to eq 2.4
-        end
-      end
-
-      context 'when .ruby-version is not in a parent directory' do
-        ['Gemfile.lock', 'gems.locked'].each do |file_name|
-          context "when #{file_name} is in a parent directory" do
-            it 'does' do
-              content =
-                <<-HEREDOC
-                  GEM
-                    remote: https://rubygems.org/
-                    specs:
-                      actionmailer (4.1.0)
-                      actionpack (= 4.1.0)
-                    rails (4.1.0)
-                      actionmailer (= 4.1.0)
-                      actionpack (= 4.1.0)
-
-                  PLATFORMS
-                    ruby
-
-                  DEPENDENCIES
-                    ruby-extensions (~> 1.9.0)
-
-                  RUBY VERSION
-                     ruby 2.0.0p0
-
-                  BUNDLED WITH
-                    1.16.1
-                HEREDOC
-              dir = configuration.base_dir_for_path_parameters
-              create_file(File.join(dir, '..', file_name), content)
-              expect(configuration.target_ruby_version).to eq 2.0
-            end
-          end
         end
       end
     end

@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
   it 'allows an object check before a blank check' do
     # The `nil` object doesn't respond to `blank?` in normal Ruby (it's added
-    # by Rails), but it's included in the Whitelist parameter in default
+    # by Rails), but it's included in the AllowedMethods parameter in default
     # configuration for this cop.
     expect_no_offenses('user && user.thing.blank?')
   end

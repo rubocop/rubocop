@@ -9,28 +9,55 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
               ^^^ Block body expression is on the same line as the block start.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      test do 
+        foo
+      end
+    RUBY
   end
 
-  it 'registers an offense for missing newline in {} block w/o params' do
+  it 'registers an offense and corrects for missing newline ' \
+    'in {} block w/o params' do
     expect_offense(<<~RUBY)
       test { foo
              ^^^ Block body expression is on the same line as the block start.
       }
     RUBY
+
+    expect_correction(<<~RUBY)
+      test { 
+        foo
+      }
+    RUBY
   end
 
-  it 'registers an offense for missing newline in do/end block with params' do
+  it 'registers an offense and corrects for missing newline ' \
+    'in do/end block with params' do
     expect_offense(<<~RUBY)
       test do |x| foo
                   ^^^ Block body expression is on the same line as the block start.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      test do |x| 
+        foo
+      end
+    RUBY
   end
 
-  it 'registers an offense for missing newline in {} block with params' do
+  it 'registers an offense and corrects for missing newline ' \
+    'in {} block with params' do
     expect_offense(<<~RUBY)
       test { |x| foo
                  ^^^ Block body expression is on the same line as the block start.
+      }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test { |x| 
+        foo
       }
     RUBY
   end
@@ -80,109 +107,108 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
-  it 'registers offenses for lambdas as expected' do
+  it 'registers offenses and corrects for lambdas' do
     expect_offense(<<~RUBY)
       -> (x) do foo
                 ^^^ Block body expression is on the same line as the block start.
         bar
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      -> (x) do 
+        foo
+        bar
+      end
+    RUBY
   end
 
-  it 'registers offenses for new lambda literal syntax as expected' do
+  it 'registers offenses and corrrects for new lambda literal syntax' do
     expect_offense(<<~RUBY)
       -> x do foo
               ^^^ Block body expression is on the same line as the block start.
         bar
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      -> x do 
+        foo
+        bar
+      end
+    RUBY
   end
 
-  it 'registers an offense for line-break before arguments' do
+  it 'registers an offense and corrects line-break before arguments' do
     expect_offense(<<~RUBY)
       test do
         |x| play_with(x)
         ^^^ Block argument expression is not on the same line as the block start.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      test do |x|
+        play_with(x)
+      end
+    RUBY
   end
 
-  it 'registers an offense for line-break before arguments with empty block' do
+  it 'registers an offense and corrects line-break ' \
+    'before arguments with empty block' do
     expect_offense(<<~RUBY)
       test do
         |x|
         ^^^ Block argument expression is not on the same line as the block start.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      test do |x|
+      end
+    RUBY
   end
 
-  it 'registers an offense for line-break within arguments' do
+  it 'registers an offense and corrects line-break within arguments' do
     expect_offense(<<~RUBY)
       test do |x,
               ^^^ Block argument expression is not on the same line as the block start.
         y|
       end
     RUBY
-  end
 
-  it 'auto-corrects a do/end block with params that is missing newlines' do
-    src = <<~RUBY
-      test do |foo| bar
-      end
-    RUBY
-
-    new_source = autocorrect_source(src)
-
-    expect(new_source).to eq(<<~RUBY)
-      test do |foo| 
-        bar
+    expect_correction(<<~RUBY)
+      test do |x, y|
       end
     RUBY
   end
 
-  it 'auto-corrects a do/end block with a mult-line body' do
-    src = <<~RUBY
+  it 'registers an offense and corrects a do/end block with a mult-line body' do
+    expect_offense(<<~RUBY)
       test do |foo| bar
+                    ^^^ Block body expression is on the same line as the block start.
         test
       end
     RUBY
 
-    new_source = autocorrect_source(src)
-
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       test do |foo| 
         bar
         test
       end
-    RUBY
-  end
-
-  it 'auto-corrects a {} block with params that is missing newlines' do
-    src = <<~RUBY
-      test { |foo| bar
-      }
-    RUBY
-
-    new_source = autocorrect_source(src)
-
-    expect(new_source).to eq(<<~RUBY)
-      test { |foo| 
-        bar
-      }
     RUBY
   end
 
   it 'autocorrects in more complex case with lambda and assignment, and '\
      'aligns the next line two spaces out from the start of the block' do
-    src = <<~RUBY
+    expect_offense(<<~RUBY)
       x = -> (y) { foo
+                   ^^^ Block body expression is on the same line as the block start.
         bar
       }
     RUBY
 
-    new_source = autocorrect_source(src)
-
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       x = -> (y) { 
             foo
         bar
@@ -190,53 +216,31 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
-  it 'auto-corrects a line-break before arguments' do
-    new_source = autocorrect_source(<<~RUBY)
-      test do
-        |x| play_with(x)
-      end
-    RUBY
-
-    expect(new_source).to eq(<<~RUBY)
-      test do |x|
-        play_with(x)
-      end
-    RUBY
-  end
-
-  it 'auto-corrects a line-break before arguments with empty block' do
-    new_source = autocorrect_source(<<~RUBY)
-      test do
-        |x|
-      end
-    RUBY
-
-    expect(new_source).to eq(<<~RUBY)
-      test do |x|
-      end
-    RUBY
-  end
-
-  it 'auto-corrects a line-break within arguments' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'registers an offense and corrects a line-break within arguments' do
+    expect_offense(<<~RUBY)
       test do |x,
+              ^^^ Block argument expression is not on the same line as the block start.
         y| play_with(x, y)
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       test do |x, y|
         play_with(x, y)
       end
     RUBY
   end
 
-  it 'auto-corrects a line break within destructured arguments' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'registers an offense and corrects a line break ' \
+    'within destructured arguments' do
+    expect_offense(<<~RUBY)
       test do |(x,
+              ^^^^ Block argument expression is not on the same line as the block start.
         y)| play_with(x, y)
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       test do |(x, y)|
         play_with(x, y)
       end
@@ -245,16 +249,57 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
 
   it "doesn't move end keyword in a way which causes infinite loop " \
      'in combination with Style/BlockEndNewLine' do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       def f
         X.map do |(a,
+                 ^^^^ Block argument expression is not on the same line as the block start.
         b)|
         end
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       def f
         X.map do |(a, b)|
+        end
+      end
+    RUBY
+  end
+
+  it 'does not auto-correct a trailing comma when only one argument ' \
+     'is present' do
+    expect_offense(<<~RUBY)
+      def f
+        X.map do |
+                 ^ Block argument expression is not on the same line as the block start.
+          a,
+        |
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def f
+        X.map do |a,|
+        end
+      end
+    RUBY
+  end
+
+  it 'auto-corrects nested parens correctly' do
+    expect_offense(<<~RUBY)
+      def f
+        X.map do |
+                 ^ Block argument expression is not on the same line as the block start.
+          (((a), b), c)
+        |
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def f
+        X.map do |(((a), b), c)|
         end
       end
     RUBY

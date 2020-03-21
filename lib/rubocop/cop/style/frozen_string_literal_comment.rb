@@ -51,29 +51,65 @@ module RuboCop
       #   module Baz
       #     # ...
       #   end
+      #
+      # @example EnforcedStyle: always_true
+      #   # The `always_true` style enforces that the frozen string literal
+      #   # comment is set to `true`. This is a stricter option than `always`
+      #   # and forces projects to use frozen string literals.
+      #   # bad
+      #   # frozen_string_literal: false
+      #
+      #   module Baz
+      #     # ...
+      #   end
+      #
+      #   # bad
+      #   module Baz
+      #     # ...
+      #   end
+      #
+      #   # good
+      #   # frozen_string_literal: true
+      #
+      #   module Bar
+      #     # ...
+      #   end
       class FrozenStringLiteralComment < Cop
         include ConfigurableEnforcedStyle
         include FrozenStringLiteral
         include RangeHelp
 
-        MSG = 'Missing magic comment `# frozen_string_literal: true`.'
+        MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: '\
+                           'true`.'
+        MSG_MISSING = 'Missing frozen string literal comment.'
         MSG_UNNECESSARY = 'Unnecessary frozen string literal comment.'
+        MSG_DISABLED = 'Frozen string literal comment must be set to `true`.'
         SHEBANG = '#!'
 
         def investigate(processed_source)
           return if processed_source.tokens.empty?
 
-          if frozen_string_literal_comment_exists?
-            check_for_no_comment(processed_source)
+          case style
+          when :never
+            ensure_no_comment(processed_source)
+          when :always_true
+            ensure_enabled_comment(processed_source)
           else
-            check_for_comment(processed_source)
+            ensure_comment(processed_source)
           end
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            if style == :never
+            case style
+            when :never
               remove_comment(corrector, node)
+            when :always_true
+              if frozen_string_literal_specified?
+                enable_comment(corrector)
+              else
+                insert_comment(corrector)
+              end
             else
               insert_comment(corrector)
             end
@@ -82,12 +118,27 @@ module RuboCop
 
         private
 
-        def check_for_no_comment(processed_source)
-          unnecessary_comment_offense(processed_source) if style == :never
+        def ensure_no_comment(processed_source)
+          return unless frozen_string_literal_comment_exists?
+
+          unnecessary_comment_offense(processed_source)
         end
 
-        def check_for_comment(processed_source)
-          offense(processed_source) unless style == :never
+        def ensure_comment(processed_source)
+          return if frozen_string_literal_comment_exists?
+
+          missing_offense(processed_source)
+        end
+
+        def ensure_enabled_comment(processed_source)
+          if frozen_string_literal_specified?
+            return if frozen_string_literals_enabled?
+
+            # The comment exists, but is not enabled.
+            disabled_offense(processed_source)
+          else # The comment doesn't exist at all.
+            missing_true_offense(processed_source)
+          end
         end
 
         def last_special_comment(processed_source)
@@ -111,11 +162,22 @@ module RuboCop
           end
         end
 
-        def offense(processed_source)
+        def missing_offense(processed_source)
           last_special_comment = last_special_comment(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(last_special_comment, location: range)
+          add_offense(last_special_comment,
+                      location: range,
+                      message: MSG_MISSING)
+        end
+
+        def missing_true_offense(processed_source)
+          last_special_comment = last_special_comment(processed_source)
+          range = source_range(processed_source.buffer, 0, 0)
+
+          add_offense(last_special_comment,
+                      location: range,
+                      message: MSG_MISSING_TRUE)
         end
 
         def unnecessary_comment_offense(processed_source)
@@ -127,9 +189,25 @@ module RuboCop
                       message: MSG_UNNECESSARY)
         end
 
+        def disabled_offense(processed_source)
+          frozen_string_literal_comment =
+            frozen_string_literal_comment(processed_source)
+
+          add_offense(frozen_string_literal_comment,
+                      location: frozen_string_literal_comment.pos,
+                      message: MSG_DISABLED)
+        end
+
         def remove_comment(corrector, node)
           corrector.remove(range_with_surrounding_space(range: node.pos,
                                                         side: :right))
+        end
+
+        def enable_comment(corrector)
+          comment = frozen_string_literal_comment(processed_source)
+
+          corrector.replace(line_range(comment.line),
+                            FROZEN_STRING_LITERAL_ENABLED)
         end
 
         def insert_comment(corrector)

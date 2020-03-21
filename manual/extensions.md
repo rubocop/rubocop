@@ -1,8 +1,8 @@
-## Extensions
+# Extensions
 
 It's possible to extend RuboCop with custom cops and formatters.
 
-### Loading Extensions
+## Loading Extensions
 
 Besides the `--require` command line option you can also specify ruby
 files that should be loaded with the optional `require` directive in the
@@ -21,16 +21,18 @@ require:
     relative path prefixed with `./` explicitly or absolute path. Paths
     starting with a `.` are resolved relative to `.rubocop.yml`.
 
-### Custom Cops
+## Custom Cops
 
 You can configure the custom cops in your `.rubocop.yml` just like any
 other cop.
 
-#### Writing your own Cops
+### Writing your own Cops
 
-See [development](development.md).
+If you'd like to create an extension gem, you can use [rubocop-extension-generator](https://github.com/rubocop-hq/rubocop-extension-generator).
 
-#### Known Custom Cops
+See [development](development.md) to learn how to implement a cop.
+
+### Known Custom Cops
 
 * [rubocop-performance](https://github.com/rubocop-hq/rubocop-performance) -
   Performance optimization analysis
@@ -53,11 +55,11 @@ See [development](development.md).
 
 Any extensions missing? Send us a Pull Request!
 
-### Custom Formatters
+## Custom Formatters
 
 You can customize RuboCop's output format with custom formatters.
 
-#### Creating a Custom Formatter
+### Creating a Custom Formatter
 
 To implement a custom formatter, you need to subclass
 `RuboCop::Formatter::BaseFormatter` and override some methods,
@@ -69,7 +71,7 @@ Please see the documents below for more formatter API details.
 * [RuboCop::Cop::Offense](https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
 * [Parser::Source::Range](https://www.rubydoc.info/gems/parser/Parser/Source/Range)
 
-#### Using a Custom Formatter from the Command Line
+### Using a Custom Formatter from the Command Line
 
 You can tell RuboCop to use your custom formatter with a combination of
 `--format` and `--require` option.

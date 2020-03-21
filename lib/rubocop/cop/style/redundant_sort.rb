@@ -63,9 +63,9 @@ module RuboCop
             (send $(send _ $:sort_by _) ${:last :first})
             (send $(send _ $:sort_by _) ${:[] :at :slice} {(int 0) (int -1)})
 
-            (send (block $(send _ ${:sort_by :sort}) ...) ${:last :first})
+            (send ({block numblock} $(send _ ${:sort_by :sort}) ...) ${:last :first})
             (send
-              (block $(send _ ${:sort_by :sort}) ...)
+              ({block numblock} $(send _ ${:sort_by :sort}) ...)
               ${:[] :at :slice} {(int 0) (int -1)}
             )
           }
@@ -127,7 +127,7 @@ module RuboCop
         end
 
         def base(accessor, arg)
-          if accessor == :first || (arg&.zero?)
+          if accessor == :first || arg&.zero?
             'min'
           elsif accessor == :last || arg == -1
             'max'

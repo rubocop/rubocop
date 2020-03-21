@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do # rubocop:disable Metrics/LineLength
+RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do # rubocop:disable Layout/LineLength
   include FileHelper
 
   subject(:formatter) { described_class.new(output) }
@@ -106,6 +106,10 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.file_finished('test_a.rb', offenses)
       formatter.file_started('test_b.rb', {})
       formatter.file_finished('test_b.rb', [offenses.first])
+
+      # Cop1 and Cop2 are unknown cops and would raise an validation error
+      allow(RuboCop::Cop::Cop.registry).to receive(:contains_cop_matching?)
+        .and_return(true)
       formatter.finished(['test_a.rb', 'test_b.rb'])
     end
 

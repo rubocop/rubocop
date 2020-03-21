@@ -54,8 +54,6 @@ module RuboCop
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'
 
         def on_def(node)
-          return unless node.body
-
           check_branch(node.body)
         end
         alias on_defs on_def
@@ -152,12 +150,8 @@ module RuboCop
         end
 
         def check_begin_node(node)
-          expressions = *node
-          last_expr = expressions.last
-
-          return unless last_expr&.return_type?
-
-          check_return_node(last_expr)
+          last_expr = node.children.last
+          check_branch(last_expr)
         end
 
         def allow_multiple_return_values?

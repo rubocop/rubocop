@@ -28,8 +28,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   it 'reports an offense for def ending with return' do
     expect_offense(<<~RUBY)
       def func
-        one
-        two
+        some_preceding_statements
         return something
         ^^^^^^ Redundant `return` detected.
       end
@@ -39,8 +38,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
   it 'reports an offense for defs ending with return' do
     expect_offense(<<~RUBY)
       def self.func
-        one
-        two
+        some_preceding_statements
         return something
         ^^^^^^ Redundant `return` detected.
       end
@@ -271,6 +269,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     let(:src) do
       <<~RUBY
         def func
+          some_preceding_statements
           begin
             return 1
           end
@@ -281,6 +280,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def func
+          some_preceding_statements
           begin
             return 1
             ^^^^^^ Redundant `return` detected.
@@ -293,6 +293,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       corrected = autocorrect_source(src)
       expect(corrected).to eq <<~RUBY
         def func
+          some_preceding_statements
           begin
             1
           end
@@ -362,6 +363,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     let(:src) do
       <<~RUBY
         def func
+          some_preceding_statements
           if x
             return 1
           elsif y
@@ -376,6 +378,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def func
+          some_preceding_statements
           if x
             return 1
             ^^^^^^ Redundant `return` detected.
@@ -394,6 +397,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       corrected = autocorrect_source(src)
       expect(corrected).to eq <<~RUBY
         def func
+          some_preceding_statements
           if x
             1
           elsif y
@@ -410,6 +414,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     let(:src) do
       <<~RUBY
         def func
+          some_preceding_statements
           case x
           when y then return 1
           when z then return 2
@@ -424,6 +429,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def func
+          some_preceding_statements
           case x
           when y then return 1
                       ^^^^^^ Redundant `return` detected.
@@ -442,6 +448,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       corrected = autocorrect_source(src)
       expect(corrected).to eq <<~RUBY
         def func
+          some_preceding_statements
           case x
           when y then 1
           when z then 2

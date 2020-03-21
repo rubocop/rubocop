@@ -212,6 +212,55 @@ The following pattern will have two captures, both arrays:
 (send nil? $int+ (send $...))
 ```
 
+## `^` for parent
+
+One may use the `^` character to check against a parent.
+
+For example, the following pattern would find any node with two children and
+with a parent that is a hash:
+
+```
+(^hash _key $_value)
+```
+
+It is possible to use `^` somewhere else than the head of a sequnece; in that
+case it is relative to that child (i.e. the current node). One case also use
+multiple `^` to go up multiple levels.
+For example, the previous example is basically the same as:
+
+```
+(pair ^^hash $_value)
+```
+
+## `` ` `` for descendants
+
+The `` ` `` character can be used to search a node and all its descendants.
+For example if looking for a `return` statement anywhere within a method definition,
+we can write:
+
+```
+(def _method_name _args `return)
+```
+
+This would match both of these methods `foo` and `bar`, even though
+these `return` for `foo` and `bar` are not at the same level.
+
+```
+def foo              # (def :foo
+  return 42          #   (args)
+end                  #   (return
+                     #     (int 42)))
+
+def bar              # (def :bar
+  return 42 if foo   #   (args)
+  nil                #   (begin
+end                  #     (if
+                     #       (send nil :foo)
+                     #       (return
+                     #         (int 42)) nil)
+                     #     (nil)))
+```
+
 ## Predicate methods
 
 Words which end with a `?` are predicate methods, are called on the target

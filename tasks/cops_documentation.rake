@@ -16,7 +16,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
 
   def cops_body(config, cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
-    content << properties(config, cop)
+    content << properties(cop.new(config))
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count.positive?
     content << configurations(pars)
@@ -32,24 +32,23 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   end
 
   # rubocop:disable Metrics/MethodLength
-  def properties(config, cop)
+  def properties(cop_instance)
     header = [
       'Enabled by default', 'Safe', 'Supports autocorrection', 'VersionAdded',
       'VersionChanged'
     ]
-    config = config.for_cop(cop)
-    safe_auto_correct = config.fetch('SafeAutoCorrect', true)
-    autocorrect = if cop.new.support_autocorrect?
-                    "Yes #{'(Unsafe)' unless safe_auto_correct}"
+    autocorrect = if cop_instance.support_autocorrect?
+                    "Yes #{'(Unsafe)' unless cop_instance.safe_autocorrect?}"
                   else
                     'No'
                   end
+    cop_config = cop_instance.cop_config
     content = [[
-      config.fetch('Enabled') ? 'Enabled' : 'Disabled',
-      config.fetch('Safe', true) ? 'Yes' : 'No',
+      cop_status(cop_config.fetch('Enabled')),
+      cop_config.fetch('Safe', true) ? 'Yes' : 'No',
       autocorrect,
-      config.fetch('VersionAdded', '-'),
-      config.fetch('VersionChanged', '-')
+      cop_config.fetch('VersionAdded', '-'),
+      cop_config.fetch('VersionChanged', '-')
     ]]
     to_table(header, content) + "\n"
   end
@@ -206,7 +205,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def table_of_content_for_department(cops, department)
     type_title = department[0].upcase + department[1..-1]
     filename = "cops_#{department.downcase}.md"
-    content = +"#### Department [#{type_title}](#{filename})\n\n"
+    content = +"### Department [#{type_title}](#{filename})\n\n"
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
       content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
@@ -237,6 +236,12 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       .sort
       .map { |department| table_of_content_for_department(cops, department) }
       .join("\n")
+  end
+
+  def cop_status(status)
+    return 'Disabled' unless status
+
+    status == 'pending' ? 'Pending' : 'Enabled'
   end
 
   def assert_manual_synchronized

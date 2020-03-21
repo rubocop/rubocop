@@ -35,6 +35,20 @@ module RuboCop
       #   # Another line of comment
       #   #*
       #
+      # @example AllowGemfileRubyComment: false (default)
+      #
+      #   # bad
+      #
+      #   #ruby=2.7.0
+      #   #ruby-gemset=myproject
+      #
+      # @example AllowGemfileRubyComment: true
+      #
+      #   # good
+      #
+      #   #ruby=2.7.0
+      #   #ruby-gemset=myproject
+      #
       class LeadingCommentSpace < Cop
         include RangeHelp
 
@@ -44,7 +58,8 @@ module RuboCop
           processed_source.each_comment do |comment|
             next unless comment.text =~ /\A#+[^#\s=:+-]/
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
-            next if allow_doxygen_comment? && doxygen_comment_style?(comment)
+            next if doxygen_comment_style?(comment)
+            next if gemfile_ruby_comment?(comment)
 
             add_offense(comment)
           end
@@ -80,7 +95,23 @@ module RuboCop
         end
 
         def doxygen_comment_style?(comment)
-          comment.text.start_with?('#*')
+          allow_doxygen_comment? && comment.text.start_with?('#*')
+        end
+
+        def allow_gemfile_ruby_comment?
+          cop_config['AllowGemfileRubyComment']
+        end
+
+        def gemfile?
+          File.basename(processed_source.file_path).eql?('Gemfile')
+        end
+
+        def ruby_comment_in_gemfile?(comment)
+          gemfile? && comment.text.start_with?('#ruby')
+        end
+
+        def gemfile_ruby_comment?(comment)
+          allow_gemfile_ruby_comment? && ruby_comment_in_gemfile?(comment)
         end
       end
     end

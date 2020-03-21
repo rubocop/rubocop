@@ -46,7 +46,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             if node.ternary?
-              corrector.replace(range_of_offense(node), '||')
+              correct_ternary(corrector, node)
             elsif node.modifier_form? || !node.else_branch
               corrector.replace(node.source_range, node.if_branch.source)
             else
@@ -90,9 +90,13 @@ module RuboCop
         end
 
         def else_source(else_branch)
-          wrap_else =
-            else_branch.basic_conditional? && else_branch.modifier_form?
-          wrap_else ? "(#{else_branch.source})" : else_branch.source
+          if else_branch.basic_conditional? &&
+             else_branch.modifier_form? ||
+             else_branch.range_type?
+            "(#{else_branch.source})"
+          else
+            else_branch.source
+          end
         end
 
         def make_ternary_form(node)
@@ -105,6 +109,15 @@ module RuboCop
           else
             ternary_form
           end
+        end
+
+        def correct_ternary(corrector, node)
+          corrector.replace(range_of_offense(node), '||')
+
+          return unless node.else_branch.range_type?
+
+          corrector.insert_before(node.else_branch.loc.expression, '(')
+          corrector.insert_after(node.else_branch.loc.expression, ')')
         end
       end
     end

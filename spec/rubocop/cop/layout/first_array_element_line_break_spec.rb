@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
              :b]
       RUBY
       # Alignment for the first element is set by IndentationWidth cop,
-      # the rest of the elements should be aligned using the AlignArray cop.
+      # the rest of the elements should be aligned using the ArrayAlignment cop.
       expect(corrected).to eq(<<~RUBY)
         a = [
         :a,

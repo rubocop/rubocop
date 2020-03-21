@@ -6,6 +6,10 @@ module RuboCop
       # This cop checks for setter call to local variable as the final
       # expression of a function definition.
       #
+      # Note: There are edge cases in which the local variable references a
+      # value that is also accessible outside the local scope. This is not
+      # detected by the cop, and it can yield a false positive.
+      #
       # @example
       #
       #   # bad
@@ -155,7 +159,7 @@ module RuboCop
             return true if node.literal?
             return false unless node.send_type?
 
-            node.method_name == :new
+            node.method?(:new)
           end
         end
       end

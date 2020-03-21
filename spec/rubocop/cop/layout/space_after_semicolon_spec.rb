@@ -8,20 +8,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
   end
   let(:brace_config) { {} }
 
-  it 'registers an offense for semicolon without space after it' do
+  it 'registers an offense and corrects semicolon without space after it' do
     expect_offense(<<~RUBY)
       x = 1;y = 2
            ^ Space missing after semicolon.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 1; y = 2
     RUBY
   end
 
   it 'does not crash if semicolon is the last character of the file' do
     expect_no_offenses('x = 1;')
-  end
-
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source('x = 1;y = 2')
-    expect(new_source).to eq('x = 1; y = 2')
   end
 
   context 'inside block braces' do
@@ -38,11 +37,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
 
       it_behaves_like 'common behavior'
 
-      it 'registers an offense for no space between a semicolon and a ' \
-         'closing brace' do
+      it 'registers an offense and corrects no space between a semicolon ' \
+        'and a closing brace' do
         expect_offense(<<~RUBY)
           test { ;}
                  ^ Space missing after semicolon.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          test { ; }
         RUBY
       end
     end

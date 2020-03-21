@@ -8,10 +8,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
   end
   let(:brace_config) { {} }
 
-  it 'registers an offense for space before semicolon' do
+  it 'registers an offense and corrects space before semicolon' do
     expect_offense(<<~RUBY)
       x = 1 ; y = 2
            ^ Space found before semicolon.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 1; y = 2
     RUBY
   end
 
@@ -19,14 +23,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
     expect_no_offenses('x = 1; y = 2')
   end
 
-  it 'auto-corrects space before semicolon' do
-    new_source = autocorrect_source('x = 1 ; y = 2')
-    expect(new_source).to eq('x = 1; y = 2')
-  end
+  it 'registers an offense and corrects more than one space ' \
+    'before a semicolon' do
+    expect_offense(<<~RUBY)
+      x = 1  ; y = 2
+           ^^ Space found before semicolon.
+    RUBY
 
-  it 'handles more than one space before a semicolon' do
-    new_source = autocorrect_source('x = 1  ; y = 2')
-    expect(new_source).to eq('x = 1; y = 2')
+    expect_correction(<<~RUBY)
+      x = 1; y = 2
+    RUBY
   end
 
   context 'inside block braces' do
@@ -55,11 +61,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon do
 
       it_behaves_like 'common behavior'
 
-      it 'registers an offense for a space between an opening brace and a ' \
-         'semicolon' do
+      it 'registers an offense and corrects a space between an opening brace ' \
+        'and a semicolon' do
         expect_offense(<<~RUBY)
           test { ; }
                 ^ Space found before semicolon.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          test {; }
         RUBY
       end
     end

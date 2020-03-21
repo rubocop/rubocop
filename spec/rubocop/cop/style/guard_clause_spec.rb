@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
   let(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new(
-      'Metrics/LineLength' => {
+      'Layout/LineLength' => {
         'Enabled' => line_length_enabled,
         'Max' => 80
       },
@@ -132,7 +132,15 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
       end
 
       def func
-        work if something
+        work unless something
+      end
+    RUBY
+  end
+
+  it 'accepts a method with empty parentheses as its body' do
+    expect_no_offenses(<<~RUBY)
+      def func
+        ()
       end
     RUBY
   end

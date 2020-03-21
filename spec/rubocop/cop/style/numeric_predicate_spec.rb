@@ -9,9 +9,11 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
 
   shared_examples(
     'code with offense'
-  ) do |code, expected:, use: expected, instead_of: code|
+  ) do |code, options|
     context "when checking #{code}" do
       let(:source) { code }
+      let(:use) { options[:use] || options[:expected] }
+      let(:instead_of) { options[:instead_of] || code }
 
       let(:message) { "Use `#{use}` instead of `#{instead_of}`." }
 
@@ -20,7 +22,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         expect(cop.messages).to eq([message])
       end
 
-      if expected
+      if (expected = options[:expected])
         it 'auto-corrects' do
           expect(autocorrect_source(code)).to eq(expected)
         end
@@ -188,6 +190,42 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         'AutoCorrect' => true,
         'IgnoredMethods' => %w[where]
       }
+    end
+
+    context 'simple method call' do
+      context '`EnforcedStyle` is `predicate`' do
+        let(:cop_config) do
+          {
+            'EnforcedStyle' => 'predicate',
+            'IgnoredMethods' => %w[==]
+          }
+        end
+
+        context 'when checking if a number is zero' do
+          it_behaves_like 'code without offense', <<~RUBY
+            if number == 0
+              puts 'hello'
+            end
+          RUBY
+        end
+      end
+
+      context '`EnforcedStyle` is `comparison`' do
+        let(:cop_config) do
+          {
+            'EnforcedStyle' => 'comparison',
+            'IgnoredMethods' => %w[zero?]
+          }
+        end
+
+        context 'when checking if a number is zero' do
+          it_behaves_like 'code without offense', <<~RUBY
+            if number.zero?
+              puts 'hello'
+            end
+          RUBY
+        end
+      end
     end
 
     context 'in argument' do

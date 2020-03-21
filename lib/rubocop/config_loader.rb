@@ -91,7 +91,9 @@ module RuboCop
         else
           add_excludes_from_files(config, config_file)
         end
-        merge_with_default(config, config_file)
+        merge_with_default(config, config_file).tap do |merged_config|
+          warn_on_pending_cops(merged_config.pending_cops)
+        end
       end
 
       def add_excludes_from_files(config, config_file)
@@ -112,6 +114,22 @@ module RuboCop
                                      print 'Default ' if debug?
                                      load_file(DEFAULT_FILE)
                                    end
+      end
+
+      def warn_on_pending_cops(pending_cops)
+        return if pending_cops.empty?
+
+        warn Rainbow('The following cops were added to RuboCop, but are not ' \
+                     'configured. Please set Enabled to either `true` or ' \
+                     '`false` in your `.rubocop.yml` file:').yellow
+
+        pending_cops.each do |cop|
+          warn Rainbow(
+            " - #{cop.name} (#{cop.metadata['VersionAdded']})"
+          ).yellow
+        end
+
+        warn Rainbow('For more information: https://docs.rubocop.org/en/latest/versioning/').yellow
       end
 
       # Merges the given configuration with the default one. If
@@ -199,8 +217,6 @@ module RuboCop
           raise(TypeError, "Malformed configuration in #{absolute_path}")
         end
 
-        check_cop_config_value(hash)
-
         hash
       end
 
@@ -219,22 +235,6 @@ module RuboCop
                         "`#{value}` is concealed by duplicate"
                     end
           warn Rainbow(message).yellow
-        end
-      end
-
-      def check_cop_config_value(hash, parent = nil)
-        hash.each do |key, value|
-          check_cop_config_value(value, key) if value.is_a?(Hash)
-
-          next unless %w[Enabled
-                         Safe
-                         SafeAutoCorrect
-                         AutoCorrect].include?(key) && value.is_a?(String)
-
-          abort(
-            "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \
-            " is supposed to be a boolean and #{Rainbow(value).yellow} is not."
-          )
         end
       end
 

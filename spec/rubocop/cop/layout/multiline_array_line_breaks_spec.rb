@@ -5,44 +5,31 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks do
 
   context 'when on same line' do
     it 'does not add any offenses' do
-      expect_no_offenses(
-        <<-RUBY
-          [1,2,3]
-        RUBY
-      )
+      expect_no_offenses(<<~RUBY)
+        [1,2,3]
+      RUBY
     end
   end
 
   context 'when on same line, separate line from brackets' do
     it 'does not add any offenses' do
-      expect_no_offenses(
-        <<-RUBY
-          [
-            1,2,3,
-          ]
-        RUBY
-      )
+      expect_no_offenses(<<~RUBY)
+        [
+          1,2,3,
+        ]
+      RUBY
     end
   end
 
   context 'when two elements on same line' do
-    it 'adds an offense' do
-      expect_offense(
-        <<-RUBY
-          [1,
-            2, 4]
-               ^ Each item in a multi-line array must start on a separate line.
-        RUBY
-      )
-    end
-
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         [1,
           2, 4]
+             ^ Each item in a multi-line array must start on a separate line.
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         [1,
           2,\s
         4]
@@ -51,23 +38,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks do
   end
 
   context 'when nested arrays' do
-    it 'adds an offense' do
-      expect_offense(
-        <<-RUBY
-          [1,
-            [2, 3], 4]
-                    ^ Each item in a multi-line array must start on a separate line.
-        RUBY
-      )
-    end
-
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         [1,
           [2, 3], 4]
+                  ^ Each item in a multi-line array must start on a separate line.
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         [1,
           [2, 3],\s
         4]

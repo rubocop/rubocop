@@ -73,6 +73,10 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
     RUBY
   end
 
+  it 'accepts x % 2 == 2' do
+    expect_no_offenses('x % 2 == 2')
+  end
+
   it 'accepts x % 3 == 0' do
     expect_no_offenses('x % 3 == 0')
   end

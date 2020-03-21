@@ -52,9 +52,9 @@ module RuboCop
       end
 
       def max_line_length
-        return unless config.for_cop('Metrics/LineLength')['Enabled']
+        return unless config.for_cop('Layout/LineLength')['Enabled']
 
-        config.for_cop('Metrics/LineLength')['Max']
+        config.for_cop('Layout/LineLength')['Max']
       end
 
       def indentation_multiplier

@@ -691,4 +691,87 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
     end
   end
+
+  context 'BracesRequiredMethods' do
+    cop_config = {
+      'EnforcedStyle' => 'line_count_based',
+      'BracesRequiredMethods' => %w[sig]
+    }
+
+    let(:cop_config) { cop_config }
+
+    describe 'BracesRequiredMethods methods' do
+      it 'allows braces' do
+        expect_no_offenses(<<~RUBY)
+          sig {
+            params(
+              foo: string,
+            ).void
+          }
+          def consume(foo)
+            foo
+          end
+        RUBY
+      end
+
+      it 'registers an offense with do' do
+        expect_offense(<<~RUBY)
+          sig do
+              ^^ Brace delimiters `{...}` required for 'sig' method.
+            params(
+              foo: string,
+            ).void
+          end
+          def consume(foo)
+            foo
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          sig {
+            params(
+              foo: string,
+            ).void
+          }
+          def consume(foo)
+            foo
+          end
+        RUBY
+      end
+    end
+
+    describe 'other methods' do
+      it 'allows braces' do
+        expect_no_offenses(<<~RUBY)
+          other_method do
+            params(
+              foo: string,
+            ).void
+          end
+          def consume(foo)
+            foo
+          end
+        RUBY
+      end
+
+      it 'auto-corrects { and } to do and end' do
+        source = <<~RUBY
+          each{ |x|
+            some_method
+            other_method
+          }
+        RUBY
+
+        expected_source = <<~RUBY
+          each do |x|
+            some_method
+            other_method
+          end
+        RUBY
+
+        new_source = autocorrect_source(source)
+        expect(new_source).to eq(expected_source)
+      end
+    end
+  end
 end
