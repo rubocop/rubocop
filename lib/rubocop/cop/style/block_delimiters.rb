@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module RuboCop
   module Cop
     module Style
@@ -106,11 +107,40 @@ module RuboCop
       #     word.flip.flop
       #   }
       #
+      # @example BracesRequiredMethods: ['sig']
+      #
+      #   # Methods listed in the BracesRequiredMethods list, such as 'sig'
+      #   # in this example, will require `{...}` braces. This option takes
+      #   # precedence over all other configurations except IgnoredMethods.
+      #
+      #   # bad
+      #   sig do
+      #     params(
+      #       foo: string,
+      #     ).void
+      #   end
+      #   def bar(foo)
+      #     puts foo
+      #   end
+      #
+      #   # good
+      #   sig {
+      #     params(
+      #       foo: string,
+      #     ).void
+      #   }
+      #   def bar(foo)
+      #     puts foo
+      #   end
+      #
       class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
         include IgnoredMethods
 
         ALWAYS_BRACES_MESSAGE = 'Prefer `{...}` over `do...end` for blocks.'
+
+        BRACES_REQUIRED_MESSAGE = 'Brace delimiters `{...}` required for ' \
+          "'%<method_name>s' method."
 
         def on_send(node)
           return unless node.arguments?
@@ -175,7 +205,15 @@ module RuboCop
           end
         end
 
+        def braces_required_message(node)
+          format(BRACES_REQUIRED_MESSAGE, method_name: node.method_name.to_s)
+        end
+
         def message(node)
+          if braces_required_method?(node.method_name)
+            return braces_required_message(node)
+          end
+
           case style
           when :line_count_based    then line_count_based_message(node)
           when :semantic            then semantic_message(node)
@@ -238,7 +276,9 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity
 
         def proper_block_style?(node)
-          return true if ignored_method?(node.method_name)
+          if special_method?(node.method_name)
+            return special_method_proper_block_style?(node)
+          end
 
           case style
           when :line_count_based    then line_count_based_block_style?(node)
@@ -246,6 +286,24 @@ module RuboCop
           when :braces_for_chaining then braces_for_chaining_style?(node)
           when :always_braces       then braces_style?(node)
           end
+        end
+
+        def special_method?(method_name)
+          ignored_method?(method_name) || braces_required_method?(method_name)
+        end
+
+        def special_method_proper_block_style?(node)
+          method_name = node.method_name
+          return true if ignored_method?(method_name)
+          return node.braces? if braces_required_method?(method_name)
+        end
+
+        def braces_required_method?(method_name)
+          braces_required_methods.include?(method_name.to_s)
+        end
+
+        def braces_required_methods
+          cop_config.fetch('BracesRequiredMethods', [])
         end
 
         def line_count_based_block_style?(node)
@@ -329,3 +387,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

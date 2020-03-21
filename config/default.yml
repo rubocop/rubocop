@@ -54,6 +54,7 @@ AllCops:
     - '**/Puppetfile'
     - '**/Rakefile'
     - '**/Snapfile'
+    - '**/Steepfile'
     - '**/Thorfile'
     - '**/Vagabondfile'
     - '**/Vagrantfile'
@@ -254,10 +255,30 @@ Layout/ArrayAlignment:
   Description: >-
                  Align the elements of an array literal if they span more than
                  one line.
-  StyleGuide: '#align-multiline-arrays'
+  StyleGuide: '#no-double-indent'
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '0.77'
+  # Alignment of elements of a multi-line array.
+  #
+  # The `with_first_parameter` style aligns the following lines along the same
+  # column as the first element.
+  #
+  #     array = [1, 2, 3,
+  #              4, 5, 6]
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with start of array.
+  #
+  #     array = [1, 2, 3,
+  #       4, 5, 6]
+  EnforcedStyle: with_first_element
+  SupportedStyles:
+    - with_first_element
+    - with_fixed_indentation
+  # By default, the indentation width from Layout/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Layout/AssignmentIndentation:
   Description: >-
@@ -794,6 +815,7 @@ Layout/LeadingCommentSpace:
   VersionAdded: '0.49'
   VersionChanged: '0.73'
   AllowDoxygenCommentStyle: false
+  AllowGemfileRubyComment: false
 
 Layout/LeadingEmptyLines:
   Description: Check for unnecessary blank lines at the beginning of a file.
@@ -1572,7 +1594,7 @@ Lint/RedundantRequireStatement:
 Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
-  VersionChanged: '0.76'
+  VersionAdded: '0.76'
 
 Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
@@ -1690,9 +1712,9 @@ Lint/SuppressedException:
   Description: "Don't suppress exceptions."
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
-  AllowComments: false
+  AllowComments: true
   VersionAdded: '0.9'
-  VersionChanged: '0.77'
+  VersionChanged: '0.81'
 
 Lint/Syntax:
   Description: 'Checks syntax error.'
@@ -1703,6 +1725,7 @@ Lint/Syntax:
 Lint/ToJSON:
   Description: 'Ensure #to_json includes an optional argument.'
   Enabled: true
+  VersionAdded: '0.66'
 
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
@@ -1782,6 +1805,8 @@ Lint/UselessSetterCall:
   Description: 'Checks for useless setter call to a local variable.'
   Enabled: true
   VersionAdded: '0.13'
+  VersionChanged: '0.80'
+  Safe: false
 
 Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
@@ -1883,7 +1908,8 @@ Migration/DepartmentName:
   Description: >-
                  Check that cop names in rubocop:disable (etc) comments are
                  given with department name.
-  Enabled: false
+  Enabled: true
+  VersionAdded: '0.75'
 
 #################### Naming ##############################
 
@@ -2356,6 +2382,12 @@ Style/BlockDelimiters:
   #   # also good
   #   collection.each do |element| puts element end
   AllowBracesOnProceduralOneLiners: false
+  # The BracesRequiredMethods overrides all other configurations except
+  # IgnoredMethods. It can be used to enforce that all blocks for specific
+  # methods use braces. For example, you can use this to enforce Sorbet
+  # signatures use braces even when the rest of your codebase enforces
+  # the `line_count_based` style.
+  BracesRequiredMethods: []
 
 Style/CaseEquality:
   Description: 'Avoid explicit use of the case equality operator(===).'
@@ -2425,7 +2457,7 @@ Style/ClassVars:
 # Align with the style guide.
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
-  StyleGuide: '#map-find-select-reduce-size'
+  StyleGuide: '#map-find-select-reduce-include-size'
   Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.27'
@@ -2442,6 +2474,7 @@ Style/CollectionMethods:
     inject: 'reduce'
     detect: 'find'
     find_all: 'select'
+    member?: 'include?'
 
 Style/ColonMethodCall:
   Description: 'Do not use :: for method call.'
@@ -2777,6 +2810,13 @@ Style/GuardClause:
   # needs to have to trigger this cop
   MinBodyLength: 1
 
+Style/HashEachMethods:
+  Description: 'Use Hash#each_key and Hash#each_value.'
+  StyleGuide: '#hash-each'
+  Enabled: pending
+  VersionAdded: '0.80'
+  Safe: false
+
 Style/HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
@@ -2799,6 +2839,18 @@ Style/HashSyntax:
   UseHashRocketsWithSymbolValues: false
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
+
+Style/HashTransformKeys:
+  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  VersionAdded: '0.80'
+  Safe: false
+
+Style/HashTransformValues:
+  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Enabled: 'pending'
+  VersionAdded: '0.80'
+  Safe: false
 
 Style/IdenticalConditionalBranches:
   Description: >-
@@ -2908,7 +2960,7 @@ Style/LambdaCall:
   Description: 'Use lambda.call(...) instead of lambda.(...).'
   StyleGuide: '#proc-call'
   Enabled: true
-  VersionAdded: '0.13.1'
+  VersionAdded: '0.13'
   VersionChanged: '0.14'
   EnforcedStyle: call
   SupportedStyles:
@@ -3778,9 +3830,10 @@ Style/TrailingCommaInArrayLiteral:
   StyleGuide: '#no-trailing-array-commas'
   Enabled: true
   VersionAdded: '0.53'
+  # If `comma`, the cop requires a comma after the last item in an array,
   # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty array literals.
+  # non-empty, multiline array literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma
@@ -3793,7 +3846,7 @@ Style/TrailingCommaInHashLiteral:
   # If `comma`, the cop requires a comma after the last item in a hash,
   # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty hash literals.
+  # non-empty, multiline hash literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma

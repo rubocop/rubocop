@@ -220,39 +220,93 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           RESULT
       end
 
-      it 'accepts cop names from plugins with a pending cop' do
-        create_file('.rubocop.yml', <<~YAML)
-          require: rubocop_ext
+      context 'when specifying a pending cop' do
+        let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 
-          Style/SomeCop:
-            Description: Something
-            Enabled: pending
-        YAML
-        create_file('rubocop_ext.rb', <<~RUBY)
-          module RuboCop
-            module Cop
-              module Style
-                class SomeCop < Cop
+        # Since we define a new cop class, we have to do this in a separate
+        # process. Otherwise, the extra cop will affect other specs.
+        let(:output) do
+          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
+        end
+
+        let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
+          The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
+        PENDING_COP_WARNING
+
+        let(:inspected_output) { <<~INSPECTED_OUTPUT }
+          Inspecting 2 files
+          ..
+
+          2 files inspected, no offenses detected
+        INSPECTED_OUTPUT
+
+        let(:versioning_manual_url) { <<~VERSIONING_MANUAL_URL.chop }
+          For more information: https://docs.rubocop.org/en/latest/versioning/
+        VERSIONING_MANUAL_URL
+
+        before do
+          create_file('rubocop_ext.rb', <<~RUBY)
+            module RuboCop
+              module Cop
+                module Style
+                  class SomeCop < Cop
+                  end
                 end
               end
             end
-          end
-        RUBY
-        create_file('redirect.rb', '$stderr = STDOUT')
-        rubocop = "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop"
-        # Since we define a new cop class, we have to do this in a separate
-        # process. Otherwise, the extra cop will affect other specs.
-        output =
-          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
-        expect(output)
-          .to eq(<<~RESULT)
-            The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
-             - Style/SomeCop
-            Inspecting 2 files
-            ..
+          RUBY
 
-            2 files inspected, no offenses detected
-          RESULT
+          create_file('redirect.rb', '$stderr = STDOUT')
+        end
+
+        context 'when Style department is enabled' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              require: rubocop_ext
+
+              Style/SomeCop:
+                Description: Something
+                Enabled: pending
+                VersionAdded: '0.80'
+            YAML
+          end
+
+          it 'accepts cop names from plugins with a pending cop warning' do
+            expect(output).to start_with(pending_cop_warning)
+            expect(output).to end_with(inspected_output)
+
+            remaining_range =
+              pending_cop_warning.length..-(inspected_output.length + 1)
+            pending_cops = output[remaining_range].split("\n")
+
+            expect(pending_cops).to include(
+              ' - Style/SomeCop (0.80)'
+            )
+
+            manual_url = output[remaining_range].split("\n").last
+
+            expect(manual_url).to eq(versioning_manual_url)
+          end
+        end
+
+        context 'when Style department is disabled' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              require: rubocop_ext
+
+              Style:
+                Enabled: false
+
+              Style/SomeCop:
+                Description: Something
+                Enabled: pending
+            YAML
+          end
+
+          it 'does not show pending cop warning' do
+            expect(output).to eq(inspected_output)
+          end
+        end
       end
 
       context 'without using namespace' do
@@ -456,10 +510,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             1  Layout/SpaceAroundOperators
             1  Layout/Tab
             1  Layout/TrailingWhitespace
+            1  Migration/DepartmentName
             1  Style/FrozenStringLiteralComment
             1  Style/NumericPredicate
             --
-            6  Total
+            7  Total
 
           RESULT
       end
@@ -576,6 +631,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to eq(<<~RESULT)
         #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:26: C: Migration/DepartmentName: Department name is missing.
         #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
     end
@@ -587,6 +643,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: Missing frozen string literal comment.
           #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:26: C: Department name is missing.
           #{file}:1:41: C: Trailing whitespace detected.
         RESULT
       end
@@ -606,6 +663,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<~RESULT)
           #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:26: C: Migration/DepartmentName: Department name is missing.
           #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
       end
@@ -616,6 +674,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).to eq(<<~RESULT)
             #{file}:1:1: C: Missing frozen string literal comment.
             #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
+            #{file}:1:26: C: Department name is missing.
             #{file}:1:41: C: Trailing whitespace detected.
           RESULT
         end

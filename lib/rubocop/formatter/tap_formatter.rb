@@ -56,7 +56,7 @@ module RuboCop
 
           report_line(offense.location)
           report_highlighted_area(offense.highlighted_area)
-        rescue IndexError # rubocop:disable Lint/SuppressedException
+        rescue IndexError
           # range is not on a valid line; perhaps the source file is empty
         end
       end

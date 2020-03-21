@@ -1,4 +1,4 @@
-## Cops
+# Cops
 
 In RuboCop lingo the various checks performed on the code are called cops.
 Each cop is responsible for detecting one particular offense. There are several
@@ -10,17 +10,17 @@ enforce different coding conventions.
 
 You can also load [custom cops](extensions.md#custom-cops).
 
-### Style
+## Style
 
 Style cops check for stylistic consistency of your code. Many of the them are
 based on the [Ruby Style Guide](https://rubystyle.guide).
 
-### Layout
+## Layout
 
 Layout cops inspect your code for consistent use of indentation, alignment,
 and white space.
 
-### Lint
+## Lint
 
 Lint cops check for ambiguities and possible errors in your code.
 
@@ -38,7 +38,7 @@ enabled Lint cops plus a selection of other cops.
 
 Disabling Lint cops is generally a bad idea.
 
-### Metrics
+## Metrics
 
 Metrics cops deal with properties of the source code that can be measured,
 such as class length, method length, etc. Generally speaking, they have a
@@ -46,44 +46,44 @@ configuration parameter called `Max` and when running
 `rubocop --auto-gen-config`, this parameter will be set to the highest value
 found for the inspected code.
 
-### Naming
+## Naming
 
 Naming cops check for naming issue of your code, such as method name, constant
 name, file name, etc.
 
-### Security
+## Security
 
 Security cops checks for method calls and constructs which are known to be
 associated with potential security issues.
 
-### Bundler
+## Bundler
 
 Bundler cops check for style and bad practices in Bundler files, e.g. `Gemfile`.
 
-### Gemspec
+## Gemspec
 
 Gemspec cops check for style and bad practices in gemspec files, e.g. `rubocop.gemspec`.
 
-### Available cops
+## Available cops
 
 In the following section you find all available cops:
 
 <!-- START_COP_LIST -->
-#### Department [Bundler](cops_bundler.md)
+### Department [Bundler](cops_bundler.md)
 
 * [Bundler/DuplicatedGem](cops_bundler.md#bundlerduplicatedgem)
 * [Bundler/GemComment](cops_bundler.md#bundlergemcomment)
 * [Bundler/InsecureProtocolSource](cops_bundler.md#bundlerinsecureprotocolsource)
 * [Bundler/OrderedGems](cops_bundler.md#bundlerorderedgems)
 
-#### Department [Gemspec](cops_gemspec.md)
+### Department [Gemspec](cops_gemspec.md)
 
 * [Gemspec/DuplicatedAssignment](cops_gemspec.md#gemspecduplicatedassignment)
 * [Gemspec/OrderedDependencies](cops_gemspec.md#gemspecordereddependencies)
 * [Gemspec/RequiredRubyVersion](cops_gemspec.md#gemspecrequiredrubyversion)
 * [Gemspec/RubyVersionGlobalsUsage](cops_gemspec.md#gemspecrubyversionglobalsusage)
 
-#### Department [Layout](cops_layout.md)
+### Department [Layout](cops_layout.md)
 
 * [Layout/AccessModifierIndentation](cops_layout.md#layoutaccessmodifierindentation)
 * [Layout/ArgumentAlignment](cops_layout.md#layoutargumentalignment)
@@ -174,7 +174,7 @@ In the following section you find all available cops:
 * [Layout/TrailingEmptyLines](cops_layout.md#layouttrailingemptylines)
 * [Layout/TrailingWhitespace](cops_layout.md#layouttrailingwhitespace)
 
-#### Department [Lint](cops_lint.md)
+### Department [Lint](cops_lint.md)
 
 * [Lint/AmbiguousBlockAssociation](cops_lint.md#lintambiguousblockassociation)
 * [Lint/AmbiguousOperator](cops_lint.md#lintambiguousoperator)
@@ -259,7 +259,7 @@ In the following section you find all available cops:
 * [Lint/UselessSetterCall](cops_lint.md#lintuselesssettercall)
 * [Lint/Void](cops_lint.md#lintvoid)
 
-#### Department [Metrics](cops_metrics.md)
+### Department [Metrics](cops_metrics.md)
 
 * [Metrics/AbcSize](cops_metrics.md#metricsabcsize)
 * [Metrics/BlockLength](cops_metrics.md#metricsblocklength)
@@ -271,11 +271,11 @@ In the following section you find all available cops:
 * [Metrics/ParameterLists](cops_metrics.md#metricsparameterlists)
 * [Metrics/PerceivedComplexity](cops_metrics.md#metricsperceivedcomplexity)
 
-#### Department [Migration](cops_migration.md)
+### Department [Migration](cops_migration.md)
 
 * [Migration/DepartmentName](cops_migration.md#migrationdepartmentname)
 
-#### Department [Naming](cops_naming.md)
+### Department [Naming](cops_naming.md)
 
 * [Naming/AccessorMethodName](cops_naming.md#namingaccessormethodname)
 * [Naming/AsciiIdentifiers](cops_naming.md#namingasciiidentifiers)
@@ -294,7 +294,7 @@ In the following section you find all available cops:
 * [Naming/VariableName](cops_naming.md#namingvariablename)
 * [Naming/VariableNumber](cops_naming.md#namingvariablenumber)
 
-#### Department [Security](cops_security.md)
+### Department [Security](cops_security.md)
 
 * [Security/Eval](cops_security.md#securityeval)
 * [Security/JSONLoad](cops_security.md#securityjsonload)
@@ -302,7 +302,7 @@ In the following section you find all available cops:
 * [Security/Open](cops_security.md#securityopen)
 * [Security/YAMLLoad](cops_security.md#securityyamlload)
 
-#### Department [Style](cops_style.md)
+### Department [Style](cops_style.md)
 
 * [Style/AccessModifierDeclarations](cops_style.md#styleaccessmodifierdeclarations)
 * [Style/Alias](cops_style.md#stylealias)
@@ -357,7 +357,10 @@ In the following section you find all available cops:
 * [Style/FrozenStringLiteralComment](cops_style.md#stylefrozenstringliteralcomment)
 * [Style/GlobalVars](cops_style.md#styleglobalvars)
 * [Style/GuardClause](cops_style.md#styleguardclause)
+* [Style/HashEachMethods](cops_style.md#stylehasheachmethods)
 * [Style/HashSyntax](cops_style.md#stylehashsyntax)
+* [Style/HashTransformKeys](cops_style.md#stylehashtransformkeys)
+* [Style/HashTransformValues](cops_style.md#stylehashtransformvalues)
 * [Style/IdenticalConditionalBranches](cops_style.md#styleidenticalconditionalbranches)
 * [Style/IfInsideElse](cops_style.md#styleifinsideelse)
 * [Style/IfUnlessModifier](cops_style.md#styleifunlessmodifier)

@@ -473,6 +473,33 @@ words.each { |word|
   word.flip.flop
 }
 ```
+#### BracesRequiredMethods: ['sig']
+
+```ruby
+# Methods listed in the BracesRequiredMethods list, such as 'sig'
+# in this example, will require `{...}` braces. This option takes
+# precedence over all other configurations except IgnoredMethods.
+
+# bad
+sig do
+  params(
+    foo: string,
+  ).void
+end
+def bar(foo)
+  puts foo
+end
+
+# good
+sig {
+  params(
+    foo: string,
+  ).void
+}
+def bar(foo)
+  puts foo
+end
+```
 
 ### Configurable attributes
 
@@ -483,6 +510,7 @@ ProceduralMethods | `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `me
 FunctionalMethods | `let`, `let!`, `subject`, `watch` | Array
 IgnoredMethods | `lambda`, `proc`, `it` | Array
 AllowBracesOnProceduralOneLiners | `false` | Boolean
+BracesRequiredMethods | `[]` | Array
 
 ### References
 
@@ -724,6 +752,7 @@ items.collect!
 items.inject
 items.detect
 items.find_all
+items.member?
 
 # good
 items.map
@@ -731,17 +760,18 @@ items.map!
 items.reduce
 items.find
 items.select
+items.include?
 ```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
-PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select"}` | 
+PreferredMethods | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}` | 
 
 ### References
 
-* [https://rubystyle.guide#map-find-select-reduce-size](https://rubystyle.guide#map-find-select-reduce-size)
+* [https://rubystyle.guide#map-find-select-reduce-include-size](https://rubystyle.guide#map-find-select-reduce-include-size)
 
 ## Style/ColonMethodCall
 
@@ -2391,6 +2421,34 @@ MinBodyLength | `1` | Integer
 
 * [https://rubystyle.guide#no-nested-conditionals](https://rubystyle.guide#no-nested-conditionals)
 
+## Style/HashEachMethods
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | No | Yes (Unsafe) | 0.80 | -
+
+This cop checks for uses of `each_key` and `each_value` Hash methods.
+
+Note: If you have an array of two-element arrays, you can put
+  parentheses around the block arguments to indicate that you're not
+  working with a hash, and suppress RuboCop offenses.
+
+### Examples
+
+```ruby
+# bad
+hash.keys.each { |k| p k }
+hash.values.each { |v| p v }
+
+# good
+hash.each_key { |k| p k }
+hash.each_value { |v| p v }
+```
+
+### References
+
+* [https://rubystyle.guide#hash-each](https://rubystyle.guide#hash-each)
+
 ## Style/HashSyntax
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2471,6 +2529,66 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 ### References
 
 * [https://rubystyle.guide#hash-literals](https://rubystyle.guide#hash-literals)
+
+## Style/HashTransformKeys
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | No | Yes (Unsafe) | 0.80 | -
+
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+transforming the keys of a hash, and tries to use a simpler & faster
+call to `transform_keys` instead.
+
+This can produce false positives if we are transforming an enumerable
+of key-value-like pairs that isn't actually a hash, e.g.:
+`[[k1, v1], [k2, v2], ...]`
+
+This cop should only be enabled on Ruby version 2.5 or newer
+(`transform_keys` was added in Ruby 2.5.)
+
+### Examples
+
+```ruby
+# bad
+{a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[foo(k)] = v }
+{a: 1, b: 2}.map { |k, v| [k.to_s, v] }
+
+# good
+{a: 1, b: 2}.transform_keys { |k| foo(k) }
+{a: 1, b: 2}.transform_keys { |k| k.to_s }
+```
+
+## Style/HashTransformValues
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | No | Yes (Unsafe) | 0.80 | -
+
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+transforming the values of a hash, and tries to use a simpler & faster
+call to `transform_values` instead.
+
+This can produce false positives if we are transforming an enumerable
+of key-value-like pairs that isn't actually a hash, e.g.:
+`[[k1, v1], [k2, v2], ...]`
+
+This cop should only be enabled on Ruby version 2.4 or newer
+(`transform_values` was added in Ruby 2.4.)
+
+### Examples
+
+```ruby
+# bad
+{a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = foo(v) }
+{a: 1, b: 2}.map { |k, v| [k, v * v] }
+
+# good
+{a: 1, b: 2}.transform_values { |v| foo(v) }
+{a: 1, b: 2}.transform_values { |v| v * v }
+```
 
 ## Style/IdenticalConditionalBranches
 
@@ -2924,7 +3042,7 @@ EnforcedStyle | `line_count_dependent` | `line_count_dependent`, `lambda`, `lite
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.13.1 | 0.14
+Enabled | Yes | Yes  | 0.13 | 0.14
 
 This cop checks for use of the lambda.(args) syntax.
 
@@ -6638,8 +6756,8 @@ projects which do not want to use that syntax.
 
 Configuration option: MinSize
 If set, arrays with fewer elements than this value will not trigger the
-cop. For example, a `MinSize of `3` will not enforce a style on an array
-of 2 or fewer elements.
+cop. For example, a `MinSize` of `3` will not enforce a style on an
+array of 2 or fewer elements.
 
 ### Examples
 
@@ -6871,6 +6989,13 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.36 | -
 
 This cop checks for trailing comma in argument lists.
+The supported styles are:
+
+- `consistent_comma`: Requires a comma after the last argument,
+for all parenthesized method calls with arguments.
+- `comma`: Requires a comma after the last argument, but only for
+parenthesized method calls where each argument is on its own line.
+- `no_comma`: Does not requires a comma after the last argument.
 
 ### Examples
 
@@ -6891,6 +7016,11 @@ method(
 
 # good
 method(
+  1, 2, 3,
+)
+
+# good
+method(
   1,
   2,
 )
@@ -6903,6 +7033,28 @@ method(1, 2,)
 
 # good
 method(1, 2)
+
+# bad
+method(
+  1, 2,
+  3,
+)
+
+# good
+method(
+  1, 2,
+  3
+)
+
+# bad
+method(
+  1, 2, 3,
+)
+
+# good
+method(
+  1, 2, 3
+)
 
 # good
 method(
@@ -6943,6 +7095,14 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing comma in array literals.
+The configuration options are:
+
+- `consistent_comma`: Requires a comma after the
+last item of all non-empty, multiline array literals.
+- `comma`: Requires a comma after last item in an array,
+but only when each item is on its own line.
+- `no_comma`: Does not requires a comma after the
+last item in an array
 
 ### Examples
 
@@ -6953,9 +7113,17 @@ This cop checks for trailing comma in array literals.
 a = [1, 2,]
 
 # good
+a = [1, 2]
+
+# good
 a = [
   1, 2,
   3,
+]
+
+# good
+a = [
+  1, 2, 3,
 ]
 
 # good
@@ -6969,6 +7137,31 @@ a = [
 ```ruby
 # bad
 a = [1, 2,]
+
+# good
+a = [1, 2]
+
+# bad
+a = [
+  1, 2,
+  3,
+]
+
+# good
+a = [
+  1, 2,
+  3
+]
+
+# bad
+a = [
+  1, 2, 3,
+]
+
+# good
+a = [
+  1, 2, 3
+]
 
 # good
 a = [
@@ -7006,6 +7199,14 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Enabled | Yes | Yes  | 0.53 | -
 
 This cop checks for trailing comma in hash literals.
+The configuration options are:
+
+- `consistent_comma`: Requires a comma after the
+last item of all non-empty, multiline hash literals.
+- `comma`: Requires a comma after the last item in a hash,
+but only when each item is on its own line.
+- `no_comma`: Does not requires a comma after the
+last item in a hash
 
 ### Examples
 
@@ -7016,9 +7217,17 @@ This cop checks for trailing comma in hash literals.
 a = { foo: 1, bar: 2, }
 
 # good
+a = { foo: 1, bar: 2 }
+
+# good
 a = {
   foo: 1, bar: 2,
   qux: 3,
+}
+
+# good
+a = {
+  foo: 1, bar: 2, qux: 3,
 }
 
 # good
@@ -7032,6 +7241,31 @@ a = {
 ```ruby
 # bad
 a = { foo: 1, bar: 2, }
+
+# good
+a = { foo: 1, bar: 2 }
+
+# bad
+a = {
+  foo: 1, bar: 2,
+  qux: 3,
+}
+
+# good
+a = {
+  foo: 1, bar: 2,
+  qux: 3
+}
+
+# bad
+a = {
+  foo: 1, bar: 2, qux: 3,
+}
+
+# good
+a = {
+  foo: 1, bar: 2, qux: 3
+}
 
 # good
 a = {

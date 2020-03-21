@@ -248,6 +248,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
         RUBY
       end
 
+      context '>= Ruby 2.7', :ruby27 do
+        it 'accepts methods being aligned with method that is an argument' \
+           'when using numbered parameter' do
+          expect_no_offenses(<<~RUBY)
+            File.read('data.yml')
+                .then { YAML.safe_load _1 }
+                .transform_values(&:downcase)
+          RUBY
+        end
+      end
+
       it 'accepts methods being aligned with method that is an argument in ' \
          'assignment' do
         expect_no_offenses(<<~RUBY)

@@ -21,6 +21,7 @@ module RuboCop
         array:        ArrayNode,
         block:        BlockNode,
         break:        BreakNode,
+        case_match:   CaseMatchNode,
         case:         CaseNode,
         class:        ClassNode,
         def:          DefNode,

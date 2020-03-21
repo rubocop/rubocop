@@ -54,7 +54,9 @@ RSpec.describe RuboCop::CommentConfig do
         '"result is #{}"',
         '# rubocop:enable Lint/EmptyInterpolation',
         '# rubocop:disable RSpec/Example',
-        '# rubocop:disable Custom2/Number9'                  # 48
+        '# rubocop:disable Custom2/Number9',                 # 48
+        '',
+        '#=SomeDslDirective # rubocop:disable Layout/LeadingCommentSpace'
       ].join("\n")
     end
 
@@ -161,6 +163,11 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports disabling cops with numbers in their name' do
       expect(disabled_lines_of_cop('Custom2/Number9')).to include(48)
+    end
+
+    it 'supports disabling cops on a comment line with an EOL comment' do
+      expect(disabled_lines_of_cop('Layout/LeadingCommentSpace'))
+        .to eq([7, 8, 9, 50])
     end
   end
 end

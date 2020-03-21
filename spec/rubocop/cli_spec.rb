@@ -353,7 +353,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
+            #{abs('example.rb')}:3:110: C: Migration/DepartmentName: Department name is missing.
             #{abs('example.rb')}:4:81: C: Layout/LineLength: Line is too long. [95/80]
+            #{abs('example.rb')}:5:28: C: Migration/DepartmentName: Department name is missing.
         RESULT
       end
     end

@@ -19,19 +19,25 @@ module RuboCop
       #
       # If autocorrection is enabled, the following Layout cops
       # are recommended to further format the broken lines.
+      # (Many of these are enabled by default.)
       #
-      #   - ParameterAlignment
       #   - ArgumentAlignment
+      #   - BlockAlignment
+      #   - BlockDelimiters
+      #   - BlockEndNewline
       #   - ClosingParenthesisIndentation
       #   - FirstArgumentIndentation
       #   - FirstArrayElementIndentation
       #   - FirstHashElementIndentation
       #   - FirstParameterIndentation
       #   - HashAlignment
+      #   - IndentationWidth
       #   - MultilineArrayLineBreaks
+      #   - MultilineBlockLayout
       #   - MultilineHashBraceLayout
       #   - MultilineHashKeyLineBreaks
       #   - MultilineMethodArgumentLineBreaks
+      #   - ParameterAlignment
       #
       # Together, these cops will pretty print hashes, arrays,
       # method calls, etc. For example, let's say the max columns
@@ -60,6 +66,10 @@ module RuboCop
         include LineLengthHelp
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
+
+        def on_block(node)
+          check_for_breakable_block(node)
+        end
 
         def on_potential_breakable_node(node)
           check_for_breakable_node(node)
@@ -106,6 +116,25 @@ module RuboCop
           tokens.reverse_each do |token|
             range = breakable_range_after_semicolon(token)
             breakable_range_by_line_index[range.line - 1] = range if range
+          end
+        end
+
+        def check_for_breakable_block(block_node)
+          return unless block_node.single_line?
+
+          line_index = block_node.loc.line - 1
+          range = breakable_block_range(block_node)
+          pos = range.begin_pos + 1
+
+          breakable_range_by_line_index[line_index] =
+            range_between(pos, pos + 1)
+        end
+
+        def breakable_block_range(block_node)
+          if block_node.arguments? && !block_node.lambda?
+            block_node.arguments.loc.end
+          else
+            block_node.loc.begin
           end
         end
 

@@ -1224,14 +1224,14 @@ end
 # good
 
 def foo
-  self.class_eval do
+  self.class.class_eval do
     def bar
     end
   end
 end
 
 def foo
-  self.module_exec do
+  self.class.module_exec do
     def bar
     end
   end
@@ -1593,15 +1593,15 @@ foo = 1
 ```
 ```ruby
 # bad
-# rubocop:disable Layout/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable Layout/LineLength
+# rubocop:disable Style/StringLiterals
+foo = "1"
+# rubocop:enable Style/StringLiterals
 baz
 # rubocop:enable all
 
 # good
-# rubocop:disable Layout/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:disable Style/StringLiterals
+foo = "1"
 # rubocop:enable all
 baz
 ```
@@ -1638,7 +1638,7 @@ require 'unloaded_feature'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | 0.76
+Enabled | Yes | Yes  | 0.76 | -
 
 This cop checks for unneeded usages of splat expansion
 
@@ -2279,13 +2279,11 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 0.77
+Enabled | Yes | No | 0.9 | 0.81
 
 This cop checks for *rescue* blocks with no body.
 
 ### Examples
-
-#### AllowComments: false (default)
 
 ```ruby
 # bad
@@ -2295,23 +2293,9 @@ rescue
 end
 
 # bad
-def some_method
-  do_something
-rescue
-  # do nothing
-end
-
-# bad
 begin
   do_something
 rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-  # do nothing
 end
 
 # good
@@ -2328,33 +2312,38 @@ rescue
   handle_exception
 end
 ```
-#### AllowComments: true
+#### AllowComments: true (default)
+
+```ruby
+# good
+def some_method
+  do_something
+rescue
+  # do nothing
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing
+end
+```
+#### AllowComments: false
 
 ```ruby
 # bad
 def some_method
   do_something
 rescue
+  # do nothing
 end
 
 # bad
 begin
   do_something
 rescue
-end
-
-# good
-def some_method
-  do_something
-rescue
-  # do nothing but comment
-end
-
-# good
-begin
-  do_something
-rescue
-  # do nothing but comment
+  # do nothing
 end
 ```
 
@@ -2362,7 +2351,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-AllowComments | `false` | Boolean
+AllowComments | `true` | Boolean
 
 ### References
 
@@ -2382,7 +2371,7 @@ into RuboCop's offenses.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | -
+Enabled | Yes | Yes  | 0.66 | -
 
 This cop checks to make sure `#to_json` includes an optional argument.
 When overriding `#to_json`, callers may invoke JSON
@@ -2946,10 +2935,14 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | -
+Enabled | No | No | 0.13 | 0.80
 
 This cop checks for setter call to local variable as the final
 expression of a function definition.
+
+Note: There are edge cases in which the local variable references a
+value that is also accessible outside the local scope. This is not
+detected by the cop, and it can yield a false positive.
 
 ### Examples
 

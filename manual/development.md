@@ -1,3 +1,5 @@
+# Development
+
 ## Add a new cop
 
 Use a rake task to generate a cop template.

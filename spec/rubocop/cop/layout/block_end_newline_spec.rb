@@ -44,4 +44,19 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline do
       }
     RUBY
   end
+
+  it 'registers an offense and corrects when `}` of multiline block ' \
+     'without processing is not on its own line' do
+    expect_offense(<<~RUBY)
+      test {
+        |foo| }
+              ^ Expression at 2, 9 should be on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test {
+        |foo|
+      }
+    RUBY
+  end
 end

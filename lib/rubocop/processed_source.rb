@@ -163,7 +163,7 @@ module RuboCop
         ast, comments, tokens = parser.tokenize(@buffer)
 
         ast.respond_to?(:complete!) && ast.complete!
-      rescue Parser::SyntaxError # rubocop:disable Lint/SuppressedException
+      rescue Parser::SyntaxError
         # All errors are in diagnostics. No need to handle exception.
       end
 

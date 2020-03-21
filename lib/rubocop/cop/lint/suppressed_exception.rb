@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for *rescue* blocks with no body.
       #
-      # @example AllowComments: false (default)
+      # @example
       #
       #   # bad
       #   def some_method
@@ -14,23 +14,9 @@ module RuboCop
       #   end
       #
       #   # bad
-      #   def some_method
-      #     do_something
-      #   rescue
-      #     # do nothing
-      #   end
-      #
-      #   # bad
       #   begin
       #     do_something
       #   rescue
-      #   end
-      #
-      #   # bad
-      #   begin
-      #     do_something
-      #   rescue
-      #     # do nothing
       #   end
       #
       #   # good
@@ -47,32 +33,36 @@ module RuboCop
       #     handle_exception
       #   end
       #
-      # @example AllowComments: true
-      #
-      #   # bad
-      #   def some_method
-      #     do_something
-      #   rescue
-      #   end
-      #
-      #   # bad
-      #   begin
-      #     do_something
-      #   rescue
-      #   end
+      # @example AllowComments: true (default)
       #
       #   # good
       #   def some_method
       #     do_something
       #   rescue
-      #     # do nothing but comment
+      #     # do nothing
       #   end
       #
       #   # good
       #   begin
       #     do_something
       #   rescue
-      #     # do nothing but comment
+      #     # do nothing
+      #   end
+      #
+      # @example AllowComments: false
+      #
+      #   # bad
+      #   def some_method
+      #     do_something
+      #   rescue
+      #     # do nothing
+      #   end
+      #
+      #   # bad
+      #   begin
+      #     do_something
+      #   rescue
+      #     # do nothing
       #   end
       class SuppressedException < Cop
         MSG = 'Do not suppress exceptions.'

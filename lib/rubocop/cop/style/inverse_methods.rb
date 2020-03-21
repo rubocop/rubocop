@@ -109,10 +109,7 @@ module RuboCop
             corrector.remove(not_to_receiver(node, method_call))
             corrector.replace(method_call.loc.selector,
                               inverse_methods[method].to_s)
-
-            if EQUALITY_METHODS.include?(method)
-              corrector.remove(end_parentheses(node, method_call))
-            end
+            remove_end_parenthesis(corrector, node, method, method_call)
           end
         end
 
@@ -186,6 +183,13 @@ module RuboCop
 
         def dot_range(loc)
           range_between(loc.dot.begin_pos, loc.expression.end_pos)
+        end
+
+        def remove_end_parenthesis(corrector, node, method, method_call)
+          return unless EQUALITY_METHODS.include?(method) ||
+                        method_call.parent.begin_type?
+
+          corrector.remove(end_parentheses(node, method_call))
         end
       end
     end

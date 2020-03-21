@@ -1,4 +1,4 @@
-## Configuration
+# Configuration
 
 The behavior of RuboCop can be controlled via the
 [.rubocop.yml](https://github.com/rubocop-hq/rubocop/blob/master/.rubocop.yml)
@@ -24,7 +24,7 @@ Layout/LineLength:
     Qualifying cop name with its type, e.g., `Style`, is recommended,
     but not necessary as long as the cop name is unique across all types.
 
-### Config file locations
+## Config file locations
 
 RuboCop will start looking for the configuration file in the directory
 where the inspected file is and continue its way up to the root directory.
@@ -52,7 +52,7 @@ files:
 * `~/.config/rubocop/config.yml`
 * [RuboCop's default configuration][1]
 
-### Inheritance
+## Inheritance
 
 All configuration inherits from [RuboCop's default configuration][1] (See
 "Defaults").
@@ -64,7 +64,7 @@ Configuration" below).
 Settings in the child file (that which inherits) override those in the parent
 (that which is inherited), with the following caveats.
 
-#### Inheritance of hashes vs. other types
+### Inheritance of hashes vs. other types
 
 Configuration parameters that are hashes, for example `PreferredMethods` in
 `Style/CollectionMethods`, are merged with the same parameter in the parent
@@ -90,7 +90,7 @@ remove elements in child files.
 However, advanced users can still merge arrays using the `inherit_mode` setting.
 See "Merging arrays using inherit_mode" below.
 
-#### Inheriting from another configuration file in the project
+### Inheriting from another configuration file in the project
 
 The optional `inherit_from` directive is used to include configuration
 from one or more files. This makes it possible to have the common
@@ -109,7 +109,7 @@ inherit_from:
   - ../conf/.rubocop.yml
 ```
 
-### Inheriting configuration from a remote URL
+## Inheriting configuration from a remote URL
 
 The optional `inherit_from` directive can contain a full url to a remote
 file. This makes it possible to have common project settings stored on a http
@@ -132,7 +132,7 @@ inherit_from:
   - ../.rubocop.yml
 ```
 
-#### Inheriting configuration from a dependency gem
+### Inheriting configuration from a dependency gem
 
 The optional `inherit_gem` directive is used to include configuration from
 one or more gems external to the current project. This makes it possible to
@@ -175,7 +175,7 @@ dependency's installation path at runtime:
 $ bundle exec rubocop <options...>
 ```
 
-#### Merging arrays using inherit_mode
+### Merging arrays using inherit_mode
 
 The optional directive `inherit_mode` specifies which configuration keys that
 have array values should be merged together instead of overriding the inherited
@@ -237,7 +237,7 @@ Style/For:
 In this example the `Exclude` would only include `bar.rb`.
 
 
-### Defaults
+## Defaults
 
 The file [config/default.yml][1] under the RuboCop home directory contains the
 default settings that all configurations inherit from. Project and personal
@@ -245,7 +245,7 @@ default settings that all configurations inherit from. Project and personal
 default ones. If there is no `.rubocop.yml` file in the project, home or XDG
 directories, `config/default.yml` will be used.
 
-### Including/Excluding files
+## Including/Excluding files
 
 RuboCop does a recursive file search starting from the directory it is
 run in, or directories given as command line arguments. Files that
@@ -296,7 +296,7 @@ $ bundle exec rubocop foo.rb
 $ bundle exec rubocop --force-exclusion foo.rb
 ```
 
-#### Path relativity
+### Path relativity
 
 In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
 files, and directories are specified relative to the directory where the
@@ -304,7 +304,7 @@ configuration file is. In configuration files that don't begin with `.rubocop`,
 e.g. `our_company_defaults.yml`, paths are relative to the directory where
 `rubocop` is run.
 
-#### Unusual files, that would not be included by default
+### Unusual files, that would not be included by default
 
 RuboCop comes with a comprehensive list of common ruby file names and
 extensions. But, if you'd like RuboCop to check files that are not included by
@@ -333,7 +333,7 @@ via [#5882](https://github.com/rubocop-hq/rubocop/pull/5882). This change allows
 people to include/exclude precisely what they need to, without the defaults
 getting in the way.
 
-##### Another example, using `inherit_mode`
+#### Another example, using `inherit_mode`
 
 ```yaml
 inherit_mode:
@@ -347,7 +347,7 @@ AllCops:
 
 See "Merging arrays using inherit_mode" above.
 
-#### Deprecated patterns
+### Deprecated patterns
 
 Patterns that are just a file name, e.g. `Rakefile`, will match
 that file name in any directory, but this pattern style is deprecated. The
@@ -369,7 +369,7 @@ is taken from the nearest `.rubocop.yml`, searching upwards. _This behavior
 will be overridden if you specify the `--ignore-parent-exclusion` command line
 argument_.
 
-#### Cop-specific `Include` and `Exclude`
+### Cop-specific `Include` and `Exclude`
 
 Cops can be run only on specific sets of files when that's needed (for
 instance you might want to run some Rails model checks only on files whose
@@ -392,12 +392,12 @@ Rails/HasAndBelongsToMany:
     - app/models/problematic.rb
 ```
 
-### Generic configuration parameters
+## Generic configuration parameters
 
 In addition to `Include` and `Exclude`, the following parameters are available
 for every cop.
 
-#### Enabled
+### Enabled
 
 Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
 
@@ -431,7 +431,7 @@ Style:
 All cops are then enabled by default. Only cops explicitly disabled
 using `Enabled: false` in user configuration files are disabled.
 
-#### Severity
+### Severity
 
 Each cop has a default severity level based on which department it belongs
 to. The level is normally `warning` for `Lint` and `convention` for all the
@@ -452,7 +452,7 @@ Metrics/CyclomaticComplexity:
   Severity: warning
 ```
 
-#### Details
+### Details
 
 Individual cops can be embellished with extra details in offense messages:
 
@@ -468,7 +468,7 @@ Layout/LineLength:
 
 These details will only be seen when RuboCop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global RuboCop configuration.
 
-#### AutoCorrect
+### AutoCorrect
 
 Cops that support the `--auto-correct` option can have that support
 disabled. For example:
@@ -478,7 +478,7 @@ Style/PerlBackrefs:
   AutoCorrect: false
 ```
 
-### Setting the target Ruby version
+## Setting the target Ruby version
 
 Some checks are dependent on the version of the Ruby interpreter which the
 inspected code must run on. For example, enforcing using Ruby 2.3+ safe
@@ -496,7 +496,7 @@ AllCops:
 Otherwise, RuboCop will then check your project for `.ruby-version` and
 use the version specified by it.
 
-### Automatically Generated Configuration
+## Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offenses, it can
 be a good idea to use `rubocop --auto-gen-config`, which creates
@@ -533,7 +533,7 @@ prefer to exclude files, like for other cops, add `--auto-gen-only-exclude`
 when running with `--auto-gen-config`. It will still change the maximum if the
 number of excluded files is higher than the exclude limit.
 
-### Updating the configuration file
+## Updating the configuration file
 
 When you update RuboCop version, sometimes you need to change `.rubocop.yml`.
 If you use [mry](https://github.com/pocke/mry), you can update `.rubocop.yml`
@@ -585,11 +585,18 @@ comment.
 for x in (0..19) # rubocop:disable Style/For
 ```
 
+If you want to disable a cop that inspects comments, you can do so by
+adding an "inner comment" on the comment line.
+
+```ruby
+# coding: utf-8 # rubocop:disable Style/Encoding
+```
+
 Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
 
-### Setting the style guide URL
+## Setting the style guide URL
 
 You can specify the base URL of the style guide using `StyleGuideBaseURL`.
 If specified under `AllCops`, all cops are targeted.

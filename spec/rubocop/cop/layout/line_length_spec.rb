@@ -735,6 +735,94 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
     end
 
+    context 'long blocks' do
+      context 'braces' do
+        it 'adds an offense and does correct it' do
+          expect_offense(<<~RUBY)
+            foo.select { |bar| 4444000039123123129993912312312999199291203123123 }
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.select { |bar|
+             4444000039123123129993912312312999199291203123123 }
+          RUBY
+        end
+      end
+
+      context 'do/end' do
+        it 'adds an offense and does correct it' do
+          expect_offense(<<~RUBY)
+            foo.select do |bar| 4444000039123123129993912312312999199291203123 end
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.select do |bar|
+             4444000039123123129993912312312999199291203123 end
+          RUBY
+        end
+      end
+
+      context 'let block' do
+        it 'adds an offense and does correct it' do
+          expect_offense(<<~RUBY)
+            let(:foobar) { BazBazBaz::BazBazBaz::BazBazBaz::BazBazBaz.baz(baz12) }
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            let(:foobar) {
+             BazBazBaz::BazBazBaz::BazBazBaz::BazBazBaz.baz(baz12) }
+          RUBY
+        end
+      end
+
+      context 'no spaces' do
+        it 'adds an offense and does correct it' do
+          expect_offense(<<~RUBY)
+            let(:foobar){BazBazBaz::BazBazBaz::BazBazBaz::BazBazBaz.baz(baz12345)}
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            let(:foobar){
+            BazBazBaz::BazBazBaz::BazBazBaz::BazBazBaz.baz(baz12345)}
+          RUBY
+        end
+      end
+
+      context 'lambda syntax' do
+        context 'when argument is enclosed in parentheses' do
+          it 'registers an offense and corrects' do
+            expect_offense(<<~RUBY)
+              ->(x) { fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ->(x) {
+               fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+            RUBY
+          end
+        end
+
+        context 'when argument is not enclosed in parentheses' do
+          it 'registers an offense and corrects' do
+            expect_offense(<<~RUBY)
+              -> x { foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              -> x {
+               foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
+            RUBY
+          end
+        end
+      end
+    end
+
     context 'semicolon' do
       context 'when under limit' do
         it 'does not add any offenses' do
