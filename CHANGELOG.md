@@ -10,6 +10,7 @@
 * [#7795](https://github.com/rubocop-hq/rubocop/issues/7795): Make `Layout/EmptyLineAfterGuardClause` aware of case where `and` or `or` is used before keyword that break control (e.g. `and return`). ([@koic][])
 * [#7786](https://github.com/rubocop-hq/rubocop/pull/7786): Support Ruby 2.7's pattern match for `Layout/ElseAlignment` cop. ([@koic][])
 * [#7784](https://github.com/rubocop-hq/rubocop/pull/7784): Support Ruby 2.7's numbered parameter for `Lint/SafeNavigationChain`. ([@koic][])
+* [#7331](https://github.com/rubocop-hq/rubocop/issues/7331): Add `forbidden` option to `Style/ModuleFunction` cop. ([@weh][])
 
 ### Bug fixes
 
@@ -72,7 +73,6 @@
 * [#7641](https://github.com/rubocop-hq/rubocop/issues/7641): **(Breaking)** Remove `Style/BracesAroundHashParameters` cop. ([@pocke][])
 * Add the method name to highlight area of `Layout/EmptyLineBetweenDefs` to help provide more context. ([@rrosenblum][])
 * [#7652](https://github.com/rubocop-hq/rubocop/pull/7652): Allow `pp` to allowed names of `Naming/MethodParameterName` cop in default config. ([@masarakki][])
-* [#7331](https://github.com/rubocop-hq/rubocop/issues/7331): Add `forbidden` option to `Style/ModuleFunction` cop. ([@weh][])
 * [#7309](https://github.com/rubocop-hq/rubocop/pull/7309): Mark `Lint/UselessSetterCall` an "not safe" and improve documentation. ([@jonas054][])
 * [#7723](https://github.com/rubocop-hq/rubocop/pull/7723): Enable `Migration/DepartmentName` cop by default. ([@koic][])
 
