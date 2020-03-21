@@ -1520,7 +1520,7 @@ rather than meant to be part of the resulting symbols.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.75 | -
+Pending | Yes | No | 0.81 | -
 
 This cop checks for `raise` or `fail` statements which are
 raising `Exception` class.
