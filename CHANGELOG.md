@@ -189,6 +189,7 @@
 * [#7317](https://github.com/rubocop-hq/rubocop/pull/7317): Add new formatter `pacman`. ([@crojasaragonez][])
 * [#6075](https://github.com/rubocop-hq/rubocop/issues/6075): Support `IgnoredPatterns` option for `Naming/MethodName` cop. ([@koic][])
 * [#7335](https://github.com/rubocop-hq/rubocop/pull/7335): Add todo as an alias to disable. `--disable-uncorrectable` will now disable cops using `rubocop:todo` instead of `rubocop:disable`. ([@desheikh][])
+* [#7299](https://github.com/rubocop-hq/rubocop/issues/7299): Add new `Lint/RaiseException` cop. ([@denys281][])
 
 ### Bug fixes
 
@@ -4387,6 +4388,7 @@
 [@jdkaplan]: https://github.com/jdkaplan
 [@cstyles]: https://github.com/cstyles
 [@avmnu-sng]: https://github.com/avmnu-sng
+[@denys281]: https://github.com/denys281
 [@tyler-ball]: https://github.com/tyler-ball
 [@ayacai115]: https://github.com/ayacai115
 [@ozydingo]: https://github.com/ozydingo
