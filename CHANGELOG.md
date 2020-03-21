@@ -26,6 +26,7 @@
 
 * [#7797](https://github.com/rubocop-hq/rubocop/pull/7797): Allow unicode-display_width dependency version 1.7.0. ([@yuritomanek][])
 * [#7779](https://github.com/rubocop-hq/rubocop/issues/7779): Change `AllowComments` option of `Lint/SuppressedException` to true by default. ([@koic][])
+* [#7320](https://github.com/rubocop-hq/rubocop/issues/7320): `Naming/MethodName` now flags `attr_reader/attr_writer/attr_accessor/attr`. ([@denys281][])
 
 ## 0.80.1 (2020-02-29)
 
@@ -228,7 +229,6 @@
 * [#7091](https://github.com/rubocop-hq/rubocop/issues/7091): `Style/FormatStringToken` now detects format sequences with flags and modifiers. ([@buehmann][])
 * [#7319](https://github.com/rubocop-hq/rubocop/pull/7319): Rename `IgnoredMethodPatterns` option to `IgnoredPatterns` option for `Style/MethodCallWithArgsParentheses`. ([@koic][])
 * [#7345](https://github.com/rubocop-hq/rubocop/issues/7345): Mark unsafe for `Style/YodaCondition`. ([@koic][])
-* [#7320](https://github.com/rubocop-hq/rubocop/issues/7320): Naming/MethodName doesn't flag attr_reader / attr_writer / attr_accessor. ([@denys281][])
 
 ## 0.74.0 (2019-07-31)
 
