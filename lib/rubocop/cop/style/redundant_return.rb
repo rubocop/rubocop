@@ -35,6 +35,18 @@ module RuboCop
       #     end
       #   end
       #
+      # @example AllowMultipleReturnValues: false (default)
+      #   # bad
+      #   def test
+      #     return x, y
+      #   end
+      #
+      # @example AllowMultipleReturnValues: true
+      #   # good
+      #   def test
+      #     return x, y
+      #   end
+      #
       class RedundantReturn < Cop
         include RangeHelp
 
@@ -42,32 +54,41 @@ module RuboCop
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'
 
         def on_def(node)
-          return unless node.body
-
           check_branch(node.body)
         end
         alias on_defs on_def
 
-        def autocorrect(node) # rubocop:disable Metrics/MethodLength
+        def autocorrect(node)
           lambda do |corrector|
-            unless arguments?(node.children)
-              corrector.replace(node.source_range, 'nil')
-              next
+            if node.arguments?
+              correct_with_arguments(node, corrector)
+            else
+              correct_without_arguments(node, corrector)
             end
-
-            return_value, = *node
-            if node.children.size > 1
-              add_brackets(corrector, node)
-            elsif return_value.hash_type?
-              add_braces(corrector, return_value) unless return_value.braces?
-            end
-            return_kw = range_with_surrounding_space(range: node.loc.keyword,
-                                                     side: :right)
-            corrector.remove(return_kw)
           end
         end
 
         private
+
+        def correct_without_arguments(return_node, corrector)
+          corrector.replace(return_node.source_range, 'nil')
+        end
+
+        def correct_with_arguments(return_node, corrector)
+          if return_node.arguments.size > 1
+            add_brackets(corrector, return_node)
+          elsif hash_without_braces?(return_node.first_argument)
+            add_braces(corrector, return_node.first_argument)
+          end
+
+          keyword = range_with_surrounding_space(range: return_node.loc.keyword,
+                                                 side: :right)
+          corrector.remove(keyword)
+        end
+
+        def hash_without_braces?(node)
+          node.hash_type? && !node.braces?
+        end
 
         def add_brackets(corrector, node)
           kids = node.children.map(&:source_range)
@@ -79,13 +100,6 @@ module RuboCop
           kids = node.children.map(&:source_range)
           corrector.insert_before(kids.first, '{')
           corrector.insert_after(kids.last, '}')
-        end
-
-        def arguments?(args)
-          return false if args.empty?
-          return true if args.size > 1
-
-          !args.first.begin_type? || !args.first.children.empty?
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity
@@ -136,12 +150,8 @@ module RuboCop
         end
 
         def check_begin_node(node)
-          expressions = *node
-          last_expr = expressions.last
-
-          return unless last_expr&.return_type?
-
-          check_return_node(last_expr)
+          last_expr = node.children.last
+          check_branch(last_expr)
         end
 
         def allow_multiple_return_values?

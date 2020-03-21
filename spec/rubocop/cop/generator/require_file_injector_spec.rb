@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
   context 'when using an unknown department' do
     let(:source_path) { 'lib/rubocop/cop/unknown/fake_cop.rb' }
 
-    let(:source) { <<-RUBY }
+    let(:source) { <<~RUBY }
       # frozen_string_literal: true
 
       require 'parser'
@@ -215,11 +215,38 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       File.write(root_file_path, source)
     end
 
-    it 'does not write to any file' do
+    it 'inserts a `require_relative` statement to the bottom of the file' do
+      generated_source = <<~RUBY
+        # frozen_string_literal: true
+
+        require 'parser'
+        require 'rainbow'
+
+        require 'English'
+        require 'set'
+        require 'forwardable'
+
+        require_relative 'rubocop/version'
+
+        require_relative 'rubocop/cop/lint/flip_flop'
+
+        require_relative 'rubocop/cop/style/end_block'
+        require_relative 'rubocop/cop/style/even_odd'
+        require_relative 'rubocop/cop/style/fake_cop'
+        require_relative 'rubocop/cop/style/file_name'
+
+        require_relative 'rubocop/cop/rails/action_filter'
+
+        require_relative 'rubocop/cop/team'
+        require_relative 'rubocop/cop/unknown/fake_cop'
+      RUBY
+
       injector.inject
 
-      expect(File.read(root_file_path)).to eq source
-      expect(stdout.string.empty?).to be(true)
+      expect(File.read(root_file_path)).to eq generated_source
+      expect(stdout.string).to eq(<<~MESSAGE)
+        [modify] lib/root.rb - `require_relative 'rubocop/cop/unknown/fake_cop'` was injected.
+      MESSAGE
     end
   end
 end

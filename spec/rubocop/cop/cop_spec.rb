@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Cop do
 
     it 'adds namespace if the cop name is found in exactly one namespace' do
       expect(described_class.qualified_cop_name('LineLength', '--only'))
-        .to eq('Metrics/LineLength')
+        .to eq('Layout/LineLength')
     end
 
     it 'returns the given cop name if it is not found in any namespace' do
@@ -33,14 +33,14 @@ RSpec.describe RuboCop::Cop::Cop do
     end
 
     it 'returns the given cop name if it already has a namespace' do
-      expect(described_class.qualified_cop_name('Metrics/LineLength', '--only'))
-        .to eq('Metrics/LineLength')
+      expect(described_class.qualified_cop_name('Layout/LineLength', '--only'))
+        .to eq('Layout/LineLength')
     end
 
     it 'returns the cop name in a different namespace if the provided ' \
        'namespace is incorrect' do
       expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
-        .to eq('Metrics/LineLength')
+        .to eq('Layout/LineLength')
     end
 
     # `Rails/SafeNavigation` was extracted to rubocop-rails gem,
@@ -154,6 +154,7 @@ RSpec.describe RuboCop::Cop::Cop do
           it 'is set to true' do
             cop.add_offense(node, location: location, message: 'message')
             expect(cop.offenses.first.corrected?).to be(true)
+            expect(cop.offenses.first.status).to be(:corrected_with_todo)
           end
         end
       end
@@ -301,6 +302,31 @@ RSpec.describe RuboCop::Cop::Cop do
 
         it { is_expected.to be(false) }
       end
+    end
+  end
+
+  describe '#safe_autocorrect?' do
+    subject { cop.safe_autocorrect? }
+
+    let(:config) { RuboCop::Config.new('Cop/Cop' => cop_config) }
+    let(:cop) { described_class.new(config) }
+
+    context 'when cop is declared unsafe' do
+      let(:cop_config) { { 'Safe' => false } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when auto-correction of the cop is declared unsafe' do
+      let(:cop_config) { { 'SafeAutoCorrect' => false } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when safety is undeclared' do
+      let(:cop_config) { {} }
+
+      it { is_expected.to be(true) }
     end
   end
 end

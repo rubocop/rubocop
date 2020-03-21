@@ -58,6 +58,17 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
+      it "ignores an accessor with the same name as #{access_modifier} " \
+         'above a method definition' do
+        expect_no_offenses(<<~RUBY)
+          class Test
+            attr_reader #{access_modifier}
+            def foo
+            end
+          end
+        RUBY
+      end
+
       it "ignores #{access_modifier} deep inside a method call" do
         expect_no_offenses(<<~RUBY)
           class Test

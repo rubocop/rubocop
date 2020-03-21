@@ -11,7 +11,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
     create_file('.rubocop.yml', <<~YAML)
-      Layout/AlignHash:
+      Layout/HashAlignment:
         EnforcedColonStyle: table
       Style/FrozenStringLiteralComment:
         Enabled: false
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       Style/HashSyntax:
         EnforcedStyle: hash_rockets
 
-      Layout/AlignHash:
+      Layout/HashAlignment:
         EnforcedHashRocketStyle: table
     YAML
     source = <<~RUBY
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--auto-correct'])).to eq(1)
 
     # 1=>2 is changed to 1 => 2. The rest is unchanged.
-    # SpaceAroundOperators leaves it to AlignHash when the style is table.
+    # SpaceAroundOperators leaves it to HashAlignment when the style is table.
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
@@ -181,9 +181,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         },
         'Style/TrailingCommaInHashLiteral' => {
           'EnforcedStyleForMultiline' => comma_style
-        },
-        'Style/BracesAroundHashParameters' =>
-          braces_around_hash_parameters_config
+        }
       }
     end
 
@@ -208,196 +206,58 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       let(:comma_style) do
         'comma'
       end
+      let(:expected_corrected_source) do
+        <<~RUBY
+          # frozen_string_literal: true
 
-      context 'and Style/BracesAroundHashParameters is disabled' do
-        let(:braces_around_hash_parameters_config) do
-          {
-            'Enabled' => false,
-            'AutoCorrect' => false,
-            'EnforcedStyle' => 'braces'
-          }
-        end
-
-        let(:expected_corrected_source) do
-          <<~RUBY
-            # frozen_string_literal: true
-
-            func({
-                   @abc => 0,
-                   @xyz => 1,
-                 })
-            func(
-              {
-                abc: 0,
-              },
-            )
-            func(
-              {},
-              {
-                xyz: 1,
-              },
-            )
-          RUBY
-        end
-
-        include_examples 'corrects offenses without producing a double comma'
-      end
-
-      context 'and BracesAroundHashParameters style is `no_braces`' do
-        let(:braces_around_hash_parameters_config) do
-          {
-            'EnforcedStyle' => 'no_braces'
-          }
-        end
-
-        let(:expected_corrected_source) do
-          <<~RUBY
-            # frozen_string_literal: true
-
-            func(
-              @abc => 0,
-              @xyz => 1,
-            )
-            func(
+          func({
+                 @abc => 0,
+                 @xyz => 1,
+               })
+          func(
+            {
               abc: 0,
-            )
-            func(
-              {},
+            },
+          )
+          func(
+            {},
+            {
               xyz: 1,
-            )
-          RUBY
-        end
-
-        include_examples 'corrects offenses without producing a double comma'
+            },
+          )
+        RUBY
       end
 
-      context 'and BracesAroundHashParameters style is `context_dependent`' do
-        let(:braces_around_hash_parameters_config) do
-          {
-            'EnforcedStyle' => 'context_dependent'
-          }
-        end
-
-        let(:expected_corrected_source) do
-          <<~RUBY
-            # frozen_string_literal: true
-
-            func(
-              @abc => 0,
-              @xyz => 1,
-            )
-            func(
-              abc: 0,
-            )
-            func(
-              {},
-              {
-                xyz: 1,
-              },
-            )
-          RUBY
-        end
-
-        include_examples 'corrects offenses without producing a double comma'
-      end
+      include_examples 'corrects offenses without producing a double comma'
     end
 
     context 'when the style is `consistent_comma`' do
       let(:comma_style) do
         'consistent_comma'
       end
+      let(:expected_corrected_source) do
+        <<~RUBY
+          # frozen_string_literal: true
 
-      context 'and Style/BracesAroundHashParameters is disabled' do
-        let(:braces_around_hash_parameters_config) do
-          {
-            'Enabled' => false,
-            'AutoCorrect' => false,
-            'EnforcedStyle' => 'braces'
-          }
-        end
-
-        let(:expected_corrected_source) do
-          <<~RUBY
-            # frozen_string_literal: true
-
-            func({
-                   @abc => 0,
-                   @xyz => 1,
-                 })
-            func(
-              {
-                abc: 0,
-              },
-            )
-            func(
-              {},
-              {
-                xyz: 1,
-              },
-            )
-          RUBY
-        end
-
-        include_examples 'corrects offenses without producing a double comma'
-      end
-
-      context 'and BracesAroundHashParameters style is `no_braces`' do
-        let(:braces_around_hash_parameters_config) do
-          {
-            'EnforcedStyle' => 'no_braces'
-          }
-        end
-
-        let(:expected_corrected_source) do
-          <<~RUBY
-            # frozen_string_literal: true
-
-            func(
-              @abc => 0,
-              @xyz => 1,
-            )
-            func(
+          func({
+                 @abc => 0,
+                 @xyz => 1,
+               })
+          func(
+            {
               abc: 0,
-            )
-            func(
-              {},
+            },
+          )
+          func(
+            {},
+            {
               xyz: 1,
-            )
-          RUBY
-        end
-
-        include_examples 'corrects offenses without producing a double comma'
+            },
+          )
+        RUBY
       end
 
-      context 'and BracesAroundHashParameters style is `context_dependent`' do
-        let(:braces_around_hash_parameters_config) do
-          {
-            'EnforcedStyle' => 'context_dependent'
-          }
-        end
-
-        let(:expected_corrected_source) do
-          <<~RUBY
-            # frozen_string_literal: true
-
-            func(
-              @abc => 0,
-              @xyz => 1,
-            )
-            func(
-              abc: 0,
-            )
-            func(
-              {},
-              {
-                xyz: 1,
-              },
-            )
-          RUBY
-        end
-
-        include_examples 'corrects offenses without producing a double comma'
-      end
+      include_examples 'corrects offenses without producing a double comma'
     end
   end
 
@@ -528,7 +388,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'corrects LineEndConcatenation offenses leaving the ' \
-     'UnneededInterpolation offense unchanged' do
+     'RedundantInterpolation offense unchanged' do
     # If we change string concatenation from plus to backslash, the string
     # literal that follows must remain a string literal.
     source = <<~'RUBY'
@@ -748,11 +608,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects UnneededCopDisableDirective offenses' do
+  it 'corrects RedundantCopDisableDirective offenses' do
     source = <<~RUBY
       class A
         # rubocop:disable Metrics/MethodLength
         def func
+          # rubocop:enable Metrics/MethodLength
           x = foo # rubocop:disable Lint/UselessAssignment,Style/For
           # rubocop:disable all
           # rubocop:disable Style/ClassVars
@@ -764,14 +625,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(%w[--auto-correct --format simple])).to eq(1)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
-      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+      C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
       C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
       C:  3:  1: Style/Documentation: Missing top-level class documentation comment.
-      W:  4:  3: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
-      W:  6: 54: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/For.
-      W:  8:  5: [Corrected] Lint/UnneededCopDisableDirective: Unnecessary disabling of Style/ClassVars.
+      W:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
+      C:  5:  1: [Corrected] Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+      C:  5:  1: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
+      W:  5: 22: [Corrected] Lint/RedundantCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
+      W:  7: 54: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/For.
+      W:  9:  5: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Style/ClassVars.
 
-      1 file inspected, 6 offenses detected, 5 offenses corrected
+      1 file inspected, 9 offenses detected, 8 offenses corrected
     RESULT
     corrected = <<~RUBY
       # frozen_string_literal: true
@@ -1006,39 +870,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects complicated cases conservatively' do
-    # Two cops make corrections here; Style/BracesAroundHashParameters, and
-    # Style/AlignHash. Because they make minimal corrections relating only
-    # to their specific areas, and stay away from cleaning up extra
-    # whitespace in the process, the combined changes don't interfere with
-    # each other and the result is semantically the same as the starting
-    # point.
-    source = <<~RUBY
-      expect(subject[:address]).to eq({
-        street1:     '1 Market',
-        street2:     '#200',
-        city:        'Some Town',
-        state:       'CA',
-        postal_code: '99999-1111'
-      })
-    RUBY
-    create_file('example.rb', source)
-    expect(cli.run(['-D', '--auto-correct'])).to eq(0)
-    corrected =
-      <<~RUBY
-        # frozen_string_literal: true
-
-        expect(subject[:address]).to eq(
-          street1: '1 Market',
-          street2: '#200',
-          city: 'Some Town',
-          state: 'CA',
-          postal_code: '99999-1111'
-        )
-      RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
-  end
-
   it 'honors Exclude settings in individual cops' do
     source = 'puts %x(ls)'
     create_file('example.rb', source)
@@ -1165,28 +996,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
   end
 
-  it 'can handle spaces when removing braces' do
-    create_file('example.rb',
-                ["assert_post_status_code 400, 's', {:type => 'bad'}"])
-    exit_status = cli.run(
-      %w[--auto-correct --format emacs
-         --only SpaceInsideHashLiteralBraces,BracesAroundHashParameters]
-    )
-    expect(exit_status).to eq(0)
-    expect(IO.read('example.rb'))
-      .to eq(<<~RUBY)
-        assert_post_status_code 400, 's', :type => 'bad'
-      RUBY
-    e = abs('example.rb')
-    # TODO: Don't report that a problem is corrected when it
-    # actually went away due to another correction.
-    expect($stdout.string).to eq(<<~RESULT)
-      #{e}:1:35: C: [Corrected] Layout/SpaceInsideHashLiteralBraces: Space inside { missing.
-      #{e}:1:35: C: [Corrected] Style/BracesAroundHashParameters: Redundant curly braces around a hash parameter.
-      #{e}:1:50: C: [Corrected] Layout/SpaceInsideHashLiteralBraces: Space inside } missing.
-    RESULT
-  end
-
   # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
   # remove the same line in autocorrect.
   it 'can correct two empty lines at end of class body' do
@@ -1307,7 +1116,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            'Method should be overridden in child classes'
     RUBY
     expect(cli.run(['--auto-correct', '--only',
-                    'SignalException,AlignArguments'])).to eq(0)
+                    'SignalException,ArgumentAlignment'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
         raise NotImplementedError,
@@ -1322,7 +1131,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       example.rb:1:1: C: [Corrected] Style/SignalException: Always use raise to signal exceptions.
       fail NotImplementedError,
       ^^^^
-      example.rb:2:6: C: [Corrected] Layout/AlignArguments: Align the arguments of a method call if they span more than one line.
+      example.rb:2:6: C: [Corrected] Layout/ArgumentAlignment: Align the arguments of a method call if they span more than one line.
            'Method should be overridden in child classes'
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1339,8 +1148,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                  '  ',
                  '  def f; end',
                  'end'])
-    expect(cli.run(%w[--auto-correct --only
-                      TrailingWhitespace,EmptyLinesAroundClassBody])).to eq(0)
+    expect(cli.run(['--auto-correct', '--only',
+                    'Layout/TrailingWhitespace,' \
+                    'Layout/EmptyLinesAroundClassBody'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(<<~RUBY)
         # Example class.
@@ -1369,7 +1179,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     RUBY
     expect(cli.run(%w[-D --auto-correct
-                      --only MethodDefParentheses,SymbolProc])).to eq(0)
+                      --only Style/MethodDefParentheses,Style/SymbolProc]))
+      .to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       def primes(limit)
@@ -1457,7 +1268,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               "Use the new Ruby 1.9 hash syntax.\n")
   end
 
-  it 'can correct TrailingBlankLines and TrailingWhitespace offenses' do
+  it 'can correct TrailingEmptyLines and TrailingWhitespace offenses' do
     create_file('example.rb',
                 ['# frozen_string_literal: true',
                  '',
@@ -1469,7 +1280,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # frozen_string_literal: true
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
-      #{abs('example.rb')}:2:1: C: [Corrected] Layout/TrailingBlankLines: 3 trailing blank lines detected.
+      #{abs('example.rb')}:2:1: C: [Corrected] Layout/TrailingEmptyLines: 3 trailing blank lines detected.
       #{abs('example.rb')}:3:1: C: [Corrected] Layout/TrailingWhitespace: Trailing whitespace detected.
     RESULT
   end
@@ -1478,7 +1289,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     create_file('example.rb', 'Hash.new()')
     exit_status = cli.run(
       %w[--auto-correct --format emacs
-         --only MethodCallWithoutArgsParentheses,EmptyLiteral]
+         --only Style/MethodCallWithoutArgsParentheses,Style/EmptyLiteral]
     )
     expect(exit_status).to eq(0)
     expect($stderr.string).to eq('')
@@ -1501,7 +1312,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       }
     RUBY
     create_file('.rubocop.yml', <<~YAML)
-      Layout/AlignHash:
+      Layout/HashAlignment:
         EnforcedColonStyle: separator
     YAML
     expect(cli.run(%w[--auto-correct])).to eq(0)
@@ -1539,7 +1350,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     YAML
     create_file('example.rb', src)
     exit_status = cli.run(
-      %w[-a -f simple --only BlockDelimiters,Semicolon,UnusedMethodArgument]
+      %w[-a -f simple
+         --only Style/BlockDelimiters,Style/Semicolon,Lint/UnusedMethodArgument]
     )
     expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')
@@ -1622,22 +1434,52 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
-  it 'corrects BracesAroundHashParameters offenses leaving the ' \
-     'MultilineHashBraceLayout offense unchanged' do
+  it 'corrects Style/BlockDelimiters offenses when specifing' \
+     'Layout/SpaceInsideBlockBraces together' do
     create_file('example.rb', <<~RUBY)
-      def method_a
-        do_something({ a: 1,
-        })
-      end
+      each {
+      }
     RUBY
 
-    expect($stderr.string).to eq('')
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceInsideBlockBraces:
+        EnforcedStyle: space
+      Style/BlockDelimiters:
+        EnforcedStyle: line_count_based
+    YAML
+
     expect(cli.run(%w[--auto-correct])).to eq(0)
+    expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
-      def method_a
-        do_something(a: 1)
+      each do
+      end
+    RUBY
+  end
+
+  it 'corrects Style/BlockDelimiters offenses when specifying' \
+     'Layout/SpaceBeforeBlockBraces with `EnforcedStyle: no_space` together' do
+    create_file('example.rb', <<~RUBY)
+      foo {
+        bar
+      }
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceBeforeBlockBraces:
+        EnforcedStyle: no_space
+    YAML
+
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only',
+                     'Style/BlockDelimiters,Layout/SpaceBeforeBlockBraces'
+                   ])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      foo do
+        bar
       end
     RUBY
   end

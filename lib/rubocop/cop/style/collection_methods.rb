@@ -27,6 +27,7 @@ module RuboCop
       #   items.inject
       #   items.detect
       #   items.find_all
+      #   items.member?
       #
       #   # good
       #   items.map
@@ -34,6 +35,7 @@ module RuboCop
       #   items.reduce
       #   items.find
       #   items.select
+      #   items.include?
       #
       class CollectionMethods < Cop
         include MethodPreference

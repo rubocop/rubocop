@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    { 'Whitelist' => %w[present? blank? try presence] }
+    { 'AcceptedMethods' => %w[present? blank? try presence] }
   end
 
   shared_examples 'accepts' do |name, code|
@@ -87,6 +87,17 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       x&.select { |x| foo(x) }.bar
                               ^^^^ Do not chain ordinary method call after safe navigation operator.
     RUBY
+  end
+
+  context '>= Ruby 2.7', :ruby27 do
+    it 'registers an offense for ordinary method chain exists after ' \
+       'safe navigation method call with a block using numbered parameter' do
+      expect_offense(<<~RUBY)
+        something
+        x&.select { foo(_1) }.bar
+                             ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+    end
   end
 
   it 'registers an offense for safe navigation with < operator' do

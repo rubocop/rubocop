@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 
 module RuboCop
   module Formatter
@@ -41,7 +41,7 @@ module RuboCop
     # * `#finished`
     #
     class BaseFormatter
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       # @api public
       #

@@ -3,10 +3,25 @@
 RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot do
   subject(:cop) { described_class.new }
 
-  it 'reports an offense for space after !' do
+  it 'registers an offense and corrects a single space after !' do
     expect_offense(<<~RUBY)
       ! something
       ^^^^^^^^^^^ Do not leave space between `!` and its argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !something
+    RUBY
+  end
+
+  it 'registers an offense and corrects multiple spaces after !' do
+    expect_offense(<<~RUBY)
+      !   something
+      ^^^^^^^^^^^^^ Do not leave space between `!` and its argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !something
     RUBY
   end
 
@@ -18,31 +33,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot do
     expect_no_offenses('not something')
   end
 
-  it 'reports an offense for space after ! with the negated receiver ' \
-     'wrapped in parentheses' do
+  it 'registers an offense and corrects space after ! with ' \
+    'the negated receiver wrapped in parentheses' do
     expect_offense(<<~RUBY)
       ! (model)
       ^^^^^^^^^ Do not leave space between `!` and its argument.
     RUBY
-  end
 
-  context 'auto-correct' do
-    it 'removes redundant space' do
-      new_source = autocorrect_source('!  something')
-
-      expect(new_source).to eq('!something')
-    end
-
-    it 'keeps space after not keyword' do
-      new_source = autocorrect_source('not something')
-
-      expect(new_source).to eq('not something')
-    end
-
-    it 'removes redundant space when there is a parentheses' do
-      new_source = autocorrect_source('!  (model)')
-
-      expect(new_source).to eq('!(model)')
-    end
+    expect_correction(<<~RUBY)
+      !(model)
+    RUBY
   end
 end

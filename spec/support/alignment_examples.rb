@@ -8,7 +8,7 @@ shared_examples_for 'misaligned' do |annotated_source, used_style|
                              else
                                { 'Enabled' => false }
                              end
-  annotated_source.strip_indent.split(/\n\n/).each do |chunk|
+  annotated_source.split(/\n\n/).each do |chunk|
     chunk << "\n" unless chunk.end_with?("\n")
     source = chunk.lines.reject { |line| line =~ /^ *\^/ }.join
     name = source.gsub(/\n(?=[a-z ])/, ' <newline> ').gsub(/\s+/, ' ')

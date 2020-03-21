@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Team do
   let(:cop_classes) { RuboCop::Cop::Cop.registry }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { nil }
-  let(:ruby_version) { RuboCop::ConfigValidator::KNOWN_RUBIES.last }
+  let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
   before do
     RuboCop::ConfigLoader.default_configuration = nil
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Team do
       end
 
       it 'returns offenses from cops' do
-        expect(cop_names).to include('Metrics/LineLength')
+        expect(cop_names).to include('Layout/LineLength')
       end
     end
 
@@ -250,15 +250,15 @@ RSpec.describe RuboCop::Cop::Team do
     context 'when only some cop classes are passed to .new' do
       let(:cop_classes) do
         RuboCop::Cop::Registry.new(
-          [RuboCop::Cop::Lint::Void, RuboCop::Cop::Metrics::LineLength]
+          [RuboCop::Cop::Lint::Void, RuboCop::Cop::Layout::LineLength]
         )
       end
 
       it 'returns only instances of the classes' do
         expect(cops.size).to eq(2)
         cops.sort! { |a, b| a.name <=> b.name }
-        expect(cops[0].name).to eq('Lint/Void')
-        expect(cops[1].name).to eq('Metrics/LineLength')
+        expect(cops[0].name).to eq('Layout/LineLength')
+        expect(cops[1].name).to eq('Lint/Void')
       end
     end
 
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Team do
       let(:disabled_config) do
         %w[
           Lint/Void
-          Metrics/LineLength
+          Layout/LineLength
         ].each_with_object(RuboCop::Config.new) do |cop_name, accum|
           accum[cop_name] = { 'Enabled' => false }
         end
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Team do
       it 'does not return instances of the classes' do
         expect(cops.empty?).to be(false)
         expect(cop_names).not_to include('Lint/Void')
-        expect(cop_names).not_to include('Metrics/LineLength')
+        expect(cop_names).not_to include('Layout/LineLength')
       end
     end
   end
@@ -330,6 +330,68 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'returns nothing' do
         expect(forces.empty?).to be(true)
+      end
+    end
+  end
+
+  describe '#external_dependency_checksum' do
+    let(:cop_classes) { RuboCop::Cop::Registry.new }
+
+    it 'does not error with no cops' do
+      expect(team.external_dependency_checksum.is_a?(String)).to be(true)
+    end
+
+    context 'when a cop joins' do
+      let(:cop_classes) do
+        RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment])
+      end
+
+      it 'returns string' do
+        expect(team.external_dependency_checksum.is_a?(String)).to be(true)
+      end
+    end
+
+    context 'when multiple cops join' do
+      let(:cop_classes) do
+        RuboCop::Cop::Registry.new(
+          [
+            RuboCop::Cop::Lint::UselessAssignment,
+            RuboCop::Cop::Lint::ShadowingOuterLocalVariable
+          ]
+        )
+      end
+
+      it 'returns string' do
+        expect(team.external_dependency_checksum.is_a?(String)).to be(true)
+      end
+    end
+
+    context 'when cop with different checksum joins' do
+      before do
+        module Test
+          class CopWithExternalDeps < ::RuboCop::Cop::Cop
+            def external_dependency_checksum
+              'something other than nil'
+            end
+          end
+        end
+      end
+
+      let(:new_cop_classes) do
+        RuboCop::Cop::Registry.new(
+          [
+            Test::CopWithExternalDeps,
+            RuboCop::Cop::Lint::UselessAssignment,
+            RuboCop::Cop::Lint::ShadowingOuterLocalVariable
+          ]
+        )
+      end
+
+      it 'has a different checksum for the whole team' do
+        original_checksum = team.external_dependency_checksum
+        new_team = described_class.new(new_cop_classes, config, options)
+        new_checksum = new_team.external_dependency_checksum
+        expect(original_checksum).not_to eq(new_checksum)
       end
     end
   end

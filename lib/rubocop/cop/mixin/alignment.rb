@@ -13,7 +13,7 @@ module RuboCop
 
       def configured_indentation_width
         cop_config['IndentationWidth'] ||
-          config.for_cop('IndentationWidth')['Width']
+          config.for_cop('Layout/IndentationWidth')['Width']
       end
 
       def indentation(node)
@@ -35,7 +35,7 @@ module RuboCop
             # If this offense is within a line range that is already being
             # realigned by autocorrect, we report the offense without
             # autocorrecting it. Two rewrites in the same area by the same
-            # cop can not be handled. The next iteration will find the
+            # cop cannot be handled. The next iteration will find the
             # offense again and correct it.
             add_offense(nil, location: expr)
           else

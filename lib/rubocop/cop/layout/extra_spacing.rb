@@ -114,7 +114,7 @@ module RuboCop
 
         # Returns an array of ranges that should not be reported. It's the
         # extra spaces between the keys and values in a multiline hash,
-        # since those are handled by the Style/AlignHash cop.
+        # since those are handled by the Layout/HashAlignment cop.
         def ignored_ranges(ast)
           return [] unless ast
 

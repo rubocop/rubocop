@@ -8,6 +8,11 @@ module RuboCop
       # parentheses using `EnforcedStyle`. Omission is only enforced when
       # removing the parentheses won't cause a different behavior.
       #
+      # `AllowSafeAssignment` option for safe assignment.
+      # By safe assignment we mean putting parentheses around
+      # an assignment to indicate "I know I'm using an assignment
+      # as a condition. It's not a mistake."
+      #
       # @example EnforcedStyle: require_no_parentheses (default)
       #   # bad
       #   foo = (bar?) ? a : b
@@ -40,6 +45,15 @@ module RuboCop
       #   foo = bar? ? a : b
       #   foo = bar.baz? ? a : b
       #   foo = (bar && baz) ? a : b
+      #
+      # @example AllowSafeAssignment: true (default)
+      #   # good
+      #   foo = (bar = baz) ? a : b
+      #
+      # @example AllowSafeAssignment: false
+      #   # bad
+      #   foo = (bar = baz) ? a : b
+      #
       class TernaryParentheses < Cop
         include SafeAssignment
         include ConfigurableEnforcedStyle
@@ -53,9 +67,14 @@ module RuboCop
           ' complex conditions.'
 
         def on_if(node)
+          return if only_closing_parenthesis_is_last_line?(node.condition)
           return unless node.ternary? && !infinite_loop? && offense?(node)
 
           add_offense(node, location: node.source_range)
+        end
+
+        def only_closing_parenthesis_is_last_line?(condition)
+          condition.source.split("\n").last == ')'
         end
 
         def autocorrect(node)
@@ -143,7 +162,7 @@ module RuboCop
         # `RedundantParentheses` cop is enabled, it will cause an infinite loop
         # as they compete to add and remove the parentheses respectively.
         def infinite_loop?
-          require_parentheses? &&
+          (require_parentheses? || require_parentheses_when_complex?) &&
             redundant_parentheses_enabled?
         end
 

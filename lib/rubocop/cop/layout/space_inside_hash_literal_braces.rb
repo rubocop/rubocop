@@ -83,17 +83,10 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            # It is possible that BracesAroundHashParameters will remove the
-            # braces while this cop inserts spaces. This can lead to unwanted
-            # changes to the inspected code. If we replace the brace with a
-            # brace plus space (rather than just inserting a space), then any
-            # removal of the same brace will give us a clobbering error. This
-            # in turn will make RuboCop fall back on cop-by-cop
-            # auto-correction. Problem solved.
             case range.source
             when /\s/ then corrector.remove(range)
-            when '{' then corrector.replace(range, '{ ')
-            else corrector.replace(range, ' }')
+            when '{' then corrector.insert_after(range, ' ')
+            else corrector.insert_before(range, ' ')
             end
           end
         end

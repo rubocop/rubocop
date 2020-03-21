@@ -50,7 +50,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             redundant_with_index?(node) do |send|
-              if send.method_name == :each_with_index
+              if send.method?(:each_with_index)
                 corrector.replace(send.loc.selector, 'each')
               else
                 corrector.remove(with_index_range(send))
@@ -63,7 +63,7 @@ module RuboCop
         private
 
         def message(node)
-          if node.method_name == :each_with_index
+          if node.method?(:each_with_index)
             MSG_EACH_WITH_INDEX
           else
             MSG_WITH_INDEX

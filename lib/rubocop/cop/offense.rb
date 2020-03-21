@@ -67,23 +67,45 @@ module RuboCop
 
       # @api public
       #
-      # @!attribute [r] corrected
+      # @!attribute [r] correctable?
       #
       # @return [Boolean]
-      #   whether this offense is automatically corrected.
-      def corrected
-        @status == :corrected
+      #   whether this offense can be automatically corrected via
+      #   autocorrect or a todo.
+      def correctable?
+        @status != :unsupported
       end
-      alias corrected? corrected
+
+      # @api public
+      #
+      # @!attribute [r] corrected?
+      #
+      # @return [Boolean]
+      #   whether this offense is automatically corrected via
+      #   autocorrect or a todo.
+      def corrected?
+        @status == :corrected || @status == :corrected_with_todo
+      end
+
+      # @api public
+      #
+      # @!attribute [r] corrected_with_todo?
+      #
+      # @return [Boolean]
+      #   whether this offense is automatically disabled via a todo.
+      def corrected_with_todo?
+        @status == :corrected_with_todo
+      end
 
       # @api public
       #
       # @!attribute [r] disabled?
       #
       # @return [Boolean]
-      #   whether this offense was locally disabled where it occurred
+      #   whether this offense was locally disabled with a
+      #   disable or todo where it occurred.
       def disabled?
-        @status == :disabled
+        @status == :disabled || @status == :todo
       end
 
       # @api public

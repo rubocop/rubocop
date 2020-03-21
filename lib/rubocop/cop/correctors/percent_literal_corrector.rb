@@ -98,7 +98,7 @@ module RuboCop
       end
 
       def fix_escaped_content(word_node, escape, delimiters)
-        content = word_node.children.first.to_s
+        content = +word_node.children.first.to_s
         content = escape_string(content) if escape
         substitute_escaped_delimiters(content, delimiters)
         content

@@ -8,16 +8,29 @@ module RuboCop
     class EmacsStyleFormatter < BaseFormatter
       def file_finished(file, offenses)
         offenses.each do |o|
-          message = if o.corrected?
-                      "[Corrected] #{o.message}"
-                    else
-                      o.message
-                    end
-
-          output.printf("%s:%d:%d: %s: %s\n",
-                        file, o.line, o.real_column, o.severity.code,
-                        message.tr("\n", ' '))
+          output.printf(
+            "%<path>s:%<line>d:%<column>d: %<severity>s: %<message>s\n",
+            path: file,
+            line: o.line,
+            column: o.real_column,
+            severity: o.severity.code,
+            message: message(o)
+          )
         end
+      end
+
+      private
+
+      def message(offense)
+        message =
+          if offense.corrected_with_todo?
+            "[Todo] #{offense.message}"
+          elsif offense.corrected?
+            "[Corrected] #{offense.message}"
+          else
+            offense.message
+          end
+        message.tr("\n", ' ')
       end
     end
   end

@@ -97,7 +97,8 @@ module RuboCop
         def line_break_necessary_in_args?(node)
           needed_length = node.source_range.column +
                           node.source.lines.first.length +
-                          block_arg_string(node.arguments).length + PIPE_SIZE
+                          block_arg_string(node, node.arguments).length +
+                          PIPE_SIZE
           needed_length > max_line_length
         end
 
@@ -115,7 +116,8 @@ module RuboCop
             newlines: false
           ).end_pos
           range = range_between(node.loc.begin.end.begin_pos, end_pos)
-          corrector.replace(range, " |#{block_arg_string(node.arguments)}|")
+          corrector.replace(range,
+                            " |#{block_arg_string(node, node.arguments)}|")
         end
 
         def autocorrect_body(corrector, node, block_body)
@@ -131,14 +133,21 @@ module RuboCop
                                   "\n  #{' ' * block_start_col}")
         end
 
-        def block_arg_string(args)
-          args.children.map do |arg|
+        def block_arg_string(node, args)
+          arg_string = args.children.map do |arg|
             if arg.mlhs_type?
-              "(#{block_arg_string(arg)})"
+              "(#{block_arg_string(node, arg)})"
             else
               arg.source
             end
           end.join(', ')
+          arg_string += ',' if include_trailing_comma?(node.arguments)
+          arg_string
+        end
+
+        def include_trailing_comma?(args)
+          arg_count = args.each_descendant(:arg).to_a.size
+          arg_count == 1 && args.source.include?(',')
         end
       end
     end

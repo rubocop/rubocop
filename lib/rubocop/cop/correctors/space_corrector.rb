@@ -12,12 +12,11 @@ module RuboCop
         def empty_corrections(processed_source, corrector, empty_config,
                               left_token, right_token)
           @processed_source = processed_source
+          range = range_between(left_token.end_pos, right_token.begin_pos)
           if offending_empty_space?(empty_config, left_token, right_token)
-            range = side_space_range(range: left_token.pos, side: :right)
             corrector.remove(range)
             corrector.insert_after(left_token.pos, ' ')
           elsif offending_empty_no_space?(empty_config, left_token, right_token)
-            range = side_space_range(range: left_token.pos, side: :right)
             corrector.remove(range)
           end
         end

@@ -64,15 +64,23 @@ module RuboCop
       end
 
       def remove_irrelevant_cops(filename)
-        @cops.reject! { |cop| cop.excluded_file?(filename) }
         @cops.reject! do |cop|
-          cop.class.respond_to?(:support_target_ruby_version?) &&
-            !cop.class.support_target_ruby_version?(cop.target_ruby_version)
+          cop.excluded_file?(filename) ||
+            !support_target_ruby_version?(cop) ||
+            !support_target_rails_version?(cop)
         end
-        @cops.reject! do |cop|
-          cop.class.respond_to?(:support_target_rails_version?) &&
-            !cop.class.support_target_rails_version?(cop.target_rails_version)
-        end
+      end
+
+      def support_target_ruby_version?(cop)
+        return true unless cop.class.respond_to?(:support_target_ruby_version?)
+
+        cop.class.support_target_ruby_version?(cop.target_ruby_version)
+      end
+
+      def support_target_rails_version?(cop)
+        return true unless cop.class.respond_to?(:support_target_rails_version?)
+
+        cop.class.support_target_rails_version?(cop.target_rails_version)
       end
 
       def reset_callbacks

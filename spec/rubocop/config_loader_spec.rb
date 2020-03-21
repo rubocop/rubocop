@@ -495,7 +495,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_empty_file('dir/subdir/example.rb')
 
         create_file('.rubocop.yml', <<~YAML)
-          Metrics/LineLength:
+          Layout/LineLength:
             Enabled: false
             Max: 77
         YAML
@@ -512,7 +512,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file(file_path, <<~YAML)
           inherit_from: ../.rubocop.yml
 
-          Metrics/LineLength:
+          Layout/LineLength:
             Enabled: true
 
           Metrics/MethodLength:
@@ -523,21 +523,21 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'returns the ancestor configuration plus local overrides' do
         config =
           default_config.merge(
-            'Metrics/LineLength' => {
+            'Layout/LineLength' => {
               'Description' =>
-              default_config['Metrics/LineLength']['Description'],
+              default_config['Layout/LineLength']['Description'],
               'StyleGuide' => '#80-character-limits',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Metrics/LineLength']['VersionAdded'],
+              default_config['Layout/LineLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Metrics/LineLength']['VersionChanged'],
+              default_config['Layout/LineLength']['VersionChanged'],
               'AutoCorrect' => false,
               'Max' => 77,
               'AllowHeredoc' => true,
               'AllowURI' => true,
               'URISchemes' => %w[http https],
-              'IgnoreCopDirectives' => false,
+              'IgnoreCopDirectives' => true,
               'IgnoredPatterns' => []
             },
             'Metrics/MethodLength' => {
@@ -627,21 +627,21 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'returns includes both of the cop changes' do
         config =
           default_config.merge(
-            'Metrics/LineLength' => {
+            'Layout/LineLength' => {
               'Description' =>
-              default_config['Metrics/LineLength']['Description'],
+              default_config['Layout/LineLength']['Description'],
               'StyleGuide' => '#80-character-limits',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Metrics/LineLength']['VersionAdded'],
+              default_config['Layout/LineLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Metrics/LineLength']['VersionChanged'],
+              default_config['Layout/LineLength']['VersionChanged'],
               'AutoCorrect' => false,
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,
               'URISchemes' => %w[http https],
-              'IgnoreCopDirectives' => false,
+              'IgnoreCopDirectives' => true,
               'IgnoredPatterns' => []
             }
           )
@@ -707,12 +707,12 @@ RSpec.describe RuboCop::ConfigLoader do
                     YAML
         create_file("#{gem_root}/gemtwo/config/default.yml",
                     <<~YAML)
-                      Metrics/LineLength:
+                      Layout/LineLength:
                         Enabled: true
                     YAML
         create_file("#{gem_root}/gemtwo/config/strict.yml",
                     <<~YAML)
-                      Metrics/LineLength:
+                      Layout/LineLength:
                         Max: 72
                         AllowHeredoc: false
                     YAML
@@ -732,7 +732,7 @@ RSpec.describe RuboCop::ConfigLoader do
           Metrics/MethodLength:
             Enabled: true
 
-          Metrics/LineLength:
+          Layout/LineLength:
             AllowURI: false
         YAML
       end
@@ -759,7 +759,7 @@ RSpec.describe RuboCop::ConfigLoader do
                      'AllowHeredoc' => false,  # gemtwo/config/strict.yml
                      'AllowURI' => false }     # overridden in .rubocop.yml
         expect(
-          configuration_from_file['Metrics/LineLength']
+          configuration_from_file['Layout/LineLength']
             .to_set.superset?(expected.to_set)
         ).to be(true)
       end
@@ -872,7 +872,7 @@ RSpec.describe RuboCop::ConfigLoader do
           end
 
           it 'disables cops in other departments' do
-            cop_class = RuboCop::Cop::Layout::AlignHash
+            cop_class = RuboCop::Cop::Layout::HashAlignment
             expect(cop_enabled?(cop_class)).to be false
           end
 
@@ -901,6 +901,89 @@ RSpec.describe RuboCop::ConfigLoader do
         it 'respects cops that are disbled in the config' do
           cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled?(cop_class)).to be false
+        end
+      end
+    end
+
+    context 'when a new cop is introduced' do
+      def cop_enabled?(cop_class)
+        configuration_from_file.for_cop(cop_class).fetch('Enabled')
+      end
+
+      let(:file_path) { '.rubocop.yml' }
+      let(:cop_class) { RuboCop::Cop::Metrics::MethodLength }
+
+      before do
+        stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', 'rubocop')
+        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE',
+                   File.join('rubocop', 'config', 'default.yml'))
+        create_file('rubocop/config/default.yml',
+                    <<~YAML)
+                      AllCops:
+                        AnythingGoes: banana
+                      Metrics/MethodLength:
+                        Enabled: pending
+                    YAML
+        create_file(file_path, config)
+      end
+
+      context 'when not configured explicitly' do
+        let(:config) { '' }
+
+        it 'is disabled' do
+          expect(cop_enabled?(cop_class)).to eq 'pending'
+        end
+      end
+
+      context 'when enabled explicitly in config' do
+        let(:config) do
+          <<~YAML
+            Metrics/MethodLength:
+              Enabled: true
+          YAML
+        end
+
+        it 'is enabled' do
+          expect(cop_enabled?(cop_class)).to be true
+        end
+      end
+
+      context 'when disabled explicitly in config' do
+        let(:config) do
+          <<~YAML
+            Metrics/MethodLength:
+              Enabled: false
+          YAML
+        end
+
+        it 'is disabled' do
+          expect(cop_enabled?(cop_class)).to be false
+        end
+      end
+
+      context 'when DisabledByDefault is true' do
+        let(:config) do
+          <<~YAML
+            AllCops:
+              DisabledByDefault: true
+          YAML
+        end
+
+        it 'is disabled' do
+          expect(cop_enabled?(cop_class)).to be false
+        end
+      end
+
+      context 'when EnabledByDefault is true' do
+        let(:config) do
+          <<~YAML
+            AllCops:
+              EnabledByDefault: true
+          YAML
+        end
+
+        it 'is enabled' do
+          expect(cop_enabled?(cop_class)).to be true
         end
       end
     end
@@ -995,7 +1078,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'set neither true nor false to value to Enabled' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/AlignArray:
+          Layout/ArrayAlignment:
             Enabled: disable
         YAML
       end
@@ -1004,7 +1087,7 @@ RSpec.describe RuboCop::ConfigLoader do
         expect do
           load_file
         end.to raise_error(
-          SystemExit,
+          RuboCop::ValidationError,
           /supposed to be a boolean and disable is not/
         )
       end

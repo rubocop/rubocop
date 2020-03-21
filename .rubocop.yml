@@ -11,6 +11,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
+    - '.git/**/*'
   TargetRubyVersion: 2.3
 
 Naming/PredicateName:
@@ -59,7 +60,7 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedHashRocketStyle:
     - key
     - table
@@ -86,9 +87,17 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - '**/*.gemspec'
 
+Metrics/ClassLength:
+  Exclude:
+    - lib/rubocop/config_obsoletion.rb
+
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
+
+RSpec/FilePath:
+  Exclude:
+    - spec/rubocop/formatter/junit_formatter_spec.rb
 
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit

@@ -41,7 +41,7 @@ automatically fix some of the problems for you.
 $ gem install rubocop
 ```
 
-If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
+If you'd rather install RuboCop using `bundler`, add a line for it in your `Gemfile` (but set the `require` option to `false`, as it is a standalone tool):
 
 ```rb
 gem 'rubocop', require: false
@@ -53,7 +53,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version lock in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.74.0', require: false
+gem 'rubocop', '~> 0.80.1', require: false
 ```
 
 ## Quickstart
@@ -74,7 +74,7 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 RuboCop supports the following Ruby implementations:
 
 * MRI 2.3+
-* JRuby 9.1+
+* JRuby 9.2+
 
 ## Team
 
@@ -213,5 +213,5 @@ RuboCop's changelog is available [here](CHANGELOG.md).
 
 ## Copyright
 
-Copyright (c) 2012-2019 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2020 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.

@@ -94,20 +94,22 @@ module RuboCop
         end
 
         def autocorrect(node)
-          method_call, _lhs, method, _rhs = inverse_candidate?(node)
-
-          if method_call && method
-            lambda do |corrector|
-              corrector.remove(not_to_receiver(node, method_call))
-              corrector.replace(method_call.loc.selector,
-                                inverse_methods[method].to_s)
-
-              if EQUALITY_METHODS.include?(method)
-                corrector.remove(end_parentheses(node, method_call))
-              end
-            end
-          else
+          if node.block_type?
             correct_inverse_block(node)
+          elsif node.send_type?
+            correct_inverse_method(node)
+          end
+        end
+
+        def correct_inverse_method(node)
+          method_call, _lhs, method, _rhs = inverse_candidate?(node)
+          return unless method_call && method
+
+          lambda do |corrector|
+            corrector.remove(not_to_receiver(node, method_call))
+            corrector.replace(method_call.loc.selector,
+                              inverse_methods[method].to_s)
+            remove_end_parenthesis(corrector, node, method, method_call)
           end
         end
 
@@ -122,18 +124,19 @@ module RuboCop
         end
 
         def correct_inverse_selector(block, corrector)
-          selector = block.loc.selector.source
+          selector_loc = block.loc.selector
+          selector = selector_loc.source
 
           if NEGATED_EQUALITY_METHODS.include?(selector.to_sym)
             selector[0] = '='
-            corrector.replace(block.loc.selector, selector)
+            corrector.replace(selector_loc, selector)
           else
             if block.loc.dot
               range = dot_range(block.loc)
               corrector.remove(range)
             end
 
-            corrector.remove(block.loc.selector)
+            corrector.remove(selector_loc)
           end
         end
 
@@ -180,6 +183,13 @@ module RuboCop
 
         def dot_range(loc)
           range_between(loc.dot.begin_pos, loc.expression.end_pos)
+        end
+
+        def remove_end_parenthesis(corrector, node, method, method_call)
+          return unless EQUALITY_METHODS.include?(method) ||
+                        method_call.parent.begin_type?
+
+          corrector.remove(end_parentheses(node, method_call))
         end
       end
     end

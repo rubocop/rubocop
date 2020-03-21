@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
   let(:cop_config) do
     {
       'Include' => ['**/Gemfile'],
-      'Whitelist' => ['rake']
+      'IgnoredGems' => ['rake']
     }
   end
 
@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
       end
     end
 
-    context 'and the gem is whitelisted' do
+    context 'and the gem is permitted' do
       it 'does not register any offenses' do
         expect_no_offenses(<<~RUBY, 'Gemfile')
           gem 'rake'

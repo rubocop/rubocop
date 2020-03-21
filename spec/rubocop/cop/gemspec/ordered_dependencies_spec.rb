@@ -198,4 +198,15 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
       RUBY
     end
   end
+
+  context 'When using a local variable in an argument of dependent gem' do
+    it 'does not register any offenses' do
+      expect_no_offenses(<<~RUBY)
+        Gem::Specification.new do |spec|
+          %w(rubocop-performance rubocop-rails).each { |dep| spec.add_dependency dep }
+          spec.add_dependency 'parser'
+        end
+      RUBY
+    end
+  end
 end

@@ -255,21 +255,27 @@ module RuboCop
       @options = options
     end
 
+    def validate_cop_options
+      %i[only except].each do |opt|
+        OptionsValidator.validate_cop_list(@options[opt])
+      end
+    end
+
     # rubocop:disable Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
-      if only_includes_unneeded_disable?
-        raise OptionArgumentError, 'Lint/UnneededCopDisableDirective can not ' \
+      if only_includes_redundant_disable?
+        raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot ' \
                                    'be used with --only.'
       end
       if except_syntax?
-        raise OptionArgumentError, 'Syntax checking can not be turned off.'
+        raise OptionArgumentError, 'Syntax checking cannot be turned off.'
       end
       unless boolean_or_empty_cache?
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
 
       if display_only_fail_level_offenses_with_autocorrect?
-        raise OptionArgumentError, '--autocorrect can not be used with ' \
+        raise OptionArgumentError, '--autocorrect cannot be used with ' \
           '--display-only-fail-level-offenses'
       end
       validate_auto_gen_config
@@ -323,8 +329,8 @@ module RuboCop
         auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
                          'while --auto-gen-config needs a non-cached run, ' \
                          'so they cannot be combined.',
-        fail_fast: '-P/--parallel can not be combined with -F/--fail-fast.',
-        auto_correct: '-P/--parallel can not be combined with --auto-correct.'
+        fail_fast: '-P/--parallel cannot be combined with -F/--fail-fast.',
+        auto_correct: '-P/--parallel cannot be combined with --auto-correct.'
       }
 
       combos.each do |key, msg|
@@ -332,10 +338,10 @@ module RuboCop
       end
     end
 
-    def only_includes_unneeded_disable?
+    def only_includes_redundant_disable?
       @options.key?(:only) &&
-        (@options[:only] & %w[Lint/UnneededCopDisableDirective
-                              UnneededCopDisableDirective]).any?
+        (@options[:only] & %w[Lint/RedundantCopDisableDirective
+                              RedundantCopDisableDirective]).any?
     end
 
     def display_only_fail_level_offenses_with_autocorrect?
@@ -367,8 +373,9 @@ module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
+    # rubocop:disable Layout/LineLength
+    FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
-    # rubocop:disable Metrics/LineLength
     TEXT = {
       only:                             'Run only the given cop(s).',
       only_guide_cops:                  ['Run only cops for rules that link to a',
@@ -394,7 +401,7 @@ module RuboCop
                                          "properties to generate. Default is #{MAX_EXCL}."],
       disable_uncorrectable:            ['Used with --auto-correct to annotate any',
                                          'offenses that do not support autocorrect',
-                                         'with `rubocop:disable` comments.'],
+                                         'with `rubocop:todo` comments.'],
       force_exclusion:                  ['Force excluding files specified in the',
                                          'configuration `Exclude` even if they are',
                                          'explicitly passed as arguments.'],
@@ -407,20 +414,8 @@ module RuboCop
       format:                           ['Choose an output formatter. This option',
                                          'can be specified multiple times to enable',
                                          'multiple formatters at the same time.',
-                                         '  [p]rogress (default)',
-                                         '  [s]imple',
-                                         '  [c]lang',
-                                         '  [d]isabled cops via inline comments',
-                                         '  [fu]ubar',
-                                         '  [e]macs',
-                                         '  [j]son',
-                                         '  [h]tml',
-                                         '  [fi]les',
-                                         '  [o]ffenses',
-                                         '  [w]orst',
-                                         '  [t]ap',
-                                         '  [q]uiet',
-                                         '  [a]utogenconf',
+                                         '[p]rogress is used by default',
+                                         *FORMATTER_OPTION_LIST.map { |item| "  #{item}" },
                                          '  custom formatter class name'],
       out:                              ['Write output to a file instead of STDOUT.',
                                          'This option applies to the previously',
@@ -460,6 +455,6 @@ module RuboCop
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
     }.freeze
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
   end
 end

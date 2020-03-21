@@ -6,6 +6,11 @@ module RuboCop
       # This cop checks for the presence of superfluous parentheses around the
       # condition of if/unless/while/until.
       #
+      # `AllowSafeAssignment` option for safe assignment.
+      # By safe assignment we mean putting parentheses around
+      # an assignment to indicate "I know I'm using an assignment
+      # as a condition. It's not a mistake."
+      #
       # @example
       #   # bad
       #   x += 1 while (x < 10)
@@ -23,6 +28,14 @@ module RuboCop
       #   elsif x < 3
       #   end
       #
+      # @example AllowSafeAssignment: true (default)
+      #   # good
+      #   foo unless (bar = baz)
+      #
+      # @example AllowSafeAssignment: false
+      #   # bad
+      #   foo unless (bar = baz)
+      #
       # @example AllowInMultilineConditions: false (default)
       #   # bad
       #   if (x > 10 &&
@@ -39,6 +52,7 @@ module RuboCop
       #   if (x > 10 &&
       #      y > 10)
       #   end
+      #
       class ParenthesesAroundCondition < Cop
         include SafeAssignment
         include Parentheses

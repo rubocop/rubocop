@@ -35,8 +35,8 @@ module RuboCop
           last_arg = nested.last_argument.source_range
 
           leading_space =
-            range_with_surrounding_space(range: first_arg,
-                                         side: :left).begin.resize(1)
+            range_with_surrounding_space(range: first_arg.begin,
+                                         side: :left)
 
           lambda do |corrector|
             corrector.replace(leading_space, '(')
@@ -49,17 +49,17 @@ module RuboCop
         def allowed_omission?(send_node)
           !send_node.arguments? || send_node.parenthesized? ||
             send_node.setter_method? || send_node.operator_method? ||
-            whitelisted?(send_node)
+            allowed?(send_node)
         end
 
-        def whitelisted?(send_node)
+        def allowed?(send_node)
           send_node.parent.arguments.one? &&
-            whitelisted_methods.include?(send_node.method_name.to_s) &&
+            allowed_methods.include?(send_node.method_name.to_s) &&
             send_node.arguments.one?
         end
 
-        def whitelisted_methods
-          cop_config['Whitelist'] || []
+        def allowed_methods
+          cop_config['AllowedMethods'] || []
         end
       end
     end

@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::GlobalVars, :config do
     RUBY
   end
 
-  it 'allows user whitelisted variables' do
+  it 'allows user permitted variables' do
     expect_no_offenses('puts $allowed')
   end
 

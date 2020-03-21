@@ -43,7 +43,7 @@ Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | No | 0.59 | -
+Disabled | Yes | No | 0.59 | 0.77
 
 Add a comment describing each gem in your Gemfile.
 
@@ -65,7 +65,7 @@ gem 'foo'
 Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
-Whitelist | `[]` | Array
+IgnoredGems | `[]` | Array
 
 ## Bundler/InsecureProtocolSource
 
@@ -83,8 +83,8 @@ most use cases HTTPS will be fine.
 
 However, it don't replace all `sources` of `http://` with `https://`.
 For example, when specifying an internal gem server using HTTP on the
-intranet, a use case where HTTPS can not be specified was considered.
-Consider using HTTP only if you can not use HTTPS.
+intranet, a use case where HTTPS cannot be specified was considered.
+Consider using HTTP only if you cannot use HTTPS.
 
 ### Examples
 

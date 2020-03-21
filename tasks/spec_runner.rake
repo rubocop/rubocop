@@ -116,18 +116,3 @@ desc 'Run RSpec code examples with ASCII encoding'
 task :ascii_spec do
   RuboCop::SpecRunner.new(external_encoding: 'ASCII').run_specs
 end
-
-namespace :parallel do
-  desc 'Deprecated: Run RSpec code examples in parallel'
-  task :spec do
-    warn '`rake parallel:spec` is deprecated. Use `rake spec` instead.'
-    Rake::Task[:spec].execute
-  end
-
-  desc 'Deprecated: Run RSpec code examples in parallel with ASCII encoding'
-  task :ascii_spec do
-    warn '`rake parallel:ascii_spec` is deprecated. Use `rake ascii_spec` ' \
-         'instead.'
-    Rake::Task[:ascii_spec].execute
-  end
-end

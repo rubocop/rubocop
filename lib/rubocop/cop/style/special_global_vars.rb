@@ -160,17 +160,15 @@ module RuboCop
         end
 
         def format_message(english, regular, global)
-          if !regular.empty? && !english.empty?
+          if regular.empty?
+            format(MSG_ENGLISH, prefer: format_list(english), global: global)
+          elsif english.empty?
+            format(MSG_REGULAR, prefer: format_list(regular), global: global)
+          else
             format(MSG_BOTH,
                    prefer: format_list(english),
                    regular: format_list(regular),
                    global: global)
-          elsif !regular.empty?
-            format(MSG_REGULAR, prefer: format_list(regular), global: global)
-          elsif !english.empty?
-            format(MSG_ENGLISH, prefer: format_list(english), global: global)
-          else
-            raise 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
           end
         end
 

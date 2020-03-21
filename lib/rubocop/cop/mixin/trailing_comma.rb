@@ -18,18 +18,20 @@ module RuboCop
 
       def check(node, items, kind, begin_pos, end_pos)
         after_last_item = range_between(begin_pos, end_pos)
-
-        # If there is any heredoc in items, then match the comma succeeding
-        # any whitespace (except newlines), otherwise allow for newlines
-        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
-        comma_offset = after_last_item.source =~ comma_regex &&
-                       after_last_item.source.index(',')
+        comma_offset = comma_offset(items, after_last_item)
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
         elsif should_have_comma?(style, node)
-          put_comma(node, items, kind)
+          put_comma(items, kind)
         end
+      end
+
+      def comma_offset(items, range)
+        # If there is any heredoc in items, then match the comma succeeding
+        # any whitespace (except newlines), otherwise allow for newlines
+        comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
+        range.source =~ comma_regex && range.source.index(',')
       end
 
       def check_comma(node, kind, comma_pos)
@@ -91,9 +93,12 @@ module RuboCop
       end
 
       def method_name_and_arguments_on_same_line?(node)
-        %i[send csend].include?(node.type) &&
-          node.loc.selector.line == node.arguments.last.last_line &&
-          node.last_line == node.arguments.last.last_line
+        return false unless node.call_type?
+
+        line = node.loc.selector.nil? ? node.loc.line : node.loc.selector.line
+
+        line == node.last_argument.last_line &&
+          node.last_line == node.last_argument.last_line
       end
 
       # A single argument with the closing bracket on the same line as the end
@@ -140,9 +145,7 @@ module RuboCop
         add_offense(range, location: range, message: msg)
       end
 
-      def put_comma(node, items, kind)
-        return if avoid_autocorrect?(elements(node))
-
+      def put_comma(items, kind)
         last_item = items.last
         return if last_item.block_pass_type?
 
@@ -162,11 +165,6 @@ module RuboCop
         ix += expr.source[ix..-1] =~ /\S/
 
         range_between(expr.begin_pos + ix, expr.end_pos)
-      end
-
-      # By default, there's no reason to avoid auto-correct.
-      def avoid_autocorrect?(_nodes)
-        false
       end
 
       def any_heredoc?(items)

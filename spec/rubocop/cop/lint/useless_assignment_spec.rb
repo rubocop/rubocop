@@ -3,6 +3,23 @@
 RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
   subject(:cop) { described_class.new }
 
+  context 'when a variable is assigned and assigned again in a modifier ' \
+          'condition' do
+    it 'accepts with parentheses' do
+      expect_no_offenses(<<~RUBY)
+        a = nil
+        puts a if (a = 123)
+      RUBY
+    end
+
+    it 'accepts without parentheses' do
+      expect_no_offenses(<<~RUBY)
+        a = nil
+        puts a unless a = 123
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned and unreferenced in a method' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

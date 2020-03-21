@@ -53,6 +53,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                       Puppetfile
                       Rakefile
                       Snapfile
+                      Steepfile
                       Thorfile
                       Vagabondfile
                       Vagrantfile

@@ -4,11 +4,56 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'never accepted' do |enforced_style|
+    it 'registers an offense for mixed snake case and camel case in attr.' do
+      expect_offense(<<~RUBY)
+        attr :visit_Arel_Nodes_SelectStatement
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_reader :visit_Arel_Nodes_SelectStatement
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_accessor :visit_Arel_Nodes_SelectStatement
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_writer :visit_Arel_Nodes_SelectStatement
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr 'visit_Arel_Nodes_SelectStatement'
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+      RUBY
+    end
+
+    it 'registers an offense for mixed snake case and camel case in attr.' do
+      expect_offense(<<~RUBY)
+        attr_reader :visit_Arel_Nodes_SelectStatement
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_reader 'visit_Arel_Nodes_SelectStatement'
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+      RUBY
+    end
+
     it 'registers an offense for mixed snake case and camel case' do
       expect_offense(<<~RUBY)
         def visit_Arel_Nodes_SelectStatement
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
         end
+      RUBY
+    end
+
+    it 'registers an offense for capitalized camel case name in attr.' do
+      expect_offense(<<~RUBY)
+        attr :MyMethod
+             ^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_reader :MyMethod
+                    ^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_accessor :MyMethod
+                      ^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_writer :MyMethod
+                    ^^^^^^^^^ Use #{enforced_style} for method names.
       RUBY
     end
 
@@ -34,7 +79,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
   end
 
-  shared_examples 'always accepted' do
+  shared_examples 'always accepted' do |enforced_style|
     it 'accepts one line methods' do
       expect_no_offenses("def body; '' end")
     end
@@ -88,10 +133,85 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
         RUBY
       end
     end
+
+    context 'when specifying `IgnoredPatterns`' do
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => enforced_style,
+          'IgnoredPatterns' => [
+            '\A\s*onSelectionBulkChange\s*',
+            '\A\s*on_selection_cleared\s*'
+          ]
+        }
+      end
+
+      it 'does not register an offense for camel case method name in attr.' do
+        expect_no_offenses(<<~RUBY)
+          attr_reader :onSelectionBulkChange
+          attr_accessor :onSelectionBulkChange
+          attr_writer :onSelectionBulkChange
+        RUBY
+      end
+
+      it 'does not register an offense for camel case method name ' \
+         ' matching `IgnoredPatterns`' do
+        expect_no_offenses(<<~RUBY)
+          def onSelectionBulkChange(arg)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for snake case method name in attr.' do
+        expect_no_offenses(<<~RUBY)
+          attr_reader :on_selection_cleared
+          attr_accessor :on_selection_cleared
+          attr_writer :on_selection_cleared
+        RUBY
+      end
+
+      it 'does not register an offense for snake case method name ' \
+         ' matching `IgnoredPatterns`' do
+        expect_no_offenses(<<~RUBY)
+          def on_selection_cleared(arg)
+          end
+        RUBY
+      end
+    end
+  end
+
+  shared_examples 'multiple attr methods' do |enforced_style|
+    it 'registers an offense for camel case methods names in attr.' do
+      expect_offense(<<~RUBY)
+        attr :my_method, :myMethod
+             ^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_reader :my_method, :myMethod
+                    ^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_accessor :myMethod, :my_method
+                      ^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+
+        attr_accessor 'myMethod', 'my_method'
+                      ^^^^^^^^^^^^^^^^^^^^^^^ Use #{enforced_style} for method names.
+      RUBY
+    end
   end
 
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
+
+    it 'registers an offense for camel case method names in attr.' do
+      expect_offense(<<~RUBY)
+        attr_reader :myMethod
+                    ^^^^^^^^^ Use snake_case for method names.
+
+        attr_accessor :myMethod
+                      ^^^^^^^^^ Use snake_case for method names.
+
+        attr_writer :myMethod
+                    ^^^^^^^^^ Use snake_case for method names.
+      RUBY
+    end
 
     it 'registers an offense for camel case in instance method name' do
       expect_offense(<<~RUBY)
@@ -121,6 +241,14 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
+    it 'accepts snake case in attr.' do
+      expect_no_offenses(<<~RUBY)
+        attr_reader :my_method
+        attr_accessor :my_method
+        attr_writer :my_method
+      RUBY
+    end
+
     it 'accepts snake case in names' do
       expect_no_offenses(<<~RUBY)
         def my_method
@@ -140,10 +268,19 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
     include_examples 'never accepted',  'snake_case'
     include_examples 'always accepted', 'snake_case'
+    include_examples 'multiple attr methods', 'snake_case'
   end
 
   context 'when configured for camelCase' do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
+
+    it 'accepts camel case names in attr.' do
+      expect_no_offenses(<<~RUBY)
+        attr_reader :myMethod
+        attr_accessor :myMethod
+        attr_writer :myMethod
+      RUBY
+    end
 
     it 'accepts camel case in instance method name' do
       expect_no_offenses(<<~RUBY)
@@ -158,6 +295,22 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
         def self.myMethod
           # ...
         end
+      RUBY
+    end
+
+    it 'registers an offense for snake case name in attr.' do
+      expect_offense(<<~RUBY)
+        attr_reader :my_method
+                    ^^^^^^^^^^ Use camelCase for method names.
+
+        attr_accessor :my_method
+                      ^^^^^^^^^^ Use camelCase for method names.
+
+        attr_writer :my_method
+                    ^^^^^^^^^^ Use camelCase for method names.
+
+        attr_writer 'my_method'
+                    ^^^^^^^^^^^ Use camelCase for method names.
       RUBY
     end
 
@@ -191,5 +344,6 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
     include_examples 'always accepted', 'camelCase'
     include_examples 'never accepted',  'camelCase'
+    include_examples 'multiple attr methods', 'camelCase'
   end
 end

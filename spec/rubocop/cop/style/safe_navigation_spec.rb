@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
   it 'allows an object check before a blank check' do
     # The `nil` object doesn't respond to `blank?` in normal Ruby (it's added
-    # by Rails), but it's included in the Whitelist parameter in default
+    # by Rails), but it's included in the AllowedMethods parameter in default
     # configuration for this cop.
     expect_no_offenses('user && user.thing.blank?')
   end
@@ -674,6 +674,15 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           expect(new_source).to eq("#{variable}&.bar(baz)")
         end
 
+        it 'corrects an object check followed by a method call ' \
+           'with a comment at EOL' do
+          source = "foo if #{variable} && #{variable}.bar # comment"
+
+          new_source = autocorrect_source(source)
+
+          expect(new_source).to eq("foo if #{variable}&.bar # comment")
+        end
+
         it 'corrects a method call with a block safeguarded with a check ' \
            'for the object' do
           source = "#{variable}.bar { |e| e.qux } if #{variable}"
@@ -931,6 +940,43 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
 
           expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
+        end
+
+        it 'does not lose comments within if expression' do
+          new_source = autocorrect_source(<<~RUBY)
+            if #{variable}
+              # this is a comment
+              # another comment
+              #{variable}.bar
+            end
+          RUBY
+
+          expected_source = <<~RUBY
+            # this is a comment
+            # another comment
+            #{variable}&.bar
+          RUBY
+          expect(new_source).to eq(expected_source)
+        end
+
+        it 'only moves comments that fall within the expression' do
+          new_source = autocorrect_source(<<~RUBY)
+            # comment one
+            def foobar
+              if #{variable}
+                # comment 2
+                #{variable}.bar
+              end
+            end
+          RUBY
+
+          expect(new_source).to eq(<<~RUBY)
+            # comment one
+            def foobar
+              # comment 2
+            #{variable}&.bar
+            end
+          RUBY
         end
 
         it 'corrects a single method call inside of an unless nil check ' \

@@ -49,11 +49,13 @@ module RuboCop
                                 node.parent.condition.source_range.end_pos)
 
           lambda do |corrector|
-            corrector.replace(range, new_expression(node.parent, node))
+            corrector.replace(range, new_expression(node))
           end
         end
 
-        def new_expression(outer_node, inner_node)
+        def new_expression(inner_node)
+          outer_node = inner_node.parent
+
           operator = replacement_operator(outer_node.keyword)
           lh_operand = left_hand_operand(outer_node, operator)
           rh_operand = right_hand_operand(inner_node, outer_node.keyword)
@@ -73,9 +75,25 @@ module RuboCop
         end
 
         def right_hand_operand(node, left_hand_keyword)
-          expr = node.condition.source
-          expr = "(#{expr})" if requires_parens?(node.condition)
+          condition = node.condition
+
+          expr = if condition.send_type? && !condition.arguments.empty? &&
+                    !condition.operator_method?
+                   add_parentheses_to_method_arguments(condition)
+                 else
+                   condition.source
+                 end
+          expr = "(#{expr})" if requires_parens?(condition)
           expr = "!#{expr}" unless left_hand_keyword == node.keyword
+          expr
+        end
+
+        def add_parentheses_to_method_arguments(send_node)
+          expr = +''
+          expr << "#{send_node.receiver.source}." if send_node.receiver
+          expr << send_node.method_name.to_s
+          expr << "(#{send_node.arguments.map(&:source).join(', ')})"
+
           expr
         end
 

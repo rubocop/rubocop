@@ -63,6 +63,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.access_modifier?
+          return if node.parent.pair_type?
 
           if offense?(node)
             add_offense(node, location: :selector) do

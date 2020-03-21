@@ -6,54 +6,35 @@ module RuboCop
       # This cop checks for operators, variables, literals, and nonmutating
       # methods used in void context.
       #
-      # @example
-      #
+      # @example CheckForMethodsWithNoSideEffects: false (default)
       #   # bad
-      #
       #   def some_method
       #     some_num * 10
       #     do_something
       #   end
-      #
-      # @example
-      #
-      #   # bad
       #
       #   def some_method(some_var)
       #     some_var
       #     do_something
       #   end
       #
-      # @example
-      #
-      #   # bad, when CheckForMethodsWithNoSideEffects is set true
-      #
+      # @example CheckForMethodsWithNoSideEffects: true
+      #   # bad
       #   def some_method(some_array)
       #     some_array.sort
       #     do_something(some_array)
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method
       #     do_something
       #     some_num * 10
       #   end
       #
-      # @example
-      #
-      #   # good
-      #
       #   def some_method(some_var)
       #     do_something
       #     some_var
       #   end
-      #
-      # @example
-      #
-      #   # good, when CheckForMethodsWithNoSideEffects is set true
       #
       #   def some_method(some_array)
       #     some_array.sort!
@@ -74,10 +55,10 @@ module RuboCop
         VOID_CONTEXT_TYPES = %i[def for block].freeze
         NONMUTATING_METHODS = %i[capitalize chomp chop collect compact
                                  delete_prefix delete_suffix downcase
-                                 encode flatten gsub lstrip map next reject
-                                 reverse rotate rstrip scrub select shuffle
-                                 slice sort sort_by squeeze strip sub succ
-                                 swapcase tr tr_s transform_values
+                                 encode flatten gsub lstrip map merge next
+                                 reject reverse rotate rstrip scrub select
+                                 shuffle slice sort sort_by squeeze strip sub
+                                 succ swapcase tr tr_s transform_values
                                  unicode_normalize uniq upcase].freeze
 
         def on_block(node)

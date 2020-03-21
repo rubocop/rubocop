@@ -65,12 +65,7 @@ module RuboCop
         to_inspect?(file, hidden_files, base_dir_config)
       end
 
-      if fail_fast?
-        # Most recently modified file first.
-        target_files.sort_by! { |path| -Integer(File.mtime(path)) }
-      else
-        target_files.sort!
-      end
+      target_files.sort_by!(&order)
     end
 
     def to_inspect?(file, hidden_files, base_dir_config)
@@ -184,6 +179,17 @@ module RuboCop
       files.reject do |file|
         config = @config_store.for(file)
         config.file_to_exclude?(file)
+      end
+    end
+
+    private
+
+    def order
+      if fail_fast?
+        # Most recently modified file first.
+        ->(path) { -Integer(File.mtime(path)) }
+      else
+        :itself
       end
     end
   end

@@ -83,9 +83,16 @@ module RuboCop
           on_argument(node)
         end
 
+        def on_masgn(node)
+          lhs, rhs = *node
+          lhs.children.each do |child|
+            add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
+          end
+        end
+
         def on_lvasgn(node)
           lhs, rhs = *node
-          @local_variables_scopes[rhs] << lhs
+          add_lhs_to_local_variables_scopes(rhs, lhs)
         end
 
         def on_send(node)
@@ -147,6 +154,16 @@ module RuboCop
           return unless node.send_type? && node.self_receiver?
 
           @allowed_send_nodes << node
+        end
+
+        def add_lhs_to_local_variables_scopes(rhs, lhs)
+          if rhs&.send_type? && !rhs.arguments.empty?
+            rhs.arguments.each do |argument|
+              @local_variables_scopes[argument] << lhs
+            end
+          else
+            @local_variables_scopes[rhs] << lhs
+          end
         end
       end
     end

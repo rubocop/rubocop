@@ -13,8 +13,8 @@ module RuboCop
       #
       # However, it don't replace all `sources` of `http://` with `https://`.
       # For example, when specifying an internal gem server using HTTP on the
-      # intranet, a use case where HTTPS can not be specified was considered.
-      # Consider using HTTP only if you can not use HTTPS.
+      # intranet, a use case where HTTPS cannot be specified was considered.
+      # Consider using HTTP only if you cannot use HTTPS.
       #
       # @example
       #   # bad

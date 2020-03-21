@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Registry do
       module Cop
         module Test
           # Create another cop with a different namespace
-          class IndentFirstArrayElement < Cop
+          class FirstArrayElementIndentation < Cop
           end
         end
 
@@ -26,10 +26,10 @@ RSpec.describe RuboCop::Cop::Registry do
     [
       RuboCop::Cop::Lint::BooleanSymbol,
       RuboCop::Cop::Lint::DuplicateMethods,
-      RuboCop::Cop::Layout::IndentFirstArrayElement,
+      RuboCop::Cop::Layout::FirstArrayElementIndentation,
       RuboCop::Cop::Metrics::MethodLength,
       RuboCop::Cop::RSpec::Foo,
-      RuboCop::Cop::Test::IndentFirstArrayElement
+      RuboCop::Cop::Test::FirstArrayElementIndentation
     ]
   end
 
@@ -62,9 +62,11 @@ RSpec.describe RuboCop::Cop::Registry do
       .to eq(described_class.new(cops.drop(2)))
   end
 
-  context '#contains_cop_matching?' do
+  describe '#contains_cop_matching?' do
     it 'can find cops matching a given name' do
-      result = registry.contains_cop_matching?(['Test/IndentFirstArrayElement'])
+      result = registry.contains_cop_matching?(
+        ['Test/FirstArrayElementIndentation']
+      )
       expect(result).to be(true)
     end
 
@@ -73,24 +75,38 @@ RSpec.describe RuboCop::Cop::Registry do
     end
   end
 
-  context '#qualified_cop_name' do
+  describe '#qualified_cop_name' do
     let(:origin) { '/app/.rubocop.yml' }
 
     it 'gives back already properly qualified names' do
       result = registry.qualified_cop_name(
-        'Layout/IndentFirstArrayElement',
+        'Layout/FirstArrayElementIndentation',
         origin
       )
-      expect(result).to eql('Layout/IndentFirstArrayElement')
+      expect(result).to eql('Layout/FirstArrayElementIndentation')
     end
 
     it 'qualifies names without a namespace' do
-      expect(registry.qualified_cop_name('MethodLength', origin))
-        .to eql('Metrics/MethodLength')
+      warning =
+        "/app/.rubocop.yml: Warning: no department given for MethodLength.\n"
+      qualified = nil
+
+      expect do
+        qualified = registry.qualified_cop_name('MethodLength', origin)
+      end.to output(warning).to_stderr
+
+      expect(qualified).to eql('Metrics/MethodLength')
     end
 
     it 'qualifies names with the correct namespace' do
-      expect(registry.qualified_cop_name('Foo', origin)).to eql('RSpec/Foo')
+      warning = "/app/.rubocop.yml: Warning: no department given for Foo.\n"
+      qualified = nil
+
+      expect do
+        qualified = registry.qualified_cop_name('Foo', origin)
+      end.to output(warning).to_stderr
+
+      expect(qualified).to eql('RSpec/Foo')
     end
 
     it 'emits a warning when namespace is incorrect' do
@@ -106,12 +122,17 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'raises an error when a cop name is ambiguous' do
-      expect { registry.qualified_cop_name('IndentFirstArrayElement', origin) }
-        .to raise_error(RuboCop::Cop::AmbiguousCopName).with_message(
-          'Ambiguous cop name `IndentFirstArrayElement` used in ' \
+      cop_name = 'FirstArrayElementIndentation'
+      expect { registry.qualified_cop_name(cop_name, origin) }
+        .to raise_error(RuboCop::Cop::AmbiguousCopName)
+        .with_message(
+          'Ambiguous cop name `FirstArrayElementIndentation` used in ' \
           '/app/.rubocop.yml needs department qualifier. Did you mean ' \
-          'Layout/IndentFirstArrayElement or Test/IndentFirstArrayElement?'
+          'Layout/FirstArrayElementIndentation or ' \
+          'Test/FirstArrayElementIndentation?'
         )
+        .and output('/app/.rubocop.yml: Warning: no department given for ' \
+                    "FirstArrayElementIndentation.\n").to_stderr
     end
 
     it 'returns the provided name if no namespace is found' do
@@ -123,19 +144,18 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.to_h).to eql(
       'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
       'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/IndentFirstArrayElement' =>
-                                 [
-                                   RuboCop::Cop::Layout::IndentFirstArrayElement
-                                 ],
+      'Layout/FirstArrayElementIndentation' => [
+        RuboCop::Cop::Layout::FirstArrayElementIndentation
+      ],
       'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
-      'Test/IndentFirstArrayElement' => [
-        RuboCop::Cop::Test::IndentFirstArrayElement
+      'Test/FirstArrayElementIndentation' => [
+        RuboCop::Cop::Test::FirstArrayElementIndentation
       ],
       'RSpec/Foo' => [RuboCop::Cop::RSpec::Foo]
     )
   end
 
-  context '#cops' do
+  describe '#cops' do
     it 'exposes a list of cops' do
       expect(registry.cops).to eql(cops)
     end
@@ -145,10 +165,10 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.length).to be(6)
   end
 
-  context '#enabled' do
+  describe '#enabled' do
     let(:config) do
       RuboCop::Config.new(
-        'Test/IndentFirstArrayElement' => { 'Enabled' => false },
+        'Test/FirstArrayElementIndentation' => { 'Enabled' => false },
         'RSpec/Foo' => { 'Safe' => false }
       )
     end
@@ -158,13 +178,31 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'overrides config if :only includes the cop' do
-      result = registry.enabled(config, ['Test/IndentFirstArrayElement'])
+      result = registry.enabled(config, ['Test/FirstArrayElementIndentation'])
       expect(result).to eql(cops)
     end
 
     it 'selects only safe cops if :safe passed' do
       enabled_cops = registry.enabled(config, [], true)
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
+    end
+
+    context 'when new cops are introduced' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+        )
+      end
+
+      it 'does not include them' do
+        result = registry.enabled(config, [])
+        expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+      end
+
+      it 'overrides config if :only includes the cop' do
+        result = registry.enabled(config, ['Lint/BooleanSymbol'])
+        expect(result).to eql(cops)
+      end
     end
   end
 
@@ -173,10 +211,10 @@ RSpec.describe RuboCop::Cop::Registry do
       [
         'Lint/BooleanSymbol',
         'Lint/DuplicateMethods',
-        'Layout/IndentFirstArrayElement',
+        'Layout/FirstArrayElementIndentation',
         'Metrics/MethodLength',
         'RSpec/Foo',
-        'Test/IndentFirstArrayElement'
+        'Test/FirstArrayElementIndentation'
       ]
     )
   end

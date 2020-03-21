@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   include_examples 'aligned', 'until',  'test',      'end'
   include_examples 'aligned', 'case',   'a when b',  'end'
 
-  include_examples 'misaligned', <<-RUBY, false
+  include_examples 'misaligned', <<~RUBY, false
     puts 1; class Test
       end
       ^^^ `end` at 2, 2 is not aligned with `class` at 1, 8.
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     include_examples 'aligned', 'puts 1; until',  'test',     'end'
     include_examples 'aligned', 'puts 1; case',   'a when b', 'end'
 
-    include_examples 'misaligned', <<-RUBY, false
+    include_examples 'misaligned', <<~RUBY, false
       puts 1; class Test
         end
         ^^^ `end` at 2, 2 is not aligned with `puts 1; class Test` at 1, 0.
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         ^^^ `end` at 2, 2 is not aligned with `case a when b` at 1, 0.
     RUBY
 
-    include_examples 'misaligned', <<-RUBY, :keyword
+    include_examples 'misaligned', <<~RUBY, :keyword
       puts(if test
            end)
            ^^^ `end` at 2, 5 is not aligned with `puts(if test` at 1, 0.
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true }
     end
 
-    include_examples 'misaligned', <<-RUBY, false
+    include_examples 'misaligned', <<~RUBY, false
       class Test
         end
         ^^^ `end` at 2, 2 is not aligned with `class` at 1, 0.
@@ -214,7 +214,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     include_examples 'aligned', 'until',  'test',      'end'
     include_examples 'aligned', 'case',   'a when b',  'end'
 
-    include_examples 'misaligned', <<-RUBY, :start_of_line
+    include_examples 'misaligned', <<~RUBY, :start_of_line
       puts 1; class Test
       end
       ^^^ `end` at 2, 0 is not aligned with `class` at 1, 8.
@@ -254,29 +254,18 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   end
 
   context 'correct + opposite' do
-    let(:source) do
-      <<~RUBY
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         x = if a
               a1
             end
         y = if b
           b1
         end
+        ^^^ `end` at 6, 0 is not aligned with `if` at 4, 4.
       RUBY
-    end
 
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages.first)
-        .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4.')
-      expect(cop.highlights.first).to eq('end')
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-    end
-
-    it 'does auto-correction' do
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         x = if a
               a1
             end
@@ -288,25 +277,11 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   end
 
   context 'when end is preceded by something else than whitespace' do
-    let(:source) do
-      <<~RUBY
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
         module A
         puts a end
       RUBY
-    end
-
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages.first)
-        .to eq('`end` at 2, 7 is not aligned with `module` at 1, 0.')
-      expect(cop.highlights.first).to eq('end')
-    end
-
-    it "doesn't auto-correct" do
-      expect(autocorrect_source(source))
-        .to eq(source)
-      expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
   end
 
@@ -318,7 +293,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
       include_examples 'aligned', 'test case', 'a when b', '     end'
 
-      include_examples 'misaligned', <<-RUBY, :start_of_line
+      include_examples 'misaligned', <<~RUBY, :start_of_line
         test case a when b
         end
         ^^^ `end` at 2, 0 is not aligned with `case` at 1, 5.
@@ -332,7 +307,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
       include_examples 'aligned', 'test case', 'a when b', 'end'
 
-      include_examples 'misaligned', <<-RUBY, :keyword
+      include_examples 'misaligned', <<~RUBY, :keyword
         test case a when b
              end
              ^^^ `end` at 2, 5 is not aligned with `test case` at 1, 0.
@@ -346,7 +321,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
       include_examples 'aligned', 'test case a when b', '', 'end'
 
-      include_examples 'misaligned', <<-RUBY, :keyword
+      include_examples 'misaligned', <<~RUBY, :keyword
         test case a when b
              end
              ^^^ `end` at 2, 5 is not aligned with `test case a when b` at 1, 0.
@@ -356,7 +331,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   context 'regarding assignment' do
     context 'when EnforcedStyleAlignWith is keyword' do
-      include_examples 'misaligned', <<-RUBY, :start_of_line
+      include_examples 'misaligned', <<~RUBY, :start_of_line
         var = if test
         end
         ^^^ `end` at 2, 0 is not aligned with `if` at 1, 6.
@@ -402,7 +377,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       include_examples 'aligned', 'var = case',   'a when b', 'end'
       include_examples 'aligned', "var =\n  if",  'test', '  end'
 
-      include_examples 'misaligned', <<-RUBY, :keyword
+      include_examples 'misaligned', <<~RUBY, :keyword
         var = if test
               end
               ^^^ `end` at 2, 6 is not aligned with `var = if` at 1, 0.
@@ -438,7 +413,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
       # If there's a line break after = we align with the keyword even if the
       # style is `variable`.
-      include_examples 'misaligned', <<-RUBY, false
+      include_examples 'misaligned', <<~RUBY, false
         var =
           if test
         end
@@ -462,7 +437,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
             ^^^ `end` at 4, 4 is not aligned with `until` at 2, 2.
       RUBY
 
-      include_examples 'misaligned', <<-RUBY, :keyword
+      include_examples 'misaligned', <<~RUBY, :keyword
         var = until test
               end.j
               ^^^ `end` at 2, 6 is not aligned with `var = until` at 1, 0.
@@ -479,7 +454,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       include_examples 'aligned', 'h[k] = if',  'test', 'end'
       include_examples 'aligned', 'h.k = if',   'test', 'end'
 
-      include_examples 'misaligned', <<-RUBY, :keyword
+      include_examples 'misaligned', <<~RUBY, :keyword
         var = case a when b
               end
               ^^^ `end` at 2, 6 is not aligned with `var = case` at 1, 0.
@@ -545,7 +520,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
                 ^^^ `end` at 2, 8 is not aligned with `h[k] << if` at 1, 0.
       RUBY
 
-      include_examples 'misaligned', <<-RUBY, false
+      include_examples 'misaligned', <<~RUBY, false
         h.k = if test
                  end
                  ^^^ `end` at 2, 9 is not aligned with `h.k = if` at 1, 0.
@@ -558,7 +533,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
     end
 
-    include_examples 'misaligned', <<-RUBY, :keyword
+    include_examples 'misaligned', <<~RUBY, :keyword
       var = if test
             end
             ^^^ `end` at 2, 6 is not aligned with `var = if test` at 1, 0.
@@ -600,7 +575,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
              ^^^ `end` at 2, 7 is not aligned with `var << case a when b` at 1, 0.
     RUBY
 
-    include_examples 'misaligned', <<-RUBY, false
+    include_examples 'misaligned', <<~RUBY, false
       var =
         if test
       end

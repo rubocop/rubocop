@@ -6,9 +6,7 @@ module RuboCop
       # This cop checks for unused block arguments.
       #
       # @example
-      #
       #   # bad
-      #
       #   do_something do |used, unused|
       #     puts used
       #   end
@@ -21,10 +19,7 @@ module RuboCop
       #     puts :baz
       #   end
       #
-      # @example
-      #
-      #   #good
-      #
+      #   # good
       #   do_something do |used, _unused|
       #     puts used
       #   end
@@ -36,6 +31,27 @@ module RuboCop
       #   define_method(:foo) do |_bar|
       #     puts :baz
       #   end
+      #
+      # @example IgnoreEmptyBlocks: true (default)
+      #   # good
+      #   do_something { |unused| }
+      #
+      # @example IgnoreEmptyBlocks: false
+      #   # bad
+      #   do_something { |unused| }
+      #
+      # @example AllowUnusedKeywordArguments: false (default)
+      #   # bad
+      #   do_something do |unused: 42|
+      #     foo
+      #   end
+      #
+      # @example AllowUnusedKeywordArguments: true
+      #   # good
+      #   do_something do |unused: 42|
+      #     foo
+      #   end
+      #
       class UnusedBlockArgument < Cop
         include UnusedArgument
 

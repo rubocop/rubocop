@@ -10,10 +10,10 @@ module RuboCop
       # Note: RDoc 5.1.0 or lower has the following issue.
       # https://github.com/rubocop-hq/rubocop/issues/7043
       #
-      # The following `String#strip_indent` can be replaced with
+      # The following `String#gsub` can be replaced with
       # squiggly heredoc when RuboCop supports Ruby 2.5 or higher
       # (RDoc 6.0 or higher).
-      SOURCE_TEMPLATE = <<-RUBY.strip_indent
+      SOURCE_TEMPLATE = <<-RUBY.gsub(/^ {8}/, '')
         # frozen_string_literal: true
 
         # TODO: when finished, run `rake generate_cops_documentation` to update the docs
@@ -104,10 +104,9 @@ module RuboCop
         end
       SPEC
 
-      CONFIGURATION_ADDED_MESSAGE = <<~MESSAGE
-        [modify] A configuration for the cop is added into %<configuration_file_path>s.
-                 If you want to disable the cop by default, set `Enabled` option to false.
-      MESSAGE
+      CONFIGURATION_ADDED_MESSAGE =
+        '[modify] A configuration for the cop is added into ' \
+          '%<configuration_file_path>s.'
 
       def initialize(name, github_user, output: $stdout)
         @badge = Badge.parse(name)

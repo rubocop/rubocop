@@ -94,10 +94,12 @@ module RuboCop
         private
 
         def autocorrect_from_percent(corrector, node)
-          args = if %i[array hash].include?(node.first_argument.type)
-                   node.first_argument.children.map(&:source).join(', ')
+          percent_rhs = node.first_argument
+          args = case percent_rhs.type
+                 when :array, :hash
+                   percent_rhs.children.map(&:source).join(', ')
                  else
-                   node.first_argument.source
+                   percent_rhs.source
                  end
 
           corrected = "#{style}(#{node.receiver.source}, #{args})"
@@ -106,14 +108,15 @@ module RuboCop
         end
 
         def autocorrect_to_percent(corrector, node)
-          format = node.first_argument.source
+          format_arg, *param_args = node.arguments
+          format = format_arg.source
 
-          args = if node.arguments.size == 2
-                   arg = node.arguments.last
+          args = if param_args.one?
+                   arg = param_args.last
 
                    arg.hash_type? ? "{ #{arg.source} }" : arg.source
                  else
-                   "[#{node.arguments[1..-1].map(&:source).join(', ')}]"
+                   "[#{param_args.map(&:source).join(', ')}]"
                  end
 
           corrector.replace(node.loc.expression, "#{format} % #{args}")

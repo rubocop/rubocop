@@ -16,6 +16,7 @@ RSpec.describe RuboCop::Cop::Offense do
     expect(offense.line).to eq(1)
     expect(offense.message).to eq('message')
     expect(offense.cop_name).to eq('CopName')
+    expect(offense.correctable?).to be_truthy
     expect(offense.corrected?).to be_truthy
     expect(offense.highlighted_area.source).to eq('a')
   end

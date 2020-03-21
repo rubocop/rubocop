@@ -31,5 +31,15 @@ RSpec.describe RuboCop::AST::RangeNode do
       it { expect(range_node.is_a?(described_class)).to be(true) }
       it { expect(range_node.range_type?).to be(true) }
     end
+
+    context 'with a beignless range' do
+      let(:ruby_version) { 2.7 }
+      let(:source) do
+        '..42'
+      end
+
+      it { expect(range_node.is_a?(described_class)).to be(true) }
+      it { expect(range_node.range_type?).to be(true) }
+    end
   end
 end

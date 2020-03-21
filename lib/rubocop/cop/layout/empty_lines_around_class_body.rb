@@ -36,7 +36,7 @@ module RuboCop
       #
       #   end
       #
-      # @example Enforcedstyle: beginning_only
+      # @example EnforcedStyle: beginning_only
       #   # good
       #
       #   class Foo
@@ -46,7 +46,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @example Enforcedstyle: ending_only
+      # @example EnforcedStyle: ending_only
       #   # good
       #
       #   class Foo

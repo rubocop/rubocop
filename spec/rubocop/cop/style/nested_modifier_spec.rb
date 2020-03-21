@@ -65,6 +65,12 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
     expect(corrected).to eq 'something if (c || d) && (a || b)'
   end
 
+  it 'adds parentheses to method arguments when needed ' \
+     'in auto-correction' do
+    corrected = autocorrect_source('a unless [1, 2].include? a if a')
+    expect(corrected).to eq 'a if a && ![1, 2].include?(a)'
+  end
+
   it 'does not add redundant parentheses in auto-correction' do
     corrected = autocorrect_source('something if a unless c || d')
     expect(corrected).to eq 'something unless c || d || !a'

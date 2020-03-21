@@ -42,11 +42,15 @@ module RuboCop
       end
 
       def report_offense(file, offense)
-        output.printf("# %s:%d:%d: %s: %s\n",
-                      cyan(smart_path(file)), offense.line, offense.real_column,
-                      colored_severity_code(offense), message(offense))
+        output.printf(
+          "# %<path>s:%<line>d:%<column>d: %<severity>s: %<message>s\n",
+          path: cyan(smart_path(file)),
+          line: offense.line,
+          column: offense.real_column,
+          severity: colored_severity_code(offense),
+          message: message(offense)
+        )
 
-        # rubocop:disable Lint/HandleExceptions
         begin
           return unless valid_line?(offense)
 
@@ -55,7 +59,6 @@ module RuboCop
         rescue IndexError
           # range is not on a valid line; perhaps the source file is empty
         end
-        # rubocop:enable Lint/HandleExceptions
       end
 
       def annotate_message(msg)
@@ -63,7 +66,15 @@ module RuboCop
       end
 
       def message(offense)
-        message = offense.corrected? ? '[Corrected] ' : ''
+        message =
+          if offense.corrected_with_todo?
+            '[Todo] '
+          elsif offense.corrected?
+            '[Corrected] '
+          else
+            ''
+          end
+
         "#{message}#{annotate_message(offense.message)}"
       end
     end

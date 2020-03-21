@@ -12,12 +12,44 @@ RSpec.describe RuboCop::Cop::Style::Attr do
     RUBY
   end
 
+  it 'registers offense for attr within class_eval' do
+    expect_offense(<<~RUBY)
+      SomeClass.class_eval do
+        attr :name
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      end
+    RUBY
+  end
+
+  it 'registers offense for attr within module_eval' do
+    expect_offense(<<~RUBY)
+      SomeClass.module_eval do
+        attr :name
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      end
+    RUBY
+  end
+
   it 'accepts attr when it does not take arguments' do
     expect_no_offenses('func(attr)')
   end
 
   it 'accepts attr when it has a receiver' do
     expect_no_offenses('x.attr arg')
+  end
+
+  it 'does not register offense for custom `attr` method' do
+    expect_no_offenses(<<~RUBY)
+      class SomeClass
+        def attr(*args)
+          p args
+        end
+
+        def a
+          attr(1)
+        end
+      end
+    RUBY
   end
 
   context 'auto-corrects' do
