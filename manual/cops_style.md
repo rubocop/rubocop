@@ -1909,7 +1909,7 @@ This cop checks ensures source files have no utf-8 encoding comments.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
+Enabled | Yes | Yes  | 0.9 | 0.81
 
 This cop checks for END blocks.
 
