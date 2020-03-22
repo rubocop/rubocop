@@ -13,6 +13,7 @@
 * [#7784](https://github.com/rubocop-hq/rubocop/pull/7784): Support Ruby 2.7's numbered parameter for `Lint/SafeNavigationChain`. ([@koic][])
 * [#7331](https://github.com/rubocop-hq/rubocop/issues/7331): Add `forbidden` option to `Style/ModuleFunction` cop. ([@weh][])
 * [#7699](https://github.com/rubocop-hq/rubocop/pull/7699): Add new `Lint/StructNewOverride` cop. ([@ybiquitous][])
+* [#7637](https://github.com/rubocop-hq/rubocop/pull/7637): Add new `Style/TrailingCommaInBlockArgs` cop. ([@pawptart][])
 * [#7809](https://github.com/rubocop-hq/rubocop/pull/7809): Add auto-correction for `Style/EndBlock` cop. ([@tejasbubane][])
 * [#7739](https://github.com/rubocop-hq/rubocop/pull/7739): Add `IgnoreNotImplementedMethods` configuration to `Lint/UnusedMethodArgument`. ([@tejasbubane][])
 

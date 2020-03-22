@@ -7223,6 +7223,54 @@ EnforcedStyleForMultiline | `no_comma` | `comma`, `consistent_comma`, `no_comma`
 
 * [https://rubystyle.guide#no-trailing-array-commas](https://rubystyle.guide#no-trailing-array-commas)
 
+## Style/TrailingCommaInBlockArgs
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | No | Yes (Unsafe) | 0.81 | -
+
+This cop checks whether trailing commas in block arguments are
+required. Blocks with only one argument and a trailing comma require
+that comma to be present. Blocks with more than one argument never
+require a trailing comma.
+
+ add do |foo, bar,|
+   foo + bar
+  end
+
+ # good
+ add do |foo, bar|
+   foo + bar
+ end
+
+ # good
+  add do |foo,|
+   foo
+ end
+
+ # good
+ add do
+    foo + bar
+ end
+
+### Examples
+
+```ruby
+# bad
+add { |foo, bar,| foo + bar }
+
+ # good
+add { |foo, bar| foo + bar }
+
+# good
+add { |foo,| foo }
+
+# good
+add { foo }
+
+# bad
+```
+
 ## Style/TrailingCommaInHashLiteral
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

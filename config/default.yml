@@ -3853,6 +3853,12 @@ Style/TrailingCommaInArrayLiteral:
     - consistent_comma
     - no_comma
 
+Style/TrailingCommaInBlockArgs:
+  Description: 'Checks for useless trailing commas in block arguments.'
+  Enabled: false
+  Safe: false
+  VersionAdded: '0.81'
+
 Style/TrailingCommaInHashLiteral:
   Description: 'Checks for trailing comma in hash literals.'
   Enabled: true
