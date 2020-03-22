@@ -27,18 +27,20 @@ module RuboCop
       #
       #   # good
       #
-      #   # using while
-      #   while some_condition
+      #   # while replacement
+      #   loop do
       #     do_something
+      #     break unless some_condition
       #   end
       #
       # @example
       #
       #   # good
       #
-      #   # using until
-      #   until some_condition
+      #   # until replacement
+      #   loop do
       #     do_something
+      #     break if some_condition
       #   end
       class Loop < Cop
         MSG = 'Use `Kernel#loop` with `break` rather than ' \
