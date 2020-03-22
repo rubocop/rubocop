@@ -2711,6 +2711,7 @@ Style/EndBlock:
   StyleGuide: '#no-END-blocks'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.81'
 
 Style/EvalWithLocation:
   Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'
