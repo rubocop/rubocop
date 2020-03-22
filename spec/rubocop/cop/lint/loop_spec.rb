@@ -17,11 +17,11 @@ RSpec.describe RuboCop::Cop::Lint::Loop do
     RUBY
   end
 
-  it 'accepts normal while' do
-    expect_no_offenses('while test; one; two; end')
+  it 'accepts loop/break unless' do
+    expect_no_offenses('loop do; one; two; break unless test; end')
   end
 
-  it 'accepts normal until' do
-    expect_no_offenses('until test; one; two; end')
+  it 'accepts loop/break if' do
+    expect_no_offenses('loop do; one; two; break if test; end')
   end
 end
