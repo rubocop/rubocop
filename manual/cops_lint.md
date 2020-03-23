@@ -618,37 +618,6 @@ when baz then 2
 end
 ```
 
-## Lint/EndInMethod
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
-
-This cop checks for END blocks in method definitions.
-
-### Examples
-
-```ruby
-# bad
-
-def some_method
-  END { do_something }
-end
-```
-```ruby
-# good
-
-def some_method
-  at_exit { do_something }
-end
-```
-```ruby
-# good
-
-# outside defs
-END { do_something }
-```
-
 ## Lint/EnsureReturn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
