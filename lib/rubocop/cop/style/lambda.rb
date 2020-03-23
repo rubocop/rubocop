@@ -73,6 +73,7 @@ module RuboCop
                       location: node.send_node.source_range,
                       message: message(node, selector))
         end
+        alias on_numblock on_block
 
         def autocorrect(node)
           if node.send_node.source == 'lambda'

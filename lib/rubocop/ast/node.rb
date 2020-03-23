@@ -484,7 +484,7 @@ module RuboCop
          (send (const nil? :Proc) :new)}
       PATTERN
 
-      def_node_matcher :lambda?, '(block (send nil? :lambda) ...)'
+      def_node_matcher :lambda?, '({block numblock} (send nil? :lambda) ...)'
       def_node_matcher :lambda_or_proc?, '{lambda? proc?}'
 
       def_node_matcher :class_constructor?, <<~PATTERN
