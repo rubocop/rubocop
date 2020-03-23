@@ -1395,11 +1395,6 @@ Lint/EmptyWhen:
   Enabled: true
   VersionAdded: '0.45'
 
-Lint/EndInMethod:
-  Description: 'END blocks should not be placed inside method definitions.'
-  Enabled: true
-  VersionAdded: '0.9'
-
 Lint/EnsureReturn:
   Description: 'Do not use return in an ensure block.'
   StyleGuide: '#no-return-ensure'

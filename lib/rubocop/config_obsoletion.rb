@@ -19,6 +19,7 @@ module RuboCop
       'Layout/LeadingBlankLines' => 'Layout/LeadingEmptyLines',
       'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
       'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
+      'Lint/EndInMethod' => 'Style/EndBlock',
       'Lint/HandleExceptions' => 'Lint/SuppressedException',
       'Lint/MultipleCompare' => 'Lint/MultipleComparison',
       'Lint/StringConversionInInterpolation' => 'Lint/RedundantStringCoercion',

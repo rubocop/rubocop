@@ -195,7 +195,6 @@ In the following section you find all available cops:
 * [Lint/EmptyExpression](cops_lint.md#lintemptyexpression)
 * [Lint/EmptyInterpolation](cops_lint.md#lintemptyinterpolation)
 * [Lint/EmptyWhen](cops_lint.md#lintemptywhen)
-* [Lint/EndInMethod](cops_lint.md#lintendinmethod)
 * [Lint/EnsureReturn](cops_lint.md#lintensurereturn)
 * [Lint/ErbNewArguments](cops_lint.md#linterbnewarguments)
 * [Lint/FlipFlop](cops_lint.md#lintflipflop)
