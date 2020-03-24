@@ -166,7 +166,7 @@ BigDecimal(123.456, 3)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.50 | -
+Enabled | Yes | Yes  | 0.50 | 0.81
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
