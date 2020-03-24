@@ -89,4 +89,16 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName do
       RUBY
     end
   end
+
+  # `Migration/DepartmentName` cop's role is to complement a department name.
+  # The role would be simple if another feature could detect unexpected
+  # disable comment format.
+  context 'when an unexpected disable comment format' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Style:Alias
+        alias :ala :bala
+      RUBY
+    end
+  end
 end
