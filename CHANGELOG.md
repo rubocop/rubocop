@@ -29,6 +29,7 @@
 * [#7791](https://github.com/rubocop-hq/rubocop/issues/7791): Fix an error on auto-correction for `Layout/BlockEndNewline` when `}` of multiline block without processing is not on its own line. ([@koic][])
 * [#7778](https://github.com/rubocop-hq/rubocop/issues/7778): Fix a false positive for `Layout/EndAlignment` when a non-whitespace is used before the `end` keyword. ([@koic][])
 * [#7806](https://github.com/rubocop-hq/rubocop/pull/7806): Fix an error for `Lint/ErbNewArguments` cop when inspecting `ActionView::Template::Handlers::ERB.new`. ([@koic][])
+* [#7814](https://github.com/rubocop-hq/rubocop/issues/7814): Fix a false positive for `Migrate/DepartmentName` cop when inspecting an unexpected disabled comment format. ([@koic][])
 
 ### Changes
 
@@ -46,7 +47,6 @@
 * [#7682](https://github.com/rubocop-hq/rubocop/issues/7682): Fix `Style/InverseMethods` autofix leaving parenthesis. ([@tejasbubane][])
 * [#7745](https://github.com/rubocop-hq/rubocop/issues/7745): Suppress a pending cop warnings when pending cop's department is disabled. ([@koic][])
 * [#7759](https://github.com/rubocop-hq/rubocop/issues/7759): Fix an error for `Layout/LineLength` cop when using lambda syntax that argument is not enclosed in parentheses. ([@koic][])
-* [#7814](https://github.com/rubocop-hq/rubocop/issues/7814): Fix a false positive for `Migrate/DepartmentName` cop when inspecting an unexpected disabled comment format. ([@koic][])
 
 ### Changes
 
