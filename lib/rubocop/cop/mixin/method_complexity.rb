@@ -5,15 +5,20 @@ module RuboCop
     # This module handles measurement and reporting of complexity in methods.
     module MethodComplexity
       include ConfigurableMax
+      include IgnoredMethods
       extend NodePattern::Macros
 
       def on_def(node)
+        return if ignored_method?(node.method_name)
+
         check_complexity(node, node.method_name)
       end
       alias on_defs on_def
 
       def on_block(node)
         define_method?(node) do |name|
+          return if ignored_method?(name)
+
           check_complexity(node, name)
         end
       end

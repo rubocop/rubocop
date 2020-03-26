@@ -1833,9 +1833,10 @@ Metrics/AbcSize:
     - https://en.wikipedia.org/wiki/ABC_Software_Metric
   Enabled: true
   VersionAdded: '0.27'
-  VersionChanged: '0.66'
+  VersionChanged: '0.81'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
+  IgnoredMethods: []
   Max: 15
 
 Metrics/BlockLength:
@@ -1875,6 +1876,8 @@ Metrics/CyclomaticComplexity:
                  of test cases needed to validate a method.
   Enabled: true
   VersionAdded: '0.25'
+  VersionChanged: '0.81'
+  IgnoredMethods: []
   Max: 6
 
 Metrics/MethodLength:
@@ -1908,6 +1911,8 @@ Metrics/PerceivedComplexity:
                  human reader.
   Enabled: true
   VersionAdded: '0.25'
+  VersionChanged: '0.81'
+  IgnoredMethods: []
   Max: 7
 
 ################## Migration #############################

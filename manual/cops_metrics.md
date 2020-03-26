@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.27 | 0.66
+Enabled | Yes | No | 0.27 | 0.81
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
@@ -15,6 +15,7 @@ and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 
 Name | Default value | Configurable values
 --- | --- | ---
+IgnoredMethods | `[]` | Array
 Max | `15` | Integer
 
 ### References
@@ -89,7 +90,7 @@ Max | `100` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | -
+Enabled | Yes | No | 0.25 | 0.81
 
 This cop checks that the cyclomatic complexity of methods is not higher
 than the configured maximum. The cyclomatic complexity is the number of
@@ -106,6 +107,7 @@ Loops can be said to have an exit condition, so they add one.
 
 Name | Default value | Configurable values
 --- | --- | ---
+IgnoredMethods | `[]` | Array
 Max | `6` | Integer
 
 ## Metrics/MethodLength
@@ -172,7 +174,7 @@ CountKeywordArgs | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | -
+Enabled | Yes | No | 0.25 | 0.81
 
 This cop tries to produce a complexity score that's a measure of the
 complexity the reader experiences when looking at a method. For that
@@ -204,4 +206,5 @@ end                             # 7 complexity points
 
 Name | Default value | Configurable values
 --- | --- | ---
+IgnoredMethods | `[]` | Array
 Max | `7` | Integer
