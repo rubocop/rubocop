@@ -33,6 +33,14 @@ RSpec.describe RuboCop::AST::BlockNode do
 
       it { expect(block_node.arguments.size).to eq(2) }
     end
+
+    context '>= Ruby 2.7', :ruby27 do
+      context 'using numbered parameters' do
+        let(:source) { 'foo { _1 }' }
+
+        it { expect(block_node.arguments.empty?).to be(true) }
+      end
+    end
   end
 
   describe '#arguments?' do
@@ -58,6 +66,14 @@ RSpec.describe RuboCop::AST::BlockNode do
       let(:source) { 'foo { |q, *z| bar(q, z) }' }
 
       it { expect(block_node.arguments?).to be_truthy }
+    end
+
+    context '>= Ruby 2.7', :ruby27 do
+      context 'using numbered parameters' do
+        let(:source) { 'foo { _1 }' }
+
+        it { expect(block_node.arguments?).to be false }
+      end
     end
   end
 

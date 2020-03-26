@@ -20,6 +20,7 @@ module RuboCop
         args:         ArgsNode,
         array:        ArrayNode,
         block:        BlockNode,
+        numblock:     BlockNode,
         break:        BreakNode,
         case_match:   CaseMatchNode,
         case:         CaseNode,
