@@ -32,6 +32,7 @@
 * [#7778](https://github.com/rubocop-hq/rubocop/issues/7778): Fix a false positive for `Layout/EndAlignment` when a non-whitespace is used before the `end` keyword. ([@koic][])
 * [#7806](https://github.com/rubocop-hq/rubocop/pull/7806): Fix an error for `Lint/ErbNewArguments` cop when inspecting `ActionView::Template::Handlers::ERB.new`. ([@koic][])
 * [#7814](https://github.com/rubocop-hq/rubocop/issues/7814): Fix a false positive for `Migrate/DepartmentName` cop when inspecting an unexpected disabled comment format. ([@koic][])
+* [#7728](https://github.com/rubocop-hq/rubocop/issues/7728): Fix an error for `Style/OneLineConditional` when one of the branches contains a self keyword. ([@koic][])
 
 ### Changes
 
