@@ -1088,6 +1088,11 @@ Layout/SpaceAroundKeyword:
   Enabled: true
   VersionAdded: '0.49'
 
+Layout/SpaceAroundMethodCallOperator:
+  Description: 'Checks method call operators to not have spaces around them.'
+  Enabled: pending
+  VersionAdded: '0.81'
+
 Layout/SpaceAroundOperators:
   Description: 'Use a single space around operators.'
   StyleGuide: '#spaces-operators'
