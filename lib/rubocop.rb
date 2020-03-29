@@ -586,7 +586,6 @@ require_relative 'rubocop/formatter/simple_text_formatter'
 # relies on simple text
 require_relative 'rubocop/formatter/clang_style_formatter'
 require_relative 'rubocop/formatter/disabled_config_formatter'
-require_relative 'rubocop/formatter/disabled_lines_formatter'
 require_relative 'rubocop/formatter/emacs_style_formatter'
 require_relative 'rubocop/formatter/file_list_formatter'
 require_relative 'rubocop/formatter/fuubar_style_formatter'

@@ -11,7 +11,6 @@ module RuboCop
       BUILTIN_FORMATTERS_FOR_KEYS = {
         '[a]utogenconf' => AutoGenConfigFormatter,
         '[c]lang'       => ClangStyleFormatter,
-        '[d]isabled'    => DisabledLinesFormatter,
         '[e]macs'       => EmacsStyleFormatter,
         '[fi]les'       => FileListFormatter,
         '[fu]ubar'      => FuubarStyleFormatter,
