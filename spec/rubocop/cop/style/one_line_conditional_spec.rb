@@ -141,4 +141,15 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
       true ? self : 7
     RUBY
   end
+
+  it 'does not break when one of the branches contains `next` keyword' do
+    expect_offense(<<~RUBY)
+      map{ |line| if line.match(/^\s*#/) || line.strip.empty? then next else line end }
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over `if/then/else/end` constructs.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      map{ |line| (line.match(/^ *#/) || line.strip.empty?) ? next : line }
+    RUBY
+  end
 end
