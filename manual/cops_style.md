@@ -4411,10 +4411,10 @@ of a parenthesized method call.
 
 ```ruby
 # good
-method1(method2(arg), method3(arg))
+method1(method2(arg))
 
 # bad
-method1(method2 arg, method3, arg)
+method1(method2 arg)
 ```
 
 ### Configurable attributes
