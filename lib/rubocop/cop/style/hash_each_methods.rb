@@ -40,6 +40,8 @@ module RuboCop
 
         def register_kv_offense(node)
           kv_each(node) do |target, method|
+            return unless target.receiver.receiver
+
             msg = format(message, prefer: "each_#{method[0..-2]}",
                                   current: "#{method}.each")
 
