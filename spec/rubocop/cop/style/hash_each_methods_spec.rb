@@ -69,25 +69,15 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods do
     end
 
     context 'when receiver is implicit' do
-      it 'registers an offense and auto-corrects keys.each with each_key' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for `keys.each`' do
+        expect_no_offenses(<<~RUBY)
           keys.each { |k| p k }
-          ^^^^^^^^^ Use `each_key` instead of `keys.each`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          each_key { |k| p k }
         RUBY
       end
 
-      it 'registers an offense and auto-corrects values.each with each_value' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for `values.each`' do
+        expect_no_offenses(<<~RUBY)
           values.each { |v| p v }
-          ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          each_value { |v| p v }
         RUBY
       end
 

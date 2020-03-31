@@ -35,6 +35,7 @@
 * [#7814](https://github.com/rubocop-hq/rubocop/issues/7814): Fix a false positive for `Migrate/DepartmentName` cop when inspecting an unexpected disabled comment format. ([@koic][])
 * [#7728](https://github.com/rubocop-hq/rubocop/issues/7728): Fix an error for `Style/OneLineConditional` when one of the branches contains a self keyword. ([@koic][])
 * [#7825](https://github.com/rubocop-hq/rubocop/issues/7825): Fix crash for `Layout/MultilineMethodCallIndentation` with key access to hash. ([@tejasbubane][])
+* [#7831](https://github.com/rubocop-hq/rubocop/issues/7831): Fix a false positive for `Style/HashEachMethods` when receiver is implicit. ([@koic][])
 
 ### Changes
 
