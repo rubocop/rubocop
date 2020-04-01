@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7777](https://github.com/rubocop-hq/rubocop/issues/7777): Fix crash for `Layout/MultilineArrayBraceLayout` when comment is present after last element. ([@shekhar-patil][])
+* [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
+
 ## 0.81.0 (2020-04-01)
 
 ### New features
@@ -4426,3 +4431,4 @@
 [@nikitasakov]: https://github.com/nikitasakov
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
+[@shekhar-patil]: https://github.com/shekhar-patil

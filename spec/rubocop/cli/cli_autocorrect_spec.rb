@@ -945,6 +945,44 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
   end
 
+  it 'correct multiline array brace without crashing' do
+    create_file('example.rb', <<~RUBY)
+      hash = {
+        first_key: [ 'value a', # comment 1
+                  'value b'  # comment 2
+        ],
+        second_key: 'value c'
+      }
+    RUBY
+    expect(cli.run(['--auto-correct'])).to eq(1)
+    expect(IO.read('example.rb'))
+      .to eq(<<~RUBY)
+        # frozen_string_literal: true
+
+        hash = {
+          first_key: ['value a', # comment 1
+                      'value b'], # comment 2
+          second_key: 'value c'
+        }
+      RUBY
+  end
+
+  it 'correct multiline literal brace without crashing' do
+    create_file('example.rb', <<~RUBY)
+      super(foo(bar,
+        'hash' => {'key' => 'value'} # comment
+      ))
+    RUBY
+    expect(cli.run(['--auto-correct'])).to eq(0)
+    expect(IO.read('example.rb'))
+      .to eq(<<~RUBY)
+        # frozen_string_literal: true
+
+        super(foo(bar,
+                  'hash' => { 'key' => 'value' })) # comment
+      RUBY
+  end
+
   it 'can change block comments and indent them' do
     create_file('example.rb', <<~RUBY)
       module Foo
