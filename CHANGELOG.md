@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.81.0 (2020-04-01)
+
 ### New features
 
 * [#7299](https://github.com/rubocop-hq/rubocop/issues/7299): Add new `Lint/RaiseException` cop. ([@denys281][])
