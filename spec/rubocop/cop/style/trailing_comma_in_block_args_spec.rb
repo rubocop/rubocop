@@ -139,4 +139,32 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
       RUBY
     end
   end
+
+  context 'when `->` has multiple arguments' do
+    it 'does not registers an offense' do
+      expect_no_offenses(<<~RUBY)
+        -> (foo, bar) { do_something(foo, bar) }
+      RUBY
+    end
+  end
+
+  context 'when `lambda` has multiple arguments' do
+    it 'does not register an offense when more than one argument is ' \
+       'present with no trailing comma' do
+      expect_no_offenses(<<~RUBY)
+        lambda { |foo, bar| do_something(foo, bar) }
+      RUBY
+    end
+
+    it "registers an offense and corrects when a trailing comma isn't needed" do
+      expect_offense(<<~RUBY)
+        lambda { |foo, bar,| do_something(foo, bar) }
+                          ^ Useless trailing comma present in block arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        lambda { |foo, bar| do_something(foo, bar) }
+      RUBY
+    end
+  end
 end
