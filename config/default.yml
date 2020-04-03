@@ -2616,6 +2616,12 @@ Style/Dir:
   Enabled: true
   VersionAdded: '0.50'
 
+Style/DisableCopsWithinSourceCodeDirective:
+  Description: >-
+                 Forbids disabling/enabling cops within source code.
+  Enabled: false
+  VersionAdded: '0.75'
+
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true

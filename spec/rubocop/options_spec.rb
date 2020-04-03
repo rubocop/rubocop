@@ -71,7 +71,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                [p]rogress is used by default
                                                  [a]utogenconf
                                                  [c]lang
-                                                 [d]isabled
                                                  [e]macs
                                                  [fi]les
                                                  [fu]ubar

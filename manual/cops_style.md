@@ -1334,6 +1334,30 @@ path = File.dirname(File.realpath(__FILE__))
 path = __dir__
 ```
 
+## Style/DisableCopsWithinSourceCodeDirective
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Disabled | Yes | Yes  | 0.75 | -
+
+Detects comments to enable/disable RuboCop.
+This is useful if want to make sure that every RuboCop error gets fixed
+and not quickly disabled with a comment.
+
+### Examples
+
+```ruby
+# bad
+# rubocop:disable Metrics/AbcSize
+def f
+end
+# rubocop:enable Metrics/AbcSize
+
+# good
+def fixed_method_name_and_no_rubocop_comments
+end
+```
+
 ## Style/Documentation
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
