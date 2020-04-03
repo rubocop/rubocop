@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RaiseException do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) { { 'AllowedImplicitNamespaces' => ['Gem'] } }
 
   it 'registers an offense for `raise` with `::Exception`' do
     expect_offense(<<~RUBY)
@@ -86,5 +88,28 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException do
     expect_no_offenses(<<~RUBY)
       raise Foo::Exception
     RUBY
+  end
+
+  context 'when under namespace' do
+    it 'does not register an offense when Exception without cbase specified' do
+      expect_no_offenses(<<~RUBY)
+        module Gem
+          def self.foo
+            raise Exception
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when Exception with cbase specified' do
+      expect_offense(<<~RUBY)
+        module Gem
+          def self.foo
+            raise ::Exception
+            ^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+          end
+        end
+      RUBY
+    end
   end
 end

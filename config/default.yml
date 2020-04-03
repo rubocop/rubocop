@@ -1567,6 +1567,8 @@ Lint/RaiseException:
   StyleGuide: '#raise-exception'
   Enabled: pending
   VersionAdded: '0.81'
+  AllowedImplicitNamespaces:
+    - 'Gem'
 
 Lint/RandOne:
   Description: >-
