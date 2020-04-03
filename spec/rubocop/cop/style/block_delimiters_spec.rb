@@ -137,6 +137,36 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
+    context 'target_ruby_version >= 2.5', :ruby25 do
+      it 'registers an offense for multi-line block with do-end '\
+         'if it contains rescue but does no corrections' do
+        expect_offense(<<~RUBY)
+          foo = map do |x|
+                    ^^ Prefer `{...}` over `do...end` for functional blocks.
+            x.something_dangerous!
+          rescue StandardError => e
+            puts 'oh no'
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense for multi-line block with do-end '\
+         'if it contains ensure but does no corrections' do
+        expect_offense(<<~RUBY)
+          foo = map do |x|
+                    ^^ Prefer `{...}` over `do...end` for functional blocks.
+            x.something_dangerous!
+          ensure
+            puts 'oh no'
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+
     it 'accepts a single line block with {} if used in an if statement' do
       expect_no_offenses('return if any? { |x| x }')
     end

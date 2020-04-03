@@ -338,7 +338,13 @@ module RuboCop
         def correction_would_break_code?(node)
           return unless node.keywords?
 
-          node.send_node.arguments? && !node.send_node.parenthesized?
+          (node.send_node.arguments? &&
+           !node.send_node.parenthesized?) ||
+            contains_rescue_or_ensure?(node.children.compact)
+        end
+
+        def contains_rescue_or_ensure?(children)
+          children.any? { |c| c.rescue_type? || c.ensure_type? }
         end
 
         def functional_method?(method_name)
