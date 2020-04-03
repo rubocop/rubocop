@@ -80,4 +80,11 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException do
   it 'does not register an offense for `fail` without arguments' do
     expect_no_offenses('fail')
   end
+
+  it 'does not register an offense when raising Exception with explicit ' \
+     'namespace' do
+    expect_no_offenses(<<~RUBY)
+      raise Foo::Exception
+    RUBY
+  end
 end
