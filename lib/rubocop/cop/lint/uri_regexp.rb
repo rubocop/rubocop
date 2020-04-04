@@ -21,7 +21,7 @@ module RuboCop
         def_node_matcher :uri_regexp_with_argument?, <<~PATTERN
           (send
             (const ${nil? cbase} :URI) :regexp
-            (str $_))
+            ${(str _) (array ...)})
         PATTERN
 
         def_node_matcher :uri_regexp_without_argument?, <<~PATTERN
@@ -32,7 +32,7 @@ module RuboCop
         def on_send(node)
           uri_regexp_with_argument?(node) do |double_colon, arg|
             register_offense(
-              node, top_level: double_colon ? '::' : '', arg: "('#{arg}')"
+              node, top_level: double_colon ? '::' : '', arg: "(#{arg.source})"
             )
           end
 
@@ -51,7 +51,7 @@ module RuboCop
             double_colon, arg = captured_values
 
             top_level = double_colon ? '::' : ''
-            argument = arg ? "('#{arg}')" : ''
+            argument = arg ? "(#{arg.source})" : ''
 
             corrector.replace(
               node.loc.expression,

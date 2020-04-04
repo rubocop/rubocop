@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when raising Exception with explicit namespace. ([@koic][])
+* [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 
 ## 0.81.0 (2020-04-01)
 
