@@ -44,6 +44,9 @@ module RuboCop
         MSG = 'Useless trailing comma present in block arguments.'
 
         def on_block(node)
+          # lambda literal (`->`) never has block arguments.
+          return if node.send_node.lambda_literal?
+
           return unless useless_trailing_comma?(node)
 
           add_offense(node, location: last_comma(node).pos)
