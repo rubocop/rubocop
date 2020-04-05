@@ -2757,6 +2757,17 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
+Style/ExponentialNotation:
+  Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
+  StyleGuide: '#exponential-notation'
+  Enabled: pending
+  VersionAdded: '0.82'
+  EnforcedStyle: scientific
+  SupportedStyles:
+    - scientific
+    - engineering
+    - integral
+
 Style/FloatDivision:
   Description: 'For performing float division, coerce one side only.'
   StyleGuide: '#float-division'
