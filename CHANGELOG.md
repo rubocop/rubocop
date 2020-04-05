@@ -8,6 +8,10 @@
 * [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 * [#7841](https://github.com/rubocop-hq/rubocop/issues/7841): Fix an error for `Style/TrailingCommaInBlockArgs` when lambda literal (`->`) has multiple arguments. ([@koic][])
 
+### Changes
+
+* Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@AndrewKvalheim][])
+
 ## 0.81.0 (2020-04-01)
 
 ### New features
@@ -4434,3 +4438,4 @@
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
 [@egze]: https://github.com/egze
+[@AndrewKvalheim]: https://github.com/AndrewKvalheim

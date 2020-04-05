@@ -48,8 +48,7 @@ module RuboCop
              {:pry :remote_pry :pry_remote :console} ...)
            (send (const {nil? (cbase)} :Pry) :rescue ...)
            (send nil? {:save_and_open_page
-                      :save_and_open_screenshot
-                      :save_screenshot} ...)}
+                      :save_and_open_screenshot} ...)}
         PATTERN
 
         def_node_matcher :binding_irb_call?, <<~PATTERN

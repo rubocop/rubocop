@@ -27,9 +27,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   include_examples 'debugger',
                    'capybara debug method',
                    'save_and_open_screenshot'
-  include_examples 'debugger',
-                   'capybara debug method',
-                   'save_screenshot'
   include_examples 'debugger', 'debugger with an argument', 'debugger foo'
   include_examples 'debugger', 'byebug with an argument', 'byebug foo'
   include_examples 'debugger',
@@ -47,9 +44,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   include_examples 'debugger',
                    'capybara debug method with an argument',
                    'save_and_open_screenshot foo'
-  include_examples 'debugger',
-                   'capybara debug method with an argument',
-                   'save_screenshot foo'
 
   include_examples 'debugger', 'remote_byebug', 'remote_byebug'
   include_examples 'debugger', 'web console binding', 'binding.console'
@@ -68,7 +62,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
 
   ALL_COMMANDS = %w[debugger byebug console pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
-                    save_screenshot remote_byebug].freeze
+                    remote_byebug].freeze
 
   ALL_COMMANDS.each do |src|
     it "does not report an offense for a #{src} in comments" do
