@@ -116,6 +116,14 @@ module RuboCop
       @for_all_cops ||= self['AllCops'] || {}
     end
 
+    def disabled_new_cops?
+      for_all_cops['NewCops'] == 'disable'
+    end
+
+    def enabled_new_cops?
+      for_all_cops['NewCops'] == 'enable'
+    end
+
     def file_to_include?(file)
       relative_file_path = path_relative_to_config(file)
 

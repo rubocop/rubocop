@@ -24,7 +24,7 @@ module RuboCop
       include FileFinder
 
       attr_accessor :debug, :auto_gen_config, :ignore_parent_exclusion,
-                    :options_config
+                    :options_config, :disable_pending_cops, :enable_pending_cops
       attr_writer :default_configuration
 
       alias debug? debug
@@ -91,15 +91,22 @@ module RuboCop
         else
           add_excludes_from_files(config, config_file)
         end
+
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config.pending_cops)
+          unless possible_new_cops?(config)
+            warn_on_pending_cops(merged_config.pending_cops)
+          end
         end
       end
 
+      def possible_new_cops?(config)
+        disable_pending_cops || enable_pending_cops ||
+          config.disabled_new_cops? || config.enabled_new_cops?
+      end
+
       def add_excludes_from_files(config, config_file)
-        found_files =
-          find_files_upwards(DOTFILE, config_file) +
-          [find_user_dotfile, find_user_xdg_config].compact
+        found_files = find_files_upwards(DOTFILE, config_file) +
+                      [find_user_dotfile, find_user_xdg_config].compact
 
         return if found_files.empty?
         return if PathUtil.relative_path(found_files.last) ==
@@ -250,8 +257,7 @@ module RuboCop
 
       def yaml_safe_load(yaml_code, filename)
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
-          SafeYAML.load(yaml_code, filename,
-                        whitelisted_tags: %w[!ruby/regexp])
+          SafeYAML.load(yaml_code, filename, whitelisted_tags: %w[!ruby/regexp])
         # Ruby 2.6+
         elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
           YAML.safe_load(

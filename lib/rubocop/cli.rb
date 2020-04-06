@@ -83,10 +83,7 @@ module RuboCop
     end
 
     def act_on_options
-      ConfigLoader.debug = @options[:debug]
-      ConfigLoader.auto_gen_config = @options[:auto_gen_config]
-      ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
-      ConfigLoader.options_config = @options[:config]
+      set_options_to_config_loader
 
       @config_store.options_config = @options[:config] if @options[:config]
       @config_store.force_default_config! if @options[:force_default_config]
@@ -100,6 +97,15 @@ module RuboCop
         # color output explicitly forced off
         Rainbow.enabled = false
       end
+    end
+
+    def set_options_to_config_loader
+      ConfigLoader.debug = @options[:debug]
+      ConfigLoader.auto_gen_config = @options[:auto_gen_config]
+      ConfigLoader.disable_pending_cops = @options[:disable_pending_cops]
+      ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
+      ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
+      ConfigLoader.options_config = @options[:config]
     end
 
     def handle_exiting_options

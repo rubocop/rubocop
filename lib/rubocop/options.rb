@@ -154,6 +154,7 @@ module RuboCop
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
@@ -162,6 +163,8 @@ module RuboCop
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
       option(opts, '-a', '--auto-correct')
+      option(opts, '--disable-pending-cops')
+      option(opts, '--enable-pending-cops')
       option(opts, '--ignore-disable-comments')
 
       option(opts, '--safe')
@@ -172,6 +175,7 @@ module RuboCop
       option(opts, '-V', '--verbose-version')
       option(opts, '-P', '--parallel')
     end
+    # rubocop:enable Metrics/MethodLength
 
     def add_aliases(opts)
       option(opts, '-l', '--lint') do
@@ -438,7 +442,9 @@ module RuboCop
       debug:                            'Display debug info.',
       display_cop_names:                ['Display cop names in offense messages.',
                                          'Default is true.'],
+      disable_pending_cops:             'Run without pending cops.',
       display_style_guide:              'Display style guide URLs in offense messages.',
+      enable_pending_cops:              'Run with pending cops.',
       extra_details:                    'Display extra details in offense messages.',
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',

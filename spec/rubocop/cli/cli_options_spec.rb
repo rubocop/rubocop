@@ -5,6 +5,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   subject(:cli) { described_class.new }
 
+  let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
+
   before do
     RuboCop::ConfigLoader.default_configuration = nil
   end
@@ -221,8 +223,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when specifying a pending cop' do
-        let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
-
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
         let(:output) do
@@ -260,9 +260,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
 
         context 'when Style department is enabled' do
+          let(:new_cops_option) { '' }
+
           before do
             create_file('.rubocop.yml', <<~YAML)
               require: rubocop_ext
+
+              AllCops:
+                DefaultFormatter: progress
+                #{new_cops_option}
 
               Style/SomeCop:
                 Description: Something
@@ -286,6 +292,66 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             manual_url = output[remaining_range].split("\n").last
 
             expect(manual_url).to eq(versioning_manual_url)
+          end
+
+          context 'when using `--disable-pending-cops` command-line option' do
+            let(:option) { '--disable-pending-cops' }
+
+            let(:output) do
+              `ruby -I . "#{rubocop}" --require redirect.rb #{option}`
+            end
+
+            it 'does not display a pending cop warning' do
+              expect(output).not_to start_with(pending_cop_warning)
+            end
+          end
+
+          context 'when using `--enable-pending-cops` command-line option' do
+            let(:option) { '--enable-pending-cops' }
+
+            let(:output) do
+              `ruby -I . "#{rubocop}" --require redirect.rb #{option}`
+            end
+
+            it 'does not display a pending cop warning' do
+              expect(output).not_to start_with(pending_cop_warning)
+            end
+          end
+
+          context 'when specifying `NewCops: pending` in .rubocop.yml' do
+            let(:new_cops_option) { 'NewCops: pending' }
+
+            let(:output) do
+              `ruby -I . "#{rubocop}" --require redirect.rb`
+            end
+
+            it 'displays a pending cop warning' do
+              expect(output).to start_with(pending_cop_warning)
+            end
+          end
+
+          context 'when specifying `NewCops: disable` in .rubocop.yml' do
+            let(:new_cops_option) { 'NewCops: disable' }
+
+            let(:output) do
+              `ruby -I . "#{rubocop}" --require redirect.rb`
+            end
+
+            it 'does not display a pending cop warning' do
+              expect(output).not_to start_with(pending_cop_warning)
+            end
+          end
+
+          context 'when specifying `NewCops: enable` in .rubocop.yml' do
+            let(:new_cops_option) { 'NewCops: enable' }
+
+            let(:output) do
+              `ruby -I . "#{rubocop}" --require redirect.rb`
+            end
+
+            it 'does not display a pending cop warning' do
+              expect(output).not_to start_with(pending_cop_warning)
+            end
           end
         end
 

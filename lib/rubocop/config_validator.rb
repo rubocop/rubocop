@@ -13,6 +13,7 @@ module RuboCop
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
                          Reference Safe SafeAutoCorrect].freeze
+    NEW_COPS_VALUES = %w[pending disable enable].freeze
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
 
@@ -22,6 +23,7 @@ module RuboCop
       @target_ruby = TargetRuby.new(config)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def validate
       check_cop_config_value(@config)
       reject_conflicting_safe_settings
@@ -37,11 +39,13 @@ module RuboCop
 
       alert_about_unrecognized_cops(invalid_cop_names)
       check_target_ruby
+      validate_new_cops_parameter
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
       validate_syntax_cop
       reject_mutually_exclusive_defaults
     end
+    # rubocop:enable Metrics/AbcSize
 
     def target_ruby_version
       target_ruby.version
@@ -105,6 +109,18 @@ module RuboCop
       raise ValidationError,
             "configuration for Syntax cop found in #{smart_loaded_path}\n" \
             'It\'s not possible to disable this cop.'
+    end
+
+    def validate_new_cops_parameter
+      new_cop_parameter = @config.for_all_cops['NewCops']
+      return if new_cop_parameter.nil? ||
+                NEW_COPS_VALUES.include?(new_cop_parameter)
+
+      message = "invalid #{new_cop_parameter} for `NewCops` found in" \
+                "#{smart_loaded_path}\n" \
+                "Valid choices are: #{NEW_COPS_VALUES.join(', ')}"
+
+      raise ValidationError, message
     end
 
     def validate_parameter_names(valid_cop_names)
