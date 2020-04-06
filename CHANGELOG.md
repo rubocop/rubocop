@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7850](https://github.com/rubocop-hq/rubocop/issues/7850): Make it possible to enable/disable pending cops. ([@koic][])
+
 ### Bug fixes
 
 * [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when raising Exception with explicit namespace. ([@koic][])

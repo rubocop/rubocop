@@ -314,7 +314,7 @@ module RuboCop
 
         cop_classes.reject! { |c| c.match?(@options[:except]) }
 
-        Cop::Registry.new(cop_classes)
+        Cop::Registry.new(cop_classes, @options)
       end
     end
 

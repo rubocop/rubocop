@@ -116,9 +116,11 @@ Command flag                    | Description
 `-c/--config`                   | Run with specified config file.
 `-C/--cache`                    | Store and reuse results for faster operation.
 `-d/--debug`                    | Displays some extra debug output.
+    --disable-pending-cops      | Run without pending cops.
 `   --disable-uncorrectable`    | Used with --auto-correct to annotate any offenses that do not support autocorrect with `rubocop:todo` comments.
 `-D/--[no-]display-cop-names`   | Displays cop names in offense messages. Default is true.
 `   --display-only-fail-level-offenses` | Only output offense messages at the specified `--fail-level` or above
+    --enable-pending-cops       | Run with pending cops.
 `   --except`                   | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 `   --exclude-limit`            | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `-E/--extra-details`            | Displays extra details in offense messages.

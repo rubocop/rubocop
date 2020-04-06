@@ -22,12 +22,13 @@ module RuboCop
 
     # Registry that tracks all cops by their badge and department.
     class Registry
-      def initialize(cops = [])
+      def initialize(cops = [], options = {})
         @registry = {}
         @departments = {}
         @cops_by_cop_name = Hash.new { |hash, key| hash[key] = [] }
 
         cops.each { |cop| enlist(cop) }
+        @options = options
       end
 
       def enlist(cop)
@@ -147,15 +148,21 @@ module RuboCop
       def enabled?(cop, config, only_safe)
         cfg = config.for_cop(cop)
 
-        # cfg['Enabled'] might be a string `pending`, which is considered
-        # disabled
-        cop_enabled = cfg.fetch('Enabled') == true
+        cop_enabled = cfg.fetch('Enabled') == true ||
+                      enabled_pending_cop?(cfg, config)
 
         if only_safe
           cop_enabled && cfg.fetch('Safe', true)
         else
           cop_enabled
         end
+      end
+
+      def enabled_pending_cop?(cop_cfg, config)
+        return false if @options[:disable_pending_cops]
+
+        cop_cfg.fetch('Enabled') == 'pending' &&
+          (@options[:enable_pending_cops] || config.enabled_new_cops?)
       end
 
       def names

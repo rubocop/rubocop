@@ -97,6 +97,14 @@ AllCops:
   # to true in the same configuration.
   EnabledByDefault: false
   DisabledByDefault: false
+  # New cops introduced between major versions are set to a special pending status
+  # and are not enabled by default with warning message.
+  # Change this behavior by overriding either `NewCops: enable` or `NewCops: disable`.
+  # When `NewCops` is `enable`, pending cops are enabled in bulk. Can be overridden by
+  # the `--enable-pending-cops` command-line option.
+  # When `NewCops` is `disable`, pending cops are disabled in bulk. Can be overridden by
+  # the `--disable-pending-cops` command-line option.
+  NewCops: pending
   # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
   UseCache: true

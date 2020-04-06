@@ -54,7 +54,25 @@ For more information: https://docs.rubocop.org/en/latest/versioning/
 You can see that 3 new cops were added in RuboCop 0.80 and it's up to you
 to decide if you want to enable or disable them.
 
-To suppress this message set `Enabled` to either `true` or `false` in your `.rubocop.yml` file.
+To suppress this message set `NewCops` to either `enable` or `disable` in your `.rubocop.yml` file.
+
+The following setting or using `rubocop --enable-pending-cops` command-line option, pending cops are enabled in bulk.
+
+```yaml
+AllCops:
+  NewCops: enable
+```
+
+The following setting or using `rubocop --disable-pending-cops` command-line option, pending cops are disabled in bulk.
+
+```yaml
+AllCops:
+  NewCops: disable
+```
+
+The command-line options takes precedence over `.rubocop.yml` file.
+
+Or set `Enabled` to either `true` or `false` in your `.rubocop.yml` file.
 
 `Style/ANewCop` is an example of a newly added pending cop:
 
