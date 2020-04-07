@@ -42,8 +42,30 @@ module RuboCop
 
         corrector.insert_before(
           last_element_range_with_trailing_comma(node).end,
-          node.loc.end.source
+          closing_brace_content(corrector, node)
         )
+      end
+
+      def closing_brace_content(corrector, node)
+        range = range_with_surrounding_space(
+          range: children(node).last.source_range,
+          side: :right
+        ).end.resize(1)
+        if range.source == '#'
+          trailing_content_of_closing_brace(corrector, node)
+        else
+          node.loc.end.source
+        end
+      end
+
+      def trailing_content_of_closing_brace(corrector, node)
+        range = range_between(
+          node.loc.end.begin_pos,
+          range_by_whole_lines(node.loc.expression).end.end_pos
+        )
+
+        corrector.remove(range)
+        range.source
       end
 
       def last_element_range_with_trailing_comma(node)

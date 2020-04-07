@@ -8,6 +8,8 @@
 * [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 * [#7841](https://github.com/rubocop-hq/rubocop/issues/7841): Fix an error for `Style/TrailingCommaInBlockArgs` when lambda literal (`->`) has multiple arguments. ([@koic][])
 * [#6963](https://github.com/rubocop-hq/rubocop/issues/6963): Check if iterating through Enumerator created with value returning method. ([@tomurb][])
+* [#7777](https://github.com/rubocop-hq/rubocop/issues/7777): Fix crash for `Layout/MultilineArrayBraceLayout` when comment is present after last element. ([@shekhar-patil][])
+* [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
 
 ## 0.81.0 (2020-04-01)
 
@@ -4436,3 +4438,4 @@
 [@yuritomanek]: https://github.com/yuritomanek
 [@egze]: https://github.com/egze
 [@tomurb]: https://github.com/tomurb
+[@shekhar-patil]: https://github.com/shekhar-patil
