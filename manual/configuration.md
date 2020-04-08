@@ -569,8 +569,9 @@ You can also disable *all* cops with
 # rubocop:enable all
 ```
 
-In cases where you want to differentiate intentional disabled vs disables that
-you'd like to revisit later, you can use disable:todo as an alias of rubocop:disable.
+In cases where you want to differentiate intentionally-disabled cops vs. cops
+you'd like to revisit later, you can use `rubocop:todo` as an alias of
+`rubocop:disable`.
 
 ```ruby
 # rubocop:todo Layout/LineLength, Style/StringLiterals
