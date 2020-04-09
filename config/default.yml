@@ -2417,6 +2417,15 @@ Style/CaseEquality:
   StyleGuide: '#no-case-equality'
   Enabled: true
   VersionAdded: '0.9'
+  # If AllowOnConstant is enabled, the cop will ignore violations when the receiver of
+  # the case equality operator is a constant.
+  #
+  #   # bad
+  #   /string/ === "string"
+  #
+  #   # good
+  #   String === "string"
+  AllowOnConstant: false
 
 Style/CharacterLiteral:
   Description: 'Checks for uses of character literals.'
