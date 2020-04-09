@@ -50,6 +50,12 @@ RSpec.describe RuboCop::Cop::Corrector do
       end.to rewrite_to 'true and nil; false'
     end
 
+    it 'allows insertion before and after a source range' do
+      expect do |corrector|
+        corrector.wrap(operator, '(', ')')
+      end.to rewrite_to 'true (and) false'
+    end
+
     it 'allows replacement of a range' do
       expect { |c| c.replace(operator, 'or') }.to rewrite_to 'true or false'
     end
