@@ -101,6 +101,16 @@ module RuboCop
         @source_rewriter.insert_after(range, content)
       end
 
+      # Wraps the given source range with the given before and after texts
+      #
+      # @param [Parser::Source::Range] range
+      # @param [String] before
+      # @param [String] after
+      def wrap(range, before, after)
+        validate_range range
+        @source_rewriter.wrap(range, before, after)
+      end
+
       # Replaces the code of the source range `range` with `content`.
       #
       # @param [Parser::Source::Range] range
