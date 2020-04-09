@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7863](https://github.com/rubocop-hq/rubocop/issues/7863): Corrector now accepts nodes in addition to ranges. ([@marcandre][])
 * [#7862](https://github.com/rubocop-hq/rubocop/issues/7862): Corrector now has a `wrap` method. ([@marcandre][])
 * [#7850](https://github.com/rubocop-hq/rubocop/issues/7850): Make it possible to enable/disable pending cops. ([@koic][])
 * [#7861](https://github.com/rubocop-hq/rubocop/issues/7861): Make it to allow `Style/CaseEquality` when the receiver is a constant. ([@rafaelfranca][])
