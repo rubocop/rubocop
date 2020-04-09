@@ -256,15 +256,15 @@ And then define the `autocorrect` method on the cop side:
 def autocorrect(node)
   lambda do |corrector|
     internal_expression = node.children[0].children[0].source
-    corrector.replace(node.loc.expression, "#{internal_expression}.any?")
+    corrector.replace(node, "#{internal_expression}.any?")
   end
 end
 ```
 
 The corrector allows you to `insert_after` and `insert_before` or
-`replace` in a specific range of the code.
+`replace` a specific node or in any specific range of the code.
 
-The range can be determined on `node.location` where it brings specific
+Range can be determined on `node.location` where it brings specific
 ranges for expression or other internal information that the node holds.
 
 ### Configuration
@@ -290,7 +290,7 @@ def autocorrect(node)
     internal_expression = node.children[0].children[0].source
     replacement = cop_config['ReplaceAnyWith'] || "any?"
     new_expression = "#{internal_expression}.#{replacement}"
-    corrector.replace(node.loc.expression, new_expression)
+    corrector.replace(node, new_expression)
   end
 end
 ```

@@ -78,6 +78,25 @@ RSpec.describe RuboCop::Cop::Corrector do
       end.to rewrite_to 'true a false'
     end
 
+    it 'accepts a node instead of a range' do
+      expect do |corrector|
+        corrector.replace(node.rhs, 'maybe')
+      end.to rewrite_to 'true and maybe'
+    end
+
+    it 'raises a useful error if not given a node or a range' do
+      # rubocop:disable Style/MultilineBlockChain
+      expect do
+        do_rewrite { |corr| corr.replace(1..3, 'oops') }
+      end.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation) do |e|
+        expect(e.cause.message).to eq(
+          'Expected a Parser::Source::Range, Comment or Rubocop::AST::Node, ' \
+          'got Range'
+        )
+      end
+      # rubocop:enable Style/MultilineBlockChain
+    end
+
     context 'when range is from incorrect source' do
       let(:other_source) { parse_source(source) }
       let(:op_other) do
