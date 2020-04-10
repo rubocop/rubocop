@@ -38,7 +38,7 @@ module RuboCop
             replacement_method = replacement_method(arg, method)
 
             correction = "#{base_number.source}.#{replacement_method}?"
-            ->(corrector) { corrector.replace(node.source_range, correction) }
+            ->(corrector) { corrector.replace(node, correction) }
           end
         end
 

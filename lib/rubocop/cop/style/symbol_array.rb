@@ -81,7 +81,7 @@ module RuboCop
           end
 
           lambda do |corrector|
-            corrector.replace(node.source_range, "[#{syms.join(', ')}]")
+            corrector.replace(node, "[#{syms.join(', ')}]")
           end
         end
 

@@ -26,7 +26,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          ->(corrector) { corrector.replace(node.source_range, 'proc') }
+          ->(corrector) { corrector.replace(node, 'proc') }
         end
       end
     end

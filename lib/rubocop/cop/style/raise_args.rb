@@ -58,7 +58,7 @@ module RuboCop
                           correction_compact_to_exploded(node)
                         end
 
-          ->(corrector) { corrector.replace(node.source_range, replacement) }
+          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         private

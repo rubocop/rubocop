@@ -161,7 +161,7 @@ module RuboCop
 
         def set_new_body_expression(transforming_body_expr, corrector)
           corrector.replace(
-            block_node.body.loc.expression,
+            block_node.body,
             transforming_body_expr.loc.expression.source
           )
         end

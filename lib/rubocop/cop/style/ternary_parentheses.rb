@@ -207,8 +207,7 @@ module RuboCop
 
         def correct_unparenthesized(condition)
           lambda do |corrector|
-            corrector.insert_before(condition.source_range, '(')
-            corrector.insert_after(condition.source_range, ')')
+            corrector.wrap(condition, '(', ')')
           end
         end
 

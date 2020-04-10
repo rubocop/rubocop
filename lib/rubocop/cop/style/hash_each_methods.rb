@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def correct_implicit(node, corrector, method_name)
-          corrector.replace(node.loc.expression, method_name)
+          corrector.replace(node, method_name)
           correct_args(node, corrector)
         end
 
@@ -70,14 +70,14 @@ module RuboCop
           return correct_implicit(node, corrector, name) unless receiver
 
           new_source = receiver.source + ".#{name}"
-          corrector.replace(node.loc.expression, new_source)
+          corrector.replace(node, new_source)
         end
 
         def correct_args(node, corrector)
           args = node.parent.arguments
           name, = *args.children.find { |arg| used?(arg) }
 
-          corrector.replace(args.source_range, "|#{name}|")
+          corrector.replace(args, "|#{name}|")
         end
 
         def kv_range(outer_node)

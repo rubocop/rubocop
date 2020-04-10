@@ -93,7 +93,7 @@ module RuboCop
           end
 
           lambda do |corrector|
-            corrector.replace(node.source_range, "[#{words.join(', ')}]")
+            corrector.replace(node, "[#{words.join(', ')}]")
           end
         end
       end

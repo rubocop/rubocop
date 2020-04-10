@@ -98,9 +98,9 @@ module RuboCop
 
           lambda do |corrector|
             if extend_self_node?(node)
-              corrector.replace(node.source_range, 'module_function')
+              corrector.replace(node, 'module_function')
             else
-              corrector.replace(node.source_range, 'extend self')
+              corrector.replace(node, 'extend self')
             end
           end
         end

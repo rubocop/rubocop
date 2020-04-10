@@ -77,11 +77,9 @@ module RuboCop
             if splat_value
               correct_splat_expansion(corrector, expr, splat_value)
             elsif node.array_type? && !node.bracketed?
-              corrector.insert_before(expr, '[')
-              corrector.insert_after(expr, ']')
+              corrector.wrap(expr, '[', ']')
             elsif requires_parentheses?(node)
-              corrector.insert_before(expr, '(')
-              corrector.insert_after(expr, ')')
+              corrector.wrap(expr, '(', ')')
             end
 
             corrector.insert_after(expr, '.freeze')

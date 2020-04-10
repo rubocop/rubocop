@@ -63,7 +63,7 @@ module RuboCop
                         else
                           to_modifier_form(node)
                         end
-          ->(corrector) { corrector.replace(node.source_range, replacement) }
+          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         private

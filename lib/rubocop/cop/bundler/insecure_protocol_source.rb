@@ -53,7 +53,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(
-              node.first_argument.loc.expression, "'https://rubygems.org'"
+              node.first_argument, "'https://rubygems.org'"
             )
           end
         end

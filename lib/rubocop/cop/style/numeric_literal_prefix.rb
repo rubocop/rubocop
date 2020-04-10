@@ -59,7 +59,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             type = literal_type(node)
-            corrector.replace(node.source_range,
+            corrector.replace(node,
                               send(:"format_#{type}", node.source))
           end
         end

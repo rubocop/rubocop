@@ -110,7 +110,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.remove(node.receiver.source_range)
+            corrector.remove(node.receiver)
             corrector.remove(node.loc.dot)
           end
         end

@@ -77,7 +77,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.loc.expression, preferred_base_class)
+            corrector.replace(node, preferred_base_class)
           end
         end
 
