@@ -34,7 +34,7 @@ The project is closely tied to several efforts to document and promote the best 
 
 A long-term goal of RuboCop (and its core extensions) is to cover with cops all the guidelines from the community style guides.
 
-So, what to do next? While you can peruse the documentation in whatever way you'd like here are
+So, what to do next? While you can peruse the documentation in whatever way you'd like, here are
 a few recommendations:
 
 * See ["Basic Usage"](basic_usage.md) to get yourself familiar with RuboCop's
