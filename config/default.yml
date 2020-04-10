@@ -2466,6 +2466,7 @@ Style/ClassAndModuleChildren:
 
 Style/ClassCheck:
   Description: 'Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.'
+  StyleGuide: '#is-a-vs-kind-of'
   Enabled: true
   VersionAdded: '0.24'
   EnforcedStyle: is_a?

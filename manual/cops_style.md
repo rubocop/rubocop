@@ -690,6 +690,10 @@ Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `is_a?` | `is_a?`, `kind_of?`
 
+### References
+
+* [https://rubystyle.guide#is-a-vs-kind-of](https://rubystyle.guide#is-a-vs-kind-of)
+
 ## Style/ClassMethods
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
