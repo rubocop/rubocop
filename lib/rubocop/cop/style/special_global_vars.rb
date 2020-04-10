@@ -145,7 +145,7 @@ module RuboCop
               node = node.parent
             end
 
-            corrector.replace(node.source_range, replacement(node, global_var))
+            corrector.replace(node, replacement(node, global_var))
           end
         end
 

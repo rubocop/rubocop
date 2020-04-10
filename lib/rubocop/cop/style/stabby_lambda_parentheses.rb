@@ -57,10 +57,7 @@ module RuboCop
 
         def missing_parentheses_corrector(node)
           lambda do |corrector|
-            args_loc = node.loc.expression
-
-            corrector.insert_before(args_loc, '(')
-            corrector.insert_after(args_loc, ')')
+            corrector.wrap(node, '(', ')')
           end
         end
 

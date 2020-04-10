@@ -30,7 +30,7 @@ module RuboCop
           array, join_arg = join_candidate?(node).map(&:source)
 
           lambda do |corrector|
-            corrector.replace(node.source_range, "#{array}.join(#{join_arg})")
+            corrector.replace(node, "#{array}.join(#{join_arg})")
           end
         end
       end

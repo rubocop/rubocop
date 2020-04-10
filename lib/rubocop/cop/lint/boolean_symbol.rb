@@ -41,7 +41,7 @@ module RuboCop
               corrector.remove(parent.loc.operator)
               boolean_literal = "#{node.source} =>"
             end
-            corrector.replace(node.loc.expression, boolean_literal)
+            corrector.replace(node, boolean_literal)
           end
         end
       end

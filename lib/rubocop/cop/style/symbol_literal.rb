@@ -23,7 +23,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.source_range, node.source.delete(%q('")))
+            corrector.replace(node, node.source.delete(%q('")))
           end
         end
       end

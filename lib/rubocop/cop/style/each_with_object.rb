@@ -48,15 +48,15 @@ module RuboCop
 
             first_arg, second_arg = *node.arguments
 
-            corrector.replace(first_arg.loc.expression, second_arg.source)
-            corrector.replace(second_arg.loc.expression, first_arg.source)
+            corrector.replace(first_arg, second_arg.source)
+            corrector.replace(second_arg, first_arg.source)
 
             return_value = return_value(node.body)
 
             if return_value_occupies_whole_line?(return_value)
               corrector.remove(whole_line_expression(return_value))
             else
-              corrector.remove(return_value.loc.expression)
+              corrector.remove(return_value)
             end
           end
         end

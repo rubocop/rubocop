@@ -40,7 +40,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement_condition(node))
+            corrector.replace(node, replacement_condition(node))
           end
         end
 

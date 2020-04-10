@@ -18,7 +18,7 @@ module RuboCop
         end
 
         def insert_before(node)
-          ->(corrector) { corrector.insert_before(node.source_range, "\n") }
+          ->(corrector) { corrector.insert_before(node, "\n") }
         end
       end
     end

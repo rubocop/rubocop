@@ -161,7 +161,7 @@ module RuboCop
           return unless names_match?(node) && !node.predicate_method? && kind
 
           lambda do |corrector|
-            corrector.replace(node.source_range,
+            corrector.replace(node,
                               accessor(kind, node.method_name))
           end
         end

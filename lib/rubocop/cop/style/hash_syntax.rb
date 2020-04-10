@@ -188,11 +188,9 @@ module RuboCop
         end
 
         def autocorrect_hash_rockets(corrector, pair_node)
-          key = pair_node.key.source_range
           op = pair_node.loc.operator
 
-          corrector.insert_after(key, pair_node.inverse_delimiter(true))
-          corrector.insert_before(key, ':')
+          corrector.wrap(pair_node.key, ':', pair_node.inverse_delimiter(true))
           corrector.remove(range_with_surrounding_space(range: op))
         end
 

@@ -43,7 +43,7 @@ module RuboCop
                     "#{node.condition.source}"
 
           lambda do |corrector|
-            corrector.replace(node.source_range, oneline)
+            corrector.replace(node, oneline)
           end
         end
 

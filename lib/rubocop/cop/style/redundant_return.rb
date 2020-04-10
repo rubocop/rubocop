@@ -71,7 +71,7 @@ module RuboCop
         private
 
         def correct_without_arguments(return_node, corrector)
-          corrector.replace(return_node.source_range, 'nil')
+          corrector.replace(return_node, 'nil')
         end
 
         def correct_with_arguments(return_node, corrector)
@@ -91,15 +91,13 @@ module RuboCop
         end
 
         def add_brackets(corrector, node)
-          kids = node.children.map(&:source_range)
-          corrector.insert_before(kids.first, '[')
-          corrector.insert_after(kids.last, ']')
+          corrector.insert_before(node.children.first, '[')
+          corrector.insert_after(node.children.last, ']')
         end
 
         def add_braces(corrector, node)
-          kids = node.children.map(&:source_range)
-          corrector.insert_before(kids.first, '{')
-          corrector.insert_after(kids.last, '}')
+          corrector.insert_before(node.children.first, '{')
+          corrector.insert_after(node.children.last, '}')
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity

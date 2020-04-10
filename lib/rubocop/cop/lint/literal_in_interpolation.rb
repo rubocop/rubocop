@@ -37,7 +37,7 @@ module RuboCop
           return if node.dstr_type? # nested, fixed in next iteration
 
           value = autocorrected_value(node)
-          ->(corrector) { corrector.replace(node.parent.source_range, value) }
+          ->(corrector) { corrector.replace(node.parent, value) }
         end
 
         private

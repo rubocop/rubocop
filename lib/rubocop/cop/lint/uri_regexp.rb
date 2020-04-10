@@ -54,7 +54,7 @@ module RuboCop
             argument = arg ? "(#{arg.source})" : ''
 
             corrector.replace(
-              node.loc.expression,
+              node,
               "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}"
             )
           end

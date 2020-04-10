@@ -66,13 +66,13 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             if integer_op_rand?(node)
-              corrector.replace(node.source_range,
+              corrector.replace(node,
                                 corrected_integer_op_rand(node))
             elsif rand_op_integer?(node)
-              corrector.replace(node.source_range,
+              corrector.replace(node,
                                 corrected_rand_op_integer(node))
             elsif rand_modified?(node)
-              corrector.replace(node.source_range,
+              corrector.replace(node,
                                 corrected_rand_modified(node))
             end
           end

@@ -45,7 +45,7 @@ module RuboCop
                    end
 
           lambda do |corrector|
-            corrector.replace(comment.loc.expression,
+            corrector.replace(comment,
                               comment.text[/#{prefix} \S+/])
           end
         end

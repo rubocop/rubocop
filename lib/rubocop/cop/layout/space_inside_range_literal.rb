@@ -35,7 +35,7 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(
-              node.source_range,
+              node,
               expression
                 .sub(/\s+#{operator_escaped}/, operator)
                 .sub(/#{operator_escaped}\s+/, operator)

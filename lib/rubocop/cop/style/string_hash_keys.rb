@@ -41,7 +41,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             symbol_content = node.str_content.to_sym.inspect
-            corrector.replace(node.source_range, symbol_content)
+            corrector.replace(node, symbol_content)
           end
         end
       end

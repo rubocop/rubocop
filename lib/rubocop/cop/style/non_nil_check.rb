@@ -111,15 +111,15 @@ module RuboCop
 
           return if expr == new_code
 
-          ->(corrector) { corrector.replace(node.source_range, new_code) }
+          ->(corrector) { corrector.replace(node, new_code) }
         end
 
         def autocorrect_non_nil(node, inner_node)
           lambda do |corrector|
             if inner_node.receiver
-              corrector.replace(node.source_range, inner_node.receiver.source)
+              corrector.replace(node, inner_node.receiver.source)
             else
-              corrector.replace(node.source_range, 'self')
+              corrector.replace(node, 'self')
             end
           end
         end
@@ -127,7 +127,7 @@ module RuboCop
         def autocorrect_unless_nil(node, receiver)
           lambda do |corrector|
             corrector.replace(node.parent.loc.keyword, 'if')
-            corrector.replace(node.source_range, receiver.source)
+            corrector.replace(node, receiver.source)
           end
         end
       end
