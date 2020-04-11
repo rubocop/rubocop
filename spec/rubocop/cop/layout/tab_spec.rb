@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
 
   let(:config) do
     supported_styles = {
-      'SupportedStyles' => %w[space tab]
+      'SupportedStyles' => %w[spaces tabs]
     }
     RuboCop::Config.new(
       'Layout/IndentationWidth' => { 'Width' => 2 },
@@ -14,49 +14,49 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
   end
 
   context 'when EnforcedStyle is space' do
-    let(:cop_config) { { 'EnforcedStyle' => 'space' } }
+    let(:cop_config) { { 'EnforcedStyle' => 'spaces' } }
 
     it 'registers an offense for a line indented with tab' do
       expect_offense(<<~RUBY)
-      	x = 0
-      ^ Tab detected.
+        	x = 0
+        ^ Tab detected.
       RUBY
     end
 
     it 'registers an offense for a line indented with multiple tabs' do
       expect_offense(<<~RUBY)
-      			x = 0
-      ^^^ Tab detected.
+        			x = 0
+        ^^^ Tab detected.
       RUBY
     end
 
     it 'registers an offense for a line indented with mixed whitespace' do
       expect_offense(<<-'RUBY')
-       	x = 0
-       ^ Tab detected.
+         	x = 0
+         ^ Tab detected.
       RUBY
     end
 
     it 'registers offenses before __END__ but not after' do
       expect_offense(<<~RUBY)
-      \tx = 0
-      ^ Tab detected.
-      __END__
-      \tx = 0
+        \tx = 0
+        ^ Tab detected.
+        __END__
+        \tx = 0
       RUBY
     end
 
     it 'registers an offense for a tab other than indentation' do
       expect_offense(<<~RUBY)
-      foo \t bar
-          ^ Tab detected.
+        foo \t bar
+            ^ Tab detected.
       RUBY
     end
 
     it 'registers an offense for tabs between string literals' do
       expect_offense(<<~RUBY)
-      'foo'\t'bar'
-           ^ Tab detected.
+        'foo'\t'bar'
+             ^ Tab detected.
       RUBY
     end
 
@@ -98,11 +98,13 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
 
     it 'auto-corrects a line with tab other than indentation' do
       new_source = autocorrect_source("foo \t bar")
-      expect(new_source).to eq("foo    bar")
+      expect(new_source).to eq('foo    bar')
     end
 
     context 'custom indentation width' do
-      let(:cop_config) { { 'IndentationWidth' => 3, 'EnforcedStyle' => 'space'  } }
+      let(:cop_config) do
+        { 'IndentationWidth' => 3, 'EnforcedStyle' => 'spaces' }
+      end
 
       it 'uses the configured number of spaces to replace a tab' do
         new_source = autocorrect_source("\tx = 0")
@@ -113,35 +115,35 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
   end
 
   context 'when EnforcedStyle is tab' do
-    let(:cop_config) { { 'EnforcedStyle' => 'tab' } }
+    let(:cop_config) { { 'EnforcedStyle' => 'tabs' } }
 
     it 'registers an offense for a line indented with space' do
       expect_offense(<<~RUBY)
-        x = 0
-      ^^ Space detected in indentation.
+          x = 0
+        ^^ Space detected in indentation.
       RUBY
     end
 
     it 'registers an offense for a line indented with multiple spaces' do
       expect_offense(<<~RUBY)
-            x = 0
-      ^^^^^^ Space detected in indentation.
+              x = 0
+        ^^^^^^ Space detected in indentation.
       RUBY
     end
 
     it 'registers an offense for a line indented with mixed whitespace' do
       expect_offense(<<~'RUBY')
-       	x = 0
-      ^ Space detected in indentation.
+         	x = 0
+        ^ Space detected in indentation.
       RUBY
     end
 
     it 'registers offenses before __END__ but not after' do
       expect_offense(<<~RUBY)
-        x = 0
-      ^^ Space detected in indentation.
-      __END__
-        x = 0
+          x = 0
+        ^^ Space detected in indentation.
+        __END__
+          x = 0
       RUBY
     end
 
@@ -154,8 +156,8 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
 
     it 'registers an offense for tabs between string literals' do
       expect_offense(<<~RUBY)
-      'foo'\t'bar'
-          ^^ Tab detected outside of indentation.
+        'foo'\t'bar'
+            ^^ Tab detected outside of indentation.
       RUBY
     end
 
@@ -176,7 +178,7 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     end
 
     it 'auto-corrects a line indented with space' do
-      new_source = autocorrect_source("  x = 0")
+      new_source = autocorrect_source('  x = 0')
       expect(new_source).to eq("\tx = 0")
     end
 
@@ -185,7 +187,8 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
       expect(new_source).to eq("\t\t\tx = 0")
     end
 
-    it 'auto-corrects a line indented with fractional number of indentation groups by ' do
+    it 'auto-corrects a line indented with fractional number of'\
+      'indentation groups by rounding down' do
       new_source = autocorrect_source('   x = 0')
       expect(new_source).to eq("\tx = 0")
     end
@@ -206,10 +209,12 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     end
 
     context 'custom indentation width' do
-      let(:cop_config) { { 'IndentationWidth' => 3, 'EnforcedStyle' => 'tab'  } }
+      let(:cop_config) do
+        { 'IndentationWidth' => 3, 'EnforcedStyle' => 'tabs' }
+      end
 
       it 'uses the configured number of spaces to replace with a tab' do
-        new_source = autocorrect_source("      x = 0")
+        new_source = autocorrect_source('      x = 0')
 
         expect(new_source).to eq("\t\tx = 0")
       end

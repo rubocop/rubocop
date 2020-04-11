@@ -4844,7 +4844,7 @@ Either only tabs or only spaces are used for indentation.
 
 ### Examples
 
-#### EnforcedStyle: space (default)
+#### EnforcedStyle: spaces (default)
 
 ```ruby
 # bad
@@ -4859,7 +4859,7 @@ def foo
   bar
 end
 ```
-#### EnforcedStyle: tab
+#### EnforcedStyle: tabs
 
 ```ruby
 # bad
@@ -4880,7 +4880,7 @@ end
 Name | Default value | Configurable values
 --- | --- | ---
 IndentationWidth | `<none>` | Integer
-EnforcedStyle | `space` | `space`, `tab`
+EnforcedStyle | `spaces` | `spaces`, `tabs`
 
 ### References
 

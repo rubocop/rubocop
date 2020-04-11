@@ -1269,10 +1269,10 @@ Layout/Tab:
   # It is used during auto-correction to determine how many spaces should
   # replace each tab.
   IndentationWidth: ~
-  EnforcedStyle: space
+  EnforcedStyle: spaces
   SupportedStyles:
-    - space
-    - tab
+    - spaces
+    - tabs
 
 Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'

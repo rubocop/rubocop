@@ -920,7 +920,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(stdout).to match(
           ['# Supports --auto-correct',
            'Layout/Tab:',
-           '  Description: Consistent indentation either with tabs only or spaces only.',
+           '  Description: Consistent indentation either with tabs only or spaces only.', # rubocop:disable Layout/LineLength
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
            /^  VersionAdded: '[0-9\.]+'$/,
@@ -945,7 +945,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(stdout).to match(
           ['# Supports --auto-correct',
            'Layout/Tab:',
-           '  Description: Consistent indentation either with tabs only or spaces only.',
+           '  Description: Consistent indentation either with tabs only or spaces only.', # rubocop:disable Layout/LineLength
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true'].join("\n")
         )
