@@ -42,7 +42,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            node.values.each do |value|
+            node.each_value do |value|
               range = value.loc.expression
 
               match = range.source.match(TRAILING_QUOTE)

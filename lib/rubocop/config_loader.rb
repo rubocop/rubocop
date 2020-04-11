@@ -55,7 +55,10 @@ module RuboCop
       end
 
       def add_missing_namespaces(path, hash)
-        hash.keys.each do |key|
+        # Using `hash.each_key` will cause the
+        # `can't add a new key into hash during iteration` error
+        hash_keys = hash.keys
+        hash_keys.each do |key|
           q = Cop::Cop.qualified_cop_name(key, path)
           next if q == key
 
