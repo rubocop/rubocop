@@ -31,6 +31,24 @@ RSpec.describe RuboCop::AST::ArrayNode do
     end
   end
 
+  describe '#each_value' do
+    let(:source) { '[1, 2, 3]' }
+
+    context 'with block' do
+      it { expect(array_node.each_value {}.is_a?(described_class)).to be(true) }
+      it do
+        ret = []
+        array_node.each_value { |i| ret << i.to_s }
+
+        expect(ret).to eq(['(int 1)', '(int 2)', '(int 3)'])
+      end
+    end
+
+    context 'without block' do
+      it { expect(array_node.each_value.is_a?(Enumerator)).to be(true) }
+    end
+  end
+
   describe '#square_brackets?' do
     context 'with square brackets' do
       let(:source) { '[1, 2, 3]' }
