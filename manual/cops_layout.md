@@ -4839,9 +4839,12 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.49 | 0.51
 
-This cop checks for tabs inside the source code.
+This cop checks that the indentation method is consistent.
+Either only tabs or only spaces are used for indentation.
 
 ### Examples
+
+#### EnforcedStyle: space (default)
 
 ```ruby
 # bad
@@ -4856,12 +4859,28 @@ def foo
   bar
 end
 ```
+#### EnforcedStyle: tab
+
+```ruby
+# bad
+# This example uses spaces to indent bar.
+def foo
+  bar
+end
+
+# good
+# This example uses a tab to indent bar.
+def foo
+  bar
+end
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 IndentationWidth | `<none>` | Integer
+EnforcedStyle | `space` | `space`, `tab`
 
 ### References
 

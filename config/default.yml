@@ -1259,7 +1259,7 @@ Layout/SpaceInsideStringInterpolation:
     - no_space
 
 Layout/Tab:
-  Description: 'No hard tabs.'
+  Description: 'Consistent indentation either with tabs only or spaces only.'
   StyleGuide: '#spaces-indentation'
   Enabled: true
   VersionAdded: '0.49'
@@ -1269,6 +1269,10 @@ Layout/Tab:
   # It is used during auto-correction to determine how many spaces should
   # replace each tab.
   IndentationWidth: ~
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - tab
 
 Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'
