@@ -47,7 +47,7 @@ module RuboCop
               else
                 corrector.insert_after(target, ' ')
               end
-            elsif target.source =~ /^\s+$/
+            elsif /^\s+$/.match?(target.source)
               corrector.remove(target)
             else
               corrector.insert_after(target, ' ')

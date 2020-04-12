@@ -47,7 +47,7 @@ module RuboCop
 
         def autocorrect(node)
           delimiter =
-            node.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
+            /^%Q[^"]+$|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
           lambda do |corrector|
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)
@@ -95,7 +95,7 @@ module RuboCop
         def acceptable_q?(node)
           src = node.source
 
-          return true if src =~ STRING_INTERPOLATION_REGEXP
+          return true if STRING_INTERPOLATION_REGEXP.match?(src)
 
           src.scan(/\\./).any? { |s| s =~ ESCAPED_NON_BACKSLASH }
         end

@@ -18,10 +18,6 @@ module RuboCop
       #   'foo'.unpack1('h*')
       #
       class UnpackFirst < Cop
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.4
-
         MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of '\
           '`%<receiver>s.unpack(%<format>s)%<method>s`.'
 

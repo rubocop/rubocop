@@ -76,10 +76,8 @@ module RuboCop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        find_project_dotfile(target_dir) ||
-          find_user_dotfile ||
-          find_user_xdg_config ||
-          DEFAULT_FILE
+        find_project_dotfile(target_dir) || find_user_dotfile ||
+          find_user_xdg_config || DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)
@@ -205,7 +203,9 @@ module RuboCop
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
           f.write "inherit_from:#{file_string}\n"
-          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents =~ /\S/
+          if /\S/.match?(rubocop_yml_contents)
+            f.write "\n#{rubocop_yml_contents}"
+          end
         end
       end
 

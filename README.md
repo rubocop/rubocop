@@ -73,7 +73,7 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 
 RuboCop supports the following Ruby implementations:
 
-* MRI 2.3+
+* MRI 2.4+
 * JRuby 9.2+
 
 ## Team

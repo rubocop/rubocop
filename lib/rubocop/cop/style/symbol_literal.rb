@@ -16,7 +16,7 @@ module RuboCop
         MSG = 'Do not use strings for word-like symbol literals.'
 
         def on_sym(node)
-          return unless node.source =~ /\A:["'][A-Za-z_]\w*["']\z/
+          return unless /\A:["'][A-Za-z_]\w*["']\z/.match?(node.source)
 
           add_offense(node)
         end

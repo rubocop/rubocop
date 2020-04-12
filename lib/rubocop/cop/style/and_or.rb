@@ -136,7 +136,7 @@ module RuboCop
           end_paren = begin_paren
           # Increment position of parenthesis, unless message is a predicate
           # method followed by a non-whitespace char (e.g. is_a?String).
-          end_paren += 1 unless node.source =~ /\?\S/
+          end_paren += 1 unless /\?\S/.match?(node.source)
           range_between(begin_paren, end_paren)
         end
       end

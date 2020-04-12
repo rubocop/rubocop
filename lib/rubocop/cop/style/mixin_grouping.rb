@@ -72,7 +72,7 @@ module RuboCop
           between = prev_mixin.loc.expression.end
                               .join(range.begin)
           # if separated from previous mixin with only whitespace?
-          if between.source !~ /\S/
+          unless /\S/.match?(between.source)
             range = range.join(between) # then remove that too
           end
           range
