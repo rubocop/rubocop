@@ -48,7 +48,7 @@ module RuboCop
               match = range.source.match(TRAILING_QUOTE)
               corrector.remove_trailing(range, match[0].length) if match
 
-              if range.source =~ LEADING_QUOTE
+              if LEADING_QUOTE.match?(range.source)
                 corrector.remove_leading(range, 1)
               end
             end

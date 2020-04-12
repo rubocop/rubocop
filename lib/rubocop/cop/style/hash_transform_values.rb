@@ -24,10 +24,7 @@ module RuboCop
       #   {a: 1, b: 2}.transform_values { |v| foo(v) }
       #   {a: 1, b: 2}.transform_values { |v| v * v }
       class HashTransformValues < Cop
-        extend TargetRubyVersion
         include HashTransformMethod
-
-        minimum_target_ruby_version 2.4
 
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block

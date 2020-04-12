@@ -16,6 +16,10 @@
 * [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 * [#7841](https://github.com/rubocop-hq/rubocop/issues/7841): Fix an error for `Style/TrailingCommaInBlockArgs` when lambda literal (`->`) has multiple arguments. ([@koic][])
 
+### Changes
+
+* [#7840](https://github.com/rubocop-hq/rubocop/pull/7840): **(BREAKING)** Drop support for Ruby 2.3. ([@koic][])
+
 ## 0.81.0 (2020-04-01)
 
 ### New features

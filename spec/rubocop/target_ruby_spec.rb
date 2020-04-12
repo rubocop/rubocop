@@ -12,7 +12,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
   let(:loaded_path) { 'example/.rubocop.yml' }
 
   context 'when TargetRubyVersion is set' do
-    let(:ruby_version) { 2.3 }
+    let(:ruby_version) { 2.4 }
 
     let(:hash) do
       {

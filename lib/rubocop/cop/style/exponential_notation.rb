@@ -74,11 +74,11 @@ module RuboCop
 
         def engineering?(node)
           mantissa, exponent = node.source.split('e')
-          return false unless exponent =~ /^-?\d+$/
+          return false unless /^-?\d+$/.match?(exponent)
           return false unless (exponent.to_i % 3).zero?
-          return false if mantissa =~ /^-?\d{4}/
-          return false if mantissa =~ /^-?0\d/
-          return false if mantissa =~ /^-?0.0/
+          return false if /^-?\d{4}/.match?(mantissa)
+          return false if /^-?0\d/.match?(mantissa)
+          return false if /^-?0.0/.match?(mantissa)
 
           true
         end

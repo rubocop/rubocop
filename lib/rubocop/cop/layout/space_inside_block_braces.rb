@@ -117,7 +117,7 @@ module RuboCop
             range = range_between(left_brace.end_pos, right_brace.begin_pos)
             inner = range.source
 
-            if inner =~ /\S/
+            if /\S/.match?(inner)
               braces_with_contents_inside(node, inner)
             elsif style_for_empty_braces == :no_space
               offense(range.begin_pos, range.end_pos,
@@ -142,7 +142,7 @@ module RuboCop
         end
 
         def check_left_brace(inner, left_brace, args_delimiter)
-          if inner =~ /\A\S/
+          if /\A\S/.match?(inner)
             no_space_inside_left_brace(left_brace, args_delimiter)
           else
             space_inside_left_brace(left_brace, args_delimiter)

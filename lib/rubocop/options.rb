@@ -366,7 +366,7 @@ module RuboCop
     end
 
     def validate_exclude_limit_option
-      return if @options[:exclude_limit] =~ /^\d+$/
+      return if /^\d+$/.match?(@options[:exclude_limit])
 
       # Emulate OptionParser's behavior to make failures consistent regardless
       # of option order.

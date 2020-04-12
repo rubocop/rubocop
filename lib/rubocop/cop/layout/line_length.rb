@@ -145,7 +145,7 @@ module RuboCop
           return nil unless next_range.line == range.line
 
           next_char = next_range.source
-          return nil if /[\r\n]/ =~ next_char
+          return nil if /[\r\n]/.match?(next_char)
           return nil if next_char == ';'
 
           next_range

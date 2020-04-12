@@ -55,7 +55,7 @@ module RuboCop
           raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
 
           regex = Regexp.new(notice)
-          return if autocorrect_notice =~ regex
+          return if autocorrect_notice&.match?(regex)
 
           raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
                          "match Notice /#{notice}/"

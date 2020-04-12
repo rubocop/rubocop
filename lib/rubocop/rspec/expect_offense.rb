@@ -153,7 +153,7 @@ module RuboCop
           annotations = []
 
           annotated_source.each_line do |source_line|
-            if source_line =~ ANNOTATION_PATTERN
+            if ANNOTATION_PATTERN.match?(source_line)
               annotations << [source.size, source_line]
             else
               source << source_line

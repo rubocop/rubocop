@@ -144,11 +144,11 @@ module RuboCop
             # Prefer { :production? => false } over { production?: false } and
             # similarly for other non-alnum final characters (except quotes,
             # to prefer { "x y": 1 } over { :"x y" => 1 }).
-            return false unless sym_name =~ /[\p{Alnum}"']\z/
+            return false unless /[\p{Alnum}"']\z/.match?(sym_name)
           end
 
           # Most hash keys can be matched against a simple regex.
-          return true if sym_name =~ /\A[_a-z]\w*[?!]?\z/i
+          return true if /\A[_a-z]\w*[?!]?\z/i.match?(sym_name)
 
           # For more complicated hash keys, let the parser validate the syntax.
           parse("{ #{sym_name}: :foo }").valid_syntax?

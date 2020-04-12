@@ -81,7 +81,7 @@ module RuboCop
         end
 
         def display_str(node)
-          if node.source =~ /\n/
+          if /\n/.match?(node.source)
             str_content(node).inspect
           else
             node.source
