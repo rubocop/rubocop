@@ -185,6 +185,24 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
+  context 'modifier if that does not fit on one line, but is not the only' \
+          ' statement on the line' do
+    let(:spaces) { ' ' * 59 }
+    let(:source) { "puts '#{spaces}' if condition; some_method_call" }
+
+    # long lines which have multiple statements on the same line can be flagged
+    #   by Layout/LineLength, Style/Semicolon, etc.
+    # if they are handled by Style/IfUnlessModifier, there is a danger of
+    #   creating infinite autocorrect loops when autocorrecting
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def f
+          #{source}
+        end
+      RUBY
+    end
+  end
+
   context 'multiline if that fits on one line with comment on first line' do
     let(:source) do
       <<~RUBY
