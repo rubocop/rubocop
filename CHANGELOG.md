@@ -8,7 +8,7 @@
 * [#7862](https://github.com/rubocop-hq/rubocop/issues/7862): Corrector now has a `wrap` method. ([@marcandre][])
 * [#7850](https://github.com/rubocop-hq/rubocop/issues/7850): Make it possible to enable/disable pending cops. ([@koic][])
 * [#7861](https://github.com/rubocop-hq/rubocop/issues/7861): Make it to allow `Style/CaseEquality` when the receiver is a constant. ([@rafaelfranca][])
-* Add a new `Style/ExponentialNotation` cop. ([@tdeo][])
+* [#7851](https://github.com/rubocop-hq/rubocop/pull/7851): Add a new `Style/ExponentialNotation` cop. ([@tdeo][])
 
 ### Bug fixes
 
@@ -18,7 +18,7 @@
 
 ### Changes
 
-* [#7840](https://github.com/rubocop-hq/rubocop/pull/7840): **(BREAKING)** Drop support for Ruby 2.3. ([@koic][])
+* [#7869](https://github.com/rubocop-hq/rubocop/pull/7869): **(BREAKING)** Drop support for Ruby 2.3. ([@koic][])
 
 ## 0.81.0 (2020-04-01)
 
