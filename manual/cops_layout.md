@@ -4079,7 +4079,7 @@ something = 123 if test
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Pending | Yes | Yes  | 0.81 | -
+Pending | Yes | Yes  | 0.82 | -
 
 Checks method call operators to not have spaces around them.
 

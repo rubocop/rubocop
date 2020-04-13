@@ -7,7 +7,7 @@ module RuboCop
     DEFAULT_VERSION = KNOWN_RUBIES.first
 
     OBSOLETE_RUBIES = {
-      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69', 2.3 => '0.81'
+      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69', 2.3 => '0.82'
     }.freeze
     private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
 

@@ -1363,7 +1363,7 @@ path = __dir__
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.75 | -
+Disabled | Yes | Yes  | 0.82 | -
 
 Detects comments to enable/disable RuboCop.
 This is useful if want to make sure that every RuboCop error gets fixed
