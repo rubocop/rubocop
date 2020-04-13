@@ -20,6 +20,7 @@
 * [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 * [#7841](https://github.com/rubocop-hq/rubocop/issues/7841): Fix an error for `Style/TrailingCommaInBlockArgs` when lambda literal (`->`) has multiple arguments. ([@koic][])
 * [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when Exception without cbase specified under the namespace `Gem` by adding  `AllowedImplicitNamespaces` option. ([@koic][])
+* `Style/IfUnlessModifier` does not infinite-loop when autocorrecting long lines which use if/unless modifiers and have multiple statements separated by semicolons. ([@alexdowad][])
 
 ### Changes
 

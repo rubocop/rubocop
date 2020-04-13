@@ -116,7 +116,7 @@ module RuboCop
       #
       # @return [Integer] the index of the receiver node in its siblings
       def sibling_index
-        parent.children.index { |sibling| sibling.equal?(self) }
+        parent&.children&.index { |sibling| sibling.equal?(self) }
       end
 
       # Common destructuring method. This can be used to normalize
