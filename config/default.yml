@@ -1091,7 +1091,7 @@ Layout/SpaceAroundKeyword:
 Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
   Enabled: pending
-  VersionAdded: '0.81'
+  VersionAdded: '0.82'
 
 Layout/SpaceAroundOperators:
   Description: 'Use a single space around operators.'
@@ -2645,7 +2645,7 @@ Style/DisableCopsWithinSourceCodeDirective:
   Description: >-
                  Forbids disabling/enabling cops within source code.
   Enabled: false
-  VersionAdded: '0.75'
+  VersionAdded: '0.82'
 
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
