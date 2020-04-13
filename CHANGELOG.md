@@ -43,6 +43,7 @@
 * [#7816](https://github.com/rubocop-hq/rubocop/pull/7816): Support Ruby 2.7's numbered parameter for `Style/Lambda`. ([@koic][])
 * [#7829](https://github.com/rubocop-hq/rubocop/issues/7829): Fix an error for `Style/OneLineConditional` when one of the branches contains `next` keyword. ([@koic][])
 * [#7384](https://github.com/rubocop-hq/rubocop/pull/7384): Add new `Style/DisableCopsWithinSourceCodeDirective` cop. ([@egze][])
+* [#7826](https://github.com/rubocop-hq/rubocop/issues/7826): Add new `Layout/SpaceAroundMethodCallOperator` cop. ([@saurabhmaurya15][])
 
 ### Bug fixes
 
@@ -4449,3 +4450,4 @@
 [@egze]: https://github.com/egze
 [@rafaelfranca]: https://github.com/rafaelfranca
 [@knu]: https://github.com/knu
+[@saurabhmaurya15]: https://github.com/saurabhmaurya15
