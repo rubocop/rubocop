@@ -2720,6 +2720,59 @@ EnforcedStyle | `normal` | `normal`, `indented_internal_methods`
 * [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 * [https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions)
 
+## Layout/IndentationStyle
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.51
+
+This cop checks that the indentation method is consistent.
+Either tabs only or spaces only are used for indentation.
+
+### Examples
+
+#### EnforcedStyle: spaces (default)
+
+```ruby
+# bad
+# This example uses a tab to indent bar.
+def foo
+  bar
+end
+
+# good
+# This example uses spaces to indent bar.
+def foo
+  bar
+end
+```
+#### EnforcedStyle: tabs
+
+```ruby
+# bad
+# This example uses spaces to indent bar.
+def foo
+  bar
+end
+
+# good
+# This example uses a tab to indent bar.
+def foo
+  bar
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+IndentationWidth | `<none>` | Integer
+EnforcedStyle | `spaces` | `spaces`, `tabs`
+
+### References
+
+* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
+
 ## Layout/IndentationWidth
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2916,7 +2969,7 @@ Enabled | Yes | Yes  | 0.25 | 0.78
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
 The tab size is configured in the `IndentationWidth`
-of the `Layout/Tab` cop.
+of the `Layout/IndentationStyle` cop.
 It also ignores a shebang line by default.
 
 This cop has some autocorrection capabilities.
@@ -4832,59 +4885,6 @@ EnforcedStyle | `no_space` | `space`, `no_space`
 ### References
 
 * [https://rubystyle.guide#string-interpolation](https://rubystyle.guide#string-interpolation)
-
-## Layout/Tab
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.51
-
-This cop checks that the indentation method is consistent.
-Either only tabs or only spaces are used for indentation.
-
-### Examples
-
-#### EnforcedStyle: spaces (default)
-
-```ruby
-# bad
-# This example uses a tab to indent bar.
-def foo
-  bar
-end
-
-# good
-# This example uses spaces to indent bar.
-def foo
-  bar
-end
-```
-#### EnforcedStyle: tabs
-
-```ruby
-# bad
-# This example uses spaces to indent bar.
-def foo
-  bar
-end
-
-# good
-# This example uses a tab to indent bar.
-def foo
-  bar
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-IndentationWidth | `<none>` | Integer
-EnforcedStyle | `spaces` | `spaces`, `tabs`
-
-### References
-
-* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 
 ## Layout/TrailingEmptyLines
 

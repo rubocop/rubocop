@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks that the indentation method is consistent.
-      # Either only tabs or only spaces are used for indentation.
+      # Either tabs only or spaces only are used for indentation.
       #
       # @example EnforcedStyle: spaces (default)
       #   # bad
@@ -33,14 +33,12 @@ module RuboCop
       #   def foo
       #     bar
       #   end
-      class Tab < Cop
+      class IndentationStyle < Cop
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_TAB = 'Tab detected.'
-        MSG_TAB_OUTSIDE_INDENTATION = 'Tab detected outside of indentation.'
-        MSG_SPACE_IN_INDENTATION = 'Space detected in indentation.'
+        MSG = '%<type>s detected in indentation.'
 
         def investigate(processed_source)
           str_ranges = string_literal_ranges(processed_source.ast)
@@ -70,9 +68,9 @@ module RuboCop
 
         def find_offence(line)
           if style == :spaces
-            line.match(/\t+/)
+            line.match(/\A\s*\t+/)
           else
-            line.match(/\A\s* +/) || line.match(/\S\s*\t+/)
+            line.match(/\A\s* +/)
           end
         end
 
@@ -110,14 +108,8 @@ module RuboCop
           end
         end
 
-        def message(node)
-          if style == :spaces
-            MSG_TAB
-          elsif node.source.include?("\t")
-            MSG_TAB_OUTSIDE_INDENTATION
-          else
-            MSG_SPACE_IN_INDENTATION
-          end
+        def message(_node)
+          format(MSG, type: style == :spaces ? 'Tab' : 'Space')
         end
       end
     end

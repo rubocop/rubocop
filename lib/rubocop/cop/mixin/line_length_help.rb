@@ -63,7 +63,7 @@ module RuboCop
       end
 
       def tab_indentation_width
-        config.for_cop('Layout/Tab')['IndentationWidth']
+        config.for_cop('Layout/IndentationStyle')['IndentationWidth']
       end
 
       def uri_regexp

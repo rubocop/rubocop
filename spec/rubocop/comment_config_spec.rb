@@ -33,7 +33,7 @@ RSpec.describe RuboCop::CommentConfig do
         '',
         '# rubocop:enable Lint/Void',
         '',
-        '# rubocop:disable Style/For, Style/Not,Layout/Tab',
+        '# rubocop:disable Style/For, Style/Not,Layout/IndentationStyle',
         'foo',                                               # 28
         '',
         'class One',
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::CommentConfig do
         '  # rubocop:disable Style/ClassVars',
         '  @@class_var = 2',
         'end',                                               # 38
-        '# rubocop:enable Style/Not,Layout/Tab',
+        '# rubocop:enable Style/Not,Layout/IndentationStyle',
         '# rubocop:disable Style/Send, Lint/RandOne some comment why',
         '# rubocop:disable Layout/BlockAlignment some comment why',
         '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports enabling/disabling multiple cops in a single directive' do
       not_disabled_lines = disabled_lines_of_cop('Style/Not')
-      tab_disabled_lines = disabled_lines_of_cop('Layout/Tab')
+      tab_disabled_lines = disabled_lines_of_cop('Layout/IndentationStyle')
 
       expect(not_disabled_lines).to eq(tab_disabled_lines)
       expected_part = (27..39).to_a

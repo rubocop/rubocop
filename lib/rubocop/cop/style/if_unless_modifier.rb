@@ -9,7 +9,7 @@ module RuboCop
       #
       # The maximum line length is configured in the `Layout/LineLength`
       # cop. The tab size is configured in the `IndentationWidth` of the
-      # `Layout/Tab` cop.
+      # `Layout/IndentationStyle` cop.
       #
       # @example
       #   # bad

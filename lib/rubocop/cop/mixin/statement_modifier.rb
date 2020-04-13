@@ -58,12 +58,13 @@ module RuboCop
       end
 
       def indentation_multiplier
-        return 1 if config.for_cop('Layout/Tab')['Enabled']
+        return 1 if config.for_cop('Layout/IndentationStyle')['Enabled']
 
         default_configuration = RuboCop::ConfigLoader.default_configuration
-        config.for_cop('Layout/Tab')['IndentationWidth'] ||
+        config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
           config.for_cop('Layout/IndentationWidth')['Width'] ||
-          default_configuration.for_cop('Layout/Tab')['IndentationWidth'] ||
+          default_configuration
+            .for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
           default_configuration.for_cop('Layout/IndentationWidth')['Width']
       end
     end

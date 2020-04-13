@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::Tab do
+RSpec.describe RuboCop::Cop::Layout::IndentationStyle do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
@@ -9,55 +9,49 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     }
     RuboCop::Config.new(
       'Layout/IndentationWidth' => { 'Width' => 2 },
-      'Layout/Tab' => cop_config.merge(supported_styles)
+      'Layout/IndentationStyle' => cop_config.merge(supported_styles)
     )
   end
 
-  context 'when EnforcedStyle is space' do
+  context 'when EnforcedStyle is spaces' do
     let(:cop_config) { { 'EnforcedStyle' => 'spaces' } }
 
     it 'registers an offense for a line indented with tab' do
       expect_offense(<<~RUBY)
         	x = 0
-        ^ Tab detected.
+        ^ Tab detected in indentation.
       RUBY
     end
 
     it 'registers an offense for a line indented with multiple tabs' do
       expect_offense(<<~RUBY)
         			x = 0
-        ^^^ Tab detected.
+        ^^^ Tab detected in indentation.
       RUBY
     end
 
     it 'registers an offense for a line indented with mixed whitespace' do
-      expect_offense(<<-'RUBY')
+      expect_offense(<<~'RUBY')
          	x = 0
-         ^ Tab detected.
+        ^^ Tab detected in indentation.
       RUBY
     end
 
     it 'registers offenses before __END__ but not after' do
       expect_offense(<<~RUBY)
         \tx = 0
-        ^ Tab detected.
+        ^ Tab detected in indentation.
         __END__
         \tx = 0
       RUBY
     end
 
-    it 'registers an offense for a tab other than indentation' do
-      expect_offense(<<~RUBY)
-        foo \t bar
-            ^ Tab detected.
-      RUBY
+    it 'accepts a line with a tab other than indentation' do
+      expect_no_offenses("foo \t bar")
     end
 
-    it 'registers an offense for tabs between string literals' do
-      expect_offense(<<~RUBY)
-        'foo'\t'bar'
-             ^ Tab detected.
-      RUBY
+    it 'accepts a line with a tab between string literals' do
+      expect_no_offenses("'foo'\t'bar'")
     end
 
     it 'accepts a line with tab in a string' do
@@ -96,9 +90,9 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
       expect(new_source).to eq("  (x = \"\t\")")
     end
 
-    it 'auto-corrects a line with tab other than indentation' do
+    it 'does not auto-correct a line with tab other than indentation' do
       new_source = autocorrect_source("foo \t bar")
-      expect(new_source).to eq('foo    bar')
+      expect(new_source).to eq("foo \t bar")
     end
 
     context 'custom indentation width' do
@@ -114,7 +108,7 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
     end
   end
 
-  context 'when EnforcedStyle is tab' do
+  context 'when EnforcedStyle is tabs' do
     let(:cop_config) { { 'EnforcedStyle' => 'tabs' } }
 
     it 'registers an offense for a line indented with space' do
@@ -147,18 +141,12 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
       RUBY
     end
 
-    it 'registers an offense for a tab other than indentation' do
-      expect_offense(<<~RUBY)
-        \tfoo \t bar
-           ^^^ Tab detected outside of indentation.
-      RUBY
+    it 'accepts a line a tab other than indentation' do
+      expect_no_offenses("\tfoo \t bar")
     end
 
-    it 'registers an offense for tabs between string literals' do
-      expect_offense(<<~RUBY)
-        'foo'\t'bar'
-            ^^ Tab detected outside of indentation.
-      RUBY
+    it 'accepts a line with tabs between string literals' do
+      expect_no_offenses("'foo'\t'bar'")
     end
 
     it 'accepts a line with tab in a string' do
@@ -203,9 +191,9 @@ RSpec.describe RuboCop::Cop::Layout::Tab do
       expect(new_source).to eq("\t(x = \"\t\")")
     end
 
-    it 'auto-corrects a line with tab other than indentation' do
+    it 'does not auto-corrects a line with tab other than indentation' do
       new_source = autocorrect_source("\tfoo \t bar")
-      expect(new_source).to eq("\tfoo    bar")
+      expect(new_source).to eq("\tfoo \t bar")
     end
 
     context 'custom indentation width' do
