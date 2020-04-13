@@ -47,6 +47,18 @@ RSpec.describe RuboCop::Cop::Lint::BooleanSymbol, :config do
         { false => :bar }
       RUBY
     end
+
+    it 'registers an offense when using `key: :false`' do
+      expect_offense(<<~RUBY)
+        { false: :false }
+                 ^^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+          ^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { false => false }
+      RUBY
+    end
   end
 
   it 'does not register an offense when using regular symbol' do
