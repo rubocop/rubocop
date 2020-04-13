@@ -37,7 +37,7 @@ module RuboCop
           lambda do |corrector|
             boolean_literal = node.source.delete(':')
             parent = node.parent
-            if parent&.pair_type?
+            if parent&.pair_type? && node.equal?(parent.children[0])
               corrector.remove(parent.loc.operator)
               boolean_literal = "#{node.source} =>"
             end
