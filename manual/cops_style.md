@@ -7175,7 +7175,8 @@ The supported styles are:
 for all parenthesized method calls with arguments.
 - `comma`: Requires a comma after the last argument, but only for
 parenthesized method calls where each argument is on its own line.
-- `no_comma`: Does not requires a comma after the last argument.
+- `no_comma`: Requires that there is no comma after the last
+argument.
 
 ### Examples
 
