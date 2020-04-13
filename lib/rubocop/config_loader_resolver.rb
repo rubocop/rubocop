@@ -181,7 +181,7 @@ module RuboCop
     end
 
     def transform(config)
-      Hash[config.map { |cop, params| [cop, yield(params)] }]
+      config.transform_values { |params| yield(params) }
     end
 
     def gem_config_path(gem_name, relative_config_path)
