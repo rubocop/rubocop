@@ -2724,7 +2724,7 @@ EnforcedStyle | `normal` | `normal`, `indented_internal_methods`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.51
+Enabled | Yes | Yes  | 0.49 | 0.82
 
 This cop checks that the indentation method is consistent.
 Either tabs only or spaces only are used for indentation.
