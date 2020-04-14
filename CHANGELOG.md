@@ -4,7 +4,12 @@
 
 ### New features
 
+* [#7867](https://github.com/rubocop-hq/rubocop/issues/7867): Add support for tabs in indentation. ([@DracoAter][])
 * [#7850](https://github.com/rubocop-hq/rubocop/issues/7850): Make it possible to enable/disable pending cops. ([@koic][])
+
+### Changes
+
+* Renamed `Layout/Tab` cop to `Layout/IndentationStyle` ([@DracoAter][])
 
 ### Bug fixes
 
@@ -4438,3 +4443,4 @@
 [@dmolesUC]: https://github.com/dmolesUC
 [@yuritomanek]: https://github.com/yuritomanek
 [@egze]: https://github.com/egze
+[@DracoAter]: https:/github.com/DracoAter
