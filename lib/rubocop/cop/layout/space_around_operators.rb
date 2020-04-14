@@ -175,7 +175,7 @@ module RuboCop
             return if with_space.is?(operator.source)
 
             "Space around operator `#{operator.source}` detected."
-          elsif with_space.source !~ /^\s.*\s$/
+          elsif !/^\s.*\s$/.match?(with_space.source)
             "Surrounding space missing for operator `#{operator.source}`."
           elsif excess_leading_space?(type, operator, with_space) ||
                 excess_trailing_space?(right_operand, with_space)

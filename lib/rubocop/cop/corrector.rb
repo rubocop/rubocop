@@ -72,18 +72,18 @@ module RuboCop
 
       # Removes the source range.
       #
-      # @param [Parser::Source::Range] range
-      def remove(range)
-        validate_range range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
+      def remove(node_or_range)
+        range = to_range(node_or_range)
         @source_rewriter.remove(range)
       end
 
       # Inserts new code before the given source range.
       #
-      # @param [Parser::Source::Range] range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
       # @param [String] content
-      def insert_before(range, content)
-        validate_range range
+      def insert_before(node_or_range, content)
+        range = to_range(node_or_range)
         # TODO: Fix Cops using bad ranges instead
         if range.end_pos > @source_buffer.source.size
           range = range.with(end_pos: @source_buffer.source.size)
@@ -94,28 +94,38 @@ module RuboCop
 
       # Inserts new code after the given source range.
       #
-      # @param [Parser::Source::Range] range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
       # @param [String] content
-      def insert_after(range, content)
-        validate_range range
+      def insert_after(node_or_range, content)
+        range = to_range(node_or_range)
         @source_rewriter.insert_after(range, content)
+      end
+
+      # Wraps the given source range with the given before and after texts
+      #
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
+      # @param [String] before
+      # @param [String] after
+      def wrap(node_or_range, before, after)
+        range = to_range(node_or_range)
+        @source_rewriter.wrap(range, before, after)
       end
 
       # Replaces the code of the source range `range` with `content`.
       #
-      # @param [Parser::Source::Range] range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
       # @param [String] content
-      def replace(range, content)
-        validate_range range
+      def replace(node_or_range, content)
+        range = to_range(node_or_range)
         @source_rewriter.replace(range, content)
       end
 
       # Removes `size` characters prior to the source range.
       #
-      # @param [Parser::Source::Range] range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
       # @param [Integer] size
-      def remove_preceding(range, size)
-        validate_range range
+      def remove_preceding(node_or_range, size)
+        range = to_range(node_or_range)
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.begin_pos - size,
                                               range.begin_pos)
@@ -126,10 +136,10 @@ module RuboCop
       # If `size` is greater than the size of `range`, the removed region can
       # overrun the end of `range`.
       #
-      # @param [Parser::Source::Range] range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
       # @param [Integer] size
-      def remove_leading(range, size)
-        validate_range range
+      def remove_leading(node_or_range, size)
+        range = to_range(node_or_range)
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.begin_pos,
                                               range.begin_pos + size)
@@ -140,10 +150,10 @@ module RuboCop
       # If `size` is greater than the size of `range`, the removed region can
       # overrun the beginning of `range`.
       #
-      # @param [Parser::Source::Range] range
+      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
       # @param [Integer] size
-      def remove_trailing(range, size)
-        validate_range range
+      def remove_trailing(node_or_range, size)
+        range = to_range(node_or_range)
         to_remove = Parser::Source::Range.new(range.source_buffer,
                                               range.end_pos - size,
                                               range.end_pos)
@@ -153,11 +163,25 @@ module RuboCop
       private
 
       # :nodoc:
-      def validate_range(range)
-        buffer = range.source_buffer
+      def to_range(node_or_range)
+        range = case node_or_range
+                when ::RuboCop::AST::Node, ::Parser::Source::Comment
+                  node_or_range.loc.expression
+                when ::Parser::Source::Range
+                  node_or_range
+                else
+                  raise TypeError,
+                        'Expected a Parser::Source::Range, Comment or ' \
+                        "Rubocop::AST::Node, got #{node_or_range.class}"
+                end
+        validate_buffer(range.source_buffer)
+        range
+      end
+
+      def validate_buffer(buffer)
         return if buffer == @source_buffer
 
-        unless buffer.is_a?(Parser::Source::Buffer)
+        unless buffer.is_a?(::Parser::Source::Buffer)
           # actually this should be enforced by parser gem
           raise 'Corrector expected range source buffer to be a ' \
                 "Parser::Source::Buffer, but got #{buffer.class}"

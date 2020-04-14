@@ -557,6 +557,27 @@ something.is_a?(Array)
 (1..100).include?(7)
 some_string =~ /something/
 ```
+#### AllowOnConstant
+
+```ruby
+# Style/CaseEquality:
+#   AllowOnConstant: true
+
+# bad
+(1..100) === 7
+/something/ === some_string
+
+# good
+Array === something
+(1..100).include?(7)
+some_string =~ /something/
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowOnConstant | `false` | Boolean
 
 ### References
 
@@ -668,6 +689,10 @@ var.kind_of?(String)
 Name | Default value | Configurable values
 --- | --- | ---
 EnforcedStyle | `is_a?` | `is_a?`, `kind_of?`
+
+### References
+
+* [https://rubystyle.guide#is-a-vs-kind-of](https://rubystyle.guide#is-a-vs-kind-of)
 
 ## Style/ClassMethods
 
@@ -1338,7 +1363,7 @@ path = __dir__
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Disabled | Yes | Yes  | 0.75 | -
+Disabled | Yes | Yes  | 0.82 | -
 
 Detects comments to enable/disable RuboCop.
 This is useful if want to make sure that every RuboCop error gets fixed
@@ -2079,6 +2104,86 @@ Pathname.new(__FILE__).parent.expand_path
 # good
 Pathname.new(__dir__).expand_path
 ```
+
+## Style/ExponentialNotation
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.82 | -
+
+This cop enforces consistency when using exponential notation
+for numbers in the code (eg 1.2e4). Different styles are supported:
+- `scientific` which enforces a mantissa between 1 (inclusive)
+               and 10 (exclusive).
+- `engineering` which enforces the exponent to be a multiple of 3
+                and the mantissa to be between 0.1 (inclusive)
+                and 10 (exclusive).
+- `integral` which enforces the mantissa to always be a whole number
+             without trailing zeroes.
+
+### Examples
+
+#### EnforcedStyle: scientific (default)
+
+```ruby
+# Enforces a mantissa between 1 (inclusive) and 10 (exclusive).
+
+# bad
+10e6
+0.3e4
+11.7e5
+3.14e0
+
+# good
+1e7
+3e3
+1.17e6
+3.14
+```
+#### EnforcedStyle: engineering
+
+```ruby
+# Enforces using multiple of 3 exponents,
+# mantissa should be between 0.1 (inclusive) and 1000 (exclusive)
+
+# bad
+3.2e7
+0.1e5
+12e5
+1232e6
+
+# good
+32e6
+10e3
+1.2e6
+1.232e9
+```
+#### EnforcedStyle: integral
+
+```ruby
+# Enforces the mantissa to have no decimal part and no
+# trailing zeroes.
+
+# bad
+3.2e7
+0.1e5
+120e4
+
+# good
+32e6
+1e4
+12e5
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `scientific` | `scientific`, `engineering`, `integral`
+
+### References
+
+* [https://rubystyle.guide#exponential-notation](https://rubystyle.guide#exponential-notation)
 
 ## Style/FloatDivision
 
@@ -7070,7 +7175,8 @@ The supported styles are:
 for all parenthesized method calls with arguments.
 - `comma`: Requires a comma after the last argument, but only for
 parenthesized method calls where each argument is on its own line.
-- `no_comma`: Does not requires a comma after the last argument.
+- `no_comma`: Requires that there is no comma after the last
+argument.
 
 ### Examples
 

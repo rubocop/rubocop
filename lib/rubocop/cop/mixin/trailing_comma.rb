@@ -135,7 +135,7 @@ module RuboCop
 
       def avoid_comma(kind, comma_begin_pos, extra_info)
         range = range_between(comma_begin_pos, comma_begin_pos + 1)
-        article = kind =~ /array/ ? 'an' : 'a'
+        article = /array/.match?(kind) ? 'an' : 'a'
         msg = format(
           MSG,
           command: 'Avoid',

@@ -152,13 +152,13 @@ module RuboCop
             "next #{node.inverse_keyword} #{node.condition.source}\n" \
             "#{' ' * node.source_range.column}#{body.source}"
 
-          corrector.replace(node.source_range, replacement)
+          corrector.replace(node, replacement)
         end
 
         def autocorrect_block(corrector, node)
           next_code = "next #{node.inverse_keyword} #{node.condition.source}"
 
-          corrector.insert_before(node.source_range, next_code)
+          corrector.insert_before(node, next_code)
 
           corrector.remove(cond_range(node, node.condition))
           corrector.remove(end_range(node))

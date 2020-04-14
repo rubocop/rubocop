@@ -45,8 +45,9 @@ module RuboCop
           # SomeClass = Class.new(...)
           # SomeClass = Struct.new(...)
           return if allowed_assignment?(value)
+          return if SNAKE_CASE.match?(const_name)
 
-          add_offense(node, location: :name) if const_name !~ SNAKE_CASE
+          add_offense(node, location: :name)
         end
 
         private

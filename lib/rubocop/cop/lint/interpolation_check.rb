@@ -25,7 +25,7 @@ module RuboCop
 
           parent = node.parent
           return if parent && (parent.dstr_type? || parent.regexp_type?)
-          return unless node.source.scrub =~ /(?<!\\)#\{.*\}/
+          return unless /(?<!\\)#\{.*\}/.match?(node.source.scrub)
 
           add_offense(node)
         end

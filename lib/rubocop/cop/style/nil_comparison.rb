@@ -49,7 +49,7 @@ module RuboCop
                      else
                        node.source.sub(/\s*={2,3}\s*nil/, '.nil?')
                      end
-          ->(corrector) { corrector.replace(node.source_range, new_code) }
+          ->(corrector) { corrector.replace(node, new_code) }
         end
 
         private

@@ -184,14 +184,14 @@ module RuboCop
         def adjust_minus(corrector, node)
           heredoc_beginning = node.loc.expression.source
           corrected = heredoc_beginning.sub(/<<-?/, '<<~')
-          corrector.replace(node.loc.expression, corrected)
+          corrector.replace(node, corrected)
         end
 
         def correct_by_library(node)
           lambda do |corrector|
             corrector.replace(node.loc.heredoc_body, indented_body(node))
             corrected = ".#{STRIP_METHODS[style]}"
-            corrector.insert_after(node.loc.expression, corrected)
+            corrector.insert_after(node, corrected)
           end
         end
 

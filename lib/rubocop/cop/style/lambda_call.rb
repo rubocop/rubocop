@@ -37,7 +37,7 @@ module RuboCop
               receiver = node.receiver.source
               replacement = node.source.sub("#{receiver}.", "#{receiver}.call")
 
-              corrector.replace(node.source_range, replacement)
+              corrector.replace(node, replacement)
             else
               add_parentheses(node, corrector) unless node.parenthesized?
               corrector.remove(node.loc.selector)
@@ -54,7 +54,7 @@ module RuboCop
 
         def add_parentheses(node, corrector)
           if node.arguments.empty?
-            corrector.insert_after(node.source_range, '()')
+            corrector.insert_after(node, '()')
           else
             corrector.replace(args_begin(node), '(')
             corrector.insert_after(args_end(node), ')')

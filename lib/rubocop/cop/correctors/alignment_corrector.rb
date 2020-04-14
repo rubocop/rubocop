@@ -51,7 +51,7 @@ module RuboCop
             unless range.resize(1).source == "\n"
               corrector.insert_before(range, ' ' * column_delta)
             end
-          elsif range.source =~ /\A[ \t]+\z/
+          elsif /\A[ \t]+\z/.match?(range.source)
             remove(range, corrector)
           end
         end
@@ -112,7 +112,7 @@ module RuboCop
           corrector.remove(range)
         rescue RuntimeError
           range = range_between(range.begin_pos + 1, range.end_pos + 1)
-          retry if range.source =~ /^ +$/
+          retry if /^ +$/.match?(range.source)
         ensure
           $stderr = original_stderr
         end

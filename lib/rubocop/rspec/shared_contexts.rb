@@ -74,10 +74,6 @@ RSpec.shared_context 'mock console output' do
   end
 end
 
-RSpec.shared_context 'ruby 2.3', :ruby23 do
-  let(:ruby_version) { 2.3 }
-end
-
 RSpec.shared_context 'ruby 2.4', :ruby24 do
   let(:ruby_version) { 2.4 }
 end

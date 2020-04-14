@@ -104,7 +104,7 @@ module RuboCop
 
           corrected = "#{style}(#{node.receiver.source}, #{args})"
 
-          corrector.replace(node.loc.expression, corrected)
+          corrector.replace(node, corrected)
         end
 
         def autocorrect_to_percent(corrector, node)
@@ -119,7 +119,7 @@ module RuboCop
                    "[#{param_args.map(&:source).join(', ')}]"
                  end
 
-          corrector.replace(node.loc.expression, "#{format} % #{args}")
+          corrector.replace(node, "#{format} % #{args}")
         end
       end
     end

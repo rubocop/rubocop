@@ -4128,6 +4128,46 @@ end
 something = 123 if test
 ```
 
+## Layout/SpaceAroundMethodCallOperator
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | Yes  | 0.82 | -
+
+Checks method call operators to not have spaces around them.
+
+### Examples
+
+```ruby
+# bad
+foo. bar
+foo .bar
+foo . bar
+foo. bar .buzz
+foo
+  . bar
+  . buzz
+foo&. bar
+foo &.bar
+foo &. bar
+foo &. bar&. buzz
+RuboCop:: Cop
+RuboCop:: Cop:: Cop
+:: RuboCop::Cop
+
+# good
+foo.bar
+foo.bar.buzz
+foo
+  .bar
+  .buzz
+foo&.bar
+foo&.bar&.buzz
+RuboCop::Cop
+RuboCop::Cop::Cop
+::RuboCop::Cop
+```
+
 ## Layout/SpaceAroundOperators
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

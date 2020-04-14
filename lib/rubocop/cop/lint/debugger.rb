@@ -69,7 +69,7 @@ module RuboCop
         end
 
         def binding_irb?(node)
-          target_ruby_version >= 2.4 && binding_irb_call?(node)
+          binding_irb_call?(node)
         end
       end
     end

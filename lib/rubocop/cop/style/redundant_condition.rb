@@ -48,11 +48,11 @@ module RuboCop
             if node.ternary?
               correct_ternary(corrector, node)
             elsif node.modifier_form? || !node.else_branch
-              corrector.replace(node.source_range, node.if_branch.source)
+              corrector.replace(node, node.if_branch.source)
             else
               corrected = make_ternary_form(node)
 
-              corrector.replace(node.source_range, corrected)
+              corrector.replace(node, corrected)
             end
           end
         end
@@ -116,8 +116,7 @@ module RuboCop
 
           return unless node.else_branch.range_type?
 
-          corrector.insert_before(node.else_branch.loc.expression, '(')
-          corrector.insert_after(node.else_branch.loc.expression, ')')
+          corrector.wrap(node.else_branch, '(', ')')
         end
       end
     end

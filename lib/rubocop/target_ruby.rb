@@ -3,11 +3,11 @@
 module RuboCop
   # The kind of Ruby that code inspected by RuboCop is written in.
   class TargetRuby
-    KNOWN_RUBIES = [2.3, 2.4, 2.5, 2.6, 2.7].freeze
+    KNOWN_RUBIES = [2.4, 2.5, 2.6, 2.7].freeze
     DEFAULT_VERSION = KNOWN_RUBIES.first
 
     OBSOLETE_RUBIES = {
-      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69'
+      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69', 2.3 => '0.82'
     }.freeze
     private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
 

@@ -43,11 +43,11 @@ module RuboCop
           lambda do |corrector|
             if target.is_a?(RuboCop::AST::Node)
               if target.parent.children.first == target
-                corrector.insert_before(target.source_range, ' ')
+                corrector.insert_before(target, ' ')
               else
-                corrector.insert_after(target.source_range, ' ')
+                corrector.insert_after(target, ' ')
               end
-            elsif target.source =~ /^\s+$/
+            elsif /^\s+$/.match?(target.source)
               corrector.remove(target)
             else
               corrector.insert_after(target, ' ')

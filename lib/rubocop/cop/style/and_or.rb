@@ -97,12 +97,12 @@ module RuboCop
           return unless correctable_send?(node)
 
           corrector.replace(whitespace_before_arg(node), '(')
-          corrector.insert_after(node.last_argument.source_range, ')')
+          corrector.insert_after(node.last_argument, ')')
         end
 
         def correct_setter(node, corrector)
-          corrector.insert_before(node.receiver.source_range, '(')
-          corrector.insert_after(node.last_argument.source_range, ')')
+          corrector.insert_before(node.receiver, '(')
+          corrector.insert_after(node.last_argument, ')')
         end
 
         # ! is a special case:
@@ -124,8 +124,7 @@ module RuboCop
         def correct_other(node, corrector)
           return if node.source_range.begin.is?('(')
 
-          corrector.insert_before(node.source_range, '(')
-          corrector.insert_after(node.source_range, ')')
+          corrector.wrap(node, '(', ')')
         end
 
         def correctable_send?(node)
@@ -137,7 +136,7 @@ module RuboCop
           end_paren = begin_paren
           # Increment position of parenthesis, unless message is a predicate
           # method followed by a non-whitespace char (e.g. is_a?String).
-          end_paren += 1 unless node.source =~ /\?\S/
+          end_paren += 1 unless /\?\S/.match?(node.source)
           range_between(begin_paren, end_paren)
         end
       end

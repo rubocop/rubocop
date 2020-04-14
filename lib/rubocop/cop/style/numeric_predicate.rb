@@ -73,7 +73,7 @@ module RuboCop
           _, replacement = check(node)
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement)
+            corrector.replace(node, replacement)
           end
         end
 

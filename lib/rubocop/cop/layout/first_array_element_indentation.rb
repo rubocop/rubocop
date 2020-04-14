@@ -125,21 +125,15 @@ module RuboCop
 
         def check_right_bracket(right_bracket, left_bracket, left_parenthesis)
           # if the right bracket is on the same line as the last value, accept
-          return if right_bracket.source_line[0...right_bracket.column] =~ /\S/
+          if /\S/.match?(right_bracket.source_line[0...right_bracket.column])
+            return
+          end
 
           expected_column = base_column(left_bracket, left_parenthesis)
           @column_delta = expected_column - right_bracket.column
           return if @column_delta.zero?
 
-          msg = if style == :align_brackets
-                  'Indent the right bracket the same as the left bracket.'
-                elsif style == :special_inside_parentheses && left_parenthesis
-                  'Indent the right bracket the same as the first position ' \
-                  'after the preceding left parenthesis.'
-                else
-                  'Indent the right bracket the same as the start of the line' \
-                  ' where the left bracket is.'
-                end
+          msg = msg(left_parenthesis)
           add_offense(right_bracket, location: right_bracket, message: msg)
         end
 
@@ -160,6 +154,18 @@ module RuboCop
             configured_indentation_width: configured_indentation_width,
             base_description: base_description
           )
+        end
+
+        def msg(left_parenthesis)
+          if style == :align_brackets
+            'Indent the right bracket the same as the left bracket.'
+          elsif style == :special_inside_parentheses && left_parenthesis
+            'Indent the right bracket the same as the first position ' \
+            'after the preceding left parenthesis.'
+          else
+            'Indent the right bracket the same as the start of the line' \
+            ' where the left bracket is.'
+          end
         end
       end
     end

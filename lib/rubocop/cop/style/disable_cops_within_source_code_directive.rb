@@ -34,7 +34,7 @@ module RuboCop
 
         def autocorrect(comment)
           lambda do |corrector|
-            corrector.replace(comment.loc.expression, '')
+            corrector.replace(comment, '')
           end
         end
 

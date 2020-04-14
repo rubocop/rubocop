@@ -75,8 +75,8 @@ module RuboCop
                               style
                             end
           case effective_style
-          when :lf then MSG_DETECTED if line =~ /\r$/
-          else MSG_MISSING if line !~ /\r$/
+          when :lf then MSG_DETECTED if /\r$/.match?(line)
+          else MSG_MISSING unless /\r$/.match?(line)
           end
         end
 

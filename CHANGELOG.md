@@ -5,7 +5,13 @@
 ### New features
 
 * [#7867](https://github.com/rubocop-hq/rubocop/issues/7867): Add support for tabs in indentation. ([@DracoAter][])
+* [#7863](https://github.com/rubocop-hq/rubocop/issues/7863): Corrector now accepts nodes in addition to ranges. ([@marcandre][])
+* [#7862](https://github.com/rubocop-hq/rubocop/issues/7862): Corrector now has a `wrap` method. ([@marcandre][])
 * [#7850](https://github.com/rubocop-hq/rubocop/issues/7850): Make it possible to enable/disable pending cops. ([@koic][])
+* [#7861](https://github.com/rubocop-hq/rubocop/issues/7861): Make it to allow `Style/CaseEquality` when the receiver is a constant. ([@rafaelfranca][])
+* [#7851](https://github.com/rubocop-hq/rubocop/pull/7851): Add a new `Style/ExponentialNotation` cop. ([@tdeo][])
+* [#7384](https://github.com/rubocop-hq/rubocop/pull/7384): Add new `Style/DisableCopsWithinSourceCodeDirective` cop. ([@egze][])
+* [#7826](https://github.com/rubocop-hq/rubocop/issues/7826): Add new `Layout/SpaceAroundMethodCallOperator` cop. ([@saurabhmaurya15][])
 
 ### Changes
 
@@ -13,9 +19,15 @@
 
 ### Bug fixes
 
+* [#7871](https://github.com/rubocop-hq/rubocop/pull/7871): Fix an auto-correction bug in `Lint/BooleanSymbol`. ([@knu][])
 * [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when raising Exception with explicit namespace. ([@koic][])
 * [#7834](https://github.com/rubocop-hq/rubocop/issues/7834): Fix `Lint/UriRegexp` to register offense with array arguments. ([@tejasbubane][])
 * [#7841](https://github.com/rubocop-hq/rubocop/issues/7841): Fix an error for `Style/TrailingCommaInBlockArgs` when lambda literal (`->`) has multiple arguments. ([@koic][])
+* [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when Exception without cbase specified under the namespace `Gem` by adding  `AllowedImplicitNamespaces` option. ([@koic][])
+
+### Changes
+
+* [#7869](https://github.com/rubocop-hq/rubocop/pull/7869): **(BREAKING)** Drop support for Ruby 2.3. ([@koic][])
 
 ## 0.81.0 (2020-04-01)
 
@@ -38,7 +50,6 @@
 * [#7823](https://github.com/rubocop-hq/rubocop/pull/7823): Add `IgnoredMethods` configuration in `Metrics/AbcSize`, `Metrics/CyclomaticComplexity`, and `Metrics/PerceivedComplexity` cops. ([@drenmi][])
 * [#7816](https://github.com/rubocop-hq/rubocop/pull/7816): Support Ruby 2.7's numbered parameter for `Style/Lambda`. ([@koic][])
 * [#7829](https://github.com/rubocop-hq/rubocop/issues/7829): Fix an error for `Style/OneLineConditional` when one of the branches contains `next` keyword. ([@koic][])
-* [#7384](https://github.com/rubocop-hq/rubocop/pull/7384): Add new `Style/DisableCopsWithinSourceCodeDirective` cop. ([@egze][])
 
 ### Bug fixes
 
@@ -4444,3 +4455,6 @@
 [@yuritomanek]: https://github.com/yuritomanek
 [@egze]: https://github.com/egze
 [@DracoAter]: https:/github.com/DracoAter
+[@rafaelfranca]: https://github.com/rafaelfranca
+[@knu]: https://github.com/knu
+[@saurabhmaurya15]: https://github.com/saurabhmaurya15
