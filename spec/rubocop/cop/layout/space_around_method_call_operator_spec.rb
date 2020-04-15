@@ -177,6 +177,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
         foo.bar.buzz
       RUBY
     end
+
+    context 'when there is a space between `.` operator and a comment' do
+      it 'does not register an offense when there is not a space before `.`' do
+        expect_no_offenses(<<~RUBY)
+          foo. # comment
+            bar.baz
+        RUBY
+      end
+
+      it 'registers an offense when there is a space before `.`' do
+        expect_offense(<<~RUBY)
+          foo . # comment
+             ^ Avoid using spaces around a method call operator.
+            bar.baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo. # comment
+            bar.baz
+        RUBY
+      end
+    end
   end
 
   context 'safe navigation operator' do
