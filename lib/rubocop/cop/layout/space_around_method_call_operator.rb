@@ -72,7 +72,7 @@ module RuboCop
           left = previous_token(operator)
           right = next_token(operator)
 
-          if valid_right_token?(right, operator)
+          if !right.comment? && valid_right_token?(right, operator)
             no_space_offenses(node, operator, right, MSG)
           end
           return unless valid_left_token?(left, operator)
@@ -121,7 +121,9 @@ module RuboCop
 
         def right_token_for_auto_correction(operator)
           right_token = next_token(operator)
-          return right_token if valid_right_token?(right_token, operator)
+          if !right_token.comment? && valid_right_token?(right_token, operator)
+            return right_token
+          end
 
           operator
         end
