@@ -29,6 +29,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/IndentHash' => { 'Enabled': true },
           'Layout/IndentHeredoc' => { 'Enabled': true },
           'Layout/LeadingBlankLines' => { 'Enabled': true },
+          'Layout/Tab' => { 'Enabled': true },
           'Layout/TrailingBlankLines' => { 'Enabled': true },
           'Lint/DuplicatedKey' => { 'Enabled': true },
           'Lint/HandleExceptions' => { 'Enabled': true },
@@ -107,6 +108,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Layout/IndentHeredoc` cop has been renamed to `Layout/HeredocIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/LeadingBlankLines` cop has been renamed to `Layout/LeadingEmptyLines`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/Tab` cop has been renamed to `Layout/IndentationStyle`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/TrailingBlankLines` cop has been renamed to `Layout/TrailingEmptyLines`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

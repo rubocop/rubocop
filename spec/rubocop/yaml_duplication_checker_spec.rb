@@ -17,10 +17,10 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
 
   context 'when yaml has duplicated keys in the top level' do
     let(:yaml) { <<~YAML }
-      Layout/Tab:
+      Layout/IndentationStyle:
         Enabled: true
 
-      Layout/Tab:
+      Layout/IndentationStyle:
         Enabled: false
     YAML
 
@@ -34,8 +34,8 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
           key1 = key_a
           key2 = key_b
         end
-        expect(key1.value).to eq('Layout/Tab')
-        expect(key2.value).to eq('Layout/Tab')
+        expect(key1.value).to eq('Layout/IndentationStyle')
+        expect(key2.value).to eq('Layout/IndentationStyle')
       end
     end
 
@@ -49,15 +49,15 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
         end
         expect(key1.start_line).to eq(0)
         expect(key2.start_line).to eq(3)
-        expect(key1.value).to eq('Layout/Tab')
-        expect(key2.value).to eq('Layout/Tab')
+        expect(key1.value).to eq('Layout/IndentationStyle')
+        expect(key2.value).to eq('Layout/IndentationStyle')
       end
     end
   end
 
   context 'when yaml has duplicated keys in the second level' do
     let(:yaml) { <<~YAML }
-      Layout/Tab:
+      Layout/IndentationStyle:
         Enabled: true
         Enabled: false
     YAML

@@ -17,6 +17,7 @@ module RuboCop
       'Layout/IndentHash' => 'Layout/FirstHashElementIndentation',
       'Layout/IndentHeredoc' => 'Layout/HeredocIndentation',
       'Layout/LeadingBlankLines' => 'Layout/LeadingEmptyLines',
+      'Layout/Tab' => 'Layout/IndentationStyle',
       'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
       'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
       'Lint/EndInMethod' => 'Style/EndBlock',

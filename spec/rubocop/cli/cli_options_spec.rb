@@ -433,7 +433,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                    'end'])
         expect(cli.run(['--format', 'simple',
                         '--only',
-                        'Style/IfUnlessModifier,Layout/Tab,' \
+                        'Style/IfUnlessModifier,Layout/IndentationStyle,' \
                         'Layout/SpaceAroundOperators',
                         'example.rb'])).to eq(1)
         expect($stderr.string).to eq('')
@@ -441,7 +441,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example.rb ==
           C:  1:  1: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
           C:  1:  5: Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
-          C:  2:  1: Layout/Tab: Tab detected.
+          C:  2:  1: Layout/IndentationStyle: Tab detected in indentation.
 
           1 file inspected, 3 offenses detected
         RESULT
@@ -456,15 +456,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Layout/EndAlignment:
               Enabled: false
           YAML
-          expect(cli.run(['--format', 'simple',
-                          '--only', 'Layout/Tab,Layout/SpaceAroundOperators',
-                          '--lint',
-                          'example.rb'])).to eq(1)
+          expect(cli.run(['--format', 'simple', '--only',
+                          'Layout/IndentationStyle,Layout/SpaceAroundOperators',
+                          '--lint', 'example.rb'])).to eq(1)
           expect($stdout.string)
             .to eq(<<~RESULT)
               == example.rb ==
               C:  1:  5: Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
-              C:  2:  1: Layout/Tab: Tab detected.
+              C:  2:  1: Layout/IndentationStyle: Tab detected in indentation.
               W:  2:  2: Lint/UselessAssignment: Useless assignment to variable - y.
 
               1 file inspected, 3 offenses detected
@@ -483,10 +482,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to eq(<<~RESULT)
 
           1  Layout/CommentIndentation
+          1  Layout/IndentationStyle
           1  Layout/IndentationWidth
           1  Layout/LineLength
           1  Layout/SpaceAroundOperators
-          1  Layout/Tab
           1  Layout/TrailingWhitespace
           --
           6  Total
@@ -511,9 +510,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           .to eq(<<~RESULT)
 
             1  Layout/CommentIndentation
+            1  Layout/IndentationStyle
             1  Layout/IndentationWidth
             1  Layout/LineLength
-            1  Layout/Tab
             1  Layout/TrailingWhitespace
             1  Style/FrozenStringLiteralComment
             1  Style/NumericLiterals
@@ -576,9 +575,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(<<~RESULT)
 
+            1  Layout/IndentationStyle
             1  Layout/IndentationWidth
             1  Layout/SpaceAroundOperators
-            1  Layout/Tab
             1  Layout/TrailingWhitespace
             1  Migration/DepartmentName
             1  Style/FrozenStringLiteralComment
@@ -620,7 +619,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                      'end # rubocop:disable all'])
           expect(cli.run(['--format', 'offenses',
                           '--except',
-                          'Style/IfUnlessModifier,Layout/Tab,' \
+                          'Style/IfUnlessModifier,Layout/IndentationStyle,' \
                           "Layout/SpaceAroundOperators,#{cop_name}",
                           'example.rb'])).to eq(1)
           if cop_name == 'RedundantCopDisableDirective'
@@ -646,10 +645,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   describe '--lint' do
     it 'runs only lint cops' do
-      create_file('example.rb', ['if 0 ',
-                                 "\ty",
-                                 "\tz # rubocop:disable Layout/Tab",
-                                 'end'])
+      create_file('example.rb',
+                  ['if 0 ',
+                   "\ty",
+                   "\tz # rubocop:disable Layout/IndentationStyle",
+                   'end'])
       # IfUnlessModifier depends on the configuration of LineLength.
 
       expect(cli.run(['--format', 'simple', '--lint',
@@ -916,13 +916,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with one cop given' do
-      let(:arguments) { ['Layout/Tab'] }
+      let(:arguments) { ['Layout/IndentationStyle'] }
 
       it 'prints that cop and nothing else' do
         expect(stdout).to match(
           ['# Supports --auto-correct',
-           'Layout/Tab:',
-           '  Description: No hard tabs.',
+           'Layout/IndentationStyle:',
+           '  Description: Consistent indentation either with tabs only or spaces only.', # rubocop:disable Layout/LineLength
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
            /^  VersionAdded: '[0-9\.]+'$/,
@@ -935,19 +935,19 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'with two cops given' do
-      let(:arguments) { ['Layout/Tab,Layout/LineLength'] }
+      let(:arguments) { ['Layout/IndentationStyle,Layout/LineLength'] }
 
       include_examples 'prints config'
     end
 
     context 'with one of the cops misspelled' do
-      let(:arguments) { ['Layout/Tab,Lint/X123'] }
+      let(:arguments) { ['Layout/IndentationStyle,Lint/X123'] }
 
       it 'skips the unknown cop' do
         expect(stdout).to match(
           ['# Supports --auto-correct',
-           'Layout/Tab:',
-           '  Description: No hard tabs.',
+           'Layout/IndentationStyle:',
+           '  Description: Consistent indentation either with tabs only or spaces only.', # rubocop:disable Layout/LineLength
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true'].join("\n")
         )
@@ -1087,7 +1087,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             'Incorrect indentation detected (column 0 instead of 1).',
             '# frozen_string_literal: true',
             '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
-            'example2.rb:3:1: C: Layout/Tab: Tab detected.',
+            'example2.rb:3:1: C: Layout/IndentationStyle: '\
+            'Tab detected in indentation.',
             "\tx",
             '^',
             'example2.rb:3:2: C: Layout/InitialIndentation: ' \
@@ -1151,7 +1152,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             #{abs('example1.rb')}:3:5: C: Layout/TrailingWhitespace: Trailing whitespace detected.
             #{abs('example1.rb')}:4:2: C: Layout/TrailingWhitespace: Trailing whitespace detected.
             #{abs('example2.rb')}:1:1: C: Layout/CommentIndentation: Incorrect indentation detected (column 0 instead of 1).
-            #{abs('example2.rb')}:3:1: C: Layout/Tab: Tab detected.
+            #{abs('example2.rb')}:3:1: C: Layout/IndentationStyle: Tab detected in indentation.
             #{abs('example2.rb')}:3:2: C: Layout/InitialIndentation: Indentation of first line in file detected.
             #{abs('example2.rb')}:4:1: C: Layout/IndentationConsistency: Inconsistent indentation detected.
           RESULT

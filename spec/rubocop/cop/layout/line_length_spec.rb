@@ -380,7 +380,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           'Layout/IndentationWidth' => {
             'Width' => 1
           },
-          'Layout/Tab' => {
+          'Layout/IndentationStyle' => {
             'Enabled' => false,
             'IndentationWidth' => 2
           },
@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           'Layout/IndentationWidth' => {
             'Width' => 1
           },
-          'Layout/Tab' => {
+          'Layout/IndentationStyle' => {
             'Enabled' => false,
             'IndentationWidth' => 2
           },

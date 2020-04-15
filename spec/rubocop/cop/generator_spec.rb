@@ -94,12 +94,13 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     it 'refuses to overwrite existing files' do
-      new_cop = described_class.new('Layout/Tab', 'your_id')
+      new_cop = described_class.new('Layout/IndentationStyle', 'your_id')
 
       allow(new_cop).to receive(:exit!)
       expect { new_cop.write_source }
         .to output(
-          "rake new_cop: lib/rubocop/cop/layout/tab.rb already exists!\n"
+          'rake new_cop: lib/rubocop/cop/layout/indentation_style.rb '\
+          "already exists!\n"
         ).to_stderr
     end
   end
@@ -142,12 +143,13 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     it 'refuses to overwrite existing files' do
-      new_cop = described_class.new('Layout/Tab', 'your_id')
+      new_cop = described_class.new('Layout/IndentationStyle', 'your_id')
 
       allow(new_cop).to receive(:exit!)
       expect { new_cop.write_spec }
         .to output(
-          "rake new_cop: spec/rubocop/cop/layout/tab_spec.rb already exists!\n"
+          'rake new_cop: spec/rubocop/cop/layout/indentation_style_spec.rb '\
+          "already exists!\n"
         ).to_stderr
     end
   end

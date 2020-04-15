@@ -128,6 +128,7 @@ In the following section you find all available cops:
 * [Layout/HeredocArgumentClosingParenthesis](cops_layout.md#layoutheredocargumentclosingparenthesis)
 * [Layout/HeredocIndentation](cops_layout.md#layoutheredocindentation)
 * [Layout/IndentationConsistency](cops_layout.md#layoutindentationconsistency)
+* [Layout/IndentationStyle](cops_layout.md#layoutindentationstyle)
 * [Layout/IndentationWidth](cops_layout.md#layoutindentationwidth)
 * [Layout/InitialIndentation](cops_layout.md#layoutinitialindentation)
 * [Layout/LeadingCommentSpace](cops_layout.md#layoutleadingcommentspace)
@@ -171,7 +172,6 @@ In the following section you find all available cops:
 * [Layout/SpaceInsideRangeLiteral](cops_layout.md#layoutspaceinsiderangeliteral)
 * [Layout/SpaceInsideReferenceBrackets](cops_layout.md#layoutspaceinsidereferencebrackets)
 * [Layout/SpaceInsideStringInterpolation](cops_layout.md#layoutspaceinsidestringinterpolation)
-* [Layout/Tab](cops_layout.md#layouttab)
 * [Layout/TrailingEmptyLines](cops_layout.md#layouttrailingemptylines)
 * [Layout/TrailingWhitespace](cops_layout.md#layouttrailingwhitespace)
 

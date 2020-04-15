@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7867](https://github.com/rubocop-hq/rubocop/pull/7867): Add support for tabs in indentation. ([@DracoAter][])
 * [#7863](https://github.com/rubocop-hq/rubocop/issues/7863): Corrector now accepts nodes in addition to ranges. ([@marcandre][])
 * [#7862](https://github.com/rubocop-hq/rubocop/issues/7862): Corrector now has a `wrap` method. ([@marcandre][])
 * [#7850](https://github.com/rubocop-hq/rubocop/issues/7850): Make it possible to enable/disable pending cops. ([@koic][])
@@ -11,6 +12,10 @@
 * [#7851](https://github.com/rubocop-hq/rubocop/pull/7851): Add a new `Style/ExponentialNotation` cop. ([@tdeo][])
 * [#7384](https://github.com/rubocop-hq/rubocop/pull/7384): Add new `Style/DisableCopsWithinSourceCodeDirective` cop. ([@egze][])
 * [#7826](https://github.com/rubocop-hq/rubocop/issues/7826): Add new `Layout/SpaceAroundMethodCallOperator` cop. ([@saurabhmaurya15][])
+
+### Changes
+
+* **(Breaking)** Renamed `Layout/Tab` cop to `Layout/IndentationStyle`. ([@DracoAter][])
 
 ### Bug fixes
 
@@ -4452,3 +4457,4 @@
 [@rafaelfranca]: https://github.com/rafaelfranca
 [@knu]: https://github.com/knu
 [@saurabhmaurya15]: https://github.com/saurabhmaurya15
+[@DracoAter]: https:/github.com/DracoAter

@@ -410,14 +410,16 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective do
             RuboCop::Cop::Offense.new(:convention,
                                       OpenStruct.new(line: 7, column: 0),
                                       'Tab detected.',
-                                      'Layout/Tab')
+                                      'Layout/IndentationStyle')
           ]
         end
 
         context 'and a comment disables' do
           context 'that cop' do
-            let(:source) { '# rubocop:disable Layout/Tab' }
-            let(:cop_disabled_line_ranges) { { 'Layout/Tab' => [1..100] } }
+            let(:source) { '# rubocop:disable Layout/IndentationStyle' }
+            let(:cop_disabled_line_ranges) do
+              { 'Layout/IndentationStyle' => [1..100] }
+            end
 
             it 'returns an empty array' do
               expect(cop.offenses.empty?).to be(true)
@@ -425,13 +427,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective do
           end
 
           context 'that cop but on other lines' do
-            let(:source) { ("\n" * 9) << '# rubocop:disable Layout/Tab' }
-            let(:cop_disabled_line_ranges) { { 'Layout/Tab' => [10..12] } }
+            let(:source) do
+              ("\n" * 9) << '# rubocop:disable Layout/IndentationStyle'
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'Layout/IndentationStyle' => [10..12] }
+            end
 
             it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of `Layout/Tab`.'])
-              expect(cop.highlights).to eq(['# rubocop:disable Layout/Tab'])
+                .to eq(['Unnecessary disabling of `Layout/IndentationStyle`.'])
+              expect(cop.highlights).to eq(
+                ['# rubocop:disable Layout/IndentationStyle']
+              )
             end
           end
 

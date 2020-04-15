@@ -801,6 +801,22 @@ Layout/IndentationConsistency:
     # A reference to `EnforcedStyle: indented_internal_methods`.
     - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
 
+Layout/IndentationStyle:
+  Description: 'Consistent indentation either with tabs only or spaces only.'
+  StyleGuide: '#spaces-indentation'
+  Enabled: true
+  VersionAdded: '0.49'
+  VersionChanged: '0.82'
+  # By default, the indentation width from Layout/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  # It is used during auto-correction to determine how many spaces should
+  # replace each tab.
+  IndentationWidth: ~
+  EnforcedStyle: spaces
+  SupportedStyles:
+    - spaces
+    - tabs
+
 Layout/IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
   StyleGuide: '#spaces-indentation'
@@ -1262,18 +1278,6 @@ Layout/SpaceInsideStringInterpolation:
   SupportedStyles:
     - space
     - no_space
-
-Layout/Tab:
-  Description: 'No hard tabs.'
-  StyleGuide: '#spaces-indentation'
-  Enabled: true
-  VersionAdded: '0.49'
-  VersionChanged: '0.51'
-  # By default, the indentation width from Layout/IndentationWidth is used
-  # But it can be overridden by setting this parameter
-  # It is used during auto-correction to determine how many spaces should
-  # replace each tab.
-  IndentationWidth: ~
 
 Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'
