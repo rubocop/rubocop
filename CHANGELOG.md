@@ -13,10 +13,6 @@
 * [#7384](https://github.com/rubocop-hq/rubocop/pull/7384): Add new `Style/DisableCopsWithinSourceCodeDirective` cop. ([@egze][])
 * [#7826](https://github.com/rubocop-hq/rubocop/issues/7826): Add new `Layout/SpaceAroundMethodCallOperator` cop. ([@saurabhmaurya15][])
 
-### Changes
-
-* **(Breaking)** Renamed `Layout/Tab` cop to `Layout/IndentationStyle`. ([@DracoAter][])
-
 ### Bug fixes
 
 * [#7871](https://github.com/rubocop-hq/rubocop/pull/7871): Fix an auto-correction bug in `Lint/BooleanSymbol`. ([@knu][])
@@ -27,7 +23,8 @@
 
 ### Changes
 
-* [#7869](https://github.com/rubocop-hq/rubocop/pull/7869): **(BREAKING)** Drop support for Ruby 2.3. ([@koic][])
+* **(Breaking)** Renamed `Layout/Tab` cop to `Layout/IndentationStyle`. ([@DracoAter][])
+* [#7869](https://github.com/rubocop-hq/rubocop/pull/7869): **(Breaking)** Drop support for Ruby 2.3. ([@koic][])
 
 ## 0.81.0 (2020-04-01)
 
@@ -4457,4 +4454,4 @@
 [@rafaelfranca]: https://github.com/rafaelfranca
 [@knu]: https://github.com/knu
 [@saurabhmaurya15]: https://github.com/saurabhmaurya15
-[@DracoAter]: https:/github.com/DracoAter
+[@DracoAter]: https://github.com/DracoAter
