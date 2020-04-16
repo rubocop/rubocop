@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.82.0 (2020-04-16)
+
 ### New features
 
 * [#7867](https://github.com/rubocop-hq/rubocop/pull/7867): Add support for tabs in indentation. ([@DracoAter][])
