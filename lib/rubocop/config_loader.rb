@@ -84,9 +84,9 @@ module RuboCop
       end
 
       def configuration_from_file(config_file)
-        config = load_file(config_file)
-        return config if config_file == DEFAULT_FILE
+        return ConfigLoader.default_configuration if config_file == DEFAULT_FILE
 
+        config = load_file(config_file)
         if ignore_parent_exclusion?
           print 'Ignoring AllCops/Exclude from parent folders' if debug?
         else
