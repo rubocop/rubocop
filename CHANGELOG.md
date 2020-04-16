@@ -4442,7 +4442,6 @@
 [@mangara]: https://github.com/mangara
 [@pirj]: https://github.com/pirj
 [@pawptart]: https://github.com/pawptart
-[@hanachin]: https://github.com/hanachin
 [@cetinajero]: https://github.com/cetinajero
 [@gfyoung]: https://github.com/gfyoung
 [@Tietew]: https://github.com/Tietew
