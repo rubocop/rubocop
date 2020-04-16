@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
   context 'when EnforcedStyle is set to indent' do
     let(:cop_config) { { 'EnforcedStyle' => 'indent' } }
 
-    it 'registers an offense for misaligned private' do
+    it 'registers an offense and corrects misaligned private' do
       expect_offense(<<~RUBY)
         class Test
 
@@ -24,9 +24,18 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class Test
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned private in module' do
+    it 'registers an offense and corrects misaligned private in module' do
       expect_offense(<<~RUBY)
         module Test
 
@@ -36,9 +45,19 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned module_function in module' do
+    it 'registers an offense and corrects misaligned module_function ' \
+      'in module' do
       expect_offense(<<~RUBY)
         module Test
 
@@ -48,9 +67,18 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+
+          module_function
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for correct + opposite alignment' do
+    it 'registers an offense and corrects correct + opposite alignment' do
       expect_offense(<<~RUBY)
         module Test
 
@@ -62,9 +90,20 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+
+          public
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for opposite + correct alignment' do
+    it 'registers an offense and corrects opposite + correct alignment' do
       expect_offense(<<~RUBY)
         module Test
 
@@ -76,9 +115,21 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+
+          public
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned private in singleton class' do
+    it 'registers an offense and corrects misaligned private ' \
+      'in a singleton class' do
       expect_offense(<<~RUBY)
         class << self
 
@@ -88,9 +139,18 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class << self
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned private in class ' \
+    it 'registers an offense and corrects misaligned private in class ' \
        'defined with Class.new' do
       expect_offense(<<~RUBY)
         Test = Class.new do
@@ -101,9 +161,19 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        Test = Class.new do
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for access modifiers in arbitrary blocks' do
+    it 'registers an offense and corrects access modifiers ' \
+      'in arbitrary blocks' do
       expect_offense(<<~RUBY)
         Test = func do
 
@@ -113,9 +183,18 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        Test = func do
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned private in module ' \
+    it 'registers an offense and corrects misaligned private in module ' \
        'defined with Module.new' do
       expect_offense(<<~RUBY)
         Test = Module.new do
@@ -126,14 +205,32 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        Test = Module.new do
+
+          private
+
+          def test; end
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned protected' do
+    it 'registers an offense and corrects misaligned protected' do
       expect_offense(<<~RUBY)
         class Test
 
         protected
         ^^^^^^^^^ Indent access modifiers like `protected`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Test
+
+          protected
 
           def test; end
         end
@@ -190,7 +287,8 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'handles properly nested classes' do
+    it 'registers an offense and corrects misaligned access modifiers ' \
+      'in nested classes' do
       expect_offense(<<~RUBY)
         class Test
 
@@ -198,6 +296,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
 
           private
           ^^^^^^^ Indent access modifiers like `private`.
+
+            def a; end
+          end
+
+          protected
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Test
+
+          class Nested
+
+            private
 
             def a; end
           end
@@ -231,29 +345,6 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           class << self
             private :test
           end
-        end
-      RUBY
-    end
-
-    it 'auto-corrects incorrectly indented access modifiers' do
-      corrected = autocorrect_source(<<~RUBY)
-        class Test
-
-        public
-         private
-           protected
-
-          def test; end
-        end
-      RUBY
-      expect(corrected).to eq(<<~RUBY)
-        class Test
-
-          public
-          private
-          protected
-
-          def test; end
         end
       RUBY
     end
@@ -294,12 +385,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
   context 'when EnforcedStyle is set to outdent' do
     let(:cop_config) { { 'EnforcedStyle' => 'outdent' } }
 
-    it 'registers offense for private indented to method depth in a class' do
+    it 'registers offense and corrects private indented ' \
+      'to method depth in a class' do
       expect_offense(<<~RUBY)
         class Test
 
           private
           ^^^^^^^ Outdent access modifiers like `private`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Test
+
+        private
 
           def test; end
         end
@@ -325,12 +426,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for private indented to method depth in a module' do
+    it 'registers an offense and corrects private indented ' \
+      'to method depth in a module' do
       expect_offense(<<~RUBY)
         module Test
 
           private
           ^^^^^^^ Outdent access modifiers like `private`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+
+        private
 
           def test; end
         end
@@ -356,12 +467,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for module fn indented to method depth in a module' do
+    it 'registers an offense and corrects module_function indented ' \
+      'to method depth in a module' do
       expect_offense(<<~RUBY)
         module Test
 
           module_function
           ^^^^^^^^^^^^^^^ Outdent access modifiers like `module_function`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+
+        module_function
 
           def test; end
         end
@@ -388,13 +509,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for private indented to method depth in singleton ' \
-       'class' do
+    it 'registers an offense and corrects private indented ' \
+      'to method depth in singleton class' do
       expect_offense(<<~RUBY)
         class << self
 
           private
           ^^^^^^^ Outdent access modifiers like `private`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class << self
+
+        private
 
           def test; end
         end
@@ -421,13 +551,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for private indented to method depth in class ' \
-       'defined with Class.new' do
+    it 'registers an offense and corrects private indented to method depth ' \
+      'in class defined with Class.new' do
       expect_offense(<<~RUBY)
         Test = Class.new do
 
           private
           ^^^^^^^ Outdent access modifiers like `private`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Test = Class.new do
+
+        private
 
           def test; end
         end
@@ -455,13 +594,22 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'registers offense for private indented to method depth in module ' \
-       'defined with Module.new' do
+    it 'registers an offense and corrects private indented to method depth ' \
+      'in module defined with Module.new' do
       expect_offense(<<~RUBY)
         Test = Module.new do
 
           private
           ^^^^^^^ Outdent access modifiers like `private`.
+
+          def test; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Test = Module.new do
+
+        private
 
           def test; end
         end
@@ -511,7 +659,8 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
     end
 
-    it 'handles properly nested classes' do
+    it 'registers an offense and corrects misaligned access modifiers ' \
+      'in nested classes' do
       expect_offense(<<~RUBY)
         class Test
 
@@ -528,70 +677,20 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
           def test; end
         end
       RUBY
-    end
 
-    it 'auto-corrects incorrectly indented access modifiers' do
-      corrected = autocorrect_source(<<~RUBY)
-        module M
-          class Test
+      expect_correction(<<~RUBY)
+        class Test
 
-        public
-         private
-             protected
+          class Nested
 
-            def test; end
-          end
-        end
-      RUBY
-      expect(corrected).to eq(<<~RUBY)
-        module M
-          class Test
-
-          public
           private
-          protected
 
-            def test; end
-          end
-        end
-      RUBY
-    end
-
-    it 'auto-corrects private in complicated case' do
-      corrected = autocorrect_source(<<~RUBY)
-        class Hello
-          def foo
-            'hi'
+            def a; end
           end
 
-          def bar
-            Module.new do
+        protected
 
-             private
-
-              def hi
-                'bye'
-              end
-            end
-          end
-        end
-      RUBY
-      expect(corrected).to eq(<<~RUBY)
-        class Hello
-          def foo
-            'hi'
-          end
-
-          def bar
-            Module.new do
-
-            private
-
-              def hi
-                'bye'
-              end
-            end
-          end
+          def test; end
         end
       RUBY
     end

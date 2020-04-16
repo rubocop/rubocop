@@ -36,7 +36,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.source_range, replacement(node))
+            corrector.replace(node, replacement(node))
           end
         end
 
@@ -91,9 +91,10 @@ module RuboCop
 
         def keyword_with_changed_precedence?(node)
           return false unless node.keyword?
-          return true if node.prefix_not?
+          return true if node.respond_to?(:prefix_not?) && node.prefix_not?
 
-          node.arguments? && !node.parenthesized_call?
+          node.respond_to?(:arguments?) && node.arguments? &&
+            !node.parenthesized_call?
         end
       end
     end

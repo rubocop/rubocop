@@ -24,7 +24,7 @@ module RuboCop
       include FileFinder
 
       attr_accessor :debug, :auto_gen_config, :ignore_parent_exclusion,
-                    :options_config
+                    :options_config, :disable_pending_cops, :enable_pending_cops
       attr_writer :default_configuration
 
       alias debug? debug
@@ -55,7 +55,10 @@ module RuboCop
       end
 
       def add_missing_namespaces(path, hash)
-        hash.keys.each do |key|
+        # Using `hash.each_key` will cause the
+        # `can't add a new key into hash during iteration` error
+        hash_keys = hash.keys
+        hash_keys.each do |key|
           q = Cop::Cop.qualified_cop_name(key, path)
           next if q == key
 
@@ -76,10 +79,8 @@ module RuboCop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        find_project_dotfile(target_dir) ||
-          find_user_dotfile ||
-          find_user_xdg_config ||
-          DEFAULT_FILE
+        find_project_dotfile(target_dir) || find_user_dotfile ||
+          find_user_xdg_config || DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)
@@ -91,15 +92,22 @@ module RuboCop
         else
           add_excludes_from_files(config, config_file)
         end
+
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config)
+          unless possible_new_cops?(config)
+            warn_on_pending_cops(merged_config.pending_cops)
+          end
         end
       end
 
+      def possible_new_cops?(config)
+        disable_pending_cops || enable_pending_cops ||
+          config.disabled_new_cops? || config.enabled_new_cops?
+      end
+
       def add_excludes_from_files(config, config_file)
-        found_files =
-          find_files_upwards(DOTFILE, config_file) +
-          [find_user_dotfile, find_user_xdg_config].compact
+        found_files = find_files_upwards(DOTFILE, config_file) +
+                      [find_user_dotfile, find_user_xdg_config].compact
 
         return if found_files.empty?
         return if PathUtil.relative_path(found_files.last) ==
@@ -116,20 +124,20 @@ module RuboCop
                                    end
       end
 
-      def warn_on_pending_cops(config)
-        pending_cops = config.keys.select do |key|
-          config[key]['Enabled'] == 'pending'
-        end
-
-        return if pending_cops.none?
+      def warn_on_pending_cops(pending_cops)
+        return if pending_cops.empty?
 
         warn Rainbow('The following cops were added to RuboCop, but are not ' \
                      'configured. Please set Enabled to either `true` or ' \
                      '`false` in your `.rubocop.yml` file:').yellow
 
         pending_cops.each do |cop|
-          warn Rainbow(" - #{cop}").yellow
+          warn Rainbow(
+            " - #{cop.name} (#{cop.metadata['VersionAdded']})"
+          ).yellow
         end
+
+        warn Rainbow('For more information: https://docs.rubocop.org/en/latest/versioning/').yellow
       end
 
       # Merges the given configuration with the default one. If
@@ -198,7 +206,9 @@ module RuboCop
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
           f.write "inherit_from:#{file_string}\n"
-          f.write "\n#{rubocop_yml_contents}" if rubocop_yml_contents =~ /\S/
+          if /\S/.match?(rubocop_yml_contents)
+            f.write "\n#{rubocop_yml_contents}"
+          end
         end
       end
 
@@ -250,8 +260,7 @@ module RuboCop
 
       def yaml_safe_load(yaml_code, filename)
         if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
-          SafeYAML.load(yaml_code, filename,
-                        whitelisted_tags: %w[!ruby/regexp])
+          SafeYAML.load(yaml_code, filename, whitelisted_tags: %w[!ruby/regexp])
         # Ruby 2.6+
         elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
           YAML.safe_load(

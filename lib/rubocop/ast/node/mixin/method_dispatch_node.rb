@@ -121,6 +121,14 @@ module RuboCop
         loc.respond_to?(:dot) && loc.dot && loc.dot.is?('::')
       end
 
+      # Checks whether the dispatched method uses a safe navigation operator to
+      # connect the receiver and the method name.
+      #
+      # @return [Boolean] whether the method was called with a connecting dot
+      def safe_navigation?
+        loc.respond_to?(:dot) && loc.dot && loc.dot.is?('&.')
+      end
+
       # Checks whether the *explicit* receiver of this method dispatch is
       # `self`.
       #

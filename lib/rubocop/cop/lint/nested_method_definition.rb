@@ -31,14 +31,14 @@ module RuboCop
       #   # good
       #
       #   def foo
-      #     self.class_eval do
+      #     self.class.class_eval do
       #       def bar
       #       end
       #     end
       #   end
       #
       #   def foo
-      #     self.module_exec do
+      #     self.class.module_exec do
       #       def bar
       #       end
       #     end

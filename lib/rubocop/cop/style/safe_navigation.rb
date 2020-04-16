@@ -131,7 +131,7 @@ module RuboCop
           comments = comments(node)
           return if comments.empty?
 
-          corrector.insert_before(method_call.loc.expression,
+          corrector.insert_before(method_call,
                                   "#{comments.map(&:text).join("\n")}\n")
         end
 

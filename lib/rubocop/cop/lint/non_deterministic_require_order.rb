@@ -52,12 +52,12 @@ module RuboCop
         def autocorrect(node)
           if unsorted_dir_block?(node)
             lambda do |corrector|
-              corrector.replace(node.loc.expression, "#{node.source}.sort.each")
+              corrector.replace(node, "#{node.source}.sort.each")
             end
           else
             lambda do |corrector|
               source = node.receiver.source
-              corrector.replace(node.loc.expression, "#{source}.sort.each")
+              corrector.replace(node, "#{source}.sort.each")
             end
           end
         end

@@ -32,6 +32,18 @@ module RuboCop
 
           add_offense(node, message: format(MSG, boolean: node.value))
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            boolean_literal = node.source.delete(':')
+            parent = node.parent
+            if parent&.pair_type? && node.equal?(parent.children[0])
+              corrector.remove(parent.loc.operator)
+              boolean_literal = "#{node.source} =>"
+            end
+            corrector.replace(node, boolean_literal)
+          end
+        end
       end
     end
   end

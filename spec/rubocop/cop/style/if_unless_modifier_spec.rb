@@ -185,6 +185,24 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
+  context 'modifier if that does not fit on one line, but is not the only' \
+          ' statement on the line' do
+    let(:spaces) { ' ' * 59 }
+    let(:source) { "puts '#{spaces}' if condition; some_method_call" }
+
+    # long lines which have multiple statements on the same line can be flagged
+    #   by Layout/LineLength, Style/Semicolon, etc.
+    # if they are handled by Style/IfUnlessModifier, there is a danger of
+    #   creating infinite autocorrect loops when autocorrecting
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def f
+          #{source}
+        end
+      RUBY
+    end
+  end
+
   context 'multiline if that fits on one line with comment on first line' do
     let(:source) do
       <<~RUBY
@@ -499,7 +517,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
-  context 'with disabled Layout/Tab cop' do
+  context 'with disabled Layout/IndentationStyle cop' do
     shared_examples 'with tabs indentation' do
       let(:source) do
         # Empty lines should make no difference.
@@ -542,13 +560,13 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       end
     end
 
-    context 'with Layout/Tab: IndentationWidth config' do
+    context 'with Layout/IndentationStyle: IndentationWidth config' do
       let(:config) do
         RuboCop::Config.new(
           'Layout/IndentationWidth' => {
             'Width' => 1
           },
-          'Layout/Tab' => {
+          'Layout/IndentationStyle' => {
             'Enabled' => false,
             'IndentationWidth' => 2
           },
@@ -565,7 +583,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
           'Layout/IndentationWidth' => {
             'Width' => 1
           },
-          'Layout/Tab' => {
+          'Layout/IndentationStyle' => {
             'Enabled' => false
           },
           'Layout/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
@@ -578,7 +596,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     context 'without any IndentationWidth config' do
       let(:config) do
         RuboCop::Config.new(
-          'Layout/Tab' => {
+          'Layout/IndentationStyle' => {
             'Enabled' => false
           },
           'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation

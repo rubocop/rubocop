@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-# The Lint/RedundantCopEnableDirective cop needs to be disabled so as
-# to be able to provide a (bad) example of an unneeded enable.
+# The Lint/RedundantCopEnableDirective and Lint/RedundantCopDisableDirective
+# cops need to be disabled so as to be able to provide a (bad) example of an
+# unneeded enable.
 
 # rubocop:disable Lint/RedundantCopEnableDirective
+# rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -21,15 +23,15 @@ module RuboCop
       #   foo = 1
       # @example
       #   # bad
-      #   # rubocop:disable Layout/LineLength
-      #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-      #   # rubocop:enable Layout/LineLength
+      #   # rubocop:disable Style/StringLiterals
+      #   foo = "1"
+      #   # rubocop:enable Style/StringLiterals
       #   baz
       #   # rubocop:enable all
       #
       #   # good
-      #   # rubocop:disable Layout/LineLength
-      #   baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+      #   # rubocop:disable Style/StringLiterals
+      #   foo = "1"
       #   # rubocop:enable all
       #   baz
       class RedundantCopEnableDirective < Cop
@@ -112,3 +114,6 @@ module RuboCop
     end
   end
 end
+
+# rubocop:enable Lint/RedundantCopDisableDirective
+# rubocop:enable Lint/RedundantCopEnableDirective

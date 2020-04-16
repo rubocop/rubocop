@@ -44,13 +44,13 @@ module RuboCop
       end
 
       def replace_selector(corrector)
-        corrector.replace(method.source_range, 'lambda')
+        corrector.replace(method, 'lambda')
       end
 
       def remove_arguments(corrector)
         return if arguments.empty_and_without_delimiters?
 
-        corrector.remove(arguments.source_range)
+        corrector.remove(arguments)
       end
 
       def insert_arguments(corrector)
@@ -62,7 +62,7 @@ module RuboCop
 
       def remove_leading_whitespace(corrector)
         corrector.remove_preceding(
-          arguments.source_range,
+          arguments,
           arguments.source_range.begin_pos -
             block_node.send_node.source_range.end_pos
         )

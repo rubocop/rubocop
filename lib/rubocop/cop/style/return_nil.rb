@@ -60,7 +60,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             corrected = style == :return ? 'return' : 'return nil'
-            corrector.replace(node.source_range, corrected)
+            corrector.replace(node, corrected)
           end
         end
 

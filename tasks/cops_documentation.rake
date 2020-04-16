@@ -44,7 +44,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
                   end
     cop_config = cop_instance.cop_config
     content = [[
-      cop_config.fetch('Enabled') ? 'Enabled' : 'Disabled',
+      cop_status(cop_config.fetch('Enabled')),
       cop_config.fetch('Safe', true) ? 'Yes' : 'No',
       autocorrect,
       cop_config.fetch('VersionAdded', '-'),
@@ -205,7 +205,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   def table_of_content_for_department(cops, department)
     type_title = department[0].upcase + department[1..-1]
     filename = "cops_#{department.downcase}.md"
-    content = +"#### Department [#{type_title}](#{filename})\n\n"
+    content = +"### Department [#{type_title}](#{filename})\n\n"
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
       content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
@@ -236,6 +236,12 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       .sort
       .map { |department| table_of_content_for_department(cops, department) }
       .join("\n")
+  end
+
+  def cop_status(status)
+    return 'Disabled' unless status
+
+    status == 'pending' ? 'Pending' : 'Enabled'
   end
 
   def assert_manual_synchronized

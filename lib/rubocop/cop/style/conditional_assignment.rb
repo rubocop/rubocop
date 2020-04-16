@@ -458,7 +458,7 @@ module RuboCop
         def correct_if_branches(corrector, cop, node)
           if_branch, elsif_branches, else_branch = extract_tail_branches(node)
 
-          corrector.insert_before(node.source_range, lhs(if_branch))
+          corrector.insert_before(node, lhs(if_branch))
           replace_branch_assignment(corrector, if_branch)
           correct_branches(corrector, elsif_branches)
           replace_branch_assignment(corrector, else_branch)
@@ -475,13 +475,13 @@ module RuboCop
                           source
                         end
 
-          corrector.replace(branch.source_range, replacement)
+          corrector.replace(branch, replacement)
         end
 
         def correct_branches(corrector, branches)
           branches.each do |branch|
             *_, assignment = *branch
-            corrector.replace(branch.source_range, assignment.source)
+            corrector.replace(branch, assignment.source)
           end
         end
       end
@@ -494,7 +494,7 @@ module RuboCop
 
           def correct(node)
             lambda do |corrector|
-              corrector.replace(node.source_range, correction(node))
+              corrector.replace(node, correction(node))
             end
           end
 
@@ -547,7 +547,7 @@ module RuboCop
           end
 
           def move_branch_inside_condition(corrector, branch, assignment)
-            corrector.insert_before(branch.loc.expression, assignment.source)
+            corrector.insert_before(branch, assignment.source)
           end
         end
       end
@@ -589,7 +589,7 @@ module RuboCop
           def move_branch_inside_condition(corrector, branch, condition,
                                            assignment, column)
             branch_assignment = tail(branch)
-            corrector.insert_before(branch_assignment.loc.expression,
+            corrector.insert_before(branch_assignment,
                                     assignment.source)
 
             remove_whitespace_in_branches(corrector, branch, condition, column)
@@ -611,7 +611,7 @@ module RuboCop
             when_branches, else_branch = extract_tail_branches(node)
 
             lambda do |corrector|
-              corrector.insert_before(node.source_range, lhs(else_branch))
+              corrector.insert_before(node, lhs(else_branch))
               correct_branches(corrector, when_branches)
               replace_branch_assignment(corrector, else_branch)
 
@@ -652,7 +652,7 @@ module RuboCop
           def move_branch_inside_condition(corrector, branch, condition,
                                            assignment, column)
             branch_assignment = tail(branch)
-            corrector.insert_before(branch_assignment.loc.expression,
+            corrector.insert_before(branch_assignment,
                                     assignment.source)
 
             remove_whitespace_in_branches(corrector, branch, condition, column)

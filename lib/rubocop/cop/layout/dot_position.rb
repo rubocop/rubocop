@@ -44,7 +44,7 @@ module RuboCop
             when :leading
               corrector.insert_before(selector_range(node), dot)
             when :trailing
-              corrector.insert_after(node.receiver.source_range, dot)
+              corrector.insert_after(node.receiver, dot)
             end
           end
         end

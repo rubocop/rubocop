@@ -9,7 +9,7 @@ module RuboCop
       #
       # The maximum line length is configured in the `Layout/LineLength`
       # cop. The tab size is configured in the `IndentationWidth` of the
-      # `Layout/Tab` cop.
+      # `Layout/IndentationStyle` cop.
       #
       # @example
       #   # bad
@@ -47,7 +47,7 @@ module RuboCop
         def on_if(node)
           msg = if eligible_node?(node)
                   MSG_USE_MODIFIER unless named_capture_in_condition?(node)
-                elsif node.modifier_form? && too_long_single_line?(node)
+                elsif too_long_due_to_modifier?(node)
                   MSG_USE_NORMAL
                 end
           return unless msg
@@ -63,10 +63,15 @@ module RuboCop
                         else
                           to_modifier_form(node)
                         end
-          ->(corrector) { corrector.replace(node.source_range, replacement) }
+          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         private
+
+        def too_long_due_to_modifier?(node)
+          node.modifier_form? && too_long_single_line?(node) &&
+            !another_statement_on_same_line?(node)
+        end
 
         def ignored_patterns
           config.for_cop('Layout/LineLength')['IgnoredPatterns'] || []
@@ -127,6 +132,21 @@ module RuboCop
 
         def non_eligible_if?(node)
           node.ternary? || node.modifier_form? || node.elsif? || node.else?
+        end
+
+        def another_statement_on_same_line?(node)
+          line_no = node.source_range.last_line
+
+          # traverse the AST upwards until we find a 'begin' node
+          # we want to look at the following child and see if it is on the
+          #   same line as this 'if' node
+          while node && !node.begin_type?
+            index = node.sibling_index
+            node  = node.parent
+          end
+
+          node && (sibling = node.children[index + 1]) &&
+            sibling.source_range.first_line == line_no
         end
 
         def parenthesize?(node)

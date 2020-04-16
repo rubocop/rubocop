@@ -8,7 +8,7 @@ module RuboCop
       # This cop checks the length of lines in the source code.
       # The maximum length is configurable.
       # The tab size is configured in the `IndentationWidth`
-      # of the `Layout/Tab` cop.
+      # of the `Layout/IndentationStyle` cop.
       # It also ignores a shebang line by default.
       #
       # This cop has some autocorrection capabilities.
@@ -19,19 +19,25 @@ module RuboCop
       #
       # If autocorrection is enabled, the following Layout cops
       # are recommended to further format the broken lines.
+      # (Many of these are enabled by default.)
       #
-      #   - ParameterAlignment
       #   - ArgumentAlignment
+      #   - BlockAlignment
+      #   - BlockDelimiters
+      #   - BlockEndNewline
       #   - ClosingParenthesisIndentation
       #   - FirstArgumentIndentation
       #   - FirstArrayElementIndentation
       #   - FirstHashElementIndentation
       #   - FirstParameterIndentation
       #   - HashAlignment
+      #   - IndentationWidth
       #   - MultilineArrayLineBreaks
+      #   - MultilineBlockLayout
       #   - MultilineHashBraceLayout
       #   - MultilineHashKeyLineBreaks
       #   - MultilineMethodArgumentLineBreaks
+      #   - ParameterAlignment
       #
       # Together, these cops will pretty print hashes, arrays,
       # method calls, etc. For example, let's say the max columns
@@ -60,6 +66,10 @@ module RuboCop
         include LineLengthHelp
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
+
+        def on_block(node)
+          check_for_breakable_block(node)
+        end
 
         def on_potential_breakable_node(node)
           check_for_breakable_node(node)
@@ -109,6 +119,25 @@ module RuboCop
           end
         end
 
+        def check_for_breakable_block(block_node)
+          return unless block_node.single_line?
+
+          line_index = block_node.loc.line - 1
+          range = breakable_block_range(block_node)
+          pos = range.begin_pos + 1
+
+          breakable_range_by_line_index[line_index] =
+            range_between(pos, pos + 1)
+        end
+
+        def breakable_block_range(block_node)
+          if block_node.arguments? && !block_node.lambda?
+            block_node.arguments.loc.end
+          else
+            block_node.loc.begin
+          end
+        end
+
         def breakable_range_after_semicolon(semicolon_token)
           range = semicolon_token.pos
           end_pos = range.end_pos
@@ -116,7 +145,7 @@ module RuboCop
           return nil unless next_range.line == range.line
 
           next_char = next_range.source
-          return nil if /[\r\n]/ =~ next_char
+          return nil if /[\r\n]/.match?(next_char)
           return nil if next_char == ';'
 
           next_range

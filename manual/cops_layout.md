@@ -124,25 +124,49 @@ aligned.
 
 ### Examples
 
+#### EnforcedStyle: with_first_element (default)
+
 ```ruby
+# good
+
+array = [1, 2, 3,
+         4, 5, 6]
+array = ['run',
+         'forrest',
+         'run']
+
 # bad
-a = [1, 2, 3,
+
+array = [1, 2, 3,
   4, 5, 6]
 array = ['run',
      'forrest',
      'run']
-
-# good
-a = [1, 2, 3,
-     4, 5, 6]
-a = ['run',
-     'forrest',
-     'run']
 ```
+#### EnforcedStyle: with_fixed_indentation
+
+```ruby
+# good
+
+array = [1, 2, 3,
+  4, 5, 6]
+
+# bad
+
+array = [1, 2, 3,
+         4, 5, 6]
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `with_first_element` | `with_first_element`, `with_fixed_indentation`
+IndentationWidth | `<none>` | Integer
 
 ### References
 
-* [https://rubystyle.guide#align-multiline-arrays](https://rubystyle.guide#align-multiline-arrays)
+* [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
 ## Layout/AssignmentIndentation
 
@@ -2696,6 +2720,59 @@ EnforcedStyle | `normal` | `normal`, `indented_internal_methods`
 * [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 * [https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions)
 
+## Layout/IndentationStyle
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.49 | 0.82
+
+This cop checks that the indentation method is consistent.
+Either tabs only or spaces only are used for indentation.
+
+### Examples
+
+#### EnforcedStyle: spaces (default)
+
+```ruby
+# bad
+# This example uses a tab to indent bar.
+def foo
+  bar
+end
+
+# good
+# This example uses spaces to indent bar.
+def foo
+  bar
+end
+```
+#### EnforcedStyle: tabs
+
+```ruby
+# bad
+# This example uses spaces to indent bar.
+def foo
+  bar
+end
+
+# good
+# This example uses a tab to indent bar.
+def foo
+  bar
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+IndentationWidth | `<none>` | Integer
+EnforcedStyle | `spaces` | `spaces`, `tabs`
+
+### References
+
+* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
+
 ## Layout/IndentationWidth
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2822,12 +2899,29 @@ or rackup options.
 # Another line of comment
 #*
 ```
+#### AllowGemfileRubyComment: false (default)
+
+```ruby
+# bad
+
+#ruby=2.7.0
+#ruby-gemset=myproject
+```
+#### AllowGemfileRubyComment: true
+
+```ruby
+# good
+
+#ruby=2.7.0
+#ruby-gemset=myproject
+```
 
 ### Configurable attributes
 
 Name | Default value | Configurable values
 --- | --- | ---
 AllowDoxygenCommentStyle | `false` | Boolean
+AllowGemfileRubyComment | `false` | Boolean
 
 ### References
 
@@ -2875,7 +2969,7 @@ Enabled | Yes | Yes  | 0.25 | 0.78
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
 The tab size is configured in the `IndentationWidth`
-of the `Layout/Tab` cop.
+of the `Layout/IndentationStyle` cop.
 It also ignores a shebang line by default.
 
 This cop has some autocorrection capabilities.
@@ -2886,19 +2980,25 @@ method calls with argument lists.
 
 If autocorrection is enabled, the following Layout cops
 are recommended to further format the broken lines.
+(Many of these are enabled by default.)
 
-  - ParameterAlignment
   - ArgumentAlignment
+  - BlockAlignment
+  - BlockDelimiters
+  - BlockEndNewline
   - ClosingParenthesisIndentation
   - FirstArgumentIndentation
   - FirstArrayElementIndentation
   - FirstHashElementIndentation
   - FirstParameterIndentation
   - HashAlignment
+  - IndentationWidth
   - MultilineArrayLineBreaks
+  - MultilineBlockLayout
   - MultilineHashBraceLayout
   - MultilineHashKeyLineBreaks
   - MultilineMethodArgumentLineBreaks
+  - ParameterAlignment
 
 Together, these cops will pretty print hashes, arrays,
 method calls, etc. For example, let's say the max columns
@@ -4028,6 +4128,46 @@ end
 something = 123 if test
 ```
 
+## Layout/SpaceAroundMethodCallOperator
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | Yes  | 0.82 | -
+
+Checks method call operators to not have spaces around them.
+
+### Examples
+
+```ruby
+# bad
+foo. bar
+foo .bar
+foo . bar
+foo. bar .buzz
+foo
+  . bar
+  . buzz
+foo&. bar
+foo &.bar
+foo &. bar
+foo &. bar&. buzz
+RuboCop:: Cop
+RuboCop:: Cop:: Cop
+:: RuboCop::Cop
+
+# good
+foo.bar
+foo.bar.buzz
+foo
+  .bar
+  .buzz
+foo&.bar
+foo&.bar&.buzz
+RuboCop::Cop
+RuboCop::Cop::Cop
+::RuboCop::Cop
+```
+
 ## Layout/SpaceAroundOperators
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -4036,6 +4176,10 @@ Enabled | Yes | Yes  | 0.49 | -
 
 Checks that operators have space around them, except for ** which
 should or shouldn't have surrounding space depending on configuration.
+
+This cop has `AllowForAlignment` option. When `true`, allows most
+uses of extra spacing if the intent is to align with an operator on
+the previous or next line, not counting empty lines or comment lines.
 
 ### Examples
 
@@ -4049,6 +4193,24 @@ my_number = 38/4
 total = 3 * 4
 "apple" + "juice"
 my_number = 38 / 4
+```
+#### AllowForAlignment: true (default)
+
+```ruby
+# good
+{
+  1 =>  2,
+  11 => 3
+}
+```
+#### AllowForAlignment: false
+
+```ruby
+# bad
+{
+  1 =>  2,
+  11 => 3
+}
 ```
 #### EnforcedStyleForExponentOperator: no_space (default)
 
@@ -4763,40 +4925,6 @@ EnforcedStyle | `no_space` | `space`, `no_space`
 ### References
 
 * [https://rubystyle.guide#string-interpolation](https://rubystyle.guide#string-interpolation)
-
-## Layout/Tab
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.51
-
-This cop checks for tabs inside the source code.
-
-### Examples
-
-```ruby
-# bad
-# This example uses a tab to indent bar.
-def foo
-  bar
-end
-
-# good
-# This example uses spaces to indent bar.
-def foo
-  bar
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-IndentationWidth | `<none>` | Integer
-
-### References
-
-* [https://rubystyle.guide#spaces-indentation](https://rubystyle.guide#spaces-indentation)
 
 ## Layout/TrailingEmptyLines
 

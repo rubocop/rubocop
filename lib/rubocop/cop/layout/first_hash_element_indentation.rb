@@ -128,7 +128,7 @@ module RuboCop
 
         def check_right_brace(right_brace, left_brace, left_parenthesis)
           # if the right brace is on the same line as the last value, accept
-          return if right_brace.source_line[0...right_brace.column] =~ /\S/
+          return if /\S/.match?(right_brace.source_line[0...right_brace.column])
 
           expected_column = base_column(left_brace, left_parenthesis)
           @column_delta = expected_column - right_brace.column

@@ -76,17 +76,21 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
         RUBY
       end
 
-      it 'autocorrects misindented )' do
-        corrected = autocorrect_source(<<~RUBY)
+      it 'registers an offense and corrects misindented ) ' \
+        'when ) is aligned with the params' do
+        expect_offense(<<~RUBY)
           some_method(a,
             x: 1,
             y: 2
                       )
+                      ^ Indent `)` to column 0 (not 12)
           b =
             some_method(a,
                         )
+                        ^ Align `)` with `(`.
         RUBY
-        expect(corrected).to eq <<~RUBY
+
+        expect_correction(<<~RUBY)
           some_method(a,
             x: 1,
             y: 2
@@ -172,11 +176,20 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
           foo = some_method(a
           )
           ^ Align `)` with `(`.
+          some_method(a,
+                      x: 1,
+                      y: 2
+                      )
+                      ^ Align `)` with `(`.
         RUBY
 
         expect_correction(<<~RUBY)
           foo = some_method(a
                            )
+          some_method(a,
+                      x: 1,
+                      y: 2
+                     )
         RUBY
       end
 
@@ -229,27 +242,6 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                             x: 1,
                             y: 2
                            )
-          b =
-            some_method(a,
-                       )
-        RUBY
-      end
-
-      it 'autocorrects misindented )' do
-        corrected = autocorrect_source(<<~RUBY)
-          some_method(a,
-                      x: 1,
-                      y: 2
-                      )
-          b =
-            some_method(a,
-                        )
-        RUBY
-        expect(corrected).to eq <<~RUBY
-          some_method(a,
-                      x: 1,
-                      y: 2
-                     )
           b =
             some_method(a,
                        )
@@ -321,13 +313,14 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
       RUBY
     end
 
-    it 'can autocorrect method chains' do
-      corrected = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects method chains' do
+      expect_offense(<<~RUBY)
         good = foo.methA(:arg1, :arg2, options: :hash)
                  .methB(
                    :arg1,
                    :arg2,
              )
+             ^ Indent `)` to column 9 (not 5)
                  .methC
 
         good = foo.methA(
@@ -335,14 +328,16 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                    :arg2,
                    options: :hash,
             )
+            ^ Indent `)` to column 9 (not 4)
                  .methB(
                    :arg1,
                    :arg2,
                )
+               ^ Indent `)` to column 9 (not 7)
                  .methC
       RUBY
 
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         good = foo.methA(:arg1, :arg2, options: :hash)
                  .methB(
                    :arg1,
@@ -364,12 +359,18 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
     end
 
     context 'when using safe navigation operator' do
-      it 'registers an offense for misaligned )' do
+      it 'registers an offense and corrects misaligned )' do
         expect_offense(<<~RUBY)
           receiver&.some_method(
             a
             )
             ^ Indent `)` to column 0 (not 2)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          receiver&.some_method(
+            a
+          )
         RUBY
       end
     end

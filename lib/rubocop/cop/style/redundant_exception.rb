@@ -32,17 +32,17 @@ module RuboCop
           exploded?(node) do |command, message|
             return lambda do |corrector|
               if node.parenthesized?
-                corrector.replace(node.source_range,
+                corrector.replace(node,
                                   "#{command}(#{message.source})")
               else
-                corrector.replace(node.source_range,
+                corrector.replace(node,
                                   "#{command} #{message.source}")
               end
             end
           end
           compact?(node) do |new_call, message|
             lambda do |corrector|
-              corrector.replace(new_call.source_range, message.source)
+              corrector.replace(new_call, message.source)
             end
           end
         end

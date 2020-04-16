@@ -44,29 +44,6 @@ rubocop_steps: &rubocop_steps
 
 jobs:
 
-  # Ruby 2.3
-  ruby-2.3-spec:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-2.3-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.3-rubocop:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
-
   # Ruby 2.4
   ruby-2.4-spec:
     docker:
@@ -240,7 +217,7 @@ jobs:
       - run:
           name: Upload coverage results to Code Climate
           command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 6 --output tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
 
   # Miscellaneous tasks
@@ -265,11 +242,6 @@ workflows:
     jobs:
       - documentation-checks
       - cc-setup
-      - ruby-2.3-spec:
-          requires:
-            - cc-setup
-      - ruby-2.3-ascii_spec
-      - ruby-2.3-rubocop
       - ruby-2.4-spec:
           requires:
             - cc-setup
@@ -303,7 +275,6 @@ workflows:
 
       - cc-upload-coverage:
           requires:
-            - ruby-2.3-spec
             - ruby-2.4-spec
             - ruby-2.5-spec
             - ruby-2.6-spec

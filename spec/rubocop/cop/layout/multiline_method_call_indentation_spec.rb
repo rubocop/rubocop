@@ -117,15 +117,20 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for no indentation of second line' do
+    it 'registers an offense and corrects no indentation of second line' do
       expect_offense(<<~RUBY)
         a.
         b
         ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b
+      RUBY
     end
 
-    it 'registers an offense for 3 spaces indentation of second line' do
+    it 'registers an offense and corrects 3 spaces indentation of 2nd line' do
       expect_offense(<<~RUBY)
         a.
            b
@@ -134,19 +139,32 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
            d
            ^ Use 2 (not 3) spaces for indenting an expression spanning multiple lines.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b
+        c.
+          d
+      RUBY
     end
 
-    it 'registers an offense for extra indentation of third line' do
+    it 'registers an offense and corrects extra indentation of third line' do
       expect_offense(<<~RUBY)
         a.
           b.
             c
             ^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b.
+          c
+      RUBY
     end
 
-    it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
-       'expression in an array' do
+    it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
+      'indentation of an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a.
@@ -154,31 +172,54 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
          ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
         ]
       RUBY
+
+      expect_correction(<<~RUBY)
+        [
+         a.
+           b
+        ]
+      RUBY
     end
 
-    it 'registers an offense for extra indentation of 3rd line in typical ' \
-       'RSpec code' do
+    it 'registers an offense and corrects extra indentation of 3rd line ' \
+      'in typical RSpec code' do
       expect_offense(<<~RUBY)
         expect { Foo.new }.
           to change { Bar.count }.
               from(1).to(2)
               ^^^^ Use 2 (not 6) spaces for indenting an expression spanning multiple lines.
       RUBY
+
+      expect_correction(<<~RUBY)
+        expect { Foo.new }.
+          to change { Bar.count }.
+          from(1).to(2)
+      RUBY
     end
 
-    it 'registers an offense for proc call without a selector' do
+    it 'registers an offense and corrects proc call without a selector' do
       expect_offense(<<~RUBY)
         a
          .(args)
          ^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a
+          .(args)
+      RUBY
     end
 
-    it 'registers an offense for one space indentation of second line' do
+    it 'registers an offense and corrects one space indentation of 2nd line' do
       expect_offense(<<~RUBY)
         a
          .b
          ^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a
+          .b
       RUBY
     end
   end
@@ -205,6 +246,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
                          .where(name: 'Bob')
                          .order(:name)
         RUBY
+      end
+
+      context '>= Ruby 2.7', :ruby27 do
+        it 'accepts methods being aligned with method that is an argument' \
+           'when using numbered parameter' do
+          expect_no_offenses(<<~RUBY)
+            File.read('data.yml')
+                .then { YAML.safe_load _1 }
+                .transform_values(&:downcase)
+          RUBY
+        end
       end
 
       it 'accepts methods being aligned with method that is an argument in ' \
@@ -252,6 +304,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
         RUBY
       end
 
+      context 'target_ruby_version >= 2.5', :ruby25 do
+        it 'accepts key access to hash' do
+          expect_no_offenses(<<~RUBY)
+            hash[key] { 10 / 0 }
+              .fmap { |x| x * 3 }
+          RUBY
+        end
+      end
+
       it 'accepts 3 aligned methods' do
         expect_no_offenses(<<~RUBY)
           a_class.new(severity, location, 'message', 'CopName')
@@ -260,7 +321,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
         RUBY
       end
 
-      it 'registers an offense for unaligned methods' do
+      it 'registers an offense and corrects unaligned methods' do
         expect_offense(<<~RUBY)
           User.a
             .b
@@ -268,9 +329,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
            .c
            ^^ Align `.c` with `.a` on line 1.
         RUBY
+
+        expect_correction(<<~RUBY)
+          User.a
+              .b
+              .c
+        RUBY
       end
 
-      it 'registers an offense for unaligned method in block body' do
+      it 'registers an offense and corrects unaligned method in block body' do
         expect_offense(<<~RUBY)
           a do
             b.c
@@ -278,16 +345,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
               ^^ Align `.d` with `.c` on line 2.
           end
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(<<~RUBY)
-          User.all.first
-            .age.to_s
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          User.all.first
-              .age.to_s
+        expect_correction(<<~RUBY)
+          a do
+            b.c
+             .d
+          end
         RUBY
       end
     end
@@ -334,12 +397,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for one space indentation of third line' do
+    it 'registers an offense and corrects one space indentation of 3rd line' do
       expect_offense(<<~RUBY)
         a
           .b
          .c
          ^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a
+          .b
+          .c
       RUBY
     end
 
@@ -372,11 +441,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for misaligned methods in if condition' do
+    it 'registers an offense and corrects misaligned methods in if condition' do
       expect_offense(<<~RUBY)
         if a.
             b
             ^ Align `b` with `a.` on line 1.
+          something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if a.
+           b
           something
         end
       RUBY
@@ -398,16 +474,23 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for misaligned method in []= call' do
+    it 'registers an offense and corrects misaligned method in []= call' do
       expect_offense(<<~RUBY)
         flash[:error] = here_is_a_string.
                         that_spans.
            multiple_lines
            ^^^^^^^^^^^^^^ Align `multiple_lines` with `here_is_a_string.` on line 1.
       RUBY
+
+      expect_correction(<<~RUBY)
+        flash[:error] = here_is_a_string.
+                        that_spans.
+                        multiple_lines
+      RUBY
     end
 
-    it 'registers an offense for misaligned methods in unless condition' do
+    it 'registers an offense and corrects misaligned methods ' \
+      'in unless condition' do
       expect_offense(<<~RUBY)
         unless a
         .b
@@ -415,9 +498,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
           something
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        unless a
+               .b
+          something
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned methods in while condition' do
+    it 'registers an offense and corrects misaligned methods ' \
+      'in while condition' do
       expect_offense(<<~RUBY)
         while a.
             b
@@ -425,13 +516,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
           something
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        while a.
+              b
+          something
+        end
+      RUBY
     end
 
-    it 'registers an offense for misaligned methods in until condition' do
+    it 'registers an offense and corrects misaligned methods ' \
+      'in until condition' do
       expect_offense(<<~RUBY)
         until a.
             b
             ^ Align `b` with `a.` on line 1.
+          something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        until a.
+              b
           something
         end
       RUBY
@@ -464,12 +570,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for misaligned methods in local variable ' \
-       'assignment' do
+    it 'registers an offense and corrects misaligned methods ' \
+      'in local variable assignment' do
       expect_offense(<<~RUBY)
         a = b.c.
          d
          ^ Align `d` with `b.c.` on line 1.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = b.c.
+            d
       RUBY
     end
 
@@ -488,27 +599,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for unaligned methods in assignment' do
+    it 'registers an offense and corrects unaligned methods in assignment' do
       expect_offense(<<~RUBY)
         bar = Foo
           .a
           ^^ Align `.a` with `Foo` on line 1.
               .b(c)
       RUBY
-    end
 
-    it 'auto-corrects' do
-      new_source = autocorrect_source(<<~RUBY)
-        until a.
-            b
-          something
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        until a.
-              b
-          something
-        end
+      expect_correction(<<~RUBY)
+        bar = Foo
+              .a
+              .b(c)
       RUBY
     end
   end
@@ -549,41 +651,63 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for no indentation of second line' do
+    it 'registers an offense and corrects no indentation of second line' do
       expect_offense(<<~RUBY)
         a.
         b
         ^ Indent `b` 2 spaces more than `a` on line 1.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b
+      RUBY
     end
 
-    it 'registers an offense for extra indentation of 3rd line in typical ' \
-       'RSpec code' do
+    it 'registers an offense and corrects extra indentation of 3rd line ' \
+      'in typical RSpec code' do
       expect_offense(<<~RUBY)
         expect { Foo.new }.
           to change { Bar.count }.
               from(1).to(2)
               ^^^^ Indent `from` 2 spaces more than `change { Bar.count }` on line 2.
       RUBY
+
+      expect_correction(<<~RUBY)
+        expect { Foo.new }.
+          to change { Bar.count }.
+               from(1).to(2)
+      RUBY
     end
 
-    it 'registers an offense for proc call without a selector' do
+    it 'registers an offense and corrects proc call without a selector' do
       expect_offense(<<~RUBY)
         a
          .(args)
          ^^ Indent `.(` 2 spaces more than `a` on line 1.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a
+          .(args)
+      RUBY
     end
 
-    it 'registers an offense for one space indentation of second line' do
+    it 'registers an offense and corrects one space indentation of 2nd line' do
       expect_offense(<<~RUBY)
         a
          .b
          ^^ Indent `.b` 2 spaces more than `a` on line 1.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a
+          .b
+      RUBY
     end
 
-    it 'registers an offense for 3 spaces indentation of second line' do
+    it 'registers an offense and corrects 3 spaces indentation ' \
+      'of second line' do
       expect_offense(<<~RUBY)
         a.
            b
@@ -592,19 +716,32 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
            d
            ^ Indent `d` 2 spaces more than `c` on line 3.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b
+        c.
+          d
+      RUBY
     end
 
-    it 'registers an offense for extra indentation of third line' do
+    it 'registers an offense and corrects extra indentation of 3rd line' do
       expect_offense(<<~RUBY)
         a.
           b.
             c
             ^ Indent `c` 2 spaces more than `a` on line 1.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b.
+          c
+      RUBY
     end
 
-    it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
-       'expression in an array' do
+    it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
+      'indentation of an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a.
@@ -612,20 +749,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
          ^ Indent `b` 2 spaces more than `a` on line 2.
         ]
       RUBY
-    end
 
-    it 'auto-corrects' do
-      new_source = autocorrect_source(<<~RUBY)
-        until a.
-              b
-          something
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        until a.
-                b
-          something
-        end
+      expect_correction(<<~RUBY)
+        [
+         a.
+           b
+        ]
       RUBY
     end
   end
@@ -645,12 +774,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for one space indentation of third line' do
+    it 'registers an offense and corrects 1 space indentation of 3rd line' do
       expect_offense(<<~RUBY)
         a
           .b
          .c
          ^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a
+          .b
+          .c
       RUBY
     end
 
@@ -663,11 +798,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for aligned methods in if condition' do
+    it 'registers an offense and corrects aligned methods in if condition' do
       expect_offense(<<~RUBY)
         if a.
            b
            ^ Use 4 (not 3) spaces for indenting a condition in an `if` statement spanning multiple lines.
+          something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if a.
+            b
           something
         end
       RUBY
@@ -744,11 +886,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       end
     end
 
-    it 'registers an offense for wrong indentation of for expression' do
+    it 'registers an offense and corrects wrong indentation ' \
+      'of for expression' do
       expect_offense(<<~RUBY)
         for n in a.
           b
           ^ Use 4 (not 2) spaces for indenting a collection in a `for` statement spanning multiple lines.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for n in a.
+            b
         end
       RUBY
     end
@@ -772,7 +921,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'registers an offense for correct + unrecognized style' do
+    it 'registers an offense and corrects correct + unrecognized style' do
       expect_offense(<<~RUBY)
         a.
           b
@@ -780,33 +929,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
             d
             ^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.
+          b
+        c.
+          d
+      RUBY
     end
 
-    it 'registers an offense for aligned operators in assignment' do
-      msg = 'Use %d (not %d) spaces for indenting an expression ' \
-              'in an assignment spanning multiple lines.'
-
+    it 'registers an offense and corrects aligned operators in assignment' do
       expect_offense(<<~RUBY)
         formatted_int = int_part
                         .abs
-                        ^^^^ #{format(msg, 2, 16)}
+                        ^^^^ Use 2 (not 16) spaces for indenting an expression in an assignment spanning multiple lines.
                         .reverse
-                        ^^^^^^^^ #{format(msg, 2, 16)}
+                        ^^^^^^^^ Use 2 (not 16) spaces for indenting an expression in an assignment spanning multiple lines.
       RUBY
-    end
 
-    it 'auto-corrects' do
-      new_source = autocorrect_source(<<~RUBY)
-        until a.
-              b
-          something
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        until a.
-            b
-          something
-        end
+      expect_correction(<<~RUBY)
+        formatted_int = int_part
+          .abs
+          .reverse
       RUBY
     end
 

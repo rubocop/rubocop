@@ -321,4 +321,18 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
       RUBY
     end
   end
+
+  context 'when using `elsif` statement' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        foo = if foo
+                foo
+              elsif
+                bar
+              else
+                'default'
+              end
+      RUBY
+    end
+  end
 end

@@ -20,8 +20,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
           do_something
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Extra empty line detected at module body beginning.'])
+
+      expect(cop.messages).to eq([extra_begin])
     end
 
     it 'registers an offense for module body ending with a blank' do
@@ -31,8 +31,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Extra empty line detected at module body end.'])
+
+      expect(cop.messages).to eq([extra_end])
     end
 
     it 'autocorrects beginning and end' do
@@ -43,6 +43,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
         end
       RUBY
+
       expect(new_source).to eq(<<~RUBY)
         module SomeModule
           do_something
@@ -61,9 +62,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
           do_something
         end
       RUBY
-      expect(cop.messages)
-        .to eq(['Empty line missing at module body beginning.',
-                'Empty line missing at module body end.'])
+
+      expect(cop.messages).to eq([missing_begin, missing_end])
     end
 
     it 'registers an offense for module body not ending with a blank' do
@@ -82,6 +82,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
           do_something
         end
       RUBY
+
       expect(new_source).to eq(<<~RUBY)
         module SomeModule
 
@@ -91,10 +92,11 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
       RUBY
     end
 
-    it 'ignores modules with an empty body' do
-      source = "module A\nend"
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(source)
+    it 'accepts modules with an empty body' do
+      expect_no_offenses(<<~RUBY)
+        module A
+        end
+      RUBY
     end
   end
 
@@ -125,6 +127,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
           end
         RUBY
+
         expect(cop.messages).to eq([extra_begin])
       end
 
@@ -139,6 +142,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
           end
         RUBY
+
         expect(cop.messages).to eq([extra_end])
       end
 
@@ -152,6 +156,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
           end
         RUBY
+
         expect(cop.messages).to eq([missing_begin])
       end
 
@@ -165,6 +170,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
           end
         RUBY
+
         expect(cop.messages).to eq([missing_end])
       end
 
@@ -178,6 +184,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
           end
         RUBY
+
         expect(new_source).to eq(<<~RUBY)
           module Parent
             module Child
@@ -210,6 +217,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
           end
         RUBY
+
         expect(cop.messages).to eq([extra_begin])
       end
 
@@ -222,6 +230,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
           end
         RUBY
+
         expect(cop.messages).to eq([extra_end])
       end
     end
@@ -258,6 +267,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
             end
           end
         RUBY
+
         expect(cop.messages).to eq([missing_begin, missing_end])
       end
     end

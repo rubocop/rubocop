@@ -5,9 +5,10 @@ require 'set'
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for tabs inside the source code.
+      # This cop checks that the indentation method is consistent.
+      # Either tabs only or spaces only are used for indentation.
       #
-      # @example
+      # @example EnforcedStyle: spaces (default)
       #   # bad
       #   # This example uses a tab to indent bar.
       #   def foo
@@ -20,17 +21,30 @@ module RuboCop
       #     bar
       #   end
       #
-      class Tab < Cop
+      # @example EnforcedStyle: tabs
+      #   # bad
+      #   # This example uses spaces to indent bar.
+      #   def foo
+      #     bar
+      #   end
+      #
+      #   # good
+      #   # This example uses a tab to indent bar.
+      #   def foo
+      #     bar
+      #   end
+      class IndentationStyle < Cop
         include Alignment
+        include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG = 'Tab detected.'
+        MSG = '%<type>s detected in indentation.'
 
         def investigate(processed_source)
           str_ranges = string_literal_ranges(processed_source.ast)
 
           processed_source.lines.each.with_index(1) do |line, lineno|
-            match = line.match(/\t+/)
+            match = find_offence(line)
             next unless match
 
             range = source_range(processed_source.buffer,
@@ -43,13 +57,37 @@ module RuboCop
         end
 
         def autocorrect(range)
+          if range.source.include?("\t")
+            autocorrect_lambda_for_tabs(range)
+          else
+            autocorrect_lambda_for_spaces(range)
+          end
+        end
+
+        private
+
+        def find_offence(line)
+          if style == :spaces
+            line.match(/\A\s*\t+/)
+          else
+            line.match(/\A\s* +/)
+          end
+        end
+
+        def autocorrect_lambda_for_tabs(range)
           lambda do |corrector|
             spaces = ' ' * configured_indentation_width
             corrector.replace(range, range.source.gsub(/\t/, spaces))
           end
         end
 
-        private
+        def autocorrect_lambda_for_spaces(range)
+          lambda do |corrector|
+            corrector.replace(range, range.source.gsub(/\A\s+/) do |match|
+              "\t" * (match.size / configured_indentation_width)
+            end)
+          end
+        end
 
         def in_string_literal?(ranges, tabs_range)
           ranges.any? { |range| range.contains?(tabs_range) }
@@ -68,6 +106,10 @@ module RuboCop
               ranges << loc.expression
             end
           end
+        end
+
+        def message(_node)
+          format(MSG, type: style == :spaces ? 'Tab' : 'Space')
         end
       end
     end

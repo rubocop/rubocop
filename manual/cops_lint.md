@@ -166,7 +166,7 @@ BigDecimal(123.456, 3)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.50 | -
+Enabled | Yes | Yes  | 0.50 | 0.81
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
@@ -618,37 +618,6 @@ when baz then 2
 end
 ```
 
-## Lint/EndInMethod
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
-
-This cop checks for END blocks in method definitions.
-
-### Examples
-
-```ruby
-# bad
-
-def some_method
-  END { do_something }
-end
-```
-```ruby
-# good
-
-def some_method
-  at_exit { do_something }
-end
-```
-```ruby
-# good
-
-# outside defs
-END { do_something }
-```
-
 ## Lint/EnsureReturn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -1094,17 +1063,19 @@ end until some_condition
 ```ruby
 # good
 
-# using while
-while some_condition
+# while replacement
+loop do
   do_something
+  break unless some_condition
 end
 ```
 ```ruby
 # good
 
-# using until
-until some_condition
+# until replacement
+loop do
   do_something
+  break if some_condition
 end
 ```
 
@@ -1224,14 +1195,14 @@ end
 # good
 
 def foo
-  self.class_eval do
+  self.class.class_eval do
     def bar
     end
   end
 end
 
 def foo
-  self.module_exec do
+  self.class.module_exec do
     def bar
     end
   end
@@ -1516,6 +1487,52 @@ rather than meant to be part of the resulting symbols.
 %i(foo bar)
 ```
 
+## Lint/RaiseException
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.81 | -
+
+This cop checks for `raise` or `fail` statements which are
+raising `Exception` class.
+
+You can specify a module name that will be an implicit namespace
+using `AllowedImplicitNamespaces` option. The cop cause a false positive
+for namespaced `Exception` when a namespace is omitted. This option can
+prevent the false positive by specifying a namespace to be omitted for
+`Exception`. Alternatively, make `Exception` a fully qualified class
+name with an explicit namespace.
+
+### Examples
+
+```ruby
+# bad
+raise Exception, 'Error message here'
+
+# good
+raise StandardError, 'Error message here'
+```
+#### AllowedImplicitNamespaces: ['Gem']
+
+```ruby
+# good
+module Gem
+  def self.foo
+    raise Exception # This exception means `Gem::Exception`.
+  end
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowedImplicitNamespaces | `Gem` | Array
+
+### References
+
+* [https://rubystyle.guide#raise-exception](https://rubystyle.guide#raise-exception)
+
 ## Lint/RandOne
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -1593,15 +1610,15 @@ foo = 1
 ```
 ```ruby
 # bad
-# rubocop:disable Layout/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable Layout/LineLength
+# rubocop:disable Style/StringLiterals
+foo = "1"
+# rubocop:enable Style/StringLiterals
 baz
 # rubocop:enable all
 
 # good
-# rubocop:disable Layout/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
+# rubocop:disable Style/StringLiterals
+foo = "1"
 # rubocop:enable all
 baz
 ```
@@ -1638,7 +1655,7 @@ require 'unloaded_feature'
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | 0.76
+Enabled | Yes | Yes  | 0.76 | -
 
 This cop checks for unneeded usages of splat expansion
 
@@ -2275,17 +2292,42 @@ def some_method
 end
 ```
 
+## Lint/StructNewOverride
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.81 | -
+
+This cop checks unexpected overrides of the `Struct` built-in methods
+via `Struct.new`.
+
+### Examples
+
+```ruby
+# bad
+Bad = Struct.new(:members, :clone, :count)
+b = Bad.new([], true, 1)
+b.members #=> [] (overriding `Struct#members`)
+b.clone #=> true (overriding `Object#clone`)
+b.count #=> 1 (overriding `Enumerable#count`)
+
+# good
+Good = Struct.new(:id, :name)
+g = Good.new(1, "foo")
+g.members #=> [:id, :name]
+g.clone #=> #<struct Good id=1, name="foo">
+g.count #=> 2
+```
+
 ## Lint/SuppressedException
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 0.77
+Enabled | Yes | No | 0.9 | 0.81
 
 This cop checks for *rescue* blocks with no body.
 
 ### Examples
-
-#### AllowComments: false (default)
 
 ```ruby
 # bad
@@ -2295,23 +2337,9 @@ rescue
 end
 
 # bad
-def some_method
-  do_something
-rescue
-  # do nothing
-end
-
-# bad
 begin
   do_something
 rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-  # do nothing
 end
 
 # good
@@ -2328,33 +2356,38 @@ rescue
   handle_exception
 end
 ```
-#### AllowComments: true
+#### AllowComments: true (default)
+
+```ruby
+# good
+def some_method
+  do_something
+rescue
+  # do nothing
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing
+end
+```
+#### AllowComments: false
 
 ```ruby
 # bad
 def some_method
   do_something
 rescue
+  # do nothing
 end
 
 # bad
 begin
   do_something
 rescue
-end
-
-# good
-def some_method
-  do_something
-rescue
-  # do nothing but comment
-end
-
-# good
-begin
-  do_something
-rescue
-  # do nothing but comment
+  # do nothing
 end
 ```
 
@@ -2362,7 +2395,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-AllowComments | `false` | Boolean
+AllowComments | `true` | Boolean
 
 ### References
 
@@ -2382,7 +2415,7 @@ into RuboCop's offenses.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | -
+Enabled | Yes | Yes  | 0.66 | -
 
 This cop checks to make sure `#to_json` includes an optional argument.
 When overriding `#to_json`, callers may invoke JSON
@@ -2597,7 +2630,7 @@ AllowUnusedKeywordArguments | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.21 | 0.35
+Enabled | Yes | Yes  | 0.21 | 0.81
 
 This cop checks for unused method arguments.
 
@@ -2644,6 +2677,30 @@ end
 def do_something(unused)
 end
 ```
+#### IgnoreNotImplementedMethods: true (default)
+
+```ruby
+# good
+def do_something(unused)
+  raise NotImplementedError
+end
+
+def do_something_else(unused)
+  fail "TODO"
+end
+```
+#### IgnoreNotImplementedMethods: false
+
+```ruby
+# bad
+def do_something(unused)
+  raise NotImplementedError
+end
+
+def do_something_else(unused)
+  fail "TODO"
+end
+```
 
 ### Configurable attributes
 
@@ -2651,6 +2708,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 AllowUnusedKeywordArguments | `false` | Boolean
 IgnoreEmptyMethods | `true` | Boolean
+IgnoreNotImplementedMethods | `true` | Boolean
 
 ### References
 
@@ -2946,10 +3004,14 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | -
+Enabled | No | No | 0.13 | 0.80
 
 This cop checks for setter call to local variable as the final
 expression of a function definition.
+
+Note: There are edge cases in which the local variable references a
+value that is also accessible outside the local scope. This is not
+detected by the cop, and it can yield a false positive.
 
 ### Examples
 

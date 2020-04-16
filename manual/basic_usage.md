@@ -1,4 +1,4 @@
-## Basic Usage
+# Basic Usage
 
 RuboCop has three primary uses:
 
@@ -8,7 +8,7 @@ RuboCop has three primary uses:
 
 In the next sections we'll briefly cover all of them.
 
-### 1. Code style checker
+## 1. Code style checker
 
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
@@ -60,7 +60,7 @@ test.rb:4:5: W: Layout/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
 1 file inspected, 5 offenses detected
 ```
 
-#### Auto-correcting offenses
+### Auto-correcting offenses
 
 You can also run RuboCop in an auto-correct mode, where it will try to
 automatically fix the problems it found in your code:
@@ -71,7 +71,7 @@ $ rubocop -a
 
 See [Auto-correct](auto_correct.md).
 
-#### Changing what RuboCop considers to be offenses
+### Changing what RuboCop considers to be offenses
 
 RuboCop comes with a preconfigured set of rules for each of its cops, based on the [Ruby Style Guide](https://rubystyle.guide).
 Depending on your project, you may wish to reconfigure a cop, tell to ignore certain files, or disable it altogether.
@@ -81,7 +81,7 @@ project's root directory.
 
 For more information, see [Configuration](configuration.md).
 
-### 2. RuboCop as a replacement for `ruby -w`
+## 2. RuboCop as a replacement for `ruby -w`
 
 RuboCop natively implements almost all `ruby -w` lint warning checks, and then some. If you want you can use RuboCop
 simply as a replacement for `ruby -w`:
@@ -90,7 +90,7 @@ simply as a replacement for `ruby -w`:
 $ rubocop -l
 ```
 
-### 3. RuboCop as a formatter
+## 3. RuboCop as a formatter
 
 There's a handy shortcut to run auto-correction only on code layout (a.k.a. formatting) offenses:
 
@@ -116,14 +116,16 @@ Command flag                    | Description
 `-c/--config`                   | Run with specified config file.
 `-C/--cache`                    | Store and reuse results for faster operation.
 `-d/--debug`                    | Displays some extra debug output.
+    --disable-pending-cops      | Run without pending cops.
 `   --disable-uncorrectable`    | Used with --auto-correct to annotate any offenses that do not support autocorrect with `rubocop:todo` comments.
 `-D/--[no-]display-cop-names`   | Displays cop names in offense messages. Default is true.
 `   --display-only-fail-level-offenses` | Only output offense messages at the specified `--fail-level` or above
+    --enable-pending-cops       | Run with pending cops.
 `   --except`                   | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 `   --exclude-limit`            | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `-E/--extra-details`            | Displays extra details in offense messages.
 `-f/--format`                   | Choose a formatter, see [Formatters](formatters.md).
-`-F/--fail-fast`                | Inspects in modification time order and stops after first file with offenses.
+`-F/--fail-fast`                | Inspect files in order of modification time and stops after first file with offenses.
 `   --fail-level`               | Minimum [severity](configuration.md#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 `   --force-exclusion`          | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
 `-h/--help`                     | Print usage information.
@@ -137,6 +139,7 @@ Command flag                    | Description
 `-o/--out`                      | Write output to a file instead of STDOUT.
 `   --parallel`                 | Use available CPUs to execute inspection in parallel.
 `-r/--require`                  | Require Ruby file (see [Loading Extensions](extensions.md#loading-extensions)).
+`   --safe`                     | Run only safe cops.
 `   --safe-auto-correct`        | Omit cops annotated as "not safe". See [Auto-correct](auto_correct.md).
 `   --show-cops`                | Shows available cops and their configuration.
 `-s/--stdin`                    | Pipe source from STDIN. This is useful for editor integration. Takes one argument, a path, relative to the root of the project. RuboCop will use this path to determine which cops are enabled (via eg. Include/Exclude), and so that certain cops like Naming/FileName can be checked.

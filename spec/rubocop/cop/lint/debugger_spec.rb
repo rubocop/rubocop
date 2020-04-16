@@ -52,7 +52,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
                    'save_screenshot foo'
 
   include_examples 'debugger', 'remote_byebug', 'remote_byebug'
-  include_examples 'debugger', 'web console', 'console'
   include_examples 'debugger', 'web console binding', 'binding.console'
 
   it 'does not report an offense for a non-pry binding' do
@@ -62,7 +61,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   include_examples 'debugger', 'debugger with Kernel', 'Kernel.debugger'
   include_examples 'debugger', 'debugger with ::Kernel', '::Kernel.debugger'
   include_examples 'debugger', 'binding.pry with Kernel', 'Kernel.binding.pry'
-  include_examples 'debugger', 'web console with Kernel', 'Kernel.console'
 
   it 'does not report an offense for save_and_open_page with Kernel' do
     expect_no_offenses('Kernel.save_and_open_page')
@@ -93,8 +91,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     RUBY
   end
 
-  context 'target_ruby_version >= 2.4', :ruby24 do
-    include_examples 'debugger', 'irb binding', 'binding.irb'
-    include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
-  end
+  include_examples 'debugger', 'irb binding', 'binding.irb'
+  include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
 end

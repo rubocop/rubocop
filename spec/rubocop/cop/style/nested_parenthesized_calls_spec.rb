@@ -100,4 +100,18 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       expect_no_offenses('expect(object1.attr = 1).to eq 1')
     end
   end
+
+  context 'backslash newline in method call' do
+    let(:source) do
+      <<~RUBY
+        puts(nex \
+               5)
+      RUBY
+    end
+
+    it 'auto-corrects by adding parentheses' do
+      new_source = autocorrect_source(source.strip)
+      expect(new_source).to eq('puts(nex(5))')
+    end
+  end
 end

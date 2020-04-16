@@ -69,7 +69,7 @@ module RuboCop
         regex = /#{Regexp.quote(PACMAN)}|#{Regexp.quote(PACDOT)}/
         @progress_line = @progress_line.sub(regex, character)
         output.printf("%<line>s\r", line: @progress_line)
-        return unless @progress_line[-1] =~ /ᗣ|\./
+        return unless /ᗣ|\./.match?(@progress_line[-1])
 
         @repetitions += 1
         output.puts

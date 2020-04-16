@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     it 'registers an offense for arbitrary tokens' do
       expect_offense(<<~RUBY)
         # frozen_string_literal: token
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
         puts 1
       RUBY
     end
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'on the top line' do
       expect_offense(<<~RUBY)
         puts 1
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
         puts 1
       RUBY
 
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'when there is only a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under an encoding comment' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
         puts 1
       RUBY
 
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under an encoding comment separated by a newline' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
 
         puts 1
       RUBY
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under a shebang and an encoding comment' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
         # encoding: utf-8
         puts 1
       RUBY
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'and the code' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
         # encoding: utf-8
 
         puts 1
@@ -241,16 +241,16 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offence for not having a frozen string literal comment ' \
+    it 'registers an offense for not having a frozen string literal comment ' \
        'when there is only a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^ Missing frozen string literal comment.
       RUBY
     end
 
-    it 'registers an offence for an extra first empty line' do
-      pending 'There is a flaw that skips adding caret symbol in this case' \
+    it 'registers an offense for an extra first empty line' do
+      pending 'There is a flaw that skips adding caret symbol in this case, ' \
               'making it impossible to use `expect_offense` matcher'
 
       expect_offense(<<~RUBY)
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         # frozen_string_literal: true
 
         puts 1
@@ -461,6 +461,529 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         #!/usr/bin/env ruby
         # encoding: utf-8
         puts 1
+      RUBY
+    end
+  end
+
+  context 'always_true' do
+    let(:cop_config) do
+      { 'Enabled'       => true,
+        'EnforcedStyle' => 'always_true' }
+    end
+
+    it 'accepts an empty source' do
+      expect_no_offenses('')
+    end
+
+    it 'accepts a source with no tokens' do
+      expect_no_offenses(' ')
+    end
+
+    it 'accepts a frozen string literal on the top line' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal on the top ' \
+       'line' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: token
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'on the top line' do
+      expect_offense(<<~RUBY)
+        puts 1
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for an extra first empty line' do
+      pending 'There is a flaw that skips adding caret symbol in this case, ' \
+              'making it impossible to use `expect_offense` matcher'
+
+      expect_offense(<<~RUBY)
+
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal above ' \
+       'an empty line' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens above an empty line' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: token
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal below a shebang comment' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal below ' \
+       'a shebang comment' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens below a shebang comment' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: token
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under an encoding comment' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal below an encoding comment' do
+      expect_no_offenses(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal ' \
+       'below an encoding comment' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens below an encoding comment' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: token
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under a shebang and an encoding comment' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        # encoding: utf-8
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment below shebang and encoding ' \
+       'comments' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+       'below shebang and encoding comments' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens below ' \
+       'shebang and encoding comments' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: tokens
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment below shebang above an ' \
+       'encoding comments' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal ' \
+       'comment below shebang above an encoding comments' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        # encoding: utf-8
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens below ' \
+       'shebang above an encoding comments' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: tokens
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        # encoding: utf-8
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'accepts an emacs style combined magic comment' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # -*- encoding: UTF-8; frozen_string_literal: true -*-
+        # encoding: utf-8
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under a shebang, an encoding comment, and extra space' do
+      pending 'There is a flaw that skips adding caret symbol in this case, ' \
+              'making it impossible to use `expect_offense` matcher'
+
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment below shebang, an encoding ' \
+       'comment, and extra space' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+       'below shebang, an encoding comment, and extra space' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens below ' \
+       'shebang, an encoding comment, and extra space' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: tokens
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under an encoding comment and extra space' do
+      pending 'There is a flaw that skips adding caret symbol in this case, ' \
+              'making it impossible to use `expect_offense` matcher'
+
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+
+        ^ Missing magic comment `# frozen_string_literal: true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment below an encoding ' \
+       'comment and extra space' do
+      expect_no_offenses(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+       'below an encoding comment and extra space' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens below ' \
+       'an encoding comment and extra space' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: tokens
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for not having a frozen string literal comment ' \
+       'under shebang with no other code' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment ' \
+       'under shebang with no other code' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+       'under shebang with no other code' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
+      RUBY
+    end
+
+    it 'registers an offense for arbitrary tokens ' \
+       'under shebang with no other code' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: tokens
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # frozen_string_literal: true
       RUBY
     end
   end

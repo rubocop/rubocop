@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Team do
       include_context 'mock console output'
 
       before do
-        allow_any_instance_of(RuboCop::Cop::Layout::Tab)
+        allow_any_instance_of(RuboCop::Cop::Layout::IndentationStyle)
           .to receive(:autocorrect).and_return(buggy_correction)
 
         create_file(file_path, <<~RUBY)
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Team do
       let(:cause) { StandardError.new('cause') }
 
       let(:error_message) do
-        'An error occurred while Layout/Tab cop was inspecting ' \
+        'An error occurred while Layout/IndentationStyle cop was inspecting ' \
         '/tmp/example.rb:2:0.'
       end
 

@@ -3,10 +3,14 @@
 RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for colon without space after it' do
+  it 'registers an offense and corrects colon without space after it' do
     expect_offense(<<~RUBY)
       {a:3}
         ^ Space missing after colon.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a: 3}
     RUBY
   end
 
@@ -52,16 +56,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon do
     RUBY
   end
 
-  it 'registers an offense if an keyword optional argument has no space' do
+  it 'registers an offense and corrects a keyword optional ' \
+    'argument without a space' do
     expect_offense(<<~RUBY)
       def m(var:1, other_var: 2)
                ^ Space missing after colon.
       end
     RUBY
-  end
 
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source('def f(a:, b:2); {a:3}; end')
-    expect(new_source).to eq('def f(a:, b: 2); {a: 3}; end')
+    expect_correction(<<~RUBY)
+      def m(var: 1, other_var: 2)
+      end
+    RUBY
   end
 end

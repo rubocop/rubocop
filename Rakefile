@@ -18,12 +18,6 @@ require 'rubocop/rake_task'
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-desc 'Deprecated: Run test and RuboCop in parallel'
-task :parallel do
-  warn '`rake parallel` is deprecated. Use `rake default` instead.'
-  Rake::Task[:default].execute
-end
-
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation).tap do |task|
   if RUBY_ENGINE == 'ruby' &&
@@ -91,6 +85,7 @@ desc 'Syntax check for the documentation comments'
 task documentation_syntax_check: :yard_for_generate_documentation do
   require 'parser/ruby25'
   require 'parser/ruby26'
+  require 'parser/ruby27'
 
   ok = true
   YARD::Registry.load!
@@ -113,8 +108,12 @@ task documentation_syntax_check: :yard_for_generate_documentation do
         # `Lint/UselessElseWithoutRescue` cop's example.
         parser = if cop == RuboCop::Cop::Lint::UselessElseWithoutRescue
                    Parser::Ruby25.new(RuboCop::AST::Builder.new)
-                 else
+                 # Ruby 2.7 raises an syntax error in
+                 # `Lint/CircularArgumentReference` cop's example.
+                 elsif cop == RuboCop::Cop::Lint::CircularArgumentReference
                    Parser::Ruby26.new(RuboCop::AST::Builder.new)
+                 else
+                   Parser::Ruby27.new(RuboCop::AST::Builder.new)
                  end
         parser.diagnostics.all_errors_are_fatal = true
         parser.parse(buffer)

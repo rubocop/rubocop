@@ -29,7 +29,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.source_range, "{#{node.source}}")
+            corrector.replace(node, "{#{node.source}}")
           end
         end
 

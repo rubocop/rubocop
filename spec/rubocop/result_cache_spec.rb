@@ -271,19 +271,33 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
     end
 
-    shared_examples 'invalid cache location' do |error|
+    shared_examples 'invalid cache location' do |error, message|
+      before do
+        $stderr = StringIO.new
+      end
+
       it 'doesn\'t raise an exception' do
         expect(FileUtils).to receive(:mkdir_p).with(start_with(cache_root))
                                               .and_raise(error)
         expect { cache.save([]) }.not_to raise_error
+        expect($stderr.string).to eq(<<~WARN)
+          Couldn't create cache directory. Continuing without cache.
+            #{message}
+        WARN
+      end
+
+      after do
+        $stderr = STDERR
       end
     end
 
     context 'when the @path is not writable' do
       let(:cache_root) { '/permission_denied_dir' }
 
-      it_behaves_like 'invalid cache location', Errno::EACCES
-      it_behaves_like 'invalid cache location', Errno::EROFS
+      it_behaves_like 'invalid cache location',
+                      Errno::EACCES, 'Permission denied'
+      it_behaves_like 'invalid cache location',
+                      Errno::EROFS, 'Read-only file system'
     end
   end
 

@@ -178,7 +178,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Offense count: 1
               # Cop supports --auto-correct.
               # Configuration parameters: EnforcedStyle.
-              # SupportedStyles: always, never
+              # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
                   - 'example.rb'
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Offense count: 1
               # Cop supports --auto-correct.
               # Configuration parameters: EnforcedStyle.
-              # SupportedStyles: always, never
+              # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
                   - 'example.rb'
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Offense count: 1
               # Cop supports --auto-correct.
               # Configuration parameters: EnforcedStyle.
-              # SupportedStyles: always, never
+              # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
                   - 'example.rb'
@@ -368,10 +368,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 '  Exclude:',
                 "    - 'example1.rb'",
                 '',
+                '# Offense count: 2',
+                '# Cop supports --auto-correct.',
+                'Migration/DepartmentName:',
+                '  Exclude:',
+                "    - 'example1.rb'",
+                '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
                 '# Configuration parameters: EnforcedStyle.',
-                '# SupportedStyles: always, never',
+                '# SupportedStyles: always, always_true, never',
                 'Style/FrozenStringLiteralComment:',
                 '  Exclude:',
                 "    - 'example1.rb'",
@@ -413,7 +419,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # Offense count: 1
           # Cop supports --auto-correct.
           # Configuration parameters: EnforcedStyle.
-          # SupportedStyles: always, never
+          # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
               - 'example1.rb'
@@ -461,7 +467,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # Offense count: 1
           # Cop supports --auto-correct.
           # Configuration parameters: EnforcedStyle.
-          # SupportedStyles: always, never
+          # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
               - 'example1.rb'
@@ -585,6 +591,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
+         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# SupportedStyles: spaces, tabs',
+         'Layout/IndentationStyle:',
+         '  Exclude:',
+         "    - 'example2.rb'",
+         '',
+         '# Offense count: 1',
+         '# Cop supports --auto-correct.',
          'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -597,13 +611,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
-         '',
-         '# Offense count: 1',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth.',
-         'Layout/Tab:',
-         '  Exclude:',
-         "    - 'example2.rb'",
          '',
          '# Offense count: 2',
          '# Cop supports --auto-correct.',
@@ -684,6 +691,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
+         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# SupportedStyles: spaces, tabs',
+         'Layout/IndentationStyle:',
+         '  Exclude:',
+         "    - 'example2.rb'",
+         '',
+         '# Offense count: 1',
+         '# Cop supports --auto-correct.',
          'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -696,13 +711,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
-         '',
-         '# Offense count: 1',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth.',
-         'Layout/Tab:',
-         '  Exclude:',
-         "    - 'example2.rb'",
          '',
          '# Offense count: 3',
          '# Cop supports --auto-correct.',
@@ -776,14 +784,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         'Layout/InitialIndentation:',
+         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# SupportedStyles: spaces, tabs',
+         'Layout/IndentationStyle:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth.',
-         'Layout/Tab:',
+         'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'"]
       actual = IO.read('.rubocop_todo.yml').split($RS)
@@ -890,6 +899,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          "    - 'example2.rb'",
          '',
          '# Cop supports --auto-correct.',
+         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# SupportedStyles: spaces, tabs',
+         'Layout/IndentationStyle:',
+         '  Exclude:',
+         "    - 'example2.rb'",
+         '',
+         '# Cop supports --auto-correct.',
          'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -901,12 +917,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
-         '',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth.',
-         'Layout/Tab:',
-         '  Exclude:',
-         "    - 'example2.rb'",
          '',
          '# Cop supports --auto-correct.',
          '# Configuration parameters: AllowInHeredoc.',
@@ -1014,7 +1024,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # Offense count: 3
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
-            # SupportedStyles: always, never
+            # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Enabled: false
 
@@ -1035,7 +1045,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # Offense count: 4
             # Cop supports --auto-correct.
             # Configuration parameters: EnforcedStyle.
-            # SupportedStyles: always, never
+            # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Exclude:
                 - 'example1.rb'

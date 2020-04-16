@@ -150,6 +150,8 @@ module RuboCop
 
         def initialize(*)
           super
+          return unless style_configured?
+
           case style
           when :require_parentheses
             extend RequireParentheses
@@ -157,6 +159,9 @@ module RuboCop
             extend OmitParentheses
           end
         end
+
+        # @abstract Overridden in style modules
+        def autocorrect(_node); end
 
         private
 

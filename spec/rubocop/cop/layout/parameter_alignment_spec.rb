@@ -18,20 +18,32 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment do
       }
     end
 
-    it 'registers an offense for parameters with single indent' do
+    it 'registers an offense and corrects parameters with single indent' do
       expect_offense(<<~RUBY)
         def method(a,
           b)
           ^ Align the parameters of a method definition if they span more than one line.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def method(a,
+                   b)
+        end
+      RUBY
     end
 
-    it 'registers an offense for parameters with double indent' do
+    it 'registers an offense and corrects parameters with double indent' do
       expect_offense(<<~RUBY)
         def method(a,
             b)
             ^ Align the parameters of a method definition if they span more than one line.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def method(a,
+                   b)
         end
       RUBY
     end
@@ -75,27 +87,27 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment do
                   c)
         end
       RUBY
-    end
 
-    it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<~RUBY)
-        def method(a,
-            b)
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        def method(a,
-                   b)
+      expect_correction(<<~RUBY)
+        def func2(a,
+                  *b,
+                  c)
         end
       RUBY
     end
 
     context 'defining self.method' do
-      it 'registers an offense for parameters with single indent' do
+      it 'registers an offense and corrects parameters with single indent' do
         expect_offense(<<~RUBY)
           def self.method(a,
             b)
             ^ Align the parameters of a method definition if they span more than one line.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.method(a,
+                          b)
           end
         RUBY
       end
@@ -107,30 +119,20 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment do
           end
         RUBY
       end
-
-      it 'auto-corrects alignment' do
-        new_source = autocorrect_source(<<~RUBY)
-          def self.method(a,
-              b)
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          def self.method(a,
-                          b)
-          end
-        RUBY
-      end
     end
 
-    it 'auto-corrects alignment in simple case' do
-      new_source = autocorrect_source(<<~RUBY)
+    it 'registers an offense and corrects alignment in simple case' do
+      expect_offense(<<~RUBY)
         def func(a,
                b,
+               ^ Align the parameters of a method definition if they span more than one line.
         c)
+        ^ Align the parameters of a method definition if they span more than one line.
           123
         end
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         def func(a,
                  b,
                  c)
@@ -147,20 +149,32 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment do
       }
     end
 
-    it 'registers an offense for parameters aligned to first param' do
+    it 'registers an offense and corrects parameters aligned to first param' do
       expect_offense(<<~RUBY)
         def method(a,
                    b)
                    ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def method(a,
+          b)
+        end
+      RUBY
     end
 
-    it 'registers an offense for parameters with double indent' do
+    it 'registers an offense and corrects parameters with double indent' do
       expect_offense(<<~RUBY)
         def method(a,
             b)
             ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def method(a,
+          b)
         end
       RUBY
     end
@@ -205,46 +219,34 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment do
                   ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
         end
       RUBY
-    end
 
-    it 'auto-corrects alignment' do
-      new_source = autocorrect_source(<<~RUBY)
-        def method(a,
-            b)
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        def method(a,
-          b)
+      expect_correction(<<~RUBY)
+        def func2(a,
+          *b,
+          c)
         end
       RUBY
     end
 
     context 'defining self.method' do
-      it 'registers an offense for parameters aligned to first param' do
+      it 'registers an offense and corrects parameters ' \
+        'aligned to first param' do
         expect_offense(<<~RUBY)
           def self.method(a,
                           b)
                           ^ Use one level of indentation for parameters following the first line of a multi-line method definition.
           end
         RUBY
-      end
 
-      it 'accepts proper indentation' do
-        expect_no_offenses(<<~RUBY)
+        expect_correction(<<~RUBY)
           def self.method(a,
             b)
           end
         RUBY
       end
 
-      it 'auto-corrects alignment' do
-        new_source = autocorrect_source(<<~RUBY)
-          def self.method(a,
-              b)
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+      it 'accepts proper indentation' do
+        expect_no_offenses(<<~RUBY)
           def self.method(a,
             b)
           end

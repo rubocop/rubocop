@@ -72,13 +72,13 @@ module RuboCop
 
         def autocorrect_variable_interpolation(embedded_node, node)
           replacement = "#{embedded_node.loc.expression.source}.to_s"
-          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
+          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         def autocorrect_single_variable_interpolation(embedded_node, node)
           variable_loc = embedded_node.children.first.loc
           replacement = "#{variable_loc.expression.source}.to_s"
-          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
+          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         def autocorrect_other(embedded_node, node)

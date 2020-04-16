@@ -162,7 +162,7 @@ module RuboCop
         # `RedundantParentheses` cop is enabled, it will cause an infinite loop
         # as they compete to add and remove the parentheses respectively.
         def infinite_loop?
-          require_parentheses? &&
+          (require_parentheses? || require_parentheses_when_complex?) &&
             redundant_parentheses_enabled?
         end
 
@@ -207,8 +207,7 @@ module RuboCop
 
         def correct_unparenthesized(condition)
           lambda do |corrector|
-            corrector.insert_before(condition.source_range, '(')
-            corrector.insert_after(condition.source_range, ')')
+            corrector.wrap(condition, '(', ')')
           end
         end
 

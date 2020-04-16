@@ -17,8 +17,10 @@ module RuboCop
       'Layout/IndentHash' => 'Layout/FirstHashElementIndentation',
       'Layout/IndentHeredoc' => 'Layout/HeredocIndentation',
       'Layout/LeadingBlankLines' => 'Layout/LeadingEmptyLines',
+      'Layout/Tab' => 'Layout/IndentationStyle',
       'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
       'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
+      'Lint/EndInMethod' => 'Style/EndBlock',
       'Lint/HandleExceptions' => 'Lint/SuppressedException',
       'Lint/MultipleCompare' => 'Lint/MultipleComparison',
       'Lint/StringConversionInInterpolation' => 'Lint/RedundantStringCoercion',
@@ -69,7 +71,8 @@ module RuboCop
                                'Style/TrailingCommaInHashLiteral',
       'Style/TrailingCommaInLiteral' => 'Style/TrailingCommaInArrayLiteral ' \
                                         'and/or ' \
-                                        'Style/TrailingCommaInHashLiteral'
+                                        'Style/TrailingCommaInHashLiteral',
+      'Style/BracesAroundHashParameters' => nil
     }.map do |old_name, other_cops|
       if other_cops
         more = ". Please use #{other_cops} instead".gsub(%r{[A-Z]\w+/\w+},

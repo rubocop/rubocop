@@ -4,6 +4,14 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for trailing comma in argument lists.
+      # The supported styles are:
+      #
+      # - `consistent_comma`: Requires a comma after the last argument,
+      # for all parenthesized method calls with arguments.
+      # - `comma`: Requires a comma after the last argument, but only for
+      # parenthesized method calls where each argument is on its own line.
+      # - `no_comma`: Requires that there is no comma after the last
+      # argument.
       #
       # @example EnforcedStyleForMultiline: consistent_comma
       #   # bad
@@ -20,6 +28,11 @@ module RuboCop
       #
       #   # good
       #   method(
+      #     1, 2, 3,
+      #   )
+      #
+      #   # good
+      #   method(
       #     1,
       #     2,
       #   )
@@ -30,6 +43,28 @@ module RuboCop
       #
       #   # good
       #   method(1, 2)
+      #
+      #   # bad
+      #   method(
+      #     1, 2,
+      #     3,
+      #   )
+      #
+      #   # good
+      #   method(
+      #     1, 2,
+      #     3
+      #   )
+      #
+      #   # bad
+      #   method(
+      #     1, 2, 3,
+      #   )
+      #
+      #   # good
+      #   method(
+      #     1, 2, 3
+      #   )
       #
       #   # good
       #   method(
@@ -67,28 +102,6 @@ module RuboCop
 
         def self.autocorrect_incompatible_with
           [Layout::HeredocArgumentClosingParenthesis]
-        end
-
-        private
-
-        def avoid_autocorrect?(args)
-          args.last.hash_type? && args.last.braces? &&
-            braces_will_be_removed?(args)
-        end
-
-        # Returns true if running with --auto-correct would remove the braces
-        # of the last argument.
-        def braces_will_be_removed?(args)
-          brace_config = config.for_cop('Style/BracesAroundHashParameters')
-          return false unless brace_config.fetch('Enabled')
-          return false if brace_config['AutoCorrect'] == false
-
-          brace_style = brace_config['EnforcedStyle']
-          return true if brace_style == 'no_braces'
-
-          return false unless brace_style == 'context_dependent'
-
-          args.one? || !args[-2].hash_type?
         end
       end
     end

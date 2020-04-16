@@ -71,12 +71,12 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                [p]rogress is used by default
                                                  [a]utogenconf
                                                  [c]lang
-                                                 [d]isabled
                                                  [e]macs
                                                  [fi]les
                                                  [fu]ubar
                                                  [h]tml
                                                  [j]son
+                                                 [ju]nit
                                                  [o]ffenses
                                                  [pa]cman
                                                  [p]rogress
@@ -110,6 +110,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -E, --extra-details              Display extra details in offense messages.
               -S, --display-style-guide        Display style guide URLs in offense messages.
               -a, --auto-correct               Auto-correct offenses.
+                  --disable-pending-cops       Run without pending cops.
+                  --enable-pending-cops        Run with pending cops.
                   --ignore-disable-comments    Run cops even when they are disabled locally
                                                with a comment.
                   --safe                       Run only safe cops.

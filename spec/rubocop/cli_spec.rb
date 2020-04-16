@@ -79,7 +79,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         .to eq(<<~RESULT)
           == example.rb ==
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
-          C:  1:  1: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+          C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
           1 file inspected, 2 offenses detected
       RESULT
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
-              'token $end (Using Ruby 2.3 parser; configure using ' \
+              'token $end (Using Ruby 2.4 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
@@ -353,7 +353,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
+            #{abs('example.rb')}:3:110: C: Migration/DepartmentName: Department name is missing.
             #{abs('example.rb')}:4:81: C: Layout/LineLength: Line is too long. [95/80]
+            #{abs('example.rb')}:5:28: C: Migration/DepartmentName: Department name is missing.
         RESULT
       end
     end
@@ -1461,16 +1463,16 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'prints an error message for an unrecognized EnforcedStyle' do
       create_file('example/example1.rb', 'puts "hello"')
       create_file('example/.rubocop.yml', <<~YAML)
-        Style/BracesAroundHashParameters:
-          EnforcedStyle: context
+        Layout/AccessModifierIndentation:
+          EnforcedStyle: ident
       YAML
 
       expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
-        .to eq(["Error: invalid EnforcedStyle 'context' for " \
-                'Style/BracesAroundHashParameters found in ' \
+        .to eq(["Error: invalid EnforcedStyle 'ident' for " \
+                'Layout/AccessModifierIndentation found in ' \
                 'example/.rubocop.yml',
-                'Valid choices are: braces, no_braces, context_dependent',
+                'Valid choices are: outdent, indent',
                 ''].join("\n"))
     end
 
@@ -1631,7 +1633,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           'Error: RuboCop found unknown Ruby version 2.8 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.3, 2.4, 2.5, 2.6, 2.7/
+          /Supported versions: 2.4, 2.5, 2.6, 2.7/
         )
       end
     end
@@ -1654,7 +1656,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         )
 
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.3, 2.4/
+          /Supported versions: 2.4/
         )
       end
     end

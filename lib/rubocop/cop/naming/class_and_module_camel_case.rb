@@ -22,7 +22,7 @@ module RuboCop
         MSG = 'Use CamelCase for classes and modules.'
 
         def on_class(node)
-          return unless node.loc.name.source =~ /_/
+          return unless /_/.match?(node.loc.name.source)
 
           add_offense(node, location: :name)
         end

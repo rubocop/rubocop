@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Registry do
-  subject(:registry) { described_class.new(cops) }
+  subject(:registry) { described_class.new(cops, options) }
 
   let(:cops) do
     stub_const('RuboCop::Cop::Test', Module.new)
@@ -32,6 +32,8 @@ RSpec.describe RuboCop::Cop::Registry do
       RuboCop::Cop::Test::FirstArrayElementIndentation
     ]
   end
+
+  let(:options) { {} }
 
   # `RuboCop::Cop::Cop` mutates its `registry` when inherited from.
   # This can introduce nondeterministic failures in other parts of the
@@ -202,6 +204,100 @@ RSpec.describe RuboCop::Cop::Registry do
       it 'overrides config if :only includes the cop' do
         result = registry.enabled(config, ['Lint/BooleanSymbol'])
         expect(result).to eql(cops)
+      end
+
+      context 'when specifying `--disable-pending-cops` command-line option' do
+        let(:options) do
+          { disable_pending_cops: true }
+        end
+
+        it 'does not include them' do
+          result = registry.enabled(config, [])
+          expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+
+        context 'when specifying `NewCops: enable` option in .rubocop.yml' do
+          let(:config) do
+            RuboCop::Config.new(
+              'AllCops' => { 'NewCops' => 'enable' },
+              'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+            )
+          end
+
+          it 'does not include them because command-line option takes ' \
+             'precedence over .rubocop.yml' do
+            result = registry.enabled(config, [])
+            expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+      end
+
+      context 'when specifying `--enable-pending-cops` command-line option' do
+        let(:options) do
+          { enable_pending_cops: true }
+        end
+
+        it 'includes them' do
+          result = registry.enabled(config, [])
+          expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+
+        context 'when specifying `NewCops: disable` option in .rubocop.yml' do
+          let(:config) do
+            RuboCop::Config.new(
+              'AllCops' => { 'NewCops' => 'disable' },
+              'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+            )
+          end
+
+          it 'includes them because command-line option takes ' \
+             'precedence over .rubocop.yml' do
+            result = registry.enabled(config, [])
+            expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+      end
+
+      context 'when specifying `NewCops: pending` option in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'NewCops' => 'pending' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them' do
+          result = registry.enabled(config, [])
+          expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `NewCops: disable` option in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'NewCops' => 'disable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them' do
+          result = registry.enabled(config, [])
+          expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `NewCops: enable` option in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'NewCops' => 'enable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'includes them' do
+          result = registry.enabled(config, [])
+          expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
       end
     end
   end

@@ -8,10 +8,10 @@ module RuboCop
       #
       # @example
       #   # good
-      #   method1(method2(arg), method3(arg))
+      #   method1(method2(arg))
       #
       #   # bad
-      #   method1(method2 arg, method3, arg)
+      #   method1(method2 arg)
       class NestedParenthesizedCalls < Cop
         include RangeHelp
 
@@ -35,8 +35,8 @@ module RuboCop
           last_arg = nested.last_argument.source_range
 
           leading_space =
-            range_with_surrounding_space(range: first_arg,
-                                         side: :left).begin.resize(1)
+            range_with_surrounding_space(range: first_arg.begin,
+                                         side: :left)
 
           lambda do |corrector|
             corrector.replace(leading_space, '(')

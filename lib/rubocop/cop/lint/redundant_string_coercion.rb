@@ -38,7 +38,7 @@ module RuboCop
           lambda do |corrector|
             receiver = node.receiver
             corrector.replace(
-              node.source_range,
+              node,
               if receiver
                 receiver.source
               else

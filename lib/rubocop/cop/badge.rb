@@ -4,11 +4,11 @@ module RuboCop
   module Cop
     # Identifier of all cops containing a department and cop name.
     #
-    # All cops are identified by their badge. For example, the badge
-    # for `RuboCop::Cop::Layout::Tab` is `Layout/Tab`. Badges can be
-    # parsed as either `Department/CopName` or just `CopName` to allow
-    # for badge references in source files that omit the department
-    # for RuboCop to infer.
+    # All cops are identified by their badge. For example, the badge for
+    # `RuboCop::Cop::Layout::IndentationStyle` is `Layout/IndentationStyle`.
+    # Badges can be parsed as either `Department/CopName` or just `CopName` to
+    # allow for badge references in source files that omit the department for
+    # RuboCop to infer.
     class Badge
       # Error raised when a badge parse fails.
       class InvalidBadge < Error

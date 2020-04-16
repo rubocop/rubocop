@@ -39,7 +39,7 @@ module RuboCop
           new_center = "#{center.source} && #{center.source}"
 
           lambda do |corrector|
-            corrector.replace(center.source_range, new_center)
+            corrector.replace(center, new_center)
           end
         end
       end

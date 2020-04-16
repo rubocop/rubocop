@@ -129,7 +129,7 @@ module RuboCop
 
           block_start_col = node.source_range.column
 
-          corrector.insert_before(first_node.source_range,
+          corrector.insert_before(first_node,
                                   "\n  #{' ' * block_start_col}")
         end
 

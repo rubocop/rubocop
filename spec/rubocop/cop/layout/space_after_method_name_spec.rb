@@ -3,28 +3,48 @@
 RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for def with space before the parenthesis' do
+  it 'registers an offense and corrects def with space ' \
+    'before the parenthesis' do
     expect_offense(<<~RUBY)
       def func (x)
               ^ Do not put a space between a method name and the opening parenthesis.
         a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def func(x)
+        a
+      end
+    RUBY
   end
 
-  it 'registers offense for class def with space before parenthesis' do
+  it 'registers offense and corrects class def with space before parenthesis' do
     expect_offense(<<~RUBY)
       def self.func (x)
                    ^ Do not put a space between a method name and the opening parenthesis.
         a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def self.func(x)
+        a
+      end
+    RUBY
   end
 
-  it 'registers offense for assignment def with space before parenthesis' do
+  it 'registers offense and corrects assignment def with space ' \
+    'before parenthesis' do
     expect_offense(<<~RUBY)
       def func= (x)
                ^ Do not put a space between a method name and the opening parenthesis.
+        a
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func=(x)
         a
       end
     RUBY
@@ -65,31 +85,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName do
   it 'accepts an assignment def with arguments but no parentheses' do
     expect_no_offenses(<<~RUBY)
       def func= x
-        a
-      end
-    RUBY
-  end
-
-  it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(<<~RUBY)
-      def func (x)
-        a
-      end
-      def self.func (x)
-        a
-      end
-      def func= (x)
-        a
-      end
-    RUBY
-    expect(new_source).to eq(<<~RUBY)
-      def func(x)
-        a
-      end
-      def self.func(x)
-        a
-      end
-      def func=(x)
         a
       end
     RUBY

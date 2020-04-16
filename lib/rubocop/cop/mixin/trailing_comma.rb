@@ -23,7 +23,7 @@ module RuboCop
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
           check_comma(node, kind, after_last_item.begin_pos + comma_offset)
         elsif should_have_comma?(style, node)
-          put_comma(node, items, kind)
+          put_comma(items, kind)
         end
       end
 
@@ -135,7 +135,7 @@ module RuboCop
 
       def avoid_comma(kind, comma_begin_pos, extra_info)
         range = range_between(comma_begin_pos, comma_begin_pos + 1)
-        article = kind =~ /array/ ? 'an' : 'a'
+        article = /array/.match?(kind) ? 'an' : 'a'
         msg = format(
           MSG,
           command: 'Avoid',
@@ -145,9 +145,7 @@ module RuboCop
         add_offense(range, location: range, message: msg)
       end
 
-      def put_comma(node, items, kind)
-        return if avoid_autocorrect?(elements(node))
-
+      def put_comma(items, kind)
         last_item = items.last
         return if last_item.block_pass_type?
 
@@ -167,11 +165,6 @@ module RuboCop
         ix += expr.source[ix..-1] =~ /\S/
 
         range_between(expr.begin_pos + ix, expr.end_pos)
-      end
-
-      # By default, there's no reason to avoid auto-correct.
-      def avoid_autocorrect?(_nodes)
-        false
       end
 
       def any_heredoc?(items)
