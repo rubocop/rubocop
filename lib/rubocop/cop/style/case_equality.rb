@@ -42,7 +42,7 @@ module RuboCop
 
         def const?(node)
           if cop_config.fetch('AllowOnConstant', false)
-            !node.const_type?
+            !node&.const_type?
           else
             true
           end
