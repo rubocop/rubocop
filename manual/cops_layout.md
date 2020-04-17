@@ -4987,7 +4987,7 @@ EnforcedStyle | `final_newline` | `final_newline`, `final_blank_line`
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.49 | 0.55
+Enabled | Yes | Yes  | 0.49 | 0.83
 
 This cop looks for trailing whitespace in the source code.
 
@@ -5002,7 +5002,7 @@ x = 0
 # good
 x = 0
 ```
-#### AllowInHeredoc: false (default)
+#### AllowInHeredoc: false
 
 ```ruby
 # The line in this example contains spaces after the 0.
@@ -5011,7 +5011,7 @@ code = <<~RUBY
   x = 0
 RUBY
 ```
-#### AllowInHeredoc: true
+#### AllowInHeredoc: true (default)
 
 ```ruby
 # The line in this example contains spaces after the 0.
@@ -5025,7 +5025,7 @@ RUBY
 
 Name | Default value | Configurable values
 --- | --- | ---
-AllowInHeredoc | `false` | Boolean
+AllowInHeredoc | `true` | Boolean
 
 ### References
 

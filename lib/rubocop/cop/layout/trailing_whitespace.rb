@@ -14,14 +14,14 @@ module RuboCop
       #   # good
       #   x = 0
       #
-      # @example AllowInHeredoc: false (default)
+      # @example AllowInHeredoc: false
       #   # The line in this example contains spaces after the 0.
       #   # bad
       #   code = <<~RUBY
       #     x = 0
       #   RUBY
       #
-      # @example AllowInHeredoc: true
+      # @example AllowInHeredoc: true (default)
       #   # The line in this example contains spaces after the 0.
       #   # good
       #   code = <<~RUBY
