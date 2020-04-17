@@ -1295,8 +1295,8 @@ Layout/TrailingWhitespace:
   StyleGuide: '#no-trailing-whitespace'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '0.55'
-  AllowInHeredoc: false
+  VersionChanged: '0.83'
+  AllowInHeredoc: true
 
 #################### Lint ##################################
 ### Warnings

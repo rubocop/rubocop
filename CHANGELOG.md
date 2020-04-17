@@ -6,6 +6,10 @@
 
 * [#7882](https://github.com/rubocop-hq/rubocop/pull/7882): Fix `Style/CaseEquality` when `AllowOnConstant` is `true` and the method receiver is implicit. ([@rafaelfranca][])
 
+### Changes
+
+* [#7860](https://github.com/rubocop-hq/rubocop/issues/7860): Change `AllowInHeredoc` option of `Layout/TrailingWhitespace` to `true` by default. ([@koic][])
+
 ## 0.82.0 (2020-04-16)
 
 ### New features
