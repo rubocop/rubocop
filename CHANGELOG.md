@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#7882](https://github.com/rubocop-hq/rubocop/pull/7882): Fix `Style/CaseEquality` when `AllowOnConstant` is `true` and the method receiver is implicit. ([@rafaelfranca][])
+
 ## 0.82.0 (2020-04-16)
 
 ### New features

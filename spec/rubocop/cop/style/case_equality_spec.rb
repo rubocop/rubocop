@@ -21,6 +21,12 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality do
       )
     end
 
+    it 'does not fail when the receiver is implicit' do
+      expect_no_offenses(<<~RUBY)
+        puts "No offense"
+      RUBY
+    end
+
     it 'does not register an offense for === when the receiver is a constant' do
       expect_no_offenses(<<~RUBY)
         Array === var
