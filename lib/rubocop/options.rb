@@ -320,9 +320,9 @@ module RuboCop
       return unless @options.key?(:parallel)
 
       if @options[:cache] == 'false'
-        raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
-                                   'execution, so combining with --cache ' \
-                                   'false is not allowed.'
+        @options.delete(:parallel)
+        warn '-P/--parallel uses caching to speed up execution, so combining '\
+             'with --cache false will ignore --parallel.'
       end
 
       validate_parallel_with_combo_option
@@ -332,13 +332,18 @@ module RuboCop
       combos = {
         auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
                          'while --auto-gen-config needs a non-cached run, ' \
-                         'so they cannot be combined.',
-        fail_fast: '-P/--parallel cannot be combined with -F/--fail-fast.',
-        auto_correct: '-P/--parallel cannot be combined with --auto-correct.'
+                         'so ignoring --parallel.',
+        fail_fast: '-P/--parallel cannot be combined with -F/--fail-fast, so '\
+                   'ignoring --parallel.',
+        auto_correct: '-P/--parallel cannot be combined with --auto-correct, '\
+                      'so ignoring --parallel.'
       }
 
       combos.each do |key, msg|
-        raise OptionArgumentError, msg if @options.key?(key)
+        next unless @options.key?(key)
+
+        @options.delete(:parallel)
+        warn msg
       end
     end
 

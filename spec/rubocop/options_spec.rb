@@ -186,11 +186,12 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--parallel' do
       context 'combined with --cache false' do
-        it 'fails with an error message' do
+        it 'succeeds with an error message' do
           msg = ['-P/--parallel uses caching to speed up execution, so ',
-                 'combining with --cache false is not allowed.'].join
-          expect { options.parse %w[--parallel --cache false] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+                 'combining with --cache false will ignore --parallel.'].join
+          options.parse %w[--parallel --cache false]
+
+          expect($stderr.string).to eq(msg)
         end
       end
 
