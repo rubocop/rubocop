@@ -47,6 +47,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).not_to match(/Running parallel inspection/)
         end
       end
+
+      context 'in combination with --ignore-parent-exclusion' do
+        before do
+          create_file('.rubocop.yml', ['AllCops:',
+                                       '  Exclude:',
+                                       '    - subdir/*'])
+          create_file('subdir/.rubocop.yml', ['AllCops:',
+                                              '  Exclude:',
+                                              '    - foobar'])
+          create_file('subdir/test.rb', 'puts 1')
+        end
+
+        it 'does ignore the exclusion in the parent directory configuration' do
+          Dir.chdir('subdir') do
+            cli.run ['--parallel', '--ignore-parent-exclusion']
+          end
+          expect($stdout.string).to match(/Inspecting 1 file/)
+        end
+      end
     end
   end
 
