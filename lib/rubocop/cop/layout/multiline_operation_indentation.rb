@@ -6,30 +6,39 @@ module RuboCop
       # This cop checks the indentation of the right hand side operand in
       # binary operations that span more than one line.
       #
+      # The `aligned` style checks that operators are aligned if they are part
+      # of an `if` or `while` condition, a `return` statement, etc. In other
+      # contexts, the second operand should be indented regardless of enforced
+      # style.
+      #
       # @example EnforcedStyle: aligned (default)
       #   # bad
       #   if a +
       #       b
-      #     something
+      #     something &&
+      #     something_else
       #   end
       #
       #   # good
       #   if a +
       #      b
-      #     something
+      #     something &&
+      #       something_else
       #   end
       #
       # @example EnforcedStyle: indented
       #   # bad
       #   if a +
       #      b
-      #     something
+      #     something &&
+      #     something_else
       #   end
       #
       #   # good
       #   if a +
       #       b
-      #     something
+      #     something &&
+      #       something_else
       #   end
       #
       class MultilineOperationIndentation < Cop

@@ -11,6 +11,7 @@
 ### Changes
 
 * [#7860](https://github.com/rubocop-hq/rubocop/issues/7860): Change `AllowInHeredoc` option of `Layout/TrailingWhitespace` to `true` by default. ([@koic][])
+* [#7094](https://github.com/rubocop-hq/rubocop/issues/7094): Clarify alignment in `Layout/MultilineOperationIndentation`. ([@jonas054][])
 
 ## 0.82.0 (2020-04-16)
 
