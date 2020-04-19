@@ -35,9 +35,8 @@ module RuboCop
       if @options[:init]
         run_command(:init)
       else
-        set_options_to_config_loader
-        validate_options_vs_config
         act_on_options
+        validate_options_vs_config
         apply_default_formatter
         execute_runners
       end
@@ -84,6 +83,8 @@ module RuboCop
     end
 
     def act_on_options
+      set_options_to_config_loader
+
       @config_store.options_config = @options[:config] if @options[:config]
       @config_store.force_default_config! if @options[:force_default_config]
 

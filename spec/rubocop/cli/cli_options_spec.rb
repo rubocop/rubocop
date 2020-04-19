@@ -66,6 +66,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string).to match(/Inspecting 1 file/)
         end
       end
+
+      context 'in combination with --force-default-config' do
+        before do
+          create_file('.rubocop.yml', ['ALLCOPS:', # Faulty configuration
+                                       '  Exclude:',
+                                       '    - subdir/*'])
+          create_file('test.rb', 'puts 1')
+        end
+
+        it 'does not parse local configuration' do
+          cli.run ['--parallel', '--force-default-config']
+          expect($stdout.string).to match(/Inspecting 1 file/)
+        end
+      end
     end
   end
 
