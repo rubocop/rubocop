@@ -3736,6 +3736,11 @@ Enabled | Yes | Yes  | 0.49 | -
 This cop checks the indentation of the right hand side operand in
 binary operations that span more than one line.
 
+The `aligned` style checks that operators are aligned if they are part
+of an `if` or `while` condition, a `return` statement, etc. In other
+contexts, the second operand should be indented regardless of enforced
+style.
+
 ### Examples
 
 #### EnforcedStyle: aligned (default)
@@ -3744,13 +3749,15 @@ binary operations that span more than one line.
 # bad
 if a +
     b
-  something
+  something &&
+  something_else
 end
 
 # good
 if a +
    b
-  something
+  something &&
+    something_else
 end
 ```
 #### EnforcedStyle: indented
@@ -3759,13 +3766,15 @@ end
 # bad
 if a +
    b
-  something
+  something &&
+  something_else
 end
 
 # good
 if a +
     b
-  something
+  something &&
+    something_else
 end
 ```
 
