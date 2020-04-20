@@ -9,12 +9,13 @@ configuration.
 
 ## Release Policy
 
-We're following http://semver.org/[SemVer] (as much as one can be
-following it when the major version is 0). At this point bumps of the
-minor (second) version number are considered major releases and always
-include new features or significant changes to existing features. API
-compatibility between major releases is a big concern, as there are
-many RuboCop extensions that can be affected by breaking API changes.
+We're following [Semantic Versioning](http://semver.org/) (as much as
+one can be following it when the major version is 0). At this point
+bumps of the minor (second) version number are considered major releases
+and always include new features or significant changes to existing
+features. API compatibility between major releases is a big concern, as
+there are many RuboCop extensions that can be affected by breaking API
+changes.
 
 The development cycle for the next major
 release starts immediately after the previous one has been
