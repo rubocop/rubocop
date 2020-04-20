@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
+
 ### Bug fixes
 
 * [#7882](https://github.com/rubocop-hq/rubocop/pull/7882): Fix `Style/CaseEquality` when `AllowOnConstant` is `true` and the method receiver is implicit. ([@rafaelfranca][])

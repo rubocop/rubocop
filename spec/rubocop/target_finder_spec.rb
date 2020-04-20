@@ -36,6 +36,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
   RUBY_FILENAMES = %w[.irbrc
                       .pryrc
+                      .simplecov
                       Appraisals
                       Berksfile
                       Brewfile
