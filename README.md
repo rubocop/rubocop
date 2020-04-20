@@ -1,6 +1,6 @@
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
-[![AppVeyor Status](https://ci.appveyor.com/api/projects/status/sj3ye7n5690d0nvg?svg=true)](https://ci.appveyor.com/project/bbatsov/rubocop)
+[![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
 [![Coverage Status](https://api.codeclimate.com/v1/badges/ad6e76460499c8c99697/test_coverage)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](https://inch-ci.org/github/bbatsov/rubocop.svg)](https://inch-ci.org/github/bbatsov/rubocop)
