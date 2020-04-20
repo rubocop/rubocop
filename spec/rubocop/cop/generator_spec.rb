@@ -280,6 +280,28 @@ RSpec.describe RuboCop::Cop::Generator do
                  "#{path}.\n")
       end
     end
+
+    context 'with version provided' do
+      it 'uses the provided version' do
+        expect(File).to receive(:write).with(path, <<~YAML)
+          Style/Alias:
+            Enabled: true
+
+          Style/FakeCop:
+            Description: 'TODO: Write a description of the cop.'
+            Enabled: pending
+            VersionAdded: '1.52'
+
+          Style/Lambda:
+            Enabled: true
+
+          Style/SpecialGlobalVars:
+            Enabled: true
+        YAML
+
+        generator.inject_config(config_file_path: path, version_added: '1.52')
+      end
+    end
   end
 
   describe '#snake_case' do
