@@ -35,6 +35,7 @@ AllCops:
     - '**/*.watchr'
     - '**/.irbrc'
     - '**/.pryrc'
+    - '**/.simplecov'
     - '**/buildfile'
     - '**/Appraisals'
     - '**/Berksfile'
