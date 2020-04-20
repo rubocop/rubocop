@@ -86,7 +86,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     it 'returns absolute paths' do
       expect(found_files.empty?).to be(false)
       found_files.each do |file|
-        expect(file.sub(/^[A-Z]:/, '')).to start_with('/')
+        expect(file.sub(/^[A-Z]:/i, '')).to start_with('/')
       end
     end
 

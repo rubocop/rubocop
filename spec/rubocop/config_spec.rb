@@ -448,7 +448,7 @@ RSpec.describe RuboCop::Config do
 
       it 'generates valid absolute directory' do
         excludes = configuration['AllCops']['Exclude']
-                   .map { |e| e.sub(/^[A-Z]:/, '') }
+                   .map { |e| e.sub(/^[A-Z]:/i, '') }
         expect(excludes)
           .to eq [
             '/home/foo/project/config/environment',
@@ -478,7 +478,7 @@ RSpec.describe RuboCop::Config do
 
       it 'generates valid absolute directory' do
         excludes = configuration['AllCops']['Exclude']
-                   .map { |e| e.sub(/^[A-Z]:/, '') }
+                   .map { |e| e.sub(/^[A-Z]:/i, '') }
         expect(excludes)
           .to eq [
             '/home/foo/project/config/environment',
