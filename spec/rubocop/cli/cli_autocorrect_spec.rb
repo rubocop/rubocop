@@ -106,6 +106,30 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects `Layout/SpaceAroundOperators` and `Layout/ExtraSpacing` ' \
+     'offenses when using `ForceEqualSignAlignment: true`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ExtraSpacing:
+        ForceEqualSignAlignment: true
+    YAML
+
+    create_file('example.rb', <<~RUBY)
+      test123456                = nil
+      test1234                   = nil
+      test1_test2_test3_test4_12 =nil
+    RUBY
+
+    expect(cli.run(['--auto-correct'])).to eq(1)
+
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      test123456                 = nil
+      test1234                   = nil
+      test1_test2_test3_test4_12 = nil
+    RUBY
+  end
+
   it 'does not correct SpaceAroundOperators in a hash that would be ' \
      'changed back' do
     create_file('.rubocop.yml', <<~YAML)

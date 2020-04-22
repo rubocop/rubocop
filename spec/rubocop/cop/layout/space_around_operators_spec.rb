@@ -6,7 +6,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   let(:config) do
     RuboCop::Config
       .new(
-        'Layout/ExtraSpacing' => { 'ForceEqualSignAlignment' => true },
         'Layout/HashAlignment' => { 'EnforcedHashRocketStyle' => hash_style },
         'Layout/SpaceAroundOperators' => {
           'AllowForAlignment' => allow_for_alignment,

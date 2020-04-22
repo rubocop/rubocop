@@ -139,7 +139,7 @@ module RuboCop
             elsif range.source.end_with?("\n")
               corrector.replace(range, " #{range.source.strip}\n")
             else
-              corrector.replace(range, " #{range.source.strip} ")
+              enclose_operator_with_space(corrector, range)
             end
           end
         end
@@ -168,6 +168,19 @@ module RuboCop
         def offense(type, operator, with_space, right_operand)
           msg = offense_message(type, operator, with_space, right_operand)
           yield msg if msg
+        end
+
+        def enclose_operator_with_space(corrector, range)
+          operator = range.source
+
+          # If `ForceEqualSignAlignment` is true, `Layout/ExtraSpacing` cop
+          # inserts spaces before operator. If `Layout/SpaceAroundOperators` cop
+          # inserts a space, it collides and raises the infinite loop error.
+          if force_equal_sign_alignment?
+            corrector.insert_after(range, ' ') unless operator.end_with?(' ')
+          else
+            corrector.replace(range, " #{operator.strip} ")
+          end
         end
 
         def offense_message(type, operator, with_space, right_operand)
@@ -214,6 +227,10 @@ module RuboCop
 
         def space_around_exponent_operator?
           cop_config['EnforcedStyleForExponentOperator'] == 'space'
+        end
+
+        def force_equal_sign_alignment?
+          config.for_cop('Layout/ExtraSpacing')['ForceEqualSignAlignment']
         end
 
         def should_not_have_surrounding_space?(operator)
