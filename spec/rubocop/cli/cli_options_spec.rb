@@ -294,6 +294,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         context 'when Style department is enabled' do
           let(:new_cops_option) { '' }
+          let(:version_added) { "VersionAdded: '0.80'" }
 
           before do
             create_file('.rubocop.yml', <<~YAML)
@@ -306,25 +307,44 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Style/SomeCop:
                 Description: Something
                 Enabled: pending
-                VersionAdded: '0.80'
+                #{version_added}
             YAML
           end
 
-          it 'accepts cop names from plugins with a pending cop warning' do
-            expect(output).to start_with(pending_cop_warning)
-            expect(output).to end_with(inspected_output)
+          context 'when `VersionAdded` is specified' do
+            it 'accepts cop names from plugins with a pending cop warning' do
+              expect(output).to start_with(pending_cop_warning)
+              expect(output).to end_with(inspected_output)
 
-            remaining_range =
-              pending_cop_warning.length..-(inspected_output.length + 1)
-            pending_cops = output[remaining_range].split("\n")
+              remaining_range =
+                pending_cop_warning.length..-(inspected_output.length + 1)
+              pending_cops = output[remaining_range].split("\n")
 
-            expect(pending_cops).to include(
-              ' - Style/SomeCop (0.80)'
-            )
+              expect(pending_cops).to include(' - Style/SomeCop (0.80)')
 
-            manual_url = output[remaining_range].split("\n").last
+              manual_url = output[remaining_range].split("\n").last
 
-            expect(manual_url).to eq(versioning_manual_url)
+              expect(manual_url).to eq(versioning_manual_url)
+            end
+          end
+
+          context 'when `VersionAdded` is not specified' do
+            let(:version_added) { '' }
+
+            it 'accepts cop names from plugins with a pending cop warning' do
+              expect(output).to start_with(pending_cop_warning)
+              expect(output).to end_with(inspected_output)
+
+              remaining_range =
+                pending_cop_warning.length..-(inspected_output.length + 1)
+              pending_cops = output[remaining_range].split("\n")
+
+              expect(pending_cops).to include(' - Style/SomeCop (N/A)')
+
+              manual_url = output[remaining_range].split("\n").last
+
+              expect(manual_url).to eq(versioning_manual_url)
+            end
           end
 
           context 'when using `--disable-pending-cops` command-line option' do

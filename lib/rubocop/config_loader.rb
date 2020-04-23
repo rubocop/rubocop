@@ -132,9 +132,9 @@ module RuboCop
                      '`false` in your `.rubocop.yml` file:').yellow
 
         pending_cops.each do |cop|
-          warn Rainbow(
-            " - #{cop.name} (#{cop.metadata['VersionAdded']})"
-          ).yellow
+          version = cop.metadata['VersionAdded'] || 'N/A'
+
+          warn Rainbow(" - #{cop.name} (#{version})").yellow
         end
 
         warn Rainbow('For more information: https://docs.rubocop.org/en/latest/versioning/').yellow
