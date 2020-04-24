@@ -41,6 +41,22 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     let(:close) { ')' }
   end
 
+  context 'when comment present before closing brace' do
+    it 'corrects closing brace without crashing' do
+      expect_offense(<<~RUBY)
+        super(foo(bar,
+          'hash' => { 'key' => 'value' } # comment
+        ))
+        ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        super(foo(bar,
+          'hash' => { 'key' => 'value' })) # comment
+      RUBY
+    end
+  end
+
   context 'when EnforcedStyle is new_line' do
     let(:cop_config) { { 'EnforcedStyle' => 'new_line' } }
 

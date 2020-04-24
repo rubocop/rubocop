@@ -43,6 +43,8 @@
 * [#7842](https://github.com/rubocop-hq/rubocop/issues/7842): Fix a false positive for `Lint/RaiseException` when Exception without cbase specified under the namespace `Gem` by adding  `AllowedImplicitNamespaces` option. ([@koic][])
 * `Style/IfUnlessModifier` does not infinite-loop when autocorrecting long lines which use if/unless modifiers and have multiple statements separated by semicolons. ([@alexdowad][])
 * [rubocop-hq/rubocop-rails#127](https://github.com/rubocop-hq/rubocop-rails/issues/127): Use `ConfigLoader.default_configuration` for the default config. ([@hanachin][])
+* [#7777](https://github.com/rubocop-hq/rubocop/issues/7777): Fix crash for `Layout/MultilineArrayBraceLayout` when comment is present after last element. ([@shekhar-patil][])
+* [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
 
 ### Changes
 
@@ -4479,3 +4481,4 @@
 [@saurabhmaurya15]: https://github.com/saurabhmaurya15
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
+[@shekhar-patil]: https://github.com/shekhar-patil
