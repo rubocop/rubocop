@@ -19,10 +19,15 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     RUBY
   end
 
-  it 'registers an offense for math expression' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for math expression' do
+    expect_no_offenses(<<~RUBY)
       puts (2 + 3) * 4
-          ^ `(...)` interpreted as grouped expression.
+    RUBY
+  end
+
+  it 'does not register an offense for math expression with `to_i`' do
+    expect_no_offenses(<<~RUBY)
+      do_something.eq (foo * bar).to_i
     RUBY
   end
 
