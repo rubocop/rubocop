@@ -595,7 +595,7 @@ This cop checks for empty interpolation.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.45 | -
+Enabled | Yes | No | 0.45 | 0.83
 
 This cop checks for the presence of `when` branches without a body.
 
@@ -603,20 +603,49 @@ This cop checks for the presence of `when` branches without a body.
 
 ```ruby
 # bad
-
 case foo
-when bar then 1
-when baz then # nothing
+when bar
+  do_something
+when baz
 end
 ```
 ```ruby
 # good
-
-case foo
-when bar then 1
-when baz then 2
+case condition
+when foo
+  do_something
+when bar
+  nil
 end
 ```
+#### AllowComments: true (default)
+
+```ruby
+# good
+case condition
+when foo
+  do_something
+when bar
+  # noop
+end
+```
+#### AllowComments: false
+
+```ruby
+# bad
+case condition
+when foo
+  do_something
+when bar
+  # do nothing
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowComments | `true` | Boolean
 
 ## Lint/EnsureReturn
 
