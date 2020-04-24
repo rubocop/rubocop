@@ -83,6 +83,12 @@ module RuboCop
 
     def add_cop_selection_csv_option(option, opts)
       option(opts, "--#{option} [COP1,COP2,...]") do |list|
+        unless list
+          message = "--#{option} argument should be [COP1,COP2,...]."
+
+          raise OptionArgumentError, message
+        end
+
         @options[:"#{option}"] =
           if list.empty?
             ['']

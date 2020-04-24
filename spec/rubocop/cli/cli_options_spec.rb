@@ -555,6 +555,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           RESULT
       end
     end
+
+    context 'when a cop name is not specified' do
+      it 'displays how to use `--only` option' do
+        expect(cli.run(%w[--except -a Lint/NumberConverion])).to eq(2)
+        expect($stderr.string).to eq(<<~MESSAGE)
+          --except argument should be [COP1,COP2,...].
+        MESSAGE
+      end
+    end
   end
 
   describe '--except' do
@@ -672,6 +681,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             RESULT
         end
+      end
+    end
+
+    context 'when a cop name is not specified' do
+      it 'displays how to use `--except` option' do
+        expect(cli.run(%w[--except])).to eq(2)
+        expect($stderr.string).to eq(<<~MESSAGE)
+          --except argument should be [COP1,COP2,...].
+        MESSAGE
       end
     end
   end
