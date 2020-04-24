@@ -12,6 +12,7 @@
 * [#7790](https://github.com/rubocop-hq/rubocop/issues/7790): Fix `--parallel` and `--ignore-parent-exclusion` combination. ([@jonas054][])
 * [#7881](https://github.com/rubocop-hq/rubocop/issues/7881): Fix `--parallel` and `--force-default-config` combination. ([@jonas054][])
 * [#7635](https://github.com/rubocop-hq/rubocop/issues/7635): Fix a false positive for `Style/MultilineWhenThen` when `then` required for a body of `when` is used. ([@koic][])
+* [#7905](https://github.com/rubocop-hq/rubocop/pull/7905): Fix an error when running `rubocop --only` or `rubocop --except` options without cop name argument. ([@koic][])
 
 ### Changes
 
