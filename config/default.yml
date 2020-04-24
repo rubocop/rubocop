@@ -1415,7 +1415,9 @@ Lint/EmptyInterpolation:
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
   Enabled: true
+  AllowComments: true
   VersionAdded: '0.45'
+  VersionChanged: '0.83'
 
 Lint/EnsureReturn:
   Description: 'Do not use return in an ensure block.'

@@ -73,12 +73,6 @@ module RuboCop
 
           add_offense(node)
         end
-
-        private
-
-        def comment_lines?(node)
-          processed_source[line_range(node)].any? { |line| comment_line?(line) }
-        end
       end
     end
   end
