@@ -3,19 +3,27 @@
 RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for method call with space before the ' \
-     'parenthesis' do
+  it 'registers an offense and corrects for method call with space before ' \
+     'the parenthesis' do
     expect_offense(<<~RUBY)
       a.func (x)
             ^ `(...)` interpreted as grouped expression.
     RUBY
+
+    expect_correction(<<~RUBY)
+      a.func(x)
+    RUBY
   end
 
-  it 'registers an offense for predicate method call with space ' \
+  it 'registers an offense and corrects for predicate method call with space ' \
      'before the parenthesis' do
     expect_offense(<<~RUBY)
       is? (x)
          ^ `(...)` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      is?(x)
     RUBY
   end
 
@@ -67,11 +75,15 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   end
 
   context 'when using safe navigation operator' do
-    it 'registers an offense for method call with space before the ' \
-       'parenthesis' do
+    it 'registers an offense and corrects for method call with space before ' \
+       'the parenthesis' do
       expect_offense(<<~RUBY)
         a&.func (x)
                ^ `(...)` interpreted as grouped expression.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a&.func(x)
       RUBY
     end
   end
