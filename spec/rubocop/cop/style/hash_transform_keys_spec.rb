@@ -66,6 +66,19 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
 
+    it 'flags _.map{...}.to_h when transform_keys could be used ' \
+       'when line break before `to_h`' do
+      expect_offense(<<~RUBY)
+        x.map {|k, v| [k.to_sym, v]}.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `map {...}.to_h`.
+          to_h
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.transform_keys {|k| k.to_sym}
+      RUBY
+    end
+
     it 'does not flag _.map{...}.to_h when both key & value are transformed' do
       expect_no_offenses('x.map {|k, v| [k.to_sym, foo(v)]}.to_h')
     end
