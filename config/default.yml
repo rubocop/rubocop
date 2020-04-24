@@ -1571,6 +1571,7 @@ Lint/ParenthesesAsGroupedExpression:
   StyleGuide: '#parens-no-spaces'
   Enabled: true
   VersionAdded: '0.12'
+  VersionChanged: '0.83'
 
 Lint/PercentStringArray:
   Description: >-

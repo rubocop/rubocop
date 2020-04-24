@@ -30,9 +30,18 @@ module RuboCop
 
           range = space_range(node.first_argument.source_range, space_length)
 
-          add_offense(nil, location: range)
+          add_offense(node, location: range)
         end
         alias on_csend on_send
+
+        def autocorrect(node)
+          space_length = spaces_before_left_parenthesis(node)
+          range = space_range(node.first_argument.source_range, space_length)
+
+          lambda do |corrector|
+            corrector.remove(range)
+          end
+        end
 
         private
 
