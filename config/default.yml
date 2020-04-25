@@ -1425,6 +1425,13 @@ Lint/ErbNewArguments:
   Enabled: true
   VersionAdded: '0.56'
 
+Lint/ExplicitOperatorPrecedence:
+  Description: >-
+                 Catches if multiple binary operators of different precedents
+                 are used without parenthesis.
+  Enabled: pending
+  VersionAdded: '0.83'
+
 Lint/FlipFlop:
   Description: 'Checks for flip-flops.'
   StyleGuide: '#no-flip-flops'

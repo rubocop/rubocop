@@ -719,6 +719,31 @@ else
 end
 ```
 
+## Lint/ExplicitOperatorPrecedence
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | Yes  | 0.83 | -
+
+This cop checks if binary operators of different precedents are used without explicit use of parenthesis.
+when operators are used without parenthesis
+
+### Examples
+
+```ruby
+# bad
+a && b || c
+a * b + c
+a ** b * c / d % e + f - g << h >> i & j | k ^ l
+```
+```ruby
+# good
+# With parenthesis, there is no ambiguity.
+(a && b) || c
+(a * b) + c
+(((((a**b) * c / d % e) + f - g) << h >> i) & j) | k ^ l
+```
+
 ## Lint/FlipFlop
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

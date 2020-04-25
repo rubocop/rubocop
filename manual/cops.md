@@ -198,6 +198,7 @@ In the following section you find all available cops:
 * [Lint/EmptyWhen](cops_lint.md#lintemptywhen)
 * [Lint/EnsureReturn](cops_lint.md#lintensurereturn)
 * [Lint/ErbNewArguments](cops_lint.md#linterbnewarguments)
+* [Lint/ExplicitOperatorPrecedence](cops_lint.md#lintexplicitoperatorprecedence)
 * [Lint/FlipFlop](cops_lint.md#lintflipflop)
 * [Lint/FloatOutOfRange](cops_lint.md#lintfloatoutofrange)
 * [Lint/FormatParameterMismatch](cops_lint.md#lintformatparametermismatch)
