@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces using // or %r around regular expressions.
+      # This cop enforces using // or %r around regular expressions, and
+      # prevents unnecessary /-escapes inside %r literals.
       #
       # @example EnforcedStyle: slashes (default)
       #   # bad
@@ -81,12 +82,23 @@ module RuboCop
       # @example AllowInnerSlashes: true
       #   # good
       #   x =~ /home\//
+      #
+      # @example
+      #   # bad
+      #   r = %r{foo\/bar}
+      #
+      #   # good
+      #   r = %r{foo/bar}
+      #
+      #   # good
+      #   r = %r/foo\/bar/
       class RegexpLiteral < Cop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
         MSG_USE_SLASHES = 'Use `//` around regular expression.'
         MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'
+        MSG_UNNECESSARY_ESCAPE = 'Unnecessary `/`-escape inside `%r` literal'
 
         def on_regexp(node)
           if slash_literal?(node)
@@ -98,8 +110,17 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            correct_delimiters(node, corrector)
-            correct_inner_slashes(node, corrector)
+            if !slash_literal?(node) && allowed_percent_r_literal?(node)
+              correct_inner_slashes(node, corrector, '\/', '/')
+            else
+              correct_delimiters(node, corrector)
+              correct_inner_slashes(
+                node,
+                corrector,
+                inner_slash_before_delimiter_correction(node),
+                inner_slash_after_delimiter_correction(node)
+              )
+            end
           end
         end
 
@@ -112,9 +133,13 @@ module RuboCop
         end
 
         def check_percent_r_literal(node)
-          return if allowed_percent_r_literal?(node)
-
-          add_offense(node, message: MSG_USE_SLASHES)
+          if allowed_percent_r_literal?(node)
+            percent_r_unnecessary_escapes(node).each do |loc|
+              add_offense(node, location: loc, message: MSG_UNNECESSARY_ESCAPE)
+            end
+          else
+            add_offense(node, message: MSG_USE_SLASHES)
+          end
         end
 
         def allowed_slash_literal?(node)
@@ -146,6 +171,12 @@ module RuboCop
           node_body(node).include?('/')
         end
 
+        def percent_r_unnecessary_escapes(node)
+          return [] if percent_r_slash_delimiters?(node) || allow_inner_slashes?
+
+          inner_slash_ranges(node, '\/')
+        end
+
         def allow_inner_slashes?
           cop_config['AllowInnerSlashes']
         end
@@ -159,6 +190,10 @@ module RuboCop
           node.loc.begin.source == '/'
         end
 
+        def percent_r_slash_delimiters?(node)
+          node.loc.begin.source == '%r/'
+        end
+
         def preferred_delimiters
           config.for_cop('Style/PercentLiteralDelimiters') \
             ['PreferredDelimiters']['%r'].split(//)
@@ -170,25 +205,24 @@ module RuboCop
           corrector.replace(node.loc.end, replacement.last)
         end
 
-        def correct_inner_slashes(node, corrector)
-          regexp_begin = node.loc.begin.end_pos
-
-          inner_slash_indices(node).each do |index|
-            start = regexp_begin + index
-
-            corrector.replace(
-              range_between(
-                start,
-                start + inner_slash_before_correction(node).length
-              ),
-              inner_slash_after_correction(node)
-            )
+        def correct_inner_slashes(node, corrector, existing, replacement)
+          inner_slash_ranges(node, existing).map do |range|
+            corrector.replace(range, replacement)
           end
         end
 
-        def inner_slash_indices(node)
+        def inner_slash_ranges(node, slash)
+          regexp_begin = node.loc.begin.end_pos
+
+          inner_slash_indices(node, slash).map do |index|
+            start = regexp_begin + index
+
+            range_between(start, start + slash.length)
+          end
+        end
+
+        def inner_slash_indices(node, pattern)
           text    = node_body(node, include_begin_nodes: true)
-          pattern = inner_slash_before_correction(node)
           index   = -1
           indices = []
 
@@ -199,11 +233,11 @@ module RuboCop
           indices
         end
 
-        def inner_slash_before_correction(node)
+        def inner_slash_before_delimiter_correction(node)
           inner_slash_for(node.loc.begin.source)
         end
 
-        def inner_slash_after_correction(node)
+        def inner_slash_after_delimiter_correction(node)
           inner_slash_for(calculate_replacement(node).first)
         end
 

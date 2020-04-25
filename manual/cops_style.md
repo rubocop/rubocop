@@ -5903,7 +5903,8 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.9 | 0.30
 
-This cop enforces using // or %r around regular expressions.
+This cop enforces using // or %r around regular expressions, and
+prevents unnecessary /-escapes inside %r literals.
 
 ### Examples
 
@@ -5993,6 +5994,16 @@ x =~ %r{home/}
 ```ruby
 # good
 x =~ /home\//
+```
+```ruby
+# bad
+r = %r{foo\/bar}
+
+# good
+r = %r{foo/bar}
+
+# good
+r = %r/foo\/bar/
 ```
 
 ### Configurable attributes
