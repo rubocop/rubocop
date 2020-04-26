@@ -22,6 +22,7 @@
 * [#7899](https://github.com/rubocop-hq/rubocop/issues/7899): Fix an infinite loop error for `Layout/SpaceAroundOperators` with `Layout/ExtraSpacing` when using `ForceEqualSignAlignment: true`. ([@koic][])
 * [#7885](https://github.com/rubocop-hq/rubocop/issues/7885): Fix `Style/IfUnlessModifier` logic when tabs are used for indentation. ([@jonas054][])
 * [#7909](https://github.com/rubocop-hq/rubocop/pull/7909): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when using an intended grouped parentheses. ([@koic][])
+* [#7913](https://github.com/rubocop-hq/rubocop/pull/7913): Fix a false positive for `Lint/LiteralAsCondition` when using `true` literal in `while` and similar cases. ([@koic][])
 
 ### Changes
 

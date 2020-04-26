@@ -10,25 +10,24 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   if 20
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # bad
-      #
       #   if some_var && true
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   if some_var && some_condition
       #     do_something
+      #   end
+      #
+      #   # good
+      #   # When using a boolean value for an infinite loop.
+      #   while true
+      #     break if condition
       #   end
       class LiteralAsCondition < Cop
         MSG = 'Literal `%<literal>s` appeared as a condition.'
@@ -38,20 +37,18 @@ module RuboCop
         end
 
         def on_while(node)
-          check_for_literal(node)
-        end
+          return if condition(node).true_type?
 
-        def on_while_post(node)
           check_for_literal(node)
         end
+        alias on_while_post on_while
 
         def on_until(node)
-          check_for_literal(node)
-        end
+          return if condition(node).false_type?
 
-        def on_until_post(node)
           check_for_literal(node)
         end
+        alias on_until_post on_until
 
         def on_case(case_node)
           if case_node.condition
