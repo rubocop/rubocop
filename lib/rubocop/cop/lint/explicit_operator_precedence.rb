@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# TODO: when finished, run `rake generate_cops_documentation` to update the docs
 module RuboCop
   module Cop
     module Lint
