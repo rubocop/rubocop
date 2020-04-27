@@ -5,6 +5,7 @@
 ### New features
 
 * [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
+* [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
 
 ### Bug fixes
 

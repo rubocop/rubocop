@@ -28,10 +28,24 @@ module RuboCop
               "if it's surely a regexp literal, or add a whitespace to the " \
               'right of the `/` if it should be a division.'
 
+        def autocorrect(node)
+          lambda do |corrector|
+            add_parentheses(node, corrector)
+          end
+        end
+
         private
 
         def relevant_diagnostic?(diagnostic)
           diagnostic.reason == :ambiguous_literal
+        end
+
+        def find_offense_node_by(diagnostic)
+          node = processed_source.ast.each_node(:regexp).find do |regexp_node|
+            regexp_node.source_range.begin_pos == diagnostic.location.begin_pos
+          end
+
+          node.parent
         end
 
         def alternative_message(_diagnostic)
