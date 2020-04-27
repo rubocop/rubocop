@@ -40,6 +40,11 @@ module RuboCop
           diagnostic.reason == :useless_else
         end
 
+        def find_offense_node_by(diagnostic)
+          # TODO: When implementing auto-correction, this method should return
+          # an offense node passed as first argument of `add_offense` method.
+        end
+
         def alternative_message(_diagnostic)
           MSG
         end

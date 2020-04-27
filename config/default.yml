@@ -1324,6 +1324,7 @@ Lint/AmbiguousRegexpLiteral:
                  a method invocation without parentheses.
   Enabled: true
   VersionAdded: '0.17'
+  VersionChanged: '0.83'
 
 Lint/AssignmentInCondition:
   Description: "Don't use assignment in conditions."

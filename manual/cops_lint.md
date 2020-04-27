@@ -66,7 +66,7 @@ do_something(*some_array)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | -
+Enabled | Yes | Yes  | 0.17 | 0.83
 
 This cop checks for ambiguous regexp literals in the first argument of
 a method invocation without parentheses.
