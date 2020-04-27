@@ -1810,7 +1810,7 @@ Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
   VersionAdded: '0.20'
-  VersionChanged: '0.47'
+  VersionChanged: '0.83'
   ContextCreatingMethods: []
   MethodCreatingMethods: []
 

@@ -125,6 +125,8 @@ module RuboCop
       #     delegate :method_a, to: :method_b
       #   end
       class UselessAccessModifier < Cop
+        include RangeHelp
+
         MSG = 'Useless `%<current>s` access modifier.'
 
         def on_class(node)
@@ -143,6 +145,16 @@ module RuboCop
 
         def on_sclass(node)
           check_node(node.children[1]) # singleton class body
+        end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            range = range_by_whole_lines(
+              node.source_range, include_final_newline: true
+            )
+
+            corrector.remove(range)
+          end
         end
 
         private
