@@ -8,6 +8,7 @@
 * [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
 * [#7917](https://github.com/rubocop-hq/rubocop/pull/7917): Support autocorrection for `Lint/UselessAccessModifier`. ([@koic][])
 * [#595](https://github.com/rubocop-hq/rubocop/issues/595): Add ERB pre-processing for configuration files. ([@jonas054][])
+* [#7918](https://github.com/rubocop-hq/rubocop/pull/7918): Support autocorrection for `Lint/AmbiguousOperator`. ([@koic][])
 
 ### Bug fixes
 
