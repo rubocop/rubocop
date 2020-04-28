@@ -22,7 +22,7 @@ RSpec.describe RuboCop::CommentConfig do
         '',
         'def some_method',
         "  puts 'Disabling indented single line' # rubocop:disable " \
-        'Metrics/LineLength',
+        'Layout/LineLength',
         'end',
         '',                                                  # 18
         'string = <<END',
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::CommentConfig do
         '',
         '# rubocop:enable Lint/Void',
         '',
-        '# rubocop:disable Style/For, Style/Not,Layout/Tab',
+        '# rubocop:disable Style/For, Style/Not,Layout/IndentationStyle',
         'foo',                                               # 28
         '',
         'class One',
@@ -45,16 +45,18 @@ RSpec.describe RuboCop::CommentConfig do
         '  # rubocop:disable Style/ClassVars',
         '  @@class_var = 2',
         'end',                                               # 38
-        '# rubocop:enable Style/Not,Layout/Tab',
+        '# rubocop:enable Style/Not,Layout/IndentationStyle',
         '# rubocop:disable Style/Send, Lint/RandOne some comment why',
         '# rubocop:disable Layout/BlockAlignment some comment why',
         '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
         '# rubocop:enable Lint/RandOne foo bar!',            # 43
-        '# rubocop:disable EmptyInterpolation',
+        '# rubocop:disable Lint/EmptyInterpolation',
         '"result is #{}"',
-        '# rubocop:enable EmptyInterpolation',
+        '# rubocop:enable Lint/EmptyInterpolation',
         '# rubocop:disable RSpec/Example',
-        '# rubocop:disable Custom2/Number9'                  # 48
+        '# rubocop:disable Custom2/Number9',                 # 48
+        '',
+        '#=SomeDslDirective # rubocop:disable Layout/LeadingCommentSpace'
       ].join("\n")
     end
 
@@ -74,7 +76,7 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports enabling/disabling multiple cops in a single directive' do
       not_disabled_lines = disabled_lines_of_cop('Style/Not')
-      tab_disabled_lines = disabled_lines_of_cop('Layout/Tab')
+      tab_disabled_lines = disabled_lines_of_cop('Layout/IndentationStyle')
 
       expect(not_disabled_lines).to eq(tab_disabled_lines)
       expected_part = (27..39).to_a
@@ -120,7 +122,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'handles indented single line' do
-      line_length_disabled_lines = disabled_lines_of_cop('Metrics/LineLength')
+      line_length_disabled_lines = disabled_lines_of_cop('Layout/LineLength')
       expect(line_length_disabled_lines).to include(16)
       expect(line_length_disabled_lines).not_to include(18)
     end
@@ -131,12 +133,12 @@ RSpec.describe RuboCop::CommentConfig do
       expect(loop_disabled_lines).not_to include(20)
     end
 
-    it 'supports disabling all cops except Lint/UnneededCopDisableDirective ' \
+    it 'supports disabling all cops except Lint/RedundantCopDisableDirective ' \
        'with keyword all' do
       expected_part = (7..8).to_a
 
       cops = RuboCop::Cop::Cop.all.reject do |klass|
-        klass == RuboCop::Cop::Lint::UnneededCopDisableDirective
+        klass == RuboCop::Cop::Lint::RedundantCopDisableDirective
       end
 
       cops.each do |cop|
@@ -161,6 +163,11 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports disabling cops with numbers in their name' do
       expect(disabled_lines_of_cop('Custom2/Number9')).to include(48)
+    end
+
+    it 'supports disabling cops on a comment line with an EOL comment' do
+      expect(disabled_lines_of_cop('Layout/LeadingCommentSpace'))
+        .to eq([7, 8, 9, 50])
     end
   end
 end

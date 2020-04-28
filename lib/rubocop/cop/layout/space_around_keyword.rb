@@ -30,10 +30,12 @@ module RuboCop
 
         DO = 'do'
         SAFE_NAVIGATION = '&.'
+        NAMESPACE_OPERATOR = '::'
         ACCEPT_LEFT_PAREN =
           %w[break defined? next not rescue return super yield].freeze
         ACCEPT_LEFT_SQUARE_BRACKET =
           %w[super yield].freeze
+        ACCEPT_NAMESPACE_OPERATOR = 'super'
 
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
@@ -193,6 +195,8 @@ module RuboCop
 
           return false if accepted_opening_delimiter?(range, char)
           return false if safe_navigation_call?(range, pos)
+          return false if accept_namespace_operator?(range) &&
+                          namespace_operator?(range, pos)
 
           char !~ /[\s;,#\\\)\}\]\.]/
         end
@@ -212,8 +216,16 @@ module RuboCop
           ACCEPT_LEFT_SQUARE_BRACKET.include?(range.source)
         end
 
+        def accept_namespace_operator?(range)
+          ACCEPT_NAMESPACE_OPERATOR == range.source
+        end
+
         def safe_navigation_call?(range, pos)
           range.source_buffer.source[pos, 2].start_with?(SAFE_NAVIGATION)
+        end
+
+        def namespace_operator?(range, pos)
+          range.source_buffer.source[pos, 2].start_with?(NAMESPACE_OPERATOR)
         end
 
         def preceded_by_operator?(node, _range)

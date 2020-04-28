@@ -97,7 +97,7 @@ module RuboCop
               autocorrect_expand_path(corrector, current_path, default_dir)
             elsif (default_dir = pathname_parent_expand_path(node)) ||
                   (default_dir = pathname_new_parent_expand_path(node))
-              corrector.replace(default_dir.loc.expression, '__dir__')
+              corrector.replace(default_dir, '__dir__')
               remove_parent_method(corrector, default_dir)
             end
           end
@@ -145,8 +145,8 @@ module RuboCop
           else
             new_path = "'#{parent_path(stripped_current_path)}'"
 
-            corrector.replace(current_path.loc.expression, new_path)
-            corrector.replace(default_dir.loc.expression, '__dir__')
+            corrector.replace(current_path, new_path)
+            corrector.replace(default_dir, '__dir__')
           end
         end
 
@@ -160,7 +160,7 @@ module RuboCop
         def depth(current_path)
           paths = current_path.split(File::SEPARATOR)
 
-          paths.reject { |path| path == '.' }.count
+          paths.count { |path| path != '.' }
         end
 
         def parent_path(current_path)

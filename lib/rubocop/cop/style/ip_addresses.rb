@@ -28,7 +28,7 @@ module RuboCop
           contents = node.source[1...-1]
           return false if contents.empty?
 
-          return false if whitelist.include?(contents.downcase)
+          return false if allowed_addresses.include?(contents.downcase)
 
           # To try to avoid doing two regex checks on every string,
           # shortcut out if the string does not look like an IP address
@@ -47,9 +47,9 @@ module RuboCop
 
         private
 
-        def whitelist
-          whitelist = cop_config['Whitelist']
-          Array(whitelist).map(&:downcase)
+        def allowed_addresses
+          allowed_addresses = cop_config['AllowedAddresses']
+          Array(allowed_addresses).map(&:downcase)
         end
 
         def could_be_ip?(str)

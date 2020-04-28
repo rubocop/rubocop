@@ -55,6 +55,10 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
     it_behaves_like 'accepts', 'not true'
     it_behaves_like 'accepts', '0 <=> val'
     it_behaves_like 'accepts', '"foo" === bar'
+    it_behaves_like 'accepts', '__FILE__ == $0'
+    it_behaves_like 'accepts', '__FILE__ != $0'
+    it_behaves_like 'accepts', '__FILE__ == $PROGRAM_NAME'
+    it_behaves_like 'accepts', '__FILE__ != $PROGRAM_NAME'
 
     it_behaves_like 'offense', '"foo" == bar'
     it_behaves_like 'offense', 'nil == bar'

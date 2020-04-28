@@ -210,17 +210,20 @@ module RuboCop
 
         def compact_corrections(corrector, node, left, right)
           if qualifies_for_compact?(node, left, side: :left)
-            range = side_space_range(range: left.pos, side: :right)
-            corrector.remove(range)
+            compact(corrector, left, :right)
           elsif !left.space_after?
             corrector.insert_after(left.pos, ' ')
           end
           if qualifies_for_compact?(node, right)
-            range = side_space_range(range: right.pos, side: :left)
-            corrector.remove(range)
+            compact(corrector, right, :left)
           elsif !right.space_before?
             corrector.insert_before(right.pos, ' ')
           end
+        end
+
+        def compact(corrector, bracket, side)
+          range = side_space_range(range: bracket.pos, side: side)
+          corrector.remove(range)
         end
       end
     end

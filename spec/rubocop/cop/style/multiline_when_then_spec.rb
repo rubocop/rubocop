@@ -30,6 +30,16 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
     RUBY
   end
 
+  it "doesn't register an offense when `then` required for a body of `when` " \
+     'is used' do
+    expect_no_offenses(<<~RUBY)
+      case cond
+      when foo then do_something(arg1,
+                                 arg2)
+      end
+    RUBY
+  end
+
   it "doesn't register an offense for multiline when statement
   with then followed by other lines" do
     expect_no_offenses(<<~RUBY)
@@ -53,6 +63,26 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
       case foo
       when bar
       do_something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for hash when statement with then' do
+    expect_no_offenses(<<~RUBY)
+      case condition
+      when foo then {
+          key: 'value'
+        }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for array when statement with then' do
+    expect_no_offenses(<<~RUBY)
+      case condition
+      when foo then [
+          'element'
+        ]
       end
     RUBY
   end
@@ -81,6 +111,23 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
       case foo
       when bar
       do_something
+      end
+    RUBY
+  end
+
+  it 'autocorrects when the body of `when` branch starts ' \
+     'with `then`' do
+    new_source = autocorrect_source(<<~RUBY)
+      case foo
+      when bar
+        then do_something
+      end
+    RUBY
+
+    expect(new_source).to eq(<<~RUBY)
+      case foo
+      when bar
+       do_something
       end
     RUBY
   end

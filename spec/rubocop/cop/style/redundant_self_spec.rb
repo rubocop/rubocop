@@ -14,6 +14,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
     expect_no_offenses('a = self.a')
   end
 
+  it 'does not report an offense when receiver and multiple assigned lvalue ' \
+     'have the same name' do
+    expect_no_offenses('a, b = self.a')
+  end
+
+  it 'does not report an offense when self receiver in a method argument and ' \
+     'lvalue have the same name' do
+    expect_no_offenses('a = do_something(self.a)')
+  end
+
+  it 'does not report an offense when self receiver in a method argument and ' \
+     'multiple assigned lvalue have the same name' do
+    expect_no_offenses('a, b = do_something(self.a)')
+  end
+
   it 'accepts a self receiver on an lvalue of an assignment' do
     expect_no_offenses('self.a = b')
   end

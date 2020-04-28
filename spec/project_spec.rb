@@ -27,6 +27,16 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
+    it 'requires a nicely formatted `VersionAdded` metadata for all cops' do
+      cop_names.each do |name|
+        version = config[name]['VersionAdded']
+        expect(version.nil?).to(be(false),
+                                "VersionAdded is required for #{name}.")
+        expect(version).to(match(/\A\d+\.\d+\z/),
+                           "#{version} should be format ('X.Y') for #{name}.")
+      end
+    end
+
     it 'have a period at EOL of description' do
       cop_names.each do |name|
         description = config[name]['Description']
@@ -153,7 +163,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         it 'has a valid URL' do
           issues.each do |issue|
             number = issue[:number].gsub(/\D/, '')
-            pattern = %r{^https://github\.com/rubocop-hq/rubocop/(?:issues|pull)/#{number}$} # rubocop:disable Metrics/LineLength
+            pattern = %r{^https://github\.com/rubocop-hq/rubocop/(?:issues|pull)/#{number}$} # rubocop:disable Layout/LineLength
             expect(issue[:url]).to match(pattern)
           end
         end
@@ -204,7 +214,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies
 
-      expect(warnings.empty?).to be(true)
+      expect(warnings).to eq []
     end
   end
 end

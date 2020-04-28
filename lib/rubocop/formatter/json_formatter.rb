@@ -53,11 +53,12 @@ module RuboCop
 
       def hash_for_offense(offense)
         {
-          severity:  offense.severity.name,
-          message:   offense.message,
-          cop_name:  offense.cop_name,
-          corrected: offense.corrected?,
-          location:  hash_for_location(offense)
+          severity:    offense.severity.name,
+          message:     offense.message,
+          cop_name:    offense.cop_name,
+          corrected:   offense.corrected?,
+          correctable: offense.correctable?,
+          location:    hash_for_location(offense)
         }
       end
 

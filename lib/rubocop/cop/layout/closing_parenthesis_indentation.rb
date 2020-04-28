@@ -191,7 +191,7 @@ module RuboCop
         end
 
         def indentation_width
-          @config.for_cop('IndentationWidth')['Width'] || 2
+          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def line_break_after_left_paren?(left_paren, elements)

@@ -42,7 +42,7 @@ module RuboCop
 
             max += 1 if range_type == :irange
 
-            corrector.replace(node.send_node.source_range,
+            corrector.replace(node.send_node,
                               "#{max - min}.times")
           end
         end

@@ -54,9 +54,10 @@ module RuboCop
         }.freeze
 
         def on_send(node)
-          return if node.each_ancestor(:send, :block).any? do |ancestor|
-            ignored_method?(ancestor.method_name)
-          end
+          return if ignored_method?(node.method_name) ||
+                    node.each_ancestor(:send, :block).any? do |ancestor|
+                      ignored_method?(ancestor.method_name)
+                    end
 
           numeric, replacement = check(node)
 
@@ -72,7 +73,7 @@ module RuboCop
           _, replacement = check(node)
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement)
+            corrector.replace(node, replacement)
           end
         end
 

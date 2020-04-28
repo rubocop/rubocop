@@ -49,6 +49,10 @@ module RuboCop
             const)
         PATTERN
 
+        def_node_matcher :wrapped_macro_scope?, <<~PATTERN
+          {({sclass class module block} ... ({begin if} ...))}
+        PATTERN
+
         def on_send(node)
           include_statement(node) do |statement|
             return if node.argument? ||
@@ -62,7 +66,13 @@ module RuboCop
         private
 
         def accepted_include?(node)
-          node.parent && node.macro?
+          node.parent && (node.macro? || ascend_macro_scope?(node.parent))
+        end
+
+        def ascend_macro_scope?(ancestor)
+          return true if wrapped_macro_scope?(ancestor)
+
+          ancestor.parent && ascend_macro_scope?(ancestor.parent)
         end
 
         def belongs_to_class_or_module?(node)

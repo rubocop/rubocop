@@ -38,9 +38,9 @@ module RuboCop
           return unless eol_comment
 
           text = eol_comment.loc.expression.source
-          corrector.insert_before(node.source_range,
+          corrector.insert_before(node,
                                   text + "\n" + (' ' * node.loc.keyword.column))
-          corrector.remove(eol_comment.loc.expression)
+          corrector.remove(eol_comment)
         end
 
         private

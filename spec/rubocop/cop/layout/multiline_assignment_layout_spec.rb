@@ -21,16 +21,37 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         ^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        blarg =
+         if true
+        end
+      RUBY
     end
 
-    it 'auto-corrects offenses' do
-      new_source = autocorrect_source(<<~RUBY)
-        blarg = if true
+    it 'registers an offense when the rhs is on the same line in []=' do
+      expect_offense(<<~RUBY)
+        hash[:foo] = if true
+        ^^^^^^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
         end
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
-        blarg =
+      expect_correction(<<~RUBY)
+        hash[:foo] =
+         if true
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the rhs is on the same line in setters' do
+      expect_offense(<<~RUBY)
+        foo.bar = if true
+        ^^^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar =
          if true
         end
       RUBY
@@ -123,17 +144,37 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         if true
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        blarg = if true
+        end
+      RUBY
     end
 
-    it 'auto-corrects offenses' do
-      new_source = autocorrect_source(<<~RUBY)
-        blarg =
+    it 'registers an offense when the rhs is a different line in []=' do
+      expect_offense(<<~RUBY)
+        hash[:foo] =
+        ^^^^^^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
         if true
         end
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
-        blarg = if true
+      expect_correction(<<~RUBY)
+        hash[:foo] = if true
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the rhs is a different line in setters' do
+      expect_offense(<<~RUBY)
+        foo.bar =
+        ^^^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
+        if true
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar = if true
         end
       RUBY
     end

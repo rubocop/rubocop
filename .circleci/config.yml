@@ -40,32 +40,9 @@ rubocop_steps: &rubocop_steps
       name: Check requiring libraries successfully
       # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
       command: |
-        ruby -I lib -r rubocop -e 'exit 0'
+        ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
 
 jobs:
-
-  # Ruby 2.3
-  ruby-2.3-spec:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *spec_steps
-  ruby-2.3-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.3-rubocop:
-    docker:
-      - image: circleci/ruby:2.3
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # Ruby 2.4
   ruby-2.4-spec:
@@ -131,6 +108,29 @@ jobs:
   ruby-2.6-rubocop:
     docker:
       - image: circleci/ruby:2.6
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
+
+  # Ruby 2.7
+  ruby-2.7-spec:
+    docker:
+      - image: circleci/ruby:2.7
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
+  ruby-2.7-ascii_spec:
+    docker:
+      - image: circleci/ruby:2.7
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
+  ruby-2.7-rubocop:
+    docker:
+      - image: circleci/ruby:2.7
     environment:
       <<: *common_env
     steps:
@@ -242,11 +242,6 @@ workflows:
     jobs:
       - documentation-checks
       - cc-setup
-      - ruby-2.3-spec:
-          requires:
-            - cc-setup
-      - ruby-2.3-ascii_spec
-      - ruby-2.3-rubocop
       - ruby-2.4-spec:
           requires:
             - cc-setup
@@ -262,6 +257,11 @@ workflows:
             - cc-setup
       - ruby-2.6-ascii_spec
       - ruby-2.6-rubocop
+      - ruby-2.7-spec:
+          requires:
+            - cc-setup
+      - ruby-2.7-ascii_spec
+      - ruby-2.7-rubocop
       - ruby-head-spec:
           requires:
             - cc-setup
@@ -275,8 +275,8 @@ workflows:
 
       - cc-upload-coverage:
           requires:
-            - ruby-2.3-spec
             - ruby-2.4-spec
             - ruby-2.5-spec
             - ruby-2.6-spec
+            - ruby-2.7-spec
             - jruby-9.2-spec

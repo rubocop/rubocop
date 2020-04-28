@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/UnneededCopDisableDirective
+# rubocop:disable Lint/RedundantCopDisableDirective
 # rubocop:disable Style/DoubleCopDisableDirective
 
 module RuboCop
@@ -26,21 +26,27 @@ module RuboCop
       #
       class DoubleCopDisableDirective < Cop
         # rubocop:enable Style/For, Style/DoubleCopDisableDirective
-        # rubocop:enable Lint/UnneededCopDisableDirective, Metrics/AbcSize
+        # rubocop:enable Lint/RedundantCopDisableDirective, Metrics/AbcSize
         MSG = 'More than one disable comment on one line.'
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            next unless comment.text.scan('# rubocop:disable').size > 1
+            next unless comment.text.scan(/# rubocop:(?:disable|todo)/).size > 1
 
             add_offense(comment)
           end
         end
 
         def autocorrect(comment)
+          prefix = if comment.text.start_with?('# rubocop:disable')
+                     '# rubocop:disable'
+                   else
+                     '# rubocop:todo'
+                   end
+
           lambda do |corrector|
-            corrector.replace(comment.loc.expression,
-                              comment.text[/# rubocop:disable \S+/])
+            corrector.replace(comment,
+                              comment.text[/#{prefix} \S+/])
           end
         end
       end

@@ -9,6 +9,11 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
     |  ^^^ Indentation of first line in file detected.
     |  end
     RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+    |def f
+    |  end
+    RUBY
   end
 
   it 'accepts unindented method definition' do
@@ -23,18 +28,27 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
       expect_no_offenses('﻿puts 1')
     end
 
-    it 'registers an offense for indented method call' do
+    it 'registers an offense and corrects indented method call' do
       expect_offense(<<~RUBY)
         ﻿  puts 1
            ^^^^ Indentation of first line in file detected.
       RUBY
+
+      expect_correction(<<~RUBY)
+        ﻿puts 1
+      RUBY
     end
 
-    it 'registers an offense for indented method call after comment' do
+    it 'registers an offense and corrects indented method call after comment' do
       expect_offense(<<~RUBY)
         ﻿# comment
           puts 1
           ^^^^ Indentation of first line in file detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ﻿# comment
+        puts 1
       RUBY
     end
   end
@@ -43,39 +57,23 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation do
     expect_no_offenses('')
   end
 
-  it 'registers an offense for indented assignment disregarding comment' do
-    expect_offense(<<-RUBY)
-       # comment
-       x = 1
-       ^ Indentation of first line in file detected.
+  it 'registers an offense and corrects indented assignment ' \
+    'disregarding comment' do
+    expect_offense(<<-RUBY.strip_margin('|'))
+    |   # comment
+    |   x = 1
+    |   ^ Indentation of first line in file detected.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+    |   # comment
+    |x = 1
     RUBY
   end
 
   it 'accepts unindented comment + assignment' do
     expect_no_offenses(<<~RUBY)
       # comment
-      x = 1
-    RUBY
-  end
-
-  it 'auto-corrects indented method definition' do
-    corrected = autocorrect_source(<<-RUBY)
-      def f
-      end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      def f
-            end
-    RUBY
-  end
-
-  it 'auto-corrects indented assignment but not comment' do
-    corrected = autocorrect_source(<<-RUBY)
-      # comment
-      x = 1
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-            # comment
       x = 1
     RUBY
   end

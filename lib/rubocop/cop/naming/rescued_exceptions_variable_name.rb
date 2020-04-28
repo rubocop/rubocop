@@ -73,7 +73,7 @@ module RuboCop
             node.body&.each_descendant(:lvar) do |var|
               next unless var.children.first == offending_name
 
-              corrector.replace(var.loc.expression, preferred_name)
+              corrector.replace(var, preferred_name)
             end
           end
         end

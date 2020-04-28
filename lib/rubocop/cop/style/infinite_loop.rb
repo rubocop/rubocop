@@ -58,7 +58,7 @@ module RuboCop
           # `loop do` without further modification. The reason is that a
           # variable that's introduced inside a while/until loop is in scope
           # outside of that loop too, but a variable that's assigned for the
-          # first time inside a block can not be accessed after the block. In
+          # first time inside a block cannot be accessed after the block. In
           # those more complicated cases we don't report an offense.
           return if @variables.any? do |var|
             assigned_inside_loop?(var, range) &&
@@ -97,12 +97,13 @@ module RuboCop
         end
 
         def modifier_replacement(node)
+          body = node.body
           if node.single_line?
-            'loop { ' + node.body.source + ' }'
+            'loop { ' + body.source + ' }'
           else
-            indentation = node.body.loc.expression.source_line[LEADING_SPACE]
+            indentation = body.source_range.source_line[LEADING_SPACE]
 
-            ['loop do', node.body.source.gsub(/^/, configured_indent),
+            ['loop do', body.source.gsub(/^/, configured_indent),
              'end'].join("\n#{indentation}")
           end
         end
@@ -119,7 +120,7 @@ module RuboCop
         end
 
         def configured_indent
-          ' ' * config.for_cop('IndentationWidth')['Width']
+          ' ' * config.for_cop('Layout/IndentationWidth')['Width']
         end
       end
     end

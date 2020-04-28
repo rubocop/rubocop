@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # Checks for while and until statements that would fit on one line
       # if written as a modifier while/until. The maximum line length is
-      # configured in the `Metrics/LineLength` cop.
+      # configured in the `Layout/LineLength` cop.
       #
       # @example
       #   # bad
@@ -43,7 +43,7 @@ module RuboCop
                     "#{node.condition.source}"
 
           lambda do |corrector|
-            corrector.replace(node.source_range, oneline)
+            corrector.replace(node, oneline)
           end
         end
 

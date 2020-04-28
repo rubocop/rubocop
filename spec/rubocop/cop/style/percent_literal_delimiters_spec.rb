@@ -200,6 +200,11 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect_no_offenses('%i[some symbols]')
     end
 
+    it 'does not register an offense for non-preferred delimiters ' \
+       'enclosing escaped delimiters' do
+      expect_no_offenses('%i(\(\) each)')
+    end
+
     it 'registers an offense for other delimiters' do
       expect_offense(<<~RUBY)
         %i(some symbols)

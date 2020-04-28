@@ -460,6 +460,110 @@ RSpec.describe RuboCop::NodePattern do
 
         it_behaves_like 'matching'
       end
+
+      context 'within a union' do
+        context 'confined to the union' do
+          context 'without unification' do
+            let(:pattern) { '{(array (int 1) _num) (array _num (int 1))}' }
+            let(:ruby) { '[2, 1]' }
+
+            it_behaves_like 'matching'
+          end
+
+          context 'with partial unification' do
+            let(:pattern) { '{(array _num _num) (array _num (int 1))}' }
+
+            context 'matching the unified branch' do
+              let(:ruby) { '[5, 5]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'matching the free branch' do
+              let(:ruby) { '[2, 1]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'that can not be unified' do
+              let(:ruby) { '[3, 2]' }
+
+              it_behaves_like 'nonmatching'
+            end
+          end
+        end
+
+        context 'with a preceding unifying constraint' do
+          let(:pattern) do
+            '(array _num {(array (int 1) _num)
+                          send
+                          (array _num (int 1))})'
+          end
+
+          context 'matching a branch' do
+            let(:ruby) { '[2, [2, 1]]' }
+
+            it_behaves_like 'matching'
+          end
+
+          context 'that can not be unified' do
+            let(:ruby) { '[3, [2, 1]]' }
+
+            it_behaves_like 'nonmatching'
+          end
+        end
+
+        context 'with a succeeding unifying constraint' do
+          context 'with branches without the wildcard' do
+            context 'encountered first' do
+              let(:pattern) do
+                '(array {send
+                         (array (int 1) _num)
+                        } _num)'
+              end
+
+              it_behaves_like 'invalid'
+            end
+
+            context 'encountered after' do
+              let(:pattern) do
+                '(array {(array (int 1) _num)
+                         (array _num (int 1))
+                          send
+                        } _num)'
+              end
+
+              it_behaves_like 'invalid'
+            end
+          end
+
+          context 'with all branches with the wildcard' do
+            let(:pattern) do
+              '(array {(array (int 1) _num)
+                       (array _num (int 1))
+                      } _num)'
+            end
+
+            context 'matching the first branch' do
+              let(:ruby) { '[[1, 2], 2]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'matching another branch' do
+              let(:ruby) { '[[2, 1], 2]' }
+
+              it_behaves_like 'matching'
+            end
+
+            context 'that can not be unified' do
+              let(:ruby) { '[[2, 1], 1]' }
+
+              it_behaves_like 'nonmatching'
+            end
+          end
+        end
+      end
     end
   end
 
@@ -512,7 +616,7 @@ RSpec.describe RuboCop::NodePattern do
         end
 
         context 'on a node which meets all requirements of the second []' do
-          let(:ruby) { '2.3' }
+          let(:ruby) { '2.4' }
 
           it_behaves_like 'matching'
         end
@@ -1534,6 +1638,46 @@ RSpec.describe RuboCop::NodePattern do
     end
   end
 
+  describe 'descend' do
+    let(:ruby) { '[1, [[2, 3, [[5]]], 4]]' }
+
+    context 'with an immediate match' do
+      let(:pattern) { '(array `$int _)' }
+
+      let(:captured_val) { s(:int, 1) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'with a match multiple levels, depth first' do
+      let(:pattern) { '(array (int 1) `$int)' }
+
+      let(:captured_val) { s(:int, 2) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'nested' do
+      let(:pattern) { '(array (int 1) `(array <`(array $int) ...>))' }
+
+      let(:captured_val) { s(:int, 5) }
+
+      it_behaves_like 'single capture'
+    end
+
+    context 'with a literal match' do
+      let(:pattern) { '(array (int 1) `4)' }
+
+      it_behaves_like 'matching'
+    end
+
+    context 'without match' do
+      let(:pattern) { '(array `$str ...)' }
+
+      it_behaves_like 'nonmatching'
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }
@@ -1605,6 +1749,22 @@ RSpec.describe RuboCop::NodePattern do
       let(:pattern) { '(send ... ...)' }
 
       it_behaves_like 'invalid'
+    end
+  end
+
+  describe '.descend' do
+    let(:ruby) { '[[1, 2], 3]' }
+
+    it 'yields all children depth first' do
+      e = described_class.descend(node)
+      expect(e.instance_of?(Enumerator)).to be(true)
+      array, three = node.children
+      one, two = array.children
+      expect(e.to_a).to eq([node, array, one, 1, two, 2, three, 3])
+    end
+
+    it 'yields the given argument if it is not a Node' do
+      expect(described_class.descend(42).to_a).to eq([42])
     end
   end
 end

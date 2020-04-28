@@ -55,8 +55,8 @@ module RuboCop
           source
             .comments
             .take_while { |comment| comment.loc.line < source.ast.loc.line }
-            .select     { |comment| MagicComment.parse(comment.text).any?  }
-            .last
+            .reverse
+            .find { |comment| MagicComment.parse(comment.text).any? }
         end
       end
     end

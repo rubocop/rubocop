@@ -36,15 +36,17 @@ module RuboCop
             @node.each_node do |child|
               if child.assignment?
                 @assignment += 1
-              elsif BRANCH_NODES.include?(child.type)
+              elsif branch?(child)
                 evaluate_branch_nodes(child)
-              elsif CONDITION_NODES.include?(child.type)
-                @condition += 1 if node_has_else_branch?(child)
-                @condition += 1
+              elsif condition?(child)
+                evaluate_condition_node(child)
               end
             end
 
-            Math.sqrt(@assignment**2 + @branch**2 + @condition**2).round(2)
+            [
+              Math.sqrt(@assignment**2 + @branch**2 + @condition**2).round(2),
+              "<#{@assignment}, #{@branch}, #{@condition}>"
+            ]
           end
 
           def evaluate_branch_nodes(node)
@@ -55,10 +57,25 @@ module RuboCop
             end
           end
 
-          def node_has_else_branch?(node)
+          def evaluate_condition_node(node)
+            @condition += 1 if else_branch?(node)
+            @condition += 1
+          end
+
+          def else_branch?(node)
             %i[case if].include?(node.type) &&
               node.else? &&
               node.loc.else.is?('else')
+          end
+
+          private
+
+          def branch?(node)
+            BRANCH_NODES.include?(node.type)
+          end
+
+          def condition?(node)
+            CONDITION_NODES.include?(node.type)
           end
         end
       end

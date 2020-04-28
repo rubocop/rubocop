@@ -190,7 +190,10 @@ module RuboCop
       end
 
       def regexp_captured_names(node)
-        regexp_string = node.children[0].children[0] || ''
+        regexp_string = node.children.select(&:str_type?).map do |child|
+          child.children.first
+        end.join || ''
+
         regexp = Regexp.new(regexp_string)
 
         regexp.named_captures.keys
@@ -284,11 +287,7 @@ module RuboCop
       def process_scope(node)
         if TWISTED_SCOPE_TYPES.include?(node.type)
           # See the comment at the end of file for this behavior.
-          twisted_nodes = [node.children[0]]
-          twisted_nodes << node.children[1] if node.class_type?
-          twisted_nodes.compact!
-
-          twisted_nodes.each do |twisted_node|
+          twisted_nodes(node).each do |twisted_node|
             process_node(twisted_node)
             scanned_nodes << twisted_node
           end
@@ -296,6 +295,12 @@ module RuboCop
 
         inspect_variables_in_scope(node)
         skip_children!
+      end
+
+      def twisted_nodes(node)
+        twisted_nodes = [node.children[0]]
+        twisted_nodes << node.children[1] if node.class_type?
+        twisted_nodes.compact
       end
 
       def process_send(node)

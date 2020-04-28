@@ -5,27 +5,39 @@ module RuboCop
     module Style
       # This cop checks for non-nil checks, which are usually redundant.
       #
-      # @example
+      # With `IncludeSemanticChanges` set to `false` by default, this cop
+      # does not report offenses for `!x.nil?` and does no changes that might
+      # change behavior.
       #
+      # With `IncludeSemanticChanges` set to `true`, this cop reports offenses
+      # for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
+      # is **usually** OK, but might change behavior.
+      #
+      # @example
       #   # bad
       #   if x != nil
       #   end
       #
-      #   # good (when not allowing semantic changes)
-      #   # bad (when allowing semantic changes)
-      #   if !x.nil?
-      #   end
-      #
-      #   # good (when allowing semantic changes)
+      #   # good
       #   if x
       #   end
       #
-      # Non-nil checks are allowed if they are the final nodes of predicate.
-      #
+      #   # Non-nil checks are allowed if they are the final nodes of predicate.
       #   # good
       #   def signed_in?
       #     !current_user.nil?
       #   end
+      #
+      # @example IncludeSemanticChanges: false (default)
+      #   # good
+      #   if !x.nil?
+      #   end
+      #
+      # @example IncludeSemanticChanges: true
+      #   # bad
+      #   if !x.nil?
+      #   end
+      #
       class NonNilCheck < Cop
         def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
@@ -99,15 +111,15 @@ module RuboCop
 
           return if expr == new_code
 
-          ->(corrector) { corrector.replace(node.source_range, new_code) }
+          ->(corrector) { corrector.replace(node, new_code) }
         end
 
         def autocorrect_non_nil(node, inner_node)
           lambda do |corrector|
             if inner_node.receiver
-              corrector.replace(node.source_range, inner_node.receiver.source)
+              corrector.replace(node, inner_node.receiver.source)
             else
-              corrector.replace(node.source_range, 'self')
+              corrector.replace(node, 'self')
             end
           end
         end
@@ -115,7 +127,7 @@ module RuboCop
         def autocorrect_unless_nil(node, receiver)
           lambda do |corrector|
             corrector.replace(node.parent.loc.keyword, 'if')
-            corrector.replace(node.source_range, receiver.source)
+            corrector.replace(node, receiver.source)
           end
         end
       end

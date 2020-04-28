@@ -163,7 +163,7 @@ module RuboCop
         ast, comments, tokens = parser.tokenize(@buffer)
 
         ast.respond_to?(:complete!) && ast.complete!
-      rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
+      rescue Parser::SyntaxError
         # All errors are in diagnostics. No need to handle exception.
       end
 
@@ -175,9 +175,6 @@ module RuboCop
     # rubocop:disable Metrics/MethodLength
     def parser_class(ruby_version)
       case ruby_version
-      when 2.3
-        require 'parser/ruby23'
-        Parser::Ruby23
       when 2.4
         require 'parser/ruby24'
         Parser::Ruby24

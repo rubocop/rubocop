@@ -13,9 +13,16 @@ module RuboCop
       #   def @table.columns; super; end
       #
       #   # good
-      #   def no_op; end
       #   def self.resource_class=(klass); end
       #   def @table.columns; end
+      #
+      # @example AllowIfMethodIsEmpty: true (default)
+      #   # good
+      #   def no_op; end
+      #
+      # @example AllowIfMethodIsEmpty: false
+      #   # bad
+      #   def no_op; end
       #
       class SingleLineMethods < Cop
         include Alignment

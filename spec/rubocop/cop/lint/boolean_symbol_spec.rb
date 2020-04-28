@@ -8,12 +8,20 @@ RSpec.describe RuboCop::Cop::Lint::BooleanSymbol, :config do
       :true
       ^^^^^ Symbol with a boolean name - you probably meant to use `true`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      true
+    RUBY
   end
 
   it 'registers an offense when using `:false`' do
     expect_offense(<<~RUBY)
       :false
       ^^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      false
     RUBY
   end
 
@@ -23,12 +31,32 @@ RSpec.describe RuboCop::Cop::Lint::BooleanSymbol, :config do
         { true: 'Foo' }
           ^^^^ Symbol with a boolean name - you probably meant to use `true`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        { true => 'Foo' }
+      RUBY
     end
 
     it 'registers an offense when using `false:`' do
       expect_offense(<<~RUBY)
-        { false: 'Bar' }
+        { false: :bar }
           ^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { false => :bar }
+      RUBY
+    end
+
+    it 'registers an offense when using `key: :false`' do
+      expect_offense(<<~RUBY)
+        { false: :false }
+                 ^^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+          ^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { false => false }
       RUBY
     end
   end

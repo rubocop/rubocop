@@ -2,7 +2,7 @@
 
 module RuboCop
   module Formatter
-    # This formatter prints a PACDOT per every file to be analized.
+    # This formatter prints a PACDOT per every file to be analyzed.
     # Pacman will "eat" one PACDOT per file when no offense is detected.
     # Otherwise it will print a Ghost.
     # This is inspired by the Pacman formatter for RSpec by Carlos Rojas.
@@ -49,7 +49,7 @@ module RuboCop
 
       def cols
         @cols ||= begin
-          width = `tput cols`.chomp.to_i
+          _height, width = $stdout.winsize
           width.nil? || width.zero? ? FALLBACK_TERMINAL_WIDTH : width
         end
       end
@@ -68,8 +68,8 @@ module RuboCop
       def step(character)
         regex = /#{Regexp.quote(PACMAN)}|#{Regexp.quote(PACDOT)}/
         @progress_line = @progress_line.sub(regex, character)
-        output.printf("%s\r", @progress_line)
-        return unless @progress_line[-1] =~ /ᗣ|\./
+        output.printf("%<line>s\r", line: @progress_line)
+        return unless /ᗣ|\./.match?(@progress_line[-1])
 
         @repetitions += 1
         output.puts

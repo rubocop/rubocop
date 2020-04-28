@@ -9,6 +9,8 @@ module RuboCop
     # A `block` node is essentially a method send with a block. Parser nests
     # the `send` node inside the `block` node.
     class BlockNode < Node
+      include MethodIdentifierPredicates
+
       VOID_CONTEXT_METHODS = %i[each tap].freeze
 
       # The `send` node associated with this block.
@@ -22,7 +24,11 @@ module RuboCop
       #
       # @return [Array<Node>]
       def arguments
-        node_parts[1]
+        if numblock_type?
+          [] # Numbered parameters have no block arguments.
+        else
+          node_parts[1]
+        end
       end
 
       # The body of this block.

@@ -33,7 +33,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.source_range, '__dir__')
+            corrector.replace(node, '__dir__')
           end
         end
 

@@ -7,9 +7,9 @@ module RuboCop
       # written as modifier `if`/`unless`. The cop also checks for modifier
       # `if`/`unless` lines that exceed the maximum line length.
       #
-      # The maximum line length is configured in the `Metrics/LineLength`
+      # The maximum line length is configured in the `Layout/LineLength`
       # cop. The tab size is configured in the `IndentationWidth` of the
-      # `Layout/Tab` cop.
+      # `Layout/IndentationStyle` cop.
       #
       # @example
       #   # bad
@@ -32,6 +32,8 @@ module RuboCop
       #   end
       class IfUnlessModifier < Cop
         include StatementModifier
+        include LineLengthHelp
+        include IgnoredPattern
 
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
                            'single-line body. Another good alternative is ' \
@@ -45,7 +47,7 @@ module RuboCop
         def on_if(node)
           msg = if eligible_node?(node)
                   MSG_USE_MODIFIER unless named_capture_in_condition?(node)
-                elsif node.modifier_form? && too_long_single_line?(node)
+                elsif too_long_due_to_modifier?(node)
                   MSG_USE_NORMAL
                 end
           return unless msg
@@ -61,17 +63,62 @@ module RuboCop
                         else
                           to_modifier_form(node)
                         end
-          ->(corrector) { corrector.replace(node.source_range, replacement) }
+          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         private
+
+        def too_long_due_to_modifier?(node)
+          node.modifier_form? && too_long_single_line?(node) &&
+            !another_statement_on_same_line?(node)
+        end
+
+        def ignored_patterns
+          config.for_cop('Layout/LineLength')['IgnoredPatterns'] || []
+        end
 
         def too_long_single_line?(node)
           return false unless max_line_length
 
           range = node.source_range
-          range.first_line == range.last_line &&
-            range.last_column > max_line_length
+          return false unless range.first_line == range.last_line
+          return false unless line_length_enabled_at_line?(range.first_line)
+
+          line = range.source_line
+          return false if line_length(line) <= max_line_length
+
+          too_long_line_based_on_config?(range, line)
+        end
+
+        def too_long_line_based_on_config?(range, line)
+          return false if matches_ignored_pattern?(line)
+
+          too_long = too_long_line_based_on_ignore_cop_directives?(range, line)
+          return too_long unless too_long == :undetermined
+
+          too_long_line_based_on_allow_uri?(line)
+        end
+
+        def too_long_line_based_on_ignore_cop_directives?(range, line)
+          if ignore_cop_directives? && directive_on_source_line?(range.line - 1)
+            return line_length_without_directive(line) > max_line_length
+          end
+
+          :undetermined
+        end
+
+        def too_long_line_based_on_allow_uri?(line)
+          if allow_uri?
+            uri_range = find_excessive_uri_range(line)
+            return false if uri_range && allowed_uri_position?(line, uri_range)
+          end
+
+          true
+        end
+
+        def line_length_enabled_at_line?(line)
+          processed_source.comment_config
+                          .cop_enabled_at_line?('Layout/LineLength', line)
         end
 
         def named_capture_in_condition?(node)
@@ -85,6 +132,21 @@ module RuboCop
 
         def non_eligible_if?(node)
           node.ternary? || node.modifier_form? || node.elsif? || node.else?
+        end
+
+        def another_statement_on_same_line?(node)
+          line_no = node.source_range.last_line
+
+          # traverse the AST upwards until we find a 'begin' node
+          # we want to look at the following child and see if it is on the
+          #   same line as this 'if' node
+          while node && !node.begin_type?
+            index = node.sibling_index
+            node  = node.parent
+          end
+
+          node && (sibling = node.children[index + 1]) &&
+            sibling.source_range.first_line == line_no
         end
 
         def parenthesize?(node)

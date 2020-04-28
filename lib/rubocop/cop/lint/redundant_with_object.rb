@@ -51,7 +51,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             redundant_with_object?(node) do |send|
-              if send.method_name == :each_with_object
+              if send.method?(:each_with_object)
                 corrector.replace(with_object_range(send), 'each')
               else
                 corrector.remove(with_object_range(send))
@@ -64,7 +64,7 @@ module RuboCop
         private
 
         def message(node)
-          if node.method_name == :each_with_object
+          if node.method?(:each_with_object)
             MSG_EACH_WITH_OBJECT
           else
             MSG_WITH_OBJECT

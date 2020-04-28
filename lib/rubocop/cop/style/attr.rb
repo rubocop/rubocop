@@ -21,6 +21,10 @@ module RuboCop
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?
+          # check only for method definitions in class/module body
+          return if node.parent &&
+                    !node.parent.class_type? &&
+                    !class_eval?(node.parent)
 
           add_offense(node, location: :selector)
         end
@@ -31,7 +35,7 @@ module RuboCop
           node_expr = node.source_range
           attr_expr = attr_name.source_range
 
-          if setter && (setter.true_type? || setter.false_type?)
+          if setter&.boolean_type?
             remove = range_between(attr_expr.end_pos, node_expr.end_pos)
           end
 
@@ -50,12 +54,16 @@ module RuboCop
         def replacement_method(node)
           setter = node.last_argument
 
-          if setter && (setter.true_type? || setter.false_type?)
+          if setter&.boolean_type?
             setter.true_type? ? 'attr_accessor' : 'attr_reader'
           else
             'attr_reader'
           end
         end
+
+        def_node_matcher :class_eval?, <<~PATTERN
+          (block (send _ {:class_eval :module_eval}) ...)
+        PATTERN
       end
     end
   end

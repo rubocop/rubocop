@@ -33,13 +33,7 @@ module RuboCop
         end
 
         def autocorrect(token)
-          raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
-
-          regex = Regexp.new(notice)
-          unless autocorrect_notice =~ regex
-            raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
-                           "match Notice /#{notice}/"
-          end
+          verify_autocorrect_notice!
 
           lambda do |corrector|
             range = token.nil? ? range_between(0, 0) : token.pos
@@ -55,6 +49,16 @@ module RuboCop
 
         def autocorrect_notice
           cop_config['AutocorrectNotice']
+        end
+
+        def verify_autocorrect_notice!
+          raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
+
+          regex = Regexp.new(notice)
+          return if autocorrect_notice&.match?(regex)
+
+          raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
+                         "match Notice /#{notice}/"
         end
 
         def insert_notice_before(processed_source)

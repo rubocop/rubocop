@@ -67,9 +67,16 @@ module RuboCop
 
         NONCOMMUTATIVE_OPERATORS = %i[===].freeze
 
+        PROGRAM_NAMES = %i[$0 $PROGRAM_NAME].freeze
+
+        def_node_matcher :file_constant_equal_program_name?, <<~PATTERN
+          (send #source_file_path_constant? {:== :!=} (gvar #program_name?))
+        PATTERN
+
         def on_send(node)
           return unless yoda_compatible_condition?(node)
-          return if equality_only? && non_equality_operator?(node)
+          return if equality_only? && non_equality_operator?(node) ||
+                    file_constant_equal_program_name?(node)
 
           valid_yoda?(node) || add_offense(node)
         end
@@ -134,6 +141,14 @@ module RuboCop
 
         def noncommutative_operator?(node)
           NONCOMMUTATIVE_OPERATORS.include?(node.method_name)
+        end
+
+        def source_file_path_constant?(node)
+          node.source == '__FILE__'
+        end
+
+        def program_name?(name)
+          PROGRAM_NAMES.include?(name)
         end
       end
     end

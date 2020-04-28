@@ -22,12 +22,13 @@ module RuboCop
 
     # Registry that tracks all cops by their badge and department.
     class Registry
-      def initialize(cops = [])
+      def initialize(cops = [], options = {})
         @registry = {}
         @departments = {}
         @cops_by_cop_name = Hash.new { |hash, key| hash[key] = [] }
 
         cops.each { |cop| enlist(cop) }
+        @options = options
       end
 
       def enlist(cop)
@@ -91,8 +92,11 @@ module RuboCop
       # @note Emits a warning if the provided name has an incorrect namespace
       #
       # @return [String] Qualified cop name
-      def qualified_cop_name(name, path)
+      def qualified_cop_name(name, path, shall_warn = true)
         badge = Badge.parse(name)
+        if shall_warn && department_missing?(badge, name)
+          print_warning(name, path)
+        end
         return name if registered?(badge)
 
         potential_badges = qualify_badge(badge)
@@ -102,6 +106,24 @@ module RuboCop
         when 1 then resolve_badge(badge, potential_badges.first, path)
         else raise AmbiguousCopName.new(badge, path, potential_badges)
         end
+      end
+
+      def department_missing?(badge, name)
+        !badge.qualified? && unqualified_cop_names.include?(name)
+      end
+
+      def print_warning(name, path)
+        message = "#{path}: Warning: no department given for #{name}."
+        if path.end_with?('.rb')
+          message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.'
+        end
+        warn message
+      end
+
+      def unqualified_cop_names
+        @unqualified_cop_names ||=
+          Set.new(@cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
+          'RedundantCopDisableDirective'
       end
 
       # @return [Hash{String => Array<Class>}]
@@ -125,11 +147,22 @@ module RuboCop
 
       def enabled?(cop, config, only_safe)
         cfg = config.for_cop(cop)
+
+        cop_enabled = cfg.fetch('Enabled') == true ||
+                      enabled_pending_cop?(cfg, config)
+
         if only_safe
-          cfg.fetch('Enabled') && cfg.fetch('Safe', true)
+          cop_enabled && cfg.fetch('Safe', true)
         else
-          cfg.fetch('Enabled')
+          cop_enabled
         end
+      end
+
+      def enabled_pending_cop?(cop_cfg, config)
+        return false if @options[:disable_pending_cops]
+
+        cop_cfg.fetch('Enabled') == 'pending' &&
+          (@options[:enable_pending_cops] || config.enabled_new_cops?)
       end
 
       def names

@@ -84,8 +84,8 @@ module RuboCop
 
             next unless conditions.size > 1
 
-            range = range_between(conditions.first.loc.expression.begin_pos,
-                                  conditions.last.loc.expression.end_pos)
+            range = range_between(conditions.first.source_range.begin_pos,
+                                  conditions.last.source_range.end_pos)
 
             corrector.replace(range, conditions.map(&:source).join(' || '))
           end

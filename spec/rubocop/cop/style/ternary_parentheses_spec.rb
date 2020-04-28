@@ -155,6 +155,20 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       it_behaves_like 'code with offense',
                       'foo = (bar[:baz]) ? a : b',
                       'foo = bar[:baz] ? a : b'
+
+      it_behaves_like 'code with offense', <<~RUBY, <<~CORRECTION
+        (foo ||
+          bar) ? a : b
+      RUBY
+        foo ||
+          bar ? a : b
+      CORRECTION
+
+      it_behaves_like 'code without offense', <<~RUBY
+        (
+          foo || bar
+        ) ? a : b
+      RUBY
     end
 
     context 'with a complex condition' do
@@ -400,14 +414,21 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
   context 'when `RedundantParenthesis` would cause an infinite loop' do
     let(:redundant_parens_enabled) { true }
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'require_parentheses',
-        'SupportedStyles' => %w[require_parentheses require_no_parentheses]
-      }
+
+    context 'when `EnforcedStyle: require_parentheses`' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'require_parentheses' }
+      end
+
+      it_behaves_like 'code without offense', 'foo = bar? ? a : b'
     end
 
-    it_behaves_like 'code without offense',
-                    'foo = bar? ? a : b'
+    context 'when `EnforcedStyle: require_parentheses_when_complex`' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'require_parentheses_when_complex' }
+      end
+
+      it_behaves_like 'code without offense', '!condition.nil? ? foo : bar'
+    end
   end
 end

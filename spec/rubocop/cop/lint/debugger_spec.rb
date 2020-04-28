@@ -50,7 +50,9 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   include_examples 'debugger',
                    'capybara debug method with an argument',
                    'save_screenshot foo'
+
   include_examples 'debugger', 'remote_byebug', 'remote_byebug'
+  include_examples 'debugger', 'web console binding', 'binding.console'
 
   it 'does not report an offense for a non-pry binding' do
     expect_no_offenses('binding.pirate')
@@ -64,7 +66,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     expect_no_offenses('Kernel.save_and_open_page')
   end
 
-  ALL_COMMANDS = %w[debugger byebug pry remote_pry pry_remote irb
+  ALL_COMMANDS = %w[debugger byebug console pry remote_pry pry_remote irb
                     save_and_open_page save_and_open_screenshot
                     save_screenshot remote_byebug].freeze
 
@@ -89,8 +91,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     RUBY
   end
 
-  context 'target_ruby_version >= 2.4', :ruby24 do
-    include_examples 'debugger', 'irb binding', 'binding.irb'
-    include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
-  end
+  include_examples 'debugger', 'irb binding', 'binding.irb'
+  include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
 end

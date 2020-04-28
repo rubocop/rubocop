@@ -73,7 +73,7 @@ module RuboCop
         end
 
         def keyword_begin_str(node, node_buf)
-          indent = config.for_cop('IndentationWidth')['Width'] || 2
+          indent = config.for_cop('Layout/IndentationWidth')['Width'] || 2
           if node_buf.source[node.loc.begin.end_pos] == "\n"
             'begin'
           else
@@ -82,7 +82,7 @@ module RuboCop
         end
 
         def keyword_end_str(node, node_buf)
-          if node_buf.source_line(node.loc.end.line) =~ /[^\s\)]/
+          if /[^\s\)]/.match?(node_buf.source_line(node.loc.end.line))
             "\n" + (' ' * node.loc.column) + 'end'
           else
             'end'

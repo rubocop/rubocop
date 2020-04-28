@@ -1,6 +1,6 @@
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
-[![AppVeyor Status](https://ci.appveyor.com/api/projects/status/sj3ye7n5690d0nvg?svg=true)](https://ci.appveyor.com/project/bbatsov/rubocop)
+[![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
 [![Coverage Status](https://api.codeclimate.com/v1/badges/ad6e76460499c8c99697/test_coverage)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](https://inch-ci.org/github/bbatsov/rubocop.svg)](https://inch-ci.org/github/bbatsov/rubocop)
@@ -41,7 +41,7 @@ automatically fix some of the problems for you.
 $ gem install rubocop
 ```
 
-If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
+If you'd rather install RuboCop using `bundler`, add a line for it in your `Gemfile` (but set the `require` option to `false`, as it is a standalone tool):
 
 ```rb
 gem 'rubocop', require: false
@@ -53,7 +53,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version lock in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.74.0', require: false
+gem 'rubocop', '~> 0.82.0', require: false
 ```
 
 ## Quickstart
@@ -73,8 +73,8 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 
 RuboCop supports the following Ruby implementations:
 
-* MRI 2.3+
-* JRuby 9.1+
+* MRI 2.4+
+* JRuby 9.2+
 
 ## Team
 
@@ -213,5 +213,5 @@ RuboCop's changelog is available [here](CHANGELOG.md).
 
 ## Copyright
 
-Copyright (c) 2012-2019 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2020 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.

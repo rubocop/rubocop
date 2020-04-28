@@ -35,7 +35,7 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(
-              node.source_range,
+              node,
               expression
                 .sub(/\s+#{operator_escaped}/, operator)
                 .sub(/#{operator_escaped}\s+/, operator)
@@ -53,7 +53,7 @@ module RuboCop
           # account for multiline range literals
           expression.sub!(/#{escaped_op}\n\s*/, op)
 
-          return unless expression =~ /(\s#{escaped_op})|(#{escaped_op}\s)/
+          return unless /(\s#{escaped_op})|(#{escaped_op}\s)/.match?(expression)
 
           add_offense(node)
         end

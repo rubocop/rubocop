@@ -23,7 +23,7 @@ module RuboCop
             {(send $_ :% (int 2))
              (begin (send $_ :% (int 2)))}
             ${:== :!=}
-            (int ${0 1 2}))
+            (int ${0 1}))
         PATTERN
 
         def on_send(node)
@@ -38,7 +38,7 @@ module RuboCop
             replacement_method = replacement_method(arg, method)
 
             correction = "#{base_number.source}.#{replacement_method}?"
-            ->(corrector) { corrector.replace(node.source_range, correction) }
+            ->(corrector) { corrector.replace(node, correction) }
           end
         end
 

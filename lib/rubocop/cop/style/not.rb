@@ -69,7 +69,7 @@ module RuboCop
         def correct_with_parens(range, node)
           lambda do |corrector|
             corrector.replace(range, '!(')
-            corrector.insert_after(node.source_range, ')')
+            corrector.insert_after(node, ')')
           end
         end
 

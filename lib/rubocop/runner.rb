@@ -104,30 +104,31 @@ module RuboCop
     end
 
     def process_file(file)
-      puts "Scanning #{file}" if @options[:debug]
       file_started(file)
-
       offenses = file_offenses(file)
-      if @options[:display_only_fail_level_offenses]
-        offenses = offenses.select { |o| considered_failure?(o) }
-      end
-      formatter_set.file_finished(file, offenses)
-      offenses
     rescue InfiniteCorrectionLoop => e
-      formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
+      offenses = e.offenses.compact.sort.freeze
       raise
+    ensure
+      file_finished(file, offenses || [])
     end
 
     def file_offenses(file)
       file_offense_cache(file) do
         source = get_processed_source(file)
         source, offenses = do_inspection_loop(file, source)
-        add_unneeded_disables(file, offenses.compact.sort, source)
+        add_redundant_disables(file, offenses.compact.sort, source)
       end
     end
 
+    def cached_result(file, team)
+      ResultCache.new(file, team, @options, @config_store)
+    end
+
     def file_offense_cache(file)
-      cache = ResultCache.new(file, @options, @config_store) if cached_run?
+      config = @config_store.for(file)
+      cache = cached_result(file, standby_team(config)) if cached_run?
+
       if cache&.valid?
         offenses = cache.load
         # If we're running --auto-correct and the cache says there are
@@ -146,33 +147,37 @@ module RuboCop
       offenses
     end
 
-    def add_unneeded_disables(file, offenses, source)
-      if check_for_unneeded_disables?(source)
-        config = @config_store.for(file)
-        if config.for_cop(Cop::Lint::UnneededCopDisableDirective)
-                 .fetch('Enabled')
-          cop = Cop::Lint::UnneededCopDisableDirective.new(config, @options)
-          if cop.relevant_file?(file)
-            cop.check(offenses, source.disabled_line_ranges, source.comments)
-            offenses += cop.offenses
-            offenses += autocorrect_unneeded_disables(file, source, cop,
-                                                      offenses)
-          end
+    def add_redundant_disables(file, offenses, source)
+      if check_for_redundant_disables?(source)
+        redundant_cop_disable_directive(file) do |cop|
+          cop.check(offenses, source.disabled_line_ranges, source.comments)
+          offenses += cop.offenses
+          offenses += autocorrect_redundant_disables(file, source, cop,
+                                                     offenses)
         end
       end
 
       offenses.sort.reject(&:disabled?).freeze
     end
 
-    def check_for_unneeded_disables?(source)
+    def check_for_redundant_disables?(source)
       !source.disabled_line_ranges.empty? && !filtered_run?
+    end
+
+    def redundant_cop_disable_directive(file)
+      config = @config_store.for(file)
+      if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
+               .fetch('Enabled')
+        cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
+        yield cop if cop.relevant_file?(file)
+      end
     end
 
     def filtered_run?
       @options[:except] || @options[:only]
     end
 
-    def autocorrect_unneeded_disables(file, source, cop, offenses)
+    def autocorrect_redundant_disables(file, source, cop, offenses)
       cop.processed_source = source
 
       team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
@@ -180,7 +185,7 @@ module RuboCop
 
       return [] unless team.updated_source_file?
 
-      # Do one extra inspection loop if any unneeded disables were
+      # Do one extra inspection loop if any redundant disables were
       # removed. This is done in order to find rubocop:enable directives that
       # have now become useless.
       _source, new_offenses = do_inspection_loop(file,
@@ -189,9 +194,17 @@ module RuboCop
     end
 
     def file_started(file)
+      puts "Scanning #{file}" if @options[:debug]
       formatter_set.file_started(file,
                                  cli_options: @options,
                                  config_store: @config_store)
+    end
+
+    def file_finished(file, offenses)
+      if @options[:display_only_fail_level_offenses]
+        offenses = offenses.select { |o| considered_failure?(o) }
+      end
+      formatter_set.file_finished(file, offenses)
     end
 
     def cached_run?
@@ -201,7 +214,7 @@ module RuboCop
          @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
-        # need to do that processing and can not use caching.
+        # need to do that processing and cannot use caching.
         !@options[:auto_gen_config] &&
         # We can't cache results from code which is piped in to stdin
         !@options[:stdin]
@@ -291,9 +304,7 @@ module RuboCop
       @mobilized_cop_classes[config.object_id] ||= begin
         cop_classes = Cop::Cop.all
 
-        %i[only except].each do |opt|
-          OptionsValidator.validate_cop_list(@options[opt])
-        end
+        OptionsValidator.new(@options).validate_cop_options
 
         if @options[:only]
           cop_classes.select! { |c| c.match?(@options[:only]) }
@@ -303,7 +314,7 @@ module RuboCop
 
         cop_classes.reject! { |c| c.match?(@options[:except]) }
 
-        Cop::Registry.new(cop_classes)
+        Cop::Registry.new(cop_classes, @options)
       end
     end
 
@@ -353,6 +364,16 @@ module RuboCop
       else
         ProcessedSource.from_file(file, ruby_version)
       end
+    end
+
+    # A Cop::Team instance is stateful and may change when inspecting.
+    # The "standby" team for a given config is an initialized but
+    # otherwise dormant team that can be used for config- and option-
+    # level caching in ResultCache.
+    def standby_team(config)
+      @team_by_config ||= {}
+      @team_by_config[config.object_id] ||=
+        Cop::Team.new(mobilized_cop_classes(config), config, @options)
     end
   end
 end

@@ -19,6 +19,12 @@ module RuboCop
         def on_postexe(node)
           add_offense(node, location: :keyword)
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.keyword, 'at_exit')
+          end
+        end
       end
     end
   end

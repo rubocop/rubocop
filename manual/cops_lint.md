@@ -97,19 +97,37 @@ Enabled | Yes | No | 0.9 | -
 This cop checks for assignments in the conditions of
 if/while/until.
 
+`AllowSafeAssignment` option for safe assignment.
+By safe assignment we mean putting parentheses around
+an assignment to indicate "I know I'm using an assignment
+as a condition. It's not a mistake."
+
 ### Examples
 
 ```ruby
 # bad
-
 if some_var = true
   do_something
 end
+
+# good
+if some_var == true
+  do_something
+end
 ```
+#### AllowSafeAssignment: true (default)
+
 ```ruby
 # good
+if (some_var = true)
+  do_something
+end
+```
+#### AllowSafeAssignment: false
 
-if some_var == true
+```ruby
+# bad
+if (some_var = true)
   do_something
 end
 ```
@@ -148,7 +166,7 @@ BigDecimal(123.456, 3)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.50 | -
+Enabled | Yes | Yes  | 0.50 | 0.81
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
@@ -341,6 +359,29 @@ when 'second'
 end
 ```
 
+## Lint/DuplicateHashKey
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.34 | 0.77
+
+This cop checks for duplicated keys in hash literals.
+
+This cop mirrors a warning in Ruby 2.2.
+
+### Examples
+
+```ruby
+# bad
+
+hash = { food: 'apple', food: 'orange' }
+```
+```ruby
+# good
+
+hash = { food: 'apple', other_food: 'orange' }
+```
+
 ## Lint/DuplicateMethods
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -391,29 +432,6 @@ def foo
 end
 
 alias bar foo
-```
-
-## Lint/DuplicatedKey
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.34 | -
-
-This cop checks for duplicated keys in hash literals.
-
-This cop mirrors a warning in Ruby 2.2.
-
-### Examples
-
-```ruby
-# bad
-
-hash = { food: 'apple', food: 'orange' }
-```
-```ruby
-# good
-
-hash = { food: 'apple', other_food: 'orange' }
 ```
 
 ## Lint/EachWithObjectArgument
@@ -600,37 +618,6 @@ when baz then 2
 end
 ```
 
-## Lint/EndInMethod
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
-
-This cop checks for END blocks in method definitions.
-
-### Examples
-
-```ruby
-# bad
-
-def some_method
-  END { do_something }
-end
-```
-```ruby
-# good
-
-def some_method
-  at_exit { do_something }
-end
-```
-```ruby
-# good
-
-# outside defs
-END { do_something }
-```
-
 ## Lint/EnsureReturn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -804,99 +791,6 @@ format('A value: %s and another: %i', a_value)
 
 format('A value: %s and another: %i', a_value, another)
 ```
-
-## Lint/HandleExceptions
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | 0.70
-
-This cop checks for *rescue* blocks with no body.
-
-### Examples
-
-#### AllowComments: false (default)
-
-```ruby
-# bad
-def some_method
-  do_something
-rescue
-end
-
-# bad
-def some_method
-  do_something
-rescue
-  # do nothing
-end
-
-# bad
-begin
-  do_something
-rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-  # do nothing
-end
-
-# good
-def some_method
-  do_something
-rescue
-  handle_exception
-end
-
-# good
-begin
-  do_something
-rescue
-  handle_exception
-end
-```
-#### AllowComments: true
-
-```ruby
-# bad
-def some_method
-  do_something
-rescue
-end
-
-# bad
-begin
-  do_something
-rescue
-end
-
-# good
-def some_method
-  do_something
-rescue
-  # do nothing but comment
-end
-
-# good
-begin
-  do_something
-rescue
-  # do nothing but comment
-end
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-AllowComments | `false` | Boolean
-
-### References
-
-* [https://rubystyle.guide#dont-hide-exceptions](https://rubystyle.guide#dont-hide-exceptions)
 
 ## Lint/HeredocMethodCallPosition
 
@@ -1169,17 +1063,19 @@ end until some_condition
 ```ruby
 # good
 
-# using while
-while some_condition
+# while replacement
+loop do
   do_something
+  break unless some_condition
 end
 ```
 ```ruby
 # good
 
-# using until
-until some_condition
+# until replacement
+loop do
   do_something
+  break if some_condition
 end
 ```
 
@@ -1240,11 +1136,11 @@ Name | Default value | Configurable values
 --- | --- | ---
 MaximumRangeSize | `Infinity` | Float
 
-## Lint/MultipleCompare
+## Lint/MultipleComparison
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.47 | -
+Enabled | Yes | Yes  | 0.47 | 0.77
 
 In math and Python, we can use `x < y < z` style comparison to compare
 multiple value. However, we can't use the comparison in Ruby. However,
@@ -1299,14 +1195,14 @@ end
 # good
 
 def foo
-  self.class_eval do
+  self.class.class_eval do
     def bar
     end
   end
 end
 
 def foo
-  self.module_exec do
+  self.class.module_exec do
     def bar
     end
   end
@@ -1372,6 +1268,45 @@ end
 result = (1..4).reduce(0) do |acc, i|
   next acc if i.odd?
   acc + i
+end
+```
+
+## Lint/NonDeterministicRequireOrder
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | No | Yes (Unsafe) | 0.78 | -
+
+`Dir[...]` and `Dir.glob(...)` do not make any guarantees about
+the order in which files are returned. The final order is
+determined by the operating system and file system.
+This means that using them in cases where the order matters,
+such as requiring files, can lead to intermittent failures
+that are hard to debug. To ensure this doesn't happen,
+always sort the list.
+
+### Examples
+
+```ruby
+# bad
+Dir["./lib/**/*.rb"].each do |file|
+  require file
+end
+
+# good
+Dir["./lib/**/*.rb"].sort.each do |file|
+  require file
+end
+```
+```ruby
+# bad
+Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')) do |file|
+  require file
+end
+
+# good
+Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')).sort.each do |file|
+  require file
 end
 ```
 
@@ -1506,7 +1441,7 @@ puts(x + y)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | No | Yes  | 0.41 | -
+Enabled | No | Yes (Unsafe) | 0.41 | -
 
 This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 
@@ -1552,6 +1487,52 @@ rather than meant to be part of the resulting symbols.
 %i(foo bar)
 ```
 
+## Lint/RaiseException
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.81 | -
+
+This cop checks for `raise` or `fail` statements which are
+raising `Exception` class.
+
+You can specify a module name that will be an implicit namespace
+using `AllowedImplicitNamespaces` option. The cop cause a false positive
+for namespaced `Exception` when a namespace is omitted. This option can
+prevent the false positive by specifying a namespace to be omitted for
+`Exception`. Alternatively, make `Exception` a fully qualified class
+name with an explicit namespace.
+
+### Examples
+
+```ruby
+# bad
+raise Exception, 'Error message here'
+
+# good
+raise StandardError, 'Error message here'
+```
+#### AllowedImplicitNamespaces: ['Gem']
+
+```ruby
+# good
+module Gem
+  def self.foo
+    raise Exception # This exception means `Gem::Exception`.
+  end
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowedImplicitNamespaces | `Gem` | Array
+
+### References
+
+* [https://rubystyle.guide#raise-exception](https://rubystyle.guide#raise-exception)
+
 ## Lint/RandOne
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -1576,6 +1557,179 @@ rand(-1.0)
 
 0 # just use 0 instead
 ```
+
+## Lint/RedundantCopDisableDirective
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop detects instances of rubocop:disable comments that can be
+removed without causing any offenses to be reported. It's implemented
+as a cop in that it inherits from the Cop base class and calls
+add_offense. The unusual part of its implementation is that it doesn't
+have any on_* methods or an investigate method. This means that it
+doesn't take part in the investigation phase when the other cops do
+their work. Instead, it waits until it's called in a later stage of the
+execution. The reason it can't be implemented as a normal cop is that
+it depends on the results of all other cops to do its work.
+
+### Examples
+
+```ruby
+# bad
+# rubocop:disable Layout/LineLength
+x += 1
+# rubocop:enable Layout/LineLength
+
+# good
+x += 1
+```
+
+## Lint/RedundantCopEnableDirective
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop detects instances of rubocop:enable comments that can be
+removed.
+
+When comment enables all cops at once `rubocop:enable all`
+that cop checks whether any cop was actually enabled.
+
+### Examples
+
+```ruby
+# bad
+foo = 1
+# rubocop:enable Layout/LineLength
+
+# good
+foo = 1
+```
+```ruby
+# bad
+# rubocop:disable Style/StringLiterals
+foo = "1"
+# rubocop:enable Style/StringLiterals
+baz
+# rubocop:enable all
+
+# good
+# rubocop:disable Style/StringLiterals
+foo = "1"
+# rubocop:enable all
+baz
+```
+
+## Lint/RedundantRequireStatement
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+Checks for unnecessary `require` statement.
+
+The following features are unnecessary `require` statement because
+they are already loaded.
+
+ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
+ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
+["enumerator.so", "rational.so", "complex.so", "thread.rb"]
+
+This cop targets Ruby 2.2 or higher containing these 4 features.
+
+### Examples
+
+```ruby
+# bad
+require 'unloaded_feature'
+require 'thread'
+
+# good
+require 'unloaded_feature'
+```
+
+## Lint/RedundantSplatExpansion
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.76 | -
+
+This cop checks for unneeded usages of splat expansion
+
+### Examples
+
+```ruby
+# bad
+
+a = *[1, 2, 3]
+a = *'a'
+a = *1
+
+begin
+  foo
+rescue *[StandardError, ApplicationError]
+  bar
+end
+
+case foo
+when *[1, 2, 3]
+  bar
+else
+  baz
+end
+```
+```ruby
+# good
+
+c = [1, 2, 3]
+a = *c
+a, b = *c
+a, *b = *c
+a = *1..10
+a = ['a']
+
+begin
+  foo
+rescue StandardError, ApplicationError
+  bar
+end
+
+case foo
+when 1, 2, 3
+  bar
+else
+  baz
+end
+```
+
+## Lint/RedundantStringCoercion
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.19 | 0.77
+
+This cop checks for string conversion in string interpolation,
+which is redundant.
+
+### Examples
+
+```ruby
+# bad
+
+"result is #{something.to_s}"
+```
+```ruby
+# good
+
+"result is #{something}"
+```
+
+### References
+
+* [https://rubystyle.guide#no-to-s](https://rubystyle.guide#no-to-s)
 
 ## Lint/RedundantWithIndex
 
@@ -1810,7 +1964,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.47 | 0.56
+Enabled | Yes | No | 0.47 | 0.77
 
 The safe navigation operator returns nil if the receiver is
 nil. If you chain an ordinary method call after a safe
@@ -1838,13 +1992,13 @@ x&.foo || bar
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+AllowedMethods | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/SafeNavigationConsistency
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.55 | -
+Enabled | Yes | Yes  | 0.55 | 0.77
 
 This cop check to make sure that if safe navigation is used for a method
 call in an `&&` or `||` condition that safe navigation is used for all
@@ -1876,7 +2030,7 @@ foo&.bar && (foobar.baz || foo&.baz)
 
 Name | Default value | Configurable values
 --- | --- | ---
-Whitelist | `present?`, `blank?`, `presence`, `try`, `try!` | Array
+AllowedMethods | `present?`, `blank?`, `presence`, `try`, `try!` | Array
 
 ## Lint/SafeNavigationWithEmpty
 
@@ -2138,31 +2292,114 @@ def some_method
 end
 ```
 
-## Lint/StringConversionInInterpolation
+## Lint/StructNewOverride
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.19 | 0.20
+Pending | Yes | No | 0.81 | -
 
-This cop checks for string conversion in string interpolation,
-which is redundant.
+This cop checks unexpected overrides of the `Struct` built-in methods
+via `Struct.new`.
 
 ### Examples
 
 ```ruby
 # bad
+Bad = Struct.new(:members, :clone, :count)
+b = Bad.new([], true, 1)
+b.members #=> [] (overriding `Struct#members`)
+b.clone #=> true (overriding `Object#clone`)
+b.count #=> 1 (overriding `Enumerable#count`)
 
-"result is #{something.to_s}"
+# good
+Good = Struct.new(:id, :name)
+g = Good.new(1, "foo")
+g.members #=> [:id, :name]
+g.clone #=> #<struct Good id=1, name="foo">
+g.count #=> 2
 ```
+
+## Lint/SuppressedException
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | No | 0.9 | 0.81
+
+This cop checks for *rescue* blocks with no body.
+
+### Examples
+
+```ruby
+# bad
+def some_method
+  do_something
+rescue
+end
+
+# bad
+begin
+  do_something
+rescue
+end
+
+# good
+def some_method
+  do_something
+rescue
+  handle_exception
+end
+
+# good
+begin
+  do_something
+rescue
+  handle_exception
+end
+```
+#### AllowComments: true (default)
+
 ```ruby
 # good
+def some_method
+  do_something
+rescue
+  # do nothing
+end
 
-"result is #{something}"
+# good
+begin
+  do_something
+rescue
+  # do nothing
+end
 ```
+#### AllowComments: false
+
+```ruby
+# bad
+def some_method
+  do_something
+rescue
+  # do nothing
+end
+
+# bad
+begin
+  do_something
+rescue
+  # do nothing
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowComments | `true` | Boolean
 
 ### References
 
-* [https://rubystyle.guide#no-to-s](https://rubystyle.guide#no-to-s)
+* [https://rubystyle.guide#dont-hide-exceptions](https://rubystyle.guide#dont-hide-exceptions)
 
 ## Lint/Syntax
 
@@ -2178,7 +2415,7 @@ into RuboCop's offenses.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | - | -
+Enabled | Yes | Yes  | 0.66 | -
 
 This cop checks to make sure `#to_json` includes an optional argument.
 When overriding `#to_json`, callers may invoke JSON
@@ -2273,153 +2510,6 @@ This cop checks for using Fixnum or Bignum constant.
 1.is_a?(Integer)
 ```
 
-## Lint/UnneededCopDisableDirective
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | -
-
-This cop detects instances of rubocop:disable comments that can be
-removed without causing any offenses to be reported. It's implemented
-as a cop in that it inherits from the Cop base class and calls
-add_offense. The unusual part of its implementation is that it doesn't
-have any on_* methods or an investigate method. This means that it
-doesn't take part in the investigation phase when the other cops do
-their work. Instead, it waits until it's called in a later stage of the
-execution. The reason it can't be implemented as a normal cop is that
-it depends on the results of all other cops to do its work.
-
-### Examples
-
-```ruby
-# bad
-# rubocop:disable Metrics/LineLength
-x += 1
-# rubocop:enable Metrics/LineLength
-
-# good
-x += 1
-```
-
-## Lint/UnneededCopEnableDirective
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.53 | -
-
-This cop detects instances of rubocop:enable comments that can be
-removed.
-
-When comment enables all cops at once `rubocop:enable all`
-that cop checks whether any cop was actually enabled.
-
-### Examples
-
-```ruby
-# bad
-foo = 1
-# rubocop:enable Metrics/LineLength
-
-# good
-foo = 1
-```
-```ruby
-# bad
-# rubocop:disable Metrics/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable Metrics/LineLength
-baz
-# rubocop:enable all
-
-# good
-# rubocop:disable Metrics/LineLength
-baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrr
-# rubocop:enable all
-baz
-```
-
-## Lint/UnneededRequireStatement
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.51 | -
-
-Checks for unnecessary `require` statement.
-
-The following features are unnecessary `require` statement because
-they are already loaded.
-
-ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
-ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
-["enumerator.so", "rational.so", "complex.so", "thread.rb"]
-
-This cop targets Ruby 2.2 or higher containing these 4 features.
-
-### Examples
-
-```ruby
-# bad
-require 'unloaded_feature'
-require 'thread'
-
-# good
-require 'unloaded_feature'
-```
-
-## Lint/UnneededSplatExpansion
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.43 | 0.74
-
-This cop checks for unneeded usages of splat expansion
-
-### Examples
-
-```ruby
-# bad
-
-a = *[1, 2, 3]
-a = *'a'
-a = *1
-
-begin
-  foo
-rescue *[StandardError, ApplicationError]
-  bar
-end
-
-case foo
-when *[1, 2, 3]
-  bar
-else
-  baz
-end
-```
-```ruby
-# good
-
-c = [1, 2, 3]
-a = *c
-a, b = *c
-a, *b = *c
-a = *1..10
-a = ['a']
-
-begin
-  foo
-rescue StandardError, ApplicationError
-  bar
-end
-
-case foo
-when 1, 2, 3
-  bar
-else
-  baz
-end
-```
-
 ## Lint/UnreachableCode
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -2471,7 +2561,6 @@ This cop checks for unused block arguments.
 
 ```ruby
 # bad
-
 do_something do |used, unused|
   puts used
 end
@@ -2483,10 +2572,8 @@ end
 define_method(:foo) do |bar|
   puts :baz
 end
-```
-```ruby
-#good
 
+# good
 do_something do |used, _unused|
   puts used
 end
@@ -2497,6 +2584,34 @@ end
 
 define_method(:foo) do |_bar|
   puts :baz
+end
+```
+#### IgnoreEmptyBlocks: true (default)
+
+```ruby
+# good
+do_something { |unused| }
+```
+#### IgnoreEmptyBlocks: false
+
+```ruby
+# bad
+do_something { |unused| }
+```
+#### AllowUnusedKeywordArguments: false (default)
+
+```ruby
+# bad
+do_something do |unused: 42|
+  foo
+end
+```
+#### AllowUnusedKeywordArguments: true
+
+```ruby
+# good
+do_something do |unused: 42|
+  foo
 end
 ```
 
@@ -2515,7 +2630,7 @@ AllowUnusedKeywordArguments | `false` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.21 | 0.35
+Enabled | Yes | Yes  | 0.21 | 0.81
 
 This cop checks for unused method arguments.
 
@@ -2523,16 +2638,67 @@ This cop checks for unused method arguments.
 
 ```ruby
 # bad
-
 def some_method(used, unused, _unused_but_allowed)
   puts used
 end
-```
-```ruby
-# good
 
+# good
 def some_method(used, _unused, _unused_but_allowed)
   puts used
+end
+```
+#### AllowUnusedKeywordArguments: false (default)
+
+```ruby
+# bad
+def do_something(used, unused: 42)
+  used
+end
+```
+#### AllowUnusedKeywordArguments: true
+
+```ruby
+# good
+def do_something(used, unused: 42)
+  used
+end
+```
+#### IgnoreEmptyMethods: true (default)
+
+```ruby
+# good
+def do_something(unused)
+end
+```
+#### IgnoreEmptyMethods: false
+
+```ruby
+# bad
+def do_something(unused)
+end
+```
+#### IgnoreNotImplementedMethods: true (default)
+
+```ruby
+# good
+def do_something(unused)
+  raise NotImplementedError
+end
+
+def do_something_else(unused)
+  fail "TODO"
+end
+```
+#### IgnoreNotImplementedMethods: false
+
+```ruby
+# bad
+def do_something(unused)
+  raise NotImplementedError
+end
+
+def do_something_else(unused)
+  fail "TODO"
 end
 ```
 
@@ -2542,6 +2708,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 AllowUnusedKeywordArguments | `false` | Boolean
 IgnoreEmptyMethods | `true` | Boolean
+IgnoreNotImplementedMethods | `true` | Boolean
 
 ### References
 
@@ -2614,34 +2781,40 @@ class or module body. Conditionally-defined methods are considered as
 always being defined, and thus access modifiers guarding such methods
 are not redundant.
 
+This cop has `ContextCreatingMethods` option. The default setting value
+is an empty array that means no method is specified.
+This setting is an array of methods which, when called, are known to
+create its own context in the module's current access context.
+
+It also has `MethodCreatingMethods` option. The default setting value
+is an empty array that means no method is specified.
+This setting is an array of methods which, when called, are known to
+create other methods in the module's current access context.
+
 ### Examples
 
 ```ruby
+# bad
 class Foo
   public # this is redundant (default access is public)
 
   def method
   end
-
-  private # this is not redundant (a method is defined)
-  def method2
-  end
-
-  private # this is redundant (no following methods are defined)
 end
-```
-```ruby
+
+# bad
 class Foo
-  # The following is not redundant (conditionally defined methods are
-  # considered as always defining a method)
-  private
+  # The following is redundant (methods defined on the class'
+  # singleton class are not affected by the public modifier)
+  public
 
-  if condition?
-    def method
-    end
+  def self.method3
   end
+end
 
-  protected # this is not redundant (method is defined)
+# bad
+class Foo
+  protected
 
   define_method(:method2) do
   end
@@ -2652,19 +2825,49 @@ class Foo
     define_method("foo#{i}") do
     end
   end
+end
 
-  # The following is redundant (methods defined on the class'
-  # singleton class are not affected by the public modifier)
-  public
+# bad
+class Foo
+  private # this is redundant (no following methods are defined)
+end
 
-  def self.method3
+# good
+class Foo
+  private # this is not redundant (a method is defined)
+
+  def method2
+  end
+end
+
+# good
+class Foo
+  # The following is not redundant (conditionally defined methods are
+  # considered as always defining a method)
+  private
+
+  if condition?
+    def method
+    end
+  end
+end
+
+# good
+class Foo
+  protected # this is not redundant (a method is defined)
+
+  define_method(:method2) do
   end
 end
 ```
+#### ContextCreatingMethods: concerning
+
 ```ruby
 # Lint/UselessAccessModifier:
 #   ContextCreatingMethods:
 #     - concerning
+
+# good
 require 'active_support/concern'
 class Foo
   concerning :Bar do
@@ -2684,10 +2887,14 @@ class Foo
   end
 end
 ```
+#### MethodCreatingMethods: delegate
+
 ```ruby
 # Lint/UselessAccessModifier:
 #   MethodCreatingMethods:
 #     - delegate
+
+# good
 require 'active_support/core_ext/module/delegation'
 class Foo
   # this is not redundant because `delegate` creates methods
@@ -2797,10 +3004,14 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.13 | -
+Enabled | No | No | 0.13 | 0.80
 
 This cop checks for setter call to local variable as the final
 expression of a function definition.
+
+Note: There are edge cases in which the local variable references a
+value that is also accessible outside the local scope. This is not
+detected by the cop, and it can yield a false positive.
 
 ### Examples
 
@@ -2833,48 +3044,39 @@ methods used in void context.
 
 ### Examples
 
+#### CheckForMethodsWithNoSideEffects: false (default)
+
 ```ruby
 # bad
-
 def some_method
   some_num * 10
   do_something
 end
-```
-```ruby
-# bad
 
 def some_method(some_var)
   some_var
   do_something
 end
 ```
-```ruby
-# bad, when CheckForMethodsWithNoSideEffects is set true
+#### CheckForMethodsWithNoSideEffects: true
 
+```ruby
+# bad
 def some_method(some_array)
   some_array.sort
   do_something(some_array)
 end
-```
-```ruby
-# good
 
+# good
 def some_method
   do_something
   some_num * 10
 end
-```
-```ruby
-# good
 
 def some_method(some_var)
   do_something
   some_var
 end
-```
-```ruby
-# good, when CheckForMethodsWithNoSideEffects is set true
 
 def some_method(some_array)
   some_array.sort!

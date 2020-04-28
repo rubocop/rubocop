@@ -194,6 +194,38 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
       end
     end
 
+    context '>= Ruby 2.7', :ruby27 do
+      context 'when using numbered parameter' do
+        context 'with a single line lambda method call' do
+          let(:source) { 'f = lambda { _1 }' }
+
+          it_behaves_like 'registers an offense',
+                          'Use the `-> { ... }` lambda literal syntax for ' \
+                          'single line lambdas.'
+          it_behaves_like 'auto-correct', 'f = -> { _1 }'
+        end
+
+        context 'with a multiline lambda method call' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              l = lambda do
+                _1
+              end
+            RUBY
+          end
+        end
+
+        context 'with a single line lambda literal' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              lambda = -> { _1 }
+              lambda.(1)
+            RUBY
+          end
+        end
+      end
+    end
+
     context 'with a multiline lambda literal' do
       context 'with arguments' do
         let(:source) do

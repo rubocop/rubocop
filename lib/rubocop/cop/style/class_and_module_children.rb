@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def indent_width
-          @config.for_cop('IndentationWidth')['Width'] || 2
+          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def check_style(node, body)

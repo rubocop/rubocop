@@ -6,22 +6,65 @@ module RuboCop
       # This cop checks for unused method arguments.
       #
       # @example
-      #
       #   # bad
-      #
       #   def some_method(used, unused, _unused_but_allowed)
       #     puts used
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method(used, _unused, _unused_but_allowed)
       #     puts used
       #   end
+      #
+      # @example AllowUnusedKeywordArguments: false (default)
+      #   # bad
+      #   def do_something(used, unused: 42)
+      #     used
+      #   end
+      #
+      # @example AllowUnusedKeywordArguments: true
+      #   # good
+      #   def do_something(used, unused: 42)
+      #     used
+      #   end
+      #
+      # @example IgnoreEmptyMethods: true (default)
+      #   # good
+      #   def do_something(unused)
+      #   end
+      #
+      # @example IgnoreEmptyMethods: false
+      #   # bad
+      #   def do_something(unused)
+      #   end
+      #
+      # @example IgnoreNotImplementedMethods: true (default)
+      #   # good
+      #   def do_something(unused)
+      #     raise NotImplementedError
+      #   end
+      #
+      #   def do_something_else(unused)
+      #     fail "TODO"
+      #   end
+      #
+      # @example IgnoreNotImplementedMethods: false
+      #   # bad
+      #   def do_something(unused)
+      #     raise NotImplementedError
+      #   end
+      #
+      #   def do_something_else(unused)
+      #     fail "TODO"
+      #   end
+      #
       class UnusedMethodArgument < Cop
         include UnusedArgument
+
+        def_node_matcher :not_implemented?, <<~PATTERN
+          {(send nil? :raise (const nil? :NotImplementedError))
+           (send nil? :fail ...)}
+        PATTERN
 
         def autocorrect(node)
           UnusedArgCorrector.correct(processed_source, node)
@@ -33,14 +76,15 @@ module RuboCop
           return unless variable.method_argument?
           return if variable.keyword_argument? &&
                     cop_config['AllowUnusedKeywordArguments']
-
-          if cop_config['IgnoreEmptyMethods']
-            body = variable.scope.node.body
-
-            return if body.nil?
-          end
+          return if ignored_method?(variable.scope.node.body)
 
           super
+        end
+
+        def ignored_method?(body)
+          cop_config['IgnoreEmptyMethods'] && body.nil? ||
+            cop_config['IgnoreNotImplementedMethods'] &&
+              not_implemented?(body)
         end
 
         def message(variable)

@@ -32,7 +32,7 @@ module RuboCop
         def_node_matcher :bad_method?, <<~PATTERN
           {
             (send $(csend ...) $_ ...)
-            (send $(block (csend ...) ...) $_ ...)
+            (send $({block numblock} (csend ...) ...) $_ ...)
           }
         PATTERN
 
@@ -42,9 +42,9 @@ module RuboCop
 
             method_chain = method_chain(node)
             location =
-              Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                        safe_nav.loc.expression.end_pos,
-                                        method_chain.loc.expression.end_pos)
+              Parser::Source::Range.new(node.source_range.source_buffer,
+                                        safe_nav.source_range.end_pos,
+                                        method_chain.source_range.end_pos)
             add_offense(node, location: location)
           end
         end
@@ -54,9 +54,8 @@ module RuboCop
         def method_chain(node)
           chain = node
           while chain.send_type?
-            chain = chain.parent if chain.parent &&
-                                    %i[send csend].include?(chain.parent.type)
-            break
+            chain = chain.parent if chain.parent&.call_type?
+            break # FIXME: Unconditional break. Why while "loop" then?
           end
           chain
         end

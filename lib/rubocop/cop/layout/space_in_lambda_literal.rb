@@ -46,11 +46,9 @@ module RuboCop
           children = lambda_node.parent.children
           lambda do |corrector|
             if style == :require_space
-              corrector.insert_before(children[1].source_range, ' ')
+              corrector.insert_before(children[1], ' ')
             else
-              space_range = range_between(children[0].source_range.end_pos,
-                                          children[1].source_range.begin_pos)
-              corrector.remove(space_range)
+              corrector.remove(space_after_arrow(lambda_node))
             end
           end
         end
@@ -62,10 +60,14 @@ module RuboCop
         end
 
         def space_after_arrow?(lambda_node)
-          arrow = lambda_node.parent.children[0]
-          parentheses = lambda_node.parent.children[1]
-          (parentheses.source_range.begin_pos - arrow.source_range.end_pos)
-            .positive?
+          !space_after_arrow(lambda_node).empty?
+        end
+
+        def space_after_arrow(lambda_node)
+          arrow = lambda_node.parent.children[0].source_range
+          parentheses = lambda_node.parent.children[1].source_range
+
+          arrow.end.join(parentheses.begin)
         end
 
         def range_of_offense(node)

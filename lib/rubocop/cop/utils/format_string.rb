@@ -44,15 +44,15 @@ module RuboCop
           attr_reader :begin_pos, :end_pos
           attr_reader :flags, :width, :precision, :name, :type
 
-          def initialize(string, **opts)
-            @source = string
-            @begin_pos = opts[:begin_pos]
-            @end_pos = opts[:end_pos]
-            @flags = opts[:flags]
-            @width = opts[:width]
-            @precision = opts[:precision]
-            @name = opts[:name]
-            @type = opts[:type]
+          def initialize(match)
+            @source = match[0]
+            @begin_pos = match.begin(0)
+            @end_pos = match.end(0)
+            @flags = match[:flags].to_s + match[:more_flags].to_s
+            @width = match[:width]
+            @precision = match[:precision]
+            @name = match[:name]
+            @type = match[:type]
           end
 
           def percent?
@@ -109,16 +109,8 @@ module RuboCop
 
         def parse
           @source.to_enum(:scan, SEQUENCE).map do
-            match = Regexp.last_match
             FormatSequence.new(
-              match[0],
-              begin_pos: match.begin(0),
-              end_pos: match.end(0),
-              flags: match[:flags].to_s + match[:more_flags].to_s,
-              width: match[:width],
-              precision: match[:precision],
-              name: match[:name],
-              type: match[:type]
+              Regexp.last_match
             )
           end
         end

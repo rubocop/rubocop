@@ -495,24 +495,23 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    it 'autocorrects' do
-      source = <<~RUBY
+    it 'registers an offense and corrects misaligned end braces' do
+      expect_offense(<<~RUBY)
         def get_gems_by_name
           @gems ||= Hash[*get_latest_gems.map { |gem|
                            [gem.name, gem, gem.full_name, gem]
                       }.flatten]
+                      ^ `}` at 4, 14 is not aligned with `*get_latest_gems.map { |gem|` at 2, 17 or `@gems ||= Hash[*get_latest_gems.map { |gem|` at 2, 2.
         end
       RUBY
-      corrected = <<~RUBY
+
+      expect_correction(<<~RUBY)
         def get_gems_by_name
           @gems ||= Hash[*get_latest_gems.map { |gem|
                            [gem.name, gem, gem.full_name, gem]
                          }.flatten]
         end
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(corrected)
     end
   end
 
@@ -527,24 +526,23 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    it 'autocorrects' do
-      source = <<~RUBY
+    it 'registers an offense and corrects misaligned end brace' do
+      expect_offense(<<~RUBY)
         def abc
           @abc ||= A[~xyz { |x|
                        x
                                 }.flatten]
+                                ^ `}` at 4, 24 is not aligned with `~xyz { |x|` at 2, 13 or `@abc ||= A[~xyz { |x|` at 2, 2.
         end
       RUBY
-      corrected = <<~RUBY
+
+      expect_correction(<<~RUBY)
         def abc
           @abc ||= A[~xyz { |x|
                        x
                      }.flatten]
         end
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(corrected)
     end
   end
 
@@ -559,24 +557,23 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    it 'autocorrects' do
-      source = <<~RUBY
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         def abc
           @abc ||= A[!xyz { |x|
                        x
         }.flatten]
+        ^ `}` at 4, 0 is not aligned with `!xyz { |x|` at 2, 13 or `@abc ||= A[!xyz { |x|` at 2, 2.
         end
       RUBY
-      corrected = <<~RUBY
+
+      expect_correction(<<~RUBY)
         def abc
           @abc ||= A[!xyz { |x|
                        x
                      }.flatten]
         end
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(corrected)
     end
   end
 
@@ -591,24 +588,23 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    it 'autocorrects' do
-      source = <<~RUBY
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         def abc
           @abc ||= A[-xyz { |x|
                        x
                           }.flatten]
+                          ^ `}` at 4, 18 is not aligned with `-xyz { |x|` at 2, 13 or `@abc ||= A[-xyz { |x|` at 2, 2.
         end
       RUBY
-      corrected = <<~RUBY
+
+      expect_correction(<<~RUBY)
         def abc
           @abc ||= A[-xyz { |x|
                        x
                      }.flatten]
         end
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(corrected)
     end
   end
 
@@ -618,6 +614,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         test {
           }
           ^ `}` at 2, 2 is not aligned with `test {` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test {
+        }
       RUBY
     end
   end

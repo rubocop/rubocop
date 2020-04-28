@@ -28,7 +28,7 @@ module RuboCop
         def autocorrect(node)
           (*, keyword) = offending_location_argument(node.parent)
 
-          ->(corrector) { corrector.replace(node.source_range, ":#{keyword}") }
+          ->(corrector) { corrector.replace(node, ":#{keyword}") }
         end
 
         private

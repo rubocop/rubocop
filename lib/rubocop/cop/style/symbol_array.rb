@@ -11,8 +11,8 @@ module RuboCop
       #
       # Configuration option: MinSize
       # If set, arrays with fewer elements than this value will not trigger the
-      # cop. For example, a `MinSize of `3` will not enforce a style on an array
-      # of 2 or fewer elements.
+      # cop. For example, a `MinSize` of `3` will not enforce a style on an
+      # array of 2 or fewer elements.
       #
       # @example EnforcedStyle: percent (default)
       #   # good
@@ -81,7 +81,7 @@ module RuboCop
           end
 
           lambda do |corrector|
-            corrector.replace(node.source_range, "[#{syms.join(', ')}]")
+            corrector.replace(node, "[#{syms.join(', ')}]")
           end
         end
 

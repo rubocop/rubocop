@@ -35,7 +35,8 @@ module RuboCop
       end
     end
 
-    def resolve_inheritance_from_gems(hash, gems)
+    def resolve_inheritance_from_gems(hash)
+      gems = hash.delete('inherit_gem')
       (gems || {}).each_pair do |gem_name, config_path|
         if gem_name == 'rubocop'
           raise ArgumentError,
@@ -180,7 +181,7 @@ module RuboCop
     end
 
     def transform(config)
-      Hash[config.map { |cop, params| [cop, yield(params)] }]
+      config.transform_values { |params| yield(params) }
     end
 
     def gem_config_path(gem_name, relative_config_path)

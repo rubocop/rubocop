@@ -121,6 +121,14 @@ module RuboCop
         loc.respond_to?(:dot) && loc.dot && loc.dot.is?('::')
       end
 
+      # Checks whether the dispatched method uses a safe navigation operator to
+      # connect the receiver and the method name.
+      #
+      # @return [Boolean] whether the method was called with a connecting dot
+      def safe_navigation?
+        loc.respond_to?(:dot) && loc.dot && loc.dot.is?('&.')
+      end
+
       # Checks whether the *explicit* receiver of this method dispatch is
       # `self`.
       #
@@ -222,21 +230,10 @@ module RuboCop
 
       def_node_matcher :macro_scope?, <<~PATTERN
         {^{({sclass class module block} ...) class_constructor?}
-         ^^#ascend_macro_scope?
+         ^^{({sclass class module block} ... ({begin if} ...)) class_constructor?}
          ^#macro_kwbegin_wrapper?
          #root_node?}
       PATTERN
-
-      def_node_matcher :wrapped_macro_scope?, <<~PATTERN
-        {({sclass class module block} ... ({begin if} ...)) class_constructor?}
-      PATTERN
-
-      def ascend_macro_scope?(ancestor)
-        return true if wrapped_macro_scope?(ancestor)
-        return false if root_node?(ancestor)
-
-        ascend_macro_scope?(ancestor.parent)
-      end
 
       # Check if a node's parent is a kwbegin wrapper within a macro scope
       #

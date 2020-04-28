@@ -91,7 +91,7 @@ module RuboCop
             when :def, :defs
               return :dynamic
             when :block
-              return :instance_eval if parent.method_name == :instance_eval
+              return :instance_eval if parent.method?(:instance_eval)
 
               return :dynamic
             end
@@ -115,7 +115,7 @@ module RuboCop
           lambda do |corrector|
             new, old = *send_node.arguments
             replacement = "alias #{identifier(new)} #{identifier(old)}"
-            corrector.replace(send_node.source_range, replacement)
+            corrector.replace(send_node, replacement)
           end
         end
 
@@ -125,15 +125,15 @@ module RuboCop
               'alias_method ' \
               ":#{identifier(node.new_identifier)}, " \
               ":#{identifier(node.old_identifier)}"
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(node, replacement)
           end
         end
 
         def correct_alias_with_symbol_args(node)
           lambda do |corrector|
-            corrector.replace(node.new_identifier.source_range,
+            corrector.replace(node.new_identifier,
                               node.new_identifier.source[1..-1])
-            corrector.replace(node.old_identifier.source_range,
+            corrector.replace(node.old_identifier,
                               node.old_identifier.source[1..-1])
           end
         end

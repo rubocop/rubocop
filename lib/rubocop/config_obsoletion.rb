@@ -4,13 +4,41 @@ module RuboCop
   # This class handles obsolete configuration.
   class ConfigObsoletion
     RENAMED_COPS = {
-      'Style/SingleSpaceBeforeFirstArg' => 'Layout/SpaceBeforeFirstArg',
-      'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',
+      'Layout/AlignArguments' => 'Layout/ArgumentAlignment',
+      'Layout/AlignArray' => 'Layout/ArrayAlignment',
+      'Layout/AlignHash' => 'Layout/HashAlignment',
+      'Layout/AlignParameters' => 'Layout/ParameterAlignment',
+      'Layout/IndentArray' => 'Layout/FirstArrayElementIndentation',
+      'Layout/IndentAssignment' => 'Layout/AssignmentIndentation',
+      'Layout/IndentFirstArgument' => 'Layout/FirstArgumentIndentation',
+      'Layout/IndentFirstArrayElement' => 'Layout/FirstArrayElementIndentation',
+      'Layout/IndentFirstHashElement' => 'Layout/FirstHashElementIndentation',
+      'Layout/IndentFirstParameter' => 'Layout/FirstParameterIndentation',
+      'Layout/IndentHash' => 'Layout/FirstHashElementIndentation',
+      'Layout/IndentHeredoc' => 'Layout/HeredocIndentation',
+      'Layout/LeadingBlankLines' => 'Layout/LeadingEmptyLines',
+      'Layout/Tab' => 'Layout/IndentationStyle',
+      'Layout/TrailingBlankLines' => 'Layout/TrailingEmptyLines',
+      'Lint/DuplicatedKey' => 'Lint/DuplicateHashKey',
+      'Lint/EndInMethod' => 'Style/EndBlock',
+      'Lint/HandleExceptions' => 'Lint/SuppressedException',
+      'Lint/MultipleCompare' => 'Lint/MultipleComparison',
+      'Lint/StringConversionInInterpolation' => 'Lint/RedundantStringCoercion',
+      'Lint/UnneededCopDisableDirective' => 'Lint/RedundantCopDisableDirective',
+      'Lint/UnneededCopEnableDirective' => 'Lint/RedundantCopEnableDirective',
+      'Lint/UnneededRequireStatement' => 'Lint/RedundantRequireStatement',
+      'Lint/UnneededSplatExpansion' => 'Lint/RedundantSplatExpansion',
+      'Naming/UncommunicativeBlockParamName' => 'Naming/BlockParameterName',
+      'Naming/UncommunicativeMethodParamName' => 'Naming/MethodParameterName',
       'Style/DeprecatedHashMethods' => 'Style/PreferredHashMethods',
+      'Style/MethodCallParentheses' => 'Style/MethodCallWithoutArgsParentheses',
       'Style/OpMethod' => 'Naming/BinaryOperatorParameterName',
-      'Layout/FirstParameterIndentation' => 'Layout/IndentFirstArgument',
-      'Layout/IndentArray' => 'Layout/IndentFirstArrayElement',
-      'Layout/IndentHash' => 'Layout/IndentFirstHashElement'
+      'Style/SingleSpaceBeforeFirstArg' => 'Layout/SpaceBeforeFirstArg',
+      'Style/UnneededCapitalW' => 'Style/RedundantCapitalW',
+      'Style/UnneededCondition' => 'Style/RedundantCondition',
+      'Style/UnneededInterpolation' => 'Style/RedundantInterpolation',
+      'Style/UnneededPercentQ' => 'Style/RedundantPercentQ',
+      'Style/UnneededSort' => 'Style/RedundantSort'
     }.map do |old_name, new_name|
       [old_name, "The `#{old_name}` cop has been renamed to `#{new_name}`."]
     end
@@ -22,7 +50,7 @@ module RuboCop
                      Style/VariableName Style/VariableNumber
                      Style/AccessorMethodName Style/AsciiIdentifiers],
       'Layout' => %w[Lint/BlockAlignment Lint/EndAlignment
-                     Lint/DefEndAlignment],
+                     Lint/DefEndAlignment Metrics/LineLength],
       'Lint' => 'Style/FlipFlop'
     }.map do |new_department, old_names|
       Array(old_names).map do |old_name|
@@ -32,9 +60,10 @@ module RuboCop
     end
 
     REMOVED_COPS = {
-      'Rails/DefaultScope' => nil,
       'Layout/SpaceAfterControlKeyword' => 'Layout/SpaceAroundKeyword',
       'Layout/SpaceBeforeModifierKeyword' => 'Layout/SpaceAroundKeyword',
+      'Lint/RescueWithoutErrorClass' => 'Style/RescueStandardError',
+      'Rails/DefaultScope' => nil,
       'Style/SpaceAfterControlKeyword' => 'Layout/SpaceAroundKeyword',
       'Style/SpaceBeforeModifierKeyword' => 'Layout/SpaceAroundKeyword',
       'Style/TrailingComma' => 'Style/TrailingCommaInArguments, ' \
@@ -43,7 +72,7 @@ module RuboCop
       'Style/TrailingCommaInLiteral' => 'Style/TrailingCommaInArrayLiteral ' \
                                         'and/or ' \
                                         'Style/TrailingCommaInHashLiteral',
-      'Lint/RescueWithoutErrorClass' => 'Style/RescueStandardError'
+      'Style/BracesAroundHashParameters' => nil
     }.map do |old_name, other_cops|
       if other_cops
         more = ". Please use #{other_cops} instead".gsub(%r{[A-Z]\w+/\w+},
@@ -88,13 +117,13 @@ module RuboCop
         cops: 'Style/IfUnlessModifier',
         parameters: 'MaxLineLength',
         alternative: '`Style/IfUnlessModifier: MaxLineLength` has been ' \
-                     'removed. Use `Metrics/LineLength: Max` instead'
+                     'removed. Use `Layout/LineLength: Max` instead'
       },
       {
         cops: 'Style/WhileUntilModifier',
         parameters: 'MaxLineLength',
         alternative: '`Style/WhileUntilModifier: MaxLineLength` has been ' \
-                     'removed. Use `Metrics/LineLength: Max` instead'
+                     'removed. Use `Layout/LineLength: Max` instead'
       },
       {
         cops: 'AllCops',
@@ -131,6 +160,42 @@ module RuboCop
         parameters: 'SafeMode',
         alternative: '`SafeMode` has been removed. ' \
                      'Use `SafeAutoCorrect` instead.'
+      },
+      {
+        cops: 'Bundler/GemComment',
+        parameters: 'Whitelist',
+        alternative: '`Whitelist` has been renamed to `IgnoredGems`.'
+      },
+      {
+        cops: %w[
+          Lint/SafeNavigationChain Lint/SafeNavigationConsistency
+          Style/NestedParenthesizedCalls Style/SafeNavigation
+          Style/TrivialAccessors
+        ],
+        parameters: 'Whitelist',
+        alternative: '`Whitelist` has been renamed to `AllowedMethods`.'
+      },
+      {
+        cops: 'Style/IpAddresses',
+        parameters: 'Whitelist',
+        alternative: '`Whitelist` has been renamed to `AllowedAddresses`.'
+      },
+      {
+        cops: 'Naming/HeredocDelimiterNaming',
+        parameters: 'Blacklist',
+        alternative: '`Blacklist` has been renamed to `ForbiddenDelimiters`.'
+      },
+      {
+        cops: 'Naming/PredicateName',
+        parameters: 'NamePrefixBlacklist',
+        alternative: '`NamePrefixBlacklist` has been renamed to ' \
+                     '`ForbiddenPrefixes`.'
+      },
+      {
+        cops: 'Naming/PredicateName',
+        parameters: 'NameWhitelist',
+        alternative: '`NameWhitelist` has been renamed to ' \
+                     '`AllowedMethods`.'
       }
     ].freeze
 

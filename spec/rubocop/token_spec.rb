@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Token do
   let(:processed_source) { RuboCop::ProcessedSource.new(source, ruby_version) }
-  let(:ruby_version) { RuboCop::ConfigValidator::KNOWN_RUBIES.last }
+  let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
   let(:source) { <<~RUBY }
     # comment

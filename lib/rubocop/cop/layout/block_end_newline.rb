@@ -52,9 +52,11 @@ module RuboCop
         end
 
         def delimiter_range(node)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    node.children.last.loc.expression.end_pos,
-                                    node.loc.expression.end_pos)
+          Parser::Source::Range.new(
+            node.loc.expression.source_buffer,
+            node.children.compact.last.loc.expression.end_pos,
+            node.loc.expression.end_pos
+          )
         end
       end
     end

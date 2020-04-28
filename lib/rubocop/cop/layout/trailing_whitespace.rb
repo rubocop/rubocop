@@ -14,6 +14,20 @@ module RuboCop
       #   # good
       #   x = 0
       #
+      # @example AllowInHeredoc: false
+      #   # The line in this example contains spaces after the 0.
+      #   # bad
+      #   code = <<~RUBY
+      #     x = 0
+      #   RUBY
+      #
+      # @example AllowInHeredoc: true (default)
+      #   # The line in this example contains spaces after the 0.
+      #   # good
+      #   code = <<~RUBY
+      #     x = 0
+      #   RUBY
+      #
       class TrailingWhitespace < Cop
         include RangeHelp
 
@@ -22,11 +36,13 @@ module RuboCop
         def investigate(processed_source)
           heredoc_ranges = extract_heredoc_ranges(processed_source.ast)
           processed_source.lines.each_with_index do |line, index|
+            lineno = index + 1
+
             next unless line.end_with?(' ', "\t")
-            next if skip_heredoc? && inside_heredoc?(heredoc_ranges, index + 1)
+            next if skip_heredoc? && inside_heredoc?(heredoc_ranges, lineno)
 
             range = source_range(processed_source.buffer,
-                                 index + 1,
+                                 lineno,
                                  (line.rstrip.length)...(line.length))
 
             add_offense(range, location: range)

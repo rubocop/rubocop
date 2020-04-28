@@ -4,14 +4,15 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
-    UNNEEDED_DISABLE = 'Lint/UnneededCopDisableDirective'
+    REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
     COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
+      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+        .gsub(' ', '\s*')
     )
 
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
@@ -112,13 +113,18 @@ module RuboCop
     def each_mentioned_cop
       each_directive do |comment, cop_names, disabled|
         comment_line_number = comment.loc.expression.line
-        single_line = !comment_only_line?(comment_line_number)
+        single_line = !comment_only_line?(comment_line_number) ||
+                      directive_on_comment_line?(comment)
 
         cop_names.each do |cop_name|
           yield qualified_cop_name(cop_name), disabled, comment_line_number,
                 single_line
         end
       end
+    end
+
+    def directive_on_comment_line?(comment)
+      comment.text[1..-1].match(COMMENT_DIRECTIVE_REGEXP)
     end
 
     def each_directive
@@ -141,7 +147,7 @@ module RuboCop
       cop_names =
         cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
 
-      disabled = (switch == 'disable')
+      disabled = %w[disable todo].include?(switch)
 
       [cop_names, disabled]
     end
@@ -151,7 +157,7 @@ module RuboCop
     end
 
     def all_cop_names
-      @all_cop_names ||= Cop::Cop.registry.names - [UNNEEDED_DISABLE]
+      @all_cop_names ||= Cop::Cop.registry.names - [REDUNDANT_DISABLE]
     end
 
     def comment_only_line?(line_number)

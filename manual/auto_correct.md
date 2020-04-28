@@ -1,4 +1,4 @@
-## Auto-correct
+# Auto-correct
 
 In auto-correct mode, RuboCop will try to automatically fix offenses:
 
@@ -6,11 +6,11 @@ In auto-correct mode, RuboCop will try to automatically fix offenses:
 $ rubocop -a
 ```
 
-For some offenses, it is not possible to implement automatic correction. 
+For some offenses, it is not possible to implement automatic correction.
 
 Some automatic corrections that _are_ possible have not been implemented yet.
 
-### Safe auto-correct
+## Safe auto-correct
 
 ```sh
 $ rubocop --safe-auto-correct
@@ -27,7 +27,7 @@ the safety of each cop will be determined.
 
 If a cop is annotated as "not safe", it will be omitted.
 
-#### Example of Unsafe Cop
+### Example of Unsafe Cop
 
 ```ruby
 array = []
@@ -52,7 +52,7 @@ Therefore, in this (unusual) scenario, `Style/LineEndConcatenation` is unsafe.
 (This is a contrived example. Real code would use `%w` for an array of string
 literals.)
 
-### Generating comments
+## Generating comments
 
 ```sh
 $ rubocop --auto-correct --disable-uncorrectable
@@ -65,5 +65,5 @@ $ rubocop --safe-auto-correct --disable-uncorrectable
 ```
 
 You can add the flag `--disable-uncorrectable`, which will generate
-`# rubocop:disable` comments in the code to stop the reporting of offenses that
+`# rubocop:todo` comments in the code to stop the reporting of offenses that
 could not be corrected automatically.

@@ -91,10 +91,10 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
     end
   end
 
-  context 'whitelist' do
-    let(:cop_config) { { 'Whitelist' => %w[to_json] } }
+  context 'permitted list' do
+    let(:cop_config) { { 'Allowlist' => %w[to_json] } }
 
-    it 'ignores if the method is whitelisted' do
+    it 'ignores if the method is permitted' do
       expect_no_offenses(<<~RUBY)
         def to_json(options = {})
         end

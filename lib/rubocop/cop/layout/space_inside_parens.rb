@@ -72,7 +72,7 @@ module RuboCop
             # If the second token is a comment, that means that a line break
             # follows, and that the rules for space inside don't apply.
             next if token2.comment?
-            next unless token2.line == token1.line && token1.space_after?
+            next unless same_line?(token1, token2) && token1.space_after?
 
             yield range_between(token1.end_pos, token2.begin_pos)
           end
@@ -82,15 +82,16 @@ module RuboCop
           tokens.each_cons(2) do |token1, token2|
             next if can_be_ignored?(token1, token2)
 
-            next unless token2.line == token1.line && !token1.space_after?
-
             if token1.left_parens?
               yield range_between(token2.begin_pos, token2.begin_pos + 1)
-
             elsif token2.right_parens?
               yield range_between(token2.begin_pos, token2.end_pos)
             end
           end
+        end
+
+        def same_line?(token1, token2)
+          token1.line == token2.line
         end
 
         def parens?(token1, token2)
@@ -104,8 +105,7 @@ module RuboCop
           # follows, and that the rules for space inside don't apply.
           return true if token2.comment?
 
-          # Ignore empty parens. # TODO: Could be configurable.
-          return true if token1.left_parens? && token2.right_parens?
+          return true unless same_line?(token1, token2) && !token1.space_after?
         end
       end
     end

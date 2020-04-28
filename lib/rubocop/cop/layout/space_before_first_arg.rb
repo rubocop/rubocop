@@ -54,12 +54,20 @@ module RuboCop
 
         def expect_params_after_method_name?(node)
           return false if node.parenthesized?
+          return true if no_space_between_method_name_and_first_argument?(node)
 
           first_arg = node.first_argument
 
           same_line?(first_arg, node) &&
             !(allow_for_alignment? &&
               aligned_with_something?(first_arg.source_range))
+        end
+
+        def no_space_between_method_name_and_first_argument?(node)
+          end_pos_of_method_name = node.loc.selector.end_pos
+          begin_pos_of_argument = node.first_argument.source_range.begin_pos
+
+          end_pos_of_method_name == begin_pos_of_argument
         end
       end
     end

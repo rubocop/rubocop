@@ -359,6 +359,64 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       RUBY
     end
 
+    context '>= Ruby 2.7', :ruby27 do
+      context 'with case match' do
+        it 'registers an offense for misaligned else' do
+          expect_offense(<<~RUBY)
+            case 0
+            in 0
+              foo
+            in -1..1
+              bar
+            in Integer
+              baz
+             else
+             ^^^^ Align `else` with `in`.
+              qux
+            end
+          RUBY
+        end
+
+        it 'accepts correctly aligned case/when/else' do
+          expect_no_offenses(<<~RUBY)
+            case 0
+            in 0
+              foo
+            in -1..1
+              bar
+            in Integer
+              baz
+            else
+              qux
+            end
+          RUBY
+        end
+
+        it 'accepts correctly aligned empty else' do
+          expect_no_offenses(<<~RUBY)
+            case 0
+            in 0
+              foo
+            in -1..1
+              bar
+            in Integer
+              baz
+            else
+            end
+          RUBY
+        end
+
+        it 'accepts case match without else' do
+          expect_no_offenses(<<~'RUBY')
+            case 0
+            in a
+              p a
+            end
+          RUBY
+        end
+      end
+    end
+
     it 'accepts else aligned with when but not with case' do
       # "Indent when as deep as case" is the job of another cop, and this is
       # one of the possible styles supported by configuration.

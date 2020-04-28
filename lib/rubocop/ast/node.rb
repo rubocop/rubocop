@@ -98,7 +98,7 @@ module RuboCop
         @mutable_attributes.frozen?
       end
 
-      protected :parent= # rubocop:disable Style/AccessModifierDeclarations
+      protected :parent=
 
       # Override `AST::Node#updated` so that `AST::Processor` does not try to
       # mutate our ASTs. Since we keep references from children to parents and
@@ -116,7 +116,7 @@ module RuboCop
       #
       # @return [Integer] the index of the receiver node in its siblings
       def sibling_index
-        parent.children.index { |sibling| sibling.equal?(self) }
+        parent&.children&.index { |sibling| sibling.equal?(self) }
       end
 
       # Common destructuring method. This can be used to normalize
@@ -141,9 +141,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_ancestor(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each ancestor node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -178,9 +175,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_child_node(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each child node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -216,9 +210,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_descendant(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each descendant node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -254,9 +245,6 @@ module RuboCop
       #   Yield only nodes matching any of the types.
       #   @param [Symbol] type_a a node type
       #   @param [Symbol] type_b a node type
-      # @overload each_node(types)
-      #   Yield only nodes matching any of types in the array.
-      #   @param [Array<Symbol>] types an array containing node types
       # @yieldparam [Node] node each node
       # @return [self] if a block is given
       # @return [Enumerator] if no block is given
@@ -303,7 +291,7 @@ module RuboCop
       ## Destructuring
 
       def_node_matcher :receiver, <<~PATTERN
-        {(send $_ ...) (block (send $_ ...) ...)}
+        {(send $_ ...) ({block numblock} (send $_ ...) ...)}
       PATTERN
 
       def_node_matcher :str_content, '(str $_)'
@@ -325,9 +313,8 @@ module RuboCop
          (casgn $_ $_        (send (const nil? {:Class :Module}) :new ...))
          (casgn $_ $_ (block (send (const nil? {:Class :Module}) :new ...) ...))}
       PATTERN
-      # rubocop:disable Style/AccessModifierDeclarations
+
       private :defined_module0
-      # rubocop:enable Style/AccessModifierDeclarations
 
       def defined_module
         namespace, name = *defined_module0
@@ -469,6 +456,10 @@ module RuboCop
         parent&.send_type? && parent.arguments.include?(self)
       end
 
+      def boolean_type?
+        true_type? || false_type?
+      end
+
       def numeric_type?
         int_type? || float_type?
       end
@@ -477,7 +468,13 @@ module RuboCop
         irange_type? || erange_type?
       end
 
-      def_node_matcher :guard_clause?, <<~PATTERN
+      def guard_clause?
+        node = and_type? || or_type? ? rhs : self
+
+        node.match_guard_clause?
+      end
+
+      def_node_matcher :match_guard_clause?, <<~PATTERN
         [${(send nil? {:raise :fail} ...) return break next} single_line?]
       PATTERN
 
@@ -487,7 +484,7 @@ module RuboCop
          (send (const nil? :Proc) :new)}
       PATTERN
 
-      def_node_matcher :lambda?, '(block (send nil? :lambda) ...)'
+      def_node_matcher :lambda?, '({block numblock} (send nil? :lambda) ...)'
       def_node_matcher :lambda_or_proc?, '{lambda? proc?}'
 
       def_node_matcher :class_constructor?, <<~PATTERN
@@ -620,7 +617,7 @@ module RuboCop
       end
 
       def parent_module_name_for_block(ancestor)
-        if ancestor.method_name == :class_eval
+        if ancestor.method?(:class_eval)
           # `class_eval` with no receiver applies to whatever module or class
           # we are currently in
           return unless (receiver = ancestor.receiver)

@@ -4,7 +4,7 @@
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.27 | 0.66
+Enabled | Yes | No | 0.27 | 0.81
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
@@ -15,6 +15,7 @@ and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 
 Name | Default value | Configurable values
 --- | --- | ---
+IgnoredMethods | `[]` | Array
 Max | `15` | Integer
 
 ### References
@@ -89,7 +90,7 @@ Max | `100` | Integer
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | -
+Enabled | Yes | No | 0.25 | 0.81
 
 This cop checks that the cyclomatic complexity of methods is not higher
 than the configured maximum. The cyclomatic complexity is the number of
@@ -106,79 +107,8 @@ Loops can be said to have an exit condition, so they add one.
 
 Name | Default value | Configurable values
 --- | --- | ---
+IgnoredMethods | `[]` | Array
 Max | `6` | Integer
-
-## Metrics/LineLength
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.25 | 0.68
-
-This cop checks the length of lines in the source code.
-The maximum length is configurable.
-The tab size is configured in the `IndentationWidth`
-of the `Layout/Tab` cop.
-It also ignores a shebang line by default.
-
-This cop has some autocorrection capabilities.
-It can programmatically shorten certain long lines by
-inserting line breaks into expressions that can be safely
-split across lines. These include arrays, hashes, and
-method calls with argument lists.
-
-If autocorrection is enabled, the following Layout cops
-are recommended to further format the broken lines.
-
-  - AlignArray
-  - AlignHash
-  - AlignParameters
-  - ClosingParenthesisIndentation
-  - IndentFirstArgument
-  - IndentFirstArrayElement
-  - IndentFirstHashElement
-  - IndentFirstParameter
-  - MultilineArrayLineBreaks
-  - MultilineHashBraceLayout
-  - MultilineHashKeyLineBreaks
-  - MultilineMethodArgumentLineBreaks
-
-Together, these cops will pretty print hashes, arrays,
-method calls, etc. For example, let's say the max columns
-is 25:
-
-### Examples
-
-```ruby
-# bad
-{foo: "0000000000", bar: "0000000000", baz: "0000000000"}
-
-# good
-{foo: "0000000000",
-bar: "0000000000", baz: "0000000000"}
-
-# good (with recommended cops enabled)
-{
-  foo: "0000000000",
-  bar: "0000000000",
-  baz: "0000000000",
-}
-```
-
-### Configurable attributes
-
-Name | Default value | Configurable values
---- | --- | ---
-AutoCorrect | `false` | Boolean
-Max | `80` | Integer
-AllowHeredoc | `true` | Boolean
-AllowURI | `true` | Boolean
-URISchemes | `http`, `https` | Array
-IgnoreCopDirectives | `false` | Boolean
-IgnoredPatterns | `[]` | Array
-
-### References
-
-* [https://rubystyle.guide#80-character-limits](https://rubystyle.guide#80-character-limits)
 
 ## Metrics/MethodLength
 
@@ -244,7 +174,7 @@ CountKeywordArgs | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.25 | -
+Enabled | Yes | No | 0.25 | 0.81
 
 This cop tries to produce a complexity score that's a measure of the
 complexity the reader experiences when looking at a method. For that
@@ -276,4 +206,5 @@ end                             # 7 complexity points
 
 Name | Default value | Configurable values
 --- | --- | ---
+IgnoredMethods | `[]` | Array
 Max | `7` | Integer

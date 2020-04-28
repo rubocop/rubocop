@@ -18,6 +18,19 @@ module RuboCop
         each_child_node.to_a
       end
 
+      # Calls the given block for all values in the `array` literal.
+      #
+      # @yieldparam [Node] node each node
+      # @return [self] if a block is given
+      # @return [Enumerator] if no block is given
+      def each_value(&block)
+        return to_enum(__method__) unless block_given?
+
+        values.each(&block)
+
+        self
+      end
+
       # Checks whether the `array` literal is delimited by square brackets.
       #
       # @return [Boolean] whether the array is enclosed in square brackets

@@ -1,6 +1,6 @@
 # These are supported funding model platforms
 
-github: bbatsov
+github: [bbatsov, koic]
 patreon: bbatsov
 open_collective: rubocop
 tidelift: "rubygems/rubocop"

@@ -475,6 +475,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  shared_examples 'method named by access modifier name' do |keyword, modifier|
+    it "registers an offense for `#{modifier}`" do
+      expect_no_offenses(<<~RUBY)
+        #{keyword} A
+          def foo
+          end
+
+          do_something do
+            { #{modifier}: #{modifier} }
+          end
+        end
+      RUBY
+    end
+  end
+
   shared_examples 'unused visibility modifiers' do |keyword|
     it 'registers an error when visibility is immediately changed ' \
        'without any intervening defs' do
@@ -864,6 +879,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
       it_behaves_like('repeated visibility modifiers', keyword, modifier)
       it_behaves_like('at the end of the body', keyword, modifier)
       it_behaves_like('nested in a begin..end block', keyword, modifier)
+      it_behaves_like('method named by access modifier name', keyword, modifier)
 
       next if modifier == 'public'
 

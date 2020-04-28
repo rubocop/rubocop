@@ -23,17 +23,6 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
       end
 
       context 'regarding assignment where the right hand side is a case' do
-        let(:correct_source) do
-          <<~RUBY
-            output = case variable
-                     when 'value1'
-              'output1'
-            else
-              'output2'
-            end
-          RUBY
-        end
-
         it 'accepts a correctly indented assignment' do
           expect_no_offenses(<<~RUBY)
             output = case variable
@@ -45,153 +34,106 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
           RUBY
         end
 
-        context 'an assignment indented as end' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
-              when 'value1'
-                'output1'
-              else
-                'output2'
-              end
-            RUBY
-          end
+        it 'registers an offense and corrects assignment indented as end' do
+          expect_offense(<<~RUBY)
+            output = case variable
+            when 'value1'
+            ^^^^ Indent `when` as deep as `case`.
+              'output1'
+            else
+              'output2'
+            end
+          RUBY
 
-          it 'registers an offense' do
-            inspect_source(source)
-            expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-            expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                       'end')
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq correct_source
-          end
+          expect_correction(<<~RUBY)
+            output = case variable
+                     when 'value1'
+              'output1'
+            else
+              'output2'
+            end
+          RUBY
         end
 
-        context 'an assignment indented some other way' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
-                when 'value1'
-                  'output1'
-                else
-                  'output2'
-              end
-            RUBY
-          end
+        it 'registers an offense and corrects assignment indented ' \
+          'some other way' do
+          expect_offense(<<~RUBY)
+            output = case variable
+              when 'value1'
+              ^^^^ Indent `when` as deep as `case`.
+                'output1'
+              else
+                'output2'
+            end
+          RUBY
 
-          let(:correct_source) do
-            <<~RUBY
-              output = case variable
-                       when 'value1'
-                  'output1'
-                else
-                  'output2'
-              end
-            RUBY
-          end
-
-          it 'registers an offense' do
-            inspect_source(source)
-            expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-            expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq correct_source
-          end
+          expect_correction(<<~RUBY)
+            output = case variable
+                     when 'value1'
+                'output1'
+              else
+                'output2'
+            end
+          RUBY
         end
 
-        context 'correct + opposite' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
-                       when 'value1'
-                         'output1'
-                       else
-                         'output2'
-                       end
-              output = case variable
-              when 'value1'
-                'output1'
-              else
-                'output2'
-              end
-            RUBY
-          end
+        it 'registers an offense and corrects correct + opposite style' do
+          expect_offense(<<~RUBY)
+            output = case variable
+                     when 'value1'
+                       'output1'
+                     else
+                       'output2'
+                     end
+            output = case variable
+            when 'value1'
+            ^^^^ Indent `when` as deep as `case`.
+              'output1'
+            else
+              'output2'
+            end
+          RUBY
 
-          let(:correct_source) do
-            <<~RUBY
-              output = case variable
-                       when 'value1'
-                         'output1'
-                       else
-                         'output2'
-                       end
-              output = case variable
-                       when 'value1'
-                'output1'
-              else
-                'output2'
-              end
-            RUBY
-          end
-
-          it 'registers an offense' do
-            inspect_source(source)
-            expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-            expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq(correct_source)
-          end
+          expect_correction(<<~RUBY)
+            output = case variable
+                     when 'value1'
+                       'output1'
+                     else
+                       'output2'
+                     end
+            output = case variable
+                     when 'value1'
+              'output1'
+            else
+              'output2'
+            end
+          RUBY
         end
       end
 
-      context "a when clause that's deeper than case" do
-        let(:source) do
-          <<~RUBY
-            case a
-                when 0 then return
-                else
-                    case b
-                     when 1 then return
-                    end
-            end
-          RUBY
-        end
+      it 'registers an offense and corrects a when clause ' \
+        'that is indented deeper than case' do
+        expect_offense(<<~RUBY)
+          case a
+              when 0 then return
+              ^^^^ Indent `when` as deep as `case`.
+              else
+                  case b
+                   when 1 then return
+                   ^^^^ Indent `when` as deep as `case`.
+                  end
+          end
+        RUBY
 
-        it 'registers an offense' do
-          expect_offense(<<~RUBY)
-            case a
-                when 0 then return
-                ^^^^ Indent `when` as deep as `case`.
-                else
-                    case b
-                     when 1 then return
-                     ^^^^ Indent `when` as deep as `case`.
-                    end
-            end
-          RUBY
-        end
-
-        it 'does auto-correction' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq(<<~RUBY)
-            case a
-            when 0 then return
-                else
-                    case b
-                    when 1 then return
-                    end
-            end
-          RUBY
-        end
+        expect_correction(<<~RUBY)
+          case a
+          when 0 then return
+              else
+                  case b
+                  when 1 then return
+                  end
+          end
+        RUBY
       end
 
       it "accepts a when clause that's equally indented with case" do
@@ -278,45 +220,26 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
           RUBY
         end
 
-        context 'an assignment indented some other way' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
+        it 'registers an offense and corrects an assignment ' \
+          'indented some other way' do
+          expect_offense(<<~RUBY)
+            output = case variable
+                     when 'value1'
+                     ^^^^ Indent `when` one step more than `case`.
+                       'output1'
+                     else
+                       'output2'
+                     end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            output = case variable
                        when 'value1'
-                         'output1'
-                       else
-                         'output2'
-                       end
-            RUBY
-          end
-
-          let(:correct_source) do
-            <<~RUBY
-              output = case variable
-                         when 'value1'
-                         'output1'
-                       else
-                         'output2'
-                       end
-            RUBY
-          end
-
-          it 'registers an offense' do
-            expect_offense(<<~RUBY)
-              output = case variable
-                       when 'value1'
-                       ^^^^ Indent `when` one step more than `case`.
-                         'output1'
-                       else
-                         'output2'
-                       end
-            RUBY
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq correct_source
-          end
+                       'output1'
+                     else
+                       'output2'
+                     end
+          RUBY
         end
       end
 
@@ -332,60 +255,40 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
         RUBY
       end
 
-      context "a when clause that's equally indented with case" do
-        let(:source) do
-          <<~RUBY
-            y = case a
+      it 'registers an offense and corrects a when clause that is ' \
+        'equally indented with case' do
+        expect_offense(<<~RUBY)
+          y = case a
+              when 0 then break
+              ^^^^ Indent `when` one step more than `case`.
+              when 0 then return
+              ^^^^ Indent `when` one step more than `case`.
+                z = case b
+                    when 1 then return
+                    ^^^^ Indent `when` one step more than `case`.
+                    when 1 then break
+                    ^^^^ Indent `when` one step more than `case`.
+                    end
+              end
+          case c
+          when 2 then encoding
+          ^^^^ Indent `when` one step more than `case`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          y = case a
                 when 0 then break
                 when 0 then return
-                  z = case b
+                z = case b
                       when 1 then return
                       when 1 then break
-                      end
-                end
-            case c
+                    end
+              end
+          case c
             when 2 then encoding
-            end
-          RUBY
-        end
-
-        it 'registers an offense' do
-          expect_offense(<<~RUBY)
-            y = case a
-                when 0 then break
-                ^^^^ Indent `when` one step more than `case`.
-                when 0 then return
-                ^^^^ Indent `when` one step more than `case`.
-                  z = case b
-                      when 1 then return
-                      ^^^^ Indent `when` one step more than `case`.
-                      when 1 then break
-                      ^^^^ Indent `when` one step more than `case`.
-                      end
-                end
-            case c
-            when 2 then encoding
-            ^^^^ Indent `when` one step more than `case`.
-            end
-          RUBY
-        end
-
-        it 'does auto-correction' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq(<<~RUBY)
-            y = case a
-                  when 0 then break
-                  when 0 then return
-                  z = case b
-                        when 1 then return
-                        when 1 then break
-                      end
-                end
-            case c
-              when 2 then encoding
-            end
-          RUBY
-        end
+          end
+        RUBY
       end
 
       context 'when indentation width is overridden for this cop only' do
@@ -435,45 +338,26 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
           RUBY
         end
 
-        context 'an assignment indented some other way' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
-                when 'value1'
-                  'output1'
-                else
-                  'output2'
-              end
-            RUBY
-          end
-
-          let(:correct_source) do
-            <<~RUBY
-              output = case variable
+        it 'registers an offense and corrects an assignment indented ' \
+          'some other way' do
+          expect_offense(<<~RUBY)
+            output = case variable
               when 'value1'
-                  'output1'
-                else
-                  'output2'
-              end
-            RUBY
-          end
+              ^^^^ Indent `when` as deep as `end`.
+                'output1'
+              else
+                'output2'
+            end
+          RUBY
 
-          it 'registers an offense' do
-            expect_offense(<<~RUBY)
-              output = case variable
-                when 'value1'
-                ^^^^ Indent `when` as deep as `end`.
-                  'output1'
-                else
-                  'output2'
-              end
-            RUBY
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq correct_source
-          end
+          expect_correction(<<~RUBY)
+            output = case variable
+            when 'value1'
+                'output1'
+              else
+                'output2'
+            end
+          RUBY
         end
       end
     end
@@ -501,77 +385,47 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
           RUBY
         end
 
-        context 'an assignment indented as case' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
+        it 'registers an offense and corrects an assignment indented as case' do
+          expect_offense(<<~RUBY)
+            output = case variable
+                     when 'value1'
+                     ^^^^ Indent `when` one step more than `end`.
+                       'output1'
+                     else
+                       'output2'
+                     end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            output = case variable
                        when 'value1'
-                         'output1'
-                       else
-                         'output2'
-                       end
-            RUBY
-          end
-
-          let(:correct_source) do
-            <<~RUBY
-              output = case variable
-                         when 'value1'
-                         'output1'
-                       else
-                         'output2'
-                       end
-            RUBY
-          end
-
-          it 'registers an offense' do
-            inspect_source(source)
-            expect(cop.messages)
-              .to eq(['Indent `when` one step more than `end`.'])
-            expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                       'case')
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq correct_source
-          end
+                       'output1'
+                     else
+                       'output2'
+                     end
+          RUBY
         end
 
-        context 'an assignment indented some other way' do
-          let(:source) do
-            <<~RUBY
-              output = case variable
+        it 'registers an offense and corrects an assignment indented ' \
+          'some other way' do
+          expect_offense(<<~RUBY)
+            output = case variable
+                   when 'value1'
+                   ^^^^ Indent `when` one step more than `end`.
+                     'output1'
+                   else
+                     'output2'
+                   end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            output = case variable
                      when 'value1'
-                       'output1'
-                     else
-                       'output2'
-                     end
-            RUBY
-          end
-
-          let(:correct_source) do
-            <<~RUBY
-              output = case variable
-                       when 'value1'
-                       'output1'
-                     else
-                       'output2'
-                     end
-            RUBY
-          end
-
-          it 'registers an offense' do
-            inspect_source(source)
-            expect(cop.messages)
-              .to eq(['Indent `when` one step more than `end`.'])
-            expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-          end
-
-          it 'does auto-correction' do
-            corrected = autocorrect_source(source)
-            expect(corrected).to eq correct_source
-          end
+                     'output1'
+                   else
+                     'output2'
+                   end
+          RUBY
         end
       end
     end
@@ -579,23 +433,18 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
 
   context 'when case is preceded by something else than whitespace' do
     let(:cop_config) { {} }
-    let(:source) do
-      <<~RUBY
-        case test when something
-        end
-      RUBY
-    end
 
-    it 'registers an offense' do
+    it 'registers an offense and does not correct' do
       expect_offense(<<~RUBY)
         case test when something
                   ^^^^ Indent `when` as deep as `case`.
         end
       RUBY
-    end
 
-    it "doesn't auto-correct" do
-      expect(autocorrect_source(source)).to eq(source)
+      expect_correction(<<~RUBY)
+        case test when something
+        end
+      RUBY
     end
   end
 end

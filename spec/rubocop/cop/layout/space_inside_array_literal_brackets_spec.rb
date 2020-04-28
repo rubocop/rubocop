@@ -19,28 +19,39 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('a = []')
     end
 
-    it 'registers an offense for empty brackets with one space inside' do
+    it 'registers an offense and corrects empty brackets with 1 space inside' do
       expect_offense(<<~RUBY)
         a = [ ]
             ^^^ Do not use space inside empty array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a = []
+      RUBY
     end
 
-    it 'registers an offense for empty brackets with lots of space inside' do
+    it 'registers an offense and corrects empty brackets ' \
+      'with multiple spaces inside' do
       expect_offense(<<~RUBY)
         a = [     ]
             ^^^^^^^ Do not use space inside empty array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a = []
+      RUBY
     end
 
-    it 'auto-corrects an unwanted single space' do
-      new_source = autocorrect_source('a = [ ]')
-      expect(new_source).to eq('a = []')
-    end
+    it 'registers an offense and corrects multiline spaces' do
+      expect_offense(<<~RUBY)
+        a = [
+            ^ Do not use space inside empty array brackets.
+        ]
+      RUBY
 
-    it 'auto-corrects multiple unwanted spaces' do
-      new_source = autocorrect_source('a = [           ]')
-      expect(new_source).to eq('a = []')
+      expect_correction(<<~RUBY)
+        a = []
+      RUBY
     end
   end
 
@@ -51,28 +62,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('a = [ ]')
     end
 
-    it 'registers offense for empty brackets with no space inside' do
+    it 'registers an offense and corrects empty brackets ' \
+      'with no space inside' do
       expect_offense(<<~RUBY)
         a = []
             ^^ Use one space inside empty array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a = [ ]
+      RUBY
     end
 
-    it 'registers offense for empty brackets with more than one space inside' do
+    it 'registers an offense and corrects empty brackets ' \
+      'with more than one space inside' do
       expect_offense(<<~RUBY)
         a = [      ]
             ^^^^^^^^ Use one space inside empty array brackets.
       RUBY
-    end
 
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source('a = []')
-      expect(new_source).to eq('a = [ ]')
-    end
-
-    it 'auto-corrects too many spaces' do
-      new_source = autocorrect_source('a = [      ]')
-      expect(new_source).to eq('a = [ ]')
+      expect_correction(<<~RUBY)
+        a = [ ]
+      RUBY
     end
   end
 
@@ -186,53 +197,82 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('subject.[](0)')
     end
 
-    it 'registers offense in array brackets with leading whitespace' do
+    it 'registers an offense and corrects array brackets ' \
+      'with leading whitespace' do
       expect_offense(<<~RUBY)
         [ 2, 3, 4]
          ^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [2, 3, 4]
+      RUBY
     end
 
-    it 'registers offense in array brackets with trailing whitespace' do
+    it 'registers an offense and corrects array brackets ' \
+      'with trailing whitespace' do
       expect_offense(<<~RUBY)
         [b, c, d   ]
                 ^^^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [b, c, d]
+      RUBY
     end
 
-    it 'registers offense in correct array when two on one line' do
+    it 'registers an offense and corrects an array when two on one line' do
       expect_offense(<<~RUBY)
         ['qux', 'baz'  ] - ['baz']
                      ^^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        ['qux', 'baz'] - ['baz']
+      RUBY
     end
 
-    it 'registers offense in multiline array on end bracket' do
+    it 'registers an offense and corrects multiline array on end bracket' do
       expect_offense(<<~RUBY)
         ['ok',
          'still good',
          'not good' ]
                    ^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        ['ok',
+         'still good',
+         'not good']
+      RUBY
     end
 
-    it 'registers offense in multiline array on end bracket' \
+    it 'registers an offense and corrects multiline array on end bracket' \
        'with trailing method' do
       expect_offense(<<~RUBY)
         [:good,
          :bad  ].compact
              ^^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [:good,
+         :bad].compact
+      RUBY
     end
 
-    it 'register offense when 2 arrays on one line' do
+    it 'registers an offense and corrects 2 arrays on one line' do
       expect_offense(<<~RUBY)
         [2,3,4] - [ 3,4]
                    ^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [2,3,4] - [3,4]
+      RUBY
     end
 
-    it 'registers offense when contains an array literal as ' \
+    it 'registers an offense and corrects an array literal as ' \
        'an argument with trailing whitespace after a heredoc is started' do
       expect_offense(<<~RUBY)
         ActiveRecord::Base.connection.execute(<<-SQL, [self.class.to_s ]).first["count"]
@@ -241,67 +281,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
           WHERE widget_type = $1
         SQL
       RUBY
+
+      expect_correction(<<~RUBY)
+        ActiveRecord::Base.connection.execute(<<-SQL, [self.class.to_s]).first["count"]
+          SELECT COUNT(widgets.id) FROM widgets
+          WHERE widget_type = $1
+        SQL
+      RUBY
     end
 
-    context 'auto-corrects' do
-      it 'fixes multiple offenses in one set of array brackets' do
-        new_source = autocorrect_source(<<~RUBY)
-          [ 89, 90, 91 ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [89, 90, 91]
-        RUBY
-      end
-
-      it 'fixes multiple offenses in two sets of array brackets' do
-        new_source = autocorrect_source(<<~RUBY)
-          [ 89, 90, 91] + [ 1, 7, 9]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [89, 90, 91] + [1, 7, 9]
-        RUBY
-      end
-
-      it 'fixes multiline offenses but does not fuss with alignment' do
-        new_source = autocorrect_source(<<~RUBY)
-          [ :foo,
-            :bar,
-            nil   ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [:foo,
-            :bar,
-            nil]
-        RUBY
-      end
-
-      it 'fixes multiline offenses with trailing method' do
-        new_source = autocorrect_source(<<~RUBY)
-          [   a,
-              b,
-              c   ].compact
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [a,
-              b,
-              c].compact
-        RUBY
-      end
-
-      it 'ignores multiline array with whitespace before end bracket' do
-        new_source = autocorrect_source(<<~RUBY)
-          stuff = [
-            a,
-            b
-             ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          stuff = [
-            a,
-            b
-             ]
-        RUBY
-      end
+    it 'accepts a multiline array with whitespace before end bracket' do
+      expect_no_offenses(<<~RUBY)
+        stuff = [
+          a,
+          b
+           ]
+      RUBY
     end
   end
 
@@ -385,111 +380,80 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('subject.[](0)')
     end
 
-    it 'registers offense in array brackets with no leading whitespace' do
+    it 'registers an offense and corrects array brackets ' \
+      'with no leading whitespace' do
       expect_offense(<<~RUBY)
         [2, 3, 4 ]
         ^ Use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [ 2, 3, 4 ]
+      RUBY
     end
 
-    it 'registers offense in array brackets with no trailing whitespace' do
+    it 'registers an offense and corrects array brackets ' \
+      'with no trailing whitespace' do
       expect_offense(<<~RUBY)
         [ b, c, d]
                  ^ Use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [ b, c, d ]
+      RUBY
     end
 
-    it 'registers offense in correct array when two on one line' do
+    it 'registers an offense and corrects an array missing whitespace ' \
+      'when there is more than one array on a line' do
       expect_offense(<<~RUBY)
         [ 'qux', 'baz'] - [ 'baz' ]
                       ^ Use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [ 'qux', 'baz' ] - [ 'baz' ]
+      RUBY
     end
 
-    it 'registers offense in multiline array on end bracket' do
+    it 'registers an offense and corrects multiline array on end bracket' do
       expect_offense(<<~RUBY)
         [ 'ok',
           'still good',
           'not good']
                     ^ Use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [ 'ok',
+          'still good',
+          'not good' ]
+      RUBY
     end
 
-    it 'registers offense in multiline array on end bracket' \
+    it 'registers an offense and corrects multiline array on end bracket' \
        'with trailing method' do
       expect_offense(<<~RUBY)
         [ :good,
           :bad].compact
               ^ Use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [ :good,
+          :bad ].compact
+      RUBY
     end
 
-    it 'register offense when 2 arrays on one line' do
+    it 'register an offense and corrects when 2 arrays are on one line' do
       expect_offense(<<~RUBY)
         [ 2, 3, 4 ] - [3, 4 ]
                       ^ Use space inside array brackets.
       RUBY
-    end
 
-    context 'auto-corrects' do
-      it 'fixes multiple offenses in one set of array brackets' do
-        new_source = autocorrect_source(<<~RUBY)
-          [89, 90, 91]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [ 89, 90, 91 ]
-        RUBY
-      end
-
-      it 'fixes multiple offenses in two sets of array brackets' do
-        new_source = autocorrect_source(<<~RUBY)
-          [ 89, 90, 91] + [ 1, 7, 9]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [ 89, 90, 91 ] + [ 1, 7, 9 ]
-        RUBY
-      end
-
-      it 'fixes multiline offenses but does not fuss with alignment' do
-        new_source = autocorrect_source(<<~RUBY)
-          [:foo,
-           :bar,
-           nil]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [ :foo,
-           :bar,
-           nil ]
-        RUBY
-      end
-
-      it 'fixes multiline offenses with trailing method' do
-        new_source = autocorrect_source(<<~RUBY)
-          [a,
-           b,
-           c].compact
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [ a,
-           b,
-           c ].compact
-        RUBY
-      end
-
-      it 'ignores multiline array with no whitespace before end bracket' do
-        new_source = autocorrect_source(<<~RUBY)
-          stuff = [
-            a,
-            b
-          ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          stuff = [
-            a,
-            b
-          ]
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        [ 2, 3, 4 ] - [ 3, 4 ]
+      RUBY
     end
   end
 
@@ -528,17 +492,25 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers offense if space between 2 closing brackets' do
+    it 'registers an offense and corrects space between 2 closing brackets' do
       expect_offense(<<~RUBY)
         [ 1, [ 2,3,4 ], [ 5,6,7 ] ]
                                  ^ Do not use space inside array brackets.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [ 1, [ 2,3,4 ], [ 5,6,7 ]]
+      RUBY
     end
 
-    it 'registers offense if space between 2 opening brackets' do
+    it 'registers an offense and corrects space between 2 opening brackets' do
       expect_offense(<<~RUBY)
         [ [ 2,3,4 ], [ 5,6,7 ], 8 ]
          ^ Do not use space inside array brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [[ 2,3,4 ], [ 5,6,7 ], 8 ]
       RUBY
     end
 
@@ -550,17 +522,53 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     context 'multiline array does not collapse successive right-brackets' do
-      it 'registers offense' do
+      it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ] ]
                           ^ Do not use space inside array brackets.
         RUBY
+
+        expect_correction(<<~RUBY)
+          multiline = [ [ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
       end
     end
 
+    it 'registers an offense and corrects 2-dimensional array ' \
+      'with extra spaces' do
+      expect_offense(<<~RUBY)
+        [ [ a, b ], [ 1, 7 ] ]
+                            ^ Do not use space inside array brackets.
+         ^ Do not use space inside array brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [[ a, b ], [ 1, 7 ]]
+      RUBY
+    end
+
+    it 'registers an offense and corrects 3-dimensional array ' \
+      'with extra spaces' do
+      expect_offense(<<~RUBY)
+        [ [a, b ], [foo, [bar, baz] ] ]
+                                     ^ Do not use space inside array brackets.
+                                   ^ Do not use space inside array brackets.
+                                  ^ Use space inside array brackets.
+                         ^ Use space inside array brackets.
+                   ^ Use space inside array brackets.
+          ^ Use space inside array brackets.
+         ^ Do not use space inside array brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [[ a, b ], [ foo, [ bar, baz ]]]
+      RUBY
+    end
+
     context 'multiline array does not collapse successive left-brackets' do
-      it 'registers offense' do
+      it 'registers an offense' do
         # In this example, we cannot use `expect_offense` because the offense
         # has no highlight (actually, a zero-width `column_range`) so our caret
         # would not match.
@@ -569,18 +577,31 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
             [ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
+
         expect(cop.offenses.size).to eq(1)
         offense = cop.offenses.first
         expect(offense.line).to eq(1)
         expect(offense.column_range).to eq(13...13) # thus, can't expect_offense
-        expect(offense.message).to eql(
-          'Do not use space inside array brackets.'
-        )
+        expect(offense.message).to eq('Do not use space inside array brackets.')
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(<<~RUBY)
+          multiline = [
+            [ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
+
+        expect(new_source).to eq(<<~RUBY)
+          multiline = [
+            [ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ] ]
+        RUBY
       end
     end
 
     context 'multiline array does not collapse any successive brackets' do
-      it 'registers offense' do
+      it 'registers an offense' do
         # In this example, we cannot use `expect_offense` because the offense
         # has no highlight (actually, a zero-width `column_range`) so our caret
         # would not match.
@@ -590,49 +611,25 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
             [ b, c ]
           ]
         RUBY
+
         expect(cop.offenses.size).to eq(1)
         offense = cop.offenses.first
         expect(offense.line).to eq(1)
         expect(offense.column_range).to eq(9...9) # thus, can't expect_offense
-        expect(offense.message).to eql(
-          'Do not use space inside array brackets.'
-        )
-      end
-    end
-
-    context 'auto-corrects' do
-      it 'fixes 2-dimensional array with extra spaces' do
-        new_source = autocorrect_source(<<~RUBY)
-          [ [ a, b ], [ 1, 7 ] ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [[ a, b ], [ 1, 7 ]]
-        RUBY
+        expect(offense.message).to eq('Do not use space inside array brackets.')
       end
 
-      it 'fixes offensive 3-dimensional array' do
-        new_source = autocorrect_source(<<~RUBY)
-          [ [a, b ], [foo, [bar, baz] ] ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          [[ a, b ], [ foo, [ bar, baz ]]]
-        RUBY
-      end
-
-      it 'ignores multi-dimensional multiline array with no ' \
-         'whitespace before end bracket' do
-        new_source = autocorrect_source(<<~RUBY)
-          stuff = [
-            a,
+      it 'does not auto-corrects' do
+        source = <<~RUBY
+          array = [
+            [ a ],
             [ b, c ]
-            ]
+          ]
         RUBY
-        expect(new_source).to eq(<<~RUBY)
-          stuff = [
-            a,
-            [ b, c ]
-            ]
-        RUBY
+
+        new_source = autocorrect_source(source)
+
+        expect(new_source).to eq(source)
       end
     end
   end

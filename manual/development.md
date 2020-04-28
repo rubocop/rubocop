@@ -1,16 +1,17 @@
+# Development
+
 ## Add a new cop
 
 Use a rake task to generate a cop template.
 
 ```sh
-$ bundle exec rake new_cop[Department/Name]
+$ bundle exec rake 'new_cop[Department/Name]'
 Files created:
   - lib/rubocop/cop/department/name.rb
   - spec/rubocop/cop/department/name_spec.rb
 File modified:
   - `require_relative 'rubocop/cop/department/name'` added into lib/rubocop.rb
   - A configuration for the cop is added into config/default.yml
-    - If you want to disable the cop by default, set `Enabled` option to false.
 
 Do 3 steps:
   1. Add an entry to the "New features" section in CHANGELOG.md,
@@ -150,7 +151,7 @@ In other words, it says: "Match code calling `!<expression>.empty?`".
 Great! Now, lets implement our cop to simplify such statements:
 
 ```sh
-$ rake new_cop[Style/SimplifyNotEmptyWithAny]
+$ rake 'new_cop[Style/SimplifyNotEmptyWithAny]'
 ```
 
 After the cop scaffold is generated, change the node matcher to match with
@@ -255,15 +256,15 @@ And then define the `autocorrect` method on the cop side:
 def autocorrect(node)
   lambda do |corrector|
     internal_expression = node.children[0].children[0].source
-    corrector.replace(node.loc.expression, "#{internal_expression}.any?")
+    corrector.replace(node, "#{internal_expression}.any?")
   end
 end
 ```
 
 The corrector allows you to `insert_after` and `insert_before` or
-`replace` in a specific range of the code.
+`replace` a specific node or in any specific range of the code.
 
-The range can be determined on `node.location` where it brings specific
+Range can be determined on `node.location` where it brings specific
 ranges for expression or other internal information that the node holds.
 
 ### Configuration
@@ -289,7 +290,7 @@ def autocorrect(node)
     internal_expression = node.children[0].children[0].source
     replacement = cop_config['ReplaceAnyWith'] || "any?"
     new_expression = "#{internal_expression}.#{replacement}"
-    corrector.replace(node.loc.expression, new_expression)
+    corrector.replace(node, new_expression)
   end
 end
 ```
@@ -368,6 +369,13 @@ CI will fail if the manual and `yard` comments do not match exactly. `rake defau
 
 Generally, is a good practice to check if your cop is working properly over a
 huge codebase to guarantee it's working in a range of different syntaxes.
+
+There are several ways to do this. Two common approaches:
+
+1. From within your local `rubocop` repo, run `exe/rubocop ~/your/other/codebase`.
+2. From within the other codebase's `Gemfile`, set a path to your local repo like this: `gem 'rubocop', path: '/full/path/to/rubocop'`. Then run `rubocop` within your codebase.
+
+With approach #2, you can use local versions of RuboCop extension repos such as `rubocop-rspec` as well.
 
 To make it fast and do not get confused with other cops in action,  you can use
 `--only` parameter in the command line to filter by your cop name:

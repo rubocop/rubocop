@@ -123,23 +123,19 @@ module RuboCop
         self.class::MSG
       end
 
-      # rubocop:disable Metrics/CyclomaticComplexity
       def add_offense(node, location: :expression, message: nil, severity: nil)
         loc = find_location(node, location)
 
         return if duplicate_location?(loc)
 
-        severity = custom_severity || severity || default_severity
-
-        message ||= message(node)
-        message = annotate(message)
+        severity = find_severity(node, severity)
+        message = find_message(node, message)
 
         status = enabled_line?(loc.line) ? correct(node) : :disabled
 
         @offenses << Offense.new(severity, loc, message, name, status)
         yield if block_given? && status != :disabled
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
       def find_location(node, loc)
         # Location can be provided as a symbol, e.g.: `:keyword`
@@ -160,10 +156,11 @@ module RuboCop
           return :uncorrected unless correction
 
           @corrections << Correction.new(correction, node, self)
+          :corrected
         elsif disable_uncorrectable?
           disable_uncorrectable(node)
+          :corrected_with_todo
         end
-        :corrected
       end
 
       def reason_to_not_correct(node)
@@ -175,6 +172,8 @@ module RuboCop
       end
 
       def disable_uncorrectable(node)
+        return unless node
+
         @disabled_lines ||= {}
         line = node.location.line
         return if @disabled_lines.key?(line)
@@ -220,7 +219,30 @@ module RuboCop
         !relevant_file?(file)
       end
 
+      # This method should be overridden when a cop's behavior depends
+      # on state that lives outside of these locations:
+      #
+      #   (1) the file under inspection
+      #   (2) the cop's source code
+      #   (3) the config (eg a .rubocop.yml file)
+      #
+      # For example, some cops may want to look at other parts of
+      # the codebase being inspected to find violations. A cop may
+      # use the presence or absence of file `foo.rb` to determine
+      # whether a certain violation exists in `bar.rb`.
+      #
+      # Overriding this method allows the cop to indicate to RuboCop's
+      # ResultCache system when those external dependencies change,
+      # ie when the ResultCache should be invalidated.
+      def external_dependency_checksum
+        nil
+      end
+
       private
+
+      def find_message(node, message)
+        annotate(message || message(node))
+      end
 
       def annotate(message)
         RuboCop::Cop::MessageAnnotator.new(
@@ -247,6 +269,10 @@ module RuboCop
         return true if @options[:ignore_disable_comments] || !@processed_source
 
         @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
+      end
+
+      def find_severity(_node, severity)
+        custom_severity || severity || default_severity
       end
 
       def default_severity

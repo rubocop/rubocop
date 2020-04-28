@@ -103,19 +103,12 @@ module RuboCop
         private
 
         def concat_consecutive_comments(comments)
-          prev_line = nil
+          consecutive_comments =
+            comments.chunk_while { |i, j| i.loc.line.succ == j.loc.line }
 
-          comments.each_with_object([]) do |comment, concatenated_comments|
-            if prev_line && comment.loc.line == prev_line.next
-              last_concatenated_comment = concatenated_comments.last
-
-              last_concatenated_comment[0] << comment_text(comment)
-              last_concatenated_comment[1] << comment
-            else
-              concatenated_comments << [comment_text(comment).dup, [comment]]
-            end
-
-            prev_line = comment.loc.line
+          consecutive_comments.map do |chunk|
+            joined_text = chunk.map { |c| comment_text(c) }.join
+            [joined_text, chunk]
           end
         end
 
@@ -141,11 +134,9 @@ module RuboCop
           cop_config['AllowMarginComment']
         end
 
-        def current_token(node)
+        def current_token(comment)
           processed_source.find_token do |token|
-            token.pos.column == node.loc.column &&
-              token.pos.last_column == node.loc.last_column &&
-              token.line == node.loc.line
+            token.pos == comment.loc.expression
           end
         end
 

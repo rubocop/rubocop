@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     it 'registers an offense for an if modifier' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2.24/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<0, 2, 1> 2.24/0]
           call_foo if some_condition # 0 + 2*2 + 1*1
         end
       RUBY
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     it 'registers an offense for an assignment of a local variable' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 0, 0> 1/0]
           x = 1
         end
       RUBY
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     it 'registers an offense for an assignment of an element' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1.41/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 1, 0> 1.41/0]
           x[0] = 1
         end
       RUBY
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
        'scores' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [5.74/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 4, 4> 5.74/0]
           my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 1, 4
           my_options.each do |key, value|           # 0, 1, 0
             p key                                   # 0, 1, 0
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     it 'registers an offense for a `define_method`' do
       expect_offense(<<~RUBY)
         define_method :method_name do
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [1/0]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 0, 0> 1/0]
           x = 1
         end
       RUBY
@@ -73,10 +73,38 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     it 'treats safe navigation method calls like regular method calls' do
       expect_offense(<<~RUBY) # sqrt(0 + 2*2 + 0) => 2
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [2/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<0, 2, 0> 2/0]
           object&.do_something
         end
       RUBY
+    end
+
+    context 'when method is in list of ignored methods' do
+      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+
+      it 'does not register an offense when defining an instance method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar.baz(:qux)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when defining a class method' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar.baz(:qux)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using `define_method`' do
+        expect_no_offenses(<<~RUBY)
+          define_method :foo do
+            bar.baz(:qux)
+          end
+        RUBY
+      end
     end
   end
 
@@ -106,10 +134,11 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
   end
 
   {
-    1.3     => '4.24/1.3', # no more than 2 decimals reported
-    10.3    => '42.43/10.3',
-    100.321 => '424.3/100.3', # 4 significant digits, so only 1 decimal here
-    1000.3  => '4243/1000'
+    1.3     => '<1, 1, 4> 4.24/1.3', # no more than 2 decimals reported
+    10.3    => '<10, 10, 40> 42.43/10.3',
+    100.321 => '<100, 100, 400> 424.3/100.3', # 4 significant digits,
+    #                                         so only 1 decimal here
+    1000.3  => '<1000, 1000, 4000> 4243/1000'
   }.each do |max, presentation|
     context "when Max is #{max}" do
       let(:cop_config) { { 'Max' => max } }

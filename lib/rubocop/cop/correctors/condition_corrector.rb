@@ -10,8 +10,7 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(node.loc.keyword, node.inverse_keyword)
-            corrector.replace(condition.source_range,
-                              condition.children.first.source)
+            corrector.replace(condition, condition.children.first.source)
           end
         end
 

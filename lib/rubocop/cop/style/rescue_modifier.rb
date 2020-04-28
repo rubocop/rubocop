@@ -64,7 +64,7 @@ module RuboCop
             "\n#{offset(node)}end"
 
           lambda do |corrector|
-            corrector.replace(node.source_range, correction)
+            corrector.replace(node, correction)
           end
         end
       end

@@ -134,6 +134,11 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword do
         y
       end
     RUBY
+    expect_no_offenses(<<~RUBY)
+      def x # rubocop:todo Metrics/MethodLength
+        y
+      end
+    RUBY
   end
 
   it 'does not register an offense if AST contains # symbol' do

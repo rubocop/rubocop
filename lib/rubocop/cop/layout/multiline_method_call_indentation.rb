@@ -193,7 +193,7 @@ module RuboCop
           node = node.receiver while node.receiver
           # ascend to first call which has a dot
           node = node.parent
-          node = node.parent until node.loc.dot
+          node = node.parent until node.loc.respond_to?(:dot) && node.loc.dot
 
           return if node.loc.dot.line != node.first_line
 

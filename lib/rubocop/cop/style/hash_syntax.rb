@@ -144,11 +144,11 @@ module RuboCop
             # Prefer { :production? => false } over { production?: false } and
             # similarly for other non-alnum final characters (except quotes,
             # to prefer { "x y": 1 } over { :"x y" => 1 }).
-            return false unless sym_name =~ /[\p{Alnum}"']\z/
+            return false unless /[\p{Alnum}"']\z/.match?(sym_name)
           end
 
           # Most hash keys can be matched against a simple regex.
-          return true if sym_name =~ /\A[_a-z]\w*[?!]?\z/i
+          return true if /\A[_a-z]\w*[?!]?\z/i.match?(sym_name)
 
           # For more complicated hash keys, let the parser validate the syntax.
           parse("{ #{sym_name}: :foo }").valid_syntax?
@@ -168,10 +168,10 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key
+          key = pair_node.key.source_range
           op = pair_node.loc.operator
 
-          range = range_between(key.source_range.begin_pos, op.end_pos)
+          range = key.join(op)
           range = range_with_surrounding_space(range: range, side: :right)
 
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
@@ -188,11 +188,9 @@ module RuboCop
         end
 
         def autocorrect_hash_rockets(corrector, pair_node)
-          key = pair_node.key.source_range
           op = pair_node.loc.operator
 
-          corrector.insert_after(key, pair_node.inverse_delimiter(true))
-          corrector.insert_before(key, ':')
+          corrector.wrap(pair_node.key, ':', pair_node.inverse_delimiter(true))
           corrector.remove(range_with_surrounding_space(range: op))
         end
 

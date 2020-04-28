@@ -52,6 +52,29 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter do
       end
     end
 
+    context 'when the offense is marked as todo' do
+      let(:file) { '/path/to/file' }
+
+      let(:offense) do
+        RuboCop::Cop::Offense.new(:convention, location,
+                                  'This is a message.', 'CopName', status)
+      end
+
+      let(:location) do
+        source_buffer = Parser::Source::Buffer.new('test', 1)
+        source_buffer.source = "a\n"
+        Parser::Source::Range.new(source_buffer, 0, 1)
+      end
+
+      let(:status) { :corrected_with_todo }
+
+      it 'prints [Todo] along with message' do
+        formatter.file_finished(file, [offense])
+        expect(output.string)
+          .to include(': [Todo] This is a message.')
+      end
+    end
+
     context 'when the offense message contains a newline' do
       let(:file) { '/path/to/file' }
 

@@ -20,8 +20,14 @@ module RuboCop
       #   a, *b, _ = foo()
       #   # => The correction `a, *b, = foo()` is a syntax error
       #
-      #   # good if AllowNamedUnderscoreVariables is true
+      # @example AllowNamedUnderscoreVariables: true (default)
+      #   # good
       #   a, b, _something = foo()
+      #
+      # @example AllowNamedUnderscoreVariables: false
+      #   # bad
+      #   a, b, _something = foo()
+      #
       class TrailingUnderscoreVariable < Cop
         include SurroundingSpace
         include RangeHelp

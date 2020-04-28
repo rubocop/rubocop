@@ -45,7 +45,7 @@ module RuboCop
         def_node_matcher :debugger_call?, <<~PATTERN
           {(send {nil? #kernel?} {:debugger :byebug :remote_byebug} ...)
            (send (send {#kernel? nil?} :binding)
-             {:pry :remote_pry :pry_remote} ...)
+             {:pry :remote_pry :pry_remote :console} ...)
            (send (const {nil? (cbase)} :Pry) :rescue ...)
            (send nil? {:save_and_open_page
                       :save_and_open_screenshot
@@ -69,7 +69,7 @@ module RuboCop
         end
 
         def binding_irb?(node)
-          target_ruby_version >= 2.4 && binding_irb_call?(node)
+          binding_irb_call?(node)
         end
       end
     end

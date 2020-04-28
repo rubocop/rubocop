@@ -4,7 +4,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    { 'AllowUnusedKeywordArguments' => false, 'IgnoreEmptyMethods' => false }
+    {
+      'AllowUnusedKeywordArguments' => false,
+      'IgnoreEmptyMethods' => false,
+      'IgnoreNotImplementedMethods' => false
+    }
   end
 
   describe 'inspection' do
@@ -411,6 +415,89 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     it 'accepts an empty method with multiple unused parameters' do
       expect_no_offenses(<<~RUBY)
         def method(a, b, *others)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a non-empty method with multiple unused ' \
+        'parameters' do
+      (a_message, b_message, others_message) = %w[a b others].map do |arg|
+        "Unused method argument - `#{arg}`. If it's necessary, use `_` or " \
+        "`_#{arg}` as an argument name to indicate that it won't be used. " \
+        'You can also write as `method(*)` if you want the method ' \
+        "to accept any arguments but don't care about them."
+      end
+
+      expect_offense(<<~RUBY)
+        def method(a, b, *others)
+                          ^^^^^^ #{others_message}
+                      ^ #{b_message}
+                   ^ #{a_message}
+          1
+        end
+      RUBY
+    end
+  end
+
+  context 'when IgnoreNotImplementedMethods config parameter is set' do
+    let(:cop_config) { { 'IgnoreNotImplementedMethods' => true } }
+
+    it 'accepts a method with a single unused parameter & '\
+       'raises NotImplementedError' do
+      expect_no_offenses(<<~RUBY)
+        def method(arg)
+          raise NotImplementedError
+        end
+      RUBY
+    end
+
+    it 'accepts a method with a single unused parameter & '\
+       'fails with message' do
+      expect_no_offenses(<<~RUBY)
+        def method(arg)
+          fail "TODO"
+        end
+      RUBY
+    end
+
+    it 'accepts a method with a single unused parameter & '\
+       'fails without message' do
+      expect_no_offenses(<<~RUBY)
+        def method(arg)
+          fail
+        end
+      RUBY
+    end
+
+    it 'accepts an empty singleton method with a single unused parameter &'\
+       'raise NotImplementedError' do
+      expect_no_offenses(<<~RUBY)
+        def self.method(unused)
+          raise NotImplementedError
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a non-empty method with a single unused ' \
+        'parameter' do
+      message = "Unused method argument - `arg`. If it's necessary, use " \
+                  '`_` or `_arg` as an argument name to indicate that it ' \
+                  "won't be used. You can also write as `method(*)` if you " \
+                  "want the method to accept any arguments but don't care " \
+                  'about them.'
+
+      expect_offense(<<~RUBY)
+        def method(arg)
+                   ^^^ #{message}
+          1
+        end
+      RUBY
+    end
+
+    it 'accepts an empty method with multiple unused parameters' do
+      expect_no_offenses(<<~RUBY)
+        def method(a, b, *others)
+          raise NotImplementedError
         end
       RUBY
     end

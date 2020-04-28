@@ -7,11 +7,13 @@ require:
   - rubocop-rspec
 
 AllCops:
+  NewCops: enable
   Exclude:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.3
+    - '.git/**/*'
+  TargetRubyVersion: 2.4
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
@@ -59,7 +61,7 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
 
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedHashRocketStyle:
     - key
     - table
@@ -93,6 +95,10 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
+
+RSpec/FilePath:
+  Exclude:
+    - spec/rubocop/formatter/junit_formatter_spec.rb
 
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit

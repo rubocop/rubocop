@@ -21,14 +21,12 @@ module RuboCop
 
       # @return [RuboCop::AST::Node] a regopt node
       def regopt
-        first, second = *self
-        first.regopt_type? ? first : second
+        children.last
       end
 
       # @return [String] a string of regexp content
       def content
-        str = children.first
-        str.str_content || ''
+        children.select(&:str_type?).map(&:str_content).join
       end
     end
   end

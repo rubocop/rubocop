@@ -112,15 +112,14 @@ module RuboCop
         end
 
         def autocorrect(node)
-          _check, body, = node.node_parts
-          _checked_variable, matching_receiver, = extract_parts(node)
-          method_call, = matching_receiver.parent
+          body = node.node_parts[1]
+          method_call = method_call(node)
 
           lambda do |corrector|
             corrector.remove(begin_range(node, body))
             corrector.remove(end_range(node, body))
             corrector.insert_before(method_call.loc.dot, '&')
-            handle_comments(corrector, method_call)
+            handle_comments(corrector, node, method_call)
 
             add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
           end
@@ -128,16 +127,28 @@ module RuboCop
 
         private
 
-        def handle_comments(corrector, method_call)
-          return if processed_source.comments.empty?
+        def handle_comments(corrector, node, method_call)
+          comments = comments(node)
+          return if comments.empty?
 
-          comments = processed_source.comments.map(&:text).join("\n")
-          corrector.insert_before(method_call.loc.expression,
-                                  comments + "\n")
+          corrector.insert_before(method_call,
+                                  "#{comments.map(&:text).join("\n")}\n")
+        end
+
+        def comments(node)
+          processed_source.comments.select do |comment|
+            comment.loc.first_line > node.loc.first_line &&
+              comment.loc.last_line < node.loc.last_line
+          end
         end
 
         def allowed_if_condition?(node)
           node.else? || node.elsif? || node.ternary?
+        end
+
+        def method_call(node)
+          _checked_variable, matching_receiver, = extract_parts(node)
+          matching_receiver.parent
         end
 
         def extract_parts(node)

@@ -42,13 +42,13 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            node.values.each do |value|
+            node.each_value do |value|
               range = value.loc.expression
 
               match = range.source.match(TRAILING_QUOTE)
               corrector.remove_trailing(range, match[0].length) if match
 
-              if range.source =~ LEADING_QUOTE
+              if LEADING_QUOTE.match?(range.source)
                 corrector.remove_leading(range, 1)
               end
             end

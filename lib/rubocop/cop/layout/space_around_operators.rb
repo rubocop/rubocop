@@ -3,24 +3,55 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks that operators have space around them, except for **
-      # which should not have surrounding space.
+      # Checks that operators have space around them, except for ** which
+      # should or shouldn't have surrounding space depending on configuration.
+      #
+      # This cop has `AllowForAlignment` option. When `true`, allows most
+      # uses of extra spacing if the intent is to align with an operator on
+      # the previous or next line, not counting empty lines or comment lines.
       #
       # @example
       #   # bad
       #   total = 3*4
       #   "apple"+"juice"
       #   my_number = 38/4
-      #   a ** b
       #
       #   # good
       #   total = 3 * 4
       #   "apple" + "juice"
       #   my_number = 38 / 4
+      #
+      # @example AllowForAlignment: true (default)
+      #   # good
+      #   {
+      #     1 =>  2,
+      #     11 => 3
+      #   }
+      #
+      # @example AllowForAlignment: false
+      #   # bad
+      #   {
+      #     1 =>  2,
+      #     11 => 3
+      #   }
+      #
+      # @example EnforcedStyleForExponentOperator: no_space (default)
+      #   # bad
+      #   a ** b
+      #
+      #   # good
       #   a**b
+      #
+      # @example EnforcedStyleForExponentOperator: space
+      #   # bad
+      #   a**b
+      #
+      #   # good
+      #   a ** b
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
         include RangeHelp
+        include RationalLiteral
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
         EXCESSIVE_SPACE = '  '
@@ -53,6 +84,8 @@ module RuboCop
         end
 
         def on_send(node)
+          return if rational_literal?(node)
+
           if node.setter_method?
             on_special_asgn(node)
           elsif regular_operator?(node)
@@ -101,12 +134,12 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            if range.source =~ /\*\*/
+            if range.source =~ /\*\*/ && !space_around_exponent_operator?
               corrector.replace(range, '**')
             elsif range.source.end_with?("\n")
               corrector.replace(range, " #{range.source.strip}\n")
             else
-              corrector.replace(range, " #{range.source.strip} ")
+              enclose_operator_with_space(corrector, range)
             end
           end
         end
@@ -137,10 +170,25 @@ module RuboCop
           yield msg if msg
         end
 
+        def enclose_operator_with_space(corrector, range)
+          operator = range.source
+
+          # If `ForceEqualSignAlignment` is true, `Layout/ExtraSpacing` cop
+          # inserts spaces before operator. If `Layout/SpaceAroundOperators` cop
+          # inserts a space, it collides and raises the infinite loop error.
+          if force_equal_sign_alignment?
+            corrector.insert_after(range, ' ') unless operator.end_with?(' ')
+          else
+            corrector.replace(range, " #{operator.strip} ")
+          end
+        end
+
         def offense_message(type, operator, with_space, right_operand)
-          if operator.is?('**')
-            'Space around operator `**` detected.' unless with_space.is?('**')
-          elsif with_space.source !~ /^\s.*\s$/
+          if should_not_have_surrounding_space?(operator)
+            return if with_space.is?(operator.source)
+
+            "Space around operator `#{operator.source}` detected."
+          elsif !/^\s.*\s$/.match?(with_space.source)
             "Surrounding space missing for operator `#{operator.source}`."
           elsif excess_leading_space?(type, operator, with_space) ||
                 excess_trailing_space?(right_operand, with_space)
@@ -169,12 +217,24 @@ module RuboCop
         end
 
         def align_hash_cop_config
-          config.for_cop('Layout/AlignHash')
+          config.for_cop('Layout/HashAlignment')
         end
 
         def hash_table_style?
           align_hash_cop_config &&
             align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
+        end
+
+        def space_around_exponent_operator?
+          cop_config['EnforcedStyleForExponentOperator'] == 'space'
+        end
+
+        def force_equal_sign_alignment?
+          config.for_cop('Layout/ExtraSpacing')['ForceEqualSignAlignment']
+        end
+
+        def should_not_have_surrounding_space?(operator)
+          operator.is?('**') ? !space_around_exponent_operator? : false
         end
       end
     end

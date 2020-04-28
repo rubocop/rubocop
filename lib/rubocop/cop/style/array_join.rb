@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of "*" as a substitute for *join*.
+      # This cop checks for uses of "\*" as a substitute for *join*.
       #
       # Not all cases can reliably checked, due to Ruby's dynamic
       # types, so we consider only cases when the first argument is an
@@ -30,7 +30,7 @@ module RuboCop
           array, join_arg = join_candidate?(node).map(&:source)
 
           lambda do |corrector|
-            corrector.replace(node.source_range, "#{array}.join(#{join_arg})")
+            corrector.replace(node, "#{array}.join(#{join_arg})")
           end
         end
       end

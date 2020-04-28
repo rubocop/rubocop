@@ -112,10 +112,14 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
         .to eq(RuboCop::Formatter::SimpleTextFormatter)
     end
 
-    it 'returns class whose first letter of alias name ' \
-       'matches passed letter' do
-      expect(builtin_formatter_class('s'))
-        .to eq(RuboCop::Formatter::SimpleTextFormatter)
+    it 'returns class which matches double character alias name' do
+      expect(builtin_formatter_class('pa'))
+        .to eq(RuboCop::Formatter::PacmanFormatter)
+    end
+
+    it 'returns class which matches single character alias name' do
+      expect(builtin_formatter_class('p'))
+        .to eq(RuboCop::Formatter::ProgressFormatter)
     end
   end
 

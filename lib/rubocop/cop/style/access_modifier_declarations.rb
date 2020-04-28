@@ -5,11 +5,12 @@ module RuboCop
     module Style
       # Access modifiers should be declared to apply to a group of methods
       # or inline before each method, depending on configuration.
+      # EnforcedStyle config covers only method definitions.
+      # Applications of visibility methods to symbols can be controlled
+      # using AllowModifiersOnSymbols config.
       #
       # @example EnforcedStyle: group (default)
-      #
       #   # bad
-      #
       #   class Foo
       #
       #     private def bar; end
@@ -18,7 +19,6 @@ module RuboCop
       #   end
       #
       #   # good
-      #
       #   class Foo
       #
       #     private
@@ -27,10 +27,9 @@ module RuboCop
       #     def baz; end
       #
       #   end
+      #
       # @example EnforcedStyle: inline
-      #
       #   # bad
-      #
       #   class Foo
       #
       #     private
@@ -41,11 +40,26 @@ module RuboCop
       #   end
       #
       #   # good
-      #
       #   class Foo
       #
       #     private def bar; end
       #     private def baz; end
+      #
+      #   end
+      #
+      # @example AllowModifiersOnSymbols: true
+      #   # good
+      #   class Foo
+      #
+      #     private :bar, :baz
+      #
+      #   end
+      #
+      # @example AllowModifiersOnSymbols: false
+      #   # bad
+      #   class Foo
+      #
+      #     private :bar, :baz
       #
       #   end
       class AccessModifierDeclarations < Cop
@@ -61,9 +75,15 @@ module RuboCop
           'inlined in method definitions.'
         ].join(' ')
 
+        def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
+          (send nil? {:private :protected :public} (sym _))
+        PATTERN
+
         def on_send(node)
           return unless node.access_modifier?
           return if node.parent.pair_type?
+          return if cop_config['AllowModifiersOnSymbols'] &&
+                    access_modifier_with_symbol?(node)
 
           if offense?(node)
             add_offense(node, location: :selector) do
