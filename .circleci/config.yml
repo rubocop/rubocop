@@ -11,37 +11,6 @@ common_env: &common_env
   # See https://github.com/tmm1/test-queue#environment-variables
   TEST_QUEUE_WORKERS: 2
 
-spec_steps: &spec_steps
-  - checkout
-  - attach_workspace:
-      at: ~/project/tmp
-  - run: bundle install
-  - run:
-      name: Run specs
-      command: |
-        ./tmp/cc-test-reporter before-build
-        COVERAGE=true bundle exec rake spec
-        ./tmp/cc-test-reporter format-coverage --output tmp/codeclimate.$CIRCLE_JOB.json
-  - persist_to_workspace:
-      root: tmp
-      paths:
-        - codeclimate.*.json
-
-ascii_spec_steps: &ascii_spec_steps
-  - checkout
-  - run: bundle install
-  - run: bundle exec rake ascii_spec
-
-rubocop_steps: &rubocop_steps
-  - checkout
-  - run: bundle install
-  - run: bundle exec rake internal_investigation
-  - run:
-      name: Check requiring libraries successfully
-      # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
-      command: |
-        ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
-
 jobs:
 
   spec:
@@ -54,7 +23,20 @@ jobs:
       <<: *common_env
       <<: *jruby_env
     steps:
-      *spec_steps
+      - checkout
+      - attach_workspace:
+          at: ~/project/tmp
+      - run: bundle install
+      - run:
+          name: Run specs
+          command: |
+            ./tmp/cc-test-reporter before-build
+            COVERAGE=true bundle exec rake spec
+            ./tmp/cc-test-reporter format-coverage --output tmp/codeclimate.$CIRCLE_JOB.json
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.*.json
 
   ascii_spec:
     parameters:
@@ -66,7 +48,9 @@ jobs:
       <<: *common_env
       <<: *jruby_env
     steps:
-      *ascii_spec_steps
+      - checkout
+      - run: bundle install
+      - run: bundle exec rake ascii_spec
 
   rubocop:
     parameters:
@@ -78,7 +62,14 @@ jobs:
       <<: *common_env
       <<: *jruby_env
     steps:
-      *rubocop_steps
+      - checkout
+      - run: bundle install
+      - run: bundle exec rake internal_investigation
+      - run:
+          name: Check requiring libraries successfully
+          # See https://github.com/rubocop-hq/rubocop/pull/4523#issuecomment-309136113
+          command: |
+            ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
 
   # Job for downloading the Code Climate test reporter
   cc-setup:
