@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jruby_env: &jruby_env
   # By default we have 2 CPUs and 4GB ram available
@@ -44,156 +44,36 @@ rubocop_steps: &rubocop_steps
 
 jobs:
 
-  # Ruby 2.4
-  ruby-2.4-spec:
+  spec:
+    parameters:
+      image:
+        type: string
     docker:
-      - image: circleci/ruby:2.4
+      - image: <<parameters.image>>
     environment:
       <<: *common_env
       <<: *jruby_env
     steps:
       *spec_steps
-  ruby-2.4-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.4
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.4-rubocop:
-    docker:
-      - image: circleci/ruby:2.4
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
 
-  # Ruby 2.5
-  ruby-2.5-spec:
+  ascii_spec:
+    parameters:
+      image:
+        type: string
     docker:
-      - image: circleci/ruby:2.5
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  ruby-2.5-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.5
+      - image: <<parameters.image>>
     environment:
       <<: *common_env
       <<: *jruby_env
     steps:
       *ascii_spec_steps
-  ruby-2.5-rubocop:
-    docker:
-      - image: circleci/ruby:2.5
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
 
-  # Ruby 2.6
-  ruby-2.6-spec:
+  rubocop:
+    parameters:
+      image:
+        type: string
     docker:
-      - image: circleci/ruby:2.6
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  ruby-2.6-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.6
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.6-rubocop:
-    docker:
-      - image: circleci/ruby:2.6
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
-
-  # Ruby 2.7
-  ruby-2.7-spec:
-    docker:
-      - image: circleci/ruby:2.7
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  ruby-2.7-ascii_spec:
-    docker:
-      - image: circleci/ruby:2.7
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  ruby-2.7-rubocop:
-    docker:
-      - image: circleci/ruby:2.7
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
-
-  # ruby-head (nightly snapshot build)
-  ruby-head-spec:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  ruby-head-ascii_spec:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  ruby-head-rubocop:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
-
-  # JRuby 9.2
-  jruby-9.2-spec:
-    docker:
-      - image: circleci/jruby:9.2
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  jruby-9.2-ascii_spec:
-    docker:
-      - image: circleci/jruby:9.2
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  jruby-9.2-rubocop:
-    docker:
-      - image: circleci/jruby:9.2
+      - image: <<parameters.image>>
     environment:
       <<: *common_env
       <<: *jruby_env
@@ -257,41 +137,46 @@ workflows:
     jobs:
       - documentation-checks
       - cc-setup
-      - ruby-2.4-spec:
+
+      - spec:
           requires:
             - cc-setup
-      - ruby-2.4-ascii_spec
-      - ruby-2.4-rubocop
-      - ruby-2.5-spec:
-          requires:
-            - cc-setup
-      - ruby-2.5-ascii_spec
-      - ruby-2.5-rubocop
-      - ruby-2.6-spec:
-          requires:
-            - cc-setup
-      - ruby-2.6-ascii_spec
-      - ruby-2.6-rubocop
-      - ruby-2.7-spec:
-          requires:
-            - cc-setup
-      - ruby-2.7-ascii_spec
-      - ruby-2.7-rubocop
-      - ruby-head-spec:
-          requires:
-            - cc-setup
-      - ruby-head-ascii_spec
-      - ruby-head-rubocop
-      - jruby-9.2-spec:
-          requires:
-            - cc-setup
-      - jruby-9.2-ascii_spec
-      - jruby-9.2-rubocop
+          matrix:
+            parameters:
+              image:
+                - circleci/ruby:2.4
+                - circleci/ruby:2.5
+                - circleci/ruby:2.6
+                - circleci/ruby:2.7
+                - rubocophq/circleci-ruby-snapshot:latest # ruby-head (nightly snapshot build)
+                - circleci/jruby:9.2
+
+      - ascii_spec:
+          matrix:
+            parameters:
+              image:
+                - circleci/ruby:2.4
+                - circleci/ruby:2.5
+                - circleci/ruby:2.6
+                - circleci/ruby:2.7
+                - rubocophq/circleci-ruby-snapshot:latest # ruby-head (nightly snapshot build)
+                - circleci/jruby:9.2
+
+      - rubocop:
+          matrix:
+            parameters:
+              image:
+                - circleci/ruby:2.4
+                - circleci/ruby:2.5
+                - circleci/ruby:2.6
+                - circleci/ruby:2.7
+                - rubocophq/circleci-ruby-snapshot:latest # ruby-head (nightly snapshot build)
+                - circleci/jruby:9.2
 
       - cc-upload-coverage:
           requires:
-            - ruby-2.4-spec
-            - ruby-2.5-spec
-            - ruby-2.6-spec
-            - ruby-2.7-spec
-            - jruby-9.2-spec
+            - spec-circleci/ruby:2.4
+            - spec-circleci/ruby:2.5
+            - spec-circleci/ruby:2.6
+            - spec-circleci/ruby:2.7
+            - spec-circleci/jruby:9.2
