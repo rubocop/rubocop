@@ -50,6 +50,7 @@ jobs:
       - image: circleci/ruby:2.4
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *spec_steps
   ruby-2.4-ascii_spec:
@@ -57,6 +58,7 @@ jobs:
       - image: circleci/ruby:2.4
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *ascii_spec_steps
   ruby-2.4-rubocop:
@@ -64,6 +66,7 @@ jobs:
       - image: circleci/ruby:2.4
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *rubocop_steps
 
@@ -73,6 +76,7 @@ jobs:
       - image: circleci/ruby:2.5
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *spec_steps
   ruby-2.5-ascii_spec:
@@ -80,6 +84,7 @@ jobs:
       - image: circleci/ruby:2.5
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *ascii_spec_steps
   ruby-2.5-rubocop:
@@ -87,6 +92,7 @@ jobs:
       - image: circleci/ruby:2.5
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *rubocop_steps
 
@@ -96,6 +102,7 @@ jobs:
       - image: circleci/ruby:2.6
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *spec_steps
   ruby-2.6-ascii_spec:
@@ -103,6 +110,7 @@ jobs:
       - image: circleci/ruby:2.6
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *ascii_spec_steps
   ruby-2.6-rubocop:
@@ -110,6 +118,7 @@ jobs:
       - image: circleci/ruby:2.6
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *rubocop_steps
 
@@ -119,6 +128,7 @@ jobs:
       - image: circleci/ruby:2.7
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *spec_steps
   ruby-2.7-ascii_spec:
@@ -126,6 +136,7 @@ jobs:
       - image: circleci/ruby:2.7
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *ascii_spec_steps
   ruby-2.7-rubocop:
@@ -133,6 +144,7 @@ jobs:
       - image: circleci/ruby:2.7
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *rubocop_steps
 
@@ -142,6 +154,7 @@ jobs:
       - image: rubocophq/circleci-ruby-snapshot:latest
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *spec_steps
   ruby-head-ascii_spec:
@@ -149,6 +162,7 @@ jobs:
       - image: rubocophq/circleci-ruby-snapshot:latest
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *ascii_spec_steps
   ruby-head-rubocop:
@@ -156,6 +170,7 @@ jobs:
       - image: rubocophq/circleci-ruby-snapshot:latest
     environment:
       <<: *common_env
+      <<: *jruby_env
     steps:
       *rubocop_steps
 
