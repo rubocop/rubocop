@@ -2773,7 +2773,7 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.20 | 0.47
+Enabled | Yes | Yes  | 0.20 | 0.83
 
 This cop checks for redundant access modifiers, including those with no
 code, those which are repeated, and leading `public` modifiers in a
