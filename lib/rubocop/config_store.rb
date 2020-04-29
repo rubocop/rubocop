@@ -23,6 +23,8 @@ module RuboCop
       loaded_config = ConfigLoader.load_file(options_config)
       @options_config = ConfigLoader.merge_with_default(loaded_config,
                                                         options_config)
+
+      check_pending_cops(loaded_config)
     end
 
     def force_default_config!
@@ -43,6 +45,16 @@ module RuboCop
                                 print "For #{dir}: " if ConfigLoader.debug?
                                 ConfigLoader.configuration_from_file(path)
                               end
+    end
+
+    private
+
+    def check_pending_cops(loaded_config)
+      @options_config.tap do |merged_config|
+        unless ConfigLoader.possible_new_cops?(loaded_config)
+          ConfigLoader.warn_on_pending_cops(merged_config.pending_cops)
+        end
+      end
     end
   end
 end
