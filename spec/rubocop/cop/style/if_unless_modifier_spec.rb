@@ -517,7 +517,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
-  context 'with disabled Layout/IndentationStyle cop' do
+  context 'with tabs used for indentation' do
     shared_examples 'with tabs indentation' do
       let(:source) do
         # Empty lines should make no difference.
@@ -563,13 +563,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     context 'with Layout/IndentationStyle: IndentationWidth config' do
       let(:config) do
         RuboCop::Config.new(
-          'Layout/IndentationWidth' => {
-            'Width' => 1
-          },
-          'Layout/IndentationStyle' => {
-            'Enabled' => false,
-            'IndentationWidth' => 2
-          },
+          'Layout/IndentationStyle' => { 'IndentationWidth' => 2 },
           'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
         )
       end
@@ -580,26 +574,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     context 'with Layout/IndentationWidth: Width config' do
       let(:config) do
         RuboCop::Config.new(
-          'Layout/IndentationWidth' => {
-            'Width' => 1
-          },
-          'Layout/IndentationStyle' => {
-            'Enabled' => false
-          },
-          'Layout/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
-        )
-      end
-
-      it_behaves_like 'with tabs indentation'
-    end
-
-    context 'without any IndentationWidth config' do
-      let(:config) do
-        RuboCop::Config.new(
-          'Layout/IndentationStyle' => {
-            'Enabled' => false
-          },
-          'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
+          'Layout/IndentationWidth' => { 'Width' => 3 },
+          'Layout/LineLength' => { 'Max' => 10 + 18 } # 18 is indentation
         )
       end
 
