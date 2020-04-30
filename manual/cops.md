@@ -449,6 +449,7 @@ In the following section you find all available cops:
 * [Style/SignalException](cops_style.md#stylesignalexception)
 * [Style/SingleLineBlockParams](cops_style.md#stylesinglelineblockparams)
 * [Style/SingleLineMethods](cops_style.md#stylesinglelinemethods)
+* [Style/SlicingWithRange](cops_style.md#styleslicingwithrange)
 * [Style/SpecialGlobalVars](cops_style.md#stylespecialglobalvars)
 * [Style/StabbyLambdaParentheses](cops_style.md#stylestabbylambdaparentheses)
 * [Style/StderrPuts](cops_style.md#stylestderrputs)

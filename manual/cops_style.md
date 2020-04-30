@@ -6609,6 +6609,29 @@ AllowIfMethodIsEmpty | `true` | Boolean
 
 * [https://rubystyle.guide#no-single-line-methods](https://rubystyle.guide#no-single-line-methods)
 
+## Style/SlicingWithRange
+
+!!! Note
+
+    Required Ruby version: 2.6
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | No | Yes (Unsafe) | 0.83 | -
+
+This cop checks that arrays are sliced with endless ranges instead of
+`ary[start..-1]` on Ruby 2.6+.
+
+### Examples
+
+```ruby
+# bad
+items[1..-1]
+
+# good
+items[1..]
+```
+
 ## Style/SpecialGlobalVars
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

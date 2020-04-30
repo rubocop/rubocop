@@ -3733,6 +3733,12 @@ Style/SingleLineMethods:
   VersionChanged: '0.19'
   AllowIfMethodIsEmpty: true
 
+Style/SlicingWithRange:
+  Description: 'Checks array slicing is done with endless ranges when suitable.'
+  Enabled: pending
+  VersionAdded: '0.83'
+  Safe: false
+
 Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   StyleGuide: '#no-cryptic-perlisms'
