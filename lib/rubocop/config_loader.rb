@@ -217,7 +217,10 @@ module RuboCop
       end
 
       def load_yaml_configuration(absolute_path)
-        yaml_code = read_file(absolute_path)
+        file_contents = read_file(absolute_path)
+        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
+          ERB.new(file_contents).result
+        end
         check_duplication(yaml_code, absolute_path)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
@@ -241,8 +244,7 @@ module RuboCop
                       "#{smart_path}:#{line1}: " \
                       "`#{value}` is concealed by line #{line2}"
                     else
-                      "#{smart_path}: " \
-                        "`#{value}` is concealed by duplicate"
+                      "#{smart_path}: `#{value}` is concealed by duplicate"
                     end
           warn Rainbow(message).yellow
         end
@@ -263,13 +265,11 @@ module RuboCop
           SafeYAML.load(yaml_code, filename, whitelisted_tags: %w[!ruby/regexp])
         # Ruby 2.6+
         elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
-          YAML.safe_load(
-            yaml_code,
-            permitted_classes: [Regexp, Symbol],
-            permitted_symbols: [],
-            aliases: true,
-            filename: filename
-          )
+          YAML.safe_load(yaml_code,
+                         permitted_classes: [Regexp, Symbol],
+                         permitted_symbols: [],
+                         aliases: true,
+                         filename: filename)
         else
           YAML.safe_load(yaml_code, [Regexp, Symbol], [], true, filename)
         end
