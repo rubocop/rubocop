@@ -6,7 +6,11 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    RuboCop::Config.new('Layout/LineLength' => line_length_config)
+    RuboCop::Config.new('Layout/LineLength' => line_length_config,
+                        'Layout/IndentationStyle' => {
+                          'Enabled' => true,
+                          'EnforcedStyle' => 'spaces'
+                        })
   end
   let(:line_length_config) do
     {
@@ -517,7 +521,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
-  context 'with disabled Layout/IndentationStyle cop' do
+  context 'with tabs used for indentation' do
     shared_examples 'with tabs indentation' do
       let(:source) do
         # Empty lines should make no difference.
@@ -567,7 +571,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
             'Width' => 1
           },
           'Layout/IndentationStyle' => {
-            'Enabled' => false,
+            'Enabled' => true,
+            'EnforcedStyle' => 'tabs',
             'IndentationWidth' => 2
           },
           'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
@@ -584,7 +589,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
             'Width' => 1
           },
           'Layout/IndentationStyle' => {
-            'Enabled' => false
+            'Enabled' => false,
+            'EnforcedStyle' => 'tabs'
           },
           'Layout/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
         )
@@ -597,7 +603,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       let(:config) do
         RuboCop::Config.new(
           'Layout/IndentationStyle' => {
-            'Enabled' => false
+            'Enabled' => false,
+            'EnforcedStyle' => 'tabs'
           },
           'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
         )

@@ -58,10 +58,11 @@ module RuboCop
       end
 
       def indentation_multiplier
-        return 1 if config.for_cop('Layout/IndentationStyle')['Enabled']
+        indentation_style_config = config.for_cop('Layout/IndentationStyle')
+        return 1 if indentation_style_config['EnforcedStyle'] == 'spaces'
 
         default_configuration = RuboCop::ConfigLoader.default_configuration
-        config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
+        indentation_style_config['IndentationWidth'] ||
           config.for_cop('Layout/IndentationWidth')['Width'] ||
           default_configuration
             .for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
