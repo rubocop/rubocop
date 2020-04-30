@@ -1199,6 +1199,42 @@ some_method(
 )
 ```
 
+## Layout/EmptyLinesAroundAttributeAccessor
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | Yes  | 0.83 | -
+
+Checks for a newline after attribute accessor.
+
+### Examples
+
+```ruby
+# bad
+attr_accessor :foo
+def do_something
+end
+
+# good
+attr_accessor :foo
+
+def do_something
+end
+
+# good
+attr_accessor :foo
+attr_reader :bar
+attr_writer :baz
+attr :qux
+
+def do_something
+end
+```
+
+### References
+
+* [https://rubystyle.guide#empty-lines-around-attribute-accessor](https://rubystyle.guide#empty-lines-around-attribute-accessor)
+
 ## Layout/EmptyLinesAroundBeginBody
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

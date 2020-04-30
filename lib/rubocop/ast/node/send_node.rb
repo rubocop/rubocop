@@ -8,6 +8,10 @@ module RuboCop
     class SendNode < Node
       include ParameterizedNode
       include MethodDispatchNode
+
+      def_node_matcher :attribute_accessor?, <<~PATTERN
+        (send nil? ${:attr_reader :attr_writer :attr_accessor :attr} $...)
+      PATTERN
     end
   end
 end
