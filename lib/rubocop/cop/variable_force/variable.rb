@@ -11,6 +11,7 @@ module RuboCop
 
         attr_reader :name, :declaration_node, :scope,
                     :assignments, :references, :captured_by_block
+
         alias captured_by_block? captured_by_block
 
         def initialize(name, declaration_node, scope)

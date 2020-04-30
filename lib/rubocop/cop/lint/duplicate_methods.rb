@@ -95,10 +95,6 @@ module RuboCop
           (send nil? :alias_method (sym $_name) _)
         PATTERN
 
-        def_node_matcher :attr?, <<~PATTERN
-          (send nil? ${:attr_reader :attr_writer :attr_accessor :attr} $...)
-        PATTERN
-
         def_node_matcher :sym_name, '(sym $_name)'
 
         def on_send(node)
@@ -108,7 +104,7 @@ module RuboCop
             return if possible_dsl?(node)
 
             found_instance_method(node, name)
-          elsif (attr = attr?(node))
+          elsif (attr = node.attribute_accessor?)
             on_attr(node, *attr)
           end
         end
