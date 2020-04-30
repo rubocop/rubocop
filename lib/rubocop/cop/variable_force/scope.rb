@@ -16,6 +16,7 @@ module RuboCop
         }.freeze
 
         attr_reader :node, :variables, :naked_top_level
+
         alias naked_top_level? naked_top_level
 
         def initialize(node)

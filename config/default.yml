@@ -462,6 +462,12 @@ Layout/EmptyLinesAroundArguments:
   Enabled: true
   VersionAdded: '0.52'
 
+Layout/EmptyLinesAroundAttributeAccessor:
+  Description: "Keep blank lines around attribute accessors."
+  StyleGuide: '#empty-lines-around-attribute-accessor'
+  Enabled: pending
+  VersionAdded: '0.83'
+
 Layout/EmptyLinesAroundBeginBody:
   Description: "Keeps track of empty lines around begin-end bodies."
   StyleGuide: '#empty-lines-around-bodies'

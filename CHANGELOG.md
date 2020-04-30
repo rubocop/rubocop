@@ -15,6 +15,7 @@
 * [#7910](https://github.com/rubocop-hq/rubocop/pull/7910): Support autocorrection for `Lint/ParenthesesAsGroupedExpression`. ([@koic][])
 * [#7925](https://github.com/rubocop-hq/rubocop/pull/7925): Support autocorrection for `Layout/ConditionPosition`. ([@koic][])
 * [#7934](https://github.com/rubocop-hq/rubocop/pull/7934): Support autocorrection for `Lint/EnsureReturn`. ([@koic][])
+* [#7922](https://github.com/rubocop-hq/rubocop/pull/7922): Add new `Layout/EmptyLineAroundAttributeAccessor` cop. ([@koic][])
 
 ### Bug fixes
 
