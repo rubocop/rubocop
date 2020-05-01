@@ -4,11 +4,16 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
   subject(:cop) { described_class.new }
 
   %w[if unless while until].each do |keyword|
-    it 'registers an offense for condition on the next line' do
+    it 'registers an offense and corrects for condition on the next line' do
       expect_offense(<<~RUBY)
         #{keyword}
         x == 10
         ^^^^^^^ Place the condition on the same line as `#{keyword}`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} x == 10
         end
       RUBY
     end
@@ -29,13 +34,21 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
     end
   end
 
-  it 'registers an offense for elsif condition on the next line' do
+  it 'registers an offense and corrects for elsif condition on the next line' do
     expect_offense(<<~RUBY)
       if something
         test
       elsif
         something
         ^^^^^^^^^ Place the condition on the same line as `elsif`.
+        test
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if something
+        test
+      elsif something
         test
       end
     RUBY
