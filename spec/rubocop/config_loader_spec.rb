@@ -1007,6 +1007,36 @@ RSpec.describe RuboCop::ConfigLoader do
       )
     end
 
+    it 'does ERB pre-processing of the configuration file' do
+      %w[a.rb b.rb].each { |file| create_file(file, 'puts 1') }
+      create_file(configuration_path, <<~YAML)
+        Style/Encoding:
+          Enabled: <%= 1 == 1 %>
+          Exclude:
+          <% Dir['*.rb'].sort.each do |name| %>
+            - <%= name %>
+          <% end %>
+      YAML
+      configuration = load_file
+      expect(configuration['Style/Encoding'])
+        .to eq('Enabled' => true,
+               'Exclude' => [abs('a.rb'), abs('b.rb')])
+    end
+
+    it 'does ERB pre-processing of a configuration file in a subdirectory' do
+      create_file('dir/c.rb', 'puts 1')
+      create_file('dir/.rubocop.yml', <<~YAML)
+        Style/Encoding:
+          Exclude:
+          <% Dir['*.rb'].each do |name| %>
+            - <%= name %>
+          <% end %>
+      YAML
+      configuration = described_class.load_file('dir/.rubocop.yml')
+      expect(configuration['Style/Encoding'])
+        .to eq('Exclude' => [abs('dir/c.rb')])
+    end
+
     it 'fails with a TypeError when loading a malformed configuration file' do
       create_file(configuration_path, 'This string is not a YAML hash')
       expect { load_file }.to raise_error(

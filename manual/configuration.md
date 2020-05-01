@@ -237,6 +237,21 @@ Style/For:
 In this example the `Exclude` would only include `bar.rb`.
 
 
+## Pre-processing
+
+Configuration files are pre-processed using the ERB templating mechanism. This
+makes it possible to add dynamic content that will be evaluated when the
+configuation file is read. For example, you could let RuboCop ignore all files
+ignored by Git.
+
+```yaml
+AllCops:
+  Exclude:
+  <% `git status --ignored --porcelain`.lines.grep(/^!! /).each do |path| %>
+    - <%= path.sub(/^!! /, '') %>
+  <% end %>
+```
+
 ## Defaults
 
 The file [config/default.yml][1] under the RuboCop home directory contains the
