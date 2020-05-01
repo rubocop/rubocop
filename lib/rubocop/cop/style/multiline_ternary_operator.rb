@@ -17,12 +17,11 @@ module RuboCop
       #
       #   # good
       #   a = cond ? b : c
-      #   a =
-      #     if cond
-      #       b
-      #     else
-      #       c
-      #     end
+      #   a = if cond
+      #     b
+      #   else
+      #     c
+      #   end
       class MultilineTernaryOperator < Cop
         MSG = 'Avoid multi-line ternary operators, ' \
               'use `if` or `unless` instead.'
@@ -31,6 +30,18 @@ module RuboCop
           return unless node.ternary? && node.multiline?
 
           add_offense(node)
+        end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node, <<~RUBY.chop)
+              if #{node.condition.source}
+                #{node.if_branch.source}
+              else
+                #{node.else_branch.source}
+              end
+            RUBY
+          end
         end
       end
     end

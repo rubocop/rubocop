@@ -3239,6 +3239,7 @@ Style/MultilineTernaryOperator:
   StyleGuide: '#no-multiline-ternary'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.86'
 
 Style/MultilineWhenThen:
   Description: 'Do not use then for multi-line when statement.'
