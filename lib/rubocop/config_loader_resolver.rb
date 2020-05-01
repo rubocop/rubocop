@@ -17,10 +17,12 @@ module RuboCop
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def resolve_inheritance(path, hash, file, debug)
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
         .reverse.each_with_index do |base_config, index|
+        override_department_setting_for_cops(base_config, hash)
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
 
@@ -34,6 +36,7 @@ module RuboCop
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def resolve_inheritance_from_gems(hash)
       gems = hash.delete('inherit_gem')
@@ -100,7 +103,31 @@ module RuboCop
     end
     # rubocop:enable Metrics/AbcSize
 
+    # An `Enabled: true` setting in user configuration for a cop overrides an
+    # `Enabled: false` setting for its department.
+    def override_department_setting_for_cops(base_hash, derived_hash)
+      derived_hash.each_key do |key|
+        next unless key =~ %r{(.*)/.*}
+
+        department = Regexp.last_match(1)
+        next unless disabled?(derived_hash, department) ||
+                    disabled?(base_hash, department)
+
+        # The `override_department` setting for the `Enabled` parameter is an
+        # internal setting that's not documented in the manual. It will cause a
+        # cop to be enabled later, when logic surrounding enabled/disabled it
+        # run, even though its department is disabled.
+        if derived_hash[key]['Enabled']
+          derived_hash[key]['Enabled'] = 'override_department'
+        end
+      end
+    end
+
     private
+
+    def disabled?(hash, department)
+      hash[department] && hash[department]['Enabled'] == false
+    end
 
     def duplicate_setting?(base_hash, derived_hash, key, inherited_file)
       return false if inherited_file.nil? # Not inheritance resolving merge
