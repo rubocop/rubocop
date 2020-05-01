@@ -1317,6 +1317,7 @@ Lint/AmbiguousOperator:
   StyleGuide: '#method-invocation-parens'
   Enabled: true
   VersionAdded: '0.17'
+  VersionChanged: '0.83'
 
 Lint/AmbiguousRegexpLiteral:
   Description: >-

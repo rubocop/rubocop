@@ -38,6 +38,12 @@ module RuboCop
                      'a whitespace to the right of the `%<operator>s` if it ' \
                      'should be a %<possible>s.'
 
+        def autocorrect(node)
+          lambda do |corrector|
+            add_parentheses(node, corrector)
+          end
+        end
+
         private
 
         def relevant_diagnostic?(diagnostic)
@@ -45,14 +51,41 @@ module RuboCop
         end
 
         def find_offense_node_by(diagnostic)
-          # TODO: When implementing auto-correction, this method should return
-          # an offense node passed as first argument of `add_offense` method.
+          ast = processed_source.ast
+          ast.each_node(:splat, :block_pass, :kwsplat) do |node|
+            next unless offense_position?(node, diagnostic)
+
+            offense_node = offense_node(node)
+            return offense_node if offense_node
+          end
+
+          ast.each_node(:send).find do |send_node|
+            offense_position?(send_node.first_argument, diagnostic) &&
+              unary_operator?(send_node.first_argument, diagnostic)
+          end
         end
 
         def alternative_message(diagnostic)
           operator = diagnostic.location.source
           hash = AMBIGUITIES[operator]
           format(MSG_FORMAT, hash)
+        end
+
+        def offense_position?(node, diagnostic)
+          node.source_range.begin_pos == diagnostic.location.begin_pos
+        end
+
+        def offense_node(node)
+          case node.type
+          when :splat, :block_pass
+            node.parent
+          when :kwsplat
+            node.parent.parent
+          end
+        end
+
+        def unary_operator?(node, diagnostic)
+          node.source.start_with?(diagnostic.arguments[:prefix])
         end
       end
     end
