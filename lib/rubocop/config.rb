@@ -261,9 +261,13 @@ module RuboCop
 
     def enable_cop?(qualified_cop_name, cop_options)
       department = department_of(qualified_cop_name)
+      cop_enabled = cop_options.fetch('Enabled') do
+        !for_all_cops['DisabledByDefault']
+      end
+      return true if cop_enabled == 'override_department'
       return false if department && department['Enabled'] == false
 
-      cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
+      cop_enabled
     end
 
     def department_of(qualified_cop_name)

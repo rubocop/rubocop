@@ -206,7 +206,8 @@ module RuboCop
                        SafeAutoCorrect
                        AutoCorrect].include?(key) && value.is_a?(String)
 
-        next if key == 'Enabled' && value == 'pending'
+        next if key == 'Enabled' &&
+                %w[pending override_department].include?(value)
 
         raise ValidationError, msg_not_boolean(parent, key, value)
       end
