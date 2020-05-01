@@ -1425,6 +1425,7 @@ Lint/EnsureReturn:
   StyleGuide: '#no-return-ensure'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.83'
 
 Lint/ErbNewArguments:
   Description: 'Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.'
