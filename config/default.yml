@@ -2952,6 +2952,7 @@ Style/IfWithSemicolon:
   StyleGuide: '#no-semicolon-ifs'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.83'
 
 Style/ImplicitRuntimeError:
   Description: >-
