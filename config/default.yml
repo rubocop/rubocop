@@ -1478,6 +1478,7 @@ Lint/ElseLayout:
   Description: 'Check for odd code arrangement in an else block.'
   Enabled: true
   VersionAdded: '0.17'
+  VersionChanged: '1.2'
 
 Lint/EmptyBlock:
   Description: 'This cop checks for blocks without a body.'
