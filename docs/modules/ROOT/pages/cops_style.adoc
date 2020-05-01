@@ -5170,9 +5170,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
-| -
+| 0.86
 |===
 
 This cop checks for multi-line ternary op expressions.
@@ -5192,12 +5192,11 @@ a = cond ?
 
 # good
 a = cond ? b : c
-a =
-  if cond
-    b
-  else
-    c
-  end
+a = if cond
+  b
+else
+  c
+end
 ----
 
 === References

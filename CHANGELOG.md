@@ -6,6 +6,7 @@
 
 * [#8111](https://github.com/rubocop-hq/rubocop/pull/8111): Add auto-correct for `Style/StructInheritance`. ([@tejasbubane][])
 * [#8113](https://github.com/rubocop-hq/rubocop/pull/8113): Let `expect_offense` templates add variable-length whitespace with `_{foo}`. ([@eugeneius][])
+* [#8148](https://github.com/rubocop-hq/rubocop/pull/8148): Support autocorrection for `Style/MultilineTernaryOperator`. ([@koic][])
 
 ### Bug fixes
 
