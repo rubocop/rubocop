@@ -586,27 +586,13 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       let(:config) do
         RuboCop::Config.new(
           'Layout/IndentationWidth' => {
-            'Width' => 1
+            'Width' => 3
           },
           'Layout/IndentationStyle' => {
             'Enabled' => false,
             'EnforcedStyle' => 'tabs'
           },
-          'Layout/LineLength' => { 'Max' => 10 + 6 } # 6 is indentation
-        )
-      end
-
-      it_behaves_like 'with tabs indentation'
-    end
-
-    context 'without any IndentationWidth config' do
-      let(:config) do
-        RuboCop::Config.new(
-          'Layout/IndentationStyle' => {
-            'Enabled' => false,
-            'EnforcedStyle' => 'tabs'
-          },
-          'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
+          'Layout/LineLength' => { 'Max' => 10 + 18 } # 18 is indentation
         )
       end
 
