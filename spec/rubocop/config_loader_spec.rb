@@ -440,6 +440,93 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a department is disabled' do
+      let(:file_path) { '.rubocop.yml' }
+
+      shared_examples 'resolves enabled/disabled for all cops' do
+        |enabled_by_default, disabled_by_default|
+        it "handles EnabledByDefault: #{enabled_by_default}, " \
+           "DisabledByDefault: #{disabled_by_default}" do
+          create_file('grandparent_rubocop.yml', <<~YAML)
+            Metrics/AbcSize:
+              Enabled: true
+
+            Metrics/PerceivedComplexity:
+              Enabled: true
+
+            Lint:
+              Enabled: false
+          YAML
+          create_file('parent_rubocop.yml', <<~YAML)
+            inherit_from: grandparent_rubocop.yml
+
+            Metrics:
+              Enabled: false
+
+            Metrics/AbcSize:
+              Enabled: false
+          YAML
+          create_file(file_path, <<~YAML)
+            inherit_from: parent_rubocop.yml
+
+            AllCops:
+              EnabledByDefault: #{enabled_by_default}
+              DisabledByDefault: #{disabled_by_default}
+
+            Style:
+              Enabled: false
+
+            Metrics/MethodLength:
+              Enabled: true
+
+            Metrics/ClassLength:
+              Enabled: false
+
+            Lint/RaiseException:
+              Enabled: true
+
+            Style/AndOr:
+              Enabled: true
+          YAML
+
+          def enabled?(cop)
+            configuration_from_file.for_cop(cop)['Enabled']
+          end
+
+          # Department disabled in parent config, cop enabled in child.
+          expect(enabled?('Metrics/MethodLength')).to be(true)
+
+          # Department disabled in parent config, cop disabled in child.
+          expect(enabled?('Metrics/ClassLength')).to be(false)
+
+          # Enabled in grandparent config, disabled in parent.
+          expect(enabled?('Metrics/AbcSize')).to be(false)
+
+          # Enabled in grandparent config, department disabled in parent.
+          expect(enabled?('Metrics/PerceivedComplexity')).to be(false)
+
+          # Pending in default config, department disabled in grandparent.
+          expect(enabled?('Lint/StructNewOverride')).to be(false)
+
+          # Department disabled in child config.
+          expect(enabled?('Style/Alias')).to be(false)
+
+          # Department disabled in child config, cop enabled in child.
+          expect(enabled?('Style/AndOr')).to be(true)
+
+          # Department disabled in grandparent, cop enabled in child config.
+          expect(enabled?('Lint/RaiseException')).to be(true)
+
+          # Cop enabled in default config, but not mentioned in user config.
+          expect(enabled?('Bundler/DuplicatedGem')).to eq(!disabled_by_default)
+        end
+      end
+
+      include_examples 'resolves enabled/disabled for all cops', false, false
+      include_examples 'resolves enabled/disabled for all cops', false, true
+      include_examples 'resolves enabled/disabled for all cops', true, false
+    end
+
     context 'when a third party require defines a new gem' do
       before do
         allow(RuboCop::Cop::Cop)

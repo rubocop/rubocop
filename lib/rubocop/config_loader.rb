@@ -36,7 +36,7 @@ module RuboCop
         FileFinder.root_level = nil
       end
 
-      def load_file(file)
+      def load_file(file) # rubocop:disable Metrics/AbcSize
         path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
 
         hash = load_yaml_configuration(path)
@@ -46,6 +46,7 @@ module RuboCop
 
         add_missing_namespaces(path, hash)
 
+        resolver.override_department_setting_for_cops({}, hash)
         resolver.resolve_inheritance_from_gems(hash)
         resolver.resolve_inheritance(path, hash, file, debug?)
 

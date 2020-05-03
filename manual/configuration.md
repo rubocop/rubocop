@@ -446,6 +446,23 @@ Style:
 All cops are then enabled by default. Only cops explicitly disabled
 using `Enabled: false` in user configuration files are disabled.
 
+If a department is disabled, cops in that department can still be individually
+enabled, and that setting overrides the setting for its department in the same
+configuration file and in any inherited file.
+
+```yaml
+inherit_from: config_that_disables_the_metrics_department.yml
+
+Metrics/MethodLength:
+  Enabled: true
+
+Style:
+  Enabled: false
+
+Style/Alias:
+  Enabled: true
+```
+
 ### Severity
 
 Each cop has a default severity level based on which department it belongs
