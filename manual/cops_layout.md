@@ -3875,6 +3875,48 @@ IndentationWidth | `<none>` | Integer
 
 * [https://rubystyle.guide#no-double-indent](https://rubystyle.guide#no-double-indent)
 
+## Layout/PrivateConstant
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.83 | -
+
+Placing constants in the private section does not make them private,
+which can be misleading
+
+Instead, you should explicitly declare a constant as private:
+  `private_constant :MY_CONSTANT`
+
+### Examples
+
+```ruby
+# bad
+class Foo
+  def public_stuff; end
+
+  private
+  MY_CONSTANT = 7
+  YOUR_CONSTANT = 21
+end
+
+# good
+class Foo
+  MY_CONSTANT = 7
+  YOUR_CONSTANT = 21
+
+  private
+  def private_stuff; end
+end
+
+class Foo
+  def public_stuff; end
+
+  private
+  MY_CONSTANT = 7
+  private_constant :MY_CONSTANT
+end
+```
+
 ## Layout/RescueEnsureAlignment
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

@@ -9,6 +9,7 @@
 * [#7917](https://github.com/rubocop-hq/rubocop/pull/7917): Support autocorrection for `Lint/UselessAccessModifier`. ([@koic][])
 * [#595](https://github.com/rubocop-hq/rubocop/issues/595): Add ERB pre-processing for configuration files. ([@jonas054][])
 * [#7918](https://github.com/rubocop-hq/rubocop/pull/7918): Support autocorrection for `Lint/AmbiguousOperator`. ([@koic][])
+* [#7933](https://github.com/rubocop-hq/rubocop/pull/7933): Add new `Layout/PrivateConstant` cop. ([@mtamhankar1][])
 
 ### Bug fixes
 
@@ -4484,3 +4485,4 @@
 [@saurabhmaurya15]: https://github.com/saurabhmaurya15
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
+[@mtamhankar1]: https://github.com/mtamhankar1

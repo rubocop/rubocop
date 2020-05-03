@@ -1041,6 +1041,14 @@ Layout/ParameterAlignment:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/PrivateConstant:
+  Description: >-
+                 Do not place constants in the protected or private block
+                 of a class. This is misleading since the constants are
+                 still publicly accessible unless explicitly marked private.
+  Enabled: pending
+  VersionAdded: '0.83'
+
 Layout/RescueEnsureAlignment:
   Description: 'Align rescues and ensures correctly.'
   Enabled: true
