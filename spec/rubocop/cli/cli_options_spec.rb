@@ -1542,6 +1542,41 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe '--only-recognized-file-types' do
+    let(:target_file) { 'example.something' }
+    let(:exit_code) { cli.run(['--only-recognized-file-types', target_file]) }
+
+    before do
+      create_file(target_file, '#' * 90)
+    end
+
+    context 'when explicitly included' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Include:
+              - #{target_file}
+        YAML
+      end
+
+      it 'includes the file given on the command line' do
+        expect(exit_code).to eq(1)
+      end
+    end
+
+    context 'when not explicitly included' do
+      it 'does not include the file given on the command line' do
+        expect(exit_code).to eq(0)
+      end
+
+      context 'but option is not given' do
+        it 'includes the file given on the command line' do
+          expect(cli.run([target_file])).to eq(1)
+        end
+      end
+    end
+  end
+
   describe '--stdin' do
     it 'causes source code to be read from stdin' do
       begin
