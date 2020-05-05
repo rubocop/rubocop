@@ -248,10 +248,7 @@ module RuboCop
       def format_message_from(name, cop_names)
         message = 'Unrecognized cop or department: %<name>s.'
         message_with_candidate = "%<message>s\nDid you mean? %<candidate>s"
-        corrections = cop_names.select do |cn|
-          score = StringUtil.similarity(cn, name)
-          score >= NameSimilarity::MINIMUM_SIMILARITY_TO_SUGGEST
-        end.sort
+        corrections = NameSimilarity.find_similar_names(name, cop_names)
 
         if corrections.empty?
           format(message, name: name)
