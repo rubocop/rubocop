@@ -94,7 +94,8 @@ module RuboCop
         end
 
         def similar_name_message(variable)
-          similar_name = find_similar_name(variable.name, variable.scope)
+          variable_like_names = collect_variable_like_names(variable.scope)
+          similar_name = find_similar_name(variable.name, variable_like_names)
           " Did you mean `#{similar_name}`?" if similar_name
         end
 
