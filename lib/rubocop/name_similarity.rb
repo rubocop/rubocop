@@ -5,8 +5,8 @@ module RuboCop
   module NameSimilarity
     MINIMUM_SIMILARITY_TO_SUGGEST = 0.9
 
-    def find_similar_name(target_name, scope)
-      names = collect_variable_like_names(scope)
+    def find_similar_name(target_name, names)
+      names = names.dup
       names.delete(target_name)
 
       scores = names.each_with_object({}) do |name, hash|
