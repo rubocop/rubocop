@@ -5,16 +5,20 @@ module RuboCop
   module NameSimilarity
     module_function
 
-    MINIMUM_SIMILARITY_TO_SUGGEST = 0.9
-
     def find_similar_name(target_name, names)
+      similar_names = find_similar_names(target_name, names)
+
+      similar_names.first
+    end
+
+    def find_similar_names(target_name, names)
       names = names.dup
       names.delete(target_name)
 
       spell_checker = DidYouMean::SpellChecker.new(dictionary: names)
       similar_names = spell_checker.correct(target_name)
 
-      similar_names.first
+      similar_names
     end
   end
 end

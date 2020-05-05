@@ -41,6 +41,7 @@
 * [#7390](https://github.com/rubocop-hq/rubocop/issues/7390): **(Breaking)** Enabling a cop overrides disabling its department. ([@jonas054][])
 * [#7936](https://github.com/rubocop-hq/rubocop/issues/7936): Mark `Lint/BooleanSymbol` as unsafe. ([@laurmurclar][])
 * [#7948](https://github.com/rubocop-hq/rubocop/pull/7948): Mark unsafe for `Style/OptionalArguments`. ([@koic][])
+* [#7931](https://github.com/rubocop-hq/rubocop/pull/7931): Remove dependency on the `jaro_winkler` gem, instead depending on `did_you_mean`. This may be a breaking change for RuboCop libraries calling `NameSimilarity#find_similar_name`. ([@bquorning][])
 
 ## 0.82.0 (2020-04-16)
 
