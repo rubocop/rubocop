@@ -11,13 +11,10 @@ module RuboCop
       names = names.dup
       names.delete(target_name)
 
-      scores = names.each_with_object({}) do |name, hash|
-        score = StringUtil.similarity(target_name, name)
-        hash[name] = score if score >= MINIMUM_SIMILARITY_TO_SUGGEST
-      end
+      spell_checker = DidYouMean::SpellChecker.new(dictionary: names)
+      similar_names = spell_checker.correct(target_name)
 
-      most_similar_name, _max_score = scores.max_by { |_, score| score }
-      most_similar_name
+      similar_names.first
     end
   end
 end
