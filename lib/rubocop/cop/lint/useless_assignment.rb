@@ -31,7 +31,6 @@ module RuboCop
       #     do_something(some_var)
       #   end
       class UselessAssignment < Cop
-        include NameSimilarity
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
         def join_force?(force_class)
@@ -95,7 +94,8 @@ module RuboCop
 
         def similar_name_message(variable)
           variable_like_names = collect_variable_like_names(variable.scope)
-          similar_name = find_similar_name(variable.name, variable_like_names)
+          similar_name = NameSimilarity.find_similar_name(variable.name,
+                                                          variable_like_names)
           " Did you mean `#{similar_name}`?" if similar_name
         end
 

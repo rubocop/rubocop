@@ -3,6 +3,8 @@
 module RuboCop
   # Common functionality for finding names that are similar to a given name.
   module NameSimilarity
+    module_function
+
     MINIMUM_SIMILARITY_TO_SUGGEST = 0.9
 
     def find_similar_name(target_name, names)
