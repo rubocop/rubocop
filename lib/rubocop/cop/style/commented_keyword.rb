@@ -36,6 +36,13 @@ module RuboCop
       class CommentedKeyword < Cop
         MSG = 'Do not place comments on the same line as the ' \
               '`%<keyword>s` keyword.'
+        KEYWORDS = %w[begin class def end module].freeze
+        ALLOWED_COMMENTS = %w[
+          :nodoc:
+          :yields:
+          rubocop:disable
+          rubocop:todo
+        ].freeze
 
         def investigate(processed_source)
           processed_source.each_comment do |comment|
@@ -44,14 +51,6 @@ module RuboCop
         end
 
         private
-
-        KEYWORDS = %w[begin class def end module].freeze
-        ALLOWED_COMMENTS = %w[
-          :nodoc:
-          :yields:
-          rubocop:disable
-          rubocop:todo
-        ].freeze
 
         def offensive?(comment)
           line = line(comment)
