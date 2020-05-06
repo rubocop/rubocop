@@ -30,6 +30,7 @@
 * [#7909](https://github.com/rubocop-hq/rubocop/pull/7909): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when using an intended grouped parentheses. ([@koic][])
 * [#7913](https://github.com/rubocop-hq/rubocop/pull/7913): Fix a false positive for `Lint/LiteralAsCondition` when using `true` literal in `while` and similar cases. ([@koic][])
 * [#7928](https://github.com/rubocop-hq/rubocop/issues/7928): Fix a false message for `Style/GuardClause` when using `and` or `or` operators for guard clause in `then` or `else` branches. ([@koic][])
+* [#7928](https://github.com/rubocop-hq/rubocop/issues/7928): Fix a false positive for `Style/GuardClause` when assigning the result of a guard condition with `else`. ([@koic][])
 
 ### Changes
 

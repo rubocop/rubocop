@@ -197,6 +197,19 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
     RUBY
   end
 
+  it 'does not register an offense when assigning the result of ' \
+     'a guard condition with `else`' do
+    expect_no_offenses(<<~RUBY)
+      def func
+        result = if something
+          work || raise('message')
+        else
+          test
+        end
+      end
+    RUBY
+  end
+
   context 'MinBodyLength: 1' do
     let(:cop_config) do
       { 'MinBodyLength' => 1 }
