@@ -126,7 +126,8 @@ module RuboCop
         end
 
         def accepted_form?(node, ending = false)
-          accepted_if?(node, ending) || node.condition.multiline?
+          accepted_if?(node, ending) || node.condition.multiline? ||
+            node.parent&.assignment?
         end
 
         def accepted_if?(node, ending)
