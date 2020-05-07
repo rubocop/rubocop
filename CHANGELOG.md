@@ -12,6 +12,7 @@
 
 ### Bug fixes
 
+* [#7929](https://github.com/rubocop-hq/rubocop/issues/7929): Fix `Style/FrozenStringLiteralComment` to accept frozen_string_literal anywhere in leading comment lines. ([@jeffcarbs][])
 * [#7882](https://github.com/rubocop-hq/rubocop/pull/7882): Fix `Style/CaseEquality` when `AllowOnConstant` is `true` and the method receiver is implicit. ([@rafaelfranca][])
 * [#7790](https://github.com/rubocop-hq/rubocop/issues/7790): Fix `--parallel` and `--ignore-parent-exclusion` combination. ([@jonas054][])
 * [#7881](https://github.com/rubocop-hq/rubocop/issues/7881): Fix `--parallel` and `--force-default-config` combination. ([@jonas054][])
@@ -4486,3 +4487,4 @@
 [@saurabhmaurya15]: https://github.com/saurabhmaurya15
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
+[@jeffcarbs]: https://github.com/jeffcarbs
