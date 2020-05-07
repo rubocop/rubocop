@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Common functionality for modifier cops.
     module StatementModifier
+      include LineLengthHelp
+
       private
 
       def single_line_as_modifier?(node)
@@ -34,38 +36,20 @@ module RuboCop
       def modifier_fits_on_single_line?(node)
         return true unless max_line_length
 
-        modifier_length = length_in_modifier_form(node, node.condition,
-                                                  node.body.source_length)
-
-        modifier_length <= max_line_length
+        length_in_modifier_form(node, node.condition) <= max_line_length
       end
 
-      def length_in_modifier_form(node, cond, body_length)
+      def length_in_modifier_form(node, cond)
         keyword = node.loc.keyword
-
-        indentation = keyword.column * indentation_multiplier
-        kw_length = keyword.size
-        cond_length = cond.source_range.size
-        space = 1
-
-        indentation + body_length + space + kw_length + space + cond_length
+        indentation = keyword.source_line[/^\s*/]
+        line_length("#{indentation}#{node.body.source} #{keyword.source} " \
+                    "#{cond.source}")
       end
 
       def max_line_length
         return unless config.for_cop('Layout/LineLength')['Enabled']
 
         config.for_cop('Layout/LineLength')['Max']
-      end
-
-      def indentation_multiplier
-        return 1 if config.for_cop('Layout/IndentationStyle')['Enabled']
-
-        default_configuration = RuboCop::ConfigLoader.default_configuration
-        config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
-          config.for_cop('Layout/IndentationWidth')['Width'] ||
-          default_configuration
-            .for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
-          default_configuration.for_cop('Layout/IndentationWidth')['Width']
       end
     end
   end
