@@ -1538,6 +1538,11 @@ Lint/NextWithoutAccumulator:
   Enabled: true
   VersionAdded: '0.36'
 
+Lint/NoReturnInBeginEndBlocks:
+  Description: 'Do not `return` inside `begin..end` blocks in assignment contexts.'
+  Enabled: pending
+  VersionAdded: '0.83'
+
 Lint/NonDeterministicRequireOrder:
   Description: 'Always sort arrays returned by Dir.glob when requiring files.'
   Enabled: true

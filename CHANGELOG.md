@@ -4,6 +4,7 @@
 
 ### New features
 
+* Add new `Lint/NoReturnInBeginEndBlocks` cop. ([@jcfausto][])
 * [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
 * [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
 * [#7917](https://github.com/rubocop-hq/rubocop/pull/7917): Support autocorrection for `Lint/UselessAccessModifier`. ([@koic][])
@@ -4487,3 +4488,4 @@
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
 [@jeffcarbs]: https://github.com/jeffcarbs
+[@jcfausto]: https://github.com/jcfausto

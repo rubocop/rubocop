@@ -214,6 +214,7 @@ In the following section you find all available cops:
 * [Lint/NestedMethodDefinition](cops_lint.md#lintnestedmethoddefinition)
 * [Lint/NestedPercentLiteral](cops_lint.md#lintnestedpercentliteral)
 * [Lint/NextWithoutAccumulator](cops_lint.md#lintnextwithoutaccumulator)
+* [Lint/NoReturnInBeginEndBlocks](cops_lint.md#lintnoreturninbeginendblocks)
 * [Lint/NonDeterministicRequireOrder](cops_lint.md#lintnondeterministicrequireorder)
 * [Lint/NonLocalExitFromIterator](cops_lint.md#lintnonlocalexitfromiterator)
 * [Lint/NumberConversion](cops_lint.md#lintnumberconversion)

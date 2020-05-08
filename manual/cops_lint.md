@@ -1271,6 +1271,51 @@ result = (1..4).reduce(0) do |acc, i|
 end
 ```
 
+## Lint/NoReturnInBeginEndBlocks
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | No | 0.83 | -
+
+Checks for the presence of a *return* inside a *begin..end* block
+in assignment contexts.
+In this situations the, `return` will take prececende over any
+assignment intended by the result of the begin..end block, leading
+to unexpected code behaviours.
+
+### Examples
+
+```ruby
+# bad
+
+@some_variable ||= begin
+  return some_value if some_condition_is_met
+
+  do_something
+end
+```
+```ruby
+# good
+
+@some_variable ||= begin
+  if some_condition_is_met
+    some_value
+  else
+    do_something
+  end
+end
+
+# good
+
+some_variable = if some_condition_is_met
+                  return if another_condition_is_met
+
+                  some_value
+                else
+                  do_something
+                end
+```
+
 ## Lint/NonDeterministicRequireOrder
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
