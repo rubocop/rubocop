@@ -1342,8 +1342,9 @@ Lint/BigDecimalNew:
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
   Enabled: true
+  Safe: false
   VersionAdded: '0.50'
-  VersionChanged: '0.81'
+  VersionChanged: '0.83'
 
 Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
