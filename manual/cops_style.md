@@ -2712,6 +2712,10 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 
 ## Style/HashTransformKeys
 
+!!! Note
+
+    Required Ruby version: 2.5
+
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
 Pending | No | Yes (Unsafe) | 0.80 | -
