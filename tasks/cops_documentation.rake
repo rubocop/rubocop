@@ -14,8 +14,10 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     cops.with_department(department).sort!
   end
 
+  # rubocop:disable Metrics/AbcSize
   def cops_body(config, cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
+    content << required_ruby_version(cop)
     content << properties(cop.new(config))
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count.positive?
@@ -23,12 +25,24 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     content << references(config, cop)
     content
   end
+  # rubocop:enable Metrics/AbcSize
 
   def examples(examples_object)
     examples_object.each_with_object(h3('Examples').dup) do |example, content|
       content << h4(example.name) unless example.name == ''
       content << code_example(example)
     end
+  end
+
+  def required_ruby_version(cop)
+    return '' unless cop.respond_to?(:required_minimum_ruby_version)
+
+    <<~NOTE
+      !!! Note
+
+          Required Ruby version: #{cop.required_minimum_ruby_version}
+
+    NOTE
   end
 
   # rubocop:disable Metrics/MethodLength
