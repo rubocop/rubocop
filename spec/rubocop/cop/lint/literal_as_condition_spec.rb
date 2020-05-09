@@ -176,4 +176,36 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
       end
     RUBY
   end
+
+  it 'accepts `true` literal in `while`' do
+    expect_no_offenses(<<~RUBY)
+      while true
+        break if condition
+      end
+    RUBY
+  end
+
+  it 'accepts `true` literal in post-loop `while`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        break if condition
+      end while true
+    RUBY
+  end
+
+  it 'accepts `false` literal in `until`' do
+    expect_no_offenses(<<~RUBY)
+      until false
+        break if condition
+      end
+    RUBY
+  end
+
+  it 'accepts `false` literal in post-loop `until`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        break if condition
+      end until false
+    RUBY
+  end
 end

@@ -993,23 +993,24 @@ if/while/until.
 
 ```ruby
 # bad
-
 if 20
   do_something
 end
-```
-```ruby
-# bad
 
+# bad
 if some_var && true
   do_something
 end
-```
-```ruby
-# good
 
+# good
 if some_var && some_condition
   do_something
+end
+
+# good
+# When using a boolean value for an infinite loop.
+while true
+  break if condition
 end
 ```
 
