@@ -657,6 +657,10 @@ end
 
 ## Lint/ErbNewArguments
 
+!!! Note
+
+    Required Ruby version: 2.6
+
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.56 | -
