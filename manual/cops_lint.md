@@ -1424,13 +1424,12 @@ parenthesis.
 
 ```ruby
 # bad
+do_something (foo)
 
-puts (x + y)
-```
-```ruby
 # good
-
-puts(x + y)
+do_something(foo)
+do_something (2 + 3) * 4
+do_something (foo * bar).baz
 ```
 
 ### References
