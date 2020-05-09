@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for optional arguments to methods
-      # that do not come at the end of the argument list
+      # that do not come at the end of the argument list.
       #
       # @example
       #   # bad

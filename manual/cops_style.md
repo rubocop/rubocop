@@ -5024,10 +5024,10 @@ SuspiciousParamNames | `options`, `opts`, `args`, `params`, `parameters` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.33 | -
+Enabled | No | No | 0.33 | 0.83
 
 This cop checks for optional arguments to methods
-that do not come at the end of the argument list
+that do not come at the end of the argument list.
 
 ### Examples
 

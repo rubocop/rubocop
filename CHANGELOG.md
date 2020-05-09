@@ -39,6 +39,7 @@
 * [#4245](https://github.com/rubocop-hq/rubocop/issues/4245): **(Breaking)** Inspect all files given on command line unless `--only-recognized-file-types` is given. ([@jonas054][])
 * [#7390](https://github.com/rubocop-hq/rubocop/issues/7390): **(Breaking)** Enabling a cop overrides disabling its department. ([@jonas054][])
 * [#7936](https://github.com/rubocop-hq/rubocop/issues/7936): Mark `Lint/BooleanSymbol` as unsafe. ([@laurmurclar][])
+* [#7948](https://github.com/rubocop-hq/rubocop/pull/7948): Mark unsafe for `Style/OptionalArguments`. ([@koic][])
 
 ## 0.82.0 (2020-04-16)
 

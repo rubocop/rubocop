@@ -3435,7 +3435,9 @@ Style/OptionalArguments:
                  of the argument list.
   StyleGuide: '#optional-arguments'
   Enabled: true
+  Safe: false
   VersionAdded: '0.33'
+  VersionChanged: '0.83'
 
 Style/OrAssignment:
   Description: 'Recommend usage of double pipe equals (||=) where applicable.'
