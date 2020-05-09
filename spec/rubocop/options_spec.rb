@@ -43,6 +43,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --force-exclusion            Force excluding files specified in the
                                                configuration `Exclude` even if they are
                                                explicitly passed as arguments.
+                  --only-recognized-file-types Inspect files given on the command line only if
+                                               they are listed in AllCops/Include parameters
+                                               of user configuration or default configuration.
                   --ignore-parent-exclusion    Prevent from inheriting AllCops/Exclude from
                                                parent folders.
                   --force-default-config       Use default configuration even if configuration

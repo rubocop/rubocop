@@ -103,6 +103,7 @@ module RuboCop
     def add_configuration_options(opts)
       option(opts, '-c', '--config FILE')
       option(opts, '--force-exclusion')
+      option(opts, '--only-recognized-file-types')
       option(opts, '--ignore-parent-exclusion')
       option(opts, '--force-default-config')
       add_auto_gen_options(opts)
@@ -415,6 +416,9 @@ module RuboCop
       force_exclusion:                  ['Force excluding files specified in the',
                                          'configuration `Exclude` even if they are',
                                          'explicitly passed as arguments.'],
+      only_recognized_file_types:       ['Inspect files given on the command line only if',
+                                         'they are listed in AllCops/Include parameters',
+                                         'of user configuration or default configuration.'],
       ignore_disable_comments:          ['Run cops even when they are disabled locally',
                                          'with a comment.'],
       ignore_parent_exclusion:          ['Prevent from inheriting AllCops/Exclude from',
