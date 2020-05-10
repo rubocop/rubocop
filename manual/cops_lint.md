@@ -1449,7 +1449,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.12 | -
+Enabled | Yes | Yes  | 0.12 | 0.83
 
 Checks for space between the name of a called method and a left
 parenthesis.
