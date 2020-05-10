@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7951](https://github.com/rubocop-hq/rubocop/pull/7951): Include `rakefile` file by default. ([@jethrodaniel][])
 * [#7921](https://github.com/rubocop-hq/rubocop/pull/7921): Add new `Style/SlicingWithRange` cop. ([@zverok][])
 * [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
 * [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
@@ -4503,3 +4504,4 @@
 [@diogoosorio]: https://github.com/diogoosorio
 [@jeffcarbs]: https://github.com/jeffcarbs
 [@laurmurclar]: https://github.com/laurmurclar
+[@jethrodaniel]: https://github.com/jethrodaniel
