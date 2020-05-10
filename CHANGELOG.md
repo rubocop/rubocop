@@ -30,6 +30,7 @@
 * [#7094](https://github.com/rubocop-hq/rubocop/issues/7094): Clarify alignment in `Layout/MultilineOperationIndentation`. ([@jonas054][])
 * [#4245](https://github.com/rubocop-hq/rubocop/issues/4245): **(Breaking)** Inspect all files given on command line unless `--only-recognized-file-types` is given. ([@jonas054][])
 * [#7390](https://github.com/rubocop-hq/rubocop/issues/7390): **(Breaking)** Enabling a cop overrides disabling its department. ([@jonas054][])
+* [#7936](https://github.com/rubocop-hq/rubocop/issues/7936): Mark `Lint/BooleanSymbol` as unsafe. ([@laurmurclar][])
 
 ## 0.82.0 (2020-04-16)
 
@@ -4490,3 +4491,4 @@
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
 [@jeffcarbs]: https://github.com/jeffcarbs
+[@laurmurclar]: https://github.com/laurmurclar
