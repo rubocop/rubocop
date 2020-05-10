@@ -13,6 +13,7 @@
 * [#7937](https://github.com/rubocop-hq/rubocop/pull/7937): Support autocorrection for `Style/IfWithSemicolon`. ([@koic][])
 * [#3696](https://github.com/rubocop-hq/rubocop/issues/3696): Add `AllowComments` option to `Lint/EmptyWhen` cop. ([@koic][])
 * [#7910](https://github.com/rubocop-hq/rubocop/pull/7910): Support autocorrection for `Lint/ParenthesesAsGroupedExpression`. ([@koic][])
+* [#7925](https://github.com/rubocop-hq/rubocop/pull/7925): Support autocorrection for `Layout/ConditionPosition`. ([@koic][])
 
 ### Bug fixes
 

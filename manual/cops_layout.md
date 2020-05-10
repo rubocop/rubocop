@@ -713,7 +713,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | -
+Enabled | Yes | Yes  | 0.53 | 0.83
 
 This cop checks for conditions that are not on the same line as
 if/while/until.

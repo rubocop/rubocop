@@ -376,6 +376,7 @@ Layout/ConditionPosition:
   StyleGuide: '#same-line-condition'
   Enabled: true
   VersionAdded: '0.53'
+  VersionChanged: '0.83'
 
 Layout/DefEndAlignment:
   Description: 'Align ends corresponding to defs correctly.'
