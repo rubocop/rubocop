@@ -147,4 +147,30 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       end
     RUBY
   end
+
+  context 'when `AllowComments: true`' do
+    let(:cop_config) { { 'AllowComments' => true } }
+
+    it_behaves_like 'code without offense', <<~RUBY
+      case condition
+      when foo
+        do_something
+      when bar
+        # do nothing
+      end
+    RUBY
+  end
+
+  context 'when `AllowComments: false`' do
+    let(:cop_config) { { 'AllowComments' => false } }
+
+    it_behaves_like 'code with offense', <<~RUBY
+      case condition
+      when foo
+        do_something
+      when bar
+        # do nothing
+      end
+    RUBY
+  end
 end

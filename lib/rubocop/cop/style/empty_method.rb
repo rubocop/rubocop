@@ -90,10 +90,6 @@ module RuboCop
           compact_style? ? '; ' : "\n#{indent}"
         end
 
-        def comment_lines?(node)
-          processed_source[line_range(node)].any? { |line| comment_line?(line) }
-        end
-
         def compact?(node)
           node.single_line?
         end

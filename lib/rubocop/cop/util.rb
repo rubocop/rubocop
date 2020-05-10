@@ -17,6 +17,10 @@ module RuboCop
         line_source =~ /^\s*#/
       end
 
+      def comment_lines?(node)
+        processed_source[line_range(node)].any? { |line| comment_line?(line) }
+      end
+
       def line_range(node)
         node.first_line..node.last_line
       end
