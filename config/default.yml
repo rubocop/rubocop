@@ -1370,6 +1370,11 @@ Lint/DeprecatedClassMethods:
   Enabled: true
   VersionAdded: '0.19'
 
+Lint/DeprecatedOpenSSLConstant:
+  Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
+  Enabled: pending
+  VersionAdded: '0.84'
+
 Lint/DisjunctiveAssignmentInConstructor:
   Description: 'In constructor, plain assignment is preferred over disjunctive.'
   Enabled: true
