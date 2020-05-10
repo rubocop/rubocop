@@ -4,7 +4,7 @@
 
 ### New features
 
-* [#7921](https://github.com/rubocop-hq/rubocop/pull/7921): Add [Style/SlicingWithRange] cop. ([@zverok][])
+* [#7921](https://github.com/rubocop-hq/rubocop/pull/7921): Add new `Style/SlicingWithRange` cop. ([@zverok][])
 * [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
 * [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
 * [#7917](https://github.com/rubocop-hq/rubocop/pull/7917): Support autocorrection for `Lint/UselessAccessModifier`. ([@koic][])
