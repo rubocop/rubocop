@@ -107,6 +107,58 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
     RUBY
   end
 
+  it 'registers an offense when using `|| raise` in `then` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`work || raise('message') if something`) instead of wrapping the code inside a conditional expression.
+          work || raise('message')
+        else
+          test
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `|| raise` in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`test || raise('message') unless something`) instead of wrapping the code inside a conditional expression.
+          work
+        else
+          test || raise('message')
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `and return` in `then` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`work and return if something`) instead of wrapping the code inside a conditional expression.
+          work and return
+        else
+          test
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `and return` in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`test and return unless something`) instead of wrapping the code inside a conditional expression.
+          work
+        else
+          test and return
+        end
+      end
+    RUBY
+  end
+
   it 'accepts a method which body does not end with if / unless' do
     expect_no_offenses(<<~RUBY)
       def func
