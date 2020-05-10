@@ -651,7 +651,7 @@ AllowComments | `true` | Boolean
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
+Enabled | Yes | Yes  | 0.9 | 0.83
 
 This cop checks for *return* from an *ensure* block.
 Explicit return from an ensure block alters the control flow
