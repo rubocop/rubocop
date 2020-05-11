@@ -54,6 +54,7 @@ AllCops:
     - '**/Podfile'
     - '**/Puppetfile'
     - '**/Rakefile'
+    - '**/rakefile'
     - '**/Snapfile'
     - '**/Steepfile'
     - '**/Thorfile'
