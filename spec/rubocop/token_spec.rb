@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Token do
-  let(:processed_source) { RuboCop::ProcessedSource.new(source, ruby_version) }
-  let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
+  let(:processed_source) { parse_source(source) }
 
   let(:source) { <<~RUBY }
     # comment
