@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.83.0 (2020-05-11)
+
 ### New features
 
 * [#7951](https://github.com/rubocop-hq/rubocop/pull/7951): Include `rakefile` file by default. ([@jethrodaniel][])
