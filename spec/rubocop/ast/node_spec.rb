@@ -4,7 +4,7 @@ RSpec.describe RuboCop::AST::Node do
   let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 
   describe '#value_used?' do
-    before do
+    before :all do
       module RuboCop
         module AST
           class Node
