@@ -1588,11 +1588,13 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.19 | -
+Enabled | Yes | No | 0.19 | 0.84
 
-This cop checks for uses of double negation (!!) to convert something
-to a boolean value. As this is both cryptic and usually redundant, it
-should be avoided.
+This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
+
+When using `EnforcedStyle: allowed_in_returns`, allow double nagation in contexts
+that use boolean as a return value. When using `EnforcedStyle: forbidden`, double nagation
+should be forbidden always.
 
 Please, note that when something is a boolean value
 !!something and !something.nil? are not the same thing.
@@ -1608,6 +1610,28 @@ this is rarely a problem in practice.
 # good
 !something.nil?
 ```
+#### EnforcedStyle: allowed_in_returns (default)
+
+```ruby
+# good
+def foo?
+  !!return_value
+end
+```
+#### EnforcedStyle: forbidden
+
+```ruby
+# bad
+def foo?
+  !!return_value
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `allowed_in_returns` | `allowed_in_returns`, `forbidden`
 
 ### References
 
