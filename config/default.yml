@@ -2706,6 +2706,11 @@ Style/DoubleNegation:
   StyleGuide: '#no-bang-bang'
   Enabled: true
   VersionAdded: '0.19'
+  VersionChanged: '0.84'
+  EnforcedStyle: allowed_in_returns
+  SupportedStyles:
+    - allowed_in_returns
+    - forbidden
 
 Style/EachForSimpleLoop:
   Description: >-
