@@ -41,9 +41,7 @@ module RuboCop
 
         def same_name_assignment?(node)
           any_assignment?(node) do |asgn_node|
-            if asgn_node.masgn_type?
-              next variable_in_mass_assignment?(node.method_name, asgn_node)
-            end
+            next variable_in_mass_assignment?(node.method_name, asgn_node) if asgn_node.masgn_type?
 
             asgn_node.loc.name.source == node.method_name.to_s
           end

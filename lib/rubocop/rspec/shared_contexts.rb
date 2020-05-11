@@ -42,9 +42,7 @@ end
 RSpec.shared_context 'config', :config do
   let(:config) do
     # Module#<
-    unless described_class < RuboCop::Cop::Cop
-      raise '`config` must be used in `describe SomeCopClass do .. end`'
-    end
+    raise '`config` must be used in `describe SomeCopClass do .. end`' unless described_class < RuboCop::Cop::Cop
 
     hash = { 'AllCops' => { 'TargetRubyVersion' => ruby_version } }
     hash['AllCops']['TargetRailsVersion'] = rails_version if rails_version

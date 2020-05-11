@@ -71,9 +71,7 @@ module RuboCop
         end
       end
 
-      if disabled_by_default
-        config = handle_disabled_by_default(config, default_configuration)
-      end
+      config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
 
       opts = { inherit_mode: config['inherit_mode'] || {},
                unset_nil: unset_nil }
@@ -117,9 +115,7 @@ module RuboCop
         # internal setting that's not documented in the manual. It will cause a
         # cop to be enabled later, when logic surrounding enabled/disabled it
         # run, even though its department is disabled.
-        if derived_hash[key]['Enabled']
-          derived_hash[key]['Enabled'] = 'override_department'
-        end
+        derived_hash[key]['Enabled'] = 'override_department' if derived_hash[key]['Enabled']
       end
     end
 

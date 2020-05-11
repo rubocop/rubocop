@@ -312,9 +312,7 @@ module RuboCop
           # ignore pseudo-assignments without rhs in for nodes
           return if node.parent&.for_type?
 
-          if assignment.begin_type? && assignment.children.one?
-            assignment, = *assignment
-          end
+          assignment, = *assignment if assignment.begin_type? && assignment.children.one?
 
           assignment
         end

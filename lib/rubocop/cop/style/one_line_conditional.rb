@@ -49,13 +49,9 @@ module RuboCop
         def replacement(node)
           return to_ternary(node) unless node.parent
 
-          if %i[and or].include?(node.parent.type)
-            return "(#{to_ternary(node)})"
-          end
+          return "(#{to_ternary(node)})" if %i[and or].include?(node.parent.type)
 
-          if node.parent.send_type? && node.parent.operator_method?
-            return "(#{to_ternary(node)})"
-          end
+          return "(#{to_ternary(node)})" if node.parent.send_type? && node.parent.operator_method?
 
           to_ternary(node)
         end

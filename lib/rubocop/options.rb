@@ -275,12 +275,8 @@ module RuboCop
         raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot ' \
                                    'be used with --only.'
       end
-      if except_syntax?
-        raise OptionArgumentError, 'Syntax checking cannot be turned off.'
-      end
-      unless boolean_or_empty_cache?
-        raise OptionArgumentError, '-C/--cache argument must be true or false'
-      end
+      raise OptionArgumentError, 'Syntax checking cannot be turned off.' if except_syntax?
+      raise OptionArgumentError, '-C/--cache argument must be true or false' unless boolean_or_empty_cache?
 
       if display_only_fail_level_offenses_with_autocorrect?
         raise OptionArgumentError, '--autocorrect cannot be used with ' \
@@ -381,7 +377,6 @@ module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
-    # rubocop:disable Layout/LineLength
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
     TEXT = {
@@ -468,6 +463,5 @@ module RuboCop
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
     }.freeze
-    # rubocop:enable Layout/LineLength
   end
 end

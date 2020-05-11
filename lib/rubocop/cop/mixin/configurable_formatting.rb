@@ -18,9 +18,7 @@ module RuboCop
 
       def report_opposing_styles(node, name)
         alternative_styles.each do |alternative|
-          if valid_name?(node, name, alternative)
-            return unexpected_style_detected(alternative)
-          end
+          return unexpected_style_detected(alternative) if valid_name?(node, name, alternative)
         end
       end
 

@@ -35,9 +35,7 @@ module RuboCop
           node_expr = node.source_range
           attr_expr = attr_name.source_range
 
-          if setter&.boolean_type?
-            remove = range_between(attr_expr.end_pos, node_expr.end_pos)
-          end
+          remove = range_between(attr_expr.end_pos, node_expr.end_pos) if setter&.boolean_type?
 
           lambda do |corrector|
             corrector.replace(node.loc.selector, replacement_method(node))

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module RuboCop
   module Cop
     module Style
@@ -210,9 +209,7 @@ module RuboCop
         end
 
         def message(node)
-          if braces_required_method?(node.method_name)
-            return braces_required_message(node)
-          end
+          return braces_required_message(node) if braces_required_method?(node.method_name)
 
           case style
           when :line_count_based    then line_count_based_message(node)
@@ -276,9 +273,7 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity
 
         def proper_block_style?(node)
-          if special_method?(node.method_name)
-            return special_method_proper_block_style?(node)
-          end
+          return special_method_proper_block_style?(node) if special_method?(node.method_name)
 
           case style
           when :line_count_based    then line_count_based_block_style?(node)
@@ -387,4 +382,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

@@ -25,9 +25,7 @@ module RuboCop
       end
 
       def check_alignment(items, base_column = nil)
-        unless items.empty?
-          base_column ||= display_column(items.first.source_range)
-        end
+        base_column ||= display_column(items.first.source_range) unless items.empty?
 
         each_bad_alignment(items, base_column) do |current|
           expr = current.source_range

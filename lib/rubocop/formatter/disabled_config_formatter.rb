@@ -59,9 +59,7 @@ module RuboCop
       def command
         command = 'rubocop --auto-gen-config'
 
-        if @options[:auto_gen_only_exclude]
-          command += ' --auto-gen-only-exclude'
-        end
+        command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
 
         if @exclude_limit_option
           command +=
@@ -70,9 +68,7 @@ module RuboCop
         end
         command += ' --no-offense-counts' if @options[:no_offense_counts]
 
-        if @options[:no_auto_gen_timestamp]
-          command += ' --no-auto-gen-timestamp'
-        end
+        command += ' --no-auto-gen-timestamp' if @options[:no_auto_gen_timestamp]
 
         command
       end
@@ -116,14 +112,10 @@ module RuboCop
       end
 
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
-        if @show_offense_counts
-          output_buffer.puts "# Offense count: #{offense_count}"
-        end
+        output_buffer.puts "# Offense count: #{offense_count}" if @show_offense_counts
 
         cop_class = Cop::Cop.registry.find_by_cop_name(cop_name)
-        if cop_class&.new&.support_autocorrect?
-          output_buffer.puts '# Cop supports --auto-correct.'
-        end
+        output_buffer.puts '# Cop supports --auto-correct.' if cop_class&.new&.support_autocorrect?
 
         default_cfg = default_config(cop_name)
         return unless default_cfg

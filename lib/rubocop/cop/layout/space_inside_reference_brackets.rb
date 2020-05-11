@@ -72,9 +72,7 @@ module RuboCop
 
           right_token = closing_bracket(tokens, left_token)
 
-          if empty_brackets?(left_token, right_token)
-            return empty_offenses(node, left_token, right_token, EMPTY_MSG)
-          end
+          return empty_offenses(node, left_token, right_token, EMPTY_MSG) if empty_brackets?(left_token, right_token)
 
           if style == :no_space
             no_space_offenses(node, left_token, right_token, MSG)
@@ -130,9 +128,7 @@ module RuboCop
           tokens[i..-1].each do |token|
             inner_left_brackets_needing_closure += 1 if token.left_bracket?
             inner_left_brackets_needing_closure -= 1 if token.right_bracket?
-            if inner_left_brackets_needing_closure.zero? && token.right_bracket?
-              return token
-            end
+            return token if inner_left_brackets_needing_closure.zero? && token.right_bracket?
           end
         end
 

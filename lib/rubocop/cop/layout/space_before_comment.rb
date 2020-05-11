@@ -20,9 +20,7 @@ module RuboCop
             next unless token2.comment?
             next unless token1.line == token2.line
 
-            if token1.pos.end == token2.pos.begin
-              add_offense(token2.pos, location: token2.pos)
-            end
+            add_offense(token2.pos, location: token2.pos) if token1.pos.end == token2.pos.begin
           end
         end
 

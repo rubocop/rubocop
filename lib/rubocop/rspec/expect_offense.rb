@@ -88,9 +88,7 @@ module RuboCop
         @processed_source = parse_source(expected_annotations.plain_source,
                                          file)
 
-        unless @processed_source.valid_syntax?
-          raise 'Error parsing example code'
-        end
+        raise 'Error parsing example code' unless @processed_source.valid_syntax?
 
         _investigate(cop, @processed_source)
         actual_annotations =
@@ -101,9 +99,7 @@ module RuboCop
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def expect_correction(correction)
-        unless @processed_source
-          raise '`expect_correction` must follow `expect_offense`'
-        end
+        raise '`expect_correction` must follow `expect_offense`' unless @processed_source
 
         corrector =
           RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
@@ -113,9 +109,7 @@ module RuboCop
       end
 
       def expect_no_corrections
-        unless @processed_source
-          raise '`expect_no_corrections` must follow `expect_offense`'
-        end
+        raise '`expect_no_corrections` must follow `expect_offense`' unless @processed_source
 
         return if cop.corrections.empty?
 

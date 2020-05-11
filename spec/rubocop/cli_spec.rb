@@ -209,12 +209,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
       src = ['# rubocop:disable all',
-             '#' * 90,
+             '#' * 130,
              'x(123456)',
              'y("123")',
              'def func',
              '  # rubocop: enable Layout/LineLength,Style/StringLiterals',
-             '  ' + '#' * 93,
+             '  ' + '#' * 130,
              '  x(123456)',
              '  y("123")',
              'end']
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string).to eq(<<~RESULT)
-        #{abs('example.rb')}:7:81: C: Layout/LineLength: Line is too long. [95/80]
+        #{abs('example.rb')}:7:121: C: Layout/LineLength: Line is too long. [132/120]
         #{abs('example.rb')}:9:5: C: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RESULT
     end
@@ -292,13 +292,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                    '',
                    '# rubocop:disable Style/LineLength,' \
                    'Style/NumericLiterals,Style/StringLiterals',
-                   '#' * 90,
+                   '#' * 130,
                    'x(123456)',
                    'y("123")',
                    'def func',
                    '  # rubocop: enable Layout/LineLength, ' \
                    'Style/StringLiterals',
-                   '  ' + '#' * 93,
+                   '  ' + '#' * 130,
                    '  x(123456)',
                    '  y("123")',
                    '  # rubocop: enable Style/NumericLiterals',
@@ -312,7 +312,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # 2 real cops was enabled, but only 1 had been disabled correctly
       expect($stdout.string).to eq(<<~RESULT)
         #{abs('example.rb')}:8:21: W: Lint/RedundantCopEnableDirective: Unnecessary enabling of Layout/LineLength.
-        #{abs('example.rb')}:9:81: C: Layout/LineLength: Line is too long. [95/80]
+        #{abs('example.rb')}:9:121: C: Layout/LineLength: Line is too long. [132/120]
         #{abs('example.rb')}:11:5: C: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RESULT
     end
@@ -327,14 +327,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb',
                   ['# frozen_string_literal: true',
                    '',
-                   'a' * 90 + ' # rubocop:disable Layout/LineLength',
-                   '#' * 95,
+                   'a' * 130 + ' # rubocop:disable Layout/LineLength',
+                   '#' * 130,
                    'y("123", 123456) # rubocop:disable Style/StringLiterals,' \
                    'Style/NumericLiterals'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(<<~RESULT)
-          #{abs('example.rb')}:4:81: C: Layout/LineLength: Line is too long. [95/80]
+          #{abs('example.rb')}:4:121: C: Layout/LineLength: Line is too long. [130/120]
       RESULT
     end
 
@@ -343,8 +343,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# frozen_string_literal: true',
                      '',
-                     'a' * 90 + ' # rubocop:disable LineLength',
-                     '#' * 95,
+                     'a' * 130 + ' # rubocop:disable LineLength',
+                     '#' * 130,
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stderr.string).to eq(<<~OUTPUT)
@@ -353,8 +353,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
-            #{abs('example.rb')}:3:110: C: Migration/DepartmentName: Department name is missing.
-            #{abs('example.rb')}:4:81: C: Layout/LineLength: Line is too long. [95/80]
+            #{abs('example.rb')}:3:150: C: Migration/DepartmentName: Department name is missing.
+            #{abs('example.rb')}:4:121: C: Layout/LineLength: Line is too long. [130/120]
             #{abs('example.rb')}:5:28: C: Migration/DepartmentName: Department name is missing.
         RESULT
       end
@@ -365,7 +365,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# frozen_string_literal: true',
                      '',
-                     '#' * 95,
+                     '#' * 130,
                      '# rubocop:disable all',
                      'a' * 10 + ' ' \
                      '# rubocop:disable Layout/LineLength,Metrics/ClassLength',
@@ -374,7 +374,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~RESULT)
-          #{abs('example.rb')}:3:81: C: Layout/LineLength: Line is too long. [95/80]
+          #{abs('example.rb')}:3:121: C: Layout/LineLength: Line is too long. [130/120]
           #{abs('example.rb')}:4:1: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
           #{abs('example.rb')}:5:12: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Layout/LineLength`, `Metrics/ClassLength`.
           #{abs('example.rb')}:6:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
@@ -394,7 +394,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             create_file('example.rb',
                         ['# frozen_string_literal: true',
                          '',
-                         '#' * 95,
+                         '#' * 130,
                          '# rubocop:disable all',
                          'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
                          'y(123) # rubocop:disable all'])
@@ -406,7 +406,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             OUTPUT
             expect($stdout.string)
               .to eq(<<~RESULT)
-                #{abs('example.rb')}:3:81: C: Layout/LineLength: Line is too long. [95/80]
+                #{abs('example.rb')}:3:121: C: Layout/LineLength: Line is too long. [130/120]
               RESULT
           end
         end
@@ -1254,18 +1254,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file("example/#{dir}/example1.rb", <<~RUBY)
           # frozen_string_literal: true
 
-          #{'#' * 90}
+          #{'#' * 130}
         RUBY
       end
       create_file('example/src/.rubocop.yml', <<~YAML)
         Layout/LineLength:
           Enabled: true
-          Max: 100
+          Max: 140
       YAML
       expect(cli.run(%w[--format simple example])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         == example/lib/example1.rb ==
-        C:  3: 81: Layout/LineLength: Line is too long. [90/80]
+        C:  3:121: Layout/LineLength: Line is too long. [130/120]
 
         2 files inspected, 1 offense detected
       RESULT
@@ -1298,7 +1298,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file("example/#{dir}/example1.rb", <<~RUBY)
           # frozen_string_literal: true
 
-          #{'#' * 90}
+          #{'#' * 130}
         RUBY
       end
 
@@ -1306,7 +1306,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example/etc/.dot/example1.rb', <<~RUBY)
         # frozen_string_literal: true
 
-        #{'#' * 90}
+        #{'#' * 130}
       RUBY
 
       create_file('example/.rubocop.yml', <<~YAML)
@@ -1321,7 +1321,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stderr.string).to eq('')
       expect($stdout.string).to eq(<<~RESULT)
         == example/tmp/test/example1.rb ==
-        C:  3: 81: Layout/LineLength: Line is too long. [90/80]
+        C:  3:121: Layout/LineLength: Line is too long. [130/120]
 
         1 file inspected, 1 offense detected
       RESULT
@@ -1371,7 +1371,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                   ['inherit_from: non_existent.yml'])
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
-                  '#' * 90)
+                  '#' * 130)
 
       create_file('.rubocop.yml', <<~YAML)
         AllCops:
@@ -1514,7 +1514,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('example/example1.rb', <<~RUBY)
           # frozen_string_literal: true
 
-          def method(foo, bar, qux, fred, arg5, f) end #{'#' * 45}
+          def method(foo, bar, qux, fred, arg5, f) end #{'#' * 85}
         RUBY
 
         create_file('rubocop.yml', <<~YAML)
@@ -1530,7 +1530,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  3: 11: Metrics/ParameterLists: Avoid parameter lists longer than 5 parameters. [6/5]
           C:  3: 39: Naming/MethodParameterName: Method parameter must be at least 3 characters long.
           C:  3: 46: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
-          E:  3: 81: Layout/LineLength: Line is too long. [90/80]
+          E:  3:121: Layout/LineLength: Line is too long. [130/120]
 
           1 file inspected, 4 offenses detected
         RESULT
@@ -1542,7 +1542,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     include_examples 'specified Severity', 'Layout'
 
     it 'fails when a configuration file specifies an invalid Severity' do
-      create_file('example/example1.rb', '#' * 90)
+      create_file('example/example1.rb', '#' * 130)
 
       create_file('rubocop.yml', <<~YAML)
         Layout/LineLength:
