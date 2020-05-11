@@ -13,6 +13,7 @@
 * [#7962](https://github.com/rubocop-hq/rubocop/issues/7962): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when heredoc has a space between the same string as the method name and `(`. ([@koic][])
 * [#7967](https://github.com/rubocop-hq/rubocop/pull/7967): `Style/SlicingWithRange` cop now supports any expression as its first index. ([@zverok][])
 * [#7972](https://github.com/rubocop-hq/rubocop/issues/7972): Fix an incorrect autocrrect for `Style/HashSyntax` when using a return value uses `return`. ([@koic][])
+* [#7985](https://github.com/rubocop-hq/rubocop/pull/7985): Add `EnforcedStyle` for `Style/DoubleNegation` cop and allow double nagation in contexts that use boolean as a return value. ([@koic][])
 
 ### Changes
 
