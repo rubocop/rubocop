@@ -47,9 +47,7 @@ module RuboCop
           @assignments.reverse_each do |assignment|
             next if consumed_branches.include?(assignment.branch)
 
-            unless assignment.run_exclusively_with?(reference)
-              assignment.reference!(node)
-            end
+            assignment.reference!(node) unless assignment.run_exclusively_with?(reference)
 
             # Modifier if/unless conditions are special. Assignments made in
             # them do not put the assigned variable in scope to the left of the
@@ -60,9 +58,7 @@ module RuboCop
 
             break if !assignment.branch || assignment.branch == reference.branch
 
-            unless assignment.branch.may_run_incompletely?
-              consumed_branches << assignment.branch
-            end
+            consumed_branches << assignment.branch unless assignment.branch.may_run_incompletely?
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity

@@ -78,9 +78,7 @@ module RuboCop
           return unless node.square_brackets?
 
           left, right = array_brackets(node)
-          if empty_brackets?(left, right)
-            return empty_offenses(node, left, right, EMPTY_MSG)
-          end
+          return empty_offenses(node, left, right, EMPTY_MSG) if empty_brackets?(left, right)
 
           start_ok = next_to_newline?(node, left)
           end_ok = node.single_line? ? false : end_has_own_line?(right)

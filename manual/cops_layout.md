@@ -3000,7 +3000,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.25 | 0.78
+Enabled | Yes | Yes  | 0.25 | 1.0
 
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
@@ -3063,7 +3063,7 @@ bar: "0000000000", baz: "0000000000"}
 Name | Default value | Configurable values
 --- | --- | ---
 AutoCorrect | `false` | Boolean
-Max | `80` | Integer
+Max | `120` | Integer
 AllowHeredoc | `true` | Boolean
 AllowURI | `true` | Boolean
 URISchemes | `http`, `https` | Array

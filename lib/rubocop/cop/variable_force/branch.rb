@@ -81,9 +81,7 @@ module RuboCop
           end
 
           def each_ancestor(include_self: false, &block)
-            unless block_given?
-              return to_enum(__method__, include_self: include_self)
-            end
+            return to_enum(__method__, include_self: include_self) unless block_given?
 
             yield self if include_self
             scan_ancestors(&block)
@@ -111,9 +109,7 @@ module RuboCop
             return false if may_jump_to_other_branch?
 
             other.each_ancestor(include_self: true) do |other_ancestor|
-              if control_node.equal?(other_ancestor.control_node)
-                return !child_node.equal?(other_ancestor.child_node)
-              end
+              return !child_node.equal?(other_ancestor.child_node) if control_node.equal?(other_ancestor.control_node)
             end
 
             if parent

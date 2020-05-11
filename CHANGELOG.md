@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#7952](https://github.com/rubocop-hq/rubocop/pull/7952): **(Breaking)** Change the max line length of `Layout/LineLength` to 120 by default. ([@koic][])
+
 ## 0.83.0 (2020-05-11)
 
 ### New features

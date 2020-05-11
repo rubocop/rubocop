@@ -125,9 +125,7 @@ module RuboCop
 
         def check_right_bracket(right_bracket, left_bracket, left_parenthesis)
           # if the right bracket is on the same line as the last value, accept
-          if /\S/.match?(right_bracket.source_line[0...right_bracket.column])
-            return
-          end
+          return if /\S/.match?(right_bracket.source_line[0...right_bracket.column])
 
           expected_column = base_column(left_bracket, left_parenthesis)
           @column_delta = expected_column - right_bracket.column

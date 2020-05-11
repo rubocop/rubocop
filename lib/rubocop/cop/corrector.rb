@@ -85,9 +85,7 @@ module RuboCop
       def insert_before(node_or_range, content)
         range = to_range(node_or_range)
         # TODO: Fix Cops using bad ranges instead
-        if range.end_pos > @source_buffer.source.size
-          range = range.with(end_pos: @source_buffer.source.size)
-        end
+        range = range.with(end_pos: @source_buffer.source.size) if range.end_pos > @source_buffer.source.size
 
         @source_rewriter.insert_before(range, content)
       end

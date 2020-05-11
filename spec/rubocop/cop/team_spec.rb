@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when Parser reports non-fatal warning for the file' do
       before do
-        create_file(file_path, ['#' * 90, 'puts *test'])
+        create_file(file_path, ['#' * 130, 'puts *test'])
       end
 
       let(:cop_names) { offenses.map(&:cop_name) }

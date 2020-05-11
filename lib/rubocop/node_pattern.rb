@@ -285,9 +285,7 @@ module RuboCop
       def repeated_generator(expr, captured, accumulate)
         with_temp_variables do |child|
           lambda do |range|
-            if range.begin == SEQ_HEAD_INDEX
-              fail_due_to 'repeated pattern at beginning of sequence'
-            end
+            fail_due_to 'repeated pattern at beginning of sequence' if range.begin == SEQ_HEAD_INDEX
             REPEATED_TEMPLATE.result(binding)
           end
         end
@@ -463,9 +461,7 @@ module RuboCop
           @captures = captures_before
           yield
           captures_after ||= @captures
-          if captures_after != @captures
-            fail_due_to("each #{what} must have same # of captures")
-          end
+          fail_due_to("each #{what} must have same # of captures") if captures_after != @captures
         end
       end
 
@@ -737,9 +733,7 @@ module RuboCop
       end
 
       def with_seq_head_context(code)
-        if code.include?(SEQ_HEAD_GUARD)
-          fail_due_to('parentheses at sequence head')
-        end
+        fail_due_to('parentheses at sequence head') if code.include?(SEQ_HEAD_GUARD)
 
         code.gsub CUR_ELEMENT, "#{CUR_NODE}.type"
       end

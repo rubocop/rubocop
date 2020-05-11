@@ -80,9 +80,7 @@ module RuboCop
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
-      if files.size > 1 && cached_run?
-        ResultCache.cleanup(@config_store, @options[:debug])
-      end
+      ResultCache.cleanup(@config_store, @options[:debug]) if files.size > 1 && cached_run?
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
@@ -206,9 +204,7 @@ module RuboCop
     end
 
     def file_finished(file, offenses)
-      if @options[:display_only_fail_level_offenses]
-        offenses = offenses.select { |o| considered_failure?(o) }
-      end
+      offenses = offenses.select { |o| considered_failure?(o) } if @options[:display_only_fail_level_offenses]
       formatter_set.file_finished(file, offenses)
     end
 
@@ -288,9 +284,7 @@ module RuboCop
     def check_for_infinite_loop(processed_source, offenses)
       checksum = processed_source.checksum
 
-      if @processed_sources.include?(checksum)
-        raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
-      end
+      raise InfiniteCorrectionLoop.new(processed_source.path, offenses) if @processed_sources.include?(checksum)
 
       @processed_sources << checksum
     end

@@ -199,9 +199,7 @@ module RuboCop
             # Ruby allows no space between the question mark and parentheses.
             # If we remove the parentheses, we need to add a space or we'll
             # generate invalid code.
-            unless whitespace_after?(condition)
-              corrector.insert_after(condition.loc.end, ' ')
-            end
+            corrector.insert_after(condition.loc.end, ' ') unless whitespace_after?(condition)
           end
         end
 

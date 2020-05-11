@@ -167,9 +167,7 @@ module RuboCop
           checked_variable, matching_receiver, method =
             extract_common_parts(receiver, variable)
 
-          if receiver && LOGIC_JUMP_KEYWORDS.include?(receiver.type)
-            matching_receiver = nil
-          end
+          matching_receiver = nil if receiver && LOGIC_JUMP_KEYWORDS.include?(receiver.type)
 
           [checked_variable, matching_receiver, receiver, method]
         end
@@ -221,9 +219,7 @@ module RuboCop
           return true if unsafe_method?(method)
 
           method.each_ancestor(:send).any? do |ancestor|
-            unless config.for_cop('Lint/SafeNavigationChain')['Enabled']
-              break true
-            end
+            break true unless config.for_cop('Lint/SafeNavigationChain')['Enabled']
 
             break true if unsafe_method?(ancestor)
             break true if nil_methods.include?(ancestor.method_name)

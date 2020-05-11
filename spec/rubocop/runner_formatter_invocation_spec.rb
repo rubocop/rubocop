@@ -12,8 +12,8 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     let(:output) { $stdout.string }
 
     before do
-      create_file('2_offense.rb', '#' * 90)
-      create_file('5_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 90])
+      create_file('2_offense.rb', '#' * 130)
+      create_file('5_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 130])
       create_file('no_offense.rb', '# frozen_string_literal: true')
 
       allow(RuboCop::Formatter::SimpleTextFormatter)

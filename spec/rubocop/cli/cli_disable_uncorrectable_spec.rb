@@ -160,7 +160,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             Max: 1
         YAML
         create_file('example.rb', <<~RUBY)
-          def long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
+          def long_long_long_long_long_long_long_long_long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
             puts 'line 1'
             puts 'line 2'
           end
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # rubocop:todo Metrics/MethodLength
           # frozen_string_literal: true
 
-          def long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
+          def long_long_long_long_long_long_long_long_long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
             puts 'line 1'
             puts 'line 2'
           end

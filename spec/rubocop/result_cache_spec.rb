@@ -164,9 +164,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         before do
           # Avoid getting "symlink() function is unimplemented on this
           # machine" on Windows.
-          if RuboCop::Platform.windows?
-            skip 'Symlinks not implemented on Windows'
-          end
+          skip 'Symlinks not implemented on Windows' if RuboCop::Platform.windows?
 
           cache.save(offenses)
           result = Dir["#{cache_root}/*/*"]

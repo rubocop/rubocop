@@ -31,9 +31,7 @@ module RuboCop
       # @api private
       def initialize(name_or_code)
         name = Severity.name_from_code(name_or_code)
-        unless NAMES.include?(name)
-          raise ArgumentError, "Unknown severity: #{name}"
-        end
+        raise ArgumentError, "Unknown severity: #{name}" unless NAMES.include?(name)
 
         @name = name.freeze
         freeze

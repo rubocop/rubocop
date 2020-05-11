@@ -88,9 +88,7 @@ module RuboCop
         # or redundant edits, we only mark one offense at a time.
         return true if contained_by_breakable_collection_on_same_line?(node)
 
-        if contained_by_multiline_collection_that_could_be_broken_up?(node)
-          return true
-        end
+        return true if contained_by_multiline_collection_that_could_be_broken_up?(node)
 
         false
       end
@@ -133,17 +131,13 @@ module RuboCop
       def contained_by_multiline_collection_that_could_be_broken_up?(node)
         node.each_ancestor.find do |ancestor|
           if ancestor.hash_type? || ancestor.array_type?
-            if breakable_collection?(ancestor, ancestor.children)
-              return children_could_be_broken_up?(ancestor.children)
-            end
+            return children_could_be_broken_up?(ancestor.children) if breakable_collection?(ancestor, ancestor.children)
           end
 
           next unless ancestor.send_type?
 
           args = process_args(ancestor.arguments)
-          if breakable_collection?(ancestor, args)
-            return children_could_be_broken_up?(args)
-          end
+          return children_could_be_broken_up?(args) if breakable_collection?(ancestor, args)
         end
 
         false
@@ -175,9 +169,7 @@ module RuboCop
         # ...then each key/value pair is treated as a method 'argument'
         # when determining where line breaks should appear.
         if (last_arg = args.last)
-          if last_arg.hash_type? && !last_arg.braces?
-            args = args.concat(args.pop.children)
-          end
+          args = args.concat(args.pop.children) if last_arg.hash_type? && !last_arg.braces?
         end
         args
       end

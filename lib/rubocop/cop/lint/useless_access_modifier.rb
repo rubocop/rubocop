@@ -227,9 +227,7 @@ module RuboCop
             add_offense(node, message: format(MSG, current: cur_vis))
           else
             # was the previous modifier never applied to any defs?
-            if unused
-              add_offense(unused, message: format(MSG, current: cur_vis))
-            end
+            add_offense(unused, message: format(MSG, current: cur_vis)) if unused
             # once we have already warned about a certain modifier, don't
             # warn again even if it is never applied to any method defs
             unused = node

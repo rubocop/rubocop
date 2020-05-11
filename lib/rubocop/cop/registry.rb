@@ -94,9 +94,7 @@ module RuboCop
       # @return [String] Qualified cop name
       def qualified_cop_name(name, path, shall_warn = true)
         badge = Badge.parse(name)
-        if shall_warn && department_missing?(badge, name)
-          print_warning(name, path)
-        end
+        print_warning(name, path) if shall_warn && department_missing?(badge, name)
         return name if registered?(badge)
 
         potential_badges = qualify_badge(badge)
@@ -114,9 +112,7 @@ module RuboCop
 
       def print_warning(name, path)
         message = "#{path}: Warning: no department given for #{name}."
-        if path.end_with?('.rb')
-          message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.'
-        end
+        message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.' if path.end_with?('.rb')
         warn message
       end
 
