@@ -10,9 +10,7 @@ module RuboCop
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
 
-            if ternary_condition?(node) && next_char_is_question_mark?(node)
-              corrector.insert_after(node.loc.end, ' ')
-            end
+            corrector.insert_after(node.loc.end, ' ') if ternary_condition?(node) && next_char_is_question_mark?(node)
           end
         end
 

@@ -86,9 +86,7 @@ module RuboCop
 
       excludes = for_all_cops['Exclude'] ||= []
       highest_config.for_all_cops['Exclude'].each do |path|
-        unless path.is_a?(Regexp) || absolute?(path)
-          path = File.join(File.dirname(highest_config.loaded_path), path)
-        end
+        path = File.join(File.dirname(highest_config.loaded_path), path) unless path.is_a?(Regexp) || absolute?(path)
         excludes << path unless excludes.include?(path)
       end
     end

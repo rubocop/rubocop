@@ -152,9 +152,7 @@ module RuboCop
       def process_variable_assignment(node)
         name = node.children.first
 
-        unless variable_table.variable_exist?(name)
-          variable_table.declare_variable(name, node)
-        end
+        variable_table.declare_variable(name, node) unless variable_table.variable_exist?(name)
 
         # Need to scan rhs before assignment so that we can mark previous
         # assignments as referenced if rhs has referencing to the variable
@@ -211,9 +209,7 @@ module RuboCop
 
         name = asgn_node.children.first
 
-        unless variable_table.variable_exist?(name)
-          variable_table.declare_variable(name, asgn_node)
-        end
+        variable_table.declare_variable(name, asgn_node) unless variable_table.variable_exist?(name)
 
         # The following statements:
         #
@@ -369,9 +365,7 @@ module RuboCop
           AssignmentReference.new(node)
         when *OPERATOR_ASSIGNMENT_TYPES
           asgn_node = node.children.first
-          if asgn_node.lvasgn_type?
-            VariableReference.new(asgn_node.children.first)
-          end
+          VariableReference.new(asgn_node.children.first) if asgn_node.lvasgn_type?
         end
       end
 

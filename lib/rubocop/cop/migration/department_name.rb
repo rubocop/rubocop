@@ -29,9 +29,7 @@ module RuboCop
 
               break if contain_plain_comment?(trimmed_name)
 
-              unless valid_content_token?(trimmed_name)
-                check_cop_name(trimmed_name, comment, offset)
-              end
+              check_cop_name(trimmed_name, comment, offset) unless valid_content_token?(trimmed_name)
 
               offset += name.length
             end
@@ -43,9 +41,7 @@ module RuboCop
           cop_name = range.source
           qualified_cop_name = Cop.registry.qualified_cop_name(cop_name,
                                                                nil, shall_warn)
-          unless qualified_cop_name.include?('/')
-            qualified_cop_name = qualified_legacy_cop_name(cop_name)
-          end
+          qualified_cop_name = qualified_legacy_cop_name(cop_name) unless qualified_cop_name.include?('/')
 
           ->(corrector) { corrector.replace(range, qualified_cop_name) }
         end

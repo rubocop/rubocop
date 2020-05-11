@@ -68,9 +68,7 @@ module RuboCop
 
         def first_argument_unparenthesized?(node)
           parent = node.parent
-          unless parent && %i[send super zsuper].include?(parent.type)
-            return false
-          end
+          return false unless parent && %i[send super zsuper].include?(parent.type)
 
           node.object_id == parent.arguments.first.object_id &&
             !parentheses?(node.parent)

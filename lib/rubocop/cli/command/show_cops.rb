@@ -42,18 +42,14 @@ module RuboCop
                             selected_cops_of_department(registry, department)
                           end
 
-          if show_all
-            puts "# Department '#{department}' (#{selected_cops.length}):"
-          end
+          puts "# Department '#{department}' (#{selected_cops.length}):" if show_all
 
           print_cop_details(selected_cops)
         end
 
         def print_cop_details(cops)
           cops.each do |cop|
-            if cop.new(@config).support_autocorrect?
-              puts '# Supports --auto-correct'
-            end
+            puts '# Supports --auto-correct' if cop.new(@config).support_autocorrect?
             puts "#{cop.cop_name}:"
             puts config_lines(cop)
             puts

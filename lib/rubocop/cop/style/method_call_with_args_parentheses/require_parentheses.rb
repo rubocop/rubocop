@@ -22,9 +22,7 @@ module RuboCop
             lambda do |corrector|
               corrector.replace(args_begin(node), '(')
 
-              unless args_parenthesized?(node)
-                corrector.insert_after(args_end(node), ')')
-              end
+              corrector.insert_after(args_end(node), ')') unless args_parenthesized?(node)
             end
           end
 

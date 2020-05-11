@@ -93,12 +93,8 @@ module RuboCop
 
         def check(begin_node)
           node = begin_node.children.first
-          if keyword_with_redundant_parentheses?(node)
-            return offense(begin_node, 'a keyword')
-          end
-          if disallowed_literal?(begin_node, node)
-            return offense(begin_node, 'a literal')
-          end
+          return offense(begin_node, 'a keyword') if keyword_with_redundant_parentheses?(node)
+          return offense(begin_node, 'a literal') if disallowed_literal?(begin_node, node)
           return offense(begin_node, 'a variable') if node.variable?
           return offense(begin_node, 'a constant') if node.const_type?
 

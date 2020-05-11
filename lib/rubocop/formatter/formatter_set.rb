@@ -87,9 +87,7 @@ module RuboCop
 
         raise %(No formatter for "#{specified_key}") if matching_keys.empty?
 
-        if matching_keys.size > 1
-          raise %(Cannot determine formatter for "#{specified_key}")
-        end
+        raise %(Cannot determine formatter for "#{specified_key}") if matching_keys.size > 1
 
         BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
       end

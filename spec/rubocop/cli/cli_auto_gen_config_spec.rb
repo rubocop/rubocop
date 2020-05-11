@@ -35,8 +35,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # frozen_string_literal: true
 
             def f
-            #{'  #' * 33}
-              if #{'a' * 80}
+            #{'  #' * 46}
+              if #{'a' * 120}
                 return y
               end
 
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
               # URISchemes: http, https
               Layout/LineLength:
-                Max: 99
+                Max: 138
           YAML
           expect(IO.read('.rubocop.yml').strip).to eq(exp_dotfile.join($RS))
           $stdout = StringIO.new
@@ -309,7 +309,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   'x= 0 ',
-                                  '#' * 85,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('.rubocop_todo.yml', <<~YAML)
@@ -342,7 +342,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 'IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
-                '  Max: 85'])
+                '  Max: 125'])
 
       # Create new CLI instance to avoid using cached configuration.
       new_cli = described_class.new
@@ -351,9 +351,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'honors rubocop:disable comments' do
-      create_file('example1.rb', ['#' * 81,
+      create_file('example1.rb', ['#' * 121,
                                   '# rubocop:disable LineLength',
-                                  '#' * 85,
+                                  '#' * 125,
                                   'y ',
                                   'puts 123456',
                                   '# rubocop:enable LineLength'])
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 'IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
-                '  Max: 81',
+                '  Max: 121',
                 ''].join("\n"))
     end
 
@@ -544,8 +544,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   '$x= 0 ',
-                                  '#' * 90,
-                                  '#' * 85,
+                                  '#' * 130,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', <<~RUBY)
@@ -639,7 +639,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
-         '  Max: 90']
+         '  Max: 130']
       actual = IO.read('.rubocop_todo.yml').split($RS)
       expected.each_with_index do |line, ix|
         if line.is_a?(String)
@@ -655,13 +655,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   '$x= 0 ',
-                                  '#' * 90,
-                                  '#' * 85,
+                                  '#' * 130,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# frozen_string_literal: true',
                                   '',
-                                  '#' * 85,
+                                  '#' * 125,
                                   "\tx = 0",
                                   'puts x '])
       expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(0)
@@ -731,7 +731,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
-         '  Max: 90']
+         '  Max: 130']
       actual = IO.read('.rubocop_todo.yml').split($RS)
       expected.each_with_index do |line, ix|
         if line.is_a?(String)
@@ -855,8 +855,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   '$x= 0 ',
-                                  '#' * 90,
-                                  '#' * 85,
+                                  '#' * 130,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', <<~RUBY)
@@ -941,7 +941,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
-         '  Max: 90']
+         '  Max: 130']
       actual = IO.read('.rubocop_todo.yml').split($RS)
       expected.each_with_index do |line, ix|
         if line.is_a?(String)
@@ -955,8 +955,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     it 'generates Exclude instead of Max when --auto-gen-only-exclude is' \
        ' used' do
-      create_file('example1.rb', ['#' * 90,
-                                  '#' * 90,
+      create_file('example1.rb', ['#' * 130,
+                                  '#' * 130,
                                   'puts 123456'])
       create_file('example2.rb', <<~RUBY)
         def function(arg1, arg2, arg3, arg4, arg5, arg6, arg7)

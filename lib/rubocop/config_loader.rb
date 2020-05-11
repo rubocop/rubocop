@@ -95,9 +95,7 @@ module RuboCop
         end
 
         merge_with_default(config, config_file).tap do |merged_config|
-          unless possible_new_cops?(config)
-            warn_on_pending_cops(merged_config.pending_cops)
-          end
+          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(config)
         end
       end
 
@@ -207,9 +205,7 @@ module RuboCop
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
           f.write "inherit_from:#{file_string}\n"
-          if /\S/.match?(rubocop_yml_contents)
-            f.write "\n#{rubocop_yml_contents}"
-          end
+          f.write "\n#{rubocop_yml_contents}" if /\S/.match?(rubocop_yml_contents)
         end
       end
 
@@ -227,9 +223,7 @@ module RuboCop
 
         puts "configuration from #{absolute_path}" if debug?
 
-        unless hash.is_a?(Hash)
-          raise(TypeError, "Malformed configuration in #{absolute_path}")
-        end
+        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
 
         hash
       end

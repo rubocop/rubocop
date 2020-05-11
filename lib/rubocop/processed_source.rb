@@ -23,9 +23,7 @@ module RuboCop
       # Defaults source encoding to UTF-8, regardless of the encoding it has
       # been read with, which could be non-utf8 depending on the default
       # external encoding.
-      unless source.encoding == Encoding::UTF_8
-        source.force_encoding(Encoding::UTF_8)
-      end
+      source.force_encoding(Encoding::UTF_8) unless source.encoding == Encoding::UTF_8
 
       @raw_source = source
       @path = path

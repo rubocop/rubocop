@@ -99,9 +99,7 @@ module RuboCop
           lambda do |corrector|
             line = range_by_whole_lines(node.source_range)
 
-            unless previous_line_empty?(node.first_line)
-              corrector.insert_before(line, "\n")
-            end
+            corrector.insert_before(line, "\n") unless previous_line_empty?(node.first_line)
 
             correct_next_line_if_denied_style(corrector, node, line)
           end
@@ -120,9 +118,7 @@ module RuboCop
         def correct_next_line_if_denied_style(corrector, node, line)
           case style
           when :around
-            unless next_line_empty?(node.last_line)
-              corrector.insert_after(line, "\n")
-            end
+            corrector.insert_after(line, "\n") unless next_line_empty?(node.last_line)
           when :only_before
             if next_line_empty?(node.last_line)
               range = next_empty_line_range(node)

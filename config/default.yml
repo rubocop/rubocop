@@ -861,9 +861,9 @@ Layout/LineLength:
   StyleGuide: '#80-character-limits'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '0.78'
+  VersionChanged: '1.0'
   AutoCorrect: false
-  Max: 80
+  Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
   AllowHeredoc: true

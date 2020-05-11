@@ -181,13 +181,9 @@ module RuboCop
           parent_type = node.parent&.type
           preferred_name = preferred_names(global_var).first
 
-          unless %i[dstr xstr regexp].include?(parent_type)
-            return preferred_name.to_s
-          end
+          return preferred_name.to_s unless %i[dstr xstr regexp].include?(parent_type)
 
-          if style == :use_english_names
-            return english_name_replacement(preferred_name, node)
-          end
+          return english_name_replacement(preferred_name, node) if style == :use_english_names
 
           "##{preferred_name}"
         end
