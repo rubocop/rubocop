@@ -20,6 +20,21 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
         end
       end
 
+      context 'without whitespaces on the right of the operator when a method with no arguments is used in advance' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            do_something
+            do_something +42
+                         ^ Ambiguous positive number operator. Parenthesize the method arguments if it's surely a positive number operator, or add a whitespace to the right of the `+` if it should be a addition.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something
+            do_something(+42)
+          RUBY
+        end
+      end
+
       context 'with a whitespace on the right of the operator' do
         it 'does not register an offense' do
           expect_no_offenses(<<~RUBY)
