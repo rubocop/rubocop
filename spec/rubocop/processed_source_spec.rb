@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::ProcessedSource do
-  include FileHelper
-
   subject(:processed_source) { described_class.new(source, ruby_version, path) }
 
   let(:source) { <<~RUBY }
@@ -12,13 +10,15 @@ RSpec.describe RuboCop::ProcessedSource do
     end
     some_method
   RUBY
+  let(:path) { 'ast/and_node_spec.rb' }
 
-  let(:path) { 'path/to/file.rb' }
-
-  describe '.from_file', :isolated_environment do
+  describe '.from_file' do
     describe 'when the file exists' do
-      before do
-        create_file(path, 'foo')
+      around do |example|
+        org_pwd = Dir.pwd
+        Dir.chdir(__dir__)
+        example.run
+        Dir.chdir(org_pwd)
       end
 
       let(:processed_source) { described_class.from_file(path, ruby_version) }
@@ -329,7 +329,7 @@ RSpec.describe RuboCop::ProcessedSource do
 
   describe '#file_path' do
     it 'returns file path' do
-      expect(processed_source.file_path).to eq 'path/to/file.rb'
+      expect(processed_source.file_path).to eq path
     end
   end
 
