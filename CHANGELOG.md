@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7735](https://github.com/rubocop-hq/rubocop/issues/7735): `NodePattern` and `AST` classes have been moved to the [`rubocop-ast` gem](https://github.com/rubocop-hq/rubocop-ast). ([@marcandre][])
+
 ### Bug fixes
 
 * [#7953](https://github.com/rubocop-hq/rubocop/issues/7953): Fix an error for `Lint/AmbiguousOperator` when a method with no arguments is used in advance. ([@koic][])
