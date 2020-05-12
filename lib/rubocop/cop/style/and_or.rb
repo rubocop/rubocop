@@ -7,7 +7,7 @@ module RuboCop
       # `||` instead. It can be configured to check only in conditions or in
       # all contexts.
       #
-      # @example EnforcedStyle: always (default)
+      # @example EnforcedStyle: always
       #   # bad
       #   foo.save and return
       #
@@ -22,7 +22,7 @@ module RuboCop
       #   if foo && bar
       #   end
       #
-      # @example EnforcedStyle: conditionals
+      # @example EnforcedStyle: conditionals (default)
       #   # bad
       #   if foo and bar
       #   end
