@@ -148,6 +148,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe '-V' do
+    it 'exits cleanly' do
+      expect(cli.run(['-V'])).to eq(0)
+      expect($stdout.string).to include(RuboCop::Version::STRING)
+      expect($stdout.string).to match(/Parser \d\.\d\.\d/)
+      expect($stdout.string).to match(/rubocop-ast \d\.\d\.\d/)
+    end
+  end
+
   describe '--only' do
     context 'when one cop is given' do
       it 'runs just one cop' do
