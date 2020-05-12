@@ -58,7 +58,7 @@ module RuboCop
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/node_pattern.rb
+                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
