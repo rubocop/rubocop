@@ -139,7 +139,7 @@ all contexts.
 
 ### Examples
 
-#### EnforcedStyle: always (default)
+#### EnforcedStyle: always
 
 ```ruby
 # bad
@@ -156,7 +156,7 @@ foo.save && return
 if foo && bar
 end
 ```
-#### EnforcedStyle: conditionals
+#### EnforcedStyle: conditionals (default)
 
 ```ruby
 # bad
@@ -178,7 +178,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `always` | `always`, `conditionals`
+EnforcedStyle | `conditionals` | `always`, `conditionals`
 
 ### References
 
