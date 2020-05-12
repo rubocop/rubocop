@@ -507,7 +507,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     context 'via the config' do
       before do
-        create_file('example.rb', 'do_something or raise')
+        create_file('example.rb', <<~RUBY)
+          if foo and bar
+            do_something
+          end
+        RUBY
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
             StyleGuideCopsOnly: #{guide_cops_only}
@@ -548,10 +552,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              1  Layout/LineLength
+              3  Layout/LineLength
               1  Style/AndOr
               --
-              2  Total
+              4  Total
 
             RESULT
           end
@@ -569,9 +573,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              1  Layout/LineLength
+              3  Layout/LineLength
               --
-              1  Total
+              3  Total
 
             RESULT
           end
@@ -585,10 +589,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              1  Layout/LineLength
+              3  Layout/LineLength
               1  Style/AndOr
               --
-              2  Total
+              4  Total
 
             RESULT
           end
