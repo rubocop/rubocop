@@ -60,8 +60,10 @@ module RuboCop
           end
 
           ast.each_node(:send).find do |send_node|
-            offense_position?(send_node.first_argument, diagnostic) &&
-              unary_operator?(send_node.first_argument, diagnostic)
+            first_argument = send_node.first_argument
+
+            first_argument &&
+              offense_position?(first_argument, diagnostic) && unary_operator?(first_argument, diagnostic)
           end
         end
 
