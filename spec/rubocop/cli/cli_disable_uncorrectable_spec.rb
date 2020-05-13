@@ -19,6 +19,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       YAML
       create_file('example.rb', <<~RUBY)
         ip('1.2.3.4')
+        # last line
       RUBY
     end
     let(:max_length) { 46 }
@@ -59,6 +60,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # frozen_string_literal: true
 
           ip('1.2.3.4') # rubocop:todo Style/IpAddresses
+          # last line
         RUBY
       end
 
@@ -171,16 +173,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example.rb ==
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           C:  1:  4: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
-          C:  3:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+          C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
         expect(IO.read('example.rb')).to eq(<<~RUBY)
-          # rubocop:todo Style/IpAddresses
           # frozen_string_literal: true
 
+          # rubocop:todo Style/IpAddresses
           ip('1.2.3.4')
           # rubocop:enable Style/IpAddresses
+          # last line
         RUBY
       end
     end
