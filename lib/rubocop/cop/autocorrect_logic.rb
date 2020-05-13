@@ -43,8 +43,7 @@ module RuboCop
       def disable_offense(node)
         range = node.location.expression
         eol_comment = " # rubocop:todo #{cop_name}"
-        needed_line_length = range.column +
-                             (range.source_line + eol_comment).length
+        needed_line_length = (range.source_line + eol_comment).length
         if needed_line_length <= max_line_length
           disable_offense_at_end_of_line(range_of_first_line(range),
                                          eol_comment)
