@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Cop do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Cop, :config do
   let(:location) do
-    source_buffer = Parser::Source::Buffer.new('test', 1)
-    source_buffer.source = "a\n"
-    Parser::Source::Range.new(source_buffer, 0, 1)
+    source_range(0...1)
   end
 
   it 'initially has 0 offenses' do
@@ -90,32 +86,41 @@ RSpec.describe RuboCop::Cop::Cop do
       .to output(/Warning: Invalid severity 'superbad'./).to_stderr
   end
 
-  it 'will set offense as disabled if ignore_disable_comments is false' do
-    comment_config = instance_double(RuboCop::CommentConfig,
-                                     cop_enabled_at_line?: false)
-    processed_source = instance_double(RuboCop::ProcessedSource,
-                                       comment_config: comment_config)
-    cop.processed_source = processed_source
-    cop.instance_variable_set(:@options, ignore_disable_comments: false)
-    cop.add_offense(nil, location: location, message: 'message')
-    expect(cop.offenses.first.status).to eq :disabled
+  context 'when disabled by a comment' do
+    subject(:offense_status) do
+      cop.add_offense(nil, location: location, message: 'message')
+      cop.offenses.first.status
+    end
+
+    before do
+      allow(processed_source.comment_config).to receive(:cop_enabled_at_line?)
+        .and_return(false)
+    end
+
+    context 'ignore_disable_comments is false' do
+      let(:cop_options) { { ignore_disable_comments: false } }
+
+      it 'will set offense as disabled' do
+        expect(offense_status).to eq :disabled
+      end
+    end
+
+    context 'ignore_disable_comments is true' do
+      let(:cop_options) { { ignore_disable_comments: true } }
+
+      it 'will not set offense as disabled' do
+        expect(offense_status).not_to eq :disabled
+      end
+    end
   end
 
-  it 'will not set offense as disabled if ignore_disable_comments is true' do
-    comment_config = instance_double(RuboCop::CommentConfig,
-                                     cop_enabled_at_line?: false)
-    processed_source = instance_double(RuboCop::ProcessedSource,
-                                       comment_config: comment_config)
-    cop.processed_source = processed_source
-    cop.instance_variable_set(:@options, ignore_disable_comments: true)
-    cop.add_offense(nil, location: location, message: 'message')
-    expect(cop.offenses.first.status).not_to eq :disabled
-  end
+  describe 'for a cop with a name' do
+    let(:cop_class) { RuboCop::Cop::Style::For }
 
-  it 'registers offense with its name' do
-    cop = RuboCop::Cop::Style::For.new
-    cop.add_offense(nil, location: location, message: 'message')
-    expect(cop.offenses.first.cop_name).to eq('Style/For')
+    it 'registers offense with its name' do
+      cop.add_offense(nil, location: location, message: 'message')
+      expect(cop.offenses.first.cop_name).to eq('Style/For')
+    end
   end
 
   describe 'setting of Offense#corrected attribute' do
@@ -161,7 +166,7 @@ RSpec.describe RuboCop::Cop::Cop do
     end
 
     context 'when cop supports autocorrection' do
-      let(:cop) { RuboCop::Cop::Style::Alias.new }
+      let(:cop_class) { RuboCop::Cop::Style::Alias }
 
       context 'when offense was corrected' do
         before do
@@ -201,24 +206,22 @@ RSpec.describe RuboCop::Cop::Cop do
   end
 
   context 'with no submodule' do
-    subject(:cop) { described_class }
-
-    it('has right name') { expect(cop.cop_name).to eq('Cop/Cop') }
-    it('has right department') { expect(cop.department).to eq(:Cop) }
+    it('has right name') { expect(cop_class.cop_name).to eq('Cop/Cop') }
+    it('has right department') { expect(cop_class.department).to eq(:Cop) }
   end
 
   context 'with style cops' do
-    subject(:cop) { RuboCop::Cop::Style::For }
+    let(:cop_class) { RuboCop::Cop::Style::For }
 
-    it('has right name') { expect(cop.cop_name).to eq('Style/For') }
-    it('has right department') { expect(cop.department).to eq(:Style) }
+    it('has right name') { expect(cop_class.cop_name).to eq('Style/For') }
+    it('has right department') { expect(cop_class.department).to eq(:Style) }
   end
 
   context 'with lint cops' do
-    subject(:cop) { RuboCop::Cop::Lint::Loop }
+    let(:cop_class) { RuboCop::Cop::Lint::Loop }
 
-    it('has right name') { expect(cop.cop_name).to eq('Lint/Loop') }
-    it('has right department') { expect(cop.department).to eq(:Lint) }
+    it('has right name') { expect(cop_class.cop_name).to eq('Lint/Loop') }
+    it('has right department') { expect(cop_class.department).to eq(:Lint) }
   end
 
   describe 'Registry' do
@@ -262,8 +265,6 @@ RSpec.describe RuboCop::Cop::Cop do
 
     subject { cop.autocorrect? }
 
-    let(:config) { RuboCop::Config.new({}) }
-    let(:cop) { described_class.new(config, options) }
     let(:support_autocorrect) { true }
     let(:disable_uncorrectable) { false }
 
@@ -279,7 +280,7 @@ RSpec.describe RuboCop::Cop::Cop do
     end
 
     context 'when the option is given' do
-      let(:options) { { auto_correct: true } }
+      let(:cop_options) { { auto_correct: true } }
 
       it { is_expected.to be(true) }
 
@@ -296,9 +297,7 @@ RSpec.describe RuboCop::Cop::Cop do
       end
 
       context 'when the cop is set to not autocorrect' do
-        let(:config) do
-          RuboCop::Config.new('Cop/Cop' => { 'AutoCorrect' => false })
-        end
+        let(:cop_options) { { 'AutoCorrect' => false } }
 
         it { is_expected.to be(false) }
       end
@@ -307,9 +306,6 @@ RSpec.describe RuboCop::Cop::Cop do
 
   describe '#safe_autocorrect?' do
     subject { cop.safe_autocorrect? }
-
-    let(:config) { RuboCop::Config.new('Cop/Cop' => cop_config) }
-    let(:cop) { described_class.new(config) }
 
     context 'when cop is declared unsafe' do
       let(:cop_config) { { 'Safe' => false } }

@@ -1,16 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective do
+RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
   describe '.check' do
-    let(:cop) do
-      cop = described_class.new
-      cop.instance_variable_get(:@options)[:auto_correct] = true
-      cop.processed_source = processed_source
-      cop
-    end
-    let(:processed_source) do
-      RuboCop::ProcessedSource.new(source, ruby_version)
-    end
+    let(:cop_options) { { auto_correct: true } }
     let(:comments) { processed_source.comments }
     let(:corrected_source) do
       RuboCop::Cop::Corrector
@@ -246,9 +238,9 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective do
                           'Unnecessary disabling of `Lint/Debugger`.'])
                 expect(cop.highlights).to eq(%w[ClassLength Debugger])
                 expect($stderr.string).to eq(<<~OUTPUT)
-                  (string): Warning: no department given for MethodLength.
-                  (string): Warning: no department given for ClassLength.
-                  (string): Warning: no department given for Debugger.
+                  test: Warning: no department given for MethodLength.
+                  test: Warning: no department given for ClassLength.
+                  test: Warning: no department given for Debugger.
                 OUTPUT
               end
             end
