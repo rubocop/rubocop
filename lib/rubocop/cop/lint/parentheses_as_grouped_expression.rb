@@ -21,9 +21,7 @@ module RuboCop
         MSG = '`(...)` interpreted as grouped expression.'
 
         def on_send(node)
-          return unless node.arguments.one?
-          return if node.operator_method? || node.setter_method?
-          return if grouped_parentheses?(node)
+          return if valid_context?(node)
 
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length.positive?
@@ -44,6 +42,16 @@ module RuboCop
         end
 
         private
+
+        def valid_context?(node)
+          return true unless node.arguments.one? && first_arugment_starts_with_left_parenthesis?(node)
+
+          node.operator_method? || node.setter_method? || grouped_parentheses?(node)
+        end
+
+        def first_arugment_starts_with_left_parenthesis?(node)
+          node.first_argument.source.start_with?('(')
+        end
 
         def grouped_parentheses?(node)
           first_argument = node.first_argument
