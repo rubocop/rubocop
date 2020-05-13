@@ -214,7 +214,7 @@ module RuboCop
           if comment
             corrector.insert_after(line_range(comment.line), following_comment)
           else
-            corrector.insert_before(line_range(1), preceding_comment)
+            corrector.insert_before(processed_source.buffer.source_range, preceding_comment)
           end
         end
 
