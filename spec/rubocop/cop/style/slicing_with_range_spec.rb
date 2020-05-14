@@ -23,6 +23,17 @@ RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
       RUBY
     end
 
+    it 'reports an offense for slicing from expression to ..-1' do
+      expect_offense(<<~RUBY)
+        ary[fetch_start(true).first..-1]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer ary[n..] over ary[n..-1].
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary[fetch_start(true).first..]
+      RUBY
+    end
+
     it 'reports no offense for excluding end' do
       expect_no_offenses(<<~RUBY)
         ary[1...-1]
