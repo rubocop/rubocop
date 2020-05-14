@@ -19,7 +19,7 @@ module RuboCop
 
         MSG = 'Prefer ary[n..] over ary[n..-1].'
 
-        def_node_matcher :range_till_minus_one?, '(irange (int _) (int -1))'
+        def_node_matcher :range_till_minus_one?, '(irange !nil? (int -1))'
 
         def on_send(node)
           return unless node.method?(:[]) && node.arguments.count == 1

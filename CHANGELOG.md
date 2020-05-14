@@ -10,6 +10,7 @@
 
 * [#7953](https://github.com/rubocop-hq/rubocop/issues/7953): Fix an error for `Lint/AmbiguousOperator` when a method with no arguments is used in advance. ([@koic][])
 * [#7962](https://github.com/rubocop-hq/rubocop/issues/7962): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when heredoc has a space between the same string as the method name and `(`. ([@koic][])
+* [#7967](https://github.com/rubocop-hq/rubocop/pull/7967): `Style/SlicingWithRange` cop now supports any expression as its first index. ([@zverok][])
 
 ### Changes
 
