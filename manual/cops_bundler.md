@@ -61,7 +61,7 @@ gem 'foo'
 # Helpers for the foo things.
 gem 'foo'
 ```
-#### OnlyIfVersionRestricted: false (default)
+#### OnlyIfVersionRestricted: true
 
 ```ruby
 # bad

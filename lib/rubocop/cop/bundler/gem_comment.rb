@@ -15,7 +15,7 @@ module RuboCop
       #   # Helpers for the foo things.
       #   gem 'foo'
       #
-      # @example OnlyIfVersionRestricted: false (default)
+      # @example OnlyIfVersionRestricted: true
       #   # bad
       #
       #   gem 'foo', '>= 2.1'
