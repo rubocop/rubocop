@@ -26,6 +26,7 @@ module RuboCop
           return unless gem_declaration?(node)
           return if ignored_gem?(node)
           return if commented?(node)
+          return if cop_config['OnlyIfVersionRestricted'] && !version_restricted_gem?(node)
 
           add_offense(node)
         end
@@ -57,6 +58,13 @@ module RuboCop
         def ignored_gem?(node)
           ignored_gems = Array(cop_config['IgnoredGems'])
           ignored_gems.include?(node.first_argument.value)
+        end
+
+        # Besides the gem name, all other *positional* arguments to `gem` are version restrictions,
+        # as long as it has one we know there's a version restriction.
+        def version_restricted_gem?(send_node)
+          # arguments[0] is the gem name
+          send_node.arguments[1]&.str_type? == true
         end
       end
     end
