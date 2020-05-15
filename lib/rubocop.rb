@@ -10,6 +10,8 @@ require 'rubocop-ast'
 require_relative 'rubocop/version'
 
 require_relative 'rubocop/core_ext/string'
+require_relative 'rubocop/ext/processed_source'
+
 require_relative 'rubocop/path_util'
 require_relative 'rubocop/file_finder'
 require_relative 'rubocop/platform'
