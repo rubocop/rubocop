@@ -18,6 +18,7 @@ require_relative 'rubocop/file_finder'
 require_relative 'rubocop/platform'
 require_relative 'rubocop/name_similarity'
 require_relative 'rubocop/string_interpreter'
+require_relative 'rubocop/error' unless RuboCop.const_defined?(:Error)
 require_relative 'rubocop/warning'
 
 require_relative 'rubocop/cop/util'

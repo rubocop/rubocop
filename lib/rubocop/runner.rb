@@ -361,7 +361,11 @@ module RuboCop
       if @options[:stdin]
         ProcessedSource.new(@options[:stdin], ruby_version, file)
       else
-        ProcessedSource.from_file(file, ruby_version)
+        begin
+          ProcessedSource.from_file(file, ruby_version)
+        rescue Errno::ENOENT
+          raise RuboCop::Error, "No such file or directory: #{file}"
+        end
       end
     end
 
