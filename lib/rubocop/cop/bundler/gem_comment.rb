@@ -5,7 +5,7 @@ module RuboCop
     module Bundler
       # Add a comment describing each gem in your Gemfile.
       #
-      # @example
+      # @example OnlyIfVersionRestricted: false (default)
       #   # bad
       #
       #   gem 'foo'
@@ -14,6 +14,16 @@ module RuboCop
       #
       #   # Helpers for the foo things.
       #   gem 'foo'
+      #
+      # @example OnlyIfVersionRestricted: false (default)
+      #   # bad
+      #
+      #   gem 'foo', '>= 2.1'
+      #
+      #   # good
+      #
+      #   # Version 2.1 introduces breaking change bar
+      #   gem 'foo', '< 2.1'
       #
       class GemComment < Cop
         include DefNode
