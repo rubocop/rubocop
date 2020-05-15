@@ -49,6 +49,8 @@ Add a comment describing each gem in your Gemfile.
 
 ### Examples
 
+#### OnlyIfVersionRestricted: false (default)
+
 ```ruby
 # bad
 
@@ -58,6 +60,18 @@ gem 'foo'
 
 # Helpers for the foo things.
 gem 'foo'
+```
+#### OnlyIfVersionRestricted: false (default)
+
+```ruby
+# bad
+
+gem 'foo', '>= 2.1'
+
+# good
+
+# Version 2.1 introduces breaking change bar
+gem 'foo', '< 2.1'
 ```
 
 ### Configurable attributes
