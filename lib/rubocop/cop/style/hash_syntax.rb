@@ -168,11 +168,7 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key.source_range
-          op = pair_node.loc.operator
-
-          range = key.join(op)
-          range = range_with_surrounding_space(range: range, side: :right)
+          range = range_for_autocorrect_ruby19(pair_node)
 
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
 
@@ -180,6 +176,17 @@ module RuboCop
             range,
             range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
           )
+
+          hash_node = pair_node.parent
+          corrector.wrap(hash_node, '{', '}') if hash_node.parent&.return_type? && !hash_node.braces?
+        end
+
+        def range_for_autocorrect_ruby19(pair_node)
+          key = pair_node.key.source_range
+          operator = pair_node.loc.operator
+
+          range = key.join(operator)
+          range_with_surrounding_space(range: range, side: :right)
         end
 
         def argument_without_space?(node)

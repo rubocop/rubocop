@@ -139,6 +139,30 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         new_source = autocorrect_source('foo:bar => 1')
         expect(new_source).to eq('foo bar: 1')
       end
+
+      context 'when using a return value uses `return`' do
+        it 'registers an offense and corrects when not enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            return :key => value
+                   ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            return {key: value}
+          RUBY
+        end
+
+        it 'registers an offense and corrects when enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            return {:key => value}
+                    ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            return {key: value}
+          RUBY
+        end
+      end
     end
 
     context 'with SpaceAroundOperators disabled' do
