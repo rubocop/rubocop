@@ -6,6 +6,7 @@
 
 * [#7735](https://github.com/rubocop-hq/rubocop/issues/7735): `NodePattern` and `AST` classes have been moved to the [`rubocop-ast` gem](https://github.com/rubocop-hq/rubocop-ast). ([@marcandre][])
 * [#7950](https://github.com/rubocop-hq/rubocop/pull/7950): Add new `Lint/DeprecatedOpenSSLConstant` cop. ([@bdewater][])
+* [#7976](https://github.com/rubocop-hq/rubocop/issues/7976): Add `IgnoreAliasSyntax` and` IgnoredMethods` options for `Layout/EmptyLinesAroundAttributeAccessor`. ([@koic][])
 
 ### Bug fixes
 
