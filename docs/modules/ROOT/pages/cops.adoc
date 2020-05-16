@@ -468,6 +468,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylesemicolon[Style/Semicolon]
 * xref:cops_style.adoc#stylesend[Style/Send]
 * xref:cops_style.adoc#stylesignalexception[Style/SignalException]
+* xref:cops_style.adoc#stylesingleargumentdig[Style/SingleArgumentDig]
 * xref:cops_style.adoc#stylesinglelineblockparams[Style/SingleLineBlockParams]
 * xref:cops_style.adoc#stylesinglelinemethods[Style/SingleLineMethods]
 * xref:cops_style.adoc#styleslicingwithrange[Style/SlicingWithRange]
