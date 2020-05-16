@@ -468,6 +468,13 @@ Layout/EmptyLinesAroundAttributeAccessor:
   StyleGuide: '#empty-lines-around-attribute-accessor'
   Enabled: pending
   VersionAdded: '0.83'
+  VersionChanged: '0.84'
+  AllowAliasSyntax: true
+  AllowedMethods:
+    - alias_method
+    - public
+    - protected
+    - private
 
 Layout/EmptyLinesAroundBeginBody:
   Description: "Keeps track of empty lines around begin-end bodies."
