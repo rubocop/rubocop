@@ -17,6 +17,10 @@ Patches in any form are always welcome! GitHub pull requests are even better! :-
 Before submitting a patch or a pull request make sure all tests are
 passing and that your patch is in line with the [contribution
 guidelines](https://github.com/rubocop-hq/rubocop/blob/master/CONTRIBUTING.md).
+
+A handy way to test only the files that you have modified in the last commit
+(with `rspec` and `rubocop`) is to use `rake check_commit`.
+
 Also see the [Development section](development.md).
 
 ## Documentation
