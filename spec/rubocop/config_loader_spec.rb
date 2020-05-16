@@ -823,31 +823,65 @@ RSpec.describe RuboCop::ConfigLoader do
         YAML
       end
 
-      it 'returns values from the gem config with local overrides' do
-        gem_class = Struct.new(:gem_dir)
-        %w[gemone gemtwo].each do |gem_name|
-          mock_spec = gem_class.new(File.join(gem_root, gem_name))
-          allow(Gem::Specification).to receive(:find_by_name)
-            .with(gem_name).and_return(mock_spec)
+      context 'and the gem is globally installed' do
+        before do
+          gem_class = Struct.new(:gem_dir)
+          %w[gemone gemtwo].each do |gem_name|
+            mock_spec = gem_class.new(File.join(gem_root, gem_name))
+            allow(Gem::Specification).to receive(:find_by_name)
+              .with(gem_name).and_return(mock_spec)
+          end
+          allow(Gem).to receive(:path).and_return([gem_root])
         end
-        allow(Gem).to receive(:path).and_return([gem_root])
 
-        expected = { 'Enabled' => true,        # overridden in .rubocop.yml
-                     'CountComments' => true,  # overridden in local.yml
-                     'Max' => 200 }            # inherited from somegem
-        expect do
-          expect(configuration_from_file['Metrics/MethodLength']
-                   .to_set.superset?(expected.to_set)).to be(true)
-        end.to output('').to_stderr
+        it 'returns values from the gem config with local overrides' do
+          expected = { 'Enabled' => true, # overridden in .rubocop.yml
+                       'CountComments' => true,  # overridden in local.yml
+                       'Max' => 200 }            # inherited from somegem
+          expect do
+            expect(configuration_from_file['Metrics/MethodLength']
+                    .to_set.superset?(expected.to_set)).to be(true)
+          end.to output('').to_stderr
 
-        expected = { 'Enabled' => true,        # gemtwo/config/default.yml
-                     'Max' => 72,              # gemtwo/config/strict.yml
-                     'AllowHeredoc' => false,  # gemtwo/config/strict.yml
-                     'AllowURI' => false }     # overridden in .rubocop.yml
-        expect(
-          configuration_from_file['Layout/LineLength']
-            .to_set.superset?(expected.to_set)
-        ).to be(true)
+          expected = { 'Enabled' => true, # gemtwo/config/default.yml
+                       'Max' => 72,              # gemtwo/config/strict.yml
+                       'AllowHeredoc' => false,  # gemtwo/config/strict.yml
+                       'AllowURI' => false }     # overridden in .rubocop.yml
+          expect(
+            configuration_from_file['Layout/LineLength']
+              .to_set.superset?(expected.to_set)
+          ).to be(true)
+        end
+      end
+
+      context 'and the gem is bundled' do
+        before do
+          specs = {
+            'gemone' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemone'))],
+            'gemtwo' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemtwo'))]
+          }
+
+          allow(Bundler).to receive(:load).and_return(OpenStruct.new(specs: specs))
+        end
+
+        it 'returns values from the gem config with local overrides' do
+          expected = { 'Enabled' => true, # overridden in .rubocop.yml
+                       'CountComments' => true,  # overridden in local.yml
+                       'Max' => 200 }            # inherited from somegem
+          expect do
+            expect(configuration_from_file['Metrics/MethodLength']
+                    .to_set.superset?(expected.to_set)).to be(true)
+          end.to output('').to_stderr
+
+          expected = { 'Enabled' => true, # gemtwo/config/default.yml
+                       'Max' => 72,              # gemtwo/config/strict.yml
+                       'AllowHeredoc' => false,  # gemtwo/config/strict.yml
+                       'AllowURI' => false }     # overridden in .rubocop.yml
+          expect(
+            configuration_from_file['Layout/LineLength']
+              .to_set.superset?(expected.to_set)
+          ).to be(true)
+        end
       end
     end
 
