@@ -168,7 +168,7 @@ def_node_matcher :not_empty_call?, <<~PATTERN
 PATTERN
 ```
 
-Get yourself familiar with the AST nodeh hooks that
+Get yourself familiar with the AST node hooks that
 [`parser`](https://www.rubydoc.info/gems/parser/Parser/AST/Processor)
 and [`rubocop-ast`](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/Traversal)
 provide.
