@@ -1,10 +1,13 @@
 # Development
 
-This section of the documentation will teach you how to develop new cops.
+This section of the documentation will teach you how to develop new cops.  We'll
+start with generating a cop template and then we'll address the various aspects
+of its implementation (interacting with the AST, auto-correct, configuration)
+and testing.
 
 ## Add a new cop
 
-Use a rake task to generate a cop template.
+Use the bundled rake task `new_cop` to generate a cop template:
 
 ```sh
 $ bundle exec rake 'new_cop[Department/Name]'
@@ -24,7 +27,7 @@ Do 3 steps:
 
 ## Implementing the cop
 
-RuboCop uses [parser](https://github.com/whitequark/parser) to create the
+RuboCop uses the [parser](https://github.com/whitequark/parser) library to create the
 Abstract Syntax Tree (AST) representation of the code.
 
 You can install `parser` gem and use `ruby-parse` command line utility to check
@@ -41,12 +44,12 @@ $ ruby-parse -e '1'
 (int 1)
 ```
 
-Each expression surrounded by parens represents a node. The first
+Each expression surrounded by parentheses represents a node in the AST. The first
 element is the node type and the tail contains the children with all
 information needed to represent the code.
 
-Another example of a local variable `name` being assigned with the "John"
-string value:
+Here's another example - a local variable `name` being assigned the
+string value "John":
 
 ```sh
 $ ruby-parse -e 'name = "John"'
@@ -110,7 +113,7 @@ NodePattern.new('send').match(node) # => true
 ```
 
 It matches because the root is a `send` type. Now lets match it deeply using
-parens to define details for sub-nodes. If you don't care about what an internal
+parentheses to define details for sub-nodes. If you don't care about what an internal
 node is, you can use `...` to skip it and just consider " a node".
 
 ```ruby
