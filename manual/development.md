@@ -1,5 +1,7 @@
 # Development
 
+This section of the documentation will teach you how to develop new cops.
+
 ## Add a new cop
 
 Use a rake task to generate a cop template.
@@ -23,7 +25,7 @@ Do 3 steps:
 ## Implementing the cop
 
 RuboCop uses [parser](https://github.com/whitequark/parser) to create the
-Abstract Syntax Tree representation of the code.
+Abstract Syntax Tree (AST) representation of the code.
 
 You can install `parser` gem and use `ruby-parse` command line utility to check
 what the AST looks like in the output.
@@ -74,7 +76,7 @@ $ bin/console
 ```
 
 First we need to declare the code that we want to match, and use the
-[ProcessedSource](https://www.rubydoc.info/gems/rubocop/RuboCop/ProcessedSource)
+[ProcessedSource](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/ProcessedSource)
 that is a simple wrap to make the parser interpret the code and build the AST:
 
 ```ruby
@@ -95,7 +97,7 @@ node.source # => "!something.empty?"
 ### Writing rules to make node pattern matches:
 
 Now that you're familiar with AST, you can learn a bit about the
-[node pattern](https://www.rubydoc.info/gems/rubocop/RuboCop/NodePattern)
+[node pattern](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/NodePattern)
 and use patterns to match with specific nodes that you want to match.
 
 You can learn more about Node Pattern [here](https://docs.rubocop.org/en/latest/node_pattern/).
@@ -163,9 +165,9 @@ def_node_matcher :not_empty_call?, <<~PATTERN
 PATTERN
 ```
 
-Get yourself familiar with the hooks
-[`parser`](https://www.rubydoc.info/github/whitequark/parser/Parser/AST/Processor)
-and [`rubocop`](https://www.rubydoc.info/github/rubocop-hq/rubocop/RuboCop/AST/Traversal)
+Get yourself familiar with the AST nodeh hooks that
+[`parser`](https://www.rubydoc.info/gems/parser/Parser/AST/Processor)
+and [`rubocop-ast`](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/Traversal)
 provide.
 
 As it starts with a `send` type, it's needed to implement the `on_send` method, as the
