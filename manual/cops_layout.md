@@ -1206,8 +1206,8 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 Pending | Yes | Yes  | 0.83 | 0.84
 
 Checks for a newline after an attribute accessor or a group of them.
-`alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed by default.
-These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
+`alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed
+by default. These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
 
 ### Examples
 

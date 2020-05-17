@@ -44,7 +44,9 @@ module RuboCop
         private
 
         def valid_context?(node)
-          return true unless node.arguments.one? && first_argument_starts_with_left_parenthesis?(node)
+          unless node.arguments.one? && first_argument_starts_with_left_parenthesis?(node)
+            return true
+          end
 
           node.operator_method? || node.setter_method? || grouped_parentheses?(node)
         end

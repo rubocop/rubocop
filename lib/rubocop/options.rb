@@ -276,7 +276,9 @@ module RuboCop
                                    'be used with --only.'
       end
       raise OptionArgumentError, 'Syntax checking cannot be turned off.' if except_syntax?
-      raise OptionArgumentError, '-C/--cache argument must be true or false' unless boolean_or_empty_cache?
+      unless boolean_or_empty_cache?
+        raise OptionArgumentError, '-C/--cache argument must be true or false'
+      end
 
       if display_only_fail_level_offenses_with_autocorrect?
         raise OptionArgumentError, '--autocorrect cannot be used with ' \

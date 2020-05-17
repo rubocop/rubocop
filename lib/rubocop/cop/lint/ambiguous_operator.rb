@@ -63,7 +63,8 @@ module RuboCop
             first_argument = send_node.first_argument
 
             first_argument &&
-              offense_position?(first_argument, diagnostic) && unary_operator?(first_argument, diagnostic)
+              offense_position?(first_argument, diagnostic) &&
+              unary_operator?(first_argument, diagnostic)
           end
         end
 
