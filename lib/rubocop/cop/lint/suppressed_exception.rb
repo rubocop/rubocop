@@ -69,9 +69,20 @@ module RuboCop
 
         def on_resbody(node)
           return if node.body
-          return if cop_config['AllowComments'] && comment_lines?(node)
+          return if cop_config['AllowComments'] && comment_between_rescue_and_end?(node)
 
           add_offense(node)
+        end
+
+        private
+
+        def comment_between_rescue_and_end?(node)
+          end_line = nil
+          node.each_ancestor(:kwbegin) do |ancestor|
+            end_line = ancestor.loc.end.line
+            break
+          end
+          processed_source[node.first_line...end_line].any? { |line| comment_line?(line) }
         end
       end
     end
