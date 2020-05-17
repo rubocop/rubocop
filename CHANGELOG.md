@@ -14,6 +14,7 @@
 * [#7962](https://github.com/rubocop-hq/rubocop/issues/7962): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when heredoc has a space between the same string as the method name and `(`. ([@koic][])
 * [#7967](https://github.com/rubocop-hq/rubocop/pull/7967): `Style/SlicingWithRange` cop now supports any expression as its first index. ([@zverok][])
 * [#7972](https://github.com/rubocop-hq/rubocop/issues/7972): Fix an incorrect autocrrect for `Style/HashSyntax` when using a return value uses `return`. ([@koic][])
+* [#7886](https://github.com/rubocop-hq/rubocop/issues/7886): Fix a bug in `AllowComments` logic in `Lint/SuppressedException`. ([@jonas054][])
 
 ### Changes
 
