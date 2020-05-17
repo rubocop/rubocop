@@ -861,7 +861,7 @@ Layout/LineLength:
   StyleGuide: '#80-character-limits'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '1.0'
+  VersionChanged: '0.84'
   AutoCorrect: false
   Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
