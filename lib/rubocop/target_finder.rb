@@ -170,7 +170,9 @@ module RuboCop
     def process_explicit_path(path, mode)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| included_file?(file) } if mode == :only_recognized_file_types || force_exclusion?
+      if mode == :only_recognized_file_types || force_exclusion?
+        files.select! { |file| included_file?(file) }
+      end
 
       return files unless force_exclusion?
 

@@ -178,7 +178,9 @@ module RuboCop
           )
 
           hash_node = pair_node.parent
-          corrector.wrap(hash_node, '{', '}') if hash_node.parent&.return_type? && !hash_node.braces?
+          return unless hash_node.parent&.return_type? && !hash_node.braces?
+
+          corrector.wrap(hash_node, '{', '}')
         end
 
         def range_for_autocorrect_ruby19(pair_node)

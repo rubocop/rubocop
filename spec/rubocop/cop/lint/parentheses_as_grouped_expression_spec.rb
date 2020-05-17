@@ -74,7 +74,8 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
 
-  it 'does not register an offesne when heredoc has a space between the same string as the method name and `(`' do
+  it 'does not register an offesne when heredoc has a space between the same string as the ' \
+     'method name and `(`' do
     expect_no_offenses(<<~RUBY)
       foo(
         <<~EOS
