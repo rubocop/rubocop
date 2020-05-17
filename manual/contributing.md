@@ -63,7 +63,7 @@ If you're working in a company that's making significant use of RuboCop we'd app
 to become a RuboCop sponsor.
 
 You can support the development of RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop),
+[GitHub Sponsors](https://github.com/sponsors/bbatsov),
 [Patreon](https://www.patreon.com/bbatsov),
 [PayPal](https://paypal.me/bbatsov),
 and [Open Collective](https://opencollective.com/rubocop).
