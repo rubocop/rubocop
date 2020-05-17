@@ -3000,7 +3000,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.25 | 1.0
+Enabled | Yes | Yes  | 0.25 | 0.84
 
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
