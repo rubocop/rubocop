@@ -103,7 +103,7 @@ Now that you're familiar with AST, you can learn a bit about the
 [node pattern](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/NodePattern)
 and use patterns to match with specific nodes that you want to match.
 
-You can learn more about Node Pattern [here](https://docs.rubocop.org/en/latest/node_pattern/).
+You can learn more about Node Pattern [here](https://github.com/rubocop-hq/rubocop-ast/blob/master/manual/node_pattern.md).
 
 Node pattern matches something very similar to the current output from AST
 representation, then let's start with something very generic:
