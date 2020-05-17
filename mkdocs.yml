@@ -18,7 +18,6 @@ pages:
 - Support: support.md
 - Contributing: contributing.md
 - Development: development.md
-- Node Pattern: node_pattern.md
 - Versioning: versioning.md
 - Cops Documentation:
     - Layout Cops: cops_layout.md
