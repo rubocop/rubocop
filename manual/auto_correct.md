@@ -16,16 +16,24 @@ Some automatic corrections that _are_ possible have not been implemented yet.
 $ rubocop --safe-auto-correct
 ```
 
-In RuboCop 0.60, we began to annotate cops as `Safe` or not safe. Eventually,
-the safety of each cop will be determined.
+In RuboCop 0.60, we began to annotate cops as `Safe` or not safe. The definition of
+safety is that the cop doesn't generate false positives and doesn't suggest changes
+that are not equivalent to the original code. On top of that there's `SafeAutoCorrect`
+that might be set to `false` in cases where only the auto-correct performed by a cop
+is unsafe, but that the offense detection logic is safe. To sum it up:
 
-> - Safe (true/false) - indicates whether the cop can yield false positives (by
->   design) or not.
-> - SafeAutoCorrect (true/false) - indicates whether the auto-correct the cop
->   does is safe (equivalent) by design.
-> https://github.com/rubocop-hq/rubocop/issues/5978#issuecomment-395958738
+- Safe (`true/false`) - indicates whether the cop can yield false positives (by
+  design) or not.
+- SafeAutoCorrect (`true/false`) - indicates whether the auto-correct a cop
+  does is safe (equivalent) by design. If a cop is unsafe its auto-correct automatically
+  becomes unsafe as well.
 
-If a cop is annotated as "not safe", it will be omitted.
+If a cop or its auto-correct is annotated as "not safe", it will be omitted when using `--safe-auto-correct`.
+
+!!! Note
+
+    Currently there might still be cops that are marked as unsafe or with unsafe auto-correct.
+    Eventually, the safety of each cop will be specified in the default configuration.
 
 ### Example of Unsafe Cop
 
