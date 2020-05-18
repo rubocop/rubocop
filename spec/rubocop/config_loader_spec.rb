@@ -443,8 +443,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'when a department is disabled' do
       let(:file_path) { '.rubocop.yml' }
 
-      shared_examples 'resolves enabled/disabled for all cops' do |enabled_by_default,
-                                                                   disabled_by_default|
+      shared_examples 'resolves enabled/disabled for all cops' do |enabled_by_default, disabled_by_default|
         it "handles EnabledByDefault: #{enabled_by_default}, " \
            "DisabledByDefault: #{disabled_by_default}" do
           create_file('grandparent_rubocop.yml', <<~YAML)
