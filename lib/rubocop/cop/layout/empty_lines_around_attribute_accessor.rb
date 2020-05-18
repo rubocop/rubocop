@@ -70,7 +70,7 @@ module RuboCop
           return if next_line_empty?(node.last_line)
 
           next_line_node = next_line_node(node)
-          return if next_line_node.nil? || allow_alias?(next_line_node) || attribute_or_allowed_method?(next_line_node)
+          return unless require_empty_line?(next_line_node)
 
           add_offense(node)
         end
@@ -87,6 +87,12 @@ module RuboCop
 
         def next_line_empty?(line)
           processed_source[line].blank?
+        end
+
+        def require_empty_line?(node)
+          return false unless node&.respond_to?(:type)
+
+          !allow_alias?(node) && !attribute_or_allowed_method?(node)
         end
 
         def next_line_node(node)
