@@ -20,8 +20,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
         end
       end
 
-      context 'without whitespaces on the right of the operator when a method with no arguments ' \
-              'is used in advance' do
+      context 'without whitespaces on the right of the operator when a method with no arguments is used in advance' do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
             do_something

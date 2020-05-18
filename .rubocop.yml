@@ -71,6 +71,8 @@ Layout/HashAlignment:
 
 Layout/LineLength:
   Max: 100
+  IgnoredPatterns:
+    - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
 
 Lint/InterpolationCheck:
   Exclude:
