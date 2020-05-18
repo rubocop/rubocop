@@ -15,6 +15,7 @@
 * [#7967](https://github.com/rubocop-hq/rubocop/pull/7967): `Style/SlicingWithRange` cop now supports any expression as its first index. ([@zverok][])
 * [#7972](https://github.com/rubocop-hq/rubocop/issues/7972): Fix an incorrect autocrrect for `Style/HashSyntax` when using a return value uses `return`. ([@koic][])
 * [#7886](https://github.com/rubocop-hq/rubocop/issues/7886): Fix a bug in `AllowComments` logic in `Lint/SuppressedException`. ([@jonas054][])
+* [#7991](https://github.com/rubocop-hq/rubocop/issues/7991): Fix an error for `Layout/EmptyLinesAroundAttributeAccessor` when attribute method is method chained. ([@koic][])
 
 ### Changes
 

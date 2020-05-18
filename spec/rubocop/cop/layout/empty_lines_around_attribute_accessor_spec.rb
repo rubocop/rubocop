@@ -67,6 +67,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
+  it 'accepts code when attribute method is method chained' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        attr.foo
+      end
+    RUBY
+  end
+
   context 'when `AllowAliasSyntax: true`' do
     let(:cop_config) do
       { 'AllowAliasSyntax' => true }
