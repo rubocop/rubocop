@@ -36,6 +36,8 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
     end
   end
 
+  let(:cop_config) { { 'AllowComments' => false } }
+
   let(:message) { 'Avoid `when` branches without a body.' }
 
   context 'when a `when` body is missing' do
