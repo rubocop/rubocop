@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'always' do
     let(:cop_config) do
       { 'Enabled'       => true,

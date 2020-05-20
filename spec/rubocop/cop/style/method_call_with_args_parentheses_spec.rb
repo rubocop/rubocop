@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when EnforcedStyle is require_parentheses (default)' do
     let(:cop_config) do
       { 'IgnoredMethods' => %w[puts] }

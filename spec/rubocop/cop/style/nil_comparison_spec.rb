@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'configured with predicate preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'predicate' } }
 

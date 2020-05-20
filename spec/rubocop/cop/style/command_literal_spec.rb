@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[backticks percent_x mixed]

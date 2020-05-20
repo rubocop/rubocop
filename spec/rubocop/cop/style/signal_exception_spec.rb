@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SignalException, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when enforced style is `semantic`' do
     let(:cop_config) { { 'EnforcedStyle' => 'semantic' } }
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { {} }
 
   it 'registers an offense on instance reader' do
