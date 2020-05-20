@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::For, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when each is the enforced style' do
     let(:cop_config) { { 'EnforcedStyle' => 'each' } }
 

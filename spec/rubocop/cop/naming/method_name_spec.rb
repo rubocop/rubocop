@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'never accepted' do |enforced_style|
     it 'registers an offense for mixed snake case and camel case in attr.' do
       expect_offense(<<~RUBY)

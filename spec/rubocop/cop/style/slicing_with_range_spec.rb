@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
-  subject(:cop) { described_class.new(config) }
-
   context '<= Ruby 2.5', :ruby25 do
     it 'reports no offense for array slicing with -1' do
       expect_no_offenses(<<~RUBY)

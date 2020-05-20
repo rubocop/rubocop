@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when EnforcedStyle is space' do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 

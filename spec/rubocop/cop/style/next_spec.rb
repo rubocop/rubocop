@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::Next, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'MinBodyLength' => 1 } }
 
   shared_examples 'iterators' do |condition|

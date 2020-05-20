@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'configured to enforce ruby19 style' do
     context 'with SpaceAroundOperators enabled' do
       let(:config) do

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'always accepted' do |access_modifier|
     it 'accepts when #{access_modifier} is a hash literal value' do
       expect_no_offenses(<<~RUBY)

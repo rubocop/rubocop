@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'always accepted' do
     it 'accepts screaming snake case globals' do
       expect_no_offenses('$MY_GLOBAL = 0')

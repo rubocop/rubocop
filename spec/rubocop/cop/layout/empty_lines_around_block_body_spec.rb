@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
-  subject(:cop) { described_class.new(config) }
-
   # Test blocks using both {} and do..end
   [%w[{ }], %w[do end]].each do |open, close|
     context "when EnforcedStyle is no_empty_lines for #{open} #{close} block" do

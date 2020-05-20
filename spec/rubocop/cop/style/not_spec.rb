@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::Not, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'registers an offense for not' do
     expect_offense(<<~RUBY)
       not test

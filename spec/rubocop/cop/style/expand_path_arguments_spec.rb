@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
-  subject(:cop) { described_class.new(config) }
-
   it "registers an offense when using `File.expand_path('..', __FILE__)`" do
     expect_offense(<<~RUBY)
       File.expand_path('..', __FILE__)

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit defs' do
