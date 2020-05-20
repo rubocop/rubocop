@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7998](https://github.com/rubocop-hq/rubocop/pull/7998): Updates Rake to version 13. ([@RicardoTrindade][])
 * [#7735](https://github.com/rubocop-hq/rubocop/issues/7735): `NodePattern` and `AST` classes have been moved to the [`rubocop-ast` gem](https://github.com/rubocop-hq/rubocop-ast). ([@marcandre][])
 * [#7950](https://github.com/rubocop-hq/rubocop/pull/7950): Add new `Lint/DeprecatedOpenSSLConstant` cop. ([@bdewater][])
 * [#7976](https://github.com/rubocop-hq/rubocop/issues/7976): Add `AllowAliasSyntax` and `AllowedMethods` options for `Layout/EmptyLinesAroundAttributeAccessor`. ([@koic][])
