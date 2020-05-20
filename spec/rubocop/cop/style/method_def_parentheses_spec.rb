@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'require_parentheses' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 

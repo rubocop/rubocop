@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'AllowedImplicitNamespaces' => ['Gem'] } }
 
   it 'registers an offense for `raise` with `::Exception`' do

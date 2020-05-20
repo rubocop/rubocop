@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:error_message) { 'Reverse the order of the operands `%s`.' }
 
   shared_examples 'accepts' do |code|

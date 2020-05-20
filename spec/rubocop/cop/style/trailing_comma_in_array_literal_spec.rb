@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'single line lists' do |extra_info|
     it 'registers an offense for trailing comma' do
       expect_offense(<<~RUBY)

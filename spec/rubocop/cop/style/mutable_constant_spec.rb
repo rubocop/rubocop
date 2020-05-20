@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:prefix) { nil }
 
   shared_examples 'mutable objects' do |o|
