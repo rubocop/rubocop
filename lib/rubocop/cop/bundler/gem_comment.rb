@@ -29,6 +29,8 @@ module RuboCop
         include DefNode
 
         MSG = 'Missing gem description comment.'
+        CHECKED_OPTIONS_CONFIG = 'OnlyWhenUsingAnyOf'
+        VERSION_SPECIFIERS_OPTION = 'with_version_specifiers'
 
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 
@@ -36,7 +38,7 @@ module RuboCop
           return unless gem_declaration?(node)
           return if ignored_gem?(node)
           return if commented?(node)
-          return if cop_config['OnlyIfVersionRestricted'] && !version_restricted_gem?(node)
+          return if cop_config[CHECKED_OPTIONS_CONFIG].any? && !checked_options_present?(node)
 
           add_offense(node)
         end
@@ -70,11 +72,26 @@ module RuboCop
           ignored_gems.include?(node.first_argument.value)
         end
 
-        # Besides the gem name, all other *positional* arguments to `gem` are version restrictions,
-        # as long as it has one we know there's a version restriction.
-        def version_restricted_gem?(send_node)
+        def checked_options_present?(node)
+          cop_config[CHECKED_OPTIONS_CONFIG].include?(VERSION_SPECIFIERS_OPTION) && version_specified_gem?(node) \
+          or contains_checked_options?(node)
+        end
+
+        # Besides the gem name, all other *positional* arguments to `gem` are version specifiers,
+        # as long as it has one we know there's at least one version specifier.
+        def version_specified_gem?(node)
           # arguments[0] is the gem name
-          send_node.arguments[1]&.str_type? == true
+          node.arguments[1]&.str_type? == true
+        end
+
+        def contains_checked_options?(node)
+          (Array(cop_config[CHECKED_OPTIONS_CONFIG]) & gem_options(node).map(&:to_s)).any?
+        end
+
+        def gem_options(node)
+          return [] unless node.arguments.last&.type == :hash
+
+          node.arguments.last.keys.map(&:value)
         end
       end
     end

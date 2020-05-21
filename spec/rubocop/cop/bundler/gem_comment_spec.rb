@@ -6,7 +6,8 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
   let(:cop_config) do
     {
       'Include' => ['**/Gemfile'],
-      'IgnoredGems' => ['rake']
+      'IgnoredGems' => ['rake'],
+      'OnlyWhenUsingAnyOf' => []
     }
   end
 
@@ -64,58 +65,73 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
       end
     end
 
-    context 'and the OnlyIfVersionRestricted option is set to true' do
-      before { cop_config['OnlyIfVersionRestricted'] = true }
+    context 'and the OnlyWhenUsingAnyOf option is set' do
+      before { cop_config['OnlyWhenUsingAnyOf'] = checked_options }
 
-      context 'and a gem is commented' do
-        it 'does not register an offense' do
+      context 'and version specifiers are checked' do
+        let(:checked_options) { ['with_version_specifiers'] }
+
+        it 'does not register an offense if a gem is commented' do
           expect_no_offenses(<<~RUBY, 'Gemfile')
             # Style-guide enforcer.
             gem 'rubocop'
           RUBY
         end
-      end
 
-      context 'and a gem is uncommented but not version restricted' do
-        it 'does not register an offense in a simple example' do
+        it 'does not register an offense if an uncommented gem has no options' do
           expect_no_offenses(<<-GEM, 'Gemfile')
             gem 'rubocop'
           GEM
         end
 
-        it 'does not register an offense in a more complex example' do
+        it 'does not register an offense if an uncommented gem has options but no version specifiers' do
           expect_no_offenses(<<-GEM, 'Gemfile')
             gem 'rubocop', group: development
           GEM
         end
-      end
 
-      context 'and a gem is uncommented and version restricted' do
-        context 'and has no other paramaters' do
-          it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+        it 'registers an offense if an uncommented gem has a version specifier' do
+          expect_offense(<<-GEM, 'Gemfile')
               gem 'rubocop', '~> 12.0'
               ^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
-          end
+          GEM
         end
 
-        context 'and has multiple version restrictions' do
-          it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+        it 'registers an offense if an uncommented gem has multiple version specifiers' do
+          expect_offense(<<-GEM, 'Gemfile')
               gem 'rubocop', '~> 12.0', '>= 11.0'
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
-          end
+          GEM
         end
 
-        context 'and has extra unrelated keyword arguments' do
-          it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+        it 'registers an offense if an uncommented gem has version specifiers and unrelated options' do
+          expect_offense(<<-GEM, 'Gemfile')
             gem 'rubocop', '~> 12.0', required: true
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
-          end
+          GEM
+        end
+      end
+
+      context 'and some other options are checked' do
+        let(:checked_options) { %w[github required] }
+
+        it 'registers an offense if an uncommented gem has one of the checked options' do
+          expect_offense(<<-GEM, 'Gemfile')
+            gem 'rubocop', github: 'some_user/some_fork'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
+          GEM
+        end
+
+        it 'does not register an offense if an uncommented gem has version specifiers but no other options' do
+          expect_no_offenses(<<-GEM, 'Gemfile')
+            gem 'rubocop', '~> 12.0'
+          GEM
+        end
+
+        it 'does not register an offense if an uncommented gem has only unchecked options' do
+          expect_no_offenses(<<-GEM, 'Gemfile')
+            gem 'rubocop', group: development
+          GEM
         end
       end
     end
