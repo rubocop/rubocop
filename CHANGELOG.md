@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.84.0 (2020-05-21)
+
 ### New features
 
 * [#7735](https://github.com/rubocop-hq/rubocop/issues/7735): `NodePattern` and `AST` classes have been moved to the [`rubocop-ast` gem](https://github.com/rubocop-hq/rubocop-ast). ([@marcandre][])
