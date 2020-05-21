@@ -629,6 +629,12 @@ Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
 
+Do not write anything other than cop name in the disabling comment. E.g.:
+
+```ruby
+# rubocop:disable Layout/LineLength --This is a bad comment that includes other than cop name.
+```
+
 ## Setting the style guide URL
 
 You can specify the base URL of the style guide using `StyleGuideBaseURL`.
