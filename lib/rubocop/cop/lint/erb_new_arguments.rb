@@ -143,7 +143,9 @@ module RuboCop
 
           overridden_kwargs[0] = "trim_mode: #{arguments[2].source}" if arguments[2]
 
-          overridden_kwargs[1] = "eoutvar: #{arguments[3].source}" if arguments[3] && !arguments[3].hash_type?
+          if arguments[3] && !arguments[3].hash_type?
+            overridden_kwargs[1] = "eoutvar: #{arguments[3].source}"
+          end
 
           overridden_kwargs
         end

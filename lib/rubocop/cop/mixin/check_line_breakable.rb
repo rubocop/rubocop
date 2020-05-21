@@ -131,7 +131,9 @@ module RuboCop
       def contained_by_multiline_collection_that_could_be_broken_up?(node)
         node.each_ancestor.find do |ancestor|
           if ancestor.hash_type? || ancestor.array_type?
-            return children_could_be_broken_up?(ancestor.children) if breakable_collection?(ancestor, ancestor.children)
+            if breakable_collection?(ancestor, ancestor.children)
+              return children_could_be_broken_up?(ancestor.children)
+            end
           end
 
           next unless ancestor.send_type?

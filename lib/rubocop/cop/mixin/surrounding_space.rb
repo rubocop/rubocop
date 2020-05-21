@@ -107,7 +107,9 @@ module RuboCop
 
       def empty_offenses(node, left, right, message)
         range = range_between(left.begin_pos, right.end_pos)
-        empty_offense(node, range, message, 'Use one') if offending_empty_space?(empty_config, left, right)
+        if offending_empty_space?(empty_config, left, right)
+          empty_offense(node, range, message, 'Use one')
+        end
         return unless offending_empty_no_space?(empty_config, left, right)
 
         empty_offense(node, range, message, 'Do not use')

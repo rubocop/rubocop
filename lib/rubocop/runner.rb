@@ -204,7 +204,9 @@ module RuboCop
     end
 
     def file_finished(file, offenses)
-      offenses = offenses.select { |o| considered_failure?(o) } if @options[:display_only_fail_level_offenses]
+      if @options[:display_only_fail_level_offenses]
+        offenses = offenses.select { |o| considered_failure?(o) }
+      end
       formatter_set.file_finished(file, offenses)
     end
 
@@ -284,7 +286,9 @@ module RuboCop
     def check_for_infinite_loop(processed_source, offenses)
       checksum = processed_source.checksum
 
-      raise InfiniteCorrectionLoop.new(processed_source.path, offenses) if @processed_sources.include?(checksum)
+      if @processed_sources.include?(checksum)
+        raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
+      end
 
       @processed_sources << checksum
     end

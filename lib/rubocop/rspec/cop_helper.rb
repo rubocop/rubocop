@@ -57,7 +57,9 @@ module CopHelper
 
       source = new_source
       cnt += 1
-      raise RuboCop::Runner::InfiniteCorrectionLoop.new(file, []) if cnt > RuboCop::Runner::MAX_ITERATIONS
+      if cnt > RuboCop::Runner::MAX_ITERATIONS
+        raise RuboCop::Runner::InfiniteCorrectionLoop.new(file, [])
+      end
     end
   end
 

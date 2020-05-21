@@ -27,7 +27,9 @@ module RuboCop
             Regexp.last_match(4).scan(/[^,]+|[\W]+/) do |name|
               trimmed_name = name.strip
 
-              check_cop_name(trimmed_name, comment, offset) unless valid_content_token?(trimmed_name)
+              unless valid_content_token?(trimmed_name)
+                check_cop_name(trimmed_name, comment, offset)
+              end
 
               break if contain_unexpected_character_for_department_name?(name)
 
@@ -41,7 +43,9 @@ module RuboCop
           cop_name = range.source
           qualified_cop_name = Cop.registry.qualified_cop_name(cop_name,
                                                                nil, shall_warn)
-          qualified_cop_name = qualified_legacy_cop_name(cop_name) unless qualified_cop_name.include?('/')
+          unless qualified_cop_name.include?('/')
+            qualified_cop_name = qualified_legacy_cop_name(cop_name)
+          end
 
           ->(corrector) { corrector.replace(range, qualified_cop_name) }
         end

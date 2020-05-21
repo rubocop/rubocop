@@ -112,7 +112,9 @@ module RuboCop
 
       def print_warning(name, path)
         message = "#{path}: Warning: no department given for #{name}."
-        message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.' if path.end_with?('.rb')
+        if path.end_with?('.rb')
+          message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.'
+        end
         warn message
       end
 

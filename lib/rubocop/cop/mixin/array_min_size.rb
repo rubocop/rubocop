@@ -38,7 +38,9 @@ module RuboCop
       def largest_brackets_size(style, ary_size)
         self.class.largest_brackets ||= -Float::INFINITY
 
-        self.class.largest_brackets = ary_size if style == :brackets && ary_size > self.class.largest_brackets
+        if style == :brackets && ary_size > self.class.largest_brackets
+          self.class.largest_brackets = ary_size
+        end
 
         self.class.largest_brackets
       end

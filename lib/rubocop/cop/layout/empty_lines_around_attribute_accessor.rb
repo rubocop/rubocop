@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Layout
       # Checks for a newline after an attribute accessor or a group of them.
-      # `alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed by default.
-      # These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
+      # `alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed
+      # by default. These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
       #
       # @example
       #   # bad
