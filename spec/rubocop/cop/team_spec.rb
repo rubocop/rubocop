@@ -210,43 +210,6 @@ RSpec.describe RuboCop::Cop::Team do
         expect($stderr.string).to include(error_message)
       end
     end
-
-    context 'when a correction that receives Parser::Source::Range raises ' \
-            'an error' do
-      include_context 'mock console output'
-
-      before do
-        allow_any_instance_of(RuboCop::Cop::Layout::IndentationStyle)
-          .to receive(:autocorrect).and_return(buggy_correction)
-
-        create_file(file_path, <<~RUBY)
-          def foo
-          \tbar
-          end
-        RUBY
-      end
-
-      let(:buggy_correction) do
-        lambda do |_corrector|
-          raise cause
-        end
-      end
-      let(:options) { { auto_correct: true } }
-
-      let(:cause) { StandardError.new('cause') }
-
-      let(:error_message) do
-        'An error occurred while Layout/IndentationStyle cop was inspecting ' \
-        '/tmp/example.rb:2:0.'
-      end
-
-      it 'records Team#errors' do
-        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
-
-        expect { team.inspect_file(source) }.to raise_error(cause)
-        expect($stderr.string).to include(error_message)
-      end
-    end
   end
 
   describe '#cops' do
