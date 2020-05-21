@@ -64,7 +64,7 @@ module RuboCop
         end
 
         def requires_bare_percent?(source)
-          style == :bare_percent && source =~ /^%Q/
+          style == :bare_percent && source.start_with?('%Q')
         end
 
         def add_offense_for_wrong_style(node, good, bad)
