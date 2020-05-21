@@ -195,8 +195,8 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
 
     it 'still rejects other methods with more than 5 lines' do
       expect_offense(<<~RUBY)
-        def m 
-        ^^^^^^ Method has too many lines. [6/5]
+        def m
+        ^^^^^ Method has too many lines. [6/5]
           a = 1
           a = 2
           a = 3
