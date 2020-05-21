@@ -159,6 +159,7 @@ Bundler/GemComment:
     - '**/Gemfile'
     - '**/gems.rb'
   IgnoredGems: []
+  OnlyWhenUsingAnyOf: []
 
 Bundler/InsecureProtocolSource:
   Description: >-

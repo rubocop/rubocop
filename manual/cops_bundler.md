@@ -47,9 +47,15 @@ Disabled | Yes | No | 0.59 | 0.77
 
 Add a comment describing each gem in your Gemfile.
 
+Optionally, the "OnlyWhenUsingAnyOf" configuration
+can be used to only register offenses when the gems
+use certain options or have version specifiers.
+Add "with_version_specifiers" and/or the option names
+(e.g. 'required', 'github', etc) you want to check.
+
 ### Examples
 
-#### OnlyIfVersionRestricted: false (default)
+#### OnlyWhenUsingAnyOf: [] (default)
 
 ```ruby
 # bad
@@ -61,17 +67,34 @@ gem 'foo'
 # Helpers for the foo things.
 gem 'foo'
 ```
-#### OnlyIfVersionRestricted: true
+#### OnlyWhenUsingAnyOf: ['with_version_specifiers']
 
 ```ruby
 # bad
 
-gem 'foo', '>= 2.1'
+gem 'foo', '< 2.1'
 
 # good
 
-# Version 2.1 introduces breaking change bar
+# Version 2.1 introduces breaking change baz
 gem 'foo', '< 2.1'
+```
+#### OnlyWhenUsingAnyOf: ['with_version_specifiers', 'github']
+
+```ruby
+# bad
+
+gem 'foo', github: 'some_account/some_fork_of_foo'
+
+gem 'bar', '< 2.1'
+
+# good
+
+# Using this fork because baz
+gem 'foo', github: 'some_account/some_fork_of_foo'
+
+# Version 2.1 introduces breaking change baz
+gem 'bar', '< 2.1'
 ```
 
 ### Configurable attributes
@@ -80,6 +103,7 @@ Name | Default value | Configurable values
 --- | --- | ---
 Include | `**/*.gemfile`, `**/Gemfile`, `**/gems.rb` | Array
 IgnoredGems | `[]` | Array
+OnlyWhenUsingAnyOf | `[]` | Array
 
 ## Bundler/InsecureProtocolSource
 

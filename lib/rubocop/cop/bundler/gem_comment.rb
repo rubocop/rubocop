@@ -5,7 +5,13 @@ module RuboCop
     module Bundler
       # Add a comment describing each gem in your Gemfile.
       #
-      # @example OnlyIfVersionRestricted: false (default)
+      # Optionally, the "OnlyWhenUsingAnyOf" configuration
+      # can be used to only register offenses when the gems
+      # use certain options or have version specifiers.
+      # Add "with_version_specifiers" and/or the option names
+      # (e.g. 'required', 'github', etc) you want to check.
+      #
+      # @example OnlyWhenUsingAnyOf: [] (default)
       #   # bad
       #
       #   gem 'foo'
@@ -15,15 +21,30 @@ module RuboCop
       #   # Helpers for the foo things.
       #   gem 'foo'
       #
-      # @example OnlyIfVersionRestricted: true
+      # @example OnlyWhenUsingAnyOf: ['with_version_specifiers']
       #   # bad
       #
-      #   gem 'foo', '>= 2.1'
+      #   gem 'foo', '< 2.1'
       #
       #   # good
       #
-      #   # Version 2.1 introduces breaking change bar
+      #   # Version 2.1 introduces breaking change baz
       #   gem 'foo', '< 2.1'
+      #
+      # @example OnlyWhenUsingAnyOf: ['with_version_specifiers', 'github']
+      #   # bad
+      #
+      #   gem 'foo', github: 'some_account/some_fork_of_foo'
+      #
+      #   gem 'bar', '< 2.1'
+      #
+      #   # good
+      #
+      #   # Using this fork because baz
+      #   gem 'foo', github: 'some_account/some_fork_of_foo'
+      #
+      #   # Version 2.1 introduces breaking change baz
+      #   gem 'bar', '< 2.1'
       #
       class GemComment < Cop
         include DefNode
