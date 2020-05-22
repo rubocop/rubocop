@@ -82,6 +82,8 @@ module RuboCop
             end_line = ancestor.loc.end.line
             break
           end
+          return false unless end_line
+
           processed_source[node.first_line...end_line].any? { |line| comment_line?(line) }
         end
       end

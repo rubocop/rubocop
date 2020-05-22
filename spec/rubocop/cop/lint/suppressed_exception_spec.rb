@@ -41,6 +41,16 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
       RUBY
     end
 
+    it 'registers an offense for empty rescue block in `def`' do
+      expect_offense(<<~RUBY)
+        def foo
+          do_something
+        rescue
+        ^^^^^^ Do not suppress exceptions.
+        end
+      RUBY
+    end
+
     it 'registers an offense for empty rescue on single line with a comment after it' do
       expect_offense(<<~RUBY)
         RSpec.describe Dummy do
