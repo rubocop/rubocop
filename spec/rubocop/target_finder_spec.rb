@@ -3,64 +3,6 @@
 RSpec.describe RuboCop::TargetFinder, :isolated_environment do
   include FileHelper
 
-  RUBY_EXTENSIONS = %w[.rb
-                       .arb
-                       .axlsx
-                       .builder
-                       .fcgi
-                       .gemfile
-                       .gemspec
-                       .god
-                       .jb
-                       .jbuilder
-                       .mspec
-                       .opal
-                       .pluginspec
-                       .podspec
-                       .rabl
-                       .rake
-                       .rbuild
-                       .rbw
-                       .rbx
-                       .ru
-                       .ruby
-                       .spec
-                       .thor
-                       .watchr].freeze
-
-  RUBY_INTERPRETERS = %w[ruby
-                         macruby
-                         rake
-                         jruby
-                         rbx].freeze
-
-  RUBY_FILENAMES = %w[.irbrc
-                      .pryrc
-                      .simplecov
-                      Appraisals
-                      Berksfile
-                      Brewfile
-                      Buildfile
-                      Capfile
-                      Cheffile
-                      Dangerfile
-                      Deliverfile
-                      Fastfile
-                      Gemfile
-                      Guardfile
-                      Jarfile
-                      Mavenfile
-                      Podfile
-                      Puppetfile
-                      Rakefile
-                      rakefile
-                      Snapfile
-                      Steepfile
-                      Thorfile
-                      Vagabondfile
-                      Vagrantfile
-                      buildfile].freeze
-
   subject(:target_finder) do
     described_class.new(config_store, options)
   end
@@ -78,6 +20,64 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     create_file('dir1/executable',  '#!/usr/bin/env ruby')
     create_empty_file('dir2/ruby3.rb')
     create_empty_file('.hidden/ruby4.rb')
+
+    stub_const('RUBY_EXTENSIONS', %w[.rb
+                                     .arb
+                                     .axlsx
+                                     .builder
+                                     .fcgi
+                                     .gemfile
+                                     .gemspec
+                                     .god
+                                     .jb
+                                     .jbuilder
+                                     .mspec
+                                     .opal
+                                     .pluginspec
+                                     .podspec
+                                     .rabl
+                                     .rake
+                                     .rbuild
+                                     .rbw
+                                     .rbx
+                                     .ru
+                                     .ruby
+                                     .spec
+                                     .thor
+                                     .watchr].freeze)
+
+    stub_const('RUBY_INTERPRETERS', %w[ruby
+                                       macruby
+                                       rake
+                                       jruby
+                                       rbx].freeze)
+
+    stub_const('RUBY_FILENAMES', %w[.irbrc
+                                    .pryrc
+                                    .simplecov
+                                    Appraisals
+                                    Berksfile
+                                    Brewfile
+                                    Buildfile
+                                    Capfile
+                                    Cheffile
+                                    Dangerfile
+                                    Deliverfile
+                                    Fastfile
+                                    Gemfile
+                                    Guardfile
+                                    Jarfile
+                                    Mavenfile
+                                    Podfile
+                                    Puppetfile
+                                    Rakefile
+                                    rakefile
+                                    Snapfile
+                                    Steepfile
+                                    Thorfile
+                                    Vagabondfile
+                                    Vagrantfile
+                                    buildfile].freeze)
   end
 
   shared_examples 'common behavior for #find' do

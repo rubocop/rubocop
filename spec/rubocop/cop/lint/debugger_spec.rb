@@ -64,11 +64,8 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     expect_no_offenses('Kernel.save_and_open_page')
   end
 
-  ALL_COMMANDS = %w[debugger byebug console pry remote_pry pry_remote irb
-                    save_and_open_page save_and_open_screenshot
-                    save_screenshot remote_byebug].freeze
-
-  ALL_COMMANDS.each do |src|
+  %w[debugger byebug console pry remote_pry pry_remote irb save_and_open_page
+     save_and_open_screenshot save_screenshot remote_byebug].each do |src|
     it "does not report an offense for a #{src} in comments" do
       expect_no_offenses("# #{src}")
     end
