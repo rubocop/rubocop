@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     let(:command_line_options) { %w[--no-color] }
 
-    context '.rubocop file' do
+    describe '.rubocop file' do
       before do
         create_file('.rubocop', '--color --fail-level C')
       end
@@ -386,7 +386,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-    context '.rubocop directory' do
+    describe '.rubocop directory' do
       before do
         FileUtils.mkdir '.rubocop'
       end

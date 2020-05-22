@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   end
 
   describe 'Registry' do
-    context '#departments' do
+    describe '#departments' do
       subject(:departments) { described_class.registry.departments }
 
       it('has departments') { expect(departments.length).not_to eq(0) }
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       end
     end
 
-    context '#with_department' do
+    describe '#with_department' do
       let(:departments) { described_class.registry.departments }
 
       it 'has at least one cop per department' do
