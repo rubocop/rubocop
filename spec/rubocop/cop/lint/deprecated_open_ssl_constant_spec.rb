@@ -88,6 +88,23 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
     RUBY
   end
 
+  context 'when used in a block' do
+    it 'registers an offense when using ::Digest class methods on an algorithm constant and corrects' do
+      expect_offense(<<~RUBY)
+        do_something do
+          OpenSSL::Digest::SHA1.new
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Digest.new('SHA1')` instead of `OpenSSL::Digest::SHA1.new`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something do
+          OpenSSL::Digest.new('SHA1')
+        end
+      RUBY
+    end
+  end
+
   it 'does not register an offense when building digest using an algorithm string' do
     expect_no_offenses(<<~RUBY)
       OpenSSL::Digest.new('SHA256')
