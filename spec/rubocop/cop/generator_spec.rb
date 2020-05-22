@@ -5,13 +5,12 @@ RSpec.describe RuboCop::Cop::Generator do
     described_class.new(cop_identifier, 'your_id', output: stdout)
   end
 
-  HOME_DIR = Dir.pwd
-
   let(:stdout) { StringIO.new }
   let(:cop_identifier) { 'Style/FakeCop' }
 
   before do
     allow(File).to receive(:write)
+    stub_const('HOME_DIR', Dir.pwd)
   end
 
   describe '#write_source' do

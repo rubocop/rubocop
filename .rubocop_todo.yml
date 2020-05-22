@@ -58,21 +58,6 @@ RSpec/ExpectOutput:
     - 'spec/rubocop/result_cache_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
 
-# Offense count: 21
-RSpec/LeakyConstantDeclaration:
-  Exclude:
-    - 'spec/rubocop/cli/cli_options_spec.rb'
-    - 'spec/rubocop/cop/generator_spec.rb'
-    - 'spec/rubocop/cop/layout/space_inside_block_braces_spec.rb'
-    - 'spec/rubocop/cop/lint/debugger_spec.rb'
-    - 'spec/rubocop/cop/range_help_spec.rb'
-    - 'spec/rubocop/cop/registry_spec.rb'
-    - 'spec/rubocop/cop/style/each_for_simple_loop_spec.rb'
-    - 'spec/rubocop/cop/team_spec.rb'
-    - 'spec/rubocop/cop/util_spec.rb'
-    - 'spec/rubocop/formatter/disabled_config_formatter_spec.rb'
-    - 'spec/rubocop/target_finder_spec.rb'
-
 # Offense count: 433
 # Configuration parameters: AggregateFailuresByDefault.
 RSpec/MultipleExpectations:

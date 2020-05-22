@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
-  SUPPORTED_STYLES = %w[space no_space].freeze
-
   subject(:cop) { described_class.new(config) }
+
+  before do
+    stub_const('SUPPORTED_STYLES', %w[space no_space].freeze)
+  end
 
   let(:cop_config) do
     {

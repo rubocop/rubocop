@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::RangeHelp do
-  class TestRangeHelp
-    include RuboCop::Cop::RangeHelp
+  before do
+    stub_const('TestRangeHelp', Class.new { include RuboCop::Cop::RangeHelp })
   end
 
   describe 'source indicated by #range_with_surrounding_comma' do
