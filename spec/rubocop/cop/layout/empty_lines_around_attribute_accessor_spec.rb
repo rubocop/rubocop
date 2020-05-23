@@ -75,6 +75,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
+  it 'does not registers an offense and corrects when using `if` ... `else` branches' do
+    expect_no_offenses(<<~RUBY)
+      if condition
+        attr_reader :foo
+      else
+        do_something
+      end
+    RUBY
+  end
+
   context 'when `AllowAliasSyntax: true`' do
     let(:cop_config) do
       { 'AllowAliasSyntax' => true }

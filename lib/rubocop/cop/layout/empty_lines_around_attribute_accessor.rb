@@ -96,6 +96,8 @@ module RuboCop
         end
 
         def next_line_node(node)
+          return if node.parent.if_type?
+
           node.parent.children[node.sibling_index + 1]
         end
 
