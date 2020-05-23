@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition do
       end
     end
 
-    context 'chained case with multiple line args' do
+    context 'chained case without args' do
       it 'detects' do
         expect_offense(<<~RUBY)
           <<-SQL

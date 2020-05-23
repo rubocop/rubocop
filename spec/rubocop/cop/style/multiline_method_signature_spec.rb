@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     end
   end
 
-  context 'when arguments span multiple lines' do
+  context 'when arguments for a singleton method span multiple lines' do
     context 'when defining an class method' do
       it 'registers an offense when `end` is on the following line' do
         expect_offense(<<~RUBY)

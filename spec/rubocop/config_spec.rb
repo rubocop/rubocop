@@ -150,33 +150,6 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes a valid EnforcedStyle' do
-      before do
-        create_file(configuration_path, <<~YAML)
-          Layout/SpaceAroundBlockParameters:
-            EnforcedStyleInsidePipes: space
-        YAML
-      end
-
-      it 'does not raise validation error' do
-        expect { configuration.validate }.not_to raise_error
-      end
-    end
-
-    context 'when the configuration includes an invalid EnforcedStyle' do
-      before do
-        create_file(configuration_path, <<~YAML)
-          Layout/SpaceAroundBlockParameters:
-            EnforcedStyleInsidePipes: itisinvalid
-        YAML
-      end
-
-      it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
-      end
-    end
-
     context 'when the configuration includes multiple valid EnforcedStyle' do
       before do
         create_file(configuration_path, <<~YAML)

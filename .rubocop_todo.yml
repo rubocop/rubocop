@@ -62,19 +62,6 @@ RSpec/ExpectOutput:
 RSpec/MultipleExpectations:
   Max: 25
 
-# Offense count: 25
-RSpec/RepeatedExampleGroupDescription:
-  Exclude:
-    - 'spec/rubocop/config_spec.rb'
-    - 'spec/rubocop/cop/layout/empty_lines_around_module_body_spec.rb'
-    - 'spec/rubocop/cop/layout/end_alignment_spec.rb'
-    - 'spec/rubocop/cop/layout/heredoc_argument_closing_parenthesis_spec.rb'
-    - 'spec/rubocop/cop/layout/multiline_method_argument_line_breaks_spec.rb'
-    - 'spec/rubocop/cop/lint/heredoc_method_call_position_spec.rb'
-    - 'spec/rubocop/cop/style/multiline_method_signature_spec.rb'
-    - 'spec/rubocop/formatter/fuubar_style_formatter_spec.rb'
-    - 'spec/rubocop/target_finder_spec.rb'
-
 # Offense count: 5
 RSpec/SubjectStub:
   Exclude:
