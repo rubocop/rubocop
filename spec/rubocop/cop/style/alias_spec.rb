@@ -157,14 +157,14 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method with non-literal '\
-       'argument' do
+       'constant argument' do
       expect_no_offenses(<<~RUBY)
         alias_method :bar, FOO
       RUBY
     end
 
     it 'does not register an offense for alias_method with non-literal ' \
-       'argument' do
+       'method call argument' do
       expect_no_offenses(<<~RUBY)
         alias_method :baz, foo.bar
       RUBY

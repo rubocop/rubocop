@@ -62,18 +62,6 @@ RSpec/ExpectOutput:
 RSpec/MultipleExpectations:
   Max: 25
 
-# Offense count: 20
-RSpec/RepeatedDescription:
-  Exclude:
-    - 'spec/rubocop/cop/layout/empty_lines_around_access_modifier_spec.rb'
-    - 'spec/rubocop/cop/layout/extra_spacing_spec.rb'
-    - 'spec/rubocop/cop/layout/multiline_hash_key_line_breaks_spec.rb'
-    - 'spec/rubocop/cop/lint/void_spec.rb'
-    - 'spec/rubocop/cop/style/alias_spec.rb'
-    - 'spec/rubocop/cop/style/frozen_string_literal_comment_spec.rb'
-    - 'spec/rubocop/cop/style/inverse_methods_spec.rb'
-    - 'spec/rubocop/cop/style/trailing_comma_in_arguments_spec.rb'
-
 # Offense count: 4
 RSpec/RepeatedExampleGroupBody:
   Exclude:
