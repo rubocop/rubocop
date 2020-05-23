@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL
             foo
           SQL
-          )
+          ).bar
           ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
@@ -132,6 +132,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL)
             foo
           SQL
+          .bar
         RUBY
       end
     end
@@ -142,7 +143,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL,
             foo
           SQL
-          )
+          ).bar
           ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
@@ -150,6 +151,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL)
             foo
           SQL
+          .bar
         RUBY
       end
     end
@@ -248,7 +250,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       it 'detects' do
         expect_offense(<<~RUBY)
           foo(<<-SQL    ,
-            foo
+            foo,
           SQL
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
@@ -256,7 +258,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
 
         expect_correction(<<~RUBY)
           foo(<<-SQL)
-            foo
+            foo,
           SQL
         RUBY
       end
