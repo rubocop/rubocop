@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
   context 'when EnforcedStyle is empty_lines_except_namespace' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines_except_namespace' } }
 
-    context 'when only child is class' do
+    context 'when only child is module' do
       it 'requires no empty lines for namespace' do
         expect_no_offenses(<<~RUBY)
           module Parent
