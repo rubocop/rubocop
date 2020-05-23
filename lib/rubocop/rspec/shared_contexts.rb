@@ -40,7 +40,7 @@ end
 
 # This context assumes nothing and defines `cop`, among others.
 RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
-  ### Meant to be overriden at will
+  ### Meant to be overridden at will
 
   let(:source) { 'code = {some: :ruby}' }
 
@@ -65,7 +65,7 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
                               range.exclude_end? ? range.end : range.end + 1)
   end
 
-  ### Usefull intermediary steps (less likely to be overriden)
+  ### Useful intermediary steps (less likely to be overridden)
 
   let(:processed_source) { parse_source(source, 'test') }
 
