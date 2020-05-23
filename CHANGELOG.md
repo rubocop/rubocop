@@ -6,6 +6,7 @@
 
 * [#8008](https://github.com/rubocop-hq/rubocop/issues/8008): Fix an error for `Lint/SuppressedException` when empty rescue block in `def`. ([@koic][])
 * [#8012](https://github.com/rubocop-hq/rubocop/issues/8012): Fix an incorrect autocorrect for `Lint/DeprecatedOpenSSLConstant` when deprecated OpenSSL constant is used in a block. ([@koic][])
+* [#8017](https://github.com/rubocop-hq/rubocop/pull/8017): Fix a false positive for `Lint/SuppressedException` when empty rescue with comment in `def`. ([@koic][])
 
 ## 0.84.0 (2020-05-21)
 
