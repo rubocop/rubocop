@@ -15,6 +15,7 @@
 * [#8124](https://github.com/rubocop-hq/rubocop/issues/8124): Fix a false positive for `Lint/FormatParameterMismatch` when using named parameters with escaped `%`. ([@koic][])
 * [#7979](https://github.com/rubocop-hq/rubocop/issues/7979): Fix "uninitialized constant DidYouMean::SpellChecker" exception. ([@bquorning][])
 * [#8098](https://github.com/rubocop-hq/rubocop/issues/8098): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using interpolations. ([@owst][])
+* [#8150](https://github.com/rubocop-hq/rubocop/pull/8150): Fix a false positive for `Layout/EmptyLinesAroundAttributeAccessor` when using attribute accessors in `if` ... `else` branches. ([@koic][])
 
 ### Changes
 
