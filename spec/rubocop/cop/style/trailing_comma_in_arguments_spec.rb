@@ -441,7 +441,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'does not break when a safe method call is chained on the ' \
-         'offending one' do
+         'offending simple one' do
         expect_no_offenses(<<~RUBY)
           foo
             &.do_something(:bar, :baz)
@@ -449,7 +449,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'does not break when a safe method call is chained on the ' \
-         'offending one' do
+         'offending more complex one' do
         expect_no_offenses(<<~RUBY)
           foo.bar(
             baz: 1,

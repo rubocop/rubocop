@@ -239,14 +239,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for not having a frozen string literal comment ' \
-       'when there is only a shebang' do
-      expect_offense(<<~RUBY)
-        #!/usr/bin/env ruby
-        ^ Missing frozen string literal comment.
-      RUBY
-    end
-
     it 'accepts a frozen string literal comment after other comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
