@@ -62,11 +62,6 @@ RSpec/ExpectOutput:
 RSpec/MultipleExpectations:
   Max: 25
 
-# Offense count: 4
-RSpec/RepeatedExampleGroupBody:
-  Exclude:
-    - 'spec/rubocop/cop/layout/heredoc_argument_closing_parenthesis_spec.rb'
-
 # Offense count: 25
 RSpec/RepeatedExampleGroupDescription:
   Exclude:
