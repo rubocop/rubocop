@@ -304,6 +304,30 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
   end
 
+  describe '#relevant_file?' do
+    subject { cop.relevant_file?(file) }
+
+    let(:cop_config) { { 'Include' => ['foo.rb'] } }
+
+    context 'when the file matches the Include configuration' do
+      let(:file) { 'foo.rb' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the file doesn\'t match the Include configuration' do
+      let(:file) { 'bar.rb' }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the file is an anonymous source' do
+      let(:file) { '(string)' }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '#safe_autocorrect?' do
     subject { cop.safe_autocorrect? }
 
