@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
       end
     end
 
-    context 'and the OnlyWhenUsingAnyOf option is set' do
+    context 'when the "OnlyWhenUsingAnyOf" option is set' do
       before { cop_config['OnlyWhenUsingAnyOf'] = checked_options }
 
       context 'and version specifiers are checked' do
