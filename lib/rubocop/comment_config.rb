@@ -124,7 +124,7 @@ module RuboCop
     end
 
     def directive_on_comment_line?(comment)
-      comment.text[1..-1].match(COMMENT_DIRECTIVE_REGEXP)
+      comment.text[1..-1].match?(COMMENT_DIRECTIVE_REGEXP)
     end
 
     def each_directive
