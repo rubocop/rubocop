@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
     context 'when the "OnlyWhenUsingAnyOf" option is set' do
       before { cop_config['OnlyWhenUsingAnyOf'] = checked_options }
 
-      context 'and version specifiers are checked' do
+      context 'when the version specifiers are checked' do
         let(:checked_options) { ['with_version_specifiers'] }
 
         it 'does not register an offense if a gem is commented' do
