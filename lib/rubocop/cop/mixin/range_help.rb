@@ -16,11 +16,7 @@ module RuboCop
           column_index = column
         end
 
-        line_begin_pos = if line_number.zero?
-                           0
-                         else
-                           source_buffer.line_range(line_number).begin_pos
-                         end
+        line_begin_pos = line_number.zero? ? 0 : source_buffer.line_range(line_number).begin_pos
         begin_pos = line_begin_pos + column_index
         end_pos = begin_pos + length
 
@@ -53,10 +49,8 @@ module RuboCop
         go_left, go_right = directions(side)
 
         begin_pos = range.begin_pos
-        if go_left
-          begin_pos =
-            final_pos(src, begin_pos, -1, newlines, whitespace)
-        end
+        begin_pos = final_pos(src, begin_pos, -1, newlines, whitespace) if go_left
+
         end_pos = range.end_pos
         end_pos = final_pos(src, end_pos, 1, newlines, whitespace) if go_right
         Parser::Source::Range.new(buffer, begin_pos, end_pos)

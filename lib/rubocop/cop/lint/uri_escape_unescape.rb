@@ -59,10 +59,8 @@ module RuboCop
                              ALTERNATE_METHODS_OF_URI_UNESCAPE
                            end
 
-            double_colon = top_level ? '::' : ''
-
             message = format(
-              MSG, uri_method: "#{double_colon}URI.#{obsolete_method}",
+              MSG, uri_method: "#{top_level ? '::' : ''}URI.#{obsolete_method}",
                    replacements: "`#{replacements[0]}`, `#{replacements[1]}` " \
                                  "or `#{replacements[2]}`"
             )

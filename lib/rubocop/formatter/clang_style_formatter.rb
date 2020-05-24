@@ -15,14 +15,12 @@ module RuboCop
       private
 
       def report_offense(file, offense)
-        output.printf(
-          "%<path>s:%<line>d:%<column>d: %<severity>s: %<message>s\n",
-          path: cyan(smart_path(file)),
-          line: offense.line,
-          column: offense.real_column,
-          severity: colored_severity_code(offense),
-          message: message(offense)
-        )
+        output.printf("%<path>s:%<line>d:%<column>d: %<severity>s: %<message>s\n",
+                      path: cyan(smart_path(file)),
+                      line: offense.line,
+                      column: offense.real_column,
+                      severity: colored_severity_code(offense),
+                      message: message(offense))
 
         begin
           return unless valid_line?(offense)

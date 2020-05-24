@@ -98,11 +98,8 @@ module RuboCop
           when 0
             'Trailing blank line missing.'
           else
-            instead_of = if wanted_blank_lines.zero?
-                           ''
-                         else
-                           "instead of #{wanted_blank_lines} "
-                         end
+            instead_of = wanted_blank_lines.zero? ? '' : "instead of #{wanted_blank_lines} "
+
             format('%<current>d trailing blank lines %<prefer>sdetected.',
                    current: blank_lines, prefer: instead_of)
           end

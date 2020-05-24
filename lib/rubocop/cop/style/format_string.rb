@@ -82,10 +82,8 @@ module RuboCop
               autocorrect_from_percent(corrector, node)
             when :format, :sprintf
               case style
-              when :percent
-                autocorrect_to_percent(corrector, node)
-              when :format, :sprintf
-                corrector.replace(node.loc.selector, style.to_s)
+              when :percent then autocorrect_to_percent(corrector, node)
+              when :format, :sprintf then corrector.replace(node.loc.selector, style.to_s)
               end
             end
           end

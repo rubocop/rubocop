@@ -77,9 +77,9 @@ module RuboCop
           # holds source read in from stdin, when --stdin option is used
           @options[:stdin] = new_source
         else
-          filename = buffer.name
-          File.open(filename, 'w') { |f| f.write(new_source) }
+          File.open(buffer.name, 'w') { |f| f.write(new_source) }
         end
+
         @updated_source_file = true
       rescue RuboCop::ErrorWithAnalyzedFileLocation => e
         process_errors(buffer.name, [e])

@@ -63,8 +63,7 @@ module RuboCop
         BRACKET_METHODS = %i[[] []=].freeze
 
         def on_send(node)
-          return if node.multiline?
-          return unless bracket_method?(node)
+          return if node.multiline? || !bracket_method?(node)
 
           tokens = tokens(node)
           left_token = left_ref_bracket(node, tokens)

@@ -102,8 +102,7 @@ module RuboCop
             case node.type
             when :block, :kwbegin
               node.loc.begin
-            when :def, :defs, :class, :module,
-                 :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn
+            when :def, :defs, :class, :module, :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn
               node.loc.name
             when :masgn
               mlhs_node, = *node

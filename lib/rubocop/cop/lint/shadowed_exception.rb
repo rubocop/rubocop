@@ -120,16 +120,7 @@ module RuboCop
         def evaluate_exceptions(rescue_group)
           if rescue_group
             rescued_exceptions = rescued_exceptions(rescue_group)
-            rescued_exceptions.each_with_object([]) do |exception, converted|
-              begin
-                silence_warnings do
-                  # Avoid printing deprecation warnings about constants
-                  converted << Kernel.const_get(exception)
-                end
-              rescue NameError
-                converted << nil
-              end
-            end
+            handle_rescued_exceptions(rescued_exceptions)
           else
             # treat an empty `rescue` as `rescue StandardError`
             [StandardError]
@@ -170,6 +161,19 @@ module RuboCop
 
           rescued_groups.each_cons(2).with_index do |group_pair, i|
             return rescues[i] unless sorted?(group_pair)
+          end
+        end
+
+        def handle_rescued_exceptions(rescued_exceptions)
+          rescued_exceptions.each_with_object([]) do |exception, converted|
+            begin
+              silence_warnings do
+                # Avoid printing deprecation warnings about constants
+                converted << Kernel.const_get(exception)
+              end
+            rescue NameError
+              converted << nil
+            end
           end
         end
       end

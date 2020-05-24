@@ -336,14 +336,10 @@ module RuboCop
 
           formats.uniq.map do |format|
             case format
-            when 'key'
-              KeyAlignment.new
-            when 'table'
-              TableAlignment.new
-            when 'separator'
-              SeparatorAlignment.new
-            else
-              raise "Unknown #{key}: #{formats}"
+            when 'key' then KeyAlignment.new
+            when 'table' then TableAlignment.new
+            when 'separator' then SeparatorAlignment.new
+            else raise "Unknown #{key}: #{formats}"
             end
           end
         end

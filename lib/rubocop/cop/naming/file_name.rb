@@ -187,10 +187,10 @@ module RuboCop
           # makes sure we work from the actual root in the case of a path like
           # /home/user/src/project_name/lib.
           components.reverse.each_with_index do |c, i|
-            if start.include?(c)
-              start_index = components.size - i
-              break
-            end
+            next unless start.include?(c)
+
+            start_index = components.size - i
+            break
           end
 
           if start_index.nil?

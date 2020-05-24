@@ -71,8 +71,7 @@ module RuboCop
         begin
           response.error!
         rescue StandardError => e
-          message = "#{e.message} while downloading remote config"\
-            " file #{uri}"
+          message = "#{e.message} while downloading remote config file #{uri}"
           raise e, message
         end
       end

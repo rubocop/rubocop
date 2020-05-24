@@ -45,9 +45,7 @@ module RuboCop
 
         @diagnostics = []
         # Don't print warnings to stderr if corrections conflict with each other
-        @source_rewriter.diagnostics.consumer = lambda do |diagnostic|
-          @diagnostics << diagnostic
-        end
+        @source_rewriter.diagnostics.consumer = ->(diagnostic) { @diagnostics << diagnostic }
       end
 
       attr_reader :corrections, :diagnostics

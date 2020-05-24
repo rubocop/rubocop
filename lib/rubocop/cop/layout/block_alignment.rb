@@ -137,8 +137,7 @@ module RuboCop
           return unless start_loc.column != end_loc.column ||
                         style == :start_of_block
 
-          do_source_line_column =
-            compute_do_source_line_column(block_node, end_loc)
+          do_source_line_column = compute_do_source_line_column(block_node, end_loc)
           return unless do_source_line_column
 
           register_offense(

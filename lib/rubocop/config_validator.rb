@@ -23,7 +23,6 @@ module RuboCop
       @target_ruby = TargetRuby.new(config)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def validate
       check_cop_config_value(@config)
       reject_conflicting_safe_settings
@@ -37,15 +36,8 @@ module RuboCop
 
       @config_obsoletion.reject_obsolete_cops_and_parameters
 
-      alert_about_unrecognized_cops(invalid_cop_names)
-      check_target_ruby
-      validate_new_cops_parameter
-      validate_parameter_names(valid_cop_names)
-      validate_enforced_styles(valid_cop_names)
-      validate_syntax_cop
-      reject_mutually_exclusive_defaults
+      run_validations(invalid_cop_names, valid_cop_names)
     end
-    # rubocop:enable Metrics/AbcSize
 
     def target_ruby_version
       target_ruby.version
@@ -159,8 +151,7 @@ module RuboCop
           valid = ConfigLoader.default_configuration[name][supported_key]
 
           next unless valid
-          next if valid.include?(style)
-          next if validate_support_and_has_list(name, style, valid)
+          next if valid.include?(style) || validate_support_and_has_list(name, style, valid)
 
           msg = "invalid #{style_name} '#{style}' for #{name} found in " \
             "#{smart_loaded_path}\n" \
@@ -218,6 +209,16 @@ module RuboCop
       "#{Rainbow('').reset}" \
         "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \
         " is supposed to be a boolean and #{Rainbow(value).yellow} is not."
+    end
+
+    def run_validations(invalid_cop_names, valid_cop_names)
+      alert_about_unrecognized_cops(invalid_cop_names)
+      check_target_ruby
+      validate_new_cops_parameter
+      validate_parameter_names(valid_cop_names)
+      validate_enforced_styles(valid_cop_names)
+      validate_syntax_cop
+      reject_mutually_exclusive_defaults
     end
   end
 end

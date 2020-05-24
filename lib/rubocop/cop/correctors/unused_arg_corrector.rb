@@ -17,17 +17,11 @@ module RuboCop
           if node.blockarg_type?
             correct_for_blockarg_type(node)
           else
-            lambda do |corrector|
-              variable_name = if node.optarg_type?
-                                node.node_parts[0]
-                              else
-                                # Extract only a var name without splat (`*`)
-                                node.source.gsub(/\A\*+/, '')
-                              end
-              corrector.replace(node.loc.name, "_#{variable_name}")
-            end
+            correct_for_not_blockarg_type(node)
           end
         end
+
+        private
 
         def correct_for_blockarg_type(node)
           lambda do |corrector|
@@ -35,6 +29,18 @@ module RuboCop
                                                  side: :left)
             range = range_with_surrounding_comma(range, :left)
             corrector.remove(range)
+          end
+        end
+
+        def correct_for_not_blockarg_type(node)
+          lambda do |corrector|
+            variable_name = if node.optarg_type?
+                              node.node_parts[0]
+                            else
+                              # Extract only a var name without splat (`*`)
+                              node.source.gsub(/\A\*+/, '')
+                            end
+            corrector.replace(node.loc.name, "_#{variable_name}")
           end
         end
       end

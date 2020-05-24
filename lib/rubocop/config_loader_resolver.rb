@@ -85,8 +85,8 @@ module RuboCop
     # rubocop:disable Metrics/AbcSize
     def merge(base_hash, derived_hash, **opts)
       result = base_hash.merge(derived_hash)
-      keys_appearing_in_both = base_hash.keys & derived_hash.keys
-      keys_appearing_in_both.each do |key|
+
+      (base_hash.keys & derived_hash.keys).each do |key|
         if opts[:unset_nil] && derived_hash[key].nil?
           result.delete(key)
         elsif base_hash[key].is_a?(Hash)
@@ -97,6 +97,7 @@ module RuboCop
           warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
         end
       end
+
       result
     end
     # rubocop:enable Metrics/AbcSize

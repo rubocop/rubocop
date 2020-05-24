@@ -50,18 +50,12 @@ module RuboCop
 
         def autocorrected_value(node)
           case node.type
-          when :int
-            node.children.last.to_i.to_s
-          when :float
-            node.children.last.to_f.to_s
-          when :str
-            autocorrected_value_for_string(node)
-          when :sym
-            autocorrected_value_for_symbol(node)
-          when :array
-            autocorrected_value_for_array(node)
-          else
-            node.source.gsub('"', '\"')
+          when :int then node.children.last.to_i.to_s
+          when :float then node.children.last.to_f.to_s
+          when :str then autocorrected_value_for_string(node)
+          when :sym then autocorrected_value_for_symbol(node)
+          when :array then autocorrected_value_for_array(node)
+          else node.source.gsub('"', '\"')
           end
         end
 

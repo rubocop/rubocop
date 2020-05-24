@@ -36,18 +36,12 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize
         def lhs(node)
           case node.type
-          when :send
-            lhs_for_send(node)
-          when :op_asgn
-            "#{node.children[0].source} #{node.children[1]}= "
-          when :and_asgn, :or_asgn
-            "#{node.children[0].source} #{node.loc.operator.source} "
-          when :casgn
-            "#{node.children[1]} = "
-          when *ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES
-            "#{node.children[0]} = "
-          else
-            node.source
+          when :send then lhs_for_send(node)
+          when :op_asgn then "#{node.children[0].source} #{node.children[1]}= "
+          when :and_asgn, :or_asgn then "#{node.children[0].source} #{node.loc.operator.source} "
+          when :casgn then "#{node.children[1]} = "
+          when *ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES then "#{node.children[0]} = "
+          else node.source
           end
         end
         # rubocop:enable Metrics/AbcSize

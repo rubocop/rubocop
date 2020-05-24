@@ -89,14 +89,13 @@ module RuboCop
           raise OptionArgumentError, message
         end
 
-        @options[:"#{option}"] =
-          if list.empty?
-            ['']
-          else
-            list.split(',').map do |c|
-              Cop::Cop.qualified_cop_name(c, "--#{option} option")
-            end
-          end
+        @options[:"#{option}"] = if list.empty?
+                                   ['']
+                                 else
+                                   list.split(',').map do |c|
+                                     Cop::Cop.qualified_cop_name(c, "--#{option} option")
+                                   end
+                                 end
       end
     end
 

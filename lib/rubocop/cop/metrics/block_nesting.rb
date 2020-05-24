@@ -31,19 +31,17 @@ module RuboCop
         def check_nesting_level(node, max, current_level)
           if consider_node?(node)
             current_level += 1 unless node.if_type? && node.elsif?
+
             if current_level > max
               self.max = current_level
+
               unless part_of_ignored_node?(node)
-                add_offense(node, message: message(max)) do
-                  ignore_node(node)
-                end
+                add_offense(node, message: message(max)) { ignore_node(node) }
               end
             end
           end
 
-          node.each_child_node do |child_node|
-            check_nesting_level(child_node, max, current_level)
-          end
+          node.each_child_node { |child_node| check_nesting_level(child_node, max, current_level) }
         end
 
         def consider_node?(node)

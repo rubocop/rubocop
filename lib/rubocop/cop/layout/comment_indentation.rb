@@ -93,10 +93,8 @@ module RuboCop
             return if column == correct_comment_indentation
           end
 
-          add_offense(
-            comment,
-            message: message(column, correct_comment_indentation)
-          )
+          add_offense(comment,
+                      message: message(column, correct_comment_indentation))
         end
 
         def message(column, correct_comment_indentation)

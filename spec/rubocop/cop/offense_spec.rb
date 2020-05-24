@@ -95,8 +95,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
       described_class.new(
         attrs[:sev],
-        location(attrs[:line], attrs[:col],
-                 %w[aaaaaa bbbbbb cccccc dddddd eeeeee ffffff]),
+        location(attrs[:line], attrs[:col], %w[aaaaaa bbbbbb cccccc dddddd eeeeee ffffff]),
         attrs[:mes],
         attrs[:cop]
       )

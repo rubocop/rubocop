@@ -82,14 +82,13 @@ module RuboCop
           begin_pos = reposition(source, begin_pos, -1)
           end_pos = reposition(source, end_pos, 1)
 
-          comma_pos =
-            if source[begin_pos - 1] == ','
-              :before
-            elsif source[end_pos] == ','
-              :after
-            else
-              :none
-            end
+          comma_pos = if source[begin_pos - 1] == ','
+                        :before
+                      elsif source[end_pos] == ','
+                        :after
+                      else
+                        :none
+                      end
 
           range_to_remove(begin_pos, end_pos, comma_pos, comment)
         end

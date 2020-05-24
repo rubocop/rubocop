@@ -102,8 +102,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             case style
-            when :never
-              remove_comment(corrector, node)
+            when :never then remove_comment(corrector, node)
             when :always_true
               if frozen_string_literal_specified?
                 enable_comment(corrector)

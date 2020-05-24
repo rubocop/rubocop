@@ -154,6 +154,10 @@ module RuboCop
           elements = *array
           elements = elements.map(&:source)
 
+          join_elements(elements, array_start)
+        end
+
+        def join_elements(elements, array_start)
           if array_start.start_with?(PERCENT_W)
             "'#{elements.join("', '")}'"
           elsif array_start.start_with?(PERCENT_CAPITAL_W)

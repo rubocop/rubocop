@@ -72,9 +72,7 @@ module RuboCop
             comments.each do |comment|
               next unless empty_comment_only?(comment[0])
 
-              comment[1].each do |offense_comment|
-                add_offense(offense_comment)
-              end
+              comment[1].each { |offense_comment| add_offense(offense_comment) }
             end
           else
             processed_source.comments.each do |comment|

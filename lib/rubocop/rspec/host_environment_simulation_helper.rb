@@ -8,15 +8,12 @@ module HostEnvironmentSimulatorHelper
   def in_its_own_process_with(*files)
     if ::Process.respond_to?(:fork)
       pid = ::Process.fork do
-        # Need to write coverage result under different name
-        if defined?(SimpleCov)
-          SimpleCov.command_name "rspec-fork-#{Process.pid}"
-          SimpleCov.pid = Process.pid
-        end
+        write_coverage_result
 
         files.each { |file| require file }
         yield
       end
+
       ::Process.wait(pid)
 
       # assert that the block did not fail
@@ -24,5 +21,15 @@ module HostEnvironmentSimulatorHelper
     else
       warn 'Process.fork is not available.'
     end
+  end
+
+  private
+
+  def write_coverage_result
+    # Need to write coverage result under different name
+    return unless defined?(SimpleCov)
+
+    SimpleCov.command_name "rspec-fork-#{Process.pid}"
+    SimpleCov.pid = Process.pid
   end
 end

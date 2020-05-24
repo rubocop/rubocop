@@ -93,13 +93,8 @@ module RuboCop
             if empty_brackets?(left, right)
               SpaceCorrector.empty_corrections(processed_source, corrector,
                                                empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            elsif style == :space
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
             else
-              compact_corrections(corrector, node, left, right)
+              autocorrect_depending_on_style(node, style, corrector, left, right)
             end
           end
         end
@@ -222,6 +217,18 @@ module RuboCop
         def compact(corrector, bracket, side)
           range = side_space_range(range: bracket.pos, side: side)
           corrector.remove(range)
+        end
+
+        def autocorrect_depending_on_style(node, style, corrector, left, right)
+          case style
+          when :no_space
+            SpaceCorrector.remove_space(processed_source, corrector,
+                                        left, right)
+          when :space
+            SpaceCorrector.add_space(processed_source, corrector, left, right)
+          else
+            compact_corrections(corrector, node, left, right)
+          end
         end
       end
     end

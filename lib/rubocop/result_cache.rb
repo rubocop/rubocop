@@ -100,8 +100,7 @@ module RuboCop
       begin
         FileUtils.mkdir_p(dir)
       rescue Errno::EACCES, Errno::EROFS => e
-        warn "Couldn't create cache directory. Continuing without cache."\
-             "\n  #{e.message}"
+        warn "Couldn't create cache directory. Continuing without cache.\n  #{e.message}"
         return
       end
 
