@@ -4,24 +4,8 @@ RSpec.describe RuboCop::Cop::Registry do
   subject(:registry) { described_class.new(cops, options) }
 
   let(:cops) do
-    stub_const('RuboCop::Cop::Test', Module.new)
-    stub_const('RuboCop::Cop::RSpec', Module.new)
-
-    module RuboCop
-      module Cop
-        module Test
-          # Create another cop with a different namespace
-          class FirstArrayElementIndentation < Cop
-          end
-        end
-
-        module RSpec
-          # Define a dummy rspec cop which has special namespace inflection
-          class Foo < Cop
-          end
-        end
-      end
-    end
+    stub_cop('RuboCop::Cop::Test::FirstArrayElementIndentation')
+    stub_cop('RuboCop::Cop::RSpec::Foo')
 
     [
       RuboCop::Cop::Lint::BooleanSymbol,

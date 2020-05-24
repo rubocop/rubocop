@@ -368,11 +368,9 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when cop with different checksum joins' do
       before do
-        module Test
-          class CopWithExternalDeps < ::RuboCop::Cop::Cop
-            def external_dependency_checksum
-              'something other than nil'
-            end
+        stub_cop('Test::CopWithExternalDeps') do
+          def external_dependency_checksum
+            'something other than nil'
           end
         end
       end

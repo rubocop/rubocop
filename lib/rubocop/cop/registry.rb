@@ -23,34 +23,28 @@ module RuboCop
     # Registry that tracks all cops by their badge and department.
     class Registry
       def initialize(cops = [], options = {})
-        @registry = {}
-        @departments = {}
-        @cops_by_cop_name = Hash.new { |hash, key| hash[key] = [] }
-
+        @enlisted = []
         cops.each { |cop| enlist(cop) }
         @options = options
       end
 
       def enlist(cop)
-        @registry[cop.badge] = cop
-        @departments[cop.department] ||= []
-        @departments[cop.department] << cop
-        @cops_by_cop_name[cop.cop_name] << cop
+        @enlisted << cop
       end
 
       # @return [Array<Symbol>] list of departments for current cops.
       def departments
-        @departments.keys
+        staff.keys
       end
 
       # @return [Registry] Cops for that specific department.
       def with_department(department)
-        with(@departments.fetch(department, []))
+        with(staff.fetch(department, []))
       end
 
       # @return [Registry] Cops not for a specific department.
       def without_department(department)
-        without_department = @departments.dup
+        without_department = staff.dup
         without_department.delete(department)
 
         with(without_department.values.flatten)
@@ -120,21 +114,21 @@ module RuboCop
 
       def unqualified_cop_names
         @unqualified_cop_names ||=
-          Set.new(@cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
+          Set.new(cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
           'RedundantCopDisableDirective'
       end
 
       # @return [Hash{String => Array<Class>}]
       def to_h
-        @cops_by_cop_name
+        cops_by_cop_name
       end
 
       def cops
-        @registry.values
+        registry.values
       end
 
       def length
-        @registry.size
+        registry.size
       end
 
       def enabled(config, only, only_safe = false)
@@ -172,7 +166,7 @@ module RuboCop
       end
 
       def sort!
-        @registry = Hash[@registry.sort_by { |badge, _| badge.cop_name }]
+        @registry = Hash[registry.sort_by { |badge, _| badge.cop_name }]
 
         self
       end
@@ -188,17 +182,45 @@ module RuboCop
       # @param [String] cop_name
       # @return [Class, nil]
       def find_by_cop_name(cop_name)
-        @cops_by_cop_name[cop_name].first
+        cops_by_cop_name[cop_name].first
+      end
+
+      protected
+
+      def cops_by_cop_name
+        @cops_by_cop_name || call_for_serve_and_protect!.cops_by_cop_name
+      end
+
+      def registry
+        @registry || call_for_serve_and_protect!.registry
+      end
+
+      def staff
+        @staff || call_for_serve_and_protect!.staff
       end
 
       private
+
+      def call_for_serve_and_protect!
+        @registry = {}
+        @staff = Hash.new { |hash, key| hash[key] = [] }
+        @cops_by_cop_name = Hash.new { |hash, key| hash[key] = [] }
+
+        @enlisted.each do |cop|
+          @registry[cop.badge] = cop
+          @staff[cop.department] << cop
+          @cops_by_cop_name[cop.cop_name] << cop
+        end
+
+        self
+      end
 
       def with(cops)
         self.class.new(cops)
       end
 
       def qualify_badge(badge)
-        @departments
+        staff
           .map { |department, _| badge.with_department(department) }
           .select { |potential_badge| registered?(potential_badge) }
       end
@@ -214,7 +236,7 @@ module RuboCop
       end
 
       def registered?(badge)
-        @registry.key?(badge)
+        registry.key?(badge)
       end
     end
   end
