@@ -41,9 +41,10 @@ module RuboCop
 
       def length_in_modifier_form(node, cond)
         keyword = node.loc.keyword
-        indentation = keyword.source_line[/^\s*/]
-        line_length("#{indentation}#{node.body.source} #{keyword.source} " \
-                    "#{cond.source}")
+        line_before_condition, = keyword.source_line.split(keyword.source)
+        condition_source = "#{node.body.source} #{keyword.source} #{cond.source}"
+        source = line_before_condition + condition_source
+        line_length(source)
       end
 
       def max_line_length

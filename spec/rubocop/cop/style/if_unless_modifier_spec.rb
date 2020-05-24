@@ -421,6 +421,26 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     expect(corrected).to eq "a = (1 if b)\n"
   end
 
+  context 'when the code before condition pushes inline length over limit' do
+    let(:line_length_config) { { 'Enabled' => true, 'Max' => 100 } }
+
+    it 'does not result in infinite loop with assignment' do
+      expect_no_offenses(<<~RUBY)
+        timespan = if params[:timespan] && POSSIBLE_TIMESPANS.include?(params[:timespan])
+                     params[:timespan].to_sym
+                   end
+      RUBY
+    end
+
+    it 'does not result in infinite loop with any other statement' do
+      expect_no_offenses(<<~RUBY)
+        puts 'ab'; if params[:timespan] && POSSIBLE_TIMESPANS.include?(params[:timespan])
+                     params[:timespan].to_sym
+                   end
+      RUBY
+    end
+  end
+
   it "doesn't break if-end when used as RHS of instance var assignment" do
     corrected = autocorrect_source(<<~RUBY)
       @a = if b

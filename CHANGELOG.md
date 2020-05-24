@@ -19,6 +19,7 @@
 * [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
 * [#7971](https://github.com/rubocop-hq/rubocop/issues/7971): Fix an issue where `--disable-uncorrectable` would not update uncorrected code with `rubocop:todo`. ([@rrosenblum][])
 * [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when argument is a variable, method, or consntant. ([@koic][])
+* [#8006](https://github.com/rubocop-hq/rubocop/issues/8006): Fix infinite loop for `Style/IfUnlessModifier`. ([@tejasbubane][])
 
 ### Changes
 
