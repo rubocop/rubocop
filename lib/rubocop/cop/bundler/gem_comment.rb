@@ -102,7 +102,7 @@ module RuboCop
         # as long as it has one we know there's at least one version specifier.
         def version_specified_gem?(node)
           # arguments[0] is the gem name
-          node.arguments[1]&.str_type? == true
+          node.arguments[1]&.str_type?
         end
 
         def contains_checked_options?(node)
