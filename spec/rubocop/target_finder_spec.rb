@@ -3,6 +3,64 @@
 RSpec.describe RuboCop::TargetFinder, :isolated_environment do
   include FileHelper
 
+  ruby_extensions = %w[.rb
+                       .arb
+                       .axlsx
+                       .builder
+                       .fcgi
+                       .gemfile
+                       .gemspec
+                       .god
+                       .jb
+                       .jbuilder
+                       .mspec
+                       .opal
+                       .pluginspec
+                       .podspec
+                       .rabl
+                       .rake
+                       .rbuild
+                       .rbw
+                       .rbx
+                       .ru
+                       .ruby
+                       .spec
+                       .thor
+                       .watchr]
+
+  ruby_interpreters = %w[ruby
+                         macruby
+                         rake
+                         jruby
+                         rbx]
+
+  ruby_filenames = %w[.irbrc
+                      .pryrc
+                      .simplecov
+                      Appraisals
+                      Berksfile
+                      Brewfile
+                      Buildfile
+                      Capfile
+                      Cheffile
+                      Dangerfile
+                      Deliverfile
+                      Fastfile
+                      Gemfile
+                      Guardfile
+                      Jarfile
+                      Mavenfile
+                      Podfile
+                      Puppetfile
+                      Rakefile
+                      rakefile
+                      Snapfile
+                      Steepfile
+                      Thorfile
+                      Vagabondfile
+                      Vagrantfile
+                      buildfile]
+
   subject(:target_finder) do
     described_class.new(config_store, options)
   end
@@ -20,86 +78,28 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     create_file('dir1/executable',  '#!/usr/bin/env ruby')
     create_empty_file('dir2/ruby3.rb')
     create_empty_file('.hidden/ruby4.rb')
-
-    stub_const('RUBY_EXTENSIONS', %w[.rb
-                                     .arb
-                                     .axlsx
-                                     .builder
-                                     .fcgi
-                                     .gemfile
-                                     .gemspec
-                                     .god
-                                     .jb
-                                     .jbuilder
-                                     .mspec
-                                     .opal
-                                     .pluginspec
-                                     .podspec
-                                     .rabl
-                                     .rake
-                                     .rbuild
-                                     .rbw
-                                     .rbx
-                                     .ru
-                                     .ruby
-                                     .spec
-                                     .thor
-                                     .watchr].freeze)
-
-    stub_const('RUBY_INTERPRETERS', %w[ruby
-                                       macruby
-                                       rake
-                                       jruby
-                                       rbx].freeze)
-
-    stub_const('RUBY_FILENAMES', %w[.irbrc
-                                    .pryrc
-                                    .simplecov
-                                    Appraisals
-                                    Berksfile
-                                    Brewfile
-                                    Buildfile
-                                    Capfile
-                                    Cheffile
-                                    Dangerfile
-                                    Deliverfile
-                                    Fastfile
-                                    Gemfile
-                                    Guardfile
-                                    Jarfile
-                                    Mavenfile
-                                    Podfile
-                                    Puppetfile
-                                    Rakefile
-                                    rakefile
-                                    Snapfile
-                                    Steepfile
-                                    Thorfile
-                                    Vagabondfile
-                                    Vagrantfile
-                                    buildfile].freeze)
   end
 
   shared_examples 'common behavior for #find' do
     context 'when a file with a ruby filename is passed' do
-      let(:args) { RUBY_FILENAMES.map { |name| "dir2/#{name}" } }
+      let(:args) { ruby_filenames.map { |name| "dir2/#{name}" } }
 
       it 'picks all the ruby files' do
-        expect(found_basenames).to eq(RUBY_FILENAMES)
+        expect(found_basenames).to eq(ruby_filenames)
       end
     end
 
     context 'when files with ruby interpreters are passed' do
-      let(:args) { RUBY_INTERPRETERS.map { |name| "dir2/#{name}" } }
+      let(:args) { ruby_interpreters.map { |name| "dir2/#{name}" } }
 
       before do
-        RUBY_INTERPRETERS.each do |interpreter|
+        ruby_interpreters.each do |interpreter|
           create_file("dir2/#{interpreter}", "#!/usr/bin/#{interpreter}")
         end
       end
 
       it 'picks all the ruby files' do
-        expect(found_basenames).to eq(RUBY_INTERPRETERS)
+        expect(found_basenames).to eq(ruby_interpreters)
       end
     end
 
@@ -267,11 +267,11 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     context 'when files with a ruby extension are passed' do
-      let(:args) { RUBY_EXTENSIONS.map { |ext| "dir2/file#{ext}" } }
+      let(:args) { ruby_extensions.map { |ext| "dir2/file#{ext}" } }
 
       it 'picks all the ruby files' do
         expect(found_basenames)
-          .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
+          .to eq(ruby_extensions.map { |ext| "file#{ext}" })
       end
 
       context 'when local AllCops/Include lists two patterns' do
@@ -352,11 +352,11 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       shared_examples 'picks all the ruby files' do
         it 'picks all the ruby files' do
           expect(found_basenames)
-            .to eq(RUBY_EXTENSIONS.map { |ext| "file#{ext}" })
+            .to eq(ruby_extensions.map { |ext| "file#{ext}" })
         end
       end
 
-      let(:args) { RUBY_EXTENSIONS.map { |ext| "dir2/file#{ext}" } }
+      let(:args) { ruby_extensions.map { |ext| "dir2/file#{ext}" } }
 
       include_examples 'picks all the ruby files'
 
