@@ -94,8 +94,9 @@ module RuboCop
         end
 
         def checked_options_present?(node)
-          cop_config[CHECKED_OPTIONS_CONFIG].include?(VERSION_SPECIFIERS_OPTION) && version_specified_gem?(node) \
-          or contains_checked_options?(node)
+          (cop_config[CHECKED_OPTIONS_CONFIG].include?(VERSION_SPECIFIERS_OPTION) &&
+            version_specified_gem?(node)) ||
+            contains_checked_options?(node)
         end
 
         # Besides the gem name, all other *positional* arguments to `gem` are version specifiers,
