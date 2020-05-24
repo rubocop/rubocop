@@ -67,7 +67,7 @@ module RuboCop
         private
 
         def allowed_method_name?(method_name, prefix)
-          !method_name.match(/^#{prefix}[^0-9]/) ||
+          !method_name.match?(/^#{prefix}[^0-9]/) ||
             method_name == expected_name(method_name, prefix) ||
             method_name.end_with?('=') ||
             allowed_methods.include?(method_name)

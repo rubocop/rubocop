@@ -18,7 +18,7 @@ module RuboCop
 
         return false unless comment
 
-        comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+        comment.text.match?(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
       end
 
       def allow_uri?
