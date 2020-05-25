@@ -80,4 +80,36 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
     it_behaves_like 'named format sequence', '%+0<num>8.2f'
     it_behaves_like 'named format sequence', '%+08<num>.2f'
   end
+
+  describe '#valid?' do
+    it 'returns true when there are only unnumbered formats' do
+      fs = described_class.new('%s %d')
+      expect(fs.valid?).to eq true
+    end
+
+    it 'returns true when there are only numbered formats' do
+      fs = described_class.new('%1$s %2$d')
+      expect(fs.valid?).to eq true
+    end
+
+    it 'returns true when there are only named formats' do
+      fs = described_class.new('%{foo}s')
+      expect(fs.valid?).to eq true
+    end
+
+    it 'returns false when there are unnumbered and numbered formats' do
+      fs = described_class.new('%s %1$d')
+      expect(fs.valid?).to eq false
+    end
+
+    it 'returns false when there are unnumbered and named formats' do
+      fs = described_class.new('%s %{foo}d')
+      expect(fs.valid?).to eq false
+    end
+
+    it 'returns false when there are numbered and named formats' do
+      fs = described_class.new('%1$s %{foo}d')
+      expect(fs.valid?).to eq false
+    end
+  end
 end

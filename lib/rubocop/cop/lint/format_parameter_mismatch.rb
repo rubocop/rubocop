@@ -43,6 +43,7 @@ module RuboCop
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
           return false if num_of_format_args == :unknown
+          return false if num_of_expected_fields == :unknown
 
           matched_arguments_count?(num_of_expected_fields, num_of_format_args)
         end
@@ -113,6 +114,8 @@ module RuboCop
           return :unknown unless node.str_type?
 
           format_string = RuboCop::Cop::Utils::FormatString.new(node.source)
+
+          return :unknown unless format_string.valid?
           return 1 if format_string.named_interpolation?
 
           max_digit_dollar_num = format_string.max_digit_dollar_num

@@ -97,6 +97,10 @@ module RuboCop
           @format_sequences ||= parse
         end
 
+        def valid?
+          !mixed_formats?
+        end
+
         def named_interpolation?
           format_sequences.any?(&:name)
         end
@@ -113,6 +117,20 @@ module RuboCop
               Regexp.last_match
             )
           end
+        end
+
+        def mixed_formats?
+          formats = format_sequences.map do |seq|
+            if seq.name
+              :named
+            elsif seq.max_digit_dollar_num
+              :numbered
+            else
+              :unnumbered
+            end
+          end
+
+          formats.uniq.size > 1
         end
       end
     end
