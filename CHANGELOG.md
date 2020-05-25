@@ -8,6 +8,7 @@
 * [#8081](https://github.com/rubocop-hq/rubocop/issues/8081): Fix a false positive for `Lint/SuppressedException` when empty rescue block in `do` block. ([@koic][])
 * [#8096](https://github.com/rubocop-hq/rubocop/issues/8096): Fix a false positive for `Lint/SuppressedException` when empty rescue block in defs. ([@koic][])
 * [#8108](https://github.com/rubocop-hq/rubocop/issues/8108): Fix infinite loop in `Layout/HeredocIndentation` auto-correct. ([@jonas054][])
+* [#8042](https://github.com/rubocop-hq/rubocop/pull/8042): Fix raising error in `Lint::FormatParameterMismatch` when it handles invalid format strings and add new offense. ([@andrykonchin][])
 
 ## 0.85.0 (2020-06-01)
 
@@ -4571,3 +4572,4 @@
 [@jschneid]: https://github.com/jschneid
 [@ric2b]: https://github.com/ric2b
 [@burnettk]: https://github.com/burnettk
+[@andrykonchin]: https://github.com/andrykonchin

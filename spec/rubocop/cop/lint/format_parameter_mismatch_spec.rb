@@ -171,6 +171,12 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
+  context 'when format is invalid' do
+    it 'does not register an offense' do
+      expect_no_offenses("format('%s %2$s', 'foo', 'bar')")
+    end
+  end
+
   # Regression: https://github.com/rubocop-hq/rubocop/issues/3869
   context 'when passed an empty array' do
     it 'does not register an offense' do
