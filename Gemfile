@@ -7,7 +7,7 @@ gemspec
 gem 'bump', require: false
 gem 'pry'
 gem 'rake', '~> 12.0'
-gem 'rspec', '~> 3.7'
+gem 'rspec', '~> 3.9'
 gem 'rubocop-performance', '~> 1.6.0'
 gem 'rubocop-rspec', '~> 1.33.0'
 # Workaround for cc-test-reporter with SimpleCov 0.18.
