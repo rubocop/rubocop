@@ -211,8 +211,9 @@ module RuboCop
       alias name cop_name
 
       def relevant_file?(file)
-        file_name_matches_any?(file, 'Include', true) &&
-          !file_name_matches_any?(file, 'Exclude', false)
+        file == RuboCop::AST::ProcessedSource::STRING_SOURCE_NAME ||
+          file_name_matches_any?(file, 'Include', true) &&
+            !file_name_matches_any?(file, 'Exclude', false)
       end
 
       def excluded_file?(file)

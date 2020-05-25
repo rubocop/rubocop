@@ -3,8 +3,7 @@
 RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   let(:cop_config) do
     {
-      'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators,
-      'Include' => nil
+      'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators
     }
   end
   let(:treat_comments_as_group_separators) { false }

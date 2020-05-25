@@ -616,7 +616,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     it 'processes excluded files with issue' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~RUBY, 'foo.rb')
         begin
           foo
         rescue
