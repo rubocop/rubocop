@@ -42,7 +42,7 @@ module RuboCop
         def contains_percent_literals?(node)
           node.each_child_node.any? do |child|
             literal = child.children.first.to_s.scrub
-            REGEXES.any? { |regex| literal.match(regex) }
+            REGEXES.any? { |regex| literal.match?(regex) }
           end
         end
       end

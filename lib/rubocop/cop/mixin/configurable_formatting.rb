@@ -23,7 +23,7 @@ module RuboCop
       end
 
       def valid_name?(node, name, given_style = style)
-        name.match(self.class::FORMATS.fetch(given_style)) ||
+        name.match?(self.class::FORMATS.fetch(given_style)) ||
           class_emitter_method?(node, name)
       end
 
