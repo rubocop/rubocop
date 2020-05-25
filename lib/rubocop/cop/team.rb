@@ -107,7 +107,9 @@ module RuboCop
         # until there are no corrections left to perform
         # To speed things up, run auto-correcting cops by themselves, and only
         # run the other cops when no corrections are left
-        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
+        on_duty = roundup_relevant_cops(processed_source.file_path)
+
+        autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
 
         autocorrect = investigate(autocorrect_cops, processed_source)
 
@@ -133,6 +135,26 @@ module RuboCop
         offenses = commissioner.investigate(processed_source)
 
         Investigation.new(offenses, commissioner.errors)
+      end
+
+      def roundup_relevant_cops(filename)
+        cops.reject do |cop|
+          cop.excluded_file?(filename) ||
+            !support_target_ruby_version?(cop) ||
+            !support_target_rails_version?(cop)
+        end
+      end
+
+      def support_target_ruby_version?(cop)
+        return true unless cop.class.respond_to?(:support_target_ruby_version?)
+
+        cop.class.support_target_ruby_version?(cop.target_ruby_version)
+      end
+
+      def support_target_rails_version?(cop)
+        return true unless cop.class.respond_to?(:support_target_rails_version?)
+
+        cop.class.support_target_rails_version?(cop.target_rails_version)
       end
 
       def autocorrect_all_cops(buffer, cops)

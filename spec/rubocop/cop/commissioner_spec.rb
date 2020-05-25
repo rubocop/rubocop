@@ -20,24 +20,6 @@ RSpec.describe RuboCop::Cop::Commissioner do
       expect(commissioner.investigate(processed_source)).to eq [1]
     end
 
-    context 'when a cop has no interest in the file' do
-      it 'returns all offenses except the ones of the cop' do
-        cops = []
-        cops << instance_double(RuboCop::Cop::Cop, offenses: %w[foo],
-                                                   excluded_file?: false)
-        cops << instance_double(RuboCop::Cop::Cop, excluded_file?: true)
-        cops << instance_double(RuboCop::Cop::Cop, offenses: %w[baz],
-                                                   excluded_file?: false)
-        cops.each(&:as_null_object)
-
-        commissioner = described_class.new(cops, [])
-        source = ''
-        processed_source = parse_source(source)
-
-        expect(commissioner.investigate(processed_source)).to eq %w[foo baz]
-      end
-    end
-
     it 'traverses the AST and invoke cops specific callbacks' do
       expect(cop).to receive(:on_def).once
 
