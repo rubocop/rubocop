@@ -102,21 +102,21 @@ module RuboCop
 
       private
 
-      def offenses(processed_source)
+      def offenses(processed_source) # rubocop:disable Metrics/AbcSize
         # The autocorrection process may have to be repeated multiple times
         # until there are no corrections left to perform
         # To speed things up, run auto-correcting cops by themselves, and only
         # run the other cops when no corrections are left
         autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
 
-        autocorrect =
-          investigate(autocorrect_cops, processed_source) do |offenses|
-            # We corrected some errors. Another round of inspection will be
-            # done, and any other offenses will be caught then, so we don't
-            # need to continue.
-            return offenses if autocorrect(processed_source.buffer,
-                                           autocorrect_cops)
-          end
+        autocorrect = investigate(autocorrect_cops, processed_source)
+
+        if autocorrect(processed_source.buffer, autocorrect_cops)
+          # We corrected some errors. Another round of inspection will be
+          # done, and any other offenses will be caught then, so we don't
+          # need to continue.
+          return autocorrect.offenses
+        end
 
         other = investigate(other_cops, processed_source)
 
@@ -131,7 +131,6 @@ module RuboCop
 
         commissioner = Commissioner.new(cops, forces_for(cops), @options)
         offenses = commissioner.investigate(processed_source)
-        yield offenses if block_given?
 
         Investigation.new(offenses, commissioner.errors)
       end
