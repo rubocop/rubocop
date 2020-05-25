@@ -122,6 +122,16 @@ RSpec.describe RuboCop::Cop::Team do
       it 'returns offenses from cops' do
         expect(cop_names).to include('Layout/LineLength')
       end
+
+      context 'when a cop has no interest in the file' do
+        it 'returns all offenses except the ones of the cop' do
+          allow_any_instance_of(RuboCop::Cop::Layout::LineLength)
+            .to receive(:excluded_file?).and_return(true)
+
+          expect(cop_names).to include('Lint/AmbiguousOperator')
+          expect(cop_names).not_to include('Layout/LineLength')
+        end
+      end
     end
 
     context 'when autocorrection is enabled' do
