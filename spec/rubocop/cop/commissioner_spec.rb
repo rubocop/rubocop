@@ -2,87 +2,70 @@
 
 RSpec.describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
+    subject(:offenses) { commissioner.investigate(processed_source) }
+
     let(:cop) do
       # rubocop:disable RSpec/VerifiedDoubles
-      double(RuboCop::Cop::Cop, offenses: [],
-                                excluded_file?: false).as_null_object
+      double(RuboCop::Cop::Cop, offenses: []).as_null_object
       # rubocop:enable RSpec/VerifiedDoubles
     end
-    let(:force) { instance_double(RuboCop::Cop::Force).as_null_object }
+    let(:cops) { [cop] }
+    let(:options) { {} }
+    let(:forces) { [] }
+    let(:commissioner) { described_class.new(cops, forces, **options) }
+    let(:errors) { commissioner.errors }
+    let(:source) { <<~RUBY }
+      def method
+      1
+      end
+    RUBY
+    let(:processed_source) { parse_source(source, 'file.rb') }
 
     it 'returns all offenses found by the cops' do
       allow(cop).to receive(:offenses).and_return([1])
 
-      commissioner = described_class.new([cop], [])
-      source = ''
-      processed_source = parse_source(source)
-
-      expect(commissioner.investigate(processed_source)).to eq [1]
+      expect(offenses).to eq [1]
     end
 
     it 'traverses the AST and invoke cops specific callbacks' do
       expect(cop).to receive(:on_def).once
-
-      commissioner = described_class.new([cop], [])
-      source = <<~RUBY
-        def method
-        1
-        end
-      RUBY
-      processed_source = parse_source(source)
-
-      commissioner.investigate(processed_source)
-    end
-
-    it 'passes the input params to all cops/forces that implement their own' \
-       ' #investigate method' do
-      source = ''
-      processed_source = parse_source(source)
-
-      expect(cop).to receive(:investigate).with(processed_source)
-      expect(force).to receive(:investigate).with(processed_source)
-
-      commissioner = described_class.new([cop], [force])
-
-      commissioner.investigate(processed_source)
+      offenses
     end
 
     it 'stores all errors raised by the cops' do
       allow(cop).to receive(:on_int) { raise RuntimeError }
 
-      commissioner = described_class.new([cop], [])
-      source = <<~RUBY
-        def method
-        1
-        end
-      RUBY
-      processed_source = parse_source(source)
-
-      commissioner.investigate(processed_source)
-
-      expect(commissioner.errors.size).to eq(1)
+      expect(offenses).to eq []
+      expect(errors.size).to eq(1)
       expect(
-        commissioner.errors[0].cause.instance_of?(RuntimeError)
+        errors[0].cause.instance_of?(RuntimeError)
       ).to be(true)
-      expect(commissioner.errors[0].line).to eq 2
-      expect(commissioner.errors[0].column).to eq 0
+      expect(errors[0].line).to eq 2
+      expect(errors[0].column).to eq 0
     end
 
     context 'when passed :raise_error option' do
+      let(:options) { { raise_error: true } }
+
       it 're-raises the exception received while processing' do
         allow(cop).to receive(:on_int) { raise RuntimeError }
 
-        commissioner = described_class.new([cop], [], raise_error: true)
-        source = <<~RUBY
-          def method
-          1
-          end
-        RUBY
-        processed_source = parse_source(source)
-
         expect do
-          commissioner.investigate(processed_source)
+          offenses
         end.to raise_error(RuntimeError)
+      end
+    end
+
+    context 'when given a force' do
+      let(:force) { instance_double(RuboCop::Cop::Force).as_null_object }
+      let(:forces) { [force] }
+
+      it 'passes the input params to all cops/forces that implement their own' \
+         ' #investigate method' do
+        expect(cop).to receive(:investigate).with(processed_source)
+        expect(force).to receive(:investigate).with(processed_source)
+
+        offenses
       end
     end
   end
