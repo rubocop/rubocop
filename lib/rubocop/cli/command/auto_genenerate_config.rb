@@ -25,10 +25,10 @@ module RuboCop
         private
 
         def maybe_run_line_length_cop
-          if !line_length_enabled?(@config_store.for(Dir.pwd))
+          if !line_length_enabled?(@config_store.for_dir(Dir.pwd))
             skip_line_length_cop(PHASE_1_DISABLED)
           elsif !same_max_line_length?(
-            @config_store.for(Dir.pwd), ConfigLoader.default_configuration
+            @config_store.for_dir(Dir.pwd), ConfigLoader.default_configuration
           )
             skip_line_length_cop(PHASE_1_OVERRIDDEN)
           else
