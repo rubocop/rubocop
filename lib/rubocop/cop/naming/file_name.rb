@@ -126,7 +126,6 @@ module RuboCop
           basename.match?(regex || SNAKE_CASE)
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def find_class_or_module(node, namespace)
           return nil unless node
 
@@ -145,7 +144,6 @@ module RuboCop
 
           nil
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def match_namespace(node, namespace, expected)
           match_partial = partial_matcher!(expected)
