@@ -106,7 +106,11 @@ module RuboCop
         end
 
         def sanitize_arguments(arguments)
-          arguments.flat_map { |arg| arg.source.tr(":'", '').split('-') }
+          arguments.flat_map do |arg|
+            argument = arg.str_type? ? arg.value : arg.source
+
+            argument.tr(":'", '').split('-')
+          end
         end
 
         def replacement_args(node)
