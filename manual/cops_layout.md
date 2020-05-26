@@ -3119,7 +3119,7 @@ IgnoredPatterns | `[]` | Array
 
 ### References
 
-* [https://rubystyle.guide#80-character-limits](https://rubystyle.guide#80-character-limits)
+* [https://rubystyle.guide#max-line-length](https://rubystyle.guide#max-line-length)
 
 ## Layout/MultilineArrayBraceLayout
 

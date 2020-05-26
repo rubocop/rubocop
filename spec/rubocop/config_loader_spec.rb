@@ -612,7 +612,7 @@ RSpec.describe RuboCop::ConfigLoader do
             'Layout/LineLength' => {
               'Description' =>
               default_config['Layout/LineLength']['Description'],
-              'StyleGuide' => '#80-character-limits',
+              'StyleGuide' => '#max-line-length',
               'Enabled' => true,
               'VersionAdded' =>
               default_config['Layout/LineLength']['VersionAdded'],
@@ -716,7 +716,7 @@ RSpec.describe RuboCop::ConfigLoader do
             'Layout/LineLength' => {
               'Description' =>
               default_config['Layout/LineLength']['Description'],
-              'StyleGuide' => '#80-character-limits',
+              'StyleGuide' => '#max-line-length',
               'Enabled' => true,
               'VersionAdded' =>
               default_config['Layout/LineLength']['VersionAdded'],
