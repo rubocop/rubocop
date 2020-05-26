@@ -129,7 +129,7 @@ module RuboCop
       def investigate(cops, processed_source)
         return Investigation.new([], {}) if cops.empty?
 
-        commissioner = Commissioner.new(cops, forces_for(cops))
+        commissioner = Commissioner.new(cops, forces_for(cops), @options)
         offenses = commissioner.investigate(processed_source)
         yield offenses if block_given?
 
