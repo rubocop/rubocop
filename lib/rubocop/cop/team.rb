@@ -11,18 +11,35 @@ module RuboCop
 
       Investigation = Struct.new(:offenses, :errors)
 
-      attr_reader :errors, :warnings, :updated_source_file
+      attr_reader :errors, :warnings, :updated_source_file, :cops
 
       alias updated_source_file? updated_source_file
 
-      def initialize(cop_classes, config, options = nil)
-        @cop_classes = cop_classes
+      def initialize(cops, config = nil, options = nil)
+        @cops = cops
         @config = config
         @options = options || DEFAULT_OPTIONS
         @errors = []
         @warnings = []
 
         validate_config
+      end
+
+      # @return [Team] with cops assembled from the given `cop_classes`
+      def self.mobilize(cop_classes, config, options = nil)
+        options ||= DEFAULT_OPTIONS
+        cops = mobilize_cops(cop_classes, config, options)
+        new(cops, config, options)
+      end
+
+      # @return [Array<Cop::Cop>]
+      def self.mobilize_cops(cop_classes, config, options = nil)
+        options ||= DEFAULT_OPTIONS
+        only = options.fetch(:only, [])
+        safe = options.fetch(:safe, false)
+        cop_classes.enabled(config, only, safe).map do |cop_class|
+          cop_class.new(config, options)
+        end
       end
 
       def autocorrect?
@@ -42,14 +59,6 @@ module RuboCop
         end
 
         offenses(processed_source)
-      end
-
-      def cops
-        only = @options.fetch(:only, [])
-        safe = @options.fetch(:safe, false)
-        @cops ||= @cop_classes.enabled(@config, only, safe).map do |cop_class|
-          cop_class.new(@config, @options)
-        end
       end
 
       def forces
