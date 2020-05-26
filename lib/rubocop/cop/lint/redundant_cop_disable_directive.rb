@@ -135,7 +135,7 @@ module RuboCop
           end
         end
 
-        # rubocop:todo Metrics/CyclomaticComplexity
+        # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity
         def find_redundant(comment, offenses, cop, line_range, next_line_range)
           if all_disabled?(comment)
             # If there's a disable all comment followed by a comment
@@ -153,7 +153,7 @@ module RuboCop
             cop if cop_offenses.none? { |o| line_range.cover?(o.line) }
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
         def all_disabled?(comment)
           /rubocop\s*:\s*(?:disable|todo)\s+all\b/.match?(comment.text)

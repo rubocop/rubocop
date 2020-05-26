@@ -41,7 +41,6 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
         def autocorrect(node)
           lambda do |corrector|
             corrector.replace(node.send_node.loc.selector, 'each_with_object')
@@ -60,7 +59,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
