@@ -27,6 +27,17 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
     RUBY
   end
 
+  it 'registers an offense with cipher constant and double quoted string argument and corrects' do
+    expect_offense(<<~RUBY)
+      OpenSSL::Cipher::AES128.new("GCM")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-128-GCM')` instead of `OpenSSL::Cipher::AES128.new("GCM")`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      OpenSSL::Cipher.new('AES-128-GCM')
+    RUBY
+  end
+
   it 'registers an offense with AES + blocksize constant and mode argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES128.new(:GCM)
