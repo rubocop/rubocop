@@ -8,7 +8,7 @@
 * [#8012](https://github.com/rubocop-hq/rubocop/issues/8012): Fix an incorrect autocorrect for `Lint/DeprecatedOpenSSLConstant` when deprecated OpenSSL constant is used in a block. ([@koic][])
 * [#8017](https://github.com/rubocop-hq/rubocop/pull/8017): Fix a false positive for `Lint/SuppressedException` when empty rescue with comment in `def`. ([@koic][])
 * [#7990](https://github.com/rubocop-hq/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
-* [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix the following false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
+* [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
 
 ## 0.84.0 (2020-05-21)
 
