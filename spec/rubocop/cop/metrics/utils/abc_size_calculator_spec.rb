@@ -2,78 +2,74 @@
 
 RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
   describe '#calculate' do
-    context '0 assignments, 3 branches, 0 conditions' do
-      it 'returns 3' do
-        node = parse_source(<<~RUBY).ast
-          def method_name
-            return x, y, z
-          end
-        RUBY
-        expect(described_class.calculate(node).first)
-          .to be_within(0.001).of(3)
-      end
+    subject(:vector) { described_class.calculate(node).last }
+
+    let(:node) { parse_source(source).ast }
+
+    context 'multiple calls with return' do
+      let(:source) { <<~RUBY }
+        def method_name
+          return x, y, z
+        end
+      RUBY
+
+      it { is_expected.to eq '<0, 3, 0>' }
     end
 
-    context '2 assignments, 6 branches, 2 conditions' do
-      it 'returns 6.63' do
-        node = parse_source(<<~RUBY).ast
-          def method_name
-            a = b ? c : d
+    context 'assignment with ternary operator' do
+      let(:source) { <<~RUBY }
+        def method_name
+          a = b ? c : d
+          e = f ? g : h
+        end
+      RUBY
+
+      it { is_expected.to eq '<2, 6, 2>' }
+    end
+
+    context 'if and arithmetic operations' do
+      let(:source) { <<~RUBY }
+        def method_name
+          a = b ? c : d
+          if a
+            a
+          else
             e = f ? g : h
+
+            # The * and - are counted as branches because they are parsed as
+            # `send` nodes. YARV might optimize them, but to `parser` they
+            # are methods.
+            e * 2.4 - 781.0
           end
-        RUBY
-        expect(described_class.calculate(node).first)
-          .to be_within(0.001).of(6.63)
-      end
+        end
+      RUBY
+
+      it { is_expected.to eq '<2, 8, 4>' }
     end
 
-    context '2 assignments, 8 branches, 4 conditions' do
-      it 'returns 8.77' do
-        node = parse_source(<<~RUBY).ast
-          def method_name
-            a = b ? c : d
-            if a
-              a
-            else
-              e = f ? g : h
+    context 'same with extra condition' do
+      let(:source) { <<~RUBY }
+        def method_name
+          a = b ? c : d
+          if a < b
+            a
+          else
+            e = f ? g : h
 
-              # The * and - are counted as branches because they are parsed as
-              # `send` nodes. YARV might optimize them, but to `parser` they
-              # are methods.
-              e * 2.4 - 781.0
-            end
+            # The * and - are counted as branches because they are parsed as
+            # `send` nodes. YARV might optimize them, but to `parser` they
+            # are methods.
+            e * 2.4 - 781.0
           end
-        RUBY
-        expect(described_class.calculate(node).first)
-          .to be_within(0.001).of(9.17)
-      end
-    end
+        end
+      RUBY
 
-    context '2 assignments, 9 branches, 5 conditions' do
-      it 'returns 10.49' do
-        node = parse_source(<<~RUBY).ast
-          def method_name
-            a = b ? c : d
-            if a < b
-              a
-            else
-              e = f ? g : h
-
-              # The * and - are counted as branches because they are parsed as
-              # `send` nodes. YARV might optimize them, but to `parser` they
-              # are methods.
-              e * 2.4 - 781.0
-            end
-          end
-        RUBY
-        expect(described_class.calculate(node).first)
-          .to be_within(0.001).of(10.49)
-      end
+      it { is_expected.to eq '<2, 9, 5>' }
     end
 
     context 'elsif vs else if' do
-      it 'counts elsif as 1 condition' do
-        node = parse_source(<<~RUBY).ast
+      context 'elsif' do
+        let(:source) { <<~RUBY }
           def method_name
             if foo        # 0, 1, 1
               bar         # 0, 2, 1
@@ -85,12 +81,11 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
           end
         RUBY
 
-        expect(described_class.calculate(node).first)
-          .to be_within(0.001).of(5.83)
+        it { is_expected.to eq '<0, 5, 3>' }
       end
 
-      it 'counts else if as 2 conditions' do
-        node = parse_source(<<~RUBY).ast
+      context 'else if' do
+        let(:source) { <<~RUBY }
           def method_name
             if foo        # 0, 1, 1
               bar         # 0, 2, 1
@@ -104,8 +99,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
           end
         RUBY
 
-        expect(described_class.calculate(node).first)
-          .to be_within(0.001).of(6.4)
+        it { is_expected.to eq '<0, 5, 4>' }
       end
     end
   end
