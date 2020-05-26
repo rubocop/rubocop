@@ -48,17 +48,22 @@ module RuboCop
             return true
           end
 
-          node.operator_method? || node.setter_method? || grouped_parentheses?(node)
+          node.operator_method? || node.setter_method? || chained_calls?(node) ||
+            operator_keyword?(node)
         end
 
         def first_argument_starts_with_left_parenthesis?(node)
           node.first_argument.source.start_with?('(')
         end
 
-        def grouped_parentheses?(node)
+        def chained_calls?(node)
           first_argument = node.first_argument
+          first_argument.send_type? && (node.children.last&.children&.count || 0) > 1
+        end
 
-          first_argument.send_type? && first_argument.receiver&.begin_type?
+        def operator_keyword?(node)
+          first_argument = node.first_argument
+          first_argument.operator_keyword?
         end
 
         def spaces_before_left_parenthesis(node)
