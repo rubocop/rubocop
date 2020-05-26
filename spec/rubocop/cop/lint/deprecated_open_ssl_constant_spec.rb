@@ -66,6 +66,25 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
     RUBY
   end
 
+  it 'does not register an offense with cipher constant and argument is a variable' do
+    expect_no_offenses(<<~RUBY)
+      mode = "cbc"
+      OpenSSL::Cipher::AES128.new(mode)
+    RUBY
+  end
+
+  it 'does not register an offense with cipher constant and send argument is a method' do
+    expect_no_offenses(<<~RUBY)
+      OpenSSL::Cipher::AES128.new(do_something)
+    RUBY
+  end
+
+  it 'does not register an offense with cipher constant and argument is a constant' do
+    expect_no_offenses(<<~RUBY)
+      OpenSSL::Cipher::AES128.new(MODE)
+    RUBY
+  end
+
   it 'registers an offense when building an instance using an digest constant and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Digest::SHA256.new
