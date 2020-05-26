@@ -14,8 +14,9 @@ RSpec.describe RuboCop::Formatter::HTMLFormatter, :isolated_environment do
 
   # Run without Style/EndOfLine as it gives different results on
   # different platforms.
+  # Metrics/AbcSize is very strict, exclude it too
   let(:options) do
-    %w[--except Layout/EndOfLine --format html --out]
+    %w[--except Layout/EndOfLine,Metrics/AbcSize --format html --out]
   end
 
   let(:actual_html_path) do
