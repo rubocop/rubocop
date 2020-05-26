@@ -321,6 +321,7 @@ require_relative 'rubocop/cop/lint/useless_else_without_rescue'
 require_relative 'rubocop/cop/lint/useless_setter_call'
 require_relative 'rubocop/cop/lint/void'
 
+require_relative 'rubocop/cop/metrics/utils/iterating_block'
 require_relative 'rubocop/cop/metrics/cyclomatic_complexity'
 # relies on cyclomatic_complexity
 require_relative 'rubocop/cop/metrics/utils/abc_size_calculator'

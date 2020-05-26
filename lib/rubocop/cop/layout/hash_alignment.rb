@@ -200,7 +200,7 @@ module RuboCop
         alias on_super on_send
         alias on_yield on_send
 
-        def on_hash(node)
+        def on_hash(node) # rubocop:todo Metrics/CyclomaticComplexity
           return if ignored_node?(node)
           return if node.pairs.empty? || node.single_line?
 

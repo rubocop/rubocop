@@ -39,7 +39,7 @@ module RuboCop
           check_for_line_terminator_or_opener
         end
 
-        def on_begin(node)
+        def on_begin(node) # rubocop:todo Metrics/CyclomaticComplexity
           return if cop_config['AllowAsExpressionSeparator']
 
           exprs = node.children

@@ -19,7 +19,7 @@ module RuboCop
           # > Condition -- a logical/Boolean test, == != <= >= < > else case
           # > default try catch ? and unary conditionals.
           # > http://c2.com/cgi/wiki?AbcMetric
-          CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
+          CONDITION_NODES = (CyclomaticComplexity::COUNTED_NODES - %i[block block_pass]).freeze
 
           def self.calculate(node)
             new(node).calculate

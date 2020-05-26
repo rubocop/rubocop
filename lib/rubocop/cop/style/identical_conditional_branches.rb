@@ -81,7 +81,7 @@ module RuboCop
 
         private
 
-        def check_branches(branches)
+        def check_branches(branches) # rubocop:todo Metrics/CyclomaticComplexity
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
           return if branches.any?(&:nil?)

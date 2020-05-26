@@ -92,7 +92,7 @@ module RuboCop
           second.int_type? ? second.to_a.first : :unknown
         end
 
-        def range_size(range_node)
+        def range_size(range_node) # rubocop:todo Metrics/CyclomaticComplexity
           vals = range_node.to_a
           return :unknown unless vals.all?(&:int_type?)
 

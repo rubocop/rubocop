@@ -67,7 +67,7 @@ module RuboCop
 
         private
 
-        def expand_elsif(node, elsif_branches = [])
+        def expand_elsif(node, elsif_branches = []) # rubocop:todo Metrics/CyclomaticComplexity
           return [] if node.nil? || !node.if_type? || !node.elsif?
 
           elsif_branches << node.if_branch

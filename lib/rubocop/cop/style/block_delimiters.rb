@@ -252,7 +252,6 @@ module RuboCop
           /\s/.match?(range.source_buffer.source[range.begin_pos + length, 1])
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def get_blocks(node, &block)
           case node.type
           when :block
@@ -270,7 +269,6 @@ module RuboCop
             node.each_child_node { |child| get_blocks(child, &block) }
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def proper_block_style?(node)
           return special_method_proper_block_style?(node) if special_method?(node.method_name)
