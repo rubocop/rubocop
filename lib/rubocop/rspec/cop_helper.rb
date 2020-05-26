@@ -64,16 +64,8 @@ module CopHelper
   end
 
   def _investigate(cop, processed_source)
-    forces = RuboCop::Cop::Force.all.each_with_object([]) do |klass, instances|
-      next unless cop.join_force?(klass)
-
-      instances << klass.new([cop])
-    end
-
-    commissioner =
-      RuboCop::Cop::Commissioner.new([cop], forces, raise_error: true)
-    commissioner.investigate(processed_source)
-    commissioner
+    team = RuboCop::Cop::Team.new([cop], nil, raise_error: true)
+    team.inspect_file(processed_source)
   end
 end
 
