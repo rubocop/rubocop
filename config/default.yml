@@ -469,6 +469,13 @@ Layout/EmptyLinesAroundAttributeAccessor:
   StyleGuide: '#empty-lines-around-attribute-accessor'
   Enabled: pending
   VersionAdded: '0.83'
+  VersionChanged: '0.84'
+  AllowAliasSyntax: true
+  AllowedMethods:
+    - alias_method
+    - public
+    - protected
+    - private
 
 Layout/EmptyLinesAroundBeginBody:
   Description: "Keeps track of empty lines around begin-end bodies."
@@ -858,11 +865,11 @@ Layout/LeadingEmptyLines:
   VersionChanged: '0.77'
 
 Layout/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  StyleGuide: '#80-character-limits'
+  Description: 'Checks that line length does not exceed the configured limit.'
+  StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '1.0'
+  VersionChanged: '0.84'
   AutoCorrect: false
   Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
@@ -2700,6 +2707,11 @@ Style/DoubleNegation:
   StyleGuide: '#no-bang-bang'
   Enabled: true
   VersionAdded: '0.19'
+  VersionChanged: '0.84'
+  EnforcedStyle: allowed_in_returns
+  SupportedStyles:
+    - allowed_in_returns
+    - forbidden
 
 Style/EachForSimpleLoop:
   Description: >-

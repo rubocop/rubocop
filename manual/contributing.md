@@ -17,6 +17,10 @@ Patches in any form are always welcome! GitHub pull requests are even better! :-
 Before submitting a patch or a pull request make sure all tests are
 passing and that your patch is in line with the [contribution
 guidelines](https://github.com/rubocop-hq/rubocop/blob/master/CONTRIBUTING.md).
+
+A handy way to test only the files that you have modified in the last commit
+(with `rspec` and `rubocop`) is to use `rake check_commit`.
+
 Also see the [Development section](development.md).
 
 ## Documentation
@@ -63,7 +67,7 @@ If you're working in a company that's making significant use of RuboCop we'd app
 to become a RuboCop sponsor.
 
 You can support the development of RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop),
+[GitHub Sponsors](https://github.com/sponsors/bbatsov),
 [Patreon](https://www.patreon.com/bbatsov),
 [PayPal](https://paypal.me/bbatsov),
 and [Open Collective](https://opencollective.com/rubocop).

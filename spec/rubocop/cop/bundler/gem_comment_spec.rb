@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) do
     {
       'Include' => ['**/Gemfile'],
@@ -13,7 +11,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
   context 'when investigating Ruby files' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~RUBY, 'foo.rb')
         gem('rubocop')
       RUBY
     end

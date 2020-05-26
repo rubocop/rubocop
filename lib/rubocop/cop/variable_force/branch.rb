@@ -109,7 +109,9 @@ module RuboCop
             return false if may_jump_to_other_branch?
 
             other.each_ancestor(include_self: true) do |other_ancestor|
-              return !child_node.equal?(other_ancestor.child_node) if control_node.equal?(other_ancestor.control_node)
+              if control_node.equal?(other_ancestor.control_node)
+                return !child_node.equal?(other_ancestor.child_node)
+              end
             end
 
             if parent

@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks for a newline after attribute accessor.
+      # Checks for a newline after an attribute accessor or a group of them.
+      # `alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed
+      # by default. These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
       #
       # @example
       #   # bad
@@ -26,6 +28,38 @@ module RuboCop
       #   def do_something
       #   end
       #
+      # @example AllowAliasSyntax: true (default)
+      #   # good
+      #   attr_accessor :foo
+      #   alias :foo? :foo
+      #
+      #   def do_something
+      #   end
+      #
+      # @example AllowAliasSyntax: false
+      #   # bad
+      #   attr_accessor :foo
+      #   alias :foo? :foo
+      #
+      #   def do_something
+      #   end
+      #
+      #   # good
+      #   attr_accessor :foo
+      #
+      #   alias :foo? :foo
+      #
+      #   def do_something
+      #   end
+      #
+      # @example AllowedMethods: ['private']
+      #   # good
+      #   attr_accessor :foo
+      #   private :foo
+      #
+      #   def do_something
+      #   end
+      #
       class EmptyLinesAroundAttributeAccessor < Cop
         include RangeHelp
 
@@ -36,7 +70,7 @@ module RuboCop
           return if next_line_empty?(node.last_line)
 
           next_line_node = next_line_node(node)
-          return if next_line_node.nil? || attribute_accessor?(next_line_node)
+          return unless require_empty_line?(next_line_node)
 
           add_offense(node)
         end
@@ -55,12 +89,36 @@ module RuboCop
           processed_source[line].blank?
         end
 
+        def require_empty_line?(node)
+          return false unless node&.respond_to?(:type)
+
+          !allow_alias?(node) && !attribute_or_allowed_method?(node)
+        end
+
         def next_line_node(node)
           node.parent.children[node.sibling_index + 1]
         end
 
-        def attribute_accessor?(node)
-          node.send_type? && node.attribute_accessor?
+        def allow_alias?(node)
+          allow_alias_syntax? && node.alias_type?
+        end
+
+        def attribute_or_allowed_method?(node)
+          return false unless node.send_type?
+
+          node.attribute_accessor? || allowed_method?(node.method_name)
+        end
+
+        def allow_alias_syntax?
+          cop_config.fetch('AllowAliasSyntax', true)
+        end
+
+        def allowed_method?(name)
+          allowed_methods.include?(name.to_s)
+        end
+
+        def allowed_methods
+          cop_config.fetch('AllowedMethods', [])
         end
       end
     end

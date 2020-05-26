@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'EnforcedStyle is `around`' do
     let(:cop_config) { { 'EnforcedStyle' => 'around' } }
 
@@ -402,7 +400,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
     end
 
     %w[public module_function].each do |access_modifier|
-      it "accepts missing blank line after #{access_modifier}" do
+      it "accepts blank line after #{access_modifier}" do
         expect_no_offenses(<<~RUBY)
           module Kernel
             #{access_modifier}
@@ -415,7 +413,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
     end
 
     %w[private protected public module_function].each do |access_modifier|
-      it "registers an offense for blank line before #{access_modifier}" do
+      it "registers an offense for missing blank line before #{access_modifier}" do
         inspect_source(<<~RUBY)
           class Test
             something

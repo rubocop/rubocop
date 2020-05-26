@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'common behavior' do
     it 'accepts an empty block' do
       expect_no_offenses('{}.each {}')

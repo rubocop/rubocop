@@ -129,7 +129,7 @@ module RuboCop
       end
 
       def separating_space?
-        block_begin.source_buffer.source[block_begin.begin_pos + 2].match(/\s/)
+        block_begin.source_buffer.source[block_begin.begin_pos + 2].match?(/\s/)
       end
     end
   end

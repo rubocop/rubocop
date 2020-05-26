@@ -2,11 +2,23 @@
 
 ## master (unreleased)
 
-### New features
+### Bug fixes
 
 * [#7978](https://github.com/rubocop-hq/rubocop/pull/7978): Add new option `OnlyWhenUsingAnyOf` to the `Bundler/GemComment` cop. ([@ric2b][])
+* [#8008](https://github.com/rubocop-hq/rubocop/issues/8008): Fix an error for `Lint/SuppressedException` when empty rescue block in `def`. ([@koic][])
+* [#8012](https://github.com/rubocop-hq/rubocop/issues/8012): Fix an incorrect autocorrect for `Lint/DeprecatedOpenSSLConstant` when deprecated OpenSSL constant is used in a block. ([@koic][])
+* [#8017](https://github.com/rubocop-hq/rubocop/pull/8017): Fix a false positive for `Lint/SuppressedException` when empty rescue with comment in `def`. ([@koic][])
+* [#7990](https://github.com/rubocop-hq/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
+* [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
+
+## 0.84.0 (2020-05-21)
+
+### New features
+
 * [#7735](https://github.com/rubocop-hq/rubocop/issues/7735): `NodePattern` and `AST` classes have been moved to the [`rubocop-ast` gem](https://github.com/rubocop-hq/rubocop-ast). ([@marcandre][])
 * [#7950](https://github.com/rubocop-hq/rubocop/pull/7950): Add new `Lint/DeprecatedOpenSSLConstant` cop. ([@bdewater][])
+* [#7976](https://github.com/rubocop-hq/rubocop/issues/7976): Add `AllowAliasSyntax` and `AllowedMethods` options for `Layout/EmptyLinesAroundAttributeAccessor`. ([@koic][])
+* [#7984](https://github.com/rubocop-hq/rubocop/pull/7984): New `rake` task "check_commit" will run `rspec` and `rubocop` on files touched by the last commit. Currently available when developing from the main repository only. ([@marcandre][])
 
 ### Bug fixes
 
@@ -14,11 +26,15 @@
 * [#7962](https://github.com/rubocop-hq/rubocop/issues/7962): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when heredoc has a space between the same string as the method name and `(`. ([@koic][])
 * [#7967](https://github.com/rubocop-hq/rubocop/pull/7967): `Style/SlicingWithRange` cop now supports any expression as its first index. ([@zverok][])
 * [#7972](https://github.com/rubocop-hq/rubocop/issues/7972): Fix an incorrect autocrrect for `Style/HashSyntax` when using a return value uses `return`. ([@koic][])
+* [#7886](https://github.com/rubocop-hq/rubocop/issues/7886): Fix a bug in `AllowComments` logic in `Lint/SuppressedException`. ([@jonas054][])
+* [#7991](https://github.com/rubocop-hq/rubocop/issues/7991): Fix an error for `Layout/EmptyLinesAroundAttributeAccessor` when attribute method is method chained. ([@koic][])
+* [#7993](https://github.com/rubocop-hq/rubocop/issues/7993): Fix a false positive for `Migration/DepartmentName` when a disable comment contains an unexpected character for department name. ([@koic][])
 
 ### Changes
 
 * [#7952](https://github.com/rubocop-hq/rubocop/pull/7952): **(Breaking)** Change the max line length of `Layout/LineLength` to 120 by default. ([@koic][])
 * [#7959](https://github.com/rubocop-hq/rubocop/pull/7959): Change enforced style to conditionals for `Style/AndOr`. ([@koic][])
+* [#7985](https://github.com/rubocop-hq/rubocop/pull/7985): Add `EnforcedStyle` for `Style/DoubleNegation` cop and allow double nagation in contexts that use boolean as a return value. ([@koic][])
 
 ## 0.83.0 (2020-05-11)
 
@@ -4525,4 +4541,5 @@
 [@jeffcarbs]: https://github.com/jeffcarbs
 [@laurmurclar]: https://github.com/laurmurclar
 [@jethrodaniel]: https://github.com/jethrodaniel
+[@CvX]: https://github.com/CvX
 [@ric2b]: https://github.com/ric2b

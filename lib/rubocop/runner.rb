@@ -183,7 +183,7 @@ module RuboCop
     def autocorrect_redundant_disables(file, source, cop, offenses)
       cop.processed_source = source
 
-      team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
+      team = Cop::Team.mobilize(RuboCop::Cop::Registry.new, nil, @options)
       team.autocorrect(source.buffer, [cop])
 
       return [] unless team.updated_source_file?
@@ -204,7 +204,9 @@ module RuboCop
     end
 
     def file_finished(file, offenses)
-      offenses = offenses.select { |o| considered_failure?(o) } if @options[:display_only_fail_level_offenses]
+      if @options[:display_only_fail_level_offenses]
+        offenses = offenses.select { |o| considered_failure?(o) }
+      end
       formatter_set.file_finished(file, offenses)
     end
 
@@ -284,14 +286,16 @@ module RuboCop
     def check_for_infinite_loop(processed_source, offenses)
       checksum = processed_source.checksum
 
-      raise InfiniteCorrectionLoop.new(processed_source.path, offenses) if @processed_sources.include?(checksum)
+      if @processed_sources.include?(checksum)
+        raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
+      end
 
       @processed_sources << checksum
     end
 
     def inspect_file(processed_source)
       config = @config_store.for(processed_source.path)
-      team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
+      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
@@ -376,7 +380,7 @@ module RuboCop
     def standby_team(config)
       @team_by_config ||= {}
       @team_by_config[config.object_id] ||=
-        Cop::Team.new(mobilized_cop_classes(config), config, @options)
+        Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
   end
 end

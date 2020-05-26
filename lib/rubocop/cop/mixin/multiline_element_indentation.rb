@@ -67,7 +67,9 @@ module RuboCop
           styles << :consistent
           styles << :special_inside_parentheses unless left_parenthesis
         end
-        styles << :special_inside_parentheses if left_parenthesis && column == left_parenthesis.column + 1
+        if left_parenthesis && column == left_parenthesis.column + 1
+          styles << :special_inside_parentheses
+        end
         styles << brace_alignment_style if column == left_brace.column
         styles
       end

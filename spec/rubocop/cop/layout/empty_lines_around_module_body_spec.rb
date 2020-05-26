@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:extra_begin) { 'Extra empty line detected at module body beginning.' }
   let(:extra_end) { 'Extra empty line detected at module body end.' }
   let(:missing_begin) { 'Empty line missing at module body beginning.' }
@@ -103,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
   context 'when EnforcedStyle is empty_lines_except_namespace' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines_except_namespace' } }
 
-    context 'when only child is class' do
+    context 'when only child is module' do
       it 'requires no empty lines for namespace' do
         expect_no_offenses(<<~RUBY)
           module Parent

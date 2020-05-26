@@ -38,25 +38,65 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
   end
 end
 
-# `cop_config` must be declared with #let.
-RSpec.shared_context 'config', :config do
-  let(:config) do
-    # Module#<
-    raise '`config` must be used in `describe SomeCopClass do .. end`' unless described_class < RuboCop::Cop::Cop
+# This context assumes nothing and defines `cop`, among others.
+RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
+  ### Meant to be overridden at will
 
-    hash = { 'AllCops' => { 'TargetRubyVersion' => ruby_version } }
-    hash['AllCops']['TargetRailsVersion'] = rails_version if rails_version
-    if respond_to?(:cop_config)
-      cop_name = described_class.cop_name
-      hash[cop_name] = RuboCop::ConfigLoader
-                       .default_configuration[cop_name]
-                       .merge('Enabled' => true) # in case it is 'pending'
-                       .merge(cop_config)
+  let(:source) { 'code = {some: :ruby}' }
+
+  let(:cop_class) do
+    if described_class.is_a?(Class) && described_class < RuboCop::Cop::Cop
+      described_class
+    else
+      RuboCop::Cop::Cop
     end
+  end
 
-    hash = other_cops.merge hash if respond_to?(:other_cops)
+  let(:cop_config) { {} }
+
+  let(:other_cops) { {} }
+
+  let(:cop_options) { {} }
+
+  ### Utilities
+
+  def source_range(range, buffer: source_buffer)
+    Parser::Source::Range.new(buffer, range.begin,
+                              range.exclude_end? ? range.end : range.end + 1)
+  end
+
+  ### Useful intermediary steps (less likely to be overridden)
+
+  let(:processed_source) { parse_source(source, 'test') }
+
+  let(:source_buffer) { processed_source.buffer }
+
+  let(:all_cops_config) do
+    rails = { 'TargetRubyVersion' => ruby_version }
+    rails['TargetRailsVersion'] = rails_version if rails_version
+    rails
+  end
+
+  let(:cur_cop_config) do
+    RuboCop::ConfigLoader
+      .default_configuration.for_cop(cop_class)
+      .merge({
+               'Enabled' => true, # in case it is 'pending'
+               'AutoCorrect' => true # in case defaults set it to false
+             })
+      .merge(cop_config)
+  end
+
+  let(:config) do
+    hash = { 'AllCops' => all_cops_config,
+             cop_class.cop_name => cur_cop_config }.merge!(other_cops)
 
     RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
+  end
+
+  let(:cop) do
+    cop_class.new(config, cop_options)
+             .tap { |cop| cop.processed_source = processed_source }
   end
 end
 

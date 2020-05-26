@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'always' do
     let(:cop_config) do
       { 'Enabled'       => true,
@@ -238,14 +236,6 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         # -*- encoding: UTF-8; frozen_string_literal: true -*-
         # encoding: utf-8
         puts 1
-      RUBY
-    end
-
-    it 'registers an offense for not having a frozen string literal comment ' \
-       'when there is only a shebang' do
-      expect_offense(<<~RUBY)
-        #!/usr/bin/env ruby
-        ^ Missing frozen string literal comment.
       RUBY
     end
 

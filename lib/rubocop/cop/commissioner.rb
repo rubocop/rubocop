@@ -36,7 +36,6 @@ module RuboCop
 
       def investigate(processed_source)
         reset_errors
-        remove_irrelevant_cops(processed_source.file_path)
         reset_callbacks
         prepare(processed_source)
         invoke_custom_processing(@cops, processed_source)
@@ -61,26 +60,6 @@ module RuboCop
 
       def reset_errors
         @errors = []
-      end
-
-      def remove_irrelevant_cops(filename)
-        @cops.reject! do |cop|
-          cop.excluded_file?(filename) ||
-            !support_target_ruby_version?(cop) ||
-            !support_target_rails_version?(cop)
-        end
-      end
-
-      def support_target_ruby_version?(cop)
-        return true unless cop.class.respond_to?(:support_target_ruby_version?)
-
-        cop.class.support_target_ruby_version?(cop.target_ruby_version)
-      end
-
-      def support_target_rails_version?(cop)
-        return true unless cop.class.respond_to?(:support_target_rails_version?)
-
-        cop.class.support_target_rails_version?(cop.target_rails_version)
       end
 
       def reset_callbacks

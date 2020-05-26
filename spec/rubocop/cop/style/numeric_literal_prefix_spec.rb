@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'octal literals' do
     context 'when config is zero_with_o' do
       let(:cop_config) do

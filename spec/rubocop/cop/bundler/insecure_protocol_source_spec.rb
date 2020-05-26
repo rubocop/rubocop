@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Bundler::InsecureProtocolSource do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Bundler::InsecureProtocolSource, :config do
   it 'registers an offense when using `source :gemcutter`' do
     expect_offense(<<~RUBY)
       source :gemcutter

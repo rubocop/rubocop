@@ -81,7 +81,9 @@ module RuboCop
 
             expr_before_body ||= node.loc.begin
 
-            autocorrect_body(corrector, node, node.body) if expr_before_body.line == node.body.first_line
+            if expr_before_body.line == node.body.first_line
+              autocorrect_body(corrector, node, node.body)
+            end
           end
         end
 

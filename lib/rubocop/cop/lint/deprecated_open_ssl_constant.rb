@@ -88,9 +88,7 @@ module RuboCop
         end
 
         def correction_range(node)
-          begin_pos = node.loc.selector.column
-          end_pos = node.loc.expression.last_column
-          range_between(begin_pos, end_pos)
+          range_between(node.loc.dot.end_pos, node.loc.expression.end_pos)
         end
 
         def openssl_class(node)
@@ -108,7 +106,11 @@ module RuboCop
         end
 
         def sanitize_arguments(arguments)
-          arguments.flat_map { |arg| arg.source.tr(":'", '').split('-') }
+          arguments.flat_map do |arg|
+            argument = arg.str_type? ? arg.value : arg.source
+
+            argument.tr(":'", '').split('-')
+          end
         end
 
         def replacement_args(node)

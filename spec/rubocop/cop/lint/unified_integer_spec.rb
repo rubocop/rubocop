@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UnifiedInteger, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'registers an offense' do |klass|
     context "when #{klass}" do
       context 'without any decorations' do

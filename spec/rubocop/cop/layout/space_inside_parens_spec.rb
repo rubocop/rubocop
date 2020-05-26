@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when EnforcedStyle is no_space' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 

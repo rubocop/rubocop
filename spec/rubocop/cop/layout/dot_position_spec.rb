@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'Leading dots style' do
     let(:cop_config) { { 'EnforcedStyle' => 'leading' } }
 

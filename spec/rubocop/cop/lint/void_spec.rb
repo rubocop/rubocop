@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
 
   unary_operators = %i[+ - ~ !]
   unary_operators.each do |op|
-    it "registers an offense for void op #{op} if not on last line" do
+    it "registers an offense for void unary op #{op} if not on last line" do
       inspect_source(<<~RUBY)
         #{op}b
         #{op}b
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
   end
 
   unary_operators.each do |op|
-    it "accepts void op #{op} if on last line" do
+    it "accepts void unary op #{op} if on last line" do
       expect_no_offenses(<<~RUBY)
         something
         #{op}b
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
   end
 
   unary_operators.each do |op|
-    it "accepts void op #{op} by itself without a begin block" do
+    it "accepts void unary op #{op} by itself without a begin block" do
       expect_no_offenses("#{op}b")
     end
   end

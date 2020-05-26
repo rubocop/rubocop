@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
   it 'registers an offense for lvar assignment in condition' do

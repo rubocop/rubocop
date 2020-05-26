@@ -612,7 +612,7 @@ RSpec.describe RuboCop::ConfigLoader do
             'Layout/LineLength' => {
               'Description' =>
               default_config['Layout/LineLength']['Description'],
-              'StyleGuide' => '#80-character-limits',
+              'StyleGuide' => '#max-line-length',
               'Enabled' => true,
               'VersionAdded' =>
               default_config['Layout/LineLength']['VersionAdded'],
@@ -716,7 +716,7 @@ RSpec.describe RuboCop::ConfigLoader do
             'Layout/LineLength' => {
               'Description' =>
               default_config['Layout/LineLength']['Description'],
-              'StyleGuide' => '#80-character-limits',
+              'StyleGuide' => '#max-line-length',
               'Enabled' => true,
               'VersionAdded' =>
               default_config['Layout/LineLength']['VersionAdded'],
@@ -781,7 +781,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a known gem' do
       let(:file_path) { '.rubocop.yml' }
-      let(:gem_root) { 'gems' }
+      let(:gem_root) { File.expand_path('gems') }
 
       before do
         create_file("#{gem_root}/gemone/config/rubocop.yml",
@@ -848,6 +848,35 @@ RSpec.describe RuboCop::ConfigLoader do
           configuration_from_file['Layout/LineLength']
             .to_set.superset?(expected.to_set)
         ).to be(true)
+      end
+    end
+
+    context 'when a file inherits from a url inheriting from a gem' do
+      let(:file_path) { '.rubocop.yml' }
+      let(:cache_file) { '.rubocop-http---example-com-default-yml' }
+      let(:gem_root) { File.expand_path('gems') }
+      let(:gem_name) { 'somegem' }
+
+      before do
+        create_file(file_path, ['inherit_from: http://example.com/default.yml'])
+
+        stub_request(:get, %r{example.com/default})
+          .to_return(status: 200, body: "inherit_gem:\n    #{gem_name}: default.yml")
+
+        create_file("#{gem_root}/#{gem_name}/default.yml", ["Layout/LineLength:\n    Max: 48"])
+
+        mock_spec = OpenStruct.new(gem_dir: File.join(gem_root, gem_name))
+        allow(Gem::Specification).to receive(:find_by_name)
+          .with(gem_name).and_return(mock_spec)
+        allow(Gem).to receive(:path).and_return([gem_root])
+      end
+
+      after do
+        File.unlink cache_file if File.exist? cache_file
+      end
+
+      it 'resolves the inherited config' do
+        expect(configuration_from_file['Layout/LineLength']['Max']).to eq(48)
       end
     end
 

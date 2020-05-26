@@ -122,7 +122,9 @@ module RuboCop
 
           return unless first_offense
 
-          return unused_range(node.type, mlhs_node, right) if unused_variables_only?(first_offense, variables)
+          if unused_variables_only?(first_offense, variables)
+            return unused_range(node.type, mlhs_node, right)
+          end
 
           return range_for_parentheses(first_offense, mlhs_node) if Util.parentheses?(mlhs_node)
 

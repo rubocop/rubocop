@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
-  subject(:cop) { described_class.new(config) }
-
   before do
     inspect_source(source)
   end
@@ -35,6 +33,8 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       expect(cop.offenses.empty?).to be(true)
     end
   end
+
+  let(:cop_config) { { 'AllowComments' => false } }
 
   let(:message) { 'Avoid `when` branches without a body.' }
 

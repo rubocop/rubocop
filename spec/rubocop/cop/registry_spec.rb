@@ -7,6 +7,7 @@ RSpec.describe RuboCop::Cop::Registry do
     stub_const('RuboCop::Cop::Test', Module.new)
     stub_const('RuboCop::Cop::RSpec', Module.new)
 
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     module RuboCop
       module Cop
         module Test
@@ -22,6 +23,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
     [
       RuboCop::Cop::Lint::BooleanSymbol,

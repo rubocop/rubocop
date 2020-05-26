@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when using Ruby 2.5 or newer', :ruby25 do
     context 'with inline block' do
       it 'flags each_with_object when transform_keys could be used' do

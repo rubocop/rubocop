@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
       end
     end
 
-    context 'when color is enabled' do
+    context 'when color is disabled' do
       before do
         formatter.rainbow.enabled = false
       end

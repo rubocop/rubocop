@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'processes excluded files with issue' do
-      expect_no_offenses('foo rescue bar')
+      expect_no_offenses('foo rescue bar', 'foo.rb')
     end
   end
 end
