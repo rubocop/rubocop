@@ -10,7 +10,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   let(:cops) { RuboCop::Cop::Cop.all }
   let(:registry) { RuboCop::Cop::Cop.registry }
   let(:team) do
-    RuboCop::Cop::Team.new(
+    RuboCop::Cop::Team.mobilize(
       registry,
       RuboCop::ConfigLoader.default_configuration,
       options

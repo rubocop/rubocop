@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Team do
-  subject(:team) { described_class.new(cop_classes, config, options) }
+  subject(:team) { described_class.mobilize(cop_classes, config, options) }
 
   let(:cop_classes) { RuboCop::Cop::Cop.registry }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
@@ -391,7 +391,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'has a different checksum for the whole team' do
         original_checksum = team.external_dependency_checksum
-        new_team = described_class.new(new_cop_classes, config, options)
+        new_team = described_class.mobilize(new_cop_classes, config, options)
         new_checksum = new_team.external_dependency_checksum
         expect(original_checksum).not_to eq(new_checksum)
       end
