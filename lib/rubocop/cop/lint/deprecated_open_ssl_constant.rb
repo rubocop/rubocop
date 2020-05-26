@@ -53,6 +53,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return if node.arguments.any? { |arg| arg.variable? || arg.send_type? || arg.const_type? }
+
           add_offense(node) if algorithm_const(node)
         end
 
