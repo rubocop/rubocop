@@ -1,0 +1,7 @@
+* xref:index.adoc[Home]
+* xref:installation.adoc[Installation]
+* Usage
+** xref:usage/basic_usage.adoc[Basic Usage]
+** xref:usage/auto_correct.adoc[Auto-correct]
+** xref:usage/caching.adoc[Caching]
+* xref:configuration.adoc[Configuration]
