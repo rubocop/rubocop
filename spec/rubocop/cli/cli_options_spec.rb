@@ -1256,25 +1256,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       context 'when a class name is specified' do
         it 'uses the class as a formatter' do
-          module MyTool
-            class RuboCopFormatter < RuboCop::Formatter::BaseFormatter
-              def started(all_files)
-                output.puts "started: #{all_files.join(',')}"
-              end
+          stub_const('MyTool::RuboCopFormatter',
+                     Class.new(RuboCop::Formatter::BaseFormatter) do
+                       def started(all_files)
+                         output.puts "started: #{all_files.join(',')}"
+                       end
 
-              def file_started(file, _options)
-                output.puts "file_started: #{file}"
-              end
+                       def file_started(file, _options)
+                         output.puts "file_started: #{file}"
+                       end
 
-              def file_finished(file, _offenses)
-                output.puts "file_finished: #{file}"
-              end
+                       def file_finished(file, _offenses)
+                         output.puts "file_finished: #{file}"
+                       end
 
-              def finished(processed_files)
-                output.puts "finished: #{processed_files.join(',')}"
-              end
-            end
-          end
+                       def finished(processed_files)
+                         output.puts "finished: #{processed_files.join(',')}"
+                       end
+                     end)
 
           cli.run(['--format', 'MyTool::RuboCopFormatter', 'example.rb'])
           expect($stdout.string).to eq(<<~RESULT)

@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes a valid EnforcedStyle' do
+    context 'when the configuration includes a valid enforced style' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes an invalid EnforcedStyle' do
+    context 'when the configuration includes an invalid enforced style' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple valid EnforcedStyle' do
+    context 'when the configuration includes multiple valid enforced styles' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/HashAlignment:
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple valid EnforcedStyle '\
+    context 'when the configuration includes multiple valid enforced styles '\
             'and one invalid style' do
       before do
         create_file(configuration_path, <<~YAML)
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple invalid EnforcedStyle' do
+    context 'when the configuration includes multiple invalid enforced styles' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/HashAlignment:

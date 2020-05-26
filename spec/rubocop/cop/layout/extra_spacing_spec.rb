@@ -331,23 +331,6 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
     end
 
-    it 'registers an offense and corrects consecutive assignments ' \
-      'that are not aligned' do
-      expect_offense(<<~RUBY)
-        a = 1
-        bb = 2
-           ^ `=` is not aligned with the preceding assignment.
-        ccc = 3
-            ^ `=` is not aligned with the preceding assignment.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        a   = 1
-        bb  = 2
-        ccc = 3
-      RUBY
-    end
-
     it 'does not register offenses for multiple complex nested assignments' do
       expect_no_offenses(<<~RUBY)
         def batch

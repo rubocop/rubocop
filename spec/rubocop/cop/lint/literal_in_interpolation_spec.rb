@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it "should have #{literal} as the message highlight" do
+    it "has #{literal} as the message highlight" do
       inspect_source(%("this is the \#{#{literal}}"))
       expect(cop.highlights).to eq([literal.to_s])
     end
@@ -139,12 +139,12 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it "should have #{string} in the message highlight" do
+    it "has #{string} in the message highlight" do
       inspect_source(%("this is the \#{#{string}}"))
       expect(cop.highlights).to eq([string])
     end
 
-    it "should remove the interpolation and quotes around #{string}" do
+    it "removes the interpolation and quotes around #{string}" do
       corrected = autocorrect_source(%("this is the \#{#{string}}"))
       expect(corrected).to eq(%("this is the #{string.gsub(/'|"/, '')}"))
     end

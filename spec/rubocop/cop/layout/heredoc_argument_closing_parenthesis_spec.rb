@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL
             foo
           SQL
-          )
+          ).bar
           ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
@@ -132,6 +132,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL)
             foo
           SQL
+          .bar
         RUBY
       end
     end
@@ -142,7 +143,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL,
             foo
           SQL
-          )
+          ).bar
           ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
@@ -150,6 +151,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           foo(<<~SQL)
             foo
           SQL
+          .bar
         RUBY
       end
     end
@@ -248,7 +250,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       it 'detects' do
         expect_offense(<<~RUBY)
           foo(<<-SQL    ,
-            foo
+            foo,
           SQL
           )
           ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
@@ -256,7 +258,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
 
         expect_correction(<<~RUBY)
           foo(<<-SQL)
-            foo
+            foo,
           SQL
         RUBY
       end
@@ -361,7 +363,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       end
     end
 
-    context 'incorrect case with other param before constructor' do
+    context 'incorrect case with other param before constructor and raise call' do
       it 'detects' do
         expect_offense(<<~RUBY)
           raise Foo.new(123, <<-SQL
@@ -431,7 +433,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       end
     end
 
-    context 'incorrect case in array with spaced out comma' do
+    context 'incorrect case in array with double heredoc and spaced out comma' do
       it 'detects' do
         expect_offense(<<~RUBY)
           [
@@ -461,7 +463,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       end
     end
 
-    context 'incorrect case in array with spaced out comma' do
+    context 'incorrect case in array with nested calls and double heredoc and spaced out comma' do
       it 'detects' do
         expect_offense(<<~RUBY)
           [
@@ -526,7 +528,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       end
     end
 
-    context 'complex incorrect case with multiple calls' do
+    context 'complex chained incorrect case with multiple calls' do
       it 'detects and fixes the first' do
         expect_offense(<<~RUBY)
           query.joins({

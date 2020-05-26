@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
     end
   end
 
-  context 'when many arguments are on multiple lines, three on same line' do
+  context 'when many arguments including hash are on multiple lines, three on same line' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         taz("abc",

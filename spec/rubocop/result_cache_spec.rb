@@ -351,7 +351,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         before { ENV['XDG_CACHE_HOME'] = nil }
 
         it 'contains $HOME/.cache' do
-          cacheroot = RuboCop::ResultCache.cache_root(config_store)
+          cacheroot = described_class.cache_root(config_store)
           expect(cacheroot)
             .to eq(File.join(Dir.home, '.cache', 'rubocop_cache'))
         end
@@ -368,7 +368,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
 
         it 'contains the given path and UID' do
-          cacheroot = RuboCop::ResultCache.cache_root(config_store)
+          cacheroot = described_class.cache_root(config_store)
           expect(cacheroot)
             .to eq(File.join(ENV['XDG_CACHE_HOME'], puid, 'rubocop_cache'))
         end
@@ -379,7 +379,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       let(:cache_root_directory) { '/opt' }
 
       it 'contains the given root' do
-        cacheroot = RuboCop::ResultCache.cache_root(config_store)
+        cacheroot = described_class.cache_root(config_store)
         expect(cacheroot).to eq(File.join('/opt', 'rubocop_cache'))
       end
     end
