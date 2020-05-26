@@ -2,7 +2,13 @@
 
 module RuboCop
   module Cop
-    # FIXME
+    # A group of cops, ready to be called on duty to inspect files.
+    # Team is responsible for selecting only relevant cops to be sent on duty,
+    # as well as insuring that the needed forces are sent along with them.
+    #
+    # For performance reasons, Team will first dispatch cops & forces in two groups,
+    # first the ones needed for autocorrection (if any), then the rest
+    # (unless autocorrections happened).
     class Team
       DEFAULT_OPTIONS = {
         auto_correct: false,
