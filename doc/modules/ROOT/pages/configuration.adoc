@@ -20,10 +20,8 @@ Layout/LineLength:
   Max: 99
 ----
 
-!!! Note
-
- Qualifying cop name with its type, e.g., `Style`, is recommended,
- but not necessary as long as the cop name is unique across all types.
+NOTE: Qualifying cop name with its type, e.g., `Style`, is recommended,
+but not necessary as long as the cop name is unique across all types.
 
 == Config file locations
 

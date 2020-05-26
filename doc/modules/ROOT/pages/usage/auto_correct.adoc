@@ -32,10 +32,8 @@ becomes unsafe as well.
 
 If a cop or its auto-correct is annotated as "not safe", it will be omitted when using `--safe-auto-correct`.
 
-!!! Note
-
- Currently there might still be cops that are marked as unsafe or with unsafe auto-correct.
- Eventually, the safety of each cop will be specified in the default configuration.
+NOTE: Currently there might still be cops that are marked as unsafe or with unsafe auto-correct.
+Eventually, the safety of each cop will be specified in the default configuration.
 
 === Example of Unsafe Cop
 

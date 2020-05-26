@@ -73,7 +73,7 @@ automatically fix the problems it found in your code:
 $ rubocop -a
 ----
 
-See xref:auto_correct.adoc[Auto-correct].
+See xref:usage/auto_correct.adoc[Auto-correct].
 
 === Changing what RuboCop considers to be offenses
 

@@ -1,6 +1,6 @@
 = Installation
 
-*RuboCop*'s installation is pretty standard:
+RuboCop's installation is pretty standard:
 
 [source,sh]
 ----
@@ -24,7 +24,5 @@ might want to use a conservative version locking in your `Gemfile`:
 gem 'rubocop', '~> 0.84.0', require: false
 ----
 
-!!! Note
-
- You can check out our progress on the road to version 1.0 [here](https://github.com/rubocop-hq/rubocop/milestone/4).
- You can also help us get there faster! :-)
+NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop-hq/rubocop/milestone/4[here].
+You can also help us get there faster! :-)
