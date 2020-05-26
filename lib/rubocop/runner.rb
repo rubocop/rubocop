@@ -183,7 +183,7 @@ module RuboCop
     def autocorrect_redundant_disables(file, source, cop, offenses)
       cop.processed_source = source
 
-      team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
+      team = Cop::Team.mobilize(RuboCop::Cop::Registry.new, nil, @options)
       team.autocorrect(source.buffer, [cop])
 
       return [] unless team.updated_source_file?
@@ -295,7 +295,7 @@ module RuboCop
 
     def inspect_file(processed_source)
       config = @config_store.for(processed_source.path)
-      team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
+      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
@@ -380,7 +380,7 @@ module RuboCop
     def standby_team(config)
       @team_by_config ||= {}
       @team_by_config[config.object_id] ||=
-        Cop::Team.new(mobilized_cop_classes(config), config, @options)
+        Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
   end
 end
