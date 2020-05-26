@@ -33,7 +33,6 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     cops.with_department(department).sort!
   end
 
-  # rubocop:disable Metrics/AbcSize
   def cops_body(cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
     content << required_ruby_version(cop)
@@ -44,7 +43,6 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content << references(cop)
     content
   end
-  # rubocop:enable Metrics/AbcSize
 
   def examples(examples_object)
     examples_object.each_with_object(h3('Examples').dup) do |example, content|

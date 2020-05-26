@@ -34,7 +34,7 @@ module RuboCop
         FileFinder.root_level = nil
       end
 
-      def load_file(file) # rubocop:disable Metrics/AbcSize
+      def load_file(file)
         path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
 
         hash = load_yaml_configuration(path)

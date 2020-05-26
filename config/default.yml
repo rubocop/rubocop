@@ -1933,7 +1933,7 @@ Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   IgnoredMethods: []
-  Max: 15
+  Max: 17
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
