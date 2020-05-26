@@ -864,8 +864,8 @@ Layout/LeadingEmptyLines:
   VersionChanged: '0.77'
 
 Layout/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  StyleGuide: '#80-character-limits'
+  Description: 'Checks that line length does not exceed the configured limit.'
+  StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '0.84'
