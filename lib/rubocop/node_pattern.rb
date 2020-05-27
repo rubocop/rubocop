@@ -118,7 +118,7 @@ module RuboCop
       ).freeze
       NUMBER       = /-?\d+(?:\.\d+)?/.freeze
       STRING       = /".+?"/.freeze
-      METHOD_NAME  = /\#?#{IDENTIFIER}[\!\?]?\(?/.freeze
+      METHOD_NAME  = /\#?#{IDENTIFIER}[!?]?\(?/.freeze
       PARAM_NUMBER = /%\d*/.freeze
 
       SEPARATORS = /[\s]+/.freeze
