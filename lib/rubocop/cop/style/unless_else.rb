@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop looks for *unless* expressions with *else* clauses.
+      # This cop looks for `unless` expressions with `else` clauses.
       #
       # @example
       #   # bad

@@ -8,22 +8,24 @@ module RuboCop
       # `Categories` allows us to map macro names into a category.
       #
       # Consider an example of code style that covers the following order:
-      # - Module inclusion (include, prepend, extend)
-      # - Constants
-      # - Associations (has_one, has_many)
-      # - Public attribute macros (attr_accessor, attr_writer, attr_reader)
-      # - Other macros (validates, validate)
-      # - Public class methods
-      # - Initializer
-      # - Public instance methods
-      # - Protected attribute macros (attr_accessor, attr_writer, attr_reader)
-      # - Protected instance methods
-      # - Private attribute macros (attr_accessor, attr_writer, attr_reader)
-      # - Private instance methods
+      #
+      # * Module inclusion (include, prepend, extend)
+      # * Constants
+      # * Associations (has_one, has_many)
+      # * Public attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Other macros (validates, validate)
+      # * Public class methods
+      # * Initializer
+      # * Public instance methods
+      # * Protected attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Protected instance methods
+      # * Private attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Private instance methods
       #
       # You can configure the following order:
       #
-      # ```yaml
+      # [source,yaml]
+      # ----
       #  Layout/ClassStructure:
       #    ExpectedOrder:
       #      - module_inclusion
@@ -40,13 +42,14 @@ module RuboCop
       #      - private_attribute_macros
       #      - private_delegate
       #      - private_methods
-      # ```
+      # ----
       #
       # Instead of putting all literals in the expected order, is also
       # possible to group categories of macros. Visibility levels are handled
       # automatically.
       #
-      # ```yaml
+      # [source,yaml]
+      # ----
       #  Layout/ClassStructure:
       #    Categories:
       #      association:
@@ -63,7 +66,7 @@ module RuboCop
       #        - include
       #        - prepend
       #        - extend
-      # ```
+      # ----
       #
       # @example
       #   # bad

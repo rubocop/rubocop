@@ -13,11 +13,11 @@ module RuboCop
       # The supported styles are:
       #
       # * ruby19 - forces use of the 1.9 syntax (e.g. `{a: 1}`) when hashes have
-      #   all symbols for keys
+      # all symbols for keys
       # * hash_rockets - forces use of hash rockets for all hashes
       # * no_mixed_keys - simply checks for hashes with mixed syntaxes
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
-      #   syntax hashes
+      # syntax hashes
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
