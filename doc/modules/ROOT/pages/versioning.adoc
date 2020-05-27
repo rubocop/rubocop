@@ -1,8 +1,6 @@
 = Versioning
 
-!!! Note
-
- Some of the information here is forward looking, as RuboCop 1.0 is still not released.
+NOTE: Some of the information here is forward looking, as RuboCop 1.0 is still not released.
 
 RuboCop is stable between major versions, both in terms of API and cop
 configuration.

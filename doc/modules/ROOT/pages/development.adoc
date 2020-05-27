@@ -109,11 +109,9 @@ node.source # => "!something.empty?"
 
 === Writing Node Pattern Rules
 
-!!! Note
-
- You can write cops without using `NodePattern` (and many older cops don't use it), but it
- generally simplifies a lot the code, as manual node matching and destructuring can be
- quite verbose.
+NOTE: You can write cops without using `NodePattern` (and many older cops don't use it), but it
+generally simplifies a lot the code, as manual node matching and destructuring can be
+quite verbose.
 
 Now that you're familiar with AST, you can learn a bit about the
 https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/NodePattern[node pattern]

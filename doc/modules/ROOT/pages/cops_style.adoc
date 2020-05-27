@@ -3391,9 +3391,7 @@ syntax hashes
 
 == Style/HashTransformKeys
 
-!!! Note
-
- Required Ruby version: 2.5
+NOTE: Required Ruby version: 2.5
 
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -8203,9 +8201,7 @@ def no_op; end
 
 == Style/SlicingWithRange
 
-!!! Note
-
- Required Ruby version: 2.6
+NOTE: Required Ruby version: 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -9223,6 +9219,8 @@ required. Blocks with only one argument and a trailing comma require
 that comma to be present. Blocks with more than one argument never
 require a trailing comma.
 
+[source,ruby]
+----
 add do |foo, bar,|
    foo + bar
   end
@@ -9241,6 +9239,7 @@ add do |foo, bar,|
  add do
     foo + bar
  end
+----
 
 === Examples
 
