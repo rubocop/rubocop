@@ -911,7 +911,7 @@ end
 | 0.83
 |===
 
-This cop checks for _return_ from an _ensure_ block.
+This cop checks for `return` from an `ensure` block.
 Explicit return from an ensure block alters the control flow
 as the return will take precedence over any exception being raised,
 and the exception will be silently thrown away as if it were rescued.
@@ -1436,7 +1436,7 @@ This cop checks for interpolated literals.
 | -
 |===
 
-This cop checks for uses of _begin...end while/until something_.
+This cop checks for uses of `begin...end while/until something`.
 
 === Examples
 
@@ -1498,8 +1498,8 @@ end
 | -
 |===
 
-This cop checks that there is an `+# rubocop:enable ...+` statement
-after a `+# rubocop:disable ...+` statement. This will prevent leaving
+This cop checks that there is an `# rubocop:enable ...` statement
+after a `# rubocop:disable ...` statement. This will prevent leaving
 cop disables on wide ranges of code, that latter contributors to
 a file wouldn't be aware of.
 
@@ -1737,7 +1737,7 @@ end
 | -
 |===
 
-`+Dir[...]+` and `+Dir.glob(...)+` do not make any guarantees about
+`Dir[...]` and `Dir.glob(...)` do not make any guarantees about
 the order in which files are returned. The final order is
 determined by the operating system and file system.
 This means that using them in cases where the order matters,
@@ -2463,7 +2463,7 @@ end
 | 0.27.1
 |===
 
-This cop checks for _rescue_ blocks targeting the Exception class.
+This cop checks for `rescue` blocks targeting the Exception class.
 
 === Examples
 
@@ -3040,7 +3040,7 @@ g.count #=> 2
 | 0.81
 |===
 
-This cop checks for _rescue_ blocks with no body.
+This cop checks for `rescue` blocks with no body.
 
 === Examples
 
@@ -3283,7 +3283,7 @@ This cop checks for using Fixnum or Bignum constant.
 
 This cop checks for unreachable code.
 The check are based on the presence of flow of control
-statement in non-final position in _begin_(implicit) blocks.
+statement in non-final position in `begin` (implicit) blocks.
 
 === Examples
 
@@ -3778,7 +3778,7 @@ This cop checks for every useless assignment to local variable in every
 scope.
 The basic idea for this cop was from the warning of `ruby -cw`:
 
-assigned but unused variable - foo
+  assigned but unused variable - foo
 
 Currently this cop has advanced logic that detects unreferenced
 reassignments and properly handles varied cases such as branch, loop,

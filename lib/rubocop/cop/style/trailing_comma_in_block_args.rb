@@ -12,7 +12,7 @@ module RuboCop
       #   # bad
       #   add { |foo, bar,| foo + bar }
       #
-      #    # good
+      #   # good
       #   add { |foo, bar| foo + bar }
       #
       #   # good
@@ -22,24 +22,24 @@ module RuboCop
       #   add { foo }
       #
       #   # bad
-      #  add do |foo, bar,|
-      #    foo + bar
+      #   add do |foo, bar,|
+      #     foo + bar
       #   end
       #
-      #  # good
-      #  add do |foo, bar|
-      #    foo + bar
-      #  end
-      #
-      #  # good
-      #   add do |foo,|
-      #    foo
-      #  end
-      #
-      #  # good
-      #  add do
+      #   # good
+      #   add do |foo, bar|
       #     foo + bar
-      #  end
+      #   end
+      #
+      #   # good
+      #   add do |foo,|
+      #     foo
+      #   end
+      #
+      #   # good
+      #   add do
+      #     foo + bar
+      #   end
       class TrailingCommaInBlockArgs < Cop
         MSG = 'Useless trailing comma present in block arguments.'
 

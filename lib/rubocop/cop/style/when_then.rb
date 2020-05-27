@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for *when;* uses in *case* expressions.
+      # This cop checks for `when;` uses in `case` expressions.
       #
       # @example
       #   # bad

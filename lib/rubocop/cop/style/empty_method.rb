@@ -8,7 +8,7 @@ module RuboCop
       # line (compact style), but it can be configured to enforce the `end`
       # to go on its own line (expanded style).
       #
-      # Note: A method definition is not considered empty if it contains
+      # NOTE: A method definition is not considered empty if it contains
       #       comments.
       #
       # @example EnforcedStyle: compact (default)

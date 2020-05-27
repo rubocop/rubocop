@@ -5,11 +5,10 @@ module RuboCop
     module Style
       # Use a consistent style for named format string tokens.
       #
-      # **Note:**
-      # `unannotated` style cop only works for strings
+      # NOTE: `unannotated` style cop only works for strings
       # which are passed as arguments to those methods:
       # `printf`, `sprintf`, `format`, `%`.
-      # The reason is that *unannotated* format is very similar
+      # The reason is that _unannotated_ format is very similar
       # to encoded URLs or Date/Time formatting strings.
       #
       # @example EnforcedStyle: annotated (default)
