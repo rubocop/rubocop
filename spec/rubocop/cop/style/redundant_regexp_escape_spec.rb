@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
             foo = /[\\#{char}]/
-                    ^^ Unnecessary escape inside regexp literal
+                    ^^ Redundant escape inside regexp literal
           RUBY
 
           expect_correction(<<~RUBY)
@@ -115,11 +115,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
-    context 'with regexp options and an unnecessary escape' do
+    context 'with regexp options and a redundant escape' do
       it 'registers offenses and corrects' do
         expect_offense(<<~'RUBY')
           r = /\-/i
-               ^^ Unnecessary escape inside regexp literal
+               ^^ Redundant escape inside regexp literal
         RUBY
 
         expect_correction(<<~'RUBY')
@@ -128,12 +128,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
-    context 'with an interpolation followed by unnecessary escapes' do
+    context 'with an interpolation followed by redundant escapes' do
       it 'registers offenses and corrects' do
         expect_offense(<<~'RUBY')
           METHOD_NAME  = /\#?#{IDENTIFIER}[\!\?]?\(?/.freeze
-                                           ^^ Unnecessary escape inside regexp literal
-                                             ^^ Unnecessary escape inside regexp literal
+                                           ^^ Redundant escape inside regexp literal
+                                             ^^ Redundant escape inside regexp literal
         RUBY
 
         expect_correction(<<~'RUBY')
@@ -146,11 +146,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       it 'registers offenses and corrects' do
         expect_offense(<<~'RUBY')
           foo = /[\s\(\|\{\[;,\*\=]/
-                    ^^ Unnecessary escape inside regexp literal
-                      ^^ Unnecessary escape inside regexp literal
-                        ^^ Unnecessary escape inside regexp literal
-                              ^^ Unnecessary escape inside regexp literal
-                                ^^ Unnecessary escape inside regexp literal
+                    ^^ Redundant escape inside regexp literal
+                      ^^ Redundant escape inside regexp literal
+                        ^^ Redundant escape inside regexp literal
+                              ^^ Redundant escape inside regexp literal
+                                ^^ Redundant escape inside regexp literal
         RUBY
 
         expect_correction(<<~'RUBY')
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
             foo = /a\\#{char}b/
-                    ^^ Unnecessary escape inside regexp literal
+                    ^^ Redundant escape inside regexp literal
           RUBY
 
           expect_correction(<<~RUBY)
@@ -202,12 +202,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
-    context 'with unnecessarily-escaped slashes' do
+    context 'with redundantly-escaped slashes' do
       it 'registers an offense and corrects' do
         expect_offense(<<~'RUBY')
           foo = %r{\/a\/}
-                   ^^ Unnecessary escape inside regexp literal
-                      ^^ Unnecessary escape inside regexp literal
+                   ^^ Redundant escape inside regexp literal
+                      ^^ Redundant escape inside regexp literal
         RUBY
 
         expect_correction(<<~RUBY)
@@ -243,14 +243,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
-    context 'with unnecessarily-escaped slashes' do
+    context 'with redundantly-escaped slashes' do
       it 'registers an offense and corrects' do
         expect_offense(<<~'RUBY')
           foo = %r{
             \/a
-            ^^ Unnecessary escape inside regexp literal
+            ^^ Redundant escape inside regexp literal
             b\/
-             ^^ Unnecessary escape inside regexp literal
+             ^^ Redundant escape inside regexp literal
           }x
         RUBY
 

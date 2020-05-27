@@ -5702,6 +5702,42 @@ question = '"What did you say?"'
 
 * [https://rubystyle.guide#percent-q](https://rubystyle.guide#percent-q)
 
+## Style/RedundantRegexpEscape
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Enabled | Yes | Yes  | 0.83 | -
+
+This cop checks for redundant escapes inside Regexp literals.
+
+### Examples
+
+```ruby
+# bad
+%r{foo\/bar}
+
+# good
+%r{foo/bar}
+
+# good
+/foo\/bar/
+
+# good
+%r/foo\/bar/
+
+# bad
+/a\-b/
+
+# good
+/a-b/
+
+# bad
+/[\+\-]\d/
+
+# good
+/[+\-]\d/
+```
+
 ## Style/RedundantReturn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
@@ -5903,8 +5939,7 @@ Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChan
 --- | --- | --- | --- | ---
 Enabled | Yes | Yes  | 0.9 | 0.30
 
-This cop enforces using // or %r around regular expressions, and
-prevents unnecessary /-escapes inside %r literals.
+This cop enforces using // or %r around regular expressions.
 
 ### Examples
 
@@ -5994,16 +6029,6 @@ x =~ %r{home/}
 ```ruby
 # good
 x =~ /home\//
-```
-```ruby
-# bad
-r = %r{foo\/bar}
-
-# good
-r = %r{foo/bar}
-
-# good
-r = %r/foo\/bar/
 ```
 
 ### Configurable attributes

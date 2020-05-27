@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop prevents unnecessary escapes inside regexp literals.
+      # This cop checks for redundant escapes inside Regexp literals.
       #
       # @example
       #   # bad
@@ -32,7 +32,7 @@ module RuboCop
       class RedundantRegexpEscape < Cop
         include RangeHelp
 
-        MSG_UNNECESSARY_ESCAPE = 'Unnecessary escape inside regexp literal'
+        MSG_REDUNDANT_ESCAPE = 'Redundant escape inside regexp literal'
 
         ALLOWED_ALWAYS_ESCAPES = ' []^\\#'.chars.freeze
         ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES = '-'.chars.freeze
@@ -45,7 +45,7 @@ module RuboCop
             add_offense(
               node,
               location: escape_range_at_index(node, index),
-              message: MSG_UNNECESSARY_ESCAPE
+              message: MSG_REDUNDANT_ESCAPE
             )
           end
         end
@@ -84,14 +84,12 @@ module RuboCop
         end
 
         def each_escape(node)
-          indexed_pattern_chars = pattern_source(node).each_char.with_index
-
-          indexed_pattern_chars.reduce([nil, false]) do |(previous, within_character_class), (current, index)|
+          pattern_source(node).each_char.with_index.reduce(
+            [nil, false]
+          ) do |(previous, within_character_class), (current, index)|
             if previous == '\\'
               yield [current, index - 1, within_character_class]
 
-              # Ensure the effect of this escaped char doesn't continue:
-              # previous will be nil on the next iteration.
               [nil, within_character_class]
             elsif previous == '[' && current != ':'
               [current, true]
