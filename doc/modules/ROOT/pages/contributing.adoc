@@ -25,33 +25,59 @@ Also see the xref:development.adoc[Development section].
 
 == Documentation
 
-Good documentation is just as important as good code. Check out the
-link:development.md#documentation[Documentation section] of this guide and consider
+Good documentation is just as important as good code.
+Please, help us improve RuboCop's documentation.
+
+You should also check out the
+xref:development.adoc#documentation[cop documentation section] of the docs and consider
 adding or improving Cop descriptions.
 
-=== Working on the Manual
+=== Working on the Docs
 
-The manual is generated from the markdown files in the
-https://github.com/rubocop-hq/rubocop/tree/master/manual[doc] folder of RuboCop's
-GitHub repo and is published to link:readthedocs.org[Read the Docs]. The
-https://www.mkdocs.org/[MkDocs] tool is used to convert the markdown sources to
-HTML.
+The manual is generated from the AsciiDoc files in the link:https://github.com/rubocop-hq/rubocop/tree/master/doc[doc] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
+link:https://antora.org[Antora] is used to convert the manual into HTML.
+The filesystem layout is described at https://docs.antora.org/antora/2.0/component-structure/.
 
-To make changes to the manual you simply have to change the files under
-`manual`. The manual will be regenerated automatically when changes to those files
-are merged in `master` (or the latest stable branch).
+To make changes to the manual you simply have to change the files under `doc`.
+The manual will be regenerated manually periodically.
 
-You can install `MkDocs` locally and use the command `mkdocs serve` to see the
-result of changes you make to the manual locally:
+==== Installing Antora
 
-[source,sh]
+NOTE: The instructions here assume you already have (the right version of) node.js installed.
+
+Installing the Antora is super simple:
+
+[source]
 ----
-$ cd path/to/rubocop/repo
-$ mkdocs serve
+$ npm i -g @antora/cli@2.0 @antora/site-generator-default@2.0
 ----
+
+Check out https://docs.antora.org/antora/2.0/install/install-antora/[the detailed installation instructions]
+if you run into any problems.
+
+==== Building the Site
+
+You can build the documentation locally from the link:https://github.com/rubocop-hq/docs.rubocop.org[docs.rubocop.org] repo.
+
+[source]
+----
+$ cd docs.rubocop.org
+$ antora --pull antora-playbook.yml
+----
+
+After you're done with the initial setup you can use the `deploy` script to push changes to the site:
+
+[source]
+----
+./deploy
+----
+
+NOTE: You'll need commit access to the repository for this to work.
+
+To check the generated site you can simply open `docs/index.html` in your favourite browser.
 
 If you want to make changes to the manual's page structure you'll have to edit
-https://github.com/rubocop-hq/rubocop/blob/master/mkdocs.yml[mkdocs.yml].
+link:https://github.com/rubocop-hq/rubocop/blob/master/doc/modules/ROOT/nav.adoc[nav.adoc].
 
 == Funding
 
