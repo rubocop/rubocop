@@ -5,7 +5,6 @@
 ** xref:usage/auto_correct.adoc[Auto-correct]
 ** xref:usage/caching.adoc[Caching]
 * xref:configuration.adoc[Configuration]
-* xref:contributing.adoc[Contributing]
 * xref:cops.adoc[Cops]
 * xref:formatters.adoc[Formatters]
 * Cop Documentation
@@ -21,5 +20,6 @@
 * xref:extensions.adoc[Extensions]
 * xref:integration_with_other_tools.adoc[Integration with Other Tools]
 * xref:development.adoc[Development]
+* xref:contributing.adoc[Contributing]
 * xref:support.adoc[Support]
 * xref:versioning.adoc[Versioning]
