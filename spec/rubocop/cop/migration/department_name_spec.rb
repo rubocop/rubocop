@@ -90,6 +90,15 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName do
     end
   end
 
+  context 'when a disable comment contains an unexpected character for department name' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Style/Alias -- because something, something, and something
+        alias :ala :bala
+      RUBY
+    end
+  end
+
   # `Migration/DepartmentName` cop's role is to complement a department name.
   # The role would be simple if another feature could detect unexpected
   # disable comment format.

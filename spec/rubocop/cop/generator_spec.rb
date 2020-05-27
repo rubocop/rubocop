@@ -5,13 +5,12 @@ RSpec.describe RuboCop::Cop::Generator do
     described_class.new(cop_identifier, 'your_id', output: stdout)
   end
 
-  HOME_DIR = Dir.pwd
-
   let(:stdout) { StringIO.new }
   let(:cop_identifier) { 'Style/FakeCop' }
 
   before do
     allow(File).to receive(:write)
+    stub_const('HOME_DIR', Dir.pwd)
   end
 
   describe '#write_source' do
@@ -63,7 +62,7 @@ RSpec.describe RuboCop::Cop::Generator do
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/node_pattern.rb
+                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
@@ -278,6 +277,28 @@ RSpec.describe RuboCop::Cop::Generator do
         expect(stdout.string)
           .to eq('[modify] A configuration for the cop is added into ' \
                  "#{path}.\n")
+      end
+    end
+
+    context 'with version provided' do
+      it 'uses the provided version' do
+        expect(File).to receive(:write).with(path, <<~YAML)
+          Style/Alias:
+            Enabled: true
+
+          Style/FakeCop:
+            Description: 'TODO: Write a description of the cop.'
+            Enabled: pending
+            VersionAdded: '1.52'
+
+          Style/Lambda:
+            Enabled: true
+
+          Style/SpecialGlobalVars:
+            Enabled: true
+        YAML
+
+        generator.inject_config(config_file_path: path, version_added: '1.52')
       end
     end
   end

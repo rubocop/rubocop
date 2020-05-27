@@ -2,13 +2,62 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#8008](https://github.com/rubocop-hq/rubocop/issues/8008): Fix an error for `Lint/SuppressedException` when empty rescue block in `def`. ([@koic][])
+* [#8012](https://github.com/rubocop-hq/rubocop/issues/8012): Fix an incorrect autocorrect for `Lint/DeprecatedOpenSSLConstant` when deprecated OpenSSL constant is used in a block. ([@koic][])
+* [#8017](https://github.com/rubocop-hq/rubocop/pull/8017): Fix a false positive for `Lint/SuppressedException` when empty rescue with comment in `def`. ([@koic][])
+* [#7990](https://github.com/rubocop-hq/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
+* [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
+
+## 0.84.0 (2020-05-21)
+
 ### New features
 
-* [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
-* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
+* [#7735](https://github.com/rubocop-hq/rubocop/issues/7735): `NodePattern` and `AST` classes have been moved to the [`rubocop-ast` gem](https://github.com/rubocop-hq/rubocop-ast). ([@marcandre][])
+* [#7950](https://github.com/rubocop-hq/rubocop/pull/7950): Add new `Lint/DeprecatedOpenSSLConstant` cop. ([@bdewater][])
+* [#7976](https://github.com/rubocop-hq/rubocop/issues/7976): Add `AllowAliasSyntax` and `AllowedMethods` options for `Layout/EmptyLinesAroundAttributeAccessor`. ([@koic][])
+* [#7984](https://github.com/rubocop-hq/rubocop/pull/7984): New `rake` task "check_commit" will run `rspec` and `rubocop` on files touched by the last commit. Currently available when developing from the main repository only. ([@marcandre][])
 
 ### Bug fixes
 
+* [#7953](https://github.com/rubocop-hq/rubocop/issues/7953): Fix an error for `Lint/AmbiguousOperator` when a method with no arguments is used in advance. ([@koic][])
+* [#7962](https://github.com/rubocop-hq/rubocop/issues/7962): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when heredoc has a space between the same string as the method name and `(`. ([@koic][])
+* [#7967](https://github.com/rubocop-hq/rubocop/pull/7967): `Style/SlicingWithRange` cop now supports any expression as its first index. ([@zverok][])
+* [#7972](https://github.com/rubocop-hq/rubocop/issues/7972): Fix an incorrect autocrrect for `Style/HashSyntax` when using a return value uses `return`. ([@koic][])
+* [#7886](https://github.com/rubocop-hq/rubocop/issues/7886): Fix a bug in `AllowComments` logic in `Lint/SuppressedException`. ([@jonas054][])
+* [#7991](https://github.com/rubocop-hq/rubocop/issues/7991): Fix an error for `Layout/EmptyLinesAroundAttributeAccessor` when attribute method is method chained. ([@koic][])
+* [#7993](https://github.com/rubocop-hq/rubocop/issues/7993): Fix a false positive for `Migration/DepartmentName` when a disable comment contains an unexpected character for department name. ([@koic][])
+* [#7983](https://github.com/rubocop-hq/rubocop/pull/7983): Make the config loader Bundler-aware. ([@CvX][])
+
+### Changes
+
+* [#7952](https://github.com/rubocop-hq/rubocop/pull/7952): **(Breaking)** Change the max line length of `Layout/LineLength` to 120 by default. ([@koic][])
+* [#7959](https://github.com/rubocop-hq/rubocop/pull/7959): Change enforced style to conditionals for `Style/AndOr`. ([@koic][])
+* [#7985](https://github.com/rubocop-hq/rubocop/pull/7985): Add `EnforcedStyle` for `Style/DoubleNegation` cop and allow double nagation in contexts that use boolean as a return value. ([@koic][])
+
+## 0.83.0 (2020-05-11)
+
+### New features
+
+* [#7951](https://github.com/rubocop-hq/rubocop/pull/7951): Include `rakefile` file by default. ([@jethrodaniel][])
+* [#7921](https://github.com/rubocop-hq/rubocop/pull/7921): Add new `Style/SlicingWithRange` cop. ([@zverok][])
+* [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
+* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
+* [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
+* [#7917](https://github.com/rubocop-hq/rubocop/pull/7917): Support autocorrection for `Lint/UselessAccessModifier`. ([@koic][])
+* [#595](https://github.com/rubocop-hq/rubocop/issues/595): Add ERB pre-processing for configuration files. ([@jonas054][])
+* [#7918](https://github.com/rubocop-hq/rubocop/pull/7918): Support autocorrection for `Lint/AmbiguousOperator`. ([@koic][])
+* [#7937](https://github.com/rubocop-hq/rubocop/pull/7937): Support autocorrection for `Style/IfWithSemicolon`. ([@koic][])
+* [#3696](https://github.com/rubocop-hq/rubocop/issues/3696): Add `AllowComments` option to `Lint/EmptyWhen` cop. ([@koic][])
+* [#7910](https://github.com/rubocop-hq/rubocop/pull/7910): Support autocorrection for `Lint/ParenthesesAsGroupedExpression`. ([@koic][])
+* [#7925](https://github.com/rubocop-hq/rubocop/pull/7925): Support autocorrection for `Layout/ConditionPosition`. ([@koic][])
+* [#7934](https://github.com/rubocop-hq/rubocop/pull/7934): Support autocorrection for `Lint/EnsureReturn`. ([@koic][])
+* [#7922](https://github.com/rubocop-hq/rubocop/pull/7922): Add new `Layout/EmptyLineAroundAttributeAccessor` cop. ([@koic][])
+
+### Bug fixes
+
+* [#7929](https://github.com/rubocop-hq/rubocop/issues/7929): Fix `Style/FrozenStringLiteralComment` to accept frozen_string_literal anywhere in leading comment lines. ([@jeffcarbs][])
 * [#7882](https://github.com/rubocop-hq/rubocop/pull/7882): Fix `Style/CaseEquality` when `AllowOnConstant` is `true` and the method receiver is implicit. ([@rafaelfranca][])
 * [#7790](https://github.com/rubocop-hq/rubocop/issues/7790): Fix `--parallel` and `--ignore-parent-exclusion` combination. ([@jonas054][])
 * [#7881](https://github.com/rubocop-hq/rubocop/issues/7881): Fix `--parallel` and `--force-default-config` combination. ([@jonas054][])
@@ -16,11 +65,21 @@
 * [#7905](https://github.com/rubocop-hq/rubocop/pull/7905): Fix an error when running `rubocop --only` or `rubocop --except` options without cop name argument. ([@koic][])
 * [#7903](https://github.com/rubocop-hq/rubocop/pull/7903): Fix an incorrect autocorrect for `Style/HashTransformKeys` and `Style/HashTransformValues` cops when line break before `to_h` method. ([@diogoosorio][], [@koic][])
 * [#7899](https://github.com/rubocop-hq/rubocop/issues/7899): Fix an infinite loop error for `Layout/SpaceAroundOperators` with `Layout/ExtraSpacing` when using `ForceEqualSignAlignment: true`. ([@koic][])
+* [#7885](https://github.com/rubocop-hq/rubocop/issues/7885): Fix `Style/IfUnlessModifier` logic when tabs are used for indentation. ([@jonas054][])
+* [#7909](https://github.com/rubocop-hq/rubocop/pull/7909): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when using an intended grouped parentheses. ([@koic][])
+* [#7913](https://github.com/rubocop-hq/rubocop/pull/7913): Fix a false positive for `Lint/LiteralAsCondition` when using `true` literal in `while` and similar cases. ([@koic][])
+* [#7928](https://github.com/rubocop-hq/rubocop/issues/7928): Fix a false message for `Style/GuardClause` when using `and` or `or` operators for guard clause in `then` or `else` branches. ([@koic][])
+* [#7928](https://github.com/rubocop-hq/rubocop/issues/7928): Fix a false positive for `Style/GuardClause` when assigning the result of a guard condition with `else`. ([@koic][])
 
 ### Changes
 
 * [#7860](https://github.com/rubocop-hq/rubocop/issues/7860): Change `AllowInHeredoc` option of `Layout/TrailingWhitespace` to `true` by default. ([@koic][])
 * [#7094](https://github.com/rubocop-hq/rubocop/issues/7094): Clarify alignment in `Layout/MultilineOperationIndentation`. ([@jonas054][])
+* [#4245](https://github.com/rubocop-hq/rubocop/issues/4245): **(Breaking)** Inspect all files given on command line unless `--only-recognized-file-types` is given. ([@jonas054][])
+* [#7390](https://github.com/rubocop-hq/rubocop/issues/7390): **(Breaking)** Enabling a cop overrides disabling its department. ([@jonas054][])
+* [#7936](https://github.com/rubocop-hq/rubocop/issues/7936): Mark `Lint/BooleanSymbol` as unsafe. ([@laurmurclar][])
+* [#7948](https://github.com/rubocop-hq/rubocop/pull/7948): Mark unsafe for `Style/OptionalArguments`. ([@koic][])
+* [#7931](https://github.com/rubocop-hq/rubocop/pull/7931): Remove dependency on the `jaro_winkler` gem, instead depending on `did_you_mean`. This may be a breaking change for RuboCop libraries calling `NameSimilarity#find_similar_name`. ([@bquorning][])
 
 ## 0.82.0 (2020-04-16)
 
@@ -47,7 +106,7 @@
 
 ### Changes
 
-* **(Breaking)** Renamed `Layout/Tab` cop to `Layout/IndentationStyle`. ([@DracoAter][])
+* [#7867](https://github.com/rubocop-hq/rubocop/pull/7867): **(Breaking)** Renamed `Layout/Tab` cop to `Layout/IndentationStyle`. ([@DracoAter][])
 * [#7869](https://github.com/rubocop-hq/rubocop/pull/7869): **(Breaking)** Drop support for Ruby 2.3. ([@koic][])
 
 ## 0.81.0 (2020-04-01)
@@ -4480,3 +4539,7 @@
 [@saurabhmaurya15]: https://github.com/saurabhmaurya15
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
+[@jeffcarbs]: https://github.com/jeffcarbs
+[@laurmurclar]: https://github.com/laurmurclar
+[@jethrodaniel]: https://github.com/jethrodaniel
+[@CvX]: https://github.com/CvX

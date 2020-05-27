@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Include' => ['**/Gemfile'] } }
 
   context 'when investigating Ruby files' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~RUBY, 'foo.rb')
         # cop will not read these contents
         gem('rubocop')
         gem('rubocop')

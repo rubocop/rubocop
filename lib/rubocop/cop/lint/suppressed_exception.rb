@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for *rescue* blocks with no body.
+      # This cop checks for `rescue` blocks with no body.
       #
       # @example
       #
@@ -69,15 +69,22 @@ module RuboCop
 
         def on_resbody(node)
           return if node.body
-          return if cop_config['AllowComments'] && comment_lines?(node)
+          return if cop_config['AllowComments'] && comment_between_rescue_and_end?(node)
 
           add_offense(node)
         end
 
         private
 
-        def comment_lines?(node)
-          processed_source[line_range(node)].any? { |line| comment_line?(line) }
+        def comment_between_rescue_and_end?(node)
+          end_line = nil
+          node.each_ancestor(:kwbegin, :def) do |ancestor|
+            end_line = ancestor.loc.end.line
+            break
+          end
+          return false unless end_line
+
+          processed_source[node.first_line...end_line].any? { |line| comment_line?(line) }
         end
       end
     end

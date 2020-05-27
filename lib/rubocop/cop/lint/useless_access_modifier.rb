@@ -125,6 +125,8 @@ module RuboCop
       #     delegate :method_a, to: :method_b
       #   end
       class UselessAccessModifier < Cop
+        include RangeHelp
+
         MSG = 'Useless `%<current>s` access modifier.'
 
         def on_class(node)
@@ -143,6 +145,16 @@ module RuboCop
 
         def on_sclass(node)
           check_node(node.children[1]) # singleton class body
+        end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            range = range_by_whole_lines(
+              node.source_range, include_final_newline: true
+            )
+
+            corrector.remove(range)
+          end
         end
 
         private
@@ -215,9 +227,7 @@ module RuboCop
             add_offense(node, message: format(MSG, current: cur_vis))
           else
             # was the previous modifier never applied to any defs?
-            if unused
-              add_offense(unused, message: format(MSG, current: cur_vis))
-            end
+            add_offense(unused, message: format(MSG, current: cur_vis)) if unused
             # once we have already warned about a certain modifier, don't
             # warn again even if it is never applied to any method defs
             unused = node

@@ -61,7 +61,12 @@ module RuboCop
 
     def find_target_files(paths)
       target_finder = TargetFinder.new(@config_store, @options)
-      target_files = target_finder.find(paths)
+      mode = if @options[:only_recognized_file_types]
+               :only_recognized_file_types
+             else
+               :all_file_types
+             end
+      target_files = target_finder.find(paths, mode)
       target_files.each(&:freeze).freeze
     end
 
@@ -75,9 +80,7 @@ module RuboCop
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
-      if files.size > 1 && cached_run?
-        ResultCache.cleanup(@config_store, @options[:debug])
-      end
+      ResultCache.cleanup(@config_store, @options[:debug]) if files.size > 1 && cached_run?
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
@@ -180,7 +183,7 @@ module RuboCop
     def autocorrect_redundant_disables(file, source, cop, offenses)
       cop.processed_source = source
 
-      team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
+      team = Cop::Team.mobilize(RuboCop::Cop::Registry.new, nil, @options)
       team.autocorrect(source.buffer, [cop])
 
       return [] unless team.updated_source_file?
@@ -292,7 +295,7 @@ module RuboCop
 
     def inspect_file(processed_source)
       config = @config_store.for(processed_source.path)
-      team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
+      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
@@ -362,7 +365,11 @@ module RuboCop
       if @options[:stdin]
         ProcessedSource.new(@options[:stdin], ruby_version, file)
       else
-        ProcessedSource.from_file(file, ruby_version)
+        begin
+          ProcessedSource.from_file(file, ruby_version)
+        rescue Errno::ENOENT
+          raise RuboCop::Error, "No such file or directory: #{file}"
+        end
       end
     end
 
@@ -373,7 +380,7 @@ module RuboCop
     def standby_team(config)
       @team_by_config ||= {}
       @team_by_config[config.object_id] ||=
-        Cop::Team.new(mobilized_cop_classes(config), config, @options)
+        Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
   end
 end

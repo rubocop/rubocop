@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Gemspec::RubyVersionGlobalsUsage, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'registers an offense when using `RUBY_VERSION`' do
-    expect_offense(<<~RUBY, '/path/to/foo.gemspec')
+    expect_offense(<<~RUBY)
       Gem::Specification.new do |spec|
         RUBY_VERSION
         ^^^^^^^^^^^^ Do not use `RUBY_VERSION` in gemspec file.

@@ -58,7 +58,7 @@ module RuboCop
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/node_pattern.rb
+                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
@@ -132,11 +132,12 @@ module RuboCop
         ).inject
       end
 
-      def inject_config(config_file_path: 'config/default.yml')
+      def inject_config(config_file_path: 'config/default.yml',
+                        version_added: bump_minor_version)
         injector =
           ConfigurationInjector.new(configuration_file_path: config_file_path,
                                     badge: badge,
-                                    version_added: bump_minor_version)
+                                    version_added: version_added)
 
         injector.inject do
           output.puts(format(CONFIGURATION_ADDED_MESSAGE,

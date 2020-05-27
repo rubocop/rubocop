@@ -1,0 +1,39 @@
+= Support
+
+RuboCop currently has several official & unofficial support channels.
+
+For questions, suggestions, and support refer to one of them. Please, don't
+use the support channels to report issues, as this makes them harder to track.
+
+== Gitter
+
+Most internal discussions about the development of RuboCop happen on its
+https://gitter.im/bbatsov/rubocop[gitter channel]. You can often find
+RuboCop's maintainers there and get some interesting news from the project's
+kitchen.
+
+== Mailing List
+
+The https://groups.google.com/forum/#!forum/rubocop[official mailing list] is
+hosted at Google Groups. It's a low-traffic list, so don't be too hesitant to subscribe.
+
+== Freenode
+
+If you're into IRC you can visit the `#rubocop` channel on Freenode.
+It's not actively
+monitored by the RuboCop maintainers themselves, but still you can get support
+from other RuboCop users there.
+
+== Stackoverflow
+
+We're also encouraging users to ask RuboCop-related questions on StackOverflow.
+
+When doing so you should use the
+https://stackoverflow.com/questions/tagged/rubocop[RuboCop] tag (ideally combined
+with the tag `ruby`).
+
+== Bountysource
+
+If you're willing to pay for some feature to be implemented you can use
+https://www.bountysource.com/teams/rubocop/issues[Bountysource] to place a
+bounty for the work you want to be done.

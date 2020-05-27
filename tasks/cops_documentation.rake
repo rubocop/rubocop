@@ -14,8 +14,10 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     cops.with_department(department).sort!
   end
 
+  # rubocop:disable Metrics/AbcSize
   def cops_body(config, cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
+    content << required_ruby_version(cop)
     content << properties(cop.new(config))
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count.positive?
@@ -23,12 +25,20 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     content << references(config, cop)
     content
   end
+  # rubocop:enable Metrics/AbcSize
 
   def examples(examples_object)
     examples_object.each_with_object(h3('Examples').dup) do |example, content|
+      content << "\n" unless content.end_with?("\n\n")
       content << h4(example.name) unless example.name == ''
       content << code_example(example)
     end
+  end
+
+  def required_ruby_version(cop)
+    return '' unless cop.respond_to?(:required_minimum_ruby_version)
+
+    "NOTE: Required Ruby version: #{cop.required_minimum_ruby_version}\n\n"
   end
 
   # rubocop:disable Metrics/MethodLength
@@ -38,7 +48,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       'VersionChanged'
     ]
     autocorrect = if cop_instance.support_autocorrect?
-                    "Yes #{'(Unsafe)' unless cop_instance.safe_autocorrect?}"
+                    "Yes#{' (Unsafe)' unless cop_instance.safe_autocorrect?}"
                   else
                     'No'
                   end
@@ -56,29 +66,29 @@ task generate_cops_documentation: :yard_for_generate_documentation do
 
   def h2(title)
     content = +"\n"
-    content << "## #{title}\n"
+    content << "== #{title}\n"
     content << "\n"
     content
   end
 
   def h3(title)
     content = +"\n"
-    content << "### #{title}\n"
+    content << "=== #{title}\n"
     content << "\n"
     content
   end
 
   def h4(title)
-    content = +"#### #{title}\n"
+    content = +"==== #{title}\n"
     content << "\n"
     content
   end
 
   def code_example(ruby_code)
-    content = +"```ruby\n"
+    content = +"[source,ruby]\n----\n"
     content << ruby_code.text.gsub('@good', '# good')
                         .gsub('@bad', '# bad').strip
-    content << "\n```\n"
+    content << "\n----\n"
     content
   end
 
@@ -130,11 +140,14 @@ task generate_cops_documentation: :yard_for_generate_documentation do
 
   def to_table(header, content)
     table = [
-      header.join(' | '),
-      Array.new(header.size, '---').join(' | ')
-    ]
-    table.concat(content.map { |c| c.join(' | ') })
-    table.join("\n") + "\n"
+      '|===',
+      "| #{header.join(' | ')}\n\n"
+    ].join("\n")
+    marked_contents = content.map do |plain_content|
+      plain_content.map { |c| "| #{c}" }.join("\n")
+    end
+    table << marked_contents.join("\n\n")
+    table << "\n|===\n"
   end
 
   def format_table_value(val)
@@ -147,9 +160,18 @@ task generate_cops_documentation: :yard_for_generate_documentation do
           val.map { |config| format_table_value(config) }.join(', ')
         end
       else
-        "`#{val.nil? ? '<none>' : val}`"
+        wrap_backtick(val.nil? ? '<none>' : val)
       end
     value.gsub("#{Dir.pwd}/", '').rstrip
+  end
+
+  def wrap_backtick(value)
+    if value.is_a?(String)
+      # Use `+` to prevent text like `**/*.gemspec` from being bold.
+      value.start_with?('*') ? "`+#{value}+`" : "`#{value}`"
+    else
+      "`#{value}`"
+    end
   end
 
   def references(config, cop)
@@ -160,18 +182,18 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     return '' if urls.empty?
 
     content = h3('References')
-    content << urls.map { |url| "* [#{url}](#{url})" }.join("\n")
+    content << urls.map { |url| "* #{url}" }.join("\n")
     content << "\n"
     content
   end
 
   def print_cops_of_department(cops, department, config)
     selected_cops = cops_of_department(cops, department)
-    content = +"# #{department}\n"
+    content = +"= #{department}\n"
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
-    file_name = "#{Dir.pwd}/manual/cops_#{department.downcase}.md"
+    file_name = "#{Dir.pwd}/doc/modules/ROOT/pages/cops_#{department.downcase}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
       file.write(content.strip + "\n")
@@ -204,27 +226,27 @@ task generate_cops_documentation: :yard_for_generate_documentation do
 
   def table_of_content_for_department(cops, department)
     type_title = department[0].upcase + department[1..-1]
-    filename = "cops_#{department.downcase}.md"
-    content = +"### Department [#{type_title}](#{filename})\n\n"
+    filename = "cops_#{department.downcase}.adoc"
+    content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
-      content << "* [#{cop.cop_name}](#{filename}##{anchor})\n"
+      content << "* xref:#{filename}#_#{anchor}[#{cop.cop_name}]\n"
     end
 
     content
   end
 
   def print_table_of_contents(cops)
-    path = "#{Dir.pwd}/manual/cops.md"
+    path = "#{Dir.pwd}/doc/modules/ROOT/pages/cops.adoc"
     original = File.read(path)
-    content = +"<!-- START_COP_LIST -->\n"
+    content = +"// START_COP_LIST\n\n"
 
     content << table_contents(cops)
 
-    content << "\n<!-- END_COP_LIST -->"
+    content << "\n// END_COP_LIST"
 
     content = original.sub(
-      /<!-- START_COP_LIST -->.+<!-- END_COP_LIST -->/m, content
+      %r{// START_COP_LIST.+// END_COP_LIST}m, content
     )
     File.write(path, content)
   end

@@ -139,7 +139,7 @@ all contexts.
 
 ### Examples
 
-#### EnforcedStyle: always (default)
+#### EnforcedStyle: always
 
 ```ruby
 # bad
@@ -156,7 +156,7 @@ foo.save && return
 if foo && bar
 end
 ```
-#### EnforcedStyle: conditionals
+#### EnforcedStyle: conditionals (default)
 
 ```ruby
 # bad
@@ -178,7 +178,7 @@ end
 
 Name | Default value | Configurable values
 --- | --- | ---
-EnforcedStyle | `always` | `always`, `conditionals`
+EnforcedStyle | `conditionals` | `always`, `conditionals`
 
 ### References
 
@@ -1588,11 +1588,13 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.19 | -
+Enabled | Yes | No | 0.19 | 0.84
 
-This cop checks for uses of double negation (!!) to convert something
-to a boolean value. As this is both cryptic and usually redundant, it
-should be avoided.
+This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
+
+When using `EnforcedStyle: allowed_in_returns`, allow double nagation in contexts
+that use boolean as a return value. When using `EnforcedStyle: forbidden`, double nagation
+should be forbidden always.
 
 Please, note that when something is a boolean value
 !!something and !something.nil? are not the same thing.
@@ -1608,6 +1610,28 @@ this is rarely a problem in practice.
 # good
 !something.nil?
 ```
+#### EnforcedStyle: allowed_in_returns (default)
+
+```ruby
+# good
+def foo?
+  !!return_value
+end
+```
+#### EnforcedStyle: forbidden
+
+```ruby
+# bad
+def foo?
+  !!return_value
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+EnforcedStyle | `allowed_in_returns` | `allowed_in_returns`, `forbidden`
 
 ### References
 
@@ -2589,6 +2613,17 @@ end
 # good
 raise 'exception' if something
 ok
+
+# bad
+if something
+  foo || raise('exception')
+else
+  ok
+end
+
+# good
+foo || raise('exception') if something
+ok
 ```
 
 ### Configurable attributes
@@ -2711,6 +2746,10 @@ PreferHashRocketsForNonAlnumEndingSymbols | `false` | Boolean
 * [https://rubystyle.guide#hash-literals](https://rubystyle.guide#hash-literals)
 
 ## Style/HashTransformKeys
+
+!!! Note
+
+    Required Ruby version: 2.5
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
@@ -2986,7 +3025,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
+Enabled | Yes | Yes  | 0.9 | 0.83
 
 Checks for uses of semicolon in if statements.
 
@@ -5009,10 +5048,10 @@ SuspiciousParamNames | `options`, `opts`, `args`, `params`, `parameters` | Array
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.33 | -
+Enabled | No | No | 0.33 | 0.83
 
 This cop checks for optional arguments to methods
-that do not come at the end of the argument list
+that do not come at the end of the argument list.
 
 ### Examples
 
@@ -6640,6 +6679,29 @@ AllowIfMethodIsEmpty | `true` | Boolean
 ### References
 
 * [https://rubystyle.guide#no-single-line-methods](https://rubystyle.guide#no-single-line-methods)
+
+## Style/SlicingWithRange
+
+!!! Note
+
+    Required Ruby version: 2.6
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | No | Yes (Unsafe) | 0.83 | -
+
+This cop checks that arrays are sliced with endless ranges instead of
+`ary[start..-1]` on Ruby 2.6+.
+
+### Examples
+
+```ruby
+# bad
+items[1..-1]
+
+# good
+items[1..]
+```
 
 ## Style/SpecialGlobalVars
 

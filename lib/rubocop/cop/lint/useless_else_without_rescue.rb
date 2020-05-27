@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for useless `else` in `begin..end` without `rescue`.
       #
-      # Note: This syntax is no longer valid on Ruby 2.6 or higher and
+      # NOTE: This syntax is no longer valid on Ruby 2.6 or higher and
       # this cop is going to be removed at some point the future.
       #
       # @example
@@ -38,6 +38,11 @@ module RuboCop
 
         def relevant_diagnostic?(diagnostic)
           diagnostic.reason == :useless_else
+        end
+
+        def find_offense_node_by(diagnostic)
+          # TODO: When implementing auto-correction, this method should return
+          # an offense node passed as first argument of `add_offense` method.
         end
 
         def alternative_message(_diagnostic)

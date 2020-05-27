@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
         .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
     end
 
-    it "corrects #{method} to #{inverse}" do
+    it "corrects operator #{method} to #{inverse}" do
       new_source = autocorrect_source("!(foo #{method} bar)")
 
       expect(new_source).to eq("foo #{inverse} bar")

@@ -10,6 +10,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(%w[--auto-correct --format simple --disable-uncorrectable])
     end
 
+    let(:setup_long_line) do
+      create_file('.rubocop.yml', <<~YAML)
+        Style/IpAddresses:
+          Enabled: true
+        Layout/LineLength:
+          Max: #{max_length}
+      YAML
+      create_file('example.rb', <<~RUBY)
+        ip('1.2.3.4')
+        # last line
+      RUBY
+    end
+    let(:max_length) { 46 }
+
     it 'does not disable anything for cops that support autocorrect' do
       create_file('example.rb', 'puts 1==2')
       expect(exit_code).to eq(0)
@@ -31,17 +45,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     context 'if one one-line disable statement fits' do
       it 'adds it' do
-        create_file('example.rb', <<~RUBY)
-          def is_example
-            true
-          end
-        RUBY
+        setup_long_line
         expect(exit_code).to eq(0)
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~OUTPUT)
           == example.rb ==
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-          C:  1:  5: [Todo] Naming/PredicateName: Rename is_example to example?.
+          C:  1:  4: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
           C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
@@ -49,9 +59,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
-          def is_example # rubocop:todo Naming/PredicateName
-            true
-          end
+          ip('1.2.3.4') # rubocop:todo Style/IpAddresses
+          # last line
         RUBY
       end
 
@@ -154,36 +163,27 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context "if a one-line disable statement doesn't fit" do
+      let(:max_length) { super() - 1 }
+
       it 'adds before-and-after disable statement' do
-        create_file('.rubocop.yml', <<~YAML)
-          Metrics/MethodLength:
-            Max: 1
-        YAML
-        create_file('example.rb', <<~RUBY)
-          def long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
-            puts 'line 1'
-            puts 'line 2'
-          end
-        RUBY
+        setup_long_line
         expect(exit_code).to eq(0)
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~OUTPUT)
           == example.rb ==
-          C:  1:  1: [Todo] Metrics/MethodLength: Method has too many lines. [2/1]
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-          C:  3:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+          C:  1:  4: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
+          C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
         expect(IO.read('example.rb')).to eq(<<~RUBY)
-          # rubocop:todo Metrics/MethodLength
           # frozen_string_literal: true
 
-          def long_method_name(_taking, _a_few, _parameters, _resulting_in_a_long_line)
-            puts 'line 1'
-            puts 'line 2'
-          end
-          # rubocop:enable Metrics/MethodLength
+          # rubocop:todo Style/IpAddresses
+          ip('1.2.3.4')
+          # rubocop:enable Style/IpAddresses
+          # last line
         RUBY
       end
     end

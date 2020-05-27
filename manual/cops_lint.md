@@ -37,7 +37,7 @@ foo = ->(bar) { bar.baz }
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | -
+Enabled | Yes | Yes  | 0.17 | 0.83
 
 This cop checks for ambiguous operators in the first argument of a
 method invocation without parentheses.
@@ -66,7 +66,7 @@ do_something(*some_array)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.17 | -
+Enabled | Yes | Yes  | 0.17 | 0.83
 
 This cop checks for ambiguous regexp literals in the first argument of
 a method invocation without parentheses.
@@ -166,7 +166,7 @@ BigDecimal(123.456, 3)
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.50 | 0.81
+Enabled | No | Yes (Unsafe) | 0.50 | 0.83
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
@@ -296,6 +296,46 @@ iterator?
 File.exist?(some_path)
 Dir.exist?(some_path)
 block_given?
+```
+
+## Lint/DeprecatedOpenSSLConstant
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | Yes  | 0.84 | -
+
+Algorithmic constants for `OpenSSL::Cipher` and `OpenSSL::Digest`
+deprecated since OpenSSL version 2.2.0. Prefer passing a string
+instead.
+
+### Examples
+
+```ruby
+# Example for OpenSSL::Cipher instantiation.
+
+# bad
+OpenSSL::Cipher::AES.new(128, :GCM)
+
+# good
+OpenSSL::Cipher.new('AES-128-GCM')
+```
+```ruby
+# Example for OpenSSL::Digest instantiation.
+
+# bad
+OpenSSL::Digest::SHA256.new
+
+# good
+OpenSSL::Digest.new('SHA256')
+```
+```ruby
+# Example for ::Digest inherited class methods.
+
+# bad
+OpenSSL::Digest::SHA256.digest('foo')
+
+# good
+OpenSSL::Digest.digest('SHA256', 'foo')
 ```
 
 ## Lint/DisjunctiveAssignmentInConstructor
@@ -595,7 +635,7 @@ This cop checks for empty interpolation.
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.45 | -
+Enabled | Yes | No | 0.45 | 0.83
 
 This cop checks for the presence of `when` branches without a body.
 
@@ -603,26 +643,55 @@ This cop checks for the presence of `when` branches without a body.
 
 ```ruby
 # bad
-
 case foo
-when bar then 1
-when baz then # nothing
+when bar
+  do_something
+when baz
 end
 ```
 ```ruby
 # good
-
-case foo
-when bar then 1
-when baz then 2
+case condition
+when foo
+  do_something
+when bar
+  nil
 end
 ```
+#### AllowComments: true (default)
+
+```ruby
+# good
+case condition
+when foo
+  do_something
+when bar
+  # noop
+end
+```
+#### AllowComments: false
+
+```ruby
+# bad
+case condition
+when foo
+  do_something
+when bar
+  # do nothing
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowComments | `true` | Boolean
 
 ## Lint/EnsureReturn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.9 | -
+Enabled | Yes | Yes  | 0.9 | 0.83
 
 This cop checks for *return* from an *ensure* block.
 Explicit return from an ensure block alters the control flow
@@ -656,6 +725,10 @@ end
 * [https://rubystyle.guide#no-return-ensure](https://rubystyle.guide#no-return-ensure)
 
 ## Lint/ErbNewArguments
+
+!!! Note
+
+    Required Ruby version: 2.6
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
@@ -993,23 +1066,24 @@ if/while/until.
 
 ```ruby
 # bad
-
 if 20
   do_something
 end
-```
-```ruby
-# bad
 
+# bad
 if some_var && true
   do_something
 end
-```
-```ruby
-# good
 
+# good
 if some_var && some_condition
   do_something
+end
+
+# good
+# When using a boolean value for an infinite loop.
+while true
+  break if condition
 end
 ```
 
@@ -1415,7 +1489,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.12 | -
+Enabled | Yes | Yes  | 0.12 | 0.83
 
 Checks for space between the name of a called method and a left
 parenthesis.
@@ -1424,13 +1498,12 @@ parenthesis.
 
 ```ruby
 # bad
+do_something (foo)
 
-puts (x + y)
-```
-```ruby
 # good
-
-puts(x + y)
+do_something(foo)
+do_something (2 + 3) * 4
+do_something (foo * bar).baz
 ```
 
 ### References
@@ -2773,7 +2846,7 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.20 | 0.47
+Enabled | Yes | Yes  | 0.20 | 0.83
 
 This cop checks for redundant access modifiers, including those with no
 code, those which are repeated, and leading `public` modifiers in a

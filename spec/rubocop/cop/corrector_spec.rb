@@ -24,6 +24,7 @@ RSpec.describe RuboCop::Cop::Corrector do
     matcher :rewrite_to do |expected|
       supports_block_expectations
       attr_accessor :result
+
       match { |corrections| (self.result = do_rewrite corrections) == expected }
 
       failure_message do

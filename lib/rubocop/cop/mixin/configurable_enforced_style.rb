@@ -67,9 +67,7 @@ module RuboCop
       def style
         @style ||= begin
           s = cop_config[style_parameter_name].to_sym
-          unless supported_styles.include?(s)
-            raise "Unknown style #{s} selected!"
-          end
+          raise "Unknown style #{s} selected!" unless supported_styles.include?(s)
 
           s
         end

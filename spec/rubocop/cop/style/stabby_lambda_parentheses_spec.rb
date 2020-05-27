@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'common' do
     it 'does not check the old lambda syntax' do
       expect_no_offenses('lambda(&:nil?)')

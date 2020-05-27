@@ -54,6 +54,7 @@ AllCops:
     - '**/Podfile'
     - '**/Puppetfile'
     - '**/Rakefile'
+    - '**/rakefile'
     - '**/Snapfile'
     - '**/Steepfile'
     - '**/Thorfile'
@@ -376,6 +377,7 @@ Layout/ConditionPosition:
   StyleGuide: '#same-line-condition'
   Enabled: true
   VersionAdded: '0.53'
+  VersionChanged: '0.83'
 
 Layout/DefEndAlignment:
   Description: 'Align ends corresponding to defs correctly.'
@@ -460,6 +462,19 @@ Layout/EmptyLinesAroundArguments:
   Description: "Keeps track of empty lines around method arguments."
   Enabled: true
   VersionAdded: '0.52'
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Description: "Keep blank lines around attribute accessors."
+  StyleGuide: '#empty-lines-around-attribute-accessor'
+  Enabled: pending
+  VersionAdded: '0.83'
+  VersionChanged: '0.84'
+  AllowAliasSyntax: true
+  AllowedMethods:
+    - alias_method
+    - public
+    - protected
+    - private
 
 Layout/EmptyLinesAroundBeginBody:
   Description: "Keeps track of empty lines around begin-end bodies."
@@ -849,13 +864,13 @@ Layout/LeadingEmptyLines:
   VersionChanged: '0.77'
 
 Layout/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  StyleGuide: '#80-character-limits'
+  Description: 'Checks that line length does not exceed the configured limit.'
+  StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '0.78'
+  VersionChanged: '0.84'
   AutoCorrect: false
-  Max: 80
+  Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
   AllowHeredoc: true
@@ -1317,6 +1332,7 @@ Lint/AmbiguousOperator:
   StyleGuide: '#method-invocation-parens'
   Enabled: true
   VersionAdded: '0.17'
+  VersionChanged: '0.83'
 
 Lint/AmbiguousRegexpLiteral:
   Description: >-
@@ -1324,6 +1340,7 @@ Lint/AmbiguousRegexpLiteral:
                  a method invocation without parentheses.
   Enabled: true
   VersionAdded: '0.17'
+  VersionChanged: '0.83'
 
 Lint/AssignmentInCondition:
   Description: "Don't use assignment in conditions."
@@ -1340,8 +1357,9 @@ Lint/BigDecimalNew:
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
   Enabled: true
+  Safe: false
   VersionAdded: '0.50'
-  VersionChanged: '0.81'
+  VersionChanged: '0.83'
 
 Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
@@ -1358,6 +1376,11 @@ Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'
   Enabled: true
   VersionAdded: '0.19'
+
+Lint/DeprecatedOpenSSLConstant:
+  Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
+  Enabled: pending
+  VersionAdded: '0.84'
 
 Lint/DisjunctiveAssignmentInConstructor:
   Description: 'In constructor, plain assignment is preferred over disjunctive.'
@@ -1412,13 +1435,16 @@ Lint/EmptyInterpolation:
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
   Enabled: true
+  AllowComments: true
   VersionAdded: '0.45'
+  VersionChanged: '0.83'
 
 Lint/EnsureReturn:
   Description: 'Do not use return in an ensure block.'
   StyleGuide: '#no-return-ensure'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.83'
 
 Lint/ErbNewArguments:
   Description: 'Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.'
@@ -1566,6 +1592,7 @@ Lint/ParenthesesAsGroupedExpression:
   StyleGuide: '#parens-no-spaces'
   Enabled: true
   VersionAdded: '0.12'
+  VersionChanged: '0.83'
 
 Lint/PercentStringArray:
   Description: >-
@@ -1809,7 +1836,7 @@ Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
   VersionAdded: '0.20'
-  VersionChanged: '0.47'
+  VersionChanged: '0.83'
   ContextCreatingMethods: []
   MethodCreatingMethods: []
 
@@ -2259,7 +2286,7 @@ Style/AndOr:
   VersionChanged: '0.25'
   # Whether `and` and `or` are banned only in conditionals (conditionals)
   # or completely (always).
-  EnforcedStyle: always
+  EnforcedStyle: conditionals
   SupportedStyles:
     - always
     - conditionals
@@ -2679,6 +2706,11 @@ Style/DoubleNegation:
   StyleGuide: '#no-bang-bang'
   Enabled: true
   VersionAdded: '0.19'
+  VersionChanged: '0.84'
+  EnforcedStyle: allowed_in_returns
+  SupportedStyles:
+    - allowed_in_returns
+    - forbidden
 
 Style/EachForSimpleLoop:
   Description: >-
@@ -2949,6 +2981,7 @@ Style/IfWithSemicolon:
   StyleGuide: '#no-semicolon-ifs'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.83'
 
 Style/ImplicitRuntimeError:
   Description: >-
@@ -3426,7 +3459,9 @@ Style/OptionalArguments:
                  of the argument list.
   StyleGuide: '#optional-arguments'
   Enabled: true
+  Safe: false
   VersionAdded: '0.33'
+  VersionChanged: '0.83'
 
 Style/OrAssignment:
   Description: 'Recommend usage of double pipe equals (||=) where applicable.'
@@ -3735,6 +3770,12 @@ Style/SingleLineMethods:
   VersionAdded: '0.9'
   VersionChanged: '0.19'
   AllowIfMethodIsEmpty: true
+
+Style/SlicingWithRange:
+  Description: 'Checks array slicing is done with endless ranges when suitable.'
+  Enabled: pending
+  VersionAdded: '0.83'
+  Safe: false
 
 Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'

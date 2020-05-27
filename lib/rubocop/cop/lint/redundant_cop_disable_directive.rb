@@ -26,7 +26,6 @@ module RuboCop
       #   # good
       #   x += 1
       class RedundantCopDisableDirective < Cop
-        include NameSimilarity
         include RangeHelp
 
         COP_NAME = 'Lint/RedundantCopDisableDirective'
@@ -235,17 +234,13 @@ module RuboCop
           elsif all_cop_names.include?(cop)
             "`#{cop}`"
           else
-            similar = find_similar_name(cop, [])
+            similar = NameSimilarity.find_similar_name(cop, all_cop_names)
             if similar
               "`#{cop}` (did you mean `#{similar}`?)"
             else
               "`#{cop}` (unknown cop)"
             end
           end
-        end
-
-        def collect_variable_like_names(scope)
-          all_cop_names.each { |name| scope << name }
         end
 
         def all_cop_names

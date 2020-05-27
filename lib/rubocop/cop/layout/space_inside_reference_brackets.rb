@@ -130,9 +130,7 @@ module RuboCop
           tokens[i..-1].each do |token|
             inner_left_brackets_needing_closure += 1 if token.left_bracket?
             inner_left_brackets_needing_closure -= 1 if token.right_bracket?
-            if inner_left_brackets_needing_closure.zero? && token.right_bracket?
-              return token
-            end
+            return token if inner_left_brackets_needing_closure.zero? && token.right_bracket?
           end
         end
 

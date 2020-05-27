@@ -3,26 +3,39 @@
 RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for method call with space before the ' \
-     'parenthesis' do
+  it 'registers an offense and corrects for method call with space before ' \
+     'the parenthesis' do
     expect_offense(<<~RUBY)
       a.func (x)
             ^ `(...)` interpreted as grouped expression.
     RUBY
+
+    expect_correction(<<~RUBY)
+      a.func(x)
+    RUBY
   end
 
-  it 'registers an offense for predicate method call with space ' \
+  it 'registers an offense and corrects for predicate method call with space ' \
      'before the parenthesis' do
     expect_offense(<<~RUBY)
       is? (x)
          ^ `(...)` interpreted as grouped expression.
     RUBY
+
+    expect_correction(<<~RUBY)
+      is?(x)
+    RUBY
   end
 
-  it 'registers an offense for math expression' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for math expression' do
+    expect_no_offenses(<<~RUBY)
       puts (2 + 3) * 4
-          ^ `(...)` interpreted as grouped expression.
+    RUBY
+  end
+
+  it 'does not register an offense for math expression with `to_i`' do
+    expect_no_offenses(<<~RUBY)
+      do_something.eq (foo * bar).to_i
     RUBY
   end
 
@@ -61,12 +74,27 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
 
+  it 'does not register an offesne when heredoc has a space between the same string as the method name and `(`' do
+    expect_no_offenses(<<~RUBY)
+      foo(
+        <<~EOS
+          foo (
+          )
+        EOS
+      )
+    RUBY
+  end
+
   context 'when using safe navigation operator' do
-    it 'registers an offense for method call with space before the ' \
-       'parenthesis' do
+    it 'registers an offense and corrects for method call with space before ' \
+       'the parenthesis' do
       expect_offense(<<~RUBY)
         a&.func (x)
                ^ `(...)` interpreted as grouped expression.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a&.func(x)
       RUBY
     end
   end

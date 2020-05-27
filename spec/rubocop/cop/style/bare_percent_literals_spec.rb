@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'accepts other delimiters' do
     it 'accepts __FILE__' do
       expect_no_offenses('__FILE__')

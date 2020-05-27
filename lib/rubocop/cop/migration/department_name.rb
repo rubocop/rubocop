@@ -27,11 +27,11 @@ module RuboCop
             Regexp.last_match(4).scan(/[^,]+|[\W]+/) do |name|
               trimmed_name = name.strip
 
-              break if contain_plain_comment?(trimmed_name)
-
               unless valid_content_token?(trimmed_name)
                 check_cop_name(trimmed_name, comment, offset)
               end
+
+              break if contain_unexpected_character_for_department_name?(name)
 
               offset += name.length
             end
@@ -64,12 +64,12 @@ module RuboCop
         end
 
         def valid_content_token?(content_token)
-          !/\W+/.match(content_token).nil? ||
-            !DISABLING_COPS_CONTENT_TOKEN.match(content_token).nil?
+          /\W+/.match?(content_token) ||
+            DISABLING_COPS_CONTENT_TOKEN.match?(content_token)
         end
 
-        def contain_plain_comment?(name)
-          name == '#'
+        def contain_unexpected_character_for_department_name?(name)
+          name.match?(%r{[^A-z/, ]})
         end
 
         def qualified_legacy_cop_name(cop_name)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Team do
-  subject(:team) { described_class.new(cop_classes, config, options) }
+  subject(:team) { described_class.mobilize(cop_classes, config, options) }
 
   let(:cop_classes) { RuboCop::Cop::Cop.registry }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when Parser reports non-fatal warning for the file' do
       before do
-        create_file(file_path, ['#' * 90, 'puts *test'])
+        create_file(file_path, ['#' * 130, 'puts *test'])
       end
 
       let(:cop_names) { offenses.map(&:cop_name) }
@@ -121,6 +121,16 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'returns offenses from cops' do
         expect(cop_names).to include('Layout/LineLength')
+      end
+
+      context 'when a cop has no interest in the file' do
+        it 'returns all offenses except the ones of the cop' do
+          allow_any_instance_of(RuboCop::Cop::Layout::LineLength)
+            .to receive(:excluded_file?).and_return(true)
+
+          expect(cop_names).to include('Lint/AmbiguousOperator')
+          expect(cop_names).not_to include('Layout/LineLength')
+        end
       end
     end
 
@@ -368,6 +378,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when cop with different checksum joins' do
       before do
+        # rubocop:disable RSpec/LeakyConstantDeclaration
         module Test
           class CopWithExternalDeps < ::RuboCop::Cop::Cop
             def external_dependency_checksum
@@ -375,6 +386,7 @@ RSpec.describe RuboCop::Cop::Team do
             end
           end
         end
+        # rubocop:enable RSpec/LeakyConstantDeclaration
       end
 
       let(:new_cop_classes) do
@@ -389,7 +401,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'has a different checksum for the whole team' do
         original_checksum = team.external_dependency_checksum
-        new_team = described_class.new(new_cop_classes, config, options)
+        new_team = described_class.mobilize(new_cop_classes, config, options)
         new_checksum = new_team.external_dependency_checksum
         expect(original_checksum).not_to eq(new_checksum)
       end

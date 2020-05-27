@@ -713,7 +713,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | No | 0.53 | -
+Enabled | Yes | Yes  | 0.53 | 0.83
 
 This cop checks for conditions that are not on the same line as
 if/while/until.
@@ -1198,6 +1198,89 @@ some_method(
   x: y
 )
 ```
+
+## Layout/EmptyLinesAroundAttributeAccessor
+
+Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+--- | --- | --- | --- | ---
+Pending | Yes | Yes  | 0.83 | 0.84
+
+Checks for a newline after an attribute accessor or a group of them.
+`alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed
+by default. These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
+
+### Examples
+
+```ruby
+# bad
+attr_accessor :foo
+def do_something
+end
+
+# good
+attr_accessor :foo
+
+def do_something
+end
+
+# good
+attr_accessor :foo
+attr_reader :bar
+attr_writer :baz
+attr :qux
+
+def do_something
+end
+```
+#### AllowAliasSyntax: true (default)
+
+```ruby
+# good
+attr_accessor :foo
+alias :foo? :foo
+
+def do_something
+end
+```
+#### AllowAliasSyntax: false
+
+```ruby
+# bad
+attr_accessor :foo
+alias :foo? :foo
+
+def do_something
+end
+
+# good
+attr_accessor :foo
+
+alias :foo? :foo
+
+def do_something
+end
+```
+#### AllowedMethods: ['private']
+
+```ruby
+# good
+attr_accessor :foo
+private :foo
+
+def do_something
+end
+```
+
+### Configurable attributes
+
+Name | Default value | Configurable values
+--- | --- | ---
+AllowAliasSyntax | `true` | Boolean
+AllowedMethods | `alias_method`, `public`, `protected`, `private` | Array
+
+### References
+
+* [https://rubystyle.guide#empty-lines-around-attribute-accessor](https://rubystyle.guide#empty-lines-around-attribute-accessor)
 
 ## Layout/EmptyLinesAroundBeginBody
 
@@ -2964,7 +3047,7 @@ end
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 --- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.25 | 0.78
+Enabled | Yes | Yes  | 0.25 | 0.84
 
 This cop checks the length of lines in the source code.
 The maximum length is configurable.
@@ -3027,7 +3110,7 @@ bar: "0000000000", baz: "0000000000"}
 Name | Default value | Configurable values
 --- | --- | ---
 AutoCorrect | `false` | Boolean
-Max | `80` | Integer
+Max | `120` | Integer
 AllowHeredoc | `true` | Boolean
 AllowURI | `true` | Boolean
 URISchemes | `http`, `https` | Array
@@ -3036,7 +3119,7 @@ IgnoredPatterns | `[]` | Array
 
 ### References
 
-* [https://rubystyle.guide#80-character-limits](https://rubystyle.guide#80-character-limits)
+* [https://rubystyle.guide#max-line-length](https://rubystyle.guide#max-line-length)
 
 ## Layout/MultilineArrayBraceLayout
 

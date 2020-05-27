@@ -98,13 +98,9 @@ module RuboCop
           lambda do |corrector|
             fix_closing_parenthesis(node, corrector)
 
-            if internal_trailing_comma?(node)
-              remove_internal_trailing_comma(node, corrector)
-            end
+            remove_internal_trailing_comma(node, corrector) if internal_trailing_comma?(node)
 
-            if external_trailing_comma?(node)
-              fix_external_trailing_comma(node, corrector)
-            end
+            fix_external_trailing_comma(node, corrector) if external_trailing_comma?(node)
           end
         end
 
@@ -194,7 +190,7 @@ module RuboCop
         def safe_to_remove_line_containing_closing_paren?(node)
           last_line = processed_source[node.loc.end.line - 1]
           # Safe to remove if last line only contains `)`, `,`, and whitespace.
-          last_line.match(/^[ ]*\)[ ]{0,20},{0,1}[ ]*$/)
+          last_line.match?(/^[ ]*\)[ ]{0,20},{0,1}[ ]*$/)
         end
 
         def incorrect_parenthesis_removal_end(node)

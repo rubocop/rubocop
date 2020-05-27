@@ -128,6 +128,7 @@ Command flag                    | Description
 `-F/--fail-fast`                | Inspect files in order of modification time and stops after first file with offenses.
 `   --fail-level`               | Minimum [severity](configuration.md#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 `   --force-exclusion`          | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
+`   --only-recognized-file-types` | Inspect files given on the command line only if they are listed in `AllCops`/`Include` parameters of user configuration or default configuration.
 `-h/--help`                     | Print usage information.
 `   --ignore-parent-exclusion`  | Ignores all Exclude: settings from all .rubocop.yml files present in parent folders. This is useful when you are importing submodules when you want to test them without being affected by the parent module's rubocop settings.
 `   --init`                     | Generate a .rubocop.yml file in the current directory.

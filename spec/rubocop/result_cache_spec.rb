@@ -10,7 +10,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   let(:cops) { RuboCop::Cop::Cop.all }
   let(:registry) { RuboCop::Cop::Cop.registry }
   let(:team) do
-    RuboCop::Cop::Team.new(
+    RuboCop::Cop::Team.mobilize(
       registry,
       RuboCop::ConfigLoader.default_configuration,
       options
@@ -164,9 +164,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         before do
           # Avoid getting "symlink() function is unimplemented on this
           # machine" on Windows.
-          if RuboCop::Platform.windows?
-            skip 'Symlinks not implemented on Windows'
-          end
+          skip 'Symlinks not implemented on Windows' if RuboCop::Platform.windows?
 
           cache.save(offenses)
           result = Dir["#{cache_root}/*/*"]
@@ -353,7 +351,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         before { ENV['XDG_CACHE_HOME'] = nil }
 
         it 'contains $HOME/.cache' do
-          cacheroot = RuboCop::ResultCache.cache_root(config_store)
+          cacheroot = described_class.cache_root(config_store)
           expect(cacheroot)
             .to eq(File.join(Dir.home, '.cache', 'rubocop_cache'))
         end
@@ -370,7 +368,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
 
         it 'contains the given path and UID' do
-          cacheroot = RuboCop::ResultCache.cache_root(config_store)
+          cacheroot = described_class.cache_root(config_store)
           expect(cacheroot)
             .to eq(File.join(ENV['XDG_CACHE_HOME'], puid, 'rubocop_cache'))
         end
@@ -381,7 +379,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       let(:cache_root_directory) { '/opt' }
 
       it 'contains the given root' do
-        cacheroot = RuboCop::ResultCache.cache_root(config_store)
+        cacheroot = described_class.cache_root(config_store)
         expect(cacheroot).to eq(File.join('/opt', 'rubocop_cache'))
       end
     end

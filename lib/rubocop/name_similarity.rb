@@ -3,19 +3,22 @@
 module RuboCop
   # Common functionality for finding names that are similar to a given name.
   module NameSimilarity
-    MINIMUM_SIMILARITY_TO_SUGGEST = 0.9
+    module_function
 
-    def find_similar_name(target_name, scope)
-      names = collect_variable_like_names(scope)
+    def find_similar_name(target_name, names)
+      similar_names = find_similar_names(target_name, names)
+
+      similar_names.first
+    end
+
+    def find_similar_names(target_name, names)
+      names = names.dup
       names.delete(target_name)
 
-      scores = names.each_with_object({}) do |name, hash|
-        score = StringUtil.similarity(target_name, name)
-        hash[name] = score if score >= MINIMUM_SIMILARITY_TO_SUGGEST
-      end
+      spell_checker = DidYouMean::SpellChecker.new(dictionary: names)
+      similar_names = spell_checker.correct(target_name)
 
-      most_similar_name, _max_score = scores.max_by { |_, score| score }
-      most_similar_name
+      similar_names
     end
   end
 end

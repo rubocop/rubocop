@@ -36,7 +36,7 @@ module RuboCop
         FileFinder.root_level = nil
       end
 
-      def load_file(file)
+      def load_file(file) # rubocop:disable Metrics/AbcSize
         path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
 
         hash = load_yaml_configuration(path)
@@ -46,6 +46,7 @@ module RuboCop
 
         add_missing_namespaces(path, hash)
 
+        resolver.override_department_setting_for_cops({}, hash)
         resolver.resolve_inheritance_from_gems(hash)
         resolver.resolve_inheritance(path, hash, file, debug?)
 
@@ -94,9 +95,7 @@ module RuboCop
         end
 
         merge_with_default(config, config_file).tap do |merged_config|
-          unless possible_new_cops?(config)
-            warn_on_pending_cops(merged_config.pending_cops)
-          end
+          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(config)
         end
       end
 
@@ -206,9 +205,7 @@ module RuboCop
       def write_config_file(file_name, file_string, rubocop_yml_contents)
         File.open(file_name, 'w') do |f|
           f.write "inherit_from:#{file_string}\n"
-          if /\S/.match?(rubocop_yml_contents)
-            f.write "\n#{rubocop_yml_contents}"
-          end
+          f.write "\n#{rubocop_yml_contents}" if /\S/.match?(rubocop_yml_contents)
         end
       end
 
@@ -217,15 +214,16 @@ module RuboCop
       end
 
       def load_yaml_configuration(absolute_path)
-        yaml_code = read_file(absolute_path)
+        file_contents = read_file(absolute_path)
+        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
+          ERB.new(file_contents).result
+        end
         check_duplication(yaml_code, absolute_path)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
         puts "configuration from #{absolute_path}" if debug?
 
-        unless hash.is_a?(Hash)
-          raise(TypeError, "Malformed configuration in #{absolute_path}")
-        end
+        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
 
         hash
       end
@@ -241,8 +239,7 @@ module RuboCop
                       "#{smart_path}:#{line1}: " \
                       "`#{value}` is concealed by line #{line2}"
                     else
-                      "#{smart_path}: " \
-                        "`#{value}` is concealed by duplicate"
+                      "#{smart_path}: `#{value}` is concealed by duplicate"
                     end
           warn Rainbow(message).yellow
         end
@@ -263,13 +260,11 @@ module RuboCop
           SafeYAML.load(yaml_code, filename, whitelisted_tags: %w[!ruby/regexp])
         # Ruby 2.6+
         elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
-          YAML.safe_load(
-            yaml_code,
-            permitted_classes: [Regexp, Symbol],
-            permitted_symbols: [],
-            aliases: true,
-            filename: filename
-          )
+          YAML.safe_load(yaml_code,
+                         permitted_classes: [Regexp, Symbol],
+                         permitted_symbols: [],
+                         aliases: true,
+                         filename: filename)
         else
           YAML.safe_load(yaml_code, [Regexp, Symbol], [], true, filename)
         end

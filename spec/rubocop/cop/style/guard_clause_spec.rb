@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::GuardClause do
-  let(:cop) { described_class.new(config) }
-  let(:config) do
-    RuboCop::Config.new(
+RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
+  let(:other_cops) do
+    {
       'Layout/LineLength' => {
         'Enabled' => line_length_enabled,
         'Max' => 80
-      },
-      'Style/GuardClause' => cop_config
-    )
+      }
+    }
   end
   let(:line_length_enabled) { true }
-  let(:cop_config) { {} }
 
   shared_examples 'reports offense' do |body|
     it 'reports an offense if method body is if / unless without else' do
@@ -107,6 +104,58 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
     RUBY
   end
 
+  it 'registers an offense when using `|| raise` in `then` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`work || raise('message') if something`) instead of wrapping the code inside a conditional expression.
+          work || raise('message')
+        else
+          test
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `|| raise` in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`test || raise('message') unless something`) instead of wrapping the code inside a conditional expression.
+          work
+        else
+          test || raise('message')
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `and return` in `then` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`work and return if something`) instead of wrapping the code inside a conditional expression.
+          work and return
+        else
+          test
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `and return` in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Use a guard clause (`test and return unless something`) instead of wrapping the code inside a conditional expression.
+          work
+        else
+          test and return
+        end
+      end
+    RUBY
+  end
+
   it 'accepts a method which body does not end with if / unless' do
     expect_no_offenses(<<~RUBY)
       def func
@@ -141,6 +190,19 @@ RSpec.describe RuboCop::Cop::Style::GuardClause do
     expect_no_offenses(<<~RUBY)
       def func
         ()
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when assigning the result of ' \
+     'a guard condition with `else`' do
+    expect_no_offenses(<<~RUBY)
+      def func
+        result = if something
+          work || raise('message')
+        else
+          test
+        end
       end
     RUBY
   end

@@ -81,9 +81,7 @@ module RuboCop
           end
 
           def each_ancestor(include_self: false, &block)
-            unless block_given?
-              return to_enum(__method__, include_self: include_self)
-            end
+            return to_enum(__method__, include_self: include_self) unless block_given?
 
             yield self if include_self
             scan_ancestors(&block)

@@ -2,7 +2,13 @@
 
 module RuboCop
   module Cop
-    # FIXME
+    # A group of cops, ready to be called on duty to inspect files.
+    # Team is responsible for selecting only relevant cops to be sent on duty,
+    # as well as insuring that the needed forces are sent along with them.
+    #
+    # For performance reasons, Team will first dispatch cops & forces in two groups,
+    # first the ones needed for autocorrection (if any), then the rest
+    # (unless autocorrections happened).
     class Team
       DEFAULT_OPTIONS = {
         auto_correct: false,
@@ -11,18 +17,35 @@ module RuboCop
 
       Investigation = Struct.new(:offenses, :errors)
 
-      attr_reader :errors, :warnings, :updated_source_file
+      attr_reader :errors, :warnings, :updated_source_file, :cops
 
       alias updated_source_file? updated_source_file
 
-      def initialize(cop_classes, config, options = nil)
-        @cop_classes = cop_classes
+      def initialize(cops, config = nil, options = nil)
+        @cops = cops
         @config = config
         @options = options || DEFAULT_OPTIONS
         @errors = []
         @warnings = []
 
         validate_config
+      end
+
+      # @return [Team] with cops assembled from the given `cop_classes`
+      def self.mobilize(cop_classes, config, options = nil)
+        options ||= DEFAULT_OPTIONS
+        cops = mobilize_cops(cop_classes, config, options)
+        new(cops, config, options)
+      end
+
+      # @return [Array<Cop::Cop>]
+      def self.mobilize_cops(cop_classes, config, options = nil)
+        options ||= DEFAULT_OPTIONS
+        only = options.fetch(:only, [])
+        safe = options.fetch(:safe, false)
+        cop_classes.enabled(config, only, safe).map do |cop_class|
+          cop_class.new(config, options)
+        end
       end
 
       def autocorrect?
@@ -42,14 +65,6 @@ module RuboCop
         end
 
         offenses(processed_source)
-      end
-
-      def cops
-        only = @options.fetch(:only, [])
-        safe = @options.fetch(:safe, false)
-        @cops ||= @cop_classes.enabled(@config, only, safe).map do |cop_class|
-          cop_class.new(@config, @options)
-        end
       end
 
       def forces
@@ -93,21 +108,23 @@ module RuboCop
 
       private
 
-      def offenses(processed_source)
+      def offenses(processed_source) # rubocop:disable Metrics/AbcSize
         # The autocorrection process may have to be repeated multiple times
         # until there are no corrections left to perform
         # To speed things up, run auto-correcting cops by themselves, and only
         # run the other cops when no corrections are left
-        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
+        on_duty = roundup_relevant_cops(processed_source.file_path)
 
-        autocorrect =
-          investigate(autocorrect_cops, processed_source) do |offenses|
-            # We corrected some errors. Another round of inspection will be
-            # done, and any other offenses will be caught then, so we don't
-            # need to continue.
-            return offenses if autocorrect(processed_source.buffer,
-                                           autocorrect_cops)
-          end
+        autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
+
+        autocorrect = investigate(autocorrect_cops, processed_source)
+
+        if autocorrect(processed_source.buffer, autocorrect_cops)
+          # We corrected some errors. Another round of inspection will be
+          # done, and any other offenses will be caught then, so we don't
+          # need to continue.
+          return autocorrect.offenses
+        end
 
         other = investigate(other_cops, processed_source)
 
@@ -120,11 +137,30 @@ module RuboCop
       def investigate(cops, processed_source)
         return Investigation.new([], {}) if cops.empty?
 
-        commissioner = Commissioner.new(cops, forces_for(cops))
+        commissioner = Commissioner.new(cops, forces_for(cops), @options)
         offenses = commissioner.investigate(processed_source)
-        yield offenses if block_given?
 
         Investigation.new(offenses, commissioner.errors)
+      end
+
+      def roundup_relevant_cops(filename)
+        cops.reject do |cop|
+          cop.excluded_file?(filename) ||
+            !support_target_ruby_version?(cop) ||
+            !support_target_rails_version?(cop)
+        end
+      end
+
+      def support_target_ruby_version?(cop)
+        return true unless cop.class.respond_to?(:support_target_ruby_version?)
+
+        cop.class.support_target_ruby_version?(cop.target_ruby_version)
+      end
+
+      def support_target_rails_version?(cop)
+        return true unless cop.class.respond_to?(:support_target_rails_version?)
+
+        cop.class.support_target_rails_version?(cop.target_rails_version)
       end
 
       def autocorrect_all_cops(buffer, cops)

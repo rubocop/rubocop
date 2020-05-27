@@ -6,8 +6,6 @@ def expect_copyright_offense(cop, source)
 end
 
 RSpec.describe RuboCop::Cop::Style::Copyright, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Notice' => 'Copyright (\(c\) )?2015 Acme Inc' } }
 
   it 'does not register an offense when the notice is present' do

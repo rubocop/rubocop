@@ -18,7 +18,7 @@ module RuboCop
 
         return false unless comment
 
-        comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+        comment.text.match?(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
       end
 
       def allow_uri?
@@ -63,7 +63,8 @@ module RuboCop
       end
 
       def tab_indentation_width
-        config.for_cop('Layout/IndentationStyle')['IndentationWidth']
+        config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
+          config.for_cop('Layout/IndentationWidth')['Width']
       end
 
       def uri_regexp

@@ -53,7 +53,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version lock in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.82.0', require: false
+gem 'rubocop', '~> 0.84.0', require: false
 ```
 
 ## Quickstart
@@ -132,7 +132,7 @@ If you're working in a company that's making significant use of RuboCop we'd app
 to become a RuboCop sponsor.
 
 You can support the development of RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop),
+[GitHub Sponsors](https://github.com/sponsors/bbatsov),
 [Patreon](https://www.patreon.com/bbatsov),
 [PayPal](https://paypal.me/bbatsov)
 and [Open Collective](https://opencollective.com/rubocop).

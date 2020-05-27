@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::Alias, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when EnforcedStyle is prefer_alias_method' do
     let(:cop_config) { { 'EnforcedStyle' => 'prefer_alias_method' } }
 
@@ -159,14 +157,14 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     end
 
     it 'does not register an offense for alias_method with non-literal '\
-       'argument' do
+       'constant argument' do
       expect_no_offenses(<<~RUBY)
         alias_method :bar, FOO
       RUBY
     end
 
     it 'does not register an offense for alias_method with non-literal ' \
-       'argument' do
+       'method call argument' do
       expect_no_offenses(<<~RUBY)
         alias_method :baz, foo.bar
       RUBY

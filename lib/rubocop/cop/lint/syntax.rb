@@ -16,9 +16,7 @@ module RuboCop
                                                 config, options)
           cop = new(config, options)
 
-          if processed_source.parser_error
-            cop.add_offense_from_error(processed_source.parser_error)
-          end
+          cop.add_offense_from_error(processed_source.parser_error) if processed_source.parser_error
 
           processed_source.diagnostics.each do |diagnostic|
             cop.add_offense_from_diagnostic(diagnostic,

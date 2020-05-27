@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'configured to enforce ruby19 style' do
     context 'with SpaceAroundOperators enabled' do
       let(:config) do
@@ -138,6 +136,30 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'auto-corrects a missing space when hash is used as argument' do
         new_source = autocorrect_source('foo:bar => 1')
         expect(new_source).to eq('foo bar: 1')
+      end
+
+      context 'when using a return value uses `return`' do
+        it 'registers an offense and corrects when not enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            return :key => value
+                   ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            return {key: value}
+          RUBY
+        end
+
+        it 'registers an offense and corrects when enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            return {:key => value}
+                    ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            return {key: value}
+          RUBY
+        end
       end
     end
 

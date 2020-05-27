@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'always' do
     let(:cop_config) do
       { 'Enabled'       => true,
@@ -241,11 +239,36 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for not having a frozen string literal comment ' \
-       'when there is only a shebang' do
-      expect_offense(<<~RUBY)
+    it 'accepts a frozen string literal comment after other comments' do
+      expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
+        # encoding: utf-8
+        #
+        # These are more comments
+        # frozen_string_literal: false
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for having a frozen string literal comment ' \
+       'under ruby code' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
         ^ Missing frozen string literal comment.
+
+        puts 1
+        # frozen_string_literal: true
+      RUBY
+
+      # Since we're only looking at the leading comments, a
+      # `frozen_string_literal` comment elsewhere in the code is invisible
+      # to this cop so the autocorrect won't remove it.
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
+        # frozen_string_literal: true
       RUBY
     end
 
@@ -461,6 +484,36 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         #!/usr/bin/env ruby
         # encoding: utf-8
         puts 1
+      RUBY
+    end
+
+    it 'registers an offense for having a frozen string literal comment ' \
+       'after other comments' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        #
+        # These are more comments
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        #
+        # These are more comments
+        puts 1
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment under ruby code' do
+      expect_no_offenses(<<~RUBY)
+        # encoding: utf-8
+
+        puts 1
+        # frozen_string_literal: true
       RUBY
     end
   end
@@ -955,6 +1008,61 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
        'under shebang with no other code' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
+        # frozen_string_literal: true
+      RUBY
+    end
+
+    it 'accepts a frozen string literal comment after other comments' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        #
+        # These are more comments
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for a disabled frozen string literal comment ' \
+       'after other comments' do
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        #
+        # These are more comments
+        # frozen_string_literal: false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #!/usr/bin/env ruby
+        # encoding: utf-8
+        #
+        # These are more comments
+        # frozen_string_literal: true
+        puts 1
+      RUBY
+    end
+
+    it 'registers an offense for having a frozen string literal comment ' \
+       'under ruby code' do
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        ^ Missing magic comment `# frozen_string_literal: true`.
+
+        puts 1
+        # frozen_string_literal: true
+      RUBY
+
+      # Since we're only looking at the leading comments, a
+      # `frozen_string_literal` comment elsewhere in the code is invisible
+      # to this cop so the autocorrect won't remove it.
+      expect_correction(<<~RUBY)
+        # encoding: utf-8
+        # frozen_string_literal: true
+
+        puts 1
         # frozen_string_literal: true
       RUBY
     end

@@ -103,6 +103,7 @@ module RuboCop
     def add_configuration_options(opts)
       option(opts, '-c', '--config FILE')
       option(opts, '--force-exclusion')
+      option(opts, '--only-recognized-file-types')
       option(opts, '--ignore-parent-exclusion')
       option(opts, '--force-default-config')
       add_auto_gen_options(opts)
@@ -247,10 +248,7 @@ module RuboCop
       def format_message_from(name, cop_names)
         message = 'Unrecognized cop or department: %<name>s.'
         message_with_candidate = "%<message>s\nDid you mean? %<candidate>s"
-        corrections = cop_names.select do |cn|
-          score = StringUtil.similarity(cn, name)
-          score >= NameSimilarity::MINIMUM_SIMILARITY_TO_SUGGEST
-        end.sort
+        corrections = NameSimilarity.find_similar_names(name, cop_names)
 
         if corrections.empty?
           format(message, name: name)
@@ -277,9 +275,7 @@ module RuboCop
         raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot ' \
                                    'be used with --only.'
       end
-      if except_syntax?
-        raise OptionArgumentError, 'Syntax checking cannot be turned off.'
-      end
+      raise OptionArgumentError, 'Syntax checking cannot be turned off.' if except_syntax?
       unless boolean_or_empty_cache?
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
@@ -383,7 +379,6 @@ module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
-    # rubocop:disable Layout/LineLength
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
     TEXT = {
@@ -415,6 +410,9 @@ module RuboCop
       force_exclusion:                  ['Force excluding files specified in the',
                                          'configuration `Exclude` even if they are',
                                          'explicitly passed as arguments.'],
+      only_recognized_file_types:       ['Inspect files given on the command line only if',
+                                         'they are listed in AllCops/Include parameters',
+                                         'of user configuration or default configuration.'],
       ignore_disable_comments:          ['Run cops even when they are disabled locally',
                                          'with a comment.'],
       ignore_parent_exclusion:          ['Prevent from inheriting AllCops/Exclude from',
@@ -467,6 +465,5 @@ module RuboCop
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
     }.freeze
-    # rubocop:enable Layout/LineLength
   end
 end

@@ -121,9 +121,7 @@ module RuboCop
 
         def right_token_for_auto_correction(operator)
           right_token = next_token(operator)
-          if !right_token.comment? && valid_right_token?(right_token, operator)
-            return right_token
-          end
+          return right_token if !right_token.comment? && valid_right_token?(right_token, operator)
 
           operator
         end

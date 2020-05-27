@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
+
+  let(:config) do
+    RuboCop::Config.new(
+      'Layout/LineLength' => {
+        'URISchemes' => %w[http https]
+      }.merge(cop_config),
+      'Layout/IndentationStyle' => { 'IndentationWidth' => 2 }
+    )
+  end
 
   it "registers an offense for a line that's 81 characters wide" do
     inspect_source('#' * 81)
@@ -34,6 +41,21 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                     '__END__',
                     '#' * 200].join("\n"))
     expect(cop.messages).to eq(['Line is too long. [150/80]'])
+  end
+
+  context 'when line is indented with tabs' do
+    let(:cop_config) { { 'Max' => 10, 'IgnoredPatterns' => nil } }
+
+    it 'accepts a short line' do
+      expect_no_offenses("\t\t\t123")
+    end
+
+    it 'registers an offense for a long line' do
+      expect_offense(<<~RUBY)
+        \t\t\t\t\t\t\t\t\t\t\t\t1
+        ^^^^^^^^^^^^^ Line is too long. [25/10]
+      RUBY
+    end
   end
 
   context 'when AllowURI option is enabled' do

@@ -43,6 +43,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --force-exclusion            Force excluding files specified in the
                                                configuration `Exclude` even if they are
                                                explicitly passed as arguments.
+                  --only-recognized-file-types Inspect files given on the command line only if
+                                               they are listed in AllCops/Include parameters
+                                               of user configuration or default configuration.
                   --ignore-parent-exclusion    Prevent from inheriting AllCops/Exclude from
                                                parent folders.
                   --force-default-config       Use default configuration even if configuration
@@ -367,7 +370,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     let(:command_line_options) { %w[--no-color] }
 
-    context '.rubocop file' do
+    describe '.rubocop file' do
       before do
         create_file('.rubocop', '--color --fail-level C')
       end
@@ -383,7 +386,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-    context '.rubocop directory' do
+    describe '.rubocop directory' do
       before do
         FileUtils.mkdir '.rubocop'
       end

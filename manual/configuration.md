@@ -237,6 +237,21 @@ Style/For:
 In this example the `Exclude` would only include `bar.rb`.
 
 
+## Pre-processing
+
+Configuration files are pre-processed using the ERB templating mechanism. This
+makes it possible to add dynamic content that will be evaluated when the
+configuation file is read. For example, you could let RuboCop ignore all files
+ignored by Git.
+
+```yaml
+AllCops:
+  Exclude:
+  <% `git status --ignored --porcelain`.lines.grep(/^!! /).each do |path| %>
+    - <%= path.sub(/^!! /, '') %>
+  <% end %>
+```
+
 ## Defaults
 
 The file [config/default.yml][1] under the RuboCop home directory contains the
@@ -431,6 +446,23 @@ Style:
 All cops are then enabled by default. Only cops explicitly disabled
 using `Enabled: false` in user configuration files are disabled.
 
+If a department is disabled, cops in that department can still be individually
+enabled, and that setting overrides the setting for its department in the same
+configuration file and in any inherited file.
+
+```yaml
+inherit_from: config_that_disables_the_metrics_department.yml
+
+Metrics/MethodLength:
+  Enabled: true
+
+Style:
+  Enabled: false
+
+Style/Alias:
+  Enabled: true
+```
+
 ### Severity
 
 Each cop has a default severity level based on which department it belongs
@@ -596,6 +628,12 @@ adding an "inner comment" on the comment line.
 Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
+
+Do not write anything other than cop name in the disabling comment. E.g.:
+
+```ruby
+# rubocop:disable Layout/LineLength --This is a bad comment that includes other than cop name.
+```
 
 ## Setting the style guide URL
 

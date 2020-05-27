@@ -27,7 +27,7 @@ module RuboCop
     # (if any). If args is empty, recursively find all Ruby source
     # files under the current directory
     # @return [Array] array of file paths
-    def find(args)
+    def find(args, mode)
       return target_files_in_dir if args.empty?
 
       files = []
@@ -36,7 +36,7 @@ module RuboCop
         files += if File.directory?(arg)
                    target_files_in_dir(arg.chomp(File::SEPARATOR))
                  else
-                   process_explicit_path(arg)
+                   process_explicit_path(arg, mode)
                  end
       end
 
@@ -54,9 +54,7 @@ module RuboCop
     # @return [Array] Array of filenames
     def target_files_in_dir(base_dir = Dir.pwd)
       # Support Windows: Backslashes from command-line -> forward slashes
-      if File::ALT_SEPARATOR
-        base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
-      end
+      base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
       hidden_files = Set.new(all_files - find_files(base_dir, 0))
       base_dir_config = @config_store.for(base_dir)
@@ -169,10 +167,12 @@ module RuboCop
       ruby_file?(file) || configured_include?(file)
     end
 
-    def process_explicit_path(path)
+    def process_explicit_path(path, mode)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| included_file?(file) }
+      if mode == :only_recognized_file_types || force_exclusion?
+        files.select! { |file| included_file?(file) }
+      end
 
       return files unless force_exclusion?
 

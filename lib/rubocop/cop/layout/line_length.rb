@@ -21,23 +21,23 @@ module RuboCop
       # are recommended to further format the broken lines.
       # (Many of these are enabled by default.)
       #
-      #   - ArgumentAlignment
-      #   - BlockAlignment
-      #   - BlockDelimiters
-      #   - BlockEndNewline
-      #   - ClosingParenthesisIndentation
-      #   - FirstArgumentIndentation
-      #   - FirstArrayElementIndentation
-      #   - FirstHashElementIndentation
-      #   - FirstParameterIndentation
-      #   - HashAlignment
-      #   - IndentationWidth
-      #   - MultilineArrayLineBreaks
-      #   - MultilineBlockLayout
-      #   - MultilineHashBraceLayout
-      #   - MultilineHashKeyLineBreaks
-      #   - MultilineMethodArgumentLineBreaks
-      #   - ParameterAlignment
+      # * ArgumentAlignment
+      # * BlockAlignment
+      # * BlockDelimiters
+      # * BlockEndNewline
+      # * ClosingParenthesisIndentation
+      # * FirstArgumentIndentation
+      # * FirstArrayElementIndentation
+      # * FirstHashElementIndentation
+      # * FirstParameterIndentation
+      # * HashAlignment
+      # * IndentationWidth
+      # * MultilineArrayLineBreaks
+      # * MultilineBlockLayout
+      # * MultilineHashBraceLayout
+      # * MultilineHashKeyLineBreaks
+      # * MultilineMethodArgumentLineBreaks
+      # * ParameterAlignment
       #
       # Together, these cops will pretty print hashes, arrays,
       # method calls, etc. For example, let's say the max columns
@@ -160,7 +160,10 @@ module RuboCop
         end
 
         def highlight_start(line)
-          max - indentation_difference(line)
+          # TODO: The max with 0 is a quick fix to avoid crashes when a line
+          # begins with many tabs, but getting a correct highlighting range
+          # when tabs are used for indentation doesn't work currently.
+          [max - indentation_difference(line), 0].max
         end
 
         def check_line(line, line_index)

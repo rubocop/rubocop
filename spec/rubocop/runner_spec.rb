@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
   let(:formatter_output_path) { 'formatter_output.txt' }
   let(:formatter_output) { File.read(formatter_output_path) }
 
-  context '#run when interrupted' do
+  describe '#run when interrupted' do
     include_context 'cli spec behavior'
 
     let(:runner) { described_class.new({}, RuboCop::ConfigStore.new) }

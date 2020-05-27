@@ -17,10 +17,12 @@ module RuboCop
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def resolve_inheritance(path, hash, file, debug)
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
         .reverse.each_with_index do |base_config, index|
+        override_department_setting_for_cops(base_config, hash)
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
 
@@ -34,6 +36,7 @@ module RuboCop
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def resolve_inheritance_from_gems(hash)
       gems = hash.delete('inherit_gem')
@@ -68,9 +71,7 @@ module RuboCop
         end
       end
 
-      if disabled_by_default
-        config = handle_disabled_by_default(config, default_configuration)
-      end
+      config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
 
       opts = { inherit_mode: config['inherit_mode'] || {},
                unset_nil: unset_nil }
@@ -100,7 +101,29 @@ module RuboCop
     end
     # rubocop:enable Metrics/AbcSize
 
+    # An `Enabled: true` setting in user configuration for a cop overrides an
+    # `Enabled: false` setting for its department.
+    def override_department_setting_for_cops(base_hash, derived_hash)
+      derived_hash.each_key do |key|
+        next unless key =~ %r{(.*)/.*}
+
+        department = Regexp.last_match(1)
+        next unless disabled?(derived_hash, department) ||
+                    disabled?(base_hash, department)
+
+        # The `override_department` setting for the `Enabled` parameter is an
+        # internal setting that's not documented in the manual. It will cause a
+        # cop to be enabled later, when logic surrounding enabled/disabled it
+        # run, even though its department is disabled.
+        derived_hash[key]['Enabled'] = 'override_department' if derived_hash[key]['Enabled']
+      end
+    end
+
     private
+
+    def disabled?(hash, department)
+      hash[department] && hash[department]['Enabled'] == false
+    end
 
     def duplicate_setting?(base_hash, derived_hash, key, inherited_file)
       return false if inherited_file.nil? # Not inheritance resolving merge
@@ -148,10 +171,20 @@ module RuboCop
 
     def inherited_file(path, inherit_from, file)
       if remote_file?(inherit_from)
+        # A remote configuration, e.g. `inherit_from: http://example.com/rubocop.yml`.
         RemoteConfig.new(inherit_from, File.dirname(path))
+      elsif Pathname.new(inherit_from).absolute?
+        # An absolute path to a config, e.g. `inherit_from: /Users/me/rubocop.yml`.
+        # The path may come from `inherit_gem` option, where a gem name is expanded
+        # to an absolute path to that gem.
+        print 'Inheriting ' if ConfigLoader.debug?
+        inherit_from
       elsif file.is_a?(RemoteConfig)
+        # A path relative to a URL, e.g. `inherit_from: configs/default.yml`
+        # in a config included with `inherit_from: http://example.com/rubocop.yml`
         file.inherit_from_remote(inherit_from, path)
       else
+        # A local relative path, e.g. `inherit_from: default.yml`
         print 'Inheriting ' if ConfigLoader.debug?
         File.expand_path(inherit_from, File.dirname(path))
       end
@@ -185,8 +218,14 @@ module RuboCop
     end
 
     def gem_config_path(gem_name, relative_config_path)
-      spec = Gem::Specification.find_by_name(gem_name)
-      File.join(spec.gem_dir, relative_config_path)
+      if defined?(Bundler)
+        gem = Bundler.load.specs[gem_name].first
+        gem_path = gem.full_gem_path if gem
+      end
+
+      gem_path ||= Gem::Specification.find_by_name(gem_name).gem_dir
+
+      File.join(gem_path, relative_config_path)
     rescue Gem::LoadError => e
       raise Gem::LoadError,
             "Unable to find gem #{gem_name}; is the gem installed? #{e}"

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
+RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
   subject(:formatter) { described_class.new(output) }
 
   let(:output) { StringIO.new }
@@ -13,16 +13,13 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
                                 'This is a message.', 'CopName', status)
     end
 
+    let(:source) { ('aa'..'az').to_a.join($RS) }
+
     let(:location) do
-      source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = "a\n"
-      Parser::Source::Range.new(source_buffer, 0, 1)
+      source_range(0...1)
     end
 
     it 'displays text containing the offending source line' do
-      cop = RuboCop::Cop::Cop.new
-      source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = ('aa'..'az').to_a.join($RS)
       cop.add_offense(
         nil,
         location: Parser::Source::Range.new(source_buffer, 0, 2),
@@ -46,10 +43,9 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
     end
 
     context 'when the source line is blank' do
+      let(:source) { ['     ', 'yaba'].join($RS) }
+
       it 'does not display offending source line' do
-        cop = RuboCop::Cop::Cop.new
-        source_buffer = Parser::Source::Buffer.new('test', 1)
-        source_buffer.source = ['     ', 'yaba'].join($RS)
         cop.add_offense(
           nil,
           location: Parser::Source::Range.new(source_buffer, 0, 2),
@@ -72,21 +68,17 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter do
     end
 
     context 'when the offending source spans multiple lines' do
-      it 'displays the first line with ellipses' do
-        source = <<~RUBY
+      let(:source) do
+        <<~RUBY
           do_something([this,
                         is,
                         target])
         RUBY
+      end
 
-        source_buffer = Parser::Source::Buffer.new('test', 1)
-        source_buffer.source = source
+      it 'displays the first line with ellipses' do
+        location = source_range(source.index('[')..source.index(']'))
 
-        location = Parser::Source::Range.new(source_buffer,
-                                             source.index('['),
-                                             source.index(']') + 1)
-
-        cop = RuboCop::Cop::Cop.new
         cop.add_offense(nil, location: location, message: 'message 1')
 
         formatter.report_file('test', cop.offenses)

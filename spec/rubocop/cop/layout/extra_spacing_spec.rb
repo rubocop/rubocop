@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'common behavior' do
     it 'registers an offense and corrects alignment with token ' \
       'not preceded by space' do
@@ -331,23 +329,6 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   context 'when ForceEqualSignAlignment is true' do
     let(:cop_config) do
       { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
-    end
-
-    it 'registers an offense and corrects consecutive assignments ' \
-      'that are not aligned' do
-      expect_offense(<<~RUBY)
-        a = 1
-        bb = 2
-           ^ `=` is not aligned with the preceding assignment.
-        ccc = 3
-            ^ `=` is not aligned with the preceding assignment.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        a   = 1
-        bb  = 2
-        ccc = 3
-      RUBY
     end
 
     it 'does not register offenses for multiple complex nested assignments' do

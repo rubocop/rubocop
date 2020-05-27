@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   let(:config) { RuboCop::Config.new }
 
   context 'when an access modifier has no effect' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
           def some_method
@@ -19,11 +19,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          def some_method
+            puts 10
+          end
+          def self.some_method
+            puts 10
+          end
+        end
+      RUBY
     end
   end
 
   context 'when an access modifier has no methods' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
           def some_method
@@ -31,6 +42,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
           protected
           ^^^^^^^^^ Useless `protected` access modifier.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          def some_method
+            puts 10
+          end
         end
       RUBY
     end
@@ -55,7 +74,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   context 'when an access modifier is followed by a ' \
     'class method defined on constant' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
           protected
@@ -64,16 +83,35 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          def SomeClass.some_method
+          end
+        end
+      RUBY
     end
   end
 
   context 'when there are consecutive access modifiers' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
          private
          private
          ^^^^^^^ Useless `private` access modifier.
+          def some_method
+            puts 10
+          end
+          def some_other_method
+            puts 10
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+         private
           def some_method
             puts 10
           end
@@ -99,22 +137,34 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   context 'when class is empty save modifier' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
           private
           ^^^^^^^ Useless `private` access modifier.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+        end
+      RUBY
     end
   end
 
   context 'when multiple class definitions in file but only one has offense' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
           private
           ^^^^^^^ Useless `private` access modifier.
+        end
+        class SomeOtherClass
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
         end
         class SomeOtherClass
         end
@@ -137,11 +187,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   context 'when only a constant or local variable is defined after the ' \
     'modifier' do
     %w[CONSTANT some_var].each do |binding_name|
-      it 'registers an offense' do
+      it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
           class SomeClass
             private
             ^^^^^^^ Useless `private` access modifier.
+            #{binding_name} = 1
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
             #{binding_name} = 1
           end
         RUBY
@@ -163,11 +219,20 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   context 'when private_class_method is used without arguments' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
           private_class_method
           ^^^^^^^^^^^^^^^^^^^^ Useless `private_class_method` access modifier.
+
+          def self.some_method
+            puts 10
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
 
           def self.some_method
             puts 10
@@ -246,11 +311,34 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
          end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          concerning :FirstThing do
+            def foo
+            end
+            private
+
+            def method
+            end
+          end
+
+          concerning :SecondThing do
+            def omg
+            end
+            private
+            def method
+            end
+            def another_method
+            end
+          end
+         end
+      RUBY
     end
   end
 
   context 'when using ActiveSupport behavior when Rails is not eabled' do
-    it 'reports offenses' do
+    it 'reports offenses and corrects' do
       expect_offense(<<~RUBY)
         module SomeModule
           extend ActiveSupport::Concern
@@ -265,6 +353,23 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
           private
           ^^^^^^^ Useless `private` access modifier.
+          def some_private_instance_method
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module SomeModule
+          extend ActiveSupport::Concern
+          class_methods do
+            def some_public_class_method
+            end
+            private
+            def some_private_class_method
+            end
+          end
+          def some_public_instance_method
+          end
           def some_private_instance_method
           end
         end
@@ -330,15 +435,29 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           ^^^^^^^ Useless `private` access modifier.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          delegate :foo, to: :bar
+
+        end
+      RUBY
     end
   end
 
   shared_examples 'at the top of the body' do |keyword|
-    it 'registers an offense for `public`' do
+    it 'registers an offense and corrects for `public`' do
       expect_offense(<<~RUBY)
         #{keyword} A
           public
           ^^^^^^ Useless `public` access modifier.
+          def method
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} A
           def method
           end
         end
@@ -385,13 +504,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   shared_examples 'non-repeated visibility modifiers' do |keyword|
-    it 'registers an offense even when `public` is not repeated' do
+    it 'registers an offense and corrects even when `public` is not repeated' do
       expect_offense(<<~RUBY)
         #{keyword} A
           def method1
           end
           public
           ^^^^^^ Useless `public` access modifier.
+          def method2
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} A
+          def method1
+          end
           def method2
           end
         end
@@ -491,8 +619,8 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   shared_examples 'unused visibility modifiers' do |keyword|
-    it 'registers an error when visibility is immediately changed ' \
-       'without any intervening defs' do
+    it 'registers an offense and corrects when visibility is ' \
+       'immediately changed without any intervening defs' do
       expect_offense(<<~RUBY)
         #{keyword} A
           private
@@ -500,6 +628,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           end
           public
           ^^^^^^ Useless `public` access modifier.
+          private
+          def method2
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} A
+          private
+          def method1
+          end
           private
           def method2
           end

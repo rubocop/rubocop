@@ -48,9 +48,7 @@ module RuboCop
       def smallest_percent_size(style, ary_size)
         @smallest_percent ||= Float::INFINITY
 
-        if style == :percent && ary_size < @smallest_percent
-          @smallest_percent = ary_size
-        end
+        @smallest_percent = ary_size if style == :percent && ary_size < @smallest_percent
 
         @smallest_percent
       end

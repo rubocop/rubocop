@@ -17,6 +17,10 @@ module RuboCop
         line_source =~ /^\s*#/
       end
 
+      def comment_lines?(node)
+        processed_source[line_range(node)].any? { |line| comment_line?(line) }
+      end
+
       def line_range(node)
         node.first_line..node.last_line
       end
@@ -24,6 +28,26 @@ module RuboCop
       def parentheses?(node)
         node.loc.respond_to?(:end) && node.loc.end &&
           node.loc.end.is?(')')
+      end
+
+      def add_parentheses(node, corrector)
+        if node.arguments.empty?
+          corrector.insert_after(node, '()')
+        else
+          corrector.replace(args_begin(node), '(')
+          corrector.insert_after(args_end(node), ')')
+        end
+      end
+
+      def args_begin(node)
+        loc = node.loc
+        selector =
+          node.super_type? || node.yield_type? ? loc.keyword : loc.selector
+        selector.end.resize(1)
+      end
+
+      def args_end(node)
+        node.loc.expression.end
       end
 
       def on_node(syms, sexp, excludes = [], &block)

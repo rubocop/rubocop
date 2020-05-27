@@ -56,9 +56,7 @@ module RuboCop
     def generate_request(uri)
       request = Net::HTTP::Get.new(uri.request_uri)
 
-      if cache_path_exists?
-        request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822
-      end
+      request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822 if cache_path_exists?
 
       yield request
     end

@@ -35,6 +35,17 @@ module RuboCop
       #   # good
       #   raise 'exception' if something
       #   ok
+      #
+      #   # bad
+      #   if something
+      #     foo || raise('exception')
+      #   else
+      #     ok
+      #   end
+      #
+      #   # good
+      #   foo || raise('exception') if something
+      #   ok
       class GuardClause < Cop
         include MinBodyLength
         include StatementModifier
@@ -69,7 +80,8 @@ module RuboCop
                else
                  opposite_keyword(node)
                end
-          register_offense(node, guard_clause.source, kw)
+
+          register_offense(node, guard_clause_source(guard_clause), kw)
         end
 
         private
@@ -98,13 +110,24 @@ module RuboCop
                       message: format(MSG, example: example))
         end
 
+        def guard_clause_source(guard_clause)
+          parent = guard_clause.parent
+
+          if parent.and_type? || parent.or_type?
+            guard_clause.parent.source
+          else
+            guard_clause.source
+          end
+        end
+
         def too_long_for_single_line?(node, example)
           max = max_line_length
           max && node.source_range.column + example.length > max
         end
 
         def accepted_form?(node, ending = false)
-          accepted_if?(node, ending) || node.condition.multiline?
+          accepted_if?(node, ending) || node.condition.multiline? ||
+            node.parent&.assignment?
         end
 
         def accepted_if?(node, ending)

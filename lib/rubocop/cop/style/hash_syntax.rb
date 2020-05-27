@@ -13,11 +13,11 @@ module RuboCop
       # The supported styles are:
       #
       # * ruby19 - forces use of the 1.9 syntax (e.g. `{a: 1}`) when hashes have
-      #   all symbols for keys
+      # all symbols for keys
       # * hash_rockets - forces use of hash rockets for all hashes
       # * no_mixed_keys - simply checks for hashes with mixed syntaxes
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
-      #   syntax hashes
+      # syntax hashes
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
@@ -168,11 +168,7 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key.source_range
-          op = pair_node.loc.operator
-
-          range = key.join(op)
-          range = range_with_surrounding_space(range: range, side: :right)
+          range = range_for_autocorrect_ruby19(pair_node)
 
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
 
@@ -180,6 +176,19 @@ module RuboCop
             range,
             range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
           )
+
+          hash_node = pair_node.parent
+          return unless hash_node.parent&.return_type? && !hash_node.braces?
+
+          corrector.wrap(hash_node, '{', '}')
+        end
+
+        def range_for_autocorrect_ruby19(pair_node)
+          key = pair_node.key.source_range
+          operator = pair_node.loc.operator
+
+          range = key.join(operator)
+          range_with_surrounding_space(range: range, side: :right)
         end
 
         def argument_without_space?(node)

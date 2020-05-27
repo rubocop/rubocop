@@ -126,9 +126,7 @@ module RuboCop
             return unused_range(node.type, mlhs_node, right)
           end
 
-          if Util.parentheses?(mlhs_node)
-            return range_for_parentheses(first_offense, mlhs_node)
-          end
+          return range_for_parentheses(first_offense, mlhs_node) if Util.parentheses?(mlhs_node)
 
           range_between(first_offense.source_range.begin_pos,
                         node.loc.operator.begin_pos)

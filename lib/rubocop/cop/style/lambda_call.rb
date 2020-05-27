@@ -52,26 +52,6 @@ module RuboCop
             implicit_style? && !node.implicit_call?
         end
 
-        def add_parentheses(node, corrector)
-          if node.arguments.empty?
-            corrector.insert_after(node, '()')
-          else
-            corrector.replace(args_begin(node), '(')
-            corrector.insert_after(args_end(node), ')')
-          end
-        end
-
-        def args_begin(node)
-          loc = node.loc
-          selector =
-            node.super_type? || node.yield_type? ? loc.keyword : loc.selector
-          selector.end.resize(1)
-        end
-
-        def args_end(node)
-          node.loc.expression.end
-        end
-
         def message(_node)
           if explicit_style?
             'Prefer the use of `lambda.call(...)` over `lambda.(...)`.'

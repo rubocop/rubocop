@@ -1,6 +1,14 @@
 # Automated Code Review
 
-The section describes SaaS that provides automated code reviews.
+The section describes SaaS solutions that provide automated code reviews for Ruby based on RuboCop.
+
+!!! Note
+
+    The services are listed in alphabetical order.
+
+## Awesome Code
+
+[Awesome Code](https://awesomecode.io) improves your code readability by git push or sending pull requests, with one click or even fully automated. It's an online `rubocop -a` service.
 
 ## Codacy
 
@@ -27,8 +35,4 @@ It is open source software.
 ## Sider
 
 [Sider](https://sider.review) improves your team's productivity by automating code analysis.
-It supports Auto-correction.
-
-## Awesome Code
-
-[Awesome Code](https://awesomecode.io) improves your code readability by git push or sending pull requests, with one click or even fully automated. It's an online `rubocop -a` service.
+It supports RuboCop's auto-correction.
