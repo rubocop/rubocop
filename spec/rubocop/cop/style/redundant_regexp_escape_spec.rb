@@ -5,13 +5,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
   context 'with a single-line `//` regexp' do
     context 'without escapes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /a/')
       end
     end
 
     context 'with escaped slashes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /\/a\//')
       end
     end
@@ -22,33 +22,33 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       %w[n101 x41 u0041 u{0041} cc C-c p{alpha} P{alpha}]
     ].flatten.each do |escape|
       context "with an escaped '#{escape}' outside a character class" do
-        it 'does not register an offence' do
+        it 'does not register an offense' do
           expect_no_offenses("foo = /\\#{escape}/")
         end
       end
 
       context "with an escaped '#{escape}' inside a character class" do
-        it 'does not register an offence' do
+        it 'does not register an offense' do
           expect_no_offenses("foo = /[\\#{escape}]/")
         end
       end
     end
 
     context "with an escaped 'M-a' outside a character class" do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /\\M-a/n')
       end
     end
 
     context "with an escaped 'M-a' inside a character class" do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /[\\M-a]/n')
       end
     end
 
     described_class::ALLOWED_OUTSIDE_CHAR_CLASS_METACHAR_ESCAPES.each do |char|
       context "with an escaped '#{char}' outside a character class" do
-        it 'does not register an offence' do
+        it 'does not register an offense' do
           expect_no_offenses("foo = /\\#{char}/")
         end
       end
@@ -68,49 +68,49 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
     end
 
     context 'with an escaped character class and following escaped char' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /\[\+/')
       end
     end
 
     context 'with a character class and following escaped char' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /[a]\+/')
       end
     end
 
     context 'with a POSIX character class inside a character class' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /[[:alnum:]\-_]+/')
       end
     end
 
     context 'with a backreference' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /([a-z])\s*\1/')
       end
     end
 
     context 'with an escaped interpolation outside a character class' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /\#\{[a-z_]+\}/')
       end
     end
 
     context 'with an escaped interpolation inside a character class' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /[\#{}]/')
       end
     end
 
     context 'with an uppercase metacharacter inside a character class' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /[\H]/')
       end
     end
 
     context 'with an uppercase metacharacter outside a character class' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = /\H/')
       end
     end
@@ -161,13 +161,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
     described_class::ALLOWED_ALWAYS_ESCAPES.each do |char|
       context "with an escaped '#{char}' outside a character class" do
-        it 'does not register an offence' do
+        it 'does not register an offense' do
           expect_no_offenses("foo = /\\#{char}/")
         end
       end
 
       context "with an escaped '#{char}' inside a character class" do
-        it 'does not register an offence' do
+        it 'does not register an offense' do
           expect_no_offenses("foo = /[\\#{char}]/")
         end
       end
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
 
       context "with an escaped '#{char}' inside a character class" do
-        it 'does not register an offence' do
+        it 'does not register an offense' do
           expect_no_offenses("foo = /a[\\#{char}]b/")
         end
       end
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
   context 'with a single-line %r{} regexp' do
     context 'without escapes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = %r{a}')
       end
     end
@@ -219,13 +219,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
   context 'with a single-line %r// regexp' do
     context 'without escapes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = %r/a/')
       end
     end
 
     context 'with escaped slashes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses('foo = %r/\/a\//')
       end
     end
@@ -233,7 +233,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
   context 'with a multi-line %r{} regexp' do
     context 'without escapes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           foo = %r{
             a
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
   context 'with a multi-line %r// regexp' do
     context 'without escapes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           foo = %r/
             a
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
     end
 
     context 'with escaped slashes' do
-      it 'does not register an offence' do
+      it 'does not register an offense' do
         expect_no_offenses(<<~'RUBY')
           foo = %r/
             \/a
