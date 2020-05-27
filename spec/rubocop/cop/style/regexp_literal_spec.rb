@@ -263,26 +263,6 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         RUBY
       end
 
-      describe 'with unnecessarily-escaped slashes' do
-        it 'registers an offense and corrects' do
-          expect_offense(<<~'RUBY')
-            foo = %r{
-              https?:\/\/
-                     ^^ Unnecessary `/`-escape inside `%r` literal
-                       ^^ Unnecessary `/`-escape inside `%r` literal
-              example\.com
-            }x
-          RUBY
-
-          expect_correction(<<~'RUBY')
-            foo = %r{
-              https?://
-              example\.com
-            }x
-          RUBY
-        end
-      end
-
       describe 'when configured to allow inner slashes' do
         before { cop_config['AllowInnerSlashes'] = true }
 
@@ -398,19 +378,6 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       end
     end
 
-    describe 'a single-line %r regex with unnecessarily-escaped slashes' do
-      it 'registers an offense and corrects' do
-        expect_offense(<<~'RUBY')
-          foo = %r{home\/}
-                       ^^ Unnecessary `/`-escape inside `%r` literal
-        RUBY
-
-        expect_correction(<<~RUBY)
-          foo = %r{home/}
-        RUBY
-      end
-    end
-
     describe 'a multi-line %r regex without slashes' do
       it 'is accepted' do
         expect_no_offenses(<<~RUBY)
@@ -425,26 +392,6 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     describe 'a multi-line %r regex with slashes' do
       it 'is accepted' do
         expect_no_offenses(<<~RUBY)
-          foo = %r{
-            https?://
-            example\.com
-          }x
-        RUBY
-      end
-    end
-
-    describe 'a multi-line %r regex with unnecessarily-escaped slashes' do
-      it 'registers an offense and corrects' do
-        expect_offense(<<~'RUBY')
-          foo = %r{
-            https?:\/\/
-                   ^^ Unnecessary `/`-escape inside `%r` literal
-                     ^^ Unnecessary `/`-escape inside `%r` literal
-            example\.com
-          }x
-        RUBY
-
-        expect_correction(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -588,26 +535,6 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     describe 'a multi-line %r regex with slashes' do
       it 'is accepted' do
         expect_no_offenses(<<~RUBY)
-          foo = %r{
-            https?://
-            example\.com
-          }x
-        RUBY
-      end
-    end
-
-    describe 'a multi-line %r regex with unnecessarily-escaped slashes' do
-      it 'registers an offense and corrects' do
-        expect_offense(<<~'RUBY')
-          foo = %r{
-            https?:\/\/
-                   ^^ Unnecessary `/`-escape inside `%r` literal
-                     ^^ Unnecessary `/`-escape inside `%r` literal
-            example\.com
-          }x
-        RUBY
-
-        expect_correction(<<~'RUBY')
           foo = %r{
             https?://
             example\.com

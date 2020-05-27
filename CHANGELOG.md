@@ -5,7 +5,7 @@
 ### New features
 
 * [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
-* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add unnecessary `/`-escapes offence to `Style/RegexpLiteral`. ([@owst][])
+* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
 
 ### Bug fixes
 
