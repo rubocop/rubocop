@@ -71,7 +71,7 @@ The cop can be configured to ignore blocks passed to certain methods.
 | Array
 
 | Exclude
-| `+**/*.gemspec+`
+| `**/*.gemspec`
 | Array
 |===
 

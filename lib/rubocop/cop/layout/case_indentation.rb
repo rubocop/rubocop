@@ -3,10 +3,10 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks how the *when*s of a *case* expression
-      # are indented in relation to its *case* or *end* keyword.
+      # This cop checks how the ``when``s of a `case` expression
+      # are indented in relation to its `case` or `end` keyword.
       #
-      # It will register a separate offense for each misaligned *when*.
+      # It will register a separate offense for each misaligned `when`.
       #
       # @example
       #   # If Layout/EndAlignment is set to keyword style (default)
