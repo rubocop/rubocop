@@ -25,9 +25,12 @@
       </div>
       <hr>
       <div class="row-fluid marketing">
-        <div class="span6">
+        <div class="span12">
           <h4><i class="icon-group"></i> Overview</h4>
           <p>RuboCop is a Ruby code style checker (linter) and formatter based on the community-driven <a href="https://rubystyle.guide">Ruby Style Guide</a>.</p>
+          <p>RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various configuration options.
+            In practice RuboCop supports pretty much every (reasonably popular) coding style that you can think of.</p>
+          <p>Apart from reporting problems in your code, RuboCop can also automatically fix some of the problems for you.</p>
 
           <h4><i class="icon-road"></i> Compatibility</h4>
           <p>RuboCop supports MRI 2.4+ and JRuby 9.2+.</p>
@@ -35,13 +38,14 @@
           <h4><i class="icon-download-alt"></i> Installation</h4>
           <p>RuboCop's installation is pretty standard:</p>
           <pre><span style="color:#008080;">$</span> gem install rubocop</pre>
-        </div>
-        <div class="span6">
+
           <h4><i class="icon-cog"></i> Usage</h4>
           <p>Running <code>rubocop</code> with no arguments will check all Ruby source files in the current directory:</p>
           <pre><span style="color:#008080;">$</span> rubocop</pre>
-          <p>Alternatively you can <code>rubocop</code> a list of files and directories to check:</p>
+          <p>Alternatively you can specify a list of files and directories to check:</p>
           <pre><span style="color:#008080;">$</span> rubocop app spec lib/something.rb</pre>
+          <p>You can auto-correct offenses with <code>rubocop -a</code>:</p>
+          <pre><span style="color:#008080;">$</span> rubocop -a</pre>
           <p>Use <code>-h</code> for available command-line options.</p>
         </div>
       </div>
