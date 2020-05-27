@@ -40,7 +40,7 @@ module RuboCop
             args = args.concat(args.pop.children) if last_arg.hash_type? && !last_arg.braces?
           end
 
-          check_line_breaks(node, args)
+          check_line_breaks(args)
         end
 
         def autocorrect(node)

@@ -10,7 +10,7 @@ module RuboCop
     module MultilineElementLineBreaks
       private
 
-      def check_line_breaks(_node, children)
+      def check_line_breaks(children)
         return if all_on_same_line?(children)
 
         last_seen_line = -1

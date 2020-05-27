@@ -27,7 +27,7 @@ module RuboCop
           'on a separate line.'
 
         def on_array(node)
-          check_line_breaks(node, node.children)
+          check_line_breaks(node.children)
         end
 
         def autocorrect(node)

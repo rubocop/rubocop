@@ -32,7 +32,7 @@ module RuboCop
           # Style/MultilineMethodArgumentLineBreaks handles those.
           return unless starts_with_curly_brace?(node)
 
-          check_line_breaks(node, node.children) if node.loc.begin
+          check_line_breaks(node.children) if node.loc.begin
         end
 
         def autocorrect(node)
