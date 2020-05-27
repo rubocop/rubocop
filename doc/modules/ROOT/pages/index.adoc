@@ -5,6 +5,8 @@ ____
 Role models are important. +
 ____
 
+== Overview
+
 *RuboCop* is a Ruby static code analyzer (a.k.a. linter) and code
 formatter. Out of the box it will enforce many of the guidelines
 outlined in the community https://rubystyle.guide[Ruby Style Guide].
@@ -34,18 +36,6 @@ The project is closely tied to several efforts to document and promote the best 
 
 A long-term goal of RuboCop (and its core extensions) is to cover with cops all the guidelines from the community style guides.
 
-So, what to do next? While you can peruse the documentation in whatever way you'd like, here are
-a few recommendations:
-
-* See xref:usage/basic_usage.adoc["Basic Usage"] to get yourself familiar with RuboCop's
-capabilities.
-* Adjust RuboCop to your style/preferences. RuboCop is an extremely flexible tool and most aspects of its behavior
-can be tweaked via various https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[configuration
-options].
-* See xref:versioning.adoc["Versioning"] for information about RuboCop versioning,
-updates, and introduction of new cops.
-* Explore the xref:extensions.adoc[existing extensions].
-
 == Philosophy
 
 Early on RuboCop aimed to be an opinionated linter/formater that adhered very closely to the Ruby Style Guide (think `gofmt` and the like).
@@ -58,3 +48,17 @@ The early feedback we got lead us to adopt of philosophy of (extreme) configurab
 of programming in Ruby. While we still believe that there's a lot of merit to just sticking to the community
 style guides, we acknowledge that Ruby is all about diversity and doing things the way that makes you happy. Whatever
 style preferences you have RuboCop is there for you. That's our promises and our guarantee. Within the subjective limits of sanity that is.
+
+== Next Steps
+
+So, what to do next? While you can peruse the documentation in whatever way you'd like, here are
+a few recommendations:
+
+* See xref:usage/basic_usage.adoc["Basic Usage"] to get yourself familiar with RuboCop's
+capabilities.
+* Adjust RuboCop to your style/preferences. RuboCop is an extremely flexible tool and most aspects of its behavior
+can be tweaked via various https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[configuration
+options]. See xref:configuration.adoc["Configuration"] for more details.
+* See xref:versioning.adoc["Versioning"] for information about RuboCop versioning,
+updates, and the process of introducing new cops.
+* Explore the xref:extensions.adoc[existing extensions].
