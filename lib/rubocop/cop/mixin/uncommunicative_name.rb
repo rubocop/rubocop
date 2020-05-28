@@ -18,7 +18,7 @@ module RuboCop
           full_name = arg.children.first.to_s
           next if full_name == '_'
 
-          name = full_name.gsub(/\A([_]+)/, '')
+          name = full_name.gsub(/\A(_+)/, '')
           next if (arg.restarg_type? || arg.kwrestarg_type?) && name.empty?
           next if allowed_names.include?(name)
 
