@@ -230,7 +230,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(cops, department.to_sym).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
-      content << "* xref:#{filename}#_#{anchor}[#{cop.cop_name}]\n"
+      content << "* xref:#{filename}##{anchor}[#{cop.cop_name}]\n"
     end
 
     content
