@@ -92,6 +92,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                This option applies to the previously
                                                specified --format, or the default format
                                                if no format is specified.
+                  --display-only-failed        Only output offense messages. Omit passing
+                                               cops. Only valid for --format junit.
               -r, --require FILE               Require Ruby file.
                   --fail-level SEVERITY        Minimum severity (A/R/C/W/E/F) for exit
                                                with error code.
@@ -221,6 +223,18 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           expect { options.parse %w[--parallel --fail-fast] }
             .to raise_error(RuboCop::OptionArgumentError, msg)
         end
+      end
+    end
+
+    describe '--display-only-failed' do
+      it 'fails if given without --format junit' do
+        expect { options.parse %w[--display-only-failed] }
+          .to raise_error(RuboCop::OptionArgumentError)
+      end
+
+      it 'works if given with --format junit' do
+        expect { options.parse %w[--format junit --display-only-failed] }
+          .not_to raise_error(RuboCop::OptionArgumentError)
       end
     end
 

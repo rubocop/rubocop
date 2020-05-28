@@ -143,6 +143,8 @@ module RuboCop
           @options[:output_path] = path
         end
       end
+
+      option(opts, '--display-only-failed')
     end
 
     def add_severity_option(opts)
@@ -286,6 +288,7 @@ module RuboCop
       end
       validate_auto_gen_config
       validate_auto_correct
+      validate_display_only_failed
       validate_parallel
 
       return if incompatible_options.size <= 1
@@ -309,13 +312,20 @@ module RuboCop
       end
     end
 
+    def validate_display_only_failed
+      return unless @options.key?(:display_only_failed)
+      return if @options[:format] == 'junit'
+
+      raise OptionArgumentError,
+            format('--display-only-failed can only be used together with --format junit.')
+    end
+
     def validate_auto_correct
       return if @options.key?(:auto_correct)
       return unless @options.key?(:disable_uncorrectable)
 
       raise OptionArgumentError,
-            format('--%<flag>s can only be used together with --auto-correct.',
-                   flag: '--disable-uncorrectable')
+            format('--disable-uncorrectable can only be used together with --auto-correct.')
     end
 
     def validate_parallel
@@ -431,6 +441,8 @@ module RuboCop
                                          'if no format is specified.'],
       fail_level:                       ['Minimum severity (A/R/C/W/E/F) for exit',
                                          'with error code.'],
+      display_only_failed:              ['Only output offense messages. Omit passing',
+                                         'cops. Only valid for --format junit.'],
       display_only_fail_level_offenses:
                                         ['Only output offense messages at',
                                          'the specified --fail-level or above'],
