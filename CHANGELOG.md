@@ -9,6 +9,7 @@
 * [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
 * [#7978](https://github.com/rubocop-hq/rubocop/pull/7978): Add new option `OnlyFor` to the `Bundler/GemComment` cop. ([@ric2b][])
 * [#8063](https://github.com/rubocop-hq/rubocop/issues/8063): Add new `AllowedNames` option for `Naming/ClassAndModuleCamelCase`. ([@tejasbubane][])
+* New option `--display-only-failed` that can be used with `--format junit`. Speeds up test report processing for large codebases and helps address the sorts of concerns raised at [mikian/rubocop-junit-formatter #18](https://github.com/mikian/rubocop-junit-formatter/issues/18). ([@burnettk][])
 
 ### Bug fixes
 
@@ -4558,3 +4559,4 @@
 [@CvX]: https://github.com/CvX
 [@jschneid]: https://github.com/jschneid
 [@ric2b]: https://github.com/ric2b
+[@burnettk]: https://github.com/burnettk
