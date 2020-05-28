@@ -8,7 +8,7 @@ the different departments is provided below.
 Many of the Style and Layout cops have configuration options, allowing them to
 enforce different coding conventions.
 
-You can also load link:extensions.md#custom-cops[custom cops].
+You can also load xref:extensions.adoc#custom-cops[custom cops].
 
 == Style
 
