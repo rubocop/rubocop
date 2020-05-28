@@ -7,9 +7,15 @@ In auto-correct mode, RuboCop will try to automatically fix offenses:
 $ rubocop -a
 ----
 
-For some offenses, it is not possible to implement automatic correction.
+There are a couple of things to keep in mind about auto-correct:
 
-Some automatic corrections that _are_ possible have not been implemented yet.
+- For some offenses, it is not possible to implement automatic correction.
+- Some automatic corrections that _are_ possible have not been implemented yet.
+- Some automatic corrections might change (slightly) the semantics of the code,
+meaning they'd produce code that's mostly equivalent to the original code, but
+not 100% equivalent. We call such auto-correct behaviour "unsafe".
+
+TIP: You should always run your test suite after using the auto-correct functionality.
 
 == Safe auto-correct
 
@@ -32,8 +38,9 @@ becomes unsafe as well.
 
 If a cop or its auto-correct is annotated as "not safe", it will be omitted when using `--safe-auto-correct`.
 
-NOTE: Currently there might still be cops that are marked as unsafe or with unsafe auto-correct.
-Eventually, the safety of each cop will be specified in the default configuration.
+NOTE: Currently there might still be cops that aren't marked as unsafe or
+with unsafe auto-correct.  Eventually, the safety of each cop will be specified
+in the default configuration.
 
 === Example of Unsafe Cop
 
