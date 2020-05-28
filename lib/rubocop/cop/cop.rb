@@ -146,17 +146,24 @@ module RuboCop
         @offenses.any? { |o| o.location == location }
       end
 
-      def correct(node)
+      def correct(node) # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
         reason = reason_to_not_correct(node)
         return reason if reason
 
         @corrected_nodes[node] = true
+
         if support_autocorrect?
           correction = autocorrect(node)
-          return :uncorrected unless correction
 
-          @corrections << Correction.new(correction, node, self)
-          :corrected
+          if correction
+            @corrections << Correction.new(correction, node, self)
+            :corrected
+          elsif disable_uncorrectable?
+            disable_uncorrectable(node)
+            :corrected_with_todo
+          else
+            :uncorrected
+          end
         elsif disable_uncorrectable?
           disable_uncorrectable(node)
           :corrected_with_todo
