@@ -7116,6 +7116,40 @@ question = '"What did you say?"'
 
 * https://rubystyle.guide#percent-q
 
+== Style/RedundantRegexpCharacterClass
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.85
+| -
+|===
+
+This cop checks for unnecessary single-element Regexp character classes.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+r = /[x]/
+
+# good
+r = /x/
+
+# bad
+r = /[\s]/
+
+# good
+r = /\s/
+
+# good
+r = /[ab]/
+----
+
 == Style/RedundantRegexpEscape
 
 |===

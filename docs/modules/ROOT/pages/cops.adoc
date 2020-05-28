@@ -437,6 +437,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleredundantinterpolation[Style/RedundantInterpolation]
 * xref:cops_style.adoc#styleredundantparentheses[Style/RedundantParentheses]
 * xref:cops_style.adoc#styleredundantpercentq[Style/RedundantPercentQ]
+* xref:cops_style.adoc#styleredundantregexpcharacterclass[Style/RedundantRegexpCharacterClass]
 * xref:cops_style.adoc#styleredundantregexpescape[Style/RedundantRegexpEscape]
 * xref:cops_style.adoc#styleredundantreturn[Style/RedundantReturn]
 * xref:cops_style.adoc#styleredundantself[Style/RedundantSelf]
