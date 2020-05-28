@@ -193,7 +193,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
     end
-    file_name = "#{Dir.pwd}/doc/modules/ROOT/pages/cops_#{department.downcase}.adoc"
+    file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/cops_#{department.downcase}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
       file.write(content.strip + "\n")
@@ -237,7 +237,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
   end
 
   def print_table_of_contents(cops)
-    path = "#{Dir.pwd}/doc/modules/ROOT/pages/cops.adoc"
+    path = "#{Dir.pwd}/docs/modules/ROOT/pages/cops.adoc"
     original = File.read(path)
     content = +"// START_COP_LIST\n\n"
 
