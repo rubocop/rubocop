@@ -242,7 +242,7 @@ The JSON structure is like the following example:
 **Machine-parsable**
 
 The `junit` style formatter provides the JUnit formatting.
-This formatter is based on [rubocop-junit-formatter gem](https://github.com/mikian/rubocop-junit-formatter).
+This formatter is based on the [rubocop-junit-formatter gem](https://github.com/mikian/rubocop-junit-formatter).
 
 ```sh
 $ rubocop --format junit
@@ -267,6 +267,18 @@ $ rubocop --format junit
   </testsuite>
 </testsuites>
 ```
+
+The `junit` style formatter is very useful for continuous integration systems
+such as Jenkins, most of which support junit formatting when parsing test
+results. A typical invocation in this type of scenario might look like:
+
+```sh
+$ rubocop --format junit --out test-reports/junit.xml
+```
+
+Since there is one XML node for each cop for each file, the size of the resulting
+XML can get quite large. If it is too large for you, you can restrict the output
+to just failures by adding the `--display-only-failed` option.
 
 ## Offense Count Formatter
 
