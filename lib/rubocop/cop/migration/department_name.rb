@@ -24,7 +24,7 @@ module RuboCop
 
             offset = Regexp.last_match(1).length
 
-            Regexp.last_match(4).scan(/[^,]+|[\W]+/) do |name|
+            Regexp.last_match(4).scan(/[^,]+|\W+/) do |name|
               trimmed_name = name.strip
 
               unless valid_content_token?(trimmed_name)
