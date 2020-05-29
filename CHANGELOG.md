@@ -10,6 +10,10 @@
 * [#7990](https://github.com/rubocop-hq/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
 * [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
 
+### Changes
+
+* [#8056](https://github.com/rubocop-hq/rubocop/pull/8056): **(Breaking)** Remove support for unindent/active_support/powerpack from `Layout/HeredocIndentation`, so it only recommends using squiggy heredoc. ([@bquorning][])
+
 ## 0.84.0 (2020-05-21)
 
 ### New features

@@ -790,13 +790,7 @@ Layout/HeredocIndentation:
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '0.77'
-  EnforcedStyle: squiggly
-  SupportedStyles:
-    - squiggly
-    - active_support
-    - powerpack
-    - unindent
+  VersionChanged: '0.85'
 
 Layout/IndentationConsistency:
   Description: 'Keep indentation straight.'
