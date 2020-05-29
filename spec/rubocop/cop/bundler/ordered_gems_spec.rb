@@ -86,20 +86,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When each individual group of line is not sorted' do
-    let(:source) { <<~RUBY }
-      gem "d"
-      gem "b"
-      gem "e"
-      gem "a"
-      gem "c"
-
-      gem "h"
-      gem "g"
-      gem "j"
-      gem "f"
-      gem "i"
-    RUBY
-
     it 'registers some offenses' do
       expect_offense(<<~RUBY)
         gem "d"
@@ -118,11 +104,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `f` should appear before `j`.
         gem "i"
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         gem "a"
         gem "b"
         gem "c"
@@ -176,12 +159,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems have an inline comment, and not sorted' do
-    let(:source) { <<~RUBY }
-      gem 'rubocop' # For code quality
-      gem 'pry'
-      gem 'rspec'   # For test
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         gem 'rubocop' # For code quality
@@ -189,11 +166,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         ^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `pry` should appear before `rubocop`.
         gem 'rspec'   # For test
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         gem 'pry'
         gem 'rspec'   # For test
         gem 'rubocop' # For code quality
