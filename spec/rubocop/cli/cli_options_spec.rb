@@ -873,7 +873,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'shows reference entry' do
       create_file('example1.rb', "JSON.load('{}')")
       file = abs('example1.rb')
-      url = 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html' \
+      url = 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html' \
             '#method-i-load'
 
       expect(cli.run(['--format',
