@@ -47,7 +47,7 @@ set Enabled to either `true` or `false` in your `.rubocop.yml` file:
  - Style/HashEachMethods (0.80)
  - Style/HashTransformKeys (0.80)
  - Style/HashTransformValues (0.80)
-For more information: https://docs.rubocop.org/en/latest/versioning/
+For more information: https://docs.rubocop.org/rubocop/versioning.html
 ----
 
 You can see that 3 new cops were added in RuboCop 0.80 and it's up to you
