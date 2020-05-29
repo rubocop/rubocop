@@ -48,21 +48,6 @@ module CopHelper
     corrector.rewrite
   end
 
-  def autocorrect_source_with_loop(source, file = nil)
-    cnt = 0
-    loop do
-      cop.instance_variable_set(:@corrections, [])
-      new_source = autocorrect_source(source, file)
-      return new_source if new_source == source
-
-      source = new_source
-      cnt += 1
-      if cnt > RuboCop::Runner::MAX_ITERATIONS
-        raise RuboCop::Runner::InfiniteCorrectionLoop.new(file, [])
-      end
-    end
-  end
-
   def _investigate(cop, processed_source)
     team = RuboCop::Cop::Team.new([cop], nil, raise_error: true)
     team.inspect_file(processed_source)
