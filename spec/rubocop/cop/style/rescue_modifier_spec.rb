@@ -204,11 +204,13 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
 
     it 'corrects doubled rescue modifiers' do
-      new_source = autocorrect_source_with_loop(<<~RUBY)
+      expect_offense(<<~RUBY)
         blah rescue 1 rescue 2
+        ^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         begin
           begin
             blah
