@@ -3157,21 +3157,17 @@ opening HEREDOC tag.
 | Yes
 | Yes
 | 0.49
-| 0.77
+| 0.85
 |===
 
 This cop checks the indentation of the here document bodies. The bodies
 are indented one step.
-In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
-use the older rubies, you should introduce some library to your project
-(e.g. ActiveSupport, Powerpack or Unindent).
+
 Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
       this cop does not add any offenses for long here documents to
       avoid `Layout/LineLength`'s offenses.
 
 === Examples
-
-==== EnforcedStyle: squiggly (default)
 
 [source,ruby]
 ----
@@ -3181,58 +3177,10 @@ something
 RUBY
 
 # good
-# When EnforcedStyle is squiggly, bad code is auto-corrected to the
-# following code.
 <<~RUBY
   something
 RUBY
 ----
-
-==== EnforcedStyle: active_support
-
-[source,ruby]
-----
-# good
-# When EnforcedStyle is active_support, bad code is auto-corrected to
-# the following code.
-<<-RUBY.strip_heredoc
-  something
-RUBY
-----
-
-==== EnforcedStyle: powerpack
-
-[source,ruby]
-----
-# good
-# When EnforcedStyle is powerpack, bad code is auto-corrected to
-# the following code.
-<<-RUBY.strip_indent
-  something
-RUBY
-----
-
-==== EnforcedStyle: unindent
-
-[source,ruby]
-----
-# good
-# When EnforcedStyle is unindent, bad code is auto-corrected to
-# the following code.
-<<-RUBY.unindent
-  something
-RUBY
-----
-
-=== Configurable attributes
-
-|===
-| Name | Default value | Configurable values
-
-| EnforcedStyle
-| `squiggly`
-| `squiggly`, `active_support`, `powerpack`, `unindent`
-|===
 
 === References
 

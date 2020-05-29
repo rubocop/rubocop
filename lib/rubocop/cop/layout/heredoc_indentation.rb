@@ -5,66 +5,31 @@ module RuboCop
     module Layout
       # This cop checks the indentation of the here document bodies. The bodies
       # are indented one step.
-      # In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
-      # use the older rubies, you should introduce some library to your project
-      # (e.g. ActiveSupport, Powerpack or Unindent).
+      #
       # Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
       #       this cop does not add any offenses for long here documents to
       #       avoid `Layout/LineLength`'s offenses.
       #
-      # @example EnforcedStyle: squiggly (default)
+      # @example
       #   # bad
       #   <<-RUBY
       #   something
       #   RUBY
       #
       #   # good
-      #   # When EnforcedStyle is squiggly, bad code is auto-corrected to the
-      #   # following code.
       #   <<~RUBY
       #     something
       #   RUBY
       #
-      # @example EnforcedStyle: active_support
-      #   # good
-      #   # When EnforcedStyle is active_support, bad code is auto-corrected to
-      #   # the following code.
-      #   <<-RUBY.strip_heredoc
-      #     something
-      #   RUBY
-      #
-      # @example EnforcedStyle: powerpack
-      #   # good
-      #   # When EnforcedStyle is powerpack, bad code is auto-corrected to
-      #   # the following code.
-      #   <<-RUBY.strip_indent
-      #     something
-      #   RUBY
-      #
-      # @example EnforcedStyle: unindent
-      #   # good
-      #   # When EnforcedStyle is unindent, bad code is auto-corrected to
-      #   # the following code.
-      #   <<-RUBY.unindent
-      #     something
-      #   RUBY
       #
       class HeredocIndentation < Cop
         include Heredoc
-        include ConfigurableEnforcedStyle
 
         RUBY23_TYPE_MSG = 'Use %<indentation_width>d spaces for indentation ' \
                           'in a heredoc by using `<<~` instead of ' \
                           '`%<current_indent_type>s`.'
         RUBY23_WIDTH_MSG = 'Use %<indentation_width>d spaces for '\
                            'indentation in a heredoc.'
-        LIBRARY_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
-                      'heredoc by using %<method>s.'
-        STRIP_METHODS = {
-          unindent: 'unindent',
-          active_support: 'strip_heredoc',
-          powerpack: 'strip_indent'
-        }.freeze
 
         def on_heredoc(node)
           body = heredoc_body(node)
@@ -85,38 +50,14 @@ module RuboCop
         end
 
         def autocorrect(node)
-          check_style!
-
-          case style
-          when :squiggly
-            correct_by_squiggly(node)
-          else
-            correct_by_library(node)
-          end
+          correct_by_squiggly(node)
         end
 
         private
 
         def message(node)
-          case style
-          when :squiggly
-            current_indent_type = "<<#{heredoc_indent_type(node)}"
-            ruby23_message(indentation_width, current_indent_type)
-          when nil
-            method = "some library(e.g. ActiveSupport's `String#strip_heredoc`)"
-            library_message(indentation_width, method)
-          else
-            method = "`String##{STRIP_METHODS[style]}`"
-            library_message(indentation_width, method)
-          end
-        end
-
-        def library_message(indentation_width, method)
-          format(
-            LIBRARY_MSG,
-            indentation_width: indentation_width,
-            method: method
-          )
+          current_indent_type = "<<#{heredoc_indent_type(node)}"
+          ruby23_message(indentation_width, current_indent_type)
         end
 
         def ruby23_message(indentation_width, current_indent_type)
@@ -185,21 +126,6 @@ module RuboCop
           heredoc_beginning = node.loc.expression.source
           corrected = heredoc_beginning.sub(/<<-?/, '<<~')
           corrector.replace(node, corrected)
-        end
-
-        def correct_by_library(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.heredoc_body, indented_body(node))
-            corrected = ".#{STRIP_METHODS[style]}"
-            corrector.insert_after(node, corrected)
-          end
-        end
-
-        def check_style!
-          return if style
-
-          raise Warning, "Auto-correction does not work for #{cop_name}. " \
-                         'Please configure EnforcedStyle.'
         end
 
         def indented_body(node)
