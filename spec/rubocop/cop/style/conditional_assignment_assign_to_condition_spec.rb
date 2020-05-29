@@ -80,11 +80,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'autocorrects the outer offense later' do
-      source =
-        annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
-      corrected = autocorrect_source_with_loop(source)
+      expect_offense(annotated_source)
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         @errors << if var.any?(:prob_a_check)
           'Problem A'
         elsif var.any?(:prob_a_check)
@@ -2228,11 +2226,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'eventually autocorrects all branches' do
-      source =
-        annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
-      corrected = autocorrect_source_with_loop(source)
+      expect_offense(annotated_source)
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         bar = if outer
           1
         else

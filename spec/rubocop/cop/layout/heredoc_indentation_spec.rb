@@ -121,17 +121,14 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
       end
 
       it 'registers an offense for not indented, without `~`' do
-        annotated_source = <<~RUBY
+        expect_offense(<<~RUBY)
           <<#{quote}RUBY2#{quote}
           foo
           ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
           RUBY2
         RUBY
 
-        expect_offense(annotated_source)
-
-        corrected = looped_autocorrect_from_annotated_source(annotated_source)
-        expect(corrected).to eq(<<~CORRECTION)
+        expect_correction(<<~CORRECTION, loop: true)
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
@@ -154,7 +151,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
       end
 
       it 'registers an offense for first line minus-level indented, with `-`' do
-        annotated_source = <<~RUBY
+        expect_offense(<<~RUBY)
                   puts <<-#{quote}RUBY2#{quote}
           def foo
           ^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
@@ -163,10 +160,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_offense(annotated_source)
-
-        corrected = looped_autocorrect_from_annotated_source(annotated_source)
-        expect(corrected).to eq(<<-CORRECTION)
+        expect_correction(<<-CORRECTION, loop: true)
         puts <<~#{quote}RUBY2#{quote}
           def foo
             bar
@@ -242,11 +236,5 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
 
   [nil, "'", '"', '`'].each do |quote|
     include_examples 'all heredoc type', quote
-  end
-
-  def looped_autocorrect_from_annotated_source(annotated_source)
-    source =
-      annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
-    autocorrect_source_with_loop(source)
   end
 end
