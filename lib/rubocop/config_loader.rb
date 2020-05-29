@@ -136,7 +136,7 @@ module RuboCop
           warn Rainbow(" - #{cop.name} (#{version})").yellow
         end
 
-        warn Rainbow('For more information: https://docs.rubocop.org/en/latest/versioning/').yellow
+        warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
       end
 
       # Merges the given configuration with the default one. If
