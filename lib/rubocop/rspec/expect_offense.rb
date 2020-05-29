@@ -114,17 +114,35 @@ module RuboCop
 
         expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-      def expect_correction(correction)
+      def expect_correction(correction, loop: false)
         raise '`expect_correction` must follow `expect_offense`' unless @processed_source
 
-        corrector =
-          RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
-        new_source = corrector.rewrite
+        iteration = 0
+        new_source = loop do
+          iteration += 1
+
+          corrector =
+            RuboCop::Cop::Corrector.new(@processed_source.buffer, cop.corrections)
+          corrected_source = corrector.rewrite
+
+          break corrected_source unless loop
+          break corrected_source if cop.corrections.empty?
+
+          if iteration > RuboCop::Runner::MAX_ITERATIONS
+            raise RuboCop::Runner::InfiniteCorrectionLoop.new(@processed_source.path, [])
+          end
+
+          # Prepare for next loop
+          cop.instance_variable_set(:@corrections, [])
+          @processed_source = parse_source(corrected_source,
+                                           @processed_source.path)
+          _investigate(cop, @processed_source)
+        end
 
         expect(new_source).to eq(correction)
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def expect_no_corrections
         raise '`expect_no_corrections` must follow `expect_offense`' unless @processed_source
