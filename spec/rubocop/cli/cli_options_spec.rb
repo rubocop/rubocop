@@ -283,7 +283,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         INSPECTED_OUTPUT
 
         let(:versioning_manual_url) { <<~VERSIONING_MANUAL_URL.chop }
-          For more information: https://docs.rubocop.org/en/latest/versioning/
+          For more information: https://docs.rubocop.org/rubocop/versioning.html
         VERSIONING_MANUAL_URL
 
         before do
