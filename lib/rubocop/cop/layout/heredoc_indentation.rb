@@ -25,11 +25,9 @@ module RuboCop
       class HeredocIndentation < Cop
         include Heredoc
 
-        RUBY23_TYPE_MSG = 'Use %<indentation_width>d spaces for indentation ' \
-                          'in a heredoc by using `<<~` instead of ' \
-                          '`%<current_indent_type>s`.'
-        RUBY23_WIDTH_MSG = 'Use %<indentation_width>d spaces for '\
-                           'indentation in a heredoc.'
+        TYPE_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
+                   'heredoc by using `<<~` instead of `%<current_indent_type>s`.'
+        WIDTH_MSG = 'Use %<indentation_width>d spaces for indentation in a heredoc.'
 
         def on_heredoc(node)
           body = heredoc_body(node)
@@ -50,35 +48,38 @@ module RuboCop
         end
 
         def autocorrect(node)
-          correct_by_squiggly(node)
+          lambda do |corrector|
+            if heredoc_indent_type(node) == '~'
+              adjust_squiggly(corrector, node)
+            else
+              adjust_minus(corrector, node)
+            end
+          end
         end
 
         private
 
         def message(node)
           current_indent_type = "<<#{heredoc_indent_type(node)}"
-          ruby23_message(indentation_width, current_indent_type)
-        end
 
-        def ruby23_message(indentation_width, current_indent_type)
           if current_indent_type == '<<~'
-            ruby23_width_message(indentation_width)
+            width_message(indentation_width)
           else
-            ruby23_type_message(indentation_width, current_indent_type)
+            type_message(indentation_width, current_indent_type)
           end
         end
 
-        def ruby23_type_message(indentation_width, current_indent_type)
+        def type_message(indentation_width, current_indent_type)
           format(
-            RUBY23_TYPE_MSG,
+            TYPE_MSG,
             indentation_width: indentation_width,
             current_indent_type: current_indent_type
           )
         end
 
-        def ruby23_width_message(indentation_width)
+        def width_message(indentation_width)
           format(
-            RUBY23_WIDTH_MSG,
+            WIDTH_MSG,
             indentation_width: indentation_width
           )
         end
@@ -105,16 +106,6 @@ module RuboCop
 
         def max_line_length
           config.for_cop('Layout/LineLength')['Max']
-        end
-
-        def correct_by_squiggly(node)
-          lambda do |corrector|
-            if heredoc_indent_type(node) == '~'
-              adjust_squiggly(corrector, node)
-            else
-              adjust_minus(corrector, node)
-            end
-          end
         end
 
         def adjust_squiggly(corrector, node)
