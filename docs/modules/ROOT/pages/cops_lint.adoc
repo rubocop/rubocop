@@ -1848,12 +1848,14 @@ fails. Cop prefer parsing with number class instead.
 '10'.to_i
 '10.2'.to_f
 '10'.to_c
+['1', 2, 3, 4].map(&:to_i)
 
 # good
 
 Integer('10', 10)
 Float('10.2')
 Complex('10')
+['1', 2, 3, 4].map { |i| Integer(i, 10) }
 ----
 
 == Lint/OrderedMagicComments

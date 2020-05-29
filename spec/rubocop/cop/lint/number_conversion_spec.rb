@@ -99,6 +99,50 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
         Integer(params[:field], 10)
       RUBY
     end
+
+    it 'registers an offense for &:to_i sent to map methods' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].map(&:to_i)
+        ^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using [1, 2, 3].map(&:to_i), use stricter [1, 2, 3].map { |i| Integer(i, 10) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].map { |i| Integer(i, 10) }
+      RUBY
+    end
+
+    it 'registers an offense for &:to_i sent to map! methods' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].map!(&:to_i)
+        ^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using [1, 2, 3].map!(&:to_i), use stricter [1, 2, 3].map! { |i| Integer(i, 10) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].map! { |i| Integer(i, 10) }
+      RUBY
+    end
+
+    it 'registers an offense for &:to_c sent to collect methods' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].collect(&:to_c)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using [1, 2, 3].collect(&:to_c), use stricter [1, 2, 3].collect { |i| Complex(i) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].collect { |i| Complex(i) }
+      RUBY
+    end
+
+    it 'registers an offense for &:to_f sent to collect! methods' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].collect!(&:to_f)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using [1, 2, 3].collect!(&:to_f), use stricter [1, 2, 3].collect! { |i| Float(i) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].collect! { |i| Float(i) }
+      RUBY
+    end
   end
 
   context 'does not register an offense' do
@@ -153,6 +197,33 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
     it 'when `#to_i` called without a receiver' do
       expect_no_offenses(<<~RUBY)
         to_i
+      RUBY
+    end
+
+    it 'does not register offense when method with block { |i| Float(i) } is called' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].map { |i| Float(i) }
+        [1, 2, 3].map! { |i| Float(i) }
+        [1, 2, 3].select { |i| Float(i) }
+        [1, 2, 3].select! { |i| Float(i) }
+      RUBY
+    end
+
+    it 'does not register offense when method with block { |i| Integer(i, 10) } is called' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].map { |i| Integer(i, 10) }
+        [1, 2, 3].map! { |i| Integer(i, 10) }
+        [1, 2, 3].select { |i| Integer(i, 10) }
+        [1, 2, 3].select! { |i| Integer(i, 10) }
+      RUBY
+    end
+
+    it 'does not register offense when method with block { |i| Complex(i) } is called' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].map { |i| Complex(i) }
+        [1, 2, 3].map! { |i| Complex(i) }
+        [1, 2, 3].select { |i| Complex(i) }
+        [1, 2, 3].select! { |i| Complex(i) }
       RUBY
     end
   end
