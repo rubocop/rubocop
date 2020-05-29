@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
         end
 
         it 'autocorrects' do
-          new_source = autocorrect_source_with_loop(source)
+          new_source = autocorrect_source(source)
           expect(new_source).to eq(<<~RUBY)
             Gem::Specification.new do |spec|
               spec.#{add_dependency} 'rspec'
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
           end
 
           it 'autocorrects' do
-            new_source = autocorrect_source_with_loop(source)
+            new_source = autocorrect_source(source)
             expect(new_source).to eq(<<~RUBY)
               Gem::Specification.new do |spec|
                 # For
