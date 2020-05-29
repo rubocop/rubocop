@@ -535,9 +535,9 @@ Style/PerlBackrefs:
 == Setting the target Ruby version
 
 Some checks are dependent on the version of the Ruby interpreter which the
-inspected code must run on. For example, enforcing using Ruby 2.3+ safe
-navigation operator rather than `try` can help make your code shorter and
-more consistent... _unless_ it must run on Ruby 2.2.
+inspected code must run on. For example, enforcing using Ruby 2.6+ endless
+ranges `foo[n..]` rather than `foo[n..-1]` can help make your code shorter and
+more consistent... _unless_ it must run on e.g. Ruby 2.5.
 
 Users may let RuboCop know the oldest version of Ruby which your project
 supports with:
@@ -545,7 +545,7 @@ supports with:
 [source,yaml]
 ----
 AllCops:
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.5
 ----
 
 Otherwise, RuboCop will then check your project for `.ruby-version` and
