@@ -56,6 +56,7 @@ module RuboCop
       class SpaceInsideReferenceBrackets < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        include TokensOptimized
 
         MSG = '%<command>s space inside reference brackets.'
         EMPTY_MSG = '%<command>s space inside empty reference brackets.'

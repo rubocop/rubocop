@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def argument_tokens(node)
-          pipes = tokens(node).select { |token| token.type == :tPIPE }
+          pipes = tokens(node).select { |token| token.type == :tPIPE } # TODO: get rid of tokens (? not mentioned in report)
           begin_pos, end_pos = pipes.map do |pipe|
             tokens(node).index(pipe)
           end

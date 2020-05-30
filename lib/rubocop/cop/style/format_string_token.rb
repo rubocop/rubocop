@@ -43,7 +43,7 @@ module RuboCop
         def on_str(node)
           return if node.each_ancestor(:xstr, :regexp).any?
 
-          tokens(node) do |detected_style, token_range|
+          tokens(node) do |detected_style, token_range| # TODO: get rid of tokens
             if detected_style == style ||
                unannotated_format?(node, detected_style)
               correct_style_detected

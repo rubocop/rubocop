@@ -53,7 +53,7 @@ module RuboCop
 
         def semicolon(node)
           @semicolon ||= {}
-          @semicolon[node.object_id] ||= tokens(node).find(&:semicolon?)
+          @semicolon[node.object_id] ||= tokens(node).find(&:semicolon?) # get rid of tokens
         end
       end
     end

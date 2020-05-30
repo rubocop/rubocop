@@ -70,6 +70,7 @@ module RuboCop
       class SpaceInsideArrayLiteralBrackets < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        include TokensOptimized
 
         MSG = '%<command>s space inside array brackets.'
         EMPTY_MSG = '%<command>s space inside empty array brackets.'

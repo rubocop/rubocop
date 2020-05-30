@@ -135,9 +135,15 @@ module RuboCop
         begin_pos = source_range.begin_pos
         end_pos = source_range.end_pos
 
-        @tokens[node.object_id] = processed_source.tokens.select do |token|
-          token.end_pos <= end_pos && token.begin_pos >= begin_pos
-        end
+        #binding.pry
+
+        #left = index_of_first_token(node)
+        #right = index_of_last_token(node)
+        #@tokens[node.object_id] = processed_source.tokens[left..right]
+
+         @tokens[node.object_id] = processed_source.tokens.select do |token|
+           token.end_pos <= end_pos && token.begin_pos >= begin_pos
+         end
       end
 
       private
