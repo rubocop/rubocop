@@ -64,7 +64,15 @@ gem 'rubocop', groups: [:development, :test]
 
 Add a comment describing each gem in your Gemfile.
 
+Optionally, the "OnlyWhenUsingAnyOf" configuration
+can be used to only register offenses when the gems
+use certain options or have version specifiers.
+Add "with_version_specifiers" and/or the option names
+(e.g. 'required', 'github', etc) you want to check.
+
 === Examples
+
+==== OnlyWhenUsingAnyOf: [] (default)
 
 [source,ruby]
 ----
@@ -78,6 +86,39 @@ gem 'foo'
 gem 'foo'
 ----
 
+==== OnlyWhenUsingAnyOf: ['with_version_specifiers']
+
+[source,ruby]
+----
+# bad
+
+gem 'foo', '< 2.1'
+
+# good
+
+# Version 2.1 introduces breaking change baz
+gem 'foo', '< 2.1'
+----
+
+==== OnlyWhenUsingAnyOf: ['with_version_specifiers', 'github']
+
+[source,ruby]
+----
+# bad
+
+gem 'foo', github: 'some_account/some_fork_of_foo'
+
+gem 'bar', '< 2.1'
+
+# good
+
+# Using this fork because baz
+gem 'foo', github: 'some_account/some_fork_of_foo'
+
+# Version 2.1 introduces breaking change baz
+gem 'bar', '< 2.1'
+----
+
 === Configurable attributes
 
 |===
@@ -88,6 +129,10 @@ gem 'foo'
 | Array
 
 | IgnoredGems
+| `[]`
+| Array
+
+| OnlyWhenUsingAnyOf
 | `[]`
 | Array
 |===
