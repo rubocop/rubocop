@@ -5741,42 +5741,6 @@ question = '"What did you say?"'
 
 * [https://rubystyle.guide#percent-q](https://rubystyle.guide#percent-q)
 
-## Style/RedundantRegexpEscape
-
-Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
---- | --- | --- | --- | ---
-Enabled | Yes | Yes  | 0.83 | -
-
-This cop checks for redundant escapes inside Regexp literals.
-
-### Examples
-
-```ruby
-# bad
-%r{foo\/bar}
-
-# good
-%r{foo/bar}
-
-# good
-/foo\/bar/
-
-# good
-%r/foo\/bar/
-
-# bad
-/a\-b/
-
-# good
-/a-b/
-
-# bad
-/[\+\-]\d/
-
-# good
-/[+\-]\d/
-```
-
 ## Style/RedundantReturn
 
 Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged

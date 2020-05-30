@@ -435,7 +435,6 @@ In the following section you find all available cops:
 * [Style/RedundantInterpolation](cops_style.md#styleredundantinterpolation)
 * [Style/RedundantParentheses](cops_style.md#styleredundantparentheses)
 * [Style/RedundantPercentQ](cops_style.md#styleredundantpercentq)
-* [Style/RedundantRegexpEscape](cops_style.md#styleredundantregexpescape)
 * [Style/RedundantReturn](cops_style.md#styleredundantreturn)
 * [Style/RedundantSelf](cops_style.md#styleredundantself)
 * [Style/RedundantSort](cops_style.md#styleredundantsort)
