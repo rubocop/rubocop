@@ -2006,6 +2006,11 @@ Naming/ClassAndModuleCamelCase:
   StyleGuide: '#camelcase-classes'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: '0.85'
+  # Allowed class/module names can be specified here.
+  # These can be full or part of the name.
+  AllowedNames:
+    - module_parent
 
 Naming/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'

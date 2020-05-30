@@ -8,6 +8,7 @@
 * [#8069](https://github.com/rubocop-hq/rubocop/issues/8069): New option for `expect_offense` to help format offense templates. ([@marcandre][])
 * [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
 * [#7978](https://github.com/rubocop-hq/rubocop/pull/7978): Add new option `OnlyFor` to the `Bundler/GemComment` cop. ([@ric2b][])
+* [#8063](https://github.com/rubocop-hq/rubocop/issues/8063): Add new `AllowedNames` option for `Naming/ClassAndModuleCamelCase`. ([@tejasbubane][])
 
 ### Bug fixes
 
