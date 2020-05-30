@@ -23,10 +23,19 @@ namespace :cut_release do
   end
 
   def update_docs(old_version, new_version)
-    docs = File.read('docs/modules/ROOT/pages/installation.adoc')
+    antora_metadata = File.read('docs/antora.yml')
+
+    File.open('docs/antora.yml', 'w') do |f|
+      f << antora_metadata.sub(
+        "version: master",
+        "version: #{new_version}"
+      )
+    end
+
+    installation = File.read('docs/modules/ROOT/pages/installation.adoc')
 
     File.open('docs/modules/ROOT/pages/installation.adoc', 'w') do |f|
-      f << docs.sub(
+      f << installation.sub(
         "gem 'rubocop', '~> #{old_version}', require: false",
         "gem 'rubocop', '~> #{new_version}', require: false"
       )
