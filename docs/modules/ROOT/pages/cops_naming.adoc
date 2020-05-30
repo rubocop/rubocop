@@ -311,6 +311,10 @@ anything/using_snake_case.rake
 | `false`
 | Boolean
 
+| CheckDefinitionPathHierarchy
+| `true`
+| Boolean
+
 | Regex
 | `<none>`
 | 
