@@ -27,7 +27,7 @@ namespace :cut_release do
 
     File.open('docs/antora.yml', 'w') do |f|
       f << antora_metadata.sub(
-        "version: master",
+        'version: master',
         "version: #{new_version}"
       )
     end
