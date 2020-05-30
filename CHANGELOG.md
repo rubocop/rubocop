@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
+
 ### Bug fixes
 
 * [#8008](https://github.com/rubocop-hq/rubocop/issues/8008): Fix an error for `Lint/SuppressedException` when empty rescue block in `def`. ([@koic][])
@@ -9,6 +13,10 @@
 * [#8017](https://github.com/rubocop-hq/rubocop/pull/8017): Fix a false positive for `Lint/SuppressedException` when empty rescue with comment in `def`. ([@koic][])
 * [#7990](https://github.com/rubocop-hq/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
 * [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
+
+### Changes
+
+* [#8056](https://github.com/rubocop-hq/rubocop/pull/8056): **(Breaking)** Remove support for unindent/active_support/powerpack from `Layout/HeredocIndentation`, so it only recommends using squiggy heredoc. ([@bquorning][])
 
 ## 0.84.0 (2020-05-21)
 
@@ -4543,3 +4551,4 @@
 [@laurmurclar]: https://github.com/laurmurclar
 [@jethrodaniel]: https://github.com/jethrodaniel
 [@CvX]: https://github.com/CvX
+[@jschneid]: https://github.com/jschneid

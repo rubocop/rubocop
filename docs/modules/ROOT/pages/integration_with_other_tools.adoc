@@ -13,13 +13,12 @@ RuboCop and uses it by default when available.
 
 === Vim
 
-The https://github.com/ngmy/vim-rubocop[vim-rubocop] plugin runs
-RuboCop and displays the results in Vim.
-
-There's also a RuboCop checker in
+RuboCop is supported by
 https://github.com/scrooloose/syntastic[syntastic],
 https://github.com/neomake/neomake[neomake],
 and https://github.com/w0rp/ale[ale].
+
+There is also the https://github.com/ngmy/vim-rubocop[vim-rubocop] plugin.
 
 === Sublime Text
 

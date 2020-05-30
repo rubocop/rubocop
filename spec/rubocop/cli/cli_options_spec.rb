@@ -283,7 +283,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         INSPECTED_OUTPUT
 
         let(:versioning_manual_url) { <<~VERSIONING_MANUAL_URL.chop }
-          For more information: https://docs.rubocop.org/en/latest/versioning/
+          For more information: https://docs.rubocop.org/rubocop/versioning.html
         VERSIONING_MANUAL_URL
 
         before do
@@ -873,7 +873,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'shows reference entry' do
       create_file('example1.rb', "JSON.load('{}')")
       file = abs('example1.rb')
-      url = 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html' \
+      url = 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html' \
             '#method-i-load'
 
       expect(cli.run(['--format',

@@ -22,11 +22,20 @@ namespace :cut_release do
     end
   end
 
-  def update_manual(old_version, new_version)
-    manual = File.read('manual/installation.md')
+  def update_docs(old_version, new_version)
+    antora_metadata = File.read('docs/antora.yml')
 
-    File.open('manual/installation.md', 'w') do |f|
-      f << manual.sub(
+    File.open('docs/antora.yml', 'w') do |f|
+      f << antora_metadata.sub(
+        'version: master',
+        "version: #{new_version}"
+      )
+    end
+
+    installation = File.read('docs/modules/ROOT/pages/installation.adoc')
+
+    File.open('docs/modules/ROOT/pages/installation.adoc', 'w') do |f|
+      f << installation.sub(
         "gem 'rubocop', '~> #{old_version}', require: false",
         "gem 'rubocop', '~> #{new_version}', require: false"
       )
@@ -86,7 +95,7 @@ namespace :cut_release do
     new_version = Bump::Bump.current
 
     update_readme(old_version, new_version)
-    update_manual(old_version, new_version)
+    update_docs(old_version, new_version)
     update_issue_template(old_version, new_version)
     add_header_to_changelog(new_version)
     create_release_notes(new_version)

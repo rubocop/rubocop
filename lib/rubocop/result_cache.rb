@@ -33,7 +33,7 @@ module RuboCop
 
       def requires_file_removal?(file_count, config_store)
         file_count > 1 &&
-          file_count > config_store.for('.').for_all_cops['MaxFilesInCache']
+          file_count > config_store.for_dir('.').for_all_cops['MaxFilesInCache']
       end
 
       def remove_oldest_files(files, dirs, cache_root, verbose)
@@ -60,7 +60,7 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = config_store.for('.').for_all_cops['CacheRootDirectory']
+      root = config_store.for_dir('.').for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
@@ -72,7 +72,7 @@ module RuboCop
     end
 
     def self.allow_symlinks_in_cache_location?(config_store)
-      config_store.for('.').for_all_cops['AllowSymlinksInCacheRootDirectory']
+      config_store.for_dir('.').for_all_cops['AllowSymlinksInCacheRootDirectory']
     end
 
     def initialize(file, team, options, config_store, cache_root = nil)
@@ -143,7 +143,7 @@ module RuboCop
       digester = Digest::SHA1.new
       mode = File.stat(file).mode
       digester.update(
-        "#{file}#{mode}#{config_store.for(file).signature}"
+        "#{file}#{mode}#{config_store.for_file(file).signature}"
       )
       digester.file(file)
       digester.hexdigest
