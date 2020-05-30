@@ -218,8 +218,14 @@ module RuboCop
     end
 
     def gem_config_path(gem_name, relative_config_path)
-      spec = Gem::Specification.find_by_name(gem_name)
-      File.join(spec.gem_dir, relative_config_path)
+      if defined?(Bundler)
+        gem = Bundler.load.specs[gem_name].first
+        gem_path = gem.full_gem_path if gem
+      end
+
+      gem_path ||= Gem::Specification.find_by_name(gem_name).gem_dir
+
+      File.join(gem_path, relative_config_path)
     rescue Gem::LoadError => e
       raise Gem::LoadError,
             "Unable to find gem #{gem_name}; is the gem installed? #{e}"

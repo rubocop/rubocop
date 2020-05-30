@@ -1,0 +1,980 @@
+= Naming
+
+== Naming/AccessorMethodName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop makes sure that accessor methods are named properly.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def set_attribute(value)
+end
+
+# good
+def attribute=(value)
+end
+
+# bad
+def get_attribute
+end
+
+# good
+def attribute
+end
+----
+
+=== References
+
+* https://rubystyle.guide#accessor_mutator_method_names
+
+== Naming/AsciiIdentifiers
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop checks for non-ascii characters in identifier names.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def καλημερα # Greek alphabet (non-ascii)
+end
+
+# bad
+def こんにちはと言う # Japanese character (non-ascii)
+end
+
+# bad
+def hello_🍣 # Emoji (non-ascii)
+end
+
+# good
+def say_hello
+end
+
+# bad
+신장 = 10 # Hangul character (non-ascii)
+
+# good
+height = 10
+
+# bad
+params[:عرض_gteq] # Arabic character (non-ascii)
+
+# good
+params[:width_gteq]
+----
+
+=== References
+
+* https://rubystyle.guide#english-identifiers
+
+== Naming/BinaryOperatorParameterName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop makes sure that certain binary operator methods have their
+sole  parameter named `other`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def +(amount); end
+
+# good
+def +(other); end
+----
+
+=== References
+
+* https://rubystyle.guide#other-arg
+
+== Naming/BlockParameterName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.53
+| 0.77
+|===
+
+This cop checks block parameter names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 1.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of permitted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+restricted names that will always register an offense.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+bar do |varOne, varTwo|
+  varOne + varTwo
+end
+
+# With `AllowNamesEndingInNumbers` set to false
+foo { |num1, num2| num1 * num2 }
+
+# With `MinParamNameLength` set to number greater than 1
+baz { |a, b, c| do_stuff(a, b, c) }
+
+# good
+bar do |thud, fred|
+  thud + fred
+end
+
+foo { |speed, distance| speed * distance }
+
+baz { |age, height, gender| do_stuff(age, height, gender) }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| MinNameLength
+| `1`
+| Integer
+
+| AllowNamesEndingInNumbers
+| `true`
+| Boolean
+
+| AllowedNames
+| `[]`
+| Array
+
+| ForbiddenNames
+| `[]`
+| Array
+|===
+
+== Naming/ClassAndModuleCamelCase
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop checks for class and module names with
+an underscore in them.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class My_Class
+end
+module My_Module
+end
+
+# good
+class MyClass
+end
+module MyModule
+end
+----
+
+=== References
+
+* https://rubystyle.guide#camelcase-classes
+
+== Naming/ConstantName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop checks whether constant names are written using
+SCREAMING_SNAKE_CASE.
+
+To avoid false positives, it ignores cases in which we cannot know
+for certain the type of value that would be assigned to a constant.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+InchInCm = 2.54
+INCHinCM = 2.54
+Inch_In_Cm = 2.54
+
+# good
+INCH_IN_CM = 2.54
+----
+
+=== References
+
+* https://rubystyle.guide#screaming-snake-case
+
+== Naming/FileName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop makes sure that Ruby source files have snake_case
+names. Ruby scripts (i.e. source files with a shebang in the
+first line) are ignored.
+
+The cop also ignores `.gemspec` files, because Bundler
+recommends using dashes to separate namespaces in nested gems
+(i.e. `bundler-console` becomes `Bundler::Console`). As such, the
+gemspec is supposed to be named `bundler-console.gemspec`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+lib/layoutManager.rb
+
+anything/usingCamelCase
+
+# good
+lib/layout_manager.rb
+
+anything/using_snake_case.rake
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Exclude
+| `[]`
+| Array
+
+| ExpectMatchingDefinition
+| `false`
+| Boolean
+
+| Regex
+| `<none>`
+| 
+
+| IgnoreExecutableScripts
+| `true`
+| Boolean
+
+| AllowedAcronyms
+| `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF`, `GUID`, `HTML`, `HTTP`, `HTTPS`, `ID`, `IP`, `JSON`, `LHS`, `QPS`, `RAM`, `RHS`, `RPC`, `SLA`, `SMTP`, `SQL`, `SSH`, `TCP`, `TLS`, `TTL`, `UDP`, `UI`, `UID`, `UUID`, `URI`, `URL`, `UTF8`, `VM`, `XML`, `XMPP`, `XSRF`, `XSS`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#snake-case-files
+
+== Naming/HeredocDelimiterCase
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop checks that your heredocs are using the configured case.
+By default it is configured to enforce uppercase heredocs.
+
+=== Examples
+
+==== EnforcedStyle: uppercase (default)
+
+[source,ruby]
+----
+# bad
+<<-sql
+  SELECT * FROM foo
+sql
+
+# good
+<<-SQL
+  SELECT * FROM foo
+SQL
+----
+
+==== EnforcedStyle: lowercase
+
+[source,ruby]
+----
+# bad
+<<-SQL
+  SELECT * FROM foo
+SQL
+
+# good
+<<-sql
+  SELECT * FROM foo
+sql
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `uppercase`
+| `lowercase`, `uppercase`
+|===
+
+=== References
+
+* https://rubystyle.guide#heredoc-delimiters
+
+== Naming/HeredocDelimiterNaming
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop checks that your heredocs are using meaningful delimiters.
+By default it disallows `END` and `EO*`, and can be configured through
+forbidden listing additional delimiters.
+
+=== Examples
+
+[source,ruby]
+----
+# good
+<<-SQL
+  SELECT * FROM foo
+SQL
+
+# bad
+<<-END
+  SELECT * FROM foo
+END
+
+# bad
+<<-EOS
+  SELECT * FROM foo
+EOS
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| ForbiddenDelimiters
+| `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#heredoc-delimiters
+
+== Naming/MemoizedInstanceVariableName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.53
+| 0.58
+|===
+
+This cop checks for memoized methods whose instance variable name
+does not match the method name.
+
+This cop can be configured with the EnforcedStyleForLeadingUnderscores
+directive. It can be configured to allow for memoized instance variables
+prefixed with an underscore. Prefixing ivars with an underscore is a
+convention that is used to implicitly indicate that an ivar should not
+be set or referenced outside of the memoization method.
+
+=== Examples
+
+==== EnforcedStyleForLeadingUnderscores: disallowed (default)
+
+[source,ruby]
+----
+# bad
+# Method foo is memoized using an instance variable that is
+# not `@foo`. This can cause confusion and bugs.
+def foo
+  @something ||= calculate_expensive_thing
+end
+
+# good
+def _foo
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @foo ||= begin
+    calculate_expensive_thing
+  end
+end
+
+# good
+def foo
+  helper_variable = something_we_need_to_calculate_foo
+  @foo ||= calculate_expensive_thing(helper_variable)
+end
+----
+
+==== EnforcedStyleForLeadingUnderscores: required
+
+[source,ruby]
+----
+# bad
+def foo
+  @something ||= calculate_expensive_thing
+end
+
+# bad
+def foo
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @_foo ||= calculate_expensive_thing
+end
+
+# good
+def _foo
+  @_foo ||= calculate_expensive_thing
+end
+----
+
+==== EnforcedStyleForLeadingUnderscores :optional
+
+[source,ruby]
+----
+# bad
+def foo
+  @something ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  @_foo ||= calculate_expensive_thing
+end
+
+# good
+def _foo
+  @_foo ||= calculate_expensive_thing
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyleForLeadingUnderscores
+| `disallowed`
+| `disallowed`, `required`, `optional`
+|===
+
+== Naming/MethodName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop makes sure that all methods use the configured style,
+snake_case or camelCase, for their names.
+
+This cop has `IgnoredPatterns` configuration option.
+
+  Naming/MethodName:
+    IgnoredPatterns:
+      - '\A\s*onSelectionBulkChange\s*'
+      - '\A\s*onSelectionCleared\s*'
+
+Method names matching patterns are always allowed.
+
+=== Examples
+
+==== EnforcedStyle: snake_case (default)
+
+[source,ruby]
+----
+# bad
+def fooBar; end
+
+# good
+def foo_bar; end
+----
+
+==== EnforcedStyle: camelCase
+
+[source,ruby]
+----
+# bad
+def foo_bar; end
+
+# good
+def fooBar; end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `snake_case`
+| `snake_case`, `camelCase`
+
+| IgnoredPatterns
+| `[]`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#snake-case-symbols-methods-vars
+
+== Naming/MethodParameterName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.53
+| 0.77
+|===
+
+This cop checks method parameter names for how descriptive they
+are. It is highly configurable.
+
+The `MinNameLength` config option takes an integer. It represents
+the minimum amount of characters the name must be. Its default is 3.
+The `AllowNamesEndingInNumbers` config option takes a boolean. When
+set to false, this cop will register offenses for names ending with
+numbers. Its default is false. The `AllowedNames` config option
+takes an array of permitted names that will never register an
+offense. The `ForbiddenNames` config option takes an array of
+restricted names that will always register an offense.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def bar(varOne, varTwo)
+  varOne + varTwo
+end
+
+# With `AllowNamesEndingInNumbers` set to false
+def foo(num1, num2)
+  num1 * num2
+end
+
+# With `MinArgNameLength` set to number greater than 1
+def baz(a, b, c)
+  do_stuff(a, b, c)
+end
+
+# good
+def bar(thud, fred)
+  thud + fred
+end
+
+def foo(speed, distance)
+  speed * distance
+end
+
+def baz(age_a, height_b, gender_c)
+  do_stuff(age_a, height_b, gender_c)
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| MinNameLength
+| `3`
+| Integer
+
+| AllowNamesEndingInNumbers
+| `true`
+| Boolean
+
+| AllowedNames
+| `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os`, `pp`
+| Array
+
+| ForbiddenNames
+| `[]`
+| Array
+|===
+
+== Naming/PredicateName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| 0.77
+|===
+
+This cop makes sure that predicates are named properly.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def is_even(value)
+end
+
+def is_even?(value)
+end
+
+# good
+def even?(value)
+end
+
+# bad
+def has_value
+end
+
+def has_value?
+end
+
+# good
+def value?
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| NamePrefix
+| `is_`, `has_`, `have_`
+| Array
+
+| ForbiddenPrefixes
+| `is_`, `has_`, `have_`
+| Array
+
+| AllowedMethods
+| `is_a?`
+| Array
+
+| MethodDefinitionMacros
+| `define_method`, `define_singleton_method`
+| Array
+
+| Exclude
+| `spec/**/*`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#bool-methods-qmark
+
+== Naming/RescuedExceptionsVariableName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| Yes
+| 0.67
+| 0.68
+|===
+
+This cop makes sure that rescued exceptions variables are named as
+expected.
+
+The `PreferredName` config option takes a `String`. It represents
+the required name of the variable. Its default is `e`.
+
+=== Examples
+
+==== PreferredName: e (default)
+
+[source,ruby]
+----
+# bad
+begin
+  # do something
+rescue MyException => exception
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => e
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => _e
+  # do something
+end
+----
+
+==== PreferredName: exception
+
+[source,ruby]
+----
+# bad
+begin
+  # do something
+rescue MyException => e
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => exception
+  # do something
+end
+
+# good
+begin
+  # do something
+rescue MyException => _exception
+  # do something
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| PreferredName
+| `e`
+| String
+|===
+
+== Naming/VariableName
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop makes sure that all variables use the configured style,
+snake_case or camelCase, for their names.
+
+=== Examples
+
+==== EnforcedStyle: snake_case (default)
+
+[source,ruby]
+----
+# bad
+fooBar = 1
+
+# good
+foo_bar = 1
+----
+
+==== EnforcedStyle: camelCase
+
+[source,ruby]
+----
+# bad
+foo_bar = 1
+
+# good
+fooBar = 1
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `snake_case`
+| `snake_case`, `camelCase`
+|===
+
+=== References
+
+* https://rubystyle.guide#snake-case-symbols-methods-vars
+
+== Naming/VariableNumber
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 0.50
+| -
+|===
+
+This cop makes sure that all numbered variables use the
+configured style, snake_case, normalcase, or non_integer,
+for their numbering.
+
+=== Examples
+
+==== EnforcedStyle: snake_case
+
+[source,ruby]
+----
+# bad
+
+variable1 = 1
+
+# good
+
+variable_1 = 1
+----
+
+==== EnforcedStyle: normalcase (default)
+
+[source,ruby]
+----
+# bad
+
+variable_1 = 1
+
+# good
+
+variable1 = 1
+----
+
+==== EnforcedStyle: non_integer
+
+[source,ruby]
+----
+# bad
+
+variable1 = 1
+
+variable_1 = 1
+
+# good
+
+variableone = 1
+
+variable_one = 1
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `normalcase`
+| `snake_case`, `normalcase`, `non_integer`
+|===

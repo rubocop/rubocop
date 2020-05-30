@@ -49,23 +49,34 @@ module RuboCop
 
         def for_bad_filename(file_path)
           basename = File.basename(file_path)
-          msg = if filename_good?(basename)
-                  return if matching_definition?(file_path)
 
-                  no_definition_message(basename, file_path)
-                else
-                  return if bad_filename_allowed?
+          if filename_good?(basename)
+            msg = perform_class_and_module_naming_checks(file_path, basename)
+          else
+            msg = other_message(basename) unless bad_filename_allowed?
+          end
 
-                  other_message(basename)
-                end
+          yield source_range(processed_source.buffer, 1, 0), msg if msg
+        end
 
-          yield source_range(processed_source.buffer, 1, 0), msg
+        def perform_class_and_module_naming_checks(file_path, basename)
+          return unless expect_matching_definition?
+
+          if check_definition_path_hierarchy? &&
+             !matching_definition?(file_path)
+            msg = no_definition_message(basename, file_path)
+          elsif !matching_class?(basename)
+            msg = no_definition_message(basename, basename)
+          end
+          msg
         end
 
         def matching_definition?(file_path)
-          return true unless expect_matching_definition?
-
           find_class_or_module(processed_source.ast, to_namespace(file_path))
+        end
+
+        def matching_class?(file_name)
+          find_class_or_module(processed_source.ast, to_namespace(file_name))
         end
 
         def bad_filename_allowed?
@@ -92,6 +103,10 @@ module RuboCop
 
         def expect_matching_definition?
           cop_config['ExpectMatchingDefinition']
+        end
+
+        def check_definition_path_hierarchy?
+          cop_config['CheckDefinitionPathHierarchy']
         end
 
         def regex

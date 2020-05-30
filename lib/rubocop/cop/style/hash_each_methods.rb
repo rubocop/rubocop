@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # This cop checks for uses of `each_key` and `each_value` Hash methods.
       #
-      # Note: If you have an array of two-element arrays, you can put
+      # NOTE: If you have an array of two-element arrays, you can put
       #   parentheses around the block arguments to indicate that you're not
       #   working with a hash, and suppress RuboCop offenses.
       #
