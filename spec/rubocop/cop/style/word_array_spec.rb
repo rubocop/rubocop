@@ -350,7 +350,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   end
 
   context 'with a treacherous WordRegex configuration' do
-    let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /[\w \[\]\(\)]/ } }
+    let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /[\w \[\]()]/ } }
 
     it "doesn't break when words contain whitespace" do
       new_source = autocorrect_source("['hi there', 'something\telse']")

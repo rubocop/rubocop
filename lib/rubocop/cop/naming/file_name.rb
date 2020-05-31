@@ -119,7 +119,7 @@ module RuboCop
 
         def filename_good?(basename)
           basename = basename.sub(/^\./, '')
-          basename = basename.sub(/\.[^\.]+$/, '')
+          basename = basename.sub(/\.[^.]+$/, '')
           # special handling for Action Pack Variants file names like
           # some_file.xlsx+mobile.axlsx
           basename = basename.sub('+', '_')
