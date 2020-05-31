@@ -23,14 +23,38 @@ module RuboCop
       end
 
       def line_numbers_of_inner_nodes(node, *types)
-        line_numbers = Set.new
+        line_numbers = []
 
-        node.each_descendant(*types) do |inner_node|
+        #binding.pry
+        #_each_child_node(node, *types) do |inner_node|
+        #node.each_descendant(*types) do |inner_node|
+        #_each_descendant(node, *types) do |inner_node|
+        return [] if node.child_nodes.size == 1
+
+        node.child_nodes[1].each_child_node(*types) do |inner_node|
           line_range = line_range(inner_node)
-          line_numbers.merge(line_range)
+          #puts "=== #{inner_node}"
+          #puts line_range
+          line_numbers.concat(line_range.to_a)
+          #puts "line numbers #{line_numbers}"
         end
 
-        line_numbers.to_a
+        line_numbers.uniq
+      end
+
+      def _each_descendant(node, *types, &block)
+        return to_enum(__method__, node, *types) unless block_given?
+
+        _visit_descendants(node, types, &block)
+
+        self
+      end
+
+      def _visit_descendants(node, types, &block)
+        node.each_child_node do |child|
+          yield child if types.empty? || types.include?(child.type)
+          child.send(:visit_descendants, types, &block)
+        end
       end
     end
   end
