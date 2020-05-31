@@ -14,7 +14,7 @@ module RuboCop
       module_function
 
       def comment_line?(line_source)
-        line_source =~ /^\s*#/
+        line_source.match?(/^\s*?#/)
       end
 
       def comment_lines?(node)
