@@ -64,6 +64,42 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         RUBY
       end
 
+      it 'adds it when the cop supports autocorrect but does not correct the offense' do
+        create_file('example.rb', <<~RUBY)
+          def ordinary_method(some_arg)
+            puts 'Ignoring args'
+          end
+
+          def method_with_keyword_arg(some_keyword_arg:)
+            puts 'Ignoring args'
+          end
+        RUBY
+
+        expect(exit_code).to eq(0)
+        expect($stderr.string).to eq('')
+        expect($stdout.string).to eq(<<~OUTPUT)
+          == example.rb ==
+          C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          W:  1: 21: [Corrected] Lint/UnusedMethodArgument: Unused method argument - some_arg. If it's necessary, use _ or _some_arg as an argument name to indicate that it won't be used. You can also write as ordinary_method(*) if you want the method to accept any arguments but don't care about them.
+          C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+          W:  5: 29: [Todo] Lint/UnusedMethodArgument: Unused method argument - some_keyword_arg. You can also write as method_with_keyword_arg(*) if you want the method to accept any arguments but don't care about them.
+
+          1 file inspected, 4 offenses detected, 4 offenses corrected
+        OUTPUT
+
+        expect(IO.read('example.rb')).to eq(<<~RUBY)
+          # frozen_string_literal: true
+
+          def ordinary_method(_some_arg)
+            puts 'Ignoring args'
+          end
+
+          def method_with_keyword_arg(some_keyword_arg:) # rubocop:todo Lint/UnusedMethodArgument
+            puts 'Ignoring args'
+          end
+        RUBY
+      end
+
       context 'and there are two offenses of the same kind on one line' do
         it 'adds a single one-line disable statement' do
           create_file('.rubocop.yml', <<~YAML)
