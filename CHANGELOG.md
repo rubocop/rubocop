@@ -6,6 +6,7 @@
 
 * [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
 * [#8069](https://github.com/rubocop-hq/rubocop/issues/8069): New option for `expect_offense` to help format offense templates. ([@marcandre][])
+* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
 
 ### Bug fixes
 
@@ -52,7 +53,6 @@
 * [#7951](https://github.com/rubocop-hq/rubocop/pull/7951): Include `rakefile` file by default. ([@jethrodaniel][])
 * [#7921](https://github.com/rubocop-hq/rubocop/pull/7921): Add new `Style/SlicingWithRange` cop. ([@zverok][])
 * [#7895](https://github.com/rubocop-hq/rubocop/pull/7895): Include `.simplecov` file by default. ([@robotdana][])
-* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
 * [#7916](https://github.com/rubocop-hq/rubocop/pull/7916): Support autocorrection for `Lint/AmbiguousRegexpLiteral`. ([@koic][])
 * [#7917](https://github.com/rubocop-hq/rubocop/pull/7917): Support autocorrection for `Lint/UselessAccessModifier`. ([@koic][])
 * [#595](https://github.com/rubocop-hq/rubocop/issues/595): Add ERB pre-processing for configuration files. ([@jonas054][])
