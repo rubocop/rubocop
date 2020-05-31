@@ -11,7 +11,7 @@ module RuboCop
       #   presence of a method name clash with an argument or a local
       #   variable.
       #
-      # * Calling an attribute writer to prevent an local variable assignment.
+      # * Calling an attribute writer to prevent a local variable assignment.
       #
       # Note, with using explicit self you can only send messages with public or
       # protected scope, you cannot send private messages this way.
