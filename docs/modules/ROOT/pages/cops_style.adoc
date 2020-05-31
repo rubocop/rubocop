@@ -990,7 +990,7 @@ You can customize the mapping from undesired method to desired method.
 
 e.g. to use `detect` over `find`:
 
-Style/CollectionMethods:
+  Style/CollectionMethods:
     PreferredMethods:
       find: detect
 
@@ -1023,8 +1023,8 @@ items.include?
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `+{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}+`
-|
+| `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
+| 
 |===
 
 === References
@@ -1533,7 +1533,7 @@ an offense is reported.
 | Name | Default value | Configurable values
 
 | Notice
-| `+^Copyright (\(c\) )?2[0-9]{3} .++`
+| `^Copyright (\(c\) )?2[0-9]{3} .+`
 | String
 
 | AutocorrectNotice
@@ -1801,7 +1801,7 @@ end
 | Name | Default value | Configurable values
 
 | Exclude
-| `+spec/**/*+`, `+test/**/*+`
+| `spec/**/*`, `test/**/*`
 | Array
 |===
 
@@ -1922,7 +1922,7 @@ end
 | Name | Default value | Configurable values
 
 | Exclude
-| `+spec/**/*+`, `+test/**/*+`
+| `spec/**/*`, `test/**/*`
 | Array
 
 | RequireForNonPublicMethods
@@ -2645,14 +2645,13 @@ Pathname.new(__dir__).expand_path
 
 This cop enforces consistency when using exponential notation
 for numbers in the code (eg 1.2e4). Different styles are supported:
-
 * `scientific` which enforces a mantissa between 1 (inclusive)
-             and 10 (exclusive).
+               and 10 (exclusive).
 * `engineering` which enforces the exponent to be a multiple of 3
-              and the mantissa to be between 0.1 (inclusive)
-              and 10 (exclusive).
+                and the mantissa to be between 0.1 (inclusive)
+                and 10 (exclusive).
 * `integral` which enforces the mantissa to always be a whole number
-           without trailing zeroes.
+             without trailing zeroes.
 
 === Examples
 
@@ -3037,8 +3036,7 @@ to frozen string literals.
 It will add the comment `# frozen_string_literal: true` to the top of
 files to enable frozen string literals. Frozen string literals may be
 default in future Ruby. The comment will be added below a shebang and
-encoding comment. The frozen string literal comment is only valid in
-Ruby 2.3+.
+encoding comment.
 
 Note that the cop will ignore files where the comment exists but is set
 to `false` instead of `true`.
@@ -3403,14 +3401,14 @@ NOTE: Required Ruby version: 2.5
 | -
 |===
 
-This cop looks for uses of `+_.each_with_object({}) {...}+`,
-`+_.map {...}.to_h+`, and `+Hash[_.map {...}]+` that are actually just
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
 transforming the keys of a hash, and tries to use a simpler & faster
 call to `transform_keys` instead.
 
 This can produce false positives if we are transforming an enumerable
 of key-value-like pairs that isn't actually a hash, e.g.:
-`+[[k1, v1], [k2, v2], ...]+`
+`[[k1, v1], [k2, v2], ...]`
 
 This cop should only be enabled on Ruby version 2.5 or newer
 (`transform_keys` was added in Ruby 2.5.)
@@ -3440,14 +3438,14 @@ This cop should only be enabled on Ruby version 2.5 or newer
 | -
 |===
 
-This cop looks for uses of `+_.each_with_object({}) {...}+`,
-`+_.map {...}.to_h+`, and `+Hash[_.map {...}]+` that are actually just
+This cop looks for uses of `_.each_with_object({}) {...}`,
+`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
 transforming the values of a hash, and tries to use a simpler & faster
 call to `transform_values` instead.
 
 This can produce false positives if we are transforming an enumerable
 of key-value-like pairs that isn't actually a hash, e.g.:
-`+[[k1, v1], [k2, v2], ...]+`
+`[[k1, v1], [k2, v2], ...]`
 
 This cop should only be enabled on Ruby version 2.4 or newer
 (`transform_values` was added in Ruby 2.4.)
@@ -3886,12 +3884,12 @@ end
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `+{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}+`
-|
+| `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
+| 
 
 | InverseBlocks
-| `+{:select=>:reject, :select!=>:reject!}+`
-|
+| `{:select=>:reject, :select!=>:reject!}`
+| 
 |===
 
 == Style/IpAddresses
@@ -4124,9 +4122,9 @@ the `IncludedMacros` list.
 
 Precedence of options is all follows:
 
-. `IgnoredMethods`
-. `IgnoredPatterns`
-. `IncludedMacros`
+1. `IgnoredMethods`
+2. `IgnoredPatterns`
+3. `IncludedMacros`
 
 eg. If a method is listed in both
 `IncludedMacros` and `IgnoredMethods`, then the latter takes
@@ -4135,17 +4133,19 @@ precedence (that is, the method is ignored).
 In the alternative style (omit_parentheses), there are three additional
 options.
 
-. `AllowParenthesesInChaining` is `false` by default. Setting it to
-`true` allows the presence of parentheses in the last call during
-method chaining.
-. `AllowParenthesesInMultilineCall` is `false` by default. Setting it
- to `true` allows the presence of parentheses in multi-line method
- calls.
-. `AllowParenthesesInCamelCaseMethod` is `false` by default. This
- allows the presence of parentheses when calling a method whose name
- begins with a capital letter and which has no arguments. Setting it
- to `true` allows the presence of parentheses in such a method call
- even with arguments.
+1. `AllowParenthesesInChaining` is `false` by default. Setting it to
+   `true` allows the presence of parentheses in the last call during
+   method chaining.
+
+2. `AllowParenthesesInMultilineCall` is `false` by default. Setting it
+    to `true` allows the presence of parentheses in multi-line method
+    calls.
+
+3. `AllowParenthesesInCamelCaseMethod` is `false` by default. This
+    allows the presence of parentheses when calling a method whose name
+    begins with a capital letter and which has no arguments. Setting it
+    to `true` allows the presence of parentheses in such a method call
+    even with arguments.
 
 === Examples
 
@@ -6151,7 +6151,7 @@ bar.baz > 0
 | Array
 
 | Exclude
-| `+spec/**/*+`
+| `spec/**/*`
 | Array
 |===
 
@@ -6500,8 +6500,8 @@ default.
 | Name | Default value | Configurable values
 
 | PreferredDelimiters
-| `+{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}+`
-|
+| `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
+| 
 |===
 
 === References
@@ -7116,6 +7116,49 @@ question = '"What did you say?"'
 
 * https://rubystyle.guide#percent-q
 
+== Style/RedundantRegexpEscape
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.85
+| -
+|===
+
+This cop checks for redundant escapes inside Regexp literals.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+%r{foo\/bar}
+
+# good
+%r{foo/bar}
+
+# good
+/foo\/bar/
+
+# good
+%r/foo\/bar/
+
+# bad
+/a\-b/
+
+# good
+/a-b/
+
+# bad
+/[\+\-]\d/
+
+# good
+/[+\-]\d/
+----
+
 == Style/RedundantReturn
 
 |===
@@ -7215,8 +7258,9 @@ This cop checks for redundant uses of `self`.
 The usage of `self` is only needed when:
 
 * Sending a message to same object with zero arguments in
-presence of a method name clash with an argument or a local
-variable.
+  presence of a method name clash with an argument or a local
+  variable.
+
 * Calling an attribute writer to prevent an local variable assignment.
 
 Note, with using explicit self you can only send messages with public or
@@ -7329,7 +7373,7 @@ arr.max_by(&:foo)
 | -
 |===
 
-This cop identifies places where `+sort_by { ... }+` can be replaced by
+This cop identifies places where `sort_by { ... }` can be replaced by
 `sort`.
 
 === Examples
@@ -7495,14 +7539,15 @@ The cop to check `rescue` in its modifier form is added for following
 reasons:
 
 * The syntax of modifier form `rescue` can be misleading because it
-might led us to believe that `rescue` handles the given exception
-but it actually rescue all exceptions to return the given rescue
-block. In this case, value returned by handle_error or
-SomeException.
+  might led us to believe that `rescue` handles the given exception
+  but it actually rescue all exceptions to return the given rescue
+  block. In this case, value returned by handle_error or
+  SomeException.
+
 * Modifier form `rescue` would rescue all the exceptions. It would
-silently skip all exception or errors and handle the error.
-Example: If `NoMethodError` is raised, modifier form rescue would
-handle the exception.
+  silently skip all exception or errors and handle the error.
+  Example: If `NoMethodError` is raised, modifier form rescue would
+  handle the exception.
 
 === Examples
 
@@ -8136,7 +8181,7 @@ end
 | Name | Default value | Configurable values
 
 | Methods
-| `+{"reduce"=>["acc", "elem"]}+`, `+{"inject"=>["acc", "elem"]}+`
+| `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
 | Array
 |===
 
@@ -8576,8 +8621,8 @@ from the String class.
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `+{"intern"=>"to_sym"}+`
-|
+| `{"intern"=>"to_sym"}`
+| 
 |===
 
 == Style/Strip
@@ -9219,28 +9264,6 @@ required. Blocks with only one argument and a trailing comma require
 that comma to be present. Blocks with more than one argument never
 require a trailing comma.
 
-[source,ruby]
-----
-add do |foo, bar,|
-   foo + bar
-  end
-
-# good
- add do |foo, bar|
-   foo + bar
- end
-
-# good
-  add do |foo,|
-   foo
- end
-
-# good
- add do
-    foo + bar
- end
-----
-
 === Examples
 
 [source,ruby]
@@ -9248,7 +9271,7 @@ add do |foo, bar,|
 # bad
 add { |foo, bar,| foo + bar }
 
- # good
+# good
 add { |foo, bar| foo + bar }
 
 # good
@@ -9258,6 +9281,24 @@ add { |foo,| foo }
 add { foo }
 
 # bad
+add do |foo, bar,|
+  foo + bar
+end
+
+# good
+add do |foo, bar|
+  foo + bar
+end
+
+# good
+add do |foo,|
+  foo
+end
+
+# good
+add do
+  foo + bar
+end
 ----
 
 == Style/TrailingCommaInHashLiteral
@@ -9563,7 +9604,7 @@ end
 | -
 |===
 
-This cop looks for _unless_ expressions with _else_ clauses.
+This cop looks for `unless` expressions with `else` clauses.
 
 === Examples
 
@@ -9662,7 +9703,7 @@ This cop checks for variable interpolation (like "#@ivar").
 | -
 |===
 
-This cop checks for _when;_ uses in _case_ expressions.
+This cop checks for `when;` uses in `case` expressions.
 
 === Examples
 
@@ -9836,8 +9877,8 @@ array of 2 or fewer elements.
 | Integer
 
 | WordRegex
-| `+(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)+`
-|
+| `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)`
+| 
 |===
 
 === References

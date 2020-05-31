@@ -129,7 +129,7 @@ module RuboCop
     end
 
     def file_offense_cache(file)
-      config = @config_store.for(file)
+      config = @config_store.for_file(file)
       cache = cached_result(file, standby_team(config)) if cached_run?
 
       if cache&.valid?
@@ -168,7 +168,7 @@ module RuboCop
     end
 
     def redundant_cop_disable_directive(file)
-      config = @config_store.for(file)
+      config = @config_store.for_file(file)
       if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
                .fetch('Enabled')
         cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
@@ -214,7 +214,7 @@ module RuboCop
       @cached_run ||=
         (@options[:cache] == 'true' ||
          @options[:cache] != 'false' &&
-         @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
+         @config_store.for_dir(Dir.pwd).for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and cannot use caching.
@@ -294,7 +294,7 @@ module RuboCop
     end
 
     def inspect_file(processed_source)
-      config = @config_store.for(processed_source.path)
+      config = @config_store.for_file(processed_source.path)
       team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
@@ -360,7 +360,7 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      ruby_version = @config_store.for(file).target_ruby_version
+      ruby_version = @config_store.for_file(file).target_ruby_version
 
       if @options[:stdin]
         ProcessedSource.new(@options[:stdin], ruby_version, file)

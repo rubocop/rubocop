@@ -153,12 +153,13 @@ Bundler/GemComment:
   Description: 'Add a comment describing each gem.'
   Enabled: false
   VersionAdded: '0.59'
-  VersionChanged: '0.77'
+  VersionChanged: '0.85'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
   IgnoredGems: []
+  OnlyFor: []
 
 Bundler/InsecureProtocolSource:
   Description: >-
@@ -790,13 +791,7 @@ Layout/HeredocIndentation:
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '0.77'
-  EnforcedStyle: squiggly
-  SupportedStyles:
-    - squiggly
-    - active_support
-    - powerpack
-    - unindent
+  VersionChanged: '0.85'
 
 Layout/IndentationConsistency:
   Description: 'Keep indentation straight.'
@@ -2031,6 +2026,10 @@ Naming/FileName:
   # It further expects it to be nested inside modules which match the names
   # of subdirectories in its path.
   ExpectMatchingDefinition: false
+  # When `false`, changes the behavior of ExpectMatchingDefinition to match only
+  # whether each source file's class or module name matches the file name --
+  # not whether the nested module hierarchy matches the subdirectory path.
+  CheckDefinitionPathHierarchy: true
   # If non-`nil`, expect all source file names to match the following regex.
   # Only the file name itself is matched, not the entire file path.
   # Use anchors as necessary if you want to match the entire name rather than
@@ -2222,7 +2221,7 @@ Security/JSONLoad:
   Description: >-
                  Prefer usage of `JSON.parse` over `JSON.load` due to potential
                  security issues. See reference for more information.
-  Reference: 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load'
+  Reference: 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load'
   Enabled: true
   VersionAdded: '0.43'
   VersionChanged: '0.44'
@@ -2235,7 +2234,7 @@ Security/MarshalLoad:
   Description: >-
                  Avoid using of `Marshal.load` or `Marshal.restore` due to potential
                  security issues. See reference for more information.
-  Reference: 'https://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations'
+  Reference: 'https://ruby-doc.org/core-2.7.0/Marshal.html#module-Marshal-label-Security+considerations'
   Enabled: true
   VersionAdded: '0.47'
 
@@ -2249,7 +2248,7 @@ Security/YAMLLoad:
   Description: >-
                  Prefer usage of `YAML.safe_load` over `YAML.load` due to potential
                  security issues. See reference for more information.
-  Reference: 'https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
+  Reference: 'https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
   Enabled: true
   VersionAdded: '0.47'
   SafeAutoCorrect: false
@@ -2874,8 +2873,7 @@ Style/FrozenStringLiteralComment:
   SupportedStyles:
     # `always` will always add the frozen string literal comment to a file
     # regardless of the Ruby version or if `freeze` or `<<` are called on a
-    # string literal. If you run code against multiple versions of Ruby, it is
-    # possible that this will create errors in Ruby 2.3.0+.
+    # string literal. It is possible that this will create errors.
     - always
     # `always_true` will add the frozen string literal comment to a file,
     # similarly to the `always` style, but will also change any disabled
@@ -3609,6 +3607,11 @@ Style/RedundantPercentQ:
   StyleGuide: '#percent-q'
   Enabled: true
   VersionAdded: '0.76'
+
+Style/RedundantRegexpEscape:
+  Description: 'Checks for redundant escapes in Regexps.'
+  Enabled: pending
+  VersionAdded: '0.85'
 
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."

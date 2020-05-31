@@ -5,12 +5,12 @@ module RuboCop
     module Style
       # This cop enforces consistency when using exponential notation
       # for numbers in the code (eg 1.2e4). Different styles are supported:
-      # - `scientific` which enforces a mantissa between 1 (inclusive)
+      # * `scientific` which enforces a mantissa between 1 (inclusive)
       #                and 10 (exclusive).
-      # - `engineering` which enforces the exponent to be a multiple of 3
+      # * `engineering` which enforces the exponent to be a multiple of 3
       #                 and the mantissa to be between 0.1 (inclusive)
       #                 and 10 (exclusive).
-      # - `integral` which enforces the mantissa to always be a whole number
+      # * `integral` which enforces the mantissa to always be a whole number
       #              without trailing zeroes.
       #
       # @example EnforcedStyle: scientific (default)

@@ -106,7 +106,7 @@ module RuboCop
           # method name
           string =~ /\A[a-zA-Z_]\w*[!?]?\z/ ||
             # instance / class variable
-            string =~ /\A\@\@?[a-zA-Z_]\w*\z/ ||
+            string =~ /\A@@?[a-zA-Z_]\w*\z/ ||
             # global variable
             string =~ /\A\$[1-9]\d*\z/ ||
             string =~ /\A\$[a-zA-Z_]\w*\z/ ||

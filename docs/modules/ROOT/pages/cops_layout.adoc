@@ -406,10 +406,10 @@ blah { |i|
 | -
 |===
 
-This cop checks how the __when__s of a _case_ expression
-are indented in relation to its _case_ or _end_ keyword.
+This cop checks how the ``when``s of a `case` expression
+are indented in relation to its `case` or `end` keyword.
 
-It will register a separate offense for each misaligned _when_.
+It will register a separate offense for each misaligned `when`.
 
 === Examples
 
@@ -656,8 +656,8 @@ end
 | Name | Default value | Configurable values
 
 | Categories
-| `+{"module_inclusion"=>["include", "prepend", "extend"]}+`
-|
+| `{"module_inclusion"=>["include", "prepend", "extend"]}`
+| 
 
 | ExpectedOrder
 | `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_methods`
@@ -3157,21 +3157,17 @@ opening HEREDOC tag.
 | Yes
 | Yes
 | 0.49
-| 0.77
+| 0.85
 |===
 
 This cop checks the indentation of the here document bodies. The bodies
 are indented one step.
-In Ruby 2.3 or newer, squiggly heredocs (`<<~`) should be used. If you
-use the older rubies, you should introduce some library to your project
-(e.g. ActiveSupport, Powerpack or Unindent).
+
 Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
       this cop does not add any offenses for long here documents to
-      avoid ``Layout/LineLength``'s offenses.
+      avoid `Layout/LineLength`'s offenses.
 
 === Examples
-
-==== EnforcedStyle: squiggly (default)
 
 [source,ruby]
 ----
@@ -3181,58 +3177,10 @@ something
 RUBY
 
 # good
-# When EnforcedStyle is squiggly, bad code is auto-corrected to the
-# following code.
 <<~RUBY
   something
 RUBY
 ----
-
-==== EnforcedStyle: active_support
-
-[source,ruby]
-----
-# good
-# When EnforcedStyle is active_support, bad code is auto-corrected to
-# the following code.
-<<-RUBY.strip_heredoc
-  something
-RUBY
-----
-
-==== EnforcedStyle: powerpack
-
-[source,ruby]
-----
-# good
-# When EnforcedStyle is powerpack, bad code is auto-corrected to
-# the following code.
-<<-RUBY.strip_indent
-  something
-RUBY
-----
-
-==== EnforcedStyle: unindent
-
-[source,ruby]
-----
-# good
-# When EnforcedStyle is unindent, bad code is auto-corrected to
-# the following code.
-<<-RUBY.unindent
-  something
-RUBY
-----
-
-=== Configurable attributes
-
-|===
-| Name | Default value | Configurable values
-
-| EnforcedStyle
-| `squiggly`
-| `squiggly`, `active_support`, `powerpack`, `unindent`
-|===
 
 === References
 
@@ -3497,7 +3445,7 @@ class A
 end
 ----
 
-==== IgnoredPatterns: ['{caret}\s*module']
+==== IgnoredPatterns: ['^\s*module']
 
 [source,ruby]
 ----
@@ -3582,7 +3530,7 @@ end
 
 This cop checks whether comments have a leading space after the
 `#` denoting the start of the comment. The leading space is not
-required for some RDoc special syntax, like `pass:c[#++]`, `#--`,
+required for some RDoc special syntax, like `#++`, `#--`,
 `#:nodoc`, `=begin`- and `=end` comments, "shebang" directives,
 or rackup options.
 
@@ -5471,7 +5419,7 @@ x = 1; y = 2
 | -
 |===
 
-This cop checks for spaces between `+->+` and opening parameter
+This cop checks for spaces between `->` and opening parameter
 parenthesis (`(`) in lambda literals.
 
 === Examples

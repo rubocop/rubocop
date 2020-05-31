@@ -1,16 +1,15 @@
-= Development
+# Development
 
 This section of the documentation will teach you how to develop new cops.  We'll
 start with generating a cop template and then we'll address the various aspects
 of its implementation (interacting with the AST, auto-correct, configuration)
 and testing.
 
-== Create a new cop
+## Create a new cop
 
 Use the bundled rake task `new_cop` to generate a cop template:
 
-[source,sh]
-----
+```sh
 $ bundle exec rake 'new_cop[Department/Name]'
 Files created:
   - lib/rubocop/cop/department/name.rb
@@ -24,28 +23,26 @@ Do 3 steps:
      e.g. "Add new `Department/Name` cop. ([@your_id][])"
   2. Modify the description of Department/Name in config/default.yml
   3. Implement your new cop in the generated file!
-----
+```
 
-== Basics
+## Basics
 
-RuboCop uses the https://github.com/whitequark/parser[parser] library to create the
+RuboCop uses the [parser](https://github.com/whitequark/parser) library to create the
 Abstract Syntax Tree (AST) representation of the code.
 
 You can install `parser` gem and use `ruby-parse` command line utility to check
 what the AST looks like in the output.
 
-[source,sh]
-----
+```sh
 $ gem install parser
-----
+```
 
 And then try to parse a simple integer representation with `ruby-parse`:
 
-[source,sh]
-----
+```sh
 $ ruby-parse -e '1'
 (int 1)
-----
+```
 
 Each expression surrounded by parentheses represents a node in the AST. The first
 element is the node type and the tail contains the children with all
@@ -54,14 +51,13 @@ information needed to represent the code.
 Here's another example - a local variable `name` being assigned the
 string value "John":
 
-[source,sh]
-----
+```sh
 $ ruby-parse -e 'name = "John"'
 (lvasgn :name
   (str "John"))
-----
+```
 
-=== Inspecting the AST representation
+### Inspecting the AST representation
 
 Let's imagine we want to simplify statements from `!array.empty?` to
 `array.any?`:
@@ -69,148 +65,136 @@ Let's imagine we want to simplify statements from `!array.empty?` to
 First, check what the bad code returns in the Abstract Syntax Tree
 representation.
 
-[source,sh]
-----
+```sh
 $ ruby-parse -e '!array.empty?'
 (send
   (send
     (send nil :array) :empty?) :!)
-----
+```
 
 Now, it's time to debug our expression using the REPL from RuboCop:
 
-[source,sh]
-----
+```sh
 $ bin/console
-----
+```
 
 First we need to declare the code that we want to match, and use the
-https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/ProcessedSource[ProcessedSource]
+[ProcessedSource](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/ProcessedSource)
 that is a simple wrap to make the parser interpret the code and build the AST:
 
-[source,ruby]
-----
+```ruby
 code = '!something.empty?'
 source = RuboCop::ProcessedSource.new(code, RUBY_VERSION.to_f)
 node = source.ast
 # => s(:send, s(:send, s(:send, nil, :something), :empty?), :!)
-----
+```
 
 The node has a few attributes that can be useful in the journey:
 
-[source,ruby]
-----
+```ruby
 node.type # => :send
 node.children # => [s(:send, s(:send, nil, :something), :empty?), :!]
 node.source # => "!something.empty?"
-----
+```
 
-== Implementation
+## Implementation
 
-=== Writing Node Pattern Rules
+### Writing Node Pattern Rules
 
-NOTE: You can write cops without using `NodePattern` (and many older cops don't use it), but it
-generally simplifies a lot the code, as manual node matching and destructuring can be
-quite verbose.
+!!! Note
+
+    You can write cops without using `NodePattern` (and many older cops don't use it), but it
+    generally simplifies a lot the code, as manual node matching and destructuring can be
+    quite verbose.
 
 Now that you're familiar with AST, you can learn a bit about the
-https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/NodePattern[node pattern]
+[node pattern](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/NodePattern)
 and use patterns to match with specific nodes that you want to match.
 
-You can learn more about Node Pattern https://github.com/rubocop-hq/rubocop-ast/blob/master/manual/node_pattern.md[here].
+You can learn more about Node Pattern [here](https://github.com/rubocop-hq/rubocop-ast/blob/master/docs/modules/ROOT/pages/node_pattern.adoc).
 
 Node pattern matches something very similar to the current output from AST
 representation, then let's start with something very generic:
 
-[source,ruby]
-----
+```ruby
 NodePattern.new('send').match(node) # => true
-----
+```
 
 It matches because the root is a `send` type. Now lets match it deeply using
 parentheses to define details for sub-nodes. If you don't care about what an internal
-node is, you can use `+...+` to skip it and just consider " a node".
+node is, you can use `...` to skip it and just consider " a node".
 
-[source,ruby]
-----
+```ruby
 NodePattern.new('(send ...)').match(node) # => true
 NodePattern.new('(send (send ...) :!)').match(node) # => true
 NodePattern.new('(send (send (send ...) :empty?) :!)').match(node) # => true
-----
+```
 
 Sometimes it's hard to comprehend complex expressions you're building with the
 pattern, then, if you got lost with the node pattern parens surrounding deeply,
 try to use the `$` to capture the internal expression and check exactly each
 piece of the expression:
 
-[source,ruby]
-----
+```ruby
 NodePattern.new('(send (send (send $...) :empty?) :!)').match(node) # => [nil, :something]
-----
+```
 
 It's not needed to strictly receive a send in the internal node because maybe
 it can also be a literal array like:
 
-[source,ruby]
-----
+```ruby
 ![].empty?
-----
+```
 
 The code above has the following representation:
 
-[source,ruby]
-----
+```ruby
 => s(:send, s(:send, s(:array), :empty?), :!)
-----
+```
 
-It's possible to skip the internal node with `+...+` to make sure that it's just
+It's possible to skip the internal node with `...` to make sure that it's just
 another internal node:
 
-[source,ruby]
-----
+```ruby
 NodePattern.new('(send (send (...) :empty?) :!)').match(node) # => true
-----
+```
 
-In other words, it says: "Match code calling ``!<expression>.empty?``".
+In other words, it says: "Match code calling `!<expression>.empty?`".
 
 Great! Now, lets implement our cop to simplify such statements:
 
-[source,sh]
-----
+```sh
 $ rake 'new_cop[Style/SimplifyNotEmptyWithAny]'
-----
+```
 
 After the cop scaffold is generated, change the node matcher to match with
 the expression achieved previously:
 
-[source,ruby]
-----
+```ruby
 def_node_matcher :not_empty_call?, <<~PATTERN
   (send (send (...) :empty?) :!)
 PATTERN
-----
+```
 
 Get yourself familiar with the AST node hooks that
-https://www.rubydoc.info/gems/parser/Parser/AST/Processor[`parser`]
-and https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/Traversal[`rubocop-ast`]
+[`parser`](https://www.rubydoc.info/gems/parser/Parser/AST/Processor)
+and [`rubocop-ast`](https://www.rubydoc.info/gems/rubocop-ast/RuboCop/AST/Traversal)
 provide.
 
 As it starts with a `send` type, it's needed to implement the `on_send` method, as the
 cop scaffold already suggested:
 
-[source,ruby]
-----
+```ruby
 def on_send(node)
   return unless not_empty_call?(node)
 
   add_offense(node)
 end
-----
+```
 
 And the final cop code will look like something like this:
 
-[source,ruby]
-----
+```ruby
 module RuboCop
   module Cop
     module Style
@@ -238,12 +222,11 @@ module RuboCop
     end
   end
 end
-----
+```
 
 Update the spec to cover the expected syntax:
 
-[source,ruby]
-----
+```ruby
 describe RuboCop::Cop::Style::SimplifyNotEmptyWithAny do
   let(:config) { RuboCop::Config.new }
   subject(:cop) { described_class.new(config) }
@@ -262,36 +245,34 @@ describe RuboCop::Cop::Style::SimplifyNotEmptyWithAny do
     RUBY
   end
 end
-----
+```
 
-=== Auto-correct
+### Auto-correct
 
 The auto-correct can help humans automatically fix offenses that have been detected.
 It's necessary to define an `autocorrect` method that returns a lambda
-https://github.com/whitequark/parser/blob/master/lib/parser/rewriter.rb[rewriter]
+[rewriter](https://github.com/whitequark/parser/blob/master/lib/parser/rewriter.rb)
 with the corrector where you can give instructions about what to do with the
 offensive node.
 
 Let's start with a simple spec to cover it:
 
-[source,ruby]
-----
+```ruby
 it 'autocorrect `!a.empty?` to `a.any?` ' do
   expect(autocorrect_source('!a.empty?')).to eq('a.any?')
 end
-----
+```
 
 And then define the `autocorrect` method on the cop side:
 
-[source,ruby]
-----
+```ruby
 def autocorrect(node)
   lambda do |corrector|
     internal_expression = node.children[0].children[0].source
     corrector.replace(node, "#{internal_expression}.any?")
   end
 end
-----
+```
 
 The corrector allows you to `insert_after` and `insert_before` or
 `replace` a specific node or in any specific range of the code.
@@ -299,7 +280,7 @@ The corrector allows you to `insert_after` and `insert_before` or
 Range can be determined on `node.location` where it brings specific
 ranges for expression or other internal information that the node holds.
 
-=== Configuration
+### Configuration
 
 Each cop can hold a configuration and you can refer to `cop_config` in the
 instance and it will bring a hash with options declared in the `.rubocop.yml`
@@ -308,17 +289,15 @@ file.
 For example, lets imagine we want to make configurable to make the replacement
 works with other method than `.any?`:
 
-[source,yml]
-----
+```yml
 Style/SimplifyNotEmptyWithAny:
   Enabled: true
   ReplaceAnyWith: "size > 0"
-----
+```
 
 And then on the autocorrect method, you just need to use the `cop_config` it:
 
-[source,ruby]
-----
+```ruby
 def autocorrect(node)
   lambda do |corrector|
     internal_expression = node.children[0].children[0].source
@@ -327,9 +306,9 @@ def autocorrect(node)
     corrector.replace(node, new_expression)
   end
 end
-----
+```
 
-== Documentation
+## Documentation
 
 Every new cop requires explanation and examples to make it easy for the community
 to understand its purpose. This documentation is generated by `yard` and is added
@@ -337,8 +316,7 @@ directly into the `cop.rb` file. For every `SupportedStyle` and unique
 configuration you have included in the cop, there needs to be examples. Examples must
 have valid Ruby syntax. Do not use upticks.
 
-[source,ruby]
-----
+```ruby
 module Department
   # Description of your cop. Include description of ALL config options. Particularly
   # ones that take booleans and arrays, because we generally do not show examples for
@@ -390,7 +368,7 @@ module Department
   #
   class YourCop
     # ...
-----
+```
 
 Take note of the placement and spacing of all the documentation pieces. Such as config
 keys being in alphabetical order, the `(default)` being specified, and one empty line
@@ -400,7 +378,7 @@ we strive to make this consistent. PRs improving RuboCop documentation are very 
 Run `rake generate_cops_documentation` to apply your `yard` documentation into the manual.
 CI will fail if the manual and `yard` comments do not match exactly. `rake default` will also generate the new documentation.
 
-== Testing your cop in a real codebase
+## Testing your cop in a real codebase
 
 Generally, is a good practice to check if your cop is working properly over a
 significant codebase (e.g. Rails or some big project you're working on) to
@@ -408,18 +386,17 @@ guarantee it's working in a range of different syntaxes.
 
 There are several ways to do this. Two common approaches:
 
-. From within your local `rubocop` repo, run `exe/rubocop ~/your/other/codebase`.
-. From within the other codebase's `Gemfile`, set a path to your local repo like this: `gem 'rubocop', path: '/full/path/to/rubocop'`. Then run `rubocop` within your codebase.
+1. From within your local `rubocop` repo, run `exe/rubocop ~/your/other/codebase`.
+2. From within the other codebase's `Gemfile`, set a path to your local repo like this: `gem 'rubocop', path: '/full/path/to/rubocop'`. Then run `rubocop` within your codebase.
 
 With approach #2, you can use local versions of RuboCop extension repos such as `rubocop-rspec` as well.
 
 To make it fast and do not get confused with other cops in action,  you can use
 `--only` parameter in the command line to filter by your cop name:
 
-[source,sh]
-----
+```sh
 $ rubocop --only Style/SimplifyNotEmptyWithAny
-----
+```
 
 In the end, do not forget to run `rake generate_cops_documentation` to update
 the docs.

@@ -311,9 +311,13 @@ anything/using_snake_case.rake
 | `false`
 | Boolean
 
+| CheckDefinitionPathHierarchy
+| `true`
+| Boolean
+
 | Regex
 | `<none>`
-|
+| 
 
 | IgnoreExecutableScripts
 | `true`
@@ -431,7 +435,7 @@ EOS
 | Name | Default value | Configurable values
 
 | ForbiddenDelimiters
-| `+(?-mix:(^\|\s)(EO[A-Z]{1}\|END)(\s\|$))+`
+| `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))`
 | Array
 |===
 
@@ -574,10 +578,10 @@ snake_case or camelCase, for their names.
 
 This cop has `IgnoredPatterns` configuration option.
 
-Naming/MethodName:
+  Naming/MethodName:
     IgnoredPatterns:
-      - '\A\s__onSelectionBulkChange\s__'
-      - '\A\s__onSelectionCleared\s__'
+      - '\A\s*onSelectionBulkChange\s*'
+      - '\A\s*onSelectionCleared\s*'
 
 Method names matching patterns are always allowed.
 
@@ -765,7 +769,7 @@ end
 | Array
 
 | Exclude
-| `+spec/**/*+`
+| `spec/**/*`
 | Array
 |===
 

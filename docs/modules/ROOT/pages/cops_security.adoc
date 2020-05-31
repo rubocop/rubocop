@@ -71,7 +71,7 @@ JSON.parse("{}")
 
 === References
 
-* https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html#method-i-load
+* https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load
 
 == Security/MarshalLoad
 
@@ -106,7 +106,7 @@ Marshal.load(Marshal.dump({}))
 
 === References
 
-* https://ruby-doc.org/core-2.3.3/Marshal.html#module-Marshal-label-Security+considerations
+* https://ruby-doc.org/core-2.7.0/Marshal.html#module-Marshal-label-Security+considerations
 
 == Security/Open
 
@@ -171,4 +171,4 @@ YAML.dump("foo")
 
 === References
 
-* https://ruby-doc.org/stdlib-2.3.3/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security
+* https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security

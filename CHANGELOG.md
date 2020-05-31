@@ -2,6 +2,13 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
+* [#8069](https://github.com/rubocop-hq/rubocop/issues/8069): New option for `expect_offense` to help format offense templates. ([@marcandre][])
+* [#7908](https://github.com/rubocop-hq/rubocop/pull/7908): Add new `Style/RedundantRegexpEscape` cop. ([@owst][])
+* [#7978](https://github.com/rubocop-hq/rubocop/pull/7978): Add new option `OnlyFor` to the `Bundler/GemComment` cop. ([@ric2b][])
+
 ### Bug fixes
 
 * [#8008](https://github.com/rubocop-hq/rubocop/issues/8008): Fix an error for `Lint/SuppressedException` when empty rescue block in `def`. ([@koic][])
@@ -10,6 +17,11 @@
 * [#7990](https://github.com/rubocop-hq/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
 * [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
 * [#7971](https://github.com/rubocop-hq/rubocop/issues/7971): Fix an issue where `--disable-uncorrectable` would not update uncorrected code with `rubocop:todo`. ([@rrosenblum][])
+* [#8035](https://github.com/rubocop-hq/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when argument is a variable, method, or consntant. ([@koic][])
+
+### Changes
+
+* [#8056](https://github.com/rubocop-hq/rubocop/pull/8056): **(Breaking)** Remove support for unindent/active_support/powerpack from `Layout/HeredocIndentation`, so it only recommends using squiggy heredoc. ([@bquorning][])
 
 ## 0.84.0 (2020-05-21)
 
@@ -29,6 +41,7 @@
 * [#7886](https://github.com/rubocop-hq/rubocop/issues/7886): Fix a bug in `AllowComments` logic in `Lint/SuppressedException`. ([@jonas054][])
 * [#7991](https://github.com/rubocop-hq/rubocop/issues/7991): Fix an error for `Layout/EmptyLinesAroundAttributeAccessor` when attribute method is method chained. ([@koic][])
 * [#7993](https://github.com/rubocop-hq/rubocop/issues/7993): Fix a false positive for `Migration/DepartmentName` when a disable comment contains an unexpected character for department name. ([@koic][])
+* [#7983](https://github.com/rubocop-hq/rubocop/pull/7983): Make the config loader Bundler-aware. ([@CvX][])
 
 ### Changes
 
@@ -4542,3 +4555,5 @@
 [@laurmurclar]: https://github.com/laurmurclar
 [@jethrodaniel]: https://github.com/jethrodaniel
 [@CvX]: https://github.com/CvX
+[@jschneid]: https://github.com/jschneid
+[@ric2b]: https://github.com/ric2b

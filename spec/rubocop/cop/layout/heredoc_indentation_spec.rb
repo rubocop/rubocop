@@ -8,98 +8,8 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
     }
   end
 
-  shared_examples 'offense' do |name, code, correction = nil|
-    it "registers an offense for #{name}" do
-      inspect_source(code)
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it "autocorrects for #{name}" do
-      corrected = autocorrect_source_with_loop(code)
-      expect(corrected).to eq(correction)
-    end
-  end
-
-  shared_examples 'accept' do |name, code|
-    it "accepts for #{name}" do
-      expect_no_offenses(code)
-    end
-  end
-
-  shared_examples 'warning' do |message|
-    it 'warns' do
-      correct = lambda do
-        autocorrect_source(<<~RUBY)
-          <<-RUBY2
-          foo
-          RUBY2
-        RUBY
-      end
-      expect(&correct).to raise_error(RuboCop::Warning, message)
-    end
-  end
-
   shared_examples 'all heredoc type' do |quote|
     context "quoted by #{quote}" do
-      let(:cop_config) do
-        { 'EnforcedStyle' => :powerpack }
-      end
-
-      include_examples 'offense', 'not indented', <<~RUBY, <<~CORRECTION
-        <<#{quote}RUBY2#{quote}
-        \#{foo}
-        bar
-        RUBY2
-      RUBY
-        <<#{quote}RUBY2#{quote}.strip_indent
-          \#{foo}
-          bar
-        RUBY2
-      CORRECTION
-      include_examples 'offense', 'minus level indented', <<~RUBY, <<~CORRECTION
-        def foo
-          <<#{quote}RUBY2#{quote}
-        \#{foo}
-        bar
-        RUBY2
-        end
-      RUBY
-        def foo
-          <<#{quote}RUBY2#{quote}.strip_indent
-            \#{foo}
-            bar
-        RUBY2
-        end
-      CORRECTION
-      include_examples 'offense', 'not indented, with `-`',
-                       <<~RUBY, <<~CORRECTION
-                         <<-#{quote}RUBY2#{quote}
-                         \#{foo}
-                         bar
-                         RUBY2
-                       RUBY
-                         <<-#{quote}RUBY2#{quote}.strip_indent
-                           \#{foo}
-                           bar
-                         RUBY2
-                       CORRECTION
-      include_examples 'offense', 'minus level indented, with `-`',
-                       <<~RUBY, <<~CORRECTION
-                         def foo
-                           <<-#{quote}RUBY2#{quote}
-                         \#{foo}
-                         bar
-                           RUBY2
-                         end
-                       RUBY
-                         def foo
-                           <<-#{quote}RUBY2#{quote}.strip_indent
-                             \#{foo}
-                             bar
-                           RUBY2
-                         end
-                       CORRECTION
-
       it 'does not register an offense when not indented but with ' \
          'whitespace, with `-`' do
         expect_no_offenses(<<-RUBY)
@@ -111,142 +21,170 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
         RUBY
       end
 
-      include_examples 'accept', 'indented, but with `-`', <<~RUBY
-        def foo
-          <<-#{quote}RUBY2#{quote}
+      it 'accepts for indented, but with `-`' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            <<-#{quote}RUBY2#{quote}
+              something
+            RUBY2
+          end
+        RUBY
+      end
+
+      it 'accepts for not indented but with whitespace' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            <<#{quote}RUBY2#{quote}
             something
           RUBY2
-        end
-      RUBY
-      include_examples 'accept', 'not indented but with whitespace', <<~RUBY
-        def foo
-          <<#{quote}RUBY2#{quote}
-          something
-        RUBY2
-        end
-      RUBY
-      include_examples 'accept', 'indented, but without `~`', <<~RUBY
-        def foo
-          <<#{quote}RUBY2#{quote}
-            something
-        RUBY2
-        end
-      RUBY
-      include_examples 'accept', 'an empty line', <<~RUBY
-        <<-#{quote}RUBY2#{quote}
+          end
+        RUBY
+      end
 
-        RUBY2
-      RUBY
+      it 'accepts for indented, but without `~`' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            <<#{quote}RUBY2#{quote}
+              something
+          RUBY2
+          end
+        RUBY
+      end
+
+      it 'accepts for an empty line' do
+        expect_no_offenses(<<~RUBY)
+          <<-#{quote}RUBY2#{quote}
+
+          RUBY2
+        RUBY
+      end
 
       context 'when Layout/LineLength is configured' do
         let(:allow_heredoc) { false }
 
-        include_examples 'offense', 'short heredoc', <<~RUBY, <<~CORRECTION
-          <<#{quote}RUBY2#{quote}
-          12
-          RUBY2
-        RUBY
-          <<#{quote}RUBY2#{quote}.strip_indent
-            12
-          RUBY2
-        CORRECTION
-
-        include_examples 'accept', 'long heredoc', <<~RUBY
-          <<#{quote}RUBY2#{quote}
-          12345678
-          RUBY2
-        RUBY
-      end
-
-      it 'displays a message with suggestion powerpack' do
-        expect_offense(<<~RUBY)
-          <<-RUBY2
-          foo
-          ^^^ Use 2 spaces for indentation in a heredoc by using `String#strip_indent`.
-          RUBY2
-        RUBY
-      end
-
-      context 'EnforcedStyle is `squiggly`' do
-        let(:cop_config) do
-          { 'EnforcedStyle' => :squiggly }
+        it 'accepts for long heredoc' do
+          expect_no_offenses(<<~RUBY)
+            <<#{quote}RUBY2#{quote}
+            12345678
+            RUBY2
+          RUBY
         end
+      end
 
-        include_examples 'offense', 'not indented', <<~RUBY, <<~CORRECTION
+      it 'registers an offense for not indented' do
+        expect_offense(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
           something
+          ^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
           RUBY2
         RUBY
+
+        expect_correction(<<~CORRECTION)
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
         CORRECTION
-        include_examples 'offense', 'minus level indented',
-                         <<~RUBY, <<~CORRECTION
-                           def foo
-                             <<~#{quote}RUBY2#{quote}
-                           something
-                             RUBY2
-                           end
-                         RUBY
-                           def foo
-                             <<~#{quote}RUBY2#{quote}
-                               something
-                             RUBY2
-                           end
-                         CORRECTION
-        include_examples 'offense', 'too deep indented', <<~RUBY, <<~CORRECTION
+      end
+
+      it 'registers an offense for minus level indented' do
+        expect_offense(<<~RUBY)
+          def foo
+            <<~#{quote}RUBY2#{quote}
+          something
+          ^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
+            RUBY2
+          end
+        RUBY
+
+        expect_correction(<<~CORRECTION)
+          def foo
+            <<~#{quote}RUBY2#{quote}
+              something
+            RUBY2
+          end
+        CORRECTION
+      end
+
+      it 'registers an offense for too deep indented' do
+        expect_offense(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
               something
+          ^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
           RUBY2
         RUBY
+
+        expect_correction(<<~CORRECTION)
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
         CORRECTION
-        include_examples 'offense', 'not indented, without `~`',
-                         <<~RUBY, <<~CORRECTION
-                           <<#{quote}RUBY2#{quote}
-                           foo
-                           RUBY2
-                         RUBY
-                           <<~#{quote}RUBY2#{quote}
-                             foo
-                           RUBY2
-                         CORRECTION
+      end
 
-        include_examples 'offense', 'not indented, with `~`',
-                         <<~RUBY, <<~CORRECTION
-                           <<~#{quote}RUBY2#{quote}
-                           foo
-                           RUBY2
-                         RUBY
-                           <<~#{quote}RUBY2#{quote}
-                             foo
-                           RUBY2
-                         CORRECTION
+      it 'registers an offense for not indented, without `~`' do
+        annotated_source = <<~RUBY
+          <<#{quote}RUBY2#{quote}
+          foo
+          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
+          RUBY2
+        RUBY
 
-        include_examples 'offense', 'first line minus-level indented, with `-`',
-                         <<~RUBY, <<-CORRECTION
-                                   puts <<-#{quote}RUBY2#{quote}
-                           def foo
-                             bar
-                           end
-                           RUBY2
-                         RUBY
+        expect_offense(annotated_source)
+
+        corrected = looped_autocorrect_from_annotated_source(annotated_source)
+        expect(corrected).to eq(<<~CORRECTION)
+          <<~#{quote}RUBY2#{quote}
+            foo
+          RUBY2
+        CORRECTION
+      end
+
+      it 'registers an offense for not indented, with `~`' do
+        expect_offense(<<~RUBY)
+          <<~#{quote}RUBY2#{quote}
+          foo
+          ^^^ Use 2 spaces for indentation in a heredoc.
+          RUBY2
+        RUBY
+
+        expect_correction(<<~CORRECTION)
+          <<~#{quote}RUBY2#{quote}
+            foo
+          RUBY2
+        CORRECTION
+      end
+
+      it 'registers an offense for first line minus-level indented, with `-`' do
+        annotated_source = <<~RUBY
+                  puts <<-#{quote}RUBY2#{quote}
+          def foo
+          ^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
+            bar
+          end
+          RUBY2
+        RUBY
+
+        expect_offense(annotated_source)
+
+        corrected = looped_autocorrect_from_annotated_source(annotated_source)
+        expect(corrected).to eq(<<-CORRECTION)
         puts <<~#{quote}RUBY2#{quote}
           def foo
             bar
           end
         RUBY2
         CORRECTION
+      end
 
-        include_examples 'accept', 'indented, with `~`', <<~RUBY
+      it 'accepts for indented, with `~`' do
+        expect_no_offenses(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
         RUBY
-        include_examples 'accept', 'include empty lines', <<~RUBY
+      end
+
+      it 'accepts for include empty lines' do
+        expect_no_offenses(<<~RUBY)
           <<~#{quote}MSG#{quote}
 
             foo
@@ -255,17 +193,23 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
 
           MSG
         RUBY
+      end
 
-        include_examples 'offense', 'not indented enough with empty lines',
-                         <<-RUBY, <<-CORRECTION
+      it 'registers an offense for not indented enough with empty lines' do
+        # rubocop:disable Layout/HeredocIndentation
+        expect_offense(<<-RUBY)
           def baz
             <<~#{quote}MSG#{quote}
             foo
+^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
 
               bar
             MSG
           end
         RUBY
+        # rubocop:enable Layout/HeredocIndentation
+
+        expect_correction(<<-CORRECTION)
           def baz
             <<~#{quote}MSG#{quote}
               foo
@@ -274,29 +218,35 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
             MSG
           end
         CORRECTION
+      end
 
-        it 'displays message to use `<<~` instead of `<<`' do
-          expect_offense(<<~RUBY)
-            <<RUBY2
-            foo
-            ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
-            RUBY2
-          RUBY
-        end
+      it 'displays message to use `<<~` instead of `<<`' do
+        expect_offense(<<~RUBY)
+          <<RUBY2
+          foo
+          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
+          RUBY2
+        RUBY
+      end
 
-        it 'displays message to use `<<~` instead of `<<-`' do
-          expect_offense(<<~RUBY)
-            <<-RUBY2
-            foo
-            ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-            RUBY2
-          RUBY
-        end
+      it 'displays message to use `<<~` instead of `<<-`' do
+        expect_offense(<<~RUBY)
+          <<-RUBY2
+          foo
+          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
+          RUBY2
+        RUBY
       end
     end
   end
 
   [nil, "'", '"', '`'].each do |quote|
     include_examples 'all heredoc type', quote
+  end
+
+  def looped_autocorrect_from_annotated_source(annotated_source)
+    source =
+      annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
+    autocorrect_source_with_loop(source)
   end
 end
