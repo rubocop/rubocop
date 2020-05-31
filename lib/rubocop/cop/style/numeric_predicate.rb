@@ -54,10 +54,12 @@ module RuboCop
         }.freeze
 
         def on_send(node)
-          return if ignored_method?(node.method_name) ||
-                    node.each_ancestor(:send, :block).any? do |ancestor|
-                      ignored_method?(ancestor.method_name)
-                    end
+          if !ignored_methods.empty?
+            return if ignored_method?(node.method_name) ||
+                      node.each_ancestor(:send, :block).any? do |ancestor|
+                        ignored_method?(ancestor.method_name)
+                      end
+          end
 
           numeric, replacement = check(node)
 
