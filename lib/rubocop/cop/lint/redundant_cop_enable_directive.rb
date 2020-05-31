@@ -4,7 +4,6 @@
 # cops need to be disabled so as to be able to provide a (bad) example of an
 # unneeded enable.
 
-# rubocop:disable Lint/RedundantCopEnableDirective
 # rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
@@ -116,4 +115,3 @@ module RuboCop
 end
 
 # rubocop:enable Lint/RedundantCopDisableDirective
-# rubocop:enable Lint/RedundantCopEnableDirective

@@ -50,7 +50,7 @@ RSpec.describe RuboCop::CommentConfig do
         '# rubocop:disable Layout/BlockAlignment some comment why',
         '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
         '# rubocop:enable Lint/RandOne foo bar!',            # 43
-        '# rubocop:disable Lint/EmptyInterpolation',
+        '# rubocop:disable EmptyInterpolation',
         '"result is #{}"',
         '# rubocop:enable Lint/EmptyInterpolation',
         '# rubocop:disable RSpec/Example',
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     def disabled_lines_of_cop(cop)
-      (1..source.size).each_with_object([]) do |line_number, disabled_lines|
+      (1..source.lines.count).each_with_object([]) do |line_number, disabled_lines|
         enabled = comment_config.cop_enabled_at_line?(cop, line_number)
         disabled_lines << line_number unless enabled
       end
@@ -105,13 +105,13 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports disabling all lines after a directive' do
       for_disabled_lines = disabled_lines_of_cop('Style/For')
-      expected_part = (27..source.size).to_a
+      expected_part = (27..source.lines.size).to_a
       expect(for_disabled_lines & expected_part).to eq(expected_part)
     end
 
     it 'just ignores unpaired enabling directives' do
       void_disabled_lines = disabled_lines_of_cop('Lint/Void')
-      expected_part = (25..source.size).to_a
+      expected_part = (25..source.lines.size).to_a
       expect((void_disabled_lines & expected_part).empty?).to be(true)
     end
 
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'can handle double disable of one cop' do
       expect(disabled_lines_of_cop('Style/ClassVars'))
-        .to eq([7, 8, 9] + (31..source.size).to_a)
+        .to eq([7, 8, 9] + (31..source.lines.size).to_a)
     end
 
     it 'supports disabling cops with multiple uppercase letters' do
@@ -168,6 +168,48 @@ RSpec.describe RuboCop::CommentConfig do
     it 'supports disabling cops on a comment line with an EOL comment' do
       expect(disabled_lines_of_cop('Layout/LeadingCommentSpace'))
         .to eq([7, 8, 9, 50])
+    end
+  end
+
+  describe '#cop_config_at_line' do
+    let(:source) { <<~RUBY }
+      # rubocop:set Metrics/AbcSize{Max: 20}
+      def method1
+      end
+
+      # rubocop:set Metrics/AbcSize{Max: 30}
+      def method2
+      end
+
+      # rubocop:reset Metrics/AbcSize
+
+      def method3
+      end
+
+      # rubocop:set Metrics/AbcSize{Max: 8}
+      def method4 # rubocop:set Metrics/AbcSize{Max: 16}
+      end
+    RUBY
+
+    def cop_config_per_line(cop)
+      (1..source.lines.count)
+        .map { |line_number| [line_number, comment_config.cop_config_at_line(cop, line_number)] }
+        .to_h
+    end
+
+    def config_ranges(hash)
+      hash.flat_map { |key_range, val| Array(key_range).map { |key| [key, val] } }.to_h
+    end
+
+    it 'sets the cop line-by-line' do
+      expect(cop_config_per_line('Metrics/AbcSize')).to eq config_ranges(
+        1..4 => { 'Max' => 20 },
+        5..9 => { 'Max' => 30 },
+        10..13 => nil,
+        14 => { 'Max' => 8 },
+        15 => { 'Max' => 16 },
+        16 => { 'Max' => 8 }
+      )
     end
   end
 end

@@ -68,5 +68,50 @@ RSpec.describe RuboCop::Cop::Commissioner do
         offenses
       end
     end
+
+    describe 'inline cop settings' do
+      let(:cop) do
+        # rubocop:disable RSpec/VerifiedDoubles
+        double(RuboCop::Cop::Cop, offenses: [], cop_name: 'Test/TheCop', processed_source: processed_source).as_null_object
+        # rubocop:enable RSpec/VerifiedDoubles
+      end
+
+      let(:source) { <<~RUBY }
+        def method0
+        0
+        end
+
+        # rubocop:set Test/TheCop{Max: 10}
+        def method1
+        1
+        end
+
+        def method2 # rubocop:set Test/TheCop{Max: 5}
+        2
+        end
+
+        # rubocop:reset Test/TheCop
+
+        def method3
+        3
+        end
+      RUBY
+
+      it "pushes cop's settings according to inline config" do
+        expect(cop).to receive(:on_def).ordered
+
+        expect(cop).to receive(:push_config).with('Max' => 10).ordered
+        expect(cop).to receive(:on_def).ordered
+        expect(cop).to receive(:pop_config)
+
+        expect(cop).to receive(:push_config).with('Max' => 5).ordered
+        expect(cop).to receive(:on_def).ordered
+        expect(cop).to receive(:pop_config)
+
+        expect(cop).to receive(:on_def).ordered
+
+        offenses
+      end
+    end
   end
 end

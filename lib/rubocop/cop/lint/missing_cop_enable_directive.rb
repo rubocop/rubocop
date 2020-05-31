@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -81,4 +80,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/RedundantCopDisableDirective, Layout/SpaceAroundOperators

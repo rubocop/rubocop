@@ -25,8 +25,8 @@ module RuboCop
       #   end
       #
       class DoubleCopDisableDirective < Cop
-        # rubocop:enable Style/For, Style/DoubleCopDisableDirective
-        # rubocop:enable Lint/RedundantCopDisableDirective, Metrics/AbcSize
+        # rubocop:enable Style/DoubleCopDisableDirective
+        # rubocop:enable Lint/RedundantCopDisableDirective
         MSG = 'More than one disable comment on one line.'
 
         def investigate(processed_source)

@@ -51,6 +51,7 @@ module RuboCop
           :yields:
           rubocop:disable
           rubocop:todo
+          rubocop:set
         ].freeze
 
         def offensive?(comment)

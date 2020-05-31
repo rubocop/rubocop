@@ -1,21 +1,86 @@
 # frozen_string_literal: true
 
 module RuboCop
-  # This class parses the special `rubocop:disable` comments in a source
-  # and provides a way to check if each cop is enabled at arbitrary line.
+  # Responsible for parsing rubocop:<command> directives and providing information extracted from
+  # those directives.
+  #
+  # Currently supported directives:
+  #
+  # * rubocop:disable <CopName>/rubocop:enable <CopName>, used via #cop_enabled_at_line?
+  # * rubocop:set <CopName>{Settings}/rubocop:reset <CopName>, used via #cop_config_at_line
+  #
   class CommentConfig
     REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
-    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
-    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
-    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
+    COP_NAME_PATTERN = '(?<cop>([A-Z]\w+/)?([A-Z]\w+))'
+    COP_SETTING_PATTERN = '(?<settings>{[^}]+})'
+    COP_PATTERN = "#{COP_NAME_PATTERN}#{COP_SETTING_PATTERN}?"
+    COPS_LIST_PATTERN = "(#{COP_PATTERN} , )*#{COP_PATTERN}"
+    COPS_PATTERN = "(?<cops>all|#{COPS_LIST_PATTERN})"
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+      ('\A # rubocop : (?<directive>[a-z]+)\b ' + COPS_PATTERN)
         .gsub(' ', '\s*')
     )
 
-    CopAnalysis = Struct.new(:line_ranges, :start_line_number)
+    # rubocop:set Metrics/MethodLength{Max: 20}, Metrics/BlockLength{Max: 40}
+
+    Directive = Struct.new(:path, :comment, :directive, :cop, :single_line, :settings) do
+      KNOWN_DIRECTIVES = %w[enable disable todo set reset].freeze
+
+      def initialize(path, comment, directive, cop_string, single_line)
+        cop, settings = cop_string.match(COP_PATTERN).values_at(:cop, :settings)
+        unless KNOWN_DIRECTIVES.include?(directive)
+          raise ArgumentError, "Unrecognized directive rubocop:#{directive}"
+        end
+
+        cop_name = Cop::Cop.qualified_cop_name(cop.strip, path)
+
+        if directive == 'set'
+          raise ArgumentError, 'rubocop:set requires arguments' unless settings
+
+          super(path, comment, directive, cop_name, single_line, YAML.safe_load(settings))
+        else
+          raise ArgumentError, "Unexpected directive arguments: #{cop_string}" if settings
+
+          super(path, comment, directive, cop_name, single_line)
+        end
+      end
+
+      alias_method :single_line?, :single_line
+
+      def disable?
+        %w[disable todo].include?(directive)
+      end
+
+      def enable?
+        directive == 'enable'
+      end
+
+      def disable_enable?
+        disable? || enable?
+      end
+
+      def set?
+        directive == 'set'
+      end
+
+      def reset?
+        directive == 'reset'
+      end
+
+      def set_reset?
+        set? || reset?
+      end
+
+      def all?
+        comment.text.match(COMMENT_DIRECTIVE_REGEXP)[:cops] == 'all'
+      end
+
+      def line
+        comment.loc.expression.line
+      end
+    end
 
     attr_reader :processed_source
 
@@ -25,182 +90,151 @@ module RuboCop
 
     def cop_enabled_at_line?(cop, line_number)
       cop = cop.cop_name if cop.respond_to?(:cop_name)
-      disabled_line_ranges = cop_disabled_line_ranges[cop]
-      return true unless disabled_line_ranges
+      disabled_line_ranges = cop_disabled_line_ranges[cop] or return true
 
       disabled_line_ranges.none? { |range| range.include?(line_number) }
     end
 
-    def cop_disabled_line_ranges
-      @cop_disabled_line_ranges ||= analyze
+    def cop_config_at_line(cop, line_number)
+      cop = cop.cop_name if cop.respond_to?(:cop_name)
+      cop_configs = cop_configs_by_line_range[cop] or return
+
+      cop_configs.reverse.find { |range,| range.cover?(line_number) }&.last
     end
 
-    def extra_enabled_comments
-      extra_enabled_comments_with_names([], {})
+    def cop_disabled_line_ranges
+      @cop_disabled_line_ranges ||= analyze_disables
+    end
+
+    def cop_configs_by_line_range
+      @cop_configs_by_line_range ||= analyze_configs
+    end
+
+    def extra_enabled_comments # rubocop:set Metrics/AbcSize{Max: 26}
+      disabled = all_cop_names.to_h { |name| [name, false] }
+
+      directives
+        .select(&:disable_enable?).reject(&:single_line?)
+        .chunk { |d| d.enable? && d.all? }
+        .each_with_object([]) do |(enable_all, dirs), redundant|
+          # if this group of directives is exploded from
+          # `# rubocop:enable all` comment, it should be handled
+          # as one statement
+          if enable_all
+            redundant << [dirs.first.comment, 'all'] if disabled.values.none?
+            disabled.transform_values! { false }
+          else
+            dirs.each do |dir|
+              redundant << [dir.comment, dir.cop] if dir.enable? && !disabled[dir.cop]
+              disabled[dir.cop] = dir.disable?
+            end
+          end
+        end
     end
 
     private
 
-    def extra_enabled_comments_with_names(extras, names)
-      each_directive do |comment, cop_names, disabled|
-        next unless comment_only_line?(comment.loc.expression.line)
-
-        if !disabled && enable_all?(comment)
-          handle_enable_all(names, extras, comment)
-        else
-          handle_switch(cop_names, names, disabled, extras, comment)
-        end
-      end
-
-      extras
+    def directives
+      @directives ||= processed_source
+                      .comments
+                      .flat_map { |comment| extract_directives(comment) }
     end
 
-    def analyze
-      analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
+    # produces hash {cop name => Array<Range>}
+    def analyze_disables
+      return {} if processed_source.comments.nil?
 
-      each_mentioned_cop do |cop_name, disabled, line, single_line|
-        analyses[cop_name] =
-          analyze_cop(analyses[cop_name], disabled, line, single_line)
-      end
-
-      analyses.each_with_object({}) do |element, hash|
-        cop_name, analysis = *element
-        hash[cop_name] = cop_line_ranges(analysis)
-      end
+      directives
+        .select(&:disable_enable?)
+        .group_by(&:cop)
+        .transform_values { |dirs| disabled_ranges(dirs) }
     end
 
-    def analyze_cop(analysis, disabled, line, single_line)
-      if single_line
-        analyze_single_line(analysis, line, disabled)
-      elsif disabled
-        analyze_disabled(analysis, line)
-      else
-        analyze_rest(analysis, line)
-      end
+    # produces hash {cop name => Array<(range, config hash)>}
+    def analyze_configs
+      return {} if processed_source.comments.nil?
+
+      directives
+        .select(&:set_reset?)
+        .group_by(&:cop)
+        .transform_values { |dirs| cop_settings(dirs) }
     end
 
-    def analyze_single_line(analysis, line, disabled)
-      return analysis unless disabled
+    def extract_directives(comment) # rubocop:set Metrics/AbcSize{Max: 16}
+      match = comment.text.match(COMMENT_DIRECTIVE_REGEXP) or return []
 
-      CopAnalysis.new(analysis.line_ranges + [(line..line)],
-                      analysis.start_line_number)
-    end
-
-    def analyze_disabled(analysis, line)
-      if (start_line = analysis.start_line_number)
-        # Cop already disabled on this line, so we end the current disabled
-        # range before we start a new range.
-        return CopAnalysis.new(analysis.line_ranges + [start_line..line], line)
-      end
-
-      CopAnalysis.new(analysis.line_ranges, line)
-    end
-
-    def analyze_rest(analysis, line)
-      if (start_line = analysis.start_line_number)
-        return CopAnalysis.new(analysis.line_ranges + [start_line..line], nil)
-      end
-
-      CopAnalysis.new(analysis.line_ranges, nil)
-    end
-
-    def cop_line_ranges(analysis)
-      return analysis.line_ranges unless analysis.start_line_number
-
-      analysis.line_ranges + [(analysis.start_line_number..Float::INFINITY)]
-    end
-
-    def each_mentioned_cop
-      each_directive do |comment, cop_names, disabled|
-        comment_line_number = comment.loc.expression.line
-        single_line = !comment_only_line?(comment_line_number) ||
-                      directive_on_comment_line?(comment)
-
-        cop_names.each do |cop_name|
-          yield qualified_cop_name(cop_name), disabled, comment_line_number,
-                single_line
-        end
-      end
-    end
-
-    def directive_on_comment_line?(comment)
-      comment.text[1..-1].match?(COMMENT_DIRECTIVE_REGEXP)
-    end
-
-    def each_directive
-      return if processed_source.comments.nil?
-
-      processed_source.each_comment do |comment|
-        directive = directive_parts(comment)
-        next unless directive
-
-        yield comment, *directive
-      end
-    end
-
-    def directive_parts(comment)
-      match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
-      return unless match
-
-      switch, cops_string = match.captures
+      directive, cops_string = match.values_at(:directive, :cops)
 
       cop_names =
         cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
 
-      disabled = %w[disable todo].include?(switch)
+      single_line = non_comment_token_line_numbers.include?(comment.loc.expression.line)
+      path = processed_source.file_path
 
-      [cop_names, disabled]
+      cop_names.map { |name| Directive.new(path, comment, directive, name, single_line) }
     end
+
+    # rubocop:set Metrics/AbcSize{Max: 26}, Metrics/CyclomaticComplexity{Max: 10}
+    # rubocop:set Metrics/PerceivedComplexity{Max: 11}
+    def disabled_ranges(directives)
+      ranges = []
+      disabled_at = nil
+
+      directives.each do |directive|
+        if directive.single_line? && directive.disable?
+          ranges << (directive.line..directive.line)
+        elsif directive.disable?
+          disabled_at ||= directive.line
+        elsif directive.enable? && disabled_at
+          ranges << (disabled_at..directive.line)
+          disabled_at = nil
+        end
+      end
+      ranges << (disabled_at..Float::INFINITY) if disabled_at
+
+      ranges
+    end
+
+    def cop_settings(directives)
+      ranges = []
+      current_config = nil
+      started_at = nil
+
+      directives.each do |directive|
+        if directive.single_line? && directive.set?
+          ranges << [started_at...directive.line, current_config] if started_at
+          ranges << [directive.line..directive.line, directive.settings]
+          # Restart it from the next line, if it was started
+          started_at = directive.line + 1 if started_at
+        elsif directive.set?
+          ranges << [started_at...directive.line, current_config] if started_at
+          started_at = directive.line
+          current_config = directive.settings
+        elsif directive.reset? && started_at
+          ranges << [started_at..directive.line, current_config]
+          started_at = nil
+        end
+      end
+      ranges << [started_at..processed_source.lines.count, current_config] if started_at
+
+      ranges
+    end
+
+    # rubocop:reset
+
+    # Generic information
 
     def qualified_cop_name(cop_name)
       Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.file_path)
     end
 
+    def non_comment_token_line_numbers
+      @non_comment_token_line_numbers ||=
+        processed_source.tokens.reject(&:comment?).map(&:line).uniq
+    end
+
     def all_cop_names
       @all_cop_names ||= Cop::Cop.registry.names - [REDUNDANT_DISABLE]
-    end
-
-    def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none? do |non_comment_line_number|
-        non_comment_line_number == line_number
-      end
-    end
-
-    def non_comment_token_line_numbers
-      @non_comment_token_line_numbers ||= begin
-        non_comment_tokens = processed_source.tokens.reject(&:comment?)
-        non_comment_tokens.map(&:line).uniq
-      end
-    end
-
-    def enable_all?(comment)
-      _, cops = comment.text.match(COMMENT_DIRECTIVE_REGEXP).captures
-      cops == 'all'
-    end
-
-    def handle_enable_all(names, extras, comment)
-      enabled_cops = 0
-      names.each do |name, counter|
-        next unless counter.positive?
-
-        names[name] -= 1
-        enabled_cops += 1
-      end
-
-      extras << [comment, 'all'] if enabled_cops.zero?
-    end
-
-    def handle_switch(cop_names, names, disabled, extras, comment)
-      cop_names.each do |name|
-        names[name] ||= 0
-        if disabled
-          names[name] += 1
-        elsif (names[name]).positive?
-          names[name] -= 1
-        else
-          extras << [comment, name]
-        end
-      end
     end
   end
 end

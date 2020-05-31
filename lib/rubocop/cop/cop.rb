@@ -102,6 +102,18 @@ module RuboCop
         false
       end
 
+      def push_config(config)
+        @prev_configs ||= []
+        @prev_configs.push(cop_config)
+        @cop_config = cop_config.merge(config)
+      end
+
+      def pop_config
+        return if @prev_configs.nil? || @prev_configs.empty?
+
+        @cop_config = @prev_configs.pop
+      end
+
       def cop_config
         # Use department configuration as basis, but let individual cop
         # configuration override.

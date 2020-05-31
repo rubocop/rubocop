@@ -53,7 +53,9 @@ module RuboCop
         end
         @callbacks[callback].each do |cop|
           with_cop_error_handling(cop, node) do
-            cop.send(callback, node)
+            with_inline_config(cop, node) do
+              cop.send(callback, node)
+            end
           end
         end
       end
@@ -118,6 +120,18 @@ module RuboCop
 
         err = ErrorWithAnalyzedFileLocation.new(cause: e, node: node, cop: cop)
         @errors << err
+      end
+
+      def with_inline_config(cop, node = nil)
+        if node&.loc&.expression && cop.processed_source
+          inline_config = cop.processed_source
+                             .comment_config
+                             .cop_config_at_line(cop.cop_name, node.loc.line)
+        end
+
+        cop.push_config(inline_config) if inline_config
+        yield
+        cop.pop_config if inline_config
       end
     end
   end

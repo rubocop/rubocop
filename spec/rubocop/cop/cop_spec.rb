@@ -351,4 +351,24 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       it { is_expected.to be(true) }
     end
   end
+
+  describe '#push_config & #pop_config' do
+    subject(:active_config) { cop.cop_config }
+
+    let(:cop_config) { { 'Max' => 10 } }
+
+    it('returns global config by default') { expect(active_config).to include(cop_config) }
+
+    context 'when the inline config was pushed' do
+      before { cop.push_config('Max' => 5) }
+
+      it('returns the pushed version') { expect(active_config).to include('Max' => 5) }
+
+      context 'when it was popped again' do
+        before { cop.pop_config }
+
+        it('returns global version') { expect(active_config).to include(cop_config) }
+      end
+    end
+  end
 end
