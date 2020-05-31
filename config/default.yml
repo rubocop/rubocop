@@ -3609,7 +3609,7 @@ Style/RedundantPercentQ:
 
 Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'
-  Enabled: true
+  Enabled: pending
   VersionAdded: '0.85'
 
 Style/RedundantReturn:
