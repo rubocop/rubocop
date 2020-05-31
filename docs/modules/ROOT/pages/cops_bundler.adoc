@@ -67,8 +67,20 @@ Add a comment describing each gem in your Gemfile.
 Optionally, the "OnlyFor" configuration
 can be used to only register offenses when the gems
 use certain options or have version specifiers.
-Add "version_specifiers" and/or the option names
-(e.g. 'required', 'github', etc) you want to check.
+Add "version_specifiers" and/or the gem option names
+you want to check.
+
+A useful use-case is to enforce a comment when using
+options that change the source of a gem:
+
+- `bitbucket`
+- `gist`
+- `git`
+- `github`
+- `source`
+
+For a full list of options supported by bundler,
+you can check the https://bundler.io/man/gemfile.5.html[official documentation].
 
 === Examples
 
