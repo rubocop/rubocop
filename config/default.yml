@@ -3607,6 +3607,11 @@ Style/RedundantPercentQ:
   Enabled: true
   VersionAdded: '0.76'
 
+Style/RedundantRegexpEscape:
+  Description: 'Checks for redundant escapes in Regexps.'
+  Enabled: pending
+  VersionAdded: '0.85'
+
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."
   StyleGuide: '#no-explicit-return'

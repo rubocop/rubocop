@@ -1005,8 +1005,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            '  Description: Consistent indentation either with tabs only or spaces only.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
-           /^  VersionAdded: '[0-9\.]+'$/,
-           /^  VersionChanged: '[0-9\.]+'$/,
+           /^  VersionAdded: '[0-9.]+'$/,
+           /^  VersionChanged: '[0-9.]+'$/,
            '  IndentationWidth:'].join("\n")
         )
       end

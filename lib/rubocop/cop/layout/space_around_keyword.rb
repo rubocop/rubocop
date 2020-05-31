@@ -186,7 +186,7 @@ module RuboCop
           pos = range.begin_pos - 1
           return false if pos.negative?
 
-          range.source_buffer.source[pos] !~ /[\s\(\|\{\[;,\*\=]/
+          range.source_buffer.source[pos] !~ /[\s(|{\[;,*=]/
         end
 
         def space_after_missing?(range)
@@ -198,7 +198,7 @@ module RuboCop
           return false if accept_namespace_operator?(range) &&
                           namespace_operator?(range, pos)
 
-          char !~ /[\s;,#\\\)\}\]\.]/
+          char !~ /[\s;,#\\)}\].]/
         end
 
         def accepted_opening_delimiter?(range, char)
