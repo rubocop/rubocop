@@ -172,8 +172,11 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   context 'when format is invalid' do
-    it 'does not register an offense' do
-      expect_no_offenses("format('%s %2$s', 'foo', 'bar')")
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        format('%s %2$s', 'foo', 'bar')
+        ^^^^^^ Format string is invalid because formatting sequence types (numbered, named or unnumbered) are mixed.
+      RUBY
     end
   end
 

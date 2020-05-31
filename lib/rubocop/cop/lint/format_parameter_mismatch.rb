@@ -7,6 +7,10 @@ module RuboCop
       # expected fields for format/sprintf/#% and what is actually
       # passed as arguments.
       #
+      # In addition it checks whether different formats are used in the same
+      # format string. Do not mix numbered, unnumbered, and named formats in
+      # the same format string.
+      #
       # @example
       #
       #   # bad
@@ -18,16 +22,37 @@ module RuboCop
       #   # good
       #
       #   format('A value: %s and another: %i', a_value, another)
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   format('Unnumbered format: %s and numbered: %2$s', a_value, another)
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   format('Numbered format: %1$s and numbered %2$s', a_value, another)
       class FormatParameterMismatch < Cop
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
               'match the number of fields (%<field_num>i).'
+        MSG_INVALID = 'Format string is invalid because formatting sequence types ' \
+                      '(numbered, named or unnumbered) are mixed.'
 
         KERNEL = 'Kernel'
         SHOVEL = '<<'
         STRING_TYPES = %i[str dstr].freeze
 
         def on_send(node)
+          return unless format_string?(node)
+
+          if invalid_format_string?(node)
+            add_offense(node, location: :selector, message: MSG_INVALID)
+            return
+          end
+
           return unless offending_node?(node)
 
           add_offense(node, location: :selector)
@@ -35,15 +60,20 @@ module RuboCop
 
         private
 
+        def format_string?(node)
+          called_on_string?(node) && method_with_format_args?(node)
+        end
+
+        def invalid_format_string?(node)
+          !RuboCop::Cop::Utils::FormatString.new(node.source).valid?
+        end
+
         def offending_node?(node)
-          return false unless called_on_string?(node)
-          return false unless method_with_format_args?(node)
           return false if splat_args?(node)
 
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
           return false if num_of_format_args == :unknown
-          return false if num_of_expected_fields == :unknown
 
           matched_arguments_count?(num_of_expected_fields, num_of_format_args)
         end
@@ -114,8 +144,6 @@ module RuboCop
           return :unknown unless node.str_type?
 
           format_string = RuboCop::Cop::Utils::FormatString.new(node.source)
-
-          return :unknown unless format_string.valid?
           return 1 if format_string.named_interpolation?
 
           max_digit_dollar_num = format_string.max_digit_dollar_num
