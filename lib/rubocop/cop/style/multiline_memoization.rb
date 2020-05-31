@@ -82,7 +82,7 @@ module RuboCop
         end
 
         def keyword_end_str(node, node_buf)
-          if /[^\s\)]/.match?(node_buf.source_line(node.loc.end.line))
+          if /[^\s)]/.match?(node_buf.source_line(node.loc.end.line))
             "\n" + (' ' * node.loc.column) + 'end'
           else
             'end'

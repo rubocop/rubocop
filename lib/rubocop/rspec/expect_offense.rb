@@ -71,9 +71,27 @@ module RuboCop
     #   RUBY
     #
     #   expect_no_corrections
+    #
+    # If your code has variables of different lengths, you can use `%{foo}`
+    # and `^{foo}` to format your template:
+    #
+    #   %w[raise fail].each do |keyword|
+    #     expect_offense(<<~RUBY, keyword: keyword)
+    #       %{keyword}(RuntimeError, msg)
+    #       ^{keyword}^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument can be removed.
+    #     RUBY
     module ExpectOffense
+      def format_offense(source, **replacements)
+        replacements.each do |keyword, value|
+          source = source.gsub("%{#{keyword}}", value)
+                         .gsub("^{#{keyword}}", '^' * value.size)
+        end
+        source
+      end
+
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      def expect_offense(source, file = nil)
+      def expect_offense(source, file = nil, **replacements)
+        source = format_offense(source, **replacements)
         RuboCop::Formatter::DisabledConfigFormatter
           .config_to_allow_offenses = {}
         RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
