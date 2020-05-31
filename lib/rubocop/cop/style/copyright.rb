@@ -54,7 +54,7 @@ module RuboCop
         def verify_autocorrect_notice!
           raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
 
-          regex = Regexp.new(notice)
+          regex = Regexp.new(notice) # TODO: optimize Regexp creation - cache it
           return if autocorrect_notice&.match?(regex)
 
           raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
@@ -84,7 +84,7 @@ module RuboCop
 
         def notice_found?(processed_source)
           notice_found = false
-          notice_regexp = Regexp.new(notice)
+          notice_regexp = Regexp.new(notice) # TODO: optimize Regexp creation - cache it
           processed_source.each_token do |token|
             break unless token.comment?
 

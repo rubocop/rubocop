@@ -18,7 +18,7 @@ module RuboCop
       end
 
       def matches_ignored_pattern?(line)
-        ignored_patterns.any? { |pattern| Regexp.new(pattern).match?(line) }
+        ignored_patterns.any? { |pattern| Regexp.new(pattern).match?(line) } # TODO: optimize Regexp creation - cache it
       end
 
       def ignored_patterns
