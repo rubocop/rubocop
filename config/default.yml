@@ -153,13 +153,13 @@ Bundler/GemComment:
   Description: 'Add a comment describing each gem.'
   Enabled: false
   VersionAdded: '0.59'
-  VersionChanged: '0.77'
+  VersionChanged: '0.85'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
   IgnoredGems: []
-  OnlyWhenUsingAnyOf: []
+  OnlyFor: []
 
 Bundler/InsecureProtocolSource:
   Description: >-

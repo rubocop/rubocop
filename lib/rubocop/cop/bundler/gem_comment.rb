@@ -5,13 +5,13 @@ module RuboCop
     module Bundler
       # Add a comment describing each gem in your Gemfile.
       #
-      # Optionally, the "OnlyWhenUsingAnyOf" configuration
+      # Optionally, the "OnlyFor" configuration
       # can be used to only register offenses when the gems
       # use certain options or have version specifiers.
-      # Add "with_version_specifiers" and/or the option names
+      # Add "version_specifiers" and/or the option names
       # (e.g. 'required', 'github', etc) you want to check.
       #
-      # @example OnlyWhenUsingAnyOf: [] (default)
+      # @example OnlyFor: [] (default)
       #   # bad
       #
       #   gem 'foo'
@@ -21,7 +21,7 @@ module RuboCop
       #   # Helpers for the foo things.
       #   gem 'foo'
       #
-      # @example OnlyWhenUsingAnyOf: ['with_version_specifiers']
+      # @example OnlyFor: ['version_specifiers']
       #   # bad
       #
       #   gem 'foo', '< 2.1'
@@ -31,7 +31,7 @@ module RuboCop
       #   # Version 2.1 introduces breaking change baz
       #   gem 'foo', '< 2.1'
       #
-      # @example OnlyWhenUsingAnyOf: ['with_version_specifiers', 'github']
+      # @example OnlyFor: ['version_specifiers', 'github']
       #   # bad
       #
       #   gem 'foo', github: 'some_account/some_fork_of_foo'
@@ -50,8 +50,8 @@ module RuboCop
         include DefNode
 
         MSG = 'Missing gem description comment.'
-        CHECKED_OPTIONS_CONFIG = 'OnlyWhenUsingAnyOf'
-        VERSION_SPECIFIERS_OPTION = 'with_version_specifiers'
+        CHECKED_OPTIONS_CONFIG = 'OnlyFor'
+        VERSION_SPECIFIERS_OPTION = 'version_specifiers'
 
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 

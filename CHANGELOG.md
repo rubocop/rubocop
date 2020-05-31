@@ -5,7 +5,7 @@
 ### New features
 
 * [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
-* [#7978](https://github.com/rubocop-hq/rubocop/pull/7978): Add new option `OnlyWhenUsingAnyOf` to the `Bundler/GemComment` cop. ([@ric2b][])
+* [#7978](https://github.com/rubocop-hq/rubocop/pull/7978): Add new option `OnlyFor` to the `Bundler/GemComment` cop. ([@ric2b][])
 
 ### Bug fixes
 

@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
     {
       'Include' => ['**/Gemfile'],
       'IgnoredGems' => ['rake'],
-      'OnlyWhenUsingAnyOf' => []
+      'OnlyFor' => []
     }
   end
 
@@ -63,11 +63,11 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
       end
     end
 
-    context 'when the "OnlyWhenUsingAnyOf" option is set' do
-      before { cop_config['OnlyWhenUsingAnyOf'] = checked_options }
+    context 'when the "OnlyFor" option is set' do
+      before { cop_config['OnlyFor'] = checked_options }
 
       context 'when the version specifiers are checked' do
-        let(:checked_options) { ['with_version_specifiers'] }
+        let(:checked_options) { ['version_specifiers'] }
 
         context 'when a gem is commented' do
           it 'does not register an offense' do
