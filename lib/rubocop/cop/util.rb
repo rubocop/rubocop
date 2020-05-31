@@ -60,7 +60,7 @@ module RuboCop
       end
 
       def begins_its_line?(range)
-        (range.source_line =~ /\S/) == range.column
+        range.source_line.index(/\S/) == range.column
       end
 
       # Returns, for example, a bare `if` node if the given node is an `if`
