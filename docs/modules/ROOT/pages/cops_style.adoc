@@ -7121,7 +7121,7 @@ question = '"What did you say?"'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Enabled
+| Pending
 | Yes
 | Yes
 | 0.85
