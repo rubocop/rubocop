@@ -101,11 +101,15 @@ module RuboCop
         @config = config || Config.new
         @options = options || { debug: false }
 
-        @offenses = []
+        @offenses = Set[]
         @corrections = []
         @corrected_nodes = {}
         @corrected_nodes.compare_by_identity
         @processed_source = nil
+      end
+
+      def offenses
+        @offenses.to_a
       end
 
       def join_force?(_force_class)
@@ -126,14 +130,16 @@ module RuboCop
       def add_offense(node, location: :expression, message: nil, severity: nil)
         loc = find_location(node, location)
 
-        return if duplicate_location?(loc)
 
         severity = find_severity(node, severity)
         message = find_message(node, message)
 
         status = enabled_line?(loc.line) ? correct(node) : :disabled
 
-        @offenses << Offense.new(severity, loc, message, name, status)
+        offense = Offense.new(severity, loc, message, name, status)
+        return if duplicate_offense?(offense)
+
+        @offenses << offense
         yield if block_given? && status != :disabled
       end
 
@@ -142,8 +148,13 @@ module RuboCop
         loc.is_a?(Symbol) ? node.loc.public_send(loc) : loc
       end
 
+      # TODO: remove - it's unused
       def duplicate_location?(location)
         @offenses.any? { |o| o.location == location }
+      end
+
+      def duplicate_offense?(offense)
+        @offenses.include? offense
       end
 
       def correct(node)
