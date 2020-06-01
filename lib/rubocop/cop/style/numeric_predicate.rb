@@ -84,7 +84,7 @@ module RuboCop
         def check(node)
           numeric, operator =
             if style == :predicate
-              comparison(node) || inverted_comparison(node, &invert)
+              comparison(node) || inverted_comparison(node, &method(:invert))
             else
               predicate(node)
             end
@@ -115,12 +115,10 @@ module RuboCop
           node.send_type? && node.binary_operation? && !node.parenthesized?
         end
 
-        def invert
-          lambda do |comparison, numeric|
-            comparison = { :> => :<, :< => :> }[comparison] || comparison
+        def invert(comparison, numeric)
+          comparison = { :> => :<, :< => :> }[comparison] || comparison
 
-            [numeric, comparison]
-          end
+          [numeric, comparison]
         end
 
         def_node_matcher :predicate, <<~PATTERN
