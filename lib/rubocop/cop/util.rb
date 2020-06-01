@@ -108,7 +108,7 @@ module RuboCop
       end
 
       def trim_string_interporation_escape_character(str)
-        str.gsub(/\\\#{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
+        str.gsub(/\\\#\{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
       end
 
       def interpret_string_escapes(string)
