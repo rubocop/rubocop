@@ -67,7 +67,8 @@ module RuboCop
         private
 
         def allowed_method_name?(method_name, prefix)
-          !method_name.match?(/^#{prefix}[^0-9]/) ||
+          #!method_name.match?(/^#{prefix}[^0-9]/) ||
+          !method_name.match?(foo(prefix)) ||
             method_name == expected_name(method_name, prefix) ||
             method_name.end_with?('=') ||
             allowed_methods.include?(method_name)
@@ -87,16 +88,22 @@ module RuboCop
           "Rename `#{method_name}` to `#{new_name}`."
         end
 
+        def foo(prefix)
+          @foo ||= {}
+          @foo[prefix] ||= /^#{prefix}[^0-9]/
+          @foo[prefix]
+        end
+
         def forbidden_prefixes
-          cop_config['ForbiddenPrefixes']
+          @forbidden_prefixes ||= cop_config['ForbiddenPrefixes']
         end
 
         def predicate_prefixes
-          cop_config['NamePrefix']
+          @predicate_prefixes ||= cop_config['NamePrefix']
         end
 
         def allowed_methods
-          cop_config['AllowedMethods']
+          @allowed_methods ||= cop_config['AllowedMethods']
         end
 
         def method_definition_macros(macro_name)
