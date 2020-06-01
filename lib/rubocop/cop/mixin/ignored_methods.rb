@@ -12,7 +12,7 @@ module RuboCop
       end
 
       def ignored_methods
-        cop_config.fetch('IgnoredMethods', [])
+        @ignored_methods ||= cop_config.fetch('IgnoredMethods', [])
       end
     end
   end
