@@ -21,7 +21,7 @@ might want to use a conservative version locking in your `Gemfile`:
 
 [source,rb]
 ----
-gem 'rubocop', '~> 0.84.0', require: false
+gem 'rubocop', '~> 0.85.0', require: false
 ----
 
 NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop-hq/rubocop/milestone/4[here].
