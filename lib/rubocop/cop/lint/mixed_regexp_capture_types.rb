@@ -25,6 +25,8 @@ module RuboCop
               'in a Regexp literal.'
 
         def on_regexp(node)
+          return if contain_non_literal?(node)
+
           tree = Regexp::Parser.parse(node.content)
           return unless named_capture?(tree)
           return unless numbered_capture?(tree)
@@ -33,6 +35,15 @@ module RuboCop
         end
 
         private
+
+        def contain_non_literal?(node)
+          if node.respond_to?(:type) && (node.variable? || node.send_type? || node.const_type?)
+            return true
+          end
+          return false unless node.respond_to?(:children)
+
+          node.children.any? { |child| contain_non_literal?(child) }
+        end
 
         def named_capture?(tree)
           tree.each_expression.any? do |e|
