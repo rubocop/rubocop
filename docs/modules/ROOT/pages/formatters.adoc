@@ -253,7 +253,7 @@ The JSON structure is like the following example:
 *Machine-parsable*
 
 The `junit` style formatter provides the JUnit formatting.
-This formatter is based on https://github.com/mikian/rubocop-junit-formatter[rubocop-junit-formatter gem].
+This formatter is based on the https://github.com/mikian/rubocop-junit-formatter[rubocop-junit-formatter gem].
 
 [source,sh]
 ----
