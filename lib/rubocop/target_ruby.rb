@@ -52,7 +52,10 @@ module RuboCop
         file = ruby_version_file
         return unless file && File.file?(file)
 
+        # rubocop:disable Lint/MixedRegexpCaptureTypes
+        # `(ruby-)` is not a capture type.
         File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
+          # rubocop:enable Lint/MixedRegexpCaptureTypes
           md[:version].to_f
         end
       end
