@@ -213,7 +213,7 @@ module RuboCop
         end
 
         def max
-          cop_config['Max']
+          @max ||= cop_config['Max']
         end
 
         def allow_heredoc?
