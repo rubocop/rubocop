@@ -1,5 +1,5 @@
 name: rubocop
 title: RuboCop
-version: 0.85
+version: master
 nav:
 - modules/ROOT/nav.adoc
