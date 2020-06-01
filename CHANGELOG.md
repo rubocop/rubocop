@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.85.0 (2020-06-01)
+
 ### New features
 
 * [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
