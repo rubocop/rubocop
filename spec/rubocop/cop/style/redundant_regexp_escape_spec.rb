@@ -115,6 +115,53 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
+    context 'with a free-spaced mode regex' do
+      context 'with a commented [ and ]' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~'RUBY')
+            r = /
+              foo # shouldn't start a char class: [
+              \+  # escape is only redundant inside a char class, so not redundant here
+              bar # shouldn't end a char class: ]
+            /x
+          RUBY
+        end
+      end
+
+      context 'with a commented redundant escape' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~'RUBY')
+            r = /
+              foo # redundant unless commented: \-
+            /x
+          RUBY
+        end
+      end
+
+      context 'with a commented redundant escape on a single line' do
+        it 'does not register an offense' do
+          expect_no_offenses('r = /foo # redundant unless commented: \-/x')
+        end
+      end
+
+      context 'with redundant escape preceded by an escaped comment' do
+        it 'registers offenses and corrects' do
+          expect_offense(<<~'RUBY')
+            r = /
+              foo \# \-
+                     ^^ Redundant escape inside regexp literal
+            /x
+          RUBY
+
+          expect_correction(<<~'RUBY')
+            r = /
+              foo \# -
+            /x
+          RUBY
+        end
+      end
+    end
+
     context 'with regexp options and a redundant escape' do
       it 'registers offenses and corrects' do
         expect_offense(<<~'RUBY')
