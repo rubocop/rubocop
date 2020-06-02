@@ -524,8 +524,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    context 'multiline array does not collapse successive right-brackets' do
-      it 'registers an offense and corrects' do
+    context 'multiline, 2-dimensional array with spaces' do
+      pending 'registers an offense and corrects at the beginning of array' do
+        expect_offense(<<~RUBY)
+          multiline = [ [ 1, 2, 3, 4 ],
+                       ^ #{no_space_message}
+            [ 3, 4, 5, 6 ]]
+        RUBY
+
+        expect_correction(<<~RUBY, loop: false)
+          multiline = [[ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
+      end
+
+      pending 'registers an offense and corrects at the end of array' do
         expect_offense(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ] ]
@@ -533,7 +546,37 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         RUBY
 
         expect_correction(<<~RUBY, loop: false)
-          multiline = [ [ 1, 2, 3, 4 ],
+          multiline = [[ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
+      end
+    end
+
+    context 'multiline, 2-dimensional array with newlines' do
+      pending 'registers an offense and corrects at the beginning of array' do
+        expect_offense(<<~RUBY)
+          multiline = [
+                       ^{} #{no_space_message}
+            [ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
+
+        expect_correction(<<~RUBY, loop: false)
+          multiline = [[ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]]
+        RUBY
+      end
+
+      pending 'registers an offense and corrects at the end of array' do
+        expect_offense(<<~RUBY)
+          multiline = [[ 1, 2, 3, 4 ],
+            [ 3, 4, 5, 6 ]
+                          ^{} #{no_space_message}
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY, loop: false)
+          multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
       end
@@ -568,37 +611,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_correction(<<~RUBY)
         [[ a, b ], [ foo, [ bar, baz ]]]
       RUBY
-    end
-
-    context 'multiline array does not collapse successive left-brackets' do
-      it 'registers an offense, and auto-corrects' do
-        expect_offense(<<~RUBY)
-          multiline = [
-                       ^{} #{no_space_message}
-            [ 1, 2, 3, 4 ],
-            [ 3, 4, 5, 6 ]]
-        RUBY
-
-        expect_correction(<<~RUBY, loop: false)
-          multiline = [
-            [ 1, 2, 3, 4 ],
-            [ 3, 4, 5, 6 ] ]
-        RUBY
-      end
-    end
-
-    context 'multiline array does not collapse any successive brackets' do
-      it 'registers an offense, but does not autocorrect' do
-        expect_offense(<<~RUBY)
-          array = [
-                   ^{} #{no_space_message}
-            [ a ],
-            [ b, c ]
-          ]
-        RUBY
-
-        expect_no_corrections
-      end
     end
   end
 end
