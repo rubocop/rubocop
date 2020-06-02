@@ -154,8 +154,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
         RUBY
       end
 
-      it 'accepts no space after the last comma' do
-        expect_no_offenses('{}.each { |x,| puts x }')
+      it 'registers an offense for space before and after the last comma' do
+        expect_offense(<<~RUBY)
+          {}.each { |x , | puts x }
+                        ^ Space after last block parameter detected.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {}.each { |x ,| puts x }
+        RUBY
       end
     end
 
@@ -351,6 +358,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     context 'trailing comma' do
       it 'accepts space after the last comma' do
         expect_no_offenses('{}.each { | x, | puts x }')
+      end
+
+      it 'accepts space both before and after the last comma' do
+        expect_no_offenses('{}.each { | x , | puts x }')
       end
 
       it 'registers an offense and corrects no space after the last comma' do
