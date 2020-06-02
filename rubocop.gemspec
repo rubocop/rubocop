@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.4.0'
   s.authors = ['Bozhidar Batsov', 'Jonas Arvidsson', 'Yuji Nakayama']
   s.description = <<-DESCRIPTION
-    Automatic Ruby code style checking tool.
-    Aims to enforce the community-driven Ruby Style Guide.
+    RuboCop is a Ruby code style checking and code formatting tool.
+    It aims to enforce the community-driven Ruby Style Guide.
   DESCRIPTION
 
   s.email = 'rubocop@googlegroups.com'
