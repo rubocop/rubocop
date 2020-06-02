@@ -31,6 +31,14 @@ module RuboCop
         validate_config
       end
 
+      # @return [Team]
+      def self.new(cop_or_classes, config, options = nil)
+        # Support v0 api:
+        return mobilize(cop_or_classes, config, options) if cop_or_classes.first.is_a?(Class)
+
+        super
+      end
+
       # @return [Team] with cops assembled from the given `cop_classes`
       def self.mobilize(cop_classes, config, options = nil)
         options ||= DEFAULT_OPTIONS
