@@ -370,4 +370,17 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
   end
+
+  describe '.new' do
+    it 'calls mobilize when passed classes' do
+      expect(described_class).to receive(:mobilize).with(cop_classes, config, options)
+      described_class.new(cop_classes, config, options)
+    end
+
+    it 'accepts cops directly classes' do
+      cop = RuboCop::Cop::Metrics::AbcSize.new
+      team = described_class.new([cop], config, options)
+      expect(team.cops.first).to equal(cop)
+    end
+  end
 end
