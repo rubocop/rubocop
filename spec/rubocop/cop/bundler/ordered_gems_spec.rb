@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem "i"
       RUBY
 
-      expect_correction(<<~RUBY, loop: true)
+      expect_correction(<<~RUBY)
         gem "a"
         gem "b"
         gem "c"
@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'rspec'   # For test
       RUBY
 
-      expect_correction(<<~RUBY, loop: true)
+      expect_correction(<<~RUBY)
         gem 'pry'
         gem 'rspec'   # For test
         gem 'rubocop' # For code quality

@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
           )
         RUBY
 
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           bar(
             foo(123, <<-SQL),
               foo
@@ -503,7 +503,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
                               ^ Put the closing parenthesis for a method call with a HEREDOC parameter on the same line as the HEREDOC opening.
         RUBY
 
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           query.order(Arel.sql(<<-SQL)
             foo
           SQL

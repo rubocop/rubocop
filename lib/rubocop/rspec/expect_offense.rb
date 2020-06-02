@@ -115,7 +115,7 @@ module RuboCop
         expect(actual_annotations.to_s).to eq(expected_annotations.to_s)
       end
 
-      def expect_correction(correction, loop: false)
+      def expect_correction(correction, loop: true)
         raise '`expect_correction` must follow `expect_offense`' unless @processed_source
 
         iteration = 0

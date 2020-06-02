@@ -634,7 +634,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         #{keyword} A
           private
           def method1

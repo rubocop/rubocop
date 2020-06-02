@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         end
       RUBY
 
-      expect_correction(<<~RUBY, loop: true)
+      expect_correction(<<~RUBY)
         class Person
           include AnotherModule
           extend SomeModule
