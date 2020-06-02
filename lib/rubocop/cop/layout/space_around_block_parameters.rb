@@ -54,17 +54,11 @@ module RuboCop
         end
 
         def check_inside_pipes(arguments)
-          opening_pipe, closing_pipe = pipes(arguments)
-
           case style
           when :no_space
-            check_no_space_style_inside_pipes(arguments.children,
-                                              opening_pipe,
-                                              closing_pipe)
+            check_no_space_style_inside_pipes(arguments)
           when :space
-            check_space_style_inside_pipes(arguments.children,
-                                           opening_pipe,
-                                           closing_pipe)
+            check_space_style_inside_pipes(arguments)
           end
         end
 
@@ -76,22 +70,29 @@ module RuboCop
                       closing_pipe, 'after closing `|`')
         end
 
-        def check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+        def check_no_space_style_inside_pipes(arguments)
+          args = arguments.children
+          opening_pipe, closing_pipe = pipes(arguments)
+
           first = args.first.source_range
           last = args.last.source_range
 
           check_no_space(opening_pipe.end_pos, first.begin_pos,
                          'Space before first')
-          check_no_space(last_end_pos_inside_pipes(last),
+          check_no_space(last_end_pos_inside_pipes(arguments, last),
                          closing_pipe.begin_pos, 'Space after last')
         end
 
-        def check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
-          check_opening_pipe_space(args, opening_pipe)
-          check_closing_pipe_space(args, closing_pipe)
+        def check_space_style_inside_pipes(arguments)
+          opening_pipe, closing_pipe = pipes(arguments)
+
+          check_opening_pipe_space(arguments, opening_pipe)
+          check_closing_pipe_space(arguments, closing_pipe)
         end
 
-        def check_opening_pipe_space(args, opening_pipe)
+        def check_opening_pipe_space(arguments, opening_pipe)
+          args = arguments.children
+
           first_arg = args.first
           range = first_arg.source_range
 
@@ -101,9 +102,11 @@ module RuboCop
                          'Extra space before first')
         end
 
-        def check_closing_pipe_space(args, closing_pipe)
+        def check_closing_pipe_space(arguments, closing_pipe)
+          args = arguments.children
+
           last         = args.last.source_range
-          last_end_pos = last_end_pos_inside_pipes(last)
+          last_end_pos = last_end_pos_inside_pipes(arguments, last)
 
           check_space(last_end_pos, closing_pipe.begin_pos, last,
                       'after last block parameter')
@@ -111,9 +114,12 @@ module RuboCop
                          'Extra space after last')
         end
 
-        def last_end_pos_inside_pipes(range)
+        def last_end_pos_inside_pipes(arguments, range)
           pos = range.end_pos
-          range.source_buffer.source[pos] == ',' ? pos + 1 : pos
+          num = pos - arguments.source_range.begin_pos
+          trailing_comma_index = arguments.source[num..-1].index(',')
+
+          trailing_comma_index ? pos + trailing_comma_index + 1 : pos
         end
 
         def check_each_arg(args)
