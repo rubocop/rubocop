@@ -210,7 +210,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
         ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       RUBY
 
-      expect_correction(<<~RUBY, loop: true)
+      expect_correction(<<~RUBY)
         begin
           begin
             blah

@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'autocorrects the inner offense first' do
       expect_offense(annotated_source)
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         if var.any?(:prob_a_check)
           @errors << 'Problem A'
         elsif var.any?(:prob_a_check)
@@ -2079,7 +2079,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           unless foo
             baz = if foobar
               1
@@ -2212,7 +2212,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'does not consider branches of nested ifs' do
       expect_offense(annotated_source)
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         if outer
           bar = 1
         else

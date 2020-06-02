@@ -529,7 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         def batch
           @areas   = params[:param].map {
                        var_1      = 123_456
