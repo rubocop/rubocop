@@ -22,6 +22,8 @@ module RuboCop
 
     # Registry that tracks all cops by their badge and department.
     class Registry
+      include Enumerable
+
       def initialize(cops = [], options = {})
         @registry = {}
         @departments = {}
