@@ -128,6 +128,7 @@ module RuboCop
 
           break corrected_source unless loop
           break corrected_source if cop.corrections.empty?
+          break corrected_source if corrected_source == @processed_source.buffer.source
 
           if iteration > RuboCop::Runner::MAX_ITERATIONS
             raise RuboCop::Runner::InfiniteCorrectionLoop.new(@processed_source.path, [])
@@ -135,6 +136,8 @@ module RuboCop
 
           # Prepare for next loop
           cop.instance_variable_set(:@corrections, [])
+          # Cache invalidation. This is bad!
+          cop.instance_variable_set(:@token_table, nil)
           @processed_source = parse_source(corrected_source,
                                            @processed_source.path)
           _investigate(cop, @processed_source)
