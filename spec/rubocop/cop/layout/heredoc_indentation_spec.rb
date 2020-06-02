@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<~CORRECTION, loop: true)
+        expect_correction(<<~CORRECTION)
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<-CORRECTION, loop: true)
+        expect_correction(<<-CORRECTION)
         puts <<~#{quote}RUBY2#{quote}
           def foo
             bar

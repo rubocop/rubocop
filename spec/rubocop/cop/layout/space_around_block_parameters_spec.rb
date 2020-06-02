@@ -359,7 +359,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
                       ^ Space after last block parameter missing.
         RUBY
 
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           {}.each { | x ,| puts x }
         RUBY
       end
