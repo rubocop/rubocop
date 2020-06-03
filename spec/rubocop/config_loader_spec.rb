@@ -527,38 +527,19 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     context 'when a third party require defines a new gem' do
-      before do
-        allow(RuboCop::Cop::Cop)
-          .to receive(:registry)
-          .and_return(
-            RuboCop::Cop::Registry.new(RuboCop::Cop::Cop.registry.cops)
-          )
-
-        create_file('third_party/gem.rb', <<~RUBY)
-          module RuboCop
-            module Cop
-              module Custom
-                class Loop < Cop
-                end
-              end
-            end
-          end
-        RUBY
-
-        create_file('.rubocop.yml', <<~YAML)
-          Custom/Loop:
-            Enabled: false
-        YAML
-
-        create_file('.rubocop_with_require.yml', <<~YAML)
-          require: ./third_party/gem
-          Custom/Loop:
-            Enabled: false
-        YAML
+      around do |example|
+        RuboCop::Cop::Registry.with_temporary_global { example.run }
       end
 
-      it 'does not emit a warning' do
-        aggregate_failures('loads requires before resolving namespace') do
+      context 'when the gem is not loaded' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            Custom/Loop:
+              Enabled: false
+          YAML
+        end
+
+        it 'emits a warning' do
           expect { described_class.configuration_from_file('.rubocop.yml') }
             .to output(
               a_string_including(
@@ -566,7 +547,30 @@ RSpec.describe RuboCop::ConfigLoader do
                 "wrong namespace - should be Lint\n"
               )
             ).to_stderr
+        end
+      end
 
+      context 'when the gem is loaded' do
+        before do
+          create_file('third_party/gem.rb', <<~RUBY)
+            module RuboCop
+              module Cop
+                module Custom
+                  class Loop < Cop
+                  end
+                end
+              end
+            end
+          RUBY
+
+          create_file('.rubocop_with_require.yml', <<~YAML)
+            require: ./third_party/gem
+            Custom/Loop:
+              Enabled: false
+          YAML
+        end
+
+        it 'does not emit a warning' do
           expect do
             described_class.configuration_from_file('.rubocop_with_require.yml')
           end.not_to output.to_stderr

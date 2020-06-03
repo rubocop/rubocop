@@ -321,15 +321,10 @@ RSpec.describe RuboCop::Cop::Generator do
     include FileHelper
 
     around do |example|
-      orig_registry = RuboCop::Cop::Cop.registry
-      RuboCop::Cop::Cop.instance_variable_set(
-        :@registry,
-        RuboCop::Cop::Registry.new(
-          [RuboCop::Cop::InternalAffairs::NodeDestructuring]
-        )
+      new_global = RuboCop::Cop::Registry.new(
+        [RuboCop::Cop::InternalAffairs::NodeDestructuring]
       )
-      example.run
-      RuboCop::Cop::Cop.instance_variable_set(:@registry, orig_registry)
+      RuboCop::Cop::Registry.with_temporary_global(new_global) { example.run }
     end
 
     let(:config) do
