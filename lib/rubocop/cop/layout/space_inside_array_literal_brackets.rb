@@ -224,6 +224,12 @@ module RuboCop
           range = side_space_range(range: bracket.pos, side: side)
           corrector.remove(range)
         end
+
+        # copied from SurroundingSpace
+        def empty_brackets?(left_bracket_token, right_bracket_token)
+          left_index = processed_source.tokens.index(left_bracket_token)
+          processed_source.tokens[left_index + 1] == right_bracket_token
+        end
       end
     end
   end
