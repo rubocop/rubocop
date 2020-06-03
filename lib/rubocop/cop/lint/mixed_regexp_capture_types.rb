@@ -27,7 +27,14 @@ module RuboCop
         def on_regexp(node)
           return if contain_non_literal?(node)
 
-          tree = Regexp::Parser.parse(node.content)
+          begin
+            tree = Regexp::Parser.parse(node.content)
+          # Returns if a regular expression that cannot be processed by regexp_parser gem.
+          # https://github.com/rubocop-hq/rubocop/issues/8083
+          rescue Regexp::Scanner::ScannerError
+            return
+          end
+
           return unless named_capture?(tree)
           return unless numbered_capture?(tree)
 
