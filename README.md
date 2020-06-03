@@ -29,8 +29,6 @@ RuboCop is extremely flexible and most aspects of its behavior can be tweaked vi
 Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 **Please consider [financially supporting its ongoing development](#funding).**
 
 ## Installation
