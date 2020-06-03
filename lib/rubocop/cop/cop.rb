@@ -44,22 +44,8 @@ module RuboCop
       attr_reader :config, :offenses, :corrections
       attr_accessor :processed_source # TODO: Bad design.
 
-      @registry = Registry.new
-
-      class << self
-        attr_reader :registry
-      end
-
-      def self.all
-        registry.without_department(:Test).cops
-      end
-
-      def self.qualified_cop_name(name, origin)
-        registry.qualified_cop_name(name, origin)
-      end
-
       def self.inherited(subclass)
-        registry.enlist(subclass)
+        Registry.global.enlist(subclass)
       end
 
       def self.badge
@@ -244,6 +230,23 @@ module RuboCop
       # ie when the ResultCache should be invalidated.
       def external_dependency_checksum
         nil
+      end
+
+      ### Deprecated registry access
+
+      # @deprecated Use Registry.global
+      def self.registry
+        Registry.global
+      end
+
+      # @deprecated Use Registry.all
+      def self.all
+        Registry.all
+      end
+
+      # @deprecated Use Registry.qualified_cop_name
+      def self.qualified_cop_name(name, origin)
+        Registry.qualified_cop_name(name, origin)
       end
 
       private
