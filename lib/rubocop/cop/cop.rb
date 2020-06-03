@@ -23,7 +23,7 @@ module RuboCop
     #       # Do custom processing
     #     end
     #   end
-    class Cop
+    class Cop # rubocop:disable Metrics/ClassLength
       extend RuboCop::AST::Sexp
       extend NodePattern::Macros
       include RuboCop::AST::Sexp
@@ -46,6 +46,10 @@ module RuboCop
 
       def self.inherited(subclass)
         Registry.global.enlist(subclass)
+      end
+
+      def self.exclude_from_registry
+        Registry.global.dismiss(self)
       end
 
       def self.badge
