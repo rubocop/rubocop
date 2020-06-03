@@ -54,6 +54,29 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.cops).not_to include(klass)
   end
 
+  context 'when dismissing a cop class' do
+    let(:cop_class) { ::RuboCop::Cop::Metrics::AbcSize }
+
+    before { registry.enlist(cop_class) }
+
+    it 'allows it if done rapidly' do
+      registry.dismiss(cop_class)
+      expect(registry.cops).not_to include(cop_class)
+    end
+
+    it 'disallows it if done too late' do
+      expect(registry.cops).to include(cop_class)
+      expect { registry.dismiss(cop_class) }.to raise_error(RuntimeError)
+    end
+
+    it 'allows re-listing' do
+      registry.dismiss(cop_class)
+      expect(registry.cops).not_to include(cop_class)
+      registry.enlist(cop_class)
+      expect(registry.cops).to include(cop_class)
+    end
+  end
+
   it 'exposes cop departments' do
     expect(registry.departments).to eql(%i[Lint Layout Metrics RSpec Test])
   end
