@@ -24,6 +24,8 @@ module RuboCop
     class Registry
       include Enumerable
 
+      attr_reader :options
+
       def initialize(cops = [], options = {})
         @registry = {}
         @departments = {}
@@ -139,7 +141,7 @@ module RuboCop
         @registry.size
       end
 
-      def enabled(config, only, only_safe = false)
+      def enabled(config, only = [], only_safe = false)
         select do |cop|
           only.include?(cop.cop_name) || enabled?(cop, config, only_safe)
         end
@@ -193,7 +195,35 @@ module RuboCop
         @cops_by_cop_name[cop_name].first
       end
 
+      @global = new
+
+      class << self
+        attr_reader :global
+      end
+
+      def self.all
+        global.without_department(:Test).cops
+      end
+
+      def self.qualified_cop_name(name, origin)
+        global.qualified_cop_name(name, origin)
+      end
+
+      # Changes momentarily the global registry
+      # Intended for testing purposes
+      def self.with_temporary_global(temp_global = global.dup)
+        previous = @global
+        @global = temp_global
+        yield
+      ensure
+        @global = previous
+      end
+
       private
+
+      def initialize_copy(reg)
+        initialize(reg.cops, reg.options)
+      end
 
       def with(cops)
         self.class.new(cops)

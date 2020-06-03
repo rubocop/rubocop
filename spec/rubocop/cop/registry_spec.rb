@@ -43,13 +43,15 @@ RSpec.describe RuboCop::Cop::Registry do
   # store. The workaround is to replace the global cop store with a temporary
   # store during these tests
   around do |test|
-    registry        = RuboCop::Cop::Cop.registry
-    temporary_store = described_class.new(registry.cops)
-    RuboCop::Cop::Cop.instance_variable_set(:@registry, temporary_store)
+    described_class.with_temporary_global { test.run }
+  end
 
-    test.run
-
-    RuboCop::Cop::Cop.instance_variable_set(:@registry, registry)
+  it 'can be cloned' do
+    klass = ::RuboCop::Cop::Metrics::AbcSize
+    copy = registry.dup
+    copy.enlist(klass)
+    expect(copy.cops).to include(klass)
+    expect(registry.cops).not_to include(klass)
   end
 
   it 'exposes cop departments' do
