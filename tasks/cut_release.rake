@@ -11,6 +11,10 @@ namespace :cut_release do
     end
   end
 
+  def version_sans_patch(version)
+    version.split('.').take(2).join('.')
+  end
+
   def update_readme(old_version, new_version)
     readme = File.read('README.md')
 
@@ -28,7 +32,7 @@ namespace :cut_release do
     File.open('docs/antora.yml', 'w') do |f|
       f << antora_metadata.sub(
         'version: master',
-        "version: #{new_version}"
+        "version: #{version_sans_patch(new_version)}"
       )
     end
 
