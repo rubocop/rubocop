@@ -32,7 +32,7 @@ module RuboCop
       end
 
       # @return [Team]
-      def self.new(cop_or_classes, config, options = nil)
+      def self.new(cop_or_classes, config, options = {})
         # Support v0 api:
         return mobilize(cop_or_classes, config, options) if cop_or_classes.first.is_a?(Class)
 
