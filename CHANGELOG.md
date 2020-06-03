@@ -4,6 +4,10 @@
 
 ## 0.85.0 (2020-06-01)
 
+### Bug fixes
+
+* [#8083](https://github.com/rubocop-hq/rubocop/issues/8083): Fix an error for `Lint/MixedRegexpCaptureTypes` cop when using a regular expression that cannot be processed by regexp_parser gem. ([@koic][])
+
 ### New features
 
 * [#6289](https://github.com/rubocop-hq/rubocop/issues/6289): Add new `CheckDefinitionPathHierarchy` option for `Naming/FileName`. ([@jschneid][])
