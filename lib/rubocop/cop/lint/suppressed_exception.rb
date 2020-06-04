@@ -78,7 +78,7 @@ module RuboCop
 
         def comment_between_rescue_and_end?(node)
           end_line = nil
-          node.each_ancestor(:kwbegin, :def, :block) do |ancestor|
+          node.each_ancestor(:kwbegin, :def, :defs, :block) do |ancestor|
             end_line = ancestor.loc.end.line
             break
           end
