@@ -120,7 +120,8 @@ module RuboCop
       file_offense_cache(file) do
         source = get_processed_source(file)
         source, offenses = do_inspection_loop(file, source)
-        add_redundant_disables(file, offenses.compact.sort, source)
+        offenses = add_redundant_disables(file, offenses.compact.sort, source)
+        offenses.sort.reject(&:disabled?).freeze
       end
     end
 
@@ -151,16 +152,30 @@ module RuboCop
     end
 
     def add_redundant_disables(file, offenses, source)
-      if check_for_redundant_disables?(source)
-        redundant_cop_disable_directive(file) do |cop|
-          cop.check(offenses, source.disabled_line_ranges, source.comments)
-          offenses += cop.offenses
-          offenses += autocorrect_redundant_disables(file, source, cop,
-                                                     offenses)
+      team_for_redundant_disables(file, offenses, source) do |team|
+        new_offenses, redundant_updated = inspect_file(source, team)
+        offenses += new_offenses
+        if redundant_updated
+          # Do one extra inspection loop if any redundant disables were
+          # removed. This is done in order to find rubocop:enable directives that
+          # have now become useless.
+          _source, new_offenses = do_inspection_loop(file,
+                                                     get_processed_source(file))
+          offenses |= new_offenses
         end
       end
+      offenses
+    end
 
-      offenses.sort.reject(&:disabled?).freeze
+    def team_for_redundant_disables(file, offenses, source)
+      return unless check_for_redundant_disables?(source)
+
+      config = @config_store.for_file(file)
+      team = Cop::Team.mobilize([Cop::Lint::RedundantCopDisableDirective], config, @options)
+      return if team.cops.empty?
+
+      team.cops.first.offenses_to_check = offenses
+      yield team
     end
 
     def check_for_redundant_disables?(source)
@@ -178,22 +193,6 @@ module RuboCop
 
     def filtered_run?
       @options[:except] || @options[:only]
-    end
-
-    def autocorrect_redundant_disables(file, source, cop, offenses)
-      cop.processed_source = source
-
-      team = Cop::Team.mobilize(RuboCop::Cop::Registry.new, nil, @options)
-      team.autocorrect(source.buffer, [cop])
-
-      return [] unless team.updated_source_file?
-
-      # Do one extra inspection loop if any redundant disables were
-      # removed. This is done in order to find rubocop:enable directives that
-      # have now become useless.
-      _source, new_offenses = do_inspection_loop(file,
-                                                 get_processed_source(file))
-      new_offenses - offenses
     end
 
     def file_started(file)
@@ -293,13 +292,16 @@ module RuboCop
       @processed_sources << checksum
     end
 
-    def inspect_file(processed_source)
-      config = @config_store.for_file(processed_source.path)
-      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
-      offenses = team.inspect_file(processed_source)
+    def inspect_file(processed_source, team = mobilize_team(processed_source))
+      report = team.investigate(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
-      [offenses, team.updated_source_file?]
+      [report.offenses, team.updated_source_file?]
+    end
+
+    def mobilize_team(processed_source)
+      config = @config_store.for_file(processed_source.path)
+      Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
 
     def mobilized_cop_classes(config)

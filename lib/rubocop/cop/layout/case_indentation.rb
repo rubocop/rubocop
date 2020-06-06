@@ -67,10 +67,11 @@ module RuboCop
       #   else
       #     y / 3
       #   end
-      class CaseIndentation < Cop
+      class CaseIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Indent `when` %<depth>s `%<base>s`.'
 
@@ -79,16 +80,6 @@ module RuboCop
 
           case_node.each_when do |when_node|
             check_when(when_node)
-          end
-        end
-
-        def autocorrect(node)
-          whitespace = whitespace_range(node)
-
-          return false unless whitespace.source.strip.empty?
-
-          lambda do |corrector|
-            corrector.replace(whitespace, replacement(node))
           end
         end
 
@@ -114,22 +105,30 @@ module RuboCop
         end
 
         def incorrect_style(when_node)
-          when_column = when_node.loc.keyword.column
-          base_column = base_column(when_node.parent, alternative_style)
+          add_offense(when_node.loc.keyword) do |corrector|
+            detect_incorrect_style(when_node)
 
-          add_offense(when_node, location: :keyword, message: message(style)) do
-            if when_column == base_column
-              opposite_style_detected
-            else
-              unrecognized_style_detected
-            end
+            whitespace = whitespace_range(when_node)
+
+            corrector.replace(whitespace, replacement(when_node)) if whitespace.source.strip.empty?
           end
         end
 
-        def message(base)
+        def detect_incorrect_style(when_node)
+          when_column = when_node.loc.keyword.column
+          base_column = base_column(when_node.parent, alternative_style)
+
+          if when_column == base_column
+            opposite_style_detected
+          else
+            unrecognized_style_detected
+          end
+        end
+
+        def find_message(*)
           depth = indent_one_step? ? 'one step more than' : 'as deep as'
 
-          format(MSG, depth: depth, base: base)
+          format(MSG, depth: depth, base: style)
         end
 
         def base_column(case_node, base)

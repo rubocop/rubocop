@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Team do
 
   let(:cop_classes) { RuboCop::Cop::Cop.registry }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
-  let(:options) { nil }
+  let(:options) { {} }
   let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
   before do
@@ -91,8 +91,8 @@ RSpec.describe RuboCop::Cop::Team do
     include FileHelper
 
     let(:file_path) { '/tmp/example.rb' }
+    let(:source) { RuboCop::ProcessedSource.from_file(file_path, ruby_version) }
     let(:offenses) do
-      source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
       team.inspect_file(source)
     end
 
@@ -206,8 +206,27 @@ RSpec.describe RuboCop::Cop::Team do
       it 'records Team#errors' do
         source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
 
-        expect { team.inspect_file(source) }.to raise_error(cause)
+        team.inspect_file(source)
         expect($stderr.string).to include(error_message)
+      end
+    end
+
+    context 'when done twice' do
+      let(:persisting_cop_class) do
+        klass = Class.new(RuboCop::Cop::Base)
+        klass.exclude_from_registry
+        klass.define_singleton_method(:support_multiple_source?) { true }
+        stub_const('Test::Persisting', klass)
+        klass
+      end
+      let(:cop_classes) { [persisting_cop_class, RuboCop::Cop::Base] }
+
+      it 'allows cops to get ready' do
+        before = team.cops.dup
+        team.inspect_file(source)
+        team.inspect_file(source)
+        expect(team.cops).to match_array([be(before.first), be_a(RuboCop::Cop::Base)])
+        expect(team.cops.last).not_to be(before.last)
       end
     end
   end
@@ -217,7 +236,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     it 'returns cop instances' do
       expect(cops.empty?).to be(false)
-      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Cop) }).to be_truthy
+      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Base) }).to be_truthy
     end
 
     context 'when only some cop classes are passed to .new' do

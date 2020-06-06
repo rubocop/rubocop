@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Formatter::FileListFormatter, :config do
   subject(:formatter) { described_class.new(output) }
 
   let(:output) { StringIO.new }
-
+  let(:cop_class) { RuboCop::Cop::Cop }
   let(:source) { %w[a b cdefghi].join("\n") }
 
   describe '#file_finished' do

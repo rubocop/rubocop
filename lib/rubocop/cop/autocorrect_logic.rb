@@ -13,11 +13,7 @@ module RuboCop
       end
 
       def correctable?
-        support_autocorrect? || disable_uncorrectable?
-      end
-
-      def support_autocorrect?
-        respond_to?(:autocorrect)
+        self.class.support_autocorrect? || disable_uncorrectable?
       end
 
       def disable_uncorrectable?
@@ -40,8 +36,9 @@ module RuboCop
         true
       end
 
-      def disable_offense(node)
-        range = node.location.expression
+      private
+
+      def disable_offense(range)
         eol_comment = " # rubocop:todo #{cop_name}"
         needed_line_length = (range.source_line + eol_comment).length
         if needed_line_length <= max_line_length
@@ -51,8 +48,6 @@ module RuboCop
           disable_offense_before_and_after(range_by_lines(range))
         end
       end
-
-      private
 
       def range_of_first_line(range)
         begin_of_first_line = range.begin_pos - range.column
@@ -82,23 +77,18 @@ module RuboCop
       end
 
       def disable_offense_at_end_of_line(range, eol_comment)
-        ->(corrector) { corrector.insert_after(range, eol_comment) }
+        Corrector.new(range).insert_after(range, eol_comment)
       end
 
       def disable_offense_before_and_after(range_by_lines)
-        lambda do |corrector|
-          range_with_newline = range_by_lines.resize(range_by_lines.size + 1)
-          leading_whitespace = range_by_lines.source_line[/^\s*/]
+        range_with_newline = range_by_lines.resize(range_by_lines.size + 1)
+        leading_whitespace = range_by_lines.source_line[/^\s*/]
 
-          corrector.insert_before(
-            range_with_newline,
-            "#{leading_whitespace}# rubocop:todo #{cop_name}\n"
-          )
-          corrector.insert_after(
-            range_with_newline,
-            "#{leading_whitespace}# rubocop:enable #{cop_name}\n"
-          )
-        end
+        Corrector.new(range_by_lines).wrap(
+          range_with_newline,
+          "#{leading_whitespace}# rubocop:todo #{cop_name}\n",
+          "#{leading_whitespace}# rubocop:enable #{cop_name}\n"
+        )
       end
     end
   end

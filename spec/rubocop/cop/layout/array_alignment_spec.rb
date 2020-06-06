@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
              [:l4]]]]
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         [:l1,
          [:l2,
            [:l3,
@@ -233,7 +233,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
                 [:l4]]]]
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         [:l1,
           [:l2,
              [:l3,

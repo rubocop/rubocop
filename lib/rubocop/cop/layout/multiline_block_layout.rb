@@ -105,7 +105,6 @@ module RuboCop
         def add_offense_for_expression(node, expr, msg)
           expression = expr.source_range
           range = range_between(expression.begin_pos, expression.end_pos)
-
           add_offense(node, location: range, message: msg)
         end
 

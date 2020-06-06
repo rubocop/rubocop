@@ -25,34 +25,34 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class RedundantCopDisableDirective < Cop
+      class RedundantCopDisableDirective < Base
         include RangeHelp
+        extend AutoCorrector
 
         COP_NAME = 'Lint/RedundantCopDisableDirective'
 
-        def check(offenses, cop_disabled_line_ranges, comments)
+        attr_accessor :offenses_to_check
+
+        def initialize(config = nil, options = nil, offenses = nil)
+          @offenses_to_check = offenses
+          super(config, options)
+        end
+
+        def on_new_investigation
+          return unless offenses_to_check
+
+          comments = processed_source.comments
+          cop_disabled_line_ranges = processed_source.disabled_line_ranges
+
           redundant_cops = Hash.new { |h, k| h[k] = Set.new }
 
           each_redundant_disable(cop_disabled_line_ranges,
-                                 offenses, comments) do |comment, redundant_cop|
+                                 offenses_to_check, comments) do |comment, redundant_cop|
             redundant_cops[comment].add(redundant_cop)
           end
 
           add_offenses(redundant_cops)
-        end
-
-        def autocorrect(args)
-          lambda do |corrector|
-            ranges, range = *args # Ranges are sorted by position.
-
-            range = if range.source.start_with?('#')
-                      comment_range_with_surrounding_space(range)
-                    else
-                      directive_range_in_list(range, ranges)
-                    end
-
-            corrector.remove(range)
-          end
+          super
         end
 
         private
@@ -187,10 +187,12 @@ module RuboCop
           cop_list = cops.sort.map { |c| describe(c) }
 
           add_offense(
-            [[location], location],
-            location: location,
+            location,
             message: "Unnecessary disabling of #{cop_list.join(', ')}."
-          )
+          ) do |corrector|
+            range = comment_range_with_surrounding_space(location)
+            corrector.remove(range)
+          end
         end
 
         def add_offense_for_some_cops(comment, cops)
@@ -200,10 +202,12 @@ module RuboCop
 
           cop_ranges.each do |cop, range|
             add_offense(
-              [ranges, range],
-              location: range,
+              range,
               message: "Unnecessary disabling of #{describe(cop)}."
-            )
+            ) do |corrector|
+              range = directive_range_in_list(range, ranges)
+              corrector.remove(range)
+            end
           end
         end
 

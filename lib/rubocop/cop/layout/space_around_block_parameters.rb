@@ -24,9 +24,10 @@ module RuboCop
       #   # good
       #   {}.each { | x, y | puts x }
       #   ->( x, y ) { puts x }
-      class SpaceAroundBlockParameters < Cop
+      class SpaceAroundBlockParameters < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         def on_block(node)
           arguments = node.arguments
@@ -36,23 +37,6 @@ module RuboCop
           check_inside_pipes(arguments)
           check_after_closing_pipe(arguments) if node.body
           check_each_arg(arguments)
-        end
-
-        # @param target [RuboCop::AST::Node,Parser::Source::Range]
-        def autocorrect(target)
-          lambda do |corrector|
-            if target.is_a?(RuboCop::AST::Node)
-              if target.parent.children.first == target
-                corrector.insert_before(target, ' ')
-              else
-                corrector.insert_after(target, ' ')
-              end
-            elsif /^\s+$/.match?(target.source)
-              corrector.remove(target)
-            else
-              corrector.insert_after(target, ' ')
-            end
-          end
         end
 
         private
@@ -97,7 +81,7 @@ module RuboCop
 
           check_no_space(opening_pipe.end_pos, first.begin_pos,
                          'Space before first')
-          check_no_space(last_end_pos_inside_pipes(last.end_pos),
+          check_no_space(last_end_pos_inside_pipes(last),
                          closing_pipe.begin_pos, 'Space after last')
         end
 
@@ -118,7 +102,7 @@ module RuboCop
 
         def check_closing_pipe_space(args, closing_pipe)
           last         = args.last.source_range
-          last_end_pos = last_end_pos_inside_pipes(last.end_pos)
+          last_end_pos = last_end_pos_inside_pipes(last)
 
           check_space(last_end_pos, closing_pipe.begin_pos, last,
                       'after last block parameter')
@@ -126,8 +110,9 @@ module RuboCop
                          'Extra space after last')
         end
 
-        def last_end_pos_inside_pipes(pos)
-          processed_source.buffer.source[pos] == ',' ? pos + 1 : pos
+        def last_end_pos_inside_pipes(range)
+          pos = range.end_pos
+          range.source_buffer.source[pos] == ',' ? pos + 1 : pos
         end
 
         def check_each_arg(args)
@@ -151,7 +136,14 @@ module RuboCop
           return if space_begin_pos != space_end_pos
 
           target = node || range
-          add_offense(target, location: range, message: "Space #{msg} missing.")
+          message = "Space #{msg} missing."
+          add_offense(target, message: message) do |corrector|
+            if node
+              corrector.insert_before(node, ' ')
+            else
+              corrector.insert_after(target, ' ')
+            end
+          end
         end
 
         def check_no_space(space_begin_pos, space_end_pos, msg)
@@ -160,8 +152,10 @@ module RuboCop
           range = range_between(space_begin_pos, space_end_pos)
           return if range.source.include?("\n")
 
-          add_offense(range, location: range,
-                             message: "#{msg} block parameter detected.")
+          message = "#{msg} block parameter detected."
+          add_offense(range, message: message) do |corrector|
+            corrector.remove(range)
+          end
         end
       end
     end
