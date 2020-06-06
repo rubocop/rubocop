@@ -251,15 +251,12 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   context 'with auto-correct supported cop' do
     before do
-      # rubocop:disable RSpec/LeakyConstantDeclaration
-      module Test
-        class Cop3 < ::RuboCop::Cop::Cop
-          def autocorrect
-            # Dummy method to respond to #support_autocorrect?
-          end
-        end
-      end
-      # rubocop:enable RSpec/LeakyConstantDeclaration
+      stub_const('Test::Cop3',
+                 Class.new(::RuboCop::Cop::Cop) do
+                   def autocorrect
+                     # Dummy method to respond to #support_autocorrect?
+                   end
+                 end)
 
       formatter.started(['test_auto_correct.rb'])
       formatter.file_started('test_auto_correct.rb', {})

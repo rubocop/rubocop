@@ -4,27 +4,6 @@ RSpec.describe RuboCop::Cop::Registry do
   subject(:registry) { described_class.new(cops, options) }
 
   let(:cops) do
-    stub_const('RuboCop::Cop::Test', Module.new)
-    stub_const('RuboCop::Cop::RSpec', Module.new)
-
-    # rubocop:disable RSpec/LeakyConstantDeclaration
-    module RuboCop
-      module Cop
-        module Test
-          # Create another cop with a different namespace
-          class FirstArrayElementIndentation < Cop
-          end
-        end
-
-        module RSpec
-          # Define a dummy rspec cop which has special namespace inflection
-          class Foo < Cop
-          end
-        end
-      end
-    end
-    # rubocop:enable RSpec/LeakyConstantDeclaration
-
     [
       RuboCop::Cop::Lint::BooleanSymbol,
       RuboCop::Cop::Lint::DuplicateMethods,
@@ -36,6 +15,11 @@ RSpec.describe RuboCop::Cop::Registry do
   end
 
   let(:options) { {} }
+
+  before do
+    stub_const('RuboCop::Cop::Test::FirstArrayElementIndentation', Class.new(RuboCop::Cop::Cop))
+    stub_const('RuboCop::Cop::RSpec::Foo', Class.new(RuboCop::Cop::Cop))
+  end
 
   # `RuboCop::Cop::Cop` mutates its `registry` when inherited from.
   # This can introduce nondeterministic failures in other parts of the
