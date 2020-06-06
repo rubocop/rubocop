@@ -1,0 +1,36 @@
+= Automated Code Review
+
+The section describes SaaS solutions that provide automated code reviews for Ruby based on RuboCop.
+
+NOTE: The services are listed in alphabetical order.
+
+== Awesome Code
+
+https://awesomecode.io[Awesome Code] improves your code readability by git push or sending pull requests, with one click or even fully automated. It's an online `rubocop -a` service.
+
+== Codacy
+
+https://www.codacy.com/[Codacy] checks your code from style to security, duplication, complexity, and also integrates with coverage.
+Codacy is free for open source, and it provides RuboCop analysis out-of-the-box.
+
+== Code Climate
+
+https://codeclimate.com/[Code Climate] provides automated code review for test coverage, complexity, duplication, security, style, and more, and merge with confidence.
+
+== CodeFactor
+
+https://www.codefactor.io[CodeFactor] reports various code metrics like duplication, churn, and problems for code style, performance, complexity, and many others. CodeFactor is free for open source. It supports analysis and auto-correction for RuboCop.
+
+== Hound
+
+https://houndci.com/[Hound] comments on style violations in GitHub pull requests, allowing you and your team to better review and maintain a clean codebase.
+It is open source software.
+
+== Pronto
+
+https://github.com/prontolabs/pronto[Pronto] does quick automated code review of your changes. Created to be used on GitHub pull requests, but also works locally and integrates with GitLab and Bitbucket.
+
+== Sider
+
+https://sider.review[Sider] improves your team's productivity by automating code analysis.
+It supports RuboCop's auto-correction.
