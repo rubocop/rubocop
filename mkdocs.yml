@@ -1,21 +1,10 @@
+# N.B.!! This is the config for the legacy readthedocs site.
+# All of the docs pages have been removed from the source, and Page Redirects
+# have been setup in the RTD admin console. This means that all rubocop.readthedocs.io
+# links should be redirected to their corresponding docs page at docs.rubocop.org.
 site_name: "RuboCop: The Ruby Linter that Serves and Protects"
 repo_url: https://github.com/rubocop-hq/rubocop
 edit_uri: edit/master/legacy-docs/
 copyright: "Copyright &copy; 2012-2020 Bozhidar Batsov and RuboCop contributors"
 docs_dir: legacy-docs
-pages:
-- Cops Documentation:
-    - Layout Cops: cops_layout.md
-    - Linting Cops: cops_lint.md
-    - Metrics Cops: cops_metrics.md
-    - Migration Cops: cops_migration.md
-    - Naming Cops: cops_naming.md
-    - Security Cops: cops_security.md
-    - Style Cops: cops_style.md
-    - Bundler Cops: cops_bundler.md
-    - Gemspec Cops: cops_gemspec.md
-extra_css:
-  - css/extra.css
-markdown_extensions:
-  - admonition
 theme: readthedocs

@@ -1,0 +1,9 @@
+version: 2
+
+mkdocs:
+  configuration: mkdocs.yml
+
+python:
+  version: 3.7
+  install:
+    - requirements: legacy-docs/requirements.txt
