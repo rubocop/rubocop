@@ -341,15 +341,12 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when cop with different checksum joins' do
       before do
-        # rubocop:disable RSpec/LeakyConstantDeclaration
-        module Test
-          class CopWithExternalDeps < ::RuboCop::Cop::Cop
-            def external_dependency_checksum
-              'something other than nil'
-            end
-          end
-        end
-        # rubocop:enable RSpec/LeakyConstantDeclaration
+        stub_const('Test::CopWithExternalDeps',
+                   Class.new(::RuboCop::Cop::Cop) do
+                     def external_dependency_checksum
+                       'something other than nil'
+                     end
+                   end)
       end
 
       let(:new_cop_classes) do
