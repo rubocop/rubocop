@@ -189,29 +189,51 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense for not indented enough with empty lines' do
-        # rubocop:disable Layout/HeredocIndentation
-        expect_offense(<<-RUBY)
-          def baz
-            <<~#{quote}MSG#{quote}
-            foo
-^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
-
-              bar
-            MSG
-          end
-        RUBY
-        # rubocop:enable Layout/HeredocIndentation
-
-        expect_correction(<<-CORRECTION)
-          def baz
-            <<~#{quote}MSG#{quote}
+      { empty: '', whitespace: '    ' }.each do |description, line|
+        it "registers an offense for not indented enough with #{description} line" do
+          # Using <<- in this section makes the code more readable.
+          # rubocop:disable Layout/HeredocIndentation
+          expect_offense(<<-RUBY)
+            def baz
+              <<~#{quote}MSG#{quote}
               foo
-
+^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
+#{line}
                 bar
-            MSG
-          end
-        CORRECTION
+              MSG
+            end
+          RUBY
+
+          expect_correction(<<-CORRECTION)
+            def baz
+              <<~#{quote}MSG#{quote}
+                foo
+#{line}
+                  bar
+              MSG
+            end
+          CORRECTION
+        end
+
+        it "registers an offense for too deep indented with #{description} line" do
+          expect_offense(<<-RUBY)
+            <<~#{quote}RUBY2#{quote}
+                  foo
+^^^^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
+#{line}
+                bar
+            RUBY2
+          RUBY
+
+          expect_correction(<<-CORRECTION)
+            <<~#{quote}RUBY2#{quote}
+                foo
+#{line}
+              bar
+            RUBY2
+          CORRECTION
+        end
+        # rubocop:enable Layout/HeredocIndentation
       end
 
       it 'displays message to use `<<~` instead of `<<`' do
