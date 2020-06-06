@@ -19,6 +19,7 @@
 ** xref:cops_style.adoc[Style]
 * xref:extensions.adoc[Extensions]
 * xref:integration_with_other_tools.adoc[Integration with Other Tools]
+* xref:automated_code_review.adoc[Automated Code Review]
 * xref:development.adoc[Development]
 * xref:contributing.adoc[Contributing]
 * xref:support.adoc[Support]
