@@ -4,16 +4,6 @@ edit_uri: edit/master/legacy-docs/
 copyright: "Copyright &copy; 2012-2020 Bozhidar Batsov and RuboCop contributors"
 docs_dir: legacy-docs
 pages:
-- Formatters: formatters.md
-- Configuration: configuration.md
-- Caching: caching.md
-- Extensions: extensions.md
-- Integration with other tools: integration_with_other_tools.md
-- Automated Code Review: automated_code_review.md
-- Support: support.md
-- Contributing: contributing.md
-- Development: development.md
-- Versioning: versioning.md
 - Cops Documentation:
     - Layout Cops: cops_layout.md
     - Linting Cops: cops_lint.md
