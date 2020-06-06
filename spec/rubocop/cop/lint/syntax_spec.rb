@@ -1,18 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::Syntax do
-  let(:options) { nil }
-  let(:ruby_version) { 2.4 }
-  let(:path) { 'test.rb' }
-  let(:processed_source) do
-    RuboCop::ProcessedSource.new(source, ruby_version, path)
-  end
-
+RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
   describe '.offenses_from_processed_source' do
-    let(:offenses) do
-      described_class.offenses_from_processed_source(processed_source,
-                                                     nil, options)
-    end
+    let(:commissioner) { RuboCop::Cop::Commissioner.new([cop]) }
+    let(:offenses) { commissioner.investigate(processed_source).offenses }
 
     context 'with a diagnostic error' do
       let(:source) { '(' }
@@ -29,7 +20,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
       end
 
       context 'with --display-cop-names option' do
-        let(:options) { { display_cop_names: true } }
+        let(:cop_options) { { display_cop_names: true } }
 
         it 'returns an offense with cop name' do
           expect(offenses.size).to eq(1)
@@ -44,7 +35,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
       end
 
       context 'with --auto-correct --disable-uncorrectable options' do
-        let(:options) { { auto_correct: true, disable_uncorrectable: true } }
+        let(:cop_options) { { auto_correct: true, disable_uncorrectable: true } }
 
         it 'returns an offense' do
           expect(offenses.size).to eq(1)
@@ -69,11 +60,11 @@ RSpec.describe RuboCop::Cop::Lint::Syntax do
         offense = offenses.first
         expect(offense.message).to eq('Invalid byte sequence in utf-8.')
         expect(offense.severity).to eq(:fatal)
-        expect(offense.location).to eq(described_class::ERROR_SOURCE_RANGE)
+        expect(offense.location).to eq(RuboCop::Cop::Offense::NO_LOCATION)
       end
 
       context 'with --display-cop-names option' do
-        let(:options) { { display_cop_names: true } }
+        let(:cop_options) { { display_cop_names: true } }
 
         it 'returns an offense with cop name' do
           expect(offenses.size).to eq(1)

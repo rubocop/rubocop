@@ -16,21 +16,22 @@ module RuboCop
       #
       #   # Good
       #   raise 'message'
-      class RedundantException < Cop
+      class RedundantException < Base
+        extend AutoCorrector
+
         MSG_1 = 'Redundant `RuntimeError` argument can be removed.'
         MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with ' \
                 'just the message.'
 
-        def on_send(node)
-          exploded?(node) { return add_offense(node, message: MSG_1) }
-          compact?(node) { add_offense(node, message: MSG_2) }
-        end
-
         # Switch `raise RuntimeError, 'message'` to `raise 'message'`, and
         # `raise RuntimeError.new('message')` to `raise 'message'`.
-        def autocorrect(node) # rubocop:disable Metrics/MethodLength
+        def on_send(node)
+          fix_exploded(node) || fix_compact(node)
+        end
+
+        def fix_exploded(node)
           exploded?(node) do |command, message|
-            return lambda do |corrector|
+            add_offense(node, message: MSG_1) do |corrector|
               if node.parenthesized?
                 corrector.replace(node,
                                   "#{command}(#{message.source})")
@@ -40,8 +41,11 @@ module RuboCop
               end
             end
           end
+        end
+
+        def fix_compact(node)
           compact?(node) do |new_call, message|
-            lambda do |corrector|
+            add_offense(node, message: MSG_2) do |corrector|
               corrector.replace(new_call, message.source)
             end
           end

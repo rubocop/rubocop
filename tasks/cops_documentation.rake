@@ -47,7 +47,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       'Enabled by default', 'Safe', 'Supports autocorrection', 'VersionAdded',
       'VersionChanged'
     ]
-    autocorrect = if cop_instance.support_autocorrect?
+    autocorrect = if cop_instance.class.support_autocorrect?
                     "Yes#{' (Unsafe)' unless cop_instance.safe_autocorrect?}"
                   else
                     'No'

@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. Extensive refactoring of `Team`, `Commissioner`. ([@marcandre][])
+
 ## 0.86.0 (2020-06-22)
 
 ### New features

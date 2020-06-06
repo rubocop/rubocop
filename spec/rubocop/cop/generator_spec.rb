@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Generator do
               #   # good
               #   good_foo_method(args)
               #
-              class FakeCop < Cop
+              class FakeCop < Base
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.

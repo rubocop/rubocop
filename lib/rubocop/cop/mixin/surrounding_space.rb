@@ -14,7 +14,7 @@ module RuboCop
       private
 
       def side_space_range(range:, side:)
-        buffer = @processed_source.buffer
+        buffer = processed_source.buffer
         src = buffer.source
 
         begin_pos = range.begin_pos
@@ -47,12 +47,17 @@ module RuboCop
       def token_table
         @token_table ||= begin
           table = {}
-          @processed_source.tokens.each_with_index do |t, ix|
+          processed_source.tokens.each_with_index do |t, ix|
             table[t.line] ||= {}
             table[t.line][t.column] = ix
           end
           table
         end
+      end
+
+      def on_new_investigation
+        @token_table = nil
+        super
       end
 
       def no_space_offenses(node, # rubocop:disable Metrics/ParameterLists

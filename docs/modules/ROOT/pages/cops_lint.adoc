@@ -3274,8 +3274,7 @@ end
 | -
 |===
 
-This is not actually a cop. It does not inspect anything. It just
-provides methods to repack Parser's diagnostics/errors
+This cop repacks Parser's diagnostics/errors
 into RuboCop's offenses.
 
 == Lint/ToJSON

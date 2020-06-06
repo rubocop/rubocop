@@ -152,6 +152,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   it 'registers an offense for a syntax error' do
     create_file('example.rb', ['class Test', 'en'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+    expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
               'token $end (Using Ruby 2.4 parser; configure using ' \
@@ -183,6 +184,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   it 'can process a file with an invalid UTF-8 byte sequence' do
     create_file('example.rb', ["# #{'f9'.hex.chr}#{'29'.hex.chr}"])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+    expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(<<~RESULT)
         #{abs('example.rb')}:1:1: F: Lint/Syntax: Invalid byte sequence in utf-8.

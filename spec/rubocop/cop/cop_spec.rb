@@ -263,15 +263,13 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   end
 
   describe '#autocorrect?' do
-    # dummy config for a generic cop instance
-
     subject { cop.autocorrect? }
 
     let(:support_autocorrect) { true }
     let(:disable_uncorrectable) { false }
 
     before do
-      allow(cop).to receive(:support_autocorrect?) { support_autocorrect }
+      allow(cop.class).to receive(:support_autocorrect?) { support_autocorrect }
       allow(cop).to receive(:disable_uncorrectable?) { disable_uncorrectable }
     end
 

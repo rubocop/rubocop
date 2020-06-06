@@ -54,7 +54,7 @@ module RuboCop
               #   # good
               #   good_foo_method(args)
               #
-              class %<cop_name>s < Cop
+              class %<cop_name>s < Base
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.

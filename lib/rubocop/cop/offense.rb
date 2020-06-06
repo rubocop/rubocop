@@ -54,14 +54,28 @@ module RuboCop
       # @api private
       attr_reader :status
 
+      # @api public
+      #
+      # @!attribute [r] corrector
+      #
+      # @return [Corrector | nil]
+      #   the autocorrection for this offense, or `nil` when not available
+      attr_reader :corrector
+
+      PseudoSourceRange = Struct.new(:line, :column, :source_line, :begin_pos,
+                                     :end_pos)
+
+      NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 1).freeze
+
       # @api private
-      def initialize(severity, location, message, cop_name,
-                     status = :uncorrected)
+      def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists
+                     status = :uncorrected, corrector = nil)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
         @message = message.freeze
         @cop_name = cop_name.freeze
         @status = status
+        @corrector = corrector
         freeze
       end
 

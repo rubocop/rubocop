@@ -241,6 +241,10 @@ module RuboCop
             .select { |c| begins_its_line?(c.loc.expression) }
             .map { |c| c.loc.line }
         end
+
+        def on_new_investigation
+          @comment_lines = nil
+        end
       end
     end
   end

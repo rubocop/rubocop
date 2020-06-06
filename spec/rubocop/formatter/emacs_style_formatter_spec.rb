@@ -3,6 +3,7 @@
 RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
   subject(:formatter) { described_class.new(output) }
 
+  let(:cop_class) { RuboCop::Cop::Cop }
   let(:source) { %w[a b cdefghi].join("\n") }
   let(:output) { StringIO.new }
 
