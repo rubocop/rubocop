@@ -22,8 +22,10 @@ module RuboCop
               'with expression `#{%<variable>s}`.'
 
         def on_node_with_interpolations(node)
-          var_nodes(node.children).each do |var_node|
-            add_offense(var_node)
+          node.children.each do |child|
+            next unless child.variable? || child.reference?
+
+            add_offense(child)
           end
         end
 
@@ -37,10 +39,6 @@ module RuboCop
 
         def message(node)
           format(MSG, variable: node.source)
-        end
-
-        def var_nodes(nodes)
-          nodes.select { |n| n.variable? || n.reference? }
         end
       end
     end

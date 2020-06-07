@@ -188,9 +188,11 @@ module RuboCop
       end
 
       def regexp_captured_names(node)
-        regexp_string = node.children.select(&:str_type?).map do |child|
-          child.children.first
-        end.join || ''
+        regexp_string = node.children.inject('') do |string, child|
+          next string unless child.str_type?
+
+          string + child.children.first
+        end
 
         regexp = Regexp.new(regexp_string)
 
