@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.85.1 (2020-06-07)
+
 ### Bug fixes
 
 * [#8083](https://github.com/rubocop-hq/rubocop/issues/8083): Fix an error for `Lint/MixedRegexpCaptureTypes` cop when using a regular expression that cannot be processed by regexp_parser gem. ([@koic][])
