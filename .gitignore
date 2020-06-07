@@ -62,3 +62,6 @@ TAGS
 
 # For rubinius:
 #*.rbc
+
+# For bundle binstubs
+bin/*

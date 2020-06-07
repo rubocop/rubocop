@@ -13,6 +13,7 @@ AllCops:
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
     - '.git/**/*'
+    - 'bin/*'
   TargetRubyVersion: 2.4
 
 Naming/PredicateName:
