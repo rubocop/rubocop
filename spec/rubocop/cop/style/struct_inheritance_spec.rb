@@ -7,6 +7,13 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance do
     expect_offense(<<~RUBY)
       class Person < Struct.new(:first_name, :last_name)
                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        def foo; end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
+        def foo; end
       end
     RUBY
   end
@@ -15,6 +22,11 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance do
     expect_offense(<<~RUBY)
       class Person < Struct.new(:first_name, :last_name) do end
                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
       end
     RUBY
   end

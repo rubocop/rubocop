@@ -20,6 +20,8 @@ module RuboCop
       #     end
       #   end
       class StructInheritance < Cop
+        include RangeHelp
+
         MSG = "Don't extend an instance initialized by `Struct.new`. " \
               'Use a block to customize the struct.'
 
@@ -29,10 +31,29 @@ module RuboCop
           add_offense(node, location: node.parent_class.source_range)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.remove(range_with_surrounding_space(range: node.loc.keyword))
+            corrector.replace(node.loc.operator, '=')
+
+            correct_parent(node.parent_class, corrector)
+          end
+        end
+
         def_node_matcher :struct_constructor?, <<~PATTERN
           {(send (const nil? :Struct) :new ...)
            (block (send (const nil? :Struct) :new ...) ...)}
         PATTERN
+
+        private
+
+        def correct_parent(parent, corrector)
+          if parent.block_type?
+            corrector.remove(range_with_surrounding_space(range: parent.loc.end, newlines: false))
+          else
+            corrector.insert_after(parent.loc.expression, ' do')
+          end
+        end
       end
     end
   end

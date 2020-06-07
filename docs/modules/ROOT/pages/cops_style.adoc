@@ -8693,9 +8693,9 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.29
-| -
+| 0.86
 |===
 
 This cop checks for inheritance from Struct.new.
