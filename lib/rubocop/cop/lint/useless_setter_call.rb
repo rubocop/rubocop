@@ -30,7 +30,7 @@ module RuboCop
       #   end
       class UselessSetterCall < Cop
         MSG = 'Useless setter call to local variable `%<variable>s`.'
-        ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
+        ASSIGNMENT_TYPES = FastArray %i[lvasgn ivasgn cvasgn gvasgn]
 
         def on_def(node)
           return unless node.body
@@ -100,7 +100,7 @@ module RuboCop
               process_logical_operator_assignment(node)
             when :op_asgn
               process_binary_operator_assignment(node)
-            when *ASSIGNMENT_TYPES
+            when ASSIGNMENT_TYPES
               _, rhs_node = *node
               process_assignment(node, rhs_node) if rhs_node
             end

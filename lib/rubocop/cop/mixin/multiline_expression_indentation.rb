@@ -5,9 +5,11 @@ module RuboCop
     # Common functionality for checking multiline method calls and binary
     # operations.
     module MultilineExpressionIndentation # rubocop:disable Metrics/ModuleLength
-      KEYWORD_ANCESTOR_TYPES  = %i[for if while until return].freeze
-      UNALIGNED_RHS_TYPES     = %i[if while until for return
-                                   array kwbegin].freeze
+      extend FastArray::Function
+
+      KEYWORD_ANCESTOR_TYPES  = FastArray %i[for if while until return]
+      UNALIGNED_RHS_TYPES     = FastArray %i[if while until for return
+                                             array kwbegin]
       DEFAULT_MESSAGE_TAIL    = 'an expression'
       ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'
       KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` ' \

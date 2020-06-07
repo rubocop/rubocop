@@ -44,11 +44,11 @@ module RuboCop
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'
         KERNEL_METHODS = Kernel.methods(false)
-        KEYWORDS = %i[alias and begin break case class def defined? do
-                      else elsif end ensure false for if in module
-                      next nil not or redo rescue retry return self
-                      super then true undef unless until when while
-                      yield __FILE__ __LINE__ __ENCODING__].freeze
+        KEYWORDS = FastArray %i[alias and begin break case class def defined? do
+                                else elsif end ensure false for if in module
+                                next nil not or redo rescue retry return self
+                                super then true undef unless until when while
+                                yield __FILE__ __LINE__ __ENCODING__]
 
         def self.autocorrect_incompatible_with
           [ColonMethodCall]

@@ -141,7 +141,7 @@ module RuboCop
           sclass: :class_singleton
         }.freeze
 
-        VISIBILITY_SCOPES = %i[private protected public].freeze
+        VISIBILITY_SCOPES = FastArray %i[private protected public]
         MSG = '`%<category>s` is supposed to appear before ' \
               '`%<previous>s`.'
 

@@ -7,13 +7,14 @@ module RuboCop
   # names, and Ruby versions.
   class ConfigValidator
     extend Forwardable
+    extend FastArray::Function
 
-    COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
-                       AutoCorrect StyleGuide Details].freeze
-    INTERNAL_PARAMS = %w[Description StyleGuide
-                         VersionAdded VersionChanged VersionRemoved
-                         Reference Safe SafeAutoCorrect].freeze
-    NEW_COPS_VALUES = %w[pending disable enable].freeze
+    COMMON_PARAMS = FastArray %w[Exclude Include Severity inherit_mode
+                                 AutoCorrect StyleGuide Details]
+    INTERNAL_PARAMS = FastArray %w[Description StyleGuide
+                                   VersionAdded VersionChanged VersionRemoved
+                                   Reference Safe SafeAutoCorrect]
+    NEW_COPS_VALUES = FastArray %w[pending disable enable]
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
 
@@ -118,7 +119,7 @@ module RuboCop
 
       message = "invalid #{new_cop_parameter} for `NewCops` found in" \
                 "#{smart_loaded_path}\n" \
-                "Valid choices are: #{NEW_COPS_VALUES.join(', ')}"
+                "Valid choices are: #{NEW_COPS_VALUES.to_a.join(', ')}"
 
       raise ValidationError, message
     end

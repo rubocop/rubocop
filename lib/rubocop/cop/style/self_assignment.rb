@@ -14,7 +14,7 @@ module RuboCop
       #   x += 1
       class SelfAssignment < Cop
         MSG = 'Use self-assignment shorthand `%<method>s=`.'
-        OPS = %i[+ - * ** / | &].freeze
+        OPS = FastArray %i[+ - * ** / | &]
 
         def self.autocorrect_incompatible_with
           [Layout::SpaceAroundOperators]

@@ -64,8 +64,8 @@ module RuboCop
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'
-        LOGIC_JUMP_KEYWORDS = %i[break fail next raise
-                                 return throw yield].freeze
+        LOGIC_JUMP_KEYWORDS = FastArray %i[break fail next raise
+                                           return throw yield]
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)

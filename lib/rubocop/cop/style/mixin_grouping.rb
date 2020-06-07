@@ -33,7 +33,7 @@ module RuboCop
       class MixinGrouping < Cop
         include ConfigurableEnforcedStyle
 
-        MIXIN_METHODS = %i[extend include prepend].freeze
+        MIXIN_METHODS = FastArray %i[extend include prepend]
         MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'
 
         def on_class(node)

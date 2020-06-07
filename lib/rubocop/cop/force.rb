@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # A scaffold for concrete forces.
     class Force
+      extend FastArray::Function
+
       attr_reader :cops
 
       def self.all

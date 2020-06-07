@@ -23,7 +23,7 @@ module RuboCop
       class PercentStringArray < Cop
         include PercentLiteral
 
-        QUOTES_AND_COMMAS = [/,$/, /^'.*'$/, /^".*"$/].freeze
+        QUOTES_AND_COMMAS = FastArray[/,$/, /^'.*'$/, /^".*"$/]
         LEADING_QUOTE = /^['"]/.freeze
         TRAILING_QUOTE = /['"]?,?$/.freeze
 

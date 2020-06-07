@@ -44,7 +44,7 @@ module RuboCop
         MSG_WITHOUT_SAFE_ASSIGNMENT_ALLOWED =
           'Use `==` if you meant to do a comparison or move the assignment ' \
           'up out of the condition.'
-        ASGN_TYPES = [:begin, *AST::Node::EQUALS_ASSIGNMENTS, :send].freeze
+        ASGN_TYPES = FastArray[:begin, *AST::Node::EQUALS_ASSIGNMENTS, :send]
 
         def on_if(node)
           return if node.condition.block_type?

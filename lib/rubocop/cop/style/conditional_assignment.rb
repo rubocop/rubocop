@@ -44,7 +44,7 @@ module RuboCop
             "#{node.children[0].source} #{node.loc.operator.source} "
           when :casgn
             "#{node.children[1]} = "
-          when *ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES
+          when ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES
             "#{node.children[0]} = "
           else
             node.source
@@ -209,9 +209,9 @@ module RuboCop
         ASSIGN_TO_CONDITION_MSG =
           'Assign variables inside of conditionals'
         VARIABLE_ASSIGNMENT_TYPES =
-          %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
-        ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
-                           %i[and_asgn or_asgn op_asgn masgn].freeze
+          FastArray %i[casgn cvasgn gvasgn ivasgn lvasgn]
+        ASSIGNMENT_TYPES = FastArray(VARIABLE_ASSIGNMENT_TYPES +
+                           %i[and_asgn or_asgn op_asgn masgn])
         LINE_LENGTH = 'Layout/LineLength'
         INDENTATION_WIDTH = 'Layout/IndentationWidth'
         ENABLED = 'Enabled'

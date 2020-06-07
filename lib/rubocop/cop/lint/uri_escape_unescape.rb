@@ -30,16 +30,16 @@ module RuboCop
       #   URI.decode_www_form(enc_uri)
       #   URI.decode_www_form_component(enc_uri)
       class UriEscapeUnescape < Cop
-        ALTERNATE_METHODS_OF_URI_ESCAPE = %w[
+        ALTERNATE_METHODS_OF_URI_ESCAPE = FastArray %w[
           CGI.escape
           URI.encode_www_form
           URI.encode_www_form_component
-        ].freeze
-        ALTERNATE_METHODS_OF_URI_UNESCAPE = %w[
+        ]
+        ALTERNATE_METHODS_OF_URI_UNESCAPE = FastArray %w[
           CGI.unescape
           URI.decode_www_form
           URI.decode_www_form_component
-        ].freeze
+        ]
 
         MSG = '`%<uri_method>s` method is obsolete and should not be used. ' \
               'Instead, use %<replacements>s depending on your specific use ' \

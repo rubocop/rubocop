@@ -11,15 +11,17 @@ module RuboCop
         # We separate the *calculator* from the *cop* so that the calculation,
         # the formula itself, is easier to test.
         class AbcSizeCalculator
+          extend FastArray::Function
+
           # > Branch -- an explicit forward program branch out of scope -- a
           # > function call, class method call ..
           # > http://c2.com/cgi/wiki?AbcMetric
-          BRANCH_NODES = %i[send csend].freeze
+          BRANCH_NODES = FastArray %i[send csend]
 
           # > Condition -- a logical/Boolean test, == != <= >= < > else case
           # > default try catch ? and unary conditionals.
           # > http://c2.com/cgi/wiki?AbcMetric
-          CONDITION_NODES = (CyclomaticComplexity::COUNTED_NODES - %i[block block_pass]).freeze
+          CONDITION_NODES = FastArray(CyclomaticComplexity::COUNTED_NODES - %i[block block_pass])
 
           def self.calculate(node)
             new(node).calculate

@@ -49,17 +49,17 @@ module RuboCop
         NONMUTATING_MSG = 'Method `#%<method>s` used in void context. ' \
           'Did you mean `#%<method>s!`?'
 
-        BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
-        UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
-        OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
-        VOID_CONTEXT_TYPES = %i[def for block].freeze
-        NONMUTATING_METHODS = %i[capitalize chomp chop collect compact
-                                 delete_prefix delete_suffix downcase
-                                 encode flatten gsub lstrip map merge next
-                                 reject reverse rotate rstrip scrub select
-                                 shuffle slice sort sort_by squeeze strip sub
-                                 succ swapcase tr tr_s transform_values
-                                 unicode_normalize uniq upcase].freeze
+        BINARY_OPERATORS = FastArray %i[* / % + - == === != < > <= >= <=>]
+        UNARY_OPERATORS = FastArray %i[+@ -@ ~ !]
+        OPERATORS = FastArray(BINARY_OPERATORS + UNARY_OPERATORS)
+        VOID_CONTEXT_TYPES = FastArray %i[def for block]
+        NONMUTATING_METHODS = FastArray %i[capitalize chomp chop collect compact
+                                           delete_prefix delete_suffix downcase
+                                           encode flatten gsub lstrip map merge next
+                                           reject reverse rotate rstrip scrub select
+                                           shuffle slice sort sort_by squeeze strip sub
+                                           succ swapcase tr tr_s transform_values
+                                           unicode_normalize uniq upcase]
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?

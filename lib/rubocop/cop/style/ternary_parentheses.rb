@@ -60,7 +60,7 @@ module RuboCop
         include SurroundingSpace
 
         VARIABLE_TYPES = AST::Node::VARIABLES
-        NON_COMPLEX_TYPES = [*VARIABLE_TYPES, :const, :defined?, :yield].freeze
+        NON_COMPLEX_TYPES = FastArray[*VARIABLE_TYPES, :const, :defined?, :yield]
 
         MSG = '%<command>s parentheses for ternary conditions.'
         MSG_COMPLEX = '%<command>s parentheses for ternary expressions with' \

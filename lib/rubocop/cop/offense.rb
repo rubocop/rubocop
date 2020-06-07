@@ -5,10 +5,11 @@ module RuboCop
     # An offense represents a style violation detected by RuboCop.
     class Offense
       include Comparable
+      extend FastArray::Function
 
       # @api private
-      COMPARISON_ATTRIBUTES = %i[line column cop_name
-                                 message severity].freeze
+      COMPARISON_ATTRIBUTES = FastArray %i[line column cop_name
+                                           message severity]
 
       # @api public
       #

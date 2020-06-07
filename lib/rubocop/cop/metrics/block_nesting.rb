@@ -14,10 +14,10 @@ module RuboCop
       class BlockNesting < Cop
         include ConfigurableMax
 
-        NESTING_BLOCKS = %i[
+        NESTING_BLOCKS = FastArray %i[
           case if while while_post
           until until_post for resbody
-        ].freeze
+        ]
 
         def investigate(processed_source)
           return if processed_source.blank?

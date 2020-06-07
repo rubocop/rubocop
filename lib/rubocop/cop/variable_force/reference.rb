@@ -6,12 +6,13 @@ module RuboCop
       # This class represents each reference of a variable.
       class Reference
         include Branchable
+        extend FastArray::Function
 
-        VARIABLE_REFERENCE_TYPES = (
+        VARIABLE_REFERENCE_TYPES = FastArray(
           [VARIABLE_REFERENCE_TYPE] +
           OPERATOR_ASSIGNMENT_TYPES +
           [ZERO_ARITY_SUPER_TYPE, SEND_TYPE]
-        ).freeze
+        )
 
         attr_reader :node, :scope
 

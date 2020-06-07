@@ -41,8 +41,8 @@ module RuboCop
         MSG_USE_NORMAL =
           'Modifier form of `%<keyword>s` makes the line too long.'
 
-        ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
-                              gvasgn ivasgn masgn].freeze
+        ASSIGNMENT_TYPES = FastArray %i[lvasgn casgn cvasgn
+                                        gvasgn ivasgn masgn]
 
         def on_if(node)
           msg = if eligible_node?(node)

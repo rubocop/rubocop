@@ -5,8 +5,9 @@ module RuboCop
     # Common functionality for checking def nodes.
     module DefNode
       extend NodePattern::Macros
+      extend FastArray::Function
 
-      NON_PUBLIC_MODIFIERS = %w[private protected].freeze
+      NON_PUBLIC_MODIFIERS = FastArray %w[private protected]
 
       private
 

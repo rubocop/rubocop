@@ -5,9 +5,10 @@ module RuboCop
     # Severity class is simple value object about severity
     class Severity
       include Comparable
+      extend FastArray::Function
 
       # @api private
-      NAMES = %i[refactor convention warning error fatal].freeze
+      NAMES = FastArray %i[refactor convention warning error fatal]
 
       # @api private
       CODE_TABLE = { R: :refactor, C: :convention,

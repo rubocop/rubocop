@@ -26,32 +26,32 @@ module RuboCop
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
       VARIABLE_ASSIGNMENT_TYPES =
-        [VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE].freeze
+        FastArray[VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE]
 
-      ARGUMENT_DECLARATION_TYPES = [
+      ARGUMENT_DECLARATION_TYPES = FastArray[
         :arg, :optarg, :restarg,
         :kwarg, :kwoptarg, :kwrestarg,
         :blockarg, # This doesn't mean block argument, it's block-pass (&block).
         :shadowarg # This means block local variable (obj.each { |arg; this| }).
-      ].freeze
+      ]
 
-      LOGICAL_OPERATOR_ASSIGNMENT_TYPES = %i[or_asgn and_asgn].freeze
+      LOGICAL_OPERATOR_ASSIGNMENT_TYPES = FastArray %i[or_asgn and_asgn]
       OPERATOR_ASSIGNMENT_TYPES =
-        (LOGICAL_OPERATOR_ASSIGNMENT_TYPES + [:op_asgn]).freeze
+        FastArray(LOGICAL_OPERATOR_ASSIGNMENT_TYPES + [:op_asgn])
 
       MULTIPLE_ASSIGNMENT_TYPE = :masgn
 
       VARIABLE_REFERENCE_TYPE = :lvar
 
-      POST_CONDITION_LOOP_TYPES = %i[while_post until_post].freeze
-      LOOP_TYPES = (POST_CONDITION_LOOP_TYPES + %i[while until for]).freeze
+      POST_CONDITION_LOOP_TYPES = FastArray %i[while_post until_post]
+      LOOP_TYPES = FastArray(POST_CONDITION_LOOP_TYPES + %i[while until for])
 
       RESCUE_TYPE = :rescue
 
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
-      TWISTED_SCOPE_TYPES = %i[block class sclass defs module].freeze
-      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:def]).freeze
+      TWISTED_SCOPE_TYPES = FastArray %i[block class sclass defs module]
+      SCOPE_TYPES = FastArray(TWISTED_SCOPE_TYPES + [:def])
 
       SEND_TYPE = :send
 
@@ -125,13 +125,13 @@ module RuboCop
           :process_zero_arity_super
         when SEND_TYPE
           :process_send
-        when *ARGUMENT_DECLARATION_TYPES
+        when ARGUMENT_DECLARATION_TYPES
           :process_variable_declaration
-        when *OPERATOR_ASSIGNMENT_TYPES
+        when OPERATOR_ASSIGNMENT_TYPES
           :process_variable_operator_assignment
-        when *LOOP_TYPES
+        when LOOP_TYPES
           :process_loop
-        when *SCOPE_TYPES
+        when SCOPE_TYPES
           :process_scope
         end
       end
@@ -363,7 +363,7 @@ module RuboCop
           VariableReference.new(node.children.first)
         when :lvasgn
           AssignmentReference.new(node)
-        when *OPERATOR_ASSIGNMENT_TYPES
+        when OPERATOR_ASSIGNMENT_TYPES
           asgn_node = node.children.first
           VariableReference.new(asgn_node.children.first) if asgn_node.lvasgn_type?
         end

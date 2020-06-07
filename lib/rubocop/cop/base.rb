@@ -38,6 +38,7 @@ module RuboCop
       include Util
       include IgnoredNode
       include AutocorrectLogic
+      extend FastArray::Function
 
       attr_reader :config, :processed_source
 

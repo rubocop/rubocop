@@ -38,7 +38,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `%<method>s %<module_name>s` instead of `%<bad_method>s`.'
-        MIXIN_METHODS = %i[include prepend extend].freeze
+        MIXIN_METHODS = FastArray %i[include prepend extend]
 
         def_node_matcher :send_with_mixin_argument?, <<~PATTERN
           (send

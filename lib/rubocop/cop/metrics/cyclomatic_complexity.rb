@@ -35,8 +35,8 @@ module RuboCop
 
         MSG = 'Cyclomatic complexity for %<method>s is too high. ' \
               '[%<complexity>d/%<max>d]'
-        COUNTED_NODES = %i[if while until for csend block block_pass
-                           rescue when and or or_asgn and_asgn].freeze
+        COUNTED_NODES = FastArray %i[if while until for csend block block_pass
+                                     rescue when and or or_asgn and_asgn]
 
         private
 

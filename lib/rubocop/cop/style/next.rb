@@ -52,7 +52,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `next` to skip iteration.'
-        EXIT_TYPES = %i[break return].freeze
+        EXIT_TYPES = FastArray %i[break return]
 
         def self.autocorrect_incompatible_with
           [Style::SafeNavigation]

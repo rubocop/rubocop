@@ -22,7 +22,7 @@ module RuboCop
         include PercentLiteral
 
         MSG = 'Literal interpolation detected.'
-        COMPOSITE = %i[array hash pair irange erange].freeze
+        COMPOSITE = FastArray %i[array hash pair irange erange]
 
         def on_interpolation(begin_node)
           final_node = begin_node.children.last

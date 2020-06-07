@@ -20,7 +20,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `each_with_object` instead of `%<method>s`.'
-        METHODS = %i[inject reduce].freeze
+        METHODS = FastArray %i[inject reduce]
 
         def_node_matcher :each_with_object_candidate?, <<~PATTERN
           (block $(send _ {:inject :reduce} _) $_ $_)

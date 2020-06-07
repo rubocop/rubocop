@@ -43,7 +43,7 @@ module RuboCop
 
         KERNEL = 'Kernel'
         SHOVEL = '<<'
-        STRING_TYPES = %i[str dstr].freeze
+        STRING_TYPES = FastArray %i[str dstr]
 
         def on_send(node)
           return unless format_string?(node)

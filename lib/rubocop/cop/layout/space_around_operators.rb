@@ -53,7 +53,7 @@ module RuboCop
         include RangeHelp
         include RationalLiteral
 
-        IRREGULAR_METHODS = %i[[] ! []=].freeze
+        IRREGULAR_METHODS = FastArray %i[[] ! []=]
         EXCESSIVE_SPACE = '  '
 
         def self.autocorrect_incompatible_with

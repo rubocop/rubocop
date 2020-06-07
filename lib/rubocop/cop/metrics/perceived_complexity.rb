@@ -31,8 +31,8 @@ module RuboCop
 
         MSG = 'Perceived complexity for %<method>s is too high. ' \
               '[%<complexity>d/%<max>d]'
-        COUNTED_NODES = %i[if case while until
-                           for rescue and or].freeze
+        COUNTED_NODES = FastArray %i[if case while until
+                                     for rescue and or]
 
         private
 

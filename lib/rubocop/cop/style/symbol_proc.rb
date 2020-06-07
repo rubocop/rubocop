@@ -17,7 +17,7 @@ module RuboCop
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
               'instead of a block.'
-        SUPER_TYPES = %i[super zsuper].freeze
+        SUPER_TYPES = FastArray %i[super zsuper]
 
         def_node_matcher :proc_node?, '(send (const nil? :Proc) :new)'
         def_node_matcher :symbol_proc?, <<~PATTERN

@@ -27,11 +27,11 @@ module RuboCop
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `%<beginning>s` at ' \
               '%<begin_loc_line>d, %<begin_loc_column>d.'
-        ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
-        RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
-        ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
-        ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method
-                                          private_class_method].freeze
+        ANCESTOR_TYPES = FastArray %i[kwbegin def defs class module]
+        RUBY_2_5_ANCESTOR_TYPES = FastArray(ANCESTOR_TYPES + %i[block])
+        ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = FastArray %i[def defs]
+        ALTERNATIVE_ACCESS_MODIFIERS = FastArray %i[public_class_method
+                                                    private_class_method]
 
         def on_resbody(node)
           check(node) unless modifier?(node)

@@ -9,11 +9,13 @@ module RuboCop
 
   # This class handles command line options.
   class Options
+    extend FastArray::Function
+
     E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
       'root of the project. RuboCop will use this path to determine which ' \
       'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
       'like Naming/FileName can be checked.'
-    EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
+    EXITING_OPTIONS = FastArray %i[version verbose_version show_cops]
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -374,7 +376,7 @@ module RuboCop
     end
 
     def incompatible_options
-      @incompatible_options ||= @options.keys & Options::EXITING_OPTIONS
+      @incompatible_options ||= @options.keys & Options::EXITING_OPTIONS.to_a
     end
 
     def validate_exclude_limit_option

@@ -4,9 +4,11 @@ module RuboCop
   module Cop
     # Common functionality for handling percent literal delimiters.
     class PreferredDelimiters
+      extend FastArray::Function
+
       attr_reader :type, :config
 
-      PERCENT_LITERAL_TYPES = %w[% %i %I %q %Q %r %s %w %W %x].freeze
+      PERCENT_LITERAL_TYPES = FastArray %w[% %i %I %q %Q %r %s %w %W %x]
 
       def initialize(type, config, preferred_delimiters)
         @type = type

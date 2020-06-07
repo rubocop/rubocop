@@ -45,13 +45,13 @@ module RuboCop
 
         private
 
-        KEYWORDS = %w[begin class def end module].freeze
-        ALLOWED_COMMENTS = %w[
+        KEYWORDS = FastArray %w[begin class def end module]
+        ALLOWED_COMMENTS = FastArray %w[
           :nodoc:
           :yields:
           rubocop:disable
           rubocop:todo
-        ].freeze
+        ]
 
         def offensive?(comment)
           line = line(comment)

@@ -39,7 +39,7 @@ module RuboCop
 
         MSG = 'Rescuing from `%<invalid_exceptions>s` will raise a ' \
               '`TypeError` instead of catching the actual exception.'
-        INVALID_TYPES = %i[array dstr float hash nil int str sym].freeze
+        INVALID_TYPES = FastArray %i[array dstr float hash nil int str sym]
 
         def on_resbody(node)
           rescued, _, _body = *node

@@ -41,7 +41,7 @@ module RuboCop
           runtime_error: 'RuntimeError',
           standard_error: 'StandardError'
         }.freeze
-        ILLEGAL_CLASSES = %w[
+        ILLEGAL_CLASSES = FastArray %w[
           Exception
           SystemStackError
           NoMemoryError
@@ -53,7 +53,7 @@ module RuboCop
           Interrupt
           SignalException
           SystemExit
-        ].freeze
+        ]
 
         def_node_matcher :class_new_call?, <<~PATTERN
           (send

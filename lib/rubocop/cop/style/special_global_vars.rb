@@ -104,12 +104,12 @@ module RuboCop
         PERL_VARS.each_value(&:freeze).freeze
 
         # Anything *not* in this set is provided by the English library.
-        NON_ENGLISH_VARS = Set.new(%i[
-                                     $LOAD_PATH
-                                     $LOADED_FEATURES
-                                     $PROGRAM_NAME
-                                     ARGV
-                                   ]).freeze
+        NON_ENGLISH_VARS = FastArray %i[
+          $LOAD_PATH
+          $LOADED_FEATURES
+          $PROGRAM_NAME
+          ARGV
+        ]
 
         def on_gvar(node)
           global_var, = *node

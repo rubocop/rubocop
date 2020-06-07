@@ -60,7 +60,7 @@ module RuboCop
         MSG = '%<command>s space inside reference brackets.'
         EMPTY_MSG = '%<command>s space inside empty reference brackets.'
 
-        BRACKET_METHODS = %i[[] []=].freeze
+        BRACKET_METHODS = FastArray %i[[] []=]
 
         def on_send(node)
           return if node.multiline?

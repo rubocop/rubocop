@@ -38,9 +38,9 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'
-        CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
-        EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
-        NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
+        CLASS_COMPARISON_METHODS = FastArray %i[<= >= < >]
+        EQUALITY_METHODS = FastArray %i[== != =~ !~ <= >= < >]
+        NEGATED_EQUALITY_METHODS = FastArray %i[!= !~]
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
 
         def self.autocorrect_incompatible_with

@@ -12,7 +12,7 @@ module RuboCop
       #   x.top >= x.top
       class UselessComparison < Cop
         MSG = 'Comparison of something with itself detected.'
-        OPS = %w[== === != < > <= >= <=>].freeze
+        OPS = FastArray %w[== === != < > <= >= <=>]
 
         def_node_matcher :useless_comparison?,
                          "(send $_match {:#{OPS.join(' :')}} $_match)"

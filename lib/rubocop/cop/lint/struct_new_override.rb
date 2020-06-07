@@ -26,7 +26,7 @@ module RuboCop
               ' and it may be unexpected.'
 
         STRUCT_METHOD_NAMES = Struct.instance_methods
-        STRUCT_MEMBER_NAME_TYPES = %i[sym str].freeze
+        STRUCT_MEMBER_NAME_TYPES = FastArray %i[sym str]
 
         def_node_matcher :struct_new, <<~PATTERN
           (send

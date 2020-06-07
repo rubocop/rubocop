@@ -3,7 +3,9 @@
 module RuboCop
   # The kind of Ruby that code inspected by RuboCop is written in.
   class TargetRuby
-    KNOWN_RUBIES = [2.4, 2.5, 2.6, 2.7].freeze
+    extend FastArray::Function
+
+    KNOWN_RUBIES = FastArray[2.4, 2.5, 2.6, 2.7]
     DEFAULT_VERSION = KNOWN_RUBIES.first
 
     OBSOLETE_RUBIES = {

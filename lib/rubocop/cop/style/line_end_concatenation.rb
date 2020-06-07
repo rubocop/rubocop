@@ -24,13 +24,13 @@ module RuboCop
 
         MSG = 'Use `\\` instead of `+` or `<<` to concatenate ' \
               'those strings.'
-        CONCAT_TOKEN_TYPES = %i[tPLUS tLSHFT].freeze
+        CONCAT_TOKEN_TYPES = FastArray %i[tPLUS tLSHFT]
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
         COMPLEX_STRING_BEGIN_TOKEN = :tSTRING_BEG
         COMPLEX_STRING_END_TOKEN = :tSTRING_END
-        HIGH_PRECEDENCE_OP_TOKEN_TYPES = %i[tSTAR2 tPERCENT tDOT
-                                            tLBRACK2].freeze
-        QUOTE_DELIMITERS = %w[' "].freeze
+        HIGH_PRECEDENCE_OP_TOKEN_TYPES = FastArray %i[tSTAR2 tPERCENT tDOT
+                                                      tLBRACK2]
+        QUOTE_DELIMITERS = FastArray %w[' "]
 
         def self.autocorrect_incompatible_with
           [Style::RedundantInterpolation]

@@ -17,8 +17,8 @@ module RuboCop
         MSG = 'When defining the `%<opr>s` operator, ' \
               'name its argument `other`.'
 
-        OP_LIKE_METHODS = %i[eql? equal?].freeze
-        BLACKLISTED = %i[+@ -@ [] []= << === `].freeze
+        OP_LIKE_METHODS = FastArray %i[eql? equal?]
+        BLACKLISTED = FastArray %i[+@ -@ [] []= << === `]
 
         def_node_matcher :op_method_candidate?, <<~PATTERN
           (def [#op_method? $_] (args $(arg [!:other !:_other])) _)

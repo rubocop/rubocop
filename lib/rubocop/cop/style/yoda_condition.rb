@@ -65,11 +65,11 @@ module RuboCop
           '>=' => '<='
         }.freeze
 
-        EQUALITY_OPERATORS = %i[== !=].freeze
+        EQUALITY_OPERATORS = FastArray %i[== !=]
 
-        NONCOMMUTATIVE_OPERATORS = %i[===].freeze
+        NONCOMMUTATIVE_OPERATORS = FastArray %i[===]
 
-        PROGRAM_NAMES = %i[$0 $PROGRAM_NAME].freeze
+        PROGRAM_NAMES = FastArray %i[$0 $PROGRAM_NAME]
 
         def_node_matcher :file_constant_equal_program_name?, <<~PATTERN
           (send #source_file_path_constant? {:== :!=} (gvar #program_name?))
