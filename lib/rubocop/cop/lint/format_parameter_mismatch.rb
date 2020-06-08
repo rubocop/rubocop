@@ -65,7 +65,12 @@ module RuboCop
         end
 
         def invalid_format_string?(node)
-          !RuboCop::Cop::Utils::FormatString.new(node.source).valid?
+          string = if sprintf?(node) || format?(node)
+                     node.first_argument.source
+                   else
+                     node.receiver.source
+                   end
+          !RuboCop::Cop::Utils::FormatString.new(string).valid?
         end
 
         def offending_node?(node)

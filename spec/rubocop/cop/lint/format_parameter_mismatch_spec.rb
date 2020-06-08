@@ -187,6 +187,14 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
+  # Regression: https://github.com/rubocop-hq/rubocop/issues/8115
+  context 'when argument itself contains format characters and ' \
+          'formats in format string and argument are not equal' do
+    it 'ignores argument formatting' do
+      expect_no_offenses(%{format('%<t>s', t: '%d')})
+    end
+  end
+
   it 'ignores percent right next to format string' do
     expect_no_offenses('format("%0.1f%% percent", 22.5)')
   end
