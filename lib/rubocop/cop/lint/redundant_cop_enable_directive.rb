@@ -74,6 +74,16 @@ module RuboCop
           comment.text.index(name)
         end
 
+        def find_comma_position(source, begin_pos, end_pos)
+          if source[begin_pos - 1] == ','
+            :before
+          elsif source[end_pos] == ','
+            :after
+          else
+            :none
+          end
+        end
+
         def range_with_comma(comment, name)
           source = comment.loc.expression.source
 
@@ -82,14 +92,7 @@ module RuboCop
           begin_pos = reposition(source, begin_pos, -1)
           end_pos = reposition(source, end_pos, 1)
 
-          comma_pos =
-            if source[begin_pos - 1] == ','
-              :before
-            elsif source[end_pos] == ','
-              :after
-            else
-              :none
-            end
+          comma_pos = find_comma_position(source, begin_pos, end_pos)
 
           # If the list of cops is comma-separated, but without a white-space after the comma,
           # we should **not** remove the prepending white-space, thus begin_pos += 1
