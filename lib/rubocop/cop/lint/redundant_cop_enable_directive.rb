@@ -96,9 +96,7 @@ module RuboCop
 
           # If the list of cops is comma-separated, but without a white-space after the comma,
           # we should **not** remove the prepending white-space, thus begin_pos += 1
-          if comma_pos == :after && source[end_pos + 1] != ' '
-            begin_pos += 1
-          end
+          begin_pos += 1 if comma_pos == :after && source[end_pos + 1] != ' '
 
           range_to_remove(begin_pos, end_pos, comma_pos, comment)
         end
