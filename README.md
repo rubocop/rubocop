@@ -84,6 +84,7 @@ Here's a list of RuboCop's core developers:
 * [Masataka Kuwabara](https://github.com/pocke)
 * [Koichi Ito](https://github.com/koic)
 * [Maxim Krizhanovski](https://github.com/darhazer)
+* [Marc-André Lafortune](https://github.com/marcandre)
 
 ## Logo
 
