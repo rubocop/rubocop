@@ -7,6 +7,10 @@
 * [#8111](https://github.com/rubocop-hq/rubocop/pull/8111): Add auto-correct for `Style/StructInheritance`. ([@tejasbubane][])
 * [#8113](https://github.com/rubocop-hq/rubocop/pull/8113): Let `expect_offense` templates add variable-length whitespace with `_{foo}`. ([@eugeneius][])
 
+### Bug fixes
+
+* [#8115](https://github.com/rubocop-hq/rubocop/issues/8115): Fix false negative for `Lint::FormatParameterMismatch` when argument contains formatting. ([@andrykonchin][])
+
 ## 0.85.1 (2020-06-07)
 
 ### Bug fixes
