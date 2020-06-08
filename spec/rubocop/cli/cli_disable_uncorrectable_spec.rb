@@ -26,6 +26,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     it 'does not disable anything for cops that support autocorrect' do
       create_file('example.rb', 'puts 1==2')
+
       expect(exit_code).to eq(0)
       expect($stderr.string).to eq('')
       expect($stdout.string).to eq(<<~OUTPUT)
@@ -36,6 +37,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         1 file inspected, 3 offenses detected, 3 offenses corrected
       OUTPUT
+
       expect(IO.read('example.rb')).to eq(<<~RUBY)
         # frozen_string_literal: true
 
@@ -46,6 +48,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'if one one-line disable statement fits' do
       it 'adds it' do
         setup_long_line
+
         expect(exit_code).to eq(0)
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~OUTPUT)
@@ -56,6 +59,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
+
         expect(IO.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
@@ -100,7 +104,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         RUBY
       end
 
-      context 'and there are two offenses of the same kind on one line' do
+      context 'when there are two offenses of the same kind on one line' do
         it 'adds a single one-line disable statement' do
           create_file('.rubocop.yml', <<~YAML)
             Style/IpAddresses:
@@ -109,6 +113,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           create_file('example.rb', <<~RUBY)
             ip('1.2.3.4', '5.6.7.8')
           RUBY
+
           expect(exit_code).to eq(0)
           expect($stderr.string).to eq('')
           expect($stdout.string).to eq(<<~OUTPUT)
@@ -120,6 +125,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             1 file inspected, 4 offenses detected, 4 offenses corrected
           OUTPUT
+
           expect(IO.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
@@ -128,9 +134,71 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      context "but there are more offenses on the line and they don't all " \
-              'fit' do
-        it 'adds both one-line and before-and-after disable statements' do
+      context 'when there are multiple offenses on the same line' do
+        context 'when more than one cop can fit in a disable statement' do
+          let(:max_length) { 72 }
+
+          it 'appends a rubocop:todo comment if there is space' do
+            create_file('example.rb', <<~RUBY)
+              # Chess engine.
+              class Chess
+                def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity
+                  legal_moves = all_legal_moves_that_dont_put_me_in_check(who_to_move)
+
+                  return nil if legal_move.nil? || legal_moves.empty?
+
+                  mating_move = checkmating_move(legal_moves)
+                  return mating_move if mating_move
+
+                  best_moves = castling_moves(legal_moves) if best_moves.empty?
+                  best_moves = taking_moves(legal_moves) if best_moves.empty?
+                  best_moves = legal_moves if best_moves.empty?
+                  best_moves = remove_dangerous_moves(best_moves, who_to_move)
+                  best_moves = legal_moves if best_moves.empty?
+                  best_moves&.sample
+                end
+              end
+            RUBY
+
+            expect(exit_code).to eq(0)
+            expect($stderr.string).to eq('')
+            expect($stdout.string).to eq(<<~OUTPUT)
+              == example.rb ==
+              C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+              C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+              C:  3:  3: [Todo] Metrics/AbcSize: Assignment Branch Condition size for choose_move is too high. [<7, 13, 7> 16.34/15]
+              C:  3:  3: [Todo] Metrics/PerceivedComplexity: Perceived complexity for choose_move is too high. [8/7]
+
+              1 file inspected, 4 offenses detected, 4 offenses corrected
+            OUTPUT
+
+            expect(IO.read('example.rb')).to eq(<<~RUBY)
+              # frozen_string_literal: true
+
+              # Chess engine.
+              class Chess
+                def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
+                  legal_moves = all_legal_moves_that_dont_put_me_in_check(who_to_move)
+
+                  return nil if legal_move.nil? || legal_moves.empty?
+
+                  mating_move = checkmating_move(legal_moves)
+                  return mating_move if mating_move
+
+                  best_moves = castling_moves(legal_moves) if best_moves.empty?
+                  best_moves = taking_moves(legal_moves) if best_moves.empty?
+                  best_moves = legal_moves if best_moves.empty?
+                  best_moves = remove_dangerous_moves(best_moves, who_to_move)
+                  best_moves = legal_moves if best_moves.empty?
+                  best_moves&.sample
+                end
+              end
+            RUBY
+          end
+        end
+
+        it 'adds both one-line and before-and-after disable statements when the comments ' \
+          'do not fit on the same line' do
           create_file('example.rb', <<~RUBY)
             # Chess engine.
             class Chess
@@ -173,6 +241,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             1 file inspected, 8 offenses detected, 8 offenses corrected
           OUTPUT
+
           expect(IO.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
@@ -209,6 +278,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'adds before-and-after disable statement' do
         setup_long_line
+
         expect(exit_code).to eq(0)
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~OUTPUT)
@@ -219,6 +289,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
+
         expect(IO.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 

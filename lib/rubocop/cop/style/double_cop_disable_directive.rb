@@ -44,10 +44,9 @@ module RuboCop
                      '# rubocop:todo'
                    end
 
-          lambda do |corrector|
-            corrector.replace(comment,
-                              comment.text[/#{prefix} \S+/])
-          end
+          replacement = "#{prefix} #{comment.text.scan(/#{prefix}\s+(\S+)/).flatten.join(', ')}"
+
+          ->(corrector) { corrector.replace(comment, replacement) }
         end
       end
     end
