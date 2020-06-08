@@ -65,6 +65,23 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
     RUBY
   end
 
+  it 'registers correct offense when combined with necessary enable, no white-space after comma' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Layout/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable Metrics/AbcSize,Layout/LineLength
+                       ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+      bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Layout/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable Layout/LineLength
+      bar
+    RUBY
+  end
+
   it 'registers offense and corrects redundant enabling of same cop' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength
