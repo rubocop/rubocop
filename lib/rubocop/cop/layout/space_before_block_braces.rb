@@ -27,6 +27,20 @@ module RuboCop
       #   foo.map{ |a|
       #     a.bar.to_s
       #   }
+      #
+      # @example EnforcedStyleForEmptyBraces: space (default)
+      #   # bad
+      #   7.times{}
+      #
+      #   # good
+      #   7.times {}
+      #
+      # @example EnforcedStyleForEmptyBraces: no_space
+      #   # bad
+      #   7.times {}
+      #
+      #   # good
+      #   7.times{}
       class SpaceBeforeBlockBraces < Cop
         include ConfigurableEnforcedStyle
         include RangeHelp

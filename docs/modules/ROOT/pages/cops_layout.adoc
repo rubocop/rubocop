@@ -5269,6 +5269,28 @@ foo.map{ |a|
 }
 ----
 
+==== EnforcedStyleForEmptyBraces: space (default)
+
+[source,ruby]
+----
+# bad
+7.times{}
+
+# good
+7.times {}
+----
+
+==== EnforcedStyleForEmptyBraces: no_space
+
+[source,ruby]
+----
+# bad
+7.times {}
+
+# good
+7.times{}
+----
+
 === Configurable attributes
 
 |===
