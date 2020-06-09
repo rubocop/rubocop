@@ -94,10 +94,6 @@ module RuboCop
 
           comma_pos = find_comma_position(source, begin_pos, end_pos)
 
-          # If the list of cops is comma-separated, but without a white-space after the comma,
-          # we should **not** remove the prepending white-space, thus begin_pos += 1
-          begin_pos += 1 if comma_pos == :after && source[end_pos + 1] != ' '
-
           range_to_remove(begin_pos, end_pos, comma_pos, comment)
         end
 
@@ -108,6 +104,10 @@ module RuboCop
           when :before
             range_between(start + begin_pos - 1, start + end_pos)
           when :after
+            # If the list of cops is comma-separated, but without a white-space after the comma,
+            # we should **not** remove the prepending white-space, thus begin_pos += 1
+            begin_pos += 1 if comment.loc.expression.source[end_pos + 1] != ' '
+
             range_between(start + begin_pos, start + end_pos + 1)
           else
             range_between(start, comment.loc.expression.end_pos)
