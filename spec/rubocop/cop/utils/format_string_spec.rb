@@ -97,6 +97,11 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
       expect(fs.valid?).to eq true
     end
 
+    it 'returns true when there are only named with escaped `%` formats' do
+      fs = described_class.new('%%%{foo}d')
+      expect(fs.valid?).to eq true
+    end
+
     it 'returns false when there are unnumbered and numbered formats' do
       fs = described_class.new('%s %1$d')
       expect(fs.valid?).to eq false
