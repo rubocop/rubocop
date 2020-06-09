@@ -120,7 +120,7 @@ module RuboCop
         end
 
         def mixed_formats?
-          formats = format_sequences.map do |seq|
+          formats = format_sequences.reject(&:percent?).map do |seq|
             if seq.name
               :named
             elsif seq.max_digit_dollar_num

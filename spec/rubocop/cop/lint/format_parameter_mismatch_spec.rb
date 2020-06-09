@@ -222,6 +222,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect_no_offenses('"foo %{bar} baz" % { bar: 42 }')
   end
 
+  it 'does not register an offense when using named parameters with escaped `%`' do
+    expect_no_offenses('format("%%%<hex>02X", hex: 10)')
+  end
+
   it 'identifies correctly digits for spacing in format' do
     expect_no_offenses('"duration: %10.fms" % 42')
   end
