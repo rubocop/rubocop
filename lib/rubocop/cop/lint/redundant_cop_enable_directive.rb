@@ -104,14 +104,18 @@ module RuboCop
           when :before
             range_between(start + begin_pos - 1, start + end_pos)
           when :after
-            # If the list of cops is comma-separated, but without a white-space after the comma,
-            # we should **not** remove the prepending white-space, thus begin_pos += 1
-            begin_pos += 1 if comment.loc.expression.source[end_pos + 1] != ' '
-
-            range_between(start + begin_pos, start + end_pos + 1)
+            range_between_for_after(start, begin_pos, end_pos, comment)
           else
             range_between(start, comment.loc.expression.end_pos)
           end
+        end
+
+        # If the list of cops is comma-separated, but without a empty space after the comma,
+        # we should **not** remove the prepending empty space, thus begin_pos += 1
+        def range_between_for_after(start, begin_pos, end_pos, comment)
+          begin_pos += 1 if comment.loc.expression.source[end_pos + 1] != ' '
+
+          range_between(start + begin_pos, start + end_pos + 1)
         end
 
         def all_or_name(name)
