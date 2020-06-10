@@ -91,6 +91,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
+    context 'with an interpolated unnecessary-escape regexp' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = /a#{/\-/}c/
+                     ^^ Redundant escape inside regexp literal
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo = /a#{/-/}c/
+        RUBY
+      end
+    end
+
+    context 'with an escape inside an interpolated string' do
+      it 'does not register an offense' do
+        expect_no_offenses('foo = /#{"\""}/')
+      end
+    end
+
     context 'with an escaped interpolation outside a character class' do
       it 'does not register an offense' do
         expect_no_offenses('foo = /\#\{[a-z_]+\}/')
@@ -357,6 +376,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
           foo = %r{
             /a
             b/
+          }x
+        RUBY
+      end
+    end
+
+    context 'with a redundant escape after a line with comment' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = %r{
+            foo # this should not affect the position of the escape below
+            \-
+            ^^ Redundant escape inside regexp literal
+          }x
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = %r{
+            foo # this should not affect the position of the escape below
+            -
           }x
         RUBY
       end
