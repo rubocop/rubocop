@@ -109,21 +109,6 @@ module RuboCop
 
           range_between(start, start + 2)
         end
-
-        def pattern_source(node)
-          freespace_mode = freespace_mode_regexp?(node)
-
-          node.children.reject(&:regopt_type?).map do |child|
-            source = child.source
-
-            if freespace_mode
-              # Remove comments to avoid misleading results
-              source.sub(/(?<!\\)#.*/, '')
-            else
-              source
-            end
-          end.join
-        end
       end
     end
   end

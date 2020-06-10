@@ -11,6 +11,7 @@
 
 * [#8115](https://github.com/rubocop-hq/rubocop/issues/8115): Fix false negative for `Lint::FormatParameterMismatch` when argument contains formatting. ([@andrykonchin][])
 * [#8124](https://github.com/rubocop-hq/rubocop/issues/8124): Fix a false positive for `Lint/FormatParameterMismatch` when using named parameters with escaped `%`. ([@koic][])
+* [#8098](https://github.com/rubocop-hq/rubocop/issues/8098): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using interpolations. ([@owst][])
 
 ## 0.85.1 (2020-06-07)
 
