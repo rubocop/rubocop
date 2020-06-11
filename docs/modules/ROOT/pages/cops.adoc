@@ -335,6 +335,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylecommentannotation[Style/CommentAnnotation]
 * xref:cops_style.adoc#stylecommentedkeyword[Style/CommentedKeyword]
 * xref:cops_style.adoc#styleconditionalassignment[Style/ConditionalAssignment]
+* xref:cops_style.adoc#styleconstantresolution[Style/ConstantResolution]
 * xref:cops_style.adoc#styleconstantvisibility[Style/ConstantVisibility]
 * xref:cops_style.adoc#stylecopyright[Style/Copyright]
 * xref:cops_style.adoc#styledatetime[Style/DateTime]

@@ -2628,6 +2628,15 @@ Style/ConditionalAssignment:
   SingleLineConditionsOnly: true
   IncludeTernaryExpressions: true
 
+Style/ConstantResolution:
+  Description: 'Check that constants are fully qualified with `::`.'
+  Enabled: false
+  VersionAdded: '0.86'
+  # Restrict this cop to only looking at certain names
+  Only: []
+  # Restrict this cop to from looking at certain names
+  Ignore: []
+
 Style/ConstantVisibility:
   Description: >-
                  Check that class- and module constants have
