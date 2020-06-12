@@ -74,7 +74,7 @@ module RuboCop
       end
 
       def timestamp
-        @options[:no_auto_gen_timestamp] ? '' : "on #{Time.now} "
+        @options[:no_auto_gen_timestamp] ? '' : "on #{Time.now.utc} "
       end
 
       def output_offenses
