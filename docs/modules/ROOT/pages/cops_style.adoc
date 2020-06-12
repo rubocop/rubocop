@@ -7004,6 +7004,70 @@ raise 'message'
 
 * https://rubystyle.guide#no-explicit-runtimeerror
 
+== Style/RedundantFetchBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.86
+| -
+|===
+
+This cop identifies places where `fetch(key) { value }`
+can be replaced by `fetch(key, value)`.
+
+In such cases `fetch(key, value)` method is faster
+than `fetch(key) { value }`.
+
+=== Examples
+
+==== SafeForConstants: false (default)
+
+[source,ruby]
+----
+# bad
+hash.fetch(:key) { 5 }
+hash.fetch(:key) { true }
+hash.fetch(:key) { nil }
+array.fetch(5) { :value }
+ENV.fetch(:key) { 'value' }
+
+# good
+hash.fetch(:key, 5)
+hash.fetch(:key, true)
+hash.fetch(:key, nil)
+array.fetch(5, :value)
+ENV.fetch(:key, 'value')
+----
+
+==== SafeForConstants: true
+
+[source,ruby]
+----
+# bad
+ENV.fetch(:key) { VALUE }
+
+# good
+ENV.fetch(:key, VALUE)
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| SafeForConstants
+| `false`
+| Boolean
+|===
+
+=== References
+
+* https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code
+
 == Style/RedundantFreeze
 
 |===
