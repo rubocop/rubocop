@@ -8,7 +8,7 @@
 * [#8113](https://github.com/rubocop-hq/rubocop/pull/8113): Let `expect_offense` templates add variable-length whitespace with `_{foo}`. ([@eugeneius][])
 * [#8148](https://github.com/rubocop-hq/rubocop/pull/8148): Support autocorrection for `Style/MultilineTernaryOperator`. ([@koic][])
 * [#8151](https://github.com/rubocop-hq/rubocop/pull/8151): Support autocorrection for `Style/NestedTernaryOperator`. ([@koic][])
-* [#8142](https://github.com/rubocop-hq/rubocop/pull/8142): Add `Style/ConstantResolution` cop. ([@robotdana][])
+* [#8142](https://github.com/rubocop-hq/rubocop/pull/8142): Add `Lint/ConstantResolution` cop. ([@robotdana][])
 
 ### Bug fixes
 

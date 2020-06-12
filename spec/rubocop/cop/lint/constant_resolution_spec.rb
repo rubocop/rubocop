@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConstantResolution, :config do
+RSpec.describe RuboCop::Cop::Lint::ConstantResolution, :config do
   it 'registers no offense when qualifying a const' do
     expect_no_offenses(<<~RUBY)
       ::MyConst

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Lint
       # Check that constants are fully qualified.
       #
       # @example
