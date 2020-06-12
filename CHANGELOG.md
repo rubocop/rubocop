@@ -6,6 +6,7 @@
 
 * [#8111](https://github.com/rubocop-hq/rubocop/pull/8111): Add auto-correct for `Style/StructInheritance`. ([@tejasbubane][])
 * [#8113](https://github.com/rubocop-hq/rubocop/pull/8113): Let `expect_offense` templates add variable-length whitespace with `_{foo}`. ([@eugeneius][])
+* [#8146](https://github.com/rubocop-hq/rubocop/pull/8146): Use UTC in Rubocop todo file generation. ([@mauro-oto][])
 
 ### Bug fixes
 
@@ -4590,3 +4591,4 @@
 [@burnettk]: https://github.com/burnettk
 [@andrykonchin]: https://github.com/andrykonchin
 [@avrusanov]: https://github.com/avrusanov
+[@mauro-oto]: https://github.com/mauro-oto
