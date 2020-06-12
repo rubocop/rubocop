@@ -152,6 +152,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               end
             end
           RUBY
+          create_file('.rubocop.yml', <<~YAML)
+            Metrics/AbcSize:
+              Max: 15
+            Metrics/CyclomaticComplexity:
+              Max: 6
+          YAML
           expect(exit_code).to eq(0)
           expect($stderr.string).to eq('')
           expect($stdout.string).to eq(<<~OUTPUT)
