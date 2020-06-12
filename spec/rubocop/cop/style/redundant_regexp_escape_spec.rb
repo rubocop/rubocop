@@ -249,6 +249,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
+    context 'with an escaped { or } outside a character class' do
+      it 'does not register an offense' do
+        expect_no_offenses('foo = %r{\{\}}')
+      end
+    end
+
+    context 'with an escaped { or } inside a character class' do
+      it 'does not register an offense' do
+        expect_no_offenses('foo = %r{[\{\}]}')
+      end
+    end
+
     context 'with redundantly-escaped slashes' do
       it 'registers an offense and corrects' do
         expect_offense(<<~'RUBY')
@@ -260,6 +272,46 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
         expect_correction(<<~RUBY)
           foo = %r{/a/}
         RUBY
+      end
+    end
+  end
+
+  [
+    '!',
+    '~',
+    '@',
+    '_',
+    '^',
+    '<>',
+    '()'
+  ].each do |delims|
+    l, r = delims.chars
+    r = l if r.nil?
+    escaped_delims = "\\#{l}\\#{r}"
+
+    context "with a single-line %r#{l}#{r} regexp" do
+      context 'without escapes' do
+        it 'does not register an offense' do
+          expect_no_offenses("foo = %r#{l}a#{r}")
+        end
+      end
+
+      context 'with escaped delimiters and regexp options' do
+        it 'does not register an offense' do
+          expect_no_offenses("foo = %r#{l}#{escaped_delims}#{r}i")
+        end
+      end
+
+      context 'with escaped delimiters outside a character-class' do
+        it 'does not register an offense' do
+          expect_no_offenses("foo = %r#{l}#{escaped_delims}#{r}")
+        end
+      end
+
+      context 'with escaped delimiters inside a character-class' do
+        it 'does not register an offense' do
+          expect_no_offenses("foo = %r#{l}a[#{escaped_delims}]b#{r}")
+        end
       end
     end
   end

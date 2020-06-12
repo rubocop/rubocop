@@ -18,6 +18,9 @@ module RuboCop
       #   # good
       #   %r/foo\/bar/
       #
+      #   # good
+      #   %r!foo\!bar!
+      #
       #   # bad
       #   /a\-b/
       #
@@ -63,25 +66,28 @@ module RuboCop
 
         private
 
-        def slash_literal?(node)
-          ['/', '%r/'].include?(node.loc.begin.source)
-        end
-
         def allowed_escape?(node, char, within_character_class)
           # Strictly speaking a few single-letter metachars are currently
           # unnecessary to "escape", e.g. g, i, E, F, but enumerating them is
           # rather difficult, and their behaviour could change over time with
           # different versions of Ruby so that e.g. /\g/ != /g/
           return true if /[[:alnum:]]/.match?(char)
-          return true if ALLOWED_ALWAYS_ESCAPES.include?(char)
+          return true if ALLOWED_ALWAYS_ESCAPES.include?(char) || delimiter?(node, char)
 
-          if char == '/'
-            slash_literal?(node)
-          elsif within_character_class
+          if within_character_class
             ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES.include?(char)
           else
             ALLOWED_OUTSIDE_CHAR_CLASS_METACHAR_ESCAPES.include?(char)
           end
+        end
+
+        def delimiter?(node, char)
+          delimiters = [
+            node.loc.begin.source.chars.last,
+            node.loc.end.source.chars.first
+          ]
+
+          delimiters.include?(char)
         end
 
         def each_escape(node)
