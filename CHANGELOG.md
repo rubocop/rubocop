@@ -9,6 +9,7 @@
 
 ### Bug fixes
 
+* [#8132](https://github.com/rubocop-hq/rubocop/issues/8132): Fix the problem with `Naming/MethodName: EnforcedStyle: camelCase` and `_` or `i` variables. ([@avrusanov][])
 * [#8115](https://github.com/rubocop-hq/rubocop/issues/8115): Fix false negative for `Lint::FormatParameterMismatch` when argument contains formatting. ([@andrykonchin][])
 * [#8131](https://github.com/rubocop-hq/rubocop/pull/8131): Fix false positive for `Style/RedundantRegexpEscape` with escaped delimiters. ([@owst][])
 * [#8124](https://github.com/rubocop-hq/rubocop/issues/8124): Fix a false positive for `Lint/FormatParameterMismatch` when using named parameters with escaped `%`. ([@koic][])
@@ -4586,3 +4587,4 @@
 [@ric2b]: https://github.com/ric2b
 [@burnettk]: https://github.com/burnettk
 [@andrykonchin]: https://github.com/andrykonchin
+[@avrusanov]: https://github.com/avrusanov
