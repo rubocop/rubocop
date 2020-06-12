@@ -142,6 +142,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with an interpolated unnecessary-character-class regexp' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        foo = /a#{/[b]/}c/
+                   ^^^ Redundant single-element character class, `[b]` can be replaced with `b`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /a#{/b/}c/
+      RUBY
+    end
+  end
+
   context 'with a negated character class with a single element' do
     it 'does not register an offense' do
       expect_no_offenses('foo = /[^x]/')
@@ -178,6 +191,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with an array index inside an interpolation' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /a#{b[0]}c/')
+    end
+  end
+
   context 'with a character class containing a space' do
     context 'when not using free-spaced mode' do
       it 'registers an offense and corrects' do
@@ -192,17 +211,44 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
       end
     end
 
+    context 'with an unnecessary-character-class after a comment' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = /
+            a # This comment shouldn't affect the position of the offense
+            [b]
+            ^^^ Redundant single-element character class, `[b]` can be replaced with `b`.
+          /x
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo = /
+            a # This comment shouldn't affect the position of the offense
+            b
+          /x
+        RUBY
+      end
+    end
+
     context 'when using free-spaced mode' do
-      it 'does not register an offense with only /x' do
-        expect_no_offenses('foo = /[ ]/x')
+      context 'with a commented single-element character class' do
+        it 'does not register an offense' do
+          expect_no_offenses('foo = /foo # [a]/x')
+        end
       end
 
-      it 'does not register an offense with /ix' do
-        expect_no_offenses('foo = /[ ]/ix')
-      end
+      context 'with a single space character class' do
+        it 'does not register an offense with only /x' do
+          expect_no_offenses('foo = /[ ]/x')
+        end
 
-      it 'does not register an offense with /iux' do
-        expect_no_offenses('foo = /[ ]/iux')
+        it 'does not register an offense with /ix' do
+          expect_no_offenses('foo = /[ ]/ix')
+        end
+
+        it 'does not register an offense with /iux' do
+          expect_no_offenses('foo = /[ ]/iux')
+        end
       end
     end
   end

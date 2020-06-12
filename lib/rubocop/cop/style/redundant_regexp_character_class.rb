@@ -67,8 +67,8 @@ module RuboCop
         end
 
         def each_redundant_character_class(node)
-          each_match_range(node.loc.expression, PATTERN) do |loc|
-            yield loc
+          pattern_source(node).scan(PATTERN) do
+            yield match_range(node.loc.begin.end, Regexp.last_match)
           end
         end
 
