@@ -6,7 +6,6 @@
 
 * [#8111](https://github.com/rubocop-hq/rubocop/pull/8111): Add auto-correct for `Style/StructInheritance`. ([@tejasbubane][])
 * [#8113](https://github.com/rubocop-hq/rubocop/pull/8113): Let `expect_offense` templates add variable-length whitespace with `_{foo}`. ([@eugeneius][])
-* [#8146](https://github.com/rubocop-hq/rubocop/pull/8146): Use UTC in Rubocop todo file generation. ([@mauro-oto][])
 
 ### Bug fixes
 
@@ -16,6 +15,10 @@
 * [#8124](https://github.com/rubocop-hq/rubocop/issues/8124): Fix a false positive for `Lint/FormatParameterMismatch` when using named parameters with escaped `%`. ([@koic][])
 * [#7979](https://github.com/rubocop-hq/rubocop/issues/7979): Fix "uninitialized constant DidYouMean::SpellChecker" exception. ([@bquorning][])
 * [#8098](https://github.com/rubocop-hq/rubocop/issues/8098): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using interpolations. ([@owst][])
+
+### Changes
+
+* [#8146](https://github.com/rubocop-hq/rubocop/pull/8146): Use UTC in RuboCop todo file generation. ([@mauro-oto][])
 
 ## 0.85.1 (2020-06-07)
 
