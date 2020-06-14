@@ -44,6 +44,11 @@ module RuboCop
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'
         KERNEL_METHODS = Kernel.methods(false)
+        KEYWORDS = %i[alias and begin break case class def defined? do
+                      else elsif end ensure false for if in module
+                      next nil not or redo rescue retry return self
+                      super then true undef unless until when while
+                      yield __FILE__ __LINE__ __ENCODING__].freeze
 
         def self.autocorrect_incompatible_with
           [ColonMethodCall]
@@ -131,7 +136,7 @@ module RuboCop
 
         def regular_method_call?(node)
           !(node.operator_method? ||
-            keyword?(node.method_name) ||
+            KEYWORDS.include?(node.method_name) ||
             node.camel_case_method? ||
             node.setter_method? ||
             node.implicit_call?)
@@ -140,14 +145,6 @@ module RuboCop
         def on_argument(node)
           name, = *node
           @local_variables_scopes[node] << name
-        end
-
-        def keyword?(method_name)
-          %i[alias and begin break case class def defined? do
-             else elsif end ensure false for if in module
-             next nil not or redo rescue retry return self
-             super then true undef unless until when while
-             yield __FILE__ __LINE__ __ENCODING__].include?(method_name)
         end
 
         def allow_self(node)
