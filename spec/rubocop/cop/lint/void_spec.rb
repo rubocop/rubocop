@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
 
   let(:config) { RuboCop::Config.new }
 
-  described_class::BINARY_OPERATORS.each do |op|
+  described_class::NONMUTATING_BINARY_OPERATORS.each do |op|
     it "registers an offense for void op #{op} if not on last line" do
       inspect_source(<<~RUBY)
         a #{op} b
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
     end
   end
 
-  described_class::BINARY_OPERATORS.each do |op|
+  described_class::NONMUTATING_BINARY_OPERATORS.each do |op|
     it "accepts void op #{op} if on last line" do
       expect_no_offenses(<<~RUBY)
         something
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
     end
   end
 
-  described_class::BINARY_OPERATORS.each do |op|
+  described_class::NONMUTATING_BINARY_OPERATORS.each do |op|
     it "accepts void op #{op} by itself without a begin block" do
       expect_no_offenses("a #{op} b")
     end

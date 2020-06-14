@@ -41,6 +41,8 @@ module RuboCop
       #     do_something(some_array)
       #   end
       class Void < Cop
+        include NonmutatingMethodNames
+
         OP_MSG = 'Operator `%<op>s` used in void context.'
         VAR_MSG = 'Variable `%<var>s` used in void context.'
         LIT_MSG = 'Literal `%<lit>s` used in void context.'
@@ -49,17 +51,10 @@ module RuboCop
         NONMUTATING_MSG = 'Method `#%<method>s` used in void context. ' \
           'Did you mean `#%<method>s!`?'
 
-        BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
-        UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
-        OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
         VOID_CONTEXT_TYPES = %i[def for block].freeze
-        NONMUTATING_METHODS = %i[capitalize chomp chop collect compact
-                                 delete_prefix delete_suffix downcase
-                                 encode flatten gsub lstrip map merge next
-                                 reject reverse rotate rstrip scrub select
-                                 shuffle slice sort sort_by squeeze strip sub
-                                 succ swapcase tr tr_s transform_values
-                                 unicode_normalize uniq upcase].freeze
+
+        NONMUTATING_METHODS = (NONMUTATING_ARRAY_METHODS +
+          NONMUTATING_HASH_METHODS + NONMUTATING_STRING_METHODS + %i[next succ] - %i[delete]).freeze
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?
@@ -95,7 +90,7 @@ module RuboCop
         end
 
         def check_void_op(node)
-          return unless node.send_type? && OPERATORS.include?(node.method_name)
+          return unless node.send_type? && NONMUTATING_OPERATORS.include?(node.method_name)
 
           add_offense(node,
                       location: :selector,
