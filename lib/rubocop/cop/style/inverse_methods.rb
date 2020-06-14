@@ -178,7 +178,7 @@ module RuboCop
         end
 
         def camel_case_constant?(node)
-          node.const_type? && node.source =~ CAMEL_CASE
+          node.const_type? && CAMEL_CASE.match?(node.source)
         end
 
         def dot_range(loc)

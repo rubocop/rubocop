@@ -69,7 +69,7 @@ module RuboCop
 
         def scientific?(node)
           mantissa, = node.source.split('e')
-          mantissa =~ /^-?[1-9](\.\d*[0-9])?$/
+          /^-?[1-9](\.\d*[0-9])?$/.match?(mantissa)
         end
 
         def engineering?(node)
@@ -85,7 +85,7 @@ module RuboCop
 
         def integral(node)
           mantissa, = node.source.split('e')
-          mantissa =~ /^-?[1-9](\d*[1-9])?$/
+          /^-?[1-9](\d*[1-9])?$/.match?(mantissa)
         end
 
         def offense?(node)

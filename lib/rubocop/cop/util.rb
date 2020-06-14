@@ -14,7 +14,7 @@ module RuboCop
       module_function
 
       def comment_line?(line_source)
-        line_source =~ /^\s*#/
+        /^\s*#/.match?(line_source)
       end
 
       def comment_lines?(node)
@@ -88,7 +88,7 @@ module RuboCop
 
         # Regex matches IF there is a ' or there is a \\ in the string that is
         # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
-        string =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
+        /'|(?<! \\) \\{2}* \\ (?![\\"])/x.match?(string)
       end
 
       def needs_escaping?(string)

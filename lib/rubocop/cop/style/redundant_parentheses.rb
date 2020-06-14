@@ -156,7 +156,7 @@ module RuboCop
           source_buffer = node.source_range.source_buffer
           line_range = source_buffer.line_range(node.loc.end.line)
 
-          line_range.source =~ /^\s*\)\s*,/
+          /^\s*\)\s*,/.match?(line_range.source)
         end
 
         def disallowed_literal?(begin_node, node)

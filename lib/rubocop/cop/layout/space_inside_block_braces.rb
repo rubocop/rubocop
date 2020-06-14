@@ -150,7 +150,7 @@ module RuboCop
         end
 
         def check_right_brace(inner, left_brace, right_brace, single_line)
-          if single_line && inner =~ /\S$/
+          if single_line && /\S$/.match?(inner)
             no_space(right_brace.begin_pos, right_brace.end_pos,
                      'Space missing inside }.')
           else

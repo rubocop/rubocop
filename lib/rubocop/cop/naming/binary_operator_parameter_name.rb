@@ -35,7 +35,7 @@ module RuboCop
         def op_method?(name)
           return false if BLACKLISTED.include?(name)
 
-          name !~ /\A\w/ || OP_LIKE_METHODS.include?(name)
+          !/\A\w/.match?(name) || OP_LIKE_METHODS.include?(name)
         end
       end
     end

@@ -58,7 +58,7 @@ module RuboCop
         end
 
         def cop_name_line?(yaml)
-          yaml !~ /^[\s#]/
+          !/^[\s#]/.match?(yaml)
         end
       end
     end

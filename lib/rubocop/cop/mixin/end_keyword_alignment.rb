@@ -51,7 +51,7 @@ module RuboCop
 
       def accept_end_kw_alignment?(end_loc)
         end_loc.nil? || # Discard modifier forms of if/while/until.
-          processed_source.lines[end_loc.line - 1] !~ /\A[ \t]*end/
+          !/\A[ \t]*end/.match?(processed_source.lines[end_loc.line - 1])
       end
 
       def style_parameter_name

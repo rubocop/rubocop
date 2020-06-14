@@ -42,7 +42,7 @@ module RuboCop
           return false unless /\w/.match?(delimiters)
 
           forbidden_delimiters.none? do |forbidden_delimiter|
-            delimiters =~ Regexp.new(forbidden_delimiter)
+            Regexp.new(forbidden_delimiter).match?(delimiters)
           end
         end
 

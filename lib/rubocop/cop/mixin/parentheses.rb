@@ -9,8 +9,7 @@ module RuboCop
       def parens_required?(node)
         range  = node.source_range
         source = range.source_buffer.source
-        source[range.begin_pos - 1] =~ /[a-z]/ ||
-          source[range.end_pos] =~ /[a-z]/
+        /[a-z]/.match?(source[range.begin_pos - 1]) || /[a-z]/.match?(source[range.end_pos])
       end
     end
   end

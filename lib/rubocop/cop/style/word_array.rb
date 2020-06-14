@@ -73,7 +73,7 @@ module RuboCop
           strings.any? do |s|
             string = s.str_content.dup.force_encoding(::Encoding::UTF_8)
             !string.valid_encoding? ||
-              string !~ word_regex || string =~ / /
+              !word_regex.match?(string) || / /.match?(string)
           end
         end
 

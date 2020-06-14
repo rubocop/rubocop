@@ -42,7 +42,7 @@ module RuboCop
         end
 
         def encoding_omitable?(line)
-          line =~ ENCODING_PATTERN
+          ENCODING_PATTERN.match?(line)
         end
 
         def encoding_line_number(processed_source)

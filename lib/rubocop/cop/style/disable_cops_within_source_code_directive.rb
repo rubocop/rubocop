@@ -41,7 +41,7 @@ module RuboCop
         private
 
         def rubocop_directive_comment?(comment)
-          comment.text =~ CommentConfig::COMMENT_DIRECTIVE_REGEXP
+          CommentConfig::COMMENT_DIRECTIVE_REGEXP.match?(comment.text)
         end
       end
     end

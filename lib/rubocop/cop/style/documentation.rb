@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def compact_namespace?(node)
-          node.loc.name.source =~ /::/
+          /::/.match?(node.loc.name.source)
         end
 
         # First checks if the :nodoc: comment is associated with the
@@ -123,7 +123,7 @@ module RuboCop
         end
 
         def nodoc?(comment, require_all = false)
-          comment.text =~ /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/
+          /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/.match?(comment.text)
         end
 
         def nodoc(node)

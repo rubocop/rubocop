@@ -25,7 +25,7 @@ module RuboCop
           value, = *node
 
           return unless value.infinite? ||
-                        value.zero? && node.source =~ /[1-9]/
+                        value.zero? && /[1-9]/.match?(node.source)
 
           add_offense(node)
         end

@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def requires_percent_q?(source)
-          style == :percent_q && source =~ /^%[^\w]/
+          style == :percent_q && /^%[^\w]/.match?(source)
         end
 
         def requires_bare_percent?(source)

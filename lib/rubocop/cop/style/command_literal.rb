@@ -153,7 +153,7 @@ module RuboCop
         end
 
         def contains_backtick?(node)
-          node_body(node) =~ /`/
+          /`/.match?(node_body(node))
         end
 
         def node_body(node)

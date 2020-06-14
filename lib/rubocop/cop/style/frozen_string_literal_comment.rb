@@ -148,7 +148,7 @@ module RuboCop
           end
 
           next_token = processed_source.tokens[token_number]
-          token = next_token if next_token && next_token.text =~ Encoding::ENCODING_PATTERN
+          token = next_token if Encoding::ENCODING_PATTERN.match?(next_token&.text)
 
           token
         end

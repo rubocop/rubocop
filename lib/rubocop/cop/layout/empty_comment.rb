@@ -119,7 +119,7 @@ module RuboCop
                                     /\A(#+\n)+\z/
                                   end
 
-          !(comment_text =~ empty_comment_pattern).nil?
+          empty_comment_pattern.match?(comment_text)
         end
 
         def comment_text(comment)

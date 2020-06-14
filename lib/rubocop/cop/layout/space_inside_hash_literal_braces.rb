@@ -182,7 +182,7 @@ module RuboCop
         def range_of_space_to_the_right(range)
           src = range.source_buffer.source
           end_pos = range.end_pos
-          end_pos += 1 while src[end_pos] =~ /[ \t]/
+          end_pos += 1 while /[ \t]/.match?(src[end_pos])
 
           range_between(range.begin_pos + 1, end_pos)
         end
@@ -190,7 +190,7 @@ module RuboCop
         def range_of_space_to_the_left(range)
           src = range.source_buffer.source
           begin_pos = range.begin_pos
-          begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
+          begin_pos -= 1 while /[ \t]/.match?(src[begin_pos - 1])
 
           range_between(begin_pos, range.end_pos - 1)
         end

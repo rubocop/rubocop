@@ -62,7 +62,7 @@ module RuboCop
             # To avoid likely false positives (e.g. a single ' or ")
             next if literal.gsub(/[^[[:alnum:]]]/, '').empty?
 
-            QUOTES_AND_COMMAS.any? { |pat| literal =~ pat }
+            QUOTES_AND_COMMAS.any? { |pat| literal.match?(pat) }
           end
         end
       end

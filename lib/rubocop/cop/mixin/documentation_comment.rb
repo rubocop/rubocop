@@ -41,11 +41,11 @@ module RuboCop
       end
 
       def interpreter_directive_comment?(comment)
-        comment.text =~ /^#\s*(frozen_string_literal|encoding):/
+        /^#\s*(frozen_string_literal|encoding):/.match?(comment.text)
       end
 
       def rubocop_directive_comment?(comment)
-        comment.text =~ CommentConfig::COMMENT_DIRECTIVE_REGEXP
+        CommentConfig::COMMENT_DIRECTIVE_REGEXP.match?(comment.text)
       end
     end
   end
