@@ -191,7 +191,7 @@ module RuboCop
         end
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)
-          source_buffer.source[end_pos..-1] =~ /\A\s*$/
+          /\A\s*$/.match?(source_buffer.source[end_pos..-1])
         end
 
         def reindentable_lines(node)
@@ -201,7 +201,7 @@ module RuboCop
           lines = (node.source_range.line + 1)...node.loc.end.line
           lines = lines.to_a - heredoc_lines(node)
           # Skip blank lines
-          lines.reject { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
+          lines.reject { |lineno| /\A\s*\z/.match?(buffer.source_line(lineno)) }
         end
 
         # Adjust indentation of `lines` to match `node`

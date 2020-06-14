@@ -174,7 +174,7 @@ module RuboCop
         end
 
         def unparenthesized_method_call?(child)
-          method_name(child) =~ /^[a-z]/i && !child.parenthesized?
+          /^[a-z]/i.match?(method_name(child)) && !child.parenthesized?
         end
 
         def below_ternary_precedence?(child)

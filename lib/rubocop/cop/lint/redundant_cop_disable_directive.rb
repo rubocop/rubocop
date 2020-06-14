@@ -154,7 +154,7 @@ module RuboCop
         end
 
         def all_disabled?(comment)
-          comment.text =~ /rubocop\s*:\s*(?:disable|todo)\s+all\b/
+          /rubocop\s*:\s*(?:disable|todo)\s+all\b/.match?(comment.text)
         end
 
         def ignore_offense?(disabled_ranges, line_range)
@@ -225,7 +225,7 @@ module RuboCop
             .drop_while { |r| !r.equal?(range) }
             .each_cons(2)
             .map { |range1, range2| range1.end.join(range2.begin).source }
-            .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
+            .all? { |intervening| /\A\s*,\s*\Z/.match?(intervening) }
         end
 
         def describe(cop)

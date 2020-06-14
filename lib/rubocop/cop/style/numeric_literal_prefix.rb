@@ -77,9 +77,9 @@ module RuboCop
         end
 
         def octal_literal_type(literal)
-          if literal =~ OCTAL_ZERO_ONLY_REGEX && octal_zero_only?
+          if OCTAL_ZERO_ONLY_REGEX.match?(literal) && octal_zero_only?
             :octal_zero_only
-          elsif literal =~ OCTAL_REGEX && !octal_zero_only?
+          elsif OCTAL_REGEX.match?(literal) && !octal_zero_only?
             :octal
           end
         end

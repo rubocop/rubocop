@@ -109,7 +109,7 @@ module RuboCop
 
         def own_line_comment?(comment)
           own_line = processed_source.lines[comment.loc.line - 1]
-          own_line =~ /\A\s*#/
+          /\A\s*#/.match?(own_line)
         end
 
         def line_after_comment(comment)
@@ -129,11 +129,11 @@ module RuboCop
         end
 
         def less_indented?(line)
-          line =~ /^\s*(end\b|[)}\]])/
+          /^\s*(end\b|[)}\]])/.match?(line)
         end
 
         def two_alternatives?(line)
-          line =~ /^\s*(else|elsif|when|rescue|ensure)\b/
+          /^\s*(else|elsif|when|rescue|ensure)\b/.match?(line)
         end
       end
     end

@@ -87,15 +87,15 @@ module RuboCop
         return false unless token
 
         if side == :left
-          String(token.space_after?) =~ SINGLE_SPACE_REGEXP
+          SINGLE_SPACE_REGEXP.match?(String(token.space_after?))
         else
-          String(token.space_before?) =~ SINGLE_SPACE_REGEXP
+          SINGLE_SPACE_REGEXP.match?(String(token.space_before?))
         end
       end
 
       def reposition(src, pos, step)
         offset = step == -1 ? -1 : 0
-        pos += step while src[pos + offset] =~ SINGLE_SPACE_REGEXP
+        pos += step while SINGLE_SPACE_REGEXP.match?(src[pos + offset])
         pos.negative? ? 0 : pos
       end
 

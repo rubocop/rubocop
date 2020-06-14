@@ -123,7 +123,7 @@ module RuboCop
           # special handling for Action Pack Variants file names like
           # some_file.xlsx+mobile.axlsx
           basename = basename.sub('+', '_')
-          basename =~ (regex || SNAKE_CASE)
+          basename.match?(regex || SNAKE_CASE)
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity

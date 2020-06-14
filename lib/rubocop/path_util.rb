@@ -40,7 +40,7 @@ module RuboCop
           hidden_file_in_not_hidden_dir?(pattern, path)
       when Regexp
         begin
-          path =~ pattern
+          pattern.match?(path)
         rescue ArgumentError => e
           return false if e.message.start_with?('invalid byte sequence')
 
@@ -51,7 +51,7 @@ module RuboCop
 
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
-      path =~ %r{\A([A-Z]:)?/}i
+      %r{\A([A-Z]:)?/}i.match?(path)
     end
 
     def self.pwd

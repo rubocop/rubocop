@@ -17,7 +17,7 @@ module RuboCop
 
       def method_uses_parens?(node, limit)
         source = node.source_range.source_line[0...limit.loc.column]
-        source =~ /\s*\(\s*$/
+        /\s*\(\s*$/.match?(source)
       end
 
       def check_children_line_break(node, children, start = node)

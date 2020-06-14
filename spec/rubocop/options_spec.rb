@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         option_sections = $stdout.string.lines.slice_before(/^\s*-/)
 
         format_section = option_sections.find do |lines|
-          lines.first =~ /^\s*-f/
+          /^\s*-f/.match?(lines.first)
         end
 
         formatter_keys = format_section.reduce([]) do |keys, line|

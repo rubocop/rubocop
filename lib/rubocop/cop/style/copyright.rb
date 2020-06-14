@@ -72,14 +72,14 @@ module RuboCop
           return false if token_index >= processed_source.tokens.size
 
           token = processed_source.tokens[token_index]
-          token.comment? && token.text =~ /^#!.*$/
+          token.comment? && /^#!.*$/.match?(token.text)
         end
 
         def encoding_token?(processed_source, token_index)
           return false if token_index >= processed_source.tokens.size
 
           token = processed_source.tokens[token_index]
-          token.comment? && token.text =~ /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+          token.comment? && /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/.match?(token.text)
         end
 
         def notice_found?(processed_source)
@@ -88,7 +88,7 @@ module RuboCop
           processed_source.each_token do |token|
             break unless token.comment?
 
-            notice_found = !(token.text =~ notice_regexp).nil?
+            notice_found = notice_regexp.match?(token.text)
             break if notice_found
           end
           notice_found

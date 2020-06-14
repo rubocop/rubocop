@@ -152,7 +152,7 @@ module RuboCop
       return true if File.extname(file) == '.gemspec'
 
       file_to_include?(file) do |pattern, relative_path, absolute_path|
-        pattern.to_s =~ /[A-Z]/ &&
+        /[A-Z]/.match?(pattern.to_s) &&
           (match_path?(pattern, relative_path) ||
            match_path?(pattern, absolute_path))
       end

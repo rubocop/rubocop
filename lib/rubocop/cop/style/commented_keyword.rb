@@ -55,8 +55,8 @@ module RuboCop
 
         def offensive?(comment)
           line = line(comment)
-          KEYWORDS.any? { |word| line =~ /^\s*#{word}\s/ } &&
-            ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
+          KEYWORDS.any? { |word| /^\s*#{word}\s/.match?(line) } &&
+            ALLOWED_COMMENTS.none? { |c| /#\s*#{c}/.match?(line) }
         end
 
         def message(comment)

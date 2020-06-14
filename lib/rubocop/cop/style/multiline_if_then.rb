@@ -42,7 +42,7 @@ module RuboCop
         private
 
         def non_modifier_then?(node)
-          node.loc.begin && node.loc.begin.source_line =~ NON_MODIFIER_THEN
+          NON_MODIFIER_THEN.match?(node.loc.begin&.source_line)
         end
       end
     end

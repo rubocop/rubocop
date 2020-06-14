@@ -245,11 +245,11 @@ module RuboCop
         end
 
         def whitespace_before?(range)
-          range.source_buffer.source[range.begin_pos - 1, 1] =~ /\s/
+          /\s/.match?(range.source_buffer.source[range.begin_pos - 1, 1])
         end
 
         def whitespace_after?(range, length = 1)
-          range.source_buffer.source[range.begin_pos + length, 1] =~ /\s/
+          /\s/.match?(range.source_buffer.source[range.begin_pos + length, 1])
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity

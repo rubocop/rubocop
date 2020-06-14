@@ -139,7 +139,7 @@ module RuboCop
       return false unless File.extname(file).empty? && File.exist?(file)
 
       first_line = File.open(file, &:readline)
-      !(first_line =~ /#!.*(#{ruby_interpreters(file).join('|')})/).nil?
+      /#!.*(#{ruby_interpreters(file).join('|')})/.match?(first_line)
     rescue EOFError, ArgumentError => e
       warn("Unprocessable file #{file}: #{e.class}, #{e.message}") if debug?
 

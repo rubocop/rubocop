@@ -109,7 +109,7 @@ module RuboCop
 
       def move_pos(src, pos, step, condition, regexp)
         offset = step == -1 ? -1 : 0
-        pos += step while condition && src[pos + offset] =~ regexp
+        pos += step while condition && regexp.match?(src[pos + offset])
         pos.negative? ? 0 : pos
       end
     end

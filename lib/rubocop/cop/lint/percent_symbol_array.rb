@@ -61,7 +61,7 @@ module RuboCop
         end
 
         def non_alphanumeric_literal?(literal)
-          literal !~ /[[:alnum:]]/
+          !/[[:alnum:]]/.match?(literal)
         end
       end
     end

@@ -44,7 +44,7 @@ module RuboCop
       end
 
       def uppercase?(name)
-        name =~ /[[:upper:]]/
+        /[[:upper:]]/.match?(name)
       end
 
       def name_type(node)
@@ -62,7 +62,7 @@ module RuboCop
       end
 
       def ends_with_num?(name)
-        name[-1] =~ /\d/
+        /\d/.match?(name[-1])
       end
 
       def length_offense(node, range)

@@ -21,7 +21,7 @@ Dir['tasks/**/*.rake'].each { |t| load t }
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation).tap do |task|
   if RUBY_ENGINE == 'ruby' &&
-     RbConfig::CONFIG['host_os'] !~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+     !/mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os'])
     task.options = %w[--parallel]
   end
 end

@@ -39,7 +39,7 @@ module RuboCop
         private
 
         def followed_by_space?(colon)
-          colon.source_buffer.source[colon.end_pos] =~ /\s/
+          /\s/.match?(colon.source_buffer.source[colon.end_pos])
         end
       end
     end

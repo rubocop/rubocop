@@ -65,7 +65,7 @@ module RuboCop
         def symbols_contain_spaces?(node)
           node.children.any? do |sym|
             content, = *sym
-            content =~ / /
+            / /.match?(content)
           end
         end
 
@@ -104,12 +104,12 @@ module RuboCop
           )
 
           # method name
-          string =~ /\A[a-zA-Z_]\w*[!?]?\z/ ||
+          /\A[a-zA-Z_]\w*[!?]?\z/.match?(string) ||
             # instance / class variable
-            string =~ /\A@@?[a-zA-Z_]\w*\z/ ||
+            /\A@@?[a-zA-Z_]\w*\z/.match?(string) ||
             # global variable
-            string =~ /\A\$[1-9]\d*\z/ ||
-            string =~ /\A\$[a-zA-Z_]\w*\z/ ||
+            /\A\$[1-9]\d*\z/.match?(string) ||
+            /\A\$[a-zA-Z_]\w*\z/.match?(string) ||
             special_gvars.include?(string) ||
             redefinable_operators.include?(string)
         end

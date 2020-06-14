@@ -31,7 +31,7 @@ module RuboCop
         # If there is any heredoc in items, then match the comma succeeding
         # any whitespace (except newlines), otherwise allow for newlines
         comma_regex = any_heredoc?(items) ? /\A[^\S\n]*,/ : /\A\s*,/
-        range.source =~ comma_regex && range.source.index(',')
+        comma_regex.match?(range.source) && range.source.index(',')
       end
 
       def check_comma(node, kind, comma_pos)

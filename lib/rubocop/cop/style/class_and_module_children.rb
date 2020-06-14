@@ -143,7 +143,7 @@ module RuboCop
         end
 
         def compact_node_name?(node)
-          node.loc.name.source =~ /::/
+          /::/.match?(node.loc.name.source)
         end
       end
     end

@@ -102,7 +102,7 @@ module RuboCop
           delimiters_regexp = Regexp.union(delimiters)
           node
             .children.map { |n| string_source(n) }.compact
-            .any? { |s| delimiters_regexp =~ s }
+            .any? { |s| delimiters_regexp.match?(s) }
         end
 
         def string_source(node)
