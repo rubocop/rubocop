@@ -71,8 +71,7 @@ RuboCop supports the following Ruby implementations:
 * MRI 2.4+
 * JRuby 9.2+
 
-RuboCop has customarily provided support for about a year after EOL of MRI Ruby version.
-This is done by RuboCop core to provide the community with a margin of transition.
+See [compatibility](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
 
 ## Team
 
