@@ -59,7 +59,6 @@ require_relative 'rubocop/cop/mixin/check_assignment'
 require_relative 'rubocop/cop/mixin/check_line_breakable'
 require_relative 'rubocop/cop/mixin/configurable_max'
 require_relative 'rubocop/cop/mixin/code_length' # relies on configurable_max
-require_relative 'rubocop/cop/mixin/classish_length' # relies on code_length
 require_relative 'rubocop/cop/mixin/configurable_enforced_style'
 require_relative 'rubocop/cop/mixin/configurable_formatting'
 require_relative 'rubocop/cop/mixin/configurable_naming'
@@ -329,6 +328,7 @@ require_relative 'rubocop/cop/metrics/utils/iterating_block'
 require_relative 'rubocop/cop/metrics/cyclomatic_complexity'
 # relies on cyclomatic_complexity
 require_relative 'rubocop/cop/metrics/utils/abc_size_calculator'
+require_relative 'rubocop/cop/metrics/utils/code_length_calculator'
 require_relative 'rubocop/cop/metrics/abc_size'
 require_relative 'rubocop/cop/metrics/block_length'
 require_relative 'rubocop/cop/metrics/block_nesting'

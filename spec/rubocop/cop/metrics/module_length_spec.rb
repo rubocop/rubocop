@@ -207,6 +207,24 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
   end
 
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
+
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        module Test
+          a = 1
+          a = [
+            2,
+            3,
+            4,
+            5
+          ]
+        end
+      RUBY
+    end
+  end
+
   context 'when inspecting a class defined with Module.new' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

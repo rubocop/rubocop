@@ -16,19 +16,9 @@ module RuboCop
       end
 
       def code_length(node)
-        body = extract_body(node)
-        lines = body&.source&.lines || []
-
-        lines.count { |line| !irrelevant_line(line) }
-      end
-
-      def extract_body(node)
-        case node.type
-        when :block, :def, :defs
-          node.body
-        else
-          node
-        end
+        Metrics::Utils::CodeLengthCalculator.new(node,
+                                                 count_comments: count_comments?,
+                                                 foldable_types: count_as_one).calculate
       end
     end
   end

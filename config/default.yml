@@ -1911,9 +1911,10 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   VersionAdded: '0.44'
-  VersionChanged: '0.66'
+  VersionChanged: '0.87'
   CountComments: false  # count full line comments?
   Max: 25
+  CountAsOne: []
   ExcludedMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
@@ -1934,8 +1935,10 @@ Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
   VersionAdded: '0.25'
+  VersionChanged: '0.87'
   CountComments: false  # count full line comments?
   Max: 100
+  CountAsOne: []
 
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
@@ -1953,17 +1956,20 @@ Metrics/MethodLength:
   StyleGuide: '#short-methods'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '0.59.2'
+  VersionChanged: '0.87'
   CountComments: false  # count full line comments?
   Max: 10
+  CountAsOne: []
   ExcludedMethods: []
 
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: true
   VersionAdded: '0.31'
+  VersionChanged: '0.87'
   CountComments: false  # count full line comments?
   Max: 100
+  CountAsOne: []
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'

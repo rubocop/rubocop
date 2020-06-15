@@ -656,6 +656,7 @@ RSpec.describe RuboCop::ConfigLoader do
               default_config['Metrics/MethodLength']['VersionChanged'],
               'CountComments' => false,
               'Max' => 5,
+              'CountAsOne' => [],
               'ExcludedMethods' => []
             }
           )

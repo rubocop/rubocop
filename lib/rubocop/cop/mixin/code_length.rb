@@ -16,6 +16,10 @@ module RuboCop
         cop_config['CountComments']
       end
 
+      def count_as_one
+        Array(cop_config['CountAsOne']).map(&:to_sym)
+      end
+
       def check_code_length(node)
         length = code_length(node)
 

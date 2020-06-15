@@ -10,6 +10,7 @@
 * [#7458](https://github.com/rubocop-hq/rubocop/issues/7458): Add new `AsciiConstants` option for `Naming/AsciiIdentifiers`. ([@fatkodima][])
 * [#7373](https://github.com/rubocop-hq/rubocop/issues/7373): Add new `Style/RedundantAssignment` cop. ([@fatkodima][])
 * [#8213](https://github.com/rubocop-hq/rubocop/pull/8213): Permit to specify TargetRubyVersion 2.8 (experimental). ([@koic][])
+* [#8159](https://github.com/rubocop-hq/rubocop/pull/8159): Add new `CountAsOne` option for code length related `Metric` cops. ([@fatkodima][])
 * [#8164](https://github.com/rubocop-hq/rubocop/pull/8164): Support auto-correction for `Lint/InterpolationCheck`. ([@koic][])
 * [#8223](https://github.com/rubocop-hq/rubocop/pull/8223): Support auto-correction for `Style/IfUnlessModifierOfIfUnless`. ([@koic][])
 * [#8172](https://github.com/rubocop-hq/rubocop/pull/8172): Support auto-correction for `Lint/SafeNavigationWithEmpty`. ([@koic][])

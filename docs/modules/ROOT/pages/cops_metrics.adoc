@@ -45,13 +45,40 @@ and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 | Yes
 | No
 | 0.44
-| 0.66
+| 0.87
 |===
 
 This cop checks if the length of a block exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 The cop can be configured to ignore blocks passed to certain methods.
+
+You can set literals you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', and 'heredoc'. Each literal
+will be counted as one line regardless of its actual size.
+
+=== Examples
+
+==== CountAsOne: ['array', 'heredoc']
+
+[source,ruby]
+----
+something do
+  array = [         # +1
+    1,
+    2
+  ]
+
+  hash = {          # +3
+    key: 'value'
+  }
+
+  msg = <<~HEREDOC  # +1
+    Heredoc
+    content.
+  HEREDOC
+end                 # 5 points
+----
 
 === Configurable attributes
 
@@ -65,6 +92,10 @@ The cop can be configured to ignore blocks passed to certain methods.
 | Max
 | `25`
 | Integer
+
+| CountAsOne
+| `[]`
+| Array
 
 | ExcludedMethods
 | `refine`
@@ -123,12 +154,39 @@ The maximum level of nesting allowed is configurable.
 | Yes
 | No
 | 0.25
-| -
+| 0.87
 |===
 
 This cop checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
+
+You can set literals you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', and 'heredoc'. Each literal
+will be counted as one line regardless of its actual size.
+
+=== Examples
+
+==== CountAsOne: ['array', 'heredoc']
+
+[source,ruby]
+----
+class Foo
+  ARRAY = [         # +1
+    1,
+    2
+  ]
+
+  HASH = {          # +3
+    key: 'value'
+  }
+
+  MSG = <<~HEREDOC  # +1
+    Heredoc
+    content.
+  HEREDOC
+end                 # 5 points
+----
 
 === Configurable attributes
 
@@ -142,6 +200,10 @@ The maximum allowed length is configurable.
 | Max
 | `100`
 | Integer
+
+| CountAsOne
+| `[]`
+| Array
 |===
 
 == Metrics/CyclomaticComplexity
@@ -206,12 +268,39 @@ Blocks that are calls to builtin iteration methods
 | Yes
 | No
 | 0.25
-| 0.59.2
+| 0.87
 |===
 
 This cop checks if the length of a method exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
+
+You can set literals you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', and 'heredoc'. Each literal
+will be counted as one line regardless of its actual size.
+
+=== Examples
+
+==== CountAsOne: ['array', 'heredoc']
+
+[source,ruby]
+----
+def m
+  array = [       # +1
+    1,
+    2
+  ]
+
+  hash = {        # +3
+    key: 'value'
+  }
+
+  <<~HEREDOC      # +1
+    Heredoc
+    content.
+  HEREDOC
+end               # 5 points
+----
 
 === Configurable attributes
 
@@ -225,6 +314,10 @@ The maximum allowed length is configurable.
 | Max
 | `10`
 | Integer
+
+| CountAsOne
+| `[]`
+| Array
 
 | ExcludedMethods
 | `[]`
@@ -244,12 +337,39 @@ The maximum allowed length is configurable.
 | Yes
 | No
 | 0.31
-| -
+| 0.87
 |===
 
 This cop checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
+
+You can set literals you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', and 'heredoc'. Each literal
+will be counted as one line regardless of its actual size.
+
+=== Examples
+
+==== CountAsOne: ['array', 'heredoc']
+
+[source,ruby]
+----
+module M
+  ARRAY = [         # +1
+    1,
+    2
+  ]
+
+  HASH = {          # +3
+    key: 'value'
+  }
+
+  MSG = <<~HEREDOC  # +1
+    Heredoc
+    content.
+  HEREDOC
+end                 # 5 points
+----
 
 === Configurable attributes
 
@@ -263,6 +383,10 @@ The maximum allowed length is configurable.
 | Max
 | `100`
 | Integer
+
+| CountAsOne
+| `[]`
+| Array
 |===
 
 == Metrics/ParameterLists
