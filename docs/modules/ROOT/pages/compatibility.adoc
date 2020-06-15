@@ -1,0 +1,36 @@
+= Compatibility
+
+RuboCop targets Ruby 2.4+.
+
+RuboCop officially supports MRI and JRuby.
+
+- MRI 2.4+
+- JRuby 9.2+
+
+The supported JRuby version follows to MRI compatible version.
+
+== Support Matrix
+
+RuboCop has customarily provided support for about one year after EOL of MRI version. The following table is the support matrix.
+
+|===
+| Supported target Ruby version | Last supported RuboCop version
+
+| 1.9 | 0.41
+| 2.0 | 0.50
+| 2.1 | 0.57
+| 2.2 | 0.68
+| 2.3 | 0.81
+| 2.4 | -
+| 2.5 | -
+| 2.6 | -
+| 2.7 | -
+|===
+
+One year provides the community with a transition margin. And the final decision to drop support will be made by core maintainers.
+
+NOTE: The compatibility https://docs.rubocop.org/rubocop/configuration.html#setting-the-target-ruby-version[target Ruby version] mentioned here is about analysys, not runtime.
+
+== Forwards Compatibility
+
+Features may be provided for development version of Ruby. These are experimental introductions and may change before the stable version of Ruby will be released.
