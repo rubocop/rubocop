@@ -8,7 +8,6 @@
 [![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop-hq/rubocop/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop-hq/rubocop/maintainability)
-[![Inline docs](https://inch-ci.org/github/rubocop-hq/rubocop.svg)](https://inch-ci.org/github/rubocop-hq/rubocop)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
