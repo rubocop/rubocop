@@ -218,4 +218,22 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
       RUBY
     end
   end
+
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
+
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        def m
+          a = 1
+          a = [
+            2,
+            3,
+            4,
+            5
+          ]
+        end
+      RUBY
+    end
+  end
 end
