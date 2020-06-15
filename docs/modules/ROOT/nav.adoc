@@ -1,5 +1,6 @@
 * xref:index.adoc[Home]
 * xref:installation.adoc[Installation]
+* xref:compatibility.adoc[Compatibility]
 * Usage
 ** xref:usage/basic_usage.adoc[Basic Usage]
 ** xref:usage/auto_correct.adoc[Auto-correct]
