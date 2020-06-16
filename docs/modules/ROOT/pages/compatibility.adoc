@@ -1,17 +1,22 @@
 = Compatibility
 
-RuboCop targets Ruby 2.4+.
+RuboCop targets Ruby 2.4+.footnote:[As defined by its reference implementation MRI.]
 
-RuboCop officially supports MRI and JRuby.
+RuboCop officially supports MRI (a.k.a. CRuby) and JRuby.
 
 - MRI 2.4+
 - JRuby 9.2+
 
-The supported JRuby version follows to MRI compatible version.
+The oldest supported JRuby version is derived from the oldest compatible MRI version.
+
+NOTE: RuboCop might be working with other Ruby implementations as well, but it's tested only on MRI and JRuby.
 
 == Support Matrix
 
-RuboCop has customarily provided support for about one year after EOL of MRI version. The following table is the support matrix.
+RuboCop generally aims to follow MRI's own support policy - meaning RuboCop would support all officially supported MRI releases.footnote:[Typically the last 3 releases.] To give people extra time for a smooth transition, we've customarily provided support for about one year after EOL of MRI version.
+This means that if Ruby 2.4 reaches its EOL in Spring 2020, it would be supported by RuboCop (at least) until Spring 2021.footnote:[At the core team's discretion this policy might be waived aside for MRI releases causing significant maintenance overhead.]
+
+The following table is the support matrix.
 
 |===
 | Supported target Ruby version | Last supported RuboCop version
@@ -27,10 +32,8 @@ RuboCop has customarily provided support for about one year after EOL of MRI ver
 | 2.7 | -
 |===
 
-One year provides the community with a transition margin. And the final decision to drop support will be made by core maintainers.
+NOTE: The compatibility xref:configuration.adoc#setting-the-target-ruby-version[target Ruby version mentioned here] is about code analysis (what RuboCop can analyze), not runtime (is RuboCop capable of running on some Ruby or not).
 
-NOTE: The compatibility https://docs.rubocop.org/rubocop/configuration.html#setting-the-target-ruby-version[target Ruby version] mentioned here is about analysys, not runtime.
+== Forward Compatibility
 
-== Forwards Compatibility
-
-Features may be provided for development version of Ruby. These are experimental introductions and may change before the stable version of Ruby will be released.
+Features may be provided for development version of Ruby. These are all considered experimental, and may change before the stable version of Ruby will be released.
