@@ -5670,9 +5670,9 @@ method1(method2 arg)
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
-| -
+| 0.86
 |===
 
 This cop checks for nested ternary op expressions.

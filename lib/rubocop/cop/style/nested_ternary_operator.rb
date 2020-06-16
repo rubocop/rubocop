@@ -26,6 +26,26 @@ module RuboCop
             add_offense(nested_ternary)
           end
         end
+
+        def autocorrect(node)
+          node = node.parent.parent
+
+          lambda do |corrector|
+            corrector.replace(node, <<~RUBY.chop)
+              if #{node.condition.source}
+                #{remove_parentheses(node.if_branch.source)}
+              else
+                #{node.else_branch.source}
+              end
+            RUBY
+          end
+        end
+
+        private
+
+        def remove_parentheses(source)
+          source.gsub(/\A\(/, '').gsub(/\)\z/, '')
+        end
       end
     end
   end

@@ -3344,6 +3344,7 @@ Style/NestedTernaryOperator:
   StyleGuide: '#no-nested-ternary'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.86'
 
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
