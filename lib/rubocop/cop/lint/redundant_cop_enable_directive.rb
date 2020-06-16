@@ -74,16 +74,6 @@ module RuboCop
           comment.text.index(name)
         end
 
-        def find_comma_position(source, begin_pos, end_pos)
-          if source[begin_pos - 1] == ','
-            :before
-          elsif source[end_pos] == ','
-            :after
-          else
-            :none
-          end
-        end
-
         def range_with_comma(comment, name)
           source = comment.loc.expression.source
 
@@ -92,27 +82,29 @@ module RuboCop
           begin_pos = reposition(source, begin_pos, -1)
           end_pos = reposition(source, end_pos, 1)
 
-          comma_pos = find_comma_position(source, begin_pos, end_pos)
-
-          range_to_remove(begin_pos, end_pos, comma_pos, comment)
+          range_to_remove(begin_pos, end_pos, comment)
         end
 
-        def range_to_remove(begin_pos, end_pos, comma_pos, comment)
+        def range_to_remove(begin_pos, end_pos, comment)
           start = comment_start(comment)
+          source = comment.loc.expression.source
 
-          case comma_pos
-          when :before
-            range_between(start + begin_pos - 1, start + end_pos)
-          when :after
-            range_between_for_after(start, begin_pos, end_pos, comment)
+          if source[begin_pos - 1] == ','
+            range_with_comma_before(start, begin_pos, end_pos)
+          elsif source[end_pos] == ','
+            range_with_comma_after(comment, start, begin_pos, end_pos)
           else
             range_between(start, comment.loc.expression.end_pos)
           end
         end
 
+        def range_with_comma_before(start, begin_pos, end_pos)
+          range_between(start + begin_pos - 1, start + end_pos)
+        end
+
         # If the list of cops is comma-separated, but without a empty space after the comma,
         # we should **not** remove the prepending empty space, thus begin_pos += 1
-        def range_between_for_after(start, begin_pos, end_pos, comment)
+        def range_with_comma_after(comment, start, begin_pos, end_pos)
           begin_pos += 1 if comment.loc.expression.source[end_pos + 1] != ' '
 
           range_between(start + begin_pos, start + end_pos + 1)
