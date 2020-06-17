@@ -51,6 +51,8 @@ Code style checking for Sequel gem
 Custom cops and config defaults for Chef Infra Cookbooks
 * https://github.com/rubocop-hq/rubocop-rake[rubocop-rake] -
 Rake-specific analysis
+* https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
+Upstream best practices and coding conventions for downstream compatibility.
 
 Any extensions missing? Send us a Pull Request!
 
