@@ -1508,7 +1508,9 @@ Lint/InheritException:
 Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.50'
+  VersionChanged: '0.87'
 
 Lint/LiteralAsCondition:
   Description: 'Checks of literals used in conditions.'

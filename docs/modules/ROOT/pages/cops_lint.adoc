@@ -1437,9 +1437,9 @@ C = Class.new(StandardError)
 
 | Enabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.50
-| -
+| 0.87
 |===
 
 This cop checks for interpolation in a single quoted string.
