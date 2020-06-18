@@ -30,6 +30,19 @@ module RuboCop
           add_offense(node)
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            starting_token, ending_token = if node.source.include?('"')
+                                             ['%{', '}']
+                                           else
+                                             ['"', '"']
+                                           end
+
+            corrector.replace(node.loc.begin, starting_token)
+            corrector.replace(node.loc.end, ending_token)
+          end
+        end
+
         def heredoc?(node)
           node.loc.is_a?(Parser::Source::Map::Heredoc) ||
             (node.parent && heredoc?(node.parent))
