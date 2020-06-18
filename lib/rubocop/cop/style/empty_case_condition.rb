@@ -43,13 +43,15 @@ module RuboCop
 
         def on_case(case_node)
           return if case_node.condition
-          return if case_node.when_branches.any? do |when_branch|
-            when_branch.each_descendant.any?(&:return_type?)
-          end
 
-          if (else_branch = case_node.else_branch)
-            return if else_branch.return_type? ||
-                      else_branch.each_descendant.any?(&:return_type?)
+          branch_bodies = [
+            *case_node.when_branches.map(&:body),
+            case_node.else_branch
+          ].compact
+
+          return if branch_bodies.any? do |body|
+            body.return_type? ||
+            body.each_descendant.any?(&:return_type?)
           end
 
           add_offense(case_node, location: :keyword)
