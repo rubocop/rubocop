@@ -6,70 +6,70 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
   it 'registers an offense for `raise` with `::Exception`' do
     expect_offense(<<~RUBY)
       raise ::Exception
-      ^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `raise` with `::Exception.new`' do
     expect_offense(<<~RUBY)
       raise ::Exception.new 'Error with exception'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `raise` with `::Exception` and message' do
     expect_offense(<<~RUBY)
       raise ::Exception, 'Error with exception'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `raise` with `Exception`' do
     expect_offense(<<~RUBY)
       raise Exception
-      ^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `raise` with `Exception` and message' do
     expect_offense(<<~RUBY)
       raise Exception, 'Error with exception'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `raise` with `Exception.new` and message' do
     expect_offense(<<~RUBY)
       raise Exception.new 'Error with exception'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `raise` with `Exception.new(args*)` ' do
     expect_offense(<<~RUBY)
       raise Exception.new('arg1', 'arg2')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+            ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `fail` with `Exception`' do
     expect_offense(<<~RUBY)
       fail Exception
-      ^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+           ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `fail` with `Exception` and message' do
     expect_offense(<<~RUBY)
       fail Exception, 'Error with exception'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+           ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
   it 'registers an offense for `fail` with `Exception.new` and message' do
     expect_offense(<<~RUBY)
       fail Exception.new 'Error with exception'
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+           ^^^^^^^^^ Use `StandardError` over `Exception`.
     RUBY
   end
 
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
         module Gem
           def self.foo
             raise ::Exception
-            ^^^^^^^^^^^^^^^^^ Use `StandardError` over `Exception`.
+                  ^^^^^^^^^^^ Use `StandardError` over `Exception`.
           end
         end
       RUBY
