@@ -10,6 +10,7 @@
 * [#8151](https://github.com/rubocop-hq/rubocop/pull/8151): Support autocorrection for `Style/NestedTernaryOperator`. ([@koic][])
 * [#8142](https://github.com/rubocop-hq/rubocop/pull/8142): Add `Lint/ConstantResolution` cop. ([@robotdana][])
 * [#8170](https://github.com/rubocop-hq/rubocop/pull/8170): Support autocorrection for `Lint/RegexpAsCondition`. ([@koic][])
+* [#8169](https://github.com/rubocop-hq/rubocop/pull/8169): Support autocorrection for `Lint/RaiseException`. ([@koic][])
 
 ### Bug fixes
 
