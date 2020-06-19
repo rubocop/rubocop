@@ -1677,6 +1677,7 @@ Lint/RegexpAsCondition:
                  The regexp literal matches `$_` implicitly.
   Enabled: true
   VersionAdded: '0.51'
+  VersionChanged: '0.86'
 
 Lint/RequireParentheses:
   Description: >-

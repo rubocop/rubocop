@@ -23,6 +23,12 @@ module RuboCop
         def on_match_current_line(node)
           add_offense(node)
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node, "#{node.source} =~ $_")
+          end
+        end
       end
     end
   end
