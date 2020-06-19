@@ -14,7 +14,7 @@ module RuboCop
       # and ||/or is shorthand for a sequence of ifs, so they also add one.
       # Loops can be said to have an exit condition, so they add one.
       # Blocks that are calls to builtin iteration methods
-      # (e.g. `ary.map{...}) also add one, otherse are ignored.
+      # (e.g. `ary.map{...}) also add one, others are ignored.
       #
       #   def each_child_node(*types)               # count begins: 1
       #     unless block_given?                     # unless: +1
