@@ -30,7 +30,7 @@ module RuboCop
         def on_if(node)
           return unless safe_navigation_empty_in_conditional?(node)
 
-          add_offense(node)
+          add_offense(node.condition)
         end
       end
     end
