@@ -6,6 +6,7 @@
 
 * [#8983](https://github.com/rubocop-hq/rubocop/pull/8983): Support auto-correction for `Naming/HeredocDelimiterCase`. ([@koic][])
 * [#8004](https://github.com/rubocop-hq/rubocop/issues/8004): Add new `GitHubActionsFormatter` formatter. ([@lautis][])
+* [#8175](https://github.com/rubocop-hq/rubocop/pull/8175): Add new `AllowedCompactTypes` option for `Style/RaiseArgs`. ([@pdobb][])
 
 ### Bug fixes
 
@@ -5058,3 +5059,4 @@
 [@matthieugendreau]: https://github.com/matthieugendreau
 [@miry]: https://github.com/miry
 [@lautis]: https://github.com/lautis
+[@pdobb]: https://github.com/pdobb
