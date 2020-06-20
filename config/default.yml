@@ -3912,11 +3912,12 @@ Style/RaiseArgs:
   StyleGuide: '#exception-class-messages'
   Enabled: true
   VersionAdded: '0.14'
-  VersionChanged: '0.40'
+  VersionChanged: '1.2'
   EnforcedStyle: exploded
   SupportedStyles:
     - compact # raise Exception.new(msg)
     - exploded # raise Exception, msg
+  AllowedCompactTypes: []
 
 Style/RandomWithOffset:
   Description: >-

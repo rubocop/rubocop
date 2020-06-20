@@ -255,6 +255,36 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'when exception type is in AllowedCompactTypes' do
+      before do
+        stub_const('Ex1', StandardError)
+        stub_const('Ex2', StandardError)
+      end
+
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => 'exploded',
+          'AllowedCompactTypes' => ['Ex1']
+        }
+      end
+
+      it 'accepts exception constructor with no arguments' do
+        expect_no_offenses('raise Ex1.new')
+      end
+
+      context 'with one argument' do
+        it 'accepts exception constructor' do
+          expect_no_offenses('raise Ex1.new(msg)')
+        end
+      end
+
+      context 'with more than one argument' do
+        it 'accepts exception constructor' do
+          expect_no_offenses('raise Ex1.new(arg1, arg2)')
+        end
+      end
+    end
+
     it 'accepts exception constructor with more than 1 argument' do
       expect_no_offenses('raise MyCustomError.new(a1, a2, a3)')
     end
