@@ -28,20 +28,27 @@ module RuboCop
         end
 
         def autocorrect(node)
-          node = node.parent.parent
+          if_node = if_node(node)
 
           lambda do |corrector|
-            corrector.replace(node, <<~RUBY.chop)
-              if #{node.condition.source}
-                #{remove_parentheses(node.if_branch.source)}
+            corrector.replace(if_node, <<~RUBY.chop)
+              if #{if_node.condition.source}
+                #{remove_parentheses(if_node.if_branch.source)}
               else
-                #{node.else_branch.source}
+                #{if_node.else_branch.source}
               end
             RUBY
           end
         end
 
         private
+
+        def if_node(node)
+          node = node.parent
+          return node if node.if_type?
+
+          if_node(node)
+        end
 
         def remove_parentheses(source)
           source.gsub(/\A\(/, '').gsub(/\)\z/, '')
