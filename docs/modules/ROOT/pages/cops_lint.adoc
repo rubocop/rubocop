@@ -310,6 +310,96 @@ def cook(dry_ingredients = self.dry_ingredients)
 end
 ----
 
+== Lint/ConstantResolution
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 0.86
+| -
+|===
+
+Check that certain constants are fully qualified.
+
+This is not enabled by default because it would mark a lot of offenses
+unnecessarily.
+
+Generally, gems should fully qualify all constants to avoid conflicts with
+the code that uses the gem. Enable this cop without using `Only`/`Ignore`
+
+Large projects will over time end up with one or two constant names that
+are problematic because of a conflict with a library or just internally
+using the same name a namespace and a class. To avoid too many unnecessary
+offenses, Enable this cop with `Only: [The, Constant, Names, Causing, Issues]`
+
+=== Examples
+
+[source,ruby]
+----
+# By default checks every constant
+
+# bad
+User
+
+# bad
+User::Login
+
+# good
+::User
+
+# good
+::User::Login
+----
+
+==== Only: ['Login']
+
+[source,ruby]
+----
+# Restrict this cop to only being concerned about certain constants
+
+# bad
+Login
+
+# good
+::Login
+
+# good
+User::Login
+----
+
+==== Ignore: ['Login']
+
+[source,ruby]
+----
+# Restrict this cop not being concerned about certain constants
+
+# bad
+User
+
+# good
+::User::Login
+
+# good
+Login
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Only
+| `[]`
+| Array
+
+| Ignore
+| `[]`
+| Array
+|===
+
 == Lint/Debugger
 
 |===
