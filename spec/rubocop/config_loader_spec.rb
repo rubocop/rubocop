@@ -197,6 +197,35 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when project has a Gemfile', :project_inside_home do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_empty_file('Gemfile')
+
+        create_file(file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+        YAML
+      end
+
+      context 'and there is a personal config file in the home folder' do
+        before do
+          create_file('~/.rubocop.yml', <<~YAML)
+            AllCops:
+              Exclude:
+                - tmp/**
+          YAML
+        end
+
+        it 'ignores personal AllCops/Exclude' do
+          excludes = configuration_from_file['AllCops']['Exclude']
+          expect(excludes).to eq([File.expand_path('vendor/**')])
+        end
+      end
+    end
+
     context 'when a parent file specifies DisabledByDefault: true' do
       let(:file_path) { '.rubocop.yml' }
 

@@ -118,7 +118,7 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        exclusion_file = find_last_file_upwards(DOTFILE, config_file)
+        exclusion_file = find_last_file_upwards(DOTFILE, config_file, project_root)
 
         return unless exclusion_file
         return if PathUtil.relative_path(exclusion_file) == PathUtil.relative_path(config_file)
@@ -132,6 +132,12 @@ module RuboCop
                                      print 'Default ' if debug?
                                      load_file(DEFAULT_FILE)
                                    end
+      end
+
+      # Returns the path rubocop inferred as the root of the project. No file
+      # searches will go past this directory.
+      def project_root
+        @project_root ||= find_project_root
       end
 
       def warn_on_pending_cops(pending_cops)
@@ -159,6 +165,14 @@ module RuboCop
 
       def find_project_dotfile(target_dir)
         find_file_upwards(DOTFILE, target_dir)
+      end
+
+      def find_project_root
+        pwd = Dir.pwd
+        gems_file = find_last_file_upwards('Gemfile', pwd) || find_last_file_upwards('gems.rb', pwd)
+        return unless gems_file
+
+        File.dirname(gems_file)
       end
 
       def find_user_dotfile
