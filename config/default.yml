@@ -1738,6 +1738,7 @@ Lint/SafeNavigationWithEmpty:
   Description: 'Avoid `foo&.empty?` in conditionals.'
   Enabled: true
   VersionAdded: '0.62'
+  VersionChanged: '0.87'
 
 Lint/ScriptPermission:
   Description: 'Grant script file execute permission.'

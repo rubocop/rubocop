@@ -2826,9 +2826,9 @@ foo&.bar && (foobar.baz || foo&.baz)
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.62
-| -
+| 0.87
 |===
 
 This cop checks to make sure safe navigation isn't used with `empty?` in
