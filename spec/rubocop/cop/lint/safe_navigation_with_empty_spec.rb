@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationWithEmpty do
     it 'registers an offense on `&.empty?`' do
       expect_offense(<<~RUBY)
         return unless foo&.empty?
-        ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid calling `empty?` with the safe navigation operator in conditionals.
+                      ^^^^^^^^^^^ Avoid calling `empty?` with the safe navigation operator in conditionals.
       RUBY
     end
 
