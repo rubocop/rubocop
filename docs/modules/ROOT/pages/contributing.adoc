@@ -34,8 +34,8 @@ adding or improving Cop descriptions.
 
 === Working on the Docs
 
-The manual is generated from the AsciiDoc files in the link:https://github.com/rubocop-hq/rubocop/tree/master/docs[docs] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
-link:https://antora.org[Antora] is used to convert the manual into HTML.
+The manual is generated from the AsciiDoc files in the https://github.com/rubocop-hq/rubocop/tree/master/docs[docs] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
+https://antora.org[Antora] is used to convert the manual into HTML.
 The filesystem layout is described at https://docs.antora.org/antora/2.0/component-structure/.
 
 To make changes to the manual you simply have to change the files under `doc`.
@@ -57,7 +57,7 @@ if you run into any problems.
 
 ==== Building the Site
 
-You can build the documentation locally from the link:https://github.com/rubocop-hq/docs.rubocop.org[docs.rubocop.org] repo.
+You can build the documentation locally from the https://github.com/rubocop-hq/docs.rubocop.org[docs.rubocop.org] repo.
 
 [source]
 ----
@@ -77,7 +77,7 @@ NOTE: You'll need commit access to the repository for this to work.
 To check the generated site you can simply open `docs/index.html` in your favourite browser.
 
 If you want to make changes to the manual's page structure you'll have to edit
-link:https://github.com/rubocop-hq/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
+https://github.com/rubocop-hq/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
 
 == Funding
 
