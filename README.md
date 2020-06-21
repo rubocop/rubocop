@@ -3,7 +3,7 @@
 </p>
 
 ----------
-[![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
 [![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop-hq/rubocop/test_coverage)
