@@ -167,7 +167,7 @@ $ rubocop -h
 | Inspect files in order of modification time and stops after first file with offenses.
 
 | `--fail-level`
-| Minimum link:configuration.md#severity[severity] for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
+| Minimum xref:configuration.adoc#severity[severity] for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 
 | `--force-exclusion`
 | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
