@@ -27,7 +27,7 @@ module RuboCop
               # RuboCop will start looking for the configuration file in the directory
               # where the inspected file is and continue its way up to the root directory.
               #
-              # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
+              # See https://docs.rubocop.org/rubocop/configuration
             DESC
 
             File.open(DOTFILE, 'w') do |f|
