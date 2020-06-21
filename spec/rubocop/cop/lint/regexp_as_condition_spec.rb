@@ -5,10 +5,15 @@ RSpec.describe RuboCop::Cop::Lint::RegexpAsCondition do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense for a regexp literal in `if` condition' do
+  it 'registers an offense and corrects for a regexp literal in `if` condition' do
     expect_offense(<<~RUBY)
       if /foo/
          ^^^^^ Do not use regexp literal as a condition. The regexp literal matches `$_` implicitly.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if /foo/ =~ $_
       end
     RUBY
   end

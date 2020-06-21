@@ -2524,9 +2524,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.51
-| -
+| 0.86
 |===
 
 This cop checks for regexp literals used as `match-current-line`.
