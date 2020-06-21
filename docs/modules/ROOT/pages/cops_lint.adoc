@@ -2138,7 +2138,7 @@ rather than meant to be part of the resulting symbols.
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Pending
-| Yes
+| No
 | No
 | 0.81
 | -

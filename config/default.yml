@@ -1620,6 +1620,7 @@ Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
   StyleGuide: '#raise-exception'
   Enabled: pending
+  Safe: false
   VersionAdded: '0.81'
   AllowedImplicitNamespaces:
     - 'Gem'
