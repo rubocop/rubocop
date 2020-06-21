@@ -2139,9 +2139,9 @@ rather than meant to be part of the resulting symbols.
 
 | Pending
 | No
-| No
+| Yes (Unsafe)
 | 0.81
-| -
+| 0.86
 |===
 
 This cop checks for `raise` or `fail` statements which are

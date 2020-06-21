@@ -1622,6 +1622,7 @@ Lint/RaiseException:
   Enabled: pending
   Safe: false
   VersionAdded: '0.81'
+  VersionChanged: '0.86'
   AllowedImplicitNamespaces:
     - 'Gem'
 

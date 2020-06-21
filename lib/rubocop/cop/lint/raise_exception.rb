@@ -44,6 +44,14 @@ module RuboCop
             exception_new_with_message?(node, &check(node))
         end
 
+        def autocorrect(node)
+          lambda do |corrector|
+            exception_class = node.children.first&.cbase_type? ? '::StandardError' : 'StandardError'
+
+            corrector.replace(node, exception_class)
+          end
+        end
+
         private
 
         def check(node)
