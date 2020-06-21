@@ -40,7 +40,7 @@ $ rubocop --out result.txt --format simple
 #           default format        $stdout
 ----
 
-You can also load link:extensions.md#custom-formatters[custom formatters].
+You can also load xref:extensions.adoc#custom-formatters[custom formatters].
 
 == Progress Formatter (default)
 

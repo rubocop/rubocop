@@ -206,7 +206,7 @@ $ rubocop -h
 | Use available CPUs to execute inspection in parallel.
 
 | `-r/--require`
-| Require Ruby file (see link:extensions.md#loading-extensions[Loading Extensions]).
+| Require Ruby file (see xref:extensions.adoc#loading-extensions[Loading Extensions]).
 
 | `--safe`
 | Run only safe cops.
