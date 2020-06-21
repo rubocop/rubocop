@@ -216,6 +216,24 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
+  it 'registers an offense and corrects for missing newline before opening parenthesis `(` for block body' do
+    expect_offense(<<~RUBY)
+      foo do |o| (
+                 ^ Block body expression is on the same line as the block start.
+          bar
+        )
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do |o| 
+        (
+          bar
+        )
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects a line-break within arguments' do
     expect_offense(<<~RUBY)
       test do |x,
