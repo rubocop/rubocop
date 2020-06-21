@@ -73,6 +73,12 @@ RuboCop supports the following Ruby implementations:
 
 See [compatibility](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
 
+## Readme Badge
+
+If you use RuboCop in your project, you can include these badge in your readme to let people know that your code is written following The Ruby Style Guide.
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
+
 ## Team
 
 Here's a list of RuboCop's core developers:
