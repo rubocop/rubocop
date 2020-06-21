@@ -3,6 +3,7 @@
 </p>
 
 ----------
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
 [![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
@@ -72,6 +73,12 @@ RuboCop supports the following Ruby implementations:
 * JRuby 9.2+
 
 See [compatibility](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
+
+## Readme Badge
+
+If you use RuboCop in your project, you can include these badge in your readme to let people know that your code is written following The Ruby Style Guide.
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
 
 ## Team
 
