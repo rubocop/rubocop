@@ -19,6 +19,8 @@ module RuboCop
       #   foo == "bar"
       #   foo <= 42
       #   bar > 10
+      #   "#{interpolation}" == foo
+      #   /#{interpolation}/ == foo
       #
       # @example EnforcedStyle: forbid_for_equality_operators_only
       #   # bad
@@ -109,7 +111,8 @@ module RuboCop
           rhs = node.first_argument
 
           return true if lhs.literal? && rhs.literal? ||
-                         !lhs.literal? && !rhs.literal?
+                         !lhs.literal? && !rhs.literal? ||
+                         interpolation?(lhs)
 
           enforce_yoda? ? lhs.literal? : rhs.literal?
         end
@@ -149,6 +152,20 @@ module RuboCop
 
         def program_name?(name)
           PROGRAM_NAMES.include?(name)
+        end
+
+        def interpolation?(node)
+          return true if node.dstr_type?
+
+          # TODO: Use `RegexpNode#interpolation?` when the following is released.
+          # https://github.com/rubocop-hq/rubocop-ast/pull/18
+          if node.regexp_type?
+            return true if node.children.any? do |child|
+              child.respond_to?(:begin_type?) && child.begin_type?
+            end
+          end
+
+          false
         end
       end
     end
