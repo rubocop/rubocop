@@ -881,7 +881,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
         expect_no_offenses(<<~RUBY)
           return #{keyword} receiver.nil? &&
               !args.empty? &&
-              BLACKLIST.include?(method_name)
+              FORBIDDEN_METHODS.include?(method_name)
         RUBY
       end
     end
