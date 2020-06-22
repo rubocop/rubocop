@@ -26,3 +26,19 @@ gem 'rubocop', '~> 0.85.1', require: false
 
 NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop-hq/rubocop/milestone/4[here].
 You can also help us get there faster! :-)
+
+.A Modular RuboCop
+****
+Originally RuboCop bundled cops focused on performance and Ruby on Rails, but those were
+extracted into their own gems eventually:
+
+* the performance cops were extracted in `rubocop-performance` and were removed from the main gem in 0.68
+* the Ruby on Rails cops were extracted in `rubocop-rails` and were removed from the main gem in 0.72
+
+You'll need to install those gems separately if you'd like to use them.
+See https://metaredux.com/posts/2019/05/22/a-modular-rubocop.html[this article] for more details.
+
+Additionally, RuboCop's AST logic was extracted to `rubocop-ast` in RuboCop 0.84. While this change is
+transparent to RuboCop's users (`rubocop-ast` is a runtime dependency of `rubocop`), it's good to be
+aware that you can leverage RuboCop's AST node extensions and AST node pattern matching outside of RuboCop.
+****
