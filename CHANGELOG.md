@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.86.0 (2020-06-22)
+
 ### New features
 
 * [#8147](https://github.com/rubocop-hq/rubocop/pull/8147): Add new `Style/RedundantFetchBlock` cop. ([@fatkodima][])
