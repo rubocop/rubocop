@@ -138,7 +138,14 @@ module RuboCop
 
       def correct(node) # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
         reason = reason_to_not_correct(node)
-        return reason if reason
+        if reason
+          if disable_uncorrectable? && reason != :already_corrected
+            disable_uncorrectable(node)
+            return :corrected_with_todo
+          else
+            return reason
+          end
+        end
 
         @corrected_nodes[node] = true
 
