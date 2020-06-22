@@ -10018,6 +10018,8 @@ foo == 99
 foo == "bar"
 foo <= 42
 bar > 10
+"#{interpolation}" == foo
+/#{interpolation}/ == foo
 ----
 
 ==== EnforcedStyle: forbid_for_equality_operators_only

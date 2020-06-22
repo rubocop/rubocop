@@ -23,6 +23,7 @@
 * [#8098](https://github.com/rubocop-hq/rubocop/issues/8098): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using interpolations. ([@owst][])
 * [#8150](https://github.com/rubocop-hq/rubocop/pull/8150): Fix a false positive for `Layout/EmptyLinesAroundAttributeAccessor` when using attribute accessors in `if` ... `else` branches. ([@koic][])
 * [#8179](https://github.com/rubocop-hq/rubocop/issues/8179): Fix an infinite correction loop error for `Layout/MultilineBlockLayout` when missing newline before opening parenthesis `(` for block body. ([@koic][])
+* [#8185](https://github.com/rubocop-hq/rubocop/issues/8185): Fix a false positive for `Style/YodaCondition` when interpolation is used on the left hand side. ([@koic][])
 
 ### Changes
 
