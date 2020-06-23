@@ -37,7 +37,7 @@ module RuboCop
       #   variableone = 1
       #
       #   variable_one = 1
-      class VariableNumber < Cop
+      class VariableNumber < Base
         include ConfigurableNumbering
 
         MSG = 'Use %<style>s for variable numbers.'
