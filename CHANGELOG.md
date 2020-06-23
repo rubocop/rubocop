@@ -4,7 +4,11 @@
 
 ### New features
 
-* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. Extensive refactoring of `Team`, `Commissioner`. ([@marcandre][])
+* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops.
+
+### Changes
+
+* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): **(Breaking)** Extensive refactoring of internal classes `Team`, `Commissioner`, `Corrector`. `Cop::Cop#corrections` not completely compatible. See Upgrade Notes ([@marcandre][])
 
 ### Bug fixes
 
