@@ -118,14 +118,14 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        found_files = find_files_upwards(DOTFILE, config_file)
+        exclusion_file = find_last_file_upwards(DOTFILE, config_file)
 
-        return if found_files.empty?
-        return if PathUtil.relative_path(found_files.last) ==
+        return if exclusion_file.nil?
+        return if PathUtil.relative_path(exclusion_file) ==
                   PathUtil.relative_path(config_file)
 
         print 'AllCops/Exclude ' if debug?
-        config.add_excludes_from_higher_level(load_file(found_files.last))
+        config.add_excludes_from_higher_level(load_file(exclusion_file))
       end
 
       def default_configuration

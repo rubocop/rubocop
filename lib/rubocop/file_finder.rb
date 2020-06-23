@@ -20,12 +20,12 @@ module RuboCop
       end
     end
 
-    def find_files_upwards(filename, start_dir)
+    def find_last_file_upwards(filename, start_dir)
       files = []
       traverse_files_upwards(filename, start_dir) do |file|
         files << file
       end
-      files
+      files.last
     end
 
     private
