@@ -41,8 +41,8 @@
 
 ### Changes
 
+* [#8149](https://github.com/rubocop-hq/rubocop/pull/8149): **(Breaking)** Cop `Metrics/CyclomaticComplexity` now counts `&.`, `||=`, `&&=` and blocks known to iterate. Default bumped from 6 to 7. Consider using `rubocop -a --disable-uncorrectable` to ease transition ([@marcandre][])
 * [#8146](https://github.com/rubocop-hq/rubocop/pull/8146): Use UTC in RuboCop todo file generation. ([@mauro-oto][])
-* [#8149](https://github.com/rubocop-hq/rubocop/pull/8149): Cop `Metrics/CyclomaticComplexity` now counts `&.`, `||=`, `&&=` and blocks known to iterate. Default bumped from 6 to 7. ([@marcandre][])
 * [#8178](https://github.com/rubocop-hq/rubocop/pull/8178): Mark unsafe for `Lint/RaiseException`. ([@koic][])
 
 ## 0.85.1 (2020-06-07)
