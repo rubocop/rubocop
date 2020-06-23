@@ -24,7 +24,7 @@ module RuboCop
       include FileFinder
 
       attr_accessor :debug, :auto_gen_config, :ignore_parent_exclusion,
-                    :options_config, :disable_pending_cops, :enable_pending_cops
+                    :disable_pending_cops, :enable_pending_cops
       attr_writer :default_configuration
 
       alias debug? debug
@@ -32,7 +32,7 @@ module RuboCop
       alias ignore_parent_exclusion? ignore_parent_exclusion
 
       def clear_options
-        @debug = @auto_gen_config = @options_config = nil
+        @debug = @auto_gen_config = nil
         FileFinder.root_level = nil
       end
 
