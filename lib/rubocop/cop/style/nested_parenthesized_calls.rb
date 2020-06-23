@@ -14,6 +14,7 @@ module RuboCop
       #   method1(method2 arg)
       class NestedParenthesizedCalls < Cop
         include RangeHelp
+        include AllowedMethods
 
         MSG = 'Add parentheses to nested method call `%<source>s`.'
 
@@ -54,12 +55,8 @@ module RuboCop
 
         def allowed?(send_node)
           send_node.parent.arguments.one? &&
-            allowed_methods.include?(send_node.method_name.to_s) &&
+            allowed_method?(send_node.method_name) &&
             send_node.arguments.one?
-        end
-
-        def allowed_methods
-          cop_config['AllowedMethods'] || []
         end
       end
     end
