@@ -7,7 +7,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   describe '--disable-uncorrectable' do
     let(:exit_code) do
-      cli.run(%w[--auto-correct --format simple --disable-uncorrectable])
+      cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable])
     end
 
     let(:setup_long_line) do

@@ -114,7 +114,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                Default is true.
               -E, --extra-details              Display extra details in offense messages.
               -S, --display-style-guide        Display style guide URLs in offense messages.
-              -a, --auto-correct               Auto-correct offenses.
+              -a, --auto-correct               Auto-correct offenses (only when it's safe).
+                  --safe-autocorrect           (same, deprecated)
+              -A, --auto-correct-all           Auto-correct offenses (safe and unsafe)
                   --disable-pending-cops       Run without pending cops.
                   --enable-pending-cops        Run with pending cops.
                   --ignore-disable-comments    Run cops even when they are disabled locally
@@ -127,7 +129,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                parallel.
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
-                  --safe-auto-correct          Run auto-correct only when it's safe.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
         OUTPUT
@@ -302,8 +303,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           .not_to raise_error
       end
 
-      it 'accepts together with --safe-auto-correct' do
-        expect { options.parse %w[--safe-auto-correct --disable-uncorrectable] }
+      it 'accepts together with --auto-correct-all' do
+        expect { options.parse %w[--auto-correct-all --disable-uncorrectable] }
           .not_to raise_error
       end
 
@@ -368,6 +369,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'fails if more than one path is given' do
         expect { options.parse %w[--stdin foo bar] }
           .to raise_error(RuboCop::OptionArgumentError)
+      end
+    end
+
+    describe '--safe-autocorrect' do
+      it 'is a deprecated alias' do
+        expect { options.parse %w[--safe-autocorrect] }
+          .to output(/deprecated/).to_stderr
       end
     end
   end

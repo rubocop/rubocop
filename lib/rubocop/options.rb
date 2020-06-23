@@ -163,7 +163,7 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
       option(opts, '-C', '--cache FLAG')
@@ -171,7 +171,16 @@ module RuboCop
       option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
-      option(opts, '-a', '--auto-correct')
+      option(opts, '-a', '--auto-correct') do
+        @options[:safe_auto_correct] = true
+      end
+      option(opts, '--safe-autocorrect') do
+        warn '--safe-autocorrect is deprecated; use --autocorrect'
+        @options[:safe_auto_correct] = @options[:auto_correct] = true
+      end
+      option(opts, '-A', '--auto-correct-all') do
+        @options[:auto_correct] = true
+      end
       option(opts, '--disable-pending-cops')
       option(opts, '--enable-pending-cops')
       option(opts, '--ignore-disable-comments')
@@ -184,7 +193,7 @@ module RuboCop
       option(opts, '-V', '--verbose-version')
       option(opts, '-P', '--parallel')
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def add_aliases(opts)
       option(opts, '-l', '--lint') do
@@ -194,9 +203,6 @@ module RuboCop
       option(opts, '-x', '--fix-layout') do
         @options[:only] ||= []
         @options[:only] << 'Layout'
-        @options[:auto_correct] = true
-      end
-      option(opts, '--safe-auto-correct') do
         @options[:auto_correct] = true
       end
     end
@@ -465,8 +471,9 @@ module RuboCop
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',
       list_target_files:                'List all files RuboCop will inspect.',
-      auto_correct:                     'Auto-correct offenses.',
-      safe_auto_correct:                'Run auto-correct only when it\'s safe.',
+      auto_correct:                     'Auto-correct offenses (only when it\'s safe).',
+      safe_autocorrect:                 '(same, deprecated)',
+      auto_correct_all:                 'Auto-correct offenses (safe and unsafe)',
       fix_layout:                       'Run only layout cops, with auto-correct on.',
       color:                            'Force color output on or off.',
       version:                          'Display version.',
