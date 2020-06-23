@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'tmpdir'
-require 'fileutils'
 
 RSpec.shared_context 'isolated environment', :isolated_environment do
   around do |example|
