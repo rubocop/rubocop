@@ -149,10 +149,10 @@ module RuboCop
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
-      def add_inheritance_from_auto_generated_file
+      def add_inheritance_from_auto_generated_file(config_file)
         file_string = " #{AUTO_GENERATED_FILE}"
 
-        config_file = options_config || DOTFILE
+        config_file ||= DOTFILE
 
         if File.exist?(config_file)
           files = Array(load_yaml_configuration(config_file)['inherit_from'])

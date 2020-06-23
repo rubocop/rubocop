@@ -88,7 +88,7 @@ module RuboCop
           @config_store = ConfigStore.new
           @config_store.options_config = @options[:config] if @options[:config]
           File.open(ConfigLoader::AUTO_GENERATED_FILE, 'w') {}
-          ConfigLoader.add_inheritance_from_auto_generated_file
+          ConfigLoader.add_inheritance_from_auto_generated_file(@options[:config])
         end
 
         def add_formatter
