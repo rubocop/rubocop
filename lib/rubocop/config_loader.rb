@@ -153,12 +153,7 @@ module RuboCop
         warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
       end
 
-      # Merges the given configuration with the default one. If
-      # AllCops:DisabledByDefault is true, it changes the Enabled params so
-      # that only cops from user configuration are enabled.
-      # If AllCops::EnabledByDefault is true, it changes the Enabled params
-      # so that only cops explicitly disabled in user configuration are
-      # disabled.
+      # Merges the given configuration with the default one.
       def merge_with_default(config, config_file, unset_nil: true)
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
