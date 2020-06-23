@@ -85,7 +85,7 @@ module RuboCop
       end
 
       def configuration_from_file(config_file)
-        return ConfigLoader.default_configuration if config_file == DEFAULT_FILE
+        return default_configuration if config_file == DEFAULT_FILE
 
         config = load_file(config_file)
         if ignore_parent_exclusion?
