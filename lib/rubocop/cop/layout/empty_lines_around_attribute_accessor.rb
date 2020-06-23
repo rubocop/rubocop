@@ -62,6 +62,7 @@ module RuboCop
       #
       class EmptyLinesAroundAttributeAccessor < Cop
         include RangeHelp
+        include AllowedMethods
 
         MSG = 'Add an empty line after attribute accessor.'
 
@@ -113,14 +114,6 @@ module RuboCop
 
         def allow_alias_syntax?
           cop_config.fetch('AllowAliasSyntax', true)
-        end
-
-        def allowed_method?(name)
-          allowed_methods.include?(name.to_s)
-        end
-
-        def allowed_methods
-          cop_config.fetch('AllowedMethods', [])
         end
       end
     end

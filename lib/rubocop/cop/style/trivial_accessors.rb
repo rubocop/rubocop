@@ -28,6 +28,8 @@ module RuboCop
       #     attr_reader :baz
       #   end
       class TrivialAccessors < Cop
+        include AllowedMethods
+
         MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'
 
         def on_def(node)
@@ -95,9 +97,8 @@ module RuboCop
           cop_config['IgnoreClassMethods']
         end
 
-        def allowed_methods
-          allowed_methods = cop_config['AllowedMethods']
-          Array(allowed_methods).map(&:to_sym) + [:initialize]
+        def allowed_method_names
+          allowed_methods.map(&:to_sym) + [:initialize]
         end
 
         def dsl_writer?(method_name)
@@ -106,7 +107,7 @@ module RuboCop
 
         def trivial_reader?(node)
           looks_like_trivial_reader?(node) &&
-            !allowed_method?(node) && !allowed_reader?(node)
+            !allowed_method_name?(node) && !allowed_reader?(node)
         end
 
         def looks_like_trivial_reader?(node)
@@ -115,7 +116,7 @@ module RuboCop
 
         def trivial_writer?(node)
           looks_like_trivial_writer?(node) &&
-            !allowed_method?(node) && !allowed_writer?(node.method_name)
+            !allowed_method_name?(node) && !allowed_writer?(node.method_name)
         end
 
         def_node_matcher :looks_like_trivial_writer?, <<~PATTERN
@@ -123,8 +124,8 @@ module RuboCop
            (defs _ _ (args (arg ...)) (ivasgn _ (lvar _)))}
         PATTERN
 
-        def allowed_method?(node)
-          allowed_methods.include?(node.method_name) ||
+        def allowed_method_name?(node)
+          allowed_method_names.include?(node.method_name) ||
             exact_name_match? && !names_match?(node)
         end
 
