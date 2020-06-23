@@ -41,13 +41,13 @@ module RuboCop
           (block
             $(send _ :fetch _)
             (args)
-            ${#basic_literal? const_type?})
+            ${nil? #basic_literal? #const_type?})
         PATTERN
 
         def on_block(node)
           redundant_fetch_block_candidate?(node) do |send, body|
-            return if body.const_type? && !check_for_constant?
-            return if body.str_type? && !check_for_string?
+            return if body&.const_type? && !check_for_constant?
+            return if body&.str_type? && !check_for_string?
 
             range = fetch_range(send, node)
             good = build_good_method(send, body)
@@ -65,7 +65,9 @@ module RuboCop
           redundant_fetch_block_candidate?(node) do |send, body|
             lambda do |corrector|
               receiver, _, key = send.children
-              corrector.replace(node, "#{receiver.source}.fetch(#{key.source}, #{body.source})")
+              default_value = body ? body.source : 'nil'
+
+              corrector.replace(node, "#{receiver.source}.fetch(#{key.source}, #{default_value})")
             end
           end
         end
@@ -73,7 +75,11 @@ module RuboCop
         private
 
         def basic_literal?(node)
-          node.basic_literal?
+          node&.basic_literal?
+        end
+
+        def const_type?(node)
+          node&.const_type?
         end
 
         def fetch_range(send, node)
@@ -82,12 +88,16 @@ module RuboCop
 
         def build_good_method(send, body)
           key = send.children[2].source
-          "fetch(#{key}, #{body.source})"
+          default_value = body ? body.source : 'nil'
+
+          "fetch(#{key}, #{default_value})"
         end
 
         def build_bad_method(send, body)
           key = send.children[2].source
-          "fetch(#{key}) { #{body.source} }"
+          block = body ? "{ #{body.source} }" : '{}'
+
+          "fetch(#{key}) #{block}"
         end
 
         def check_for_constant?
