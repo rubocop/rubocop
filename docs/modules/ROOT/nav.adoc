@@ -18,7 +18,7 @@
 ** xref:cops_naming.adoc[Naming]
 ** xref:cops_security.adoc[Security]
 ** xref:cops_style.adoc[Style]
-** xref:v1_upgrade_notes.adoc[Style]
+** xref:v1_upgrade_notes.adoc[Upgrade Notes]
 * xref:extensions.adoc[Extensions]
 * xref:integration_with_other_tools.adoc[Integration with Other Tools]
 * xref:automated_code_review.adoc[Automated Code Review]
