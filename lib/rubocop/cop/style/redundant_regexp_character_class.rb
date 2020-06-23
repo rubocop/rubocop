@@ -34,7 +34,7 @@ module RuboCop
             \[                # Literal [
             (?!\#\{)          # Not (the start of) an interpolation
             (?:               # Either...
-             \\. |            # Any escaped character
+             \\[^b] |         # Any escaped character except b (which would change behaviour)
              [^.*+?{}()|$] |  # or one that doesn't require escaping outside the character class
              \\[upP]\{[^}]+\} # or a unicode code-point or property
             )
