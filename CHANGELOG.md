@@ -6,6 +6,10 @@
 
 * [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. Extensive refactoring of `Team`, `Commissioner`. ([@marcandre][])
 
+### Bug fixes
+
+* [#8195](https://github.com/rubocop-hq/rubocop/issues/8195): Fix an error for `Style/RedundantFetchBlock` when using `#fetch` with empty block. ([@koic][])
+
 ## 0.86.0 (2020-06-22)
 
 ### New features

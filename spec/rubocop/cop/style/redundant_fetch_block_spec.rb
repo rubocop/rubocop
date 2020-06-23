@@ -67,6 +67,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock do
       RUBY
     end
 
+    it 'registers an offense and corrects when using `#fetch` with empty block' do
+      expect_offense(<<~RUBY)
+        hash.fetch(:key) {}
+             ^^^^^^^^^^^^^^ Use `fetch(:key, nil)` instead of `fetch(:key) {}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash.fetch(:key, nil)
+      RUBY
+    end
+
     it 'registers an offense and corrects when using `#fetch` with constant in the block' do
       expect_offense(<<~RUBY)
         hash.fetch(:key) { CONSTANT }
