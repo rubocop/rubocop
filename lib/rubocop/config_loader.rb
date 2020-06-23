@@ -18,7 +18,6 @@ module RuboCop
     XDG_CONFIG = 'config.yml'
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
-    AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
       include FileFinder
@@ -53,6 +52,21 @@ module RuboCop
         hash.delete('inherit_from')
 
         Config.create(hash, path)
+      end
+
+      def load_yaml_configuration(absolute_path)
+        file_contents = read_file(absolute_path)
+        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
+          ERB.new(file_contents).result
+        end
+        check_duplication(yaml_code, absolute_path)
+        hash = yaml_safe_load(yaml_code, absolute_path) || {}
+
+        puts "configuration from #{absolute_path}" if debug?
+
+        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
+
+        hash
       end
 
       def add_missing_namespaces(path, hash)
@@ -149,26 +163,6 @@ module RuboCop
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
-      def add_inheritance_from_auto_generated_file(config_file)
-        file_string = " #{AUTO_GENERATED_FILE}"
-
-        config_file ||= DOTFILE
-
-        if File.exist?(config_file)
-          files = Array(load_yaml_configuration(config_file)['inherit_from'])
-
-          return if files.include?(AUTO_GENERATED_FILE)
-
-          files.unshift(AUTO_GENERATED_FILE)
-          file_string = "\n  - " + files.join("\n  - ") if files.size > 1
-          rubocop_yml_contents = existing_configuration(config_file)
-        end
-
-        write_config_file(config_file, file_string, rubocop_yml_contents)
-
-        puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
-      end
-
       private
 
       def find_project_dotfile(target_dir)
@@ -196,36 +190,8 @@ module RuboCop
         path
       end
 
-      def existing_configuration(config_file)
-        IO.read(config_file, encoding: Encoding::UTF_8)
-          .sub(/^inherit_from: *[^\n]+/, '')
-          .sub(/^inherit_from: *(\n *- *[^\n]+)+/, '')
-      end
-
-      def write_config_file(file_name, file_string, rubocop_yml_contents)
-        File.open(file_name, 'w') do |f|
-          f.write "inherit_from:#{file_string}\n"
-          f.write "\n#{rubocop_yml_contents}" if /\S/.match?(rubocop_yml_contents)
-        end
-      end
-
       def resolver
         @resolver ||= ConfigLoaderResolver.new
-      end
-
-      def load_yaml_configuration(absolute_path)
-        file_contents = read_file(absolute_path)
-        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
-          ERB.new(file_contents).result
-        end
-        check_duplication(yaml_code, absolute_path)
-        hash = yaml_safe_load(yaml_code, absolute_path) || {}
-
-        puts "configuration from #{absolute_path}" if debug?
-
-        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
-
-        hash
       end
 
       def check_duplication(yaml_code, absolute_path)
