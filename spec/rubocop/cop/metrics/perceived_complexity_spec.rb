@@ -242,6 +242,27 @@ RSpec.describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
         end
       RUBY
     end
+
+    it 'does not count unknown block calls' do
+      expect_no_offenses(<<~RUBY)
+        def method_name
+          bar.baz(:qux) do |x|
+            raise x
+          end
+        end
+      RUBY
+    end
+
+    it 'counts known iterating block' do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [2/1]
+          ary.each do |x|
+            foo(x)
+          end
+        end
+      RUBY
+    end
   end
 
   context 'when method is in list of ignored methods' do

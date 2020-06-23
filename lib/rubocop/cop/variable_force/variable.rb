@@ -38,7 +38,7 @@ module RuboCop
           !@references.empty?
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
@@ -63,7 +63,7 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def in_modifier_if?(assignment)
           parent = assignment.node.parent

@@ -26,13 +26,11 @@ module RuboCop
       #       do_something until a && b   # 2
       #     end                           # ===
       #   end                             # 7 complexity points
-      class PerceivedComplexity < Base
-        include MethodComplexity
-
+      class PerceivedComplexity < CyclomaticComplexity
         MSG = 'Perceived complexity for %<method>s is too high. ' \
               '[%<complexity>d/%<max>d]'
-        COUNTED_NODES = %i[if case while until
-                           for rescue and or].freeze
+
+        COUNTED_NODES = (CyclomaticComplexity::COUNTED_NODES - [:when] + [:case]).freeze
 
         private
 
@@ -53,7 +51,7 @@ module RuboCop
           when :if
             node.else? && !node.elsif? ? 2 : 1
           else
-            1
+            super
           end
         end
       end
