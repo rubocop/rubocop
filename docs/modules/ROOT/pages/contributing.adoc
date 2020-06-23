@@ -3,12 +3,15 @@
 == Issues
 
 Report issues and suggest features and improvements on the
-https://github.com/rubocop-hq/rubocop/issues[GitHub issue tracker]. Don't ask
-questions on the issue tracker - use the xref:support.adoc[support channels] instead.
+https://github.com/rubocop-hq/rubocop/issues[GitHub issue tracker].
 
-If you want to file a bug, please provide all the necessary info listed in
-our issue reporting template (it's loaded automatically when you create a
-new GitHub issue).
+If you want to file an issue (bug report or feature request), please provide all
+the necessary info listed in our issue reporting template (it's loaded
+automatically when you create a new GitHub issue).
+
+NOTE: Please, don't ask support-like questions on the issue tracker (e.g. "How
+can I configure RuboCop to do X?" - use the xref:support.adoc[support channels]
+instead.
 
 == Patches
 
