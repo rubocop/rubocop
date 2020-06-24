@@ -69,7 +69,7 @@ module RuboCop
         task(:auto_correct, *args) do |_, task_args|
           RakeFileUtils.verbose(verbose) do
             yield(*[self, task_args].slice(0, task_block.arity)) if block_given?
-            options = full_options.unshift('--auto-correct')
+            options = full_options.unshift('--auto-correct-all')
             options.delete('--parallel')
             run_cli(verbose, options)
           end

@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
         end
       end
 
-      context 'with --auto-correct --disable-uncorrectable options' do
+      context 'with --auto-correct-all --disable-uncorrectable options' do
         let(:cop_options) { { auto_correct: true, disable_uncorrectable: true } }
 
         it 'returns an offense' do

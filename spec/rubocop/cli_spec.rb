@@ -260,7 +260,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    context 'when --auto-correct is given' do
+    context 'when --auto-correct-all is given' do
       it 'does not trigger RedundantCopDisableDirective due to ' \
          'lines moving around' do
         src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
@@ -272,7 +272,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Layout/EmptyLineAfterMagicComment:
             Enabled: false
         YAML
-        expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
+        expect(cli.run(['--format', 'offenses', '-A', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(<<~RESULT)
 
           1  Style/FrozenStringLiteralComment
