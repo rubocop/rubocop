@@ -38,6 +38,7 @@ module RuboCop
              [^.*+?{}()|$] |  # or one that doesn't require escaping outside the character class
              \\[upP]\{[^}]+\} # or a unicode code-point or property
             )
+            (?<!\\)           # No \-prefix (i.e. not escaped)
             \]                # Literal ]
           )
         /x.freeze
