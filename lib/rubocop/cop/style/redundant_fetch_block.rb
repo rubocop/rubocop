@@ -46,8 +46,7 @@ module RuboCop
 
         def on_block(node)
           redundant_fetch_block_candidate?(node) do |send, body|
-            return if body&.const_type? && !check_for_constant?
-            return if body&.str_type? && !check_for_string?
+            return if should_not_check?(send, body)
 
             range = fetch_range(send, node)
             good = build_good_method(send, body)
@@ -81,6 +80,16 @@ module RuboCop
         def const_type?(node)
           node&.const_type?
         end
+
+        def should_not_check?(send, body)
+          (body&.const_type? && !check_for_constant?) ||
+            (body&.str_type? && !check_for_string?) ||
+            rails_cache?(send.receiver)
+        end
+
+        def_node_matcher :rails_cache?, <<~PATTERN
+          (send (const _ :Rails) :cache)
+        PATTERN
 
         def fetch_range(send, node)
           range_between(send.loc.selector.begin_pos, node.loc.end.end_pos)
