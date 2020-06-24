@@ -245,6 +245,10 @@ gem 'rspec'
 | `true`
 | Boolean
 
+| ConsiderPunctuation
+| `false`
+| Boolean
+
 | Include
 | `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
 | Array

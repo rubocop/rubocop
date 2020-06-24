@@ -175,11 +175,11 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
-  context 'When gems are asciibetically sorted' do
+  context 'When gems are asciibetically sorted irrespective of _' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
-        gem 'paper_trail'
         gem 'paperclip'
+        gem 'paper_trail'
       RUBY
     end
   end
@@ -205,6 +205,38 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'a'
         gem 'Z'
       RUBY
+    end
+  end
+
+  context 'When a gem is sorted but not so when disregarding _-' do
+    context 'by default' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          gem 'active-admin-some_plugin'
+          gem 'active_admin_other_plugin'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `active_admin_other_plugin` should appear before `active-admin-some_plugin`.
+          gem 'activeadmin'
+          ^^^^^^^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `activeadmin` should appear before `active_admin_other_plugin`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          gem 'activeadmin'
+          gem 'active_admin_other_plugin'
+          gem 'active-admin-some_plugin'
+        RUBY
+      end
+    end
+
+    context 'when ConsiderPunctuation is true' do
+      let(:cop_config) { super().merge({ 'ConsiderPunctuation' => true }) }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          gem 'active-admin-some_plugin'
+          gem 'active_admin_other_plugin'
+          gem 'activeadmin'
+        RUBY
+      end
     end
   end
 
