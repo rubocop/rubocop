@@ -43,6 +43,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with a character class containing an escaped [' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        foo = /[\[]/
+               ^^^^ Redundant single-element character class, `[\[]` can be replaced with `\[`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /\[/
+      RUBY
+    end
+  end
+
   context 'with a character class containing a space meta-character' do
     it 'registers an offense and corrects' do
       expect_offense(<<~'RUBY')
@@ -160,6 +173,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
       expect_correction(<<~'RUBY')
         foo = /a#{/b/}c/
       RUBY
+    end
+  end
+
+  context 'with a character class with first element an escaped ]' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[\])]/')
     end
   end
 
