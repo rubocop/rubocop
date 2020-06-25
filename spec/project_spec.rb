@@ -209,7 +209,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
   end
 
   describe 'requiring all of `lib` with verbose warnings enabled' do
-    it 'emits no warnings' do
+    it 'emits no warnings', :unbundle do
       warnings = `ruby -Ilib -w -W2 lib/rubocop.rb 2>&1`
                  .lines
                  .grep(%r{/lib/rubocop}) # ignore warnings from dependencies

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::CLI, :isolated_environment do
+RSpec.describe RuboCop::CLI, :isolated_environment, :unbundle do
   include_context 'cli spec behavior'
 
   subject(:cli) { described_class.new }
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
         output =
-          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
+          `#{ruby} -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
         # Excludes a warning when new `Enabled: pending` status cop is specified
         # in config/default.yml.
         output_excluding_warn_for_pending_cops =
@@ -268,7 +268,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
         let(:output) do
-          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
+          `#{ruby} -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
         end
 
         let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
@@ -360,7 +360,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             let(:option) { '--disable-pending-cops' }
 
             let(:output) do
-              `ruby -I . "#{rubocop}" --require redirect.rb #{option}`
+              `#{ruby} -I . "#{rubocop}" --require redirect.rb #{option}`
             end
 
             it 'does not display a pending cop warning' do
@@ -372,7 +372,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             let(:option) { '--enable-pending-cops' }
 
             let(:output) do
-              `ruby -I . "#{rubocop}" --require redirect.rb #{option}`
+              `#{ruby} -I . "#{rubocop}" --require redirect.rb #{option}`
             end
 
             it 'does not display a pending cop warning' do
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             let(:new_cops_option) { 'NewCops: pending' }
 
             let(:output) do
-              `ruby -I . "#{rubocop}" --require redirect.rb`
+              `#{ruby} -I . "#{rubocop}" --require redirect.rb`
             end
 
             it 'displays a pending cop warning' do
@@ -396,7 +396,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             let(:new_cops_option) { 'NewCops: disable' }
 
             let(:output) do
-              `ruby -I . "#{rubocop}" --require redirect.rb`
+              `#{ruby} -I . "#{rubocop}" --require redirect.rb`
             end
 
             it 'does not display a pending cop warning' do
@@ -408,7 +408,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             let(:new_cops_option) { 'NewCops: enable' }
 
             let(:output) do
-              `ruby -I . "#{rubocop}" --require redirect.rb`
+              `#{ruby} -I . "#{rubocop}" --require redirect.rb`
             end
 
             it 'does not display a pending cop warning' do
