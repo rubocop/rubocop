@@ -123,6 +123,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock do
       inspect_source('hash.fetch(:key) { |k| "missing-#{k}" }')
       expect(cop.offenses.size).to eq(0)
     end
+
+    it 'does not register an offense when using `#fetch` with `Rails.cache`' do
+      expect_no_offenses(<<~RUBY)
+        Rails.cache.fetch(:key) { :value }
+      RUBY
+    end
   end
 
   context 'with SafeForConstants: false' do
