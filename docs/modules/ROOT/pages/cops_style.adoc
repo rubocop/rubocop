@@ -6765,6 +6765,49 @@ end
 
 * https://rubystyle.guide#no-parens-around-condition
 
+== Style/PatternArgument
+
+NOTE: Required Ruby version: 2.5
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.86
+| -
+|===
+
+This cop looks for all? / any? / none? / one? calls where the block
+has a single statement and === has been invoked on the receiver so the
+=== argument can be used as the predicate method argument.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+%w[foo bar foobar].any? { |e| /oo/.match?(e) }
+
+[1, 2, 3].any? { |e| (1..10).include?(e) }
+
+[1, 2, 3].any? { |e| Set[1, 2, 3] === e }
+
+[1, 2, 3].none? do |e|
+  Integer === e
+end
+
+# good
+%w[foo bar foobar].any?(/oo/)
+
+[1, 2, 3].any?(1..10)
+
+[1, 2, 3].any?(Set[1, 2, 3])
+
+[1, 2, 3].none?(Integer)
+----
+
 == Style/PercentLiteralDelimiters
 
 |===

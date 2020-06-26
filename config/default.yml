@@ -3589,6 +3589,12 @@ Style/ParenthesesAroundCondition:
   AllowSafeAssignment: true
   AllowInMultilineConditions: false
 
+Style/PatternArgument:
+  Description: 'Pass `pattern` as an argument to the predicate method instead of a block.'
+  Enabled: 'pending'
+  VersionAdded: '0.86'
+  Safe: false
+
 Style/PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently.'
   StyleGuide: '#percent-literal-braces'

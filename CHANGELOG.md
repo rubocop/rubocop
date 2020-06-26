@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#8220](https://github.com/rubocop-hq/rubocop/pull/8220): Add new `Style/PatternArgument` cop. ([@sebastian-palma][])
 * [#7333](https://github.com/rubocop-hq/rubocop/issues/7333): Add new `Style/RedundantFileExtensionInRequire` cop. ([@fatkodima][])
 * [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
 * [#8295](https://github.com/rubocop-hq/rubocop/pull/8295): Add new `Style/ArrayCoercion` cop. ([@fatkodima][])
@@ -4676,3 +4677,4 @@
 [@CamilleDrapier]: https://github.com/CamilleDrapier
 [@shekhar-patil]: https://github.com/shekhar-patil
 [@knejad]: https://github.com/knejad
+[@sebastian-palma]: https://github.com/sebastian-palma

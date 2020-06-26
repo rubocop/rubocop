@@ -430,6 +430,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleorassignment[Style/OrAssignment]
 * xref:cops_style.adoc#styleparallelassignment[Style/ParallelAssignment]
 * xref:cops_style.adoc#styleparenthesesaroundcondition[Style/ParenthesesAroundCondition]
+* xref:cops_style.adoc#stylepatternargument[Style/PatternArgument]
 * xref:cops_style.adoc#stylepercentliteraldelimiters[Style/PercentLiteralDelimiters]
 * xref:cops_style.adoc#stylepercentqliterals[Style/PercentQLiterals]
 * xref:cops_style.adoc#styleperlbackrefs[Style/PerlBackrefs]
