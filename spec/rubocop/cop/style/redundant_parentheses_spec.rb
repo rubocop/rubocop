@@ -278,4 +278,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
       })
     RUBY
   end
+
+  it 'accepts parentheses in yield call with hash' do
+    expect_no_offenses(<<~RUBY)
+      yield ({
+        foo: bar,
+      })
+    RUBY
+  end
 end

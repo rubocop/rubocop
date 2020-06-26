@@ -16,6 +16,7 @@
 * [#8195](https://github.com/rubocop-hq/rubocop/issues/8195): Fix an error for `Style/RedundantFetchBlock` when using `#fetch` with empty block. ([@koic][])
 * [#8193](https://github.com/rubocop-hq/rubocop/issues/8193): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using `[\b]`. ([@owst][])
 * [#8205](https://github.com/rubocop-hq/rubocop/issues/8205): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using a leading escaped `]`. ([@owst][])
+* [#8208](https://github.com/rubocop-hq/rubocop/issues/8208): Fix `Style/RedundantParentheses` with hash literal as first argument to `yield`. ([@karlwithak][])
 
 ### Changes
 
@@ -4631,3 +4632,4 @@
 [@avrusanov]: https://github.com/avrusanov
 [@mauro-oto]: https://github.com/mauro-oto
 [@fatkodima]: https://github.com/fatkodima
+[@karlwithak]: https://github.com/karlwithak
