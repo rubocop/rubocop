@@ -6,17 +6,17 @@
 
 * [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. ([@marcandre][])
 
-### Changes
-
-* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): **(Breaking)** Extensive refactoring of internal classes `Team`, `Commissioner`, `Corrector`. `Cop::Cop#corrections` not completely compatible. See Upgrade Notes. ([@marcandre][])
-* [#8156](https://github.com/rubocop-hq/rubocop/issues/8156): **(Breaking)** `rubocop -a / --autocorrect` no longer run unsafe corrections; `rubocop -A / --autocorrect-all` run both safe and unsafe corrections. Options `--safe-autocorrect` is deprecated. ([@marcandre][])
-
 ### Bug fixes
 
 * [#8196](https://github.com/rubocop-hq/rubocop/issues/8196): Fix a false positive for `Style/RedundantFetchBlock` when using with `Rails.cache`. ([@fatkodima][])
 * [#8195](https://github.com/rubocop-hq/rubocop/issues/8195): Fix an error for `Style/RedundantFetchBlock` when using `#fetch` with empty block. ([@koic][])
 * [#8193](https://github.com/rubocop-hq/rubocop/issues/8193): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using `[\b]`. ([@owst][])
 * [#8205](https://github.com/rubocop-hq/rubocop/issues/8205): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using a leading escaped `]`. ([@owst][])
+
+### Changes
+
+* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): **(Breaking)** Extensive refactoring of internal classes `Team`, `Commissioner`, `Corrector`. `Cop::Cop#corrections` not completely compatible. See Upgrade Notes. ([@marcandre][])
+* [#8156](https://github.com/rubocop-hq/rubocop/issues/8156): **(Breaking)** `rubocop -a / --autocorrect` no longer run unsafe corrections; `rubocop -A / --autocorrect-all` run both safe and unsafe corrections. Options `--safe-autocorrect` is deprecated. ([@marcandre][])
 
 ## 0.86.0 (2020-06-22)
 
