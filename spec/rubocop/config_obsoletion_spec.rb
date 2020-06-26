@@ -71,7 +71,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/InvalidCharacterLiteral' => { 'Enabled': true },
           'Lint/RescueWithoutErrorClass' => { 'Enabled': true },
           'Lint/SpaceBeforeFirstArg' => { 'Enabled': true },
-          'Rails/DefaultScope' => { 'Enabled': true },
           'Style/SpaceAfterControlKeyword' => { 'Enabled': true },
           'Style/SpaceBeforeModifierKeyword' => { 'Enabled': true },
           'Style/TrailingComma' => { 'Enabled': true },
@@ -184,8 +183,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Layout/SpaceBeforeModifierKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/RescueWithoutErrorClass` cop has been removed. Please use `Style/RescueStandardError` instead.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Rails/DefaultScope` cop has been removed.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)

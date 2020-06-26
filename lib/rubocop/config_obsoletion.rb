@@ -63,7 +63,6 @@ module RuboCop
       'Layout/SpaceAfterControlKeyword' => 'Layout/SpaceAroundKeyword',
       'Layout/SpaceBeforeModifierKeyword' => 'Layout/SpaceAroundKeyword',
       'Lint/RescueWithoutErrorClass' => 'Style/RescueStandardError',
-      'Rails/DefaultScope' => nil,
       'Style/SpaceAfterControlKeyword' => 'Layout/SpaceAroundKeyword',
       'Style/SpaceBeforeModifierKeyword' => 'Layout/SpaceAroundKeyword',
       'Style/TrailingComma' => 'Style/TrailingCommaInArguments, ' \
