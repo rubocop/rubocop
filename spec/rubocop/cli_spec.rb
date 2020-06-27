@@ -1632,14 +1632,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
-            TargetRubyVersion: 2.8
+            TargetRubyVersion: 3.0
         YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to start_with(
-          'Error: RuboCop found unknown Ruby version 2.8 in `TargetRubyVersion`'
+          'Error: RuboCop found unknown Ruby version 3.0 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.4, 2.5, 2.6, 2.7/
+          /Supported versions: 2.4, 2.5, 2.6, 2.7, 2.8/
         )
       end
     end

@@ -30,6 +30,7 @@ The following table is the support matrix.
 | 2.5 | -
 | 2.6 | -
 | 2.7 | -
+| 2.8 (experimental) | -
 |===
 
 NOTE: The compatibility xref:configuration.adoc#setting-the-target-ruby-version[target Ruby version mentioned here] is about code analysis (what RuboCop can analyze), not runtime (is RuboCop capable of running on some Ruby or not).

@@ -5,6 +5,7 @@
 ### New features
 
 * [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. ([@marcandre][])
+* [#8213](https://github.com/rubocop-hq/rubocop/pull/8213): Permit to specify TargetRubyVersion 2.8 (experimental). ([@koic][])
 
 ### Bug fixes
 
