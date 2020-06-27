@@ -3683,9 +3683,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.39
-| -
+| 0.87
 |===
 
 Checks for if and unless statements used as modifiers of other if or
