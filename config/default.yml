@@ -2997,6 +2997,7 @@ Style/IfUnlessModifierOfIfUnless:
                  Avoid modifier if/unless usage on conditionals.
   Enabled: true
   VersionAdded: '0.39'
+  VersionChanged: '0.87'
 
 Style/IfWithSemicolon:
   Description: 'Do not use if x; .... Use the ternary operator instead.'

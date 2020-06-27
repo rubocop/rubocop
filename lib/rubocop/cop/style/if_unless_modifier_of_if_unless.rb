@@ -33,6 +33,18 @@ module RuboCop
           add_offense(node, location: :keyword,
                             message: format(MSG, keyword: node.keyword))
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            keyword = node.if? ? 'if' : 'unless'
+
+            corrector.replace(node, <<~RUBY.chop)
+              #{keyword} #{node.condition.source}
+              #{node.if_branch.source}
+              end
+            RUBY
+          end
+        end
       end
     end
   end
