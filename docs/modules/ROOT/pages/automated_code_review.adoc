@@ -30,6 +30,10 @@ It is open source software.
 
 https://github.com/prontolabs/pronto[Pronto] does quick automated code review of your changes. Created to be used on GitHub pull requests, but also works locally and integrates with GitLab and Bitbucket.
 
+== ReviewDog
+
+https://github.com/reviewdog/reviewdog[ReviewDog] is similar to Pronto but with better support for Github Actions.
+
 == Sider
 
 https://sider.review[Sider] improves your team's productivity by automating code analysis.
