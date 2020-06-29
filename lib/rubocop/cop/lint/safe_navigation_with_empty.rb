@@ -32,6 +32,14 @@ module RuboCop
 
           add_offense(node.condition)
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            receiver = node.receiver.source
+
+            corrector.replace(node, "#{receiver} && #{receiver}.#{node.method_name}")
+          end
+        end
       end
     end
   end
