@@ -8,7 +8,10 @@ module RuboCop
   #
   # require 'rubocop/rake_task'
   # RuboCop::RakeTask.new
-  class RakeTask < Rake::TaskLib
+  #
+  # Use global Rake namespace here to avoid namespace issues with custom
+  # rubocop-rake tasks
+  class RakeTask < ::Rake::TaskLib
     attr_accessor :name
     attr_accessor :verbose
     attr_accessor :fail_on_error
