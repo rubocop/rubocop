@@ -180,6 +180,9 @@ Bundler/OrderedGems:
   VersionAdded: '0.46'
   VersionChanged: '0.47'
   TreatCommentsAsGroupSeparators: true
+  # By default, "-" and "_" are ignored for order purposes.
+  # This can be overriden by setting this parameter to true.
+  ConsiderPunctuation: false
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
@@ -200,6 +203,9 @@ Gemspec/OrderedDependencies:
   Enabled: true
   VersionAdded: '0.51'
   TreatCommentsAsGroupSeparators: true
+  # By default, "-" and "_" are ignored for order purposes.
+  # This can be overriden by setting this parameter to true.
+  ConsiderPunctuation: false
   Include:
     - '**/*.gemspec'
 

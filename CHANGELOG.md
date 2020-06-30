@@ -10,6 +10,11 @@
 * [#8223](https://github.com/rubocop-hq/rubocop/pull/8223): Support auto-correction for `Style/IfUnlessModifierOfIfUnless`. ([@koic][])
 * [#8172](https://github.com/rubocop-hq/rubocop/pull/8172): Support auto-correction for `Lint/SafeNavigationWithEmpty`. ([@koic][])
 
+### Changes
+
+* [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): **(Breaking)** Extensive refactoring of internal classes `Team`, `Commissioner`, `Corrector`. `Cop::Cop#corrections` not completely compatible. See Upgrade Notes. ([@marcandre][])
+* [#8207](https://github.com/rubocop-hq/rubocop/pull/8207): **(Breaking)** Order for gems names now disregards underscores and dashes unless `ConsiderPunctuation` setting is set to `true`. ([@marcandre][])
+
 ### Bug fixes
 
 * [#8196](https://github.com/rubocop-hq/rubocop/issues/8196): Fix a false positive for `Style/RedundantFetchBlock` when using with `Rails.cache`. ([@fatkodima][])

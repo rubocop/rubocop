@@ -131,6 +131,10 @@ spec.add_dependency 'rspec'
 | `true`
 | Boolean
 
+| ConsiderPunctuation
+| `false`
+| Boolean
+
 | Include
 | `+**/*.gemspec+`
 | Array
