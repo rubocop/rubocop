@@ -223,7 +223,7 @@ module RuboCop
 
       ### Persistence
 
-      # Override if your cop should be called repeatedly for mutliple investigations
+      # Override if your cop should be called repeatedly for multiple investigations
       # Between calls to `on_new_investigation` and `on_investigation_end`,
       # the result of `processed_source` will remain constant.
       # You should invalidate any caches that depend on the current `processed_source`

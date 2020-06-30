@@ -181,7 +181,7 @@ Bundler/OrderedGems:
   VersionChanged: '0.47'
   TreatCommentsAsGroupSeparators: true
   # By default, "-" and "_" are ignored for order purposes.
-  # This can be overriden by setting this parameter to true.
+  # This can be overridden by setting this parameter to true.
   ConsiderPunctuation: false
   Include:
     - '**/*.gemfile'
@@ -204,7 +204,7 @@ Gemspec/OrderedDependencies:
   VersionAdded: '0.51'
   TreatCommentsAsGroupSeparators: true
   # By default, "-" and "_" are ignored for order purposes.
-  # This can be overriden by setting this parameter to true.
+  # This can be overridden by setting this parameter to true.
   ConsiderPunctuation: false
   Include:
     - '**/*.gemspec'

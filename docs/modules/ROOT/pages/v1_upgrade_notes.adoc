@@ -148,7 +148,7 @@ This section lists all changes (big or small) to the API. It is meant for mainta
 
 _Legacy_: Cops inherit from `Cop::Cop`.
 
-_Current_: Cops inherit from `Cop::Base`. Having a different base class makes the implementation much cleaner and makes it easy to signal which API is being used. `Cop::Cop` inherits from `Cop::Base` and refines some methods for backward compatiblity.
+_Current_: Cops inherit from `Cop::Base`. Having a different base class makes the implementation much cleaner and makes it easy to signal which API is being used. `Cop::Cop` inherits from `Cop::Base` and refines some methods for backward compatibility.
 
 === `add_offense` API
 
