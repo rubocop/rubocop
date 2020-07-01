@@ -49,7 +49,7 @@ module RuboCop
         def on_def(node)
           return unless node.arguments?
 
-          check(node, node.arguments.reject(&:forward_args_type?))
+          check(node, node.arguments)
         end
         alias on_defs on_def
       end

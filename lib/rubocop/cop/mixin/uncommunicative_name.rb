@@ -15,11 +15,13 @@ module RuboCop
         args.each do |arg|
           # Argument names might be "_" or prefixed with "_" to indicate they
           # are unused. Trim away this prefix and only analyse the basename.
-          full_name = arg.children.first.to_s
+          name_child = arg.children.first
+          next if name_child.nil?
+
+          full_name = name_child.to_s
           next if full_name == '_'
 
           name = full_name.gsub(/\A(_+)/, '')
-          next if (arg.restarg_type? || arg.kwrestarg_type?) && name.empty?
           next if allowed_names.include?(name)
 
           range = arg_range(arg, name.size)
