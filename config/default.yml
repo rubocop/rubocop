@@ -2738,6 +2738,7 @@ Style/DoubleNegation:
   VersionAdded: '0.19'
   VersionChanged: '0.84'
   EnforcedStyle: allowed_in_returns
+  SafeAutoCorrect: false
   SupportedStyles:
     - allowed_in_returns
     - forbidden
