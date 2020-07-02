@@ -3934,7 +3934,7 @@ Style/SymbolLiteral:
 Style/SymbolProc:
   Description: 'Use symbols as procs instead of blocks when possible.'
   Enabled: true
-  SafeAutoCorrect: false
+  Safe: false
   VersionAdded: '0.26'
   VersionChanged: '0.64'
   # A list of method names to be ignored by the check.

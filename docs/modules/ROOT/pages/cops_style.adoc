@@ -8909,7 +8909,7 @@ This cop checks symbol literal syntax.
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
+| No
 | Yes (Unsafe)
 | 0.26
 | 0.64
