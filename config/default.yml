@@ -3594,6 +3594,11 @@ Style/RandomWithOffset:
   Enabled: true
   VersionAdded: '0.52'
 
+Style/RedundantAssignment:
+  Description: 'Checks for redundant assignment before returning.'
+  Enabled: 'pending'
+  VersionAdded: '0.87'
+
 Style/RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
   StyleGuide: '#begin-implicit'

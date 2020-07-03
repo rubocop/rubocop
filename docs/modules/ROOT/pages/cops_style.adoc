@@ -6812,6 +6812,56 @@ rand(1...7)
 
 * https://rubystyle.guide#random-numbers
 
+== Style/RedundantAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.87
+| -
+|===
+
+This cop checks for redundant assignment before returning.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def test
+  x = foo
+  x
+end
+
+# bad
+def test
+  if x
+    z = foo
+    z
+  elsif y
+    z = bar
+    z
+  end
+end
+
+# good
+def test
+  foo
+end
+
+# good
+def test
+  if x
+    foo
+  elsif y
+    bar
+  end
+end
+----
+
 == Style/RedundantBegin
 
 |===
