@@ -6,6 +6,7 @@
 
 * [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. ([@marcandre][])
 * [#7458](https://github.com/rubocop-hq/rubocop/issues/7458): Add new `AsciiConstants` option for `Naming/AsciiIdentifiers`. ([@fatkodima][])
+* [#7373](https://github.com/rubocop-hq/rubocop/issues/7373): Add new `Style/RedundantAssignment` cop. ([@fatkodima][])
 * [#8213](https://github.com/rubocop-hq/rubocop/pull/8213): Permit to specify TargetRubyVersion 2.8 (experimental). ([@koic][])
 * [#8164](https://github.com/rubocop-hq/rubocop/pull/8164): Support auto-correction for `Lint/InterpolationCheck`. ([@koic][])
 * [#8223](https://github.com/rubocop-hq/rubocop/pull/8223): Support auto-correction for `Style/IfUnlessModifierOfIfUnless`. ([@koic][])

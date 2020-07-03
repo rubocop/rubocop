@@ -430,6 +430,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleproc[Style/Proc]
 * xref:cops_style.adoc#styleraiseargs[Style/RaiseArgs]
 * xref:cops_style.adoc#stylerandomwithoffset[Style/RandomWithOffset]
+* xref:cops_style.adoc#styleredundantassignment[Style/RedundantAssignment]
 * xref:cops_style.adoc#styleredundantbegin[Style/RedundantBegin]
 * xref:cops_style.adoc#styleredundantcapitalw[Style/RedundantCapitalW]
 * xref:cops_style.adoc#styleredundantcondition[Style/RedundantCondition]
