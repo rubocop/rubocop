@@ -6,6 +6,10 @@
 
 * [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
 
+### Bug fixes
+
+* [#8232](https://github.com/rubocop-hq/rubocop/issues/8232): Fix a false positive for `Layout/EmptyLinesAroundAccessModifier` when `end` immediately after access modifier. ([@koic][])
+
 ## 0.87.1 (2020-07-07)
 
 ### Bug fixes
