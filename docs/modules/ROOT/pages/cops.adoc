@@ -321,6 +321,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleautoresourcecleanup[Style/AutoResourceCleanup]
 * xref:cops_style.adoc#stylebarepercentliterals[Style/BarePercentLiterals]
 * xref:cops_style.adoc#stylebeginblock[Style/BeginBlock]
+* xref:cops_style.adoc#stylebisectedattraccessor[Style/BisectedAttrAccessor]
 * xref:cops_style.adoc#styleblockcomments[Style/BlockComments]
 * xref:cops_style.adoc#styleblockdelimiters[Style/BlockDelimiters]
 * xref:cops_style.adoc#stylecaseequality[Style/CaseEquality]
