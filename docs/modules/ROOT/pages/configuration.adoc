@@ -330,6 +330,11 @@ configuration file is. In configuration files that don't begin with `.rubocop`,
 e.g. `our_company_defaults.yml`, paths are relative to the directory where
 `rubocop` is run.
 
+This affects cops that have customisable paths: if the default is `db/migrate/*.rb`,
+and the cop is enabled in `db/migrate/.rubocop.yml`, the path will need to be
+explicitly set as `*.rb`, as the default will look for `db/migrate/db/migrate/*.rb`.
+This is unlikely to be what you wanted.
+
 === Unusual files, that would not be included by default
 
 RuboCop comes with a comprehensive list of common ruby file names and
