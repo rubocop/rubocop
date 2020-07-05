@@ -5,7 +5,9 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks for non-ascii characters in identifier names.
+      # This cop checks for non-ascii characters in identifier and constant names.
+      # Identifiers are always checked and whether constants are checked
+      # can be controlled using AsciiConstants config.
       #
       # @example
       #   # bad
@@ -36,20 +38,41 @@ module RuboCop
       #   # good
       #   params[:width_gteq]
       #
+      # @example AsciiConstants: true (default)
+      #   # bad
+      #   class Foö
+      #   end
+      #
+      #   FOÖ = "foo"
+      #
+      # @example AsciiConstants: false
+      #   # good
+      #   class Foö
+      #   end
+      #
+      #   FOÖ = "foo"
+      #
       class AsciiIdentifiers < Cop
         include RangeHelp
 
-        MSG = 'Use only ascii symbols in identifiers.'
+        IDENTIFIER_MSG = 'Use only ascii symbols in identifiers.'
+        CONSTANT_MSG   = 'Use only ascii symbols in constants.'
 
         def investigate(processed_source)
           processed_source.each_token do |token|
-            next unless token.type == :tIDENTIFIER && !token.text.ascii_only?
+            next if !should_check?(token) || token.text.ascii_only?
 
-            add_offense(token, location: first_offense_range(token))
+            message = token.type == :tIDENTIFIER ? IDENTIFIER_MSG : CONSTANT_MSG
+            add_offense(token, location: first_offense_range(token), message: message)
           end
         end
 
         private
+
+        def should_check?(token)
+          token.type == :tIDENTIFIER ||
+            (token.type == :tCONSTANT && cop_config['AsciiConstants'])
+        end
 
         def first_offense_range(identifier)
           expression    = identifier.pos

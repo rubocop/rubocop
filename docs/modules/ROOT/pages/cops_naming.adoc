@@ -48,10 +48,12 @@ end
 | Yes
 | No
 | 0.50
-| -
+| 0.87
 |===
 
-This cop checks for non-ascii characters in identifier names.
+This cop checks for non-ascii characters in identifier and constant names.
+Identifiers are always checked and whether constants are checked
+can be controlled using AsciiConstants config.
 
 === Examples
 
@@ -85,6 +87,38 @@ params[:عرض_gteq] # Arabic character (non-ascii)
 # good
 params[:width_gteq]
 ----
+
+==== AsciiConstants: true (default)
+
+[source,ruby]
+----
+# bad
+class Foö
+end
+
+FOÖ = "foo"
+----
+
+==== AsciiConstants: false
+
+[source,ruby]
+----
+# good
+class Foö
+end
+
+FOÖ = "foo"
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AsciiConstants
+| `true`
+| Boolean
+|===
 
 === References
 
