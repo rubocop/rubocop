@@ -170,6 +170,33 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when configuration has a custom name' do
+      let(:file_path) { '.custom_rubocop.yml' }
+
+      before do
+        create_file(file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+        YAML
+      end
+
+      context 'and there is a personal config file in the home folder' do
+        before do
+          create_file('~/.rubocop.yml', <<~YAML)
+            AllCops:
+              Exclude:
+                - tmp/**
+          YAML
+        end
+
+        it 'ignores personal AllCops/Exclude' do
+          excludes = configuration_from_file['AllCops']['Exclude']
+          expect(excludes).to eq([File.expand_path('vendor/**')])
+        end
+      end
+    end
+
     context 'when a parent file specifies DisabledByDefault: true' do
       let(:file_path) { '.rubocop.yml' }
 
@@ -965,7 +992,7 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     context 'when a file inherits from a url inheriting from another file' do
-      let(:file_path) { '.robocop.yml' }
+      let(:file_path) { '.rubocop.yml' }
       let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
       let(:cache_file_2) { '.rubocop-http---example-com-inherit-yml' }
 

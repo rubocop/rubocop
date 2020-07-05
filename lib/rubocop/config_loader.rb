@@ -119,7 +119,6 @@ module RuboCop
 
       def add_excludes_from_files(config, config_file)
         found_files = find_files_upwards(DOTFILE, config_file)
-        found_files = [find_user_dotfile, find_user_xdg_config].compact if found_files.empty?
 
         return if found_files.empty?
         return if PathUtil.relative_path(found_files.last) ==
