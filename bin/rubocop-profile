@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'stackprof'
+
+StackProf.start
+start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+begin
+  load "#{__dir__}/../exe/rubocop"
+ensure
+  delta = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+  StackProf.stop
+  Dir.mkdir('tmp') unless File.exist?('tmp')
+  StackProf.results('tmp/stackprof.dump')
+  puts "Finished in #{delta.round(1)} seconds"
+end

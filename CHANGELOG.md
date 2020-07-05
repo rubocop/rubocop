@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
+
 ## 0.87.1 (2020-07-07)
 
 ### Bug fixes
