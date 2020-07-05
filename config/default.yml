@@ -2366,6 +2366,13 @@ Style/BeginBlock:
   Enabled: true
   VersionAdded: '0.9'
 
+Style/BisectedAttrAccessor:
+  Description: >-
+                Checks for places where `attr_reader` and `attr_writer`
+                for the same method can be combined into single `attr_accessor`.
+  Enabled: 'pending'
+  VersionAdded: '0.87'
+
 Style/BlockComments:
   Description: 'Do not use block comments.'
   StyleGuide: '#no-block-comments'
