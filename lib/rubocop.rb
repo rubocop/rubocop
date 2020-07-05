@@ -356,6 +356,7 @@ require_relative 'rubocop/cop/naming/variable_name'
 require_relative 'rubocop/cop/naming/variable_number'
 
 require_relative 'rubocop/cop/style/access_modifier_declarations'
+require_relative 'rubocop/cop/style/accessor_grouping'
 require_relative 'rubocop/cop/style/alias'
 require_relative 'rubocop/cop/style/and_or'
 require_relative 'rubocop/cop/style/array_join'
