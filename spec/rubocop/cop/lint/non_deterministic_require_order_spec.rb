@@ -29,6 +29,14 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
         RUBY
       end
 
+      it 'registers an offense with block passed as parameter' do
+        pending
+        expect_offense(<<~RUBY)
+          Dir["./lib/**/*.rb"].each(&method(:require))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+        RUBY
+      end
+
       it 'auto-corrects to add .sort' do
         new_source = autocorrect_source(<<~RUBY)
           Dir["./lib/**/*.rb"].each do |file|
@@ -40,6 +48,22 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
             require file
           end
         RUBY
+      end
+
+      context 'with top-level ::Dir' do
+        it 'registers an offense and corrects to add .sort' do
+          expect_offense(<<~RUBY)
+            ::Dir["./lib/**/*.rb"].each do |file|
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+              require file
+            end
+          RUBY
+          expect_correction(<<~RUBY)
+            ::Dir["./lib/**/*.rb"].sort.each do |file|
+              require file
+            end
+          RUBY
+        end
       end
     end
 
@@ -65,6 +89,22 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
           end
         RUBY
       end
+
+      context 'with top-level ::Dir' do
+        it 'registers an offense and corrects to add .sort' do
+          expect_offense(<<~RUBY)
+            ::Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), ::File::FNM_DOTMATCH).each do |file|
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+              require file
+            end
+          RUBY
+          expect_correction(<<~RUBY)
+            ::Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), ::File::FNM_DOTMATCH).sort.each do |file|
+              require file
+            end
+          RUBY
+        end
+      end
     end
 
     context 'with direct block glob' do
@@ -88,6 +128,17 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
             require file
           end
         RUBY
+      end
+
+      context 'with top-level ::Dir' do
+        it 'registers an offense and corrects to add .sort.each' do
+          expect_offense(<<~RUBY)
+            ::Dir.glob("./lib/**/*.rb") do |file|
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+              require file
+            end
+          RUBY
+        end
       end
     end
 

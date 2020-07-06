@@ -69,11 +69,11 @@ module RuboCop
         end
 
         def_node_matcher :unsorted_dir_block?, <<~PATTERN
-          (send (const nil? :Dir) :glob ...)
+          (send (const {nil? cbase} :Dir) :glob ...)
         PATTERN
 
         def_node_matcher :unsorted_dir_each?, <<~PATTERN
-          (send (send (const nil? :Dir) {:[] :glob} ...) :each)
+          (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each)
         PATTERN
 
         def_node_matcher :loop_variable, <<~PATTERN
