@@ -71,6 +71,18 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
   end
 
   it 'registers an offense when using ' \
+     "`::File.expand_path('./../..', __FILE__)`" do
+    expect_offense(<<~RUBY)
+      ::File.expand_path('./../..', __FILE__)
+             ^^^^^^^^^^^ Use `expand_path('..', __dir__)` instead of `expand_path('./../..', __FILE__)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::File.expand_path('..', __dir__)
+    RUBY
+  end
+
+  it 'registers an offense when using ' \
      '`Pathname(__FILE__).parent.expand_path`' do
     expect_offense(<<~RUBY)
       Pathname(__FILE__).parent.expand_path
@@ -94,6 +106,18 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
     RUBY
   end
 
+  it 'registers an offense when using ' \
+     '`::Pathname.new(__FILE__).parent.expand_path`' do
+    expect_offense(<<~RUBY)
+      ::Pathname.new(__FILE__).parent.expand_path
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Pathname.new(__dir__).expand_path` instead of `Pathname.new(__FILE__).parent.expand_path`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::Pathname.new(__dir__).expand_path
+    RUBY
+  end
+
   it 'does not register an offense when using `File.expand_path(__dir__)`' do
     expect_no_offenses(<<~RUBY)
       File.expand_path(__dir__)
@@ -101,7 +125,7 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
   end
 
   it 'does not register an offense when using ' \
-     '`File.expand_path('..', __dir__)`' do
+     "`File.expand_path('..', __dir__)`" do
     expect_no_offenses(<<~RUBY)
       File.expand_path('..', __dir__)
     RUBY
