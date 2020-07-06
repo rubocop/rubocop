@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.87.0 (2020-07-06)
+
 ### New features
 
 * [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. ([@marcandre][])
