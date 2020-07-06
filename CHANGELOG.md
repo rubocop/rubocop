@@ -31,6 +31,7 @@
 * [#8156](https://github.com/rubocop-hq/rubocop/issues/8156): **(Breaking)** `rubocop -a / --autocorrect` no longer run unsafe corrections; `rubocop -A / --autocorrect-all` run both safe and unsafe corrections. Options `--safe-autocorrect` is deprecated. ([@marcandre][])
 * [#8207](https://github.com/rubocop-hq/rubocop/pull/8207): **(Breaking)** Order for gems names now disregards underscores and dashes unless `ConsiderPunctuation` setting is set to `true`. ([@marcandre][])
 * [#8211](https://github.com/rubocop-hq/rubocop/pull/8211): `Style/ClassVars` cop now detects `class_variable_set`. ([@biinari][])
+* [#8245](https://github.com/rubocop-hq/rubocop/pull/8245): Detect top-level constants like `::Const` in various cops. ([@biinari][])
 
 ## 0.86.0 (2020-06-22)
 
