@@ -85,7 +85,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :rescue_standard_error?, <<~PATTERN
-          (resbody $(array (const nil? :StandardError)) _ _)
+          (resbody $(array (const {nil? cbase} :StandardError)) _ _)
         PATTERN
 
         def on_resbody(node)
