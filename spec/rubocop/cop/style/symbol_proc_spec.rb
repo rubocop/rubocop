@@ -34,6 +34,10 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('Proc.new { |x| x.method }')
   end
 
+  it 'accepts ::Proc.new with 1 argument' do
+    expect_no_offenses('::Proc.new { |x| x.method }')
+  end
+
   it 'accepts ignored method' do
     expect_no_offenses('respond_to { |format| format.xml }')
   end
