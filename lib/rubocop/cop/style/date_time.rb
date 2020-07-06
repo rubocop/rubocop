@@ -50,7 +50,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :historic_date?, <<~PATTERN
-          (send _ _ _ (const (const nil? :Date) _))
+          (send _ _ _ (const (const {nil? (cbase)} :Date) _))
         PATTERN
 
         def_node_matcher :to_datetime?, <<~PATTERN
