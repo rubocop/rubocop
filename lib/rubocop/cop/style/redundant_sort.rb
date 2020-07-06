@@ -135,9 +135,10 @@ module RuboCop
         end
 
         def suffix(sorter)
-          if sorter == :sort
+          case sorter
+          when :sort
             ''
-          elsif sorter == :sort_by
+          when :sort_by
             '_by'
           end
         end

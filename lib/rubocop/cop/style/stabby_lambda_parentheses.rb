@@ -34,9 +34,10 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if style == :require_parentheses
+          case style
+          when :require_parentheses
             missing_parentheses_corrector(node)
-          elsif style == :require_no_parentheses
+          when :require_no_parentheses
             unwanted_parentheses_corrector(node)
           end
         end

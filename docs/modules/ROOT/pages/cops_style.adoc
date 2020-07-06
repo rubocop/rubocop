@@ -826,6 +826,49 @@ some_string =~ /something/
 
 * https://rubystyle.guide#no-case-equality
 
+== Style/CaseLikeIf
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.88
+| -
+|===
+
+This cop identifies places where `if-elsif` constructions
+can be replaced with `case-when`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if status == :active
+  perform_action
+elsif status == :inactive || status == :hibernating
+  check_timeout
+else
+  final_action
+end
+
+# good
+case status
+when :active
+  perform_action
+when :inactive, :hibernating
+  check_timeout
+else
+  final_action
+end
+----
+
+=== References
+
+* https://rubystyle.guide#case-vs-if-else
+
 == Style/CharacterLiteral
 
 |===
