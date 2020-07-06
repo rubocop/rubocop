@@ -87,6 +87,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
         a = Array.new(3) { 42 }
       RUBY
     end
+
+    it 'registers and corrects an array using top-level const' do
+      expect_offense(<<~RUBY)
+        a = *::Array.new(3) { 42 }
+            ^^^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = ::Array.new(3) { 42 }
+      RUBY
+    end
   end
 
   context 'expanding an array literal in a when condition' do
@@ -293,6 +304,21 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
     context 'when the array literal contains more than one element' do
       it 'accepts' do
         expect_no_offenses('[1, 2, *Array.new(foo), 6]')
+      end
+    end
+
+    context 'with ::Array.new' do
+      context 'when the array literal contains exactly one element' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            [*::Array.new(foo)]
+             ^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ::Array.new(foo)
+          RUBY
+        end
       end
     end
   end

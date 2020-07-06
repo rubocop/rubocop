@@ -60,8 +60,8 @@ module RuboCop
 
         def_node_matcher :array_new?, <<~PATTERN
           {
-            $(send (const nil? :Array) :new ...)
-            $(block (send (const nil? :Array) :new ...) ...)
+            $(send (const {nil? cbase} :Array) :new ...)
+            $(block (send (const {nil? cbase} :Array) :new ...) ...)
           }
         PATTERN
 
