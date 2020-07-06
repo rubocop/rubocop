@@ -1003,7 +1003,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     it_behaves_like('method defined using instance_eval', modifier)
   end
 
-  %w[Class Module Struct].each do |klass|
+  %w[Class ::Class Module ::Module Struct ::Struct].each do |klass|
     %w[protected private].each do |modifier|
       it_behaves_like('def in new block', klass, modifier)
     end
