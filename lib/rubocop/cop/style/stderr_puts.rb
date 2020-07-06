@@ -22,7 +22,7 @@ module RuboCop
 
         def_node_matcher :stderr_puts?, <<~PATTERN
           (send
-            {(gvar #stderr_gvar?) (const nil? :STDERR)}
+            {(gvar #stderr_gvar?) (const {nil? cbase} :STDERR)}
             :puts $_
             ...)
         PATTERN
