@@ -177,11 +177,46 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition do
     RUBY
   end
 
+  it 'does not register offense for nested definition inside ::Class.new' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def self.define
+          ::Class.new(S) do
+            def y
+            end
+          end
+        end
+      end
+
+      class Foo
+        def self.define
+          ::Class.new do
+            def y
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'does not register offense for nested definition inside Module.new' do
     expect_no_offenses(<<~RUBY)
       class Foo
         def self.define
           Module.new do
+            def y
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offense for nested definition inside ::Module.new' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def self.define
+          ::Module.new do
             def y
             end
           end
@@ -204,6 +239,28 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition do
       class Foo
         def self.define
           Struct.new do
+            def y
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offense for nested definition inside ::Struct.new' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def self.define
+          ::Struct.new(:name) do
+            def y
+            end
+          end
+        end
+      end
+
+      class Foo
+        def self.define
+          ::Struct.new do
             def y
             end
           end
