@@ -41,4 +41,7 @@ RSpec.describe RuboCop::Cop::Lint::RandOne do
   it_behaves_like 'no offense', 'Kernel.rand'
   it_behaves_like 'no offense', 'Kernel.rand 2'
   it_behaves_like 'no offense', 'Kernel.rand(-1..1)'
+
+  it_behaves_like 'offenses', '::Kernel.rand(1)'
+  it_behaves_like 'no offense', '::Kernel.rand'
 end
