@@ -185,4 +185,20 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
       RUBY
     end
   end
+
+  context 'when inspecting a class defined with ::Class.new' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        Foo = ::Class.new do
+        ^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
 end

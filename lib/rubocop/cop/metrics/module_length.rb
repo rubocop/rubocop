@@ -45,7 +45,7 @@ module RuboCop
         private
 
         def_node_matcher :module_definition?, <<~PATTERN
-          (casgn nil? _ (block (send (const nil? :Module) :new) ...))
+          (casgn nil? _ (block (send (const {nil? cbase} :Module) :new) ...))
         PATTERN
 
         def message(length, max_length)
