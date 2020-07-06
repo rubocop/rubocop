@@ -64,9 +64,10 @@ module RuboCop
 
         def ending_delimiter(str)
           # implicit string concatenation does not work with %{}, etc.
-          if str.source[0] == "'"
+          case str.source[0]
+          when "'"
             "'"
-          elsif str.source[0] == '"'
+          when '"'
             '"'
           end
         end

@@ -142,11 +142,12 @@ module RuboCop
         end
 
         def issue_offenses(node, left, right, start_ok, end_ok)
-          if style == :no_space
+          case style
+          when :no_space
             start_ok = next_to_comment?(node, left)
             no_space_offenses(node, left, right, MSG, start_ok: start_ok,
                                                       end_ok: end_ok)
-          elsif style == :space
+          when :space
             space_offenses(node, left, right, MSG, start_ok: start_ok,
                                                    end_ok: end_ok)
           else

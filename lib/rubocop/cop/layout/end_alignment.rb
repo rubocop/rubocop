@@ -150,9 +150,10 @@ module RuboCop
         end
 
         def alignment_node(node)
-          if style == :keyword
+          case style
+          when :keyword
             node
-          elsif style == :variable
+          when :variable
             alignment_node_for_variable_style(node)
           else
             start_line_range(node)
