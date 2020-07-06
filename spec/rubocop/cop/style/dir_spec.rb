@@ -9,25 +9,51 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
     end
   end
 
-  it 'registers an offense when using `#expand_path` and `#dirname`' do
-    expect_offense(<<~RUBY)
-      File.expand_path(File.dirname(__FILE__))
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
-    RUBY
+  context 'when using `#expand_path` and `#dirname`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        File.expand_path(File.dirname(__FILE__))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
+      RUBY
+    end
+
+    it 'registers an offense with ::File' do
+      expect_offense(<<~RUBY)
+        ::File.expand_path(::File.dirname(__FILE__))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
+      RUBY
+    end
+
+    it_behaves_like 'auto-correct',
+                    'File.expand_path(File.dirname(__FILE__))',
+                    '__dir__'
+
+    it_behaves_like 'auto-correct',
+                    '::File.expand_path(::File.dirname(__FILE__))',
+                    '__dir__'
   end
 
-  it_behaves_like 'auto-correct',
-                  'File.expand_path(File.dirname(__FILE__))',
-                  '__dir__'
+  context 'when using `#dirname` and `#realpath`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        File.dirname(File.realpath(__FILE__))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
+      RUBY
+    end
 
-  it 'registers an offense when using `#dirname` and `#realpath`' do
-    expect_offense(<<~RUBY)
-      File.dirname(File.realpath(__FILE__))
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
-    RUBY
+    it 'registers an offense with ::File' do
+      expect_offense(<<~RUBY)
+        ::File.dirname(::File.realpath(__FILE__))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
+      RUBY
+    end
+
+    it_behaves_like 'auto-correct',
+                    'File.dirname(File.realpath(__FILE__))',
+                    '__dir__'
+
+    it_behaves_like 'auto-correct',
+                    '::File.dirname(::File.realpath(__FILE__))',
+                    '__dir__'
   end
-
-  it_behaves_like 'auto-correct',
-                  'File.dirname(File.realpath(__FILE__))',
-                  '__dir__'
 end
