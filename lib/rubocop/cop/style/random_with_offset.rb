@@ -31,7 +31,7 @@ module RuboCop
           (send
             int {:+ :-}
             (send
-              {nil? (const nil? :Random) (const nil? :Kernel)}
+              {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
               {int irange erange}))
         PATTERN
@@ -39,7 +39,7 @@ module RuboCop
         def_node_matcher :rand_op_integer?, <<~PATTERN
           (send
             (send
-              {nil? (const nil? :Random) (const nil? :Kernel)}
+              {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
               {int irange erange})
             {:+ :-}
@@ -49,7 +49,7 @@ module RuboCop
         def_node_matcher :rand_modified?, <<~PATTERN
           (send
             (send
-              {nil? (const nil? :Random) (const nil? :Kernel)}
+              {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
               {int irange erange})
             {:succ :pred :next})
@@ -128,14 +128,8 @@ module RuboCop
           end
         end
 
-        def_node_matcher :namespace, <<~PATTERN
-          {$nil? (const nil? $_)}
-        PATTERN
-
         def prefix_from_prefix_node(node)
-          namespace(node) do |namespace|
-            [namespace, 'rand'].compact.join('.')
-          end
+          [node&.source, 'rand'].compact.join('.')
         end
 
         def boundaries_from_random_node(random_node)

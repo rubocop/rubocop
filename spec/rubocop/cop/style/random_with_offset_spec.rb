@@ -61,10 +61,24 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
     RUBY
   end
 
+  it 'registers an offense when using ::Kernel.rand' do
+    expect_offense(<<~RUBY)
+      ::Kernel.rand(6) + 1
+      ^^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+  end
+
   it 'registers an offense when using Random.rand' do
     expect_offense(<<~RUBY)
       Random.rand(6) + 1
       ^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+  end
+
+  it 'registers an offense when using ::Random.rand' do
+    expect_offense(<<~RUBY)
+      ::Random.rand(6) + 1
+      ^^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
   end
 
@@ -122,9 +136,39 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
     expect(new_source).to eq 'Random.rand(1..6)'
   end
 
+  it 'autocorrects the use of ::Random.rand' do
+    new_source = autocorrect_source('::Random.rand(6) + 1')
+    expect(new_source).to eq '::Random.rand(1..6)'
+  end
+
+  it 'autocorrects offset + Random.rand(int)' do
+    new_source = autocorrect_source('1 + Random.rand(6)')
+    expect(new_source).to eq 'Random.rand(1..6)'
+  end
+
+  it 'autocorrects offset - ::Random.rand(int)' do
+    new_source = autocorrect_source('1 - ::Random.rand(6)')
+    expect(new_source).to eq '::Random.rand(-4..1)'
+  end
+
+  it 'autocorrects Random.rand(int).succ' do
+    new_source = autocorrect_source('Random.rand(6).succ')
+    expect(new_source).to eq 'Random.rand(1..6)'
+  end
+
+  it 'autocorrects ::Random.rand(int).pred' do
+    new_source = autocorrect_source('::Random.rand(6).pred')
+    expect(new_source).to eq '::Random.rand(-1..4)'
+  end
+
   it 'autocorrects the use of Kernel.rand' do
     new_source = autocorrect_source('Kernel.rand(6) + 1')
     expect(new_source).to eq 'Kernel.rand(1..6)'
+  end
+
+  it 'autocorrects the use of ::Kernel.rand' do
+    new_source = autocorrect_source('::Kernel.rand(6) + 1')
+    expect(new_source).to eq '::Kernel.rand(1..6)'
   end
 
   it 'autocorrects rand(irange) + offset' do
