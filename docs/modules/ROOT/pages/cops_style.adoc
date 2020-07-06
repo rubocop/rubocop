@@ -506,6 +506,37 @@ BEGIN { test }
 
 * https://rubystyle.guide#no-BEGIN-blocks
 
+== Style/BisectedAttrAccessor
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.87
+| -
+|===
+
+This cop checks for places where `attr_reader` and `attr_writer`
+for the same method can be combined into single `attr_accessor`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  attr_reader :bar
+  attr_writer :bar
+end
+
+# good
+class Foo
+  attr_accessor :bar
+end
+----
+
 == Style/BlockComments
 
 |===
