@@ -18,6 +18,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       RUBY
     end
 
+    it 'registers an offense for ::Array.new' do
+      expect_offense(<<~RUBY)
+        test = ::Array.new
+               ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
+      RUBY
+    end
+
     it 'does not register an offense for Array.new(3)' do
       expect_no_offenses('test = Array.new(3)')
     end
@@ -35,6 +42,10 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'does not registers an offense Array.new with block' do
       expect_no_offenses('test = Array.new { 1 }')
+    end
+
+    it 'does not register an offense for ::Array.new with block' do
+      expect_no_offenses('test = ::Array.new { 1 }')
     end
 
     it 'does not register Array.new with block in other block' do
@@ -57,12 +68,27 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       RUBY
     end
 
+    it 'registers an offense for ::Hash.new' do
+      expect_offense(<<~RUBY)
+        test = ::Hash.new
+               ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+    end
+
     it 'does not register an offense for Hash.new(3)' do
       expect_no_offenses('test = Hash.new(3)')
     end
 
+    it 'does not register an offense for ::Hash.new(3)' do
+      expect_no_offenses('test = ::Hash.new(3)')
+    end
+
     it 'does not register an offense for Hash.new { block }' do
       expect_no_offenses('test = Hash.new { block }')
+    end
+
+    it 'does not register an offense for ::Hash.new { block }' do
+      expect_no_offenses('test = ::Hash.new { block }')
     end
 
     it 'auto-corrects Hash.new to {}' do
@@ -149,8 +175,19 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       RUBY
     end
 
+    it 'registers an offense for ::String.new' do
+      expect_offense(<<~RUBY)
+        test = ::String.new
+               ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+      RUBY
+    end
+
     it 'does not register an offense for String.new("top")' do
       expect_no_offenses('test = String.new("top")')
+    end
+
+    it 'does not register an offense for ::String.new("top")' do
+      expect_no_offenses('test = ::String.new("top")')
     end
 
     it 'auto-corrects String.new to empty string literal' do
@@ -174,6 +211,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         expect_offense(<<~RUBY)
           test = String.new
                  ^^^^^^^^^^ Use string literal `""` instead of `String.new`.
+        RUBY
+      end
+
+      it 'registers an offense for ::String.new' do
+        expect_offense(<<~RUBY)
+          test = ::String.new
+                 ^^^^^^^^^^^^ Use string literal `""` instead of `String.new`.
         RUBY
       end
 

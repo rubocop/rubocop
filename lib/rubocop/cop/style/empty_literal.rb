@@ -25,13 +25,13 @@ module RuboCop
         STR_MSG = 'Use string literal `%<prefer>s` instead of ' \
                   '`String.new`.'
 
-        def_node_matcher :array_node, '(send (const nil? :Array) :new)'
-        def_node_matcher :hash_node, '(send (const nil? :Hash) :new)'
-        def_node_matcher :str_node, '(send (const nil? :String) :new)'
+        def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new)'
+        def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new)'
+        def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
         def_node_matcher :array_with_block,
-                         '(block (send (const nil? :Array) :new) args _)'
+                         '(block (send (const {nil? cbase} :Array) :new) args _)'
         def_node_matcher :hash_with_block,
-                         '(block (send (const nil? :Hash) :new) args _)'
+                         '(block (send (const {nil? cbase} :Hash) :new) args _)'
 
         def on_send(node)
           add_offense(node, message: ARR_MSG)  if offense_array_node?(node)
