@@ -104,6 +104,66 @@ end
 | Boolean
 |===
 
+== Style/AccessorGrouping
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.87
+| -
+|===
+
+This cop checks for grouping of accessors in `class` and `module` bodies.
+By default it enforces accessors to be placed in grouped declarations,
+but it can be configured to enforce separating them in multiple declarations.
+
+=== Examples
+
+==== EnforcedStyle: grouped (default)
+
+[source,ruby]
+----
+# bad
+class Foo
+  attr_reader :bar
+  attr_reader :baz
+end
+
+# good
+class Foo
+  attr_reader :bar, :baz
+end
+----
+
+==== EnforcedStyle: separated
+
+[source,ruby]
+----
+# bad
+class Foo
+  attr_reader :bar, :baz
+end
+
+# good
+class Foo
+  attr_reader :bar
+  attr_reader :baz
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `grouped`
+| `separated`, `grouped`
+|===
+
 == Style/Alias
 
 |===

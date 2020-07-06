@@ -219,8 +219,7 @@ module RuboCop
           correct_node(node, delta)
         end
 
-        attr_accessor :offences_by
-        attr_accessor :column_deltas
+        attr_accessor :offences_by, :column_deltas
 
         private
 

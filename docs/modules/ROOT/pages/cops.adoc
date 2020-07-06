@@ -313,6 +313,7 @@ In the following section you find all available cops:
 === Department xref:cops_style.adoc[Style]
 
 * xref:cops_style.adoc#styleaccessmodifierdeclarations[Style/AccessModifierDeclarations]
+* xref:cops_style.adoc#styleaccessorgrouping[Style/AccessorGrouping]
 * xref:cops_style.adoc#stylealias[Style/Alias]
 * xref:cops_style.adoc#styleandor[Style/AndOr]
 * xref:cops_style.adoc#stylearrayjoin[Style/ArrayJoin]

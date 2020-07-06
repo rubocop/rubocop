@@ -2299,6 +2299,17 @@ Style/AccessModifierDeclarations:
     - group
   AllowModifiersOnSymbols: true
 
+Style/AccessorGrouping:
+  Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
+  Enabled: 'pending'
+  VersionAdded: '0.87'
+  EnforcedStyle: grouped
+  SupportedStyles:
+    # separated: each accessor goes in a separate statement.
+    # grouped: accessors are grouped into a single statement.
+    - separated
+    - grouped
+
 Style/Alias:
   Description: 'Use alias instead of alias_method.'
   StyleGuide: '#alias-method-lexically'

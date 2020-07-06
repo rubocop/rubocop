@@ -5,6 +5,7 @@
 ### New features
 
 * [#7868](https://github.com/rubocop-hq/rubocop/pull/7868): `Cop::Base` is the new recommended base class for cops. ([@marcandre][])
+* [#3983](https://github.com/rubocop-hq/rubocop/issues/3983): Add new `Style/AccessorGrouping` cop. ([@fatkodima][])
 * [#8244](https://github.com/rubocop-hq/rubocop/pull/8244): Add new `Style/BisectedAttrAccessor` cop. ([@fatkodima][])
 * [#7458](https://github.com/rubocop-hq/rubocop/issues/7458): Add new `AsciiConstants` option for `Naming/AsciiIdentifiers`. ([@fatkodima][])
 * [#7373](https://github.com/rubocop-hq/rubocop/issues/7373): Add new `Style/RedundantAssignment` cop. ([@fatkodima][])
