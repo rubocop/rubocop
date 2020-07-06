@@ -61,6 +61,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     it_behaves_like 'immutable objects', 'FOO - BAR'
     it_behaves_like 'immutable objects', "'foo' + 'bar'"
     it_behaves_like 'immutable objects', "ENV['foo']"
+    it_behaves_like 'immutable objects', "::ENV['foo']"
 
     it 'allows method call assignments' do
       expect_no_offenses('TOP_TEST = Something.new')
@@ -192,9 +193,13 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     it_behaves_like 'immutable objects', '1.5'
     it_behaves_like 'immutable objects', ':sym'
     it_behaves_like 'immutable objects', "ENV['foo']"
+    it_behaves_like 'immutable objects', "::ENV['foo']"
     it_behaves_like 'immutable objects', 'OTHER_CONST'
+    it_behaves_like 'immutable objects', '::OTHER_CONST'
     it_behaves_like 'immutable objects', 'Namespace::OTHER_CONST'
+    it_behaves_like 'immutable objects', '::Namespace::OTHER_CONST'
     it_behaves_like 'immutable objects', 'Struct.new'
+    it_behaves_like 'immutable objects', '::Struct.new'
     it_behaves_like 'immutable objects', 'Struct.new(:a, :b)'
     it_behaves_like 'immutable objects', <<~RUBY
       Struct.new(:node) do
@@ -302,6 +307,9 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       it 'accepts assigning to an environment variable with a fallback' do
         expect_no_offenses(<<~RUBY)
           CONST = ENV['foo'] || 'foo'
+        RUBY
+        expect_no_offenses(<<~RUBY)
+          CONST = ::ENV['foo'] || 'foo'
         RUBY
       end
 
