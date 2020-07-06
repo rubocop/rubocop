@@ -129,6 +129,23 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
     expect_no_offenses('x = 0')
   end
 
+  it 'accepts an assignment with the same alignment margins' do
+    expect_no_offenses(<<~RUBY)
+      @integer_message = 12345
+      @output  = StringIO.new
+      @logger  = Logger.new(@output)
+    RUBY
+  end
+
+  it 'accepts an assignment with a blank line' do
+    expect_no_offenses(<<~RUBY)
+      expected = posts(:welcome)
+
+      tagging  = Tagging.all.merge!(includes: :taggable).find(taggings(:welcome_general).id)
+      assert_no_queries { assert_equal expected, tagging.taggable }
+    RUBY
+  end
+
   it 'accepts an assignment by `for` statement' do
     expect_no_offenses(<<~RUBY)
       for a in [] do; end

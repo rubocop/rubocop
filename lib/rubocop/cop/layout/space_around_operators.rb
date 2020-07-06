@@ -5,6 +5,8 @@ module RuboCop
     module Layout
       # Checks that operators have space around them, except for ** which
       # should or shouldn't have surrounding space depending on configuration.
+      # It allows vertical alignment consisting of one or more whitespace
+      # around operators.
       #
       # This cop has `AllowForAlignment` option. When `true`, allows most
       # uses of extra spacing if the intent is to align with an operator on
@@ -207,7 +209,8 @@ module RuboCop
           token            = Token.new(operator, nil, operator.source)
           align_preceding  = aligned_with_preceding_assignment(token)
 
-          return align_preceding == :no unless align_preceding == :none
+          return false if align_preceding == :yes ||
+                          aligned_with_subsequent_assignment(token) == :none
 
           aligned_with_subsequent_assignment(token) != :yes
         end
