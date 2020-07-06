@@ -108,8 +108,8 @@ module RuboCop
         # implement `#size`, but not `#empty`. We ignore those to
         # reduce false positives.
         def_node_matcher :non_polymorphic_collection?, <<~PATTERN
-          {(send (send (send (const nil? :File) :stat _) ...) ...)
-           (send (send (send (const nil? {:Tempfile :StringIO}) {:new :open} ...) ...) ...)}
+          {(send (send (send (const {nil? cbase} :File) :stat _) ...) ...)
+           (send (send (send (const {nil? cbase} {:Tempfile :StringIO}) {:new :open} ...) ...) ...)}
         PATTERN
       end
     end

@@ -161,6 +161,12 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
         File.stat(foo).size == 0
       RUBY
     end
+
+    it 'does not register an offense with ::File' do
+      expect_no_offenses(<<~RUBY)
+        ::File.stat(foo).size == 0
+      RUBY
+    end
   end
 
   context 'when inspecting a StringIO object' do
@@ -168,6 +174,12 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           StringIO.new('foo').size == 0
+        RUBY
+      end
+
+      it 'does not register an offense with top-level ::StringIO' do
+        expect_no_offenses(<<~RUBY)
+          ::StringIO.new('foo').size == 0
         RUBY
       end
     end
@@ -178,6 +190,12 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
           StringIO.new.size == 0
         RUBY
       end
+
+      it 'does not register an offense with top-level ::StringIO' do
+        expect_no_offenses(<<~RUBY)
+          ::StringIO.new.size == 0
+        RUBY
+      end
     end
   end
 
@@ -185,6 +203,12 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         Tempfile.new('foo').size == 0
+      RUBY
+    end
+
+    it 'does not register an offense with top-level ::Tempfile' do
+      expect_no_offenses(<<~RUBY)
+        ::Tempfile.new('foo').size == 0
       RUBY
     end
   end
