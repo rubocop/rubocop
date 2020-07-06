@@ -126,6 +126,19 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
       RUBY
     end
 
+    it 'registers an offense for `raise` and `fail` with `::Kernel` as ' \
+       'explicit receiver' do
+      expect_offense(<<~RUBY)
+        def test
+          ::Kernel.raise
+                   ^^^^^ Use `fail` instead of `raise` to signal exceptions.
+        rescue Exception
+          ::Kernel.fail
+                   ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
+        end
+      RUBY
+    end
+
     it 'registers an offense for raise not in a begin/rescue/end' do
       expect_offense(<<~RUBY)
         case cop_config['EnforcedStyle']
