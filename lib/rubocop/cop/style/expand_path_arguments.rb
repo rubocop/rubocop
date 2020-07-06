@@ -53,7 +53,7 @@ module RuboCop
 
         def_node_matcher :file_expand_path, <<~PATTERN
           (send
-            (const nil? :File) :expand_path
+            (const {nil? cbase} :File) :expand_path
             $_
             $_)
         PATTERN
@@ -69,7 +69,7 @@ module RuboCop
           (send
             (send
               (send
-                (const nil? :Pathname) :new
+                (const {nil? cbase} :Pathname) :new
                 $_) :parent) :expand_path)
         PATTERN
 
