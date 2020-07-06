@@ -24,6 +24,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'immutable objects', ':sym'
   it_behaves_like 'immutable objects', ':""'
   it_behaves_like 'immutable objects', "ENV['foo']"
+  it_behaves_like 'immutable objects', "::ENV['foo']"
   it_behaves_like 'immutable objects', "'foo'.count"
   it_behaves_like 'immutable objects', '(1 + 2)'
   it_behaves_like 'immutable objects', '(2 > 1)'
