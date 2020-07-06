@@ -36,6 +36,10 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
     expect_no_offenses("DateTime.iso8601('2016-06-29', Date::ENGLAND)")
   end
 
+  it 'does not register an offense when using ::DateTime for historic date' do
+    expect_no_offenses("::DateTime.iso8601('2016-06-29', ::Date::ITALY)")
+  end
+
   it 'does not register an offense when using DateTime in another namespace' do
     expect_no_offenses('Icalendar::Values::DateTime.new(start_at)')
   end
