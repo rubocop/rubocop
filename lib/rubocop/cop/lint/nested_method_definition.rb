@@ -96,7 +96,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          (block (send (const nil? {:Class :Module :Struct}) :new ...) ...)
+          (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN
       end
     end
