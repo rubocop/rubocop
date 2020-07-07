@@ -21,7 +21,7 @@ module RuboCop
       #   end
       #
       class BisectedAttrAccessor < Cop
-        MSG = 'Combine both accessors into `attr_accessor :%<name>s`.'
+        MSG = 'Combine both accessors into `attr_accessor %<name>s`.'
 
         def on_class(class_node)
           reader_names, writer_names = accessor_names(class_node)
@@ -47,7 +47,7 @@ module RuboCop
           writer_names = Set.new
 
           accessor_macroses(class_node).each do |macro|
-            names = macro.arguments.map(&:value)
+            names = macro.arguments.map(&:source)
 
             names.each do |name|
               if attr_reader?(macro)
@@ -85,7 +85,7 @@ module RuboCop
 
         def check(macro, reader_names, writer_names)
           macro.arguments.each do |arg_node|
-            name = arg_node.value
+            name = arg_node.source
 
             if (attr_reader?(macro) && writer_names.include?(name)) ||
                (attr_writer?(macro) && reader_names.include?(name))
@@ -95,20 +95,33 @@ module RuboCop
         end
 
         def replacement(macro, node)
-          rest_args = macro.arguments
-          rest_args.delete(node)
-          args = rest_args.map(&:source).join(', ')
+          class_node = macro.each_ancestor(:class, :module).first
+          reader_names, writer_names = accessor_names(class_node)
+
+          rest_args = rest_args(macro.arguments, reader_names, writer_names)
 
           if attr_reader?(macro)
-            if args.empty?
-              "attr_accessor #{node.source}"
-            else
-              "attr_accessor #{node.source}\n#{indent(macro)}#{macro.method_name} #{args}"
-            end
-          elsif args.empty?
+            attr_reader_replacement(macro, node, rest_args)
+          elsif rest_args.empty?
             ''
           else
-            "#{indent(macro)}#{macro.method_name} #{args}"
+            "#{macro.method_name} #{rest_args.map(&:source).join(', ')}"
+          end
+        end
+
+        def rest_args(args, reader_names, writer_names)
+          args.reject do |arg|
+            name = arg.source
+            reader_names.include?(name) && writer_names.include?(name)
+          end
+        end
+
+        def attr_reader_replacement(macro, node, rest_args)
+          if rest_args.empty?
+            "attr_accessor #{node.source}"
+          else
+            "attr_accessor #{node.source}\n"\
+            "#{indent(macro)}#{macro.method_name} #{rest_args.map(&:source).join(', ')}"
           end
         end
 
