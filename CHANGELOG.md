@@ -6,6 +6,7 @@
 
 * [#8252](https://github.com/rubocop-hq/rubocop/issues/8252): Fix a command line option name from `--safe-autocorrect` to `--safe-auto-correct`, which is compatible with RuboCop 0.86 and lower. ([@koic][])
 * [#8239](https://github.com/rubocop-hq/rubocop/pull/8239): Don't load `.rubocop.yml` from personal folders to check for exclusions if given a custom configuration file. ([@deivid-rodriguez][])
+* [#8256](https://github.com/rubocop-hq/rubocop/issues/8256): Fix an error for `--auto-gen-config` when running a cop who do not support auto-correction. ([@koic][])
 
 ## 0.87.0 (2020-07-06)
 
