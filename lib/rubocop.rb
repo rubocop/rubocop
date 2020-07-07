@@ -115,6 +115,7 @@ require_relative 'rubocop/cop/mixin/trailing_body'
 require_relative 'rubocop/cop/mixin/trailing_comma'
 require_relative 'rubocop/cop/mixin/uncommunicative_name'
 require_relative 'rubocop/cop/mixin/unused_argument'
+require_relative 'rubocop/cop/mixin/visibility_help'
 
 require_relative 'rubocop/cop/utils/format_string'
 
