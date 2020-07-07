@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -E, --extra-details              Display extra details in offense messages.
               -S, --display-style-guide        Display style guide URLs in offense messages.
               -a, --auto-correct               Auto-correct offenses (only when it's safe).
-                  --safe-autocorrect           (same, deprecated)
+                  --safe-auto-correct          (same, deprecated)
               -A, --auto-correct-all           Auto-correct offenses (safe and unsafe)
                   --disable-pending-cops       Run without pending cops.
                   --enable-pending-cops        Run with pending cops.
@@ -372,9 +372,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-    describe '--safe-autocorrect' do
+    describe '--safe-auto-correct' do
       it 'is a deprecated alias' do
-        expect { options.parse %w[--safe-autocorrect] }
+        expect { options.parse %w[--safe-auto-correct] }
           .to output(/deprecated/).to_stderr
       end
     end
