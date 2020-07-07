@@ -2,6 +2,6 @@ name: rubocop
 title: RuboCop
 # We always provide version without patch here (e.g. 1.1),
 # as patch versions should not appear in the docs.
-version: 0.87
+version: master
 nav:
 - modules/ROOT/nav.adoc
