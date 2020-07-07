@@ -89,6 +89,16 @@ module RuboCop
     #       end
     #     RUBY
     #   end
+    #
+    # If you need to specify an offense on a blank line, use the empty `^{}` marker:
+    #
+    # @example `^{}` empty line offense
+    #
+    #   expect_offense(<<~RUBY)
+    #
+    #     ^{} Missing frozen string literal comment.
+    #     puts 1
+    #   RUBY
     module ExpectOffense
       def format_offense(source, **replacements)
         replacements.each do |keyword, value|
@@ -177,7 +187,7 @@ module RuboCop
 
       # Parsed representation of code annotated with the `^^^ Message` style
       class AnnotatedSource
-        ANNOTATION_PATTERN = /\A\s*\^+ /.freeze
+        ANNOTATION_PATTERN = /\A\s*(\^+|\^{}) /.freeze
 
         # @param annotated_source [String] string passed to the matchers
         #
@@ -261,6 +271,7 @@ module RuboCop
             offenses.map do |offense|
               indent     = ' ' * offense.column
               carets     = '^' * offense.column_length
+              carets     = '^{}' if offense.column_length.zero?
 
               [offense.line, "#{indent}#{carets} #{offense.message}\n"]
             end

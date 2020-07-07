@@ -273,12 +273,9 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for an extra first empty line' do
-      pending 'There is a flaw that skips adding caret symbol in this case, ' \
-              'making it impossible to use `expect_offense` matcher'
-
       expect_offense(<<~RUBY)
 
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^{} Missing frozen string literal comment.
         puts 1
       RUBY
 
@@ -580,12 +577,9 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for an extra first empty line' do
-      pending 'There is a flaw that skips adding caret symbol in this case, ' \
-              'making it impossible to use `expect_offense` matcher'
-
       expect_offense(<<~RUBY)
 
-        ^ Missing magic comment `# frozen_string_literal: true`.
+        ^{} Missing magic comment `# frozen_string_literal: true`.
         puts 1
       RUBY
 
@@ -854,14 +848,11 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under a shebang, an encoding comment, and extra space' do
-      pending 'There is a flaw that skips adding caret symbol in this case, ' \
-              'making it impossible to use `expect_offense` matcher'
-
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
+        ^ Missing magic comment `# frozen_string_literal: true`.
         # encoding: utf-8
 
-        ^ Missing magic comment `# frozen_string_literal: true`.
         puts 1
       RUBY
 
@@ -927,13 +918,10 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
 
     it 'registers an offense for not having a frozen string literal comment ' \
        'under an encoding comment and extra space' do
-      pending 'There is a flaw that skips adding caret symbol in this case, ' \
-              'making it impossible to use `expect_offense` matcher'
-
       expect_offense(<<~RUBY)
         # encoding: utf-8
-
         ^ Missing magic comment `# frozen_string_literal: true`.
+
         puts 1
       RUBY
 
