@@ -15,7 +15,7 @@ module RuboCop
       #   OpenSSL::Cipher::AES.new(128, :GCM)
       #
       #   # good
-      #   OpenSSL::Cipher.new('AES-128-GCM')
+      #   OpenSSL::Cipher.new('aes-128-gcm')
       #
       # @example
       #
@@ -127,9 +127,9 @@ module RuboCop
         end
 
         def build_cipher_arguments(node, algorithm_name)
-          algorithm_parts = algorithm_name.split('-')
-          size_and_mode = sanitize_arguments(node.arguments)
-          "'#{(algorithm_parts + size_and_mode + ['CBC']).take(3).join('-')}'"
+          algorithm_parts = algorithm_name.downcase.split('-')
+          size_and_mode = sanitize_arguments(node.arguments).map(&:downcase)
+          "'#{(algorithm_parts + size_and_mode + ['cbc']).take(3).join('-')}'"
         end
       end
     end
