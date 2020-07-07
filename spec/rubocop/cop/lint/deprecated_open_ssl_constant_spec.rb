@@ -8,61 +8,61 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
   it 'registers an offense with cipher constant and two arguments and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES.new(128, :GCM)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-128-GCM')` instead of `OpenSSL::Cipher::AES.new(128, :GCM)`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('aes-128-gcm')` instead of `OpenSSL::Cipher::AES.new(128, :GCM)`.
     RUBY
 
     expect_correction(<<~RUBY)
-      OpenSSL::Cipher.new('AES-128-GCM')
+      OpenSSL::Cipher.new('aes-128-gcm')
     RUBY
   end
 
   it 'registers an offense with cipher constant and one argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES.new('128-GCM')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-128-GCM')` instead of `OpenSSL::Cipher::AES.new('128-GCM')`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('aes-128-gcm')` instead of `OpenSSL::Cipher::AES.new('128-GCM')`.
     RUBY
 
     expect_correction(<<~RUBY)
-      OpenSSL::Cipher.new('AES-128-GCM')
+      OpenSSL::Cipher.new('aes-128-gcm')
     RUBY
   end
 
   it 'registers an offense with cipher constant and double quoted string argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES128.new("GCM")
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-128-GCM')` instead of `OpenSSL::Cipher::AES128.new("GCM")`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('aes-128-gcm')` instead of `OpenSSL::Cipher::AES128.new("GCM")`.
     RUBY
 
     expect_correction(<<~RUBY)
-      OpenSSL::Cipher.new('AES-128-GCM')
+      OpenSSL::Cipher.new('aes-128-gcm')
     RUBY
   end
 
   it 'registers an offense with AES + blocksize constant and mode argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES128.new(:GCM)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-128-GCM')` instead of `OpenSSL::Cipher::AES128.new(:GCM)`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('aes-128-gcm')` instead of `OpenSSL::Cipher::AES128.new(:GCM)`.
     RUBY
 
     expect_correction(<<~RUBY)
-      OpenSSL::Cipher.new('AES-128-GCM')
+      OpenSSL::Cipher.new('aes-128-gcm')
     RUBY
   end
 
   it 'registers an offense with AES + blocksize constant and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES128.new
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-128-CBC')` instead of `OpenSSL::Cipher::AES128.new`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('aes-128-cbc')` instead of `OpenSSL::Cipher::AES128.new`.
     RUBY
 
     expect_correction(<<~RUBY)
-      OpenSSL::Cipher.new('AES-128-CBC')
+      OpenSSL::Cipher.new('aes-128-cbc')
     RUBY
   end
 
   it 'does not register an offense when using cipher with a string' do
     expect_no_offenses(<<~RUBY)
-      OpenSSL::Cipher.new('AES-128-GCM')
+      OpenSSL::Cipher.new('aes-128-gcm')
     RUBY
   end
 
