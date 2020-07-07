@@ -33,6 +33,7 @@ module RuboCop
       #
       class AccessorGrouping < Cop
         include ConfigurableEnforcedStyle
+        include VisibilityHelp
 
         GROUPED_MSG = 'Group together all `%<accessor>s` attributes.'
         SEPARATED_MSG = 'Use one attribute per `%<accessor>s`.'
@@ -46,6 +47,7 @@ module RuboCop
             check(macro)
           end
         end
+        alias on_sclass on_class
         alias on_module on_class
 
         def autocorrect(node)
@@ -90,7 +92,9 @@ module RuboCop
 
         def sibling_accessors(send_node)
           send_node.parent.each_child_node(:send).select do |sibling|
-            sibling.macro? && sibling.method?(send_node.method_name)
+            accessor?(sibling) &&
+              sibling.method?(send_node.method_name) &&
+              node_visibility(sibling) == node_visibility(send_node)
           end
         end
 

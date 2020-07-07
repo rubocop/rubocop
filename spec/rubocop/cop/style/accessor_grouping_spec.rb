@@ -33,6 +33,89 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when using separated accessors with different access modifiers' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_reader :bar1
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          attr_reader :bar2
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+
+          protected
+          attr_accessor :quux
+
+          private
+          attr_reader :baz1, :baz2
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          attr_writer :baz3
+          attr_reader :baz4
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+
+          public
+          attr_reader :bar3
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          other_macro :zoo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          attr_reader :bar1, :bar2, :bar3
+          
+
+          protected
+          attr_accessor :quux
+
+          private
+          attr_reader :baz1, :baz2, :baz4
+          attr_writer :baz3
+          
+
+          public
+          
+          other_macro :zoo
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using separated accessors within eigenclass' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_reader :bar
+
+          class << self
+            attr_reader :baz1, :baz2
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+            attr_reader :baz3
+            ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+
+            private
+
+            attr_reader :quux1
+            ^^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+            attr_reader :quux2
+            ^^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          attr_reader :bar
+
+          class << self
+            attr_reader :baz1, :baz2, :baz3
+            
+
+            private
+
+            attr_reader :quux1, :quux2
+            
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense when using grouped accessors' do
       expect_no_offenses(<<~RUBY)
         class Foo
@@ -63,6 +146,84 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
           attr_reader :baz
           attr_accessor :quux
           other_macro :zoo, :woo
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using grouped accessors with different access modifiers' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_reader :bar1, :bar2
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+
+          protected
+          attr_accessor :quux
+
+          private
+          attr_reader :baz1, :baz2
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+          attr_writer :baz3
+          attr_reader :baz4
+
+          public
+          attr_reader :bar3
+          other_macro :zoo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          attr_reader :bar1
+          attr_reader :bar2
+
+          protected
+          attr_accessor :quux
+
+          private
+          attr_reader :baz1
+          attr_reader :baz2
+          attr_writer :baz3
+          attr_reader :baz4
+
+          public
+          attr_reader :bar3
+          other_macro :zoo
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using grouped accessors within eigenclass' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_reader :bar
+
+          class << self
+            attr_reader :baz1, :baz2
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+            attr_reader :baz3
+
+            private
+
+            attr_reader :quux1, :quux2
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          attr_reader :bar
+
+          class << self
+            attr_reader :baz1
+            attr_reader :baz2
+            attr_reader :baz3
+
+            private
+
+            attr_reader :quux1
+            attr_reader :quux2
+          end
         end
       RUBY
     end
