@@ -51,6 +51,10 @@ files:
 * `~/.config/rubocop/config.yml`
 * https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[RuboCop's default configuration]
 
+All the previous logic does not apply if a specific configuration file is passed
+on the command line through the `--config` flag. In that case, the resolved
+configuration file will be the one passed to the CLI.
+
 == Inheritance
 
 All configuration inherits from https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[RuboCop's default configuration] (See
