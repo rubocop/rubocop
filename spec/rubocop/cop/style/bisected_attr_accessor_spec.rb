@@ -86,10 +86,85 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
     RUBY
   end
 
+  it 'registers an offense and corrects when both accessors are in the same visibility scope' do
+    expect_offense(<<~RUBY)
+      class Foo
+        attr_reader :bar
+                    ^^^^ Combine both accessors into `attr_accessor :bar`.
+        attr_writer :bar
+                    ^^^^ Combine both accessors into `attr_accessor :bar`.
+
+        private
+
+        attr_writer :baz
+                    ^^^^ Combine both accessors into `attr_accessor :baz`.
+        attr_reader :baz
+                    ^^^^ Combine both accessors into `attr_accessor :baz`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_accessor :bar
+        
+
+        private
+
+        
+        attr_accessor :baz
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when withing eigenclass' do
+    expect_offense(<<~RUBY)
+      class Foo
+        attr_reader :bar
+
+        class << self
+          attr_reader :baz
+                      ^^^^ Combine both accessors into `attr_accessor :baz`.
+          attr_writer :baz
+                      ^^^^ Combine both accessors into `attr_accessor :baz`.
+
+          private
+
+          attr_reader :quux
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_reader :bar
+
+        class << self
+          attr_accessor :baz
+          
+
+          private
+
+          attr_reader :quux
+        end
+      end
+    RUBY
+  end
+
   it 'does not register an offense when only one accessor of the name exists' do
     expect_no_offenses(<<~RUBY)
       class Foo
         attr_reader :bar
+        attr_writer :baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when accessors are withing different visibility scopes' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        attr_reader :bar
+
+        private
         attr_writer :baz
       end
     RUBY
