@@ -439,6 +439,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleredundantconditional[Style/RedundantConditional]
 * xref:cops_style.adoc#styleredundantexception[Style/RedundantException]
 * xref:cops_style.adoc#styleredundantfetchblock[Style/RedundantFetchBlock]
+* xref:cops_style.adoc#styleredundantfileextensioninrequire[Style/RedundantFileExtensionInRequire]
 * xref:cops_style.adoc#styleredundantfreeze[Style/RedundantFreeze]
 * xref:cops_style.adoc#styleredundantinterpolation[Style/RedundantInterpolation]
 * xref:cops_style.adoc#styleredundantparentheses[Style/RedundantParentheses]

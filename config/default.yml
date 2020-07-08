@@ -3665,6 +3665,14 @@ Style/RedundantFetchBlock:
   SafeForConstants: false
   VersionAdded: '0.86'
 
+Style/RedundantFileExtensionInRequire:
+  Description: >-
+                  Checks for the presence of superfluous `.rb` extension in
+                  the filename provided to `require` and `require_relative`.
+  StyleGuide: '#no-explicit-rb-to-require'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
+
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
   Enabled: true

@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#7333](https://github.com/rubocop-hq/rubocop/issues/7333): Add new `Style/RedundantFileExtensionInRequire` cop. ([@fatkodima][])
 * [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
 
 ### Bug fixes
