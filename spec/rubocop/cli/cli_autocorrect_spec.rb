@@ -554,6 +554,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             EnforcedStyle: #{style}
         YAML
         expect(cli.run(['--auto-correct-all'])).to eq(1)
+        # rubocop:disable Style/HashLikeCase
         corrected = case style
                     when :semantic
                       <<~RUBY
@@ -589,6 +590,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                         end.baz
                       RUBY
                     end
+        # rubocop:enable Style/HashLikeCase
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(corrected)
       end

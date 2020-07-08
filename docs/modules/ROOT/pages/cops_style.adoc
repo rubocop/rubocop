@@ -3442,6 +3442,71 @@ hash.each_value { |v| p v }
 
 * https://rubystyle.guide#hash-each
 
+== Style/HashLikeCase
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.88
+| -
+|===
+
+This cop checks for places where `case-when` represents a simple 1:1
+mapping and can be replaced with a hash lookup.
+
+=== Examples
+
+==== MinBranchesCount: 3 (default)
+
+[source,ruby]
+----
+# bad
+case country
+when 'europe'
+  'http://eu.example.com'
+when 'america'
+  'http://us.example.com'
+when 'australia'
+  'http://au.example.com'
+end
+
+# good
+SITES = {
+  'europe'    => 'http://eu.example.com',
+  'america'   => 'http://us.example.com',
+  'australia' => 'http://au.example.com'
+}
+SITES[country]
+----
+
+==== MinBranchesCount: 4
+
+[source,ruby]
+----
+# good
+case country
+when 'europe'
+  'http://eu.example.com'
+when 'america'
+  'http://us.example.com'
+when 'australia'
+  'http://au.example.com'
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| MinBranchesCount
+| `3`
+| Integer
+|===
+
 == Style/HashSyntax
 
 |===
