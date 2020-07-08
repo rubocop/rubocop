@@ -102,6 +102,7 @@ module RuboCop
     module ExpectOffense
       def format_offense(source, **replacements)
         replacements.each do |keyword, value|
+          value = value.to_s
           source = source.gsub("%{#{keyword}}", value)
                          .gsub("^{#{keyword}}", '^' * value.size)
                          .gsub("_{#{keyword}}", ' ' * value.size)
