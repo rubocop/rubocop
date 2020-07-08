@@ -6,6 +6,7 @@
 
 * [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
 * [#4286](https://github.com/rubocop-hq/rubocop/issues/4286): Add new `Style/HashAsLastArrayItem` cop. ([@fatkodima][])
+* [#8247](https://github.com/rubocop-hq/rubocop/issues/8247): Add new `Style/HashLikeCase` cop. ([@fatkodima][])
 
 ### Bug fixes
 

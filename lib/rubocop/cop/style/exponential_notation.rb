@@ -60,6 +60,11 @@ module RuboCop
       #
       class ExponentialNotation < Cop
         include ConfigurableEnforcedStyle
+        MESSAGES = {
+          scientific: 'Use a mantissa in [1, 10[.',
+          engineering: 'Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.',
+          integral: 'Use an integer as mantissa, without trailing zero.'
+        }.freeze
 
         def on_float(node)
           add_offense(node) if offense?(node)
@@ -104,14 +109,7 @@ module RuboCop
         end
 
         def message(_node)
-          case style
-          when :scientific
-            'Use a mantissa in [1, 10[.'
-          when :engineering
-            'Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.'
-          when :integral
-            'Use an integer as mantissa, without trailing zero.'
-          end
+          MESSAGES[style]
         end
       end
     end
