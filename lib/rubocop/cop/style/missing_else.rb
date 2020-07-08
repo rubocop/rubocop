@@ -119,17 +119,7 @@ module RuboCop
         private
 
         def check(node)
-          return if node.else?
-
-          if empty_else_cop_enabled?
-            if empty_else_style == :empty
-              add_offense(node)
-            elsif empty_else_style == :nil
-              add_offense(node)
-            end
-          end
-
-          add_offense(node)
+          add_offense(node) unless node.else?
         end
 
         def message(node)
