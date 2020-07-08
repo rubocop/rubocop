@@ -35,6 +35,22 @@ module RuboCop
       #     require file
       #   end
       #
+      # @example
+      #
+      #   # bad
+      #   Dir['./lib/**/*.rb'].each(&method(:require))
+      #
+      #   # good
+      #   Dir['./lib/**/*.rb'].sort.each(&method(:require))
+      #
+      # @example
+      #
+      #   # bad
+      #   Dir.glob(Rails.root.join('test', '*.rb'), &method(:require))
+      #
+      #   # good
+      #   Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
+      #
       class NonDeterministicRequireOrder < Cop
         MSG = 'Sort files before requiring them.'
 
@@ -49,7 +65,16 @@ module RuboCop
           end
         end
 
+        def on_block_pass(node)
+          return unless method_require?(node)
+          return unless unsorted_dir_pass?(node.parent)
+
+          add_offense(node.parent)
+        end
+
         def autocorrect(node)
+          return correct_block_pass(node) if node.arguments.last&.block_pass_type?
+
           if unsorted_dir_block?(node)
             lambda do |corrector|
               corrector.replace(node, "#{node.source}.sort.each")
@@ -64,8 +89,36 @@ module RuboCop
 
         private
 
+        def correct_block_pass(node)
+          if unsorted_dir_glob_pass?(node)
+            lambda do |corrector|
+              block_arg = node.arguments.last
+              corrector.remove(last_arg_range(node))
+              corrector.insert_after(node, ".sort.each(#{block_arg.source})")
+            end
+          else
+            lambda do |corrector|
+              corrector.replace(node.loc.selector, 'sort.each')
+            end
+          end
+        end
+
+        # Returns range of last argument including comma and whitespace.
+        #
+        # @return [Parser::Source::Range]
+        #
+        def last_arg_range(node)
+          node.arguments.last.source_range.with(
+            begin_pos: node.arguments[-2].source_range.end_pos
+          )
+        end
+
         def unsorted_dir_loop?(node)
           unsorted_dir_block?(node) || unsorted_dir_each?(node)
+        end
+
+        def unsorted_dir_pass?(node)
+          unsorted_dir_glob_pass?(node) || unsorted_dir_each_pass?(node)
         end
 
         def_node_matcher :unsorted_dir_block?, <<~PATTERN
@@ -74,6 +127,20 @@ module RuboCop
 
         def_node_matcher :unsorted_dir_each?, <<~PATTERN
           (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each)
+        PATTERN
+
+        def_node_matcher :method_require?, <<~PATTERN
+          (block-pass (send nil? :method (sym :require)))
+        PATTERN
+
+        def_node_matcher :unsorted_dir_glob_pass?, <<~PATTERN
+          (send (const {nil? cbase} :Dir) :glob ...
+            (block-pass (send nil? :method (sym :require))))
+        PATTERN
+
+        def_node_matcher :unsorted_dir_each_pass?, <<~PATTERN
+          (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each
+            (block-pass (send nil? :method (sym :require))))
         PATTERN
 
         def_node_matcher :loop_variable, <<~PATTERN

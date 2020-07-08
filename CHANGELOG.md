@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8279](https://github.com/rubocop-hq/rubocop/pull/8279): Recognise require method passed as argument in `Lint/NonDeterministicRequireOrder` cop. ([@biinari][])
+
 ### Bug fixes
 
 * [#8252](https://github.com/rubocop-hq/rubocop/issues/8252): Fix a command line option name from `--safe-autocorrect` to `--safe-auto-correct`, which is compatible with RuboCop 0.86 and lower. ([@koic][])
