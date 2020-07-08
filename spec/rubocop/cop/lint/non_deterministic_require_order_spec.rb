@@ -7,10 +7,15 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
 
   context 'when requiring files' do
     context 'with unsorted index' do
-      it 'registers an offsense' do
+      it 'registers an offsense and autocorrects to add .sort' do
         expect_offense(<<~RUBY)
           Dir["./lib/**/*.rb"].each do |file|
           ^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+            require file
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          Dir["./lib/**/*.rb"].sort.each do |file|
             require file
           end
         RUBY
@@ -20,24 +25,20 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
         expect_offense(<<~RUBY)
           Dir["./lib/**/*.rb"].each do |file|
           ^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
-            if file.starts_with('_')
+            if file.start_with?('_')
               puts "Not required."
             else
               require file
             end
           end
         RUBY
-      end
-
-      it 'auto-corrects to add .sort' do
-        new_source = autocorrect_source(<<~RUBY)
-          Dir["./lib/**/*.rb"].each do |file|
-            require file
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           Dir["./lib/**/*.rb"].sort.each do |file|
-            require file
+            if file.start_with?('_')
+              puts "Not required."
+            else
+              require file
+            end
           end
         RUBY
       end
@@ -72,22 +73,14 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
     end
 
     context 'with unsorted glob' do
-      it 'registers an offsense' do
+      it 'registers an offsense and autocorrects to add .sort' do
         expect_offense(<<~RUBY)
           Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), File::FNM_DOTMATCH).each do |file|
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
             require file
           end
         RUBY
-      end
-
-      it 'auto-corrects to add .sort' do
-        new_source = autocorrect_source(<<~RUBY)
-          Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), File::FNM_DOTMATCH).each do |file|
-            require file
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), File::FNM_DOTMATCH).sort.each do |file|
             require file
           end
@@ -124,22 +117,14 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
     end
 
     context 'with direct block glob' do
-      it 'registers an offsense' do
+      it 'registers an offsense and autocorrects to add .sort.each' do
         expect_offense(<<~RUBY)
           Dir.glob("./lib/**/*.rb") do |file|
           ^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
             require file
           end
         RUBY
-      end
-
-      it 'auto-corrects to add .sort.each' do
-        new_source = autocorrect_source(<<~RUBY)
-          Dir.glob("./lib/**/*.rb") do |file|
-            require file
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           Dir.glob("./lib/**/*.rb").sort.each do |file|
             require file
           end
@@ -170,6 +155,11 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder do
           expect_offense(<<~RUBY)
             ::Dir.glob("./lib/**/*.rb") do |file|
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+              require file
+            end
+          RUBY
+          expect_correction(<<~RUBY)
+            ::Dir.glob("./lib/**/*.rb").sort.each do |file|
               require file
             end
           RUBY
