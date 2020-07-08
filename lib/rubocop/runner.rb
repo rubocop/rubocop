@@ -118,8 +118,7 @@ module RuboCop
 
     def file_offenses(file)
       file_offense_cache(file) do
-        source = get_processed_source(file)
-        source, offenses = do_inspection_loop(file, source)
+        source, offenses = do_inspection_loop(file)
         offenses = add_redundant_disables(file, offenses.compact.sort, source)
         offenses.sort.reject(&:disabled?).freeze
       end
@@ -159,8 +158,7 @@ module RuboCop
           # Do one extra inspection loop if any redundant disables were
           # removed. This is done in order to find rubocop:enable directives that
           # have now become useless.
-          _source, new_offenses = do_inspection_loop(file,
-                                                     get_processed_source(file))
+          _source, new_offenses = do_inspection_loop(file)
           offenses |= new_offenses
         end
       end
@@ -232,7 +230,8 @@ module RuboCop
       cache.save(offenses)
     end
 
-    def do_inspection_loop(file, processed_source)
+    def do_inspection_loop(file)
+      processed_source = get_processed_source(file)
       offenses = []
 
       # When running with --auto-correct, we need to inspect the file (which
