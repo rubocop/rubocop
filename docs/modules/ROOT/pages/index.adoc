@@ -20,7 +20,7 @@ linter:
 * Multiple result formatters for both interactive use and for feeding data into other tools
 * Ability to have different configuration for different parts of your codebase
 * Ability to disable certain cops only for specific files or parts of files
-* Extremely flexible configuration that allows you to adapt RuboCop to prety much every style and preference
+* Extremely flexible configuration that allows you to adapt RuboCop to pretty much every style and preference
 * It's easy to extend RuboCop with custom cops and formatters
 * A vast number of ready-made extensions (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
 * Wide editor/IDE support
