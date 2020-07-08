@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
-  include StatementModifierHelper
-
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) do
-    RuboCop::Config.new('Layout/LineLength' => line_length_config)
-  end
+######
+# Note: most of these tests probably belong in the shared context "condition modifier cop"
+######
+RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
+  let(:ignore_cop_directives) { true }
+  let(:allow_uri) { true }
   let(:line_length_config) do
     {
       'Enabled' => true,
@@ -17,8 +15,11 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
       'URISchemes' => %w[http https]
     }
   end
-  let(:allow_uri) { true }
-  let(:ignore_cop_directives) { true }
+  let(:other_cops) { { 'Layout/LineLength' => line_length_config } }
+
+  extra = ' Another good alternative is the usage of control flow `&&`/`||`.'
+  it_behaves_like 'condition modifier cop', :if, extra
+  it_behaves_like 'condition modifier cop', :unless, extra
 
   context 'modifier if that does not fit on one line' do
     let(:spaces) { ' ' * 59 }
@@ -297,14 +298,6 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
-  it "accepts multiline if that doesn't fit on one line" do
-    check_too_long('if')
-  end
-
-  it 'accepts multiline if whose body is more than one line' do
-    check_short_multiline('if')
-  end
-
   context 'multiline unless that fits on one line' do
     let(:source) do
       <<~RUBY
@@ -341,11 +334,6 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     expect_no_offenses(<<~RUBY)
       if args.last.is_a? Hash then args.pop else Hash.new end
     RUBY
-  end
-
-  it 'accepts an empty condition' do
-    check_empty('if')
-    check_empty('unless')
   end
 
   it 'accepts if/elsif' do
@@ -561,22 +549,22 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
     end
 
     context 'with Layout/IndentationStyle: IndentationWidth config' do
-      let(:config) do
-        RuboCop::Config.new(
+      let(:other_cops) do
+        {
           'Layout/IndentationStyle' => { 'IndentationWidth' => 2 },
           'Layout/LineLength' => { 'Max' => 10 + 12 } # 12 is indentation
-        )
+        }
       end
 
       it_behaves_like 'with tabs indentation'
     end
 
     context 'with Layout/IndentationWidth: Width config' do
-      let(:config) do
-        RuboCop::Config.new(
+      let(:other_cops) do
+        {
           'Layout/IndentationWidth' => { 'Width' => 3 },
           'Layout/LineLength' => { 'Max' => 10 + 18 } # 18 is indentation
-        )
+        }
       end
 
       it_behaves_like 'with tabs indentation'
@@ -584,14 +572,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier do
   end
 
   context 'when Layout/LineLength is disabled' do
-    let(:config) do
-      RuboCop::Config.new(
-        'Layout/LineLength' => {
-          'Enabled' => false,
-          'Max' => 80
-        }
-      )
-    end
+    let(:line_length_config) { { 'Enabled' => false } }
 
     it 'registers an offense even for a long modifier statement' do
       expect_offense(<<~RUBY)
