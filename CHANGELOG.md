@@ -46,6 +46,8 @@
 * [#8193](https://github.com/rubocop-hq/rubocop/issues/8193): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using `[\b]`. ([@owst][])
 * [#8205](https://github.com/rubocop-hq/rubocop/issues/8205): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using a leading escaped `]`. ([@owst][])
 * [#8208](https://github.com/rubocop-hq/rubocop/issues/8208): Fix `Style/RedundantParentheses` with hash literal as first argument to `yield`. ([@karlwithak][])
+* [#7777](https://github.com/rubocop-hq/rubocop/issues/7777): Fix crash for `Layout/MultilineArrayBraceLayout` when comment is present after last element. ([@shekhar-patil][])
+* [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
 * [#8176](https://github.com/rubocop-hq/rubocop/pull/8176): Don't load `.rubocop.yml` from personal folders to check for exclusions if there's a project configuration. ([@deivid-rodriguez][])
 
 ### Changes
@@ -4665,3 +4667,4 @@
 [@fatkodima]: https://github.com/fatkodima
 [@karlwithak]: https://github.com/karlwithak
 [@CamilleDrapier]: https://github.com/CamilleDrapier
+[@shekhar-patil]: https://github.com/shekhar-patil
