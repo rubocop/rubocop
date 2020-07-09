@@ -16,12 +16,6 @@ RSpec.describe RuboCop::Cop::Lint::MultipleComparison do
         x #{operator1} y && y #{operator2} z
       RUBY
     end
-
-    it "accepts for x #{operator1} y && y #{operator2} z" do
-      expect_no_offenses(<<~RUBY)
-        x #{operator1} y && y #{operator2} z
-      RUBY
-    end
   end
 
   %w[< > <= >=].repeated_permutation(2) do |operator1, operator2|
