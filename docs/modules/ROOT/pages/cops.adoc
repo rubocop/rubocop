@@ -193,6 +193,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintdeprecatedopensslconstant[Lint/DeprecatedOpenSSLConstant]
 * xref:cops_lint.adoc#lintdisjunctiveassignmentinconstructor[Lint/DisjunctiveAssignmentInConstructor]
 * xref:cops_lint.adoc#lintduplicatecasecondition[Lint/DuplicateCaseCondition]
+* xref:cops_lint.adoc#lintduplicateelsifcondition[Lint/DuplicateElsifCondition]
 * xref:cops_lint.adoc#lintduplicatehashkey[Lint/DuplicateHashKey]
 * xref:cops_lint.adoc#lintduplicatemethods[Lint/DuplicateMethods]
 * xref:cops_lint.adoc#linteachwithobjectargument[Lint/EachWithObjectArgument]

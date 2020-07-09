@@ -609,6 +609,39 @@ when 'second'
 end
 ----
 
+== Lint/DuplicateElsifCondition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.88
+| -
+|===
+
+This cop checks that there are no repeated conditions used in if 'elsif'.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if x == 1
+  do_something
+elsif x == 1
+  do_something_else
+end
+
+# good
+if x == 1
+  do_something
+elsif x == 2
+  do_something_else
+end
+----
+
 == Lint/DuplicateHashKey
 
 |===
