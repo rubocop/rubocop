@@ -3354,6 +3354,59 @@ ok
 
 * https://rubystyle.guide#no-nested-conditionals
 
+== Style/HashAsLastArrayItem
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.88
+| -
+|===
+
+Checks for presence or absence of braces around hash literal as a last
+array item depending on configuration.
+
+=== Examples
+
+==== EnforcedStyle: braces (default)
+
+[source,ruby]
+----
+# bad
+[1, 2, one: 1, two: 2]
+
+# good
+[1, 2, { one: 1, two: 2 }]
+----
+
+==== EnforcedStyle: no_braces
+
+[source,ruby]
+----
+# bad
+[1, 2, { one: 1, two: 2 }]
+
+# good
+[1, 2, one: 1, two: 2]
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `braces`
+| `braces`, `no_braces`
+|===
+
+=== References
+
+* https://rubystyle.guide#hash-literal-as-last-array-item
+
 == Style/HashEachMethods
 
 |===

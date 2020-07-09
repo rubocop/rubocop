@@ -2961,6 +2961,18 @@ Style/GuardClause:
   # needs to have to trigger this cop
   MinBodyLength: 1
 
+Style/HashAsLastArrayItem:
+  Description: >-
+                 Checks for presence or absence of braces around hash literal as a last
+                 array item depending on configuration.
+  StyleGuide: '#hash-literal-as-last-array-item'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
+  EnforcedStyle: braces
+  SupportedStyles:
+    - braces
+    - no_braces
+
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'

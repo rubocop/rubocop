@@ -369,6 +369,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylefrozenstringliteralcomment[Style/FrozenStringLiteralComment]
 * xref:cops_style.adoc#styleglobalvars[Style/GlobalVars]
 * xref:cops_style.adoc#styleguardclause[Style/GuardClause]
+* xref:cops_style.adoc#stylehashaslastarrayitem[Style/HashAsLastArrayItem]
 * xref:cops_style.adoc#stylehasheachmethods[Style/HashEachMethods]
 * xref:cops_style.adoc#stylehashsyntax[Style/HashSyntax]
 * xref:cops_style.adoc#stylehashtransformkeys[Style/HashTransformKeys]
