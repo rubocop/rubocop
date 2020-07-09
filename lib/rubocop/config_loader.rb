@@ -120,7 +120,7 @@ module RuboCop
       def add_excludes_from_files(config, config_file)
         exclusion_file = find_last_file_upwards(DOTFILE, config_file)
 
-        return if exclusion_file.nil?
+        return unless exclusion_file
         return if PathUtil.relative_path(exclusion_file) ==
                   PathUtil.relative_path(config_file)
 
