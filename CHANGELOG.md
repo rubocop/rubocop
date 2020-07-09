@@ -22,6 +22,7 @@
 ### Changes
 
 * [#8294](https://github.com/rubocop-hq/rubocop/pull/8294): Sort `AllowedNames` of `MethodParameterName` cop. ([@AlexWayfer][])
+* [#8294](https://github.com/rubocop-hq/rubocop/pull/8294): Add `of` to `AllowedNames` of `MethodParameterName` cop. ([@AlexWayfer][])
 
 ## 0.87.1 (2020-07-07)
 

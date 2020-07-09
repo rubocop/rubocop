@@ -2191,6 +2191,7 @@ Naming/MethodParameterName:
     - in
     - io
     - ip
+    - of
     - 'on'
     - os
     - pp
