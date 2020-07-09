@@ -750,7 +750,7 @@ end
 | Boolean
 
 | AllowedNames
-| `io`, `id`, `to`, `by`, `on`, `in`, `at`, `ip`, `db`, `os`, `pp`
+| `at`, `by`, `db`, `id`, `in`, `io`, `ip`, `on`, `os`, `pp`, `to`
 | Array
 
 | ForbiddenNames

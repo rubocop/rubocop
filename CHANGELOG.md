@@ -17,6 +17,10 @@
 * [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
 * [#8282](https://github.com/rubocop-hq/rubocop/issues/8282): Fix `Style/IfUnlessModifier` bad precedence detection. ([@tejasbubane][])
 
+### Changes
+
+* [#8294](https://github.com/rubocop-hq/rubocop/pull/8294): Sort `AllowedNames` of `MethodParameterName` cop. ([@AlexWayfer][])
+
 ## 0.87.1 (2020-07-07)
 
 ### Bug fixes

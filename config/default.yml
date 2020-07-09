@@ -2179,17 +2179,17 @@ Naming/MethodParameterName:
   AllowNamesEndingInNumbers: true
   # Allowed names that will not register an offense
   AllowedNames:
-    - io
-    - id
-    - to
-    - by
-    - 'on'
-    - in
     - at
-    - ip
+    - by
     - db
+    - id
+    - in
+    - io
+    - ip
+    - 'on'
     - os
     - pp
+    - to
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
