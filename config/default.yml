@@ -1403,6 +1403,11 @@ Lint/DuplicateCaseCondition:
   Enabled: true
   VersionAdded: '0.45'
 
+Lint/DuplicateElsifCondition:
+  Description: 'Do not repeat conditions used in if `elsif`.'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
+
 Lint/DuplicateHashKey:
   Description: 'Check for duplicate keys in hash literals.'
   Enabled: true
