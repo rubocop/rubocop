@@ -74,9 +74,13 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
       context 'and a splat argument is unused' do
         it 'registers an offense and preserves splat' do
+          message = 'Unused block argument - `bars`. ' \
+                    "If it's necessary, use `_` or `_bars` as an argument " \
+                    "name to indicate that it won't be used."
+
           expect_offense(<<~RUBY)
             obj.method { |foo, *bars, baz| stuff(foo, baz) }
-                                ^^^^ Unused block argument - `bars`. If it's necessary, use `_` or `_bars` as an argument name to indicate that it won't be used.
+                                ^^^^ #{message}
           RUBY
           expect_correction(<<~RUBY)
             obj.method { |foo, *_bars, baz| stuff(foo, baz) }
@@ -86,9 +90,13 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
       context 'and an argument with default value is unused' do
         it 'registers an offense and preserves default value' do
+          message = 'Unused block argument - `bar`. ' \
+                    "If it's necessary, use `_` or `_bar` as an argument " \
+                    "name to indicate that it won't be used."
+
           expect_offense(<<~RUBY)
             obj.method do |foo, bar = baz|
-                                ^^^ Unused block argument - `bar`. If it's necessary, use `_` or `_bar` as an argument name to indicate that it won't be used.
+                                ^^^ #{message}
               stuff(foo)
             end
           RUBY
