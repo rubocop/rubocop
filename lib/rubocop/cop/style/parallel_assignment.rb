@@ -30,7 +30,7 @@ module RuboCop
         def on_masgn(node)
           lhs, rhs = *node
           lhs_elements = *lhs
-          rhs_elements = [*rhs].compact # edge case for one constant
+          rhs_elements = Array(rhs).compact # edge case for one constant
 
           return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
                     allowed_masign?(lhs_elements, rhs_elements)
@@ -42,7 +42,7 @@ module RuboCop
           lambda do |corrector|
             left, right = *node
             left_elements = *left
-            right_elements = [*right].compact
+            right_elements = Array(right).compact
             order = find_valid_order(left_elements, right_elements)
             correction = assignment_corrector(node, order)
 
@@ -69,7 +69,7 @@ module RuboCop
 
         def allowed_rhs?(node)
           # Edge case for one constant
-          elements = [*node].compact
+          elements = Array(node).compact
 
           # Account for edge case of `Constant::CONSTANT`
           !node.array_type? ||
