@@ -30,7 +30,7 @@ module RuboCop
         end
 
         def tail(branch)
-          branch.begin_type? ? [*branch].last : branch
+          branch.begin_type? ? Array(branch).last : branch
         end
 
         # rubocop:disable Metrics/AbcSize
