@@ -41,9 +41,6 @@ module RuboCop
         MSG_USE_NORMAL =
           'Modifier form of `%<keyword>s` makes the line too long.'
 
-        ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
-                              gvasgn ivasgn masgn].freeze
-
         def on_if(node)
           msg = if single_line_as_modifier?(node)
                   MSG_USE_MODIFIER unless named_capture_in_condition?(node)
@@ -155,8 +152,9 @@ module RuboCop
           # Parenthesize corrected expression if changing to modifier-if form
           # would change the meaning of the parent expression
           # (due to the low operator precedence of modifier-if)
-          return false if node.parent.nil?
-          return true if ASSIGNMENT_TYPES.include?(node.parent.type)
+          parent = node.parent
+          return false if parent.nil?
+          return true if parent.assignment? || parent.operator_keyword?
 
           node.parent.send_type? && !node.parent.parenthesized?
         end
