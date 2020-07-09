@@ -79,5 +79,15 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
         x = 0 #{keyword} true
       RUBY
     end
+
+    # See: https://github.com/rubocop-hq/rubocop/issues/8273
+    context 'accepts multiline condition in modifier form' do
+      it 'registers an offense' do
+        expect_no_offenses(<<~RUBY)
+          foo #{keyword} bar ||
+                         baz
+        RUBY
+      end
+    end
   end
 end
