@@ -1,48 +1,29 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
-  before do
-    inspect_source(source)
-  end
-
-  shared_examples 'code with offense' do |code, expected = nil|
+  shared_examples 'code with offense' do |code|
     context "when checking #{code}" do
-      let(:source) { code }
-
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq([message])
-      end
-
-      if expected
-        it 'auto-corrects' do
-          expect(autocorrect_source(code)).to eq(expected)
-        end
-      else
-        it 'does not auto-correct' do
-          expect(autocorrect_source(code)).to eq(code)
-        end
+        expect_offense(code)
+        expect_no_corrections
       end
     end
   end
 
   shared_examples 'code without offense' do |code|
-    let(:source) { code }
-
     it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect_no_offenses(code)
     end
   end
 
   let(:cop_config) { { 'AllowComments' => false } }
-
-  let(:message) { 'Avoid `when` branches without a body.' }
 
   context 'when a `when` body is missing' do
     it_behaves_like 'code with offense', <<~RUBY
       case foo
       when :bar then 1
       when :baz # nothing
+      ^^^^^^^^^ Avoid `when` branches without a body.
       end
     RUBY
 
@@ -50,6 +31,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       case foo
       when :bar then 1
       when :baz # nothing
+      ^^^^^^^^^ Avoid `when` branches without a body.
       else 3
       end
     RUBY
@@ -58,6 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       case foo
       when :bar then 1
       when :baz then # nothing
+      ^^^^^^^^^ Avoid `when` branches without a body.
       end
     RUBY
 
@@ -65,6 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       case foo
       when :bar then 1
       when :baz then # nothing
+      ^^^^^^^^^ Avoid `when` branches without a body.
       else 3
       end
     RUBY
@@ -74,6 +58,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       when :bar
         1
       when :baz
+      ^^^^^^^^^ Avoid `when` branches without a body.
         # nothing
       end
     RUBY
@@ -83,6 +68,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       when :bar
         1
       when :baz
+      ^^^^^^^^^ Avoid `when` branches without a body.
         # nothing
       else
         3
@@ -94,6 +80,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       when :bar
         1
       when :baz
+      ^^^^^^^^^ Avoid `when` branches without a body.
         # nothing
       else
         3
@@ -169,6 +156,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       when foo
         do_something
       when bar
+      ^^^^^^^^ Avoid `when` branches without a body.
         # do nothing
       end
     RUBY
