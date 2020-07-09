@@ -23,6 +23,7 @@
 
 ### Bug fixes
 
+* [#8189](https://github.com/rubocop-hq/rubocop/issues/8189): Fix an error for `Layout/MultilineBlockLayout` where spaces for a new line where not considered. ([@knejad][])
 * [#8252](https://github.com/rubocop-hq/rubocop/issues/8252): Fix a command line option name from `--safe-autocorrect` to `--safe-auto-correct`, which is compatible with RuboCop 0.86 and lower. ([@koic][])
 * [#8259](https://github.com/rubocop-hq/rubocop/issues/8259): Fix false positives for `Style/BisectedAttrAccessor` when accessors have different access modifiers. ([@fatkodima][])
 * [#8253](https://github.com/rubocop-hq/rubocop/issues/8253): Fix false positives for `Style/AccessorGrouping` when accessors have different access modifiers. ([@fatkodima][])
@@ -4674,3 +4675,4 @@
 [@karlwithak]: https://github.com/karlwithak
 [@CamilleDrapier]: https://github.com/CamilleDrapier
 [@shekhar-patil]: https://github.com/shekhar-patil
+[@knejad]: https://github.com/knejad
