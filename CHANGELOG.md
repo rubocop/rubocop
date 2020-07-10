@@ -279,6 +279,7 @@
 * [#7805](https://github.com/rubocop-hq/rubocop/pull/7805): Change `AllowComments` option of `Lint/SuppressedException` to true by default. ([@koic][])
 * [#7320](https://github.com/rubocop-hq/rubocop/issues/7320): `Naming/MethodName` now flags `attr_reader/attr_writer/attr_accessor/attr`. ([@denys281][])
 * [#7813](https://github.com/rubocop-hq/rubocop/issues/7813): **(Breaking)** Remove `Lint/EndInMethod` cop. ([@tejasbubane][])
+* [#7737](https://github.com/rubocop-hq/rubocop/issues/7737): Add new `Style/RedundantArguments` cop. ([@tejasbubane][])
 
 ## 0.80.1 (2020-02-29)
 

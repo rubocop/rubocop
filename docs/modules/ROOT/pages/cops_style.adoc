@@ -7097,6 +7097,61 @@ rand(1...7)
 
 * https://rubystyle.guide#random-numbers
 
+== Style/RedundantArguments
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.88
+| -
+|===
+
+This cop checks for redundant arguments to methods.
+Method names & arguments can be configured like:
+
+RedundantArguments:
+  join: ''
+  split: ' '
+  foo: 2
+
+Limitations:
+1. This cop matches for method names only and hence cannot tell apart
+   methods with same name in different classes.
+2. This cop is limited to methods with single parameter.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+array.join('')
+[1, 2, 3].join("")
+string.split(" ")
+"first\nsecond".split(" ")
+A.foo(2)
+
+# good
+array.join
+[1, 2, 3].join
+string.split
+"first second".split
+A.foo
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| RedundantArguments
+| `{"join"=>"", "split"=>" "}`
+| 
+|===
+
 == Style/RedundantAssignment
 
 |===
