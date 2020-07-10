@@ -42,6 +42,7 @@ module RuboCop
         end
       end
 
+      # @api private
       def each_bad_alignment(items, base_column)
         prev_line = -1
         items.each do |current|
@@ -55,11 +56,13 @@ module RuboCop
         end
       end
 
+      # @api public
       def display_column(range)
         line = processed_source.lines[range.line - 1]
         Unicode::DisplayWidth.of(line[0, range.column])
       end
 
+      # @api public
       def within?(inner, outer)
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end

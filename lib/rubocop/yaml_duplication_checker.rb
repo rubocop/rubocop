@@ -2,6 +2,7 @@
 
 module RuboCop
   # Find duplicated keys from YAML.
+  # @api private
   module YAMLDuplicationChecker
     def self.check(yaml_string, filename, &on_duplicated)
       # Ruby 2.6+

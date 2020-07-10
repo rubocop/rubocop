@@ -4,12 +4,17 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
+    # @api private
     REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
+    # @api private
     COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
+    # @api private
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
+    # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
+    # @api private
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
       "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
         .gsub(' ', '\s*')

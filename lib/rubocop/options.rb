@@ -8,6 +8,7 @@ module RuboCop
   class OptionArgumentError < StandardError; end
 
   # This class handles command line options.
+  # @api private
   class Options
     E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
       'root of the project. RuboCop will use this path to determine which ' \
@@ -232,6 +233,7 @@ module RuboCop
   end
 
   # Validates option arguments and the options' compatibility with each other.
+  # @api private
   class OptionsValidator
     class << self
       # Cop name validation must be done later than option parsing, so it's not
@@ -393,6 +395,7 @@ module RuboCop
   end
 
   # This module contains help texts for command line options.
+  # @api private
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys

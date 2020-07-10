@@ -5,6 +5,7 @@ require 'pathname'
 
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.
+  # @api private
   class ConfigLoaderResolver
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)

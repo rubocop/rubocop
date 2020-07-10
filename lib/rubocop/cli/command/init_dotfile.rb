@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # Generate a .rubocop.yml file in the current directory.
+      # @api private
       class InitDotfile < Base
         DOTFILE = ConfigLoader::DOTFILE
 
