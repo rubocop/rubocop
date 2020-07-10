@@ -5,7 +5,7 @@ module RuboCop
   module PathUtil
     module_function
 
-    def relative_path(path, base_dir = PathUtil.pwd)
+    def relative_path(path, base_dir = Dir.pwd)
       # Optimization for the common case where path begins with the base
       # dir. Just cut off the first part.
       if path.start_with?(base_dir)
@@ -24,7 +24,7 @@ module RuboCop
 
     def smart_path(path)
       # Ideally, we calculate this relative to the project root.
-      base_dir = PathUtil.pwd
+      base_dir = Dir.pwd
 
       if path.start_with? base_dir
         relative_path(path, base_dir)
@@ -52,21 +52,6 @@ module RuboCop
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
       %r{\A([A-Z]:)?/}i.match?(path)
-    end
-
-    def self.pwd
-      @pwd ||= Dir.pwd
-    end
-
-    def self.reset_pwd
-      @pwd = nil
-    end
-
-    def self.chdir(dir, &block)
-      reset_pwd
-      Dir.chdir(dir, &block)
-    ensure
-      reset_pwd
     end
 
     def hidden_file_in_not_hidden_dir?(pattern, path)

@@ -172,7 +172,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       let(:args) { [] }
 
       it 'finds files under the current directory' do
-        RuboCop::PathUtil.chdir('dir1') do
+        Dir.chdir('dir1') do
           expect(found_files.empty?).to be(false)
           found_files.each do |file|
             expect(file).to include('/dir1/')
@@ -186,7 +186,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       let(:args) { ['../dir2'] }
 
       it 'finds files under the specified directory' do
-        RuboCop::PathUtil.chdir('dir1') do
+        Dir.chdir('dir1') do
           expect(found_files.empty?).to be(false)
           found_files.each do |file|
             expect(file).to include('/dir2/')
