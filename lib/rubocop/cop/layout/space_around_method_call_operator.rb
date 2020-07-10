@@ -34,96 +34,55 @@ module RuboCop
       #   RuboCop::Cop::Cop
       #   ::RuboCop::Cop
       #
-      class SpaceAroundMethodCallOperator < Cop
-        include SurroundingSpace
+      class SpaceAroundMethodCallOperator < Base
+        include RangeHelp
+        extend AutoCorrector
+
+        SPACES_REGEXP = /\A[ \t]+\z/.freeze
 
         MSG = 'Avoid using spaces around a method call operator.'
 
         def on_send(node)
-          return unless dot_or_safe_navigation_operator?(node)
+          return unless node.dot? || node.safe_navigation?
 
-          check_and_add_offense(node)
+          check_space_before_dot(node)
+          check_space_after_dot(node)
         end
+        alias on_csend on_send
 
         def on_const(node)
           return unless node.loc.double_colon
 
-          check_and_add_offense(node, false)
+          check_space_after_double_colon(node)
         end
-
-        def autocorrect(node)
-          operator = operator_token(node)
-          left = left_token_for_auto_correction(node, operator)
-          right = right_token_for_auto_correction(operator)
-
-          lambda do |corrector|
-            SpaceCorrector.remove_space(
-              processed_source, corrector, left, right
-            )
-          end
-        end
-
-        alias on_csend on_send
 
         private
 
-        def check_and_add_offense(node, add_left_offense = true)
-          operator = operator_token(node)
-          left = previous_token(operator)
-          right = next_token(operator)
-
-          if !right.comment? && valid_right_token?(right, operator)
-            no_space_offenses(node, operator, right, MSG)
-          end
-          return unless valid_left_token?(left, operator)
-
-          no_space_offenses(node, left, operator, MSG) if add_left_offense
+        def check_space_before_dot(node)
+          receiver_pos = node.receiver.source_range.end_pos
+          dot_pos = node.loc.dot.begin_pos
+          check_space(receiver_pos, dot_pos)
         end
 
-        def operator_token(node)
-          operator_location =
-            node.const_type? ? node.loc.double_colon : node.loc.dot
-
-          processed_source.find_token do |token|
-            token.pos == operator_location
-          end
+        def check_space_after_dot(node)
+          dot_pos = node.loc.dot.end_pos
+          selector_pos = node.loc.selector.begin_pos
+          check_space(dot_pos, selector_pos)
         end
 
-        def previous_token(current_token)
-          index = processed_source.tokens.index(current_token)
-          index.zero? ? nil : processed_source.tokens[index - 1]
+        def check_space_after_double_colon(node)
+          double_colon_pos = node.loc.double_colon.end_pos
+          name_pos = node.loc.name.begin_pos
+          check_space(double_colon_pos, name_pos)
         end
 
-        def next_token(current_token)
-          index = processed_source.tokens.index(current_token)
-          processed_source.tokens[index + 1]
-        end
+        def check_space(begin_pos, end_pos)
+          return if end_pos <= begin_pos
 
-        def dot_or_safe_navigation_operator?(node)
-          node.dot? || node.safe_navigation?
-        end
+          range = range_between(begin_pos, end_pos)
+          return unless range.source.match?(SPACES_REGEXP)
 
-        def valid_left_token?(left, operator)
-          left && left.line == operator.line
-        end
-
-        def valid_right_token?(right, operator)
-          right && right.line == operator.line
-        end
-
-        def left_token_for_auto_correction(node, operator)
-          left_token = previous_token(operator)
-          return operator if node.const_type?
-          return left_token if valid_left_token?(left_token, operator)
-
-          operator
-        end
-
-        def right_token_for_auto_correction(operator)
-          right_token = next_token(operator)
-          return right_token if !right_token.comment? && valid_right_token?(right_token, operator)
-
-          operator
+          add_offense(range) { |corrector| corrector.remove(range) }
         end
       end
     end

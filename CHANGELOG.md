@@ -22,6 +22,7 @@
 
 ### Changes
 
+* [#8021](https://github.com/rubocop-hq/rubocop/issues/8021): Rewrite `Layout/SpaceAroundMethodCallOperator` cop to make it faster. ([@fatkodima][])
 * [#8294](https://github.com/rubocop-hq/rubocop/pull/8294): Add `of` to `AllowedNames` of `MethodParameterName` cop. ([@AlexWayfer][])
 
 ## 0.87.1 (2020-07-07)
