@@ -158,6 +158,7 @@ module RuboCop
     end
 
     # The checksum of the rubocop program running the inspection.
+    # rubocop:disable Metrics/AbcSize
     def rubocop_checksum
       ResultCache.source_checksum ||=
         begin
@@ -168,13 +169,16 @@ module RuboCop
           # exe directory. A change to any of them could affect the cop output
           # so we include them in the cache hash.
           source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
-          sources = source_files
-                    .select { |path| File.file?(path) }
-                    .sort
-                    .map { |path| IO.read(path, encoding: Encoding::UTF_8) }
-          Digest::SHA1.hexdigest(sources.join)
+
+          digest = Digest::SHA1.new
+          source_files
+            .select { |path| File.file?(path) }
+            .sort!
+            .each { |path| digest << File.mtime(path).to_s }
+          digest.hexdigest
         end
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Return a hash of the options given at invocation, minus the ones that have
     # no effect on which offenses and disabled line ranges are found, and thus
