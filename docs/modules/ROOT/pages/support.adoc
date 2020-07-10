@@ -32,9 +32,3 @@ We're also encouraging users to ask RuboCop-related questions on StackOverflow.
 When doing so you should use the
 https://stackoverflow.com/questions/tagged/rubocop[RuboCop] tag (ideally combined
 with the tag `ruby`).
-
-== Bountysource
-
-If you're willing to pay for some feature to be implemented you can use
-https://www.bountysource.com/teams/rubocop/issues[Bountysource] to place a
-bounty for the work you want to be done.
