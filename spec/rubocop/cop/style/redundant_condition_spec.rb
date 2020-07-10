@@ -42,6 +42,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
         RUBY
       end
 
+      it 'registers an offense and corrects when `raise` without argument parentheses in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            raise 'foo'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || raise('foo')
+        RUBY
+      end
+
+      it 'registers an offense and corrects when a method without argument parentheses in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            do_something foo, bar, key: :value
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || do_something(foo, bar, key: :value)
+        RUBY
+      end
+
       it 'registers an offense and corrects complex one liners' do
         expect_offense(<<~RUBY)
           if b
@@ -250,6 +280,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
 
         expect_correction(<<~RUBY)
           time_period = updated_during || (2.days.ago...Time.now)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the else branch contains `rescue`' do
+        expect_offense(<<~RUBY)
+          if a
+          ^^^^ Use double pipes `||` instead.
+            a
+          else
+            b rescue c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a || (b rescue c)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the else branch contains `and`' do
+        expect_offense(<<~RUBY)
+          if a
+          ^^^^ Use double pipes `||` instead.
+            a
+          else
+            b and c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a || (b and c)
         RUBY
       end
     end
