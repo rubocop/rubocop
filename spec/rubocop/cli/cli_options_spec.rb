@@ -268,7 +268,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
         let(:output) do
-          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
+          `ruby -I . "#{rubocop}" --require redirect.rb`
         end
 
         let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
@@ -313,6 +313,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 DefaultFormatter: progress
                 #{new_cops_option}
 
+              Style/FrozenStringLiteralComment:
+                Enabled: false
+
               Style/SomeCop:
                 Description: Something
                 Enabled: pending
@@ -330,10 +333,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               pending_cops = output[remaining_range].split("\n")
 
               expect(pending_cops).to include(' - Style/SomeCop (0.80)')
-
-              manual_url = output[remaining_range].split("\n").last
-
-              expect(manual_url).to eq(versioning_manual_url)
+              expect(pending_cops).to include(versioning_manual_url)
             end
           end
 
@@ -370,6 +370,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           context 'when using `--enable-pending-cops` command-line option' do
             let(:option) { '--enable-pending-cops' }
+
+            let(:output) do
+              `ruby -I . "#{rubocop}" --require redirect.rb #{option}`
+            end
+
+            it 'does not display a pending cop warning' do
+              expect(output).not_to start_with(pending_cop_warning)
+            end
+          end
+
+          context 'when using `--only` command-line option' do
+            let(:option) { '--only Style/RedundantAssignment' }
 
             let(:output) do
               `ruby -I . "#{rubocop}" --require redirect.rb #{option}`

@@ -23,6 +23,7 @@
 ### Changes
 
 * [#8294](https://github.com/rubocop-hq/rubocop/pull/8294): Add `of` to `AllowedNames` of `MethodParameterName` cop. ([@AlexWayfer][])
+* [#8265](https://github.com/rubocop-hq/rubocop/issues/8265): Don't show pending cops warning when using --only flag. ([@tejasbubane][])
 
 ## 0.87.1 (2020-07-07)
 
