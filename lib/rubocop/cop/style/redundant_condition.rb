@@ -90,10 +90,10 @@ module RuboCop
         end
 
         def else_source(else_branch)
-          if else_branch.basic_conditional? &&
-             else_branch.modifier_form? ||
-             else_branch.range_type?
+          if require_parentheses?(else_branch)
             "(#{else_branch.source})"
+          elsif without_argument_parentheses_method?(else_branch)
+            "#{else_branch.method_name}(#{else_branch.arguments.map(&:source).join(', ')})"
           else
             else_branch.source
           end
@@ -117,6 +117,18 @@ module RuboCop
           return unless node.else_branch.range_type?
 
           corrector.wrap(node.else_branch, '(', ')')
+        end
+
+        def require_parentheses?(node)
+          node.basic_conditional? &&
+            node.modifier_form? ||
+            node.range_type? ||
+            node.rescue_type? ||
+            node.respond_to?(:semantic_operator?) && node.semantic_operator?
+        end
+
+        def without_argument_parentheses_method?(node)
+          node.send_type? && !node.arguments.empty? && !node.parenthesized?
         end
       end
     end
