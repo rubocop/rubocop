@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
   describe 'inspection' do
     context 'when a method takes multiple arguments' do
       context 'and an argument is unused' do
-        it 'registers an offense' do
+        it 'registers an offense and adds underscore-prefix' do
           message = 'Unused method argument - `foo`. ' \
                       "If it's necessary, use `_` or `_foo` " \
                       "as an argument name to indicate that it won't be used."
@@ -23,6 +23,33 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               puts bar
             end
           RUBY
+          expect_correction(<<~RUBY)
+            def some_method(_foo, bar)
+              puts bar
+            end
+          RUBY
+        end
+
+        context 'and there is some whitespace around the unused argument' do
+          it 'registers an offense and preserves whitespace' do
+            message = 'Unused method argument - `bar`. ' \
+                        "If it's necessary, use `_` or `_bar` " \
+                        "as an argument name to indicate that it won't be used."
+
+            expect_offense(<<~RUBY)
+              def some_method(foo,
+                  bar)
+                  ^^^ #{message}
+                puts foo
+              end
+            RUBY
+            expect_correction(<<~RUBY)
+              def some_method(foo,
+                  _bar)
+                puts foo
+              end
+            RUBY
+          end
         end
 
         context 'and arguments are swap-assigned' do
@@ -48,12 +75,18 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                 a, b = b, 42
               end
             RUBY
+            expect_correction(<<~RUBY)
+              def foo(_a, b)
+                a, b = b, 42
+              end
+            RUBY
           end
         end
       end
 
       context 'and all the arguments are unused' do
-        it 'registers offenses and suggests the use of `*`' do
+        it 'registers offenses and suggests the use of `*` and ' \
+           'auto-corrects to add underscore-prefix to all arguments' do
           (foo_message, bar_message) = %w[foo bar].map do |arg|
             "Unused method argument - `#{arg}`. " \
             "If it's necessary, use `_` or `_#{arg}` " \
@@ -68,7 +101,52 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                             ^^^ #{foo_message}
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            def some_method(_foo, _bar)
+            end
+          RUBY
         end
+      end
+    end
+
+    context 'when a splat argument is unused' do
+      it 'registers an offense and preserves the splat' do
+        message = 'Unused method argument - `bar`. ' \
+                    "If it's necessary, use `_` or `_bar` " \
+                    "as an argument name to indicate that it won't be used."
+
+        expect_offense(<<~RUBY)
+          def some_method(foo, *bar)
+                                ^^^ #{message}
+            puts foo
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          def some_method(foo, *_bar)
+            puts foo
+          end
+        RUBY
+      end
+    end
+
+    context 'when an argument with a default value is unused' do
+      it 'registers an offense and preserves the default value' do
+        message = 'Unused method argument - `bar`. ' \
+                    "If it's necessary, use `_` or `_bar` " \
+                    "as an argument name to indicate that it won't be used."
+
+        expect_offense(<<~RUBY)
+          def some_method(foo, bar = 1)
+                               ^^^ #{message}
+            puts foo
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          def some_method(foo, _bar = 1)
+            puts foo
+          end
+        RUBY
       end
     end
 
@@ -80,6 +158,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+        expect_no_corrections
       end
     end
 
@@ -91,6 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+        expect_no_corrections
       end
 
       context 'and AllowUnusedKeywordArguments set' do
@@ -106,6 +186,26 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
+    context 'when a trailing block argument is unused' do
+      it 'registers an offense and removes the unused block arg' do
+        message = 'Unused method argument - `block`. ' \
+                    "If it's necessary, use `_` or `_block` " \
+                    "as an argument name to indicate that it won't be used."
+
+        expect_offense(<<~RUBY)
+          def some_method(foo, bar, &block)
+                                     ^^^^^ #{message}
+            foo + bar
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          def some_method(foo, bar)
+            foo + bar
+          end
+        RUBY
+      end
+    end
+
     context 'when a singleton method argument is unused' do
       it 'registers an offense' do
         message = "Unused method argument - `foo`. If it's necessary, use " \
@@ -117,6 +217,10 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         expect_offense(<<~RUBY)
           def self.some_method(foo)
                                ^^^ #{message}
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          def self.some_method(_foo)
           end
         RUBY
       end
@@ -196,6 +300,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               super(:something)
             end
           RUBY
+          expect_correction(<<~RUBY)
+            def some_method(_foo)
+              super(:something)
+            end
+          RUBY
         end
       end
     end
@@ -229,6 +338,13 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               end
             end
           RUBY
+          expect_correction(<<~RUBY)
+            def some_method(_foo, _bar)
+              def other(a)
+                puts something(binding)
+              end
+            end
+          RUBY
         end
       end
     end
@@ -248,131 +364,12 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               binding(:something)
             end
           RUBY
+          expect_correction(<<~RUBY)
+            def some_method(_foo)
+              binding(:something)
+            end
+          RUBY
         end
-      end
-    end
-  end
-
-  describe 'auto-correction' do
-    let(:corrected_source) { autocorrect_source(source) }
-
-    context 'when multiple arguments are unused' do
-      let(:source) { <<-RUBY }
-        def some_method(foo, bar)
-        end
-      RUBY
-
-      let(:expected_source) { <<-RUBY }
-        def some_method(_foo, _bar)
-        end
-      RUBY
-
-      it 'adds underscore-prefix to them' do
-        expect(corrected_source).to eq(expected_source)
-      end
-    end
-
-    context 'when only a part of arguments is unused' do
-      let(:source) { <<-RUBY }
-        def some_method(foo, bar)
-          puts foo
-        end
-      RUBY
-
-      let(:expected_source) { <<-RUBY }
-        def some_method(foo, _bar)
-          puts foo
-        end
-      RUBY
-
-      it 'modifies only the unused one' do
-        expect(corrected_source).to eq(expected_source)
-      end
-    end
-
-    context 'when there is some whitespace around the argument' do
-      let(:source) { <<-RUBY }
-        def some_method(foo,
-            bar)
-          puts foo
-        end
-      RUBY
-
-      let(:expected_source) { <<-RUBY }
-        def some_method(foo,
-            _bar)
-          puts foo
-        end
-      RUBY
-
-      it 'preserves the whitespace' do
-        expect(corrected_source).to eq(expected_source)
-      end
-    end
-
-    context 'when a splat argument is unused' do
-      let(:source) { <<-RUBY }
-        def some_method(foo, *bar)
-          puts foo
-        end
-      RUBY
-
-      let(:expected_source) { <<-RUBY }
-        def some_method(foo, *_bar)
-          puts foo
-        end
-      RUBY
-
-      it 'preserves the splat' do
-        expect(corrected_source).to eq(expected_source)
-      end
-    end
-
-    context 'when an unused argument has default value' do
-      let(:source) { <<-RUBY }
-        def some_method(foo, bar = 1)
-          puts foo
-        end
-      RUBY
-
-      let(:expected_source) { <<-RUBY }
-        def some_method(foo, _bar = 1)
-          puts foo
-        end
-      RUBY
-
-      it 'preserves the default value' do
-        expect(corrected_source).to eq(expected_source)
-      end
-    end
-
-    context 'when a keyword argument is unused' do
-      let(:source) { <<-RUBY }
-        def some_method(foo, bar: 1)
-          puts foo
-        end
-      RUBY
-
-      it 'ignores that since modifying the name changes the method interface' do
-        expect(corrected_source).to eq(source)
-      end
-    end
-
-    context 'when a trailing block argument is unused' do
-      let(:source) { <<-RUBY }
-        def some_method(foo, bar, &block)
-          foo + bar
-        end
-      RUBY
-
-      let(:expected_source) { <<-RUBY }
-        def some_method(foo, bar)
-          foo + bar
-        end
-      RUBY
-
-      it 'removes the unused block arg' do
-        expect(corrected_source).to eq(expected_source)
       end
     end
   end
@@ -408,6 +405,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           1
         end
       RUBY
+      expect_correction(<<~RUBY)
+        def method(_arg)
+          1
+        end
+      RUBY
     end
 
     it 'accepts an empty method with multiple unused parameters' do
@@ -431,6 +433,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                           ^^^^^^ #{others_message}
                       ^ #{b_message}
                    ^ #{a_message}
+          1
+        end
+      RUBY
+      expect_correction(<<~RUBY)
+        def method(_a, _b, *_others)
           1
         end
       RUBY
@@ -499,6 +506,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           1
         end
       RUBY
+      expect_correction(<<~RUBY)
+        def method(_arg)
+          1
+        end
+      RUBY
     end
 
     it 'accepts an empty method with multiple unused parameters' do
@@ -523,6 +535,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                           ^^^^^^ #{others_message}
                       ^ #{b_message}
                    ^ #{a_message}
+          1
+        end
+      RUBY
+      expect_correction(<<~RUBY)
+        def method(_a, _b, *_others)
           1
         end
       RUBY

@@ -25,6 +25,19 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               puts key
             end
           RUBY
+          expect_correction(<<~RUBY)
+            hash.each do |key, _value|
+              puts key
+            end
+          RUBY
+        end
+      end
+
+      context 'and all arguments are used' do
+        it 'accepts' do
+          expect_no_offenses(<<~RUBY)
+            obj.method { |foo, bar| stuff(foo, bar) }
+          RUBY
         end
       end
 
@@ -51,6 +64,47 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               key, value = value, 42
             end
           RUBY
+          expect_correction(<<~RUBY)
+            hash.each do |_key, value|
+              key, value = value, 42
+            end
+          RUBY
+        end
+      end
+
+      context 'and a splat argument is unused' do
+        it 'registers an offense and preserves splat' do
+          message = 'Unused block argument - `bars`. ' \
+                    "If it's necessary, use `_` or `_bars` as an argument " \
+                    "name to indicate that it won't be used."
+
+          expect_offense(<<~RUBY)
+            obj.method { |foo, *bars, baz| stuff(foo, baz) }
+                                ^^^^ #{message}
+          RUBY
+          expect_correction(<<~RUBY)
+            obj.method { |foo, *_bars, baz| stuff(foo, baz) }
+          RUBY
+        end
+      end
+
+      context 'and an argument with default value is unused' do
+        it 'registers an offense and preserves default value' do
+          message = 'Unused block argument - `bar`. ' \
+                    "If it's necessary, use `_` or `_bar` as an argument " \
+                    "name to indicate that it won't be used."
+
+          expect_offense(<<~RUBY)
+            obj.method do |foo, bar = baz|
+                                ^^^ #{message}
+              stuff(foo)
+            end
+          RUBY
+          expect_correction(<<~RUBY)
+            obj.method do |foo, _bar = baz|
+              stuff(foo)
+            end
+          RUBY
         end
       end
 
@@ -69,6 +123,36 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               puts :something
             end
           RUBY
+          expect_correction(<<~RUBY)
+            hash = { foo: 'FOO', bar: 'BAR' }
+            hash.each do |_key, _value|
+              puts :something
+            end
+          RUBY
+        end
+
+        context 'and unused arguments span multiple lines' do
+          it 'registers offenses and suggests omitting them' do
+            key_message, value_message = %w[key value].map do |arg|
+              "Unused block argument - `#{arg}`. You can omit all the " \
+                "arguments if you don't care about them."
+            end
+
+            expect_offense(<<~RUBY)
+              hash.each do |key,
+                            ^^^ #{key_message}
+                            value|
+                            ^^^^^ #{value_message}
+                puts :something
+              end
+            RUBY
+            expect_correction(<<~RUBY)
+              hash.each do |_key,
+                            _value|
+                puts :something
+              end
+            RUBY
+          end
         end
       end
     end
@@ -82,6 +166,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           expect_offense(<<~RUBY)
             1.times do |index|
                         ^^^^^ #{message}
+              puts :something
+            end
+          RUBY
+          expect_correction(<<~RUBY)
+            1.times do |_index|
               puts :something
             end
           RUBY
@@ -100,6 +189,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               puts 'baz'
             end
           RUBY
+          expect_correction(<<~RUBY)
+            define_method(:foo) do |_bar|
+              puts 'baz'
+            end
+          RUBY
         end
       end
     end
@@ -110,6 +204,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           expect_offense(<<~RUBY)
             1.times do |index; block_local_variable|
                                ^^^^^^^^^^^^^^^^^^^^ Unused block local variable - `block_local_variable`.
+              puts index
+            end
+          RUBY
+          expect_correction(<<~RUBY)
+            1.times do |index; _block_local_variable|
               puts index
             end
           RUBY
@@ -134,6 +233,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                      ^^^ #{bar_message}
                 ^^^ #{foo_message}
           RUBY
+          expect_correction(<<~RUBY)
+            -> (_foo, _bar) { do_something }
+          RUBY
         end
       end
 
@@ -146,6 +248,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           expect_offense(<<~RUBY)
             -> (foo, bar) { puts bar }
                 ^^^ #{message}
+          RUBY
+          expect_correction(<<~RUBY)
+            -> (_foo, bar) { puts bar }
           RUBY
         end
       end
@@ -174,6 +279,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               puts 'bar'
             end
           RUBY
+          expect_no_corrections
         end
 
         context 'when AllowUnusedKeywordArguments set' do
@@ -200,6 +306,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               puts 'bar'
             end
           RUBY
+          expect_no_corrections
         end
 
         context 'when AllowUnusedKeywordArguments set' do
@@ -260,6 +367,13 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               end
             end
           RUBY
+          expect_correction(<<~RUBY)
+            test do |_key, _value|
+              def other(a)
+                puts something(binding)
+              end
+            end
+          RUBY
         end
       end
     end
@@ -279,6 +393,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
               puts something(binding(:other))
             end
           RUBY
+          expect_correction(<<~RUBY)
+            test do |_key, _value|
+              puts something(binding(:other))
+            end
+          RUBY
         end
       end
     end
@@ -295,6 +414,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
             super { |bar| }
                      ^^^ #{message}
           RUBY
+          expect_correction(<<~RUBY)
+            super { |_bar| }
+          RUBY
         end
       end
 
@@ -305,55 +427,6 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           expect_no_offenses('super { |bar| }')
         end
       end
-    end
-  end
-
-  context 'auto-correct' do
-    it_behaves_like(
-      'auto-correction',
-      'fixes single',
-      'arr.map { |foo| stuff }',
-      'arr.map { |_foo| stuff }'
-    )
-
-    it_behaves_like(
-      'auto-correction',
-      'fixes multiple',
-      'hash.map { |key, val| stuff }',
-      'hash.map { |_key, _val| stuff }'
-    )
-
-    it_behaves_like(
-      'auto-correction',
-      'preserves whitespace',
-      <<-SOURCE,
-        hash.map { |key,
-                    val| stuff }
-      SOURCE
-      <<-CORRECTED_SOURCE
-        hash.map { |_key,
-                    _val| stuff }
-      CORRECTED_SOURCE
-    )
-
-    it_behaves_like(
-      'auto-correction',
-      'preserves splat',
-      'obj.method { |foo, *bars, baz| stuff(foo, baz) }',
-      'obj.method { |foo, *_bars, baz| stuff(foo, baz) }'
-    )
-
-    it_behaves_like(
-      'auto-correction',
-      'preserves default',
-      'obj.method { |foo, bar = baz| stuff(foo) }',
-      'obj.method { |foo, _bar = baz| stuff(foo) }'
-    )
-
-    it 'ignores used arguments' do
-      original_source = 'obj.method { |foo, baz| stuff(foo, baz) }'
-
-      expect(autocorrect_source(original_source)).to eq(original_source)
     end
   end
 
@@ -375,6 +448,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         ->(arg) { 1 }
            ^^^ #{message}
       RUBY
+      expect_correction(<<~RUBY)
+        ->(_arg) { 1 }
+      RUBY
     end
 
     it 'accepts an empty block with multiple unused parameters' do
@@ -395,6 +471,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
                         ^^^^^^ #{others_message}
                  ^^^^ #{arg2_message}
            ^^^^ #{arg1_message}
+      RUBY
+      expect_correction(<<~RUBY)
+        ->(_arg1, _arg2, *_others) { 1 }
       RUBY
     end
   end
