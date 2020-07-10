@@ -25,7 +25,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           x = 1
         RUBY
         create_empty_file('other/empty')
-        RuboCop::PathUtil.chdir('other') do
+        Dir.chdir('other') do
           expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
         end
         expect($stdout.string).to eq(<<~RESULT)
