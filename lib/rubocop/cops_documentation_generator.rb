@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Class for generating documentation of all cops departments
+# @api private
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   include ::RuboCop::Cop::Documentation
   # This class will only generate documentation for cops that belong to one of

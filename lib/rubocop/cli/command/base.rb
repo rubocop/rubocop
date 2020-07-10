@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # A subcommand in the CLI.
+      # @api private
       class Base
         attr_reader :env
 

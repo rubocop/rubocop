@@ -2,6 +2,7 @@
 
 module RuboCop
   # Common functionality for finding names that are similar to a given name.
+  # @api private
   module NameSimilarity
     module_function
 

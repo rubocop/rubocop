@@ -7,10 +7,12 @@ module RuboCop
     module AllowedMethods
       private
 
+      # @api public
       def allowed_method?(name)
         allowed_methods.include?(name.to_s)
       end
 
+      # @api public
       def allowed_methods
         cop_config.fetch('AllowedMethods', [])
       end

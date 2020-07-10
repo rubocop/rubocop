@@ -4,6 +4,7 @@ require 'pathname'
 
 module RuboCop
   # Common methods for finding files.
+  # @api private
   module FileFinder
     def self.root_level=(level)
       @root_level = level

@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # Display version.
+      # @api private
       class Version < Base
         self.command_name = :version
 

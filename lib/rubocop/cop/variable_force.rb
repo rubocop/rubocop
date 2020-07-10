@@ -22,6 +22,8 @@ module RuboCop
     #
     #     def after_declaring_variable(variable, variable_table)
     #     end
+    #
+    # @api private
     class VariableForce < Force # rubocop:disable Metrics/ClassLength
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
