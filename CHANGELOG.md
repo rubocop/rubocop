@@ -12,6 +12,10 @@
 * [#8993](https://github.com/rubocop-hq/rubocop/issues/8993): Allow `ExcludedMethods` config of `Metrics/MethodLength` cop to contain regex. ([@tejasbubane][])
 * [#9073](https://github.com/rubocop-hq/rubocop/issues/9073): Enable `Layout/LineLength`'s auto-correct by default. ([@bbatsov][])
 
+### New features
+
+* [#7737](https://github.com/rubocop-hq/rubocop/issues/7737): Add new `Style/RedundantArguments` cop. ([@tejasbubane][])
+
 ## 1.3.1 (2020-11-16)
 
 ### Bug fixes
