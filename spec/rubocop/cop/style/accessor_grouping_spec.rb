@@ -123,6 +123,47 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         end
       RUBY
     end
+
+    it 'does not register offense for accessors with comments' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          # @return [String] value of foo
+          attr_reader :one, :two
+
+          attr_reader :four
+        end
+      RUBY
+    end
+
+    it 'registers offense and corrects if atleast two separate accessors without comments' do
+      expect_offense(<<~RUBY)
+        class Foo
+          # @return [String] value of foo
+          attr_reader :one, :two
+
+          # [String] Some bar value return
+          attr_reader :three
+
+          attr_reader :four
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          attr_reader :five
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          # @return [String] value of foo
+          attr_reader :one, :two
+
+          # [String] Some bar value return
+          attr_reader :three
+
+          attr_reader :four, :five
+          
+        end
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is separated' do
@@ -233,6 +274,15 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         class Foo
           attr_reader :bar
           attr_reader :baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for grouped accessors with comments' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          # Some comment
+          attr_reader :one, :two
         end
       RUBY
     end
