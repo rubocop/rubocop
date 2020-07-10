@@ -25,7 +25,7 @@ It's not actively
 monitored by the RuboCop maintainers themselves, but still you can get support
 from other RuboCop users there.
 
-== Stackoverflow
+== StackOverflow
 
 We're also encouraging users to ask RuboCop-related questions on StackOverflow.
 
