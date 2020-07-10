@@ -10,6 +10,7 @@
 * [#7736](https://github.com/rubocop-hq/rubocop/issues/7736): Add new `Style/CaseLikeIf` cop. ([@fatkodima][])
 * [#4286](https://github.com/rubocop-hq/rubocop/issues/4286): Add new `Style/HashAsLastArrayItem` cop. ([@fatkodima][])
 * [#8247](https://github.com/rubocop-hq/rubocop/issues/8247): Add new `Style/HashLikeCase` cop. ([@fatkodima][])
+* [#8286](https://github.com/rubocop-hq/rubocop/issues/8286): Internal method `expect_offense` allows abbreviated offense messages. ([@marcandre][])
 
 ### Bug fixes
 
