@@ -33,8 +33,8 @@ module RuboCop
       #     end
       #   end
       #
-      class TrailingMethodEndStatement < Cop
-        include Alignment
+      class TrailingMethodEndStatement < Base
+        extend AutoCorrector
 
         MSG = 'Place the end statement of a multi-line method on ' \
               'its own line.'
@@ -42,13 +42,11 @@ module RuboCop
         def on_def(node)
           return unless trailing_end?(node)
 
-          add_offense(node, location: end_token(node).pos)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            break_line_before_end(node, corrector)
-            remove_semicolon(node, corrector)
+          add_offense(node.loc.end) do |corrector|
+            corrector.insert_before(
+              node.loc.end,
+              "\n" + ' ' * node.loc.keyword.column
+            )
           end
         end
 
@@ -60,30 +58,9 @@ module RuboCop
             body_and_end_on_same_line?(node)
         end
 
-        def end_token(node)
-          tokens(node).reverse.find(&:end?)
-        end
-
         def body_and_end_on_same_line?(node)
-          end_token(node).line == token_before_end(node).line
-        end
-
-        def token_before_end(node)
-          i = tokens(node).index(end_token(node))
-          tokens(node)[i - 1]
-        end
-
-        def break_line_before_end(node, corrector)
-          corrector.insert_before(
-            end_token(node).pos,
-            "\n" + ' ' * configured_indentation_width
-          )
-        end
-
-        def remove_semicolon(node, corrector)
-          return unless token_before_end(node).semicolon?
-
-          corrector.remove(token_before_end(node).pos)
+          last_child = node.children.last
+          last_child.loc.last_line == node.loc.end.last_line
         end
       end
     end
