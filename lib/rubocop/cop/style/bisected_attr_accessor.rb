@@ -28,6 +28,7 @@ module RuboCop
         def on_class(class_node)
           VISIBILITY_SCOPES.each do |visibility|
             reader_names, writer_names = accessor_names(class_node, visibility)
+            next unless reader_names && writer_names
 
             accessor_macroses(class_node, visibility).each do |macro|
               check(macro, reader_names, writer_names)
@@ -48,17 +49,17 @@ module RuboCop
         private
 
         def accessor_names(class_node, visibility)
-          reader_names = Set.new
-          writer_names = Set.new
+          reader_names = nil
+          writer_names = nil
 
           accessor_macroses(class_node, visibility).each do |macro|
             names = macro.arguments.map(&:source)
 
             names.each do |name|
               if attr_reader?(macro)
-                reader_names.add(name)
+                (reader_names ||= Set.new).add(name)
               else
-                writer_names.add(name)
+                (writer_names ||= Set.new).add(name)
               end
             end
           end
