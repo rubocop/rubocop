@@ -5,19 +5,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessComparison do
 
   described_class::OPS.each do |op|
     it "registers an offense for a simple comparison with #{op}" do
-      inspect_source(<<~RUBY)
-        5 #{op} 5
-        a #{op} a
+      expect_offense(<<~RUBY, op: op)
+        5 %{op} 5
+          ^{op} Comparison of something with itself detected.
+        a %{op} a
+          ^{op} Comparison of something with itself detected.
       RUBY
-      expect(cop.offenses.size).to eq(2)
     end
 
     it "registers an offense for a complex comparison with #{op}" do
-      inspect_source(<<~RUBY)
-        5 + 10 * 30 #{op} 5 + 10 * 30
-        a.top(x) #{op} a.top(x)
+      expect_offense(<<~RUBY, op: op)
+        5 + 10 * 30 %{op} 5 + 10 * 30
+                    ^{op} Comparison of something with itself detected.
+        a.top(x) %{op} a.top(x)
+                 ^{op} Comparison of something with itself detected.
       RUBY
-      expect(cop.offenses.size).to eq(2)
     end
   end
 

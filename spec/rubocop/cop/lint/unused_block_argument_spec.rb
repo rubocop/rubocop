@@ -3,14 +3,6 @@
 RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
   let(:cop_config) { { 'AllowUnusedKeywordArguments' => false } }
 
-  shared_examples 'auto-correction' do |name, old_source, new_source|
-    it "auto-corrects #{name}" do
-      corrected_source = autocorrect_source(old_source)
-
-      expect(corrected_source).to eq(new_source)
-    end
-  end
-
   context 'inspection' do
     context 'when a block takes multiple arguments' do
       context 'and an argument is unused' do

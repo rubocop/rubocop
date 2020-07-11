@@ -1,64 +1,160 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
-  shared_examples_for 'debugger' do |name, src|
-    it "reports an offense for a #{name} call" do
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Remove debugger entry point `#{src}`."])
-      expect(cop.highlights).to eq([src])
+  it 'reports an offense for a debugger call' do
+    expect_offense(<<~RUBY)
+      debugger
+      ^^^^^^^^ Remove debugger entry point `debugger`.
+    RUBY
+  end
+
+  it 'reports an offense for a byebug call' do
+    expect_offense(<<~RUBY)
+      byebug
+      ^^^^^^ Remove debugger entry point `byebug`.
+    RUBY
+  end
+
+  it 'reports an offense for a pry binding call' do
+    expect_offense(<<~RUBY)
+      binding.pry
+      ^^^^^^^^^^^ Remove debugger entry point `binding.pry`.
+    RUBY
+  end
+
+  it 'reports an offense for a remote_pry binding call' do
+    expect_offense(<<~RUBY)
+      binding.remote_pry
+      ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `binding.remote_pry`.
+    RUBY
+  end
+
+  it 'reports an offense for a pry_remote binding call' do
+    expect_offense(<<~RUBY)
+      binding.pry_remote
+      ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `binding.pry_remote`.
+    RUBY
+  end
+
+  context 'with capybara debug method call' do
+    it 'reports an offense for save_and_open_page' do
+      expect_offense(<<~RUBY)
+        save_and_open_page
+        ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_and_open_page`.
+      RUBY
+    end
+
+    it 'reports an offense for save_and_open_screenshot' do
+      expect_offense(<<~RUBY)
+        save_and_open_screenshot
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_and_open_screenshot`.
+      RUBY
+    end
+
+    it 'reports an offense for save_screenshot' do
+      expect_offense(<<~RUBY)
+        save_screenshot
+        ^^^^^^^^^^^^^^^ Remove debugger entry point `save_screenshot`.
+      RUBY
+    end
+
+    context 'with an argument' do
+      it 'reports an offense for save_and_open_page' do
+        expect_offense(<<~RUBY)
+          save_and_open_page foo
+          ^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_and_open_page foo`.
+        RUBY
+      end
+
+      it 'reports an offense for save_and_open_screenshot' do
+        expect_offense(<<~RUBY)
+          save_and_open_screenshot foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_and_open_screenshot foo`.
+        RUBY
+      end
+
+      it 'reports an offense for save_screenshot' do
+        expect_offense(<<~RUBY)
+          save_screenshot foo
+          ^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_screenshot foo`.
+        RUBY
+      end
     end
   end
 
-  include_examples 'debugger', 'debugger', 'debugger'
-  include_examples 'debugger', 'byebug', 'byebug'
-  include_examples 'debugger', 'pry binding',
-                   'binding.pry'
-  include_examples 'debugger', 'pry binding',
-                   'binding.remote_pry'
-  include_examples 'debugger', 'pry binding',
-                   'binding.pry_remote'
-  include_examples 'debugger',
-                   'capybara debug method',
-                   'save_and_open_page'
-  include_examples 'debugger',
-                   'capybara debug method',
-                   'save_and_open_screenshot'
-  include_examples 'debugger',
-                   'capybara debug method',
-                   'save_screenshot'
-  include_examples 'debugger', 'debugger with an argument', 'debugger foo'
-  include_examples 'debugger', 'byebug with an argument', 'byebug foo'
-  include_examples 'debugger',
-                   'pry binding with an argument',
-                   'binding.pry foo'
-  include_examples 'debugger',
-                   'pry binding with an argument',
-                   'binding.remote_pry foo'
-  include_examples 'debugger',
-                   'pry binding with an argument',
-                   'binding.pry_remote foo'
-  include_examples 'debugger',
-                   'capybara debug method with an argument',
-                   'save_and_open_page foo'
-  include_examples 'debugger',
-                   'capybara debug method with an argument',
-                   'save_and_open_screenshot foo'
-  include_examples 'debugger',
-                   'capybara debug method with an argument',
-                   'save_screenshot foo'
+  it 'reports an offense for a debugger with an argument call' do
+    expect_offense(<<~RUBY)
+      debugger foo
+      ^^^^^^^^^^^^ Remove debugger entry point `debugger foo`.
+    RUBY
+  end
 
-  include_examples 'debugger', 'remote_byebug', 'remote_byebug'
-  include_examples 'debugger', 'web console binding', 'binding.console'
+  it 'reports an offense for a byebug with an argument call' do
+    expect_offense(<<~RUBY)
+      byebug foo
+      ^^^^^^^^^^ Remove debugger entry point `byebug foo`.
+    RUBY
+  end
+
+  it 'reports an offense for a pry binding with an argument call' do
+    expect_offense(<<~RUBY)
+      binding.pry foo
+      ^^^^^^^^^^^^^^^ Remove debugger entry point `binding.pry foo`.
+    RUBY
+  end
+
+  it 'reports an offense for a remote_pry binding with an argument call' do
+    expect_offense(<<~RUBY)
+      binding.remote_pry foo
+      ^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `binding.remote_pry foo`.
+    RUBY
+  end
+
+  it 'reports an offense for a pry_remote binding with an argument call' do
+    expect_offense(<<~RUBY)
+      binding.pry_remote foo
+      ^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `binding.pry_remote foo`.
+    RUBY
+  end
+
+  it 'reports an offense for a remote_byebug call' do
+    expect_offense(<<~RUBY)
+      remote_byebug
+      ^^^^^^^^^^^^^ Remove debugger entry point `remote_byebug`.
+    RUBY
+  end
+
+  it 'reports an offense for a web console binding call' do
+    expect_offense(<<~RUBY)
+      binding.console
+      ^^^^^^^^^^^^^^^ Remove debugger entry point `binding.console`.
+    RUBY
+  end
 
   it 'does not report an offense for a non-pry binding' do
     expect_no_offenses('binding.pirate')
   end
 
-  include_examples 'debugger', 'debugger with Kernel', 'Kernel.debugger'
-  include_examples 'debugger', 'debugger with ::Kernel', '::Kernel.debugger'
-  include_examples 'debugger', 'binding.pry with Kernel', 'Kernel.binding.pry'
+  it 'reports an offense for a debugger with Kernel call' do
+    expect_offense(<<~RUBY)
+      Kernel.debugger
+      ^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.debugger`.
+    RUBY
+  end
+
+  it 'reports an offense for a debugger with ::Kernel call' do
+    expect_offense(<<~RUBY)
+      ::Kernel.debugger
+      ^^^^^^^^^^^^^^^^^ Remove debugger entry point `::Kernel.debugger`.
+    RUBY
+  end
+
+  it 'reports an offense for a binding.pry with Kernel call' do
+    expect_offense(<<~RUBY)
+      Kernel.binding.pry
+      ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.pry`.
+    RUBY
+  end
 
   it 'does not report an offense for save_and_open_page with Kernel' do
     expect_no_offenses('Kernel.save_and_open_page')
@@ -86,6 +182,17 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     RUBY
   end
 
-  include_examples 'debugger', 'irb binding', 'binding.irb'
-  include_examples 'debugger', 'binding.irb with Kernel', 'Kernel.binding.irb'
+  it 'reports an offense for a irb binding call' do
+    expect_offense(<<~RUBY)
+      binding.irb
+      ^^^^^^^^^^^ Remove debugger entry point `binding.irb`.
+    RUBY
+  end
+
+  it 'reports an offense for a binding.irb with Kernel call' do
+    expect_offense(<<~RUBY)
+      Kernel.binding.irb
+      ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.irb`.
+    RUBY
+  end
 end

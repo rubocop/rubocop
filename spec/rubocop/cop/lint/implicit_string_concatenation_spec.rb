@@ -33,11 +33,21 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
 
   context 'when the string literals contain newlines' do
     it 'registers an offense' do
-      inspect_source(<<~RUBY)
-        def method; "ab\nc" "de\nf"; end
+      expect_offense(<<~'RUBY')
+        def method
+          "ab
+          ^^^ Combine "ab\nc" and "de\nf" into a single string literal, [...]
+        c" "de
+        f"
+        end
       RUBY
+    end
 
-      expect(cop.offenses.size).to eq(1)
+    it 'does not register an offense for a single string' do
+      expect_no_offenses(<<~RUBY)
+        'abc
+        def'
+      RUBY
     end
   end
 
