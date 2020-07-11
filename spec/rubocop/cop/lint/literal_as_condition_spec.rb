@@ -60,8 +60,6 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
 
     it "registers an offense for literal #{lit} in a when " \
        'of a case without anything after case keyword' do
-      pending 'Offense should be just the literal condition rather than ' \
-        'the whole when line.'
       expect_offense(<<~RUBY, lit: lit)
         case
         when %{lit} then top
