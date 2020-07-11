@@ -105,7 +105,7 @@ module RuboCop
       # If message is not specified, the method `message` will be called.
       def add_offense(node_or_range, message: nil, severity: nil, &block)
         range = range_from_node_or_range(node_or_range)
-        return unless @current_offense_locations.add?(range)
+        return unless current_offense_locations.add?(range)
 
         range_to_pass = callback_argument(range)
 
@@ -271,11 +271,19 @@ module RuboCop
 
       ### Reserved for Commissioner:
 
+      def current_offense_locations
+        @current_offense_locations ||= Set.new
+      end
+
+      def currently_disabled_lines
+        @currently_disabled_lines ||= Set.new
+      end
+
       # Called before any investigation
       def begin_investigation(processed_source)
         @current_offenses = []
-        @current_offense_locations = Set[]
-        @currently_disabled_lines = Set[]
+        @current_offense_locations = nil
+        @currently_disabled_lines = nil
         @processed_source = processed_source
         @current_corrector = Corrector.new(@processed_source) if @processed_source.valid_syntax?
       end
@@ -327,7 +335,7 @@ module RuboCop
 
       def disable_uncorrectable(range)
         line = range.line
-        return unless @currently_disabled_lines.add?(line)
+        return unless currently_disabled_lines.add?(line)
 
         disable_offense(range)
       end
