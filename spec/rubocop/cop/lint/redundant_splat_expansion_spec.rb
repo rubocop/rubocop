@@ -364,16 +364,26 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
     end
 
     context 'splat expansion inside of an array' do
-      it 'changes %i to a list of symbols' do
-        new_source = autocorrect_source('[:a, :b, *%i(c d), :e]')
+      it 'registers an offense and corrects %i to a list of symbols' do
+        expect_offense(<<~RUBY)
+          [:a, :b, *%i(c d), :e]
+                   ^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
 
-        expect(new_source).to eq('[:a, :b, :c, :d, :e]')
+        expect_correction(<<~RUBY)
+          [:a, :b, :c, :d, :e]
+        RUBY
       end
 
-      it 'changes %I to a list of symbols' do
-        new_source = autocorrect_source('[:a, :b, *%I(#{one} two), :e]')
+      it 'registers an offense and changes %I to a list of symbols' do
+        expect_offense(<<~'RUBY')
+          [:a, :b, *%I(#{one} two), :e]
+                   ^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
 
-        expect(new_source).to eq('[:a, :b, :"#{one}", :"two", :e]')
+        expect_correction(<<~'RUBY')
+          [:a, :b, :"#{one}", :"two", :e]
+        RUBY
       end
     end
   end

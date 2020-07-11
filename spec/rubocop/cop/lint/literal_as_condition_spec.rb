@@ -5,67 +5,69 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
 
   %w(1 2.0 [1] {} :sym :"#{a}").each do |lit|
     it "registers an offense for literal #{lit} in if" do
-      inspect_source(<<~RUBY)
-        if #{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit}
+           ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in while" do
-      inspect_source(<<~RUBY)
-        while #{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        while %{lit}
+              ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in post-loop while" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, lit: lit)
         begin
           top
-        end while(#{lit})
+        end while(%{lit})
+                  ^{lit} Literal `#{lit}` appeared as a condition.
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in until" do
-      inspect_source(<<~RUBY)
-        until #{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        until %{lit}
+              ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in post-loop until" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, lit: lit)
         begin
           top
-        end until #{lit}
+        end until %{lit}
+                  ^{lit} Literal `#{lit}` appeared as a condition.
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in case" do
-      inspect_source(<<~RUBY)
-        case #{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        case %{lit}
+             ^{lit} Literal `#{lit}` appeared as a condition.
         when x then top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in a when " \
        'of a case without anything after case keyword' do
-      inspect_source(<<~RUBY)
+      pending 'Offense should be just the literal condition rather than ' \
+        'the whole when line.'
+      expect_offense(<<~RUBY, lit: lit)
         case
-        when #{lit} then top
+        when %{lit} then top
+             ^{lit} Literal `#{lit}` appeared as a condition.
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "accepts literal #{lit} in a when of a case with " \
@@ -78,39 +80,39 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for literal #{lit} in &&" do
-      inspect_source(<<~RUBY)
-        if x && #{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        if x && %{lit}
+                ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in complex cond" do
-      inspect_source(<<~RUBY)
-        if x && !(a && #{lit}) && y && z
+      expect_offense(<<~RUBY, lit: lit)
+        if x && !(a && %{lit}) && y && z
+                       ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in !" do
-      inspect_source(<<~RUBY)
-        if !#{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        if !%{lit}
+            ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for literal #{lit} in complex !" do
-      inspect_source(<<~RUBY)
-        if !(x && (y && #{lit}))
+      expect_offense(<<~RUBY, lit: lit)
+        if !(x && (y && %{lit}))
+                        ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "accepts literal #{lit} if it's not an and/or operand" do
@@ -130,17 +132,17 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
     end
 
     it "registers an offense for `!#{lit}`" do
-      inspect_source(<<~RUBY)
-        !#{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        !%{lit}
+         ^{lit} Literal `#{lit}` appeared as a condition.
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it "registers an offense for `not #{lit}`" do
-      inspect_source(<<~RUBY)
-        not(#{lit})
+      expect_offense(<<~RUBY, lit: lit)
+        not(%{lit})
+            ^{lit} Literal `#{lit}` appeared as a condition.
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 

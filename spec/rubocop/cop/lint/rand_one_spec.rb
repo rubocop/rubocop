@@ -6,14 +6,10 @@ RSpec.describe RuboCop::Cop::Lint::RandOne do
   shared_examples 'offenses' do |source|
     describe source do
       it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(
-          [
-            "`#{source}` always returns `0`. " \
-            'Perhaps you meant `rand(2)` or `rand`?'
-          ]
-        )
-        expect(cop.highlights).to eq([source])
+        expect_offense(<<~RUBY, source: source)
+          %{source}
+          ^{source} `#{source}` always returns `0`. [...]
+        RUBY
       end
     end
   end
