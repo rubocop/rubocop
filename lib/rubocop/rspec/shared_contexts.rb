@@ -18,13 +18,14 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
       ENV.delete('XDG_CONFIG_HOME')
 
       base_dir = example.metadata[:project_inside_home] ? virtual_home : tmpdir
-      working_dir = File.join(base_dir, 'work')
+      root = example.metadata[:root]
+      working_dir = root ? File.join(base_dir, 'work', root) : File.join(base_dir, 'work')
 
       # Make upwards search for .rubocop.yml files stop at this directory.
       RuboCop::FileFinder.root_level = working_dir
 
       begin
-        Dir.mkdir(working_dir)
+        FileUtils.mkdir_p(working_dir)
 
         Dir.chdir(working_dir) do
           example.run

@@ -82,6 +82,26 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when there is a spurious rubocop config outside of the project', root: 'dir' do
+      let(:dir_path) { 'dir' }
+
+      before do
+        # Force reload of project root
+        described_class.project_root = nil
+        create_empty_file('Gemfile')
+        create_empty_file('../.rubocop.yml')
+      end
+
+      after do
+        # Don't leak project root change
+        described_class.project_root = nil
+      end
+
+      it 'ignores the spurious config and falls back to the provided default file if run from the project' do
+        expect(configuration_file_for).to end_with('config/default.yml')
+      end
+    end
+
     context 'when a config file exists in the parent directory' do
       let(:dir_path) { 'dir' }
 
