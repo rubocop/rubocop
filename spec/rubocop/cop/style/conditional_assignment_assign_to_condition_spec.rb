@@ -282,6 +282,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('comparison methods', '===')
   it_behaves_like('comparison methods', '<=')
   it_behaves_like('comparison methods', '>=')
+  it_behaves_like('comparison methods', '<')
+  it_behaves_like('comparison methods', '>')
 
   context 'empty branch' do
     it 'allows an empty if statement' do
