@@ -33,6 +33,10 @@ module RuboCop
       for_dir(File.dirname(file))
     end
 
+    def for_pwd
+      for_dir(Dir.pwd)
+    end
+
     # If type (file/dir) is known beforehand,
     # prefer using #for_file or #for_dir for improved performance
     def for(file_or_dir)
