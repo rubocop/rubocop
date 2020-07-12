@@ -12,16 +12,17 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
       # get mismatched pathnames when loading config files later on.
       tmpdir = File.realpath(tmpdir)
 
+      virtual_home = File.expand_path(File.join(tmpdir, 'home'))
+      Dir.mkdir(virtual_home)
+      ENV['HOME'] = virtual_home
+      ENV.delete('XDG_CONFIG_HOME')
+
+      working_dir = File.join(tmpdir, 'work')
+
       # Make upwards search for .rubocop.yml files stop at this directory.
-      RuboCop::FileFinder.root_level = tmpdir
+      RuboCop::FileFinder.root_level = working_dir
 
       begin
-        virtual_home = File.expand_path(File.join(tmpdir, 'home'))
-        Dir.mkdir(virtual_home)
-        ENV['HOME'] = virtual_home
-        ENV.delete('XDG_CONFIG_HOME')
-
-        working_dir = File.join(tmpdir, 'work')
         Dir.mkdir(working_dir)
 
         Dir.chdir(working_dir) do
