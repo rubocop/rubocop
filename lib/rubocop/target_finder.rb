@@ -132,7 +132,7 @@ module RuboCop
     end
 
     def all_cops_include
-      @config_store.for('.').for_all_cops['Include'].map(&:to_s)
+      @config_store.for_pwd.for_all_cops['Include'].map(&:to_s)
     end
 
     def ruby_executable?(file)
@@ -160,7 +160,7 @@ module RuboCop
     end
 
     def configured_include?(file)
-      @config_store.for('.').file_to_include?(file)
+      @config_store.for_pwd.file_to_include?(file)
     end
 
     def included_file?(file)
