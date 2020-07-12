@@ -20,6 +20,7 @@
 * [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
 * [#8282](https://github.com/rubocop-hq/rubocop/issues/8282): Fix `Style/IfUnlessModifier` bad precedence detection. ([@tejasbubane][])
 * [#8289](https://github.com/rubocop-hq/rubocop/issues/8289): Fix `Style/AccessorGrouping` to not register offense for accessor with comment. ([@tejasbubane][])
+* [#8310](https://github.com/rubocop-hq/rubocop/pull/8310): Handle major version requirements in `Gemspec/RequiredRubyVersion`. ([@eugeneius][])
 
 ### Changes
 
