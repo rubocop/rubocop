@@ -24,7 +24,7 @@ module RuboCop
 
       attr_accessor :debug, :ignore_parent_exclusion,
                     :disable_pending_cops, :enable_pending_cops
-      attr_writer :default_configuration
+      attr_writer :default_configuration, :project_root
 
       alias debug? debug
       alias ignore_parent_exclusion? ignore_parent_exclusion
@@ -164,7 +164,7 @@ module RuboCop
       private
 
       def find_project_dotfile(target_dir)
-        find_file_upwards(DOTFILE, target_dir)
+        find_file_upwards(DOTFILE, target_dir, project_root)
       end
 
       def find_project_root
