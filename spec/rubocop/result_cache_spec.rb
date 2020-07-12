@@ -20,7 +20,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   let(:file) { 'example.rb' }
   let(:options) { {} }
   let(:config_store) do
-    instance_double(RuboCop::ConfigStore, for_dir: RuboCop::Config.new)
+    instance_double(RuboCop::ConfigStore, for_pwd: RuboCop::Config.new)
   end
   let(:cache_root) { "#{Dir.pwd}/rubocop_cache" }
   let(:offenses) do
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
         context 'and symlink attack protection is disabled' do
           before do
-            allow(config_store).to receive(:for_dir).with('.').and_return(
+            allow(config_store).to receive(:for_pwd).and_return(
               RuboCop::Config.new(
                 'AllCops' => {
                   'AllowSymlinksInCacheRootDirectory' => true
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   describe '.cleanup' do
     before do
       cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => 1 })
-      allow(config_store).to receive(:for_dir).with('.').and_return(cfg)
+      allow(config_store).to receive(:for_pwd).and_return(cfg)
       allow(config_store).to receive(:for_file).with('other.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
       $stdout = StringIO.new
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         'AllCops' => { 'CacheRootDirectory' => cache_root_directory }
       }
       config = RuboCop::Config.new(all_cops)
-      allow(config_store).to receive(:for_dir).with('.').and_return(config)
+      allow(config_store).to receive(:for_pwd).and_return(config)
     end
 
     context 'when CacheRootDirectory not set' do

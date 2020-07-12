@@ -75,7 +75,7 @@ module RuboCop
 
     def validate_options_vs_config
       if @options[:parallel] &&
-         !@config_store.for_dir(Dir.pwd).for_all_cops['UseCache']
+         !@config_store.for_pwd.for_all_cops['UseCache']
         raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
                                    'execution, so combining with AllCops: ' \
                                    'UseCache: false is not allowed.'
@@ -121,7 +121,7 @@ module RuboCop
         if @options[:auto_gen_config]
           formatter = 'autogenconf'
         else
-          cfg = @config_store.for_dir(Dir.pwd).for_all_cops
+          cfg = @config_store.for_pwd.for_all_cops
           formatter = cfg['DefaultFormatter'] || 'progress'
         end
         [[formatter, @options[:output_path]]]
