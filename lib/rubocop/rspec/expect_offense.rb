@@ -209,6 +209,7 @@ module RuboCop
               source << source_line
             end
           end
+          annotations.each { |a| a[0] = 1 } if source.empty?
 
           new(source, annotations)
         end
