@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.88.0 (2020-07-13)
+
 ### New features
 
 * [#8279](https://github.com/rubocop-hq/rubocop/pull/8279): Recognise require method passed as argument in `Lint/NonDeterministicRequireOrder` cop. ([@biinari][])
