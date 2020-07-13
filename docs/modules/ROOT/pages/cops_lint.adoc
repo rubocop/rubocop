@@ -1943,6 +1943,24 @@ Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')).sort.each do |file|
 end
 ----
 
+[source,ruby]
+----
+# bad
+Dir['./lib/**/*.rb'].each(&method(:require))
+
+# good
+Dir['./lib/**/*.rb'].sort.each(&method(:require))
+----
+
+[source,ruby]
+----
+# bad
+Dir.glob(Rails.root.join('test', '*.rb'), &method(:require))
+
+# good
+Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
+----
+
 == Lint/NonLocalExitFromIterator
 
 |===
