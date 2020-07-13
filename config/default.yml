@@ -1397,6 +1397,7 @@ Lint/DisjunctiveAssignmentInConstructor:
   Enabled: true
   Safe: false
   VersionAdded: '0.62'
+  VersionChanged: '0.88'
 
 Lint/DuplicateCaseCondition:
   Description: 'Do not repeat values in case conditionals.'

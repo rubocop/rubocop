@@ -539,9 +539,9 @@ OpenSSL::Digest.digest('SHA256', 'foo')
 
 | Enabled
 | No
-| No
+| Yes (Unsafe)
 | 0.62
-| -
+| 0.88
 |===
 
 This cop checks constructors for disjunctive assignments that should

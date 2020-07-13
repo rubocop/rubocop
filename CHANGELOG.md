@@ -5,6 +5,7 @@
 ### New features
 
 * [#7333](https://github.com/rubocop-hq/rubocop/issues/7333): Add new `Style/RedundantFileExtensionInRequire` cop. ([@fatkodima][])
+* [#8316](https://github.com/rubocop-hq/rubocop/pull/8316): Support autocorrect for `Lint/DisjunctiveAssignmentInConstructor` cop. ([@fatkodima][])
 * [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
 * [#8295](https://github.com/rubocop-hq/rubocop/pull/8295): Add new `Style/ArrayCoercion` cop. ([@fatkodima][])
 * [#8293](https://github.com/rubocop-hq/rubocop/pull/8293): Add new `Lint/DuplicateElsifCondition` cop. ([@fatkodima][])
