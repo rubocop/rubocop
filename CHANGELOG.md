@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8322](https://github.com/rubocop-hq/rubocop/pull/8322): Support autocorrect for `Style/CaseEquality` cop. ([@fatkodima][])
+
 ### Bug fixes
 
 * [#8346](https://github.com/rubocop-hq/rubocop/pull/8346): Allow parentheses in single-line inheritance with `Style/MethodCallWithArgsParentheses` `EnforcedStyle: omit_parentheses` to fix invalid Ruby auto-correction. ([@gsamokovarov][])
