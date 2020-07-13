@@ -1453,7 +1453,7 @@ Lint/EmptyWhen:
   Enabled: true
   AllowComments: true
   VersionAdded: '0.45'
-  VersionChanged: '0.83'
+  VersionChanged: '0.89'
 
 Lint/EnsureReturn:
   Description: 'Do not use return in an ensure block.'

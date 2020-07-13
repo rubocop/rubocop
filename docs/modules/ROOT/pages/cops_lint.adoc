@@ -956,9 +956,9 @@ This cop checks for empty interpolation.
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.45
-| 0.83
+| 0.89
 |===
 
 This cop checks for the presence of `when` branches without a body.

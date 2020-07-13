@@ -12,7 +12,12 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         ^^^^^^^^^ Avoid `when` branches without a body.
         end
       RUBY
-      expect_no_corrections
+
+      expect_correction(<<~RUBY)
+        case foo
+        when :bar then 1
+        end
+      RUBY
     end
 
     it 'registers an offense for missing when body followed by else' do
@@ -35,7 +40,12 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         ^^^^^^^^^ Avoid `when` branches without a body.
         end
       RUBY
-      expect_no_corrections
+
+      expect_correction(<<~RUBY)
+        case foo
+        when :bar then 1
+        end
+      RUBY
     end
 
     it 'registers an offense for missing when ... then body followed by else' do
@@ -60,7 +70,13 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
           # nothing
         end
       RUBY
-      expect_no_corrections
+
+      expect_correction(<<~RUBY)
+        case foo
+        when :bar
+          1
+        end
+      RUBY
     end
 
     it 'registers an offense for missing when body with a comment ' \
@@ -181,7 +197,13 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
           # do nothing
         end
       RUBY
-      expect_no_corrections
+
+      expect_correction(<<~RUBY)
+        case condition
+        when foo
+          do_something
+        end
+      RUBY
     end
   end
 end

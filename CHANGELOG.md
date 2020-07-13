@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8331](https://github.com/rubocop-hq/rubocop/pull/8331): Support autocorrect for `Lint/EmptyWhen` cop. ([@fatkodima][])
+
 ### Bug fixes
 
 * [#8324](https://github.com/rubocop-hq/rubocop/issues/8324): Fix crash for `Layout/SpaceAroundMethodCallOperator` when using `Proc#call` shorthand syntax. ([@fatkodima][])

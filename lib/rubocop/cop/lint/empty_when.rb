@@ -44,7 +44,10 @@ module RuboCop
       #     # do nothing
       #   end
       #
-      class EmptyWhen < Cop
+      class EmptyWhen < Base
+        include RangeHelp
+        extend AutoCorrector
+
         MSG = 'Avoid `when` branches without a body.'
 
         def on_case(node)
@@ -52,8 +55,36 @@ module RuboCop
             next if when_node.body
             next if cop_config['AllowComments'] && comment_lines?(node)
 
-            add_offense(when_node, location: when_node.source_range)
+            add_offense(when_node.source_range) do |corrector|
+              correct_empty_when(corrector, when_node)
+            end
           end
+        end
+
+        private
+
+        def correct_empty_when(corrector, when_node)
+          return if when_node.parent.else?
+
+          end_pos = correction_end_pos(when_node)
+          corrector.remove(
+            range_between(when_node.loc.keyword.begin_pos, end_pos)
+          )
+        end
+
+        def correction_end_pos(when_node)
+          sibling = right_sibling_of(when_node)
+
+          if sibling&.when_type?
+            next_when.loc.keyword.begin_pos
+          else
+            # This is the last `when` in the `case`
+            when_node.parent.loc.end.begin_pos
+          end
+        end
+
+        def right_sibling_of(node)
+          node.parent.children[node.sibling_index + 1]
         end
       end
     end
