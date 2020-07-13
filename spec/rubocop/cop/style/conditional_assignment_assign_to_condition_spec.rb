@@ -1563,6 +1563,44 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
     end
 
+    context 'constant assignment' do
+      it 'corrects if..else with namespaced constant' do
+        expect_offense(<<~RUBY)
+          if something
+          ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+            FOO::BAR = 1
+          else
+            FOO::BAR = 2
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          FOO::BAR = if something
+            1
+          else
+            2
+          end
+        RUBY
+      end
+
+      it 'corrects if..else with top-level constant' do
+        expect_offense(<<~RUBY)
+          if something
+          ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+            ::BAR = 1
+          else
+            ::BAR = 2
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          ::BAR = if something
+            1
+          else
+            2
+          end
+        RUBY
+      end
+    end
+
     context 'self.attribute= assignment' do
       it 'corrects if..else' do
         expect_offense(<<~RUBY)
