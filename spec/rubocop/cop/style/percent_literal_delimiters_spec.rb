@@ -58,6 +58,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
         ^^^^^^^^^^^^^^^ `%`-literals should be delimited by `[` and `]`.
       RUBY
     end
+
+    it 'does not crash when the source contains invalid characters' do
+      expect { inspect_source('%{\x80}') }.not_to raise_error
+    end
   end
 
   context '`%q` string' do
