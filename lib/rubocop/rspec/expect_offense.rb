@@ -235,7 +235,7 @@ module RuboCop
         def match_annotations?(other)
           annotations.zip(other.annotations) do |(_actual_line, actual_annotation),
                                                  (_expected_line, expected_annotation)|
-            if expected_annotation.end_with?(ABBREV)
+            if expected_annotation&.end_with?(ABBREV)
               if actual_annotation.start_with?(expected_annotation[0...-ABBREV.length])
                 expected_annotation.replace(actual_annotation)
               end
