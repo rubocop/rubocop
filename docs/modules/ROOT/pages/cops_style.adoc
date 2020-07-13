@@ -806,9 +806,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
-| -
+| 0.89
 |===
 
 This cop checks for uses of the case equality operator(===).

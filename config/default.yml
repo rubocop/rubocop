@@ -2527,6 +2527,7 @@ Style/CaseEquality:
   StyleGuide: '#no-case-equality'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.89'
   # If AllowOnConstant is enabled, the cop will ignore violations when the receiver of
   # the case equality operator is a constant.
   #
