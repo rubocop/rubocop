@@ -66,7 +66,15 @@ module RuboCop
 
         def check_space_after_dot(node)
           dot_pos = node.loc.dot.end_pos
-          selector_pos = node.loc.selector.begin_pos
+
+          selector_pos =
+            # `Proc#call` shorthand syntax
+            if node.method?(:call) && !node.loc.selector
+              node.loc.begin.begin_pos
+            else
+              node.loc.selector.begin_pos
+            end
+
           check_space(dot_pos, selector_pos)
         end
 
