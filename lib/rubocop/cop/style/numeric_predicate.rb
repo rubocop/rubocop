@@ -54,14 +54,13 @@ module RuboCop
         }.freeze
 
         def on_send(node)
+          numeric, replacement = check(node)
+          return unless numeric
+
           return if ignored_method?(node.method_name) ||
                     node.each_ancestor(:send, :block).any? do |ancestor|
                       ignored_method?(ancestor.method_name)
                     end
-
-          numeric, replacement = check(node)
-
-          return unless numeric
 
           add_offense(node,
                       message: format(MSG,

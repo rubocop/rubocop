@@ -33,7 +33,7 @@ module RuboCop
 
       def requires_file_removal?(file_count, config_store)
         file_count > 1 &&
-          file_count > config_store.for_dir('.').for_all_cops['MaxFilesInCache']
+          file_count > config_store.for_pwd.for_all_cops['MaxFilesInCache']
       end
 
       def remove_oldest_files(files, dirs, cache_root, verbose)
@@ -60,7 +60,7 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = config_store.for_dir('.').for_all_cops['CacheRootDirectory']
+      root = config_store.for_pwd.for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
@@ -72,7 +72,7 @@ module RuboCop
     end
 
     def self.allow_symlinks_in_cache_location?(config_store)
-      config_store.for_dir('.').for_all_cops['AllowSymlinksInCacheRootDirectory']
+      config_store.for_pwd.for_all_cops['AllowSymlinksInCacheRootDirectory']
     end
 
     def initialize(file, team, options, config_store, cache_root = nil)
@@ -158,6 +158,7 @@ module RuboCop
     end
 
     # The checksum of the rubocop program running the inspection.
+    # rubocop:disable Metrics/AbcSize
     def rubocop_checksum
       ResultCache.source_checksum ||=
         begin
@@ -168,13 +169,16 @@ module RuboCop
           # exe directory. A change to any of them could affect the cop output
           # so we include them in the cache hash.
           source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
-          sources = source_files
-                    .select { |path| File.file?(path) }
-                    .sort
-                    .map { |path| IO.read(path, encoding: Encoding::UTF_8) }
-          Digest::SHA1.hexdigest(sources.join)
+
+          digest = Digest::SHA1.new
+          source_files
+            .select { |path| File.file?(path) }
+            .sort!
+            .each { |path| digest << File.mtime(path).to_s }
+          digest.hexdigest
         end
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Return a hash of the options given at invocation, minus the ones that have
     # no effect on which offenses and disabled line ranges are found, and thus

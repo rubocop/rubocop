@@ -290,6 +290,39 @@ end
 
 * https://rubystyle.guide#no-and-or-or
 
+== Style/ArrayCoercion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.88
+| -
+|===
+
+This cop enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+paths = [paths] unless paths.is_a?(Array)
+paths.each { |path| do_something(path) }
+
+# bad (always creates a new Array instance)
+[*paths].each { |path| do_something(path) }
+
+# good (and a bit more readable)
+Array(paths).each { |path| do_something(path) }
+----
+
+=== References
+
+* https://rubystyle.guide#array-coercion
+
 == Style/ArrayJoin
 
 |===
@@ -825,6 +858,49 @@ some_string =~ /something/
 === References
 
 * https://rubystyle.guide#no-case-equality
+
+== Style/CaseLikeIf
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.88
+| -
+|===
+
+This cop identifies places where `if-elsif` constructions
+can be replaced with `case-when`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if status == :active
+  perform_action
+elsif status == :inactive || status == :hibernating
+  check_timeout
+else
+  final_action
+end
+
+# good
+case status
+when :active
+  perform_action
+when :inactive, :hibernating
+  check_timeout
+else
+  final_action
+end
+----
+
+=== References
+
+* https://rubystyle.guide#case-vs-if-else
 
 == Style/CharacterLiteral
 
@@ -3354,6 +3430,59 @@ ok
 
 * https://rubystyle.guide#no-nested-conditionals
 
+== Style/HashAsLastArrayItem
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.88
+| -
+|===
+
+Checks for presence or absence of braces around hash literal as a last
+array item depending on configuration.
+
+=== Examples
+
+==== EnforcedStyle: braces (default)
+
+[source,ruby]
+----
+# bad
+[1, 2, one: 1, two: 2]
+
+# good
+[1, 2, { one: 1, two: 2 }]
+----
+
+==== EnforcedStyle: no_braces
+
+[source,ruby]
+----
+# bad
+[1, 2, { one: 1, two: 2 }]
+
+# good
+[1, 2, one: 1, two: 2]
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `braces`
+| `braces`, `no_braces`
+|===
+
+=== References
+
+* https://rubystyle.guide#hash-literal-as-last-array-item
+
 == Style/HashEachMethods
 
 |===
@@ -3388,6 +3517,71 @@ hash.each_value { |v| p v }
 === References
 
 * https://rubystyle.guide#hash-each
+
+== Style/HashLikeCase
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.88
+| -
+|===
+
+This cop checks for places where `case-when` represents a simple 1:1
+mapping and can be replaced with a hash lookup.
+
+=== Examples
+
+==== MinBranchesCount: 3 (default)
+
+[source,ruby]
+----
+# bad
+case country
+when 'europe'
+  'http://eu.example.com'
+when 'america'
+  'http://us.example.com'
+when 'australia'
+  'http://au.example.com'
+end
+
+# good
+SITES = {
+  'europe'    => 'http://eu.example.com',
+  'america'   => 'http://us.example.com',
+  'australia' => 'http://au.example.com'
+}
+SITES[country]
+----
+
+==== MinBranchesCount: 4
+
+[source,ruby]
+----
+# good
+case country
+when 'europe'
+  'http://eu.example.com'
+when 'america'
+  'http://us.example.com'
+when 'australia'
+  'http://au.example.com'
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| MinBranchesCount
+| `3`
+| Integer
+|===
 
 == Style/HashSyntax
 
@@ -7232,6 +7426,47 @@ ENV.fetch(:key, VALUE)
 === References
 
 * https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code
+
+== Style/RedundantFileExtensionInRequire
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.88
+| -
+|===
+
+This cop checks for the presence of superfluous `.rb` extension in
+the filename provided to `require` and `require_relative`.
+
+Note: If the extension is omitted, Ruby tries adding '.rb', '.so',
+      and so on to the name until found. If the file named cannot be found,
+      a `LoadError` will be raised.
+      There is an edge case where `foo.so` file is loaded instead of a `LoadError`
+      if `foo.so` file exists when `require 'foo.rb'` will be changed to `require 'foo'`,
+      but that seems harmless.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+require 'foo.rb'
+require_relative '../foo.rb'
+
+# good
+require 'foo'
+require 'foo.so'
+require_relative '../foo'
+require_relative '../foo.so'
+----
+
+=== References
+
+* https://rubystyle.guide#no-explicit-rb-to-require
 
 == Style/RedundantFreeze
 

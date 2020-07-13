@@ -21,15 +21,21 @@ module RuboCop
       #   end
       #
       class BisectedAttrAccessor < Cop
+        include VisibilityHelp
+
         MSG = 'Combine both accessors into `attr_accessor %<name>s`.'
 
         def on_class(class_node)
-          reader_names, writer_names = accessor_names(class_node)
+          VISIBILITY_SCOPES.each do |visibility|
+            reader_names, writer_names = accessor_names(class_node, visibility)
+            next unless reader_names && writer_names
 
-          accessor_macroses(class_node).each do |macro|
-            check(macro, reader_names, writer_names)
+            accessor_macroses(class_node, visibility).each do |macro|
+              check(macro, reader_names, writer_names)
+            end
           end
         end
+        alias on_sclass on_class
         alias on_module on_class
 
         def autocorrect(node)
@@ -42,18 +48,18 @@ module RuboCop
 
         private
 
-        def accessor_names(class_node)
-          reader_names = Set.new
-          writer_names = Set.new
+        def accessor_names(class_node, visibility)
+          reader_names = nil
+          writer_names = nil
 
-          accessor_macroses(class_node).each do |macro|
+          accessor_macroses(class_node, visibility).each do |macro|
             names = macro.arguments.map(&:source)
 
             names.each do |name|
               if attr_reader?(macro)
-                reader_names.add(name)
+                (reader_names ||= Set.new).add(name)
               else
-                writer_names.add(name)
+                (writer_names ||= Set.new).add(name)
               end
             end
           end
@@ -61,7 +67,7 @@ module RuboCop
           [reader_names, writer_names]
         end
 
-        def accessor_macroses(class_node)
+        def accessor_macroses(class_node, visibility)
           class_def = class_node.body
           return [] if !class_def || class_def.def_type?
 
@@ -72,7 +78,13 @@ module RuboCop
               class_def.each_child_node(:send)
             end
 
-          send_nodes.select { |node| node.macro? && (attr_reader?(node) || attr_writer?(node)) }
+          send_nodes.select { |node| attr_within_visibility_scope?(node, visibility) }
+        end
+
+        def attr_within_visibility_scope?(node, visibility)
+          node.macro? &&
+            (attr_reader?(node) || attr_writer?(node)) &&
+            node_visibility(node) == visibility
         end
 
         def attr_reader?(send_node)
@@ -95,8 +107,8 @@ module RuboCop
         end
 
         def replacement(macro, node)
-          class_node = macro.each_ancestor(:class, :module).first
-          reader_names, writer_names = accessor_names(class_node)
+          class_node = macro.each_ancestor(:class, :sclass, :module).first
+          reader_names, writer_names = accessor_names(class_node, node_visibility(macro))
 
           rest_args = rest_args(macro.arguments, reader_names, writer_names)
 

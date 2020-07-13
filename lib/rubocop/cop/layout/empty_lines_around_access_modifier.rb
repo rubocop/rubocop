@@ -109,6 +109,7 @@ module RuboCop
 
         def allowed_only_before_style?(node)
           if node.special_modifier?
+            return true if processed_source[node.last_line] == 'end'
             return false if next_line_empty?(node.last_line)
           end
 

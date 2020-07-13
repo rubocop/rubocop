@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'bump', require: false
+gem 'memory_profiler', platform: :mri
 gem 'pry'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
@@ -14,6 +15,7 @@ gem 'rubocop-rspec', '~> 1.39.0'
 # Stop upgrading SimpleCov until the following issue will be resolved.
 # https://github.com/codeclimate/test-reporter/issues/418
 gem 'simplecov', '~> 0.10', '< 0.18'
+gem 'stackprof', platform: :mri
 gem 'test-queue'
 gem 'yard', '~> 0.9'
 

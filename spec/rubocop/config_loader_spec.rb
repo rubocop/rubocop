@@ -1463,7 +1463,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     it 'uses paths relative to the .rubocop.yml, not cwd' do
       config_path = described_class.configuration_file_for('.')
-      RuboCop::PathUtil.chdir '..' do
+      Dir.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end
@@ -1481,7 +1481,7 @@ RSpec.describe RuboCop::ConfigLoader do
     it 'works without a starting .' do
       config_path = described_class.configuration_file_for('.')
       $LOAD_PATH.unshift(File.dirname(config_path))
-      RuboCop::PathUtil.chdir '..' do
+      Dir.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end

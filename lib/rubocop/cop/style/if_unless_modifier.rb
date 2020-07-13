@@ -41,11 +41,8 @@ module RuboCop
         MSG_USE_NORMAL =
           'Modifier form of `%<keyword>s` makes the line too long.'
 
-        ASSIGNMENT_TYPES = %i[lvasgn casgn cvasgn
-                              gvasgn ivasgn masgn].freeze
-
         def on_if(node)
-          msg = if eligible_node?(node)
+          msg = if single_line_as_modifier?(node)
                   MSG_USE_MODIFIER unless named_capture_in_condition?(node)
                 elsif too_long_due_to_modifier?(node)
                   MSG_USE_NORMAL
@@ -125,13 +122,15 @@ module RuboCop
           node.condition.match_with_lvasgn_type?
         end
 
-        def eligible_node?(node)
-          !non_eligible_if?(node) && !node.chained? &&
-            !node.nested_conditional? && single_line_as_modifier?(node)
+        def non_eligible_node?(node)
+          non_simple_if_unless?(node) ||
+            node.chained? ||
+            node.nested_conditional? ||
+            super
         end
 
-        def non_eligible_if?(node)
-          node.ternary? || node.modifier_form? || node.elsif? || node.else?
+        def non_simple_if_unless?(node)
+          node.ternary? || node.elsif? || node.else?
         end
 
         def another_statement_on_same_line?(node)
@@ -153,8 +152,9 @@ module RuboCop
           # Parenthesize corrected expression if changing to modifier-if form
           # would change the meaning of the parent expression
           # (due to the low operator precedence of modifier-if)
-          return false if node.parent.nil?
-          return true if ASSIGNMENT_TYPES.include?(node.parent.type)
+          parent = node.parent
+          return false if parent.nil?
+          return true if parent.assignment? || parent.operator_keyword?
 
           node.parent.send_type? && !node.parent.parenthesized?
         end

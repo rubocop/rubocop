@@ -72,8 +72,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     RUBY
     expect(corrected).to eq(<<~RUBY)
       def some_method
-        [] 
-        end
+        []; 
+      end
     RUBY
   end
 
@@ -86,8 +86,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     expect(corrected).to eq(<<~RUBY)
       def do_this(x)
         y = x + 5
-        y / 2 
-        end
+        y / 2; 
+      end
     RUBY
   end
 
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
       def f(x, y)
         process(x)
         process(y) 
-        end # comment
+      end # comment
     RUBY
   end
 
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
         block do
           foo
         end 
-        end
+      end
     RUBY
   end
 
@@ -125,9 +125,9 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     corrected = autocorrect_source(<<~RUBY)
       class Foo
         def some_method
-          []; end
+          [] end
         def another_method
-          {}; end
+          {} end
       end
     RUBY
     expect(corrected).to eq(<<~RUBY)

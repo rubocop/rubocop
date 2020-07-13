@@ -126,7 +126,7 @@ module RuboCop
         end
 
         def message_for_dup(node, method_name)
-          format(MSG, method: method_name, defined: @definitions[method_name],
+          format(MSG, method: method_name, defined: source_location(@definitions[method_name]),
                       current: source_location(node))
         end
 
@@ -152,7 +152,7 @@ module RuboCop
 
             add_offense(node, location: loc, message: message)
           else
-            @definitions[method_name] = source_location(node)
+            @definitions[method_name] = node
           end
         end
 

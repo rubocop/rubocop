@@ -56,11 +56,12 @@ module RuboCop
         def check_inside_pipes(arguments)
           opening_pipe, closing_pipe = pipes(arguments)
 
-          if style == :no_space
+          case style
+          when :no_space
             check_no_space_style_inside_pipes(arguments.children,
                                               opening_pipe,
                                               closing_pipe)
-          elsif style == :space
+          when :space
             check_space_style_inside_pipes(arguments.children,
                                            opening_pipe,
                                            closing_pipe)

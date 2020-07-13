@@ -41,6 +41,12 @@ module RuboCop
       #   a.fdiv(b)
       class FloatDivision < Cop
         include ConfigurableEnforcedStyle
+        MESSAGES = {
+          left_coerce: 'Prefer using `.to_f` on the left side.',
+          right_coerce: 'Prefer using `.to_f` on the right side.',
+          single_coerce: 'Prefer using `.to_f` on one side only.',
+          fdiv: 'Prefer using `fdiv` for float divisions.'
+        }.freeze
 
         def_node_matcher :right_coerce?, <<~PATTERN
           (send _ :/ (send _ :to_f))
@@ -77,16 +83,7 @@ module RuboCop
         end
 
         def message(_node)
-          case style
-          when :left_coerce
-            'Prefer using `.to_f` on the left side.'
-          when :right_coerce
-            'Prefer using `.to_f` on the right side.'
-          when :single_coerce
-            'Prefer using `.to_f` on one side only.'
-          when :fdiv
-            'Prefer using `fdiv` for float divisions.'
-          end
+          MESSAGES[style]
         end
       end
     end

@@ -5,10 +5,38 @@
 ### New features
 
 * [#8279](https://github.com/rubocop-hq/rubocop/pull/8279): Recognise require method passed as argument in `Lint/NonDeterministicRequireOrder` cop. ([@biinari][])
+* [#7333](https://github.com/rubocop-hq/rubocop/issues/7333): Add new `Style/RedundantFileExtensionInRequire` cop. ([@fatkodima][])
+* [#8316](https://github.com/rubocop-hq/rubocop/pull/8316): Support autocorrect for `Lint/DisjunctiveAssignmentInConstructor` cop. ([@fatkodima][])
+* [#8242](https://github.com/rubocop-hq/rubocop/pull/8242): Internal profiling available with `bin/rubocop-profile` and rake tasks. ([@marcandre][])
+* [#8295](https://github.com/rubocop-hq/rubocop/pull/8295): Add new `Style/ArrayCoercion` cop. ([@fatkodima][])
+* [#8293](https://github.com/rubocop-hq/rubocop/pull/8293): Add new `Lint/DuplicateElsifCondition` cop. ([@fatkodima][])
+* [#7736](https://github.com/rubocop-hq/rubocop/issues/7736): Add new `Style/CaseLikeIf` cop. ([@fatkodima][])
+* [#4286](https://github.com/rubocop-hq/rubocop/issues/4286): Add new `Style/HashAsLastArrayItem` cop. ([@fatkodima][])
+* [#8247](https://github.com/rubocop-hq/rubocop/issues/8247): Add new `Style/HashLikeCase` cop. ([@fatkodima][])
+* [#8286](https://github.com/rubocop-hq/rubocop/issues/8286): Internal method `expect_offense` allows abbreviated offense messages. ([@marcandre][])
 
 ### Bug fixes
 
+* [#8232](https://github.com/rubocop-hq/rubocop/issues/8232): Fix a false positive for `Layout/EmptyLinesAroundAccessModifier` when `end` immediately after access modifier. ([@koic][])
+* [#7777](https://github.com/rubocop-hq/rubocop/issues/7777): Fix crash for `Layout/MultilineArrayBraceLayout` when comment is present after last element. ([@shekhar-patil][])
+* [#7776](https://github.com/rubocop-hq/rubocop/issues/7776): Fix crash for `Layout/MultilineMethodCallBraceLayout` when comment is present before closing braces. ([@shekhar-patil][])
+* [#8282](https://github.com/rubocop-hq/rubocop/issues/8282): Fix `Style/IfUnlessModifier` bad precedence detection. ([@tejasbubane][])
+* [#8289](https://github.com/rubocop-hq/rubocop/issues/8289): Fix `Style/AccessorGrouping` to not register offense for accessor with comment. ([@tejasbubane][])
+* [#8310](https://github.com/rubocop-hq/rubocop/pull/8310): Handle major version requirements in `Gemspec/RequiredRubyVersion`. ([@eugeneius][])
+* [#8315](https://github.com/rubocop-hq/rubocop/pull/8315): Fix crash for `Style/PercentLiteralDelimiters` when the source contains invalid characters. ([@eugeneius][])
+
+### Changes
+
+* [#8021](https://github.com/rubocop-hq/rubocop/issues/8021): Rewrite `Layout/SpaceAroundMethodCallOperator` cop to make it faster. ([@fatkodima][])
+* [#8294](https://github.com/rubocop-hq/rubocop/pull/8294): Add `of` to `AllowedNames` of `MethodParameterName` cop. ([@AlexWayfer][])
+
+## 0.87.1 (2020-07-07)
+
+### Bug fixes
+
+* [#8189](https://github.com/rubocop-hq/rubocop/issues/8189): Fix an error for `Layout/MultilineBlockLayout` where spaces for a new line where not considered. ([@knejad][])
 * [#8252](https://github.com/rubocop-hq/rubocop/issues/8252): Fix a command line option name from `--safe-autocorrect` to `--safe-auto-correct`, which is compatible with RuboCop 0.86 and lower. ([@koic][])
+* [#8259](https://github.com/rubocop-hq/rubocop/issues/8259): Fix false positives for `Style/BisectedAttrAccessor` when accessors have different access modifiers. ([@fatkodima][])
 * [#8253](https://github.com/rubocop-hq/rubocop/issues/8253): Fix false positives for `Style/AccessorGrouping` when accessors have different access modifiers. ([@fatkodima][])
 * [#8257](https://github.com/rubocop-hq/rubocop/issues/8257): Fix an error for `Style/BisectedAttrAccessor` when using `attr_reader` and `attr_writer` with splat arguments. ([@fatkodima][])
 * [#8239](https://github.com/rubocop-hq/rubocop/pull/8239): Don't load `.rubocop.yml` from personal folders to check for exclusions if given a custom configuration file. ([@deivid-rodriguez][])
@@ -4657,3 +4685,5 @@
 [@fatkodima]: https://github.com/fatkodima
 [@karlwithak]: https://github.com/karlwithak
 [@CamilleDrapier]: https://github.com/CamilleDrapier
+[@shekhar-patil]: https://github.com/shekhar-patil
+[@knejad]: https://github.com/knejad

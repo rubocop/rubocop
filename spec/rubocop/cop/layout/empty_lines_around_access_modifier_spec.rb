@@ -397,6 +397,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end
         RUBY
       end
+
+      it "does not register an offense when `end` immediately after #{access_modifier}" do
+        expect_no_offenses(<<~RUBY)
+          class Test
+            #{access_modifier}
+          end
+        RUBY
+      end
     end
 
     %w[public module_function].each do |access_modifier|

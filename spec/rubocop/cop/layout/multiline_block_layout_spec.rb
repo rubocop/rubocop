@@ -78,15 +78,49 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
-  it 'does not register offenses when there are too many parameters to fit ' \
-     'on one line' do
+  it 'does not register offenses when there are too many parameters to fit on one line' do
     expect_no_offenses(<<~RUBY)
       some_result = lambda do |
         so_many,
         parameters,
         it_will,
         be_too_long,
-        for_one_line|
+        for_one_line,
+        line_length,
+        has_increased,
+        add_3_more|
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers offenses when there are not too many parameters to fit on one line' do
+    expect_offense(<<~RUBY)
+      some_result = lambda do |
+                              ^ Block argument expression is not on the same line as the block start.
+        so_many,
+        parameters,
+        it_will,
+        be_too_long,
+        for_one_line,
+        line_length,
+        has_increased,
+        add_3_mor|
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      some_result = lambda do |so_many, parameters, it_will, be_too_long, for_one_line, line_length, has_increased, add_3_mor|
+        do_something
+      end
+    RUBY
+  end
+
+  it 'considers the extra space required to join the lines together' do
+    expect_no_offenses(<<~RUBY)
+      some_result = lambda do
+        |so_many, parameters, it_will, be_too_long, for_one_line, line_length, has_increased, add_3_more|
         do_something
       end
     RUBY

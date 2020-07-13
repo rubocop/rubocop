@@ -35,6 +35,11 @@ module RuboCop
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = ['>= 2.5.0', '< 2.7.0']
       #   end
+      #
+      #   # good
+      #   Gem::Specification.new do |spec|
+      #     spec.required_ruby_version = '~> 2.5'
+      #   end
       class RequiredRubyVersion < Cop
         MSG = '`required_ruby_version` (%<required_ruby_version>s, ' \
               'declared in %<gemspec_filename>s) and `TargetRubyVersion` ' \
@@ -68,7 +73,7 @@ module RuboCop
             end
           end
 
-          required_ruby_version.str_content.match(/(\d\.\d)/)[1]
+          required_ruby_version.str_content.scan(/\d/).first(2).join('.')
         end
 
         def message(required_ruby_version, target_ruby_version)

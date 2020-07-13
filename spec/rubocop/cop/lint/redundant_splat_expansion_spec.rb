@@ -3,8 +3,6 @@
 RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
   subject(:cop) { described_class.new }
 
-  let(:message) { 'Replace splat expansion with comma separated values.' }
-
   it 'allows assigning to a splat' do
     expect_no_offenses('*, rhs = *node')
   end
@@ -32,49 +30,61 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
     RUBY
   end
 
-  shared_examples 'splat literal assignment' do |literal|
-    it 'registers an offense for ' do
-      inspect_source("a = *#{literal}")
-
-      expect(cop.messages).to eq([message])
-      expect(cop.highlights).to eq(["*#{literal}"])
+  shared_examples 'splat literal assignment' do |literal, corrects, as_array: literal|
+    it "registers an offense and #{corrects}" do
+      expect_offense(<<~RUBY, literal: literal)
+        a = *%{literal}
+            ^^{literal} Replace splat expansion with comma separated values.
+      RUBY
+      expect_correction(<<~RUBY)
+        a = #{as_array}
+      RUBY
     end
   end
 
-  shared_examples 'array splat expansion' do |literal|
+  shared_examples 'array splat expansion' do |literal, as_args: nil|
     context 'method parameters' do
-      it 'registers an offense' do
-        inspect_source("array.push(*#{literal})")
-
-        expect(cop.messages)
-          .to eq(['Pass array contents as separate arguments.'])
-        expect(cop.highlights).to eq(["*#{literal}"])
+      it 'registers an offense and converts to a list of arguments' do
+        expect_offense(<<~RUBY, literal: literal)
+          array.push(*%{literal})
+                     ^^{literal} Pass array contents as separate arguments.
+        RUBY
+        expect_correction(<<~RUBY)
+          array.push(#{as_args})
+        RUBY
       end
     end
 
-    it_behaves_like 'splat literal assignment', literal
+    it_behaves_like 'splat literal assignment', literal,
+                    'removes the splat from array', as_array: literal
   end
 
-  shared_examples 'splat expansion' do |literal|
+  shared_examples 'splat expansion' do |literal, as_array: literal|
     context 'method parameters' do
-      it 'registers an offense' do
-        inspect_source("array.push(*#{literal})")
-
-        expect(cop.messages).to eq([message])
-        expect(cop.highlights).to eq(["*#{literal}"])
+      it 'registers an offense and converts to an array' do
+        expect_offense(<<~RUBY, literal: literal)
+          array.push(*%{literal})
+                     ^^{literal} Replace splat expansion with comma separated values.
+        RUBY
+        expect_correction(<<~RUBY)
+          array.push(#{as_array})
+        RUBY
       end
     end
 
-    it_behaves_like 'splat literal assignment', literal
+    it_behaves_like 'splat literal assignment', literal,
+                    'converts to an array', as_array: as_array
   end
 
-  it_behaves_like 'array splat expansion', '[1, 2, 3]'
-  it_behaves_like 'array splat expansion', '%w(one two three)'
-  it_behaves_like 'array splat expansion', '%W(one #{two} three)'
-  it_behaves_like 'splat expansion', "'a'"
-  it_behaves_like 'splat expansion', '"#{a}"'
-  it_behaves_like 'splat expansion', '1'
-  it_behaves_like 'splat expansion', '1.1'
+  it_behaves_like 'array splat expansion', '[1, 2, 3]', as_args: '1, 2, 3'
+  it_behaves_like 'array splat expansion', '%w(one two three)',
+                  as_args: "'one', 'two', 'three'"
+  it_behaves_like 'array splat expansion', '%W(one #{two} three)',
+                  as_args: '"one", "#{two}", "three"'
+  it_behaves_like 'splat expansion', "'a'", as_array: "['a']"
+  it_behaves_like 'splat expansion', '"#{a}"', as_array: '["#{a}"]'
+  it_behaves_like 'splat expansion', '1', as_array: '[1]'
+  it_behaves_like 'splat expansion', '1.1', as_array: '[1.1]'
 
   context 'assignment to splat expansion' do
     it 'registers an offense and corrects an array using a constructor' do
@@ -323,74 +333,10 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
     end
   end
 
-  context 'autocorrect' do
-    context 'assignment to a splat expanded variable' do
-      it 'removes the splat from an array using []' do
-        new_source = autocorrect_source('a = *[1, 2, 3]')
-
-        expect(new_source).to eq('a = [1, 2, 3]')
-      end
-
-      it 'removes the splat from an array using %w' do
-        new_source = autocorrect_source('a = *%w(one two three)')
-
-        expect(new_source).to eq('a = %w(one two three)')
-      end
-
-      it 'removes the splat from an array using %W' do
-        new_source = autocorrect_source('a = *%W(one two three)')
-
-        expect(new_source).to eq('a = %W(one two three)')
-      end
-
-      it 'converts an expanded string to an array' do
-        new_source = autocorrect_source("a = *'a'")
-
-        expect(new_source).to eq("a = ['a']")
-      end
-
-      it 'converts an expanded string with interpolation to an array' do
-        new_source = autocorrect_source('a = *"#{a}"')
-
-        expect(new_source).to eq('a = ["#{a}"]')
-      end
-
-      it 'converts an expanded integer to an array' do
-        new_source = autocorrect_source('a = *1')
-
-        expect(new_source).to eq('a = [1]')
-      end
-
-      it 'converts an expanded float to an array' do
-        new_source = autocorrect_source('a = *1.1')
-
-        expect(new_source).to eq('a = [1.1]')
-      end
-    end
-
-    context 'splat expansion of method parameters' do
-      it 'removes the splat and brackets from []' do
-        new_source = autocorrect_source('foo(*[1, 2, 3])')
-
-        expect(new_source).to eq('foo(1, 2, 3)')
-      end
-
-      it 'changes %w to a list of words' do
-        new_source = autocorrect_source('foo(*%w(one two three))')
-
-        expect(new_source).to eq("foo('one', 'two', 'three')")
-      end
-
-      it 'changes %W to a list of words' do
-        new_source = autocorrect_source('foo(*%W(#{one} two three))')
-
-        expect(new_source).to eq('foo("#{one}", "two", "three")')
-      end
-    end
-  end
-
-  it_behaves_like 'array splat expansion', '%i(first second)'
-  it_behaves_like 'array splat expansion', '%I(first second #{third})'
+  it_behaves_like 'array splat expansion', '%i(first second)',
+                  as_args: ':first, :second'
+  it_behaves_like 'array splat expansion', '%I(first second #{third})',
+                  as_args: ':"first", :"second", :"#{third}"'
 
   context 'arrays being expanded with %i variants using splat expansion' do
     context 'splat expansion of method parameters' do
@@ -418,16 +364,26 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
     end
 
     context 'splat expansion inside of an array' do
-      it 'changes %i to a list of symbols' do
-        new_source = autocorrect_source('[:a, :b, *%i(c d), :e]')
+      it 'registers an offense and corrects %i to a list of symbols' do
+        expect_offense(<<~RUBY)
+          [:a, :b, *%i(c d), :e]
+                   ^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
 
-        expect(new_source).to eq('[:a, :b, :c, :d, :e]')
+        expect_correction(<<~RUBY)
+          [:a, :b, :c, :d, :e]
+        RUBY
       end
 
-      it 'changes %I to a list of symbols' do
-        new_source = autocorrect_source('[:a, :b, *%I(#{one} two), :e]')
+      it 'registers an offense and changes %I to a list of symbols' do
+        expect_offense(<<~'RUBY')
+          [:a, :b, *%I(#{one} two), :e]
+                   ^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
 
-        expect(new_source).to eq('[:a, :b, :"#{one}", :"two", :e]')
+        expect_correction(<<~'RUBY')
+          [:a, :b, :"#{one}", :"two", :e]
+        RUBY
       end
     end
   end

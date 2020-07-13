@@ -1397,11 +1397,17 @@ Lint/DisjunctiveAssignmentInConstructor:
   Enabled: true
   Safe: false
   VersionAdded: '0.62'
+  VersionChanged: '0.88'
 
 Lint/DuplicateCaseCondition:
   Description: 'Do not repeat values in case conditionals.'
   Enabled: true
   VersionAdded: '0.45'
+
+Lint/DuplicateElsifCondition:
+  Description: 'Do not repeat conditions used in if `elsif`.'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
 
 Lint/DuplicateHashKey:
   Description: 'Check for duplicate keys in hash literals.'
@@ -2179,17 +2185,18 @@ Naming/MethodParameterName:
   AllowNamesEndingInNumbers: true
   # Allowed names that will not register an offense
   AllowedNames:
-    - io
-    - id
-    - to
-    - by
-    - 'on'
-    - in
     - at
-    - ip
+    - by
     - db
+    - id
+    - in
+    - io
+    - ip
+    - of
+    - 'on'
     - os
     - pp
+    - to
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
@@ -2339,6 +2346,14 @@ Style/AndOr:
   SupportedStyles:
     - always
     - conditionals
+
+Style/ArrayCoercion:
+  Description: >-
+                  Use Array() instead of explicit Array check or [*var], when dealing
+                  with a variable you want to treat as an Array, but you're not certain it's an array.
+  StyleGuide: '#array-coercion'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
 
 Style/ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'
@@ -2521,6 +2536,12 @@ Style/CaseEquality:
   #   # good
   #   String === "string"
   AllowOnConstant: false
+
+Style/CaseLikeIf:
+  Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
+  StyleGuide: '#case-vs-if-else'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
 
 Style/CharacterLiteral:
   Description: 'Checks for uses of character literals.'
@@ -2961,12 +2982,34 @@ Style/GuardClause:
   # needs to have to trigger this cop
   MinBodyLength: 1
 
+Style/HashAsLastArrayItem:
+  Description: >-
+                 Checks for presence or absence of braces around hash literal as a last
+                 array item depending on configuration.
+  StyleGuide: '#hash-literal-as-last-array-item'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
+  EnforcedStyle: braces
+  SupportedStyles:
+    - braces
+    - no_braces
+
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
   Enabled: pending
   VersionAdded: '0.80'
   Safe: false
+
+Style/HashLikeCase:
+  Description: >-
+                  Checks for places where `case-when` represents a simple 1:1
+                  mapping and can be replaced with a hash lookup.
+  Enabled: 'pending'
+  VersionAdded: '0.88'
+  # `MinBranchesCount` defines the number of branches `case` needs to have
+  # to trigger this cop
+  MinBranchesCount: 3
 
 Style/HashSyntax:
   Description: >-
@@ -3664,6 +3707,14 @@ Style/RedundantFetchBlock:
   # This can be dangerous since constants will not be defined at that moment.
   SafeForConstants: false
   VersionAdded: '0.86'
+
+Style/RedundantFileExtensionInRequire:
+  Description: >-
+                  Checks for the presence of superfluous `.rb` extension in
+                  the filename provided to `require` and `require_relative`.
+  StyleGuide: '#no-explicit-rb-to-require'
+  Enabled: 'pending'
+  VersionAdded: '0.88'
 
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."

@@ -42,10 +42,10 @@ module RuboCop
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
-          consumed_branches = Set.new
+          consumed_branches = nil
 
           @assignments.reverse_each do |assignment|
-            next if consumed_branches.include?(assignment.branch)
+            next if consumed_branches&.include?(assignment.branch)
 
             assignment.reference!(node) unless assignment.run_exclusively_with?(reference)
 
@@ -58,7 +58,9 @@ module RuboCop
 
             break if !assignment.branch || assignment.branch == reference.branch
 
-            consumed_branches << assignment.branch unless assignment.branch.may_run_incompletely?
+            unless assignment.branch.may_run_incompletely?
+              (consumed_branches ||= Set.new) << assignment.branch
+            end
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity

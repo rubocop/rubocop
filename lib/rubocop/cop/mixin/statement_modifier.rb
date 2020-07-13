@@ -17,9 +17,9 @@ module RuboCop
       end
 
       def non_eligible_node?(node)
-        node.nonempty_line_count > 3 ||
-          !node.modifier_form? &&
-            processed_source.commented?(node.loc.end)
+        node.modifier_form? ||
+          node.nonempty_line_count > 3 ||
+          processed_source.commented?(node.loc.end)
       end
 
       def non_eligible_body?(body)

@@ -497,7 +497,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Layout/LineLength:
             Max: 95
         YAML
-        RuboCop::PathUtil.chdir('dir') do
+        Dir.chdir('dir') do
           expect(cli.run(%w[--auto-gen-config])).to eq(0)
         end
         expect($stderr.string).to eq('')

@@ -36,6 +36,10 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
           #!/usr/bin/ruby
           ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
         RUBY
+        expect_correction(<<~RUBY)
+          #!/usr/bin/ruby
+        RUBY
+        expect(file.stat.executable?).to be_truthy
       end
     end
   end
@@ -69,18 +73,6 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
 
     it 'skips investigation' do
       expect_no_offenses(source)
-    end
-  end
-
-  unless RuboCop::Platform.windows?
-    context 'auto-correct' do
-      it 'adds execute permissions to the file' do
-        File.write(file.path, source)
-
-        autocorrect_source(file.read, file)
-
-        expect(file.stat.executable?).to be_truthy
-      end
     end
   end
 end

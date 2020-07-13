@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'uri'
-require_relative 'legacy/corrections_proxy.rb'
+require_relative 'legacy/corrections_proxy'
 
 module RuboCop
   module Cop

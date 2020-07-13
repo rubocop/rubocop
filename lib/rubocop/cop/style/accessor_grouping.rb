@@ -58,6 +58,10 @@ module RuboCop
 
         private
 
+        def previous_line_comment?(node)
+          comment_line?(processed_source[node.first_line - 2])
+        end
+
         def class_send_elements(class_node)
           class_def = class_node.body
 
@@ -75,6 +79,8 @@ module RuboCop
         end
 
         def check(send_node)
+          return if previous_line_comment?(send_node)
+
           if grouped_style? && sibling_accessors(send_node).size > 1
             add_offense(send_node)
           elsif separated_style? && send_node.arguments.size > 1
@@ -94,7 +100,8 @@ module RuboCop
           send_node.parent.each_child_node(:send).select do |sibling|
             accessor?(sibling) &&
               sibling.method?(send_node.method_name) &&
-              node_visibility(sibling) == node_visibility(send_node)
+              node_visibility(sibling) == node_visibility(send_node) &&
+              !previous_line_comment?(sibling)
           end
         end
 

@@ -264,6 +264,28 @@ describe RuboCop::Cop::Style::SimplifyNotEmptyWithAny, :config do
 end
 ----
 
+If your code has variables of different lengths, you can use `%{foo}`,
+`^{foo}`, and `_{foo}` to format your template; you can also abbreviate
+offense messages with `[...]`:
+
+[source,ruby]
+----
+%w[raise fail].each do |keyword|
+  expect_offense(<<~RUBY, keyword: keyword)
+    %{keyword}(RuntimeError, msg)
+    ^{keyword}^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument [...]
+  RUBY
+
+%w[has_one has_many].each do |type|
+  expect_offense(<<~RUBY, type: type)
+    class Book
+      %{type} :chapter, foreign_key: 'book_id'
+      _{type}           ^^^^^^^^^^^^^^^^^^^^^^ Specifying the default [...]
+    end
+  RUBY
+end
+----
+
 === Auto-correct
 
 The auto-correct can help humans automatically fix offenses that have been detected.

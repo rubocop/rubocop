@@ -118,8 +118,7 @@ module RuboCop
 
     def file_offenses(file)
       file_offense_cache(file) do
-        source = get_processed_source(file)
-        source, offenses = do_inspection_loop(file, source)
+        source, offenses = do_inspection_loop(file)
         offenses = add_redundant_disables(file, offenses.compact.sort, source)
         offenses.sort.reject(&:disabled?).freeze
       end
@@ -159,8 +158,7 @@ module RuboCop
           # Do one extra inspection loop if any redundant disables were
           # removed. This is done in order to find rubocop:enable directives that
           # have now become useless.
-          _source, new_offenses = do_inspection_loop(file,
-                                                     get_processed_source(file))
+          _source, new_offenses = do_inspection_loop(file)
           offenses |= new_offenses
         end
       end
@@ -213,7 +211,7 @@ module RuboCop
       @cached_run ||=
         (@options[:cache] == 'true' ||
          @options[:cache] != 'false' &&
-         @config_store.for_dir(Dir.pwd).for_all_cops['UseCache']) &&
+         @config_store.for_pwd.for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and cannot use caching.
@@ -232,7 +230,8 @@ module RuboCop
       cache.save(offenses)
     end
 
-    def do_inspection_loop(file, processed_source)
+    def do_inspection_loop(file)
+      processed_source = get_processed_source(file)
       offenses = []
 
       # When running with --auto-correct, we need to inspect the file (which
