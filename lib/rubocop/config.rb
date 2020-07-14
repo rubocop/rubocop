@@ -104,10 +104,14 @@ module RuboCop
       end
     end
 
+    # @return [Config] for the given cop / cop name.
+    # Note: the 'Enabled' attribute is calculated according to the department's
+    # and 'AllCops' configuration; other attributes are not inherited.
     def for_cop(cop)
       @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
     end
 
+    # @return [Config] for the given department name.
     def for_department(department_name)
       @for_cop[department_name]
     end
