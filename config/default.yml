@@ -2313,7 +2313,7 @@ Naming/MemoizedInstanceVariableName:
     Memoized method name should match memo instance variable name.
   Enabled: true
   VersionAdded: '0.53'
-  VersionChanged: '0.58'
+  VersionChanged: '1.2'
   EnforcedStyleForLeadingUnderscores: disallowed
   SupportedStylesForLeadingUnderscores:
     - disallowed

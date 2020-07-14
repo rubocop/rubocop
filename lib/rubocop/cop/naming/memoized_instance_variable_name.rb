@@ -20,6 +20,11 @@ module RuboCop
       #     @something ||= calculate_expensive_thing
       #   end
       #
+      #   def foo
+      #     return @something if defined?(@something)
+      #     @something = calculate_expensive_thing
+      #   end
+      #
       #   # good
       #   def _foo
       #     @foo ||= calculate_expensive_thing
@@ -54,6 +59,11 @@ module RuboCop
       #     @foo ||= calculate_expensive_thing
       #   end
       #
+      #   def foo
+      #     return @foo if defined?(@foo)
+      #     @foo = calculate_expensive_thing
+      #   end
+      #
       #   # good
       #   def foo
       #     @_foo ||= calculate_expensive_thing
@@ -62,6 +72,11 @@ module RuboCop
       #   # good
       #   def _foo
       #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   def foo
+      #     return @_foo if defined?(@_foo)
+      #     @_foo = calculate_expensive_thing
       #   end
       #
       # @example EnforcedStyleForLeadingUnderscores :optional
@@ -84,6 +99,12 @@ module RuboCop
       #   def _foo
       #     @_foo ||= calculate_expensive_thing
       #   end
+      #
+      #   # good
+      #   def foo
+      #     return @_foo if defined?(@_foo)
+      #     @_foo = calculate_expensive_thing
+      #   end
       class MemoizedInstanceVariableName < Base
         include ConfigurableEnforcedStyle
 
@@ -92,32 +113,60 @@ module RuboCop
         UNDERSCORE_REQUIRED = 'Memoized variable `%<var>s` does not start ' \
           'with `_`. Use `@%<suggested_var>s` instead.'
 
-        def self.node_pattern
-          memo_assign = '(or_asgn $(ivasgn _) _)'
-          memoized_at_end_of_method = "(begin ... #{memo_assign})"
-          instance_method =
-            "(def $_ _ {#{memo_assign} #{memoized_at_end_of_method}})"
-          class_method =
-            "(defs self $_ _ {#{memo_assign} #{memoized_at_end_of_method}})"
-          "{#{instance_method} #{class_method}}"
-        end
+        # rubocop:disable Metrics/AbcSize
+        def on_or_asgn(node)
+          lhs, _value = *node
+          return unless lhs.ivasgn_type?
+          return unless (method_node = node.each_ancestor(:def, :defs).first)
 
-        private_class_method :node_pattern
-        def_node_matcher :memoized?, node_pattern
+          body = method_node.body
+          return unless body == node || body.children.last == node
 
-        def on_def(node)
-          (method_name, ivar_assign) = memoized?(node)
-          return if matches?(method_name, ivar_assign)
+          method_name = method_node.method_name
+          return if matches?(method_name, lhs)
 
           msg = format(
-            message(ivar_assign.children.first.to_s),
-            var: ivar_assign.children.first.to_s,
+            message(lhs.children.first.to_s),
+            var: lhs.children.first.to_s,
             suggested_var: suggested_var(method_name),
             method: method_name
           )
-          add_offense(ivar_assign.source_range, message: msg)
+          add_offense(lhs, message: msg)
         end
-        alias on_defs on_def
+        # rubocop:enable Metrics/AbcSize
+
+        def_node_matcher :defined_memoized?, <<~PATTERN
+          (begin
+            (if (defined $(ivar %1)) (return $(ivar %1)) nil?)
+            ...
+            $(ivasgn %1 _))
+        PATTERN
+
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        def on_defined?(node)
+          arg = node.arguments.first
+          return unless arg.ivar_type?
+
+          method_node = node.each_ancestor(:def, :defs).first
+          return unless method_node
+
+          var_name = arg.children.first
+          method_name = method_node.method_name
+          defined_memoized?(method_node.body, var_name) do |defined_ivar, return_ivar, ivar_assign|
+            return if matches?(method_name, ivar_assign)
+
+            msg = format(
+              message(var_name.to_s),
+              var: var_name.to_s,
+              suggested_var: suggested_var(method_name),
+              method: method_name
+            )
+            add_offense(defined_ivar, message: msg)
+            add_offense(return_ivar, message: msg)
+            add_offense(ivar_assign.loc.name, message: msg)
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         private
 
