@@ -1442,6 +1442,12 @@ Lint/ElseLayout:
   Enabled: true
   VersionAdded: '0.17'
 
+Lint/EmptyConditionalBody:
+  Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
+  Enabled: 'pending'
+  AllowComments: true
+  VersionAdded: '0.89'
+
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
