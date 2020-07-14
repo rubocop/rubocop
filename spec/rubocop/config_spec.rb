@@ -735,6 +735,31 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#for_badge' do
+    let(:hash) do
+      {
+        'Style' => { 'Foo' => 42, 'Bar' => 666 },
+        'Layout/TrailingWhitespace' => { 'Bar' => 43 },
+        'Style/Alias' => { 'Bar' => 44 }
+      }
+    end
+
+    it 'takes into account the department' do
+      expect(configuration.for_badge(RuboCop::Cop::Style::Alias.badge)).to eq(
+        { 'Enabled' => true,
+          'Foo' => 42,
+          'Bar' => 44 }
+      )
+    end
+
+    it 'works if department has no config' do
+      expect(configuration.for_badge(RuboCop::Cop::Layout::TrailingWhitespace.badge)).to eq(
+        { 'Enabled' => true,
+          'Bar' => 43 }
+      )
+    end
+  end
+
   context 'whether the cop is enabled' do
     def cop_enabled(cop_class)
       configuration.for_cop(cop_class).fetch('Enabled')
