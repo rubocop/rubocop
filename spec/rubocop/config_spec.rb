@@ -819,4 +819,31 @@ RSpec.describe RuboCop::Config do
       end
     end
   end
+
+  describe '#for_department' do
+    let(:hash) do
+      {
+        'Foo' => { 'Bar' => 42, 'Baz' => true },
+        'Foo/Foo' => { 'Bar' => 42, 'Qux' => true }
+      }
+    end
+
+    around do |test|
+      RuboCop::Cop::Registry.with_temporary_global do
+        test.run
+      end
+    end
+
+    before do
+      stub_const('RuboCop::Foo::Foo', Class.new(RuboCop::Cop::Base))
+    end
+
+    it "always returns the department's config" do
+      expect(configuration.for_department('Foo')).to eq hash['Foo']
+    end
+
+    it 'accepts a Symbol' do
+      expect(configuration.for_department(:Foo)).to eq hash['Foo']
+    end
+  end
 end
