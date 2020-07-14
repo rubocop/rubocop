@@ -107,7 +107,7 @@ module RuboCop
     def cop_line_ranges(analysis)
       return analysis.line_ranges unless analysis.start_line_number
 
-      analysis.line_ranges + [(analysis.start_line_number..Float::INFINITY)]
+      analysis.line_ranges + [(analysis.start_line_number.to_f..Float::INFINITY)]
     end
 
     def each_mentioned_cop
