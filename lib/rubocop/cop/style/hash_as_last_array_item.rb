@@ -25,7 +25,7 @@ module RuboCop
         extend AutoCorrector
 
         def on_hash(node)
-          return unless node.parent&.array_type?
+          return unless last_array_item?(node)
 
           if braces_style?
             check_braces(node)
@@ -35,6 +35,13 @@ module RuboCop
         end
 
         private
+
+        def last_array_item?(node)
+          parent = node.parent
+          return false unless parent
+
+          parent.array_type? && parent.values.last == node
+        end
 
         def check_braces(node)
           return if node.braces?
