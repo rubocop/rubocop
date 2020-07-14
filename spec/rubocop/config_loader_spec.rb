@@ -952,6 +952,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
       context 'and the gem is bundled' do
         before do
+          require 'bundler'
+
           specs = {
             'gemone' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemone'))],
             'gemtwo' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemtwo'))]
