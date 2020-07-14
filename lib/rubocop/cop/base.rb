@@ -189,8 +189,7 @@ module RuboCop
       def cop_config
         # Use department configuration as basis, but let individual cop
         # configuration override.
-        @cop_config ||= @config.for_cop(self.class.department.to_s)
-                               .merge(@config.for_cop(self))
+        @cop_config ||= @config.for_badge(self.class.badge)
       end
 
       def config_to_allow_offenses

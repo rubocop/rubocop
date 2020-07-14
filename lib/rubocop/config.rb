@@ -47,7 +47,7 @@ module RuboCop
     end
 
     def_delegators :@hash, :[], :[]=, :delete, :each, :key?, :keys, :each_key,
-                   :map, :merge, :to_h, :to_hash, :transform_values
+                   :fetch, :map, :merge, :to_h, :to_hash, :transform_values
     def_delegators :@validator, :validate, :target_ruby_version
 
     def to_s
@@ -109,6 +109,14 @@ module RuboCop
     # and 'AllCops' configuration; other attributes are not inherited.
     def for_cop(cop)
       @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
+    end
+
+    # @return [Config] for the given cop merged with that of its department (if any)
+    # Note: the 'Enabled' attribute is same as that returned by `for_cop`
+    def for_badge(badge)
+      cop_config = for_cop(badge.to_s)
+      fetch(badge.department.to_s) { return cop_config }
+        .merge(cop_config)
     end
 
     # @return [Config] for the given department name.
