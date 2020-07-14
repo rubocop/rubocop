@@ -504,7 +504,7 @@ EOS
 | Yes
 | No
 | 0.53
-| 0.58
+| 1.2
 |===
 
 This cop checks for memoized methods whose instance variable name
@@ -527,6 +527,11 @@ be set or referenced outside of the memoization method.
 # not `@foo`. This can cause confusion and bugs.
 def foo
   @something ||= calculate_expensive_thing
+end
+
+def foo
+  return @something if defined?(@something)
+  @something = calculate_expensive_thing
 end
 
 # good
@@ -567,6 +572,11 @@ def foo
   @foo ||= calculate_expensive_thing
 end
 
+def foo
+  return @foo if defined?(@foo)
+  @foo = calculate_expensive_thing
+end
+
 # good
 def foo
   @_foo ||= calculate_expensive_thing
@@ -575,6 +585,11 @@ end
 # good
 def _foo
   @_foo ||= calculate_expensive_thing
+end
+
+def foo
+  return @_foo if defined?(@_foo)
+  @_foo = calculate_expensive_thing
 end
 ----
 
@@ -600,6 +615,12 @@ end
 # good
 def _foo
   @_foo ||= calculate_expensive_thing
+end
+
+# good
+def foo
+  return @_foo if defined?(@_foo)
+  @_foo = calculate_expensive_thing
 end
 ----
 
