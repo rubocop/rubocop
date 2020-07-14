@@ -20,6 +20,7 @@
 * [#7425](https://github.com/rubocop-hq/rubocop/pull/7425): Add new `Lint/TopLevelReturnWithArgument` cop. ([@iamravitejag][])
 * [#8417](https://github.com/rubocop-hq/rubocop/pull/8417): Add new `Style/GlobalStdStream` cop. ([@fatkodima][])
 * [#7949](https://github.com/rubocop-hq/rubocop/issues/7949): Add new `Style/SingleArgumentDig` cop. ([@volfgox][])
+* [#8341](https://github.com/rubocop-hq/rubocop/pull/8341): Add new `Lint/EmptyConditionalBody` cop. ([@fatkodima][])
 
 ### Bug fixes
 
