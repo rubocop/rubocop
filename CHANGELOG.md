@@ -20,6 +20,10 @@
 
 * [#8350](https://github.com/rubocop-hq/rubocop/pull/8350): Set default max line length to 120 for `Style/MultilineMethodSignature`. ([@koic][])
 
+### Changes
+
+* [#8338](https://github.com/rubocop-hq/rubocop/pull/8338): **potentially breaking**. Config#for_department now returns only the config specified for that department; the 'Enabled' attribute is no longer calculated. ([@marcandre][])
+
 ## 0.88.0 (2020-07-13)
 
 ### New features

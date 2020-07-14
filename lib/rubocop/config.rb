@@ -112,8 +112,13 @@ module RuboCop
     end
 
     # @return [Config] for the given department name.
+    # Note: the 'Enabled' attribute will be present only if specified
+    # at the department's level
     def for_department(department_name)
-      @for_cop[department_name]
+      @for_department ||= Hash.new do |h, dept|
+        h[dept] = self[dept] || {}
+      end
+      @for_department[department_name.to_s]
     end
 
     def for_all_cops
