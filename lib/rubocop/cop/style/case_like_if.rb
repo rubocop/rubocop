@@ -112,6 +112,7 @@ module RuboCop
         def find_target_in_equality_node(node)
           argument = node.arguments.first
           receiver = node.receiver
+          return unless receiver
 
           if argument.literal? || const_reference?(argument)
             receiver
@@ -123,6 +124,7 @@ module RuboCop
         def find_target_in_match_node(node)
           argument = node.arguments.first
           receiver = node.receiver
+          return unless receiver
 
           if receiver.regexp_type?
             argument
