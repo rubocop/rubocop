@@ -10,6 +10,10 @@
 * [#8299](https://github.com/rubocop-hq/rubocop/issues/8299): Fix an incorrect auto-correct for `Style/RedundantCondition` when using `raise`, `rescue`, or `and` without argument parentheses in `else`. ([@koic][])
 * [#8335](https://github.com/rubocop-hq/rubocop/issues/8335): Fix incorrect character class detection for nested or POSIX bracket character classes in `Style/RedundantRegexpEscape`. ([@owst][])
 
+### Changes
+
+* [#8350](https://github.com/rubocop-hq/rubocop/pull/8350): Set default max line length to 120 for `Style/MultilineMethodSignature`. ([@koic][])
+
 ## 0.88.0 (2020-07-13)
 
 ### New features
