@@ -56,6 +56,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.receiver
           return unless integer_op_rand?(node) ||
                         rand_op_integer?(node) ||
                         rand_modified?(node)

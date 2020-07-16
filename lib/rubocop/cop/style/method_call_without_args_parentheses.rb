@@ -18,8 +18,8 @@ module RuboCop
               'no arguments.'
 
         def on_send(node)
-          return if ineligible_node?(node)
           return unless !node.arguments? && node.parenthesized?
+          return if ineligible_node?(node)
           return if ignored_method?(node.method_name)
           return if same_name_assignment?(node)
 

@@ -23,9 +23,13 @@ module RuboCop
         MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with ' \
                 'just the message.'
 
+        RAISE_METHODS = %i[raise fail].freeze
+
         # Switch `raise RuntimeError, 'message'` to `raise 'message'`, and
         # `raise RuntimeError.new('message')` to `raise 'message'`.
         def on_send(node)
+          return unless RAISE_METHODS.include?(node.method_name)
+
           fix_exploded(node) || fix_compact(node)
         end
 

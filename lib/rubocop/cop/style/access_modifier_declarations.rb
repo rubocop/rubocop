@@ -65,6 +65,8 @@ module RuboCop
       class AccessModifierDeclarations < Cop
         include ConfigurableEnforcedStyle
 
+        ACCESS_MODIFIERS = %i[private protected public module_function].to_set.freeze
+
         GROUP_STYLE_MESSAGE = [
           '`%<access_modifier>s` should not be',
           'inlined in method definitions.'
@@ -80,7 +82,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.access_modifier?
+          return unless access_modifier?(node)
           return if node.parent.pair_type?
           return if cop_config['AllowModifiersOnSymbols'] &&
                     access_modifier_with_symbol?(node)
@@ -95,6 +97,14 @@ module RuboCop
         end
 
         private
+
+        def access_modifier?(node)
+          maybe_access_modifier?(node) && node.access_modifier?
+        end
+
+        def maybe_access_modifier?(node)
+          !node.receiver && ACCESS_MODIFIERS.include?(node.method_name)
+        end
 
         def offense?(node)
           (group_style? && access_modifier_is_inlined?(node)) ||

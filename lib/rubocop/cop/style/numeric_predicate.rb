@@ -53,7 +53,11 @@ module RuboCop
           'negative?' => '<'
         }.freeze
 
+        COMPARISON_METHODS = %i[== > < positive? negative? zero?].to_set.freeze
+
         def on_send(node)
+          return unless COMPARISON_METHODS.include?(node.method_name)
+
           numeric, replacement = check(node)
           return unless numeric
 
