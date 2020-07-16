@@ -27,7 +27,7 @@ module RuboCop
 
         # @return [Corrector]
         def merged_correctors
-          correctors.inject(Corrector.new(processed_source), :merge!)
+          correctors.compact.inject(Corrector.new(processed_source), :merge!)
         end
 
         def offenses
