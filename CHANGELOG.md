@@ -9,6 +9,7 @@
 * [#8323](https://github.com/rubocop-hq/rubocop/issues/8323): Fix a false positive for `Style/HashAsLastArrayItem` when hash is not a last array item. ([@fatkodima][])
 * [#8299](https://github.com/rubocop-hq/rubocop/issues/8299): Fix an incorrect auto-correct for `Style/RedundantCondition` when using `raise`, `rescue`, or `and` without argument parentheses in `else`. ([@koic][])
 * [#8335](https://github.com/rubocop-hq/rubocop/issues/8335): Fix incorrect character class detection for nested or POSIX bracket character classes in `Style/RedundantRegexpEscape`. ([@owst][])
+* [#8347](https://github.com/rubocop-hq/rubocop/issues/8347): Fix an incorrect auto-correct for `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Layout/HashAlignment`. ([@koic][])
 
 ### Changes
 
