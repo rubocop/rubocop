@@ -404,6 +404,20 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense in multi-line inheritance' do
+      expect_offense(<<~RUBY)
+        class Point < Struct.new(:x, :y)
+                                ^^^^^^^^ Omit parentheses for method calls with arguments.
+        end
+      RUBY
+    end
+
+    it 'accepts parens in single-line inheritance' do
+      expect_no_offenses(<<-RUBY)
+        class Point < Struct.new(:x, :y); end
+      RUBY
+    end
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
@@ -578,6 +592,18 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         foo \\
           bar: 3
 
+      RUBY
+    end
+
+    it 'auto-corrects multi-line class definitions with inheritance' do
+      original = <<~RUBY
+        class Point < Struct.new(:x, :y)
+        end
+      RUBY
+
+      expect(autocorrect_source(original)).to eq(<<~RUBY)
+        class Point < Struct.new :x, :y
+        end
       RUBY
     end
 

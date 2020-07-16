@@ -4,6 +4,7 @@
 
 ### Bug fixes
 
+* [#8346](https://github.com/rubocop-hq/rubocop/pull/8346): Allow parentheses in single-line inheritance with `Style/MethodCallWithArgsParentheses` `EnforcedStyle: omit_parentheses` to fix invalid Ruby auto-correction. ([@gsamokovarov][])
 * [#8324](https://github.com/rubocop-hq/rubocop/issues/8324): Fix crash for `Layout/SpaceAroundMethodCallOperator` when using `Proc#call` shorthand syntax. ([@fatkodima][])
 * [#8344](https://github.com/rubocop-hq/rubocop/issues/8344): Fix crash for `Style/CaseLikeIf` when checking against `equal?` and `match?` without a receiver. ([@fatkodima][])
 * [#8323](https://github.com/rubocop-hq/rubocop/issues/8323): Fix a false positive for `Style/HashAsLastArrayItem` when hash is not a last array item. ([@fatkodima][])
