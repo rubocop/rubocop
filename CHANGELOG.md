@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#8352](https://github.com/rubocop-hq/rubocop/issues/8352): Allow multiple cops in shared_context. ([@dorner][])
+
 ### Bug fixes
 
 * [#8324](https://github.com/rubocop-hq/rubocop/issues/8324): Fix crash for `Layout/SpaceAroundMethodCallOperator` when using `Proc#call` shorthand syntax. ([@fatkodima][])
@@ -4698,3 +4700,4 @@
 [@CamilleDrapier]: https://github.com/CamilleDrapier
 [@shekhar-patil]: https://github.com/shekhar-patil
 [@knejad]: https://github.com/knejad
+[@dorner]: https://github.com/dorner

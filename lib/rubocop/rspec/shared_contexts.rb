@@ -58,6 +58,8 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
 
   let(:other_cops) { {} }
 
+  let(:run_first) { [] }
+
   let(:cop_options) { {} }
 
   ### Utilities
@@ -92,6 +94,15 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   let(:config) do
     hash = { 'AllCops' => all_cops_config,
              cop_class.cop_name => cur_cop_config }.merge!(other_cops)
+    run_first.each do |run_first_cop|
+      run_first_cop_config = RuboCop::ConfigLoader
+                             .default_configuration.for_cop(run_first_cop)
+                             .merge({
+                                      'Enabled' => true, # in case it is 'pending'
+                                      'AutoCorrect' => true # in case defaults set it to false
+                                    }).merge(other_cops[run_first_cop.badge.to_s] || {})
+      hash.merge!(run_first_cop.badge.to_s => run_first_cop_config)
+    end
 
     RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
   end
@@ -99,6 +110,14 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   let(:cop) do
     cop_class.new(config, cop_options).tap do |cop|
       cop.send :begin_investigation, processed_source
+    end
+  end
+
+  let(:run_first_cops) do
+    run_first.map do |cop_class|
+      cop_class.new(config, cop_options).tap do |cop|
+        cop.send :begin_investigation, processed_source
+      end
     end
   end
 end
