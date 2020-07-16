@@ -30,6 +30,8 @@ module RuboCop
         NONZERO_MSG = 'Use `!empty?` instead of ' \
                       '`%<lhs>s %<opr>s %<rhs>s`.'
 
+        LENGTH_METHODS = %i[size length].freeze
+
         def on_send(node)
           check_zero_length_predicate(node)
           check_nonzero_length_predicate(node)
@@ -44,31 +46,33 @@ module RuboCop
         private
 
         def check_zero_length_predicate(node)
-          zero_length_predicate = zero_length_predicate(node)
+          return unless LENGTH_METHODS.include?(node.method_name)
 
+          zero_length_predicate = zero_length_predicate(node.parent)
           return unless zero_length_predicate
 
           lhs, opr, rhs = zero_length_predicate
 
-          return if non_polymorphic_collection?(node)
+          return if non_polymorphic_collection?(node.parent)
 
           add_offense(
-            node,
+            node.parent,
             message: format(ZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
           )
         end
 
         def check_nonzero_length_predicate(node)
-          nonzero_length_predicate = nonzero_length_predicate(node)
+          return unless LENGTH_METHODS.include?(node.method_name)
 
+          nonzero_length_predicate = nonzero_length_predicate(node.parent)
           return unless nonzero_length_predicate
 
           lhs, opr, rhs = nonzero_length_predicate
 
-          return if non_polymorphic_collection?(node)
+          return if non_polymorphic_collection?(node.parent)
 
           add_offense(
-            node,
+            node.parent,
             message: format(NONZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
           )
         end

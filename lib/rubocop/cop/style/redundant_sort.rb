@@ -55,6 +55,8 @@ module RuboCop
         MSG = 'Use `%<suggestion>s` instead of '\
               '`%<sorter>s...%<accessor_source>s`.'
 
+        SORT_METHODS = %i[sort sort_by].freeze
+
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
             (send $(send _ $:sort ...) ${:last :first})
@@ -71,20 +73,25 @@ module RuboCop
           }
         MATCHER
 
+        # rubocop:disable Metrics/AbcSize
         def on_send(node)
-          redundant_sort?(node) do |sort_node, sorter, accessor|
-            range = range_between(
-              sort_node.loc.selector.begin_pos,
-              node.loc.expression.end_pos
-            )
+          return unless sort_method?(node)
 
-            add_offense(node,
-                        location: range,
-                        message: message(node,
-                                         sorter,
-                                         accessor))
+          if (sort_node, sorter, accessor = redundant_sort?(node.parent))
+            ancestor = node.parent
+          elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
+            ancestor = node.parent.parent
+          else
+            return
           end
+
+          add_offense(ancestor,
+                      location: offense_range(sort_node, ancestor),
+                      message: message(ancestor,
+                                       sorter,
+                                       accessor))
         end
+        # rubocop:enable Metrics/AbcSize
 
         def autocorrect(node)
           sort_node, sorter, accessor = redundant_sort?(node)
@@ -107,6 +114,14 @@ module RuboCop
         end
 
         private
+
+        def sort_method?(node)
+          SORT_METHODS.include?(node.method_name)
+        end
+
+        def offense_range(sort_node, ancestor)
+          range_between(sort_node.loc.selector.begin_pos, ancestor.loc.expression.end_pos)
+        end
 
         def message(node, sorter, accessor)
           accessor_source = range_between(

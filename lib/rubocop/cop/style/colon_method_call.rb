@@ -30,11 +30,11 @@ module RuboCop
         end
 
         def on_send(node)
-          # ignore Java interop code like Java::int
-          return if java_type_node?(node)
-
           return unless node.receiver && node.double_colon?
           return if node.camel_case_method?
+
+          # ignore Java interop code like Java::int
+          return if java_type_node?(node)
 
           add_offense(node, location: :dot)
         end

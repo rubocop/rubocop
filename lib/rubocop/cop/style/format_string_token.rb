@@ -41,6 +41,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_str(node)
+          return unless node.value.include?('%')
           return if node.each_ancestor(:xstr, :regexp).any?
 
           tokens(node) do |detected_style, token_range|
