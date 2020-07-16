@@ -50,7 +50,7 @@ module CopHelper
     cop_array = Array(cops)
     team = RuboCop::Cop::Team.new(cop_array, nil, raise_error: true)
     report = team.investigate(processed_source)
-    @last_corrector = report.merged_correctors || RuboCop::Cop::Corrector.new(processed_source)
+    @last_corrector = report.merged_correctors
     report.offenses
   end
 end
