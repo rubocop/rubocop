@@ -177,8 +177,20 @@ RSpec.describe RuboCop::Cop::Style::PatternArgument, :config do
           end
         end
 
-        it 'accepts invoking === on the current element through the iteration' do
-          expect_no_offenses("%w[foo bar].#{method} { |e| e === f }")
+        context 'invoking === on lvar passing an object that does not internally use lvar' do
+          it 'is positive' do
+            expect_offense(<<~RUBY, method: method)
+              [1, 2, 3].#{method} { |e| e === f }
+                        ^{method} Pass `f` as an argument to `#{method}` instead of a block.
+              [1, 2, 3].#{method} { |e| e === another_method }
+                        ^{method} Pass `another_method` as an argument to `#{method}` instead of a block.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              [1, 2, 3].#{method}(f)
+              [1, 2, 3].#{method}(another_method)
+            RUBY
+          end
         end
 
         it 'accepts methods like member?, include?, =~, match, match? when receiver is not set, range or regexp' do
@@ -220,15 +232,31 @@ RSpec.describe RuboCop::Cop::Style::PatternArgument, :config do
             end
             [{ foo: :foo, bar: :bar }, { foo: :bar, bar: :foo }].#{method} do |hash|
               foo, bar = hash.values_at(:foo, :bar)
-              foo === bar
+              foo.include?(bar)
             end
           RUBY
         end
 
         it 'accepts a block yielding multiple values' do
-          expect_no_offenses("{ foo: :foo, bar: :bar }.#{method} { |key, _| Symbol === key }")
-          expect_no_offenses("[[1, :one], [2, :two]].#{method} { |_, e| Symbol === e }")
-          expect_no_offenses("[%w[fo_o o], %w[foo_bar bar]].#{method} { |e, f| /_\#{f}$/ === e }")
+          expect_no_offenses(<<~RUBY)
+            [1, 2, 3].#{method} { |x, y| Set[foo(y), bar(y)].include?(x) }
+            [1, 2, 3].#{method} { |_, x| Set[1, 2, 3].include?(x) }
+            { foo: :foo, bar: :bar }.#{method} { |key, _| Symbol === key }
+            [[1, :one], [2, :two]].#{method} { |_, e| Symbol === e }
+            [%w[fo_o o], %w[foo_bar bar]].#{method} { |e, f| /_\#{f}$/ === e }
+          RUBY
+        end
+
+        it 'accepts using lvar to invoke a method whose value is used with a supported method' do
+          expect_no_offenses(<<~RUBY)
+            [1, 2, 3].#{method} { |e| e === f(e) }
+            [1, 2, 3].#{method} { |e| e === f + 2 }
+            [1, 2, 3].#{method} { |e| e === e.another_method }
+          RUBY
+        end
+
+        it 'accepts using lvar as the complement for another method' do
+          expect_no_offenses("[1, 2, 3].#{method} { |x| Set[1, 2, 3].include?(foo(x)) }")
         end
       end
     end
@@ -237,7 +265,7 @@ RSpec.describe RuboCop::Cop::Style::PatternArgument, :config do
   context 'below Ruby 2.5', :ruby24 do
     %i[all? any? none? one?].each do |method|
       it "does not flag if the pattern could be used as the predicate argument in #{method}" do
-        expect_no_offenses("[1, 2, 3].#{method} { |e| (1..10) === e }")
+        expect_no_offenses("[1, 2, 3].#{method} { |e| (1..10).include?(e) }")
       end
     end
   end

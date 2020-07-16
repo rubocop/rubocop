@@ -61,11 +61,12 @@ module RuboCop
         def_node_matcher :set?, '(send (const {nil? cbase} :Set) {:[] :new} ...)'
         def_node_matcher :pattern_argument_candidate?, <<~PATTERN
           (block $({send csend} _ {:all? :any? :none? :one?}) (:args _) {
-            (send ${#range? #set?} {:=== :include? :member?} ...)
-            (send ${#regexp?} {:=== :=~ :match :match?} ...)
-            (send $(const nil? _) :=== _)
+            (send ${#range? #set?} {:=== :include? :member?} lvar)
+            (send ${#regexp?} {:=== :=~ :match :match?} lvar)
+            (send $(const nil? _) :=== lvar)
             (send lvar :is_a? $(const nil? _))
-            (send lvar {:=~ :match :match?} ${#regexp?})})
+            (send lvar {:=~ :match :match?} ${#regexp?})
+            (send lvar :=== $(send nil? _))})
         PATTERN
 
         def replacement(pattern)
