@@ -25,6 +25,11 @@ module RuboCop
           @correctors ||= cop_reports.map(&:corrector)
         end
 
+        # @return [Corrector]
+        def merged_correctors
+          correctors.compact.inject(:merge!)
+        end
+
         def offenses
           @offenses ||= offenses_per_cop.flatten(1)
         end
