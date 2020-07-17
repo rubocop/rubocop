@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module RuboCop
   module Cop
     module Lint
@@ -53,6 +55,9 @@ module RuboCop
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
               '%<current>s.'
 
+        METHOD_DEF_METHODS = %i[alias_method attr_reader attr_writer
+                                attr_accessor attr].to_set.freeze
+
         def initialize(config = nil, options = nil)
           super
           @definitions = {}
@@ -97,7 +102,10 @@ module RuboCop
 
         def_node_matcher :sym_name, '(sym $_name)'
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
+          return unless METHOD_DEF_METHODS.include?(node.method_name)
+
           if (name = alias_method?(node))
             return unless name
             return if node.ancestors.any?(&:if_type?)
@@ -108,6 +116,7 @@ module RuboCop
             on_attr(node, *attr)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 

@@ -30,10 +30,11 @@ module RuboCop
               'call.'
 
         def on_send(node)
-          return if !node.arguments? || node.parenthesized? ||
-                    node.last_argument.lambda? || allowed_method?(node)
+          return unless node.arguments?
 
           return unless ambiguous_block_association?(node)
+          return if node.parenthesized? ||
+                    node.last_argument.lambda? || allowed_method?(node)
 
           add_offense(node)
         end

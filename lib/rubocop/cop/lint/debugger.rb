@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module RuboCop
   module Cop
     module Lint
@@ -35,6 +37,11 @@ module RuboCop
       class Debugger < Cop
         MSG = 'Remove debugger entry point `%<source>s`.'
 
+        DEBUGGER_METHODS = %i[
+          debugger byebug remote_byebug pry remote_pry pry_remote console rescue
+          save_and_open_page save_and_open_screenshot save_screenshot irb
+        ].to_set.freeze
+
         def_node_matcher :kernel?, <<~PATTERN
           {
             (const nil? :Kernel)
@@ -57,6 +64,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless DEBUGGER_METHODS.include?(node.method_name)
           return unless debugger_call?(node) || binding_irb?(node)
 
           add_offense(node)

@@ -44,9 +44,10 @@ module RuboCop
         KERNEL = 'Kernel'
         SHOVEL = '<<'
         STRING_TYPES = %i[str dstr].freeze
+        FORMAT_METHODS = %i[format sprintf %].freeze
 
         def on_send(node)
-          return unless format_string?(node)
+          return unless FORMAT_METHODS.include?(node.method_name) && format_string?(node)
 
           if invalid_format_string?(node)
             add_offense(node, location: :selector, message: MSG_INVALID)

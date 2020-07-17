@@ -70,9 +70,7 @@ module RuboCop
         def check_node(node)
           return unless node&.begin_type?
 
-          ignored_methods = private_class_method_names(node)
-
-          ineffective_modifier(node, ignored_methods) do |defs_node, modifier|
+          ineffective_modifier(node) do |defs_node, modifier|
             add_offense(defs_node,
                         location: :keyword,
                         message: format_message(modifier))
@@ -97,20 +95,26 @@ module RuboCop
                       alternative: alternative)
         end
 
-        def ineffective_modifier(node, ignored_methods, modifier = nil, &block)
+        # rubocop:disable Metrics/CyclomaticComplexity
+        def ineffective_modifier(node, modifier = nil, &block)
+          ignored_methods = nil
+
           node.each_child_node do |child|
             case child.type
             when :send
               modifier = child if access_modifier?(child)
             when :defs
+              ignored_methods ||= private_class_method_names(node)
               next if correct_visibility?(child, modifier, ignored_methods)
 
               yield child, modifier
             when :kwbegin
+              ignored_methods ||= private_class_method_names(node)
               ineffective_modifier(child, ignored_methods, modifier, &block)
             end
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def access_modifier?(node)
           node.bare_access_modifier? && !node.method?(:module_function)
