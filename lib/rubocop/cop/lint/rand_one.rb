@@ -29,7 +29,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless rand_one?(node)
+          return unless node.method?(:rand) && rand_one?(node)
 
           add_offense(node)
         end

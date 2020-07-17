@@ -21,11 +21,10 @@ module RuboCop
               'Use double quoted strings if you need interpolation.'
 
         def on_str(node)
-          return if heredoc?(node)
-
           parent = node.parent
           return if parent && (parent.dstr_type? || parent.regexp_type?)
           return unless /(?<!\\)#\{.*\}/.match?(node.source.scrub)
+          return if heredoc?(node)
 
           add_offense(node)
         end

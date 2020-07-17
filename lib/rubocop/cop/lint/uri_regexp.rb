@@ -30,6 +30,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.method?(:regexp)
+
           uri_regexp_with_argument?(node) do |double_colon, arg|
             register_offense(
               node, top_level: double_colon ? '::' : '', arg: "(#{arg.source})"

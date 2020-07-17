@@ -60,7 +60,11 @@ module RuboCop
                                     replacement: :block_given?)
         ].freeze
 
+        DEPRECATED_METHODS = DEPRECATED_METHODS_OBJECT.map(&:deprecated_method).freeze
+
         def on_send(node)
+          return unless DEPRECATED_METHODS.include?(node.method_name)
+
           check(node) do |data|
             message = format(MSG, current: deprecated_method(data),
                                   prefer: replacement_method(data))
