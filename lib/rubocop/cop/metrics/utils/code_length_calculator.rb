@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module RuboCop
   module Cop
     module Metrics
@@ -10,10 +12,11 @@ module RuboCop
           include Util
 
           FOLDABLE_TYPES = %i[array hash heredoc].freeze
-          CLASSISH_TYPES = %i[class module].freeze
+          CLASSLIKE_TYPES = %i[class module].freeze
 
-          def initialize(node, count_comments: false, foldable_types: [])
+          def initialize(node, processed_source, count_comments: false, foldable_types: [])
             @node = node
+            @processed_source = processed_source
             @count_comments = count_comments
             @foldable_checks = build_foldable_checks(foldable_types)
             @foldable_types = normalize_foldable_types(foldable_types)
@@ -21,13 +24,11 @@ module RuboCop
 
           def calculate
             length = code_length(@node)
+            return length if @foldable_types.empty?
 
-            each_top_level_descendant(@node, *@foldable_types, *CLASSISH_TYPES) do |descendant|
-              descendant_length = code_length(descendant)
-
-              if classlike_node?(descendant)
-                length -= (descendant_length + 2)
-              elsif foldable_node?(descendant)
+            each_top_level_descendant(@node, @foldable_types) do |descendant|
+              if foldable_node?(descendant)
+                descendant_length = code_length(descendant)
                 length = length - descendant_length + 1
               end
             end
@@ -36,14 +37,6 @@ module RuboCop
           end
 
           private
-
-          def_node_matcher :class_definition?, <<~PATTERN
-            (casgn nil? _ (block (send (const nil? :Class) :new) ...))
-          PATTERN
-
-          def_node_matcher :module_definition?, <<~PATTERN
-            (casgn nil? _ (block (send (const nil? :Module) :new) ...))
-          PATTERN
 
           def build_foldable_checks(types)
             types.map do |type|
@@ -67,15 +60,51 @@ module RuboCop
           end
 
           def code_length(node)
-            return heredoc_length(node) if heredoc_node?(node)
+            if classlike_node?(node)
+              classlike_code_length(node)
+            elsif heredoc_node?(node)
+              heredoc_length(node)
+            else
+              body = extract_body(node)
+              return 0 unless body
 
-            body = extract_body(node)
-            lines = body&.source&.lines || []
-            lines.count { |line| !irrelevant_line?(line) }
+              body.source.each_line.count { |line| !irrelevant_line?(line) }
+            end
           end
 
           def heredoc_node?(node)
             node.respond_to?(:heredoc?) && node.heredoc?
+          end
+
+          def classlike_code_length(node)
+            return 0 if namespace_module?(node)
+
+            body_line_numbers = line_range(node).to_a[1...-1]
+
+            target_line_numbers = body_line_numbers -
+                                  line_numbers_of_inner_nodes(node, :module, :class)
+
+            target_line_numbers.reduce(0) do |length, line_number|
+              source_line = @processed_source[line_number]
+              next length if irrelevant_line?(source_line)
+
+              length + 1
+            end
+          end
+
+          def namespace_module?(node)
+            classlike_node?(node.body)
+          end
+
+          def line_numbers_of_inner_nodes(node, *types)
+            line_numbers = Set.new
+
+            node.each_descendant(*types) do |inner_node|
+              line_range = line_range(inner_node)
+              line_numbers.merge(line_range)
+            end
+
+            line_numbers.to_a
           end
 
           def heredoc_length(node)
@@ -83,19 +112,20 @@ module RuboCop
             lines.count { |line| !irrelevant_line?(line) } + 2
           end
 
-          def each_top_level_descendant(node, *types, &block)
+          def each_top_level_descendant(node, types, &block)
             node.each_child_node do |child|
+              next if classlike_node?(child)
+
               if types.include?(child.type)
                 yield child
               else
-                each_top_level_descendant(child, *types, &block)
+                each_top_level_descendant(child, types, &block)
               end
             end
           end
 
           def classlike_node?(node)
-            CLASSISH_TYPES.include?(node.type) ||
-              (node.casgn_type? && (class_definition?(node) || module_definition?(node)))
+            CLASSLIKE_TYPES.include?(node.type)
           end
 
           def foldable_node?(node)

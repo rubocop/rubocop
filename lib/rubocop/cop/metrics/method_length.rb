@@ -30,7 +30,7 @@ module RuboCop
       #   end               # 5 points
       #
       class MethodLength < Cop
-        include TooManyLines
+        include CodeLength
 
         LABEL = 'Method'
 
