@@ -30,7 +30,7 @@ module RuboCop
       #   end                 # 5 points
       #
       class ClassLength < Cop
-        include TooManyLines
+        include CodeLength
 
         def on_class(node)
           check_code_length(node)
