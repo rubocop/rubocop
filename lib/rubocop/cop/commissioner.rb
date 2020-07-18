@@ -95,7 +95,6 @@ module RuboCop
 
       def reset
         @errors = []
-        @callbacks = {}
       end
 
       def invoke(callback, cops, *args)
