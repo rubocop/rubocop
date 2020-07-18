@@ -2,6 +2,22 @@
 
 # Class for generating documentation of all cops departments
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
+  def call
+    cops   = RuboCop::Cop::Cop.registry
+    config = RuboCop::ConfigLoader.default_configuration
+
+    YARD::Registry.load!
+    cops.departments.sort!.each do |department|
+      print_cops_of_department(cops, department, config)
+    end
+
+    print_table_of_contents(cops)
+  ensure
+    RuboCop::ConfigLoader.default_configuration = nil
+  end
+
+  private
+
   def cops_of_department(cops, department)
     cops.with_department(department).sort!
   end
@@ -256,19 +272,5 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     return 'Disabled' unless status
 
     status == 'pending' ? 'Pending' : 'Enabled'
-  end
-
-  def main
-    cops   = RuboCop::Cop::Cop.registry
-    config = RuboCop::ConfigLoader.default_configuration
-
-    YARD::Registry.load!
-    cops.departments.sort!.each do |department|
-      print_cops_of_department(cops, department, config)
-    end
-
-    print_table_of_contents(cops)
-  ensure
-    RuboCop::ConfigLoader.default_configuration = nil
   end
 end
