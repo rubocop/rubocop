@@ -55,10 +55,25 @@ module RuboCop
     end
 
     def hidden_file_in_not_hidden_dir?(pattern, path)
-      File.fnmatch?(
-        pattern, path,
-        File::FNM_PATHNAME | File::FNM_EXTGLOB | File::FNM_DOTMATCH
-      ) && File.basename(path).start_with?('.') && !hidden_dir?(path)
+      hidden_file?(path) &&
+        File.fnmatch?(
+          pattern, path,
+          File::FNM_PATHNAME | File::FNM_EXTGLOB | File::FNM_DOTMATCH
+        ) &&
+        !hidden_dir?(path)
+    end
+
+    def hidden_file?(path)
+      maybe_hidden_file?(path) && File.basename(path).start_with?('.')
+    end
+
+    # Loose check to reduce memory allocations
+    def maybe_hidden_file?(path)
+      separator_index = path.rindex(File::SEPARATOR)
+      return false unless separator_index
+
+      dot_index = path.index('.', separator_index + 1)
+      dot_index == separator_index + 1
     end
 
     def hidden_dir?(path)
