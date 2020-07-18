@@ -42,7 +42,7 @@ module RuboCop
         @cops = cops
         @forces = forces
         @options = options
-        @callbacks = {}
+        @callbacks = Hash.new { |h, k| h[k] = cops_callbacks_for(k) }
 
         reset
       end
@@ -83,9 +83,6 @@ module RuboCop
       private
 
       def trigger_responding_cops(callback, node)
-        @callbacks[callback] ||= @cops.select do |cop|
-          cop.respond_to?(callback)
-        end
         @callbacks[callback].each do |cop|
           with_cop_error_handling(cop, node) do
             cop.send(callback, node)
@@ -95,6 +92,12 @@ module RuboCop
 
       def reset
         @errors = []
+      end
+
+      def cops_callbacks_for(callback)
+        @cops.select do |cop|
+          cop.respond_to?(callback)
+        end
       end
 
       def invoke(callback, cops, *args)
