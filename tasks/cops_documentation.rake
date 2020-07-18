@@ -266,20 +266,6 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     status == 'pending' ? 'Pending' : 'Enabled'
   end
 
-  def assert_docs_synchronized
-    # Do not print diff and yield whether exit code was zero
-    sh('git diff --quiet docs') do |outcome, _|
-      return if outcome
-
-      # Output diff before raising error
-      sh('GIT_PAGER=cat git diff docs')
-
-      warn 'The docs directory is out of sync. ' \
-        'Run `rake generate_cops_documentation` and commit the results.'
-      exit!
-    end
-  end
-
   def main
     cops   = RuboCop::Cop::Cop.registry
     config = RuboCop::ConfigLoader.default_configuration
@@ -290,11 +276,24 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     end
 
     print_table_of_contents(cops)
-
-    assert_docs_synchronized if ENV['CI'] == 'true'
   ensure
     RuboCop::ConfigLoader.default_configuration = nil
   end
 
   main
+end
+
+desc 'Verify that documentation is up to date'
+task verify_cops_documentation: :generate_cops_documentation do
+  # Do not print diff and yield whether exit code was zero
+  sh('git diff --quiet docs') do |outcome, _|
+    exit if outcome
+
+    # Output diff before raising error
+    sh('GIT_PAGER=cat git diff docs')
+
+    warn 'The docs directory is out of sync. ' \
+      'Run `rake generate_cops_documentation` and commit the results.'
+    exit!
+  end
 end
