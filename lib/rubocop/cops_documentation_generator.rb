@@ -37,7 +37,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def cops_body(cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
     content << required_ruby_version(cop)
-    content << properties(cop.new(config))
+    content << properties(cop)
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count.positive?
     content << configurations(pars)
@@ -61,17 +61,17 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   # rubocop:disable Metrics/MethodLength
-  def properties(cop_instance)
+  def properties(cop)
     header = [
       'Enabled by default', 'Safe', 'Supports autocorrection', 'VersionAdded',
       'VersionChanged'
     ]
-    autocorrect = if cop_instance.class.support_autocorrect?
-                    "Yes#{' (Unsafe)' unless cop_instance.safe_autocorrect?}"
+    autocorrect = if cop.support_autocorrect?
+                    "Yes#{' (Unsafe)' unless cop.new(config).safe_autocorrect?}"
                   else
                     'No'
                   end
-    cop_config = cop_instance.cop_config
+    cop_config = config.for_cop(cop)
     content = [[
       cop_status(cop_config.fetch('Enabled')),
       cop_config.fetch('Safe', true) ? 'Yes' : 'No',
@@ -220,12 +220,12 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def print_cop_with_doc(cop)
-    t = config.for_cop(cop)
+    cop_config = config.for_cop(cop)
     non_display_keys = %w[
       Description Enabled StyleGuide Reference Safe SafeAutoCorrect VersionAdded
       VersionChanged
     ]
-    pars = t.reject { |k| non_display_keys.include? k }
+    pars = cop_config.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
     examples_object = []
     cop_code(cop) do |code_object|
