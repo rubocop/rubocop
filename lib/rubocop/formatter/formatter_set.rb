@@ -35,6 +35,7 @@ module RuboCop
       end
 
       def initialize(options = {})
+        super()
         @options = options # CLI options
       end
 

@@ -137,6 +137,7 @@ module RuboCop
       end
 
       def self.inherited(subclass)
+        super
         Registry.global.enlist(subclass)
       end
 

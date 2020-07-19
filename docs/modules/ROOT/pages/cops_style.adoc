@@ -4815,42 +4815,6 @@ end
 
 * https://rubystyle.guide#method-parens
 
-== Style/MethodMissingSuper
-
-|===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
-
-| Enabled
-| Yes
-| No
-| 0.56
-| -
-|===
-
-This cop checks for the presence of `method_missing` without
-falling back on `super`.
-
-=== Examples
-
-[source,ruby]
-----
-#bad
-def method_missing(name, *args)
-  # ...
-end
-
-#good
-
-def method_missing(name, *args)
-  # ...
-  super
-end
-----
-
-=== References
-
-* https://rubystyle.guide#no-method-missing
-
 == Style/MinMax
 
 |===
