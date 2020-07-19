@@ -2,12 +2,22 @@
 
 # Class for generating documentation of all cops departments
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
+  # This class will only generate documentation for cops that belong to one of
+  # the departments given in the `departments` array. E.g. if we only wanted
+  # documentation for Lint cops:
+  #
+  #   CopsDocumentationGenerator.new(departments: ['Lint']).call
+  #
+  def initialize(departments: [])
+    @departments = departments.map(&:to_sym).sort!
+  end
+
   def call
     cops   = RuboCop::Cop::Cop.registry
     config = RuboCop::ConfigLoader.default_configuration
 
     YARD::Registry.load!
-    cops.departments.sort!.each do |department|
+    departments.each do |department|
       print_cops_of_department(cops, department, config)
     end
 
@@ -17,6 +27,8 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   private
+
+  attr_reader :departments
 
   def cops_of_department(cops, department)
     cops.with_department(department).sort!
@@ -236,7 +248,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     type_title = department[0].upcase + department[1..-1]
     filename = "cops_#{department.downcase}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
-    cops_of_department(cops, department.to_sym).each do |cop|
+    cops_of_department(cops, department).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
       content << "* xref:#{filename}##{anchor}[#{cop.cop_name}]\n"
     end
@@ -260,10 +272,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def table_contents(cops)
-    cops
-      .departments
-      .map(&:to_s)
-      .sort
+    departments
       .map { |department| table_of_content_for_department(cops, department) }
       .join("\n")
   end
