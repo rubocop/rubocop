@@ -5,6 +5,8 @@ module RuboCop
     # Common functionality for enforcing a specific superclass
     module EnforceSuperclass
       def self.included(base)
+        super
+
         base.def_node_matcher :class_definition, <<~PATTERN
           (class (const _ !:#{base::SUPERCLASS}) #{base::BASE_PATTERN} ...)
         PATTERN

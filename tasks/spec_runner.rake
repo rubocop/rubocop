@@ -94,6 +94,7 @@ module RuboCop
     # implicitly reading ARGV.
     class Framework < ::TestQueue::TestFramework::RSpec
       def initialize(rspec_args)
+        super()
         @rspec_args = rspec_args
       end
 

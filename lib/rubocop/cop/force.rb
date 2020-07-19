@@ -11,6 +11,7 @@ module RuboCop
       end
 
       def self.inherited(subclass)
+        super
         all << subclass
       end
 
