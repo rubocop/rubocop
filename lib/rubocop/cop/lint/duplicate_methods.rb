@@ -99,13 +99,10 @@ module RuboCop
         PATTERN
 
         def_node_matcher :sym_name, '(sym $_name)'
-
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless METHOD_DEF_METHODS.include?(node.method_name)
 
           if (name = alias_method?(node))
-            return unless name
             return if node.ancestors.any?(&:if_type?)
             return if possible_dsl?(node)
 
@@ -114,7 +111,6 @@ module RuboCop
             on_attr(node, *attr)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
