@@ -87,20 +87,11 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   RUBY
   it_behaves_like('allowed', 'a, b = Float::INFINITY')
   it_behaves_like('allowed', 'a[0], a[1] = a[1], a[0]')
+  it_behaves_like('allowed', 'obj.attr1, obj.attr2 = obj.attr2, obj.attr1')
+  it_behaves_like('allowed', 'obj.attr1, ary[0] = ary[0], obj.attr1')
   it_behaves_like('allowed', 'ary[0], ary[1], ary[2] = ary[1], ary[2], ary[0]')
-
-  # FIXME: Remove `RUBY_ENGINE` condition, which works around
-  # a JRuby 9.2.9.0 regression:
-  # https://github.com/jruby/jruby/issues/5968
-  # Originally, both MRI and JRuby are successful tests.
-  # The tests fail as follows:
-  # https://circleci.com/gh/rubocop-hq/rubocop/74069
-  unless RUBY_ENGINE == 'jruby'
-    it_behaves_like('allowed', 'obj.attr1, obj.attr2 = obj.attr2, obj.attr1')
-    it_behaves_like('allowed', 'obj.attr1, ary[0] = ary[0], obj.attr1')
-    it_behaves_like('allowed', 'self.a, self.b = self.b, self.a')
-    it_behaves_like('allowed', 'self.a, self.b = b, a')
-  end
+  it_behaves_like('allowed', 'self.a, self.b = self.b, self.a')
+  it_behaves_like('allowed', 'self.a, self.b = b, a')
 
   it 'highlights the entire expression' do
     expect_offense(<<~RUBY)
