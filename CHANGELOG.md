@@ -6,6 +6,7 @@
 
 * [#8322](https://github.com/rubocop-hq/rubocop/pull/8322): Support autocorrect for `Style/CaseEquality` cop. ([@fatkodima][])
 * [#8339](https://github.com/rubocop-hq/rubocop/pull/8339): Add `Config#for_badge` as an efficient way to get a cop's config merged with its department's. ([@marcandre][])
+* [#5067](https://github.com/rubocop-hq/rubocop/issues/5067): Add new `Style/StringConcatenation` cop. ([@fatkodima][])
 
 ### Bug fixes
 

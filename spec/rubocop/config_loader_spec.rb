@@ -1526,7 +1526,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     before do
       create_file('.rubocop.yml', ['require:', "  - #{required_file_path}"])
-      create_file(required_file_path + '.rb', ['class MyClass', 'end'])
+      create_file("#{required_file_path}.rb", ['class MyClass', 'end'])
     end
 
     it 'works without a starting .' do

@@ -74,7 +74,7 @@ module RuboCop
             if c.dsym_type?
               string_literal = to_string_literal(c.source)
 
-              ':' + trim_string_interporation_escape_character(string_literal)
+              ":#{trim_string_interporation_escape_character(string_literal)}"
             else
               to_symbol_literal(c.value.to_s)
             end

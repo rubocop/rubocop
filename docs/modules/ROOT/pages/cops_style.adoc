@@ -8944,6 +8944,37 @@ warn('hello')
 
 * https://rubystyle.guide#warn
 
+== Style/StringConcatenation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.89
+| -
+|===
+
+This cop checks for places where string concatenation
+can be replaced with string interpolation.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+email_with_name = user.name + ' <' + user.email + '>'
+
+# good
+email_with_name = "#{user.name} <#{user.email}>"
+email_with_name = format('%s <%s>', user.name, user.email)
+----
+
+=== References
+
+* https://rubystyle.guide#string-interpolation
+
 == Style/StringHashKeys
 
 |===

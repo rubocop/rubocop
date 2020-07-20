@@ -25,9 +25,9 @@ module RuboCop
           target_line = find_target_line
           if target_line
             configuration_entries.insert(target_line,
-                                         new_configuration_entry + "\n")
+                                         "#{new_configuration_entry}\n")
           else
-            configuration_entries.push("\n" + new_configuration_entry)
+            configuration_entries.push("\n#{new_configuration_entry}")
           end
 
           File.write(configuration_file_path, configuration_entries.join)

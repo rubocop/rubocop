@@ -471,6 +471,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylespecialglobalvars[Style/SpecialGlobalVars]
 * xref:cops_style.adoc#stylestabbylambdaparentheses[Style/StabbyLambdaParentheses]
 * xref:cops_style.adoc#stylestderrputs[Style/StderrPuts]
+* xref:cops_style.adoc#stylestringconcatenation[Style/StringConcatenation]
 * xref:cops_style.adoc#stylestringhashkeys[Style/StringHashKeys]
 * xref:cops_style.adoc#stylestringliterals[Style/StringLiterals]
 * xref:cops_style.adoc#stylestringliteralsininterpolation[Style/StringLiteralsInInterpolation]
