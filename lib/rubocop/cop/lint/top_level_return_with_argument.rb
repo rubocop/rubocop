@@ -32,7 +32,7 @@ module RuboCop
       #
       # All other return statements are usually defined inside a method, or in
       # a block. Thus, unlike the top-level return, these statements have
-      # parents belonging to the `AST::DefNode`, `AST::BlockNode` or 
+      # parents belonging to the `AST::DefNode`, `AST::BlockNode` or
       # `AST::IfNode` class.
       #
       # @example
@@ -43,17 +43,19 @@ module RuboCop
         MSG = 'Top level return with argument detected.'
 
         def on_return(return_node)
-          if ancestors_valid?(return_node) && !return_node.arguments.empty?
-            add_offense(return_node)
-          end
+          add_offense(return_node) if ancestors_valid?(return_node) && !return_node.arguments.empty?
         end
 
         private
 
         def ancestors_valid?(return_node)
           return true if return_node.parent.nil?
-          return true if return_node.parent.instance_of?(AST::Node) && return_node.parent.parent.nil?
-          return false
+
+          if return_node.parent.instance_of?(AST::Node) && return_node.parent.parent.nil?
+            return true
+          end
+
+          false
         end
       end
     end
