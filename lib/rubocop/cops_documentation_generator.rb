@@ -10,27 +10,27 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   #
   def initialize(departments: [])
     @departments = departments.map(&:to_sym).sort!
+    @cops = RuboCop::Cop::Cop.registry
   end
 
   def call
-    cops   = RuboCop::Cop::Cop.registry
     config = RuboCop::ConfigLoader.default_configuration
 
     YARD::Registry.load!
     departments.each do |department|
-      print_cops_of_department(cops, department, config)
+      print_cops_of_department(department, config)
     end
 
-    print_table_of_contents(cops)
+    print_table_of_contents
   ensure
     RuboCop::ConfigLoader.default_configuration = nil
   end
 
   private
 
-  attr_reader :departments
+  attr_reader :departments, :cops
 
-  def cops_of_department(cops, department)
+  def cops_of_department(department)
     cops.with_department(department).sort!
   end
 
@@ -207,8 +207,8 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
-  def print_cops_of_department(cops, department, config)
-    selected_cops = cops_of_department(cops, department)
+  def print_cops_of_department(department, config)
+    selected_cops = cops_of_department(department)
     content = +"= #{department}\n"
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop, config)
@@ -244,11 +244,11 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def table_of_content_for_department(cops, department)
+  def table_of_content_for_department(department)
     type_title = department[0].upcase + department[1..-1]
     filename = "cops_#{department.downcase}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
-    cops_of_department(cops, department).each do |cop|
+    cops_of_department(department).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase
       content << "* xref:#{filename}##{anchor}[#{cop.cop_name}]\n"
     end
@@ -256,12 +256,12 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
-  def print_table_of_contents(cops)
+  def print_table_of_contents
     path = "#{Dir.pwd}/docs/modules/ROOT/pages/cops.adoc"
     original = File.read(path)
     content = +"// START_COP_LIST\n\n"
 
-    content << table_contents(cops)
+    content << table_contents
 
     content << "\n// END_COP_LIST"
 
@@ -271,9 +271,9 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     File.write(path, content)
   end
 
-  def table_contents(cops)
+  def table_contents
     departments
-      .map { |department| table_of_content_for_department(cops, department) }
+      .map { |department| table_of_content_for_department(department) }
       .join("\n")
   end
 
