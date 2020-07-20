@@ -11,14 +11,13 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def initialize(departments: [])
     @departments = departments.map(&:to_sym).sort!
     @cops = RuboCop::Cop::Cop.registry
+    @config = RuboCop::ConfigLoader.default_configuration
   end
 
   def call
-    config = RuboCop::ConfigLoader.default_configuration
-
     YARD::Registry.load!
     departments.each do |department|
-      print_cops_of_department(department, config)
+      print_cops_of_department(department)
     end
 
     print_table_of_contents
@@ -28,21 +27,21 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   private
 
-  attr_reader :departments, :cops
+  attr_reader :departments, :cops, :config
 
   def cops_of_department(department)
     cops.with_department(department).sort!
   end
 
   # rubocop:disable Metrics/AbcSize
-  def cops_body(config, cop, description, examples_objects, pars)
+  def cops_body(cop, description, examples_objects, pars)
     content = h2(cop.cop_name)
     content << required_ruby_version(cop)
     content << properties(cop.new(config))
     content << "#{description}\n"
     content << examples(examples_objects) if examples_objects.count.positive?
     content << configurations(pars)
-    content << references(config, cop)
+    content << references(cop)
     content
   end
   # rubocop:enable Metrics/AbcSize
@@ -194,7 +193,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def references(config, cop)
+  def references(cop)
     cop_config = config.for_cop(cop)
     urls = RuboCop::Cop::MessageAnnotator.new(
       config, cop.name, cop_config, {}
@@ -207,11 +206,11 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
-  def print_cops_of_department(department, config)
+  def print_cops_of_department(department)
     selected_cops = cops_of_department(department)
     content = +"= #{department}\n"
     selected_cops.each do |cop|
-      content << print_cop_with_doc(cop, config)
+      content << print_cop_with_doc(cop)
     end
     file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/cops_#{department.downcase}.adoc"
     File.open(file_name, 'w') do |file|
@@ -220,7 +219,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def print_cop_with_doc(cop, config)
+  def print_cop_with_doc(cop)
     t = config.for_cop(cop)
     non_display_keys = %w[
       Description Enabled StyleGuide Reference Safe SafeAutoCorrect VersionAdded
@@ -233,7 +232,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       description = code_object.docstring unless code_object.docstring.blank?
       examples_object = code_object.tags('example')
     end
-    cops_body(config, cop, description, examples_object, pars)
+    cops_body(cop, description, examples_object, pars)
   end
 
   def cop_code(cop)
