@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Top level return with argument detected.'
 
         def on_return(return_node)
-          if return_node.parent.instance_of?(RuboCop::AST::Node) && !return_node.arguments.empty?
+          if return_node.parent.instance_of?(AST::Node) && !return_node.arguments.empty?
             add_offense(return_node)
           end
         end

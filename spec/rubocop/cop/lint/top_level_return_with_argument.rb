@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
     { 'AllowComments' => true }
   end
 
-  it 'Expect no offense from the top level return node' do
+  contextit 'Expect no offense from the top level return node' do
     expect_no_offenses(<<~RUBY)
       foo
 

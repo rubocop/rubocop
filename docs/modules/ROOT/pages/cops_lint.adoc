@@ -1,4 +1,4 @@
-= Lint
+  = Lint
 
 == Lint/AmbiguousBlockAssociation
 
@@ -3461,6 +3461,34 @@ end
 def to_json(*_args)
 end
 ----
+
+== Lint/TopLevelReturnWithArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop detects top-level return statements with arguments.
+
+=== Examples
+
+[source,ruby]
+----
+# Detected in Ruby 2.7
+foo
+
+return 1 # Ignored in Ruby 2.7
+
+bar
+----
+
+
 
 == Lint/UnderscorePrefixedVariableName
 
