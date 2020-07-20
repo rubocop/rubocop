@@ -3503,7 +3503,7 @@ the type `AST::Node` and the parent.parent is `nil`, like so:
 
 All other return statements are usually defined inside a method, or in
 a block. Thus, unlike the top-level return, these statements have
-parents belonging to the `AST::DefNode`, `AST::BlockNode` or 
+parents belonging to the `AST::DefNode`, `AST::BlockNode` or
 `AST::IfNode` class.
 
 === Examples

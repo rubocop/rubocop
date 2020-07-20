@@ -10,6 +10,7 @@
 * [#8339](https://github.com/rubocop-hq/rubocop/pull/8339): Add `Config#for_badge` as an efficient way to get a cop's config merged with its department's. ([@marcandre][])
 * [#5067](https://github.com/rubocop-hq/rubocop/issues/5067): Add new `Style/StringConcatenation` cop. ([@fatkodima][])
 * [#7425](https://github.com/rubocop-hq/rubocop/pull/7425): Add new Lint/TopLevelReturnWithArgument cop. ([@iamravitejag](https://github.com/iamravitejag)).
+* [#7425](https://github.com/rubocop-hq/rubocop/pull/7425): Add new `Lint/TopLevelReturnWithArgument` cop. ([@iamravitejag][])
 
 ### Bug fixes
 
@@ -4720,3 +4721,4 @@
 [@CamilleDrapier]: https://github.com/CamilleDrapier
 [@shekhar-patil]: https://github.com/shekhar-patil
 [@knejad]: https://github.com/knejad
+[@iamravitejag]: https://github.com/iamravitejag
