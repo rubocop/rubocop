@@ -43,7 +43,7 @@ module RuboCop
         MSG = 'Top level return with argument detected.'
 
         def on_return(return_node)
-          add_offense(return_node) if ancestors_valid?(return_node) && !return_node.arguments.empty?
+          add_offense(return_node) if ancestors_valid?(return_node) && return_node.arguments?
         end
 
         private
@@ -51,11 +51,7 @@ module RuboCop
         def ancestors_valid?(return_node)
           return true if return_node.parent.nil?
 
-          if return_node.parent.instance_of?(AST::Node) && return_node.parent.parent.nil?
-            return true
-          end
-
-          false
+          return_node.parent.instance_of?(AST::Node) && return_node.parent.parent.nil?
         end
       end
     end
