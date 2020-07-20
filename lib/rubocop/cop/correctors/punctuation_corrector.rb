@@ -10,7 +10,7 @@ module RuboCop
         end
 
         def add_space(token)
-          ->(corrector) { corrector.replace(token.pos, token.pos.source + ' ') }
+          ->(corrector) { corrector.replace(token.pos, "#{token.pos.source} ") }
         end
 
         def swap_comma(range)

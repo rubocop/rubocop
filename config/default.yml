@@ -3940,6 +3940,13 @@ Style/StderrPuts:
   Enabled: true
   VersionAdded: '0.51'
 
+Style/StringConcatenation:
+  Description: 'Checks for places where string concatenation can be replaced with string interpolation.'
+  StyleGuide: '#string-interpolation'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Style/StringHashKeys:
   Description: 'Prefer symbols instead of strings as hash keys.'
   StyleGuide: '#symbols-as-keys'

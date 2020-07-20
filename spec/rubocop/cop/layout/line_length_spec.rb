@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   end
 
   it 'highlights excessive characters' do
-    inspect_source('#' * 80 + 'abc')
+    inspect_source("#{'#' * 80}abc")
     expect(cop.highlights).to eq(['abc'])
   end
 
@@ -328,7 +328,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
 
     context 'and the source is too long' do
-      let(:source) { 'a' * 80 + 'bcd' + ' # rubocop:enable Style/ClassVars' }
+      let(:source) { "#{'a' * 80}bcd # rubocop:enable Style/ClassVars" }
 
       it 'registers an offense for the line' do
         inspect_source(source)
@@ -378,7 +378,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     shared_examples 'with tabs indentation' do
       it "registers an offense for a line that's including 2 tab with size 2" \
          ' and 28 other characters' do
-        inspect_source("\t\t" + '#' * 28)
+        inspect_source("\t\t#{'#' * 28}")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to eq('Line is too long. [32/30]')
         expect(cop.config_to_allow_offenses)
@@ -386,13 +386,13 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       it 'highlights excessive characters' do
-        inspect_source("\t" + '#' * 28 + 'a')
+        inspect_source("\t#{'#' * 28}a")
         expect(cop.highlights).to eq(['a'])
       end
 
       it "accepts a line that's including 1 tab with size 2" \
          ' and 28 other characters' do
-        expect_no_offenses("\t" + '#' * 28)
+        expect_no_offenses("\t#{'#' * 28}")
       end
     end
 

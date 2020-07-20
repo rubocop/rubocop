@@ -174,7 +174,7 @@ module RuboCop
 
           corrector.replace(
             range,
-            range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
+            range.source.sub(/^:(.*\S)\s*=>\s*$/, "#{space}\\1: ")
           )
 
           hash_node = pair_node.parent

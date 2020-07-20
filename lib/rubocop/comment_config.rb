@@ -11,7 +11,7 @@ module RuboCop
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
         .gsub(' ', '\s*')
     )
 

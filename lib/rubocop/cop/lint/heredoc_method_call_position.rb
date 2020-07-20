@@ -148,7 +148,7 @@ module RuboCop
         end
 
         def trailing_comma?(call_source, call_line_source)
-          call_source + ',' == call_line_source
+          "#{call_source}," == call_line_source
         end
       end
     end

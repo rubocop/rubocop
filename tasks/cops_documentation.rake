@@ -60,7 +60,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
       cop_config.fetch('VersionAdded', '-'),
       cop_config.fetch('VersionChanged', '-')
     ]]
-    to_table(header, content) + "\n"
+    "#{to_table(header, content)}\n"
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -196,7 +196,7 @@ task generate_cops_documentation: :yard_for_generate_documentation do
     file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/cops_#{department.downcase}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
-      file.write(content.strip + "\n")
+      file.write("#{content.strip}\n")
     end
   end
 

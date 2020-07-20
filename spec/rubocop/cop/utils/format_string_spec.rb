@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
 
         expect(described_class.new(escaped).named_interpolation?)
           .to be_falsey
-        expect(described_class.new('prefix:' + escaped).named_interpolation?)
+        expect(described_class.new("prefix:#{escaped}").named_interpolation?)
           .to be_falsey
       end
     end

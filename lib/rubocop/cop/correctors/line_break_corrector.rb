@@ -29,8 +29,8 @@ module RuboCop
                               configured_width:)
           corrector.insert_before(
             range,
-            "\n" + ' ' * (node.loc.keyword.column +
-                          indent_steps * configured_width)
+            "\n#{' ' * (node.loc.keyword.column +
+                          indent_steps * configured_width)}"
           )
         end
 
@@ -39,7 +39,7 @@ module RuboCop
 
           text = eol_comment.loc.expression.source
           corrector.insert_before(node,
-                                  text + "\n" + (' ' * node.loc.keyword.column))
+                                  "#{text}\n#{' ' * node.loc.keyword.column}")
           corrector.remove(eol_comment)
         end
 

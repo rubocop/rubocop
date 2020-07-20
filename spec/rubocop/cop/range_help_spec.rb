@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
       context 'with include_final_newline' do
         let(:include_final_newline) { true }
 
-        it { is_expected.to eq(expected + "\n") }
+        it { is_expected.to eq("#{expected}\n") }
       end
     end
 
