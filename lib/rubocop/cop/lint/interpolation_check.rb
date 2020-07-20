@@ -23,7 +23,7 @@ module RuboCop
         def on_str(node)
           parent = node.parent
           return if parent && (parent.dstr_type? || parent.regexp_type?)
-          return unless /(?<!\\)#\{.*\}/.match?(node.source.scrub)
+          return unless /(?<!\\)#\{.*\}/.match?(node.source)
           return if heredoc?(node)
 
           add_offense(node)
