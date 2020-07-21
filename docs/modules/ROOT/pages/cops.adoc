@@ -345,6 +345,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleclassandmodulechildren[Style/ClassAndModuleChildren]
 * xref:cops_style.adoc#styleclasscheck[Style/ClassCheck]
 * xref:cops_style.adoc#styleclassmethods[Style/ClassMethods]
+* xref:cops_style.adoc#styleclassmethodsdefinitions[Style/ClassMethodsDefinitions]
 * xref:cops_style.adoc#styleclassvars[Style/ClassVars]
 * xref:cops_style.adoc#stylecollectionmethods[Style/CollectionMethods]
 * xref:cops_style.adoc#stylecolonmethodcall[Style/ColonMethodCall]

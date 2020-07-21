@@ -116,6 +116,7 @@ require_relative 'rubocop/cop/mixin/trailing_comma'
 require_relative 'rubocop/cop/mixin/uncommunicative_name'
 require_relative 'rubocop/cop/mixin/unused_argument'
 require_relative 'rubocop/cop/mixin/visibility_help'
+require_relative 'rubocop/cop/mixin/comments_help' # relies on visibility_help
 
 require_relative 'rubocop/cop/utils/format_string'
 
@@ -389,6 +390,7 @@ require_relative 'rubocop/cop/style/character_literal'
 require_relative 'rubocop/cop/style/class_and_module_children'
 require_relative 'rubocop/cop/style/class_check'
 require_relative 'rubocop/cop/style/class_methods'
+require_relative 'rubocop/cop/style/class_methods_definitions'
 require_relative 'rubocop/cop/style/class_vars'
 require_relative 'rubocop/cop/style/collection_methods'
 require_relative 'rubocop/cop/style/colon_method_call'

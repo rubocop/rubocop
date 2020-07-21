@@ -134,6 +134,7 @@ module RuboCop
       #
       # @see https://rubystyle.guide#consistent-classes
       class ClassStructure < Cop
+        include CommentsHelp
         include VisibilityHelp
 
         HUMANIZED_NODE_TYPE = {
