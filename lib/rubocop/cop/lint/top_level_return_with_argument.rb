@@ -19,20 +19,14 @@ module RuboCop
         MSG = 'Top level return with argument detected.'
 
         def on_return(return_node)
-          parent = return_node&.parent
-          add_offense(return_node) if ancestors_valid?(parent) && return_node.arguments?
+          add_offense(return_node) if ancestors_valid?(return_node) && return_node.arguments?
         end
 
         private
 
-        def ancestors_valid?(parent)
-          prohibited_class = [AST::BlockNode, AST::DefNode]
-
-          until parent.nil?
-            return false if prohibited_class.include?(parent.class)
-
-            parent = parent&.parent
-          end
+        def ancestors_valid?(return_node)
+          prohibited_ancestors = return_node.each_ancestor(:block, :def, :defs)
+          return false if prohibited_ancestors.any?
 
           true
         end
