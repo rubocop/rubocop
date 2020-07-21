@@ -54,14 +54,13 @@ module RuboCop
       class TopLevelReturnWithArgument < Cop
         MSG = 'Top level return with argument detected.'
 
-        def on_if(node)
-          return_node = node.child_nodes[1] if node.child_nodes[1].instance_of?(AST::ReturnNode)
-          parent = return_node&.parent
-          add_offense(return_node) if ancestors_valid_inline_if?(parent) && return_node.arguments?
-        end
-
         def on_return(return_node)
-          parent = return_node.parent
+          parent = return_node&.parent
+
+          if parent.instance_of?(AST::IfNode)
+            add_offense(return_node) if ancestors_valid_inline_if?(parent) && return_node.arguments?
+          end
+
           add_offense(return_node) if ancestors_valid?(parent) && return_node.arguments?
         end
 
@@ -78,10 +77,9 @@ module RuboCop
         def ancestors_valid_inline_if?(parent)
           grandparent = parent&.parent
 
-          return true if parent.instance_of?(AST::IfNode) && grandparent.nil?
+          return true if grandparent.nil?
 
-          parent.instance_of?(AST::IfNode) && grandparent.instance_of?(AST::Node) &&
-            grandparent&.parent.nil?
+          grandparent.instance_of?(AST::Node) && grandparent&.parent.nil?
         end
       end
     end
