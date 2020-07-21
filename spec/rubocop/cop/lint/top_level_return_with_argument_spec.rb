@@ -109,4 +109,40 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
       RUBY
     end
   end
+
+  context 'Code segment containing semi-colon separated statements' do
+    it 'Expects an offense from the return with arguments and multi-line code' do
+      expect_offense(<<~RUBY)
+        foo
+
+        if a == b; warn 'hey'; return 42; end
+                               ^^^^^^^^^ Top level return with argument detected.
+
+        bar
+      RUBY
+    end
+
+    it 'Expects an offense from the return with arguments' do
+      expect_offense(<<~RUBY)
+        if a == b; warn 'hey'; return 42; end
+                               ^^^^^^^^^ Top level return with argument detected.
+      RUBY
+    end
+
+    it 'Expects no offense from the return without arguments' do
+      expect_no_offenses(<<~RUBY)
+        if a == b; warn 'hey'; return; end
+      RUBY
+    end
+
+    it 'Expects no offense from the return with arguments and multi-line code' do
+      expect_no_offenses(<<~RUBY)
+        foo
+
+        if a == b; warn 'hey'; return; end
+
+        bar
+      RUBY
+    end
+  end
 end
