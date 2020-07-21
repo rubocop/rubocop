@@ -13,6 +13,9 @@ module RuboCop
       # 1. The parent should be `nil`.
       # 2. The parent should be an instance of `AST::Node` & the parent.parent
       #    is `nil`.
+      # 3. If used alongside inline `if`, then the parent should be an instance
+      #    of `AST::IfNode`, parent.parent should be an instance of `AST::Node`
+      #    and parent.parent.parent should be `nil`.
       #
       # Case 1 occurs in cases where the top-level return statement is the
       # only piece of code in the whole file. It being the only statement,
@@ -30,6 +33,15 @@ module RuboCop
       #
       #   bar
       #
+      # Case 3 occurs in cases where the top-level return statement is placed
+      # alongside an inline if, like so:
+      #
+      #   foo
+      #
+      #   return 1 if 1 == 1
+      #
+      #   bar
+      #
       # All other return statements are usually defined inside a method, or in
       # a block. Thus, unlike the top-level return, these statements have
       # parents belonging to the `AST::DefNode`, `AST::BlockNode` or
@@ -42,16 +54,34 @@ module RuboCop
       class TopLevelReturnWithArgument < Cop
         MSG = 'Top level return with argument detected.'
 
+        def on_if(node)
+          return_node = node.child_nodes[1] if node.child_nodes[1].instance_of?(AST::ReturnNode)
+          parent = return_node&.parent
+          add_offense(return_node) if ancestors_valid_inline_if?(parent) && return_node.arguments?
+        end
+
         def on_return(return_node)
-          add_offense(return_node) if ancestors_valid?(return_node) && return_node.arguments?
+          parent = return_node.parent
+          add_offense(return_node) if ancestors_valid?(parent) && return_node.arguments?
         end
 
         private
 
-        def ancestors_valid?(return_node)
-          return true if return_node.parent.nil?
+        def ancestors_valid?(parent)
+          grandparent = parent&.parent
 
-          return_node.parent.instance_of?(AST::Node) && return_node.parent.parent.nil?
+          return true if parent.nil?
+
+          parent.instance_of?(AST::Node) && grandparent.nil?
+        end
+
+        def ancestors_valid_inline_if?(parent)
+          grandparent = parent&.parent
+
+          return true if parent.instance_of?(AST::IfNode) && grandparent.nil?
+
+          parent.instance_of?(AST::IfNode) && grandparent.instance_of?(AST::Node) &&
+            grandparent&.parent.nil?
         end
       end
     end

@@ -3484,6 +3484,9 @@ top-level return node's ancestors satisfy either of the conditions:
 1. The parent should be `nil`.
 2. The parent should be an instance of `AST::Node` & the parent.parent
    is `nil`.
+3. If used alongside inline `if`, then the parent should be an instance
+   of `AST::IfNode`, parent.parent should be an instance of `AST::Node`
+   and parent.parent.parent should be `nil`.
 
 Case 1 occurs in cases where the top-level return statement is the
 only piece of code in the whole file. It being the only statement,
@@ -3498,6 +3501,15 @@ the type `AST::Node` and the parent.parent is `nil`, like so:
   foo
 
   return 1, 2, 3 # Allowed since Ruby 2.4.
+
+  bar
+
+Case 3 occurs in cases where the top-level return statement is placed
+alongside an inline if, like so:
+
+  foo
+
+  return 1 if 1 == 1
 
   bar
 
