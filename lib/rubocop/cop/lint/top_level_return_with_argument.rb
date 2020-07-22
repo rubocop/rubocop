@@ -19,16 +19,14 @@ module RuboCop
         MSG = 'Top level return with argument detected.'
 
         def on_return(return_node)
-          add_offense(return_node) if ancestors_valid?(return_node) && return_node.arguments?
+          add_offense(return_node) if return_node.arguments? && ancestors_valid?(return_node)
         end
 
         private
 
         def ancestors_valid?(return_node)
           prohibited_ancestors = return_node.each_ancestor(:block, :def, :defs)
-          return false if prohibited_ancestors.any?
-
-          true
+          prohibited_ancestors.none?
         end
       end
     end
