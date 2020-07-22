@@ -39,7 +39,7 @@ module RuboCop
           'instead of %<correct_comment_indentation>d).'
 
         def investigate(processed_source)
-          processed_source.each_comment { |comment| check(comment) }
+          processed_source.comments.each { |comment| check(comment) }
         end
 
         def autocorrect(comment)

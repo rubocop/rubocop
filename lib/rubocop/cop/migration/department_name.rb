@@ -20,7 +20,7 @@ module RuboCop
         DISABLING_COPS_CONTENT_TOKEN = %r{[A-z]+/[A-z]+|all}.freeze
 
         def on_new_investigation
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             next if comment.text !~ DISABLE_COMMENT_FORMAT
 
             offset = Regexp.last_match(1).length
