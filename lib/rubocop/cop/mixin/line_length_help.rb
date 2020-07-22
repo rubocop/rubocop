@@ -12,9 +12,7 @@ module RuboCop
 
       def directive_on_source_line?(line_index)
         source_line_number = line_index + processed_source.buffer.first_line
-        comment =
-          processed_source.comments
-                          .detect { |e| e.location.line == source_line_number }
+        comment = processed_source.comment_at_line(source_line_number)
 
         return false unless comment
 

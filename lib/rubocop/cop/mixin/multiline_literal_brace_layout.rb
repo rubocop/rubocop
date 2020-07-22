@@ -27,8 +27,7 @@ module RuboCop
         last_element_line =
           last_element_range_with_trailing_comma(node).last_line
 
-        last_element_commented =
-          processed_source.comments.any? { |c| c.loc.line == last_element_line }
+        last_element_commented = processed_source.comment_at_line(last_element_line)
 
         last_element_commented && (node.chained? || node.argument?)
       end

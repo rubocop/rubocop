@@ -28,12 +28,8 @@ module RuboCop
       end
 
       def comments_in_array?(node)
-        comments = processed_source.comments
-        array_range = node.source_range.to_a
-
-        comments.any? do |comment|
-          !(comment.loc.expression.to_a & array_range).empty?
-        end
+        line_span = node.source_range.first_line...node.source_range.last_line
+        processed_source.each_comment_in_lines(line_span).any?
       end
 
       def check_percent_array(node)

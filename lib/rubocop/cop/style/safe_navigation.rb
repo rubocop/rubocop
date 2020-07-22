@@ -136,10 +136,10 @@ module RuboCop
         end
 
         def comments(node)
-          processed_source.comments.select do |comment|
-            comment.loc.first_line > node.loc.first_line &&
-              comment.loc.last_line < node.loc.last_line
-          end
+          processed_source.each_comment_in_lines(
+            node.loc.first_line...
+            node.loc.last_line
+          ).to_a
         end
 
         def allowed_if_condition?(node)

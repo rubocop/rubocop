@@ -674,18 +674,19 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
       it 'does not lose comments within if expression' do
         expect_offense(<<~RUBY, variable: variable)
-          if %{variable}
-          ^^^^{variable} Use safe navigation (`&.`) instead [...]
+          if %{variable} # hello
+          ^^^^{variable}^^^^^^^^ Use safe navigation (`&.`) instead [...]
             # this is a comment
             # another comment
             %{variable}.bar
-          end
+          end # bye!
         RUBY
 
         expect_correction(<<~RUBY)
+          # hello
           # this is a comment
           # another comment
-          #{variable}&.bar
+          #{variable}&.bar # bye!
         RUBY
       end
 
