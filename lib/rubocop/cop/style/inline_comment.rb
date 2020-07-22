@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Avoid trailing inline comments.'
 
         def on_new_investigation
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             next if comment_line?(processed_source[comment.loc.line - 1]) ||
                     comment.text.match?(/\A# rubocop:(enable|disable)/)
 

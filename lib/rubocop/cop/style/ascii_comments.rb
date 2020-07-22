@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Use only ascii symbols in comments.'
 
         def on_new_investigation
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             next if comment.text.ascii_only?
             next if only_allowed_non_ascii_chars?(comment.text)
 

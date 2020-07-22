@@ -25,7 +25,7 @@ module RuboCop
         END_LENGTH = "\n=end".length
 
         def on_new_investigation
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             next unless comment.document?
 
             add_offense(comment) do |corrector|
