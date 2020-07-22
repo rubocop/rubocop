@@ -40,6 +40,7 @@ module RuboCop
         def on_new_investigation
           return if processed_source.blank?
 
+          @aligned_comments = aligned_locations(processed_source.comments.map(&:loc))
           @corrected = Set.new if force_equal_sign_alignment?
 
           processed_source.tokens.each_cons(2) do |token1, token2|
@@ -48,6 +49,18 @@ module RuboCop
         end
 
         private
+
+        def aligned_locations(locs)
+          return [] if locs.empty?
+
+          aligned = Set[locs.first.line, locs.last.line]
+          locs.each_cons(3) do |before, loc, after|
+            col = loc.column
+            aligned << loc.line if col == before.column || # rubocop:disable Style/MultipleComparison
+                                   col == after.column
+          end
+          aligned
+        end
 
         def check_tokens(ast, token1, token2)
           return if token2.type == :tNL
@@ -95,7 +108,7 @@ module RuboCop
 
         def aligned_tok?(token)
           if token.comment?
-            aligned_comments?(token)
+            @aligned_comments.include?(token.line)
           else
             aligned_with_something?(token.pos)
           end
@@ -117,26 +130,6 @@ module RuboCop
             key, value = *pair
             key.source_range.end_pos...value.source_range.begin_pos
           end.compact
-        end
-
-        def aligned_comments?(comment_token)
-          ix = processed_source.comments.index do |comment|
-            comment.loc.expression.begin_pos == comment_token.begin_pos
-          end
-          aligned_with_previous_comment?(ix) || aligned_with_next_comment?(ix)
-        end
-
-        def aligned_with_previous_comment?(index)
-          index.positive? && comment_column(index - 1) == comment_column(index)
-        end
-
-        def aligned_with_next_comment?(index)
-          index < processed_source.comments.length - 1 &&
-            comment_column(index + 1) == comment_column(index)
-        end
-
-        def comment_column(index)
-          processed_source.comments[index].loc.column
         end
 
         def force_equal_sign_alignment?
