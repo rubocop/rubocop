@@ -1711,9 +1711,9 @@ This cop checks for interpolated literals.
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
-| -
+| 0.89
 |===
 
 This cop checks for uses of `begin...end while/until something`.

@@ -1559,6 +1559,7 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.89'
 
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
