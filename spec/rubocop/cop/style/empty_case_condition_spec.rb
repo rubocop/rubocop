@@ -49,33 +49,40 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
     context 'with multiple when branches and an `else` with code comments' do
       let(:source) do
         <<~RUBY
-          case
-          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
-          # condition a
-          # This is a multi-line comment
-          when 1 == 2
-            foo
-          # condition b
-          when 1 == 1
-            bar
-          # condition c
-          else
-            baz
+          def example
+            # Comment before everything
+            case # first comment
+            ^^^^ Do not use empty `case` condition, instead use an `if` expression.
+            # condition a
+            # This is a multi-line comment
+            when 1 == 2
+              foo
+            # condition b
+            when 1 == 1
+              bar
+            # condition c
+            else
+              baz
+            end
           end
         RUBY
       end
       let(:corrected_source) do
         <<~RUBY
-          # condition a
-          # This is a multi-line comment
-          if 1 == 2
-            foo
-          # condition b
-          elsif 1 == 1
-            bar
-          # condition c
-          else
-            baz
+          def example
+            # Comment before everything
+            # first comment
+            # condition a
+            # This is a multi-line comment
+            if 1 == 2
+              foo
+            # condition b
+            elsif 1 == 1
+              bar
+            # condition c
+            else
+              baz
+            end
           end
         RUBY
       end
