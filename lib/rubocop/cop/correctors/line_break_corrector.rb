@@ -16,7 +16,7 @@ module RuboCop
                                   processed_source:)
           @processed_source = processed_source
           range = first_part_of(node.to_a.last)
-          eol_comment = end_of_line_comment(node.source_range.line)
+          eol_comment = processed_source.comment_at_line(node.source_range.line)
 
           break_line_before(range: range, node: node, corrector: corrector,
                             configured_width: configured_width)

@@ -73,7 +73,7 @@ module RuboCop
 
         def move_comment(node, corrector)
           LineBreakCorrector.move_comment(
-            eol_comment: end_of_line_comment(node.source_range.line),
+            eol_comment: processed_source.comment_at_line(node.source_range.line),
             node: node, corrector: corrector
           )
         end

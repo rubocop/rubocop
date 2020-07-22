@@ -138,21 +138,16 @@ module RuboCop
 
         def autocorrect(corrector, node)
           return false if autocorrect_forbidden?(node.type.to_s)
-          return false if comment_in_else?(node)
+          return false if comment_in_else?(node.loc)
 
           end_pos = base_node(node).loc.end.begin_pos
           corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
         end
 
-        def comment_in_else?(node)
-          range = else_line_range(node.loc)
-          processed_source.find_comment { |c| range.include?(c.loc.line) }
-        end
+        def comment_in_else?(loc)
+          return false if loc.else.nil? || loc.end.nil?
 
-        def else_line_range(loc)
-          return 0..0 if loc.else.nil? || loc.end.nil?
-
-          loc.else.first_line..loc.end.first_line
+          processed_source.contains_comment?(loc.else.join(loc.end))
         end
 
         def base_node(node)
