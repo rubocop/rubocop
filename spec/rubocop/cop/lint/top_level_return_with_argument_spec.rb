@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
     it 'Expects offense from the return with arguments' do
       expect_offense(<<~RUBY)
-        return 1, 2, 3 # Should raise a `top level return with argument detected` offense
+        return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
       RUBY
     end
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
         [1, 2, 3, 4, 5].each { |n| return n }
 
-        return # Should raise a `top level return with argument detected` offense
+        return
 
         bar
       RUBY
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
         [1, 2, 3, 4, 5].each { |n| return n }
 
-        return 1, 2, 3 # Should raise a `top level return with argument detected` offense
+        return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
 
         bar
@@ -57,14 +57,6 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   end
 
   context 'Code segment with method-level return statements' do
-    it 'Expects no offense from the method-level return statement' do
-      expect_no_offenses(<<~RUBY)
-        def method
-          return 'Hello World'
-        end
-      RUBY
-    end
-
     it 'Expects offense when method-level & top-level return co-exist' do
       expect_offense(<<~RUBY)
         def method
@@ -119,19 +111,6 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
                                ^^^^^^^^^ Top level return with argument detected.
 
         bar
-      RUBY
-    end
-
-    it 'Expects an offense from the return with arguments' do
-      expect_offense(<<~RUBY)
-        if a == b; warn 'hey'; return 42; end
-                               ^^^^^^^^^ Top level return with argument detected.
-      RUBY
-    end
-
-    it 'Expects no offense from the return without arguments' do
-      expect_no_offenses(<<~RUBY)
-        if a == b; warn 'hey'; return; end
       RUBY
     end
 

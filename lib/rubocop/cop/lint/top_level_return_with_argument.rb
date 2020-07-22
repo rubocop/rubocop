@@ -7,15 +7,15 @@ module RuboCop
       # top-level return statement with an argument, then the argument is
       # always ignored. This is detected automatically since Ruby 2.7.
       #
-      # This cop works by validating the ancestors of the return node. A
-      # top-level return node's ancestors will never belong to `AST::BlockNode`
-      # or `AST::DefNode` class.
-      #
       # @example
       #
       #   # Detected since Ruby 2.7
       #   return 1 # 1 is always ignored.
       class TopLevelReturnWithArgument < Cop
+        # This cop works by validating the ancestors of the return node. A
+        # top-level return node's ancestors should not be of block, def, or
+        # defs type.
+
         MSG = 'Top level return with argument detected.'
 
         def on_return(return_node)
