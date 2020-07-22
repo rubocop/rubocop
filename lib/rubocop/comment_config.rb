@@ -128,8 +128,6 @@ module RuboCop
     end
 
     def each_directive
-      return if processed_source.comments.nil?
-
       processed_source.comments.each do |comment|
         directive = directive_parts(comment)
         next unless directive
