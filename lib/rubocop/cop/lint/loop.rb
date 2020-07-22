@@ -43,6 +43,8 @@ module RuboCop
       #     break if some_condition
       #   end
       class Loop < Base
+        extend AutoCorrector
+
         MSG = 'Use `Kernel#loop` with `break` rather than ' \
               '`begin/end/until`(or `while`).'
 
@@ -57,7 +59,26 @@ module RuboCop
         private
 
         def register_offense(node)
-          add_offense(node.loc.keyword)
+          body = node.body
+
+          add_offense(node.loc.keyword) do |corrector|
+            corrector.replace(body.loc.begin, 'loop do')
+            corrector.remove(keyword_and_condition_range(node))
+            corrector.insert_before(body.loc.end, build_break_line(node))
+          end
+        end
+
+        def keyword_and_condition_range(node)
+          node.body.loc.end.end.join(node.source_range.end)
+        end
+
+        def build_break_line(node)
+          conditional_keyword = node.while_post_type? ? 'unless' : 'if'
+          "break #{conditional_keyword} #{node.condition.source}\n#{indent(node)}"
+        end
+
+        def indent(node)
+          ' ' * node.loc.column
         end
       end
     end
