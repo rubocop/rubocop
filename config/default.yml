@@ -1420,6 +1420,11 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
 
+Lint/DuplicateRescueException:
+  Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
   Enabled: true

@@ -196,6 +196,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintduplicateelsifcondition[Lint/DuplicateElsifCondition]
 * xref:cops_lint.adoc#lintduplicatehashkey[Lint/DuplicateHashKey]
 * xref:cops_lint.adoc#lintduplicatemethods[Lint/DuplicateMethods]
+* xref:cops_lint.adoc#lintduplicaterescueexception[Lint/DuplicateRescueException]
 * xref:cops_lint.adoc#linteachwithobjectargument[Lint/EachWithObjectArgument]
 * xref:cops_lint.adoc#lintelselayout[Lint/ElseLayout]
 * xref:cops_lint.adoc#lintemptyensure[Lint/EmptyEnsure]
