@@ -18,7 +18,7 @@ module RuboCop
         include Util
         extend AutoCorrector
 
-        MSG = 'Prefer string interpolation instead of string concatenation.'
+        MSG = 'Prefer string interpolation to string concatenation.'
 
         def_node_matcher :string_concatenation?, <<~PATTERN
           {
