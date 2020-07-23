@@ -47,8 +47,8 @@ module RuboCop
           # string literals
           return if taboo_ranges.any? { |t| within?(range, t) }
 
-          if column_delta.positive?
-            corrector.insert_before(range, ' ' * column_delta) unless range.resize(1).source == "\n"
+          if column_delta.positive? && range.resize(1).source != "\n"
+            corrector.insert_before(range, ' ' * column_delta)
           elsif /\A[ \t]+\z/.match?(range.source)
             remove(range, corrector)
           end

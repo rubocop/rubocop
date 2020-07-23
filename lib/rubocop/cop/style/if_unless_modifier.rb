@@ -43,8 +43,8 @@ module RuboCop
           'Modifier form of `%<keyword>s` makes the line too long.'
 
         def on_if(node)
-          msg = if single_line_as_modifier?(node)
-                  MSG_USE_MODIFIER unless named_capture_in_condition?(node)
+          msg = if single_line_as_modifier?(node) && !named_capture_in_condition?(node)
+                  MSG_USE_MODIFIER
                 elsif too_long_due_to_modifier?(node)
                   MSG_USE_NORMAL
                 end

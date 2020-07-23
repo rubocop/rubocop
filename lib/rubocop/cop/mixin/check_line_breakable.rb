@@ -130,10 +130,9 @@ module RuboCop
 
       def contained_by_multiline_collection_that_could_be_broken_up?(node)
         node.each_ancestor.find do |ancestor|
-          if ancestor.hash_type? || ancestor.array_type?
-            if breakable_collection?(ancestor, ancestor.children)
-              return children_could_be_broken_up?(ancestor.children)
-            end
+          if (ancestor.hash_type? || ancestor.array_type?) &&
+             breakable_collection?(ancestor, ancestor.children)
+            return children_could_be_broken_up?(ancestor.children)
           end
 
           next unless ancestor.send_type?
@@ -170,9 +169,8 @@ module RuboCop
         #
         # ...then each key/value pair is treated as a method 'argument'
         # when determining where line breaks should appear.
-        if (last_arg = args.last)
-          args = args[0...-1] + last_arg.children if last_arg.hash_type? && !last_arg.braces?
-        end
+        last_arg = args.last
+        args = args[0...-1] + last_arg.children if last_arg&.hash_type? && !last_arg&.braces?
         args
       end
 

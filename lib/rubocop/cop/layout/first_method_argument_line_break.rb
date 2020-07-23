@@ -35,9 +35,8 @@ module RuboCop
           #
           # ...then each key/value pair is treated as a method 'argument'
           # when determining where line breaks should appear.
-          if (last_arg = args.last)
-            args.concat(args.pop.children) if last_arg.hash_type? && !last_arg.braces?
-          end
+          last_arg = args.last
+          args.concat(args.pop.children) if last_arg&.hash_type? && !last_arg&.braces?
 
           check_method_line_break(node, args)
         end

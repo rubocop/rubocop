@@ -176,8 +176,8 @@ module RuboCop
           # If `ForceEqualSignAlignment` is true, `Layout/ExtraSpacing` cop
           # inserts spaces before operator. If `Layout/SpaceAroundOperators` cop
           # inserts a space, it collides and raises the infinite loop error.
-          if force_equal_sign_alignment?
-            corrector.insert_after(range, ' ') unless operator.end_with?(' ')
+          if force_equal_sign_alignment? && !operator.end_with?(' ')
+            corrector.insert_after(range, ' ')
           else
             corrector.replace(range, " #{operator.strip} ")
           end
