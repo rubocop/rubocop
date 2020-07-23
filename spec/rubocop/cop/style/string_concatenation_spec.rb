@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
   it 'registers an offense and corrects for string concatenation' do
     expect_offense(<<~RUBY)
       email_with_name = user.name + ' <' + user.email + '>'
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation instead of string concatenation.
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
   it 'registers an offense and corrects for string concatenation as part of other expression' do
     expect_offense(<<~RUBY)
       users = (user.name + ' ' + user.email) * 5
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation instead of string concatenation.
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
   it 'correctly handles strings with special characters' do
     expect_offense(<<-RUBY)
       email_with_name = "\\n" + user.name + ' ' + user.email + '\\n'
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation instead of string concatenation.
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
     RUBY
 
     expect_correction(<<-RUBY)
