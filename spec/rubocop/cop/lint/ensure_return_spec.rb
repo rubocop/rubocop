@@ -14,13 +14,7 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
       end
     RUBY
 
-    expect_correction(<<~RUBY)
-      begin
-        something
-      ensure
-        file.close
-      end
-    RUBY
+    expect_no_corrections
   end
 
   it 'registers an offense and corrects for return with argument in ensure' do
@@ -28,20 +22,26 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
       begin
         foo
       ensure
-        bar
         return baz
-        ^^^^^^ Do not return from an `ensure` block.
+        ^^^^^^^^^^ Do not return from an `ensure` block.
       end
     RUBY
 
-    expect_correction(<<~RUBY)
+    expect_no_corrections
+  end
+
+  it 'registers an offense when returning multiple values in `ensure`' do
+    expect_offense(<<~RUBY)
       begin
-        foo
+        something
       ensure
-        bar
-        baz
+        do_something
+        return foo, bar
+        ^^^^^^^^^^^^^^^ Do not return from an `ensure` block.
       end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'does not register an offense for return outside ensure' do
@@ -51,16 +51,6 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn do
         return
       ensure
         file.close
-      end
-    RUBY
-  end
-
-  it "doesn't register an offense when returning multiple values in `ensure`" do
-    expect_no_offenses(<<~RUBY)
-      begin
-        something
-      ensure
-        return foo, bar
       end
     RUBY
   end

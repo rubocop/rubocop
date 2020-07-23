@@ -4,57 +4,55 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for `return` from an `ensure` block.
-      # Explicit return from an ensure block alters the control flow
-      # as the return will take precedence over any exception being raised,
+      # `return` from an ensure block is a dangerous code smell as it
+      # will take precedence over any exception being raised,
       # and the exception will be silently thrown away as if it were rescued.
+      #
+      # If you want to rescue some (or all) exceptions, best to do it explicitly
       #
       # @example
       #
       #   # bad
       #
-      #   begin
+      #   def foo
       #     do_something
       #   ensure
-      #     do_something_else
-      #     return
+      #     cleanup
+      #     return self
       #   end
       #
       # @example
       #
       #   # good
       #
-      #   begin
+      #   def foo
       #     do_something
+      #     self
       #   ensure
-      #     do_something_else
+      #     cleanup
       #   end
-      class EnsureReturn < Cop
+      #
+      #   # also good
+      #
+      #   def foo
+      #     begin
+      #       do_something
+      #     rescue SomeException
+      #       # Let's ignore this exception
+      #     end
+      #     self
+      #   ensure
+      #     cleanup
+      #   end
+      class EnsureReturn < Base
+        extend AutoCorrector
         include RangeHelp
 
         MSG = 'Do not return from an `ensure` block.'
 
         def on_ensure(node)
-          ensure_body = node.body
-
-          return unless ensure_body
-
-          ensure_body.each_node(:return) do |return_node|
-            next if return_node.arguments.size >= 2
-
-            add_offense(return_node, location: :keyword)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.arguments?
-              corrector.replace(node, node.source.gsub(/return\s*/, ''))
-            else
-              range = range_by_whole_lines(
-                node.loc.expression, include_final_newline: true
-              )
-              corrector.remove(range)
-            end
+          node.body&.each_node(:return) do |return_node|
+            add_offense(return_node)
           end
         end
       end
