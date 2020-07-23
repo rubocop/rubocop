@@ -112,9 +112,8 @@ module RuboCop
 
           node = node.children.first while suspect_unary?(node)
 
-          if node.send_type?
-            return unless method_call_with_redundant_parentheses?(node)
-          end
+          return if node.send_type? &&
+                    !method_call_with_redundant_parentheses?(node)
 
           offense(begin_node, 'an unary operation')
         end

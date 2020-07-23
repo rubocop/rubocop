@@ -9077,6 +9077,69 @@ items[1..-1]
 items[1..]
 ----
 
+== Style/SoleNestedConditional
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+If the branch of a conditional consists solely of a conditional node,
+its conditions can be combined with the conditions of the outer branch.
+This helps to keep the nesting level from getting too deep.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if condition_a
+  if condition_b
+    do_something
+  end
+end
+
+# good
+if condition_a && condition_b
+  do_something
+end
+----
+
+==== AllowModifier: false (default)
+
+[source,ruby]
+----
+# bad
+if condition_a
+  do_something if condition_b
+end
+----
+
+==== AllowModifier: true
+
+[source,ruby]
+----
+# good
+if condition_a
+  do_something if condition_b
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowModifier
+| `false`
+| Boolean
+|===
+
 == Style/SpecialGlobalVars
 
 |===

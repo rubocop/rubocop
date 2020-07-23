@@ -4030,6 +4030,14 @@ Style/SlicingWithRange:
   VersionAdded: '0.83'
   Safe: false
 
+Style/SoleNestedConditional:
+  Description: >-
+                  Finds sole nested conditional nodes
+                  which can be merged into outer conditional node.
+  Enabled: pending
+  VersionAdded: '0.89'
+  AllowModifier: false
+
 Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   StyleGuide: '#no-cryptic-perlisms'

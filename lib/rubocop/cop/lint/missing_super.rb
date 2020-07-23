@@ -56,8 +56,8 @@ module RuboCop
         def on_def(node)
           return unless offender?(node)
 
-          if node.method?(:initialize)
-            add_offense(node, message: CONSTRUCTOR_MSG) if inside_class_with_stateful_parent?(node)
+          if node.method?(:initialize) && inside_class_with_stateful_parent?(node)
+            add_offense(node, message: CONSTRUCTOR_MSG)
           elsif callback_method_def?(node)
             add_offense(node, message: CALLBACK_MSG)
           end

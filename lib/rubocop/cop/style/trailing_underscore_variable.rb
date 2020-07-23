@@ -68,11 +68,9 @@ module RuboCop
 
             var, = *variable
             var, = *var
-            if allow_named_underscore_variables
-              break offense unless var == :_
-            else
-              break offense unless var.to_s.start_with?(UNDERSCORE)
-            end
+
+            break offense if (allow_named_underscore_variables && var != :_) ||
+                             !var.to_s.start_with?(UNDERSCORE)
 
             variable
           end

@@ -154,15 +154,7 @@ module RuboCop
         def interpolation?(node)
           return true if node.dstr_type?
 
-          # TODO: Use `RegexpNode#interpolation?` when the following is released.
-          # https://github.com/rubocop-hq/rubocop-ast/pull/18
-          if node.regexp_type?
-            return true if node.children.any? do |child|
-              child.respond_to?(:begin_type?) && child.begin_type?
-            end
-          end
-
-          false
+          node.regexp_type? && node.interpolation?
         end
       end
     end
