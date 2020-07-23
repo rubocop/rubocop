@@ -739,6 +739,44 @@ end
 alias bar foo
 ----
 
+== Lint/DuplicateRescueException
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks that there are no repeated exceptions
+used in 'rescue' expressions.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+begin
+  something
+rescue FirstException
+  handle_exception
+rescue FirstException
+  handle_other_exception
+end
+
+# good
+begin
+  something
+rescue FirstException
+  handle_exception
+rescue SecondException
+  handle_other_exception
+end
+----
+
 == Lint/EachWithObjectArgument
 
 |===
