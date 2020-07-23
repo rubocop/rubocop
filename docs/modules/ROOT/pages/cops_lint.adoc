@@ -2995,6 +2995,35 @@ puts 'hello, world'
 puts 'hello, world'
 ----
 
+== Lint/SelfAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for self-assignments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo = foo
+foo, bar = foo, bar
+Foo = Foo
+
+# good
+foo = bar
+foo, bar = bar, foo
+Foo = Bar
+----
+
 == Lint/SendWithMixinArgument
 
 |===

@@ -247,6 +247,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintsafenavigationconsistency[Lint/SafeNavigationConsistency]
 * xref:cops_lint.adoc#lintsafenavigationwithempty[Lint/SafeNavigationWithEmpty]
 * xref:cops_lint.adoc#lintscriptpermission[Lint/ScriptPermission]
+* xref:cops_lint.adoc#lintselfassignment[Lint/SelfAssignment]
 * xref:cops_lint.adoc#lintsendwithmixinargument[Lint/SendWithMixinArgument]
 * xref:cops_lint.adoc#lintshadowedargument[Lint/ShadowedArgument]
 * xref:cops_lint.adoc#lintshadowedexception[Lint/ShadowedException]
