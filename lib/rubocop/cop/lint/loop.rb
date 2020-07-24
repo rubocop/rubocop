@@ -42,7 +42,7 @@ module RuboCop
       #     do_something
       #     break if some_condition
       #   end
-      class Loop < Cop
+      class Loop < Base
         MSG = 'Use `Kernel#loop` with `break` rather than ' \
               '`begin/end/until`(or `while`).'
 
@@ -57,7 +57,7 @@ module RuboCop
         private
 
         def register_offense(node)
-          add_offense(node, location: :keyword)
+          add_offense(node.loc.keyword)
         end
       end
     end

@@ -49,7 +49,9 @@ module RuboCop
       #   else
       #     baz
       #   end
-      class RedundantSplatExpansion < Cop
+      class RedundantSplatExpansion < Base
+        extend AutoCorrector
+
         MSG = 'Replace splat expansion with comma separated values.'
         ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'
         PERCENT_W = '%w'
@@ -73,22 +75,24 @@ module RuboCop
           redundant_splat_expansion(node) do
             if array_splat?(node) &&
                (method_argument?(node) || part_of_an_array?(node))
-              add_offense(node, message: ARRAY_PARAM_MSG)
+              add_offense(node, message: ARRAY_PARAM_MSG) do |corrector|
+                autocorrect(corrector, node)
+              end
             else
-              add_offense(node)
+              add_offense(node) do |corrector|
+                autocorrect(corrector, node)
+              end
             end
           end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           range, content = replacement_range_and_content(node)
 
-          lambda do |corrector|
-            corrector.replace(range, content)
-          end
+          corrector.replace(range, content)
         end
-
-        private
 
         def redundant_splat_expansion(node)
           literal_expansion(node) do |expanded_item|

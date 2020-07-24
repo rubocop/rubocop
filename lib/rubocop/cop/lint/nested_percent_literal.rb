@@ -15,7 +15,7 @@ module RuboCop
       #     valid_attributes: %i[name content],
       #     nested_attributes: %i[name content %i[incorrectly nested]]
       #   }
-      class NestedPercentLiteral < Cop
+      class NestedPercentLiteral < Base
         include PercentLiteral
 
         MSG = 'Within percent literals, nested percent literals do not ' \

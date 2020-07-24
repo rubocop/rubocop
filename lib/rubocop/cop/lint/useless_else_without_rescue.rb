@@ -29,7 +29,7 @@ module RuboCop
       #   else
       #     do_something_else
       #   end
-      class UselessElseWithoutRescue < Cop
+      class UselessElseWithoutRescue < Base
         include ParserDiagnostic
 
         MSG = '`else` without `rescue` is useless.'
