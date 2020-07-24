@@ -25,7 +25,7 @@ module RuboCop
       #     spec.add_runtime_dependency 'gem_a'
       #   end
       #
-      class RubyVersionGlobalsUsage < Cop
+      class RubyVersionGlobalsUsage < Base
         MSG = 'Do not use `RUBY_VERSION` in gemspec file.'
 
         def_node_matcher :ruby_version?, '(const {cbase nil?} :RUBY_VERSION)'

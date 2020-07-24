@@ -34,7 +34,7 @@ module RuboCop
       #     spec.add_runtime_dependency('parallel', '~> 1.10')
       #     spec.add_runtime_dependency('parser', '>= 2.3.3.1', '< 3.0')
       #   end
-      class DuplicatedAssignment < Cop
+      class DuplicatedAssignment < Base
         include RangeHelp
 
         MSG = '`%<assignment>s` method calls already given on line '\
@@ -54,7 +54,7 @@ module RuboCop
             (lvar #match_block_variable_name?) #assignment_method? ...)
         PATTERN
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           duplicated_assignment_method_nodes.each do |nodes|
@@ -96,7 +96,7 @@ module RuboCop
             assignment: assignment,
             line_of_first_occurrence: line_of_first_occurrence
           )
-          add_offense(node, location: offense_location, message: message)
+          add_offense(offense_location, message: message)
         end
       end
     end

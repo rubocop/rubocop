@@ -45,7 +45,7 @@ module RuboCop
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = '~> 2.5'
       #   end
-      class RequiredRubyVersion < Cop
+      class RequiredRubyVersion < Base
         include RangeHelp
 
         NOT_EQUAL_MSG = '`required_ruby_version` (%<required_ruby_version>s, ' \
@@ -64,7 +64,7 @@ module RuboCop
         PATTERN
 
         # rubocop:disable Metrics/AbcSize
-        def investigate(processed_source)
+        def on_new_investigation
           version_def = required_ruby_version(processed_source.ast).first
 
           if version_def
@@ -72,13 +72,12 @@ module RuboCop
             return if !ruby_version || ruby_version == target_ruby_version.to_s
 
             add_offense(
-              processed_source.ast,
-              location: version_def.loc.expression,
+              version_def.loc.expression,
               message: not_equal_message(ruby_version, target_ruby_version)
             )
           else
             range = source_range(processed_source.buffer, 1, 0)
-            add_offense(nil, location: range, message: MISSING_MSG)
+            add_offense(range, message: MISSING_MSG)
           end
         end
         # rubocop:enable Metrics/AbcSize

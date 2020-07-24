@@ -58,7 +58,7 @@ module RuboCop
       #   # Version 2.1 introduces breaking change baz
       #   gem 'bar', '< 2.1'
       #
-      class GemComment < Cop
+      class GemComment < Base
         include DefNode
 
         MSG = 'Missing gem description comment.'
