@@ -23,8 +23,6 @@
 * [#8375](https://github.com/rubocop-hq/rubocop/pull/8375): Fix an infinite loop error for `Style/EmptyMethod`. ([@koic][])
 * [#8385](https://github.com/rubocop-hq/rubocop/pull/8385): Remove auto-correction for `Lint/EnsureReturn`. ([@marcandre][])
 * [#8391](https://github.com/rubocop-hq/rubocop/issues/8391): Mark `Style/ArrayCoercion` as not safe. ([@marcandre][])
-* [#7425](https://github.com/rubocop-hq/rubocop/issues/7425): Add new `Lint/TopLevelReturnWithArgument` cop. ([@iamravitejag][])
-* [#7425](https://github.com/rubocop-hq/rubocop/issues/7425): Add new `Lint/TopLevelReturnWithArgument` cop. ([@iamravitejag](https://github.com/iamravitejag))
 
 ### Changes
 
