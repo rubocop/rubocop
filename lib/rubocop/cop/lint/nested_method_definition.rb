@@ -54,7 +54,7 @@ module RuboCop
       #       end
       #     end
       #   end
-      class NestedMethodDefinition < Cop
+      class NestedMethodDefinition < Base
         MSG = 'Method definitions must not be nested. ' \
               'Use `lambda` instead.'
 

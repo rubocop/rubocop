@@ -29,7 +29,7 @@ module RuboCop
       #   while true
       #     break if condition
       #   end
-      class LiteralAsCondition < Cop
+      class LiteralAsCondition < Base
         include RangeHelp
 
         MSG = 'Literal `%<literal>s` appeared as a condition.'
@@ -60,7 +60,9 @@ module RuboCop
               next unless when_node.conditions.all?(&:literal?)
 
               range = when_conditions_range(when_node)
-              add_offense(when_node, location: range, message: message(range))
+              message = message(range)
+
+              add_offense(range, message: message)
             end
           end
         end

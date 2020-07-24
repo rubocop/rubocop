@@ -21,7 +21,9 @@ module RuboCop
       #
       #   # good
       #   false
-      class BooleanSymbol < Cop
+      class BooleanSymbol < Base
+        extend AutoCorrector
+
         MSG = 'Symbol with a boolean name - ' \
               'you probably meant to use `%<boolean>s`.'
 
@@ -30,19 +32,22 @@ module RuboCop
         def on_sym(node)
           return unless boolean_symbol?(node)
 
-          add_offense(node, message: format(MSG, boolean: node.value))
+          add_offense(node, message: format(MSG, boolean: node.value)) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            boolean_literal = node.source.delete(':')
-            parent = node.parent
-            if parent&.pair_type? && node.equal?(parent.children[0])
-              corrector.remove(parent.loc.operator)
-              boolean_literal = "#{node.source} =>"
-            end
-            corrector.replace(node, boolean_literal)
+        private
+
+        def autocorrect(corrector, node)
+          boolean_literal = node.source.delete(':')
+          parent = node.parent
+          if parent&.pair_type? && node.equal?(parent.children[0])
+            corrector.remove(parent.loc.operator)
+            boolean_literal = "#{node.source} =>"
           end
+
+          corrector.replace(node, boolean_literal)
         end
       end
     end

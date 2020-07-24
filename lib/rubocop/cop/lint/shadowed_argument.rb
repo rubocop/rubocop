@@ -63,14 +63,14 @@ module RuboCop
       #     bar
       #   end
       #
-      class ShadowedArgument < Cop
+      class ShadowedArgument < Base
         MSG = 'Argument `%<argument>s` was shadowed by a local variable ' \
               'before it was used.'
 
         def_node_search :uses_var?, '(lvar %)'
 
-        def join_force?(force_class)
-          force_class == VariableForce
+        def self.joining_forces
+          VariableForce
         end
 
         def after_leaving_scope(scope, _variable_table)

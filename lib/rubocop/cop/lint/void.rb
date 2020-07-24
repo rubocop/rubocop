@@ -40,7 +40,7 @@ module RuboCop
       #     some_array.sort!
       #     do_something(some_array)
       #   end
-      class Void < Cop
+      class Void < Base
         OP_MSG = 'Operator `%<op>s` used in void context.'
         VAR_MSG = 'Variable `%<var>s` used in void context.'
         LIT_MSG = 'Literal `%<lit>s` used in void context.'
@@ -97,17 +97,13 @@ module RuboCop
         def check_void_op(node)
           return unless node.send_type? && OPERATORS.include?(node.method_name)
 
-          add_offense(node,
-                      location: :selector,
-                      message: format(OP_MSG, op: node.method_name))
+          add_offense(node.loc.selector, message: format(OP_MSG, op: node.method_name))
         end
 
         def check_var(node)
           return unless node.variable? || node.const_type?
 
-          add_offense(node,
-                      location: :name,
-                      message: format(VAR_MSG, var: node.loc.name.source))
+          add_offense(node.loc.name, message: format(VAR_MSG, var: node.loc.name.source))
         end
 
         def check_literal(node)

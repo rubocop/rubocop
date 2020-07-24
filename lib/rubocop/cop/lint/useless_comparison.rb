@@ -10,7 +10,7 @@ module RuboCop
       #   # bad
       #
       #   x.top >= x.top
-      class UselessComparison < Cop
+      class UselessComparison < Base
         MSG = 'Comparison of something with itself detected.'
         OPS = %w[== === != < > <= >= <=>].freeze
 
@@ -20,7 +20,7 @@ module RuboCop
         def on_send(node)
           return unless useless_comparison?(node)
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
       end
     end

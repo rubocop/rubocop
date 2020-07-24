@@ -23,7 +23,7 @@ module RuboCop
       #
       #   x&.foo&.bar
       #   x&.foo || bar
-      class SafeNavigationChain < Cop
+      class SafeNavigationChain < Base
         include NilMethods
 
         MSG = 'Do not chain ordinary method call' \
@@ -45,7 +45,7 @@ module RuboCop
               Parser::Source::Range.new(node.source_range.source_buffer,
                                         safe_nav.source_range.end_pos,
                                         method_chain.source_range.end_pos)
-            add_offense(node, location: location)
+            add_offense(location)
           end
         end
 

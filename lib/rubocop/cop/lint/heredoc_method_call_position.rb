@@ -30,8 +30,9 @@ module RuboCop
       #        bar
       #      SQL
       #
-      class HeredocMethodCallPosition < Cop
+      class HeredocMethodCallPosition < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Put a method call with a HEREDOC receiver on the ' \
         'same line as the HEREDOC opening.'
@@ -41,24 +42,22 @@ module RuboCop
           return unless heredoc
           return if correctly_positioned?(node, heredoc)
 
-          add_offense(node, location: call_after_heredoc_range(heredoc))
+          add_offense(call_after_heredoc_range(heredoc)) do |corrector|
+            autocorrect(corrector, node, heredoc)
+          end
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          heredoc = heredoc_node_descendent_receiver(node)
-
-          lambda do |corrector|
-            call_range = call_range_to_safely_reposition(node, heredoc)
-            return if call_range.nil?
-
-            call_source = call_range.source.strip
-            corrector.remove(call_range)
-            corrector.insert_after(heredoc_begin_line_range(node), call_source)
-          end
-        end
-
         private
+
+        def autocorrect(corrector, node, heredoc)
+          call_range = call_range_to_safely_reposition(node, heredoc)
+          return if call_range.nil?
+
+          call_source = call_range.source.strip
+          corrector.remove(call_range)
+          corrector.insert_after(heredoc_begin_line_range(node), call_source)
+        end
 
         def heredoc_node_descendent_receiver(node)
           while send_node?(node)

@@ -24,7 +24,7 @@ module RuboCop
       #   # good
       #   # Lambda arguments require no disambiguation
       #   foo = ->(bar) { bar.baz }
-      class AmbiguousBlockAssociation < Cop
+      class AmbiguousBlockAssociation < Base
         MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
               'block will be associated with the `%<method>s` method ' \
               'call.'
@@ -36,7 +36,9 @@ module RuboCop
           return if node.parenthesized? ||
                     node.last_argument.lambda? || allowed_method?(node)
 
-          add_offense(node)
+          message = message(node)
+
+          add_offense(node, message: message)
         end
         alias on_csend on_send
 

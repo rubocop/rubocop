@@ -44,7 +44,7 @@ module RuboCop
       #     # do nothing
       #   end
       #
-      class EmptyWhen < Cop
+      class EmptyWhen < Base
         MSG = 'Avoid `when` branches without a body.'
 
         def on_case(node)
@@ -52,7 +52,7 @@ module RuboCop
             next if when_node.body
             next if cop_config['AllowComments'] && comment_lines?(node)
 
-            add_offense(when_node, location: when_node.source_range)
+            add_offense(when_node)
           end
         end
       end

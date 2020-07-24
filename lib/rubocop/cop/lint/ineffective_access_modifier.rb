@@ -45,7 +45,7 @@ module RuboCop
       #       end
       #     end
       #   end
-      class IneffectiveAccessModifier < Cop
+      class IneffectiveAccessModifier < Base
         MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
               'methods %<modifier>s. Use %<alternative>s instead.'
         ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a ' \
@@ -71,9 +71,7 @@ module RuboCop
           return unless node&.begin_type?
 
           ineffective_modifier(node) do |defs_node, modifier|
-            add_offense(defs_node,
-                        location: :keyword,
-                        message: format_message(modifier))
+            add_offense(defs_node.loc.keyword, message: format_message(modifier))
           end
         end
 

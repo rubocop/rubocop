@@ -26,8 +26,9 @@ module RuboCop
       #     v
       #   end
       #
-      class RedundantWithObject < Cop
+      class RedundantWithObject < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG_EACH_WITH_OBJECT = 'Use `each` instead of `each_with_object`.'
 
@@ -43,20 +44,16 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          redundant_with_object?(node) do |send|
-            add_offense(node, location: with_object_range(send))
-          end
-        end
+          return unless (send = redundant_with_object?(node))
 
-        def autocorrect(node)
-          lambda do |corrector|
-            redundant_with_object?(node) do |send|
-              if send.method?(:each_with_object)
-                corrector.replace(with_object_range(send), 'each')
-              else
-                corrector.remove(with_object_range(send))
-                corrector.remove(send.loc.dot)
-              end
+          range = with_object_range(send)
+
+          add_offense(range, message: message(send)) do |corrector|
+            if send.method?(:each_with_object)
+              corrector.replace(range, 'each')
+            else
+              corrector.remove(range)
+              corrector.remove(send.loc.dot)
             end
           end
         end

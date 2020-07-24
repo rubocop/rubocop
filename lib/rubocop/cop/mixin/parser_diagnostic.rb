@@ -16,7 +16,7 @@ module RuboCop
     #       'My custom message'
     #     end
     module ParserDiagnostic
-      def investigate(processed_source)
+      def on_new_investigation
         processed_source.diagnostics.each do |d|
           next unless relevant_diagnostic?(d)
 
@@ -25,13 +25,18 @@ module RuboCop
                     else
                       d.message.capitalize
                     end
+          offense_node = find_offense_node_by(d)
 
-          add_offense(find_offense_node_by(d),
-                      location: d.location,
-                      message: message,
-                      severity: d.level)
+          add_offense(d.location, message: message, severity: d.level) do |corrector|
+            autocorrect(corrector, offense_node)
+          end
         end
       end
+
+      private
+
+      # If a mixed-in subclass has auto-correction, implement it in the mixed-in subclass.
+      def autocorrect(corrector, node); end
     end
   end
 end

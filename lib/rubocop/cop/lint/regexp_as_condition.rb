@@ -16,16 +16,14 @@ module RuboCop
       #   if /foo/ =~ $_
       #     do_something
       #   end
-      class RegexpAsCondition < Cop
+      class RegexpAsCondition < Base
+        extend AutoCorrector
+
         MSG = 'Do not use regexp literal as a condition.' \
               ' The regexp literal matches `$_` implicitly.'
 
         def on_match_current_line(node)
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             corrector.replace(node, "#{node.source} =~ $_")
           end
         end

@@ -19,7 +19,9 @@ module RuboCop
       #   return if foo && foo.empty?
       #   return unless foo && foo.empty?
       #
-      class SafeNavigationWithEmpty < Cop
+      class SafeNavigationWithEmpty < Base
+        extend AutoCorrector
+
         MSG = 'Avoid calling `empty?` with the safe navigation operator ' \
           'in conditionals.'
 
@@ -30,14 +32,12 @@ module RuboCop
         def on_if(node)
           return unless safe_navigation_empty_in_conditional?(node)
 
-          add_offense(node.condition)
-        end
+          condition = node.condition
 
-        def autocorrect(node)
-          lambda do |corrector|
-            receiver = node.receiver.source
+          add_offense(condition) do |corrector|
+            receiver = condition.receiver.source
 
-            corrector.replace(node, "#{receiver} && #{receiver}.#{node.method_name}")
+            corrector.replace(condition, "#{receiver} && #{receiver}.#{condition.method_name}")
           end
         end
       end
