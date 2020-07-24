@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for methods with too many parameters.
       # The maximum number of parameters is configurable.
       # Keyword arguments can optionally be excluded from the total count.
-      class ParameterLists < Cop
+      class ParameterLists < Base
         include ConfigurableMax
 
         MSG = 'Avoid parameter lists longer than %<max>d parameters. ' \
@@ -18,7 +18,7 @@ module RuboCop
 
           return if argument_to_lambda_or_proc?(node)
 
-          add_offense(node) do
+          add_offense(node, message: format(MSG, max: max_params, count: args_count(node))) do
             self.max = count
           end
         end
@@ -28,10 +28,6 @@ module RuboCop
         def_node_matcher :argument_to_lambda_or_proc?, <<~PATTERN
           ^lambda_or_proc?
         PATTERN
-
-        def message(node)
-          format(MSG, max: max_params, count: args_count(node))
-        end
 
         def args_count(node)
           if count_keyword_args?

@@ -26,7 +26,7 @@ module RuboCop
       #       do_something until a && b   # 2
       #     end                           # ===
       #   end                             # 7 complexity points
-      class PerceivedComplexity < Cop
+      class PerceivedComplexity < Base
         include MethodComplexity
 
         MSG = 'Perceived complexity for %<method>s is too high. ' \
