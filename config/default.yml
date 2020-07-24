@@ -1820,6 +1820,11 @@ Lint/ToJSON:
   Enabled: true
   VersionAdded: '0.66'
 
+Lint/TopLevelReturnWithArgument:
+  Description: 'This cop detects top level return statements with argument.'
+  Enabled: 'pending'
+  VersionAdded: '0.89'
+
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
