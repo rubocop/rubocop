@@ -21,6 +21,7 @@
 * [#8347](https://github.com/rubocop-hq/rubocop/issues/8347): Fix an incorrect auto-correct for `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Layout/HashAlignment`. ([@koic][])
 * [#8375](https://github.com/rubocop-hq/rubocop/pull/8375): Fix an infinite loop error for `Style/EmptyMethod`. ([@koic][])
 * [#8385](https://github.com/rubocop-hq/rubocop/pull/8385): Remove auto-correction for `Lint/EnsureReturn`. ([@marcandre][])
+* [#8391](https://github.com/rubocop-hq/rubocop/issues/8391): Mark `Style/ArrayCoercion` as not safe. ([@marcandre][])
 
 ### Changes
 
