@@ -29,7 +29,7 @@ module RuboCop
       #     HEREDOC
       #   end                 # 5 points
       #
-      class ClassLength < Cop
+      class ClassLength < Base
         include CodeLength
 
         def on_class(node)
