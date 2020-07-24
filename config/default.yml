@@ -2359,6 +2359,7 @@ Style/ArrayCoercion:
                   Use Array() instead of explicit Array check or [*var], when dealing
                   with a variable you want to treat as an Array, but you're not certain it's an array.
   StyleGuide: '#array-coercion'
+  Safe: false
   Enabled: 'pending'
   VersionAdded: '0.88'
 
