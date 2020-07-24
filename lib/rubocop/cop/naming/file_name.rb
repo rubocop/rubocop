@@ -24,7 +24,7 @@ module RuboCop
       #   lib/layout_manager.rb
       #
       #   anything/using_snake_case.rake
-      class FileName < Cop
+      class FileName < Base
         include RangeHelp
 
         MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) ' \
@@ -35,13 +35,13 @@ module RuboCop
 
         SNAKE_CASE = /^[\da-z_.?!]+$/.freeze
 
-        def investigate(processed_source)
+        def on_new_investigation
           file_path = processed_source.file_path
           return if config.file_to_exclude?(file_path) ||
                     config.allowed_camel_case_file?(file_path)
 
           for_bad_filename(file_path) do |range, msg|
-            add_offense(nil, location: range, message: msg)
+            add_offense(range, message: msg)
           end
         end
 

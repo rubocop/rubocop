@@ -53,22 +53,23 @@ module RuboCop
       #     # do something
       #   end
       #
-      class RescuedExceptionsVariableName < Cop
+      class RescuedExceptionsVariableName < Base
+        extend AutoCorrector
+
         MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'
 
         def on_resbody(node)
-          name = variable_name(node)
-          return unless name
-          return if preferred_name(name).to_sym == name
+          offending_name = variable_name(node)
+          return unless offending_name
 
-          add_offense(node, location: offense_range(node))
-        end
+          preferred_name = preferred_name(offending_name)
+          return if preferred_name.to_sym == offending_name
 
-        def autocorrect(node)
-          lambda do |corrector|
-            offending_name = variable_name(node)
-            preferred_name = preferred_name(offending_name)
-            corrector.replace(offense_range(node), preferred_name)
+          range = offense_range(node)
+          message = message(node)
+
+          add_offense(range, message: message) do |corrector|
+            corrector.replace(range, preferred_name)
 
             node.body&.each_descendant(:lvar) do |var|
               next unless var.children.first == offending_name
