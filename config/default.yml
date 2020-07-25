@@ -1770,6 +1770,11 @@ Lint/ScriptPermission:
   VersionAdded: '0.49'
   VersionChanged: '0.50'
 
+Lint/SelfAssignment:
+  Description: 'Checks for self-assignments.'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/SendWithMixinArgument:
   Description: 'Checks for `send` method when using mixin.'
   Enabled: true
