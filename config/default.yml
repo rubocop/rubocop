@@ -1420,6 +1420,11 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
 
+Lint/DuplicateRescueException:
+  Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
   Enabled: true
@@ -1819,6 +1824,11 @@ Lint/ToJSON:
   Description: 'Ensure #to_json includes an optional argument.'
   Enabled: true
   VersionAdded: '0.66'
+
+Lint/TopLevelReturnWithArgument:
+  Description: 'This cop detects top level return statements with argument.'
+  Enabled: 'pending'
+  VersionAdded: '0.89'
 
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
@@ -2364,6 +2374,7 @@ Style/ArrayCoercion:
                   Use Array() instead of explicit Array check or [*var], when dealing
                   with a variable you want to treat as an Array, but you're not certain it's an array.
   StyleGuide: '#array-coercion'
+  Safe: false
   Enabled: 'pending'
   VersionAdded: '0.88'
 

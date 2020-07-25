@@ -739,6 +739,44 @@ end
 alias bar foo
 ----
 
+== Lint/DuplicateRescueException
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks that there are no repeated exceptions
+used in 'rescue' expressions.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+begin
+  something
+rescue FirstException
+  handle_exception
+rescue FirstException
+  handle_other_exception
+end
+
+# good
+begin
+  something
+rescue FirstException
+  handle_exception
+rescue SecondException
+  handle_other_exception
+end
+----
+
 == Lint/EachWithObjectArgument
 
 |===
@@ -1035,9 +1073,11 @@ end
 |===
 
 This cop checks for `return` from an `ensure` block.
-Explicit return from an ensure block alters the control flow
-as the return will take precedence over any exception being raised,
+`return` from an ensure block is a dangerous code smell as it
+will take precedence over any exception being raised,
 and the exception will be silently thrown away as if it were rescued.
+
+If you want to rescue some (or all) exceptions, best to do it explicitly
 
 === Examples
 
@@ -1045,11 +1085,11 @@ and the exception will be silently thrown away as if it were rescued.
 ----
 # bad
 
-begin
+def foo
   do_something
 ensure
-  do_something_else
-  return
+  cleanup
+  return self
 end
 ----
 
@@ -1057,10 +1097,24 @@ end
 ----
 # good
 
-begin
+def foo
   do_something
+  self
 ensure
-  do_something_else
+  cleanup
+end
+
+# also good
+
+def foo
+  begin
+    do_something
+  rescue SomeException
+    # Let's ignore this exception
+  end
+  self
+ensure
+  cleanup
 end
 ----
 
@@ -3435,6 +3489,30 @@ end
 # good
 def to_json(*_args)
 end
+----
+
+== Lint/TopLevelReturnWithArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for top level return with arguments. If there is a
+top-level return statement with an argument, then the argument is
+always ignored. This is detected automatically since Ruby 2.7.
+
+=== Examples
+
+[source,ruby]
+----
+# Detected since Ruby 2.7
+return 1 # 1 is always ignored.
 ----
 
 == Lint/UnderscorePrefixedVariableName
