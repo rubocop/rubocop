@@ -8,10 +8,19 @@ module RuboCop
       # when reading code.
       #
       # @example
-      #
+      #   # bad
       #   a do
       #     b
       #   end.c
+      #
+      #   # good
+      #   a { b }.c
+      #
+      #   # good
+      #   foo = a do
+      #     b
+      #   end
+      #   foo.c
       class MethodCalledOnDoEndBlock < Base
         include RangeHelp
 
