@@ -19,14 +19,14 @@ module RuboCop
       def non_eligible_node?(node)
         node.modifier_form? ||
           node.nonempty_line_count > 3 ||
-          processed_source.commented?(node.loc.end)
+          processed_source.line_with_comment?(node.loc.last_line)
       end
 
       def non_eligible_body?(body)
         body.nil? ||
           body.empty_source? ||
           body.begin_type? ||
-          processed_source.commented?(body.source_range)
+          processed_source.contains_comment?(body.source_range)
       end
 
       def non_eligible_condition?(condition)
