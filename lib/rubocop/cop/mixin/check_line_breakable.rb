@@ -59,7 +59,7 @@ module RuboCop
         return if safe_to_ignore?(node)
 
         line = processed_source.lines[node.first_line - 1]
-        return if processed_source.commented?(node.loc.begin)
+        return if processed_source.line_with_comment?(node.loc.line)
         return if line.length <= max
 
         extract_first_element_over_column_limit(node, elements, max)
