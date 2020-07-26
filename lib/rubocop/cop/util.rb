@@ -14,10 +14,12 @@ module RuboCop
 
       module_function
 
+      # This is a bad API
       def comment_line?(line_source)
         /^\s*#/.match?(line_source)
       end
 
+      # @deprecated Use `ProcessedSource#line_with_comment?`, `contains_comment` or similar
       def comment_lines?(node)
         processed_source[line_range(node)].any? { |line| comment_line?(line) }
       end
