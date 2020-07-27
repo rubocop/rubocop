@@ -2356,6 +2356,21 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 ----
 
+== Lint/OutOfRangeRefInRegexp
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+# good
+  puts $1 # => foo
+
 == Lint/ParenthesesAsGroupedExpression
 
 |===
