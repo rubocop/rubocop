@@ -74,37 +74,56 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRefInRegexp do
     it 'does not register an offence when containing a lvar' do
       expect_no_offenses(<<~'RUBY')
         var = '(\d+)'
-        /(?<foo>#{var}*)/
+        /(?<foo>#{var}*)/ =~ "12"
+        puts $1
+        puts $2
       RUBY
     end
 
     it 'does not register an offence when containing a ivar' do
       expect_no_offenses(<<~'RUBY')
-        /(?<foo>#{@var}*)/
+        @var = '(\d+)'
+        /(?<foo>#{@var}*)/ =~ "12"
+        puts $1
+        puts $3
       RUBY
     end
 
     it 'does not register an offence when containing a cvar' do
       expect_no_offenses(<<~'RUBY')
-        /(?<foo>#{@@var}*)/
+        @@var = '(\d+)'
+        /(?<foo>#{@@var}*)/ =~ "12"
+        puts $1
+        puts $4
       RUBY
     end
 
     it 'does not register an offence when containing a gvar' do
       expect_no_offenses(<<~'RUBY')
-        /(?<foo>#{$var}*)/
+        $var = '(\d+)'
+        /(?<foo>#{$var}*)/ =~ "12"
+        puts $1
+        puts $2
       RUBY
     end
 
     it 'does not register an offence when containing a method' do
       expect_no_offenses(<<~'RUBY')
-        /(?<foo>#{do_something}*)/
+        def do_something
+          '(\d+)'
+        end
+        /(?<foo>#{do_something}*)/ =~ "12"
+        puts $1
+        puts $4
       RUBY
     end
 
     it 'does not register an offence when containing a constant' do
       expect_no_offenses(<<~'RUBY')
-        /(?<foo>#{CONST}*)/
+        CONST = "12"
+        /(?<foo>#{CONST}*)/ =~ "12"
+        puts $1
+        puts $3
       RUBY
     end
   end

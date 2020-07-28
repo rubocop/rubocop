@@ -15,25 +15,29 @@ module RuboCop
       #   # good
       #   puts $1 # => foo
       #
-      class OutOfRangeRefInRegexp < Cop
+      class OutOfRangeRefInRegexp < Base
         MSG = 'Do not use out of range reference for the Regexp.'
 
-        def investigate(processed_source)
-          ast = processed_source.ast
-          valid_ref = cop_config['Count']
-          ast.each_node do |node|
-            if node.regexp_type?
-              break if contain_non_literal?(node)
+        def on_regexp(node)
+          @valid_ref = cop_config['Count']
+          return if contain_non_literal?(node)
 
-              tree = parse_node(node.content)
-              break if tree.nil?
-
-              valid_ref = regexp_captures(tree)
-            elsif node.nth_ref_type?
-              backref, = *node
-              add_offense(node) if backref > valid_ref
-            end
+          begin
+            tree = Regexp::Parser.parse(node.content)
+          # Returns if a regular expression that cannot be processed by regexp_parser gem.
+          # https://github.com/rubocop-hq/rubocop/issues/8083
+          rescue Regexp::Scanner::ScannerError
+            return
           end
+
+          @valid_ref = regexp_captures(tree)
+        end
+
+        def on_nth_ref(node)
+          backref, = *node
+          return if @valid_ref.nil?
+
+          add_offense(node) if backref > @valid_ref
         end
 
         private
@@ -45,12 +49,6 @@ module RuboCop
           return false unless node.respond_to?(:children)
 
           node.children.any? { |child| contain_non_literal?(child) }
-        end
-
-        def parse_node(content)
-          Regexp::Parser.parse(content)
-        rescue Regexp::Scanner::ScannerError
-          nil
         end
 
         def regexp_captures(tree)
