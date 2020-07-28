@@ -5,6 +5,7 @@
 ### New features
 
 * [#8451](https://github.com/rubocop-hq/rubocop/issues/8451): Add new `Style/RedundantSelfAssignment` cop. ([@fatkodima][])
+* [#8384](https://github.com/rubocop-hq/rubocop/issues/8384): Add new `Layout/EmptyLineAfterMultilineCondition` cop. ([@fatkodima][])
 * [#8390](https://github.com/rubocop-hq/rubocop/pull/8390): Add new `Style/SoleNestedConditional` cop. ([@fatkodima][])
 * [#8562](https://github.com/rubocop-hq/rubocop/pull/8562): Add new `Style/KeywordParametersOrder` cop. ([@fatkodima][])
 * [#8486](https://github.com/rubocop-hq/rubocop/pull/8486): Add new `Style/CombinableLoops` cop. ([@fatkodima][])
