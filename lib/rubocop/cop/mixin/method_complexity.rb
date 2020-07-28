@@ -57,8 +57,11 @@ module RuboCop
       end
 
       def complexity(body)
-        body.each_node(*self.class::COUNTED_NODES).reduce(1) do |score, node|
-          reset_on_lvasgn(node) if node.lvasgn_type?
+        body.each_node(:lvasgn, *self.class::COUNTED_NODES).reduce(1) do |score, node|
+          if node.lvasgn_type?
+            reset_on_lvasgn(node)
+            next score
+          end
           score + complexity_score_for(node)
         end
       end
