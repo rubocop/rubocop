@@ -436,6 +436,14 @@ Layout/EmptyLineAfterMagicComment:
   Enabled: true
   VersionAdded: '0.49'
 
+Layout/EmptyLineAfterMultilineCondition:
+  Description: 'Enforces empty line after multiline condition.'
+  # This is disabled, because this style is not very common in practice.
+  Enabled: false
+  VersionAdded: '0.90'
+  Reference:
+    - https://github.com/airbnb/ruby#multiline-if-newline
+
 Layout/EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   StyleGuide: '#empty-lines-between-methods'
