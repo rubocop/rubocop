@@ -1643,6 +1643,7 @@ Lint/OrderedMagicComments:
 Lint/OutOfRangeRefInRegexp:
   Description: 'Checks for out of range reference for Regep because it always returns nil.'
   Enabled: pending
+  Safe: false
   VersionAdded: '0.89'
 
 Lint/ParenthesesAsGroupedExpression:
