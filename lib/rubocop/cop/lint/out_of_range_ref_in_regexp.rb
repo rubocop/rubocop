@@ -57,11 +57,7 @@ module RuboCop
             named_capture += 1 if e.instance_of?(Regexp::Expression::Group::Named)
             numbered_capture += 1 if e.instance_of?(Regexp::Expression::Group::Capture)
           end
-          return named_capture if numbered_capture.zero?
-
-          return numbered_capture if named_capture.zero?
-
-          named_capture
+          named_capture.positive? ? named_capture : numbered_capture
         end
       end
     end
