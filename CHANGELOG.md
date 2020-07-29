@@ -28,6 +28,7 @@
 
 ### Changes
 
+* [#8413](https://github.com/rubocop-hq/rubocop/issues/8413): Pending cops warning now contains snippet that can be directly copied into `.rubocop.yml` as well as a notice about `NewCops: enable` config option. ([@colszowka][])
 * [#8376](https://github.com/rubocop-hq/rubocop/pull/8376): `Style/MethodMissingSuper` cop is removed in favor of new `Lint/MissingSuper` cop. ([@fatkodima][])
 * [#8350](https://github.com/rubocop-hq/rubocop/pull/8350): Set default max line length to 120 for `Style/MultilineMethodSignature`. ([@koic][])
 * [#8338](https://github.com/rubocop-hq/rubocop/pull/8338): **potentially breaking**. Config#for_department now returns only the config specified for that department; the 'Enabled' attribute is no longer calculated. ([@marcandre][])
@@ -4724,3 +4725,4 @@
 [@knejad]: https://github.com/knejad
 [@iamravitejag]: https://github.com/iamravitejag
 [@volfgox]: https://github.com/volfgox
+[@colszowka]: https://github.com/colszowka

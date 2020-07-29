@@ -272,7 +272,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
 
         let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
-          The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
+          The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
         PENDING_COP_WARNING
 
         let(:inspected_output) { <<~INSPECTED_OUTPUT }
@@ -327,9 +327,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               remaining_range =
                 pending_cop_warning.length..-(inspected_output.length + 1)
-              pending_cops = output[remaining_range].split("\n")
+              pending_cops = output[remaining_range]
 
-              expect(pending_cops).to include(' - Style/SomeCop (0.80)')
+              expect(pending_cops).to include("Style/SomeCop: # (new in 0.80)\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
@@ -346,9 +346,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               remaining_range =
                 pending_cop_warning.length..-(inspected_output.length + 1)
-              pending_cops = output[remaining_range].split("\n")
+              pending_cops = output[remaining_range]
 
-              expect(pending_cops).to include(' - Style/SomeCop (N/A)')
+              expect(pending_cops).to include("Style/SomeCop: # (new in N/A)\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
