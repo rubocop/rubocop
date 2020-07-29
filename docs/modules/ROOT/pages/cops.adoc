@@ -431,6 +431,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleonelineconditional[Style/OneLineConditional]
 * xref:cops_style.adoc#styleoptionhash[Style/OptionHash]
 * xref:cops_style.adoc#styleoptionalarguments[Style/OptionalArguments]
+* xref:cops_style.adoc#styleoptionalbooleanparameter[Style/OptionalBooleanParameter]
 * xref:cops_style.adoc#styleorassignment[Style/OrAssignment]
 * xref:cops_style.adoc#styleparallelassignment[Style/ParallelAssignment]
 * xref:cops_style.adoc#styleparenthesesaroundcondition[Style/ParenthesesAroundCondition]
