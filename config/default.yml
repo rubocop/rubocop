@@ -3583,6 +3583,13 @@ Style/OptionalArguments:
   VersionAdded: '0.33'
   VersionChanged: '0.83'
 
+Style/OptionalBooleanParameter:
+  Description: 'Use keyword arguments when defining method with boolean argument.'
+  StyleGuide: '#boolean-keyword-arguments'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Style/OrAssignment:
   Description: 'Recommend usage of double pipe equals (||=) where applicable.'
   StyleGuide: '#double-pipe-for-uninit'

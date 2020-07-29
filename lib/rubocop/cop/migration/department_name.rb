@@ -51,7 +51,7 @@ module RuboCop
 
           add_offense(range) do |corrector|
             cop_name = range.source
-            qualified_cop_name = Cop.registry.qualified_cop_name(cop_name, nil, false)
+            qualified_cop_name = Cop.registry.qualified_cop_name(cop_name, nil, warn: false)
 
             unless qualified_cop_name.include?('/')
               qualified_cop_name = qualified_legacy_cop_name(cop_name)

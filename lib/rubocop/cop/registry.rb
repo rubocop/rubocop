@@ -100,9 +100,9 @@ module RuboCop
       # @note Emits a warning if the provided name has an incorrect namespace
       #
       # @return [String] Qualified cop name
-      def qualified_cop_name(name, path, shall_warn = true)
+      def qualified_cop_name(name, path, warn: true)
         badge = Badge.parse(name)
-        print_warning(name, path) if shall_warn && department_missing?(badge, name)
+        print_warning(name, path) if warn && department_missing?(badge, name)
         return name if registered?(badge)
 
         potential_badges = qualify_badge(badge)
@@ -149,7 +149,7 @@ module RuboCop
         @registry.size
       end
 
-      def enabled(config, only = [], only_safe = false)
+      def enabled(config, only = [], only_safe: false)
         select do |cop|
           only.include?(cop.cop_name) || enabled?(cop, config, only_safe)
         end

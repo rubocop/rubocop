@@ -43,7 +43,7 @@ module RuboCop
         cop_classes = Registry.new(cop_classes.to_a) unless cop_classes.is_a?(Registry)
         only = options.fetch(:only, [])
         safe = options.fetch(:safe, false)
-        cop_classes.enabled(config, only, safe).map do |cop_class|
+        cop_classes.enabled(config, only, only_safe: safe).map do |cop_class|
           cop_class.new(config, options)
         end
       end

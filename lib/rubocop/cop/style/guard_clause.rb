@@ -87,7 +87,7 @@ module RuboCop
         private
 
         def check_ending_if(node)
-          return if accepted_form?(node, true) || !min_body_length?(node)
+          return if accepted_form?(node, ending: true) || !min_body_length?(node)
 
           register_offense(node, 'return', opposite_keyword(node))
         end
@@ -125,7 +125,7 @@ module RuboCop
           max && node.source_range.column + example.length > max
         end
 
-        def accepted_form?(node, ending = false)
+        def accepted_form?(node, ending: false)
           accepted_if?(node, ending) || node.condition.multiline? ||
             node.parent&.assignment?
         end

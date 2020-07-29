@@ -6547,6 +6547,46 @@ end
 
 * https://rubystyle.guide#optional-arguments
 
+== Style/OptionalBooleanParameter
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.89
+| -
+|===
+
+This cop checks for places where keyword arguments can be used instead of
+boolean arguments when defining methods.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method(bar = false)
+  puts bar
+end
+
+# bad - common hack before keyword args were introduced
+def some_method(options = {})
+  bar = options.fetch(:bar, false)
+  puts bar
+end
+
+# good
+def some_method(bar: false)
+  puts bar
+end
+----
+
+=== References
+
+* https://rubystyle.guide#boolean-keyword-arguments
+
 == Style/OrAssignment
 
 |===
