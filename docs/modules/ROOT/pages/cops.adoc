@@ -369,6 +369,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleevalwithlocation[Style/EvalWithLocation]
 * xref:cops_style.adoc#styleevenodd[Style/EvenOdd]
 * xref:cops_style.adoc#styleexpandpatharguments[Style/ExpandPathArguments]
+* xref:cops_style.adoc#styleexplicitblockargument[Style/ExplicitBlockArgument]
 * xref:cops_style.adoc#styleexponentialnotation[Style/ExponentialNotation]
 * xref:cops_style.adoc#stylefloatdivision[Style/FloatDivision]
 * xref:cops_style.adoc#stylefor[Style/For]

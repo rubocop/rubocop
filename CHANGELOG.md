@@ -10,6 +10,7 @@
 * [#8430](https://github.com/rubocop-hq/rubocop/pull/8430): Add new `Lint/UnreachableLoop` cop. ([@fatkodima][])
 * [#8412](https://github.com/rubocop-hq/rubocop/pull/8412): Add new `Style/OptionalBooleanParameter` cop. ([@fatkodima][])
 * [#8376](https://github.com/rubocop-hq/rubocop/pull/8376): Add new `Lint/MissingSuper` cop. ([@fatkodima][])
+* [#8415](https://github.com/rubocop-hq/rubocop/pull/8415): Add new `Style/ExplicitBlockArgument` cop. ([@fatkodima][])
 * [#8339](https://github.com/rubocop-hq/rubocop/pull/8339): Add `Config#for_badge` as an efficient way to get a cop's config merged with its department's. ([@marcandre][])
 * [#5067](https://github.com/rubocop-hq/rubocop/issues/5067): Add new `Style/StringConcatenation` cop. ([@fatkodima][])
 * [#7425](https://github.com/rubocop-hq/rubocop/pull/7425): Add new `Lint/TopLevelReturnWithArgument` cop. ([@iamravitejag][])
