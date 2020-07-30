@@ -2987,6 +2987,12 @@ Style/FrozenStringLiteralComment:
     - never
   Safe: false
 
+Style/GlobalStdStream:
+  Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
+  StyleGuide: '#global-stdout'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
   StyleGuide: '#instance-vars'
