@@ -230,7 +230,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintnonlocalexitfromiterator[Lint/NonLocalExitFromIterator]
 * xref:cops_lint.adoc#lintnumberconversion[Lint/NumberConversion]
 * xref:cops_lint.adoc#lintorderedmagiccomments[Lint/OrderedMagicComments]
-* xref:cops_lint.adoc#lintoutofrangerefinregexp[Lint/OutOfRangeRefInRegexp]
+* xref:cops_lint.adoc#lintoutofrangeregexpref[Lint/OutOfRangeRegexpRef]
 * xref:cops_lint.adoc#lintparenthesesasgroupedexpression[Lint/ParenthesesAsGroupedExpression]
 * xref:cops_lint.adoc#lintpercentstringarray[Lint/PercentStringArray]
 * xref:cops_lint.adoc#lintpercentsymbolarray[Lint/PercentSymbolArray]

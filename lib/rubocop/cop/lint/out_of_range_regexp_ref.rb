@@ -15,7 +15,7 @@ module RuboCop
       #   # good
       #   puts $1 # => foo
       #
-      class OutOfRangeRefInRegexp < Base
+      class OutOfRangeRegexpRef < Base
         MSG = 'Do not use out of range reference for the Regexp.'
 
         def on_regexp(node)

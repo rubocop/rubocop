@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::OutOfRangeRefInRegexp do
+RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
   subject(:cop) { described_class.new(config) }
 
   let(:config) { RuboCop::Config.new }
