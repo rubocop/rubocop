@@ -2904,6 +2904,16 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
+Style/ExplicitBlockArgument:
+  Description: >-
+                  Consider using explicit block argument to avoid writing block literal
+                  that just passes its arguments to another block.
+  StyleGuide: '#block-argument'
+  Enabled: pending
+  # May change the yielding arity.
+  Safe: false
+  VersionAdded: '0.89'
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'

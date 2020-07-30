@@ -2813,6 +2813,48 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ----
 
+== Style/ExplicitBlockArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.89
+| -
+|===
+
+This cop enforces the use of explicit block argument to avoid writing
+block literal that just passes its arguments to another block.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def with_tmp_dir
+  Dir.mktmpdir do |tmp_dir|
+    Dir.chdir(tmp_dir) { |dir| yield dir } # block just passes arguments
+  end
+end
+
+# good
+def with_tmp_dir(&block)
+  Dir.mktmpdir do |tmp_dir|
+    Dir.chdir(tmp_dir, &block)
+  end
+end
+
+with_tmp_dir do |dir|
+  puts "dir is accessible as a parameter and pwd is set: #{dir}"
+end
+----
+
+=== References
+
+* https://rubystyle.guide#block-argument
+
 == Style/ExponentialNotation
 
 |===
