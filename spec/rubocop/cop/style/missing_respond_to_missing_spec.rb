@@ -52,6 +52,31 @@ RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing do
     RUBY
   end
 
+  it 'allows method_missing and respond_to_missing? when defined with inline access modifier' do
+    expect_no_offenses(<<~RUBY)
+      class Test
+        private def respond_to_missing?
+        end
+
+        private def method_missing
+        end
+      end
+    RUBY
+  end
+
+  it 'allows method_missing and respond_to_missing? when defined with inline access modifier and ' \
+     'method_missing is not qualified by inline access modifier' do
+    expect_no_offenses(<<~RUBY)
+      class Test
+        private def respond_to_missing?
+        end
+
+        def method_missing
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense respond_to_missing? is implemented as ' \
     'an instance method and method_missing is implemented as a class method' do
     expect_offense(<<~RUBY)
