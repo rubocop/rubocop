@@ -261,6 +261,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintunderscoreprefixedvariablename[Lint/UnderscorePrefixedVariableName]
 * xref:cops_lint.adoc#lintunifiedinteger[Lint/UnifiedInteger]
 * xref:cops_lint.adoc#lintunreachablecode[Lint/UnreachableCode]
+* xref:cops_lint.adoc#lintunreachableloop[Lint/UnreachableLoop]
 * xref:cops_lint.adoc#lintunusedblockargument[Lint/UnusedBlockArgument]
 * xref:cops_lint.adoc#lintunusedmethodargument[Lint/UnusedMethodArgument]
 * xref:cops_lint.adoc#linturiescapeunescape[Lint/UriEscapeUnescape]

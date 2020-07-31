@@ -53,10 +53,7 @@ module RuboCop
 
         def method_chain(node)
           chain = node
-          while chain.send_type?
-            chain = chain.parent if chain.parent&.call_type?
-            break # FIXME: Unconditional break. Why while "loop" then?
-          end
+          chain = chain.parent if chain.send_type? && chain.parent&.call_type?
           chain
         end
       end

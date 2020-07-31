@@ -1846,6 +1846,11 @@ Lint/UnreachableCode:
   Enabled: true
   VersionAdded: '0.9'
 
+Lint/UnreachableLoop:
+  Description: 'This cop checks for loops that will have at most one iteration.'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
