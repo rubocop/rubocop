@@ -96,9 +96,7 @@ module RuboCop
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity
-        def ineffective_modifier(node, modifier = nil, &block)
-          ignored_methods = nil
-
+        def ineffective_modifier(node, ignored_methods = nil, modifier = nil, &block)
           node.each_child_node do |child|
             case child.type
             when :send
