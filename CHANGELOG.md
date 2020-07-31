@@ -29,6 +29,7 @@
 * [#8391](https://github.com/rubocop-hq/rubocop/issues/8391): Mark `Style/ArrayCoercion` as not safe. ([@marcandre][])
 * [#8406](https://github.com/rubocop-hq/rubocop/issues/8406): Improve `Style/AccessorGrouping`'s auto-correction to remove redundant blank lines. ([@koic][])
 * [#8330](https://github.com/rubocop-hq/rubocop/issues/8330): Fix a false positive for `Style/MissingRespondToMissing` when defined method with inline access modifier. ([@koic][])
+* [#8422](https://github.com/rubocop-hq/rubocop/issues/8422): Fix an error for `Lint/SelfAssignment` when using or-assignment for constant. ([@koic][])
 
 ### Changes
 

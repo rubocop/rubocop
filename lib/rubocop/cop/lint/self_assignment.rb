@@ -40,7 +40,7 @@ module RuboCop
 
         def on_casgn(node)
           lhs_scope, lhs_name, rhs = *node
-          return unless rhs.const_type?
+          return unless rhs&.const_type?
 
           rhs_scope, rhs_name = *rhs
           add_offense(node) if lhs_scope == rhs_scope && lhs_name == rhs_name
