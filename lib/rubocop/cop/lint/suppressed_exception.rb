@@ -77,13 +77,10 @@ module RuboCop
         private
 
         def comment_between_rescue_and_end?(node)
-          end_line = nil
-          node.each_ancestor(:kwbegin, :def, :defs, :block) do |ancestor|
-            end_line = ancestor.loc.end.line
-            break
-          end
-          return false unless end_line
+          ancestor = node.each_ancestor(:kwbegin, :def, :defs, :block).first
+          return unless ancestor
 
+          end_line = ancestor.loc.end.line
           processed_source[node.first_line...end_line].any? { |line| comment_line?(line) }
         end
       end
