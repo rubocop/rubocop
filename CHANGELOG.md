@@ -7,6 +7,7 @@
 * [#8322](https://github.com/rubocop-hq/rubocop/pull/8322): Support autocorrect for `Style/CaseEquality` cop. ([@fatkodima][])
 * [#8291](https://github.com/rubocop-hq/rubocop/pull/8291): Add new `Lint/SelfAssignment` cop. ([@fatkodima][])
 * [#8389](https://github.com/rubocop-hq/rubocop/pull/8389): Add new `Lint/DuplicateRescueException` cop. ([@fatkodima][])
+* [#8433](https://github.com/rubocop-hq/rubocop/pull/8433): Add new `Lint/BinaryOperatorWithIdenticalOperands` cop. ([@fatkodima][])
 * [#8430](https://github.com/rubocop-hq/rubocop/pull/8430): Add new `Lint/UnreachableLoop` cop. ([@fatkodima][])
 * [#8412](https://github.com/rubocop-hq/rubocop/pull/8412): Add new `Style/OptionalBooleanParameter` cop. ([@fatkodima][])
 * [#8432](https://github.com/rubocop-hq/rubocop/pull/8432): Add new `Lint/FloatComparison` cop. ([@fatkodima][])
@@ -45,6 +46,7 @@
 ### Changes
 
 * [#8376](https://github.com/rubocop-hq/rubocop/pull/8376): `Style/MethodMissingSuper` cop is removed in favor of new `Lint/MissingSuper` cop. ([@fatkodima][])
+* [#8433](https://github.com/rubocop-hq/rubocop/pull/8433): `Lint/UselessComparison` cop is removed in favor of new `Lint/BinaryOperatorWithIdenticalOperands` cop. ([@fatkodima][])
 * [#8350](https://github.com/rubocop-hq/rubocop/pull/8350): Set default max line length to 120 for `Style/MultilineMethodSignature`. ([@koic][])
 * [#8338](https://github.com/rubocop-hq/rubocop/pull/8338): **potentially breaking**. Config#for_department now returns only the config specified for that department; the 'Enabled' attribute is no longer calculated. ([@marcandre][])
 * [#8037](https://github.com/rubocop-hq/rubocop/pull/8037): **(Breaking)** Cop `Metrics/AbcSize` now counts ||=, &&=, multiple assignments, for, yield, iterating blocks. `&.` now count as conditions too (unless repeated on the same variable). Default bumped from 15 to 17. Consider using `rubocop -a --disable-uncorrectable` to ease transition. ([@marcandre][])
