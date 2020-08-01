@@ -1355,6 +1355,12 @@ Lint/BigDecimalNew:
   Enabled: true
   VersionAdded: '0.53'
 
+Lint/BinaryOperatorWithIdenticalOperands:
+  Description: 'This cop checks for places where binary operator has identical operands.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
   Enabled: true
@@ -1903,11 +1909,6 @@ Lint/UselessAccessModifier:
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
   StyleGuide: '#underscore-unused-vars'
-  Enabled: true
-  VersionAdded: '0.11'
-
-Lint/UselessComparison:
-  Description: 'Checks for comparison of something with itself.'
   Enabled: true
   VersionAdded: '0.11'
 
