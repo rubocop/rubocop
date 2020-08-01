@@ -7,7 +7,7 @@ module RuboCop
       # out of range reference always returns nil.
 
       # @example
-      #   /(foo)bar/ =~ 'foobar'\
+      #   /(foo)bar/ =~ 'foobar'
 
       #   # bad - always returns nil
       #   puts $2 # => nil
@@ -18,8 +18,12 @@ module RuboCop
       class OutOfRangeRegexpRef < Base
         MSG = 'Do not use out of range reference for the Regexp.'
 
+        def on_new_investigation
+          @valid_ref = 0
+        end
+
         def on_regexp(node)
-          @valid_ref = cop_config['Count']
+          @valid_ref = nil
           return if contain_non_literal?(node)
 
           begin
@@ -49,8 +53,9 @@ module RuboCop
         def regexp_captures(tree)
           named_capture = numbered_capture = 0
           tree.each_expression do |e|
-            named_capture += 1 if e.instance_of?(Regexp::Expression::Group::Named)
-            numbered_capture += 1 if e.instance_of?(Regexp::Expression::Group::Capture)
+            if e.type?(:group)
+              e.respond_to?(:name) ? named_capture += 1 : numbered_capture += 1
+            end
           end
           named_capture.positive? ? named_capture : numbered_capture
         end
