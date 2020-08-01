@@ -1478,6 +1478,12 @@ Lint/FlipFlop:
   Enabled: true
   VersionAdded: '0.16'
 
+Lint/FloatComparison:
+  Description: 'Checks for the presence of precise comparison of floating point numbers.'
+  StyleGuide: '#float-comparison'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
