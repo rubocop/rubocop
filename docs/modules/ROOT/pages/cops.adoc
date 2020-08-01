@@ -206,6 +206,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintensurereturn[Lint/EnsureReturn]
 * xref:cops_lint.adoc#linterbnewarguments[Lint/ErbNewArguments]
 * xref:cops_lint.adoc#lintflipflop[Lint/FlipFlop]
+* xref:cops_lint.adoc#lintfloatcomparison[Lint/FloatComparison]
 * xref:cops_lint.adoc#lintfloatoutofrange[Lint/FloatOutOfRange]
 * xref:cops_lint.adoc#lintformatparametermismatch[Lint/FormatParameterMismatch]
 * xref:cops_lint.adoc#lintheredocmethodcallposition[Lint/HeredocMethodCallPosition]
