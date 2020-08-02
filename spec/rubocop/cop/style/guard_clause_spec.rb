@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         end
       RUBY
 
-      expect { inspect_source(source) }
+      expect { expect_no_offenses(source) }
         .to raise_error('MinBodyLength needs to be a positive integer!')
     end
   end

@@ -7,6 +7,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
         x.each_with_object({}) {|(k, v), h| h[k] = foo(v)}
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `each_with_object`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.transform_values {|v| foo(v)}
+      RUBY
     end
   end
 
@@ -18,6 +22,12 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
           memo[key] = val * val
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        some_hash.transform_values do |val|
+          val * val
+        end
+      RUBY
     end
   end
 
@@ -26,6 +36,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       expect_offense(<<~RUBY)
         x&.each_with_object({}) {|(k, v), h| h[k] = foo(v)}
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `each_with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.transform_values {|v| foo(v)}
       RUBY
     end
   end
@@ -61,6 +75,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       x.map {|k, v| [k, foo(v)]}.to_h
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `map {...}.to_h`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      x.transform_values {|v| foo(v)}
+    RUBY
   end
 
   it 'flags _.map {...}.to_h when transform_values could be used ' \
@@ -85,6 +103,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       Hash[x.map {|k, v| [k, foo(v)]}]
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `Hash[_.map {...}]`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      x.transform_values {|v| foo(v)}
+    RUBY
   end
 
   it 'does not flag Hash[_.map{...}] when both key & value are transformed' do
@@ -101,43 +123,14 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     RUBY
   end
 
-  it 'correctly autocorrects each_with_object' do
-    corrected = autocorrect_source(<<~RUBY)
-      {a: 1, b: 2}.each_with_object({}) {|(k, v), h| h[k] = foo(v)}
-    RUBY
-
-    expect(corrected).to eq(<<~RUBY)
-      {a: 1, b: 2}.transform_values {|v| foo(v)}
-    RUBY
-  end
-
-  it 'correctly autocorrects _.map{...}.to_h without block' do
-    corrected = autocorrect_source(<<~RUBY)
-      {a: 1, b: 2}.map {|k, v| [k, foo(v)]}.to_h
-    RUBY
-
-    expect(corrected).to eq(<<~RUBY)
-      {a: 1, b: 2}.transform_values {|v| foo(v)}
-    RUBY
-  end
-
   it 'correctly autocorrects _.map{...}.to_h with block' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       {a: 1, b: 2}.map {|k, v| [k, foo(v)]}.to_h {|k, v| [v, k]}
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `map {...}.to_h`.
     RUBY
 
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       {a: 1, b: 2}.transform_values {|v| foo(v)}.to_h {|k, v| [v, k]}
-    RUBY
-  end
-
-  it 'correctly autocorrects Hash[_.map{...}]' do
-    corrected = autocorrect_source(<<~RUBY)
-      Hash[{a: 1, b: 2}.map {|k, v| [k, foo(v)]}]
-    RUBY
-
-    expect(corrected).to eq(<<~RUBY)
-      {a: 1, b: 2}.transform_values {|v| foo(v)}
     RUBY
   end
 end

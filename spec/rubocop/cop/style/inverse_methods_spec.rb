@@ -29,12 +29,31 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       !foo.none?(&:even?)
       ^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo.any?(&:even?)
+    RUBY
   end
 
   it 'registers an offense for calling !.none? with a block' do
     expect_offense(<<~RUBY)
       !foo.none? { |f| f.even? }
       ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.any? { |f| f.even? }
+    RUBY
+  end
+
+  it 'registers an offense for calling !.any? inside parens' do
+    expect_offense(<<~RUBY)
+      !(foo.any? &:working?)
+      ^^^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of inverting `any?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.none? &:working?
     RUBY
   end
 
@@ -64,51 +83,27 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     RUBY
   end
 
-  context 'auto-correct' do
-    it 'corrects !.none? with a symbol proc to any?' do
-      new_source = autocorrect_source('!foo.none?(&:even?)')
-
-      expect(new_source).to eq('foo.any?(&:even?)')
-    end
-
-    it 'corrects !.none? with a block to any?' do
-      new_source = autocorrect_source('!foo.none? { |f| f.even? }')
-
-      expect(new_source).to eq('foo.any? { |f| f.even? }')
-    end
-
-    it 'corrects inverse any? inside parens' do
-      new_source = autocorrect_source('!(foo.any? &:working?)')
-
-      expect(new_source).to eq('foo.none? &:working?')
-    end
-  end
-
   shared_examples 'all variable types' do |variable|
     it "registers an offense for calling !#{variable}.none?" do
-      inspect_source("!#{variable}.none?")
+      expect_offense(<<~RUBY, variable: variable)
+        !%{variable}.none?
+        ^^{variable}^^^^^^ Use `any?` instead of inverting `none?`.
+      RUBY
 
-      expect(cop.messages).to eq(['Use `any?` instead of inverting `none?`.'])
-      expect(cop.highlights).to eq(["!#{variable}.none?"])
+      expect_correction(<<~RUBY)
+        #{variable}.any?
+      RUBY
     end
 
     it "registers an offense for calling not #{variable}.none?" do
-      inspect_source("not #{variable}.none?")
+      expect_offense(<<~RUBY, variable: variable)
+        not %{variable}.none?
+        ^^^^^{variable}^^^^^^ Use `any?` instead of inverting `none?`.
+      RUBY
 
-      expect(cop.messages).to eq(['Use `any?` instead of inverting `none?`.'])
-      expect(cop.highlights).to eq(["not #{variable}.none?"])
-    end
-
-    it "corrects !#{variable}.none? to #{variable}.any?" do
-      new_source = autocorrect_source("!#{variable}.none?")
-
-      expect(new_source).to eq("#{variable}.any?")
-    end
-
-    it "corrects not #{variable}.none? to #{variable}.any?" do
-      new_source = autocorrect_source("not #{variable}.none?")
-
-      expect(new_source).to eq("#{variable}.any?")
+      expect_correction(<<~RUBY)
+        #{variable}.any?
+      RUBY
     end
   end
 
@@ -130,16 +125,14 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     blank?: :present?,
     exclude?: :include? }.each do |method, inverse|
       it "registers an offense for !foo.#{method}" do
-        inspect_source("!foo.#{method}")
+        expect_offense(<<~RUBY, method: method)
+          !foo.%{method}
+          ^^^^^^{method} Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
 
-        expect(cop.messages)
-          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
-      end
-
-      it "corrects #{method} to #{inverse}" do
-        new_source = autocorrect_source("!foo.#{method}")
-
-        expect(new_source).to eq("foo.#{inverse}")
+        expect_correction(<<~RUBY)
+          foo.#{inverse}
+        RUBY
       end
     end
 
@@ -150,23 +143,25 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
     :< => :>=,
     :> => :<= }.each do |method, inverse|
     it "registers an offense for !(foo #{method} bar)" do
-      inspect_source("!(foo #{method} bar)")
+      expect_offense(<<~RUBY, method: method)
+        !(foo %{method} bar)
+        ^^^^^^^{method}^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+      RUBY
 
-      expect(cop.messages)
-        .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
+      expect_correction(<<~RUBY)
+        foo #{inverse} bar
+      RUBY
     end
 
     it "registers an offense for not (foo #{method} bar)" do
-      inspect_source("not (foo #{method} bar)")
+      expect_offense(<<~RUBY, method: method)
+        not (foo %{method} bar)
+        ^^^^^^^^^^{method}^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+      RUBY
 
-      expect(cop.messages)
-        .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
-    end
-
-    it "corrects operator #{method} to #{inverse}" do
-      new_source = autocorrect_source("!(foo #{method} bar)")
-
-      expect(new_source).to eq("foo #{inverse} bar")
+      expect_correction(<<~RUBY)
+        foo #{inverse} bar
+      RUBY
     end
   end
 
@@ -190,6 +185,11 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       !(klass < FOO_BAR)
       ^^^^^^^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      klass = self.class
+      klass >= FOO_BAR
+    RUBY
   end
 
   it 'registers an offense for comparing snake case constants on the left' do
@@ -197,6 +197,11 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       klass = self.class
       !(FOO_BAR < klass)
       ^^^^^^^^^^^^^^^^^^ Use `>=` instead of inverting `<`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      klass = self.class
+      FOO_BAR >= klass
     RUBY
   end
 
@@ -206,145 +211,130 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods do
       select!: :reject!,
       reject!: :select! }.each do |method, inverse|
       it "registers an offense for foo.#{method} { |e| !e }" do
-        inspect_source("foo.#{method} { |e| !e }")
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} { |e| !e }
+          ^^^^^{method}^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
 
-        expect(cop.messages)
-          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
+        expect_correction(<<~RUBY)
+          foo.#{inverse} { |e| e }
+        RUBY
       end
 
       it 'registers an offense for a multiline method call where the last ' \
         'method is inverted' do
-        inspect_source(<<~RUBY)
-          foo.#{method} do |e|
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} do |e|
+          ^^^^^{method}^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
             something
             !e.bar
           end
         RUBY
 
-        expect(cop.messages)
-          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
+        expect_correction(<<~RUBY)
+          foo.#{inverse} do |e|
+            something
+            e.bar
+          end
+        RUBY
       end
 
       it 'registers an offense for an inverted equality block' do
-        expect_offense(<<~RUBY)
-          foo.select { |e| e != 2 }
-          ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `reject` instead of inverting `select`.
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} { |e| e != 2 }
+          ^^^^^{method}^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.#{inverse} { |e| e == 2 }
         RUBY
       end
 
       it 'registers an offense for a multiline inverted equality block' do
-        inspect_source(<<~RUBY)
-          foo.#{method} do |e|
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} do |e|
+          ^^^^^{method}^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
             something
             something_else
             e != 2
           end
         RUBY
 
-        expect(cop.messages)
-          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
-      end
-
-      it 'registers a single offense for nested inverse method calls' do
-        inspect_source(<<~RUBY)
-          y.#{method} { |key, _value| !(key =~ /c\d/) }
-        RUBY
-
-        expect(cop.messages)
-          .to eq(["Use `#{inverse}` instead of inverting `#{method}`."])
-      end
-
-      it 'corrects nested inverse method calls' do
-        new_source =
-          autocorrect_source("y.#{method} { |key, _value| !(key =~ /c\d/) }")
-
-        expect(new_source)
-          .to eq("y.#{inverse} { |key, _value| (key =~ /c\d/) }")
-      end
-
-      it 'corrects a simple inverted block' do
-        new_source = autocorrect_source("foo.#{method} { |e| !e }")
-
-        expect(new_source).to eq("foo.#{inverse} { |e| e }")
-      end
-
-      it 'corrects an inverted method call' do
-        new_source = autocorrect_source("foo.#{method} { |e| !e.bar? }")
-
-        expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
-      end
-
-      it 'corrects an inverted method call when using `BasicObject#!`' do
-        new_source = autocorrect_source("foo.#{method} { |e| e.bar?.! }")
-
-        expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
-      end
-
-      it 'corrects an inverted method call when using `BasicObject#  !`' do
-        new_source = autocorrect_source("foo.#{method} { |e| e.bar?.  ! }")
-
-        expect(new_source).to eq("foo.#{inverse} { |e| e.bar? }")
-      end
-
-      it 'corrects a complex inverted method call' do
-        source = "puts 1 if !foo.#{method} { |e| !e.bar? }"
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq("puts 1 if !foo.#{inverse} { |e| e.bar? }")
-      end
-
-      it 'corrects an inverted do end method call' do
-        new_source = autocorrect_source(<<~RUBY)
-          foo.#{method} do |e|
-            !e.bar
-          end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
-          foo.#{inverse} do |e|
-            e.bar
-          end
-        RUBY
-      end
-
-      it 'corrects a multiline method call where the last method is inverted' do
-        new_source = autocorrect_source(<<~RUBY)
-          foo.#{method} do |e|
-            something
-            something_else
-            !e.bar
-          end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
-          foo.#{inverse} do |e|
-            something
-            something_else
-            e.bar
-          end
-        RUBY
-      end
-
-      it 'corrects an offense for an inverted equality block' do
-        new_source = autocorrect_source("foo.#{method} { |e| e != 2 }")
-
-        expect(new_source).to eq("foo.#{inverse} { |e| e == 2 }")
-      end
-
-      it 'corrects an offense for a multiline inverted equality block' do
-        new_source = autocorrect_source(<<~RUBY)
-          foo.#{method} do |e|
-            something
-            something_else
-            e != 2
-          end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           foo.#{inverse} do |e|
             something
             something_else
             e == 2
+          end
+        RUBY
+      end
+
+      it 'registers a single offense for nested inverse method calls' do
+        expect_offense(<<~RUBY, method: method)
+          y.%{method} { |key, _value| !(key =~ /c\\d/) }
+          ^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          y.#{inverse} { |key, _value| (key =~ /c\\d/) }
+        RUBY
+      end
+
+      it 'corrects an inverted method call' do
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} { |e| !e.bar? }
+          ^^^^^{method}^^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.#{inverse} { |e| e.bar? }
+        RUBY
+      end
+
+      it 'corrects an inverted method call when using `BasicObject#!`' do
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} { |e| e.bar?.! }
+          ^^^^^{method}^^^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.#{inverse} { |e| e.bar? }
+        RUBY
+      end
+
+      it 'corrects an inverted method call when using `BasicObject#  !`' do
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} { |e| e.bar?.  ! }
+          ^^^^^{method}^^^^^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.#{inverse} { |e| e.bar? }
+        RUBY
+      end
+
+      it 'corrects a complex inverted method call' do
+        expect_offense(<<~RUBY, method: method)
+          puts 1 if !foo.%{method} { |e| !e.bar? }
+                     ^^^^^{method}^^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          puts 1 if !foo.#{inverse} { |e| e.bar? }
+        RUBY
+      end
+
+      it 'corrects an inverted do end method call' do
+        expect_offense(<<~RUBY, method: method)
+          foo.%{method} do |e|
+          ^^^^^{method}^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.
+            !e.bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.#{inverse} do |e|
+            e.bar
           end
         RUBY
       end
