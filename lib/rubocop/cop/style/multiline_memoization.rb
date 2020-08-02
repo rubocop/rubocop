@@ -34,7 +34,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'
+        KEYWORD_MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'
+        BRACES_MSG = 'Wrap multiline memoization blocks in `(` and `)`.'
 
         def on_or_asgn(node)
           _lhs, rhs = *node
@@ -49,6 +50,10 @@ module RuboCop
               corrector.replace(rhs.loc.end, ')')
             end
           end
+        end
+
+        def message(_node)
+          style == :braces ? BRACES_MSG : KEYWORD_MSG
         end
 
         private
