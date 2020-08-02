@@ -148,26 +148,6 @@ module RuboCop
             sibling.source_range.first_line == line_no
         end
 
-        def parenthesize?(node)
-          # Parenthesize corrected expression if changing to modifier-if form
-          # would change the meaning of the parent expression
-          # (due to the low operator precedence of modifier-if)
-          parent = node.parent
-          return false if parent.nil?
-          return true if parent.assignment? || parent.operator_keyword?
-
-          node.parent.send_type? && !node.parent.parenthesized?
-        end
-
-        def to_modifier_form(node)
-          expression = [node.body.source,
-                        node.keyword,
-                        node.condition.source,
-                        first_line_comment(node)].compact.join(' ')
-
-          parenthesize?(node) ? "(#{expression})" : expression
-        end
-
         def to_normal_form(node)
           indentation = ' ' * node.source_range.column
           <<~RUBY.chomp
