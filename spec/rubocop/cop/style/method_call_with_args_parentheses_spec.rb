@@ -583,13 +583,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it 'auto-corrects multi-line calls with trailing whitespace' do
       original = <<~RUBY
-        foo(
+        foo( 
           bar: 3
         )
       RUBY
 
       expect(autocorrect_source(original)).to eq(<<~RUBY)
-        foo \\
+        foo \\ 
           bar: 3
 
       RUBY
