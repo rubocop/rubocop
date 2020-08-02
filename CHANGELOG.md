@@ -35,6 +35,9 @@
 * [#8422](https://github.com/rubocop-hq/rubocop/issues/8422): Fix an error for `Lint/SelfAssignment` when using or-assignment for constant. ([@koic][])
 * [#8423](https://github.com/rubocop-hq/rubocop/issues/8423): Fix an error for `Style/SingleArgumentDig` when without a receiver. ([@koic][])
 * [#8424](https://github.com/rubocop-hq/rubocop/issues/8424): Fix an error for `Lint/IneffectiveAccessModifier` when there is `begin...end` before a method definition. ([@koic][])
+* [#8006](https://github.com/rubocop-hq/rubocop/issues/8006): Fix line length calculation for `Style/IfUnlessModifier` to correctly take into account code before the if condition when considering conversation to a single-line form. ([@dsavochkin][])
+* [#8283](https://github.com/rubocop-hq/rubocop/issues/8283): Fix line length calculation for `Style/IfUnlessModifier` to correctly take into account a comment on the first line when considering conversation to a single-line form. ([@dsavochkin][])
+* [#8226](https://github.com/rubocop-hq/rubocop/issues/8226): Fix `Style/IfUnlessModifier` to add parentheses when converting if-end condition inside an array or a hash to a single-line form. ([@dsavochkin][])
 
 ### Changes
 
@@ -4736,3 +4739,4 @@
 [@knejad]: https://github.com/knejad
 [@iamravitejag]: https://github.com/iamravitejag
 [@volfgox]: https://github.com/volfgox
+[@dsavochkin]: https://github.com/dmytro-savochkin

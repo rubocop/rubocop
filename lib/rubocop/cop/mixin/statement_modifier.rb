@@ -36,14 +36,41 @@ module RuboCop
       def modifier_fits_on_single_line?(node)
         return true unless max_line_length
 
-        length_in_modifier_form(node, node.condition) <= max_line_length
+        length_in_modifier_form(node) <= max_line_length
       end
 
-      def length_in_modifier_form(node, cond)
+      def length_in_modifier_form(node)
         keyword = node.loc.keyword
-        indentation = keyword.source_line[/^\s*/]
-        line_length("#{indentation}#{node.body.source} #{keyword.source} " \
-                    "#{cond.source}")
+        prefix = keyword.source_line[0...keyword.column]
+        expression = to_modifier_form(node)
+        line_length("#{prefix}#{expression}")
+      end
+
+      def to_modifier_form(node)
+        expression = [node.body.source,
+                      node.keyword,
+                      node.condition.source].compact.join(' ')
+        parenthesized = parenthesize?(node) ? "(#{expression})" : expression
+        [parenthesized, first_line_comment(node)].compact.join(' ')
+      end
+
+      def first_line_comment(node)
+        comment =
+          processed_source.find_comment { |c| c.loc.line == node.loc.line }
+
+        comment ? comment.loc.expression.source : nil
+      end
+
+      def parenthesize?(node)
+        # Parenthesize corrected expression if changing to modifier-if form
+        # would change the meaning of the parent expression
+        # (due to the low operator precedence of modifier-if)
+        parent = node.parent
+        return false if parent.nil?
+        return true if parent.assignment? || parent.operator_keyword?
+        return true if %i[array pair].include?(parent.type)
+
+        node.parent.send_type? && !node.parent.parenthesized?
       end
 
       def max_line_length

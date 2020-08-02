@@ -598,4 +598,146 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       RUBY
     end
   end
+
+  context 'when if-end condition is assigned to a variable' do
+    context 'with variable being on the same line' do
+      let(:source) do
+        <<~RUBY
+          x = if a
+            #{'b' * body_length}
+          end
+        RUBY
+      end
+
+      context 'when it is short enough to fit on a single line' do
+        let(:body_length) { 69 }
+
+        it 'corrects it to the single-line form' do
+          corrected = autocorrect_source(source)
+          expect(corrected).to eq "x = (#{'b' * body_length} if a)\n"
+        end
+      end
+
+      context 'when it is not short enough to fit on a single line' do
+        let(:body_length) { 70 }
+
+        it 'accepts it in the multiline form' do
+          expect_no_offenses(source)
+        end
+      end
+    end
+
+    context 'with variable being on the previous line' do
+      let(:source) do
+        <<~RUBY
+          x =
+            if a
+              #{'b' * body_length}
+            end
+        RUBY
+      end
+
+      context 'when it is short enough to fit on a single line' do
+        let(:body_length) { 71 }
+
+        it 'corrects it to the single-line form' do
+          corrected = autocorrect_source(source)
+          expect(corrected).to eq "x =\n  (#{'b' * body_length} if a)\n"
+        end
+      end
+
+      context 'when it is not short enough to fit on a single line' do
+        let(:body_length) { 72 }
+
+        it 'accepts it in the multiline form' do
+          expect_no_offenses(source)
+        end
+      end
+    end
+  end
+
+  context 'when if-end condition is an element of an array' do
+    let(:source) do
+      <<~RUBY
+        [
+          if a
+            #{'b' * body_length}
+          end
+        ]
+      RUBY
+    end
+
+    context 'when short enough to fit on a single line' do
+      let(:body_length) { 71 }
+
+      it 'corrects it to the single-line form' do
+        corrected = autocorrect_source(source)
+        expect(corrected).to eq "[\n  (#{'b' * body_length} if a)\n]\n"
+      end
+    end
+
+    context 'when not short enough to fit on a single line' do
+      let(:body_length) { 72 }
+
+      it 'accepts it in the multiline form' do
+        expect_no_offenses(source)
+      end
+    end
+  end
+
+  context 'when if-end condition is a value in a hash' do
+    let(:source) do
+      <<~RUBY
+        {
+          x: if a
+               #{'b' * body_length}
+             end
+        }
+      RUBY
+    end
+
+    context 'when it is short enough to fit on a single line' do
+      let(:body_length) { 68 }
+
+      it 'corrects it to the single-line form' do
+        corrected = autocorrect_source(source)
+        expect(corrected).to eq "{\n  x: (#{'b' * body_length} if a)\n}\n"
+      end
+    end
+
+    context 'when it is not short enough to fit on a single line' do
+      let(:body_length) { 69 }
+
+      it 'accepts it in the multiline form' do
+        expect_no_offenses(source)
+      end
+    end
+  end
+
+  context 'when if-end condition has a first line comment' do
+    let(:source) do
+      <<~RUBY
+        if foo # #{'c' * comment_length}
+          bar
+        end
+      RUBY
+    end
+
+    context 'when it is short enough to fit on a single line' do
+      let(:comment_length) { 67 }
+
+      it 'corrects it to the single-line form' do
+        corrected = autocorrect_source(source)
+        expect(corrected).to eq "bar if foo # #{'c' * comment_length}\n"
+      end
+    end
+
+    context 'when it is not short enough to fit on a single line' do
+      let(:comment_length) { 68 }
+
+      it 'accepts it in the multiline form' do
+        expect_no_offenses(source)
+      end
+    end
+  end
 end
