@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
           it 'registers an offense for begin...end block on first line' do
             expect_offense(<<~RUBY)
               foo ||= begin
-              ^^^^^^^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+              ^^^^^^^^^^^^^ Wrap multiline memoization blocks in `(` and `)`.
                 bar
                 baz
               end
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
           it 'registers an offense for begin...end block on following line' do
             expect_offense(<<~RUBY)
               foo ||=
-              ^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+              ^^^^^^^ Wrap multiline memoization blocks in `(` and `)`.
                 begin
                   bar
                   baz
