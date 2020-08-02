@@ -1234,7 +1234,7 @@ Layout/SpaceInsideBlockBraces:
 
 Layout/SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
-  StyleGuide: '#spaces-operators'
+  StyleGuide: '#spaces-braces'
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: space
