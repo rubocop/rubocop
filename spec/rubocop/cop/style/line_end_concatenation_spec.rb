@@ -9,12 +9,20 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                    ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+    expect_correction(<<~RUBY)
+      top = "test" \\
+      "top"
+    RUBY
   end
 
   it 'registers an offense for string concat with << at line end' do
     expect_offense(<<~RUBY)
       top = "test" <<
                    ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
+      "top"
+    RUBY
+    expect_correction(<<~RUBY)
+      top = "test" \\
       "top"
     RUBY
   end
@@ -26,6 +34,11 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "bar"
     RUBY
+    expect_correction(<<~RUBY)
+      top = "test " \\
+      "foo" \\
+      "bar"
+    RUBY
   end
 
   it 'registers an offense for dynamic string concat at line end' do
@@ -34,12 +47,20 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                        ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+    expect_correction(<<~'RUBY')
+      top = "test#{x}" \
+      "top"
+    RUBY
   end
 
   it 'registers an offense for dynamic string concat with << at line end' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" <<
                        ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+      "top"
+    RUBY
+    expect_correction(<<~'RUBY')
+      top = "test#{x}" \
       "top"
     RUBY
   end
@@ -52,6 +73,11 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "ubertop"
     RUBY
+    expect_correction(<<~'RUBY')
+      top = "test#{x}" \
+      "top" \
+      "ubertop"
+    RUBY
   end
 
   it 'registers multiple offenses when there are chained concatenations' do
@@ -62,17 +88,30 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "foo"
     RUBY
+    expect_correction(<<~'RUBY')
+      top = "test#{x}" \
+      "top" \
+      "foo"
+    RUBY
   end
 
   it 'registers multiple offenses when there are chained concatenations' \
      'combined with << calls' do
-    inspect_source(<<~'RUBY')
+    expect_offense(<<~'RUBY')
       top = "test#{x}" <<
+                       ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top" +
+            ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "foo" <<
+            ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "bar"
     RUBY
-    expect(cop.offenses.size).to eq(3)
+    expect_correction(<<~'RUBY')
+      top = "test#{x}" \
+      "top" \
+      "foo" \
+      "bar"
+    RUBY
   end
 
   it 'accepts string concat on the same line' do
@@ -139,16 +178,12 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "qux"
     RUBY
-  end
-
-  it 'autocorrects in the simple case by replacing + with \\' do
-    corrected = autocorrect_source(<<~RUBY)
-      top = "test" + 
-      "top"
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      top = "test" \\
-      "top"
+    expect_correction(<<~'RUBY')
+      top = "test#{x}" + # comment
+      "foo" +
+      %(bar) +
+      "baz" \
+      "qux"
     RUBY
   end
 
@@ -156,54 +191,41 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   # the code has syntax errors, so it's important to fix the trailing
   # whitespace in this cop.
   it 'autocorrects a + with trailing whitespace to \\' do
-    corrected = autocorrect_source(<<~RUBY)
-      top = "test" +
+    expect_offense(<<~RUBY)
+      top = "test" + 
+                   ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       top = "test" \\
       "top"
     RUBY
   end
 
   it 'autocorrects a + with \\ to just \\' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       top = "test" + \\
+                   ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       top = "test" \\
       "top"
     RUBY
   end
 
-  it 'autocorrects for chained concatenations and << calls' do
-    corrected = autocorrect_source(<<~'RUBY')
-      top = "test#{x}" <<
-      "top" +
-      "ubertop" <<
-      "foo"
-    RUBY
-
-    expect(corrected).to eq(<<~'RUBY')
-      top = "test#{x}" \
-      "top" \
-      "ubertop" \
-      "foo"
-    RUBY
-  end
-
   it 'autocorrects only the lines that should be autocorrected' do
-    corrected = autocorrect_source(<<~'RUBY')
+    expect_offense(<<~'RUBY')
       top = "test#{x}" <<
+                       ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top" + # comment
       "foo" +
+            ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "bar" +
       %(baz) +
       "qux"
     RUBY
-
-    expect(corrected).to eq(<<~'RUBY')
+    expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top" + # comment
       "foo" \

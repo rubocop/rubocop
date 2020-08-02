@@ -3,46 +3,24 @@
 RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
   let(:message) { 'Wrap multiline memoization blocks in `begin` and `end`.' }
 
-  before do
-    inspect_source(source)
-  end
-
-  shared_examples 'code with offense' do |code, expected|
-    let(:source) { code }
-
-    it 'registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq([message])
-    end
-
-    it 'auto-corrects' do
-      expect(autocorrect_source(code)).to eq(expected)
-    end
-  end
-
-  shared_examples 'code without offense' do |code|
-    let(:source) { code }
-
-    it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
   shared_examples 'with all enforced styles' do
     context 'with a single line memoization' do
-      it_behaves_like 'code without offense',
-                      'foo ||= bar'
+      it 'allows expression on first line' do
+        expect_no_offenses('foo ||= bar')
+      end
 
-      it_behaves_like 'code without offense', <<~RUBY
-        foo ||=
-          bar
-      RUBY
+      it 'allows expression on the following line' do
+        expect_no_offenses(<<~RUBY)
+          foo ||=
+            bar
+        RUBY
+      end
     end
 
     context 'with a multiline memoization' do
       context 'without a `begin` and `end` block' do
-        context 'when there is another block on the first line' do
-          it_behaves_like 'code without offense', <<~RUBY
+        it 'allows with another block on the first line' do
+          expect_no_offenses(<<~RUBY)
             foo ||= bar.each do |b|
               b.baz
               bb.ax
@@ -50,8 +28,8 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
           RUBY
         end
 
-        context 'when there is another block on the following line' do
-          it_behaves_like 'code without offense', <<~RUBY
+        it 'allows with another block on the following line' do
+          expect_no_offenses(<<~RUBY)
             foo ||=
               bar.each do |b|
                 b.baz
@@ -60,8 +38,8 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
           RUBY
         end
 
-        context 'when there is a conditional on the first line' do
-          it_behaves_like 'code without offense', <<~RUBY
+        it 'allows with a conditional on the first line' do
+          expect_no_offenses(<<~RUBY)
             foo ||= if bar
                       baz
                     else
@@ -70,8 +48,8 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
           RUBY
         end
 
-        context 'when there is a conditional on the following line' do
-          it_behaves_like 'code without offense', <<~RUBY
+        it 'allows with a conditional on the following line' do
+          expect_no_offenses(<<~RUBY)
             foo ||=
               if bar
                 baz
@@ -92,67 +70,54 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
     context 'with a multiline memoization' do
       context 'without a `begin` and `end` block' do
         context 'when the expression is wrapped in parentheses' do
-          it_behaves_like 'code with offense',
-                          <<~RUBY,
-                            foo ||= (
-                              bar
-                              baz
-                            )
-                          RUBY
-                          <<~RUBY
-                            foo ||= begin
-                              bar
-                              baz
-                            end
-                          RUBY
+          it 'registers an offense when expression starts on first line' do
+            expect_offense(<<~RUBY)
+              foo ||= (
+              ^^^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+                bar
+                baz
+              )
+            RUBY
+            expect_correction(<<~RUBY)
+              foo ||= begin
+                bar
+                baz
+              end
+            RUBY
+          end
 
-          it_behaves_like 'code with offense',
-                          <<~RUBY,
-                            foo ||=
-                              (
-                                bar
-                                baz
-                              )
-                          RUBY
-                          <<~RUBY
-                            foo ||=
-                              begin
-                                bar
-                                baz
-                              end
-                          RUBY
+          it 'registers an offense when expression starts on following line' do
+            expect_offense(<<~RUBY)
+              foo ||=
+              ^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+                (
+                  bar
+                  baz
+                )
+            RUBY
+            expect_correction(<<~RUBY)
+              foo ||=
+                begin
+                  bar
+                  baz
+                end
+            RUBY
+          end
 
-          it_behaves_like 'code with offense',
-                          <<~RUBY,
-                            foo ||= (bar ||
-                                     baz)
-                          RUBY
-                          <<~RUBY
-                            foo ||= begin
-                                      bar ||
-                                     baz
-                                    end
-                          RUBY
+          it 'registers an offense with multiline expression' do
+            expect_offense(<<~RUBY)
+              foo ||= (bar ||
+              ^^^^^^^^^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+                        baz)
+            RUBY
+            expect_correction(<<~RUBY)
+              foo ||= begin
+                        bar ||
+                        baz
+                      end
+            RUBY
+          end
         end
-      end
-
-      context 'with a `begin` and `end` block on the first line' do
-        it_behaves_like 'code without offense', <<~RUBY
-          foo ||= begin
-            bar
-            baz
-          end
-        RUBY
-      end
-
-      context 'with a `begin` and `end` block on the following line' do
-        it_behaves_like 'code without offense', <<~RUBY
-          foo ||=
-            begin
-            bar
-            baz
-          end
-        RUBY
       end
     end
   end
@@ -166,55 +131,40 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
       context 'without braces' do
         context 'when the expression is wrapped in' \
                 ' `begin` and `end` keywords' do
-          it_behaves_like 'code with offense',
-                          <<~RUBY,
-                            foo ||= begin
-                              bar
-                              baz
-                            end
-                          RUBY
-                          <<~RUBY
-                            foo ||= (
-                              bar
-                              baz
-                            )
-                          RUBY
+          it 'registers an offense for begin...end block on first line' do
+            expect_offense(<<~RUBY)
+              foo ||= begin
+              ^^^^^^^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+                bar
+                baz
+              end
+            RUBY
+            expect_correction(<<~RUBY)
+              foo ||= (
+                bar
+                baz
+              )
+            RUBY
+          end
 
-          it_behaves_like 'code with offense',
-                          <<~RUBY,
-                            foo ||=
-                              begin
-                                bar
-                                baz
-                              end
-                          RUBY
-                          <<~RUBY
-                            foo ||=
-                              (
-                                bar
-                                baz
-                              )
-                          RUBY
+          it 'registers an offense for begin...end block on following line' do
+            expect_offense(<<~RUBY)
+              foo ||=
+              ^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
+                begin
+                  bar
+                  baz
+                end
+            RUBY
+            expect_correction(<<~RUBY)
+              foo ||=
+                (
+                  bar
+                  baz
+                )
+            RUBY
+          end
         end
-      end
-
-      context 'with parentheses on the first line' do
-        it_behaves_like 'code without offense', <<~RUBY
-          foo ||= (
-            bar
-            baz
-          )
-        RUBY
-      end
-
-      context 'with parentheses block on the following line' do
-        it_behaves_like 'code without offense', <<~RUBY
-          foo ||=
-            (
-            bar
-            baz
-          )
-        RUBY
       end
     end
   end
