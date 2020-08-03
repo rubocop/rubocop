@@ -80,6 +80,10 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
     expect_no_offenses('foo(bar, baz, bing)')
   end
 
+  it 'ignores kwargs listed on a single line when the arguments are used in `super`' do
+    expect_no_offenses('super(foo: 1, bar: 2)')
+  end
+
   it 'ignores arguments without parens' do
     expect_no_offenses(<<~RUBY)
       foo bar,
