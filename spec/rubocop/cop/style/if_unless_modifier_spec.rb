@@ -4,20 +4,23 @@
 # Note: most of these tests probably belong in the shared context "condition modifier cop"
 ######
 RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
-  let(:ignore_cop_directives) { true }
-  let(:allow_uri) { true }
-  let(:line_length_enabled) { true }
-  let(:other_cops) do
-    {
-      'Layout/LineLength' => {
-        'Enabled' => line_length_enabled,
-        'Max' => 80,
-        'AllowURI' => allow_uri,
-        'IgnoreCopDirectives' => ignore_cop_directives,
-        'URISchemes' => %w[http https]
+  shared_context 'with LineLength settings' do |enabled: true,
+                                                allow_uri: true,
+                                                ignore_cop_directives: true|
+    let(:other_cops) do
+      {
+        'Layout/LineLength' => {
+          'Enabled' => enabled,
+          'Max' => 80,
+          'AllowURI' => allow_uri,
+          'IgnoreCopDirectives' => ignore_cop_directives,
+          'URISchemes' => %w[http https]
+        }
       }
-    }
+    end
   end
+
+  include_context 'with LineLength settings' # default ones
 
   extra = ' Another good alternative is the usage of control flow `&&`/`||`.'
   it_behaves_like 'condition modifier cop', :if, extra
@@ -61,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       context 'when AllowURI is false' do
-        let(:allow_uri) { false }
+        include_context 'with LineLength settings', allow_uri: false
 
         it 'flags the long line with an URL' do
           expect_offense(<<~RUBY)
@@ -94,11 +97,11 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           end
         end
 
-        context 'and the long line is too long because IgnoreCopDirectives ' \
-                'is false' do
-          let(:ignore_cop_directives) { false }
+        context 'when IgnoreCopDirectives is false' do
+          include_context 'with LineLength settings',
+                          ignore_cop_directives: false
 
-          it 'registers an offense' do
+          it 'flags an overly long line' do
             expect_offense(<<~RUBY, body: body)
               def f
                 %{body} if condition #{comment}
@@ -119,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
 
     context 'when Layout/LineLength is disabled in configuration' do
-      let(:line_length_enabled) { false }
+      include_context 'with LineLength settings', enabled: false
 
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
@@ -584,7 +587,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   end
 
   context 'when Layout/LineLength is disabled' do
-    let(:line_length_enabled) { false }
+    include_context 'with LineLength settings', enabled: false
 
     it 'registers an offense even for a long modifier statement' do
       expect_offense(<<~RUBY)
