@@ -8,12 +8,18 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       test::method_name
           ^^ Do not use `::` for method calls.
     RUBY
+    expect_correction(<<~RUBY)
+      test.method_name
+    RUBY
   end
 
   it 'registers an offense for instance method call with arg' do
     expect_offense(<<~RUBY)
       test::method_name(arg)
           ^^ Do not use `::` for method calls.
+    RUBY
+    expect_correction(<<~RUBY)
+      test.method_name(arg)
     RUBY
   end
 
@@ -22,12 +28,18 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       Class::method_name
            ^^ Do not use `::` for method calls.
     RUBY
+    expect_correction(<<~RUBY)
+      Class.method_name
+    RUBY
   end
 
   it 'registers an offense for class method call with arg' do
     expect_offense(<<~RUBY)
       Class::method_name(arg, arg2)
            ^^ Do not use `::` for method calls.
+    RUBY
+    expect_correction(<<~RUBY)
+      Class.method_name(arg, arg2)
     RUBY
   end
 
@@ -53,10 +65,5 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
 
   it 'does not register an offense for Java package namespaces' do
     expect_no_offenses('Java::com')
-  end
-
-  it 'auto-corrects "::" with "."' do
-    new_source = autocorrect_source('test::method')
-    expect(new_source).to eq('test.method')
   end
 end

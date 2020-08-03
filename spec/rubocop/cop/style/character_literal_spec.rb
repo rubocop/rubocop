@@ -8,12 +8,18 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
       x = ?x
           ^^ Do not use the character literal - use string literal instead.
     RUBY
+    expect_correction(<<~RUBY)
+      x = 'x'
+    RUBY
   end
 
   it 'registers an offense for literals like \n' do
     expect_offense(<<~'RUBY')
       x = ?\n
           ^^^ Do not use the character literal - use string literal instead.
+    RUBY
+    expect_correction(<<~'RUBY')
+      x = "\n"
     RUBY
   end
 
@@ -25,18 +31,13 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
     expect_no_offenses('%w{? A}')
   end
 
-  it "auto-corrects ?x to 'x'" do
-    new_source = autocorrect_source('x = ?x')
-    expect(new_source).to eq("x = 'x'")
-  end
-
-  it 'auto-corrects ?\n to "\\n"' do
-    new_source = autocorrect_source('x = ?\n')
-    expect(new_source).to eq('x = "\\n"')
-  end
-
   it 'auto-corrects ?\' to "\'"' do
-    new_source = autocorrect_source('x = ?\'')
-    expect(new_source).to eq('x = "\'"')
+    expect_offense(<<~RUBY)
+      x = ?'
+          ^^ Do not use the character literal - use string literal instead.
+    RUBY
+    expect_correction(<<~RUBY)
+      x = "'"
+    RUBY
   end
 end

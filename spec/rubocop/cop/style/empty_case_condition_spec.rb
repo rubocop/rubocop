@@ -3,21 +3,13 @@
 RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
   subject(:cop) { described_class.new }
 
-  let(:message) do
-    'Do not use empty `case` condition, instead use an `if` expression.'
-  end
-
   shared_examples 'detect/correct empty case, accept non-empty case' do
-    it 'registers an offense' do
-      inspect_source(source)
-      expect(cop.messages).to eq [message]
+    it 'registers an offense and autocorrects' do
+      expect_offense(source)
+      expect_correction(corrected_source)
     end
 
-    it 'correctly autocorrects' do
-      expect(autocorrect_source(source)).to eq corrected_source
-    end
-
-    let(:source_with_case) { source.sub(/case/, 'case :a') }
+    let(:source_with_case) { source.sub(/case/, 'case :a').sub(/^\s*\^.*\n/, '') }
 
     it 'accepts the source with case' do
       expect_no_offenses(source_with_case)
@@ -29,6 +21,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when 1 == 2
             foo
           when 1 == 1
@@ -57,6 +50,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           # condition a
           # This is a multi-line comment
           when 1 == 2
@@ -70,7 +64,6 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
           end
         RUBY
       end
-
       let(:corrected_source) do
         <<~RUBY
           # condition a
@@ -94,6 +87,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when 1 == 2
             foo
           when 1 == 1
@@ -118,6 +112,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when 1 == 2
             foo
           else
@@ -142,6 +137,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when 1 == 2
             foo
           end
@@ -162,6 +158,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when false
             foo
           when nil, false, 1
@@ -190,6 +187,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when false then foo
           when nil, false, 1 then bar
           when false, 1 then baz
@@ -212,6 +210,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
           when my.foo?, my.bar?
             something
           when my.baz?
@@ -236,6 +235,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:source) do
         <<~RUBY
           do_some_work case
+                       ^^^^ Do not use empty `case` condition, instead use an `if` expression.
                        when object.nil?
                          Object.new
                        else
@@ -261,6 +261,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
         <<~RUBY
           # example.rb
           do_some_work case
+                       ^^^^ Do not use empty `case` condition, instead use an `if` expression.
                        when object.nil?
                          Object.new
                        else

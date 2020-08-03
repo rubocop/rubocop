@@ -1,221 +1,274 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
-  before do
-    inspect_source(source)
-  end
-
-  shared_examples 'code with offense' do |code, expected|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq([message])
-      end
-
-      if expected
-        it 'auto-corrects' do
-          expect(autocorrect_source(code)).to eq(expected)
-        end
-      else
-        it 'does not auto-correct' do
-          expect(autocorrect_source(code)).to eq(code)
-        end
-      end
-    end
-  end
-
-  shared_examples 'code without offense' do |code|
-    let(:source) { code }
-
-    it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
   context 'when configured with compact style' do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
-    let(:message) { 'Put empty method definitions on a single line.' }
-
     context 'with an empty instance method definition' do
-      it_behaves_like 'code with offense',
-                      ['def foo',
-                       'end'].join("\n"),
-                      'def foo; end'
+      it 'registers an offense for empty method' do
+        expect_offense(<<~'RUBY')
+          def foo
+          ^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def foo; end
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      ['def foo(bar, baz)',
-                       'end'].join("\n"),
-                      'def foo(bar, baz); end'
+      it 'registers an offense for method with arguments' do
+        expect_offense(<<~'RUBY')
+          def foo(bar, baz)
+          ^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def foo(bar, baz); end
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      ['def foo bar, baz',
-                       'end'].join("\n"),
-                      'def foo bar, baz; end'
+      it 'registers an offense for method with arguments without parens' do
+        expect_offense(<<~'RUBY')
+          def foo bar, baz
+          ^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def foo bar, baz; end
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      ['def foo',
-                       '',
-                       'end'].join("\n"),
-                      'def foo; end'
+      it 'registers an offense for method with blank line' do
+        expect_offense(<<~'RUBY')
+          def foo
+          ^^^^^^^ Put empty method definitions on a single line.
 
-      it_behaves_like 'code with offense',
-                      ['def foo(arg',
-                       '); end'].join("\n"),
-                      'def foo(arg); end'
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def foo; end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'def foo; end'
+      it 'registers an offense for method with closing paren on following line' do
+        expect_offense(<<~RUBY)
+          def foo(arg
+          ^^^^^^^^^^^ Put empty method definitions on a single line.
+          ); end
+        RUBY
+        expect_correction(<<~RUBY)
+          def foo(arg); end
+        RUBY
+      end
+
+      it 'allows single line method' do
+        expect_no_offenses('def foo; end')
+      end
     end
 
     context 'with a non-empty instance method definition' do
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def foo
-                          bar
-                        end
-                      RUBY
+      it 'allows multi line method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar
+          end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'def foo; bar; end'
+      it 'allows single line method' do
+        expect_no_offenses('def foo; bar; end')
+      end
 
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def foo
-                          # bar
-                        end
-                      RUBY
+      it 'allows multi line method with comment' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            # bar
+          end
+        RUBY
+      end
     end
 
     context 'with an empty class method definition' do
-      it_behaves_like 'code with offense',
-                      ['def self.foo',
-                       'end'].join("\n"),
-                      'def self.foo; end'
+      it 'registers an offense for empty method' do
+        expect_offense(<<~'RUBY')
+          def self.foo
+          ^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def self.foo; end
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      ['def self.foo(bar, baz)',
-                       'end'].join("\n"),
-                      'def self.foo(bar, baz); end'
+      it 'registers an offense for empty method with arguments' do
+        expect_offense(<<~'RUBY')
+          def self.foo(bar, baz)
+          ^^^^^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def self.foo(bar, baz); end
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      ['def self.foo',
-                       '',
-                       'end'].join("\n"),
-                      'def self.foo; end'
+      it 'registers an offense for method with blank line' do
+        expect_offense(<<~'RUBY')
+          def self.foo
+          ^^^^^^^^^^^^ Put empty method definitions on a single line.
 
-      it_behaves_like 'code without offense',
-                      'def self.foo; end'
+          end
+        RUBY
+        expect_correction(<<~'RUBY')
+          def self.foo; end
+        RUBY
+      end
+
+      it 'allows single line method' do
+        expect_no_offenses('def self.foo; end')
+      end
     end
 
     context 'with a non-empty class method definition' do
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def self.foo
-                          bar
-                        end
-                      RUBY
+      it 'allows multi line method' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar
+          end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'def self.foo; bar; end'
+      it 'allows single line method' do
+        expect_no_offenses('def self.foo; bar; end')
+      end
 
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def self.foo
-                          # bar
-                        end
-                      RUBY
+      it 'allows multi line method with comment' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            # bar
+          end
+        RUBY
+      end
     end
   end
 
   context 'when configured with expanded style' do
     let(:cop_config) { { 'EnforcedStyle' => 'expanded' } }
 
-    let(:message) do
-      'Put the `end` of empty method definitions on the next line.'
-    end
-
     context 'with an empty instance method definition' do
-      it_behaves_like 'code without offense',
-                      ['def foo',
-                       'end'].join("\n")
+      it 'allows multi line method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+          end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      ['def foo',
-                       '',
-                       'end'].join("\n")
+      it 'allows multi line method with blank line' do
+        expect_no_offenses(<<~RUBY)
+          def foo
 
-      it_behaves_like 'code with offense',
-                      'def foo; end',
-                      ['def foo',
-                       'end'].join("\n")
+          end
+        RUBY
+      end
+
+      it 'registers an offense for single line method' do
+        expect_offense(<<~'RUBY')
+          def foo; end
+          ^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+        RUBY
+        expect_correction(<<~'RUBY')
+          def foo
+          end
+        RUBY
+      end
     end
 
     context 'with a non-empty instance method definition' do
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def foo
-                          bar
-                        end
-                      RUBY
+      it 'allows multi line method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar
+          end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'def foo; bar; end'
+      it 'allows single line method' do
+        expect_no_offenses('def foo; bar; end')
+      end
 
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def foo
-                          # bar
-                        end
-                      RUBY
+      it 'allows multi line method with a comment' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            # bar
+          end
+        RUBY
+      end
     end
 
     context 'with an empty class method definition' do
-      it_behaves_like 'code without offense',
-                      ['def self.foo',
-                       'end'].join("\n")
+      it 'allows empty multi line method' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+          end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      ['def self.foo',
-                       '',
-                       'end'].join("\n")
+      it 'allows multi line method with a blank line' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
 
-      it_behaves_like 'code with offense',
-                      'def self.foo; end',
-                      ['def self.foo',
-                       'end'].join("\n")
+          end
+        RUBY
+      end
+
+      it 'registers an offense for single line method' do
+        expect_offense(<<~'RUBY')
+          def self.foo; end
+          ^^^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+        RUBY
+        expect_correction(<<~'RUBY')
+          def self.foo
+          end
+        RUBY
+      end
     end
 
     context 'with a non-empty class method definition' do
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def self.foo
-                          bar
-                        end
-                      RUBY
+      it 'allows multi line method' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar
+          end
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'def self.foo; bar; end'
+      it 'allows single line method' do
+        expect_no_offenses('def self.foo; bar; end')
+      end
 
-      it_behaves_like 'code without offense',
-                      <<~RUBY
-                        def self.foo
-                          # bar
-                        end
-                      RUBY
+      it 'allows multi line method with comment' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            # bar
+          end
+        RUBY
+      end
     end
 
     context 'when method is nested in class scope' do
-      it_behaves_like 'code with offense',
-                      ['class Foo',
-                       '  def bar; end',
-                       'end'].join("\n"),
-                      ['class Foo',
-                       '  def bar',
-                       '  end',
-                       'end'].join("\n")
+      it 'registers an offense for single line method' do
+        expect_offense(<<~RUBY)
+          class Foo
+            def bar; end
+            ^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          class Foo
+            def bar
+            end
+          end
+        RUBY
+      end
     end
   end
 end

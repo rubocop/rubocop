@@ -3,36 +3,6 @@
 RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
   subject(:cop) { described_class.new }
 
-  it 'registers offense for inclusive end range' do
-    expect_offense(<<~RUBY)
-      (0..10).each {}
-      ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
-    RUBY
-  end
-
-  it 'registers offense for exclusive end range' do
-    expect_offense(<<~RUBY)
-      (0...10).each {}
-      ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
-    RUBY
-  end
-
-  it 'registers offense for exclusive end range with do ... end syntax' do
-    expect_offense(<<~RUBY)
-      (0...10).each do
-      ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
-      end
-    RUBY
-  end
-
-  it 'registers an offense for range not starting with zero' do
-    expect_offense(<<~RUBY)
-      (3..7).each do
-      ^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
-      end
-    RUBY
-  end
-
   it 'does not register offense if range startpoint is not constant' do
     expect_no_offenses('(a..10).each {}')
   end
@@ -56,83 +26,95 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
     expect_no_offenses("('a'..'b').each {}")
   end
 
-  context 'when using an inclusive range' do
+  context 'when using an inclusive end range' do
     it 'autocorrects the source with inline block' do
-      corrected = autocorrect_source('(0..10).each {}')
-      expect(corrected).to eq '11.times {}'
+      expect_offense(<<~RUBY)
+        (0..10).each {}
+        ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
+      RUBY
+      expect_correction(<<~RUBY)
+        11.times {}
+      RUBY
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         (0..10).each do
+        ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
         end
       RUBY
 
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         11.times do
         end
       RUBY
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         (3..7).each do
+        ^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
         end
       RUBY
 
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         5.times do
         end
       RUBY
     end
 
-    it 'does not autocorrect range not starting with zero and using param' do
-      source = <<~RUBY
+    it 'does not register offense for range not starting with zero and ' \
+       'using param' do
+      expect_no_offenses(<<~RUBY)
         (3..7).each do |n|
         end
       RUBY
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(source)
     end
   end
 
-  context 'when using an exclusive range' do
+  context 'when using an exclusive end range' do
     it 'autocorrects the source with inline block' do
-      corrected = autocorrect_source('(0...10).each {}')
-      expect(corrected).to eq '10.times {}'
+      expect_offense(<<~RUBY)
+        (0...10).each {}
+        ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
+      RUBY
+      expect_correction(<<~RUBY)
+        10.times {}
+      RUBY
     end
 
     it 'autocorrects the source with multiline block' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         (0...10).each do
+        ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
         end
       RUBY
 
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         10.times do
         end
       RUBY
     end
 
     it 'autocorrects the range not starting with zero' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         (3...7).each do
+        ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
         end
       RUBY
 
-      expect(corrected).to eq <<~RUBY
+      expect_correction(<<~RUBY)
         4.times do
         end
       RUBY
     end
 
-    it 'does not autocorrect range not starting with zero and using param' do
-      source = <<~RUBY
+    it 'does not register offense for range not starting with zero and ' \
+       'using param' do
+      expect_no_offenses(<<~RUBY)
         (3...7).each do |n|
         end
       RUBY
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(source)
     end
   end
 end
