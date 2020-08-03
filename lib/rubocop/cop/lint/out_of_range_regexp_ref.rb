@@ -5,14 +5,17 @@ module RuboCop
     module Lint
       # This cops looks for out of range referencing for Regexp, as while capturing groups out of
       # out of range reference always returns nil.
-
+      #
       # @example
+      #
       #   /(foo)bar/ =~ 'foobar'
-
+      #
       #   # bad - always returns nil
+      #
       #   puts $2 # => nil
-
+      #
       #   # good
+      #
       #   puts $1 # => foo
       #
       class OutOfRangeRegexpRef < Base
