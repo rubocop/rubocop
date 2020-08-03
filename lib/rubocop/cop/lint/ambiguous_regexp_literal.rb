@@ -22,22 +22,25 @@ module RuboCop
       #   # With parentheses, there's no ambiguity.
       #   do_something(/pattern/i)
       class AmbiguousRegexpLiteral < Base
-        include ParserDiagnostic
         extend AutoCorrector
 
         MSG = 'Ambiguous regexp literal. Parenthesize the method arguments ' \
               "if it's surely a regexp literal, or add a whitespace to the " \
               'right of the `/` if it should be a division.'
 
+        def on_new_investigation
+          processed_source.diagnostics.each do |diagnostic|
+            next unless diagnostic.reason == :ambiguous_literal
+
+            offense_node = find_offense_node_by(diagnostic)
+
+            add_offense(diagnostic.location, severity: diagnostic.level) do |corrector|
+              add_parentheses(offense_node, corrector)
+            end
+          end
+        end
+
         private
-
-        def autocorrect(corrector, node)
-          add_parentheses(node, corrector)
-        end
-
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :ambiguous_literal
-        end
 
         def find_offense_node_by(diagnostic)
           node = processed_source.ast.each_node(:regexp).find do |regexp_node|
@@ -45,10 +48,6 @@ module RuboCop
           end
 
           node.parent
-        end
-
-        def alternative_message(_diagnostic)
-          MSG
         end
       end
     end
