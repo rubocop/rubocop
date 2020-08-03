@@ -27,16 +27,14 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   it_behaves_like 'condition modifier cop', :unless, extra
 
   context 'modifier `if` that does not fit on one line' do
-    let(:spaces) { ' ' * 59 }
-    let(:body) { "puts '#{spaces}'" }
-    let(:source) { "#{body} if condition" }
+    let(:body) { "puts '                                                           '" }
     let(:long_url) do
       'https://some.example.com/with/a/rather?long&and=very&complicated=path'
     end
 
     context 'when Layout/LineLength is enabled' do
       it 'corrects it to normal form' do
-        expect(source.length).to be(79) # That's 81 including indentation.
+        expect("#{body} if condition".length).to be(79) # That's 81 including indentation
         expect_offense(<<~RUBY, body: body)
           def f
             # Comment 1
@@ -81,18 +79,13 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       describe 'IgnoreCopDirectives' do
-        let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }
-        let(:body) { "puts '#{spaces}'" }
 
-        context 'and the long line is allowed because IgnoreCopDirectives is ' \
-                'true' do
-          it 'accepts' do
-            expect("#{body} if condition".length).to eq(77) # That's 79 including indentation.
+        context 'when IgnoreCopDirectives is true' do
+          it 'ignores an overly long line' do
+            expect("#{body} if condition".length).to eq(79)
             expect_no_offenses(<<~RUBY)
-              def f
-                #{body} if condition #{comment}
-              end
+              #{body} if condition #{comment}
             RUBY
           end
         end
@@ -103,18 +96,14 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
 
           it 'flags an overly long line' do
             expect_offense(<<~RUBY, body: body)
-              def f
-                %{body} if condition #{comment}
-                _{body} ^^ Modifier form of `if` makes the line too long.
-              end
+              %{body} if condition #{comment}
+              _{body} ^^ Modifier form of `if` makes the line too long.
             RUBY
 
             expect_correction(<<~RUBY)
-              def f
-                if condition
-                  #{body}
-                end #{comment}
-              end
+              if condition
+                #{body}
+              end #{comment}
             RUBY
           end
         end
@@ -157,11 +146,11 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  context 'multiline `if` that fits on one line' do
-    let(:condition) { 'a' * 38 }
-    let(:body) { 'b' * 38 }
+  context 'when multiline `if` that fits on one line' do
+    it 'flags and inlines' do
+      condition = 'a' * 38
+      body = 'b' * 38
 
-    it 'registers an offense' do
       # The statement fits exactly on one line if written as a modifier
       expect("#{body} if #{condition}".length).to eq(80)
 
@@ -179,36 +168,27 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       RUBY
     end
 
-    context 'and has two statements separated by semicolon' do
-      it 'accepts' do
-        expect_no_offenses(<<~RUBY)
-          if condition
-            do_this; do_that
-          end
-        RUBY
-      end
-    end
-  end
-
-  context 'modifier `if` that does not fit on one line, but is not the only' \
-          ' statement on the line' do
-    let(:spaces) { ' ' * 59 }
-
-    # long lines which have multiple statements on the same line can be flagged
-    #   by Layout/LineLength, Style/Semicolon, etc.
-    # if they are handled by Style/IfUnlessModifier, there is a danger of
-    #   creating infinite autocorrect loops when autocorrecting
-    it 'accepts' do
+    it 'ignores two statements separated by semicolon' do
       expect_no_offenses(<<~RUBY)
-        def f
-          puts '#{spaces}' if condition; some_method_call
+        if condition
+          do_this; do_that
         end
       RUBY
     end
   end
 
-  context 'multiline if that fits on one line with comment on first line' do
-    it 'registers an offense and preserves comment' do
+  it 'ignores modifier `if` that does not fit on one line, but is not the' \
+          ' only statement on the line' do
+    # Long lines which have multiple statements on the same line can be flagged
+    # by Layout/LineLength, Style/Semicolon, etc. If they are handled by
+    # Style/IfUnlessModifier, there is a risk of infinite autocorrect loops.
+    expect_no_offenses(<<~RUBY)
+      puts '                                                                                ' if condition; some_method_call
+    RUBY
+  end
+
+  context 'when multiline `if` fits on one line with a comment on first line' do
+    it 'flags and inlines preserving the comment' do
       expect_offense(<<~RUBY)
         if a # comment
         ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
@@ -222,53 +202,52 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  context 'multiline if that fits on one line with comment near end' do
-    it 'accepts' do
-      expect_no_offenses(<<~RUBY)
-        if a
-          b
-        end # comment
-        if a
-          b
-          # comment
-        end
-      RUBY
-    end
+  it 'ignores multiline `if` that fits on one line with a comment near end' do
+    expect_no_offenses(<<~RUBY)
+      if a
+        b
+      end # comment
+      if a
+        b
+        # comment
+      end
+      unless a
+        b # A comment
+      end
+    RUBY
   end
 
-  context 'short multiline if near an else etc' do
-    it 'registers an offense' do
-      expect_offense(<<~RUBY)
-        if x
-          y
-        elsif x1
-          y1
-        else
-          z
-        end
-        n = a ? 0 : 1
-        m = 3 if m0
+  it 'inlines a short multiline `if` surrounded by unrelated conditionals' do
+    expect_offense(<<~RUBY)
+      if x
+        y
+      elsif x1
+        y1
+      else
+        z
+      end
+      n = a ? 0 : 1
+      m = 3 if m0
 
-        if a
-        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
-          b
-        end
-      RUBY
+      if a
+      ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+        b
+      end
+    RUBY
 
-      expect_correction(<<~RUBY)
-        if x
-          y
-        elsif x1
-          y1
-        else
-          z
-        end
-        n = a ? 0 : 1
-        m = 3 if m0
+    expect_correction(<<~RUBY)
+      if x
+        y
+      elsif x1
+        y1
+      else
+        z
+      end
+      n = a ? 0 : 1
+      m = 3 if m0
 
-        b if a
-      RUBY
-    end
+      b if a
+    RUBY
   end
 
   context 'multiline unless that fits on one line' do
@@ -286,21 +265,13 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  it 'accepts code with EOL comment since user might want to keep it' do
-    expect_no_offenses(<<~RUBY)
-      unless a
-        b # A comment
-      end
-    RUBY
-  end
-
-  it 'accepts if-else-end' do
+  it 'ignores if-else-end' do
     expect_no_offenses(<<~RUBY)
       if args.last.is_a? Hash then args.pop else Hash.new end
     RUBY
   end
 
-  it 'accepts if/elsif' do
+  it 'ignores if/elsif' do
     expect_no_offenses(<<~RUBY)
       if test
         something
@@ -345,7 +316,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  it 'accepts if-end followed by a chained call using `.`' do
+  it 'ignores if-end followed by a chained call using `.`' do
     expect_no_offenses(<<~RUBY)
       if test
         something
@@ -353,7 +324,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     RUBY
   end
 
-  it 'accepts if-end followed by a chained call using `&.`' do
+  it 'ignores if-end followed by a chained call using `&.`' do
     expect_no_offenses(<<~RUBY)
       if test
         something
@@ -452,7 +423,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     RUBY
   end
 
-  it 'accepts if-end when used as LHS of binary arithmetic' do
+  it 'ignores if-end when used as LHS of binary arithmetic' do
     expect_no_offenses(<<~RUBY)
       if test
         1
