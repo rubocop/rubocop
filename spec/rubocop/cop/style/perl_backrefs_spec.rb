@@ -8,15 +8,31 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs do
       puts $1
            ^^ Avoid the use of Perl-style backrefs.
     RUBY
+
+    expect_correction(<<~RUBY)
+      puts Regexp.last_match(1)
+    RUBY
   end
 
-  it 'auto-corrects $1 to Regexp.last_match(1)' do
-    new_source = autocorrect_source('$1')
-    expect(new_source).to eq('Regexp.last_match(1)')
+  it 'registers an offense for $9' do
+    expect_offense(<<~RUBY)
+      $9
+      ^^ Avoid the use of Perl-style backrefs.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Regexp.last_match(9)
+    RUBY
   end
 
   it 'auto-corrects #$1 to #{Regexp.last_match(1)}' do
-    new_source = autocorrect_source('"#$1"')
-    expect(new_source).to eq('"#{Regexp.last_match(1)}"')
+    expect_offense(<<~'RUBY')
+      "#$1"
+        ^^ Avoid the use of Perl-style backrefs.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "#{Regexp.last_match(1)}"
+    RUBY
   end
 end
