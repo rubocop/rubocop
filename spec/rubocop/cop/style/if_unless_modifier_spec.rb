@@ -6,22 +6,24 @@
 RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   let(:ignore_cop_directives) { true }
   let(:allow_uri) { true }
-  let(:line_length_config) do
+  let(:line_length_enabled) { true }
+  let(:other_cops) do
     {
-      'Enabled' => true,
-      'Max' => 80,
-      'AllowURI' => allow_uri,
-      'IgnoreCopDirectives' => ignore_cop_directives,
-      'URISchemes' => %w[http https]
+      'Layout/LineLength' => {
+        'Enabled' => line_length_enabled,
+        'Max' => 80,
+        'AllowURI' => allow_uri,
+        'IgnoreCopDirectives' => ignore_cop_directives,
+        'URISchemes' => %w[http https]
+      }
     }
   end
-  let(:other_cops) { { 'Layout/LineLength' => line_length_config } }
 
   extra = ' Another good alternative is the usage of control flow `&&`/`||`.'
   it_behaves_like 'condition modifier cop', :if, extra
   it_behaves_like 'condition modifier cop', :unless, extra
 
-  context 'modifier if that does not fit on one line' do
+  context 'modifier `if` that does not fit on one line' do
     let(:spaces) { ' ' * 59 }
     let(:body) { "puts '#{spaces}'" }
     let(:source) { "#{body} if condition" }
@@ -44,24 +46,24 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           def f
             # Comment 1
             if condition
-              puts '#{spaces}'
+              #{body}
             end # Comment 2
           end
         RUBY
       end
 
-      context 'and the long line is allowed because AllowURI is true' do
-        it 'accepts' do
+      context 'when AllowURI is true' do
+        it 'ignores the long line with an URL' do
           expect_no_offenses(<<~RUBY)
             puts 1 if url == '#{long_url}'
           RUBY
         end
       end
 
-      context 'and the long line is too long because AllowURI is false' do
+      context 'when AllowURI is false' do
         let(:allow_uri) { false }
 
-        it 'registers an offense' do
+        it 'flags the long line with an URL' do
           expect_offense(<<~RUBY)
             puts 1 if url == '#{long_url}'
                    ^^ Modifier form of `if` makes the line too long.
@@ -117,7 +119,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
 
     context 'when Layout/LineLength is disabled in configuration' do
-      let(:line_length_config) { { 'Enabled' => false, 'Max' => 80 } }
+      let(:line_length_enabled) { false }
 
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
@@ -152,13 +154,12 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  context 'multiline if that fits on one line' do
+  context 'multiline `if` that fits on one line' do
     let(:condition) { 'a' * 38 }
     let(:body) { 'b' * 38 }
 
     it 'registers an offense' do
-      # This if statement fits exactly on one line if written as a
-      # modifier.
+      # The statement fits exactly on one line if written as a modifier
       expect("#{body} if #{condition}".length).to eq(80)
 
       # Empty lines should make no difference.
@@ -186,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  context 'modifier if that does not fit on one line, but is not the only' \
+  context 'modifier `if` that does not fit on one line, but is not the only' \
           ' statement on the line' do
     let(:spaces) { ' ' * 59 }
 
@@ -583,7 +584,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   end
 
   context 'when Layout/LineLength is disabled' do
-    let(:line_length_config) { { 'Enabled' => false } }
+    let(:line_length_enabled) { false }
 
     it 'registers an offense even for a long modifier statement' do
       expect_offense(<<~RUBY)
