@@ -309,13 +309,15 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'register an offense for parens in method call without args' do
+      trailing_whitespace = ' '
+
       expect_offense(<<~RUBY)
         top.test()
                 ^^ Omit parentheses for method calls with arguments.
       RUBY
 
       expect_correction(<<~RUBY)
-        top.test 
+        top.test#{trailing_whitespace}
       RUBY
     end
 
@@ -663,15 +665,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     it 'auto-corrects multi-line calls with trailing whitespace' do
+      trailing_whitespace = ' '
+
       expect_offense(<<~RUBY)
-        foo( 
+        foo(#{trailing_whitespace}
            ^^ Omit parentheses for method calls with arguments.
           bar: 3
         )
       RUBY
 
       expect_correction(<<~RUBY)
-        foo \\ 
+        foo \\#{trailing_whitespace}
           bar: 3
 
       RUBY
