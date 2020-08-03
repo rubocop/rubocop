@@ -6,6 +6,9 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not test
       ^^^ Use `!` instead of `not`.
     RUBY
+    expect_correction(<<~RUBY)
+      !test
+    RUBY
   end
 
   it 'does not register an offense for !' do
@@ -13,42 +16,72 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
   end
 
   it 'auto-corrects "not" with !' do
-    new_source = autocorrect_source('x = 10 if not y')
-    expect(new_source).to eq('x = 10 if !y')
+    expect_offense(<<~RUBY)
+      x = 10 if not y
+                ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      x = 10 if !y
+    RUBY
   end
 
   it 'auto-corrects "not" followed by parens with !' do
-    new_source = autocorrect_source('not(test)')
-    expect(new_source).to eq('!(test)')
+    expect_offense(<<~RUBY)
+      not(test)
+      ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      !(test)
+    RUBY
   end
 
   it 'uses the reverse operator when `not` is applied to a comparison' do
-    src = 'not x < y'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq('x >= y')
+    expect_offense(<<~RUBY)
+      not x < y
+      ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      x >= y
+    RUBY
   end
 
   it 'parenthesizes when `not` would change the meaning of a binary exp' do
-    src = 'not a >> b'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq('!(a >> b)')
+    expect_offense(<<~RUBY)
+      not a >> b
+      ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      !(a >> b)
+    RUBY
   end
 
   it 'parenthesizes when `not` is applied to a ternary op' do
-    src = 'not a ? b : c'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq('!(a ? b : c)')
+    expect_offense(<<~RUBY)
+      not a ? b : c
+      ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      !(a ? b : c)
+    RUBY
   end
 
   it 'parenthesizes when `not` is applied to and' do
-    src = 'not a && b'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq('!(a && b)')
+    expect_offense(<<~RUBY)
+      not a && b
+      ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      !(a && b)
+    RUBY
   end
 
   it 'parenthesizes when `not` is applied to or' do
-    src = 'not a || b'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq('!(a || b)')
+    expect_offense(<<~RUBY)
+      not a || b
+      ^^^ Use `!` instead of `not`.
+    RUBY
+    expect_correction(<<~RUBY)
+      !(a || b)
+    RUBY
   end
 end

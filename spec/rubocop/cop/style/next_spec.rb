@@ -7,27 +7,16 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     let(:opposite) { condition == 'if' ? 'unless' : 'if' }
 
     it "registers an offense for #{condition} inside of downto" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         3.downto(1) do
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             puts o
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
-    end
-
-    it "autocorrects #{condition} inside of downto" do
-      new_source = autocorrect_source(<<~RUBY)
-        3.downto(1) do
-          #{condition} o == 1
-            puts o
-          end
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         3.downto(1) do
           next #{opposite} o == 1
           puts o
@@ -36,27 +25,16 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of each" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].each do |o|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             puts o
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
-    end
-
-    it "autocorrects #{condition} inside of each" do
-      new_source = autocorrect_source(<<~RUBY)
-        [].each do |o|
-          #{condition} o == 1
-            puts o
-          end
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         [].each do |o|
           next #{opposite} o == 1
           puts o
@@ -65,40 +43,34 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of each_with_object" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].each_with_object({}) do |o, a|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             a[o] = {}
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].each_with_object({}) do |o, a|
+          next #{opposite} o == 1
+          a[o] = {}
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of for" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         for o in 1..3 do
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             puts o
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
-    end
-
-    it "autocorrects #{condition} inside of for" do
-      new_source = autocorrect_source(<<~RUBY)
-        for o in 1..3 do
-          #{condition} o == 1
-            puts o
-          end
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         for o in 1..3 do
           next #{opposite} o == 1
           puts o
@@ -107,156 +79,220 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "registers an offense for #{condition} inside of loop" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         loop do
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             puts o
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        loop do
+          next #{opposite} o == 1
+          puts o
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of map" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         loop do
           {}.map do |k, v|
-            #{condition} v == 1
+            %{condition} v == 1
+            ^{condition}^^^^^^^ Use `next` to skip iteration.
               puts k
             end
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} v == 1"])
+      expect_correction(<<~RUBY)
+        loop do
+          {}.map do |k, v|
+            next #{opposite} v == 1
+            puts k
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of times" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         loop do
           3.times do |o|
-            #{condition} o == 1
+            %{condition} o == 1
+            ^{condition}^^^^^^^ Use `next` to skip iteration.
               puts o
             end
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        loop do
+          3.times do |o|
+            next #{opposite} o == 1
+            puts o
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of collect" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].collect do |o|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             true
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].collect do |o|
+          next #{opposite} o == 1
+          true
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of select" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].select do |o|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             true
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].select do |o|
+          next #{opposite} o == 1
+          true
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of select!" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].select! do |o|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             true
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].select! do |o|
+          next #{opposite} o == 1
+          true
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of reject" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].reject do |o|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             true
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].reject do |o|
+          next #{opposite} o == 1
+          true
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of reject!" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].reject! do |o|
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             true
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].reject! do |o|
+          next #{opposite} o == 1
+          true
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of nested iterators" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         loop do
           until false
-            #{condition} o == 1
+            %{condition} o == 1
+            ^{condition}^^^^^^^ Use `next` to skip iteration.
               puts o
             end
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        loop do
+          until false
+            next #{opposite} o == 1
+            puts o
+          end
+        end
+      RUBY
     end
 
     it "registers an offense for #{condition} inside of nested iterators" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         loop do
           while true
-            #{condition} o == 1
+            %{condition} o == 1
+            ^{condition}^^^^^^^ Use `next` to skip iteration.
               puts o
             end
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        loop do
+          while true
+            next #{opposite} o == 1
+            puts o
+          end
+        end
+      RUBY
     end
 
     it 'registers an offense for a condition at the end of an iterator ' \
        'when there is more in the iterator than the condition' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         [].each do |o|
           puts o
-          #{condition} o == 1
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
             puts o
           end
         end
       RUBY
 
-      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-      expect(cop.highlights).to eq(["#{condition} o == 1"])
+      expect_correction(<<~RUBY)
+        [].each do |o|
+          puts o
+          next #{opposite} o == 1
+          puts o
+        end
+      RUBY
     end
 
     it 'allows loops with conditional break' do
@@ -318,9 +354,10 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     it "reports an offense for #{condition} whose body has 3 lines" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, condition: condition)
         arr.each do |e|
-          #{condition} something
+          %{condition} something
+          ^{condition}^^^^^^^^^^ Use `next` to skip iteration.
             work
             work
             work
@@ -328,8 +365,14 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(["#{condition} something"])
+      expect_correction(<<~RUBY)
+        arr.each do |e|
+          next #{opposite} something
+          work
+          work
+          work
+        end
+      RUBY
     end
 
     context 'EnforcedStyle: skip_modifier_ifs' do
@@ -351,24 +394,16 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
         { 'EnforcedStyle' => 'always' }
       end
       let(:opposite) { condition == 'if' ? 'unless' : 'if' }
-      let(:source) do
-        <<~RUBY
-          [].each do |o|
-            puts o #{condition} o == 1 # comment
-          end
-        RUBY
-      end
 
       it "registers an offense for modifier #{condition}" do
-        inspect_source(source)
+        expect_offense(<<~RUBY, condition: condition)
+          [].each do |o|
+            puts o #{condition} o == 1 # comment
+            ^^^^^^^^{condition}^^^^^^^ Use `next` to skip iteration.
+          end
+        RUBY
 
-        expect(cop.messages).to eq(['Use `next` to skip iteration.'])
-        expect(cop.highlights).to eq(["puts o #{condition} o == 1"])
-      end
-
-      it "auto-corrects modifier #{condition}" do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           [].each do |o|
             next #{opposite} o == 1
             puts o # comment
@@ -378,9 +413,10 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     it 'auto-corrects a misaligned end' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         [1, 2, 3, 4].each do |num|
           if !opts.nil?
+          ^^^^^^^^^^^^^ Use `next` to skip iteration.
             puts num
             if num != 2
               puts 'hello'
@@ -390,23 +426,23 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         [1, 2, 3, 4].each do |num|
           next unless !opts.nil?
           puts num
-          if num != 2
-            puts 'hello'
-            puts 'world'
-          end
+          next unless num != 2
+          puts 'hello'
+          puts 'world'
         end
       RUBY
     end
   end
 
   it 'keeps comments when autocorrecting' do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       loop do
         if test # keep me
+        ^^^^^^^ Use `next` to skip iteration.
           # keep me
           something # keep me
           # keep me
@@ -415,7 +451,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       loop do
         next unless test # keep me
         # keep me
@@ -428,14 +464,16 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'handles `then` when autocorrecting' do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       loop do
         if test then
+        ^^^^^^^ Use `next` to skip iteration.
           something
         end
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       loop do
         next unless test
         something
@@ -444,9 +482,10 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   it "doesn't reindent heredoc bodies when autocorrecting" do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       loop do
         if test
+        ^^^^^^^ Use `next` to skip iteration.
           str = <<-BLAH
         this is a heredoc
          nice eh?
@@ -455,7 +494,8 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
         end
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       loop do
         next unless test
         str = <<-BLAH
@@ -468,18 +508,21 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   it 'handles nested autocorrections' do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       loop do
         if test
+        ^^^^^^^ Use `next` to skip iteration.
           loop do
             if test
+            ^^^^^^^ Use `next` to skip iteration.
               something
             end
           end
         end
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       loop do
         next unless test
         loop do
@@ -577,7 +620,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
         end
       RUBY
 
-      expect { inspect_source(source) }
+      expect { expect_no_offenses(source) }
         .to raise_error('MinBodyLength needs to be a positive integer!')
     end
   end

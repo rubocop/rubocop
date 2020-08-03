@@ -36,11 +36,10 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
           %Q(hi)
           ^^^ Do not use `%Q` unless interpolation is needed. Use `%q`.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source('%Q(hi)')
-        expect(new_source).to eq('%q(hi)')
+        expect_correction(<<~RUBY)
+          %q(hi)
+        RUBY
       end
 
       include_examples 'accepts quote characters'
@@ -70,15 +69,14 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
           %q(hi)
           ^^^ Use `%Q` instead of `%q`.
         RUBY
+
+        expect_correction(<<~RUBY)
+          %Q(hi)
+        RUBY
       end
 
       it 'accepts %Q' do
         expect_no_offenses('%Q(hi)')
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source('%q[hi]')
-        expect(new_source).to eq('%Q[hi]')
       end
 
       include_examples 'accepts quote characters'
@@ -95,12 +93,6 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         # but we can't be sure if it's a mistake or not. Changing it to %Q
         # would alter semantics, so we leave it as it is.
         expect_no_offenses('%q(#{1 + 2})')
-      end
-
-      it 'does not auto-correct' do
-        source = '%q(#{1 + 2})'
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(source)
       end
 
       include_examples 'accepts quote characters'
