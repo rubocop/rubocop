@@ -71,7 +71,10 @@ module RuboCop
         def add_block_argument(node, corrector)
           if node.arguments?
             last_arg = node.arguments.last
-            corrector.insert_after(last_arg, ', &block') unless last_arg.blockarg_type?
+            arg_range = range_with_surrounding_comma(last_arg.source_range, :right)
+            replacement = ' &block'
+            replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
+            corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
           elsif node.send_type?
             corrector.insert_after(node, '(&block)')
           else

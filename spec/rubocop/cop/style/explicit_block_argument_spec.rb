@@ -48,6 +48,21 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
     RUBY
   end
 
+  it 'correctly corrects when the method call has a trailing comma in its argument list' do
+    expect_offense(<<~RUBY)
+      def m
+        items.something(a, b,) { |i| yield i }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m(&block)
+        items.something(a, b, &block)
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when method contains multiple `yield`s' do
     expect_offense(<<~RUBY)
       def m
