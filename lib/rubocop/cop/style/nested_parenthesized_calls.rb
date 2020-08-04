@@ -37,7 +37,9 @@ module RuboCop
 
           leading_space =
             range_with_surrounding_space(range: first_arg.begin,
-                                         side: :left)
+                                         side: :left,
+                                         whitespace: true,
+                                         continuations: true)
 
           lambda do |corrector|
             corrector.replace(leading_space, '(')

@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
 
   context 'backslash newline in method call' do
     let(:source) do
-      <<~RUBY
+      <<~'RUBY'
         puts(nex \
                5)
       RUBY
