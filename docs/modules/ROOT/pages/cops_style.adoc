@@ -2839,6 +2839,11 @@ def with_tmp_dir
   end
 end
 
+# bad
+def nine_times
+  9.times { yield }
+end
+
 # good
 def with_tmp_dir(&block)
   Dir.mktmpdir do |tmp_dir|
@@ -2848,6 +2853,11 @@ end
 
 with_tmp_dir do |dir|
   puts "dir is accessible as a parameter and pwd is set: #{dir}"
+end
+
+# good
+def nine_times(&block)
+  9.times(&block)
 end
 ----
 

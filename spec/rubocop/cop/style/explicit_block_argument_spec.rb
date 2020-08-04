@@ -73,6 +73,7 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
           yield 2
         elsif other_condition
           3.times { yield }
+          ^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
         else
           other_items.something { |i, j| yield i }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
@@ -87,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
         if condition
           yield 2
         elsif other_condition
-          3.times { yield }
+          3.times(&block)
         else
           other_items.something(&block)
         end
@@ -103,10 +104,17 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
     RUBY
   end
 
-  it 'does not register an offense when `yield` inside block has no arguments' do
-    expect_no_offenses(<<~RUBY)
+  it 'registers an offense and corrects when `yield` inside block has no arguments' do
+    expect_offense(<<~RUBY)
       def m
         3.times { yield }
+        ^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m(&block)
+        3.times(&block)
       end
     RUBY
   end
