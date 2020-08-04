@@ -40,10 +40,12 @@ module RuboCop
       end
 
       def length_in_modifier_form(node)
-        keyword = node.loc.keyword
-        prefix = keyword.source_line[0...keyword.column]
+        keyword_element = node.loc.keyword
+        end_element = node.loc.end
+        code_before = keyword_element.source_line[0...keyword_element.column]
+        code_after = end_element.source_line[end_element.last_column..-1]
         expression = to_modifier_form(node)
-        line_length("#{prefix}#{expression}")
+        line_length("#{code_before}#{expression}#{code_after}")
       end
 
       def to_modifier_form(node)
