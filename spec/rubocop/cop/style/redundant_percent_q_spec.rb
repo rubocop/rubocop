@@ -68,11 +68,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
       end
 
       it 'auto-corrects for strings that is concated with backslash' do
-        new_source = autocorrect_source(<<~RUBY)
+        new_source = autocorrect_source(<<~'RUBY')
           %q(foo bar baz) \
             'boogers'
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect(new_source).to eq(<<~'RUBY')
           'foo bar baz' \
             'boogers'
         RUBY
@@ -142,11 +142,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
       end
 
       it 'auto-corrects for strings that is concated with backslash' do
-        new_source = autocorrect_source(<<~RUBY)
+        new_source = autocorrect_source(<<~'RUBY')
           %Q(foo bar baz) \
             'boogers'
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect(new_source).to eq(<<~'RUBY')
           "foo bar baz" \
             'boogers'
         RUBY
