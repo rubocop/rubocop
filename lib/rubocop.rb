@@ -23,6 +23,7 @@ require_relative 'rubocop/string_interpreter'
 require_relative 'rubocop/error'
 require_relative 'rubocop/warning'
 
+require_relative 'rubocop/cop/tokens_util'
 require_relative 'rubocop/cop/util'
 require_relative 'rubocop/cop/offense'
 require_relative 'rubocop/cop/message_annotator'

@@ -30,31 +30,6 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def index_of_first_token(node)
-        range = node.source_range
-        token_table[range.line][range.column]
-      end
-
-      def index_of_last_token(node)
-        range = node.source_range
-        table_row = token_table[range.last_line]
-        (0...range.last_column).reverse_each do |c|
-          ix = table_row[c]
-          return ix if ix
-        end
-      end
-
-      def token_table
-        @token_table ||= begin
-          table = {}
-          processed_source.tokens.each_with_index do |t, ix|
-            table[t.line] ||= {}
-            table[t.line][t.column] = ix
-          end
-          table
-        end
-      end
-
       def on_new_investigation
         @token_table = nil
         super
