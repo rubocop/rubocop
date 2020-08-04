@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     end
 
     it 'accepts double quotes on a broken static string' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         "A" \
           "B"
       RUBY

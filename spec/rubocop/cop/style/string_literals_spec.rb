@@ -300,7 +300,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'accepts continued strings using all single quotes' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           'abc' \
           'def'
         RUBY
@@ -330,7 +330,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it "doesn't register offense for double quotes with embedded single" do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           "abc'" \
           "def"
         RUBY
@@ -369,7 +369,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'accepts continued strings using all double quotes' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           "abc" \
           "def"
         RUBY
@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it "doesn't register offense for single quotes with embedded double" do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           'abc"' \
           'def'
         RUBY

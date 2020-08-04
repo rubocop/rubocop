@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     it 'registers an offense and corrects misaligned string operand ' \
       'when the first operand has backslash continuation' do
-      expect_offense(<<~RUBY)
+      expect_offense(<<~'RUBY')
         def f
           flash[:error] = 'Here is a string ' \
                           'That spans' <<
@@ -334,7 +334,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~'RUBY')
         def f
           flash[:error] = 'Here is a string ' \
                           'That spans' <<
@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts the indentation of a broken string' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         MSG = 'Use 2 (not %d) spaces for indenting a ' \
               'broken line.'
       RUBY
