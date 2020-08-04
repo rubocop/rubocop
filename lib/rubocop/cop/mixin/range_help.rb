@@ -46,7 +46,8 @@ module RuboCop
       end
 
       def range_with_surrounding_space(range:, side: :both,
-                                       newlines: true, whitespace: false)
+                                       newlines: true, whitespace: false,
+                                       continuations: false)
         buffer = @processed_source.buffer
         src = buffer.source
 
@@ -55,10 +56,13 @@ module RuboCop
         begin_pos = range.begin_pos
         if go_left
           begin_pos =
-            final_pos(src, begin_pos, -1, newlines, whitespace)
+            final_pos(src, begin_pos, -1, continuations, newlines, whitespace)
         end
         end_pos = range.end_pos
-        end_pos = final_pos(src, end_pos, 1, newlines, whitespace) if go_right
+        if go_right
+          end_pos =
+            final_pos(src, end_pos, 1, continuations, newlines, whitespace)
+        end
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
@@ -101,15 +105,25 @@ module RuboCop
         end
       end
 
-      def final_pos(src, pos, increment, newlines, whitespace)
+      # rubocop:disable Metrics/ParameterLists
+      def final_pos(src, pos, increment, continuations, newlines, whitespace)
         pos = move_pos(src, pos, increment, true, /[ \t]/)
+        pos = move_pos_str(src, pos, increment, continuations, "\\\n")
         pos = move_pos(src, pos, increment, newlines, /\n/)
         move_pos(src, pos, increment, whitespace, /\s/)
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def move_pos(src, pos, step, condition, regexp)
         offset = step == -1 ? -1 : 0
         pos += step while condition && regexp.match?(src[pos + offset])
+        pos.negative? ? 0 : pos
+      end
+
+      def move_pos_str(src, pos, step, condition, needle)
+        size = needle.length
+        offset = step == -1 ? -size : 0
+        pos += size * step while condition && src[pos + offset, size] == needle
         pos.negative? ? 0 : pos
       end
     end
