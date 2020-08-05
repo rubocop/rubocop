@@ -43,17 +43,19 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
 
     context 'correct + opposite' do
       it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages.first)
-          .to eq('`end` at 7, 4 is not aligned with `foo def` at 5, 0.')
-        expect(cop.highlights.first).to eq('end')
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
+        expect_offense(<<~RUBY)
+          foo def a
+            a1
+          end
 
-      it 'does auto-correction' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
+          foo def b
+                b1
+              end
+              ^^^ `end` at 7, 4 is not aligned with `foo def` at 5, 0.
+        RUBY
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+        expect_correction(<<~RUBY)
           foo def a
             a1
           end
@@ -96,21 +98,22 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
 
     context 'correct + opposite' do
       it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages.first)
-          .to eq('`end` at 3, 0 is not aligned with `def` at 1, 4.')
-        expect(cop.highlights.first).to eq('end')
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
+        expect_offense(<<~RUBY)
+          foo def a
+            a1
+          end
+          ^^^ `end` at 3, 0 is not aligned with `def` at 1, 4.
+          foo def b
+                b1
+              end
+        RUBY
 
-      it 'does auto-correction' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq(<<~RUBY)
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+        expect_correction(<<~RUBY)
           foo def a
             a1
               end
-
           foo def b
                 b1
               end

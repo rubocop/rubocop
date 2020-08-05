@@ -12,37 +12,37 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'no_empty_lines' } }
 
     it 'registers an offense for module body starting with a blank' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         module SomeModule
 
+        ^{} #{extra_begin}
           do_something
         end
       RUBY
-
-      expect(cop.messages).to eq([extra_begin])
     end
 
     it 'registers an offense for module body ending with a blank' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         module SomeModule
           do_something
 
+        ^{} #{extra_end}
         end
       RUBY
-
-      expect(cop.messages).to eq([extra_end])
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         module SomeModule
 
+        ^{} #{extra_begin}
           do_something
 
+        ^{} #{extra_end}
         end
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         module SomeModule
           do_something
         end
@@ -55,13 +55,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
     it 'registers an offense for module body not starting or ending with a ' \
        'blank' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         module SomeModule
           do_something
+        ^ #{missing_begin}
         end
+        ^ #{missing_end}
       RUBY
-
-      expect(cop.messages).to eq([missing_begin, missing_end])
     end
 
     it 'registers an offense for module body not ending with a blank' do
@@ -70,18 +70,20 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
           do_something
         end
-        ^ Empty line missing at module body end.
+        ^ #{missing_end}
       RUBY
     end
 
     it 'autocorrects beginning and end' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         module SomeModule
           do_something
+        ^ #{missing_begin}
         end
+        ^ #{missing_end}
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         module SomeModule
 
           do_something
@@ -253,9 +255,10 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
       it 'registers offenses for namespace body starting '\
         'and ending without a blank' do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           module Parent
             module Mom
+          ^ #{missing_begin}
 
               do_something
 
@@ -264,9 +267,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
 
             end
           end
+          ^ #{missing_end}
         RUBY
-
-        expect(cop.messages).to eq([missing_begin, missing_end])
       end
     end
   end

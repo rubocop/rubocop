@@ -1,72 +1,103 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
+  let(:empty_line_annotation) { '^{} Empty line detected around arguments.' }
+
   context 'when extra lines' do
-    it 'registers offense for empty line before arg' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense for empty line before arg' do
+      expect_offense(<<~RUBY)
         foo(
 
+        #{empty_line_annotation}
           bar
         )
       RUBY
-      expect(cop.messages)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        foo(
+          bar
+        )
+      RUBY
     end
 
-    it 'registers offense for empty line after arg' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense for empty line after arg' do
+      expect_offense(<<~RUBY)
         bar(
           [baz, qux]
 
+        #{empty_line_annotation}
         )
       RUBY
-      expect(cop.messages)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        bar(
+          [baz, qux]
+        )
+      RUBY
     end
 
-    it 'registers offense for empty line between args' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense for empty line between args' do
+      expect_offense(<<~RUBY)
         foo.do_something(
           baz,
 
+        #{empty_line_annotation}
           qux: 0
         )
       RUBY
-      expect(cop.messages)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        foo.do_something(
+          baz,
+          qux: 0
+        )
+      RUBY
     end
 
-    it 'registers offenses when multiple empty lines are detected' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offenses when multiple empty lines are detected' do
+      expect_offense(<<~RUBY)
         foo(
           baz,
 
+        #{empty_line_annotation}
           qux,
 
+        #{empty_line_annotation}
           biz,
 
+        #{empty_line_annotation}
         )
       RUBY
-      expect(cop.offenses.size).to eq 3
-      expect(cop.messages.uniq)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        foo(
+          baz,
+          qux,
+          biz,
+        )
+      RUBY
     end
 
-    it 'registers offense when args start on definition line' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense when args start on definition line' do
+      expect_offense(<<~RUBY)
         foo(biz,
 
+        #{empty_line_annotation}
             baz: 0)
       RUBY
-      expect(cop.messages)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        foo(biz,
+            baz: 0)
+      RUBY
     end
 
-    it 'registers offense when empty line between normal arg & block arg' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense when empty line between normal arg & block arg' do
+      expect_offense(<<~RUBY)
         Foo.prepend(
           a,
 
+        #{empty_line_annotation}
           Module.new do
             def something; end
 
@@ -74,13 +105,21 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
           end
         )
       RUBY
-      expect(cop.offenses.size).to eq 1
-      expect(cop.messages)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        Foo.prepend(
+          a,
+          Module.new do
+            def something; end
+
+            def anything; end
+          end
+        )
+      RUBY
     end
 
-    it 'registers offense on correct line for single offense example' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense on correct line for single offense example' do
+      expect_offense(<<~RUBY)
         class Foo
 
           include Bar
@@ -89,128 +128,89 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
             fizz(
               qux,
 
+        #{empty_line_annotation}
               10
             )
           end
         end
       RUBY
-      expect(cop.offenses.size).to eq 1
-      expect(cop.offenses.first.location.line).to eq 8
-      expect(cop.messages.uniq)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        class Foo
+
+          include Bar
+
+          def baz(qux)
+            fizz(
+              qux,
+              10
+            )
+          end
+        end
+      RUBY
     end
 
-    it 'registers offense on correct lines for multi-offense example' do
-      inspect_source(<<~RUBY)
+    it 'registers and autocorrects offense on correct lines for multi-offense example' do
+      expect_offense(<<~RUBY)
         something(1, 5)
         something_else
 
         foo(biz,
 
+        #{empty_line_annotation}
             qux)
 
         quux.map do
 
         end.another.thing(
 
+        #{empty_line_annotation}
           [baz]
         )
       RUBY
-      expect(cop.offenses.size).to eq 2
-      expect(cop.offenses[0].location.line).to eq 5
-      expect(cop.offenses[1].location.line).to eq 11
-      expect(cop.messages.uniq)
-        .to eq(['Empty line detected around arguments.'])
+
+      expect_correction(<<~RUBY)
+        something(1, 5)
+        something_else
+
+        foo(biz,
+            qux)
+
+        quux.map do
+
+        end.another.thing(
+          [baz]
+        )
+      RUBY
     end
 
     context 'when using safe navigation operator' do
-      it 'registers offense for empty line before arg' do
-        inspect_source(<<~RUBY)
+      it 'registers and autocorrects offense for empty line before arg' do
+        expect_offense(<<~RUBY)
           receiver&.foo(
 
+          #{empty_line_annotation}
             bar
           )
         RUBY
-        expect(cop.messages)
-          .to eq(['Empty line detected around arguments.'])
+
+        expect_correction(<<~RUBY)
+          receiver&.foo(
+            bar
+          )
+        RUBY
       end
     end
 
-    it 'autocorrects empty line detected at top' do
-      corrected = autocorrect_source(<<~RUBY)
-        foo(
-
-          bar
-        )
-      RUBY
-
-      expect(corrected).to eq(<<~RUBY)
-        foo(
-          bar
-        )
-      RUBY
-    end
-
-    it 'autocorrects empty line detected at bottom' do
-      corrected = autocorrect_source(<<~RUBY)
-        foo(
-          baz: 1
-
-        )
-      RUBY
-
-      expect(corrected).to eq(<<~RUBY)
-        foo(
-          baz: 1
-        )
-      RUBY
-    end
-
-    it 'autocorrects empty line detected in the middle' do
-      corrected = autocorrect_source(<<~RUBY)
-        do_something(
-          [baz],
-
-          qux: 0
-        )
-      RUBY
-
-      expect(corrected).to eq(<<~RUBY)
-        do_something(
-          [baz],
-          qux: 0
-        )
-      RUBY
-    end
-
-    it 'autocorrects multiple empty lines' do
-      corrected = autocorrect_source(<<~RUBY)
-        do_stuff(
-          baz,
-
-          qux,
-
-          bar: 0,
-        )
-      RUBY
-
-      expect(corrected).to eq(<<~RUBY)
-        do_stuff(
-          baz,
-          qux,
-          bar: 0,
-        )
-      RUBY
-    end
-
-    it 'autocorrects args that start on definition line' do
-      corrected = autocorrect_source(<<~RUBY)
+    it 'registers autocorrects empty line whetn args start on definition line' do
+      expect_offense(<<~RUBY)
         bar(qux,
 
+        #{empty_line_annotation}
             78)
       RUBY
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         bar(qux,
             78)
       RUBY
