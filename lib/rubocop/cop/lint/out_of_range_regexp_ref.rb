@@ -21,7 +21,10 @@ module RuboCop
       class OutOfRangeRegexpRef < Base
         MSG = 'Do not use out of range reference for the Regexp.'
 
-        REGEXP_CAPTURE_METHODS = %i[=~ === match].to_set.freeze
+        REGEXP_RECEIVER_METHODS = %i[=~ === match].to_set.freeze
+        REGEXP_ARGUMENT_METHODS = %i[=~ match grep gsub gsub! sub sub! [] slice slice! index rindex
+                                     scan partition rpartition start_with? end_with?].to_set.freeze
+        REGEXP_CAPTURE_METHODS = (REGEXP_RECEIVER_METHODS + REGEXP_ARGUMENT_METHODS).freeze
 
         def on_new_investigation
           @valid_ref = 0
@@ -38,9 +41,18 @@ module RuboCop
 
           if node.receiver&.regexp_type?
             check_regexp(node.receiver)
-          elsif node.first_argument&.regexp_type? && node.method?(:=~)
+          elsif node.first_argument&.regexp_type? \
+            && REGEXP_ARGUMENT_METHODS.include?(node.method_name)
             check_regexp(node.first_argument)
           end
+        end
+
+        def on_when(node)
+          regexp_conditions = node.conditions.select(&:regexp_type?)
+
+          @valid_ref = regexp_conditions.map do |condition|
+            check_regexp(condition)
+          end.compact.max
         end
 
         def on_nth_ref(node)
