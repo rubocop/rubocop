@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<~RUBY)
+    offenses = inspect_source(<<~RUBY)
       module Test
         a = 1
         a = 2
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
         a = 6
       end
     RUBY
-    offense = cop.offenses.first
+    offense = offenses.first
     expect(offense.location.first_line).to eq(1)
     expect(offense.location.last_line).to eq(8)
   end

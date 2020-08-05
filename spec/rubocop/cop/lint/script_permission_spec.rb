@@ -41,6 +41,23 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
         RUBY
         expect(file.stat.executable?).to be_truthy
       end
+
+      context 'if auto-correction is off' do
+        # very dirty hack
+        def _investigate(cop, processed_source)
+          cop.instance_variable_get(:@options)[:auto_correct] = false
+          super
+        end
+
+        it 'leaves the file intact' do
+          expect_offense(<<~RUBY, file)
+            #!/usr/bin/ruby
+            ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
+          RUBY
+          expect_no_corrections
+          expect(file.stat.executable?).to be false
+        end
+      end
     end
   end
 

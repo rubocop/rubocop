@@ -20,7 +20,7 @@ module RuboCop
       #   # good
       #   /(FOO)(BAR)/
       #
-      class MixedRegexpCaptureTypes < Cop
+      class MixedRegexpCaptureTypes < Base
         MSG = 'Do not mix named captures and numbered captures ' \
               'in a Regexp literal.'
 

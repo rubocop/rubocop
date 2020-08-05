@@ -24,7 +24,7 @@ module RuboCop
       #   rescue ArgumentError
       #     handle_exception
       #   end
-      class RescueException < Cop
+      class RescueException < Base
         MSG = 'Avoid rescuing the `Exception` class. ' \
               'Perhaps you meant to rescue `StandardError`?'
 

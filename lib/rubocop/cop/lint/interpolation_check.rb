@@ -16,31 +16,34 @@ module RuboCop
       #   # good
       #
       #   foo = "something with #{interpolation} inside"
-      class InterpolationCheck < Cop
+      class InterpolationCheck < Base
+        extend AutoCorrector
+
         MSG = 'Interpolation in single quoted string detected. '\
               'Use double quoted strings if you need interpolation.'
 
         def on_str(node)
-          return if heredoc?(node)
-
           parent = node.parent
           return if parent && (parent.dstr_type? || parent.regexp_type?)
-          return unless /(?<!\\)#\{.*\}/.match?(node.source.scrub)
+          return unless /(?<!\\)#\{.*\}/.match?(node.source)
+          return if heredoc?(node)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            starting_token, ending_token = if node.source.include?('"')
-                                             ['%{', '}']
-                                           else
-                                             ['"', '"']
-                                           end
+        private
 
-            corrector.replace(node.loc.begin, starting_token)
-            corrector.replace(node.loc.end, ending_token)
-          end
+        def autocorrect(corrector, node)
+          starting_token, ending_token = if node.source.include?('"')
+                                           ['%{', '}']
+                                         else
+                                           ['"', '"']
+                                         end
+
+          corrector.replace(node.loc.begin, starting_token)
+          corrector.replace(node.loc.end, ending_token)
         end
 
         def heredoc?(node)

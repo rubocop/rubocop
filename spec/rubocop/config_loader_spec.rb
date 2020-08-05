@@ -952,6 +952,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
       context 'and the gem is bundled' do
         before do
+          require 'bundler'
+
           specs = {
             'gemone' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemone'))],
             'gemtwo' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemtwo'))]
@@ -1524,7 +1526,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     before do
       create_file('.rubocop.yml', ['require:', "  - #{required_file_path}"])
-      create_file(required_file_path + '.rb', ['class MyClass', 'end'])
+      create_file("#{required_file_path}.rb", ['class MyClass', 'end'])
     end
 
     it 'works without a starting .' do

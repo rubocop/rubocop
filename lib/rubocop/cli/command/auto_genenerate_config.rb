@@ -113,7 +113,7 @@ module RuboCop
             return if files.include?(AUTO_GENERATED_FILE)
 
             files.unshift(AUTO_GENERATED_FILE)
-            file_string = "\n  - " + files.join("\n  - ") if files.size > 1
+            file_string = "\n  - #{files.join("\n  - ")}" if files.size > 1
             rubocop_yml_contents = existing_configuration(config_file)
           end
 

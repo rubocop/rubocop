@@ -12,6 +12,14 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      class Test
+        def self.some_method
+          do_something
+        end
+      end
+    RUBY
   end
 
   it 'registers an offense for methods using a module name' do
@@ -19,6 +27,14 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
       module Test
         def Test.some_method
             ^^^^ Use `self.some_method` instead of `Test.some_method`.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module Test
+        def self.some_method
           do_something
         end
       end
@@ -53,26 +69,5 @@ RSpec.describe RuboCop::Cop::Style::ClassMethods do
         do_something
       end
     RUBY
-  end
-
-  it 'autocorrects class name to self' do
-    src = <<~RUBY
-      class Test
-        def Test.some_method
-          do_something
-        end
-      end
-    RUBY
-
-    correct_source = <<~RUBY
-      class Test
-        def self.some_method
-          do_something
-        end
-      end
-    RUBY
-
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(correct_source)
   end
 end

@@ -18,7 +18,7 @@ module RuboCop
       #   # okish - deep copy hack
       #   Marshal.load(Marshal.dump({}))
       #
-      class MarshalLoad < Cop
+      class MarshalLoad < Base
         MSG = 'Avoid using `Marshal.%<method>s`.'
 
         def_node_matcher :marshal_load, <<~PATTERN
@@ -28,9 +28,7 @@ module RuboCop
 
         def on_send(node)
           marshal_load(node) do |method|
-            add_offense(node,
-                        location: :selector,
-                        message: format(MSG, method: method))
+            add_offense(node.loc.selector, message: format(MSG, method: method))
           end
         end
       end

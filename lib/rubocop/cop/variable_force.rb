@@ -197,7 +197,6 @@ module RuboCop
         regexp.named_captures.keys
       end
 
-      # rubocop:disable Metrics/AbcSize
       def process_variable_operator_assignment(node)
         if LOGICAL_OPERATOR_ASSIGNMENT_TYPES.include?(node.type)
           asgn_node, rhs_node = *node
@@ -232,7 +231,6 @@ module RuboCop
 
         skip_children!
       end
-      # rubocop:enable Metrics/AbcSize
 
       def process_variable_multiple_assignment(node)
         lhs_node, rhs_node = *node

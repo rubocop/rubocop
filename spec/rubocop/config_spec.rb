@@ -735,6 +735,31 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#for_badge' do
+    let(:hash) do
+      {
+        'Style' => { 'Foo' => 42, 'Bar' => 666 },
+        'Layout/TrailingWhitespace' => { 'Bar' => 43 },
+        'Style/Alias' => { 'Bar' => 44 }
+      }
+    end
+
+    it 'takes into account the department' do
+      expect(configuration.for_badge(RuboCop::Cop::Style::Alias.badge)).to eq(
+        { 'Enabled' => true,
+          'Foo' => 42,
+          'Bar' => 44 }
+      )
+    end
+
+    it 'works if department has no config' do
+      expect(configuration.for_badge(RuboCop::Cop::Layout::TrailingWhitespace.badge)).to eq(
+        { 'Enabled' => true,
+          'Bar' => 43 }
+      )
+    end
+  end
+
   context 'whether the cop is enabled' do
     def cop_enabled(cop_class)
       configuration.for_cop(cop_class).fetch('Enabled')
@@ -817,6 +842,33 @@ RSpec.describe RuboCop::Config do
           expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
         end
       end
+    end
+  end
+
+  describe '#for_department' do
+    let(:hash) do
+      {
+        'Foo' => { 'Bar' => 42, 'Baz' => true },
+        'Foo/Foo' => { 'Bar' => 42, 'Qux' => true }
+      }
+    end
+
+    around do |test|
+      RuboCop::Cop::Registry.with_temporary_global do
+        test.run
+      end
+    end
+
+    before do
+      stub_const('RuboCop::Foo::Foo', Class.new(RuboCop::Cop::Base))
+    end
+
+    it "always returns the department's config" do
+      expect(configuration.for_department('Foo')).to eq hash['Foo']
+    end
+
+    it 'accepts a Symbol' do
+      expect(configuration.for_department(:Foo)).to eq hash['Foo']
     end
   end
 end

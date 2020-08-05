@@ -11,7 +11,7 @@ module RuboCop
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
         .gsub(' ', '\s*')
     )
 
@@ -55,7 +55,7 @@ module RuboCop
       extras
     end
 
-    def analyze
+    def analyze # rubocop:todo Metrics/AbcSize
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
 
       each_mentioned_cop do |cop_name, disabled, line, single_line|

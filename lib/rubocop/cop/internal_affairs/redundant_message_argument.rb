@@ -19,8 +19,9 @@ module RuboCop
       #   add_offense(node, message: CUSTOM_MSG)
       #   add_offense(node, message: message(other_node))
       #
-      class RedundantMessageArgument < Cop
+      class RedundantMessageArgument < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Redundant message argument to `#add_offense`.'
 
@@ -39,15 +40,13 @@ module RuboCop
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|
             find_offending_argument(node_arg, kwargs) do |pair|
-              add_offense(pair)
+              add_offense(pair) do |corrector|
+                range = offending_range(pair)
+
+                corrector.remove(range)
+              end
             end
           end
-        end
-
-        def autocorrect(node)
-          range = offending_range(node)
-
-          ->(corrector) { corrector.remove(range) }
         end
 
         private

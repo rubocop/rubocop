@@ -20,8 +20,9 @@ module RuboCop
       #   # good
       #
       #   %w(foo bar)
-      class PercentStringArray < Cop
+      class PercentStringArray < Base
         include PercentLiteral
+        extend AutoCorrector
 
         QUOTES_AND_COMMAS = [/,$/, /^'.*'$/, /^".*"$/].freeze
         LEADING_QUOTE = /^['"]/.freeze
@@ -37,23 +38,23 @@ module RuboCop
         def on_percent_literal(node)
           return unless contains_quotes_or_commas?(node)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            node.each_value do |value|
-              range = value.loc.expression
-
-              match = range.source.match(TRAILING_QUOTE)
-              corrector.remove_trailing(range, match[0].length) if match
-
-              corrector.remove_leading(range, 1) if LEADING_QUOTE.match?(range.source)
-            end
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          node.each_value do |value|
+            range = value.loc.expression
+
+            match = range.source.match(TRAILING_QUOTE)
+            corrector.remove_trailing(range, match[0].length) if match
+
+            corrector.remove_leading(range, 1) if LEADING_QUOTE.match?(range.source)
+          end
+        end
 
         def contains_quotes_or_commas?(node)
           node.values.any? do |value|

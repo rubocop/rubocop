@@ -9,7 +9,7 @@ module RuboCop
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s %<ruby_platform>s)'
 
-    def self.version(debug = false)
+    def self.version(debug: false)
       if debug
         format(MSG, version: STRING, parser_version: Parser::VERSION,
                     rubocop_ast_version: RuboCop::AST::Version::STRING,

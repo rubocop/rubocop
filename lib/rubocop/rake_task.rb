@@ -15,6 +15,7 @@ module RuboCop
     attr_accessor :name, :verbose, :fail_on_error, :patterns, :formatters, :requires, :options
 
     def initialize(name = :rubocop, *args, &task_block)
+      super()
       setup_ivars(name)
 
       desc 'Run RuboCop' unless ::Rake.application.last_description

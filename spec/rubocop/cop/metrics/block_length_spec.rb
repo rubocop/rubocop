@@ -40,14 +40,14 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<~RUBY)
+    offenses = inspect_source(<<~RUBY)
       something do
         a = 1
         a = 2
         a = 3
       end
     RUBY
-    offense = cop.offenses.first
+    offense = offenses.first
     expect(offense.location.first_line).to eq(1)
     expect(offense.location.last_line).to eq(5)
   end

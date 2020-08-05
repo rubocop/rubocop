@@ -74,32 +74,30 @@ class MySillyCorrectingCop < Base
 end
 ----
 
-=== If your class uses instance variables
+=== Instance variables
 
 Do not use RuboCop's internal instance variables. If you used `@processed_source`, use `processed_source`. If you have a need to access an instance variable, open an issue with your use case.
 
-Cop instances will be called on different `processed_source` if the class supports it. In all cases it is recommended to to invalidate your cache data during the `on_new_investigation` callback:
+By default, a Cop instance will be called only once for a given `processed_source`, so instance variables will be uninitialized when the investigation starts. Using `@cache ||= ...` is fine. If you want to initialize some instance variable, the callback `on_new_investigation` is the best place to do so.
 
 [source,ruby]
 ----
-# Before
-class MyCachingCop < Cop
+class MyCachingCop < Base
   def on_send(node)
     if my_cached_data[node]
+      @counts(node.method_name) += 1
       #...
     end
   end
 
+  # One way:
   def my_cached_data
     @data ||= processed_source.comments.map { # ... }
   end
-end
 
-# After
-class MyCachingCop < Base
-  # ... same as above, plus...
+  # Another way:
   def on_new_investigation
-    @data = nil
+    @counts = Hash.new(0)
     super  # Be nice and call super for callback
   end
 end

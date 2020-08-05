@@ -21,18 +21,18 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
   let(:includes) { ['**/*.rb'] }
   let(:source) { 'print 1' }
   let(:processed_source) { parse_source(source) }
+  let(:offenses) { _investigate(cop, processed_source) }
+  let(:messages) { offenses.sort.map(&:message) }
 
   before do
-    allow(processed_source.buffer)
-      .to receive(:name).and_return(filename)
-    _investigate(cop, processed_source)
+    allow(processed_source.buffer).to receive(:name).and_return(filename)
   end
 
   context 'with camelCase file names ending in .rb' do
     let(:filename) { '/some/dir/testCase.rb' }
 
     it 'reports an offense' do
-      expect(cop.offenses.size).to eq(1)
+      expect(offenses.size).to eq(1)
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/testCase' }
 
     it 'reports an offense' do
-      expect(cop.offenses.size).to eq(1)
+      expect(offenses.size).to eq(1)
     end
   end
 
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/test_case.rb' }
 
     it 'reports an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/test_case' }
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '/some/dir/some_task.rake' }
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { 'some/dir/some_view.html.slim_spec.rb' }
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { 'some/dir/file?!.rb' }
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { 'some/dir/some_file.xlsx+mobile.axlsx' }
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -100,14 +100,14 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
 
     context 'when IgnoreExecutableScripts is disabled' do
       let(:cop_config) { { 'IgnoreExecutableScripts' => false } }
 
       it 'reports an offense' do
-        expect(cop.offenses.size).to eq(1)
+        expect(offenses.size).to eq(1)
       end
     end
   end
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/some/dir/Gemfile' }
 
       it 'does not report an offense' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(offenses.empty?).to be(true)
       end
     end
   end
@@ -139,9 +139,9 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
           let(:filename) { "/some/dir/#{dir}/file/test_case.rb" }
 
           it 'registers an offense' do
-            expect(cop.offenses.size).to eq(1)
-            expect(cop.messages).to eq(['test_case.rb should define a class ' \
-                                        'or module called `File::TestCase`.'])
+            expect(offenses.size).to eq(1)
+            expect(messages).to eq(['test_case.rb should define a class ' \
+                                    'or module called `File::TestCase`.'])
           end
         end
       end
@@ -150,9 +150,9 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
         let(:filename) { '/some/other/dir/test_case.rb' }
 
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages).to eq(['test_case.rb should define a class ' \
-                                      'or module called `TestCase`.'])
+          expect(offenses.size).to eq(1)
+          expect(messages).to eq(['test_case.rb should define a class ' \
+                                  'or module called `TestCase`.'])
         end
       end
     end
@@ -162,9 +162,8 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/lib/rubocop/blah.rb' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['blah.rb should define a class ' \
-                                    'or module called `Rubocop::Blah`.'])
+        expect(offenses.size).to eq(1)
+        expect(messages).to eq(['blah.rb should define a class or module called `Rubocop::Blah`.'])
       end
     end
 
@@ -173,10 +172,9 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { 'a file.rb' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(['The name of this source file (`a file.rb`) ' \
-                  'should use snake_case.'])
+        expect(offenses.size).to eq(1)
+        expect(messages).to eq(['The name of this source file (`a file.rb`) ' \
+                                'should use snake_case.'])
       end
     end
 
@@ -186,7 +184,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
           let(:filename) { "/some/dir/#{dir}/a/b.rb" }
 
           it 'does not register an offense' do
-            expect(cop.offenses.empty?).to be(true)
+            expect(offenses.empty?).to be(true)
           end
         end
 
@@ -194,9 +192,8 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
           let(:filename) { "/some/dir/#{dir}/c/b.rb" }
 
           it 'registers an offense' do
-            expect(cop.offenses.size).to eq(1)
-            expect(cop.messages).to eq(['b.rb should define a class ' \
-                                        'or module called `C::B`.'])
+            expect(offenses.size).to eq(1)
+            expect(messages).to eq(['b.rb should define a class or module called `C::B`.'])
           end
         end
 
@@ -204,7 +201,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
           let(:filename) { "/some/dir/#{dir}/project/#{dir}/a/b.rb" }
 
           it 'does not register an offense' do
-            expect(cop.offenses.empty?).to be(true)
+            expect(offenses.empty?).to be(true)
           end
         end
       end
@@ -213,7 +210,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
         let(:filename) { '/some/dir/b.rb' }
 
         it 'does not register an offense' do
-          expect(cop.offenses.empty?).to be(true)
+          expect(offenses.empty?).to be(true)
         end
       end
 
@@ -221,9 +218,8 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
         let(:filename) { '/some/dir/e.rb' }
 
         it 'registers an offense' do
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages).to eq(['e.rb should define a class ' \
-                                      'or module called `E`.'])
+          expect(offenses.size).to eq(1)
+          expect(messages).to eq(['e.rb should define a class or module called `E`.'])
         end
       end
     end
@@ -296,7 +292,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/lib/image_collection.rb' }
 
       it 'does not register an offense' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(offenses.empty?).to be(true)
       end
     end
 
@@ -310,10 +306,9 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/lib/image_collection.rb' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['image_collection.rb should define a ' \
-                                    'class or module called ' \
-                                    '`ImageCollection`.'])
+        expect(offenses.size).to eq(1)
+        expect(messages).to eq(['image_collection.rb should define a ' \
+                                'class or module called `ImageCollection`.'])
       end
     end
 
@@ -322,9 +317,8 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/lib/rubocop/foo.rb' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['foo.rb should define a class ' \
-                                    'or module called `Foo`.'])
+        expect(offenses.size).to eq(1)
+        expect(messages).to eq(['foo.rb should define a class or module called `Foo`.'])
       end
     end
 
@@ -338,7 +332,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { '/lib/some/path/foo.rb' }
 
       it 'does not register an offense' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(offenses.empty?).to be(true)
       end
     end
 
@@ -354,7 +348,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { 'lib/foo.rb' }
 
       it 'does not register an offense' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(offenses.empty?).to be(true)
       end
     end
 
@@ -370,7 +364,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { 'lib/foo.rb' }
 
       it 'does not register an offense' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(offenses.empty?).to be(true)
       end
     end
   end
@@ -382,7 +376,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { 'a.rb' }
 
       it 'does not register an offense' do
-        expect(cop.offenses.empty?).to be(true)
+        expect(offenses.empty?).to be(true)
       end
     end
 
@@ -390,10 +384,8 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       let(:filename) { 'z.rb' }
 
       it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(
-          ['`z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.']
-        )
+        expect(offenses.size).to eq(1)
+        expect(messages).to eq(['`z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.'])
       end
     end
   end
@@ -419,7 +411,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -442,7 +434,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -465,7 +457,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     RUBY
 
     it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 
@@ -473,7 +465,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
     let(:filename) { '.pryrc' }
 
     it 'does not report an offense' do
-      expect(cop.offenses.empty?).to be(true)
+      expect(offenses.empty?).to be(true)
     end
   end
 end

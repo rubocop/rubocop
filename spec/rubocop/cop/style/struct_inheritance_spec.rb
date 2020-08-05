@@ -60,6 +60,22 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance do
     RUBY
   end
 
+  it 'registers an offense when extending instance of `Struct` when there is a comment ' \
+     'before class declaration' do
+    expect_offense(<<~RUBY)
+      # comment
+      class Person < Struct.new(:first_name, :last_name) do end
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      Person = Struct.new(:first_name, :last_name) do
+      end
+    RUBY
+  end
+
   it 'accepts plain class' do
     expect_no_offenses(<<~RUBY)
       class Person

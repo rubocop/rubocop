@@ -6,7 +6,13 @@ module RuboCop
     module CodeLength
       include ConfigurableMax
 
+      MSG = '%<label>s has too many lines. [%<length>d/%<max>d]'
+
       private
+
+      def message(length, max_length)
+        format(MSG, label: cop_label, length: length, max: max_length)
+      end
 
       def max_length
         cop_config['Max']
@@ -21,14 +27,16 @@ module RuboCop
       end
 
       def check_code_length(node)
-        length = code_length(node)
+        # Skip costly calculation when definitely not needed
+        return if node.line_count <= max_length
 
-        return unless length > max_length
+        calculator = build_code_length_calculator(node)
+        length = calculator.calculate
+        return if length <= max_length
 
-        location = node.casgn_type? ? :name : :expression
+        location = node.casgn_type? ? node.loc.name : node.loc.expression
 
-        add_offense(node, location: location,
-                          message: message(length, max_length)) do
+        add_offense(location, message: message(length, max_length)) do
           self.max = length
         end
       end
@@ -36,6 +44,15 @@ module RuboCop
       # Returns true for lines that shall not be included in the count.
       def irrelevant_line(source_line)
         source_line.blank? || !count_comments? && comment_line?(source_line)
+      end
+
+      def build_code_length_calculator(node)
+        Metrics::Utils::CodeLengthCalculator.new(
+          node,
+          processed_source,
+          count_comments: count_comments?,
+          foldable_types: count_as_one
+        )
       end
     end
   end

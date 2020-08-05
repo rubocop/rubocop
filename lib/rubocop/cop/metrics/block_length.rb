@@ -29,8 +29,8 @@ module RuboCop
       #       content.
       #     HEREDOC
       #   end                 # 5 points
-      class BlockLength < Cop
-        include TooManyLines
+      class BlockLength < Base
+        include CodeLength
 
         LABEL = 'Block'
 

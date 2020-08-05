@@ -13,6 +13,7 @@ module RuboCop
           attr_accessor :command_name
 
           def inherited(subclass)
+            super
             @subclasses << subclass
           end
 

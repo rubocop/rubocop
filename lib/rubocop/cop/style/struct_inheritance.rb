@@ -33,7 +33,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.remove(range_with_surrounding_space(range: node.loc.keyword))
+            corrector.remove(range_with_surrounding_space(range: node.loc.keyword, newlines: false))
             corrector.replace(node.loc.operator, '=')
 
             correct_parent(node.parent_class, corrector)

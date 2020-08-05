@@ -13,6 +13,14 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          [1, 2, 3].each do |n|
+            puts n
+          end
+        end
+      RUBY
     end
 
     it 'registers an offense for opposite + correct style' do
@@ -27,27 +35,20 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          [1, 2, 3].each do |n|
+            puts n
+          end
+          [1, 2, 3].each do |n|
+            puts n
+          end
+        end
+      RUBY
     end
 
     context 'auto-correct' do
-      it 'changes for to each' do
-        new_source = autocorrect_source(<<~RUBY)
-          def func
-            for n in [1, 2, 3] do
-              puts n
-            end
-          end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
-          def func
-            [1, 2, 3].each do |n|
-              puts n
-            end
-          end
-        RUBY
-      end
-
       context 'with range' do
         let(:expected_each_with_range) do
           <<~RUBY
@@ -60,66 +61,71 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
         end
 
         it 'changes for to each' do
-          new_source = autocorrect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             def func
               for n in (1...value) do
+              ^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
                 puts n
               end
             end
           RUBY
 
-          expect(new_source).to eq(expected_each_with_range)
+          expect_correction(expected_each_with_range)
         end
 
         it 'changes for that does not have do or semicolon to each' do
-          new_source = autocorrect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             def func
               for n in (1...value)
+              ^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
                 puts n
               end
             end
           RUBY
 
-          expect(new_source).to eq(expected_each_with_range)
+          expect_correction(expected_each_with_range)
         end
 
         context 'without parentheses' do
           it 'changes for to each' do
-            new_source = autocorrect_source(<<~RUBY)
+            expect_offense(<<~RUBY)
               def func
                 for n in 1...value do
+                ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
                   puts n
                 end
               end
             RUBY
 
-            expect(new_source).to eq(expected_each_with_range)
+            expect_correction(expected_each_with_range)
           end
 
           it 'changes for that does not have do or semicolon to each' do
-            new_source = autocorrect_source(<<~RUBY)
+            expect_offense(<<~RUBY)
               def func
                 for n in 1...value
+                ^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
                   puts n
                 end
               end
             RUBY
 
-            expect(new_source).to eq(expected_each_with_range)
+            expect_correction(expected_each_with_range)
           end
         end
       end
 
       it 'corrects a tuple of items' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           def func
             for (a, b) in {a: 1, b: 2, c: 3} do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
               puts a, b
             end
           end
         RUBY
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           def func
             {a: 1, b: 2, c: 3}.each do |(a, b)|
               puts a, b
@@ -129,15 +135,16 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       end
 
       it 'changes for that does not have do or semicolon to each' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           def func
             for n in [1, 2, 3]
+            ^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
               puts n
             end
           end
         RUBY
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           def func
             [1, 2, 3].each do |n|
               puts n
@@ -188,13 +195,29 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          for n in [1, 2, 3] do
+            puts n
+          end
+        end
+      RUBY
     end
 
-    it 'registers an offense for each without an item' do
+    it 'registers an offense for each without an item and uses _ as the item' do
       expect_offense(<<~RUBY)
         def func
           [1, 2, 3].each do
           ^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+            something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          for _ in [1, 2, 3] do
             something
           end
         end
@@ -213,62 +236,36 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          for n in [1, 2, 3] do
+            puts n
+          end
+          for n in [1, 2, 3] do
+            puts n
+          end
+        end
+      RUBY
     end
 
-    context 'auto-correct' do
-      it 'changes each to for' do
-        new_source = autocorrect_source(<<~RUBY)
-          def func
-            [1, 2, 3].each do |n|
-              puts n
-            end
+    it 'registers an offense for a tuple of items' do
+      expect_offense(<<~RUBY)
+        def func
+          {a: 1, b: 2, c: 3}.each do |(a, b)|
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+            puts a, b
           end
-        RUBY
+        end
+      RUBY
 
-        expect(new_source).to eq(<<~RUBY)
-          def func
-            for n in [1, 2, 3] do
-              puts n
-            end
+      expect_correction(<<~RUBY)
+        def func
+          for (a, b) in {a: 1, b: 2, c: 3} do
+            puts a, b
           end
-        RUBY
-      end
-
-      it 'corrects each to for and uses _ as the item' do
-        new_source = autocorrect_source(<<~RUBY)
-          def func
-            [1, 2, 3].each do
-              something
-            end
-          end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
-          def func
-            for _ in [1, 2, 3] do
-              something
-            end
-          end
-        RUBY
-      end
-
-      it 'corrects a tuple of items' do
-        new_source = autocorrect_source(<<~RUBY)
-          def func
-            {a: 1, b: 2, c: 3}.each do |(a, b)|
-              puts a, b
-            end
-          end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
-          def func
-            for (a, b) in {a: 1, b: 2, c: 3} do
-              puts a, b
-            end
-          end
-        RUBY
-      end
+        end
+      RUBY
     end
 
     it 'accepts single line each' do

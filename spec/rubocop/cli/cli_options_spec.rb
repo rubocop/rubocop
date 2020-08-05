@@ -144,7 +144,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'exits cleanly' do
       expect(cli.run(['-v'])).to eq(0)
       expect(cli.run(['--version'])).to eq(0)
-      expect($stdout.string).to eq((RuboCop::Version::STRING + "\n") * 2)
+      expect($stdout.string).to eq("#{RuboCop::Version::STRING}\n" * 2)
     end
   end
 
@@ -537,7 +537,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'when a namespace is given' do
       it 'runs all enabled cops in that namespace' do
         create_file('example.rb', ['if x== 100000000000000 ',
-                                   '  ' + '#' * 130,
+                                   "  #{'#' * 130}",
                                    "\ty",
                                    'end'])
         expect(cli.run(%w[-f offenses --only Layout example.rb])).to eq(1)
@@ -559,7 +559,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'when three namespaces are given' do
       it 'runs all enabled cops in those namespaces' do
         create_file('example.rb', ['if x== 100000000000000 ',
-                                   '  # ' + '-' * 130,
+                                   "  # #{'-' * 130}",
                                    "\ty",
                                    'end'])
         create_file('.rubocop.yml', <<~YAML)

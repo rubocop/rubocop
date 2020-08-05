@@ -20,7 +20,9 @@ module RuboCop
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
-      class DeprecatedClassMethods < Cop
+      class DeprecatedClassMethods < Base
+        extend AutoCorrector
+
         # Inner class to DeprecatedClassMethods.
         # This class exists to add abstraction and clean naming to the
         # objects that are going to be operated on.
@@ -60,20 +62,17 @@ module RuboCop
                                     replacement: :block_given?)
         ].freeze
 
+        DEPRECATED_METHODS = DEPRECATED_METHODS_OBJECT.map(&:deprecated_method).freeze
+
         def on_send(node)
+          return unless DEPRECATED_METHODS.include?(node.method_name)
+
           check(node) do |data|
             message = format(MSG, current: deprecated_method(data),
                                   prefer: replacement_method(data))
 
-            add_offense(node, location: :selector, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            check(node) do |data|
-              corrector.replace(node.loc.selector,
-                                data.replacement_method.to_s)
+            add_offense(node.loc.selector, message: message) do |corrector|
+              corrector.replace(node.loc.selector, data.replacement_method.to_s)
             end
           end
         end

@@ -5,6 +5,7 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
+      include TokensUtil
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
@@ -125,19 +126,6 @@ module RuboCop
         enforced_style
           .sub(/^Enforced/, 'Supported')
           .sub('Style', 'Styles')
-      end
-
-      def tokens(node)
-        @tokens ||= {}
-        return @tokens[node.object_id] if @tokens[node.object_id]
-
-        source_range = node.source_range
-        begin_pos = source_range.begin_pos
-        end_pos = source_range.end_pos
-
-        @tokens[node.object_id] = processed_source.tokens.select do |token|
-          token.end_pos <= end_pos && token.begin_pos >= begin_pos
-        end
       end
 
       private

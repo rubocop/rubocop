@@ -73,13 +73,13 @@ module RuboCop
         end
 
         def corrected(node)
-          if node.arguments?
-            arguments   = node.arguments.source
-            extra_space = ' ' unless parentheses?(node.arguments)
-          end
           scope = node.receiver ? "#{node.receiver.source}." : ''
+          arguments = if node.arguments?
+                        args = node.arguments.map(&:source).join(', ')
 
-          signature = [scope, node.method_name, extra_space, arguments].join
+                        parentheses?(node.arguments) ? "(#{args})" : " #{args}"
+                      end
+          signature = [scope, node.method_name, arguments].join
 
           ["def #{signature}", 'end'].join(joint(node))
         end

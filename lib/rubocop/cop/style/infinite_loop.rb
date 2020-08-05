@@ -99,7 +99,7 @@ module RuboCop
         def modifier_replacement(node)
           body = node.body
           if node.single_line?
-            'loop { ' + body.source + ' }'
+            "loop { #{body.source} }"
           else
             indentation = body.source_range.source_line[LEADING_SPACE]
 

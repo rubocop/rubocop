@@ -112,17 +112,17 @@ module RuboCop
         # proceeds to check its ancestors for :nodoc: all.
         # Note: How end-of-line comments are associated with code changed in
         # parser-2.2.0.4.
-        def nodoc_comment?(node, require_all = false)
+        def nodoc_comment?(node, require_all: false)
           return false unless node&.children&.first
 
           nodoc = nodoc(node)
 
-          return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all)
+          return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all: require_all)
 
-          nodoc_comment?(node.parent, true)
+          nodoc_comment?(node.parent, require_all: true)
         end
 
-        def nodoc?(comment, require_all = false)
+        def nodoc?(comment, require_all: false)
           /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/.match?(comment.text)
         end
 

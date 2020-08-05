@@ -174,6 +174,28 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: hash_rockets` of `Style/HashSyntax` with `Layout/HashAlignment`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/HashSyntax:
+        EnforcedStyle: hash_rockets
+    YAML
+    source = <<~RUBY
+      some_method(a: 'abc', b: 'abc',
+              c: 'abc', d: 'abc'
+              )
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only', 'Style/HashSyntax,Style/HashAlignment'
+                   ])).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      some_method(:a => 'abc', :b => 'abc',
+                  :c => 'abc', :d => 'abc'
+              )
+    RUBY
+  end
+
   describe 'trailing comma cops' do
     let(:source) do
       <<~RUBY

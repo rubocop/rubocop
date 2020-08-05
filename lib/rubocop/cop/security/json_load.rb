@@ -22,7 +22,9 @@ module RuboCop
       #   # good
       #   JSON.parse("{}")
       #
-      class JSONLoad < Cop
+      class JSONLoad < Base
+        extend AutoCorrector
+
         MSG = 'Prefer `JSON.parse` over `JSON.%<method>s`.'
 
         def_node_matcher :json_load, <<~PATTERN
@@ -31,14 +33,10 @@ module RuboCop
 
         def on_send(node)
           json_load(node) do |method|
-            add_offense(node,
-                        location: :selector,
-                        message: format(MSG, method: method))
+            add_offense(node.loc.selector, message: format(MSG, method: method)) do |corrector|
+              corrector.replace(node.loc.selector, 'parse')
+            end
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'parse') }
         end
       end
     end

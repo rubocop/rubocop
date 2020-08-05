@@ -213,7 +213,7 @@ module RuboCop
                 start_loc.column == source_line_column[:column]
             ''
           else
-            ' or ' + format_source_line_column(source_line_column)
+            " or #{format_source_line_column(source_line_column)}"
           end
         end
 

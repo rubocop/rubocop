@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module RuboCop
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
@@ -114,10 +112,12 @@ module RuboCop
     end
 
     def ruby_extensions
-      ext_patterns = all_cops_include.select do |pattern|
-        pattern.start_with?('**/*.')
+      @ruby_extensions ||= begin
+        ext_patterns = all_cops_include.select do |pattern|
+          pattern.start_with?('**/*.')
+        end
+        ext_patterns.map { |pattern| pattern.sub('**/*', '') }
       end
-      ext_patterns.map { |pattern| pattern.sub('**/*', '') }
     end
 
     def ruby_filename?(file)
@@ -125,14 +125,17 @@ module RuboCop
     end
 
     def ruby_filenames
-      file_patterns = all_cops_include.reject do |pattern|
-        pattern.start_with?('**/*.')
+      @ruby_filenames ||= begin
+        file_patterns = all_cops_include.reject do |pattern|
+          pattern.start_with?('**/*.')
+        end
+        file_patterns.map { |pattern| pattern.sub('**/', '') }
       end
-      file_patterns.map { |pattern| pattern.sub('**/', '') }
     end
 
     def all_cops_include
-      @config_store.for_pwd.for_all_cops['Include'].map(&:to_s)
+      @all_cops_include ||=
+        @config_store.for_pwd.for_all_cops['Include'].map(&:to_s)
     end
 
     def ruby_executable?(file)

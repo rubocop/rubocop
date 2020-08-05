@@ -161,11 +161,11 @@ module RuboCop
         end
 
         def heredoc_body(node)
-          node.loc.heredoc_body.source.scrub
+          node.loc.heredoc_body.source
         end
 
         def heredoc_end(node)
-          node.loc.heredoc_end.source.scrub
+          node.loc.heredoc_end.source
         end
       end
     end

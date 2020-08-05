@@ -77,13 +77,13 @@ module RuboCop
           if node_buf.source[node.loc.begin.end_pos] == "\n"
             'begin'
           else
-            "begin\n" + (' ' * (node.loc.column + indent))
+            "begin\n#{' ' * (node.loc.column + indent)}"
           end
         end
 
         def keyword_end_str(node, node_buf)
           if /[^\s)]/.match?(node_buf.source_line(node.loc.end.line))
-            "\n" + (' ' * node.loc.column) + 'end'
+            "\n#{' ' * node.loc.column}end"
           else
             'end'
           end

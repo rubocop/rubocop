@@ -17,17 +17,23 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
 
   cop_config['PreferredMethods'].each do |method, preferred_method|
     it "registers an offense for #{method} with block" do
-      inspect_source("[1, 2, 3].#{method} { |e| e + 1 }")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method} { |e| e + 1 }
+                  ^{method} Prefer `#{preferred_method}` over `#{method}`.
+      RUBY
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{preferred_method} { |e| e + 1 }
+      RUBY
     end
 
     it "registers an offense for #{method} with proc param" do
-      inspect_source("[1, 2, 3].#{method}(&:test)")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method}(&:test)
+                  ^{method} Prefer `#{preferred_method}` over `#{method}`.
+      RUBY
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{preferred_method}(&:test)
+      RUBY
     end
 
     it "accepts #{method} with more than 1 param" do
@@ -40,11 +46,6 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
       expect_no_offenses(<<~RUBY)
         [1, 2, 3].#{method}
       RUBY
-    end
-
-    it 'auto-corrects to preferred method' do
-      new_source = autocorrect_source('some.collect(&:test)')
-      expect(new_source).to eq('some.map(&:test)')
     end
   end
 end

@@ -29,8 +29,8 @@ module RuboCop
       #     HEREDOC
       #   end                 # 5 points
       #
-      class ModuleLength < Cop
-        include TooManyLines
+      class ModuleLength < Base
+        include CodeLength
 
         def on_module(node)
           check_code_length(node)

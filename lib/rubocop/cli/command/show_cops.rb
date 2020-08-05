@@ -68,7 +68,7 @@ module RuboCop
 
         def config_lines(cop)
           cnf = @config.for_cop(cop)
-          cnf.to_yaml.lines.to_a.drop(1).map { |line| '  ' + line }
+          cnf.to_yaml.lines.to_a.drop(1).map { |line| "  #{line}" }
         end
       end
     end

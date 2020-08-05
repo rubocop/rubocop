@@ -211,111 +211,92 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     context 'with a procedural multi-line block' do
-      let(:corrected_source) do
-        <<~RUBY
+      it 'auto-corrects { and } to do and end' do
+        expect_offense(<<~RUBY)
+          each { |x|
+               ^ Prefer `do...end` over `{...}` for procedural blocks.
+            x
+          }
+        RUBY
+        expect_correction(<<~RUBY)
           each do |x|
             x
           end
         RUBY
       end
 
-      it 'auto-corrects { and } to do and end' do
-        source = <<~RUBY
-          each { |x|
-            x
-          }
-        RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(corrected_source)
-      end
-
       it 'auto-corrects { and } to do and end with appropriate spacing' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           each {|x|
+               ^ Prefer `do...end` over `{...}` for procedural blocks.
             x
           }
         RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(corrected_source)
+        expect_correction(<<~RUBY)
+          each do |x|
+            x
+          end
+        RUBY
       end
     end
 
-    it 'does not auto-correct {} to do-end if it is a known functional ' \
-       'method' do
-      source = <<~RUBY
+    it 'allows {} if it is a known functional method' do
+      expect_no_offenses(<<~RUBY)
         let(:foo) { |x|
           x
         }
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(source)
     end
 
-    it 'does not autocorrect do-end to {} if it is a known procedural ' \
-       'method' do
-      source = <<~RUBY
+    it 'allows {} if it is a known procedural method' do
+      expect_no_offenses(<<~RUBY)
         foo = bar.tap do |x|
           x.age = 1
         end
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(source)
     end
 
     it 'auto-corrects do-end to {} if it is a functional block' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         foo = map do |x|
+                  ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end
       RUBY
-
-      expected_source = <<~RUBY
+      expect_correction(<<~RUBY)
         foo = map { |x|
           x
         }
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(expected_source)
     end
 
     it 'auto-corrects do-end to {} with appropriate spacing' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         foo = map do|x|
+                  ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end
       RUBY
-
-      expected_source = <<~RUBY
+      expect_correction(<<~RUBY)
         foo = map { |x|
           x
         }
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(expected_source)
     end
 
     it 'auto-corrects do-end to {} if it is a functional block and does ' \
        'not change the meaning' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         puts (map do |x|
+                  ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end)
       RUBY
-
-      expected_source = <<~RUBY
+      expect_correction(<<~RUBY)
         puts (map { |x|
           x
         })
       RUBY
-
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(expected_source)
     end
   end
 
@@ -330,24 +311,29 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     include_examples 'syntactic styles'
 
     it 'auto-corrects do and end for single line blocks to { and }' do
-      new_source = autocorrect_source('block do |x| end')
-      expect(new_source).to eq('block { |x| }')
+      expect_offense(<<~RUBY)
+        block do |x| end
+              ^^ Prefer `{...}` over `do...end` for single-line blocks.
+      RUBY
+      expect_correction(<<~RUBY)
+        block { |x| }
+      RUBY
     end
 
     it 'does not auto-correct do-end if {} would change the meaning' do
-      src = "s.subspec 'Subspec' do |sp| end"
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(src)
+      expect_offense(<<~RUBY)
+        s.subspec 'Subspec' do |sp| end
+                            ^^ Prefer `{...}` over `do...end` for single-line blocks.
+      RUBY
+      expect_no_corrections
     end
 
     it 'does not auto-correct {} if do-end would change the meaning' do
-      src = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         foo :bar, :baz, qux: lambda { |a|
           bar a
         }
       RUBY
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(src)
     end
 
     context 'when there are braces around a multi-line block' do
@@ -426,33 +412,30 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
 
       it 'auto-corrects { and } to do and end' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           each{ |x|
+              ^ Avoid using `{...}` for multi-line blocks.
             some_method
             other_method
           }
         RUBY
-
-        expected_source = <<~RUBY
+        expect_correction(<<~RUBY)
           each do |x|
             some_method
             other_method
           end
         RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(expected_source)
       end
 
       it 'auto-corrects adjacent curly braces correctly' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           (0..3).each { |a| a.times {
+                                    ^ Avoid using `{...}` for multi-line blocks.
+                      ^ Avoid using `{...}` for multi-line blocks.
             puts a
           }}
         RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           (0..3).each do |a| a.times do
             puts a
           end end
@@ -460,13 +443,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
 
       it 'does not auto-correct {} if do-end would introduce a syntax error' do
-        src = <<~RUBY
+        expect_no_offenses(<<~RUBY)
           my_method :arg1, arg2: proc {
             something
           }, arg3: :another_value
         RUBY
-        new_source = autocorrect_source(src)
-        expect(new_source).to eq(src)
       end
     end
   end
@@ -622,9 +603,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     it 'does not auto-correct do-end if {} would change the meaning' do
-      src = "s.subspec 'Subspec' do |sp| end"
-      new_source = autocorrect_source(src)
-      expect(new_source).to eq(src)
+      expect_offense(<<~RUBY)
+        s.subspec 'Subspec' do |sp| end
+                            ^^ Prefer `{...}` over `do...end` for blocks.
+      RUBY
+      expect_no_corrections
     end
 
     it 'accepts a multi-line block that needs braces to be valid ruby' do
@@ -753,22 +736,20 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
 
       it 'auto-corrects { and } to do and end' do
-        source = <<~RUBY
+        expect_offense(<<~RUBY)
           each{ |x|
+              ^ Avoid using `{...}` for multi-line blocks.
             some_method
             other_method
           }
         RUBY
 
-        expected_source = <<~RUBY
+        expect_correction(<<~RUBY)
           each do |x|
             some_method
             other_method
           end
         RUBY
-
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(expected_source)
       end
     end
   end

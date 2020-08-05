@@ -20,7 +20,7 @@ module RuboCop
       #   # good
       #
       #   0 # just use 0 instead
-      class RandOne < Cop
+      class RandOne < Base
         MSG = '`%<method>s` always returns `0`. ' \
               'Perhaps you meant `rand(2)` or `rand`?'
 
@@ -29,7 +29,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless rand_one?(node)
+          return unless node.method?(:rand) && rand_one?(node)
 
           add_offense(node)
         end

@@ -92,18 +92,18 @@ module RuboCop
 
         def each_escape(node)
           pattern_source(node).each_char.with_index.reduce(
-            [nil, false]
-          ) do |(previous, within_character_class), (current, index)|
+            [nil, 0]
+          ) do |(previous, char_class_depth), (current, index)|
             if previous == '\\'
-              yield [current, index - 1, within_character_class]
+              yield [current, index - 1, !char_class_depth.zero?]
 
-              [nil, within_character_class]
-            elsif previous == '[' && current != ':'
-              [current, true]
-            elsif previous != ':' && current == ']'
-              [current, false]
+              [nil, char_class_depth]
+            elsif previous == '['
+              [current, char_class_depth + 1]
+            elsif current == ']'
+              [current, char_class_depth - 1]
             else
-              [current, within_character_class]
+              [current, char_class_depth]
             end
           end
         end

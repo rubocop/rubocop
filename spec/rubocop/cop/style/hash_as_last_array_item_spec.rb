@@ -39,12 +39,12 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
 
     it 'registers an offense and corrects when hash with braces' do
       expect_offense(<<~RUBY)
-        [1, 2, { one: 1, two: 2 }]
-               ^^^^^^^^^^^^^^^^^^ Omit the braces around the hash.
+        [{ one: 1 }, 2, { three: 3 }]
+                        ^^^^^^^^^^^^ Omit the braces around the hash.
       RUBY
 
       expect_correction(<<~RUBY)
-        [1, 2,  one: 1, two: 2 ]
+        [{ one: 1 }, 2,  three: 3 ]
       RUBY
     end
 

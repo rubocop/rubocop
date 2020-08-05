@@ -5852,7 +5852,7 @@ foo = {     }
 
 === References
 
-* https://rubystyle.guide#spaces-operators
+* https://rubystyle.guide#spaces-braces
 
 == Layout/SpaceInsideParens
 

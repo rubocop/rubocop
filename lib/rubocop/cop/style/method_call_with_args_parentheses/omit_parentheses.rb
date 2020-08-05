@@ -60,6 +60,7 @@ module RuboCop
               call_with_ambiguous_arguments?(node) ||
               call_in_logical_operators?(node) ||
               call_in_optional_arguments?(node) ||
+              call_in_single_line_inheritance?(node) ||
               allowed_multiline_call_with_parentheses?(node) ||
               allowed_chained_call_with_parentheses?(node)
           end
@@ -84,6 +85,10 @@ module RuboCop
           def call_in_optional_arguments?(node)
             node.parent &&
               (node.parent.optarg_type? || node.parent.kwoptarg_type?)
+          end
+
+          def call_in_single_line_inheritance?(node)
+            node.parent&.class_type? && node.parent&.single_line?
           end
 
           def call_with_ambiguous_arguments?(node)

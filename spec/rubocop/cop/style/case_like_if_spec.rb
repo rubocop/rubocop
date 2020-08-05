@@ -86,6 +86,15 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
     RUBY
   end
 
+  it 'does not register an offense when using `equal?` without a receiver' do
+    expect_no_offenses(<<~RUBY)
+      if equal?(Foo)
+      elsif Bar == x
+      else
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `is_a?`' do
     expect_offense(<<~RUBY)
       if x.is_a?(Foo)
@@ -126,6 +135,15 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
     expect_no_offenses(<<~RUBY)
       if y.match?(x)
       elsif x.match?('str')
+      else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `match?` without a receiver' do
+    expect_no_offenses(<<~RUBY)
+      if match?(/foo/)
+      elsif x.match?(/bar/)
       else
       end
     RUBY

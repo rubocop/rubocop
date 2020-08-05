@@ -201,7 +201,7 @@ module RuboCop
         next unless dept_params['Enabled']
 
         new_default_configuration.each do |cop, params|
-          next unless cop.start_with?(dept + '/')
+          next unless cop.start_with?("#{dept}/")
 
           # Retain original default configuration for cops in the department.
           params['Enabled'] = ConfigLoader.default_configuration[cop]['Enabled']
@@ -213,8 +213,8 @@ module RuboCop
       end
     end
 
-    def transform(config)
-      config.transform_values { |params| yield(params) }
+    def transform(config, &block)
+      config.transform_values(&block)
     end
 
     def gem_config_path(gem_name, relative_config_path)

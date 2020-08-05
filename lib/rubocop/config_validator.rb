@@ -23,7 +23,6 @@ module RuboCop
       @target_ruby = TargetRuby.new(config)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def validate
       check_cop_config_value(@config)
       reject_conflicting_safe_settings
@@ -45,7 +44,6 @@ module RuboCop
       validate_syntax_cop
       reject_mutually_exclusive_defaults
     end
-    # rubocop:enable Metrics/AbcSize
 
     def target_ruby_version
       target_ruby.version
@@ -150,7 +148,7 @@ module RuboCop
       end
     end
 
-    def validate_enforced_styles(valid_cop_names)
+    def validate_enforced_styles(valid_cop_names) # rubocop:todo Metrics/AbcSize
       valid_cop_names.each do |name|
         styles = @config[name].select { |key, _| key.start_with?('Enforced') }
 

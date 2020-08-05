@@ -26,7 +26,7 @@ module RuboCop
       #   end
       #   class module_parent::MyModule
       #   end
-      class ClassAndModuleCamelCase < Cop
+      class ClassAndModuleCamelCase < Base
         MSG = 'Use CamelCase for classes and modules.'
 
         def on_class(node)
@@ -34,7 +34,7 @@ module RuboCop
           name = node.loc.name.source.gsub(allowed, '')
           return unless /_/.match?(name)
 
-          add_offense(node, location: :name)
+          add_offense(node.loc.name)
         end
         alias on_module on_class
       end

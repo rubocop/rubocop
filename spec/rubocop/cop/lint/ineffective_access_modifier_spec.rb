@@ -118,4 +118,18 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
       RUBY
     end
   end
+
+  context 'when there is `begin` before a method definition' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          begin
+          end
+
+          def do_something
+          end
+        end
+      RUBY
+    end
+  end
 end

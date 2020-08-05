@@ -25,9 +25,7 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       expect_correction(<<~RUBY)
         class Foo
           attr_reader :bar1, :bar2, :bar3, :bar4
-          
           attr_accessor :quux
-          
           other_macro :zoo
         end
       RUBY
@@ -61,7 +59,6 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       expect_correction(<<~RUBY)
         class Foo
           attr_reader :bar1, :bar2, :bar3
-          
 
           protected
           attr_accessor :quux
@@ -69,10 +66,8 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
           private
           attr_reader :baz1, :baz2, :baz4
           attr_writer :baz3
-          
 
           public
-          
           other_macro :zoo
         end
       RUBY
@@ -105,12 +100,10 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
 
           class << self
             attr_reader :baz1, :baz2, :baz3
-            
 
             private
 
             attr_reader :quux1, :quux2
-            
           end
         end
       RUBY
@@ -160,7 +153,6 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
           attr_reader :three
 
           attr_reader :four, :five
-          
         end
       RUBY
     end

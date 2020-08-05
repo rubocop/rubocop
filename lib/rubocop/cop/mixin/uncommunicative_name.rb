@@ -41,8 +41,7 @@ module RuboCop
       end
 
       def case_offense(node, range)
-        add_offense(node, location: range,
-                          message: format(CASE_MSG, name_type: name_type(node)))
+        add_offense(range, message: format(CASE_MSG, name_type: name_type(node)))
       end
 
       def uppercase?(name)
@@ -59,8 +58,7 @@ module RuboCop
       end
 
       def num_offense(node, range)
-        add_offense(node, location: range,
-                          message: format(NUM_MSG, name_type: name_type(node)))
+        add_offense(range, message: format(NUM_MSG, name_type: name_type(node)))
       end
 
       def ends_with_num?(name)
@@ -68,10 +66,9 @@ module RuboCop
       end
 
       def length_offense(node, range)
-        add_offense(node, location: range,
-                          message: format(LENGTH_MSG,
-                                          name_type: name_type(node).capitalize,
-                                          min: min_length))
+        message = format(LENGTH_MSG, name_type: name_type(node).capitalize, min: min_length)
+
+        add_offense(range, message: message)
       end
 
       def long_enough?(name)
@@ -86,11 +83,7 @@ module RuboCop
       end
 
       def forbidden_offense(node, range, name)
-        add_offense(
-          node,
-          location: range,
-          message: format(FORBIDDEN_MSG, name: name, name_type: name_type(node))
-        )
+        add_offense(range, message: format(FORBIDDEN_MSG, name: name, name_type: name_type(node)))
       end
 
       def allowed_names

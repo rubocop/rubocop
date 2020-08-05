@@ -112,6 +112,7 @@ module RuboCop
         def find_target_in_equality_node(node)
           argument = node.arguments.first
           receiver = node.receiver
+          return unless receiver
 
           if argument.literal? || const_reference?(argument)
             receiver
@@ -123,6 +124,7 @@ module RuboCop
         def find_target_in_match_node(node)
           argument = node.arguments.first
           receiver = node.receiver
+          return unless receiver
 
           if receiver.regexp_type?
             argument
@@ -149,7 +151,6 @@ module RuboCop
           conditions << condition if condition
         end
 
-        # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/CyclomaticComplexity
         def condition_from_send_node(node, target)
           case node.method_name
@@ -167,7 +168,6 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity
-        # rubocop:enable Metrics/AbcSize
 
         def condition_from_binary_op(lhs, rhs, target)
           lhs = deparenthesize(lhs)

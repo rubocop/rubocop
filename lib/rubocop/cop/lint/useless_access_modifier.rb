@@ -124,8 +124,9 @@ module RuboCop
       #
       #     delegate :method_a, to: :method_b
       #   end
-      class UselessAccessModifier < Cop
+      class UselessAccessModifier < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Useless `%<current>s` access modifier.'
 
@@ -147,17 +148,13 @@ module RuboCop
           check_node(node.children[1]) # singleton class body
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            range = range_by_whole_lines(
-              node.source_range, include_final_newline: true
-            )
-
-            corrector.remove(range)
-          end
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          range = range_by_whole_lines(node.source_range, include_final_newline: true)
+
+          corrector.remove(range)
+        end
 
         def_node_matcher :static_method_definition?, <<~PATTERN
           {def (send nil? {:attr :attr_reader :attr_writer :attr_accessor} ...)}
@@ -181,7 +178,9 @@ module RuboCop
           if node.begin_type?
             check_scope(node)
           elsif node.send_type? && node.bare_access_modifier?
-            add_offense(node, message: format(MSG, current: node.method_name))
+            add_offense(node, message: format(MSG, current: node.method_name)) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
@@ -192,8 +191,11 @@ module RuboCop
 
         def check_scope(node)
           cur_vis, unused = check_child_nodes(node, nil, :public)
+          return unless unused
 
-          add_offense(unused, message: format(MSG, current: cur_vis)) if unused
+          add_offense(unused, message: format(MSG, current: cur_vis)) do |corrector|
+            autocorrect(corrector, unused)
+          end
         end
 
         def check_child_nodes(node, unused, cur_vis)
@@ -216,7 +218,9 @@ module RuboCop
           if node.bare_access_modifier?
             check_new_visibility(node, unused, node.method_name, cur_vis)
           elsif node.method?(:private_class_method) && !node.arguments?
-            add_offense(node, message: format(MSG, current: node.method_name))
+            add_offense(node, message: format(MSG, current: node.method_name)) do |corrector|
+              autocorrect(corrector, node)
+            end
             [cur_vis, unused]
           end
         end
@@ -224,10 +228,16 @@ module RuboCop
         def check_new_visibility(node, unused, new_vis, cur_vis)
           # does this modifier just repeat the existing visibility?
           if new_vis == cur_vis
-            add_offense(node, message: format(MSG, current: cur_vis))
+            add_offense(node, message: format(MSG, current: cur_vis)) do |corrector|
+              autocorrect(corrector, node)
+            end
           else
             # was the previous modifier never applied to any defs?
-            add_offense(unused, message: format(MSG, current: cur_vis)) if unused
+            if unused
+              add_offense(unused, message: format(MSG, current: cur_vis)) do |corrector|
+                autocorrect(corrector, unused)
+              end
+            end
             # once we have already warned about a certain modifier, don't
             # warn again even if it is never applied to any method defs
             unused = node

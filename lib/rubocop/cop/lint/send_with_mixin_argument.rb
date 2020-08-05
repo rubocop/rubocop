@@ -34,8 +34,9 @@ module RuboCop
       #   Foo.prepend Bar
       #   Foo.extend Bar
       #
-      class SendWithMixinArgument < Cop
+      class SendWithMixinArgument < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<method>s %<module_name>s` instead of `%<bad_method>s`.'
         MIXIN_METHODS = %i[include prepend extend].freeze
@@ -53,16 +54,9 @@ module RuboCop
               method, module_name.source, bad_location(node).source
             )
 
-            add_offense(node, location: bad_location(node), message: message)
-          end
-        end
-
-        def autocorrect(node)
-          send_with_mixin_argument?(node) do |method, module_name|
-            lambda do |corrector|
-              corrector.replace(
-                bad_location(node), "#{method} #{module_name.source}"
-              )
+            bad_location = bad_location(node)
+            add_offense(bad_location, message: message) do |corrector|
+              corrector.replace(bad_location, "#{method} #{module_name.source}")
             end
           end
         end

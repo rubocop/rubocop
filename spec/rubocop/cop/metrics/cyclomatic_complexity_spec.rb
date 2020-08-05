@@ -212,9 +212,23 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for &.' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
-          foo = nil
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
           foo&.bar
+          foo&.bar
+        end
+      RUBY
+    end
+
+    it 'counts repeated &. on same untouched local variable as 1' do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+          var = 1
+          var&.foo
+          var&.dont_count_me
+          var = 2
+          var&.bar
+          var&.dont_count_me_eother
         end
       RUBY
     end

@@ -110,7 +110,7 @@ module RuboCop
 
       def end_content(source)
         result = /\A(\s*)\]/.match(source.split("\n").last)
-        ("\n" + result[1]) if result
+        "\n#{result[1]}" if result
       end
     end
   end

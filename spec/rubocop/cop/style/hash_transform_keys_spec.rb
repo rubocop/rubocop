@@ -8,6 +8,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
           x.each_with_object({}) {|(k, v), h| h[foo(k)] = v}
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `each_with_object`.
         RUBY
+
+        expect_correction(<<~RUBY)
+          x.transform_keys {|k| foo(k)}
+        RUBY
       end
     end
 
@@ -19,14 +23,24 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
             memo[key.to_sym] = val
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          some_hash.transform_keys do |key|
+            key.to_sym
+          end
+        RUBY
       end
     end
 
     context 'with safe navigation operator' do
-      it 'flags each_with_object when transform_keyscould be used' do
+      it 'flags each_with_object when transform_keys could be used' do
         expect_offense(<<~RUBY)
           x&.each_with_object({}) {|(k, v), h| h[foo(k)] = v}
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `each_with_object`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x&.transform_keys {|k| foo(k)}
         RUBY
       end
     end
@@ -62,6 +76,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
         x.map {|k, v| [k.to_sym, v]}.to_h
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `map {...}.to_h`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.transform_keys {|k| k.to_sym}
+      RUBY
     end
 
     it 'flags _.map{...}.to_h when transform_keys could be used ' \
@@ -86,6 +104,10 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
         Hash[x.map {|k, v| [k.to_sym, v]}]
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `Hash[_.map {...}]`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.transform_keys {|k| k.to_sym}
+      RUBY
     end
 
     it 'does not flag Hash[_.map{...}] when both key & value are transformed' do
@@ -102,28 +124,15 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
 
-    it 'correctly autocorrects each_with_object' do
-      corrected = autocorrect_source(<<~RUBY)
-        {a: 1, b: 2}.each_with_object({}) do |(k, v), h|
-          h[k.to_s] = v
-        end
-      RUBY
-
-      expect(corrected).to eq(<<~RUBY)
-        {a: 1, b: 2}.transform_keys do |k|
-          k.to_s
-        end
-      RUBY
-    end
-
     it 'correctly autocorrects _.map{...}.to_h without block' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         {a: 1, b: 2}.map do |k, v|
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `map {...}.to_h`.
           [k.to_s, v]
         end.to_h
       RUBY
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         {a: 1, b: 2}.transform_keys do |k|
           k.to_s
         end
@@ -131,23 +140,25 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
     end
 
     it 'correctly autocorrects _.map{...}.to_h with block' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         {a: 1, b: 2}.map {|k, v| [k.to_s, v]}.to_h {|k, v| [v, k]}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `map {...}.to_h`.
       RUBY
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         {a: 1, b: 2}.transform_keys {|k| k.to_s}.to_h {|k, v| [v, k]}
       RUBY
     end
 
     it 'correctly autocorrects Hash[_.map{...}]' do
-      corrected = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         Hash[{a: 1, b: 2}.map do |k, v|
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `Hash[_.map {...}]`.
           [k.to_s, v]
         end]
       RUBY
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         {a: 1, b: 2}.transform_keys do |k|
           k.to_s
         end

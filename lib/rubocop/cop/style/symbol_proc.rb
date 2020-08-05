@@ -84,7 +84,7 @@ module RuboCop
           arg_range = args.last.source_range
           arg_range = range_with_surrounding_comma(arg_range, :right)
           replacement = " &:#{method_name}"
-          replacement = ',' + replacement unless arg_range.source.end_with?(',')
+          replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
           corrector.insert_after(arg_range, replacement)
           corrector.remove(block_range_with_space(node))
         end

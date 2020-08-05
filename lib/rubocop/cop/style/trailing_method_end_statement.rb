@@ -45,7 +45,7 @@ module RuboCop
           add_offense(node.loc.end) do |corrector|
             corrector.insert_before(
               node.loc.end,
-              "\n" + ' ' * node.loc.keyword.column
+              "\n#{' ' * node.loc.keyword.column}"
             )
           end
         end

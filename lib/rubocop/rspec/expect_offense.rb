@@ -134,7 +134,7 @@ module RuboCop
         actual_annotations =
           expected_annotations.with_offense_annotations(offenses)
 
-        expect(actual_annotations).to eq(expected_annotations)
+        expect(actual_annotations).to eq(expected_annotations), ''
         expect(offenses.map(&:severity).uniq).to eq([severity]) if severity
       end
 

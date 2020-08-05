@@ -216,7 +216,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
              'y("123")',
              'def func',
              '  # rubocop: enable Layout/LineLength,Style/StringLiterals',
-             '  ' + '#' * 130,
+             "  #{'#' * 130}",
              '  x(123456)',
              '  y("123")',
              'end']
@@ -300,7 +300,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                    'def func',
                    '  # rubocop: enable Layout/LineLength, ' \
                    'Style/StringLiterals',
-                   '  ' + '#' * 130,
+                   "  #{'#' * 130}",
                    '  x(123456)',
                    '  y("123")',
                    '  # rubocop: enable Style/NumericLiterals',
@@ -329,7 +329,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb',
                   ['# frozen_string_literal: true',
                    '',
-                   'a' * 130 + ' # rubocop:disable Layout/LineLength',
+                   "#{'a' * 130} # rubocop:disable Layout/LineLength",
                    '#' * 130,
                    'y("123", 123456) # rubocop:disable Style/StringLiterals,' \
                    'Style/NumericLiterals'])
@@ -345,7 +345,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# frozen_string_literal: true',
                      '',
-                     'a' * 130 + ' # rubocop:disable LineLength',
+                     "#{'a' * 130} # rubocop:disable LineLength",
                      '#' * 130,
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
@@ -385,7 +385,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       context 'and there are no other offenses' do
         it 'exits with error code' do
-          create_file('example.rb', 'a' * 10 + ' # rubocop:disable LineLength')
+          create_file('example.rb', "#{'a' * 10} # rubocop:disable LineLength")
           expect(cli.run(['example.rb'])).to eq(1)
         end
       end
@@ -398,7 +398,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                          '',
                          '#' * 130,
                          '# rubocop:disable all',
-                         'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
+                         "#{'a' * 10} # rubocop:disable LineLength,ClassLength",
                          'y(123) # rubocop:disable all'])
             create_file('.rubocop.yml', config)
             expect(cli.run(['--format', 'emacs'])).to eq(1)
