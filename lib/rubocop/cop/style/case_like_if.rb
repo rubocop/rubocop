@@ -151,7 +151,6 @@ module RuboCop
           conditions << condition if condition
         end
 
-        # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/CyclomaticComplexity
         def condition_from_send_node(node, target)
           case node.method_name
@@ -169,7 +168,6 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity
-        # rubocop:enable Metrics/AbcSize
 
         def condition_from_binary_op(lhs, rhs, target)
           lhs = deparenthesize(lhs)

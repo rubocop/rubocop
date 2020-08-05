@@ -27,7 +27,9 @@ module RuboCop
       #       raise Exception # This exception means `Gem::Exception`.
       #     end
       #   end
-      class RaiseException < Cop
+      class RaiseException < Base
+        extend AutoCorrector
+
         MSG = 'Use `StandardError` over `Exception`.'
 
         def_node_matcher :exception?, <<~PATTERN
@@ -44,21 +46,21 @@ module RuboCop
             exception_new_with_message?(node, &check(node))
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            exception_class = node.children.first&.cbase_type? ? '::StandardError' : 'StandardError'
-
-            corrector.replace(node, exception_class)
-          end
-        end
-
         private
 
         def check(node)
           lambda do |exception_class, cbase|
             return if cbase.nil? && implicit_namespace?(node)
 
-            add_offense(exception_class)
+            add_offense(exception_class) do |corrector|
+              prefer_exception = if exception_class.children.first&.cbase_type?
+                                   '::StandardError'
+                                 else
+                                   'StandardError'
+                                 end
+
+              corrector.replace(exception_class, prefer_exception)
+            end
           end
         end
 

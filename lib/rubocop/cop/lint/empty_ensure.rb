@@ -42,15 +42,15 @@ module RuboCop
       #   ensure
       #     do_something_else
       #   end
-      class EmptyEnsure < Cop
+      class EmptyEnsure < Base
+        extend AutoCorrector
+
         MSG = 'Empty `ensure` block detected.'
 
         def on_ensure(node)
-          add_offense(node, location: :keyword) unless node.body
-        end
+          return if node.body
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.loc.keyword) do |corrector|
             corrector.remove(node.loc.keyword)
           end
         end

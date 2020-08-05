@@ -35,7 +35,7 @@ module RuboCop
       #   foo { |speed, distance| speed * distance }
       #
       #   baz { |age, height, gender| do_stuff(age, height, gender) }
-      class BlockParameterName < Cop
+      class BlockParameterName < Base
         include UncommunicativeName
 
         def on_block(node)

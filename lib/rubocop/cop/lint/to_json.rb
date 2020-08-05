@@ -17,18 +17,16 @@ module RuboCop
       #   def to_json(*_args)
       #   end
       #
-      class ToJSON < Cop
+      class ToJSON < Base
+        extend AutoCorrector
+
         MSG = ' `#to_json` requires an optional argument to be parsable ' \
           'via JSON.generate(obj).'
 
         def on_def(node)
           return unless node.method?(:to_json) && node.arguments.empty?
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             # The following used `*_args` because `to_json(*args)` has
             # an offense of `Lint/UnusedMethodArgument` cop if `*args`
             # is not used.

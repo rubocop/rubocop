@@ -84,7 +84,7 @@ module RuboCop
       #   def _foo
       #     @_foo ||= calculate_expensive_thing
       #   end
-      class MemoizedInstanceVariableName < Cop
+      class MemoizedInstanceVariableName < Base
         include ConfigurableEnforcedStyle
 
         MSG = 'Memoized variable `%<var>s` does not match ' \
@@ -115,7 +115,7 @@ module RuboCop
             suggested_var: suggested_var(method_name),
             method: method_name
           )
-          add_offense(node, location: ivar_assign.source_range, message: msg)
+          add_offense(ivar_assign.source_range, message: msg)
         end
         alias on_defs on_def
 

@@ -29,7 +29,7 @@ module RuboCop
       #     HEREDOC
       #   end               # 5 points
       #
-      class MethodLength < Cop
+      class MethodLength < Base
         include CodeLength
 
         LABEL = 'Method'

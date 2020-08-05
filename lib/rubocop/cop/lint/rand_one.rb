@@ -20,7 +20,7 @@ module RuboCop
       #   # good
       #
       #   0 # just use 0 instead
-      class RandOne < Cop
+      class RandOne < Base
         MSG = '`%<method>s` always returns `0`. ' \
               'Perhaps you meant `rand(2)` or `rand`?'
 

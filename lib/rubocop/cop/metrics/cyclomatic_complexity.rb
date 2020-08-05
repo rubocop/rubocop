@@ -29,7 +29,7 @@ module RuboCop
       #
       #     self
       #   end                                       # total: 6
-      class CyclomaticComplexity < Cop
+      class CyclomaticComplexity < Base
         include MethodComplexity
         include Utils::IteratingBlock
 
@@ -42,6 +42,7 @@ module RuboCop
 
         def complexity_score_for(node)
           return 0 if iterating_block?(node) == false
+          return 0 if node.csend_type? && discount_for_repeated_csend?(node)
 
           1
         end

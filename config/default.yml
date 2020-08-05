@@ -1235,7 +1235,7 @@ Layout/SpaceInsideBlockBraces:
 
 Layout/SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
-  StyleGuide: '#spaces-operators'
+  StyleGuide: '#spaces-braces'
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: space
@@ -1356,6 +1356,12 @@ Lint/BigDecimalNew:
   Enabled: true
   VersionAdded: '0.53'
 
+Lint/BinaryOperatorWithIdenticalOperands:
+  Description: 'This cop checks for places where binary operator has identical operands.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
   Enabled: true
@@ -1421,6 +1427,11 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
 
+Lint/DuplicateRescueException:
+  Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
   Enabled: true
@@ -1474,6 +1485,12 @@ Lint/FlipFlop:
   Enabled: true
   VersionAdded: '0.16'
 
+Lint/FloatComparison:
+  Description: 'Checks for the presence of precise comparison of floating point numbers.'
+  StyleGuide: '#float-comparison'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
@@ -1521,7 +1538,7 @@ Lint/InheritException:
 Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs.'
   Enabled: true
-  SafeAutoCorrect: false
+  Safe: false
   VersionAdded: '0.50'
   VersionChanged: '0.87'
 
@@ -1543,6 +1560,7 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.89'
 
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
@@ -1766,6 +1784,11 @@ Lint/ScriptPermission:
   VersionAdded: '0.49'
   VersionChanged: '0.50'
 
+Lint/SelfAssignment:
+  Description: 'Checks for self-assignments.'
+  Enabled: pending
+  VersionAdded: '0.89'
+
 Lint/SendWithMixinArgument:
   Description: 'Checks for `send` method when using mixin.'
   Enabled: true
@@ -1816,6 +1839,11 @@ Lint/ToJSON:
   Enabled: true
   VersionAdded: '0.66'
 
+Lint/TopLevelReturnWithArgument:
+  Description: 'This cop detects top level return statements with argument.'
+  Enabled: 'pending'
+  VersionAdded: '0.89'
+
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
@@ -1831,6 +1859,11 @@ Lint/UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
   VersionAdded: '0.9'
+
+Lint/UnreachableLoop:
+  Description: 'This cop checks for loops that will have at most one iteration.'
+  Enabled: pending
+  VersionAdded: '0.89'
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
@@ -1881,11 +1914,6 @@ Lint/UselessAssignment:
   Enabled: true
   VersionAdded: '0.11'
 
-Lint/UselessComparison:
-  Description: 'Checks for comparison of something with itself.'
-  Enabled: true
-  VersionAdded: '0.11'
-
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
   Enabled: true
@@ -1919,7 +1947,7 @@ Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   IgnoredMethods: []
-  Max: 15
+  Max: 17
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
@@ -2001,7 +2029,7 @@ Metrics/PerceivedComplexity:
   VersionAdded: '0.25'
   VersionChanged: '0.81'
   IgnoredMethods: []
-  Max: 7
+  Max: 8
 
 ################## Migration #############################
 
@@ -2360,6 +2388,7 @@ Style/ArrayCoercion:
                   Use Array() instead of explicit Array check or [*var], when dealing
                   with a variable you want to treat as an Array, but you're not certain it's an array.
   StyleGuide: '#array-coercion'
+  Safe: false
   Enabled: 'pending'
   VersionAdded: '0.88'
 
@@ -2889,6 +2918,16 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
+Style/ExplicitBlockArgument:
+  Description: >-
+                  Consider using explicit block argument to avoid writing block literal
+                  that just passes its arguments to another block.
+  StyleGuide: '#block-argument'
+  Enabled: pending
+  # May change the yielding arity.
+  Safe: false
+  VersionAdded: '0.89'
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'
@@ -2971,6 +3010,12 @@ Style/FrozenStringLiteralComment:
     # exist in a file.
     - never
   Safe: false
+
+Style/GlobalStdStream:
+  Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
+  StyleGuide: '#global-stdout'
+  Enabled: pending
+  VersionAdded: '0.89'
 
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
@@ -3568,6 +3613,13 @@ Style/OptionalArguments:
   VersionAdded: '0.33'
   VersionChanged: '0.83'
 
+Style/OptionalBooleanParameter:
+  Description: 'Use keyword arguments when defining method with boolean argument.'
+  StyleGuide: '#boolean-keyword-arguments'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Style/OrAssignment:
   Description: 'Recommend usage of double pipe equals (||=) where applicable.'
   StyleGuide: '#double-pipe-for-uninit'
@@ -3885,6 +3937,12 @@ Style/SignalException:
     - only_raise
     - only_fail
     - semantic
+
+Style/SingleArgumentDig:
+  Description: 'Avoid using single argument dig method.'
+  Enabled: pending
+  VersionAdded: '0.89'
+  Safe: false
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'

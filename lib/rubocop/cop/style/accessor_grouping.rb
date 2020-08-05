@@ -33,6 +33,7 @@ module RuboCop
       #
       class AccessorGrouping < Cop
         include ConfigurableEnforcedStyle
+        include RangeHelp
         include VisibilityHelp
 
         GROUPED_MSG = 'Group together all `%<accessor>s` attributes.'
@@ -52,7 +53,12 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node, correction(node))
+            if (preferred_accessors = preferred_accessors(node))
+              corrector.replace(node, preferred_accessors)
+            else
+              range = range_with_surrounding_space(range: node.loc.expression, side: :left)
+              corrector.remove(range)
+            end
           end
         end
 
@@ -110,14 +116,10 @@ module RuboCop
           format(msg, accessor: send_node.method_name)
         end
 
-        def correction(node)
+        def preferred_accessors(node)
           if grouped_style?
             accessors = sibling_accessors(node)
-            if node == accessors.first
-              group_accessors(node, accessors)
-            else
-              ''
-            end
+            group_accessors(node, accessors) if node == accessors.first
           else
             separate_accessors(node)
           end

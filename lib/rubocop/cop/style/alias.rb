@@ -101,10 +101,14 @@ module RuboCop
         end
 
         def lexical_scope_type(node)
-          node.each_ancestor(:class, :module) do |ancestor|
-            return ancestor.class_type? ? 'in a class body' : 'in a module body'
+          ancestor = node.each_ancestor(:class, :module).first
+          if ancestor.nil?
+            'at the top level'
+          elsif ancestor.class_type?
+            'in a class body'
+          else
+            'in a module body'
           end
-          'at the top level'
         end
 
         def bareword?(sym_node)

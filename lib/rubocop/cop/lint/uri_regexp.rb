@@ -13,7 +13,9 @@ module RuboCop
       #   # good
       #   URI::DEFAULT_PARSER.make_regexp('http://example.com')
       #
-      class UriRegexp < Cop
+      class UriRegexp < Base
+        extend AutoCorrector
+
         MSG = '`%<top_level>sURI.regexp%<arg>s` is obsolete and should not ' \
               'be used. Instead, use `%<top_level>sURI::DEFAULT_PARSER.' \
               'make_regexp%<arg>s`.'
@@ -32,42 +34,18 @@ module RuboCop
         def on_send(node)
           return unless node.method?(:regexp)
 
-          uri_regexp_with_argument?(node) do |double_colon, arg|
-            register_offense(
-              node, top_level: double_colon ? '::' : '', arg: "(#{arg.source})"
-            )
+          captured_values = uri_regexp_with_argument?(node) || uri_regexp_without_argument?(node)
+
+          double_colon, arg = captured_values
+
+          top_level = double_colon ? '::' : ''
+          argument = arg ? "(#{arg.source})" : ''
+
+          format = format(MSG, top_level: top_level, arg: argument)
+
+          add_offense(node.loc.selector, message: format) do |corrector|
+            corrector.replace(node, "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}")
           end
-
-          uri_regexp_without_argument?(node) do |double_colon|
-            register_offense(node, top_level: double_colon ? '::' : '')
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if (captured_values = uri_regexp_with_argument?(node))
-            else
-              captured_values = uri_regexp_without_argument?(node)
-            end
-
-            double_colon, arg = captured_values
-
-            top_level = double_colon ? '::' : ''
-            argument = arg ? "(#{arg.source})" : ''
-
-            corrector.replace(
-              node,
-              "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}"
-            )
-          end
-        end
-
-        private
-
-        def register_offense(node, top_level: '', arg: '')
-          format = format(MSG, top_level: top_level, arg: arg)
-
-          add_offense(node, location: :selector, message: format)
         end
       end
     end

@@ -37,8 +37,9 @@ module RuboCop
       #   # good
       #   OpenSSL::Digest.digest('SHA256', 'foo')
       #
-      class DeprecatedOpenSSLConstant < Cop
+      class DeprecatedOpenSSLConstant < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)`' \
           ' instead of `%<original>s`.'
@@ -54,25 +55,28 @@ module RuboCop
 
         def on_send(node)
           return if node.arguments.any? { |arg| arg.variable? || arg.send_type? || arg.const_type? }
+          return unless algorithm_const(node)
 
-          add_offense(node) if algorithm_const(node)
-        end
+          message = message(node)
 
-        def autocorrect(node)
-          algorithm_constant, = algorithm_const(node)
-
-          lambda do |corrector|
-            corrector.remove(algorithm_constant.loc.double_colon)
-            corrector.remove(algorithm_constant.loc.name)
-
-            corrector.replace(
-              correction_range(node),
-              "#{node.loc.selector.source}(#{replacement_args(node)})"
-            )
+          add_offense(node, message: message) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          algorithm_constant, = algorithm_const(node)
+
+          corrector.remove(algorithm_constant.loc.double_colon)
+          corrector.remove(algorithm_constant.loc.name)
+
+          corrector.replace(
+            correction_range(node),
+            "#{node.loc.selector.source}(#{replacement_args(node)})"
+          )
+        end
 
         def message(node)
           algorithm_constant, = algorithm_const(node)

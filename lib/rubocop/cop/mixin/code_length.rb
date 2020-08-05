@@ -30,16 +30,13 @@ module RuboCop
         # Skip costly calculation when definitely not needed
         return if node.line_count <= max_length
 
-        calculator = Metrics::Utils::CodeLengthCalculator.new(node, processed_source,
-                                                              count_comments: count_comments?,
-                                                              foldable_types: count_as_one)
+        calculator = build_code_length_calculator(node)
         length = calculator.calculate
         return if length <= max_length
 
-        location = node.casgn_type? ? :name : :expression
+        location = node.casgn_type? ? node.loc.name : node.loc.expression
 
-        add_offense(node, location: location,
-                          message: message(length, max_length)) do
+        add_offense(location, message: message(length, max_length)) do
           self.max = length
         end
       end
@@ -47,6 +44,15 @@ module RuboCop
       # Returns true for lines that shall not be included in the count.
       def irrelevant_line(source_line)
         source_line.blank? || !count_comments? && comment_line?(source_line)
+      end
+
+      def build_code_length_calculator(node)
+        Metrics::Utils::CodeLengthCalculator.new(
+          node,
+          processed_source,
+          count_comments: count_comments?,
+          foldable_types: count_as_one
+        )
       end
     end
   end

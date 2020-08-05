@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'selects only safe cops if :safe passed' do
-      enabled_cops = registry.enabled(config, [], true)
+      enabled_cops = registry.enabled(config, [], only_safe: true)
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
 

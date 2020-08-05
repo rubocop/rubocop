@@ -211,6 +211,46 @@ BigDecimal.new(123.456, 3)
 BigDecimal(123.456, 3)
 ----
 
+== Lint/BinaryOperatorWithIdenticalOperands
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.89
+| -
+|===
+
+This cop checks for places where binary operator has identical operands.
+
+It covers arithmetic operators: `+`, `-`, `*`, `/`, `%`, `**`;
+comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
+bitwise operators: `|`, `^`, `&`, `<<`, `>>`;
+boolean operators: `&&`, `||`
+and "spaceship" operator - `<=>`.
+
+This cop is marked as unsafe as it does not consider side effects when calling methods
+and thus can generate false positives:
+  if wr.take_char == '\0' && wr.take_char == '\0'
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x.top >= x.top
+
+if a.x != 0 && a.x != 0
+  do_something
+end
+
+def childs?
+  left_child || left_child
+end
+----
+
 == Lint/BooleanSymbol
 
 |===
@@ -739,6 +779,44 @@ end
 alias bar foo
 ----
 
+== Lint/DuplicateRescueException
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks that there are no repeated exceptions
+used in 'rescue' expressions.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+begin
+  something
+rescue FirstException
+  handle_exception
+rescue FirstException
+  handle_other_exception
+end
+
+# good
+begin
+  something
+rescue FirstException
+  handle_exception
+rescue SecondException
+  handle_other_exception
+end
+----
+
 == Lint/EachWithObjectArgument
 
 |===
@@ -1035,9 +1113,11 @@ end
 |===
 
 This cop checks for `return` from an `ensure` block.
-Explicit return from an ensure block alters the control flow
-as the return will take precedence over any exception being raised,
+`return` from an ensure block is a dangerous code smell as it
+will take precedence over any exception being raised,
 and the exception will be silently thrown away as if it were rescued.
+
+If you want to rescue some (or all) exceptions, best to do it explicitly
 
 === Examples
 
@@ -1045,11 +1125,11 @@ and the exception will be silently thrown away as if it were rescued.
 ----
 # bad
 
-begin
+def foo
   do_something
 ensure
-  do_something_else
-  return
+  cleanup
+  return self
 end
 ----
 
@@ -1057,10 +1137,24 @@ end
 ----
 # good
 
-begin
+def foo
   do_something
+  self
 ensure
-  do_something_else
+  cleanup
+end
+
+# also good
+
+def foo
+  begin
+    do_something
+  rescue SomeException
+    # Let's ignore this exception
+  end
+  self
+ensure
+  cleanup
 end
 ----
 
@@ -1174,6 +1268,51 @@ end
 === References
 
 * https://rubystyle.guide#no-flip-flops
+
+== Lint/FloatComparison
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for the presence of precise comparison of floating point numbers.
+
+Floating point values are inherently inaccurate, and comparing them for exact equality
+is almost never the desired semantics. Comparison via the `==/!=` operators checks
+floating-point value representation to be exactly the same, which is very unlikely
+if you perform any arithmetic operations involving precision loss.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x == 0.1
+x != 0.1
+
+# good - using BigDecimal
+x.to_d == 0.1.to_d
+
+# good
+(x - 0.1).abs < Float::EPSILON
+
+# good
+tolerance = 0.0001
+(x - 0.1).abs < tolerance
+
+# Or some other epsilon based type of comparison:
+# https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
+----
+
+=== References
+
+* https://rubystyle.guide#float-comparison
 
 == Lint/FloatOutOfRange
 
@@ -1469,7 +1608,7 @@ C = Class.new(StandardError)
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
+| No
 | Yes (Unsafe)
 | 0.50
 | 0.87
@@ -1572,9 +1711,9 @@ This cop checks for interpolated literals.
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
-| -
+| 0.89
 |===
 
 This cop checks for uses of `begin...end while/until something`.
@@ -2995,6 +3134,35 @@ puts 'hello, world'
 puts 'hello, world'
 ----
 
+== Lint/SelfAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for self-assignments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo = foo
+foo, bar = foo, bar
+Foo = Foo
+
+# good
+foo = bar
+foo, bar = bar, foo
+Foo = Bar
+----
+
 == Lint/SendWithMixinArgument
 
 |===
@@ -3408,6 +3576,30 @@ def to_json(*_args)
 end
 ----
 
+== Lint/TopLevelReturnWithArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for top level return with arguments. If there is a
+top-level return statement with an argument, then the argument is
+always ignored. This is detected automatically since Ruby 2.7.
+
+=== Examples
+
+[source,ruby]
+----
+# Detected since Ruby 2.7
+return 1 # 1 is always ignored.
+----
+
 == Lint/UnderscorePrefixedVariableName
 
 |===
@@ -3551,6 +3743,89 @@ end
 
 def some_method
   do_something
+end
+----
+
+== Lint/UnreachableLoop
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for loops that will have at most one iteration.
+
+A loop that can never reach the second iteration is a possible error in the code.
+In rare cases where only one iteration (or at most one iteration) is intended behavior,
+the code should be refactored to use `if` conditionals.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+while node
+  do_something(node)
+  node = node.parent
+  break
+end
+
+# good
+while node
+  do_something(node)
+  node = node.parent
+end
+
+# bad
+def verify_list(head)
+  item = head
+  begin
+    if verify(item)
+      return true
+    else
+      return false
+    end
+  end while(item)
+end
+
+# good
+def verify_list(head)
+  item = head
+  begin
+    if verify(item)
+      item = item.next
+    else
+      return false
+    end
+  end while(item)
+
+  true
+end
+
+# bad
+def find_something(items)
+  items.each do |item|
+    if something?(item)
+      return item
+    else
+      raise NotFoundError
+    end
+  end
+end
+
+# good
+def find_something(items)
+  items.each do |item|
+    if something?(item)
+      return item
+    end
+  end
+  raise NotFoundError
 end
 ----
 
@@ -4046,29 +4321,6 @@ end
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
-
-== Lint/UselessComparison
-
-|===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
-
-| Enabled
-| Yes
-| No
-| 0.11
-| -
-|===
-
-This cop checks for comparison of something with itself.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-
-x.top >= x.top
-----
 
 == Lint/UselessElseWithoutRescue
 

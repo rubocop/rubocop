@@ -43,7 +43,7 @@ module RuboCop
       #     handle_standard_error
       #   end
       #
-      class ShadowedException < Cop
+      class ShadowedException < Base
         include RescueNode
         include RangeHelp
 
@@ -62,7 +62,7 @@ module RuboCop
           return if !rescue_group_rescues_multiple_levels &&
                     sorted?(rescued_groups)
 
-          add_offense(node, location: offense_range(rescues))
+          add_offense(offense_range(rescues))
         end
 
         private

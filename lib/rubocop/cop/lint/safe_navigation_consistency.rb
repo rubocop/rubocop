@@ -26,9 +26,10 @@ module RuboCop
       #   # good
       #   foo&.bar && (foobar.baz || foo&.baz)
       #
-      class SafeNavigationConsistency < Cop
+      class SafeNavigationConsistency < Base
         include IgnoredNode
         include NilMethods
+        extend AutoCorrector
 
         MSG = 'Ensure that safe navigation is used consistently ' \
           'inside of `&&` and `||`.'
@@ -49,24 +50,27 @@ module RuboCop
             unsafe_method_calls(method_calls, safe_nav_receiver)
 
           unsafe_method_calls.each do |unsafe_method_call|
-            location =
-              node.loc.expression.join(unsafe_method_call.loc.expression)
-            add_offense(unsafe_method_call,
-                        location: location)
+            location = location(node, unsafe_method_call)
+
+            add_offense(location) do |corrector|
+              autocorrect(corrector, unsafe_method_call)
+            end
 
             ignore_node(unsafe_method_call)
           end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           return unless node.dot?
 
-          lambda do |corrector|
-            corrector.insert_before(node.loc.dot, '&')
-          end
+          corrector.insert_before(node.loc.dot, '&')
         end
 
-        private
+        def location(node, unsafe_method_call)
+          node.loc.expression.join(unsafe_method_call.loc.expression)
+        end
 
         def top_conditional_ancestor(node)
           parent = node.parent

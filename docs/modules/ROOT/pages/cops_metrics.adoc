@@ -27,7 +27,7 @@ and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 | Array
 
 | Max
-| `15`
+| `17`
 | Integer
 |===
 
@@ -472,6 +472,6 @@ end                             # 7 complexity points
 | Array
 
 | Max
-| `7`
+| `8`
 | Integer
 |===

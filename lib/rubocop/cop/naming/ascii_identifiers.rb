@@ -52,18 +52,18 @@ module RuboCop
       #
       #   FOÖ = "foo"
       #
-      class AsciiIdentifiers < Cop
+      class AsciiIdentifiers < Base
         include RangeHelp
 
         IDENTIFIER_MSG = 'Use only ascii symbols in identifiers.'
         CONSTANT_MSG   = 'Use only ascii symbols in constants.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.each_token do |token|
             next if !should_check?(token) || token.text.ascii_only?
 
             message = token.type == :tIDENTIFIER ? IDENTIFIER_MSG : CONSTANT_MSG
-            add_offense(token, location: first_offense_range(token), message: message)
+            add_offense(first_offense_range(token), message: message)
           end
         end
 

@@ -61,7 +61,7 @@ module RuboCop
       class IfInsideElse < Cop
         MSG = 'Convert `if` nested inside `else` to `elsif`.'
 
-        def on_if(node) # rubocop:todo Metrics/CyclomaticComplexity
+        def on_if(node)
           return if node.ternary? || node.unless?
 
           else_branch = node.else_branch

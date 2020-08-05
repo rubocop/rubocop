@@ -51,7 +51,9 @@ module RuboCop
       #   # good
       #   Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
       #
-      class NonDeterministicRequireOrder < Cop
+      class NonDeterministicRequireOrder < Base
+        extend AutoCorrector
+
         MSG = 'Sort files before requiring them.'
 
         def on_block(node)
@@ -61,7 +63,9 @@ module RuboCop
           loop_variable(node.arguments) do |var_name|
             return unless var_is_required?(node.body, var_name)
 
-            add_offense(node.send_node)
+            add_offense(node.send_node) do |corrector|
+              correct_block(corrector, node.send_node)
+            end
           end
         end
 
@@ -69,37 +73,37 @@ module RuboCop
           return unless method_require?(node)
           return unless unsorted_dir_pass?(node.parent)
 
-          add_offense(node.parent)
-        end
+          parent_node = node.parent
 
-        def autocorrect(node)
-          return correct_block_pass(node) if node.arguments.last&.block_pass_type?
-
-          if unsorted_dir_block?(node)
-            lambda do |corrector|
-              corrector.replace(node, "#{node.source}.sort.each")
-            end
-          else
-            lambda do |corrector|
-              source = node.receiver.source
-              corrector.replace(node, "#{source}.sort.each")
+          add_offense(parent_node) do |corrector|
+            if parent_node.arguments.last&.block_pass_type?
+              correct_block_pass(corrector, parent_node)
+            else
+              correct_block(corrector, parent_node)
             end
           end
         end
 
         private
 
-        def correct_block_pass(node)
-          if unsorted_dir_glob_pass?(node)
-            lambda do |corrector|
-              block_arg = node.arguments.last
-              corrector.remove(last_arg_range(node))
-              corrector.insert_after(node, ".sort.each(#{block_arg.source})")
-            end
+        def correct_block(corrector, node)
+          if unsorted_dir_block?(node)
+            corrector.replace(node, "#{node.source}.sort.each")
           else
-            lambda do |corrector|
-              corrector.replace(node.loc.selector, 'sort.each')
-            end
+            source = node.receiver.source
+
+            corrector.replace(node, "#{source}.sort.each")
+          end
+        end
+
+        def correct_block_pass(corrector, node)
+          if unsorted_dir_glob_pass?(node)
+            block_arg = node.arguments.last
+
+            corrector.remove(last_arg_range(node))
+            corrector.insert_after(node, ".sort.each(#{block_arg.source})")
+          else
+            corrector.replace(node.loc.selector, 'sort.each')
           end
         end
 

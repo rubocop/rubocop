@@ -5,8 +5,9 @@ module RuboCop
     module Migration
       # Check that cop names in rubocop:disable comments are given with
       # department name.
-      class DepartmentName < Cop
+      class DepartmentName < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Department name is missing.'
 
@@ -18,7 +19,7 @@ module RuboCop
         # `DepartmentName/CopName` or` all`.
         DISABLING_COPS_CONTENT_TOKEN = %r{[A-z]+/[A-z]+|all}.freeze
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.each_comment do |comment|
             next if comment.text !~ DISABLE_COMMENT_FORMAT
 
@@ -38,18 +39,6 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          shall_warn = false
-          cop_name = range.source
-          qualified_cop_name = Cop.registry.qualified_cop_name(cop_name,
-                                                               nil, shall_warn)
-          unless qualified_cop_name.include?('/')
-            qualified_cop_name = qualified_legacy_cop_name(cop_name)
-          end
-
-          ->(corrector) { corrector.replace(range, qualified_cop_name) }
-        end
-
         private
 
         def disable_comment_offset
@@ -60,7 +49,16 @@ module RuboCop
           start = comment.location.expression.begin_pos + offset
           range = range_between(start, start + name.length)
 
-          add_offense(range, location: range)
+          add_offense(range) do |corrector|
+            cop_name = range.source
+            qualified_cop_name = Cop.registry.qualified_cop_name(cop_name, nil, warn: false)
+
+            unless qualified_cop_name.include?('/')
+              qualified_cop_name = qualified_legacy_cop_name(cop_name)
+            end
+
+            corrector.replace(range, qualified_cop_name)
+          end
         end
 
         def valid_content_token?(content_token)

@@ -5,30 +5,28 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
   shared_examples 'mutable objects' do |o|
     context 'when assigning with =' do
-      it "registers an offense for #{o} assigned to a constant" do
-        source = [prefix, "CONST = #{o}"].compact.join("\n")
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-      end
-
-      it 'auto-corrects by adding .freeze' do
-        source = [prefix, "CONST = #{o}"].compact.join("\n")
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq("#{source}.freeze")
+      it "registers an offense for #{o} assigned to a constant " \
+         'and corrects by adding .freeze' do
+        expect_offense([prefix, <<~RUBY].compact.join("\n"), o: o)
+          CONST = %{o}
+                  ^{o} Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction([prefix, <<~RUBY].compact.join("\n"))
+          CONST = #{o}.freeze
+        RUBY
       end
     end
 
     context 'when assigning with ||=' do
-      it "registers an offense for #{o} assigned to a constant" do
-        source = [prefix, "CONST ||= #{o}"].compact.join("\n")
-        inspect_source(source)
-        expect(cop.offenses.size).to eq(1)
-      end
-
-      it 'auto-corrects by adding .freeze' do
-        source = [prefix, "CONST ||= #{o}"].compact.join("\n")
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq("#{source}.freeze")
+      it "registers an offense for #{o} assigned to a constant " \
+         'and corrects by adding .freeze' do
+        expect_offense([prefix, <<~RUBY].compact.join("\n"), o: o)
+          CONST ||= %{o}
+                    ^{o} Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction([prefix, <<~RUBY].compact.join("\n"))
+          CONST ||= #{o}.freeze
+        RUBY
       end
     end
   end
@@ -69,31 +67,25 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'splat expansion' do
       context 'expansion of a range' do
-        it 'registers an offense' do
+        it 'registers an offense and corrects to use to_a.freeze' do
           expect_offense(<<~RUBY)
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
-        end
-
-        it 'correct to use to_a.freeze' do
-          new_source = autocorrect_source('FOO = *1..10')
-
-          expect(new_source).to eq('FOO = (1..10).to_a.freeze')
+          expect_correction(<<~RUBY)
+            FOO = (1..10).to_a.freeze
+          RUBY
         end
 
         context 'with parentheses' do
-          it 'registers an offense' do
+          it 'registers an offense and corrects to use to_a.freeze' do
             expect_offense(<<~RUBY)
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
-          end
-
-          it 'correct to use to_a.freeze' do
-            new_source = autocorrect_source('FOO = *(1..10)')
-
-            expect(new_source).to eq('FOO = (1..10).to_a.freeze')
+            expect_correction(<<~RUBY)
+              FOO = (1..10).to_a.freeze
+            RUBY
           end
         end
       end
@@ -101,37 +93,67 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'when assigning an array without brackets' do
       it 'adds brackets when auto-correcting' do
-        new_source = autocorrect_source('XXX = YYY, ZZZ')
-        expect(new_source).to eq 'XXX = [YYY, ZZZ].freeze'
+        expect_offense(<<~RUBY)
+          XXX = YYY, ZZZ
+                ^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = [YYY, ZZZ].freeze
+        RUBY
       end
 
       it 'does not add brackets to %w() arrays' do
-        new_source = autocorrect_source('XXX = %w(YYY ZZZ)')
-        expect(new_source).to eq 'XXX = %w(YYY ZZZ).freeze'
+        expect_offense(<<~RUBY)
+          XXX = %w(YYY ZZZ)
+                ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = %w(YYY ZZZ).freeze
+        RUBY
       end
     end
 
     context 'when assigning a range (irange) without parenthesis' do
       it 'adds parenthesis when auto-correcting' do
-        new_source = autocorrect_source('XXX = 1..99')
-        expect(new_source).to eq 'XXX = (1..99).freeze'
+        expect_offense(<<~RUBY)
+          XXX = 1..99
+                ^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = (1..99).freeze
+        RUBY
       end
 
       it 'does not add parenthesis to range enclosed in parentheses' do
-        new_source = autocorrect_source('XXX = (1..99)')
-        expect(new_source).to eq 'XXX = (1..99).freeze'
+        expect_offense(<<~RUBY)
+          XXX = (1..99)
+                ^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = (1..99).freeze
+        RUBY
       end
     end
 
     context 'when assigning a range (erange) without parenthesis' do
       it 'adds parenthesis when auto-correcting' do
-        new_source = autocorrect_source('XXX = 1...99')
-        expect(new_source).to eq 'XXX = (1...99).freeze'
+        expect_offense(<<~RUBY)
+          XXX = 1...99
+                ^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = (1...99).freeze
+        RUBY
       end
 
       it 'does not add parenthesis to range enclosed in parentheses' do
-        new_source = autocorrect_source('XXX = (1...99)')
-        expect(new_source).to eq 'XXX = (1...99).freeze'
+        expect_offense(<<~RUBY)
+          XXX = (1...99)
+                ^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = (1...99).freeze
+        RUBY
       end
     end
 
@@ -217,31 +239,25 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'splat expansion' do
       context 'expansion of a range' do
-        it 'registers an offense' do
+        it 'registers an offense and corrects to use to_a.freeze' do
           expect_offense(<<~RUBY)
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
-        end
-
-        it 'correct to use to_a.freeze' do
-          new_source = autocorrect_source('FOO = *1..10')
-
-          expect(new_source).to eq('FOO = (1..10).to_a.freeze')
+          expect_correction(<<~RUBY)
+            FOO = (1..10).to_a.freeze
+          RUBY
         end
 
         context 'with parentheses' do
-          it 'registers an offense' do
+          it 'registers an offense and corrects to use to_a.freeze' do
             expect_offense(<<~RUBY)
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
-          end
-
-          it 'correct to use to_a.freeze' do
-            new_source = autocorrect_source('FOO = *(1..10)')
-
-            expect(new_source).to eq('FOO = (1..10).to_a.freeze')
+            expect_correction(<<~RUBY)
+              FOO = (1..10).to_a.freeze
+            RUBY
           end
         end
       end
@@ -249,19 +265,12 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
 
     context 'when assigning with an operator' do
       shared_examples 'operator methods' do |o|
-        it 'registers an offense' do
-          inspect_source("CONST = FOO #{o} BAR")
-
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.highlights).to eq(["FOO #{o} BAR"])
-        end
-
-        it 'corrects by wrapping in parentheses and calling freeze' do
-          new_source = autocorrect_source(<<~RUBY)
-            CONST = FOO #{o} BAR
+        it 'registers an offense and corrects with parens and freeze' do
+          expect_offense(<<~RUBY, o: o)
+            CONST = FOO %{o} BAR
+                    ^^^^^{o}^^^^ Freeze mutable objects assigned to constants.
           RUBY
-
-          expect(new_source).to eq(<<~RUBY)
+          expect_correction(<<~RUBY)
             CONST = (FOO #{o} BAR).freeze
           RUBY
         end
@@ -276,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'when assigning with multiple operator calls' do
-      it 'registers an offense' do
+      it 'registers an offense and corrects with parens and freeze' do
         expect_offense(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
@@ -284,17 +293,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = FOO + BAR + BAZ
                   ^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
-      end
-
-      it 'corrects by wrapping in parens and calling freeze' do
-        new_source = autocorrect_source(<<~RUBY)
-          FOO = [1].freeze
-          BAR = [2].freeze
-          BAZ = [3].freeze
-          CONST = FOO + BAR + BAZ
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
           BAZ = [3].freeze
@@ -361,6 +360,9 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = FOO + 'bar'
                   ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+        expect_correction(<<~RUBY)
+          CONST = (FOO + 'bar').freeze
+        RUBY
       end
 
       it 'registers an offense when operating on multiple strings' do
@@ -368,29 +370,42 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = 'foo' + 'bar' + 'baz'
                   ^^^^^^^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+        expect_correction(<<~RUBY)
+          CONST = ('foo' + 'bar' + 'baz').freeze
+        RUBY
       end
     end
 
     context 'when assigning an array without brackets' do
       it 'adds brackets when auto-correcting' do
-        new_source = autocorrect_source('XXX = YYY, ZZZ')
-        expect(new_source).to eq 'XXX = [YYY, ZZZ].freeze'
+        expect_offense(<<~RUBY)
+          XXX = YYY, ZZZ
+                ^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = [YYY, ZZZ].freeze
+        RUBY
       end
 
       it 'does not add brackets to %w() arrays' do
-        new_source = autocorrect_source('XXX = %w(YYY ZZZ)')
-        expect(new_source).to eq 'XXX = %w(YYY ZZZ).freeze'
+        expect_offense(<<~RUBY)
+          XXX = %w(YYY ZZZ)
+                ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+        expect_correction(<<~RUBY)
+          XXX = %w(YYY ZZZ).freeze
+        RUBY
       end
     end
 
     it 'freezes a heredoc' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         FOO = <<-HERE
+              ^^^^^^^ Freeze mutable objects assigned to constants.
           SOMETHING
         HERE
       RUBY
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         FOO = <<-HERE.freeze
           SOMETHING
         HERE

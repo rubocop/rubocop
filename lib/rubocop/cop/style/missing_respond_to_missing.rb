@@ -36,9 +36,16 @@ module RuboCop
         private
 
         def implements_respond_to_missing?(node)
-          node.parent.each_child_node(node.type).any? do |sibling|
-            sibling.method?(:respond_to_missing?)
+          return false unless (grand_parent = node.parent.parent)
+
+          grand_parent.each_descendant(node.type) do |descendant|
+            return true if descendant.method?(:respond_to_missing?)
+
+            child = descendant.children.first
+            return true if child.respond_to?(:method?) && child.method?(:respond_to_missing?)
           end
+
+          false
         end
       end
     end

@@ -34,7 +34,7 @@ module RuboCop
       #   def some_method
       #     do_something
       #   end
-      class UnreachableCode < Cop
+      class UnreachableCode < Base
         MSG = 'Unreachable code detected.'
 
         def on_begin(node)

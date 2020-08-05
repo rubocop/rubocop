@@ -55,7 +55,7 @@ module RuboCop
             #{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}
 
             Mention the following information in the issue report:
-            #{RuboCop::Version.version(true)}
+            #{RuboCop::Version.version(debug: true)}
           WARNING
         end
 

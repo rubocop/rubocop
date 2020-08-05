@@ -254,8 +254,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'registers offense(s)' do
-            inspect_source(src)
-            expect(cop.offenses.empty?).to be(false)
+            offenses = inspect_source(src)
+            expect(offenses.empty?).to be(false)
           end
         end
       end
@@ -294,15 +294,15 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           sources.each do |reason, src|
             context "such as #{reason}" do
               it 'registers offense(s)' do
-                inspect_source(src)
+                offenses = inspect_source(src)
                 # In this one specific test case, the extra space in question
                 # is to align comments, so it would be allowed by EITHER ONE
                 # being true.  Yes, that means technically it interferes a bit,
                 # but specifically in the way it was intended to.
                 if reason == 'aligning tokens with empty line between'
-                  expect(cop.offenses.empty?).to be(true)
+                  expect(offenses.empty?).to be(true)
                 else
-                  expect(cop.offenses.empty?).to be(false)
+                  expect(offenses.empty?).to be(false)
                 end
               end
             end
@@ -315,8 +315,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       let(:allow_comments) { false }
 
       it 'regsiters offense' do
-        inspect_source(src_with_extra)
-        expect(cop.offenses.empty?).to be(false)
+        offenses = inspect_source(src_with_extra)
+        expect(offenses.empty?).to be(false)
       end
 
       it 'does not trigger on only one space before comment' do

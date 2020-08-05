@@ -27,7 +27,7 @@ module RuboCop
       #   # good
       #   def value?
       #   end
-      class PredicateName < Cop
+      class PredicateName < Base
         include AllowedMethods
 
         def_node_matcher :dynamic_method_define, <<~PATTERN
@@ -42,8 +42,7 @@ module RuboCop
               next if allowed_method_name?(method_name.to_s, prefix)
 
               add_offense(
-                node,
-                location: node.first_argument.loc.expression,
+                node.first_argument.loc.expression,
                 message: message(method_name,
                                  expected_name(method_name.to_s, prefix))
               )
@@ -58,8 +57,7 @@ module RuboCop
             next if allowed_method_name?(method_name, prefix)
 
             add_offense(
-              node,
-              location: :name,
+              node.loc.name,
               message: message(method_name, expected_name(method_name, prefix))
             )
           end

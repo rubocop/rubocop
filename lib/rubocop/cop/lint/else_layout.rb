@@ -27,7 +27,7 @@ module RuboCop
       #     do_this
       #     do_that
       #   end
-      class ElseLayout < Cop
+      class ElseLayout < Base
         MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'
 
         def on_if(node)

@@ -3,15 +3,23 @@
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   subject(:cop) { described_class.new }
 
+  let(:beginning_offense_annotation) { '^{} Extra empty line detected at method body beginning.' }
+  let(:end_offense_annotation) { '^{} Extra empty line detected at method body end.' }
+
   it 'registers an offense for method body starting with a blank' do
-    inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       def some_method
 
+      #{beginning_offense_annotation}
         do_something
       end
     RUBY
-    expect(cop.messages)
-      .to eq(['Extra empty line detected at method body beginning.'])
+
+    expect_correction(<<~RUBY)
+      def some_method
+        do_something
+      end
+    RUBY
   end
 
   # The cop only registers an offense if the extra line is completely empty. If
@@ -25,39 +33,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
                         'end'].join("\n"))
   end
 
-  it 'autocorrects method body starting with a blank' do
-    corrected = autocorrect_source(<<~RUBY)
-      def some_method
-
-        do_something
-      end
-    RUBY
-    expect(corrected).to eq <<~RUBY
-      def some_method
-        do_something
-      end
-    RUBY
-  end
-
   it 'registers an offense for class method body starting with a blank' do
-    inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       def Test.some_method
 
+      #{beginning_offense_annotation}
         do_something
       end
     RUBY
-    expect(cop.messages)
-      .to eq(['Extra empty line detected at method body beginning.'])
-  end
 
-  it 'autocorrects class method body starting with a blank' do
-    corrected = autocorrect_source(<<~RUBY)
-      def Test.some_method
-
-        do_something
-      end
-    RUBY
-    expect(corrected).to eq <<~RUBY
+    expect_correction(<<~RUBY)
       def Test.some_method
         do_something
       end
@@ -65,25 +50,23 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
   end
 
   it 'registers an offense for method body ending with a blank' do
-    inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       def some_method
         do_something
 
+      #{end_offense_annotation}
       end
     RUBY
-    expect(cop.messages)
-      .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'registers an offense for class method body ending with a blank' do
-    inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       def Test.some_method
         do_something
-
+      
+      #{end_offense_annotation}
       end
     RUBY
-    expect(cop.messages)
-      .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'is not fooled by single line methods' do

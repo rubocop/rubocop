@@ -23,7 +23,7 @@ module RuboCop
       #   <<-EOS
       #     SELECT * FROM foo
       #   EOS
-      class HeredocDelimiterNaming < Cop
+      class HeredocDelimiterNaming < Base
         include Heredoc
 
         MSG = 'Use meaningful heredoc delimiters.'
@@ -31,7 +31,7 @@ module RuboCop
         def on_heredoc(node)
           return if meaningful_delimiters?(node)
 
-          add_offense(node, location: :heredoc_end)
+          add_offense(node.loc.heredoc_end)
         end
 
         private
