@@ -125,7 +125,10 @@ $ rubocop -h
 | Command flag | Description
 
 | `-a/--auto-correct`
-| Auto-correct certain offenses. _Experimental_, use with caution. See xref:usage/auto_correct.adoc[Auto-correct].
+| Auto-correct offenses (only when it's safe). See xref:usage/auto_correct.adoc[Auto-correct].
+
+| `-A/--auto-correct-all`
+| Auto-correct offenses (safe and unsafe). See xref:usage/auto_correct.adoc[Auto-correct].
 
 | `--auto-gen-config`
 | Generate a configuration file acting as a TODO list.

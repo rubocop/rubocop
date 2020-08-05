@@ -73,6 +73,17 @@ Therefore, in this (unusual) scenario, `Style/LineEndConcatenation` is unsafe.
 (This is a contrived example. Real code would use `%w` for an array of string
 literals.)
 
+To run all auto-corrections (safe and unsafe):
+
+[source,sh]
+----
+$ rubocop -A
+# or
+$ rubocop --auto-correct-all
+----
+
+It is recommended to be even more vigilent when using this option and review carefully the changes.
+
 == Generating comments
 
 [source,sh]
