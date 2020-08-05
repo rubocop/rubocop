@@ -43,7 +43,7 @@ module RuboCop
           when :and_asgn, :or_asgn
             "#{node.children[0].source} #{node.loc.operator.source} "
           when :casgn
-            "#{node.children[1]} = "
+            lhs_for_casgn(node)
           when *ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES
             "#{node.children[0]} = "
           else
@@ -90,6 +90,15 @@ module RuboCop
             "#{receiver}.#{node.method_name[0...-1]} = "
           else
             "#{receiver} #{node.method_name} "
+          end
+        end
+
+        def lhs_for_casgn(node)
+          namespace = node.children[0]
+          if namespace.nil? || namespace.cbase_type?
+            "#{namespace&.source}#{node.children[1]} = "
+          else
+            "#{namespace.source}::#{node.children[1]} = "
           end
         end
 
