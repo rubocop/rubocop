@@ -2356,6 +2356,36 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 ----
 
+== Lint/OutOfRangeRegexpRef
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.89
+| -
+|===
+
+This cops looks for references of Regexp captures that are out of range
+and thus always returns nil.
+
+=== Examples
+
+[source,ruby]
+----
+/(foo)bar/ =~ 'foobar'
+
+# bad - always returns nil
+
+puts $2 # => nil
+
+# good
+
+puts $1 # => foo
+----
+
 == Lint/ParenthesesAsGroupedExpression
 
 |===

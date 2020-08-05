@@ -21,6 +21,7 @@
 * [#8417](https://github.com/rubocop-hq/rubocop/pull/8417): Add new `Style/GlobalStdStream` cop. ([@fatkodima][])
 * [#7949](https://github.com/rubocop-hq/rubocop/issues/7949): Add new `Style/SingleArgumentDig` cop. ([@volfgox][])
 * [#8341](https://github.com/rubocop-hq/rubocop/pull/8341): Add new `Lint/EmptyConditionalBody` cop. ([@fatkodima][])
+* [#7755](https://github.com/rubocop-hq/rubocop/issues/7755):  Add new `Lint/OutOfRangeRegexpRef` cop. ([@sonalinavlakhe][])
 
 ### Bug fixes
 
@@ -4750,3 +4751,4 @@
 [@iamravitejag]: https://github.com/iamravitejag
 [@volfgox]: https://github.com/volfgox
 [@dsavochkin]: https://github.com/dmytro-savochkin
+[@sonalinavlakhe]: https://github.com/sonalinavlakhe

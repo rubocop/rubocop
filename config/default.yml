@@ -1640,6 +1640,12 @@ Lint/OrderedMagicComments:
   Enabled: true
   VersionAdded: '0.53'
 
+Lint/OutOfRangeRegexpRef:
+  Description: 'Checks for out of range reference for Regexp because it always returns nil.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Lint/ParenthesesAsGroupedExpression:
   Description: >-
                  Checks for method calls with a space before the opening
