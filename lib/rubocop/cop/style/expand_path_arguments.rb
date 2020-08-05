@@ -73,7 +73,6 @@ module RuboCop
                 $_) :parent) :expand_path)
         PATTERN
 
-        # rubocop:disable Metrics/PerceivedComplexity
         def on_send(node)
           return unless node.method?(:expand_path)
 
@@ -91,7 +90,6 @@ module RuboCop
             add_offense(node, message: PATHNAME_NEW_MSG)
           end
         end
-        # rubocop:enable Metrics/PerceivedComplexity
 
         def autocorrect(node)
           lambda do |corrector|

@@ -62,7 +62,6 @@ module RuboCop
         MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash."
         MSG_HASH_ROCKETS = 'Use hash rockets syntax.'
 
-        # rubocop:disable Metrics/PerceivedComplexity, Metrics/AbcSize
         def on_hash(node)
           pairs = node.pairs
 
@@ -78,7 +77,6 @@ module RuboCop
             ruby19_check(pairs)
           end
         end
-        # rubocop:enable Metrics/PerceivedComplexity, Metrics/AbcSize
 
         def ruby19_check(pairs)
           check(pairs, '=>', MSG_19) if sym_indices?(pairs)

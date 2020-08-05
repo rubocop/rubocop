@@ -73,7 +73,6 @@ module RuboCop
           }
         MATCHER
 
-        # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return unless sort_method?(node)
 
@@ -91,7 +90,6 @@ module RuboCop
                                        sorter,
                                        accessor))
         end
-        # rubocop:enable Metrics/AbcSize
 
         def autocorrect(node)
           sort_node, sorter, accessor = redundant_sort?(node)
