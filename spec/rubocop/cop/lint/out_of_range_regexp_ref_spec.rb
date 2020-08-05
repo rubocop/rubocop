@@ -67,14 +67,6 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     RUBY
   end
 
-  # See https://github.com/rubocop-hq/rubocop/issues/8083
-  it 'does not register offense when using a Regexp cannot be processed by regexp_parser gem' do
-    expect_no_offenses(<<~'RUBY')
-      /data = ({"words":.+}}}[^}]*})/m
-      puts $1
-    RUBY
-  end
-
   # RuboCop does not know a value of variables that it will contain in the regexp literal.
   # For example, `/(?<foo>#{var}*)` is interpreted as `/(?<foo>*)`.
   # So it does not offense when variables are used in regexp literals.

@@ -2368,8 +2368,8 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 | -
 |===
 
-This cops looks for out of range referencing for Regexp, as while capturing groups out of
-out of range reference always returns nil.
+This cops looks for references of Regexp captures that are out of range
+and thus always returns nil.
 
 === Examples
 

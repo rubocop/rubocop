@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Lint
-      # This cops looks for out of range referencing for Regexp, as while capturing groups out of
-      # out of range reference always returns nil.
+      # This cops looks for references of Regexp captures that are out of range
+      # and thus always returns nil.
       #
       # @example
       #
@@ -29,14 +29,7 @@ module RuboCop
           @valid_ref = nil
           return if contain_non_literal?(node)
 
-          begin
-            tree = Regexp::Parser.parse(node.content)
-          # Returns if a regular expression that cannot be processed by regexp_parser gem.
-          # https://github.com/rubocop-hq/rubocop/issues/8083
-          rescue Regexp::Scanner::ScannerError
-            return
-          end
-
+          tree = Regexp::Parser.parse(node.content)
           @valid_ref = regexp_captures(tree)
         end
 
