@@ -14,6 +14,11 @@ module RuboCop
       #     end
       #   end
       #
+      #   # bad
+      #   def nine_times
+      #     9.times { yield }
+      #   end
+      #
       #   # good
       #   def with_tmp_dir(&block)
       #     Dir.mktmpdir do |tmp_dir|
@@ -23,6 +28,11 @@ module RuboCop
       #
       #   with_tmp_dir do |dir|
       #     puts "dir is accessible as a parameter and pwd is set: #{dir}"
+      #   end
+      #
+      #   # good
+      #   def nine_times(&block)
+      #     9.times(&block)
       #   end
       #
       class ExplicitBlockArgument < Base
@@ -61,8 +71,6 @@ module RuboCop
         private
 
         def yielding_arguments?(block_args, yield_args)
-          return false if yield_args.empty?
-
           yield_args.zip(block_args).all? do |yield_arg, block_arg|
             block_arg && yield_arg.children.first == block_arg.children.first
           end
