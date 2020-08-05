@@ -21,16 +21,26 @@ module RuboCop
       class OutOfRangeRegexpRef < Base
         MSG = 'Do not use out of range reference for the Regexp.'
 
+        REGEXP_CAPTURE_METHODS = %i[=~ === match].to_set.freeze
+
         def on_new_investigation
           @valid_ref = 0
         end
 
-        def on_regexp(node)
-          @valid_ref = nil
-          return if contain_non_literal?(node)
+        def on_match_with_lvasgn(node)
+          check_regexp(node.children.first)
+        end
 
-          tree = Regexp::Parser.parse(node.content)
-          @valid_ref = regexp_captures(tree)
+        def on_send(node)
+          return unless REGEXP_CAPTURE_METHODS.include?(node.method_name)
+
+          @valid_ref = nil
+
+          if node.receiver&.regexp_type?
+            check_regexp(node.receiver)
+          elsif node.first_argument&.regexp_type? && node.method?(:=~)
+            check_regexp(node.first_argument)
+          end
         end
 
         def on_nth_ref(node)
@@ -41,6 +51,13 @@ module RuboCop
         end
 
         private
+
+        def check_regexp(regexp)
+          return if contain_non_literal?(regexp)
+
+          tree = Regexp::Parser.parse(regexp.content)
+          @valid_ref = regexp_captures(tree)
+        end
 
         def contain_non_literal?(node)
           node.children.size != 2 || !node.children.first.str_type?
