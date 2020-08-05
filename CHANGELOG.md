@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.89.0 (2020-08-05)
+
 ### New features
 
 * [#8322](https://github.com/rubocop-hq/rubocop/pull/8322): Support autocorrect for `Style/CaseEquality` cop. ([@fatkodima][])
