@@ -78,4 +78,59 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       puts $2
     RUBY
   end
+
+  it 'registers an offense when the regexp comes after `=~`' do
+    expect_offense(<<~RUBY)
+      "foobar" =~ /(foo)(bar)/
+      puts $3
+           ^^ Do not use out of range reference for the Regexp.
+    RUBY
+  end
+
+  it 'registers an offense when the regexp is matched with `===`' do
+    expect_offense(<<~RUBY)
+      /(foo)(bar)/ === "foobar"
+      puts $3
+           ^^ Do not use out of range reference for the Regexp.
+    RUBY
+  end
+
+  it 'registers an offense when the regexp is matched with `match`' do
+    expect_offense(<<~RUBY)
+      /(foo)(bar)/.match("foobar")
+      puts $3
+           ^^ Do not use out of range reference for the Regexp.
+    RUBY
+  end
+
+  it 'ignores calls to `match?`' do
+    expect_offense(<<~RUBY)
+      /(foo)(bar)/.match("foobar")
+      /(foo)(bar)(baz)/.match?("foobarbaz")
+      puts $3
+           ^^ Do not use out of range reference for the Regexp.
+    RUBY
+  end
+
+  it 'handles `match` with no arguments' do
+    expect_no_offenses(<<~RUBY)
+      foo.match
+    RUBY
+  end
+
+  it 'handles `match` with no receiver' do
+    expect_no_offenses(<<~RUBY)
+      match(bar)
+    RUBY
+  end
+
+  it 'only registers an offense when the regexp is matched as a literal' do
+    expect_no_offenses(<<~RUBY)
+      foo_bar_regexp = /(foo)(bar)/
+      foo_regexp = /(foo)/
+
+      foo_bar_regexp =~ 'foobar'
+      puts $2
+    RUBY
+  end
 end
