@@ -82,7 +82,7 @@ $ rubocop -A
 $ rubocop --auto-correct-all
 ----
 
-It is recommended to be even more vigilent when using this option and review carefully the changes.
+It is recommended to be even more vigilant when using this option and review carefully the changes.
 
 == Generating comments
 
