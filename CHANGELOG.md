@@ -5,6 +5,7 @@
 ### New features
 
 * [#8322](https://github.com/rubocop-hq/rubocop/pull/8322): Support autocorrect for `Style/CaseEquality` cop. ([@fatkodima][])
+* [#7876](https://github.com/rubocop-hq/rubocop/issues/7876): Enhance `Gemspec/RequiredRubyVersion` cop with check that `required_ruby_version` is specified. ([@fatkodima][])
 * [#8291](https://github.com/rubocop-hq/rubocop/pull/8291): Add new `Lint/SelfAssignment` cop. ([@fatkodima][])
 * [#8389](https://github.com/rubocop-hq/rubocop/pull/8389): Add new `Lint/DuplicateRescueException` cop. ([@fatkodima][])
 * [#8433](https://github.com/rubocop-hq/rubocop/pull/8433): Add new `Lint/BinaryOperatorWithIdenticalOperands` cop. ([@fatkodima][])

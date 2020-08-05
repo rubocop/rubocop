@@ -128,4 +128,12 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       RUBY
     end
   end
+
+  it 'registers an offense when `required_ruby_version` is not specified' do
+    expect_offense(<<~RUBY, '/path/to/foo.gemspec')
+      Gem::Specification.new do |spec|
+      ^ `required_ruby_version` should be specified.
+      end
+    RUBY
+  end
 end
