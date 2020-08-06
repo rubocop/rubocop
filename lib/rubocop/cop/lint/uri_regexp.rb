@@ -32,7 +32,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.method?(:regexp)
+          return unless node.method?(:regexp) && node.receiver
 
           captured_values = uri_regexp_with_argument?(node) || uri_regexp_without_argument?(node)
 
