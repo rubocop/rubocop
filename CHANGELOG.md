@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#8478](https://github.com/rubocop-hq/rubocop/issues/8478): Relax `Lint/BinaryOperatorWithIdenticalOperands` for mathematical operations. ([@marcandre][])
+
 ## 0.89.0 (2020-08-05)
 
 ### New features
