@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8474](https://github.com/rubocop-hq/rubocop/pull/8474): Add new `Lint/DuplicateRequire` cop. ([@fatkodima][])
+
 ### Changes
 
 * [#8362](https://github.com/rubocop-hq/rubocop/issues/8362): Add numbers of correctable offenses to summary. ([@nguyenquangminh0711][])

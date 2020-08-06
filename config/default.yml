@@ -1427,6 +1427,11 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
 
+Lint/DuplicateRequire:
+  Description: 'Check for duplicate `require`s and `require_relative`s.'
+  Enabled: pending
+  VersionAdded: '0.90'
+
 Lint/DuplicateRescueException:
   Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
   Enabled: pending
