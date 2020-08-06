@@ -28,6 +28,7 @@ RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands do
   it 'does not register an offense when using arithmetic operator with numerics' do
     expect_no_offenses(<<~RUBY)
       x = 2 + 2
+      x = 1 << 1
     RUBY
   end
 end
