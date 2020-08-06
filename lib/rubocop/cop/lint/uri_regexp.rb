@@ -16,35 +16,19 @@ module RuboCop
       class UriRegexp < Base
         extend AutoCorrector
 
-        MSG = '`%<top_level>sURI.regexp%<arg>s` is obsolete and should not ' \
-              'be used. Instead, use `%<top_level>sURI::DEFAULT_PARSER.' \
-              'make_regexp%<arg>s`.'
-
-        def_node_matcher :uri_regexp_with_argument?, <<~PATTERN
-          (send
-            (const ${nil? cbase} :URI) :regexp
-            ${(str _) (array ...)})
-        PATTERN
-
-        def_node_matcher :uri_regexp_without_argument?, <<~PATTERN
-          (send
-            (const ${nil? cbase} :URI) :regexp)
-        PATTERN
+        MSG = '`%<current>s` is obsolete and should not be used. Instead, use `%<preferred>s`.'
+        URI_CONSTANTS = ['URI', '::URI'].freeze
 
         def on_send(node)
           return unless node.method?(:regexp) && node.receiver
+          return unless URI_CONSTANTS.include?(node.receiver.source)
 
-          captured_values = uri_regexp_with_argument?(node) || uri_regexp_without_argument?(node)
+          argument = node.first_argument ? "(#{node.first_argument.source})" : ''
+          preferred_method = "#{node.receiver.source}::DEFAULT_PARSER.make_regexp#{argument}"
+          message = format(MSG, current: node.source, preferred: preferred_method)
 
-          double_colon, arg = captured_values
-
-          top_level = double_colon ? '::' : ''
-          argument = arg ? "(#{arg.source})" : ''
-
-          format = format(MSG, top_level: top_level, arg: argument)
-
-          add_offense(node.loc.selector, message: format) do |corrector|
-            corrector.replace(node, "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}")
+          add_offense(node.loc.selector, message: message) do |corrector|
+            corrector.replace(node, preferred_method)
           end
         end
       end
