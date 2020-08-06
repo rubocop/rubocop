@@ -21,9 +21,10 @@ module RuboCop
       #   end
       #
       # The compact style is only forced for classes/modules with one child.
-      class ClassAndModuleChildren < Cop
+      class ClassAndModuleChildren < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         NESTED_MSG = 'Use nested module/class definitions instead of ' \
                      'compact style.'
@@ -38,14 +39,6 @@ module RuboCop
 
         def on_module(node)
           check_style(node, node.body)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            return if node.class_type? && node.parent_class && style != :nested
-
-            nest_or_compact(corrector, node)
-          end
         end
 
         private
@@ -129,13 +122,23 @@ module RuboCop
         def check_nested_style(node)
           return unless compact_node_name?(node)
 
-          add_offense(node, location: :name, message: NESTED_MSG)
+          add_offense(node.loc.name, message: NESTED_MSG) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def check_compact_style(node, body)
           return unless one_child?(body) && !compact_node_name?(node)
 
-          add_offense(node, location: :name, message: COMPACT_MSG)
+          add_offense(node.loc.name, message: COMPACT_MSG) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          return if node.class_type? && node.parent_class && style != :nested
+
+          nest_or_compact(corrector, node)
         end
 
         def one_child?(body)

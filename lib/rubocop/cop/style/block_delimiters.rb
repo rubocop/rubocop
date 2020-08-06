@@ -132,14 +132,14 @@ module RuboCop
       #     puts foo
       #   end
       #
-      class BlockDelimiters < Cop
+      class BlockDelimiters < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods
+        extend AutoCorrector
 
         ALWAYS_BRACES_MESSAGE = 'Prefer `{...}` over `do...end` for blocks.'
 
-        BRACES_REQUIRED_MESSAGE = 'Brace delimiters `{...}` required for ' \
-          "'%<method_name>s' method."
+        BRACES_REQUIRED_MESSAGE = "Brace delimiters `{...}` required for '%<method_name>s' method."
 
         def on_send(node)
           return unless node.arguments?
@@ -158,21 +158,25 @@ module RuboCop
 
         def on_block(node)
           return if ignored_node?(node)
+          return if proper_block_style?(node)
 
-          add_offense(node, location: :begin) unless proper_block_style?(node)
-        end
-
-        def autocorrect(node)
-          return if correction_would_break_code?(node)
-
-          if node.braces?
-            replace_braces_with_do_end(node.loc)
-          else
-            replace_do_end_with_braces(node.loc)
+          message = message(node)
+          add_offense(node.loc.begin, message: message) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          return if correction_would_break_code?(node)
+
+          if node.braces?
+            replace_braces_with_do_end(corrector, node.loc)
+          else
+            replace_do_end_with_braces(corrector, node.loc)
+          end
+        end
 
         def line_count_based_message(node)
           if node.multiline?
@@ -219,29 +223,25 @@ module RuboCop
           end
         end
 
-        def replace_braces_with_do_end(loc)
+        def replace_braces_with_do_end(corrector, loc)
           b = loc.begin
           e = loc.end
 
-          lambda do |corrector|
-            corrector.insert_before(b, ' ') unless whitespace_before?(b)
-            corrector.insert_before(e, ' ') unless whitespace_before?(e)
-            corrector.insert_after(b, ' ') unless whitespace_after?(b)
-            corrector.replace(b, 'do')
-            corrector.replace(e, 'end')
-          end
+          corrector.insert_before(b, ' ') unless whitespace_before?(b)
+          corrector.insert_before(e, ' ') unless whitespace_before?(e)
+          corrector.insert_after(b, ' ') unless whitespace_after?(b)
+          corrector.replace(b, 'do')
+          corrector.replace(e, 'end')
         end
 
-        def replace_do_end_with_braces(loc)
+        def replace_do_end_with_braces(corrector, loc)
           b = loc.begin
           e = loc.end
 
-          lambda do |corrector|
-            corrector.insert_after(b, ' ') unless whitespace_after?(b, 2)
+          corrector.insert_after(b, ' ') unless whitespace_after?(b, 2)
 
-            corrector.replace(b, '{')
-            corrector.replace(e, '}')
-          end
+          corrector.replace(b, '{')
+          corrector.replace(e, '}')
         end
 
         def whitespace_before?(range)

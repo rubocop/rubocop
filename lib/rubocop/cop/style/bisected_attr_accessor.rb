@@ -18,8 +18,9 @@ module RuboCop
       #     attr_accessor :bar
       #   end
       #
-      class BisectedAttrAccessor < Cop
+      class BisectedAttrAccessor < Base
         include VisibilityHelp
+        extend AutoCorrector
 
         MSG = 'Combine both accessors into `attr_accessor %<name>s`.'
 
@@ -35,14 +36,6 @@ module RuboCop
         end
         alias on_sclass on_class
         alias on_module on_class
-
-        def autocorrect(node)
-          macro = node.parent
-
-          lambda do |corrector|
-            corrector.replace(macro, replacement(macro, node))
-          end
-        end
 
         private
 
@@ -97,9 +90,13 @@ module RuboCop
           macro.arguments.each do |arg_node|
             name = arg_node.source
 
-            if (attr_reader?(macro) && writer_names.include?(name)) ||
-               (attr_writer?(macro) && reader_names.include?(name))
-              add_offense(arg_node, message: format(MSG, name: name))
+            next unless (attr_reader?(macro) && writer_names.include?(name)) ||
+                        (attr_writer?(macro) && reader_names.include?(name))
+
+            add_offense(arg_node, message: format(MSG, name: name)) do |corrector|
+              macro = arg_node.parent
+
+              corrector.replace(macro, replacement(macro, arg_node))
             end
           end
         end

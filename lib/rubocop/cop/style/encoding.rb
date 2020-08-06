@@ -9,27 +9,23 @@ module RuboCop
       #   # encoding: UTF-8
       #   # coding: UTF-8
       #   # -*- coding: UTF-8 -*-
-      class Encoding < Cop
+      class Encoding < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
         ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
         SHEBANG = '#!'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.buffer.source.empty?
 
           line_number = encoding_line_number(processed_source)
           return unless (@message = offense(processed_source, line_number))
 
           range = processed_source.buffer.line_range(line_number + 1)
-          add_offense(range, location: range, message: @message)
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            corrector.remove(range_with_surrounding_space(range: range,
-                                                          side: :right))
+          add_offense(range, message: @message) do |corrector|
+            corrector.remove(range_with_surrounding_space(range: range, side: :right))
           end
         end
 

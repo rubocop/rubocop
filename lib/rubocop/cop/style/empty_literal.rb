@@ -16,14 +16,14 @@ module RuboCop
       #   a = []
       #   h = {}
       #   s = ''
-      class EmptyLiteral < Cop
+      class EmptyLiteral < Base
         include FrozenStringLiteral
         include RangeHelp
+        extend AutoCorrector
 
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
-        STR_MSG = 'Use string literal `%<prefer>s` instead of ' \
-                  '`String.new`.'
+        STR_MSG = 'Use string literal `%<prefer>s` instead of `String.new`.'
 
         def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new)'
         def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new)'
@@ -34,25 +34,24 @@ module RuboCop
                          '(block (send (const {nil? cbase} :Hash) :new) args _)'
 
         def on_send(node)
-          add_offense(node, message: ARR_MSG)  if offense_array_node?(node)
-          add_offense(node, message: HASH_MSG) if offense_hash_node?(node)
+          return unless (message = offense_message(node))
 
-          str_node(node) do
-            return if frozen_string_literals_enabled?
-
-            add_offense(node,
-                        message: format(STR_MSG,
-                                        prefer: preferred_string_literal))
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: message) do |corrector|
             corrector.replace(replacement_range(node), correction(node))
           end
         end
 
         private
+
+        def offense_message(node)
+          if offense_array_node?(node)
+            ARR_MSG
+          elsif offense_hash_node?(node)
+            HASH_MSG
+          elsif str_node(node) && !frozen_string_literals_enabled?
+            format(STR_MSG, prefer: preferred_string_literal)
+          end
+        end
 
         def preferred_string_literal
           enforce_double_quotes? ? '""' : "''"

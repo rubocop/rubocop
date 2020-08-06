@@ -16,7 +16,7 @@ module RuboCop
       #   File.open('file') do |f|
       #     # ...
       #   end
-      class AutoResourceCleanup < Cop
+      class AutoResourceCleanup < Base
         MSG = 'Use the block version of `%<class>s.%<method>s`.'
 
         TARGET_METHODS = {
@@ -32,10 +32,7 @@ module RuboCop
 
             next if cleanup?(node)
 
-            add_offense(node,
-                        message: format(MSG,
-                                        class: target_class,
-                                        method: target_method))
+            add_offense(node, message: format(MSG, class: target_class, method: target_method))
           end
         end
 

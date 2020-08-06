@@ -55,7 +55,7 @@ module RuboCop
       #       Public = Class.new
       #     end
       #
-      class Documentation < Cop
+      class Documentation < Base
         include DocumentationComment
 
         MSG = 'Missing top-level %<type>s documentation comment.'
@@ -84,9 +84,7 @@ module RuboCop
           return if compact_namespace?(node) &&
                     nodoc_comment?(outer_module(node).first)
 
-          add_offense(node,
-                      location: :keyword,
-                      message: format(MSG, type: type))
+          add_offense(node.loc.keyword, message: format(MSG, type: type))
         end
 
         def namespace?(node)

@@ -16,9 +16,10 @@ module RuboCop
       #
       #   # good
       #   path = __dir__
-      class Dir < Cop
-        MSG = 'Use `__dir__` to get an absolute path to the current ' \
-              "file's directory."
+      class Dir < Base
+        extend AutoCorrector
+
+        MSG = "Use `__dir__` to get an absolute path to the current file's directory."
 
         def_node_matcher :dir_replacement?, <<~PATTERN
           {(send (const {nil? cbase} :File) :expand_path (send (const {nil? cbase} :File) :dirname  #file_keyword?))
@@ -27,13 +28,9 @@ module RuboCop
 
         def on_send(node)
           dir_replacement?(node) do
-            add_offense(node)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, '__dir__')
+            add_offense(node) do |corrector|
+              corrector.replace(node, '__dir__')
+            end
           end
         end
 
