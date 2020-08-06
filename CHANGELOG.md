@@ -7,6 +7,7 @@
 * [#8463](https://github.com/rubocop-hq/rubocop/pull/8463): Fix false positives for `Lint/OutOfRangeRegexpRef` when a regexp is defined and matched in separate steps. ([@eugeneius][])
 * [#8466](https://github.com/rubocop-hq/rubocop/issues/8466): Fix a false positive for `Lint/UriRegexp` when using `regexp` method without receiver. ([@koic][])
 * [#8478](https://github.com/rubocop-hq/rubocop/issues/8478): Relax `Lint/BinaryOperatorWithIdenticalOperands` for mathematical operations. ([@marcandre][])
+* [#8480](https://github.com/rubocop-hq/rubocop/issues/8480): Tweak callback list of `Lint/MissingSuper`. ([@marcandre][])
 
 ## 0.89.0 (2020-08-05)
 
