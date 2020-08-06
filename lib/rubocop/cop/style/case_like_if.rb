@@ -26,8 +26,9 @@ module RuboCop
       #     final_action
       #   end
       #
-      class CaseLikeIf < Cop
+      class CaseLikeIf < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Convert `if-elsif` to `case-when`.'
 
@@ -46,27 +47,29 @@ module RuboCop
             break unless convertible
           end
 
-          add_offense(node) if convertible
-        end
+          return unless convertible
 
-        def autocorrect(node)
-          target = find_target(node.condition)
-
-          lambda do |corrector|
-            corrector.insert_before(node, "case #{target.source}\n#{indent(node)}")
-
-            branch_conditions(node).each do |branch_condition|
-              conditions = []
-              collect_conditions(branch_condition, target, conditions)
-
-              range = correction_range(branch_condition)
-              branch_replacement = "when #{conditions.map(&:source).join(', ')}"
-              corrector.replace(range, branch_replacement)
-            end
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          target = find_target(node.condition)
+
+          corrector.insert_before(node, "case #{target.source}\n#{indent(node)}")
+
+          branch_conditions(node).each do |branch_condition|
+            conditions = []
+            collect_conditions(branch_condition, target, conditions)
+
+            range = correction_range(branch_condition)
+            branch_replacement = "when #{conditions.map(&:source).join(', ')}"
+            corrector.replace(range, branch_replacement)
+          end
+        end
 
         def should_check?(node)
           !node.unless? && !node.elsif? && !node.modifier_form? && !node.ternary? &&

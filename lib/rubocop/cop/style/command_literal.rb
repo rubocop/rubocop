@@ -75,8 +75,9 @@ module RuboCop
       # @example AllowInnerBackticks: true
       #   # good
       #   `echo \`ls\``
-      class CommandLiteral < Cop
+      class CommandLiteral < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_USE_BACKTICKS = 'Use backticks around command string.'
         MSG_USE_PERCENT_X = 'Use `%x` around command string.'
@@ -85,13 +86,31 @@ module RuboCop
           return if node.heredoc?
 
           if backtick_literal?(node)
-            check_backtick_literal(node)
+            check_backtick_literal(node, MSG_USE_PERCENT_X)
           else
-            check_percent_x_literal(node)
+            check_percent_x_literal(node, MSG_USE_BACKTICKS)
           end
         end
 
-        def autocorrect(node)
+        private
+
+        def check_backtick_literal(node, message)
+          return if allowed_backtick_literal?(node)
+
+          add_offense(node, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def check_percent_x_literal(node, message)
+          return if allowed_percent_x_literal?(node)
+
+          add_offense(node, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
           return if contains_backtick?(node)
 
           replacement = if backtick_literal?(node)
@@ -100,28 +119,8 @@ module RuboCop
                           %w[` `]
                         end
 
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, replacement.first)
-            corrector.replace(node.loc.end, replacement.last)
-          end
-        end
-
-        private
-
-        def check_backtick_literal(node)
-          return if allowed_backtick_literal?(node)
-
-          add_offense(node)
-        end
-
-        def check_percent_x_literal(node)
-          return if allowed_percent_x_literal?(node)
-
-          add_offense(node)
-        end
-
-        def message(node)
-          backtick_literal?(node) ? MSG_USE_PERCENT_X : MSG_USE_BACKTICKS
+          corrector.replace(node.loc.begin, replacement.first)
+          corrector.replace(node.loc.end, replacement.last)
         end
 
         def allowed_backtick_literal?(node)

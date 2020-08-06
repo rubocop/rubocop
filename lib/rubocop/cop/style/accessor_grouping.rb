@@ -31,10 +31,11 @@ module RuboCop
       #     attr_reader :baz
       #   end
       #
-      class AccessorGrouping < Cop
+      class AccessorGrouping < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
         include VisibilityHelp
+        extend AutoCorrector
 
         GROUPED_MSG = 'Group together all `%<accessor>s` attributes.'
         SEPARATED_MSG = 'Use one attribute per `%<accessor>s`.'
@@ -51,18 +52,27 @@ module RuboCop
         alias on_sclass on_class
         alias on_module on_class
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if (preferred_accessors = preferred_accessors(node))
-              corrector.replace(node, preferred_accessors)
-            else
-              range = range_with_surrounding_space(range: node.loc.expression, side: :left)
-              corrector.remove(range)
-            end
+        private
+
+        def check(send_node)
+          return if previous_line_comment?(send_node)
+          return unless grouped_style? && sibling_accessors(send_node).size > 1 ||
+                        separated_style? && send_node.arguments.size > 1
+
+          message = message(send_node)
+          add_offense(send_node, message: message) do |corrector|
+            autocorrect(corrector, send_node)
           end
         end
 
-        private
+        def autocorrect(corrector, node)
+          if (preferred_accessors = preferred_accessors(node))
+            corrector.replace(node, preferred_accessors)
+          else
+            range = range_with_surrounding_space(range: node.loc.expression, side: :left)
+            corrector.remove(range)
+          end
+        end
 
         def previous_line_comment?(node)
           comment_line?(processed_source[node.first_line - 2])
@@ -82,16 +92,6 @@ module RuboCop
 
         def accessor?(send_node)
           send_node.macro? && ACCESSOR_METHODS.include?(send_node.method_name)
-        end
-
-        def check(send_node)
-          return if previous_line_comment?(send_node)
-
-          if grouped_style? && sibling_accessors(send_node).size > 1
-            add_offense(send_node)
-          elsif separated_style? && send_node.arguments.size > 1
-            add_offense(send_node)
-          end
         end
 
         def grouped_style?

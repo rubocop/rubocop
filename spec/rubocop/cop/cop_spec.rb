@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
 
     context 'when cop supports autocorrection' do
-      let(:cop_class) { RuboCop::Cop::Style::Alias }
+      let(:cop_class) { RuboCop::Cop::Style::ZeroLengthPredicate }
 
       context 'when offense was corrected' do
         before do

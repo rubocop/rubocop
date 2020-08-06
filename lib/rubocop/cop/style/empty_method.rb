@@ -40,8 +40,9 @@ module RuboCop
       #
       #   def self.foo(bar)
       #   end
-      class EmptyMethod < Cop
+      class EmptyMethod < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_COMPACT = 'Put empty method definitions on a single line.'
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
@@ -51,19 +52,15 @@ module RuboCop
           return if node.body || comment_lines?(node)
           return if correct_style?(node)
 
-          add_offense(node)
-        end
-        alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             corrector.replace(node, corrected(node))
           end
         end
+        alias on_defs on_def
 
         private
 
-        def message(_node)
+        def message(_range)
           compact_style? ? MSG_COMPACT : MSG_EXPANDED
         end
 

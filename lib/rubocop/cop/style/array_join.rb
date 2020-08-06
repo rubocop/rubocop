@@ -17,20 +17,18 @@ module RuboCop
       #   # good
       #   %w(foo bar baz).join(",")
       #
-      class ArrayJoin < Cop
+      class ArrayJoin < Base
+        extend AutoCorrector
+
         MSG = 'Favor `Array#join` over `Array#*`.'
 
         def_node_matcher :join_candidate?, '(send $array :* $str)'
 
         def on_send(node)
-          join_candidate?(node) { add_offense(node, location: :selector) }
-        end
+          return unless (array, join_arg = join_candidate?(node))
 
-        def autocorrect(node)
-          array, join_arg = join_candidate?(node).map(&:source)
-
-          lambda do |corrector|
-            corrector.replace(node, "#{array}.join(#{join_arg})")
+          add_offense(node.loc.selector) do |corrector|
+            corrector.replace(node, "#{array.source}.join(#{join_arg.source})")
           end
         end
       end

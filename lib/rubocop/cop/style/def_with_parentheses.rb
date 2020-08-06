@@ -33,24 +33,22 @@ module RuboCop
       #   def Baz.foo
       #     # does a thing
       #   end
-      class DefWithParentheses < Cop
+      class DefWithParentheses < Base
+        extend AutoCorrector
+
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
               'any arguments.'
 
         def on_def(node)
           return if node.single_line?
-          return unless !node.arguments? && node.arguments.loc.begin
+          return unless !node.arguments? && (node_arguments_loc_begin = node.arguments.loc.begin)
 
-          add_offense(node.arguments, location: :begin)
-        end
-        alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
+          add_offense(node_arguments_loc_begin) do |corrector|
+            corrector.remove(node_arguments_loc_begin)
+            corrector.remove(node.arguments.loc.end)
           end
         end
+        alias on_defs on_def
       end
     end
   end

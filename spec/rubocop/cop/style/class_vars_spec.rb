@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::ClassVars do
     expect_offense(<<~RUBY)
       class TestClass
         class_variable_set(:@@test, 2)
-                           ^^^^^^^ Replace class var @@test with a class instance var.
+                           ^^^^^^^ Replace class var :@@test with a class instance var.
       end
     RUBY
   end
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::ClassVars do
     expect_offense(<<~RUBY)
       class TestClass; end
       TestClass.class_variable_set(:@@test, 42)
-                                   ^^^^^^^ Replace class var @@test with a class instance var.
+                                   ^^^^^^^ Replace class var :@@test with a class instance var.
     RUBY
   end
 

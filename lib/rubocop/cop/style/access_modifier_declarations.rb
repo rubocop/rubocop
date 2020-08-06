@@ -62,7 +62,7 @@ module RuboCop
       #     private :bar, :baz
       #
       #   end
-      class AccessModifierDeclarations < Cop
+      class AccessModifierDeclarations < Base
         include ConfigurableEnforcedStyle
 
         ACCESS_MODIFIERS = %i[private protected public module_function].to_set.freeze
@@ -84,13 +84,10 @@ module RuboCop
         def on_send(node)
           return unless access_modifier?(node)
           return if node.parent.pair_type?
-          return if cop_config['AllowModifiersOnSymbols'] &&
-                    access_modifier_with_symbol?(node)
+          return if cop_config['AllowModifiersOnSymbols'] && access_modifier_with_symbol?(node)
 
           if offense?(node)
-            add_offense(node, location: :selector) do
-              opposite_style_detected
-            end
+            add_offense(node.loc.selector) if opposite_style_detected
           else
             correct_style_detected
           end
@@ -127,8 +124,8 @@ module RuboCop
           !access_modifier_is_inlined?(node)
         end
 
-        def message(node)
-          access_modifier = node.loc.selector.source
+        def message(range)
+          access_modifier = range.source
 
           if group_style?
             format(GROUP_STYLE_MESSAGE, access_modifier: access_modifier)

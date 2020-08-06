@@ -23,8 +23,9 @@ module RuboCop
       #   %Q|He said: "#{greeting}"|
       #   %q/She said: 'Hi'/
       #
-      class BarePercentLiterals < Cop
+      class BarePercentLiterals < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Use `%%%<good>s` instead of `%%%<bad>s`.'
 
@@ -34,14 +35,6 @@ module RuboCop
 
         def on_str(node)
           check(node)
-        end
-
-        def autocorrect(node)
-          src = node.loc.begin.source
-          replacement = src.start_with?('%Q') ? '%' : '%Q'
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, src.sub(/%Q?/, replacement))
-          end
         end
 
         private
@@ -68,9 +61,14 @@ module RuboCop
         end
 
         def add_offense_for_wrong_style(node, good, bad)
-          add_offense(node, location: :begin, message: format(MSG,
-                                                              good: good,
-                                                              bad: bad))
+          location = node.loc.begin
+
+          add_offense(location, message: format(MSG, good: good, bad: bad)) do |corrector|
+            source = location.source
+            replacement = source.start_with?('%Q') ? '%' : '%Q'
+
+            corrector.replace(location, source.sub(/%Q?/, replacement))
+          end
         end
       end
     end
